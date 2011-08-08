@@ -33,9 +33,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public abstract class AbstractSection extends AbstractPropertySection{
 	
 	
-	private Text TEXT;
+	private Text text;
 
-	private Text TEXT2;
+	private Text text2;
 
 	/**
 	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
@@ -68,39 +68,39 @@ public abstract class AbstractSection extends AbstractPropertySection{
 				.createFlatFormComposite(parent);
 		FormData data;
 		
-		TEXT = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-		TEXT.setEditable(false);
+		text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+		text.setEditable(false);
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		TEXT.setLayoutData(data);
+		text.setLayoutData(data);
 
 		CLabel namespaceLabel = getWidgetFactory()
 				.createCLabel(composite, title); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(TEXT,
+		data.right = new FormAttachment(text,
 				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(TEXT, 0, SWT.CENTER);
+		data.top = new FormAttachment(text, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
 		
 		if(marker){
-			TEXT2 = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-			TEXT2.setEditable(false);
+			text2 = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+			text2.setEditable(false);
 			data = new FormData();
 			data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 			data.right = new FormAttachment(100, 0);
-			data.top = new FormAttachment(TEXT, ITabbedPropertyConstants.VSPACE);
-			TEXT2.setLayoutData(data);
+			data.top = new FormAttachment(text, ITabbedPropertyConstants.VSPACE);
+			text2.setLayoutData(data);
 
 			CLabel LocalNameLabel = getWidgetFactory()
 					.createCLabel(composite, title2); //$NON-NLS-1$
 			data = new FormData();
 			data.left = new FormAttachment(0, 0);
-			data.right = new FormAttachment(TEXT2,
+			data.right = new FormAttachment(text2,
 					-ITabbedPropertyConstants.HSPACE);
-			data.top = new FormAttachment(TEXT2, 0, SWT.CENTER);
+			data.top = new FormAttachment(text2, 0, SWT.CENTER);
 			LocalNameLabel.setLayoutData(data);
 		}
 	}
@@ -109,27 +109,27 @@ public abstract class AbstractSection extends AbstractPropertySection{
 	 * @return the tEXT2
 	 */
 	public Text getText2() {
-		return TEXT2;
+		return text2;
 	}
 
 	/**
-	 * @param tEXT2 the tEXT2 to set
+	 * @param txt the text2 to set
 	 */
-	public void setText2(Text tEXT2) {
-		TEXT2 = tEXT2;
+	public void setText2(Text txt) {
+		text2 = txt;
 	}
 	
 	/**
 	 * @return the tEXT
 	 */
 	public Text getText() {
-		return TEXT;
+		return text;
 	}
 
 	/**
-	 * @param tEXT the tEXT to set
+	 * @param txt the tEXT to set
 	 */
-	public void setText(Text tEXT) {
-		TEXT = tEXT;
+	public void setText(Text txt) {
+		text = txt;
 	}
 }

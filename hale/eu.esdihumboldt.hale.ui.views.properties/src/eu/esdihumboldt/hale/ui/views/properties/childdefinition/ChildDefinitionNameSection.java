@@ -12,12 +12,12 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.childdefinition;
 
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection;
 
 /**
  * TODO Type description
- * @author Patrick
+ * @author Patrick Lieb
  */
 public class ChildDefinitionNameSection extends DefinitionNameSection{
 
@@ -26,6 +26,6 @@ public class ChildDefinitionNameSection extends DefinitionNameSection{
 	 */
 	@Override
 	protected void setInput(Object input) {
-		setDefinition(((PropertyDefinition) input).getParentType());
+		setDefinition(((ChildDefinition<?>) input).getParentType());
 	}
 }
