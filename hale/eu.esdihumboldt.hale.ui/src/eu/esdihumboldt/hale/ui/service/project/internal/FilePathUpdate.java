@@ -26,7 +26,7 @@ public class FilePathUpdate {
 	 * @param newlocation directory path where the program is running now
 	 * @return the constructed string
 	 */
-	public static String changePath(String oldsource, String newlocation) {
+	public String changePath(String oldsource, String newlocation) {
 		String src = oldsource.substring(oldsource.indexOf("/") + 1, oldsource.lastIndexOf("/"));
 		String prefex = oldsource.substring(0, oldsource.indexOf("/")+ 1);
 		String data = oldsource.substring(oldsource.lastIndexOf("/") +1);

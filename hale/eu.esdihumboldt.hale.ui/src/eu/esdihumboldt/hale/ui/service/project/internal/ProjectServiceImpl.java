@@ -31,11 +31,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.referencing.operation.projection.AlbersEqualArea.Provider;
 import org.osgi.framework.Version;
+import org.eclipse.jface.preference.StringButtonFieldEditor;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -187,6 +190,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 
 			// uses paths based on "/" in FilePathUpdate
 			private void updatePaths(Project main) {
+				FilePathUpdate update = new FilePathUpdate();
 				IOConfiguration saveconfig = main.getSaveConfiguration();
 				if(saveconfig == null)
 					return;
@@ -199,22 +203,40 @@ public class ProjectServiceImpl extends AbstractProjectService
 					for(IOConfiguration providerconf : configuration){
 						Map<String, String> conf = providerconf.getProviderConfiguration();
 						String impsrc = conf.get(ImportProvider.PARAM_SOURCE);
-						try {
+						String target = impsrc.substring(impsrc.lastIndexOf("/") + 1);
+						String extension = "*" + impsrc.substring(impsrc.lastIndexOf("."));
+						String[] extensions = new String[]{extension};
+						try { 
 							URI uri = new URI(impsrc);
 							File file = new File(uri);
 							if(!file.exists()){
-								String newsrc = FilePathUpdate.changePath(impsrc, location);
+								String newsrc = update.changePath(impsrc, location);
 								
 								URI newuri = new URI(newsrc);
 								File newfile = new File(newuri);
 								if(newfile.exists()){
 									conf.remove(ImportProvider.PARAM_SOURCE);
 									conf.put(ImportProvider.PARAM_SOURCE, newsrc);
+								} else {
+							        FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN | SWT.SHEET);
+							        dialog.setFilterExtensions(extensions);
+							        dialog.setFileName(target);
+									
+							        String openfile = dialog.open();
+							        if (openfile != null) {
+							            openfile = openfile.trim();
+							            if (openfile.length() > 0) {
+							            	openfile = "file:/" + openfile;
+							            	openfile = openfile.replace("\\", "/");
+							            	conf.remove(ImportProvider.PARAM_SOURCE);
+											conf.put(ImportProvider.PARAM_SOURCE, openfile);
+										}
+							        }
+							        }
 								}
-							}
+							
 						} catch (URISyntaxException e) {
-//							OpenFileFieldEditor sourceFile = new OpenFileFieldEditor("sourceFile", "Source file:", true,
-//									FileFieldEditor.VALIDATE_ON_KEY_STROKE, parent);
+							// ignore?
 						}
 					}
 				}
