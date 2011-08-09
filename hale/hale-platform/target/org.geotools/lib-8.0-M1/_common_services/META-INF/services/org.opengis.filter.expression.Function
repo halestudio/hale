@@ -1,11 +1,3 @@
-org.geotools.filter.IDFunctionExpression
-org.geotools.filter.AsMultiGeometryFunctionExpression
-org.geotools.filter.expression.VocabFunction
-org.geotools.filter.expression.ToEnvelopeFunction
-org.geotools.filter.expression.ToEnvelopeFunction
-org.geotools.filter.expression.ToDirectPositionFunction
-org.geotools.filter.expression.ToPointFunction
-org.geotools.filter.expression.ToXlinkHrefFunction
 org.geotools.filter.function.PropertyExistsFunction
 org.geotools.filter.AreaFunction
 org.geotools.filter.LengthFunction

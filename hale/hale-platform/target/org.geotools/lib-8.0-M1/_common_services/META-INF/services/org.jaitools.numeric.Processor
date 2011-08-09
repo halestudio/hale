@@ -1,5 +1,0 @@
-org.jaitools.numeric.ApproxMedianProcessor
-org.jaitools.numeric.ExactMedianProcessor
-org.jaitools.numeric.ExtremaProcessor
-org.jaitools.numeric.MeanVarianceProcessor
-org.jaitools.numeric.SumProcessor

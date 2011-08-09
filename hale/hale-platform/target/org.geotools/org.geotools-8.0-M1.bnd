@@ -63,6 +63,7 @@ Import-Package: com.sun.jimi.core;resolution:=optional,\
   org.jaitools.*;resolution:=optional,\
   it.geosolutions.imageio.plugins.tiff;resolution:=optional,\
   junit.framework;resolution:=optional,\
+  com.vividsolutions.jts.geom,\
   *
 Export-Package: net.opengis.*;-split-package:=merge-first,\
  org.opengis.*;-split-package:=merge-first,\
@@ -71,8 +72,7 @@ Export-Package: net.opengis.*;-split-package:=merge-first,\
 Private-Package: META-INF.*;-split-package:=merge-first,\
  javax.vecmath;-split-package:=merge-first,\
  org.hsqldb.*;-split-package:=merge-first,\
- org.jdesktop.swingworker;-split-package:=merge-first,\
- *
+ *;-split-package:=merge-first
 Bundle-Version: 8.0-M1
 Bundle-Name: Geotools Plug-in
 Bundle-SymbolicName: org.geotools
