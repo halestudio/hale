@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -43,19 +44,22 @@ public class Servicemerger {
 	
 	String source;
 	String dest;
+	ArrayList<String> bndSpecifications;
+	boolean bndFlag;
 	
 	/**
 	 * @param source - the sourcepath of the geotools jar-files.
 	 * @param dest - the destinationpath where the merged files should appear
+	 * @param bnd - bnd-File with specified names of jar-files to merge
 	 */
-	public Servicemerger(String source, String dest){
-		this.source = source;
-		this.dest = dest;
-
-		File dir = new File(source);
-			
+	public Servicemerger(String bnd){
+		
+		this.bndSpecifications = new ArrayList<String>();
+		this.bndFlag = true;
+		
 		try {
-			merge(dir);
+			readBND(bnd);			
+			merge(new File(this.source));
 			createJar(dest);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -64,6 +68,55 @@ public class Servicemerger {
 	}
 	
 	
+	/**
+	 * @param source - the sourcepath of the geotools jar-files.
+	 * @param dest - the destinationpath where the merged files should appear
+	 * @param bnd - bnd-File with specified names of jar-files to merge
+	 */
+	public Servicemerger(String source, String dest){
+		this.source = source;
+		this.dest = dest;
+		this.bndFlag = false;
+		
+		try {
+			merge(new File(this.source));
+			createJar(dest);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	/**
+	 * @param bnd 
+	 * @throws IOException 
+	 * 
+	 */
+	private void readBND(String bnd) throws IOException {
+	
+		File bndFile = new File(bnd);
+		BufferedReader bndReader = new BufferedReader(
+				new FileReader(bndFile));
+		String readLine;
+		while((readLine = bndReader.readLine()).contains(",\\")){
+			
+			if(readLine.contains("classpath")) continue;
+		    
+			bndSpecifications.add(readLine.substring(readLine.lastIndexOf("/") + 1, readLine.indexOf(",\\")));			
+		}
+		
+		//TODO
+		this.source = bndFile.getParent().concat( java.io.File.separator + readLine.substring(0, readLine.lastIndexOf("/")));
+		this.dest = this.source;
+		//!
+		
+		bndSpecifications.add(readLine.substring(readLine.lastIndexOf("/") + 1));
+		bndReader.close();
+		
+	}
+
+
 	/**
 	 * Method for creating a jar file containing the merged servicefiles
 	 * @param dest the destinationpath of the jar file
@@ -83,7 +136,7 @@ public class Servicemerger {
 		       byte buffer [] = new byte [ BUFFER_SIZE ] ;
 		       
 		       FileOutputStream stream = new FileOutputStream(jar) ;
-		       JarOutputStream out = new JarOutputStream(stream, new Manifest()) ;
+		       JarOutputStream out = new JarOutputStream(stream) ;
 
 		       for (int i = 0 ; i < jaredFiles.length; i++) {
 		         if (jaredFiles[i] == null || !jaredFiles[i].exists()
@@ -94,8 +147,9 @@ public class Servicemerger {
 		        // System.out.println("Adding " + jaredFiles[i].getName()) ;
 		         
 		         //add files as JarEntrys to the JarFile
-		         JarEntry entry = new JarEntry(	"META-INF" + java.io.File.separator +
-							"services" + java.io.File.separator + jaredFiles[i].getName()) ;
+		         //must use "/" for pathname so it works with bnd
+		         JarEntry entry = new JarEntry("META-INF" + "/" +
+							"services" + "/" + jaredFiles[i].getName()) ;
 		         entry.setTime(jaredFiles[i].lastModified()) ;
 		         out.putNextEntry(entry) ;
 
@@ -189,6 +243,7 @@ public class Servicemerger {
 			String fileLine;
 			String textLine;
 			ArrayList<String> fileContent = new ArrayList<String>();
+			ArrayList<String> toBeWritten = new ArrayList<String>();
 			
 			while ((fileLine = readFile.readLine()) != null){
 				
@@ -198,13 +253,19 @@ public class Servicemerger {
 				
 			while ((textLine = readText.readLine()) != null){
 				
-				if (!fileContent.contains(textLine)){
-					
-					out.write(textLine + "\n");
-					
+				if (!fileContent.contains(textLine)){					
+					toBeWritten.add(textLine);				
 				}
-
+			}
+			
+			for(String s : toBeWritten){
+				
+			
+			out.write(s);		
+			out.newLine();
 			}		
+			
+			out.flush();
 			out.close();
 		}
 	}
@@ -223,10 +284,23 @@ public class Servicemerger {
 		//are jar files in the given directory?
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
+				
 				//we only work with .jar files
-				if(files[i].getName().endsWith(".jar")){
+				JarFile jar = null;
+				
+				if(this.bndFlag == false){
+					if(files[i].getName().endsWith(".jar")){
+						jar = new JarFile(files[i]);
+					}
+				}
+				
+				else if(this.bndFlag == true){
+					if(files[i].getName().endsWith(".jar") && bndSpecifications.contains(files[i].getName())){
+						jar = new JarFile(files[i]);
+					}
+				}
 						
-					JarFile jar = new JarFile(files[i]);
+					if(jar != null){
 					
 					Enumeration<JarEntry> jarenu = jar.entries();
 					//lets look at the entry of a specific jar file
@@ -234,11 +308,13 @@ public class Servicemerger {
 						 
 						 JarEntry entry = jarenu.nextElement();
 						 //do the jar file contains a servicefile?
-						if(entry.getName().contains("META-INF" + java.io.File.separator + "services") && !entry.isDirectory()){
+						if(entry.getName().contains("META-INF") 
+								&& entry.getName().contains("services") 
+								&& !entry.isDirectory()){
 							
 							if(visited.containsKey(entry.getName())){
 								
-								File mergedFile =	visited.get(entry.getName());
+								File mergedFile = visited.get(entry.getName());
 								writeMergedFile(mergedFile, readFile(jar.getInputStream(entry)));		
 							
 							}
@@ -253,11 +329,11 @@ public class Servicemerger {
 								
 					 
 					 
-					 
+					 }
 				
 					 }
 			
-				}
+				
 				
 			
 				
@@ -274,7 +350,12 @@ public class Servicemerger {
 	 */
 	public static void main(String[] args) {
 		
-		Servicemerger sm = new Servicemerger(args[0], args[1]);
+		if(args[0].equals("-bnd")){
+			Servicemerger sm = new Servicemerger(args[1]);
+		}
+		else {
+			Servicemerger sm = new Servicemerger(args[0], args[1]);
+		}
 		}
 
 }
