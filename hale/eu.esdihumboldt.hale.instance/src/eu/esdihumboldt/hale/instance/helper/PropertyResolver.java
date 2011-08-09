@@ -14,11 +14,13 @@ package eu.esdihumboldt.hale.instance.helper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.schema.model.ChildDefinition;
 
 /**
  * TODO Type description
@@ -56,15 +58,20 @@ public class PropertyResolver {
 		//TODO
 		
 		
-		
+	/*	
 		ArrayList<String> pathParts = new ArrayList<String>();
 		 StringTokenizer st = new StringTokenizer(propertyPath, ".");
 			while(st.hasMoreTokens()){
 				pathParts.add(st.nextToken());
 			}
+			*/
 			
-			
-			
+		 Iterator<? extends ChildDefinition<?>> childIterator = instance
+				 .getDefinition().getChildren().iterator();
+		 
+	while(childIterator.hasNext()){
+		  childIterator.next();
+	}
 			
 		
 		//the old way
