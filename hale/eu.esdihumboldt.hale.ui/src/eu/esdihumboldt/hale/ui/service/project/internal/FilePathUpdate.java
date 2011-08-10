@@ -26,42 +26,42 @@ public class FilePathUpdate {
 	 * @param newlocation directory path where the program is running now
 	 * @return the constructed string
 	 */
-	public String changePath(String oldsource, String newlocation) {
+	protected String changePath(String oldsource, String newlocation) {
 		String src = oldsource.substring(oldsource.indexOf("/") + 1, oldsource.lastIndexOf("/"));
 		String prefex = oldsource.substring(0, oldsource.indexOf("/")+ 1);
 		String data = oldsource.substring(oldsource.lastIndexOf("/") +1);
 		String[] locarray = newlocation.split("/");
 		String[] srcarray = src.split("/");
-		String newsrc = prefex;
+		StringBuffer newsrc = new StringBuffer();
+		newsrc.append(prefex);
 		boolean changed = false;
 		
 		for(int i = srcarray.length - 1; i >= 0; i--){
-			int first = FilePathUpdate.contains(locarray, srcarray[i]);
+			int first = getPosition(locarray, srcarray[i]);
 			int second = -1;
 			if(i-1 >= 0)
-			second = FilePathUpdate.contains(locarray, srcarray[i-1]);
+			second = getPosition(locarray, srcarray[i-1]);
 			if(first != -1 && (i == 0 || second == -1)){
 				changed = true;
 				for(int l = 0; l <= first; l++){
-					newsrc = newsrc + locarray[l] + "/";
+					newsrc = newsrc.append(locarray[l]).append("/");
 				}
-				// Logik hinzufügen!!!
 				for(int d = i+1; d < srcarray.length; d++){
-					newsrc = newsrc + srcarray[d] + "/";
+					newsrc = newsrc.append(srcarray[d]).append("/");
 				}
-				return newsrc + data;
+				return newsrc.append(data).toString();
 			}
 		}
 		if(!changed){
 			for(int i = 0; i < locarray.length; i++){
-				newsrc = newsrc + locarray[i] + "/";
+				newsrc = newsrc.append(locarray[i]).append("/");
 			}
 		}
 		
-		return newsrc + data;
+		return newsrc.append(data).toString();
 	}
 	
-	private static int contains(String[] array, String search){
+	private int getPosition(String[] array, String search){
 		for(int i = array.length - 1; i >= 0; i--){
 			if(array[i].equals(search))
 				return i;

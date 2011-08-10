@@ -4,10 +4,17 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * Testing class for {@link FilePathUpdate}
+ * @author Patrick Lieb
+ */
 public class FilePathUpdateTester {
 	
 	FilePathUpdate update = new FilePathUpdate();
 
+	/**
+	 * Testing case with two normal paths
+	 */
 	@Test
 	public void TestcaseA(){
 		String path = "c:/neu/blub/blab/dadada/";
@@ -17,6 +24,9 @@ public class FilePathUpdateTester {
 		assertEquals(correct, newpath);
 	}
 	
+	/**
+	 * Testing case with two normal paths
+	 */
 	@Test
 	public void TestcaseB(){
 		String path = "c:/neu/dada/duddu/lalala/dumdidum/blub/blab/dadada/";
@@ -26,6 +36,9 @@ public class FilePathUpdateTester {
 		assertEquals(correct, newpath);
 	}
 	
+	/**
+	 * Testing case with no analogy of the two paths
+	 */
 	@Test
 	public void TestcaseC(){
 		String path = "c:/neu/dada/duddu/lalala/dumdidum/blub/blabe/dadadaesa/";
@@ -35,6 +48,9 @@ public class FilePathUpdateTester {
 		assertEquals(correct, newpath);
 	}
 	
+	/**
+	 * Testing case with the same device
+	 */
 	@Test
 	public void TestcaseD(){
 		String path = "c:/dadada/";
@@ -44,20 +60,14 @@ public class FilePathUpdateTester {
 		assertEquals(correct, newpath);
 	}
 	
+	/**
+	 * Testing case with no analogy of the two paths
+	 */
 	@Test
 	public void TestcaseE(){
 		String path = "c:/dadada/dududu/blab/";
 		String file = "file:/d:/test/test/test/hale.test";
 		String correct = "file:/c:/dadada/dududu/blab/hale.test";
-		String newpath = update.changePath(file, path);
-		assertEquals(correct, newpath);
-	}
-	
-	@Test
-	public void TestcaseF(){
-		String path = "C:/watercourse";
-		String file = "file:/C:/humboldt2/_testdata/watercourse/hale.test";
-		String correct = "file:/C:/watercourse/hale.test";
 		String newpath = update.changePath(file, path);
 		assertEquals(correct, newpath);
 	}
