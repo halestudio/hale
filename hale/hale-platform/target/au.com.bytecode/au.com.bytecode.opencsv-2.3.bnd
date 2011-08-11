@@ -1,0 +1,7 @@
+-classpath: lib/opencsv-2.3.jar
+-output: au.com.bytecode.opencsv-2.3.0.jar
+Export-Package: *;-split-package:=merge-last;-noimport:=true
+Import-Package: *
+Bundle-Version: 2.3.0
+Bundle-Name: OpenCSV
+Bundle-SymbolicName: au.com.bytecode.opencsv
