@@ -102,7 +102,7 @@
 		</Feature>
 		
 		<InstallExecuteSequence>
-			<RemoveExistingProducts After="InstallFinalize" />
+			<RemoveExistingProducts Before="InstallInitialize" />
 		</InstallExecuteSequence>
 	</Product>
 </Wix>
