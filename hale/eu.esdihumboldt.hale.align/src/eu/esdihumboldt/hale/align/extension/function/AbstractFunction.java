@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.align.extension.function;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -19,6 +20,8 @@ import java.util.Set;
 import net.jcip.annotations.Immutable;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
 
@@ -97,6 +100,28 @@ public abstract class AbstractFunction implements Function {
 	@Override
 	public final Set<FunctionParameter> getDefinedParameters() {
 		return Collections.unmodifiableSet(parameters);
+	}
+
+	/**
+	 * @see Function#getIconURL()
+	 */
+	@Override
+	public URL getIconURL() {
+		String icon = conf.getAttribute("icon");
+		return getURL(icon);
+	}
+
+	private URL getURL(String resource) {
+		if (resource != null && !resource.isEmpty()) {
+			String contributor = conf.getDeclaringExtension().getContributor().getName();
+			Bundle bundle = Platform.getBundle(contributor);
+			
+			if (bundle != null) {
+				return bundle.getResource(resource);
+			}
+		}
+		
+		return null;
 	}
 
 }

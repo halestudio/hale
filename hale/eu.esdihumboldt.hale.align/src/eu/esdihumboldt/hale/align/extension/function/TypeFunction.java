@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.align.extension.function;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -73,6 +74,18 @@ public final class TypeFunction extends AbstractFunction {
 	 */
 	public Set<TypeParameter> getTargetTypes() {
 		return Collections.unmodifiableSet(target);
+	}
+	
+	/**
+	 * @see AbstractFunction#getIconURL()
+	 */
+	@Override
+	public URL getIconURL() {
+		URL icon = super.getIconURL();
+		if (icon == null)  {
+			icon = getClass().getResource("/icons/typeFunction.png");
+		}
+		return icon;
 	}
 
 }
