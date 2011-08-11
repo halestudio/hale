@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.ui.views.functions;
 
+import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
@@ -25,7 +26,7 @@ import eu.esdihumboldt.hale.align.extension.function.AbstractFunction;
 public class FunctionLabelProvider extends LabelProvider {
 
 	/**
-	 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
+	 * @see LabelProvider#getText(Object)
 	 */
 	@Override
 	public String getText(Object element) {
@@ -40,12 +41,25 @@ public class FunctionLabelProvider extends LabelProvider {
 	}
 
 	/**
-	 * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
+	 * @see LabelProvider#getImage(Object)
 	 */
 	@Override
 	public Image getImage(Object element) {
+		//TODO get image based on getIconURL in AbstractFunction (an cache them) 
+		
 		// TODO Auto-generated method stub
 		return super.getImage(element);
+	}
+
+	/**
+	 * @see BaseLabelProvider#dispose()
+	 */
+	@Override
+	public void dispose() {
+		//TODO dispose any images created
+		
+		// TODO Auto-generated method stub
+		super.dispose();
 	}
 
 }
