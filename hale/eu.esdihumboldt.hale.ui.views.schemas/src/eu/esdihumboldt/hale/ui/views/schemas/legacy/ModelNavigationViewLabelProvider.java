@@ -11,7 +11,6 @@
  */
 package eu.esdihumboldt.hale.ui.views.schemas.legacy;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,27 +22,15 @@ import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.model.schema.AttributeItem;
-import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
-import eu.esdihumboldt.hale.ui.model.schema.TreeObject;
-import eu.esdihumboldt.hale.ui.model.schema.TreeObject.TreeObjectType;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
-import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
-import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 import eu.esdihumboldt.specification.cst.align.ICell;
@@ -155,12 +142,12 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	 */
 	@Override
 	public String getToolTip(Object element) {
-		if (element instanceof SchemaItem) {
-			String description = ((SchemaItem) element).getDefinition().getDescription();
-			if (description != null && !description.isEmpty()) {
-				return description;
-			}
-		}
+//		if (element instanceof SchemaItem) {
+//			String description = ((SchemaItem) element).getDefinition().getDescription();
+//			if (description != null && !description.isEmpty()) {
+//				return description;
+//			}
+//		}
 		
 		return null;
 	}
@@ -171,107 +158,108 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	 */
 	@Override
 	public Image getImage(Object obj) {
-		TreeObject to = (TreeObject) obj;
-		String imageKey = null;
-		
-		// determine image key
-		if (to.getType().equals(TreeObjectType.ROOT)) {
-			imageKey = ISharedImages.IMG_DEF_VIEW;
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		}
-		else {
-			imageKey = ModelNavigationViewLabelProvider.getImageforTreeObjectType(to.getType());
-		}
-		
-		// retrieve image for key
-		Image image;
-		if (imageKey == null) {
-			// default
-			imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			image = PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		}
-		else  {
-			image = images.get(imageKey);
-			if (image == null) {
-				image = SchemasViewPlugin.getImageDescriptor(
-					"/icons/" + imageKey).createImage(); //$NON-NLS-1$
-				images.put(imageKey, image);
-			}
-		}
-		
-		// legend image
-		if (to.getDefinition() != null && (to.getDefinition() instanceof TypeDefinition) 
-				&& ((TypeDefinition) to.getDefinition()).hasGeometry() 
-				&& to.getPropertyType() instanceof FeatureType) {
-			FeatureType type = (FeatureType) to.getPropertyType();
-			BufferedImage img = StyleHelper.getLegendImage(type, true);
-			if (img != null) {
-				// replace image with style image
-				ImageData imgData = SwingRcpUtilities.convertToSWT(img);
-				image = new Image(Display.getCurrent(), imgData);
-				
-				String key = to.getName().getURI();
-				Image old = null;
-				if (styleImages.containsKey(key)) {
-					old = styleImages.get(key);
-				}
-				styleImages.put(key, image);
-				if (old != null) {
-					old.dispose(); // ok here?
-				}
-			}
-		}
-		// check for inline attributes
-		else {
-			boolean attribute;
-			boolean mandatory;
-			if (to instanceof AttributeItem) {
-				AttributeDefinition def = ((AttributeItem) to).getAttributeDefinition();
-				attribute = def.isAttribute();
-				mandatory = !def.isNillable() && def.getMinOccurs() > 0;
-			}
-			else {
-				attribute = false;
-				mandatory = false;
-			}
-			boolean def = to.isAttribute() && to.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE && to.getParent().isType() && isDefaultGeometry((FeatureType) to.getParent().getPropertyType(), to.getName().getLocalPart());
-			
-			if (def || mandatory || attribute) {
-				// overlayed image
-				ImageConf conf = new ImageConf(imageKey, attribute, def, mandatory);
-				Image overlayedImage = overlayedImages.get(conf);
-				
-				if (overlayedImage == null) {
-					// apply overlays to image
-					
-					Image copy = new Image(image.getDevice(), image.getBounds());
-					// draw on image
-					GC gc = new GC(copy);
-					try {
-						gc.drawImage(image, 0, 0);
-						if (attribute) {
-							gc.drawImage(attribOverlay, 0, 0);
-						}
-						if (def) {
-							gc.drawImage(defOverlay, 0, 0);
-						}
-						if (mandatory) {
-							gc.drawImage(mandatoryOverlay, 0, 0);
-						}
-					} finally {
-						gc.dispose();
-					}
-					
-					image = copy;
-					overlayedImages.put(conf, copy);
-				}
-				else {
-					image = overlayedImage;
-				}
-			}
-		}
-		
-		return image;
+//		TreeObject to = (TreeObject) obj;
+//		String imageKey = null;
+//		
+//		// determine image key
+//		if (to.getType().equals(TreeObjectType.ROOT)) {
+//			imageKey = ISharedImages.IMG_DEF_VIEW;
+//			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+//		}
+//		else {
+//			imageKey = ModelNavigationViewLabelProvider.getImageforTreeObjectType(to.getType());
+//		}
+//		
+//		// retrieve image for key
+//		Image image;
+//		if (imageKey == null) {
+//			// default
+//			imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+//			image = PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+//		}
+//		else  {
+//			image = images.get(imageKey);
+//			if (image == null) {
+//				image = SchemasViewPlugin.getImageDescriptor(
+//					"/icons/" + imageKey).createImage(); //$NON-NLS-1$
+//				images.put(imageKey, image);
+//			}
+//		}
+//		
+//		// legend image
+//		if (to.getDefinition() != null && (to.getDefinition() instanceof TypeDefinition) 
+//				&& ((TypeDefinition) to.getDefinition()).hasGeometry() 
+//				&& to.getPropertyType() instanceof FeatureType) {
+//			FeatureType type = (FeatureType) to.getPropertyType();
+//			BufferedImage img = StyleHelper.getLegendImage(type, true);
+//			if (img != null) {
+//				// replace image with style image
+//				ImageData imgData = SwingRcpUtilities.convertToSWT(img);
+//				image = new Image(Display.getCurrent(), imgData);
+//				
+//				String key = to.getName().getURI();
+//				Image old = null;
+//				if (styleImages.containsKey(key)) {
+//					old = styleImages.get(key);
+//				}
+//				styleImages.put(key, image);
+//				if (old != null) {
+//					old.dispose(); // ok here?
+//				}
+//			}
+//		}
+//		// check for inline attributes
+//		else {
+//			boolean attribute;
+//			boolean mandatory;
+//			if (to instanceof AttributeItem) {
+//				AttributeDefinition def = ((AttributeItem) to).getAttributeDefinition();
+//				attribute = def.isAttribute();
+//				mandatory = !def.isNillable() && def.getMinOccurs() > 0;
+//			}
+//			else {
+//				attribute = false;
+//				mandatory = false;
+//			}
+//			boolean def = to.isAttribute() && to.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE && to.getParent().isType() && isDefaultGeometry((FeatureType) to.getParent().getPropertyType(), to.getName().getLocalPart());
+//			
+//			if (def || mandatory || attribute) {
+//				// overlayed image
+//				ImageConf conf = new ImageConf(imageKey, attribute, def, mandatory);
+//				Image overlayedImage = overlayedImages.get(conf);
+//				
+//				if (overlayedImage == null) {
+//					// apply overlays to image
+//					
+//					Image copy = new Image(image.getDevice(), image.getBounds());
+//					// draw on image
+//					GC gc = new GC(copy);
+//					try {
+//						gc.drawImage(image, 0, 0);
+//						if (attribute) {
+//							gc.drawImage(attribOverlay, 0, 0);
+//						}
+//						if (def) {
+//							gc.drawImage(defOverlay, 0, 0);
+//						}
+//						if (mandatory) {
+//							gc.drawImage(mandatoryOverlay, 0, 0);
+//						}
+//					} finally {
+//						gc.dispose();
+//					}
+//					
+//					image = copy;
+//					overlayedImages.put(conf, copy);
+//				}
+//				else {
+//					image = overlayedImage;
+//				}
+//			}
+//		}
+//		
+//		return image;
+		return null;
 	}
 
 	private boolean isDefaultGeometry(FeatureType type, String propertyName) {
@@ -303,19 +291,19 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 	 * @return the color
 	 */
 	private Color getColor(Object element, boolean background) {
-		if (element instanceof TreeObject) {
-			Entity entity = ((SchemaItem) element).getEntity();
-			
-			RGB rgb = getColor(entity, background);
-			if (rgb != null) {
-				Color color = createdColors.get(rgb);
-				if (color == null) {
-					color = new Color(Display.getDefault(), rgb);
-					createdColors.put(rgb, color);
-				}
-				return color;
-			}
-		}
+//		if (element instanceof TreeObject) {
+//			Entity entity = ((SchemaItem) element).getEntity();
+//			
+//			RGB rgb = getColor(entity, background);
+//			if (rgb != null) {
+//				Color color = createdColors.get(rgb);
+//				if (color == null) {
+//					color = new Color(Display.getDefault(), rgb);
+//					createdColors.put(rgb, color);
+//				}
+//				return color;
+//			}
+//		}
 		
 		// default
 		return null;
@@ -453,38 +441,6 @@ public class ModelNavigationViewLabelProvider extends LabelProvider
 		mandatoryOverlay.dispose();
 			
 		super.dispose();
-	}
-	
-	/**
-	 * Get the image for a tree object
-	 * 
-	 * @param tot the tree object type
-	 * @return the right image
-	 */
-	public static String getImageforTreeObjectType(TreeObjectType tot) {
-		String imageKey = null;
-		if (tot.equals(TreeObjectType.ABSTRACT_FT)) {
-			imageKey = "abstract_ft.png"; //$NON-NLS-1$
-		}
-		else if (tot.equals(TreeObjectType.CONCRETE_FT)) {
-			imageKey = "concrete_ft.png"; //$NON-NLS-1$
-		}
-		else if (tot.equals(TreeObjectType.PROPERTY_TYPE)) {
-			//TODO add image for property types
-		}
-		else if (tot.equals(TreeObjectType.STRING_ATTRIBUTE)) {
-			imageKey = "string_attribute.png"; //$NON-NLS-1$
-		} 
-		else if (tot.equals(TreeObjectType.NUMERIC_ATTRIBUTE)) {
-			imageKey = "number_attribute.png"; //$NON-NLS-1$
-		}
-		else if (tot.equals(TreeObjectType.GEOMETRIC_ATTRIBUTE)) {
-			imageKey = "geometry_attribute.png"; //$NON-NLS-1$
-		}
-		else if (tot.equals(TreeObjectType.COMPLEX_ATTRIBUTE)) {
-			// TODO add image for complex attributes
-		}
-		return imageKey;
 	}
 	
 }

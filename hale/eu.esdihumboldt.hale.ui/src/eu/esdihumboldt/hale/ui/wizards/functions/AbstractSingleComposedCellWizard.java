@@ -9,52 +9,60 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.model.functions;
+package eu.esdihumboldt.hale.ui.wizards.functions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.commons.goml.align.Cell;
-import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
+import eu.esdihumboldt.hale.ui.wizards.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Abstract function wizard working with a single {@link Cell}
+ *   where an entity can consist of multiple composed entities
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$
  */
-public abstract class AbstractSingleCellWizard extends Wizard implements FunctionWizard {
+public abstract class AbstractSingleComposedCellWizard extends Wizard implements FunctionWizard {
 
 	private final Cell cell;
 	
-	private final SchemaItem sourceItem;
+	private final Set<SchemaItem> sourceItems = new TreeSet<SchemaItem>();
 	
-	private final SchemaItem targetItem;
+	private final Set<SchemaItem> targetItems = new TreeSet<SchemaItem>();
 	
 	/**
 	 * Creates a wizard that creates a new {@link Cell} or
-	 *   copies the existing {@link ICell} for the first
+	 *   copies the existing {@link ICell} for the
 	 *   source an target items of the given {@link AlignmentInfo}
 	 *   
 	 * @param selection the {@link AlignmentInfo} of the selection
 	 */
-	public AbstractSingleCellWizard(AlignmentInfo selection) {
+	public AbstractSingleComposedCellWizard(AlignmentInfo selection) {
 		super();
 		
-		sourceItem = selection.getFirstSourceItem();
-		targetItem = selection.getFirstTargetItem();
+		for (SchemaItem item : selection.getSourceItems()) {
+			sourceItems.add(item);
+		}
+		for (SchemaItem item : selection.getTargetItems()) {
+			targetItems.add(item);
+		}
 		
 		ICell oldCell = selection.getAlignment(
-				sourceItem, targetItem);
+				sourceItems, targetItems);
 		
 		if (oldCell == null) {
 			cell = new Cell();
-			cell.setEntity1(sourceItem.getEntity());
-			cell.setEntity2(targetItem.getEntity());
+			cell.setEntity1(SchemaSelectionInfo.determineEntity(sourceItems));
+			cell.setEntity2(SchemaSelectionInfo.determineEntity(targetItems));
 		}
 		else {
 			// copy the cell
@@ -80,8 +88,8 @@ public abstract class AbstractSingleCellWizard extends Wizard implements Functio
 	 */
 	@Override
 	public void addPage(IWizardPage page) {
-		if (page instanceof AbstractSingleCellWizardPage) {
-			((AbstractSingleCellWizardPage) page).setParent(this);
+		if (page instanceof AbstractSingleComposedCellWizardPage) {
+			((AbstractSingleComposedCellWizardPage) page).setParent(this);
 		}
 		
 		super.addPage(page);
@@ -90,15 +98,33 @@ public abstract class AbstractSingleCellWizard extends Wizard implements Functio
 	/**
 	 * @return the sourceItem
 	 */
-	public SchemaItem getSourceItem() {
-		return sourceItem;
+	public Set<SchemaItem> getSourceItems() {
+		return sourceItems;
 	}
 
 	/**
 	 * @return the targetItem
 	 */
-	public SchemaItem getTargetItem() {
-		return targetItem;
+	public Set<SchemaItem> getTargetItems() {
+		return targetItems;
+	}
+	
+	/**
+	 * Get the first source item
+	 * 
+	 * @return the first source item
+	 */
+	public SchemaItem getFirstSourceItem() {
+		return sourceItems.iterator().next();
+	}
+	
+	/**
+	 * Get the first target item
+	 * 
+	 * @return the first target item
+	 */
+	public SchemaItem getFirstTargetItem() {
+		return targetItems.iterator().next();
 	}
 
 	/**

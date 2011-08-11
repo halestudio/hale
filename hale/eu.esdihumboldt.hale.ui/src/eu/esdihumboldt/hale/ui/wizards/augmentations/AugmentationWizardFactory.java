@@ -10,18 +10,18 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.model.augmentations;
+package eu.esdihumboldt.hale.ui.wizards.augmentations;
 
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.commons.goml.align.Entity;
-import eu.esdihumboldt.hale.ui.model.functions.AlignmentInfo;
-import eu.esdihumboldt.hale.ui.model.functions.CellSelectionInfo;
-import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
-import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardFactory;
-import eu.esdihumboldt.hale.ui.model.schema.NullSchemaItem;
-import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.wizards.functions.AlignmentInfo;
+import eu.esdihumboldt.hale.ui.wizards.functions.CellSelectionInfo;
+import eu.esdihumboldt.hale.ui.wizards.functions.FunctionWizard;
+import eu.esdihumboldt.hale.ui.wizards.functions.extension.FunctionWizardFactory;
+import eu.esdihumboldt.hale.ui.wizards.schema.NullSchemaItem;
+import eu.esdihumboldt.hale.ui.wizards.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**

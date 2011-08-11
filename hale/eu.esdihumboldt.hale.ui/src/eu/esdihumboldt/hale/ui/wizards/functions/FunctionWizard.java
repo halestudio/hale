@@ -9,28 +9,24 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.model.functions;
-
-import java.util.List;
+package eu.esdihumboldt.hale.ui.wizards.functions;
 
 import org.eclipse.jface.wizard.IWizard;
 
-import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.hale.align.model.Cell;
 
 /**
  * Function wizard interface
- * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public interface FunctionWizard extends IWizard {
 
 	/**
-	 * Get the result cells
+	 * Get the result cell
 	 * 
-	 * @return the list of result cells
+	 * @return the result cell
 	 */
-	public List<ICell> getResult();
+	public Cell getResult();
 	
 }

@@ -3,7 +3,7 @@
 <plugin>
    <extension-point id="eu.esdihumboldt.hale.ui.io.config" name="I/O configuration wizard pages" schema="schema/eu.esdihumboldt.hale.ui.io.config.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.MappingExport" name="Mapping Export Providers" schema="schema/eu.esdihumboldt.hale.MappingExport.exsd"/>
-   <extension-point id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="Function wizards" schema="schema/eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.ui.wizards.functions" name="Function wizards" schema="schema/eu.esdihumboldt.hale.ui.wizards.functions.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.io.advisor" name="I/O advisors in the context of the UI services" schema="schema/eu.esdihumboldt.hale.ui.io.advisor.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.io.source" name="Import sources" schema="schema/eu.esdihumboldt.hale.ui.io.source.exsd"/>
    <extension

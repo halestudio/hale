@@ -1,21 +1,11 @@
-package eu.esdihumboldt.hale.ui.views.schemas;
+package eu.esdihumboldt.hale.ui.views.schemas.legacy;
 
-import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Menu;
-import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.model.functions.FunctionWizardContribution;
-import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
-import eu.esdihumboldt.hale.ui.style.FeatureTypeStyleAction;
-import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
-import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
+import eu.esdihumboldt.hale.ui.wizards.functions.extension.FunctionWizardContribution;
 
 /**
  * Context menu contribution
@@ -46,8 +36,8 @@ public class SchemaItemContribution extends
 		if (tree.getSelection() instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) tree.getSelection();
 			Object tmp = selection.getFirstElement();
-			if (tmp != null && tmp instanceof SchemaItem) {
-				SchemaItem item = (SchemaItem) tmp;
+//			if (tmp != null && tmp instanceof SchemaItem) {
+//				SchemaItem item = (SchemaItem) tmp;
 				boolean addSep = false;
 				
 				// properties
@@ -60,17 +50,17 @@ public class SchemaItemContribution extends
 //				}
 				
 				// SLD
-				TypeDefinition typeDef = DefinitionUtil.getType(item.getDefinition());
-				if (item.isType() && typeDef.hasGeometry() && !typeDef.isAbstract()) {
-					IAction action = new FeatureTypeStyleAction((FeatureType) item.getPropertyType());
-					action.setText(Messages.ModelNavigationView_ActionText);
-					action.setImageDescriptor(SchemasViewPlugin.getImageDescriptor(
-							"/icons/styles.gif")); //$NON-NLS-1$
-					IContributionItem contrib = new ActionContributionItem(action);
-					contrib.fill(menu, index++);
-					
-					addSep = true;
-				}
+//				TypeDefinition typeDef = DefinitionUtil.getType(item.getDefinition());
+//				if (item.isType() && typeDef.hasGeometry() && !typeDef.isAbstract()) {
+//					IAction action = new FeatureTypeStyleAction((FeatureType) item.getPropertyType());
+//					action.setText(Messages.ModelNavigationView_ActionText);
+//					action.setImageDescriptor(SchemasViewPlugin.getImageDescriptor(
+//							"/icons/styles.gif")); //$NON-NLS-1$
+//					IContributionItem contrib = new ActionContributionItem(action);
+//					contrib.fill(menu, index++);
+//					
+//					addSep = true;
+//				}
 				
 				// default geometry
 //				if (item.isAttribute() && item.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE 
@@ -88,7 +78,7 @@ public class SchemaItemContribution extends
 					new Separator().fill(menu, index++);
 				}
 			}
-		}
+//		}
 		
 		super.fill(menu, index);
 	}

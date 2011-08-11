@@ -10,15 +10,16 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.selection;
+package eu.esdihumboldt.hale.ui.wizards.functions.extension;
+
+import eu.esdihumboldt.hale.align.extension.function.TypeFunction;
 
 /**
- * Selection that contains entities from the source or target schema. Entities
- * represent a concrete type or property and not its definition.
+ * TODO Type description
  * @author Simon Templer
  */
-public interface EntitySelection {
+public interface TypeFunctionWizardDescriptor extends FunctionWizardDescriptor<TypeFunction> {
 
-	//TODO
+	// concrete typed interface
 	
 }

@@ -27,11 +27,14 @@ import org.eclipse.ui.PlatformUI;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
+import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTracker;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
 
 /**
- * Helper class to get the selected feature types from the ModelNavigatioView.
+ * Helper class to get current {@link SchemaSelection}.
+ * @author unkown
+ * @author Simon Templer
  */
 public abstract class SchemaSelectionHelper {
 	
@@ -67,7 +70,7 @@ public abstract class SchemaSelectionHelper {
 		}
 		
 		if (result == null) {
-			result = new SchemaSelection();
+			result = new DefaultSchemaSelection();
 		}
 		
 		return result;

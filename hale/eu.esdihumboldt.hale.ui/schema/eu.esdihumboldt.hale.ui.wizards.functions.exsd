@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="HALE" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="eu.esdihumboldt.hale.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="eu.esdihumboldt.hale.ui" id="eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory" name="FunctionWizardFactory"/>
+         <meta.schema plugin="eu.esdihumboldt.hale.ui" id="eu.esdihumboldt.hale.ui.wizards.functions" name="Function wizards"/>
       </appinfo>
       <documentation>
-         Extension for IFunctionWizards
+         Extension for function wizards
       </documentation>
    </annotation>
 
@@ -18,8 +18,8 @@
       </annotation>
       <complexType>
          <choice minOccurs="0" maxOccurs="unbounded">
-            <element ref="factory"/>
-            <element ref="simple"/>
+            <element ref="typeWizard"/>
+            <element ref="propertyWizard"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -48,7 +48,7 @@
       </complexType>
    </element>
 
-   <element name="factory">
+   <element name="typeWizard">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -56,63 +56,57 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.rcp.wizards.functions.FunctionWizardFactory"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.ui.wizards.functions.FunctionWizardFactory"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute translatable="true"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="icon" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="resource"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="simple">
-      <complexType>
          <attribute name="function" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.cst.CstFunction"/>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.function/typeFunction/@identifier"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="icon" type="string">
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="propertyWizard">
+      <complexType>
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="resource"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.ui.wizards.functions.FunctionWizardFactory"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="name" type="string" use="required">
+         <attribute name="function" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute translatable="true"/>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.function/propertyFunction/@identifier"/>
                </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

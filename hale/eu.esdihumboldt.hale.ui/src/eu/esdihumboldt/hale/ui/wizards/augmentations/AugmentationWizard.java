@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.model.augmentations;
+package eu.esdihumboldt.hale.ui.wizards.augmentations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,8 @@ import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.commons.goml.align.Cell;
 import eu.esdihumboldt.commons.goml.align.Entity;
-import eu.esdihumboldt.hale.ui.model.functions.FunctionWizard;
-import eu.esdihumboldt.hale.ui.model.schema.SchemaItem;
+import eu.esdihumboldt.hale.ui.wizards.functions.FunctionWizard;
+import eu.esdihumboldt.hale.ui.wizards.schema.SchemaItem;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**

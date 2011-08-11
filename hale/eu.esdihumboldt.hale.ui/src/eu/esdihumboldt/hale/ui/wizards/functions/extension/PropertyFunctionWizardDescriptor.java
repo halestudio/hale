@@ -10,19 +10,17 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.selection;
+package eu.esdihumboldt.hale.ui.wizards.functions.extension;
 
-import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.align.extension.function.PropertyFunction;
 
 /**
- * Selection that contains schema {@link Definition}s, e.g {@link TypeDefinition}s
- * and {@link ChildDefinition}s.
+ * TODO Type description
  * @author Simon Templer
  */
-public interface DefinitionSelection {
-
-	//TODO
+public interface PropertyFunctionWizardDescriptor extends
+		FunctionWizardDescriptor<PropertyFunction> {
 	
+	// concrete typed interface
+
 }

@@ -9,26 +9,26 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.model.functions;
+package eu.esdihumboldt.hale.ui.wizards.augmentations;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 
 /**
- * Wizard page that knows about its {@link AbstractSingleCellWizard}
+ * Wizard page that knows about its {@link AugmentationWizard}
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public abstract class AbstractSingleCellWizardPage extends WizardPage {
+public abstract class AugmentationWizardPage extends WizardPage {
 
-	private AbstractSingleCellWizard parent;
+	private AugmentationWizard parent;
 
 	/**
 	 * @see WizardPage#WizardPage(String, String, ImageDescriptor)
 	 */
-	public AbstractSingleCellWizardPage(String pageName, String title,
+	public AugmentationWizardPage(String pageName, String title,
 			ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
 	}
@@ -36,21 +36,21 @@ public abstract class AbstractSingleCellWizardPage extends WizardPage {
 	/**
 	 * @see WizardPage#WizardPage(String)
 	 */
-	public AbstractSingleCellWizardPage(String pageName) {
+	public AugmentationWizardPage(String pageName) {
 		super(pageName);
 	}
 
 	/**
 	 * @return the parent
 	 */
-	public AbstractSingleCellWizard getParent() {
+	public AugmentationWizard getParent() {
 		return parent;
 	}
 
 	/**
 	 * @param parent the parent to set
 	 */
-	public void setParent(AbstractSingleCellWizard parent) {
+	public void setParent(AugmentationWizard parent) {
 		this.parent = parent;
 	}
 

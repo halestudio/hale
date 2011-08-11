@@ -9,35 +9,21 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.model.functions;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
+package eu.esdihumboldt.hale.ui.wizards.functions.extension;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.ui.internal.Messages;
-import eu.esdihumboldt.hale.ui.selection.CellSelection;
-import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelectionHelper;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
-import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Contribution that provides access to function wizards
@@ -67,12 +53,12 @@ public class FunctionWizardContribution extends ContributionItem {
 		public WizardAction(FunctionWizardDescriptor descriptor,
 				ISelectionService selectionService,
 				AlignmentService alignmentService) {
-			super(descriptor.getName(), IAction.AS_PUSH_BUTTON);
+			super(descriptor.getDisplayName(), IAction.AS_PUSH_BUTTON);
 			
 			this.descriptor = descriptor;
 			this.alignmentService = alignmentService;
 			
-			setImageDescriptor(descriptor.getIcon());
+			setImageDescriptor(ImageDescriptor.createFromURL(descriptor.getIconURL()));
 			
 			selectionService.addSelectionListener(this);
 			
@@ -84,37 +70,37 @@ public class FunctionWizardContribution extends ContributionItem {
 		 */
 		@Override
 		public void run() {
-			ISelection selection = getSelection();
-			
-			if (selection.isEmpty()) return;
-			
-			FunctionWizard wizard = null;
-			AlignmentInfo info = null;
-			
-			if (selection instanceof SchemaSelection) {
-				SchemaSelection schemaSelection = (SchemaSelection) selection;
-				info = new SchemaSelectionInfo(schemaSelection, alignmentService);
-			}
-			else if (selection instanceof CellSelection) {
-				CellSelection cellSelection = (CellSelection) selection;
-				info = new CellSelectionInfo(cellSelection);
-			}
-			
-			if (info != null && descriptor.supports(info)) {
-				wizard = descriptor.createWizard(info);
-			}
-			
-			if (wizard != null) {
-				WizardDialog dialog = new WizardDialog(
-						Display.getCurrent().getActiveShell(),
-						wizard);
-				
-				if (dialog.open() == WizardDialog.OK) {
-					for (ICell cell : wizard.getResult()) {
-//FIXME						alignmentService.addOrUpdateCell(cell);
-					}
-				}
-			}
+//			ISelection selection = getSelection();
+//			
+//			if (selection.isEmpty()) return;
+//			
+//			FunctionWizard wizard = null;
+//			AlignmentInfo info = null;
+//			
+//			if (selection instanceof DefaultSchemaSelection) {
+//				SchemaSelection schemaSelection = (SchemaSelection) selection;
+//				info = new SchemaSelectionInfo(schemaSelection, alignmentService);
+//			}
+//			else if (selection instanceof CellSelection) {
+//				CellSelection cellSelection = (CellSelection) selection;
+//				info = new CellSelectionInfo(cellSelection);
+//			}
+//			
+//			if (info != null && descriptor.supports(info)) {
+//				wizard = descriptor.createWizard(info);
+//			}
+//			
+//			if (wizard != null) {
+//				WizardDialog dialog = new WizardDialog(
+//						Display.getCurrent().getActiveShell(),
+//						wizard);
+//				
+//				if (dialog.open() == WizardDialog.OK) {
+//					for (ICell cell : wizard.getResult()) {
+////FIXME						alignmentService.addOrUpdateCell(cell);
+//					}
+//				}
+//			}
 		}
 
 		/**
@@ -175,74 +161,74 @@ public class FunctionWizardContribution extends ContributionItem {
 	 */
 	@Override
 	public void fill(Menu menu, int index) {
-		boolean added = false;
-		
-		ISelectionService selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
-		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		
-		List<WizardAction> augmentationActions = new ArrayList<WizardAction>();
-		
-		for (FunctionWizardDescriptor descriptor : FunctionWizardExtension.getFunctionWizards()) {
-			if (!descriptor.isAugmentation() || showAugmentations) {
-				WizardAction action = new WizardAction(descriptor, selectionService,
-						alignmentService);
-				if (action.isActive()) {
-					if (descriptor.isAugmentation()) {
-						augmentationActions.add(action);
-					}
-					else {
-						IContributionItem item = new ActionContributionItem(action);
-						item.fill(menu, index++);
-						added = true;
-					}
-				}
-			}
-		}
-		
-		if (!augmentationActions.isEmpty()) {
-			if (added) {
-				new Separator().fill(menu, index++);
-			}
-			
-			// get augmentation target name
-			ISelection selection = selectionService.getSelection();
-			AlignmentInfo info = null;
-			
-			if (selection instanceof SchemaSelection) {
-				SchemaSelection schemaSelection = (SchemaSelection) selection;
-				info = new SchemaSelectionInfo(schemaSelection, alignmentService);
-			}
-			else if (selection instanceof CellSelection) {
-				CellSelection cellSelection = (CellSelection) selection;
-				info = new CellSelectionInfo(cellSelection);
-			}
-			
-			String augmentations;
-			if (info != null && info.getTargetItemCount() == 1) {
-				augmentations = MessageFormat.format(Messages.FunctionWizardContribution_0, info.getFirstTargetItem().getName().getLocalPart()); 
-			}
-			else {
-				augmentations = Messages.FunctionWizardContribution_1; 
-			}
-			
-			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);
-			augItem.setText(augmentations);
-			augItem.setEnabled(false);
-			
-			//new Separator().fill(menu, index++);
-			
-			for (WizardAction action : augmentationActions) {
-				IContributionItem item = new ActionContributionItem(action);
-				item.fill(menu, index++);
-				added = true;
-			}
-		}
-		
-		if (!added) {
-			MenuItem item = new MenuItem(menu, SWT.PUSH, index++);
-			item.setText(Messages.FunctionWizardContribution_2); //$NON-NLS-1$
-			item.setEnabled(false);
-		}
+//		boolean added = false;
+//		
+//		ISelectionService selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+//		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+//		
+//		List<WizardAction> augmentationActions = new ArrayList<WizardAction>();
+//		
+//		for (FunctionWizardDescriptor descriptor : FunctionWizardExtension.getFunctionWizards()) {
+//			if (!descriptor.isAugmentation() || showAugmentations) {
+//				WizardAction action = new WizardAction(descriptor, selectionService,
+//						alignmentService);
+//				if (action.isActive()) {
+//					if (descriptor.isAugmentation()) {
+//						augmentationActions.add(action);
+//					}
+//					else {
+//						IContributionItem item = new ActionContributionItem(action);
+//						item.fill(menu, index++);
+//						added = true;
+//					}
+//				}
+//			}
+//		}
+//		
+//		if (!augmentationActions.isEmpty()) {
+//			if (added) {
+//				new Separator().fill(menu, index++);
+//			}
+//			
+//			// get augmentation target name
+//			ISelection selection = selectionService.getSelection();
+//			AlignmentInfo info = null;
+//			
+//			if (selection instanceof DefaultSchemaSelection) {
+//				SchemaSelection schemaSelection = (SchemaSelection) selection;
+//				info = new SchemaSelectionInfo(schemaSelection, alignmentService);
+//			}
+//			else if (selection instanceof CellSelection) {
+//				CellSelection cellSelection = (CellSelection) selection;
+//				info = new CellSelectionInfo(cellSelection);
+//			}
+//			
+//			String augmentations;
+//			if (info != null && info.getTargetItemCount() == 1) {
+//				augmentations = MessageFormat.format(Messages.FunctionWizardContribution_0, info.getFirstTargetItem().getName().getLocalPart()); 
+//			}
+//			else {
+//				augmentations = Messages.FunctionWizardContribution_1; 
+//			}
+//			
+//			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);
+//			augItem.setText(augmentations);
+//			augItem.setEnabled(false);
+//			
+//			//new Separator().fill(menu, index++);
+//			
+//			for (WizardAction action : augmentationActions) {
+//				IContributionItem item = new ActionContributionItem(action);
+//				item.fill(menu, index++);
+//				added = true;
+//			}
+//		}
+//		
+//		if (!added) {
+//			MenuItem item = new MenuItem(menu, SWT.PUSH, index++);
+//			item.setText(Messages.FunctionWizardContribution_2); //$NON-NLS-1$
+//			item.setEnabled(false);
+//		}
 	}
 
 	/**
@@ -263,13 +249,13 @@ public class FunctionWizardContribution extends ContributionItem {
 			.getActiveWorkbenchWindow().getSelectionService();
 		ISelection selection = selectionService.getSelection();
 		
-		if (selection instanceof SchemaSelection ||
-				selection instanceof CellSelection) {
-			return selection;
-		}
-		else {
+//		if (selection instanceof DefaultSchemaSelection ||
+//				selection instanceof CellSelection) {
+//			return selection;
+//		}
+//		else {
 			return SchemaSelectionHelper.getSchemaSelection();
-		}
+//		}
 	}
 	
 	/**
@@ -288,18 +274,18 @@ public class FunctionWizardContribution extends ContributionItem {
 		
 		boolean enabled = false;
 		
-		if (selection instanceof SchemaSelection) {
-			SchemaSelection schemaSelection = (SchemaSelection) selection;
-			if (descriptor.supports(new SchemaSelectionInfo(schemaSelection, alignmentService))) {
-				enabled = true;
-			}
-		}
-		else if (selection instanceof CellSelection) {
-			CellSelection cellSelection = (CellSelection) selection;
-			if (descriptor.supports(new CellSelectionInfo(cellSelection))) {
-				enabled = true;
-			}
-		}
+//		if (selection instanceof DefaultSchemaSelection) {
+//			SchemaSelection schemaSelection = (SchemaSelection) selection;
+//			if (descriptor.supports(new SchemaSelectionInfo(schemaSelection, alignmentService))) {
+//				enabled = true;
+//			}
+//		}
+//		else if (selection instanceof CellSelection) {
+//			CellSelection cellSelection = (CellSelection) selection;
+//			if (descriptor.supports(new CellSelectionInfo(cellSelection))) {
+//				enabled = true;
+//			}
+//		}
 		
 		return enabled;
 	}
@@ -312,11 +298,11 @@ public class FunctionWizardContribution extends ContributionItem {
 	 *   current selection
 	 */
 	public boolean hasActiveFunctions() {
-		for (FunctionWizardDescriptor descriptor : FunctionWizardExtension.getFunctionWizards()) {
-			if (isActive(descriptor)) {
-				return true;
-			}
-		}
+//		for (FunctionWizardDescriptor descriptor : FunctionWizardExtension.getFunctionWizards()) {
+//			if (isActive(descriptor)) {
+//				return true;
+//			}
+//		}
 		
 		return false;
 	}
