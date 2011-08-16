@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.ui.views.report.properties;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -22,6 +25,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -37,7 +43,7 @@ public class ReportIOSummary extends ReportSummary {
 	
 	private Text linkText;
 	
-	private Link link;
+	private Hyperlink link;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -49,8 +55,9 @@ public class ReportIOSummary extends ReportSummary {
 //		FormData data;
 		
 		
-		link = new Link(composite, SWT.NONE);
-		link.setText("<a href=\"\">File</a>");
+//		link = new Link(composite, SWT.NONE);
+//		link.setText("<a href=\"\">File</a>");
+		link = getWidgetFactory().createHyperlink(composite, "File", SWT.None);
 		link.setVisible(false);
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
@@ -58,6 +65,12 @@ public class ReportIOSummary extends ReportSummary {
 		data.top = new FormAttachment(timeText, ITabbedPropertyConstants.VSPACE);
 //		linkText.setLayoutData(data);
 		link.setLayoutData(data);
+		
+		link.addHyperlinkListener(new HyperlinkAdapter() {
+			public void linkActivated(HyperlinkEvent e){
+				// TODO add HyperlinkAdapter
+			}
+		  });
 		
 		CLabel linkLabel = getWidgetFactory()
 				.createCLabel(composite, "Link:"); //$NON-NLS-1$
@@ -86,12 +99,14 @@ public class ReportIOSummary extends ReportSummary {
 	public void refresh() {
 		super.refresh();
 		
-		// add
-		if (report instanceof IOReport) {
-			link.setText("<a href=\""+((IOReport)report).getTarget().getLocation().toString()+"\">File</a>");
+//		link.setText("<a href=\""+((IOReport)report).getTarget().getLocation().toString()+"\">File</a>");
+		try {
+			link.setText(((IOReport)report).getTarget().getLocation().toString());
+			link.setHref(new URL(((IOReport)report).getTarget().getLocation().toString()));
 			link.setVisible(true);
-		} else {
+		} catch (MalformedURLException e) {
 			link.setVisible(false);
 		}
+		
 	}
 }
