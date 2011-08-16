@@ -47,6 +47,8 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	
 	private final List<T> warnings = new ArrayList<T>();
 	
+	private final List<T> infos = new ArrayList<T>();
+	
 	private Date startTime;
 	
 	private Date timestamp;
@@ -168,6 +170,14 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	@Override
 	public Collection<T> getWarnings() {
 		return Collections.unmodifiableList(warnings);
+	}
+	
+	/**
+	 * @see Report#getInfos()
+	 */
+	@Override
+	public Collection<T> getInfos() {
+		return Collections.unmodifiableList(infos);
 	}
 
 	/**

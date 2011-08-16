@@ -77,6 +77,14 @@ public interface Report<T extends Message> {
 	public Collection<T> getErrors();
 	
 	/**
+	 * Get the info messages
+	 * 
+	 * @return the info messages
+	 */
+	public Collection<T> getInfos();
+	
+	
+	/**
 	 * Get the message type (for determining the message type at runtime).
 	 * 
 	 * @return the message type
