@@ -81,6 +81,7 @@ public class ReportListLabelProvider implements ILabelProvider  {
 		//System.err.println("LabelProvider.getImage(): "+element.getClass());
 		
 		if (element instanceof String) {
+			// TODO maybe add a project icon here?
 			return null;
 		}
 		else if (element instanceof Report) {

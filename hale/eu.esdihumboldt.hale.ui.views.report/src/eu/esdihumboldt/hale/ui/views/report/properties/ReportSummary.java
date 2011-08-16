@@ -88,6 +88,7 @@ public class ReportSummary extends AbstractPropertySection {
 		summaryLabe.setLayoutData(data);
 		
 		// timestamp and time related stuff
+		// TODO calculate duration if possible
 		timeText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
 		timeText.setEditable(false);
 		data = new FormData();
