@@ -37,5 +37,13 @@ public interface ReportLog<T extends Message> {
 	 * @param message the error message
 	 */
 	public void error(T message);
+	
+	/**
+	 * Adds an info to the report. If configured accordingly a log
+	 * message will also be created.
+	 * 
+	 * @param message the info message
+	 */
+	public void info(T message);
 
 }

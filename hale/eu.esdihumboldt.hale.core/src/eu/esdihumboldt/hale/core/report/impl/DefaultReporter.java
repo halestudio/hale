@@ -106,6 +106,19 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	}
 	
 	/**
+	 * 
+	 * @see eu.esdihumboldt.hale.core.report.ReportLog#info(eu.esdihumboldt.hale.core.report.Message)
+	 */
+	@Override
+	public void info(T message) {
+		infos.add(message);
+		
+		if (doLog) {
+			log.error(message.getMessage(), message.getThrowable());
+		}
+	}
+	
+	/**
 	 * @see Report#getTaskName()
 	 */
 	@Override
