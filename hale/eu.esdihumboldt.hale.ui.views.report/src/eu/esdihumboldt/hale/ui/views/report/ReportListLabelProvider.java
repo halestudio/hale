@@ -78,11 +78,24 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Image getImage(Object element) {
-		//System.err.println("LabelProvider.getImage(): "+element.getClass());
+//		System.err.println("LabelProvider.getImage(): "+element.getClass());
 		
-		if (element instanceof String) {
+		if (element instanceof Project) {
 			// TODO maybe add a project icon here?
-			return null;
+			String img = "icons/compressed_folder_obj.gif";
+			ImageDescriptor descriptor = null;
+			descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
+			if (descriptor == null) {
+				return null;
+			}
+			
+			Image image = imageCache.get(descriptor);
+			if (image == null) {
+				image = descriptor.createImage();
+				imageCache.put(descriptor, image);
+			}
+			return image;
+//			return null;
 		}
 		else if (element instanceof Report) {
 			// get the right image
