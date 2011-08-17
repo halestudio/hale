@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.report;
 
 import org.eclipse.jface.action.IMenuManager;
+
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -32,6 +33,14 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.views.report.properties.ReportPropertiesViewPart;
+import org.eclipse.swt.widgets.CoolBar;
+import org.eclipse.swt.widgets.CoolItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+
+import eu.esdihumboldt.hale.core.report.writer.ReportWriter;
 
 /**
  * This is the Report view.
@@ -151,6 +160,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	 */
 	@Override
 	public void reportAdded(final Report<Message> report) {
+		final ReportWriter reportWriter = new ReportWriter(); // remove this soon
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -166,6 +176,11 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					}
 					
 					_treeViewer.setInput(new ReportItem(info, report));
+					
+					// remove this (test purpose)
+					reportWriter.addReport(report);
+					reportWriter.write();
+					// until here
 				} catch (NullPointerException e) {
 					// TODO remove this or add proper Exception handling
 				}
