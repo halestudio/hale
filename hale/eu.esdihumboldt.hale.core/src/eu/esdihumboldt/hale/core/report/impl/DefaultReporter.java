@@ -224,4 +224,15 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 		return startTime;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		String NL = System.getProperty("line.separator");
+	    
+		result.append("taskname = "+this.getTaskName()+NL);
+		result.append("success = "+this.isSuccess()+NL);
+		result.append("summary = "+this.getSummary()+NL);
+		
+		return result.toString();
+	}
 }
