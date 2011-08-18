@@ -60,6 +60,13 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.report.ReportList"; //$NON-NLS-1$
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private TreeViewer _treeViewer;
+	private Menu _menu;
+	private MenuItem _mntmCopy;
+	private MenuItem _mntmClearReportList;
+	private MenuItem _mntmDeleteLog;
+	private MenuItem _mntmRestoreLog;
+	private MenuItem _mntmExportLog;
+	private MenuItem _mntmExportEntry;
 
 	/**
 	 * Constructor.
@@ -87,38 +94,48 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 			{
 				_treeViewer = new TreeViewer(composite, SWT.BORDER);
 				Tree tree = _treeViewer.getTree();
+				tree.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						// enable some functions in the popupmenu
+						_mntmCopy.setEnabled(true);
+						_mntmExportEntry.setEnabled(true);
+					}
+				});
 				tree.setHeaderVisible(true);
 				tree.setLinesVisible(true);
 				formToolkit.paintBordersFor(tree);
 				
-				Menu menu = new Menu(tree);
-				tree.setMenu(menu);
+				_menu = new Menu(tree);
+				tree.setMenu(_menu);
 				
-				MenuItem mntmCopy = new MenuItem(menu, SWT.NONE);
-				mntmCopy.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/copy_edit.gif"));
-				mntmCopy.setText("Copy");
+				_mntmCopy = new MenuItem(_menu, SWT.NONE);
+				_mntmCopy.setEnabled(false);
+				_mntmCopy.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/copy_edit.gif"));
+				_mntmCopy.setText("Copy");
 				
-				new MenuItem(menu, SWT.SEPARATOR);
+				new MenuItem(_menu, SWT.SEPARATOR);
 				
-				MenuItem mntmClearReportList = new MenuItem(menu, SWT.NONE);
-				mntmClearReportList.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/clear_co.gif"));
-				mntmClearReportList.setText("Clear Report List");
+				_mntmClearReportList = new MenuItem(_menu, SWT.NONE);
+				_mntmClearReportList.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/clear_co.gif"));
+				_mntmClearReportList.setText("Clear Report List");
 				
-				MenuItem mntmDeleteLog = new MenuItem(menu, SWT.NONE);
-				mntmDeleteLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/delete_obj.gif"));
-				mntmDeleteLog.setText("Delete Log");
+				_mntmDeleteLog = new MenuItem(_menu, SWT.NONE);
+				_mntmDeleteLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/delete_obj.gif"));
+				_mntmDeleteLog.setText("Delete Log");
 				
-				MenuItem mntmRestoreLog = new MenuItem(menu, SWT.NONE);
-				mntmRestoreLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/restore_log.gif"));
-				mntmRestoreLog.setText("Restore Log");
+				_mntmRestoreLog = new MenuItem(_menu, SWT.NONE);
+				_mntmRestoreLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/restore_log.gif"));
+				_mntmRestoreLog.setText("Restore Log");
 				
-				new MenuItem(menu, SWT.SEPARATOR);
+				new MenuItem(_menu, SWT.SEPARATOR);
 				
-				MenuItem mntmExportLog = new MenuItem(menu, SWT.NONE);
-				mntmExportLog.setText("Export Log");
+				_mntmExportLog = new MenuItem(_menu, SWT.NONE);
+				_mntmExportLog.setText("Export Log");
 				
-				MenuItem mntmExportEntry = new MenuItem(menu, SWT.NONE);
-				mntmExportEntry.setText("Export Entry");
+				_mntmExportEntry = new MenuItem(_menu, SWT.NONE);
+				_mntmExportEntry.setEnabled(false);
+				_mntmExportEntry.setText("Export Entry");
 			}
 		}
 
