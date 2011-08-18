@@ -63,15 +63,16 @@ public class ReportWriter {
 	    
 	    for (Report<?> r : this.reports) {
 	    	// check for specific type
-	    	result.append("!REPOR_DEFAULT:"+nl);
+	    	result.append("!REPORT_DEFAULT:"+nl);
 	    	
 	    	// print default data
 	    	result.append(r.toString()+nl);
 	    	
 	    	// iterate through all messages
 	    	for (Object m : r.getWarnings()) {
+	    		String type = m.getClass().getSimpleName().toUpperCase().replace("IMPL", ""); // use this until there's a better idea
 	    		result.append("!WARN"+nl);
-	    		result.append("!MSG_DEFAULT:"+nl); // TODO check the message type!
+	    		result.append("!MSG_"+type+":"+nl);
 	    		result.append("message = "+((Message)m).getMessage()+nl);
 	    		result.append("stack = "+((Message)m).getStackTrace()+nl);
 	    		
@@ -79,8 +80,9 @@ public class ReportWriter {
 	    	}
 	    	
 	    	for (Object m : r.getErrors()) {
+	    		String type = m.getClass().getSimpleName().toUpperCase().replace("IMPL", ""); // use this until there's a better idea
 	    		result.append("!ERROR"+nl);
-	    		result.append("!MSG_DEFAULT:"+nl); // TODO check the message type!
+	    		result.append("!MSG_"+type+":"+nl);
 	    		result.append("message = "+((Message)m).getMessage()+nl);
 	    		result.append("stack = "+((Message)m).getStackTrace()+nl);
 	    		
@@ -88,8 +90,9 @@ public class ReportWriter {
 	    	}
 	    	
 	    	for (Object m : r.getInfos()) {
+	    		String type = m.getClass().getSimpleName().toUpperCase().replace("IMPL", ""); // use this until there's a better idea
 	    		result.append("!INFO"+nl);
-	    		result.append("!MSG_DEFAULT:"+nl); // TODO check the message type!
+	    		result.append("!MSG_"+type+":"+nl);
 	    		result.append("message = "+((Message)m).getMessage()+nl);
 	    		result.append("stack = "+((Message)m).getStackTrace()+nl);
 	    		
