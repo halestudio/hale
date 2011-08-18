@@ -41,6 +41,10 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import eu.esdihumboldt.hale.core.report.writer.ReportWriter;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * This is the Report view.
@@ -86,6 +90,35 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				tree.setHeaderVisible(true);
 				tree.setLinesVisible(true);
 				formToolkit.paintBordersFor(tree);
+				
+				Menu menu = new Menu(tree);
+				tree.setMenu(menu);
+				
+				MenuItem mntmCopy = new MenuItem(menu, SWT.NONE);
+				mntmCopy.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/copy_edit.gif"));
+				mntmCopy.setText("Copy");
+				
+				new MenuItem(menu, SWT.SEPARATOR);
+				
+				MenuItem mntmClearReportList = new MenuItem(menu, SWT.NONE);
+				mntmClearReportList.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/clear_co.gif"));
+				mntmClearReportList.setText("Clear Report List");
+				
+				MenuItem mntmDeleteLog = new MenuItem(menu, SWT.NONE);
+				mntmDeleteLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/delete_obj.gif"));
+				mntmDeleteLog.setText("Delete Log");
+				
+				MenuItem mntmRestoreLog = new MenuItem(menu, SWT.NONE);
+				mntmRestoreLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/restore_log.gif"));
+				mntmRestoreLog.setText("Restore Log");
+				
+				new MenuItem(menu, SWT.SEPARATOR);
+				
+				MenuItem mntmExportLog = new MenuItem(menu, SWT.NONE);
+				mntmExportLog.setText("Export Log");
+				
+				MenuItem mntmExportEntry = new MenuItem(menu, SWT.NONE);
+				mntmExportEntry.setText("Export Entry");
 			}
 		}
 
