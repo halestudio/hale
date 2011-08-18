@@ -117,6 +117,20 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				new MenuItem(_menu, SWT.SEPARATOR);
 				
 				_mntmClearReportList = new MenuItem(_menu, SWT.NONE);
+				_mntmClearReportList.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						// clear the view
+						_treeViewer.getTree().removeAll();
+						
+						// clear saved data
+						ReportListContentProvider.data.clear();
+						
+						// make some functions unavailable
+						_mntmCopy.setEnabled(false);
+						_mntmExportEntry.setEnabled(false);
+					}
+				});
 				_mntmClearReportList.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/clear_co.gif"));
 				_mntmClearReportList.setText("Clear Report List");
 				
