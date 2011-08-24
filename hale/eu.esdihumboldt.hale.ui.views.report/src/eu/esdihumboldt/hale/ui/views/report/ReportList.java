@@ -139,12 +139,24 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				_mntmDeleteLog.setText("Delete Log");
 				
 				_mntmRestoreLog = new MenuItem(_menu, SWT.NONE);
+				_mntmRestoreLog.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						// TODO restore the reports from ReportService
+					}
+				});
 				_mntmRestoreLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/restore_log.gif"));
 				_mntmRestoreLog.setText("Restore Log");
 				
 				new MenuItem(_menu, SWT.SEPARATOR);
 				
 				_mntmExportLog = new MenuItem(_menu, SWT.NONE);
+				_mntmExportLog.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						// TODO add save dialog
+					}
+				});
 				_mntmExportLog.setText("Export Log");
 				
 				_mntmExportEntry = new MenuItem(_menu, SWT.NONE);
