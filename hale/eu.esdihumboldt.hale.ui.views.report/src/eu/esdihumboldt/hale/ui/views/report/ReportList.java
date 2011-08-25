@@ -15,42 +15,36 @@ package eu.esdihumboldt.hale.ui.views.report;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IMenuManager;
-
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.wb.swt.ResourceManager;
 
 import swing2swt.layout.BorderLayout;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.core.io.project.model.Project;
 import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
+import eu.esdihumboldt.hale.core.report.writer.ReportWriter;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.views.report.properties.ReportPropertiesViewPart;
-import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.widgets.CoolItem;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-
-import eu.esdihumboldt.hale.core.report.writer.ReportWriter;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * This is the Report view.
@@ -74,6 +68,8 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	private MenuItem _mntmExportLog;
 	private MenuItem _mntmExportEntry;
 
+	private static final ALogger _log = ALoggerFactory.getLogger(ReportList.class);
+	
 	/**
 	 * Constructor.
 	 */
@@ -106,6 +102,13 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 						// enable some functions in the popupmenu
 						_mntmCopy.setEnabled(true);
 						_mntmExportEntry.setEnabled(true);
+						
+						Object obj = ((IStructuredSelection) _treeViewer.getSelection()).getFirstElement();
+						if (obj instanceof Project) {
+							_mntmExportEntry.setText("Export All Entries");
+						} else {
+							_mntmExportEntry.setText("Export Entry");
+						}
 					}
 				});
 				tree.setHeaderVisible(true);
@@ -311,7 +314,8 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					reportWriter.write();
 					// until here
 				} catch (NullPointerException e) {
-					// TODO remove this or add proper Exception handling
+					_log.warn("NullpointerException while adding a Report.");
+					_log.trace(e.getMessage());
 				}
 			}
 		});
