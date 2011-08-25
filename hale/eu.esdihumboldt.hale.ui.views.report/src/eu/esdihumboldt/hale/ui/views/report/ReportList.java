@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.views.report;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IMenuManager;
 
 import org.eclipse.jface.action.IToolBarManager;
@@ -39,6 +40,7 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.views.report.properties.ReportPropertiesViewPart;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -97,7 +99,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 			composite.setLayout(new TreeColumnLayout());
 			{
 				_treeViewer = new TreeViewer(composite, SWT.BORDER);
-				Tree tree = _treeViewer.getTree();
+				final Tree tree = _treeViewer.getTree();
 				tree.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
@@ -175,7 +177,17 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				_mntmExportLog.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						// TODO add save dialog
+						FileDialog fd = new FileDialog(tree.getShell(), SWT.SAVE);
+						fd.setText("Export Report Log");
+						String[] filterExt = { "*.log", "*.txt", "*.*" };
+						fd.setFilterExtensions(filterExt);
+						
+						String file = fd.open();
+						
+						if (file != null) {
+							// save the reports to given path
+							
+						}
 					}
 				});
 				_mntmExportLog.setText("Export Log");
