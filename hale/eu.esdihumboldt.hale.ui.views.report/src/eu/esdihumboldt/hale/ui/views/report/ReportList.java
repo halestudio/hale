@@ -12,10 +12,14 @@
 
 package eu.esdihumboldt.hale.ui.views.report;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+
 import org.eclipse.jface.action.IMenuManager;
 
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -110,6 +114,23 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				tree.setMenu(_menu);
 				
 				_mntmCopy = new MenuItem(_menu, SWT.NONE);
+				_mntmCopy.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						String clipboard = new String();
+						Object obj = ((IStructuredSelection) _treeViewer.getSelection()).getFirstElement();
+						if (obj instanceof Project) {
+							// use the name for a project
+							clipboard = ((Project) obj).getName();
+						} else {
+							// else copy the stuff from toString()
+							clipboard = _treeViewer.getSelection().toString();
+						}
+						
+						// write text to clipboard
+						Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(clipboard), null);
+					}
+				});
 				_mntmCopy.setEnabled(false);
 				_mntmCopy.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/copy_edit.gif"));
 				_mntmCopy.setText("Copy");
