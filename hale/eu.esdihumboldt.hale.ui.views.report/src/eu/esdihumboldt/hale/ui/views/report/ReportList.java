@@ -161,6 +161,12 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				_mntmClearReportList.setText("Clear Report List");
 				
 				_mntmDeleteLog = new MenuItem(_menu, SWT.NONE);
+				_mntmDeleteLog.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						// TODO delete all logs
+					}
+				});
 				_mntmDeleteLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/delete_obj.gif"));
 				_mntmDeleteLog.setText("Delete Log");
 				
