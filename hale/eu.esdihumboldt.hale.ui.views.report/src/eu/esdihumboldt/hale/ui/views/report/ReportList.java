@@ -193,6 +193,26 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				_mntmExportLog.setText("Export Log");
 				
 				_mntmExportEntry = new MenuItem(_menu, SWT.NONE);
+				_mntmExportEntry.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						/*
+						 * If a project is selected: export the whole project
+						 * else just the single entry.
+						 */
+						FileDialog fd = new FileDialog(tree.getShell(), SWT.SAVE);
+						fd.setText("Export Report Log Entry");
+						String[] filterExt = { "*.log", "*.txt", "*.*" };
+						fd.setFilterExtensions(filterExt);
+						
+						String file = fd.open();
+						
+						if (file != null) {
+							// save the reports to given path
+							
+						}
+					}
+				});
 				_mntmExportEntry.setEnabled(false);
 				_mntmExportEntry.setText("Export Entry");
 			}
