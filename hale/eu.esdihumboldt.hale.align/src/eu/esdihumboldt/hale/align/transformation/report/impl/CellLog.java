@@ -66,4 +66,12 @@ public class CellLog implements TransformationLog {
 		return new TransformationMessageImpl(cell, message, throwable);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.core.report.ReportLog#info(eu.esdihumboldt.hale.core.report.Message)
+	 */
+	@Override
+	public void info(TransformationMessage message) {
+		log.info(message);
+	}
+
 }
