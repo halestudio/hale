@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -146,15 +147,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				_mntmClearReportList.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						// clear the view
-						_treeViewer.getTree().removeAll();
-						
-						// clear saved data
-						ReportListContentProvider.data.clear();
-						
-						// make some functions unavailable
-						_mntmCopy.setEnabled(false);
-						_mntmExportEntry.setEnabled(false);
+						clearLogView();
 					}
 				});
 				_mntmClearReportList.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/clear_co.gif"));
@@ -165,6 +158,16 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						// TODO delete all logs
+						MessageBox messageBox = new MessageBox(tree.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+						messageBox.setText("Confirm Delete");
+						messageBox.setMessage("Are you sure you want to permanently delete all logged events?");
+						
+						if (messageBox.open() == SWT.YES) {
+							// clear the view
+							clearLogView();
+							
+							// remove all entries from ReportService
+						}
 					}
 				});
 				_mntmDeleteLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/delete_obj.gif"));
@@ -325,5 +328,20 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Clears the log view.
+	 */
+	private void clearLogView() {
+		// clear the view
+		_treeViewer.getTree().removeAll();
+		
+		// clear saved data
+		ReportListContentProvider.data.clear();
+		
+		// make some functions unavailable
+		_mntmCopy.setEnabled(false);
+		_mntmExportEntry.setEnabled(false);
 	}
 }
