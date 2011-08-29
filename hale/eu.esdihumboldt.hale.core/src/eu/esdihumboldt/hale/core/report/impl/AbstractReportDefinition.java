@@ -19,7 +19,6 @@ import java.util.Properties;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
 import eu.esdihumboldt.hale.core.report.ReportDefinition;
 
@@ -29,11 +28,11 @@ import eu.esdihumboldt.hale.core.report.ReportDefinition;
  * @param <T> the report type
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractReportDefinition<T extends Report<Message>> implements ReportDefinition<Report<?>> {
+public abstract class AbstractReportDefinition<T extends Report<?>> implements ReportDefinition<T> {
 
 	private static final ALogger _log = ALoggerFactory.getLogger(AbstractReportDefinition.class);
 	
-	private final Class<Report<?>> reportClass;
+	private final Class<T> reportClass;
 	
 	private final String identifier;
 	
@@ -42,7 +41,7 @@ public abstract class AbstractReportDefinition<T extends Report<Message>> implem
 	 * @param reportClass the report class
 	 * @param id the identifier for the definition (without prefix)
 	 */
-	public AbstractReportDefinition(Class<Report<?>> reportClass, String id) {
+	public AbstractReportDefinition(Class<T> reportClass, String id) {
 		super();
 		
 		this.reportClass = reportClass;
@@ -61,7 +60,7 @@ public abstract class AbstractReportDefinition<T extends Report<Message>> implem
 	 * @see eu.esdihumboldt.hale.util.definition.ObjectDefinition#getObjectClass()
 	 */
 	@Override
-	public Class<Report<?>> getObjectClass() {
+	public Class<T> getObjectClass() {
 		return reportClass;
 	}
 
@@ -69,7 +68,7 @@ public abstract class AbstractReportDefinition<T extends Report<Message>> implem
 	 * @see eu.esdihumboldt.hale.util.definition.ObjectDefinition#parse(java.lang.String)
 	 */
 	@Override
-	public Report<?> parse(String value) {
+	public T parse(String value) {
 		Properties props = new Properties();
 		StringReader reader = new StringReader(value.trim());
 		try {
@@ -95,7 +94,7 @@ public abstract class AbstractReportDefinition<T extends Report<Message>> implem
 	 * @see eu.esdihumboldt.hale.util.definition.ObjectDefinition#asString(java.lang.Object)
 	 */
 	@Override
-	public String asString(Report<?> report) {
+	public String asString(T report) {
 		Properties props = asProperties(report);
 		
 		StringWriter writer = new StringWriter();
