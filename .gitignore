@@ -15,7 +15,6 @@ _testdata/
 !hale/hale-platform/target/
 !humboldt-mediator-service/MS-TargetPlatform/target
 *.patch
-users.txt
 
 # all hail windows
 Thumbs.db
