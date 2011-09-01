@@ -106,5 +106,7 @@ Export-Package: eu.esdihumboldt.hale.ui,
  eu.esdihumboldt.hale.ui.service.schema.internal;x-internal:=true,
  eu.esdihumboldt.hale.ui.wizards.augmentations,
  eu.esdihumboldt.hale.ui.wizards.functions,
+ eu.esdihumboldt.hale.ui.wizards.functions.contribution,
+ eu.esdihumboldt.hale.ui.wizards.functions.contribution.internal;x-internal:=true,
  eu.esdihumboldt.hale.ui.wizards.functions.extension,
  eu.esdihumboldt.hale.ui.wizards.functions.extension.impl

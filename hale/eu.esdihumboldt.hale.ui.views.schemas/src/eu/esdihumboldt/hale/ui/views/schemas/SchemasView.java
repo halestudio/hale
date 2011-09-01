@@ -19,6 +19,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -27,11 +30,15 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
@@ -45,6 +52,7 @@ import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection.SchemaStructuredMode;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -52,38 +60,44 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.SchemaExplorer;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
+import eu.esdihumboldt.hale.ui.wizards.functions.contribution.SchemaSelectionFunctionContribution;
 
 /**
  * This view component handles the display of source and target schemas.
- * 
- * @author Thorsten Reitz, Simon Templer
- * @version $Id$
+ * @author Thorsten Reitz
+ * @author Simon Templer
  */
 public class SchemasView extends PropertiesViewPart {
 
-//	/**
-	//	 * Function contribution that always uses this view's selection
-	//	 */
-	//	private class SchemaFunctionContribution extends FunctionWizardContribution {
-	//
-	//		/**
-	//		 * Default constructor
-	//		 */
-	//		public SchemaFunctionContribution() {
-	//			super(true);
-	//		}
-	//
-	//		/**
-	//		 * @see FunctionWizardContribution#getSelection()
-	//		 */
-	//		@Override
-	//		protected ISelection getSelection() {
-	//			return currentSelection;
-	//		}
-	//
-	//	}
-
 	private static final ALogger log = ALoggerFactory.getLogger(SchemasView.class);
+	
+	/**
+	 * Function contribution that always uses this view's selection
+	 */
+	private class SchemaFunctionContribution extends SchemaSelectionFunctionContribution {
+
+		/**
+		 * Default constructor
+		 */
+		public SchemaFunctionContribution() {
+			super();
+		}
+
+		/**
+		 * @see SchemaSelectionFunctionContribution#getSelection()
+		 */
+		@Override
+		public SchemaSelection getSelection() {
+			if (currentSelection instanceof SchemaSelection) {
+				return (SchemaSelection) currentSelection;
+			}
+			
+			return super.getSelection();
+		}
+
+	}
 
 	/**
 	 * Selection provider combining selections from source and target schema explorers
@@ -94,11 +108,6 @@ public class SchemasView extends PropertiesViewPart {
 		 * The selection listeners
 		 */
 		private final Set<ISelectionChangedListener> listeners = new HashSet<ISelectionChangedListener>();
-
-		/**
-		 * The current selection
-		 */
-		private ISelection currentSelection;
 
 		private boolean lastSourceFirst = true;
 
@@ -143,7 +152,7 @@ public class SchemasView extends PropertiesViewPart {
 		 */
 		@Override
 		public void setSelection(ISelection selection) {
-			this.currentSelection = selection;
+			SchemasView.this.currentSelection = selection;
 		}
 		
 		/**
@@ -156,7 +165,6 @@ public class SchemasView extends PropertiesViewPart {
 			lastSourceFirst = sourceFirst;
 			
 			// combine the selections of both viewers
-			//XXX at least for now using a StructuredSelection
 			
 			// source items
 			ITreeSelection sourceSelection = (ITreeSelection) sourceExplorer.getTreeViewer().getSelection();
@@ -238,7 +246,7 @@ public class SchemasView extends PropertiesViewPart {
 		 * @param selection the selection to set 
 		 */
 		protected void fireSelectionChange(ISelection selection) {
-			this.currentSelection = selection;
+			SchemasView.this.currentSelection = selection;
 			
 			SelectionChangedEvent event = 
 				new SelectionChangedEvent(this, currentSelection);
@@ -269,6 +277,11 @@ public class SchemasView extends PropertiesViewPart {
 	 * The view id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.schemas"; //$NON-NLS-1$
+	
+	/**
+	 * The current selection
+	 */
+	private ISelection currentSelection;
 
 	/**
 	 * Viewer for the source schema
@@ -286,13 +299,13 @@ public class SchemasView extends PropertiesViewPart {
 	 */
 	private SchemaService schemaService;
 
-//	private Image functionImage;
-//	
-//	private Image augmentImage;
+	private Image functionImage;
+	
+	private Image augmentImage;
 
 	private SchemaServiceListener schemaListener;
 
-private SchemasSelectionProvider selectionProvider;
+	private SchemasSelectionProvider selectionProvider;
 
 //	private HaleServiceListener alignmentListener;
 //
@@ -348,104 +361,47 @@ private SchemasSelectionProvider selectionProvider;
 		layout.horizontalSpacing = 0;
 		modelComposite.setLayout(layout);
 		
-//		List<SimpleToggleAction> sourceToggleActions = this.getToggleActions(
-//				sourceSchemaFilter);
-//		List<SimpleToggleAction> targetToggleActions = this.getToggleActions(
-//				targetSchemaFilter);
-
 		// source schema toolbar, filter and explorer
 		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
 		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-//		List<AbstractContentProviderAction> sourceContentActions = 
-//			initSchemaExplorerToolBar(sourceComposite, sourceSchemaFilter, 
-//				sourceToggleActions, Messages.ModelNavigationView_Source, "source"); //$NON-NLS-1$ //$NON-NLS-2$
-//
-//		this.sourceSchemaViewer = this.schemaExplorerSetup(sourceComposite, SchemaSpaceID.SOURCE);
-//		this.sourceSchemaViewer.addFilter(sourceSchemaFilter);
-//		
-//		for (AbstractContentProviderAction cpa : sourceContentActions) {
-//			cpa.setViewer(sourceSchemaViewer);
-//		}
-//
-//		for (SimpleToggleAction sta : sourceToggleActions) {
-//			sta.setActionTarget(this.sourceSchemaViewer);
-//		}
 		
 		// function button
 		final Button functionButton = new Button(modelComposite, SWT.PUSH | SWT.FLAT);
-//		functionImage = SchemasViewPlugin.getImageDescriptor("icons/mapping.gif").createImage(); //$NON-NLS-1$
-//		augmentImage = SchemasViewPlugin.getImageDescriptor("icons/augment.gif").createImage(); //$NON-NLS-1$
-//		functionButton.setImage(functionImage);
-//		functionButton.setToolTipText(Messages.ModelNavigationView_FunctionButtonToolTipText);
-//		functionButton.setEnabled(false);
-//		functionButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
-//		MenuManager manager = new MenuManager();
-//		manager.setRemoveAllWhenShown(true);
-//		final FunctionWizardContribution functionContribution = new SchemaFunctionContribution();
-//		manager.addMenuListener(new IMenuListener() {
-//
-//			@Override
-//			public void menuAboutToShow(IMenuManager manager) {
-//				// populate context menu
-//				manager.add(functionContribution);
-//			}
-//			
-//		});
-//		final Menu functionMenu = manager.createContextMenu(functionButton);
-//		functionButton.addSelectionListener(new SelectionAdapter() {
-//
-//			/**
-//			 * @see SelectionAdapter#widgetSelected(SelectionEvent)
-//			 */
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				// show menu on button press
-//				functionMenu.setLocation(Display.getCurrent().getCursorLocation());
-//				functionMenu.setVisible(true);
-//			}
-//			
-//		});
-//		addSelectionChangedListener(new ISelectionChangedListener() {
-//
-//			@Override
-//			public void selectionChanged(SelectionChangedEvent event) {
-//				functionButton.setEnabled(functionContribution.hasActiveFunctions());
-//				if (event.getSelection() instanceof SchemaSelection) {
-//					SchemaSelection selection = (SchemaSelection) event.getSelection();
-//					if (selection.getSourceItems().size() == 0 && selection.getTargetItems().size() > 0) {
-//						// augmentation
-//						functionButton.setImage(augmentImage);
-//					}
-//					else {
-//						// function
-//						functionButton.setImage(functionImage);
-//					}
-//				}
-//			}
-//			
-//		});
+		functionImage = SchemasViewPlugin.getImageDescriptor("icons/mapping.gif").createImage(); //$NON-NLS-1$
+		augmentImage = SchemasViewPlugin.getImageDescriptor("icons/augment.gif").createImage(); //$NON-NLS-1$
+		functionButton.setImage(functionImage);
+		functionButton.setToolTipText(Messages.ModelNavigationView_FunctionButtonToolTipText);
+		functionButton.setEnabled(false);
+		functionButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		MenuManager manager = new MenuManager();
+		manager.setRemoveAllWhenShown(true);
+		final SchemaFunctionContribution functionContribution = new SchemaFunctionContribution();
+		manager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				// populate context menu
+				manager.add(functionContribution);
+			}
+			
+		});
+		final Menu functionMenu = manager.createContextMenu(functionButton);
+		functionButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// show menu on button press
+				functionMenu.setLocation(Display.getCurrent().getCursorLocation());
+				functionMenu.setVisible(true);
+			}
+			
+		});
 
 		// target schema toolbar, filter and explorer
 		targetExplorer = new SchemaExplorer(modelComposite, "Target");
 		targetExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
-//		List<AbstractContentProviderAction> targetContentActions = 
-//			initSchemaExplorerToolBar(targetComposite, targetSchemaFilter, 
-//				targetToggleActions, Messages.ModelNavigationView_Target, "target"); //$NON-NLS-1$ //$NON-NLS-2$
-//
-//		this.targetSchemaViewer = this.schemaExplorerSetup(targetComposite,
-//				SchemaSpaceID.TARGET);
-//		
-//		this.targetSchemaViewer.addFilter(targetSchemaFilter);
-//		
-//		for (AbstractContentProviderAction cpa : targetContentActions) {
-//			cpa.setViewer(targetSchemaViewer);
-//		}
-//
-//		for (SimpleToggleAction sta : targetToggleActions) {
-//			sta.setActionTarget(this.targetSchemaViewer);
-//		}
 		
 		// redraw on alignment change
 //		AlignmentService as = (AlignmentService) getSite().getService(AlignmentService.class);
@@ -526,6 +482,27 @@ private SchemasSelectionProvider selectionProvider;
 		
 		// register selection provider
 		getSite().setSelectionProvider(selectionProvider = new SchemasSelectionProvider());
+		
+		// listen for selection changes and update function button
+		selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				functionButton.setEnabled(functionContribution.hasActiveFunctions());
+				if (event.getSelection() instanceof SchemaSelection) {
+					SchemaSelection selection = (SchemaSelection) event.getSelection();
+					if (selection.getSourceItems().size() == 0 && selection.getTargetItems().size() > 0) {
+						// augmentation
+						functionButton.setImage(augmentImage);
+					}
+					else {
+						// function
+						functionButton.setImage(functionImage);
+					}
+				}
+			}
+			
+		});
 	}
 
 //	/**
@@ -614,13 +591,13 @@ private SchemasSelectionProvider selectionProvider;
 //			StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 //			styleService.removeListener(styleListener);
 //		}
-//		
-//		if (functionImage != null) {
-//			functionImage.dispose();
-//		}
-//		if (augmentImage != null) {
-//			augmentImage.dispose();
-//		}
+		
+		if (functionImage != null) {
+			functionImage.dispose();
+		}
+		if (augmentImage != null) {
+			augmentImage.dispose();
+		}
 		
 		super.dispose();
 	}
