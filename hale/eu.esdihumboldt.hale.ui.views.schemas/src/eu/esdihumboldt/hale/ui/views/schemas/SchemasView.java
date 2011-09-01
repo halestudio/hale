@@ -12,14 +12,20 @@
 package eu.esdihumboldt.hale.ui.views.schemas;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,7 +35,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
+import eu.esdihumboldt.hale.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
+import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection.SchemaStructuredMode;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
@@ -66,7 +83,7 @@ public class SchemasView extends PropertiesViewPart {
 	//
 	//	}
 
-	//private static Logger _log = Logger.getLogger(ModelNavigationView.class);
+	private static final ALogger log = ALoggerFactory.getLogger(SchemasView.class);
 
 	/**
 	 * Selection provider combining selections from source and target schema explorers
@@ -136,49 +153,85 @@ public class SchemasView extends PropertiesViewPart {
 		 *   target
 		 */
 		private void updateSelection(boolean sourceFirst) {
-			lastSourceFirst  = sourceFirst;
+			lastSourceFirst = sourceFirst;
 			
 			// combine the selections of both viewers
 			//XXX at least for now using a StructuredSelection
 			
 			// source items
-			IStructuredSelection sourceSelection = (IStructuredSelection) sourceExplorer.getTreeViewer().getSelection();
+			ITreeSelection sourceSelection = (ITreeSelection) sourceExplorer.getTreeViewer().getSelection();
 			// target items
-			IStructuredSelection targetSelection = (IStructuredSelection) targetExplorer.getTreeViewer().getSelection();
+			ITreeSelection targetSelection = (ITreeSelection) targetExplorer.getTreeViewer().getSelection();
 
-			IStructuredSelection selection;
-			
 			/*
 			 * XXX because there are problem with the properties view if we 
 			 * combine the objects here (multiple objects in the selection), 
 			 * we return only one of the original selections
 			 */
-			selection = (sourceFirst)?(sourceSelection):(targetSelection);
-			
-			//XXX deactivated
-//			if (sourceSelection.isEmpty()) {
-//				selection = targetSelection;
-//			}
-//			else if (targetSelection.isEmpty()) {
-//				selection = sourceSelection;
-//			}
-//			else {
-//				List<Object> elements;
-//				if (sourceFirst) {
-//					elements = new ArrayList<Object>(sourceSelection.toList());
-//					elements.addAll(targetSelection.toList());
-//				}
-//				else {
-//					elements = new ArrayList<Object>(targetSelection.toList());
-//					elements.addAll(sourceSelection.toList());
-//				}
-//				
-//				selection = new StructuredSelection(elements);
-//			}
+			SchemaStructuredMode selectionMode = (sourceFirst)?
+					(SchemaStructuredMode.ONLY_SOURCE):
+					(SchemaStructuredMode.ONLY_TARGET);
+					
+			Collection<EntityDefinition> sourceItems = collectDefinitions(sourceSelection);
+			Collection<EntityDefinition> targetItems = collectDefinitions(targetSelection);
+			DefaultSchemaSelection selection = new DefaultSchemaSelection(
+					sourceItems, targetItems, selectionMode);
 			
 			fireSelectionChange(selection);
 		}
 		
+		/**
+		 * Collect {@link EntityDefinition} from a {@link TreeSelection} 
+		 * containing {@link TypeDefinition}s and {@link PropertyDefinition}s
+		 * @param selection the tree selection
+		 * @return the collected entity definitions
+		 */
+		private Collection<EntityDefinition> collectDefinitions(
+				ITreeSelection selection) {
+			if (selection.isEmpty()) {
+				return Collections.emptyList();
+			}
+			
+			TreePath[] paths = selection.getPaths();
+			List<EntityDefinition> result = new ArrayList<EntityDefinition>(paths.length);
+			
+			for (TreePath path : paths) {
+				Object last = path.getLastSegment();
+				if (last instanceof TypeDefinition) {
+					result.add(new TypeEntityDefinition((TypeDefinition) last));
+				}
+				else if (last instanceof PropertyDefinition) {
+					List<Definition<?>> propertyPath = new ArrayList<Definition<?>>();
+					Definition<?> element = (Definition<?>) last;
+					int index = path.getSegmentCount() - 1;
+					while (element != null && !(element instanceof TypeDefinition)) {
+						propertyPath.add(0, element);
+						Object segment = path.getSegment(--index);
+						if (segment instanceof Definition<?>) {
+							element = (Definition<?>) segment;
+						}
+						else {
+							element = null;
+						}
+					}
+					
+					if (element != null) {
+						// prepend type definition to path 
+						propertyPath.add(0, element);
+						result.add(new PropertyEntityDefinition(propertyPath));
+					}
+					else {
+						log.error("No parent type definition for property path found, skipping object for selection.");
+					}
+				}
+				else {
+					log.error("Could determine entity definition for object, skipping object for selection.");
+				}
+			}
+			
+			return result;
+		}
+
 		/**
 		 * Sets the selection to the given selection and fires a selection change
 		 * 

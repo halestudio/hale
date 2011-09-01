@@ -37,12 +37,26 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	private final Set<EntityDefinition> sourceItems = new LinkedHashSet<EntityDefinition>();
 	
 	private final Set<EntityDefinition> targetItems = new LinkedHashSet<EntityDefinition>();
+	
+	private final SchemaStructuredMode mode;
+	
+	/**
+	 * Defines modes specifying the behavior of the selection as {@link IStructuredSelection}
+	 */
+	public enum SchemaStructuredMode {
+		/** Only source items are returned */
+		ONLY_SOURCE,
+		/** Only target items are returned */
+		ONLY_TARGET,
+		/** All items are returned */
+		ALL
+	}
 
 	/**
 	 * Creates an empty selection
 	 */
 	public DefaultSchemaSelection() {
-		this(null, null);
+		this(null, null, SchemaStructuredMode.ALL);
 	}
 	
 	/**
@@ -50,10 +64,14 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	 * 
 	 * @param sourceItems the source items
 	 * @param targetItems the target items
+	 * @param mode the selection structured mode
 	 */
 	public DefaultSchemaSelection(final Collection<EntityDefinition> sourceItems, 
-			final Collection<EntityDefinition> targetItems) {
+			final Collection<EntityDefinition> targetItems, 
+			SchemaStructuredMode mode) {
 		super();
+		
+		this.mode = mode;
 		
 		if (sourceItems != null) {
 			this.sourceItems.addAll(sourceItems);
@@ -83,7 +101,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.ui.selection.SchemaSelection#getSourceItems()
+	 * @see SchemaSelection#getSourceItems()
 	 */
 	@Override
 	public Set<EntityDefinition> getSourceItems() {
@@ -91,7 +109,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.selection.SchemaSelection#getTargetItems()
+	 * @see SchemaSelection#getTargetItems()
 	 */
 	@Override
 	public Set<EntityDefinition> getTargetItems() {
@@ -99,7 +117,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.ui.selection.SchemaSelection#getFirstSourceItem()
+	 * @see SchemaSelection#getFirstSourceItem()
 	 */
 	@Override
 	public EntityDefinition getFirstSourceItem() {
@@ -107,7 +125,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.ui.selection.SchemaSelection#getFirstTargetItem()
+	 * @see SchemaSelection#getFirstTargetItem()
 	 */
 	@Override
 	public EntityDefinition getFirstTargetItem() {
@@ -115,7 +133,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.ui.selection.SchemaSelection#getFirstItem(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID)
+	 * @see SchemaSelection#getFirstItem(SchemaSpaceID)
 	 */
 	@Override
 	public EntityDefinition getFirstItem(SchemaSpaceID schema) {
@@ -138,7 +156,8 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	 */
 	@Override
 	public Object getFirstElement() {
-		if (!sourceItems.isEmpty()) {
+		if (!sourceItems.isEmpty() && 
+				!mode.equals(SchemaStructuredMode.ONLY_TARGET)) {
 			return getFirstSourceItem();
 		}
 		else {
@@ -159,7 +178,15 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	 */
 	@Override
 	public int size() {
-		return sourceItems.size() + targetItems.size();
+		switch (mode) {
+		case ONLY_TARGET:
+			return targetItems.size();
+		case ONLY_SOURCE:
+			return sourceItems.size();
+		case ALL:
+		default:
+			return sourceItems.size() + targetItems.size();
+		}
 	}
 
 	/**
@@ -177,8 +204,17 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public List<EntityDefinition> toList() {
 		List<EntityDefinition> list = new ArrayList<EntityDefinition>(
 				sourceItems.size() + targetItems.size());
-		list.addAll(sourceItems);
-		list.addAll(targetItems);
+		switch (mode) {
+		case ONLY_TARGET:
+			list.addAll(targetItems);
+			break;
+		case ONLY_SOURCE:
+			list.addAll(sourceItems);
+			break;
+		case ALL:
+			list.addAll(sourceItems);
+			list.addAll(targetItems);
+		}
 		return list;
 	}
 
