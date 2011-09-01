@@ -16,6 +16,9 @@ _testdata/
 !humboldt-mediator-service/MS-TargetPlatform/target
 *.patch
 
+# generic main project
+/.project
+
 # all hail windows
 Thumbs.db
 
