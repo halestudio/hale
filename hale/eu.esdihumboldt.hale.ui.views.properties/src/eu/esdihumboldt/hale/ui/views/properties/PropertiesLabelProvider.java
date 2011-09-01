@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import eu.esdihumboldt.hale.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
@@ -38,6 +39,10 @@ public class PropertiesLabelProvider extends LabelProvider {
 			element = ((IStructuredSelection) element).getFirstElement();
 		}
 		
+		if (element instanceof EntityDefinition) {
+			element = ((EntityDefinition) element).getDefinition();
+		}
+		
 		if (element instanceof Definition<?>) {
 			return definitionLabels.getImage(element);
 		}
@@ -52,6 +57,10 @@ public class PropertiesLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		if (element instanceof IStructuredSelection) {
 			element = ((IStructuredSelection) element).getFirstElement();
+		}
+		
+		if (element instanceof EntityDefinition) {
+			element = ((EntityDefinition) element).getDefinition();
 		}
 		
 		if (element instanceof TypeDefinition) {

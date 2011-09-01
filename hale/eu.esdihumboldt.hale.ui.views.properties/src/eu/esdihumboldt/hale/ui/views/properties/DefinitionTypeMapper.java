@@ -12,28 +12,27 @@
 
 package eu.esdihumboldt.hale.ui.views.properties;
 
+import org.eclipse.ui.views.properties.tabbed.AbstractTypeMapper;
+import org.eclipse.ui.views.properties.tabbed.ITypeMapper;
+
 import eu.esdihumboldt.hale.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.schema.model.Definition;
 
 /**
- * TODO Type description
- * @author Patrick Lieb
- * @param <T> the definition type
+ * Type mapper for objects containing definitions
+ * @author Simon Templer
  */
-public abstract class DefaultDefinitionSection<T extends Definition<?>> extends AbstractDefinitionSection<T> {
-	
+public class DefinitionTypeMapper extends AbstractTypeMapper {
+
 	/**
-	 * @see AbstractSection#setInput(Object)
+	 * @see ITypeMapper#mapType(Object)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void setInput(Object input) {
-		if (input instanceof EntityDefinition) {
-			setDefinition((T) ((EntityDefinition) input).getDefinition());
+	public Class<?> mapType(Object object) {
+		if (object instanceof EntityDefinition) {
+			return ((EntityDefinition) object).getDefinition().getClass();
 		}
-		else {
-			setDefinition((T) input);
-		}
+		
+		return object.getClass();
 	}
-	
+
 }

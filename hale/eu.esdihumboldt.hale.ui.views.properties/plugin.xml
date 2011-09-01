@@ -198,7 +198,8 @@
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor
             contributorId="eu.esdihumboldt.hale.ui.views.properties"
-            labelProvider="eu.esdihumboldt.hale.ui.views.properties.PropertiesLabelProvider">
+            labelProvider="eu.esdihumboldt.hale.ui.views.properties.PropertiesLabelProvider"
+            typeMapper="eu.esdihumboldt.hale.ui.views.properties.DefinitionTypeMapper">
          <propertyCategory
                category="eu.esdihumboldt.hale.ui.views.properties.definition">
          </propertyCategory>
