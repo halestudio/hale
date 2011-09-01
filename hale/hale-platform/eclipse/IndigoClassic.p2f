@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?p2f version='1.0.0'?>
 <p2f version='1.0.0'>
-  <ius size='13'>
+  <ius size='27'>
     <iu id='de.loskutov.BytecodeOutline.feature.feature.group' name='Bytecode Outline' version='2.3.1'>
       <repositories size='1'>
         <repository location='http://andrei.gmxhome.de/eclipse'/>
@@ -28,6 +28,11 @@
         <repository location='http://download.eclipse.org/releases/indigo'/>
       </repositories>
     </iu>
+    <iu id='org.eclipse.egit.mylyn.feature.group' name='EGit Mylyn' version='1.0.0.201106090707-r'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+      </repositories>
+    </iu>
     <iu id='edu.umd.cs.findbugs.plugin.eclipse.feature.group' name='FindBugs Feature' version='1.3.9.20090821'>
       <repositories size='1'>
         <repository location='http://findbugs.cs.umd.edu/eclipse'/>
@@ -35,12 +40,92 @@
     </iu>
     <iu id='com.javadude.workingsets.feature.feature.group' name='JavaDude Automated Working Sets Feature' version='2.1.2'>
       <repositories size='1'>
-        <repository location='http://javadude.googlecode.com/hg/com.javadude.updatesite'/>
+        <repository location='http://javadude.googlecode.com/svn/trunk/com.javadude.updatesite'/>
       </repositories>
     </iu>
     <iu id='org.eclipse.epp.mpc.feature.group' name='Marketplace Client' version='1.1.0.I20110525-0742'>
       <repositories size='1'>
         <repository location='http://download.eclipse.org/releases/indigo'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.builds.feature.group' name='Mylyn Builds (Incubation)' version='0.8.0.v20110608-1400'>
+      <repositories size='2'>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.hudson.feature.group' name='Mylyn Builds Connector: Hudson/Jenkins (Incubation)' version='0.8.0.v20110608-1400'>
+      <repositories size='2'>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+      </repositories>
+    </iu>
+    <iu id='net.sf.redmine_mylyn.feature.feature.group' name='Mylyn Connector: Redmine' version='0.3.2.201108282058'>
+      <repositories size='1'>
+        <repository location='http://redmin-mylyncon.sourceforge.net/update-site/N/'/>
+      </repositories>
+    </iu>
+    <iu id='net.sf.redmine_mylyn.extensions.feature.feature.group' name='Mylyn Connector: Redmine - Redmine-Plugin-Support' version='0.1.0.201108282058'>
+      <repositories size='1'>
+        <repository location='http://redmin-mylyncon.sourceforge.net/update-site/N/'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.ide_feature.feature.group' name='Mylyn Context Connector: Eclipse IDE' version='3.6.0.v20110608-1400'>
+      <repositories size='3'>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.java_feature.feature.group' name='Mylyn Context Connector: Java Development' version='3.6.0.v20110608-1400'>
+      <repositories size='3'>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.pde_feature.feature.group' name='Mylyn Context Connector: Plug-in Development' version='3.6.0.v20110608-1400'>
+      <repositories size='3'>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.team_feature.feature.group' name='Mylyn Context Connector: Team Support' version='3.6.0.v20110608-1400'>
+      <repositories size='3'>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.reviews.feature.feature.group' name='Mylyn Reviews (Incubation)' version='0.8.0.v20110608-1400'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/reviews/updates'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.gerrit.feature.feature.group' name='Mylyn Reviews Connector: Gerrit (Incubation)' version='0.8.0.v20110608-1400'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/reviews/updates'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn_feature.feature.group' name='Mylyn Task List' version='3.6.0.v20110608-1400'>
+      <repositories size='3'>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.context_feature.feature.group' name='Mylyn Task-Focused Interface' version='3.6.0.v20110608-1400'>
+      <repositories size='3'>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.versions.feature.group' name='Mylyn Versions (Incubation)' version='0.8.0.v20110608-1400'>
+      <repositories size='2'>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
       </repositories>
     </iu>
     <iu id='org.eclipse.wb.core.feature.feature.group' name='WindowBuilder Core' version='1.0.0.r37x201106081531'>
