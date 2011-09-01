@@ -13,7 +13,7 @@ package eu.esdihumboldt.hale.ui.wizards.functions;
 
 import org.eclipse.jface.wizard.IWizard;
 
-import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.align.model.MutableCell;
 
 /**
  * Function wizard interface
@@ -27,6 +27,6 @@ public interface FunctionWizard extends IWizard {
 	 * 
 	 * @return the result cell
 	 */
-	public Cell getResult();
+	public MutableCell getResult();
 	
 }

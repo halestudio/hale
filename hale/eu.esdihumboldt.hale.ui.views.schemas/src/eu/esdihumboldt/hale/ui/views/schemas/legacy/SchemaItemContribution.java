@@ -5,13 +5,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Menu;
 
-import eu.esdihumboldt.hale.ui.wizards.functions.extension.FunctionWizardContribution;
+import eu.esdihumboldt.hale.ui.wizards.functions.contribution.AbstractFunctionWizardContribution;
 
 /**
  * Context menu contribution
  */
 public class SchemaItemContribution extends
-		FunctionWizardContribution {
+		AbstractFunctionWizardContribution {
 	
 	private final TreeViewer tree;
 
@@ -29,7 +29,7 @@ public class SchemaItemContribution extends
 	}
 
 	/**
-	 * @see FunctionWizardContribution#fill(Menu, int)
+	 * @see AbstractFunctionWizardContribution#fill(Menu, int)
 	 */
 	@Override
 	public void fill(Menu menu, int index) {

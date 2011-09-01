@@ -29,10 +29,23 @@ public class FunctionWizardExtension extends AbstractExtension<FunctionWizardFac
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.wizards.functions"; //$NON-NLS-1$
 	
+	private static FunctionWizardExtension instance;
+	
+	/**
+	 * Get the extension instance
+	 * @return the function wizard extension 
+	 */
+	public static FunctionWizardExtension getInstance() {
+		if (instance == null) {
+			instance = new FunctionWizardExtension();
+		}
+		return instance;
+	}
+	
 	/**
 	 * Default constructor
 	 */
-	public FunctionWizardExtension() {
+	private FunctionWizardExtension() {
 		super(ID);
 	}
 
