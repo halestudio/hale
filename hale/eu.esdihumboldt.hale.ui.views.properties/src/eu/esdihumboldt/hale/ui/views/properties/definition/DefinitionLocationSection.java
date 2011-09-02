@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.definition;
 
+import java.net.URI;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
@@ -67,7 +69,8 @@ public class DefinitionLocationSection extends DefaultDefinitionSection<Definiti
 	 */
 	@Override
 	public void refresh() {
-		location.setText(getDefinition().getLocation().toString());
+		URI loc = getDefinition().getLocation();
+		location.setText((loc == null)?(""):(loc.toString()));
 	}
 	
 	/**
