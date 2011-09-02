@@ -12,9 +12,16 @@
 
 package eu.esdihumboldt.ui.views.functions;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.align.extension.category.Category;
 import eu.esdihumboldt.hale.align.extension.function.AbstractFunction;
@@ -24,7 +31,9 @@ import eu.esdihumboldt.hale.align.extension.function.AbstractFunction;
  * @author Simon Templer
  */
 public class FunctionLabelProvider extends LabelProvider {
-
+	
+	private final Map<String, Image> urlImages = new HashMap<String, Image>();
+	
 	/**
 	 * @see LabelProvider#getText(Object)
 	 */
@@ -45,9 +54,32 @@ public class FunctionLabelProvider extends LabelProvider {
 	 */
 	@Override
 	public Image getImage(Object element) {
-		//TODO get image based on getIconURL in AbstractFunction (an cache them) 
+		if (element instanceof Category) {
+			return PlatformUI.getWorkbench().getSharedImages().getImage(
+					ISharedImages.IMG_OBJ_FOLDER);
+		}
 		
-		// TODO Auto-generated method stub
+		// get image based on getIconURL in AbstractFunction (and cache them)
+		if (element instanceof AbstractFunction) {
+			URL iconUrl = ((AbstractFunction) element).getIconURL();
+			String iconString = iconUrl.toString();
+			
+			Image image = urlImages.get(iconString);
+			
+			if (image == null) {
+				try {
+					image = ImageDescriptor.createFromURL(iconUrl).createImage();
+					if (image != null) {
+						urlImages.put(iconString, image);
+					}
+				} catch (Throwable e) {
+					// ignore
+				}
+			}
+			
+			return image;
+		}
+		
 		return super.getImage(element);
 	}
 
@@ -56,9 +88,12 @@ public class FunctionLabelProvider extends LabelProvider {
 	 */
 	@Override
 	public void dispose() {
-		//TODO dispose any images created
+		// dispose any images created
+		for (Image image : urlImages.values()) {
+			image.dispose();
+		}
+		urlImages.clear();
 		
-		// TODO Auto-generated method stub
 		super.dispose();
 	}
 
