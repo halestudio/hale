@@ -504,8 +504,12 @@ public class XmlSchemaReader
 		setMetadata(type, schemaType, schemaLocation);
 	}
 
-	private URI createLocationURI(String schemaLocation,
+	private static URI createLocationURI(String schemaLocation,
 			XmlSchemaObject schemaObject) {
+		if (schemaLocation == null) {
+			return null;
+		}
+		
 		//XXX improve
 		try {
 			return new URI(schemaLocation + "#" + schemaObject.getLineNumber() + 
@@ -869,9 +873,29 @@ public class XmlSchemaReader
 			}
 		}
 		else {
-			reporter.error(new IOMessageImpl(
-					"Could not create property for element", null, 
-					element.getLineNumber(), element.getLinePosition()));
+			// <element name="..." />
+			
+			// no type defined
+			reporter.warn(new IOMessageImpl(
+					"Element definition without an associated type: {0}", null, 
+					element.getLineNumber(), element.getLinePosition(),
+					element.getQName()));
+			
+			// assuming xsd:anyType as default type
+			QName elementName = element.getQName();
+			
+			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(
+					new QName(elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), //TODO improve naming? 
+					declaringGroup);
+			
+			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+					elementName, substitutionGroup, 
+					index.getOrCreateType(XmlTypeUtil.NAME_ANY_TYPE));
+			
+			// set metadata and constraints
+			setMetadataAndConstraints(property, element, schemaLocation);
+			
+			substitutionGroup.setProperty(property);
 		}
 	}
 
@@ -936,9 +960,10 @@ public class XmlSchemaReader
 	 * @param annotated the XML annotated object
 	 * @param schemaLocation the schema location
 	 */
-	private void setMetadata(AbstractDefinition<?> definition,
+	public static void setMetadata(AbstractDefinition<?> definition,
 			XmlSchemaAnnotated annotated, String schemaLocation) {
 		definition.setDescription(XMLSchemaIO.getDescription(annotated));
+		
 		definition.setLocation(createLocationURI(schemaLocation, annotated));
 	}
 

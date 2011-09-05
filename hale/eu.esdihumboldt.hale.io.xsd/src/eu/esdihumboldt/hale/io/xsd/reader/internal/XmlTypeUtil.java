@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumeration;
@@ -51,8 +52,8 @@ import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.schema.model.constraint.type.Enumeration;
-import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 
 /**
  * Utility methods regarding type resolving
@@ -80,6 +81,11 @@ public abstract class XmlTypeUtil {
 	 * GML up to 3.1.x namespace
 	 */
 	private static final String NAMESPACE_GML = "http://www.opengis.net/gml"; //$NON-NLS-1$
+	
+	/**
+	 * Qualified name of the anyType schema type 
+	 */
+	public static final QName NAME_ANY_TYPE = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "anyType");
 	
 	/**
 	 * Set of XML schema types that should get a String binding but don't get
@@ -254,9 +260,35 @@ public abstract class XmlTypeUtil {
 			XmlSchemaSimpleTypeRestriction restriction, XmlIndex index,
 			IOReporter reporter) {
 		QName baseTypeName = restriction.getBaseTypeName();
-	
-		// resolve super type
-		XmlTypeDefinition baseTypeDef = index.getOrCreateType(baseTypeName);
+		
+		XmlTypeDefinition baseTypeDef;
+		if (baseTypeName != null) {
+			// resolve super type
+			baseTypeDef = index.getOrCreateType(baseTypeName);
+		}
+		else if (restriction.getBaseType() != null) {
+			// simple schema type
+			XmlSchemaSimpleType simpleType = restriction.getBaseType();
+			
+			// create an anonymous type
+			QName anonymousName = new QName(
+					type.getName().getNamespaceURI() + "/" + 
+					type.getName().getLocalPart(), "AnonymousSuperType"); //$NON-NLS-1$
+			
+			baseTypeDef = new AnonymousXmlType(anonymousName);
+			
+			XmlTypeUtil.configureSimpleType(type, simpleType, index, reporter);
+			
+			// set metadata
+			XmlSchemaReader.setMetadata(type, simpleType, null); // no schema location available at this point
+		}
+		else {
+			reporter.error(new IOMessageImpl(
+					"Simple type restriction without base type, skipping type configuration.", 
+					null, restriction.getLineNumber(), restriction.getLinePosition()));
+			return;
+		}
+		
 		// set super type
 		type.setSuperType(baseTypeDef);
 		// mark as restriction
