@@ -64,7 +64,8 @@ public final class PropertyFunction extends AbstractFunction {
 	 * Get the source properties
 	 * @return the source properties
 	 */
-	public Set<PropertyParameter> getSourceProperties() {
+	@Override
+	public Set<PropertyParameter> getSource() {
 		return Collections.unmodifiableSet(source);
 	}
 	
@@ -72,7 +73,8 @@ public final class PropertyFunction extends AbstractFunction {
 	 * Get the target properties
 	 * @return the target properties
 	 */
-	public Set<PropertyParameter> getTargetProperties() {
+	@Override
+	public Set<PropertyParameter> getTarget() {
 		return Collections.unmodifiableSet(target);
 	}
 

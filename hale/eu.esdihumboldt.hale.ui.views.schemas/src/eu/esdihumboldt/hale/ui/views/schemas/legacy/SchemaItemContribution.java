@@ -5,13 +5,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Menu;
 
-import eu.esdihumboldt.hale.ui.wizards.functions.contribution.AbstractFunctionWizardContribution;
+import eu.esdihumboldt.hale.ui.function.contribution.AbstractFunctionWizardContribution;
 
 /**
  * Context menu contribution
  */
-public class SchemaItemContribution extends
-		AbstractFunctionWizardContribution {
+public class SchemaItemContribution {
 	
 	private final TreeViewer tree;
 
@@ -23,7 +22,8 @@ public class SchemaItemContribution extends
 	 * @param showAugmentations if augmentations shall be shown in the menu
 	 */
 	public SchemaItemContribution(TreeViewer tree, boolean showAugmentations) {
-		super(showAugmentations);
+		super();
+//		super(showAugmentations);
 		
 		this.tree = tree;
 	}
@@ -31,7 +31,6 @@ public class SchemaItemContribution extends
 	/**
 	 * @see AbstractFunctionWizardContribution#fill(Menu, int)
 	 */
-	@Override
 	public void fill(Menu menu, int index) {
 		if (tree.getSelection() instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) tree.getSelection();
@@ -80,7 +79,7 @@ public class SchemaItemContribution extends
 			}
 //		}
 		
-		super.fill(menu, index);
+//		super.fill(menu, index);
 	}
 
 }

@@ -64,7 +64,8 @@ public final class TypeFunction extends AbstractFunction {
 	 * Get the source properties
 	 * @return the source properties
 	 */
-	public Set<TypeParameter> getSourceTypes() {
+	@Override
+	public Set<TypeParameter> getSource() {
 		return Collections.unmodifiableSet(source);
 	}
 	
@@ -72,7 +73,8 @@ public final class TypeFunction extends AbstractFunction {
 	 * Get the target properties
 	 * @return the target properties
 	 */
-	public Set<TypeParameter> getTargetTypes() {
+	@Override
+	public Set<TypeParameter> getTarget() {
 		return Collections.unmodifiableSet(target);
 	}
 	

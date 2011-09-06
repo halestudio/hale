@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import eu.esdihumboldt.hale.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 
@@ -32,6 +33,10 @@ public class DefinitionLabelProvider extends LabelProvider {
 	 */
 	@Override
 	public String getText(Object element) {
+		if (element instanceof EntityDefinition) {
+			element = ((EntityDefinition) element).getDefinition();
+		}
+		
 		if (element instanceof Definition<?>) {
 			return ((Definition<?>) element).getDisplayName();
 		}
@@ -45,6 +50,10 @@ public class DefinitionLabelProvider extends LabelProvider {
 	 */
 	@Override
 	public Image getImage(Object element) {
+		if (element instanceof EntityDefinition) {
+			element = ((EntityDefinition) element).getDefinition();
+		}
+		
 		if (element instanceof Definition<?>) {
 			return images.getImage((Definition<?>) element);
 		}

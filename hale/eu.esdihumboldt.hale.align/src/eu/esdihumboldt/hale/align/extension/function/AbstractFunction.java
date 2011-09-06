@@ -61,7 +61,19 @@ public abstract class AbstractFunction implements Function {
 		
 		return parameters;
 	}
-
+	
+	/**
+	 * Get the source entities
+	 * @return the source entities
+	 */
+	public abstract Set<? extends AbstractParameter> getSource();
+	
+	/**
+	 * Get the target entities
+	 * @return the target entities
+	 */
+	public abstract Set<? extends AbstractParameter> getTarget();
+	
 	/**
 	 * @see Identifiable#getId()
 	 */

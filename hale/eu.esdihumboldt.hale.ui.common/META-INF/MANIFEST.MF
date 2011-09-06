@@ -8,6 +8,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.ui;bundle-version="3.6.2"
 Import-Package: com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
+ eu.esdihumboldt.hale.align.model,
  eu.esdihumboldt.hale.core.io,
  eu.esdihumboldt.hale.core.io.supplier,
  eu.esdihumboldt.hale.io.xsd.constraint,

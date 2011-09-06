@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: UI for CST core functions
+Bundle-SymbolicName: eu.esdihumboldt.cst.functions.core.ui;singleton:=true
+Bundle-Version: 2.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: eu.esdihumboldt.hale.ui;bundle-version="2.2.0"

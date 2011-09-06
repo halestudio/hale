@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionContribution;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection.SchemaStructuredMode;
@@ -62,7 +63,6 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.SchemaExplorer;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
-import eu.esdihumboldt.hale.ui.wizards.functions.contribution.SchemaSelectionFunctionContribution;
 
 /**
  * This view component handles the display of source and target schemas.

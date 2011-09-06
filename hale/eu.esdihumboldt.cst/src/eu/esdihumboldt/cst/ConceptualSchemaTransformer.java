@@ -18,13 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.jcip.annotations.Immutable;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-
-import net.jcip.annotations.Immutable;
-
 import eu.esdihumboldt.cst.internal.EngineManager;
 import eu.esdihumboldt.cst.internal.SimplePropertyTransformer;
 import eu.esdihumboldt.hale.align.extension.transformation.TypeTransformationExtension;
@@ -84,7 +83,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		EngineManager engines = new EngineManager();
 		
 		PropertyTransformer transformer = new SimplePropertyTransformer(
-				alignment, reporter);
+				alignment, reporter, target);
 		
 		TypeTransformationExtension typesTransformations = 
 				OsgiUtils.getService(TypeTransformationExtension.class);
@@ -107,7 +106,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			}
 		}
 		
-		//TODO join with PropertyTransformer?
+		//TODO join with PropertyTransformer?!
 
 		engines.dispose();
 		

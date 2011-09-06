@@ -34,12 +34,12 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 */
 	@Override
 	public void setParameters(ListMultimap<String, String> parameters) {
-		this.parameters = Multimaps.unmodifiableListMultimap(parameters);
+		this.parameters = (parameters == null)?(null):(Multimaps.unmodifiableListMultimap(parameters));
 	}
 
 	/**
 	 * Get the function parameters
-	 * @return the parameters
+	 * @return the parameters, may be <code>null</code> if there are none
 	 */
 	public ListMultimap<String, String> getParameters() {
 		return parameters;

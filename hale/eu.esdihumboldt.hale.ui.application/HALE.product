@@ -77,6 +77,7 @@
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
+      <plugin id="eu.esdihumboldt.cst.functions.core.ui"/>
       <plugin id="eu.esdihumboldt.hale.align"/>
       <plugin id="eu.esdihumboldt.hale.cache"/>
       <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>

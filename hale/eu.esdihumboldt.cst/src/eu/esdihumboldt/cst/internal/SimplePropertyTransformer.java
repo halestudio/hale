@@ -17,6 +17,7 @@ import java.util.Collection;
 import eu.esdihumboldt.hale.align.model.Alignment;
 import eu.esdihumboldt.hale.align.model.Type;
 import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
+import eu.esdihumboldt.hale.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.MutableInstance;
@@ -31,15 +32,19 @@ public class SimplePropertyTransformer implements PropertyTransformer {
 	
 	private final TransformationReporter reporter;
 
+	private final InstanceSink sink;
+
 	/**
 	 * Create a simple property transformer
 	 * @param alignment the alignment
 	 * @param reporter the transformation log to report any transformation 
 	 *   messages to
+	 * @param sink the target instance sink
 	 */
-	public SimplePropertyTransformer(Alignment alignment, TransformationReporter reporter) {
+	public SimplePropertyTransformer(Alignment alignment, TransformationReporter reporter, InstanceSink sink) {
 		this.alignment = alignment;
 		this.reporter = reporter;
+		this.sink = sink;
 	}
 
 	/**
@@ -50,6 +55,9 @@ public class SimplePropertyTransformer implements PropertyTransformer {
 			Instance source, MutableInstance target) {
 		// TODO Auto-generated method stub
 		//TODO identify transformations to be executed on given instances
+		
+		//XXX after property transformations, publish target instance
+		sink.addInstance(target);
 	}
 
 }

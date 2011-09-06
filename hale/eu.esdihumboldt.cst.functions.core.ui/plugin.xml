@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.function">
+      <typeWizard
+            function="eu.esdihumboldt.hale.align.retype"
+            id="eu.esdihumboldt.hale.align.retype.generic">
+      </typeWizard>
+      <propertyWizard
+            function="eu.esdihumboldt.hale.align.rename"
+            id="eu.esdihumboldt.hale.align.rename.generic">
+      </propertyWizard>
+   </extension>
+
+</plugin>
