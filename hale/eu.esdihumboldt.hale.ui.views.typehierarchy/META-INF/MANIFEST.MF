@@ -6,7 +6,8 @@ Bundle-Version: 2.2.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: eu.esdihumboldt.hale.core.io.supplier,
+Import-Package: eu.esdihumboldt.hale.align.model,
+ eu.esdihumboldt.hale.core.io.supplier,
  eu.esdihumboldt.hale.schema.model,
  eu.esdihumboldt.hale.ui.common.definition.viewer,
  eu.esdihumboldt.hale.ui.util.selection,

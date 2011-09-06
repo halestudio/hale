@@ -27,6 +27,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
+import eu.esdihumboldt.hale.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionFilter;
@@ -121,6 +122,9 @@ public class TypeHierarchyView extends PropertiesViewPart {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
 			if (element instanceof ParentPath) {
 				element = ((ParentPath) element).getHead();
+			}
+			if (element instanceof EntityDefinition) {
+				element = ((EntityDefinition) element).getDefinition();
 			}
 			viewer.setInput(element);
 			ParentPath path = TypeHierarchyContentProvider.createPath(element);
