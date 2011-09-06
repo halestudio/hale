@@ -12,11 +12,13 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -43,17 +45,19 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 /**
  * Page that allows assigning cell entities
  * @param <T> the function type
+ * @param <F> the field type
  * @author Simon Templer
  */
-public abstract class EntitiesPage<T extends AbstractFunction> extends HaleWizardPage<AbstractGenericFunctionWizard<T>>
+public abstract class EntitiesPage<T extends AbstractFunction, F extends Field<?>> extends HaleWizardPage<AbstractGenericFunctionWizard<T>>
 		implements FunctionWizardPage {
 
 	private final Cell initialCell;
+	private final SchemaSelection initialSelection;
 	
 	private final Set<EntityDefinition> sourceCandidates = new HashSet<EntityDefinition>();
 	private final Set<EntityDefinition> targetCandidates = new HashSet<EntityDefinition>();
 	
-	private final Set<Field> functionFields = new HashSet<Field>();
+	private final Set<F> functionFields = new HashSet<F>();
 
 	private final Observer fieldObserver;
 	
@@ -76,6 +80,7 @@ public abstract class EntitiesPage<T extends AbstractFunction> extends HaleWizar
 		};
 		
 		this.initialCell = initialCell;
+		this.initialSelection = initialSelection;
 		
 		// fill candidates
 		if (initialSelection != null) {
@@ -99,6 +104,13 @@ public abstract class EntitiesPage<T extends AbstractFunction> extends HaleWizar
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(2, true));
 		
+		Control header = createHeader(page);
+		if (header != null) {
+			header.setLayoutData(GridDataFactory.swtDefaults().
+					align(SWT.FILL, SWT.BEGINNING).grab(true, false).
+					span(2, 1).create());
+		}
+		
 		Control source = createEntityGroup(SchemaSpaceID.SOURCE, page);
 		source.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		
@@ -108,6 +120,37 @@ public abstract class EntitiesPage<T extends AbstractFunction> extends HaleWizar
 		updateState();
 	}
 	
+	/**
+	 * @return the initial cell
+	 */
+	protected Cell getInitialCell() {
+		return initialCell;
+	}
+
+	/**
+	 * @return the initial selection
+	 */
+	protected SchemaSelection getInitialSelection() {
+		return initialSelection;
+	}
+
+	/**
+	 * Get the function fields associated with the page
+	 * @return the function fields
+	 */
+	protected Set<F> getFunctionFields() {
+		return Collections.unmodifiableSet(functionFields);
+	}
+	
+	/**
+	 * Create the header control.
+	 * @param parent the parent composite
+	 * @return the header control or <code>null</code>
+	 */
+	protected Control createHeader(Composite parent) {
+		return null;
+	}
+
 	/**
 	 * Get the entity candidates for the given schema space
 	 * @param ssid the schema space ID
@@ -160,7 +203,7 @@ public abstract class EntitiesPage<T extends AbstractFunction> extends HaleWizar
 		
 		// create fields
 		for (AbstractParameter field : fields) {
-			Field functionField = createField(ssid, field, main);
+			F functionField = createField(ssid, field, main);
 			if (functionField != null) {
 				functionFields.add(functionField);
 				functionField.addObserver(fieldObserver);
@@ -178,7 +221,7 @@ public abstract class EntitiesPage<T extends AbstractFunction> extends HaleWizar
 	 * @param parent the parent composite
 	 * @return the created field or <code>null</code>
 	 */
-	private Field createField(SchemaSpaceID ssid, AbstractParameter field,
+	private F createField(SchemaSpaceID ssid, AbstractParameter field,
 			Composite parent) {
 		if (field.getMaxOccurrence() == 0) {
 			return null;
@@ -197,7 +240,7 @@ public abstract class EntitiesPage<T extends AbstractFunction> extends HaleWizar
 	 * @param initialCell the initial cell
 	 * @return the created field or <code>null</code>
 	 */
-	protected abstract Field createField(AbstractParameter field, SchemaSpaceID ssid,
+	protected abstract F createField(AbstractParameter field, SchemaSpaceID ssid,
 			Composite parent, Set<EntityDefinition> candidates,
 			Cell initialCell);
 
@@ -210,7 +253,7 @@ public abstract class EntitiesPage<T extends AbstractFunction> extends HaleWizar
 		ListMultimap<String, Entity> target = ArrayListMultimap.create();
 		
 		// collect entities from fields
-		for (Field field : functionFields) {
+		for (F field : functionFields) {
 			switch (field.getSchemaSpace()) {
 			case SOURCE:
 				field.fillEntities(source);
@@ -232,7 +275,7 @@ public abstract class EntitiesPage<T extends AbstractFunction> extends HaleWizar
 	 */
 	private void updateState() {
 		boolean complete = true;
-		for (Field field : functionFields) {
+		for (Field<?> field : functionFields) {
 			if (!field.isValid()) {
 				complete = false;
 				break;

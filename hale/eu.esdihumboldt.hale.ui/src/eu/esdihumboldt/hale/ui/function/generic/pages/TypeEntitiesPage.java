@@ -27,7 +27,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
  * Entity page for types
  * @author Simon Templer
  */
-public class TypeEntitiesPage extends EntitiesPage<TypeFunction> {
+public class TypeEntitiesPage extends EntitiesPage<TypeFunction, TypeField> {
 
 	/**
 	 * @see EntitiesPage#EntitiesPage(SchemaSelection, Cell)
@@ -40,7 +40,7 @@ public class TypeEntitiesPage extends EntitiesPage<TypeFunction> {
 	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID, Composite, Set, Cell)
 	 */
 	@Override
-	protected Field createField(AbstractParameter field, SchemaSpaceID ssid,
+	protected TypeField createField(AbstractParameter field, SchemaSpaceID ssid,
 			Composite parent, Set<EntityDefinition> candidates, Cell initialCell) {
 		return new TypeField(field, ssid, parent, candidates, initialCell);
 	}

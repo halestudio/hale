@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Set;
@@ -34,16 +35,15 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * Represents named entities in a function
+ * @param <S> the entity selector type
  * @author Simon Templer
  */
-public abstract class Field extends Observable {
+public abstract class Field<S extends EntitySelector> extends Observable {
 
-	//FIXME let Field manage components?
-	
 	private final AbstractParameter definition;
 	private final SchemaSpaceID ssid;
 	
-	private final Set<EntitySelector> selectors = new HashSet<EntitySelector>();
+	private final Set<S> selectors = new HashSet<S>();
 	private final Composite selectorContainer;
 	private final ISelectionChangedListener selectionChangedListener;
 	
@@ -85,7 +85,7 @@ public abstract class Field extends Observable {
 		};
 		
 		// mandatory fields
-		EntitySelector selector = createEntitySelector(ssid, 
+		S selector = createEntitySelector(ssid, 
 				candidates, definition, selectorContainer);
 		selector.getControl().setLayoutData(GridDataFactory.swtDefaults().
 				align(SWT.FILL, SWT.CENTER).grab(true, false).create());
@@ -113,15 +113,23 @@ public abstract class Field extends Observable {
 	 * @param parent the parent composite
 	 * @return the entity selector
 	 */
-	protected abstract EntitySelector createEntitySelector(SchemaSpaceID ssid,
+	protected abstract S createEntitySelector(SchemaSpaceID ssid,
 			Set<EntityDefinition> candidates, AbstractParameter field, 
 			Composite parent);
+	
+	/**
+	 * Get the selectors associated with the field
+	 * @return the selectors
+	 */
+	protected Set<S> getSelectors() {
+		return Collections.unmodifiableSet(selectors);
+	}
 
 	/**
 	 * Add a selector
 	 * @param selector the entity selector to add
 	 */
-	protected void addSelector(EntitySelector selector) {
+	protected void addSelector(S selector) {
 		selectors.add(selector);
 		selector.getViewer().addSelectionChangedListener(selectionChangedListener);
 	}
@@ -130,7 +138,7 @@ public abstract class Field extends Observable {
 	 * Remove a selector
 	 * @param selector the entity selector to remove
 	 */
-	protected void removeSelector(EntitySelector selector) {
+	protected void removeSelector(S selector) {
 		//TODO remove listener
 		//TODO remove from set
 		//TODO remove from composite (dispose)
@@ -182,7 +190,7 @@ public abstract class Field extends Observable {
 	 * @param target the map to add the entities to
 	 */
 	public void fillEntities(ListMultimap<String, Entity> target) {
-		for (EntitySelector selector : selectors) {
+		for (S selector : selectors) {
 			Entity entity = selector.getEntity();
 			if (entity != null) {
 				target.put(definition.getName(), entity);

@@ -54,7 +54,7 @@ public class GenericTypeFunctionWizard extends AbstractGenericFunctionWizard<Typ
 	 * @see AbstractGenericFunctionWizard#createEntitiesPage(SchemaSelection, Cell)
 	 */
 	@Override
-	protected EntitiesPage<TypeFunction> createEntitiesPage(
+	protected EntitiesPage<TypeFunction, ?> createEntitiesPage(
 			SchemaSelection initSelection, Cell initCell) {
 		return new TypeEntitiesPage(initSelection, initCell);
 	}

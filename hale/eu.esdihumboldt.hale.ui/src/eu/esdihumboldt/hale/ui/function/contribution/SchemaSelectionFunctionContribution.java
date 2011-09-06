@@ -89,6 +89,8 @@ public class SchemaSelectionFunctionContribution extends
 			return false;
 		}
 		
+		//TODO check if properties have the same parent type? what about joins?
+		
 		// check counts
 		if (!checkCount(sourceItems.size(), function.getSource())) {
 			return false;

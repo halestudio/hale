@@ -1,0 +1,81 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ */
+
+package eu.esdihumboldt.hale.ui.function.generic.pages;
+
+import java.util.Set;
+
+import org.eclipse.swt.widgets.Composite;
+
+import eu.esdihumboldt.hale.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
+
+/**
+ * Represents named property entities in a function
+ * @author Simon Templer
+ */
+public class PropertyField extends Field<PropertyEntitySelector> {
+	
+	private TypeDefinition parentType;
+
+	/**
+	 * Create a property field
+	 * @param definition the field definition
+	 * @param ssid the schema space
+	 * @param parent the parent composite
+	 * @param candidates the entity candidates
+	 * @param initialCell the initial cell
+	 * @param parentType the parent type of the properties
+	 */
+	public PropertyField(AbstractParameter definition, SchemaSpaceID ssid,
+			Composite parent, Set<EntityDefinition> candidates, Cell initialCell,
+			TypeDefinition parentType) {
+		super(definition, ssid, parent, candidates, initialCell);
+		
+		// set the parent type on all added selectors
+		setParentType(parentType);
+	}
+
+	/**
+	 * Set the parent type
+	 * @param parentType the parentType to set
+	 */
+	public void setParentType(TypeDefinition parentType) {
+		this.parentType = parentType;
+		
+		// set the parent type on the selectors
+		for (PropertyEntitySelector selector : getSelectors()) {
+			selector.setParentType(parentType);
+		}
+	}
+
+	/**
+	 * @see Field#createEntitySelector(SchemaSpaceID, Set, AbstractParameter, Composite)
+	 */
+	@Override
+	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid,
+			Set<EntityDefinition> candidates, AbstractParameter field,
+			Composite parent) {
+		return new PropertyEntitySelector(ssid, candidates, field, parent, null);
+	}
+
+	/**
+	 * @return the parentType
+	 */
+	public TypeDefinition getParentType() {
+		return parentType;
+	}
+
+}

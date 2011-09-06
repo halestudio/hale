@@ -17,7 +17,7 @@ import eu.esdihumboldt.hale.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.align.model.Cell;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
-import eu.esdihumboldt.hale.ui.function.generic.pages.TypeEntitiesPage;
+import eu.esdihumboldt.hale.ui.function.generic.pages.PropertyEntitiesPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
@@ -54,10 +54,9 @@ public class GenericPropertyFunctionWizard extends AbstractGenericFunctionWizard
 	 * @see AbstractGenericFunctionWizard#createEntitiesPage(SchemaSelection, Cell)
 	 */
 	@Override
-	protected EntitiesPage<PropertyFunction> createEntitiesPage(
+	protected EntitiesPage<PropertyFunction, ?> createEntitiesPage(
 			SchemaSelection initSelection, Cell initCell) {
-		//FIXME
-		return null;
+		return new PropertyEntitiesPage(initSelection, initCell);
 	}
 
 }

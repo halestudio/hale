@@ -22,10 +22,10 @@ import eu.esdihumboldt.hale.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
- * TODO Type description
- * @author sitemple
+ * Represents named type entities in a function
+ * @author Simon Templer
  */
-public class TypeField extends Field {
+public class TypeField extends Field<TypeEntitySelector> {
 
 	/**
 	 * @see Field#Field(AbstractParameter, SchemaSpaceID, Composite, Set, Cell)
@@ -39,7 +39,7 @@ public class TypeField extends Field {
 	 * @see Field#createEntitySelector(SchemaSpaceID, Set, AbstractParameter, Composite)
 	 */
 	@Override
-	protected EntitySelector createEntitySelector(SchemaSpaceID ssid,
+	protected TypeEntitySelector createEntitySelector(SchemaSpaceID ssid,
 			Set<EntityDefinition> candidates, AbstractParameter field,
 			Composite parent) {
 		return new TypeEntitySelector(ssid, candidates, field, parent);

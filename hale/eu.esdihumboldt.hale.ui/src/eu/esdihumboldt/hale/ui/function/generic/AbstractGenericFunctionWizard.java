@@ -38,7 +38,7 @@ public abstract class AbstractGenericFunctionWizard<T extends AbstractFunction> 
 	private final String functionId;
 	private MutableCell resultCell;
 	
-	private EntitiesPage<T> entitiesPage;
+	private EntitiesPage<T, ?> entitiesPage;
 	
 	private Set<FunctionWizardPage> cellPages = new LinkedHashSet<FunctionWizardPage>();
 
@@ -84,7 +84,7 @@ public abstract class AbstractGenericFunctionWizard<T extends AbstractFunction> 
 	 * @param initCell the initial cell
 	 * @return the entities page
 	 */
-	protected abstract EntitiesPage<T> createEntitiesPage(SchemaSelection initSelection,
+	protected abstract EntitiesPage<T, ?> createEntitiesPage(SchemaSelection initSelection,
 			Cell initCell);
 
 	/**

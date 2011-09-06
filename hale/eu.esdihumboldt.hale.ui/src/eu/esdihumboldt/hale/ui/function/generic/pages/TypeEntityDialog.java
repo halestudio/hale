@@ -33,12 +33,10 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 public class TypeEntityDialog extends EntityDialog {
 
 	/**
-	 * @param parentShell
-	 * @param ssid
+	 * @see EntityDialog#EntityDialog(Shell, SchemaSpaceID, String) 
 	 */
 	public TypeEntityDialog(Shell parentShell, SchemaSpaceID ssid, String title) {
 		super(parentShell, ssid, title);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
