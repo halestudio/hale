@@ -24,13 +24,6 @@ import eu.esdihumboldt.hale.align.extension.function.AbstractFunction;
 public interface FunctionWizardDescriptor<T extends AbstractFunction> 
 		extends ExtensionObjectFactory<FunctionWizardFactory>, FunctionWizardFactory {
 
-//	/**
-//	 * Determines if the descriptor represents an augmentation
-//	 * 
-//	 * @return if the descriptor represents an augmentation
-//	 */
-//	public abstract boolean isAugmentation();
-	
 	/**
 	 * Get the ID of the associated function
 	 * @return the function ID

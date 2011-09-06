@@ -40,16 +40,23 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
  */
 public abstract class AbstractFunctionWizardContribution extends ContributionItem {
 
-//	private final boolean showAugmentations;
+	private final boolean showAugmentations;
 	
-//	/**
-//	 * Constructor
-//	 * 
-//	 * @param showAugmentations if augmentations shall be shown
-//	 */
-//	public AbstractFunctionWizardContribution(boolean showAugmentations) {
-//		this.showAugmentations = showAugmentations;
-//	}
+	/**
+	 * Constructor
+	 * 
+	 * @param showAugmentations if augmentations shall be shown
+	 */
+	public AbstractFunctionWizardContribution(boolean showAugmentations) {
+		this.showAugmentations = showAugmentations;
+	}
+	
+	/**
+	 * Create a function wizard contribution that doesn't hide augmentations.
+	 */
+	public AbstractFunctionWizardContribution() {
+		this(true);
+	}
 	
 	/**
 	 * @see ContributionItem#fill(ToolBar, int)
@@ -93,22 +100,20 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 		
 		List<AbstractWizardAction<?>> augmentationActions = new ArrayList<AbstractWizardAction<?>>();
 		
-		//XXX augmentation stuff ignored for now
-		
 		for (FunctionWizardDescriptor<?> descriptor : getFunctionWizardDescriptors()) {
-//			if (!descriptor.isAugmentation() || showAugmentations) {
+			if (!descriptor.getFunction().isAugmentation() || showAugmentations) {
 				AbstractWizardAction<?> action = createWizardAction(descriptor, alignmentService);
 				if (action.isActive()) {
-//					if (descriptor.isAugmentation()) {
-//						augmentationActions.add(action);
-//					}
-//					else {
+					if (descriptor.getFunction().isAugmentation()) {
+						augmentationActions.add(action);
+					}
+					else {
 						IContributionItem item = new ActionContributionItem(action);
 						item.fill(menu, index++);
 						added = true;
-//					}
+					}
 				}
-//			}
+			}
 		}
 		
 		if (!augmentationActions.isEmpty()) {
@@ -129,25 +134,25 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 //				info = new CellSelectionInfo(cellSelection);
 //			}
 //			
-//			String augmentations;
+			String augmentations;
 //			if (info != null && info.getTargetItemCount() == 1) {
 //				augmentations = MessageFormat.format(Messages.FunctionWizardContribution_0, info.getFirstTargetItem().getName().getLocalPart()); 
 //			}
 //			else {
-//				augmentations = Messages.FunctionWizardContribution_1; 
+				augmentations = Messages.FunctionWizardContribution_1; 
 //			}
 //			
-//			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);
-//			augItem.setText(augmentations);
-//			augItem.setEnabled(false);
+			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);
+			augItem.setText(augmentations);
+			augItem.setEnabled(false);
 			
-			//new Separator().fill(menu, index++);
+			new Separator().fill(menu, index++);
 			
-//			for (AbstractWizardAction action : augmentationActions) {
-//				IContributionItem item = new ActionContributionItem(action);
-//				item.fill(menu, index++);
-//				added = true;
-//			}
+			for (AbstractWizardAction<?> action : augmentationActions) {
+				IContributionItem item = new ActionContributionItem(action);
+				item.fill(menu, index++);
+				added = true;
+			}
 		}
 		
 		if (!added) {

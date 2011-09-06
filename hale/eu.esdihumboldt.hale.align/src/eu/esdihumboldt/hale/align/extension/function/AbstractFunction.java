@@ -75,6 +75,15 @@ public abstract class AbstractFunction implements Function {
 	public abstract Set<? extends AbstractParameter> getTarget();
 	
 	/**
+	 * States if the function represents an augmentation of a target instance
+	 * instead of a transformation.
+	 * @return if the function is an augmentation
+	 */
+	public boolean isAugmentation() {
+		return getSource().isEmpty();
+	}
+	
+	/**
 	 * @see Identifiable#getId()
 	 */
 	@Override
