@@ -44,7 +44,7 @@ public class SourceDataView extends AbstractDataView {
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.data.source"; //$NON-NLS-1$
 	
-	private Image mapImage;
+//	private Image mapImage;
 	
 	private Image instanceImage;
 	
@@ -108,12 +108,12 @@ public class SourceDataView extends AbstractDataView {
 			
 		});
 		
-		final Button mapButton = new Button(parent, SWT.RADIO);
-		if (mapImage == null) {
-			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
-		}
-		mapButton.setImage(mapImage);
-		mapButton.setToolTipText(Messages.ReferenceTableView_1); //$NON-NLS-1$
+//		final Button mapButton = new Button(parent, SWT.RADIO);
+//		if (mapImage == null) {
+//			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
+//		}
+//		mapButton.setImage(mapImage);
+//		mapButton.setToolTipText(Messages.ReferenceTableView_1); //$NON-NLS-1$
 //		mapButton.addSelectionListener(new SelectionAdapter() {
 //
 //			@Override
@@ -129,9 +129,9 @@ public class SourceDataView extends AbstractDataView {
 	 */
 	@Override
 	public void dispose() {
-		if (mapImage != null) {
-			mapImage.dispose();
-		}
+//		if (mapImage != null) {
+//			mapImage.dispose();
+//		}
 		if (instanceImage != null) {
 			instanceImage.dispose();
 		}

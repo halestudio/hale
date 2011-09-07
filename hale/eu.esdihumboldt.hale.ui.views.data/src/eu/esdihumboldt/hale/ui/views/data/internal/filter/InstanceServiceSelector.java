@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.schema.model.Schema;
 import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
@@ -129,18 +130,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 			// feature type selector
 			typeDefinitions = new ComboViewer(this, SWT.READ_ONLY);
 			typeDefinitions.setContentProvider(ArrayContentProvider.getInstance());
-			/*featureTypes.setComparator(new ViewerComparator() {
-
-				@Override
-				public int compare(Viewer viewer, Object e1, Object e2) {
-					if (e1 instanceof FeatureType && e2 instanceof FeatureType) {
-						return ((FeatureType) e1).getName().getLocalPart().compareTo(
-								((FeatureType) e2).getName().getLocalPart());
-					}
-					return super.compare(viewer, e1, e2);
-				}
-				
-			});*/
+			typeDefinitions.setComparator(new DefinitionComparator());
 			typeDefinitions.setLabelProvider(new DefinitionLabelProvider());
 			typeDefinitions.addSelectionChangedListener(new ISelectionChangedListener() {
 				

@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceSelector;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.SampleTransformInstanceSelector;
 
 /**
  * Table for viewing transformed data
@@ -43,11 +44,11 @@ public class TransformedDataView extends AbstractDataView {
 	
 	private Image sampleImage;
 	
-	private Image mapImage;
+//	private Image mapImage;
 	
 	private InstanceServiceSelector instanceSelector;
 	
-	private SampleTransformFeatureSelector sampleSelector;
+	private SampleTransformInstanceSelector sampleSelector;
 	
 //	private MapFeatureSelector mapSelector;
 
@@ -55,11 +56,11 @@ public class TransformedDataView extends AbstractDataView {
 	 * Default constructor
 	 */
 	public TransformedDataView() {
-		super(new SampleTransformFeatureSelector());
+		super(new SampleTransformInstanceSelector());
 		
 		instanceSelector = new InstanceServiceSelector(SchemaSpaceID.TARGET);
 		// another selector based on the reference sample service
-		sampleSelector = (SampleTransformFeatureSelector) getFeatureSelector();
+		sampleSelector = (SampleTransformInstanceSelector) getFeatureSelector();
 		// selector base on the map selection
 //		mapSelector = new MapFeatureSelector(SchemaType.TARGET);
 	}
@@ -107,20 +108,20 @@ public class TransformedDataView extends AbstractDataView {
 			
 		});
 		
-		final Button mapButton = new Button(parent, SWT.RADIO);
-		if (mapImage == null) {
-			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
-		}
-		mapButton.setImage(mapImage);
-		mapButton.setToolTipText(Messages.TransformedTableView_1); //$NON-NLS-1$
-		mapButton.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
+//		final Button mapButton = new Button(parent, SWT.RADIO);
+//		if (mapImage == null) {
+//			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
+//		}
+//		mapButton.setImage(mapImage);
+//		mapButton.setToolTipText(Messages.TransformedTableView_1); //$NON-NLS-1$
+//		mapButton.addSelectionListener(new SelectionAdapter() {
+//
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
 //				setInstanceSelector(mapSelector);
-			}
-			
-		});
+//			}
+//			
+//		});
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class TransformedDataView extends AbstractDataView {
 	public void dispose() {
 		instanceImage.dispose();
 		sampleImage.dispose();
-		mapImage.dispose();
+//		mapImage.dispose();
 		
 		super.dispose();
 	}
