@@ -12,8 +12,11 @@
 
 package eu.esdihumboldt.hale.ui.service.instance;
 
+import java.util.Set;
+
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
  * The {@link InstanceService} provides {@link Instance}s from different data
@@ -32,6 +35,13 @@ public interface InstanceService {
 	 * @return the instance collection
 	 */
 	public InstanceCollection getInstances(DataSet dataset);
+	
+	/**
+	 * Get the types for which instances are present in the given data set
+	 * @param dataset the data set
+	 * @return the set of types for which instances are present
+	 */
+	public Set<TypeDefinition> getInstanceTypes(DataSet dataset);
 	
 	/**
 	 * Add instances to the {@link DataSet#SOURCE} data set

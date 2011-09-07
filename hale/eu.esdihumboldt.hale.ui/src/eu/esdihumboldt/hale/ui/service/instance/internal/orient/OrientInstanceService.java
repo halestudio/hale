@@ -15,13 +15,22 @@ package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.xml.namespace.QName;
+
+import org.apache.commons.codec.DecoderException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.PlatformUI;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import de.cs3d.util.logging.ALogger;
@@ -32,6 +41,9 @@ import eu.esdihumboldt.hale.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.instance.model.Instance;
 import eu.esdihumboldt.hale.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.instance.model.impl.ONameUtil;
+import eu.esdihumboldt.hale.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
@@ -100,8 +112,6 @@ public class OrientInstanceService extends AbstractInstanceService {
 		transformed = new LocalOrientDB(new File(instanceLoc, "transformed"));
 	}
 
-	
-
 	/**
 	 * @see InstanceService#getInstances(DataSet)
 	 */
@@ -115,6 +125,77 @@ public class OrientInstanceService extends AbstractInstanceService {
 		}
 		
 		throw new IllegalArgumentException("Illegal data set requested: " + dataset);
+	}
+
+	/**
+	 * @see InstanceService#getInstanceTypes(DataSet)
+	 */
+	@Override
+	public Set<TypeDefinition> getInstanceTypes(DataSet dataset) {
+		switch (dataset) {
+		case SOURCE:
+			return getInstanceTypes(source, schemaService.getSchemas(SchemaSpaceID.SOURCE));
+		case TRANSFORMED:
+			return getInstanceTypes(transformed, schemaService.getSchemas(SchemaSpaceID.TARGET));
+		}
+		
+		throw new IllegalArgumentException("Illegal data set requested: " + dataset);
+	}
+
+	/**
+	 * Get the instance types available in the given database
+	 * @param lodb the database
+	 * @param schemas the type definitions
+	 * @return the set of type definitions for which instances are present in 
+	 * the database
+	 */
+	private Set<TypeDefinition> getInstanceTypes(LocalOrientDB lodb,
+			SchemaSpace schemas) {
+		Set<TypeDefinition> result = new HashSet<TypeDefinition>();
+		
+		DatabaseReference<ODatabaseDocumentTx> dbref = lodb.openRead();
+		try {
+			ODatabaseDocumentTx db = dbref.getDatabase();
+			
+			// get schema and classes
+			OSchema schema = db.getMetadata().getSchema();
+			Collection<OClass> classes = schema.getClasses();
+			
+			Collection<? extends TypeDefinition> mappableTypes = schemas.getMappableTypes();
+			Set<String> allowedIdentifiers = new HashSet<String>();
+			for (TypeDefinition type : mappableTypes) {
+				allowedIdentifiers.add(type.getIdentifier());
+			}
+			
+			for (OClass clazz : classes) {
+				try {
+					String identifier = ONameUtil.decodeName(clazz.getName());
+					if (allowedIdentifiers.contains(identifier) && 
+							db.countClass(clazz.getName()) > 0) {
+						int lastSlash = identifier.lastIndexOf('/');
+						if (lastSlash >= 0) {
+							String namespace = identifier.substring(0, lastSlash);
+							String localname = identifier.substring(lastSlash + 1);
+							TypeDefinition type = schemas.getType(new QName(namespace, localname));
+							if (type != null) {
+								result.add(type);
+							}
+							else {
+								log.error(MessageFormat.format(
+										"Could not resolve type with identifier {0}", 
+										identifier));
+							}
+						}
+					}
+				} catch (DecoderException e) {
+					log.error("Could not decode class name to type identifier", e);
+				}
+			}
+		} finally {
+			dbref.dispose();
+		}
+		
+		return result;
 	}
 
 	/**
