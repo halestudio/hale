@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -232,7 +233,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 						
 						@Override
 						public void run() {
-							updateSelection();
+							updateTypesSelection();
 						}
 					});
 				}
@@ -246,38 +247,28 @@ public class InstanceServiceSelector implements InstanceSelector {
 		protected void updateTypesSelection() {
 			SchemaSpaceID space = getSchemaSpace();
 			
-			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-			TypeIndex schema = ss.getSchemas(space);
+			TypeDefinition lastSelected = null;
+			ISelection lastSelection = typeDefinitions.getSelection();
+			if (!lastSelection.isEmpty() && lastSelection instanceof IStructuredSelection) {
+				lastSelected = (TypeDefinition) ((IStructuredSelection) lastSelection).getFirstElement();
+			}
 			
-			List<TypeDefinition> filteredTypes = new ArrayList<TypeDefinition>(schema.getMappableTypes());
-			
-			Collections.sort(filteredTypes, new Comparator<TypeDefinition>() {
-
-				@Override
-				public int compare(TypeDefinition o1, TypeDefinition o2) {
-					return o1.getDisplayName().compareTo(o2.getDisplayName());
-				}
-				
-			});
-			
-			typeDefinitions.setInput(filteredTypes);
-			
-			// try to determine type to select from data set
-			TypeDefinition typeToSelect = null;
 			DataSet dataset = (space == SchemaSpaceID.SOURCE)?(DataSet.SOURCE):(DataSet.TRANSFORMED);
 			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-			InstanceCollection instances = is.getInstances(dataset);
-			if (instances != null) {
-				ResourceIterator<Instance> itInstance = instances.iterator();
-				try {
-					while (itInstance.hasNext() && typeToSelect == null) {
-						Instance instance = itInstance.next();
-						typeToSelect = instance.getDefinition();
-					}
-				} finally {
-					itInstance.close();
-				}
+			
+			// get instance types
+			List<TypeDefinition> filteredTypes = new ArrayList<TypeDefinition>(is.getInstanceTypes(dataset));
+			
+			if (filteredTypes.isEmpty()) {
+				// if there are no instances present, show all types
+				SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+				filteredTypes = new ArrayList<TypeDefinition>(ss.getSchemas(space).getMappableTypes());
 			}
+			
+			typeDefinitions.setInput(filteredTypes);
+
+			// select the previously selected type if possible
+			TypeDefinition typeToSelect = (filteredTypes.contains(lastSelected))?(lastSelected):(null);
 			
 			// fallback selection
 			if (typeToSelect == null && !filteredTypes.isEmpty()) {
@@ -287,6 +278,10 @@ public class InstanceServiceSelector implements InstanceSelector {
 			if (typeToSelect != null) {
 				typeDefinitions.setSelection(new StructuredSelection(typeToSelect));
 			}
+			
+			boolean enabled = !filteredTypes.isEmpty();
+			typeDefinitions.getControl().setEnabled(enabled );
+			count.getControl().setEnabled(enabled);
 			
 			layout(true, true);
 			
