@@ -17,6 +17,7 @@ import eu.esdihumboldt.hale.instance.model.Instance;
 /**
  * Sink for instances
  * @author Simon Templer
+ * @since 2.5.0
  */
 public interface InstanceSink {
 
