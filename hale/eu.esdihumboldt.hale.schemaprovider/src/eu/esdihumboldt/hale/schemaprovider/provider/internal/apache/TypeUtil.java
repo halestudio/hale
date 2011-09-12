@@ -300,6 +300,12 @@ public abstract class TypeUtil {
 			Name name, SchemaTypeResolver schemaTypes) {
 		AttributeType type = null;
 			
+		if (simpleTypeRestriction.getBaseTypeName() == null) {
+			// not supported in 2.1.1
+			log.warn("Simple type restrictions w/o base type name not supported");
+			return null;
+		}
+		
 		Name baseTypeName = new NameImpl(
 				simpleTypeRestriction.getBaseTypeName().getNamespaceURI(),
 				simpleTypeRestriction.getBaseTypeName().getLocalPart());
