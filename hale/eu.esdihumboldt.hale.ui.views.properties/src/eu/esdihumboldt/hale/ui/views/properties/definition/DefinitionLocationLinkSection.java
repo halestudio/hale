@@ -17,25 +17,26 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
-
+import eu.esdihumboldt.hale.ui.views.properties.UriLink;
 
 /**
- * Properties section with definition name
- * @author Simon Templer
+ * TODO Type description
+ * @author Patrick Lieb
  */
-public class DefinitionDescriptionSection extends DefaultDefinitionSection<Definition<?>> {
-
-	private Text descriptionText;
+public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Definition<?>>{
 	
-	private CLabel namespaceLabel;
-
+	private UriLink location;
+	
+	private Link link;
+	
+	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
 	 */
@@ -47,53 +48,28 @@ public class DefinitionDescriptionSection extends DefaultDefinitionSection<Defin
 				.createFlatFormComposite(parent);
 		FormData data;
 		
-		descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
-				SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
-		descriptionText.setEditable(false);
-		//TODO improve layout
+		
 		data = new FormData();
-		data.width = 100;
-		data.height = 100;
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
-		descriptionText.setLayoutData(data);
-
-		namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, "Description:"); //$NON-NLS-1$
+		location = new UriLink(composite, 0, null, data, "<A>Open Location</A>");
+		
+		link = location.getLink();
+		
+		CLabel namespaceLabel = getWidgetFactory()
+		.createCLabel(composite, "Location"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(descriptionText,
-				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(descriptionText, 0, SWT.TOP);
-		namespaceLabel.setLayoutData(data);
-	}
-
-	/**
-	 * @see AbstractPropertySection#shouldUseExtraSpace()
-	 */
-	@Override
-	public boolean shouldUseExtraSpace() {
-		return true;
-	}
-
-	/**
-	 * @see AbstractPropertySection#refresh()
-	 */
-	@Override
-	public void refresh() {
-		String desc = getDefinition().getDescription();
-		if (desc == null) {
-			desc = "";
-		}
-		descriptionText.setText(desc);
+		data.right = new FormAttachment(link,
+										-ITabbedPropertyConstants.HSPACE);
+		data.top = new FormAttachment(link, 0, SWT.CENTER);
+										namespaceLabel.setLayoutData(data);
 	}
 	
-	/**
-	 * @return the descriptionText
-	 */
-	public Text getDescription(){
-		return descriptionText;
+	@Override
+	public void refresh(){
+		location.refresh(getDefinition().getLocation());
+		link = location.getLink();
 	}
 }

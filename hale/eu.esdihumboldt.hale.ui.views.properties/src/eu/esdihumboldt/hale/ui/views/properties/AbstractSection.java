@@ -81,7 +81,7 @@ public abstract class AbstractSection extends AbstractPropertySection{
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(text,
-				-ITabbedPropertyConstants.HSPACE);
+				10);
 		data.top = new FormAttachment(text, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
 		
@@ -99,7 +99,7 @@ public abstract class AbstractSection extends AbstractPropertySection{
 			data = new FormData();
 			data.left = new FormAttachment(0, 0);
 			data.right = new FormAttachment(text2,
-					-ITabbedPropertyConstants.HSPACE);
+					10);
 			data.top = new FormAttachment(text2, 0, SWT.CENTER);
 			LocalNameLabel.setLayoutData(data);
 		}

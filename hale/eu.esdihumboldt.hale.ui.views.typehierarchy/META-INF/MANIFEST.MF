@@ -4,7 +4,8 @@ Bundle-Name: Type Hierarchy View
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.typehierarchy; singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.eclipse.ui.forms;bundle-version="3.5.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: eu.esdihumboldt.hale.align.model,
  eu.esdihumboldt.hale.core.io.supplier,
