@@ -467,6 +467,7 @@ public class ApacheSchemaProvider
 	/**
 	 * @see SchemaProvider#loadSchema(java.net.URI, ProgressIndicator)
 	 */
+	@Override
 	public Schema loadSchema(URI location, ProgressIndicator progress) throws IOException {
 		if (progress == null) {
 			progress = new LogProgressIndicator();
@@ -520,7 +521,7 @@ public class ApacheSchemaProvider
 		imports.put(location.toString(), null);
 
 		SchemaResult schemaResult = loadSchema(location.toString(), schema,
-				imports, progress);
+				imports, progress, 1);
 
 		Map<String, SchemaElement> elements = new HashMap<String, SchemaElement>();
 		for (SchemaElement element : schemaResult.getElements().values()) {
@@ -552,6 +553,33 @@ public class ApacheSchemaProvider
 		
 		return result;
 	}
+	
+	private static boolean isFeatureType(TypeDefinition type) {
+		if (type == null) return false;
+		
+		TypeDefinition superType = type.getSuperType();
+		while (superType != null) {
+			if (isAbstractFeatureType(superType)) {
+				return true;
+			}
+			
+			superType = superType.getSuperType();
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Determines if a type is the AbstractFeatureType. This is related to GML.
+	 * @param type the type definition
+	 * @return if the type is the AbstractFeatureType
+	 */
+	private static boolean isAbstractFeatureType(TypeDefinition type) {
+		//XXX not really nice
+		return type.getName().getLocalPart().equals("AbstractFeatureType") &&
+			type.getName().getNamespaceURI().startsWith("http://www.opengis.net/") &&
+			type.getName().getNamespaceURI().contains("gml");
+	}
 
 	/**
 	 * Load the feature types defined by the given schema
@@ -561,9 +589,10 @@ public class ApacheSchemaProvider
 	 * @param imports the imports/includes that were already
 	 *   loaded or where loading has been started
 	 * @param progress the progress indicator
+	 * @param depth the call depth
 	 * @return the map of feature type names and types
 	 */
-	protected SchemaResult loadSchema(String schemaLocation, XmlSchema schema, Map<String, SchemaResult> imports, ProgressIndicator progress) {
+	protected SchemaResult loadSchema(String schemaLocation, XmlSchema schema, Map<String, SchemaResult> imports, ProgressIndicator progress, int depth) {
 		String namespace = schema.getTargetNamespace();
 		if (namespace == null || namespace.isEmpty()) {
 			// default to gml schema
@@ -663,6 +692,8 @@ public class ApacheSchemaProvider
 		
 		// Set of include locations
 		Set<String> includes = new HashSet<String>();
+		//XXX
+		Set<String> ftIncludes = new HashSet<String>();
 		
 		// handle imports
 		XmlSchemaObjectCollection externalItems = schema.getIncludes();
@@ -680,10 +711,16 @@ public class ApacheSchemaProvider
 				String location = importedSchema.getSourceURI();
 				if (!(imports.containsKey(location))) { // only add schemas that were not already added
 					imports.put(location, null); // place a marker in the map to prevent loading the location in the call to loadSchema 
-					imports.put(location, loadSchema(location, importedSchema, imports, progress));
+					imports.put(location, loadSchema(location, importedSchema, imports, progress, depth + 1));
 				}
 				if (imp instanceof XmlSchemaInclude) {
 					includes.add(location);
+				}
+				//XXX
+				else if ((depth < 5 )) { // &&)
+					//importedSchema.getTargetNamespace().contains("geosciml") ||
+					//importedSchema.getTargetNamespace().contains("http://inspire.jrc.ec.europa.eu/schemas/ge"))) {
+					ftIncludes.add(location);
 				}
 			} catch (Throwable e) {
 				_log.error("Error adding imported schema", e); //$NON-NLS-1$
@@ -713,6 +750,33 @@ public class ApacheSchemaProvider
 					elements.putAll(entry.getValue().getElements());
 					schemaAttributes.putAll(entry.getValue().getSchemaAttributes());
 					schemaAttributeGroups.putAll(entry.getValue().getSchemaAttributeGroups());
+				}
+				//XXX
+				else if (ftIncludes.contains(entry.getKey())) {
+					// add only feature types to result
+					for (Entry<Name, TypeDefinition> typeEntry : entry.getValue().getTypes().entrySet()) {
+						if (isFeatureType(typeEntry.getValue())) {
+							featureTypes.put(typeEntry.getKey(), typeEntry.getValue());
+						}
+						else {
+							importedFeatureTypes.put(typeEntry.getKey(), typeEntry.getValue());
+						}
+					}
+					for (Entry<Name, SchemaElement> elementEntry : entry.getValue().getElements().entrySet()) {
+						if (isFeatureType(elementEntry.getValue().getType())) {
+							elements.put(elementEntry.getKey(), elementEntry.getValue());
+						}
+						else {
+							importedElements.put(elementEntry.getKey(), elementEntry.getValue());
+						}
+					}
+					
+//					featureTypes.putAll(entry.getValue().getTypes());
+//					elements.putAll(entry.getValue().getElements());
+					
+					// imported attributes
+					importedSchemaAttributes.putAll(entry.getValue().getSchemaAttributes());
+					importedSchemaAttributeGroups.putAll(entry.getValue().getSchemaAttributeGroups());
 				}
 				else {
 					// is import, don't add to result
