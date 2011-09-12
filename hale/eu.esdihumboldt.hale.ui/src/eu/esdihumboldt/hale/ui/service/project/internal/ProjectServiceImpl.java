@@ -33,9 +33,11 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Version;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
@@ -70,7 +72,6 @@ import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
-import eu.esdihumboldt.hale.ui.service.project.internal.FilePathUpdate;
 
 /**
  * Default implementation of the {@link ProjectService}.
@@ -213,11 +214,15 @@ public class ProjectServiceImpl extends AbstractProjectService
 									conf.remove(ImportProvider.PARAM_SOURCE);
 									conf.put(ImportProvider.PARAM_SOURCE, newsrc);
 								} else {
-							        FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN | SWT.SHEET);
-							        dialog.setFilterExtensions(extensions);
-							        dialog.setFileName(target);
+									MessageBox error = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
+									error.setText("Loading Error");
+									error.setMessage("Can't load " + impsrc);
+									error.open();
+									FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN | SWT.SHEET);
+									filedialog.setFilterExtensions(extensions);
+									filedialog.setFileName(target);
 									
-							        String openfile = dialog.open();
+							        String openfile = filedialog.open();
 							        if (openfile != null) {
 							            openfile = openfile.trim();
 							            if (openfile.length() > 0) {
