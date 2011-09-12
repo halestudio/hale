@@ -12,7 +12,7 @@
 
 package eu.xsdi.mdl.identifier;
 
-import eu.esdihumboldt.goml.align.Cell;
+import eu.esdihumboldt.commons.goml.align.Cell;
 
 /**
  * Used to identify a mismatch purely based on a {@link Cell}, without further

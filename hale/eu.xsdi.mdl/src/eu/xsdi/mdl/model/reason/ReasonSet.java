@@ -14,7 +14,7 @@ package eu.xsdi.mdl.model.reason;
 import java.util.List;
 import java.util.Set;
 
-import eu.esdihumboldt.goml.align.Entity;
+import eu.esdihumboldt.commons.goml.align.Entity;
 
 /**
  * The {@link ReasonSet} describes a Set of properties of either a schema or
