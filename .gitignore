@@ -13,6 +13,7 @@ classes/
 target/
 _testdata/
 !platform/target/
+!legacy/plugins/eu.esdihumboldt.commons/target/
 *.patch
 
 # generic main project
