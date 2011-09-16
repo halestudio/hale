@@ -48,7 +48,7 @@ public class XmlInstanceReaderFactory extends AbstractIOProviderFactory<Instance
 	 */
 	@Override
 	public InstanceReader createProvider() {
-		return new StreamGmlReader(ContentType.getContentType("XML"), true);
+		return new StreamGmlReader(ContentType.getContentType("XML"), false);
 	}
 
 }
