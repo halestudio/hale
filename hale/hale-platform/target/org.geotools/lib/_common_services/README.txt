@@ -1,1 +1,0 @@
-_common_services contains the merged files in META-INF/services that are contained in the various Geotools Jars. Because merging the files is not supported by Bnd, the files have to be merged in _common_services and the _common_services Jar has to be the first library in the bnd file for the Geotools bundle.

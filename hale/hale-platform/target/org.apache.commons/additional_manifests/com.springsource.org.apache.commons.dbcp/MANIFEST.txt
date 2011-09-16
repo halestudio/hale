@@ -1,3 +1,0 @@
-Require-Bundle: com.springsource.oracle.jdbc;bundle-version="10.2.0";resolution:=optional,
- com.springsource.com.mysql.jdbc;bundle-version="5.1.6";resolution:=optional,
- de.fhg.igd.transactions;bundle-version="1.0.0";resolution:=optional

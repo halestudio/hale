@@ -1,7 +1,0 @@
--classpath: lib/XmlSchema-1.4.7.jar
--output: org.apache.ws.commons.schema-1.4.7.jar
-Import-Package: *
-Export-Package: *;-noimport:=true
-Bundle-Version: 1.4.7
-Bundle-Name: Apache XML Schema Bundle
-Bundle-SymbolicName: org.apache.ws.commons.schema

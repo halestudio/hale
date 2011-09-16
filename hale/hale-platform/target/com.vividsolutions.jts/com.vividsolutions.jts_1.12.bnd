@@ -1,7 +1,0 @@
--classpath: lib/jts-1.12.jar
--output: com.vividsolutions.jts_1.12.jar
-Import-Package: *
-Export-Package: *
-Bundle-Version: 1.12
-Bundle-Name: JTS Plug-in
-Bundle-SymbolicName: com.vividsolutions.jts

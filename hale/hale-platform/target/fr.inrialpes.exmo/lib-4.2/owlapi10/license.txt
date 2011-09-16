@@ -1,4 +1,0 @@
-This code is being made available under the GNU Lesser General Public
-License (LGPL). For details, please see
-
-  http://www.gnu.org/copyleft/lesser.txt.
