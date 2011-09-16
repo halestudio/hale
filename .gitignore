@@ -12,8 +12,7 @@ logs/
 classes/
 target/
 _testdata/
-!hale/hale-platform/target/
-!humboldt-mediator-service/MS-TargetPlatform/target
+!platform/target/
 *.patch
 
 # generic main project
