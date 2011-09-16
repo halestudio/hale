@@ -24,8 +24,8 @@ import com.google.common.collect.Multimap;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 

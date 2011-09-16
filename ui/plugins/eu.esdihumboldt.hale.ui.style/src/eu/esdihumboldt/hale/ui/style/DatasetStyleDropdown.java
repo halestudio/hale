@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
@@ -144,7 +144,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, Schema
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID, eu.esdihumboldt.hale.schema.model.Schema)
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID, eu.esdihumboldt.hale.common.schema.model.Schema)
 	 */
 	@Override
 	public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {

@@ -20,11 +20,11 @@ import javax.xml.namespace.QName;
 
 import com.google.common.base.Preconditions;
 
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultSchema;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
 
 /**
  * XML schema used during schema parsing, manages {@link XmlTypeDefinition}s

@@ -23,7 +23,7 @@ import java.util.Set;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 

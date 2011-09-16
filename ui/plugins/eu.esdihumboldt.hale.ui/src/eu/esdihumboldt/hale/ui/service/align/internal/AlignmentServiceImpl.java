@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import eu.esdihumboldt.hale.align.model.Alignment;
-import eu.esdihumboldt.hale.align.model.Cell;
-import eu.esdihumboldt.hale.align.model.MutableAlignment;
-import eu.esdihumboldt.hale.align.model.MutableCell;
-import eu.esdihumboldt.hale.align.model.impl.DefaultAlignment;
+import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**

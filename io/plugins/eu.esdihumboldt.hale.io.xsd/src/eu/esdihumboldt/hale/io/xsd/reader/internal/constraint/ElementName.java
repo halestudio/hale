@@ -14,9 +14,9 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;
 
 import java.util.Collection;
 
+import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
-import eu.esdihumboldt.hale.schema.model.constraint.DisplayName;
 
 /**
  * Custom display name based on XML elements

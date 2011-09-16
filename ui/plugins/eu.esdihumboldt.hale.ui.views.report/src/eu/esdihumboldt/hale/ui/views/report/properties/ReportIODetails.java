@@ -14,8 +14,8 @@ package eu.esdihumboldt.hale.ui.views.report.properties;
 
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 
-import eu.esdihumboldt.hale.core.io.report.IOMessage;
-import eu.esdihumboldt.hale.core.report.Message;
+import eu.esdihumboldt.hale.common.core.io.report.IOMessage;
+import eu.esdihumboldt.hale.common.core.report.Message;
 
 /**
  * @author Andreas Burchert

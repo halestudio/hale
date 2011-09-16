@@ -37,11 +37,11 @@ import org.eclipse.wb.swt.ResourceManager;
 import swing2swt.layout.BorderLayout;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.core.io.project.model.Project;
-import eu.esdihumboldt.hale.core.report.Message;
-import eu.esdihumboldt.hale.core.report.Report;
-import eu.esdihumboldt.hale.core.report.writer.ReportWriter;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.writer.ReportWriter;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
@@ -297,7 +297,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#reportAdded(eu.esdihumboldt.hale.core.report.Report)
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#reportAdded(eu.esdihumboldt.hale.common.core.report.Report)
 	 */
 	@Override
 	public void reportAdded(final Report<Message> report) {

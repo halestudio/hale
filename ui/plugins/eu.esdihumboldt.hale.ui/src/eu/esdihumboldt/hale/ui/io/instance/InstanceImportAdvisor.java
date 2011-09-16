@@ -14,10 +14,10 @@ package eu.esdihumboldt.hale.ui.io.instance;
 
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.core.io.IOAdvisor;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOAdvisor;
-import eu.esdihumboldt.hale.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.ui.io.instance.crs.DialogCRSProvider;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;

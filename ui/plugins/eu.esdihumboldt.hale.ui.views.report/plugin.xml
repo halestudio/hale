@@ -31,7 +31,7 @@
                id="eu.esdihumboldt.hale.ui.views.report.properties.summary.name"
                tab="eu.esdihumboldt.hale.ui.views.report.properties.summary">
             <input
-                  type="eu.esdihumboldt.hale.core.io.report.IOReport">
+                  type="eu.esdihumboldt.hale.common.core.io.report.IOReport">
             </input>
          </propertySection>
          <propertySection
@@ -40,7 +40,7 @@
                id="eu.esdihumboldt.hale.ui.views.report.properties.details.name"
                tab="eu.esdihumboldt.hale.ui.views.report.properties.details">
             <input
-                  type="eu.esdihumboldt.hale.core.report.IOReport">
+                  type="eu.esdihumboldt.hale.common.core.io.report.IOReport">
             </input>
          </propertySection>
          <propertySection
@@ -49,7 +49,7 @@
                id="eu.esdihumboldt.hale.ui.views.report.properties.summary.name"
                tab="eu.esdihumboldt.hale.ui.views.report.properties.summary">
             <input
-                  type="eu.esdihumboldt.hale.core.report.Report">
+                  type="eu.esdihumboldt.hale.common.core.report.Report">
             </input>
          </propertySection>
          <propertySection
@@ -58,7 +58,7 @@
                id="eu.esdihumboldt.hale.ui.views.report.properties.details.name"
                tab="eu.esdihumboldt.hale.ui.views.report.properties.details">
             <input
-                  type="eu.esdihumboldt.hale.core.report.Report">
+                  type="eu.esdihumboldt.hale.common.core.report.Report">
             </input>
          </propertySection>
       </propertySections>

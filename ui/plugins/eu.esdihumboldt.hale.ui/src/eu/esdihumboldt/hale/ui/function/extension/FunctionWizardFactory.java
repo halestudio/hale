@@ -11,7 +11,7 @@
  */
 package eu.esdihumboldt.hale.ui.function.extension;
 
-import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 

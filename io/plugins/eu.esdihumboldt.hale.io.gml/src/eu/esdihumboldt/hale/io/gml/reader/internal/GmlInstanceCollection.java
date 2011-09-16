@@ -27,16 +27,16 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.Classification;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
-import eu.esdihumboldt.hale.schema.Classification;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeIndex;
 
 /**
  * Instance collection based on an XML/GML input stream

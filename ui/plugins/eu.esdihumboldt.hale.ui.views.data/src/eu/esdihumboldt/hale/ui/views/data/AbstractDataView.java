@@ -19,8 +19,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.WorkbenchPart;
 
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
 import eu.esdihumboldt.hale.ui.views.data.internal.tree.DefinitionInstanceTreeViewer;

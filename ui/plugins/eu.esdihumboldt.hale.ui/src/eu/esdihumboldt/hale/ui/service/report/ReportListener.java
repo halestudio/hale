@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.service.report;
 
-import eu.esdihumboldt.hale.core.report.Message;
-import eu.esdihumboldt.hale.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
  * Report listener interface. Listens for {@link ReportService} events.

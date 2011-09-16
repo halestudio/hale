@@ -2,6 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="eu.esdihumboldt.cst">
    <implementation class="eu.esdihumboldt.cst.ConceptualSchemaTransformer"/>
    <service>
-      <provide interface="eu.esdihumboldt.hale.align.transformation.service.TransformationService"/>
+      <provide interface="eu.esdihumboldt.hale.common.align.transformation.service.TransformationService"/>
    </service>
 </scr:component>

@@ -16,9 +16,9 @@ import java.util.Comparator;
 
 import org.eclipse.jface.viewers.ViewerComparator;
 
-import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * Comparator for {@link Definition}s. Groups group properties and

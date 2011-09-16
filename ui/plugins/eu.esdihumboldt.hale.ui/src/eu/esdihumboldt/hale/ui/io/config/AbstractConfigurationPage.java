@@ -14,8 +14,8 @@ package eu.esdihumboldt.hale.ui.io.config;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 

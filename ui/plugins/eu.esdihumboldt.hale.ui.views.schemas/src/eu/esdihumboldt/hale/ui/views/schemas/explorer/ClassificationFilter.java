@@ -19,8 +19,8 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import eu.esdihumboldt.hale.schema.Classification;
-import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.Classification;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * Filters based on {@link Classification}s

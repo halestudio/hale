@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.io.shp;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
 
 /**
  * Utilities and constants for Shapefile I/O 

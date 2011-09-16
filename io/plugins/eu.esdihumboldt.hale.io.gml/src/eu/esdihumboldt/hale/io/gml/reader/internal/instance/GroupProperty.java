@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
 
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * Represents a property at the end of a group path

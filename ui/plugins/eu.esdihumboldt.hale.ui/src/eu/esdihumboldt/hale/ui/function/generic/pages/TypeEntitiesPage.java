@@ -16,10 +16,10 @@ import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.align.model.Cell;
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 

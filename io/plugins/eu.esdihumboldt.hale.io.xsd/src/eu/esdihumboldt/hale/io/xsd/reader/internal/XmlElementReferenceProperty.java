@@ -14,10 +14,10 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
-import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
  * Property referencing a XML element

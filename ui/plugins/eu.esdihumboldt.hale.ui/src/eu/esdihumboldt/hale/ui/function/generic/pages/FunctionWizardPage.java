@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages;
 
-import eu.esdihumboldt.hale.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 
 /**
  * Function wizard page interface

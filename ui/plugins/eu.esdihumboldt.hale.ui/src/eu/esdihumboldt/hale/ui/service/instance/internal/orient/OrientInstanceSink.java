@@ -18,9 +18,9 @@ import java.io.IOException;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
-import eu.esdihumboldt.hale.align.transformation.service.InstanceSink;
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 
 /**
  * Instance sink based on a {@link LocalOrientDB}

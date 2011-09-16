@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="eu.esdihumboldt.hale.common.align.CategoryExtension">
+   <implementation class="eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension"/>
+   <service>
+      <provide interface="eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension"/>
+   </service>
+</scr:component>

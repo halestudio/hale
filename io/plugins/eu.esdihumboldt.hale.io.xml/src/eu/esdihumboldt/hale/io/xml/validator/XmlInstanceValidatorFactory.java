@@ -12,10 +12,10 @@
 
 package eu.esdihumboldt.hale.io.xml.validator;
 
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProviderFactory;
-import eu.esdihumboldt.hale.instance.io.InstanceValidator;
-import eu.esdihumboldt.hale.instance.io.InstanceValidatorFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProviderFactory;
+import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
+import eu.esdihumboldt.hale.common.instance.io.InstanceValidatorFactory;
 
 /**
  * Factory for {@link XmlInstanceValidator}s

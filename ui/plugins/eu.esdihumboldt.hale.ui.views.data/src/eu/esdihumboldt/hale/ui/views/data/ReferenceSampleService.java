@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.ui.views.data;
 import java.util.Collection;
 import java.util.Observer;
 
-import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 
 /**

@@ -17,8 +17,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 /**

@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;

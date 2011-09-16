@@ -27,9 +27,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.core.io.ExportProvider;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.ExportProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 
 /**

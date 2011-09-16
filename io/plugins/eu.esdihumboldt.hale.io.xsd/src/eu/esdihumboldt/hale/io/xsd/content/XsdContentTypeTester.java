@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.io.xsd.content;
 
 import javax.xml.XMLConstants;
 
-import eu.esdihumboldt.hale.core.io.tester.XmlRootElementTester;
+import eu.esdihumboldt.hale.common.core.io.tester.XmlRootElementTester;
 
 /**
  * Content type tester for XML schemas. Matches the root element name.

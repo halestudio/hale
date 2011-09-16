@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.service.schema;
 
-import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 
 
 /**

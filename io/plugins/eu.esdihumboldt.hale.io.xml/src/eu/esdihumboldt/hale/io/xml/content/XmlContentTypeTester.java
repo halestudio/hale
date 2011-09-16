@@ -17,8 +17,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import eu.esdihumboldt.hale.core.io.ContentTypeTester;
-import eu.esdihumboldt.hale.core.io.tester.AbstractXmlTester;
+import eu.esdihumboldt.hale.common.core.io.ContentTypeTester;
+import eu.esdihumboldt.hale.common.core.io.tester.AbstractXmlTester;
 
 /**
  * Testing class for XML-files

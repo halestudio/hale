@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.io.xsd.model;
 
-import eu.esdihumboldt.hale.schema.model.impl.DefaultGroup;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroup;
 
 /**
  * Represents a XML group

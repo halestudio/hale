@@ -7,7 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  LIB/com.springsource.org.apache.xerces-2.8.1.jar
 Export-Package: eu.esdihumboldt.hale.gmlparser
-Import-Package: eu.esdihumboldt.hale.core.io,
+Import-Package: eu.esdihumboldt.hale.common.core.io,
  org.apache.commons.logging;version="1.1.1",
  org.junit;version="4.8.1",
  org.picocontainer

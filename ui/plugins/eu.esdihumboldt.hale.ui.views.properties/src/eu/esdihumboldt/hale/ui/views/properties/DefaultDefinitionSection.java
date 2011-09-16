@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.properties;
 
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * TODO Type description

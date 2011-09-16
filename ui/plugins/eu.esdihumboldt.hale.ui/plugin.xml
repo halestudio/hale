@@ -93,7 +93,7 @@
             id="eu.esdihumboldt.hale.ui.io.schema.source"
             label="Source schema..."
             priority="-10"
-            providerType="eu.esdihumboldt.hale.schema.io.SchemaReader"
+            providerType="eu.esdihumboldt.hale.common.schema.io.SchemaReader"
             projectResource="true"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </advisor>
@@ -102,7 +102,7 @@
             id="eu.esdihumboldt.hale.ui.io.schema.target"
             label="Target schema..."
             priority="-9"
-            providerType="eu.esdihumboldt.hale.schema.io.SchemaReader"
+            providerType="eu.esdihumboldt.hale.common.schema.io.SchemaReader"
             projectResource="true"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </advisor>
@@ -111,7 +111,7 @@
             id="eu.esdihumboldt.hale.ui.io.instance.source"
             label="Source data..."
             priority="-6"
-            providerType="eu.esdihumboldt.hale.instance.io.InstanceReader"
+            providerType="eu.esdihumboldt.hale.common.instance.io.InstanceReader"
             projectResource="true"
             wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard">
          <dependsOn

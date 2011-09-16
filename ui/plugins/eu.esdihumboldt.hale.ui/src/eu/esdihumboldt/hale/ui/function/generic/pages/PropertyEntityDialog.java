@@ -21,11 +21,11 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.schema.model.Definition;
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypePropertyContentProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;

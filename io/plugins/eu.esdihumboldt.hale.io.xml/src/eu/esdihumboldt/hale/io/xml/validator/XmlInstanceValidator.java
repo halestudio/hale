@@ -15,15 +15,15 @@ package eu.esdihumboldt.hale.io.xml.validator;
 import java.io.IOException;
 import java.io.InputStream;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.core.io.report.IOReport;
-import eu.esdihumboldt.hale.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.core.io.report.impl.DefaultIOReporter;
-import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceValidator;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
+import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
 
 /**
  * Validates XML

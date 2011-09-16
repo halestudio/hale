@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Label;
 
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.align.model.Cell;
-import eu.esdihumboldt.hale.align.model.Entity;
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**

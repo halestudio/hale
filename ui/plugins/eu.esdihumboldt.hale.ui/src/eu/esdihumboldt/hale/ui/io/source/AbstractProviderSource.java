@@ -26,12 +26,12 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.HaleIO;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.ImportProvider;
-import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**

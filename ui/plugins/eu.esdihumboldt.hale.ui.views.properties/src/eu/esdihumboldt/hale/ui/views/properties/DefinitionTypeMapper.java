@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.ui.views.properties;
 import org.eclipse.ui.views.properties.tabbed.AbstractTypeMapper;
 import org.eclipse.ui.views.properties.tabbed.ITypeMapper;
 
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 
 /**
  * Type mapper for objects containing definitions

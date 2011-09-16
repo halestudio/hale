@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.service.ContentTypeService;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.service.ContentTypeService;
 
 /**
  * File field editor that allows setting the file dialog style and filter 

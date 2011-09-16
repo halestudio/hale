@@ -23,8 +23,8 @@ import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
 import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**

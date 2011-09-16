@@ -12,10 +12,10 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
+import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
+import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
-import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
-import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
 
 /**
  * Property that represents a substitution in an XML element substitution group.

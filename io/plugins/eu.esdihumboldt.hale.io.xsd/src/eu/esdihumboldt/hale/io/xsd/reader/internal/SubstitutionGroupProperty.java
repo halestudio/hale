@@ -25,18 +25,18 @@ import javax.xml.namespace.QName;
 
 import com.google.common.base.Preconditions;
 
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
-import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.DisplayName;
-import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
-import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultGroupPropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
 
 /**
  * Group property that resolves all possible substitutions for a property

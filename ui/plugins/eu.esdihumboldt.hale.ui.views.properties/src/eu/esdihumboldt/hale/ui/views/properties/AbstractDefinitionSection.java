@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.properties;
 
-import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * Abstract section for definition properties

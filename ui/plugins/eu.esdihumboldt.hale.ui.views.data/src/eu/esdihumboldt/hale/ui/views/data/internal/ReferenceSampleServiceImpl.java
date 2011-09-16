@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Observable;
 
-import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.views.data.ReferenceSampleService;
 
 /**

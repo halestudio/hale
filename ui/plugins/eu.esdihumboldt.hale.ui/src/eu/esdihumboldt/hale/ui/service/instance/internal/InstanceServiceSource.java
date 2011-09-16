@@ -20,7 +20,7 @@ import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;

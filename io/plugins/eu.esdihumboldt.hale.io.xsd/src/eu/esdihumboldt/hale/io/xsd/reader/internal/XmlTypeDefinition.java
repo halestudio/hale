@@ -16,9 +16,9 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
-import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeDefinition;
 
 /**
  * XML type definition

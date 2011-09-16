@@ -16,10 +16,10 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
-import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultGroupPropertyDefinition;
 
 /**
  * Lazy property group definition

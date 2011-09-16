@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
-import eu.esdihumboldt.hale.cache.Request;
+import eu.esdihumboldt.hale.common.cache.Request;
 
 /**
  * Resolve imported/included schemas

@@ -39,10 +39,10 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;

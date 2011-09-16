@@ -26,8 +26,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-import eu.esdihumboldt.hale.schema.Classification;
-import eu.esdihumboldt.hale.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.schema.Classification;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;

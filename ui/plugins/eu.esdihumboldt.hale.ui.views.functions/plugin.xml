@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="eu.esdihumboldt.ui.views.functions.FunctionsView"
+            class="eu.esdihumboldt.hale.ui.views.functions.FunctionsView"
             id="eu.esdihumboldt.hale.ui.views.functions"
             name="Functions"
             restorable="true">

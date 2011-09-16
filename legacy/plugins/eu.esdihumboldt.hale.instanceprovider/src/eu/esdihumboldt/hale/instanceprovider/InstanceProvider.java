@@ -20,7 +20,7 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 
 /**
  * Provides support for parsing feature instances

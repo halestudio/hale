@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.function;
 
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**

@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
 import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.schema.model.impl.AbstractDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 
 /**
  * An anonymous XML type

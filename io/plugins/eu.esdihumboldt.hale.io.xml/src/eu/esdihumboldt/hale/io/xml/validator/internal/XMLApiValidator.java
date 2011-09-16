@@ -22,7 +22,7 @@ import javax.xml.validation.SchemaFactory;
 
 import eu.esdihumboldt.hale.io.xml.validator.Report;
 import eu.esdihumboldt.hale.io.xml.validator.Validator;
-import eu.esdihumboldt.hale.cache.Request;
+import eu.esdihumboldt.hale.common.cache.Request;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 
 /**

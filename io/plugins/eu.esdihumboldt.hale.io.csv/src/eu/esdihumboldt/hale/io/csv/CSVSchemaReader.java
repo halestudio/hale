@@ -21,27 +21,27 @@ import javax.xml.namespace.QName;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.core.io.report.IOReport;
-import eu.esdihumboldt.hale.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.schema.io.impl.AbstractSchemaReader;
-import eu.esdihumboldt.hale.schema.model.Schema;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
-import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultPropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultSchema;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
+import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 
 /**
  * Reads a schema from a shapefile.

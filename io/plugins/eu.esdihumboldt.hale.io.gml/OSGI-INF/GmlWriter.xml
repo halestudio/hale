@@ -2,6 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="false" name="GmlWriter">
 	<implementation class="eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriterFactory"/>
 	<service>
-		<provide interface="eu.esdihumboldt.hale.instance.io.InstanceWriterFactory"/>
+		<provide interface="eu.esdihumboldt.hale.common.instance.io.InstanceWriterFactory"/>
 	</service>
 </scr:component>

@@ -13,9 +13,9 @@
 package eu.esdihumboldt.hale.io.xsd.constraint;
 
 import net.jcip.annotations.Immutable;
-import eu.esdihumboldt.hale.schema.model.Constraint;
-import eu.esdihumboldt.hale.schema.model.PropertyConstraint;
-import eu.esdihumboldt.hale.schema.model.constraint.AbstractFlagConstraint;
+import eu.esdihumboldt.hale.common.schema.model.Constraint;
+import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
+import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
 
 /**
  * Flags if a property is represented by a XML attribute, disabled by default

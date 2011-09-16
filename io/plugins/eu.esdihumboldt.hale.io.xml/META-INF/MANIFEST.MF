@@ -7,13 +7,13 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/XmlValidator.xml
 Import-Package: com.google.common.io;version="1.6.0",
  de.cs3d.util.logging,
- eu.esdihumboldt.hale.cache,
- eu.esdihumboldt.hale.instance.io,
- eu.esdihumboldt.hale.instance.io.impl,
+ eu.esdihumboldt.hale.common.cache,
+ eu.esdihumboldt.hale.common.instance.io,
+ eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.hale.schemaprovider,
  org.slf4j;version="1.5.11"
 Bundle-ClassPath: lib/xercesImpl-2.9.1.jar,
  .
 Export-Package: eu.esdihumboldt.hale.io.xml.content,
  eu.esdihumboldt.hale.io.xml.validator
-Require-Bundle: eu.esdihumboldt.hale.core;bundle-version="2.2.0"
+Require-Bundle: eu.esdihumboldt.hale.common.core;bundle-version="2.2.0"

@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.function.extension;
 
-import eu.esdihumboldt.hale.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 
 /**
  * TODO Type description

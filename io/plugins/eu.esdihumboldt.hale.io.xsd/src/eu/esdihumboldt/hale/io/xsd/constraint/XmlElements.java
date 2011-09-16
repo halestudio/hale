@@ -17,9 +17,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.esdihumboldt.hale.common.schema.model.Constraint;
+import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
-import eu.esdihumboldt.hale.schema.model.Constraint;
-import eu.esdihumboldt.hale.schema.model.TypeConstraint;
 
 /**
  * Constraint that states the {@link XmlElement}s associated with a type 

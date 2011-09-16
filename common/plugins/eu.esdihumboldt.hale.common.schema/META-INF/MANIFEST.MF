@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Schema API
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.schema
+Bundle-Version: 2.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.google.common.base,
+ com.vividsolutions.jts.geom,
+ de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.impl,
+ eu.esdihumboldt.hale.common.core.io.supplier,
+ net.jcip.annotations,
+ org.opengis.feature.type,
+ org.opengis.referencing.crs,
+ org.slf4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.common.schema,
+ eu.esdihumboldt.hale.common.schema.geometry,
+ eu.esdihumboldt.hale.common.schema.helper,
+ eu.esdihumboldt.hale.common.schema.io,
+ eu.esdihumboldt.hale.common.schema.io.impl,
+ eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.hale.common.schema.model.constraint,
+ eu.esdihumboldt.hale.common.schema.model.constraint.property,
+ eu.esdihumboldt.hale.common.schema.model.constraint.type,
+ eu.esdihumboldt.hale.common.schema.model.impl,
+ eu.esdihumboldt.hale.common.schema.model.impl.internal;x-internal:=true

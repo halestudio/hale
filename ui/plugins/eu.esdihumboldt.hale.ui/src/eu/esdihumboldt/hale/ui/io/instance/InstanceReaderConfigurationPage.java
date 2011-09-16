@@ -14,8 +14,8 @@ package eu.esdihumboldt.hale.ui.io.instance;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import eu.esdihumboldt.hale.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.instance.io.InstanceReaderFactory;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReaderFactory;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**

@@ -16,7 +16,7 @@ import net.jcip.annotations.Immutable;
 
 import com.orientechnologies.orient.core.id.ORID;
 
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 

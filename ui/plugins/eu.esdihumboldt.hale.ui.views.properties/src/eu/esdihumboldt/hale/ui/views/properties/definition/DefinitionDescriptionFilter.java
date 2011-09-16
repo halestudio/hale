@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.views.properties.definition;
 
 import org.eclipse.jface.viewers.IFilter;
 
-import eu.esdihumboldt.hale.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * Filter that lets only {@link Definition}s with a description that is not 

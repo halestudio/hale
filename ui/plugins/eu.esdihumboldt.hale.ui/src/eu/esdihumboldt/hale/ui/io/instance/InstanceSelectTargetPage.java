@@ -34,12 +34,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.HaleIO;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.instance.io.InstanceValidatorFactory;
-import eu.esdihumboldt.hale.instance.io.InstanceWriter;
-import eu.esdihumboldt.hale.instance.io.InstanceWriterFactory;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.instance.io.InstanceValidatorFactory;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriterFactory;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardListener;

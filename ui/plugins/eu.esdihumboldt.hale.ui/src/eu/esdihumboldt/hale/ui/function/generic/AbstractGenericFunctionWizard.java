@@ -18,10 +18,10 @@ import java.util.Set;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.hale.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.align.model.Cell;
-import eu.esdihumboldt.hale.align.model.MutableCell;
-import eu.esdihumboldt.hale.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.ui.function.AbstractFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;

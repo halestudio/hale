@@ -15,9 +15,9 @@ package eu.esdihumboldt.hale.ui.service.project;
 import java.io.File;
 
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
 
 /**

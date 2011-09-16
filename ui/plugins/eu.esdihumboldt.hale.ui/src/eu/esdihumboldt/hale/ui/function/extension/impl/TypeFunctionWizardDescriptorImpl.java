@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 
-import eu.esdihumboldt.hale.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.align.extension.function.TypeFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardFactory;
 import eu.esdihumboldt.hale.ui.function.extension.TypeFunctionWizardDescriptor;

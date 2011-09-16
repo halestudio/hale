@@ -17,7 +17,7 @@ import java.util.Collection;
 
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 
 /**
  * A {@link SchemaProvider} loads a schema from a given URI. A type that

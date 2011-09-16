@@ -11,8 +11,8 @@
  */
 package eu.esdihumboldt.hale.ui.service.schema;
 
-import eu.esdihumboldt.hale.schema.model.Schema;
-import eu.esdihumboldt.hale.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
  * The schema service is used internally to provide access to the currently 

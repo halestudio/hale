@@ -29,27 +29,27 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
-import eu.esdihumboldt.hale.core.io.report.IOReport;
-import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
-import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
-import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.Schema;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.property.Cardinality;
-import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.property.NillableFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.schema.model.impl.DefaultTypeIndex;
 
 /**
  * Tests for XML schema reading

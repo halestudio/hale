@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.io.project;
 
-import eu.esdihumboldt.hale.core.io.project.ProjectReader;
-import eu.esdihumboldt.hale.core.io.project.ProjectReaderFactory;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectReaderFactory;
 import eu.esdihumboldt.hale.ui.io.ImportWizard;
 
 /**

@@ -12,9 +12,9 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;
 
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.AbstractFlagConstraint;
-import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
  * {@link HasValueFlag} constraint that uses the constraint of the super type 

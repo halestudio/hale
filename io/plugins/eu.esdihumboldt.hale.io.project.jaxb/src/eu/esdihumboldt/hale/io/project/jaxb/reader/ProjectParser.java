@@ -30,27 +30,27 @@ import org.osgi.framework.Version;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.HaleIO;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.core.io.impl.AbstractImportProvider;
-import eu.esdihumboldt.hale.core.io.project.ProjectReader;
-import eu.esdihumboldt.hale.core.io.project.model.IOConfiguration;
-import eu.esdihumboldt.hale.core.io.project.model.Project;
-import eu.esdihumboldt.hale.core.io.project.model.ProjectFile;
-import eu.esdihumboldt.hale.core.io.report.IOReport;
-import eu.esdihumboldt.hale.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.instance.io.InstanceReaderFactory;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReaderFactory;
+import eu.esdihumboldt.hale.common.schema.io.SchemaReaderFactory;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigData;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigSection;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
 import eu.esdihumboldt.hale.io.project.jaxb.internal.Messages;
-import eu.esdihumboldt.hale.schema.io.SchemaReaderFactory;
 
 /**
  * The project parser reads a given project XML file and populates a 

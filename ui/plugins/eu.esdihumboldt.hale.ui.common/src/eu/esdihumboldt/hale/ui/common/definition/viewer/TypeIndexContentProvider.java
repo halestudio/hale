@@ -17,10 +17,10 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Tree content provider using a {@link TypeIndex} as root

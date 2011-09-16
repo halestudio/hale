@@ -13,7 +13,7 @@
 package eu.esdihumboldt.hale.ui.service.schema.internal;
 
 import de.cs3d.util.eclipse.TypeSafeListenerList;
-import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;

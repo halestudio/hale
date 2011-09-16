@@ -18,7 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 
-import eu.esdihumboldt.hale.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.contribution.AbstractFunctionWizardContribution;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;

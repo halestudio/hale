@@ -20,12 +20,12 @@ import javax.xml.namespace.QName;
 
 import static com.google.common.base.Preconditions.*;
 
-import eu.esdihumboldt.hale.instance.model.MutableGroup;
-import eu.esdihumboldt.hale.instance.model.impl.OGroup;
-import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.schema.model.GroupPropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.property.ChoiceFlag;
+import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
+import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 
 /**
  * Represents a path of groups in two parts, the existing parent 

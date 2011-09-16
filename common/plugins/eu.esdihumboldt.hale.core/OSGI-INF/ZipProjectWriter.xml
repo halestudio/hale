@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="false" name="ZipProjectWriter">
-	<implementation class="eu.esdihumboldt.hale.core.io.project.impl.ZipProjectWriterFactory"/>
- <service>
-    <provide interface="eu.esdihumboldt.hale.core.io.project.ProjectWriterFactory"/>
- </service>
-</scr:component>

@@ -24,13 +24,13 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.iterator.ORecordIteratorClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.instance.model.impl.OInstance;
-import eu.esdihumboldt.hale.instance.model.impl.ONameUtil;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Instance collection based on a {@link LocalOrientDB}

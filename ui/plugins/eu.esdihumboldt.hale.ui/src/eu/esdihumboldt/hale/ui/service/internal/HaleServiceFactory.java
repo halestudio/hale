@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.ui.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
-import eu.esdihumboldt.hale.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;

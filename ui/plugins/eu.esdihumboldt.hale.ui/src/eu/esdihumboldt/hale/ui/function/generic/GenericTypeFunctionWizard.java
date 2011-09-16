@@ -13,9 +13,9 @@
 package eu.esdihumboldt.hale.ui.function.generic;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.align.extension.function.TypeFunctionExtension;
-import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.TypeEntitiesPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;

@@ -20,8 +20,8 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Tree content provider showing the hierarchy of a {@link TypeDefinition}

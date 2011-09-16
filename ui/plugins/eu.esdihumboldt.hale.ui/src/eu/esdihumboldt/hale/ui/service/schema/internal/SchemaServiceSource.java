@@ -20,8 +20,8 @@ import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.schema.model.Schema;
-import eu.esdihumboldt.hale.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;

@@ -35,9 +35,9 @@ import org.eclipse.swt.widgets.Text;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import eu.esdihumboldt.hale.instance.geometry.impl.CodeDefinition;
-import eu.esdihumboldt.hale.instance.geometry.impl.WKTDefinition;
-import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.ui.internal.Messages;
 
 /**

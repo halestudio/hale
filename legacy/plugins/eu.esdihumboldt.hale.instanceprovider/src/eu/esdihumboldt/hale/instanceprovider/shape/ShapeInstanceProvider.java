@@ -26,7 +26,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.gmlparser.CstFeatureCollection;
 import eu.esdihumboldt.hale.instanceprovider.AbstractInstanceProvider;
 import eu.esdihumboldt.hale.instanceprovider.InstanceConfiguration;

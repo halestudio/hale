@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.report;
 
-import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.core.report.Report;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
  * 

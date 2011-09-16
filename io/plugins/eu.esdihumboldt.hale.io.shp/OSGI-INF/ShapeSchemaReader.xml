@@ -2,6 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="false" name="ShapeSchemaReader">
 	<implementation class="eu.esdihumboldt.hale.io.shp.reader.ShapeSchemaReaderFactory"/>
  <service>
-    <provide interface="eu.esdihumboldt.hale.schema.io.SchemaReaderFactory"/>
+    <provide interface="eu.esdihumboldt.hale.common.schema.io.SchemaReaderFactory"/>
  </service>
 </scr:component>

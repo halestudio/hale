@@ -12,11 +12,11 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProviderFactory;
-import eu.esdihumboldt.hale.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.instance.io.InstanceReaderFactory;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProviderFactory;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReaderFactory;
 
 /**
  * Factory for XML instance readers

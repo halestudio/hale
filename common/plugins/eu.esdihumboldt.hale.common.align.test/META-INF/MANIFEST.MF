@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Alignment Model Tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.align.test
+Bundle-Version: 2.2.0.qualifier
+Fragment-Host: eu.esdihumboldt.hale.common.align;bundle-version="2.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.junit,
+ org.junit.rules;version="4.8.1"

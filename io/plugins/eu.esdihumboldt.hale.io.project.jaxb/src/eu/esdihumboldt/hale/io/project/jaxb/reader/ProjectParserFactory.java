@@ -12,11 +12,11 @@
 
 package eu.esdihumboldt.hale.io.project.jaxb.reader;
 
-import eu.esdihumboldt.hale.core.io.HaleIO;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProviderFactory;
-import eu.esdihumboldt.hale.core.io.project.ProjectReader;
-import eu.esdihumboldt.hale.core.io.project.ProjectReaderFactory;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectReaderFactory;
 
 /**
  * Factory for the {@link ProjectParser}

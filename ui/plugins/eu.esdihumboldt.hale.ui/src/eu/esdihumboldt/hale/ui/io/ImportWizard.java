@@ -14,9 +14,9 @@ package eu.esdihumboldt.hale.ui.io;
 
 import org.eclipse.jface.wizard.Wizard;
 
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 
 /**

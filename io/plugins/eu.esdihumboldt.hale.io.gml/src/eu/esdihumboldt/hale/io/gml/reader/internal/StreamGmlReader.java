@@ -14,16 +14,16 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 
 import java.io.IOException;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.core.io.report.IOReport;
-import eu.esdihumboldt.hale.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceReader;
-import eu.esdihumboldt.hale.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 
 /**
  * Reads XML/GML from a stream

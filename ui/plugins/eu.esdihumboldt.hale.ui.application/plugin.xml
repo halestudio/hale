@@ -180,19 +180,9 @@
                id="configure"
                label="%menu.configure.label"
                mnemonic="%menu.configure.mnemonic">
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.common.functions.list"
-                  id="listFunctions"
-                  label="%command.availableFunctions.label"
-                  style="push">
-            </command>
             <menu
                   id="configureTasks"
                   label="%menu.tasks.label">
-               <dynamic
-                     class="eu.esdihumboldt.hale.ui.views.tasks.TaskProviderMenu"
-                     id="HALE.dynamic.tasks">
-               </dynamic>
             </menu>
             <separator
                   name="HALE.separator1"

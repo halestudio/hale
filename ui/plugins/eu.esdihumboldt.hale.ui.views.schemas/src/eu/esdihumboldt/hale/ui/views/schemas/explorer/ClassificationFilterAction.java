@@ -13,7 +13,7 @@ package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
 import org.eclipse.jface.action.Action;
 
-import eu.esdihumboldt.hale.schema.Classification;
+import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
 /**

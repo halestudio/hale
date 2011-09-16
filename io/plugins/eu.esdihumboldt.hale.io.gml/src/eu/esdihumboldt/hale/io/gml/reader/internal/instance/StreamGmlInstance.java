@@ -27,18 +27,18 @@ import javax.xml.stream.XMLStreamReader;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.instance.model.MutableGroup;
-import eu.esdihumboldt.hale.instance.model.MutableInstance;
-import eu.esdihumboldt.hale.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
-import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.schema.model.DefinitionUtil;
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
 
 /**
  * Utility methods for instances from {@link XMLStreamReader}s

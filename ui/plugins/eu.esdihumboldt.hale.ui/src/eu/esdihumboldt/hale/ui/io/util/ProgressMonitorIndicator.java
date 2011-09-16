@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.io.util;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 
 /**
  * Progress indicator using an {@link IProgressMonitor}

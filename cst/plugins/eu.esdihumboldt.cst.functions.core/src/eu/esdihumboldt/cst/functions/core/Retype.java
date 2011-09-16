@@ -17,12 +17,12 @@ import java.util.Map;
 
 import net.jcip.annotations.Immutable;
 
-import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.align.transformation.function.TransformationFunction;
-import eu.esdihumboldt.hale.align.transformation.function.impl.AbstractSingleTypeTransformation;
-import eu.esdihumboldt.hale.align.transformation.report.TransformationLog;
-import eu.esdihumboldt.hale.instance.model.MutableInstance;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTypeTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Simple 1:1 retype

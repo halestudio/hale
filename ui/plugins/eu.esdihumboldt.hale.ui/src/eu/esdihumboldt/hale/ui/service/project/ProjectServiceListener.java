@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.service.project;
 
 import java.util.Map;
 
-import eu.esdihumboldt.hale.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 
 /**
  * Listens for {@link ProjectService} events, e.g. the loading and saving of a 

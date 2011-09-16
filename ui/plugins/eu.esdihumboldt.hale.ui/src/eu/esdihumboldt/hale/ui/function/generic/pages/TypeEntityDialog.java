@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypesContentProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;

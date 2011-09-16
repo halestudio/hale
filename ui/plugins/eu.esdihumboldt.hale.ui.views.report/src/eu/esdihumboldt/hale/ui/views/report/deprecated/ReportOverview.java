@@ -28,8 +28,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 
-import eu.esdihumboldt.hale.core.report.Message;
-import eu.esdihumboldt.hale.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import swing2swt.layout.BorderLayout;
@@ -217,7 +217,7 @@ public class ReportOverview extends ViewPart implements ReportListener<Report<Me
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#reportAdded(eu.esdihumboldt.hale.core.report.Report)
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#reportAdded(eu.esdihumboldt.hale.common.core.report.Report)
 	 */
 	@Override
 	public void reportAdded(final Report<Message> report) {

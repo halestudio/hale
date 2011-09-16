@@ -12,11 +12,11 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;
 
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.AbstractFlagConstraint;
-import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 
 /**
  * Mappable constraint that determines if a type is mappable using xsi:type.

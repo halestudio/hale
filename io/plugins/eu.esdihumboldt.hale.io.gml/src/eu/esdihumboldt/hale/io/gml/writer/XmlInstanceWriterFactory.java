@@ -12,10 +12,10 @@
 
 package eu.esdihumboldt.hale.io.gml.writer;
 
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProviderFactory;
-import eu.esdihumboldt.hale.instance.io.InstanceWriter;
-import eu.esdihumboldt.hale.instance.io.InstanceWriterFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProviderFactory;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriterFactory;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 
 /**

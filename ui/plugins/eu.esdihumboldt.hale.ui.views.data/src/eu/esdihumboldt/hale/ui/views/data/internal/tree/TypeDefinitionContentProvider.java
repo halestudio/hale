@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.ui.views.data.internal.tree;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 
 /**

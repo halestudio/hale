@@ -16,7 +16,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import eu.esdihumboldt.hale.core.io.tester.AbstractXmlTester;
+import eu.esdihumboldt.hale.common.core.io.tester.AbstractXmlTester;
 
 /**
  * Contenttype-Tester for GML-files based on AbstractXmlTester
@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.core.io.tester.AbstractXmlTester;
 public class GmlContentTypeTester extends AbstractXmlTester {
 
 	/**
-	 * @see eu.esdihumboldt.hale.core.io.ContentTypeTester#matchesContentType(java.io.InputStream)
+	 * @see eu.esdihumboldt.hale.common.core.io.ContentTypeTester#matchesContentType(java.io.InputStream)
 	 */
 	@Override
 	protected boolean testReader(XMLStreamReader reader)

@@ -23,12 +23,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.core.io.project.ProjectWriter;
-import eu.esdihumboldt.hale.core.io.project.ProjectWriterFactory;
-import eu.esdihumboldt.hale.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectWriterFactory;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardListener;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;

@@ -25,11 +25,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.ImportProvider;
-import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractProviderSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractSource;

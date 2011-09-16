@@ -3,11 +3,13 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Functions View
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.functions;singleton:=true
 Bundle-Version: 2.5.0.qualifier
-Bundle-Activator: eu.esdihumboldt.ui.views.functions.internal.Activator
+Bundle-Activator: eu.esdihumboldt.hale.ui.views.functions.internal.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- eu.esdihumboldt.hale.align;bundle-version="2.2.0"
+ eu.esdihumboldt.hale.common.align;bundle-version="2.2.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.cs3d.util.eclipse.extension.simple,
  de.fhg.igd.osgi.util;version="1.0.0"
+Export-Package: eu.esdihumboldt.hale.ui.views.functions,
+ eu.esdihumboldt.hale.ui.views.functions.internal;x-internal:=true

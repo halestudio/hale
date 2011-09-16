@@ -15,8 +15,8 @@ package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 
 /**

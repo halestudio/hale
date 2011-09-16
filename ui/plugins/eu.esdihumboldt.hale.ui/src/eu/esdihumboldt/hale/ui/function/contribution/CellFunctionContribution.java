@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.function.contribution;
 
-import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.CellWizardAction;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;

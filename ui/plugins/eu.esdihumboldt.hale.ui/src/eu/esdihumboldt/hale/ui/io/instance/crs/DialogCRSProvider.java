@@ -17,9 +17,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.instance.geometry.CRSProvider;
-import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * Provides default CRS definitions by offering a dialog to the user.

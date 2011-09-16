@@ -14,11 +14,11 @@ package eu.esdihumboldt.hale.ui.io.schema;
 
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.core.io.IOAdvisor;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOAdvisor;
-import eu.esdihumboldt.hale.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 

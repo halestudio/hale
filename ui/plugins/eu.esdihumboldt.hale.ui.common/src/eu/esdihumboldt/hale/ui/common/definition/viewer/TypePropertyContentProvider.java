@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
 import org.eclipse.jface.viewers.TreeViewer;
 
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Content provider that shows properties of an input type definition

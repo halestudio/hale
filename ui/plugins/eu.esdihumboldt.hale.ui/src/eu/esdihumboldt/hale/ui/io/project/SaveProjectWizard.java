@@ -12,10 +12,10 @@
 
 package eu.esdihumboldt.hale.ui.io.project;
 
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.project.ProjectWriter;
-import eu.esdihumboldt.hale.core.io.project.ProjectWriterFactory;
-import eu.esdihumboldt.hale.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectWriterFactory;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 

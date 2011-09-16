@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="eu.esdihumboldt.hale.common.align.TypeTransformationExtension">
+   <implementation class="eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension"/>
+   <service>
+      <provide interface="eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension"/>
+   </service>
+</scr:component>

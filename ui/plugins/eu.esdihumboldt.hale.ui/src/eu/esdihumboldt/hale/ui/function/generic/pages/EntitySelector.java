@@ -30,9 +30,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import eu.esdihumboldt.hale.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.align.model.Entity;
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 

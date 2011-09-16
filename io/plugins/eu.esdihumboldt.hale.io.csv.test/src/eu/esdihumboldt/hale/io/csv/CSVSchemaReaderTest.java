@@ -16,9 +16,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-import eu.esdihumboldt.hale.core.io.report.IOReport;
-import eu.esdihumboldt.hale.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 
 /**
  * TODO Type description

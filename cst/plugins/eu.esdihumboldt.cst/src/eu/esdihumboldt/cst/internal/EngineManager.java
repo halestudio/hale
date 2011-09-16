@@ -20,10 +20,10 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
 
-import eu.esdihumboldt.hale.align.extension.engine.EngineExtension;
-import eu.esdihumboldt.hale.align.extension.engine.EngineFactory;
-import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.align.extension.engine.EngineExtension;
+import eu.esdihumboldt.hale.common.align.extension.engine.EngineFactory;
+import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
  * Transformation engine manager. Holds transformation engine instances during

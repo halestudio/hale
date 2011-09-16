@@ -14,8 +14,8 @@ package eu.esdihumboldt.hale.ui.service.instance.internal;
 
 import de.cs3d.util.eclipse.TypeSafeListenerList;
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.align.model.Cell;
-import eu.esdihumboldt.hale.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;

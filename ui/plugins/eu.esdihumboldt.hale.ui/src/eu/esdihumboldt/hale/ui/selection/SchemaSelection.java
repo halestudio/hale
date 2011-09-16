@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.ISelection;
 
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**

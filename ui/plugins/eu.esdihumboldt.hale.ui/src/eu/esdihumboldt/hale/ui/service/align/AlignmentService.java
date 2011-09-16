@@ -12,10 +12,10 @@
 
 package eu.esdihumboldt.hale.ui.service.align;
 
-import eu.esdihumboldt.hale.align.model.Alignment;
-import eu.esdihumboldt.hale.align.model.Cell;
-import eu.esdihumboldt.hale.align.model.MutableAlignment;
-import eu.esdihumboldt.hale.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 
 /**
  * The {@link AlignmentService} provides access to the currently loaded 

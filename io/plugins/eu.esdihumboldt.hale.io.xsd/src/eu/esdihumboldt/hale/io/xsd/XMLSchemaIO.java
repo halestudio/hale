@@ -19,7 +19,7 @@ import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
 
 /**
  * Utilities and constants for XML schemas

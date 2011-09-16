@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
-import eu.esdihumboldt.hale.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.instance.io.InstanceReaderFactory;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReaderFactory;
 import eu.esdihumboldt.hale.ui.io.ImportWizard;
 
 /**

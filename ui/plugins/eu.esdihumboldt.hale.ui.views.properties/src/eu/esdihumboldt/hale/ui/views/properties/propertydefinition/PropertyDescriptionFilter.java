@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
 import org.eclipse.jface.viewers.IFilter;
 
-import eu.esdihumboldt.hale.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * TODO Type description

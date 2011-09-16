@@ -17,16 +17,16 @@ import java.util.Set;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
-import eu.esdihumboldt.hale.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.align.model.Entity;
-import eu.esdihumboldt.hale.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.align.model.Property;
-import eu.esdihumboldt.hale.align.model.Type;
-import eu.esdihumboldt.hale.align.model.impl.DefaultProperty;
-import eu.esdihumboldt.hale.align.model.impl.DefaultType;
-import eu.esdihumboldt.hale.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**

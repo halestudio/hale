@@ -13,7 +13,7 @@
 package eu.esdihumboldt.hale.ui.service.align.internal;
 
 import de.cs3d.util.eclipse.TypeSafeListenerList;
-import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 

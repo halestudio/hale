@@ -28,28 +28,28 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.core.io.ContentType;
-import eu.esdihumboldt.hale.core.io.IOProvider;
-import eu.esdihumboldt.hale.core.io.IOProviderConfigurationException;
-import eu.esdihumboldt.hale.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.core.io.report.IOReport;
-import eu.esdihumboldt.hale.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.instance.geometry.CRSDefinitionUtil;
-import eu.esdihumboldt.hale.instance.geometry.DefaultGeometryProperty;
-import eu.esdihumboldt.hale.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.instance.io.impl.AbstractInstanceReader;
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.instance.model.MutableInstance;
-import eu.esdihumboldt.hale.instance.model.impl.DefaultInstanceCollection;
-import eu.esdihumboldt.hale.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.shp.ShapefileIO;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
-import eu.esdihumboldt.hale.schema.geometry.CRSDefinition;
-import eu.esdihumboldt.hale.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
 
 /**
  * Reads instances from a shapefile.

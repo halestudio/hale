@@ -28,7 +28,7 @@ import de.cs3d.ui.util.eclipse.extension.AbstractFactoryAction;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**

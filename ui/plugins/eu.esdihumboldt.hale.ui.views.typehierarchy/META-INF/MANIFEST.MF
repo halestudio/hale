@@ -7,9 +7,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.forms;bundle-version="3.5.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: eu.esdihumboldt.hale.align.model,
- eu.esdihumboldt.hale.core.io.supplier,
- eu.esdihumboldt.hale.schema.model,
+Import-Package: eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.ui.common.definition.viewer,
  eu.esdihumboldt.hale.ui.util.selection,
  eu.esdihumboldt.hale.ui.views.properties,

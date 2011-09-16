@@ -13,7 +13,7 @@
 package eu.esdihumboldt.hale.ui.function.extension;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 
 /**
  * Function wizard descriptor

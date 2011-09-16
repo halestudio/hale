@@ -17,7 +17,7 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.schema.helper.FeatureTypeHelper;
+import eu.esdihumboldt.hale.common.schema.helper.FeatureTypeHelper;
 import eu.esdihumboldt.hale.ui.style.dialog.FeatureStyleDialog;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 

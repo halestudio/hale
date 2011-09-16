@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.align.transformation" name="Transformation functions and execution" schema="schema/eu.esdihumboldt.hale.align.transformation.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.align.function" name="Transformation function definitions" schema="schema/eu.esdihumboldt.hale.align.function.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.align.engine" name="Transformation engine definitions" schema="schema/eu.esdihumboldt.hale.align.engine.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.align.category" name="Transformation function categories" schema="schema/eu.esdihumboldt.hale.align.category.exsd"/>
+   <extension
+         point="eu.esdihumboldt.hale.align.category">
+      <category
+            id="eu.esdihumboldt.hale.align.general"
+            name="General">
+      </category>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.function">
+      <typeFunction
+            category="eu.esdihumboldt.hale.align.general"
+            description="Maps one source type to one target type"
+            identifier="eu.esdihumboldt.hale.align.retype"
+            name="Retype">
+         <sourceTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </sourceTypes>
+         <targetTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+      </typeFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.hale.align.general"
+            description="Copy a source property to a target property"
+            identifier="eu.esdihumboldt.hale.align.rename"
+            name="Rename">
+         <sourceProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </sourceProperties>
+         <targetProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+      </propertyFunction>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.engine">
+      <engine
+            class="eu.esdihumboldt.hale.common.align.transformation.engine.internal.NullTransformationEngine"
+            description="Transformation functions based complemtely on Java without need of a engine for execution"
+            id="eu.esdihumboldt.align.java"
+            name="Java transformation functions">
+      </engine>
+   </extension>
+
+</plugin>

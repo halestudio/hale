@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.io.schema;
 
-import eu.esdihumboldt.hale.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.schema.io.SchemaReaderFactory;
+import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
+import eu.esdihumboldt.hale.common.schema.io.SchemaReaderFactory;
 import eu.esdihumboldt.hale.ui.io.ImportWizard;
 
 /**

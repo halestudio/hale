@@ -12,12 +12,12 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader;
 
-import eu.esdihumboldt.hale.core.io.HaleIO;
-import eu.esdihumboldt.hale.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.core.io.impl.AbstractIOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProviderFactory;
+import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
+import eu.esdihumboldt.hale.common.schema.io.SchemaReaderFactory;
 import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
-import eu.esdihumboldt.hale.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.schema.io.SchemaReaderFactory;
 
 /**
  * Factory for Shapefile {@link SchemaReader}s

@@ -40,7 +40,7 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
@@ -92,7 +92,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 		schema.addSchemaServiceListener(new SchemaServiceListener() {
 			
 			/**
-			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID, eu.esdihumboldt.hale.schema.model.Schema)
+			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID, eu.esdihumboldt.hale.common.schema.model.Schema)
 			 */
 			@Override
 			public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {

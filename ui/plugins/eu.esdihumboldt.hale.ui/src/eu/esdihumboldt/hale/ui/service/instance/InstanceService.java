@@ -14,9 +14,9 @@ package eu.esdihumboldt.hale.ui.service.instance;
 
 import java.util.Set;
 
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * The {@link InstanceService} provides {@link Instance}s from different data

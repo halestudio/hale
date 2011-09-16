@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.type.Enumeration;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 
 /**
  * Enumeration constraint for type unions

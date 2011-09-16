@@ -20,8 +20,8 @@ import java.util.Map;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import eu.esdihumboldt.hale.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.core.report.Report;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
  * ContentProvider for {@link ReportList}.

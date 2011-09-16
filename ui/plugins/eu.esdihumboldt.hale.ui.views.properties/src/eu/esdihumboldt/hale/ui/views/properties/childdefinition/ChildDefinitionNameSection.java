@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.childdefinition;
 
-import eu.esdihumboldt.hale.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection;
 
 /**

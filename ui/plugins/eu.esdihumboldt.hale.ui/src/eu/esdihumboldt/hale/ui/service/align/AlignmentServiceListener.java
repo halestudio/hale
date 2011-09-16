@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.service.align;
 
-import eu.esdihumboldt.hale.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 
 /**
  * Listener for alignment service events

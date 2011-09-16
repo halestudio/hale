@@ -25,7 +25,7 @@ import org.springframework.core.convert.converter.GenericConverter;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.util.reflection.ReflectionHelper;
+import eu.esdihumboldt.util.reflection.ReflectionHelper;
 
 
 /**

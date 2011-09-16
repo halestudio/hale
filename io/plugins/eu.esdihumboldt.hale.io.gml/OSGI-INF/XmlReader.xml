@@ -2,6 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="false" name="XmlReader">
    <implementation class="eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReaderFactory"/>
    <service>
-      <provide interface="eu.esdihumboldt.hale.instance.io.InstanceReaderFactory"/>
+      <provide interface="eu.esdihumboldt.hale.common.instance.io.InstanceReaderFactory"/>
    </service>
 </scr:component>

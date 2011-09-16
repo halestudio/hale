@@ -15,8 +15,8 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;
 import java.util.Collection;
 import java.util.Iterator;
 
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 
 /**
  * Binding constraint for type unions

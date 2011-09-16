@@ -18,8 +18,8 @@ import org.eclipse.core.expressions.Expression;
 import org.eclipse.ui.services.IEvaluationService;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.core.io.IOAdvisor;
-import eu.esdihumboldt.hale.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**

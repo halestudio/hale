@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.io.project.jaxb;
 
-import eu.esdihumboldt.hale.core.io.tester.XmlRootElementTester;
+import eu.esdihumboldt.hale.common.core.io.tester.XmlRootElementTester;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
 
 /**

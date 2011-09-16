@@ -38,22 +38,22 @@ import org.geotools.xs.XSSchema;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 
-import eu.esdihumboldt.hale.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumeration;
-import eu.esdihumboldt.hale.schema.geometry.GeometryProperty;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.type.AbstractFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.schema.model.constraint.type.ElementType;
-import eu.esdihumboldt.hale.schema.model.constraint.type.Enumeration;
-import eu.esdihumboldt.hale.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.schema.model.constraint.type.MappableFlag;
 
 /**
  * Utility methods regarding type resolving

@@ -14,13 +14,13 @@ package eu.esdihumboldt.cst.internal;
 
 import java.util.Collection;
 
-import eu.esdihumboldt.hale.align.model.Alignment;
-import eu.esdihumboldt.hale.align.model.Type;
-import eu.esdihumboldt.hale.align.transformation.report.TransformationReporter;
-import eu.esdihumboldt.hale.align.transformation.service.InstanceSink;
-import eu.esdihumboldt.hale.align.transformation.service.PropertyTransformer;
-import eu.esdihumboldt.hale.instance.model.Instance;
-import eu.esdihumboldt.hale.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
+import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
+import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
 /**
  * TODO Type description

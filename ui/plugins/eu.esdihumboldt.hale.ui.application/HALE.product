@@ -77,19 +77,17 @@
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
-      <plugin id="eu.esdihumboldt.cst.functions.core.ui"/>
-      <plugin id="eu.esdihumboldt.hale.align"/>
-      <plugin id="eu.esdihumboldt.hale.cache"/>
-      <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.cache.ui"/>
-      <plugin id="eu.esdihumboldt.hale.codelist"/>
-      <plugin id="eu.esdihumboldt.hale.codelist.io.xml"/>
-      <plugin id="eu.esdihumboldt.hale.codelist.io.xml.test" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.codelist.ui"/>
+      <plugin id="eu.esdihumboldt.hale.common.align"/>
+      <plugin id="eu.esdihumboldt.hale.common.cache"/>
+      <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.codelist"/>
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
-      <plugin id="eu.esdihumboldt.hale.core"/>
-      <plugin id="eu.esdihumboldt.hale.core.test" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.core"/>
+      <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
@@ -99,16 +97,16 @@
       <plugin id="eu.esdihumboldt.hale.io.xml.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.orient.embedded"/>
-      <plugin id="eu.esdihumboldt.hale.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
-      <plugin id="eu.esdihumboldt.hale.schema"/>
       <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.ui.application"/>
+      <plugin id="eu.esdihumboldt.hale.ui.cache"/>
+      <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
       <plugin id="eu.esdihumboldt.hale.ui.common"/>
+      <plugin id="eu.esdihumboldt.hale.ui.functions.core"/>
+      <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
@@ -118,8 +116,10 @@
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.typehierarchy"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.util"/>
       <plugin id="eu.esdihumboldt.specification"/>
+      <plugin id="eu.esdihumboldt.util"/>
+      <plugin id="eu.esdihumboldt.util.orient.embedded"/>
+      <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
@@ -200,11 +200,11 @@
       <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
       <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.align" autoStart="true" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.codelist.io.xml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.core" autoStart="true" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.instance" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.core" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.project.jaxb" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />

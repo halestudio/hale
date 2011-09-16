@@ -16,10 +16,10 @@ import java.util.Map;
 
 import net.jcip.annotations.Immutable;
 
-import eu.esdihumboldt.hale.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.align.transformation.function.TransformationFunction;
-import eu.esdihumboldt.hale.align.transformation.function.impl.AbstractPropertyTransformation;
-import eu.esdihumboldt.hale.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractPropertyTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
  * Property rename function

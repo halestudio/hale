@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.hale.core.io.tester.AbstractXmlTester;
+import eu.esdihumboldt.hale.common.core.io.tester.AbstractXmlTester;
 
 /**
  * TODO Type description

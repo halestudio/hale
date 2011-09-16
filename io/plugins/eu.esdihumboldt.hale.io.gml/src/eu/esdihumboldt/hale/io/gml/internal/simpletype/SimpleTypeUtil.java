@@ -25,8 +25,8 @@ import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 
 /**
  * Utility methods used for simple type conversion
