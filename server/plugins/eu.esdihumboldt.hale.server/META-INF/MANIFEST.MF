@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Server
+Bundle-SymbolicName: eu.esdihumboldt.hale.server;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: eu.esdihumboldt.hale.server.Activator
+Require-Bundle: org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: javax.servlet.http
