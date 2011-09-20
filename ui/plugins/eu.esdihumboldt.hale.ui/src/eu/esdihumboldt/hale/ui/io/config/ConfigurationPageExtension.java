@@ -12,14 +12,19 @@
 
 package eu.esdihumboldt.hale.ui.io.config;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 import de.cs3d.util.logging.ALogger;
@@ -66,9 +71,20 @@ public abstract class ConfigurationPageExtension {
 			ids.add(factory.getIdentifier());
 		}
 		
-		Multimap<String, AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> result = HashMultimap.create();
+		List<IConfigurationElement> sortedConfs = Arrays.asList(confArray);
+		Collections.sort(sortedConfs, new Comparator<IConfigurationElement>() {
+
+			@Override
+			public int compare(IConfigurationElement o1,
+					IConfigurationElement o2) {
+				return getOrder(o1).compareTo(getOrder(o2));
+			}
+			
+		});
 		
-		for (IConfigurationElement conf : confArray) {
+		ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> result = ArrayListMultimap.create();
+		
+		for (IConfigurationElement conf : sortedConfs) {
 			IConfigurationElement[] pageFactories = conf.getChildren("providerFactory");
 			AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>> page = null;
 			for (int i = 0; i < pageFactories.length; i++) {
@@ -93,6 +109,28 @@ public abstract class ConfigurationPageExtension {
 		}
 		
 		return result;
+	}
+
+	/**
+	 * Get the order for the given configuration element
+	 * @param conf the configuration element
+	 * @return the element order
+	 */
+	protected static Integer getOrder(IConfigurationElement conf) {
+		String orderString = conf.getAttribute("order");
+		int order;
+		if (orderString == null) {
+			order = 0;
+		}
+		else {
+			try {
+				order = Integer.parseInt(orderString);
+			} catch (Exception e) {
+				order = 0;
+			}
+		}
+		
+		return Integer.valueOf(order);
 	}
 	
 }

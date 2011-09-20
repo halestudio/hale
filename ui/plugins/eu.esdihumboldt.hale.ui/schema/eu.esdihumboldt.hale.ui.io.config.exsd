@@ -67,6 +67,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="order" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Number used for ordering. Lower numbers appear first. Default value is 0
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
