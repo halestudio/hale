@@ -13,6 +13,8 @@
 package eu.esdihumboldt.hale.io.csv.ui;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -29,7 +31,7 @@ import eu.esdihumboldt.hale.ui.io.schema.SchemaReaderConfigurationPage;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class SchemaTypePage extends SchemaReaderConfigurationPage {
+public class SchemaTypePage extends SchemaReaderConfigurationPage implements ModifyListener{
 
 	private Text nameText;
 	private String defaultString = "Please insert the Typename";
@@ -66,18 +68,12 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	@SuppressWarnings("restriction")
 	@Override
 	public boolean updateConfiguration(SchemaReader provider) {
-		if (nameText.getText() != defaultString) {
-
 			provider.setParameter(CSVSchemaReader.PARAM_TYPENAME,
 					nameText.getText());
 			return true;
-		}
-
-		provider.setParameter(CSVSchemaReader.PARAM_TYPENAME, "default Typename");
-		return false;
 		
 	}
-
+	
 	/**
 	 * @see HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
 	 */
@@ -89,14 +85,25 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		nameLabel.setText("Typename:");
 
 		nameText = new Text(page, SWT.BORDER);
+		nameText.addModifyListener(this);
 		GridData gridData = new GridData();
 		gridData.horizontalAlignment = SWT.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		nameText.setLayoutData(gridData);
 		nameText.setText(defaultString);
 
+		setPageComplete(false);
+		
 		page.pack();
 
 	}
+
+/**
+ * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+ */
+@Override
+public void modifyText(ModifyEvent e) {
+	setPageComplete(true);
+}
 
 }

@@ -9,6 +9,12 @@
                id="eu.esdihumboldt.hale.io.csv.reader.schema">
          </providerFactory>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.csv.ui.ReadConfigurationPage">
+         <providerFactory
+               id="eu.esdihumboldt.hale.io.csv.reader.schema">
+         </providerFactory>
+      </configPage>
    </extension>
 
 </plugin>
