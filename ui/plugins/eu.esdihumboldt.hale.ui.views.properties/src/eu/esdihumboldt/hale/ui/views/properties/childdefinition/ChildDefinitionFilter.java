@@ -12,28 +12,25 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.childdefinition;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import org.eclipse.jface.viewers.IFilter;
+
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationSection;
 
 /**
  * TODO Type description
  * @author Patrick Lieb
  */
-public class ChildDefinitionLocationSection extends DefinitionLocationSection{
+public class ChildDefinitionFilter implements IFilter{
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection#setInput(java.lang.Object)
+	 * @see IFilter#select(Object)
 	 */
 	@Override
-	protected void setInput(Object input) {
-		if (input instanceof EntityDefinition) {
-			setDefinition(((ChildDefinition<?>) ((EntityDefinition) input).getDefinition()).getParentType());
+	public boolean select(Object toTest) {
+		if (toTest instanceof ChildDefinition<?>) {
+			return ((ChildDefinition<?>) toTest).getParentType() != null;
 		}
-		else {
-			setDefinition(((ChildDefinition<?>) input).getParentType());
-		}
+		
+		return false;
 	}
-	
-	
 }

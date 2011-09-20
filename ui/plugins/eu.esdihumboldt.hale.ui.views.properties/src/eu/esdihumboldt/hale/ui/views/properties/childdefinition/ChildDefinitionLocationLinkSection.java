@@ -14,14 +14,14 @@ package eu.esdihumboldt.hale.ui.views.properties.childdefinition;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationSection;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationLinkSection;
 
 /**
- * TODO Type description
+ * Creates a link to open the location in editor or browser
  * @author Patrick Lieb
  */
-public class ChildDefinitionLocationSection extends DefinitionLocationSection{
-
+public class ChildDefinitionLocationLinkSection extends DefinitionLocationLinkSection{
+	
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection#setInput(java.lang.Object)
 	 */
@@ -34,6 +34,4 @@ public class ChildDefinitionLocationSection extends DefinitionLocationSection{
 			setDefinition(((ChildDefinition<?>) input).getParentType());
 		}
 	}
-	
-	
 }
