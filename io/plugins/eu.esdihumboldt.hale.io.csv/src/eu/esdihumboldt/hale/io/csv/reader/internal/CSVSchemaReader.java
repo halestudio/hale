@@ -52,12 +52,22 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 	 * Name of the parameter specifying the type name
 	 */
 	public static String PARAM_TYPENAME = "typename";
+	
+	public static String PARAM_SEPARATOR = "separator";
+	
+	public static String PARAM_QUOTE = "quote";
+	
+	public static String PARAM_ESCAPE = "escape";
 
 	/**
 	 * The separating sign for the CSV file to be read (can be '\t' or ',' or
 	 * ' ')
 	 */
-	public static char separator = '\t';
+	public static final char defaultSeparator = '\t';
+	
+	public static final char defaultQuote = '\"';
+	
+	public static final char defaultEscape = '\\';
 
 	private DefaultSchema schema;
 
@@ -87,10 +97,17 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 
 		String namespace = CSVFileIO.CSVFILE_NS;
 		schema = new DefaultSchema(namespace, getSource().getLocation());
-
+	
+		String separator = getParameter(PARAM_SEPARATOR);
+		char sep = (separator == null || separator.isEmpty())?(defaultSeparator):(separator.charAt(0));
+		String quote = getParameter(PARAM_QUOTE);
+		char qu = (quote == null || quote.isEmpty())?(defaultQuote):(quote.charAt(0));
+		String escape = getParameter(PARAM_ESCAPE);
+		char esc = (escape == null || escape.isEmpty())?(defaultEscape):(escape.charAt(0));
+		
 		Reader streamReader = new BufferedReader(new InputStreamReader(
 				getSource().getInput()));
-		CSVReader reader = new CSVReader(streamReader, separator);
+		CSVReader reader = new CSVReader(streamReader, sep, qu, esc);
 
 		String[] firstLine;
 
