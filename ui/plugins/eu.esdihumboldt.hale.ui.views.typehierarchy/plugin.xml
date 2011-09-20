@@ -12,5 +12,19 @@
             name="Type hierarchy">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="eu.esdihumboldt.hale.ui.views.typehierarchy.views">
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.typehierarchy.properties.ChildDefinitionTypeHierarchyViewSection"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.typehierarchy"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.ChildDefinition">
+            </input>
+         </propertySection>
+      </propertySections>
+   </extension>
 
 </plugin>

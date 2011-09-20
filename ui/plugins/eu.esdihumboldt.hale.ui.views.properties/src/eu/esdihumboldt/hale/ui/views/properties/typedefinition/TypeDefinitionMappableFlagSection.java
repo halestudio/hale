@@ -35,7 +35,7 @@ public class TypeDefinitionMappableFlagSection extends DefaultDefinitionSection<
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "MappableFlag:", false, null);
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "MappableFlag:", null);
 		mappableFlag = getText();
 	}
 

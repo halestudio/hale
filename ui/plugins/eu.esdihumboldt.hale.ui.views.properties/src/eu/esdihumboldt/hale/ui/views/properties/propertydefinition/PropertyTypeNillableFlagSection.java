@@ -35,7 +35,7 @@ public class PropertyTypeNillableFlagSection extends DefaultDefinitionSection<Pr
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "NillableFlag:", false, null);
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "NillableFlag:", null);
 		nillableflag = getText();
 	}
 	
