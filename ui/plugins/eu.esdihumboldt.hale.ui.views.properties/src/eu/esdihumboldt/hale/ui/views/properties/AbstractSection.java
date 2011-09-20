@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.properties;
 
+import java.util.HashMap;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -33,9 +35,15 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public abstract class AbstractSection extends AbstractPropertySection{
 	
 	
+	private HashMap<String, Text> textmap = new HashMap<String, Text>();
+	
 	private Text text;
-
+	
 	private Text text2;
+	
+//	private int pos = -1;
+//	
+//	private String[] list;
 
 	/**
 	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
@@ -53,19 +61,35 @@ public abstract class AbstractSection extends AbstractPropertySection{
 	 */
 	protected abstract void setInput(Object input);
 	
+//	/**
+//	 * Abstract version of createControls for more than 
+//	 * one control in one line
+//	 * @param parent the parent composite for the section
+//	 * @param aTabbedPropertySheetPage the tabbed property sheet page
+//	 * @param list the identifier for the property
+//	 */
+//	protected void createControlsOnList(Composite parent,
+//			TabbedPropertySheetPage aTabbedPropertySheetPage, String[] list){
+//		this.list = list;
+//		for(pos = 0; pos < list.length; pos++){
+//			abstractCreateControls(parent, aTabbedPropertySheetPage, list[pos]);
+//			textmap.put(list[pos], text);
+//		}
+//	}
+
 	/**
-	 * Abstract version of createControls
+	 * Creates the controls for two lines @seeAbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
 	 * @param parent the parent composite for the section
 	 * @param aTabbedPropertySheetPage the tabbed property sheet page
-	 * @param title the title for the first text part (static variable TEXT)
-	 * @param marker true if TEXT2 also should be configured otherwise false
-	 * @param title2 the title for the second text part (static variable TEXT2)
+	 * @param title the title for the property
+	 * @param title2 the title for the second property (could be null)
 	 */
 	protected void abstractCreateControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage, String title, boolean marker, String title2){
-		super.createControls(parent, aTabbedPropertySheetPage);
+		TabbedPropertySheetPage aTabbedPropertySheetPage, String title, String title2){
+//		if (pos <= 0)
+			super.createControls(parent, aTabbedPropertySheetPage);
 		Composite composite = getWidgetFactory()
-				.createFlatFormComposite(parent);
+		.createFlatFormComposite(parent);
 		FormData data;
 		
 		text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
@@ -73,9 +97,13 @@ public abstract class AbstractSection extends AbstractPropertySection{
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+//		if(pos <= 0 ){
+			data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+//		} else {
+//			data.top = new FormAttachment(textmap.get(list[pos-1]), ITabbedPropertyConstants.VSPACE);
+//		}
 		text.setLayoutData(data);
-
+	
 		CLabel namespaceLabel = getWidgetFactory()
 				.createCLabel(composite, title); //$NON-NLS-1$
 		data = new FormData();
@@ -85,7 +113,7 @@ public abstract class AbstractSection extends AbstractPropertySection{
 		data.top = new FormAttachment(text, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
 		
-		if(marker){
+		if(title2 != null){
 			text2 = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
 			text2.setEditable(false);
 			data = new FormData();
@@ -93,43 +121,36 @@ public abstract class AbstractSection extends AbstractPropertySection{
 			data.right = new FormAttachment(100, 0);
 			data.top = new FormAttachment(text, ITabbedPropertyConstants.VSPACE);
 			text2.setLayoutData(data);
-
-			CLabel LocalNameLabel = getWidgetFactory()
+		
+			CLabel label2 = getWidgetFactory()
 					.createCLabel(composite, title2); //$NON-NLS-1$
 			data = new FormData();
 			data.left = new FormAttachment(0, 0);
 			data.right = new FormAttachment(text2,
 					10);
 			data.top = new FormAttachment(text2, 0, SWT.CENTER);
-			LocalNameLabel.setLayoutData(data);
+			label2.setLayoutData(data);
 		}
 	}
-
 	/**
-	 * @return the tEXT2
+	 * @return the configured text
 	 */
-	public Text getText2() {
-		return text2;
-	}
-
-	/**
-	 * @param txt the text2 to set
-	 */
-	public void setText2(Text txt) {
-		text2 = txt;
+	public Text getText(){
+		return text;
 	}
 	
 	/**
-	 * @return the tEXT
+	 * @return the configured second text
 	 */
-	public Text getText() {
-		return text;
+	public Text getText2(){
+		return text2;
 	}
-
+	
 	/**
-	 * @param txt the tEXT to set
+	 * @param key the key for the text element
+	 * @return the text element
 	 */
-	public void setText(Text txt) {
-		text = txt;
+	public Text getMapText(String key){
+		return textmap.get(key);
 	}
 }

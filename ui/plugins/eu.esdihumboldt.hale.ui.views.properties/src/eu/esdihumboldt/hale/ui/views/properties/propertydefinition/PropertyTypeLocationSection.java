@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationSection;
 
@@ -26,6 +27,12 @@ public class PropertyTypeLocationSection extends DefinitionLocationSection{
 	 */
 	@Override
 	protected void setInput(Object input) {
-		setDefinition(((PropertyDefinition) input).getPropertyType());
+		if (input instanceof EntityDefinition) {
+			setDefinition(((PropertyDefinition) ((EntityDefinition) input).getDefinition()).getPropertyType());
+		}
+		else {
+			setDefinition(((PropertyDefinition) input).getPropertyType());
+		}
 	}
+	
 }

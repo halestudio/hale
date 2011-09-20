@@ -37,7 +37,7 @@ public class GroupPropertyCardinalitySection extends DefaultDefinitionSection<Gr
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "Minimum:", true, "Maximum:");
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "Minimum:", "Maximum:");
 		min = getText();
 		max = getText2();
 	}

@@ -28,7 +28,7 @@ public class PropertyDescriptionFilter implements IFilter{
 		@Override
 		public boolean select(Object toTest) {
 			if (toTest instanceof PropertyDefinition) {
-				return ((PropertyDefinition) toTest).getDescription() != null;
+				return ((PropertyDefinition) toTest).getPropertyType().getDescription() != null;
 			}
 			
 			return false;
