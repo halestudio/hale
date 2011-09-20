@@ -28,6 +28,7 @@
    </vm>
 
    <plugins>
+      <plugin id="au.com.bytecode.opencsv"/>
       <plugin id="cal10n.api"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
@@ -89,6 +90,8 @@
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.csv"/>
+      <plugin id="eu.esdihumboldt.hale.io.csv.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
@@ -206,6 +209,7 @@
       <plugin id="eu.esdihumboldt.hale.common.core" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.csv" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.project.jaxb" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
