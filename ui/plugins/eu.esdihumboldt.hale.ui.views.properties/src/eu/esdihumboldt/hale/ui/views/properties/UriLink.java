@@ -59,6 +59,7 @@ public class UriLink{
 	 */
 	public void refresh(URI uri){
 		link.removeSelectionListener(adapter);
+		if(uri == null) return;
 		adapter = createDefaultSelectionAdapter(uri);
 		link.addSelectionListener(adapter);
 	}
@@ -132,13 +133,13 @@ public class UriLink{
 		// return data;
 	// }
 
-	// /**
-	 // * @param text the text to set
-	 // */
-	// public void setText(String text) {
-		// this.text = text;
-		// link.setText(text);
-	// }
+	 /**
+	  * @param text the text to set
+	  */
+	 public void setText(String text) {
+//		 this.text = text;
+		 link.setText(text);
+	 }
 
 	// /**
 	 // * @return the text

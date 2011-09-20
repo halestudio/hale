@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.definition;
 
+import java.net.URI;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
@@ -27,7 +29,7 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 import eu.esdihumboldt.hale.ui.views.properties.UriLink;
 
 /**
- * TODO Type description
+ * Creates a link to open the location in editor or browser
  * @author Patrick Lieb
  */
 public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Definition<?>>{
@@ -35,7 +37,6 @@ public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Defi
 	private UriLink location;
 	
 	private Link link;
-	
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -69,7 +70,12 @@ public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Defi
 	
 	@Override
 	public void refresh(){
-		location.refresh(getDefinition().getLocation());
+		URI loc = getDefinition().getLocation();
+		if(loc == null){
+			location.setText("no Link available");
+		} else {
+			location.refresh(loc);
+		}
 		link = location.getLink();
 	}
 }
