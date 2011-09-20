@@ -1,8 +1,0 @@
--classpath: lib/annotations.jar, lib/jsr305.jar
--output: edu.umd.cs.findbugs.annotations_1.3.9.jar
-Import-Package: *
-Export-Package: !javax.annotation.*,*;-noimport:=true
-Private-Package: javax.annotation.*
-Bundle-Version: 1.3.9
-Bundle-Name: FindBugs Annotations Plug-in
-Bundle-SymbolicName: edu.umd.cs.findbugs.annotations

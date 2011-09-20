@@ -1,3 +1,0 @@
-org.geotools.data.property.PropertyDataStoreFactory
-org.geotools.data.shapefile.ShapefileDataStoreFactory
-org.geotools.data.wfs.WFSDataStoreFactory

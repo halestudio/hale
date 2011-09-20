@@ -1,7 +1,0 @@
--classpath: lib/org.apache.httpcomponents.httpcore_4.1/httpcore-4.1.jar, lib/org.apache.httpcomponents.httpcore_4.1/httpcore-nio-4.1.jar
--output: org.apache.httpcomponents.httpcore-4.1.jar
-Export-Package: *;-split-package:=merge-last;-noimport:=true
-Import-Package: *
-Bundle-Version: 4.1.0
-Bundle-Name: Apache HttpClient
-Bundle-SymbolicName: org.apache.httpcomponents.httpcore

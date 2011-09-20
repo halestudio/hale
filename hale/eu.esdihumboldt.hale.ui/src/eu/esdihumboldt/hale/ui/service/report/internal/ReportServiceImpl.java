@@ -18,7 +18,7 @@ import java.util.Map;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import de.fhg.igd.eclipse.util.TypeSafeListenerList;
+import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.core.report.Message;
 import eu.esdihumboldt.hale.core.report.Report;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;

@@ -1,8 +1,0 @@
--classpath: lib/jena-2.6.4.jar,\
-lib/iri-0.8.jar
--output: com.hp.hpl.jena-2.6.4.jar
-Export-Package: *;-split-package:=merge-last;-noimport:=true
-Import-Package: *
-Bundle-Version: 2.6.4
-Bundle-Name: JENA Framework
-Bundle-SymbolicName: com.hp.hpl.jena
