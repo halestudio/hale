@@ -108,7 +108,7 @@
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.name"
                class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionDescriptionSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionFilter"
+               filter="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionDescriptionFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.description"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input
@@ -119,7 +119,6 @@
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.description"
                class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionLocationLinkSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.location"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input
@@ -129,7 +128,6 @@
          <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionNameSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.name"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input

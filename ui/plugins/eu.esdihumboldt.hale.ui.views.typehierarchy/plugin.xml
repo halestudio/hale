@@ -15,13 +15,25 @@
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertySections">
       <propertySections
-            contributorId="eu.esdihumboldt.hale.ui.views.typehierarchy.views">
+            contributorId="eu.esdihumboldt.hale.ui.views.properties">
          <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.location"
                class="eu.esdihumboldt.hale.ui.views.typehierarchy.properties.ChildDefinitionTypeHierarchyViewSection"
-               id="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.typehierarchy"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.typehierarchy.parenttype.link"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.ChildDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype.location"
+               class="eu.esdihumboldt.hale.ui.views.typehierarchy.properties.PropertyTypeHierarchyViewSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.typehierarchy.propertytype.link"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
             </input>
          </propertySection>
       </propertySections>
