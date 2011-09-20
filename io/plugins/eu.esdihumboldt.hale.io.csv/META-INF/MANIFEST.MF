@@ -27,3 +27,6 @@ Import-Package: au.com.bytecode.opencsv;version="2.3.0",
  org.opengis.feature.simple,
  org.opengis.feature.type
 Require-Bundle: eu.esdihumboldt.hale.common.instance
+Export-Package: eu.esdihumboldt.hale.io.csv,
+ eu.esdihumboldt.hale.io.csv.reader,
+ eu.esdihumboldt.hale.io.csv.reader.internal;x-internal:=true

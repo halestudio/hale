@@ -96,7 +96,7 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 
 		try {
 			// create type definition
-			String typename = "muh"; //getParameter(PARAM_TYPENAME);
+			String typename = getParameter(PARAM_TYPENAME);
 			DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(
 					typename));
 
