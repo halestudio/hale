@@ -28,7 +28,7 @@ public class ChildDefinitionDescriptionFilter implements IFilter{
 	@Override
 	public boolean select(Object toTest) {
 		if (toTest instanceof ChildDefinition<?>) {
-			return ((ChildDefinition<?>) toTest).getDescription() != null;
+			return ((ChildDefinition<?>) toTest).getParentType().getDescription() != null;
 		}
 		
 		return false;
