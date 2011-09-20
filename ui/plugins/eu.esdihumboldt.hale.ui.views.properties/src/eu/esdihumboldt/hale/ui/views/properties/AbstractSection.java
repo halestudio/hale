@@ -126,8 +126,7 @@ public abstract class AbstractSection extends AbstractPropertySection{
 					.createCLabel(composite, title2); //$NON-NLS-1$
 			data = new FormData();
 			data.left = new FormAttachment(0, 0);
-			data.right = new FormAttachment(text2,
-					10);
+			data.right = new FormAttachment(text2,15);
 			data.top = new FormAttachment(text2, 0, SWT.CENTER);
 			label2.setLayoutData(data);
 		}

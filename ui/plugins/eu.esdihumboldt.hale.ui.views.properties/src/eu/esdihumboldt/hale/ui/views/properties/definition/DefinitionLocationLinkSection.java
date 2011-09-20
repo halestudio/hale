@@ -59,11 +59,10 @@ public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Defi
 		link = location.getLink();
 		
 		CLabel namespaceLabel = getWidgetFactory()
-		.createCLabel(composite, "Location"); //$NON-NLS-1$
+		.createCLabel(composite, "Location:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(link,
-										-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(link,15);
 		data.top = new FormAttachment(link, 0, SWT.CENTER);
 										namespaceLabel.setLayoutData(data);
 	}
