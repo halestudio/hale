@@ -21,9 +21,12 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.IPageChangingListener;
+import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Objects;
@@ -57,7 +60,7 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory<P>> extends Wizard {
+public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory<P>> extends Wizard implements IPageChangingListener {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(IOWizard.class);
 
@@ -78,7 +81,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	private final Multimap<String, AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> configPages;
 	
 	private final List<IWizardPage> mainPages = new ArrayList<IWizardPage>();
-
+	
 	/**
 	 * Create an I/O wizard
 	 * 
@@ -130,6 +133,42 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 		for (AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>> page : configPages.values()) {
 			addPage(page);
 		}
+		
+		if (getContainer() instanceof WizardDialog) {
+			((WizardDialog) getContainer()).addPageChangingListener(this);
+		}
+		else {
+			throw new RuntimeException("Only WizardDialog as container supported");
+		}
+	}
+
+	/**
+	 * @see IPageChangingListener#handlePageChanging(PageChangingEvent)
+	 */
+	@Override
+	public void handlePageChanging(PageChangingEvent event) {
+		if (event.getCurrentPage() instanceof IWizardPage && 
+				event.getTargetPage() == getNextPage((IWizardPage) event.getCurrentPage())) {
+			// only do automatic configuration when proceeding to next page
+			if (event.getCurrentPage() instanceof IOWizardPage<?, ?, ?>) {
+				@SuppressWarnings("unchecked")
+				IOWizardPage<P, T, ?> page = (IOWizardPage<P, T, ?>) event.getCurrentPage();
+				event.doit = validatePage(page);
+				//TODO error message?!
+			}
+		}
+	}
+
+	/**
+	 * @see Wizard#dispose()
+	 */
+	@Override
+	public void dispose() {
+		if (getContainer() instanceof WizardDialog) {
+			((WizardDialog) getContainer()).removePageChangingListener(this);
+		}
+		
+		super.dispose();
 	}
 
 	/**
@@ -389,6 +428,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 		
 		// process main pages
 		for (int i = 0; i < mainPages.size(); i++) {
+			// validating is still necessary as it is not guaranteed to be up to date by handlePageChanging
 			boolean valid = validatePage(mainPages.get(i));
 			if (!valid) {
 				//TODO error message?!
@@ -400,6 +440,7 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 		List<AbstractConfigurationPage<? extends P, ? extends T, ? extends IOWizard<P, T>>> confPages = getConfigurationPages();
 		if (confPages != null) {
 			for (int i = 0; i < confPages.size(); i++) {
+				// validating is still necessary as it is not guaranteed to be up to date by handlePageChanging
 				boolean valid = validatePage(confPages.get(i));
 				if (!valid) {
 					//TODO error message?!

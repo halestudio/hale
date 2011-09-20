@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 public abstract class ImportWizard<P extends ImportProvider, T extends IOProviderFactory<P>> extends IOWizard<P, T> {
 	
 	private ImportSelectSourcePage<P, T, ? extends ImportWizard<P, T>> selectSourcePage;
-
+	
 	/**
 	 * @see IOWizard#IOWizard(Class)
 	 */
