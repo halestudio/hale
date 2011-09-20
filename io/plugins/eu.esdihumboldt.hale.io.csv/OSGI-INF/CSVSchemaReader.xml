@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="false" name="CSVSchemaReader">
+	<implementation class="eu.esdihumboldt.hale.io.csv.reader.CSVSchemaReaderFactory"/>
+ <service>
+    <provide interface="eu.esdihumboldt.hale.schema.io.SchemaReaderFactory"/>
+ </service>
+</scr:component>

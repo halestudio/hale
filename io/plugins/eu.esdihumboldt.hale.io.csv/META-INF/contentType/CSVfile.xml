@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A content type definition may contain one content type, the id is required -->
+<contentType id="CSV">
+	<!-- Default display name -->
+	<defaultName>CSV file</defaultName>
+	<!-- Translated display names -->
+	<name>
+		<locale language="de" country="" />
+		<value>CSV-Datei</value>
+	</name>
+	<!-- File extensions -->
+	<fileExtension>csv</fileExtension>
+	<!-- Tester class name -->
+	<!-- testerClass>eu.esdihumboldt.hale.core.ui.internal.SomeTesterClass</testerClass-->
+</contentType>

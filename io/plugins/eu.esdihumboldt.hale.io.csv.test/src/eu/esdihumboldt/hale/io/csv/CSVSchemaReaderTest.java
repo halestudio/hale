@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
 
 /**
  * TODO Type description
