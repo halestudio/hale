@@ -191,4 +191,12 @@ public class TypeHierarchyView extends PropertiesViewPart {
 		super.dispose();
 	}
 	
+	/**
+	 * @param type the TypeDefinition to set
+	 */
+	public void setType(TypeDefinition type) {
+		update(new StructuredSelection(type));
+		
+	}
+	
 }

@@ -35,7 +35,7 @@ public class TypeDefinitionHasValueFlagSection extends DefaultDefinitionSection<
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "HasValueFlag:", false, null);
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "HasValueFlag:", null);
 		hasValueFlag = getText();
 	}
 

@@ -35,7 +35,7 @@ public class GroupPropertyChoiceFlagSection extends DefaultDefinitionSection<Gro
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "ChoiceFlag:", false, null);
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "ChoiceFlag:", null);
 		choiceflag = getText();
 	}
 	

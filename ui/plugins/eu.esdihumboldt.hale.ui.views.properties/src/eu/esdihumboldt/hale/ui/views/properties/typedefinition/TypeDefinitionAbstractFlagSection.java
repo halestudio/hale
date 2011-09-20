@@ -35,7 +35,7 @@ public class TypeDefinitionAbstractFlagSection extends DefaultDefinitionSection<
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "AbstractFlag:", false, null);
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "AbstractFlag:", null);
 		abstractFlag = getText();
 	}
 
