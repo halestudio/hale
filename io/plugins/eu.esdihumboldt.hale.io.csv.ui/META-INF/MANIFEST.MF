@@ -1,8 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE CSV I/O UI
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.csv.ui
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.csv.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.core.runtime;bundle-version="3.6.0"
+Import-Package: eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.schema.io,
+ eu.esdihumboldt.hale.io.csv.reader.internal,
+ eu.esdihumboldt.hale.ui.io.schema
