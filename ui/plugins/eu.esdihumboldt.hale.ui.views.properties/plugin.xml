@@ -165,14 +165,6 @@
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionBindingSection"
-               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.binding"
-               tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
-            <input
-                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
-            </input>
-         </propertySection>
-         <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionElementTypeSection"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">

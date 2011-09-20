@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
 
 /**
- * TODO Type description
+ * Link class based on URIs
  * @author Patrick Lieb
  */
 public class UriLink{
@@ -34,9 +34,9 @@ public class UriLink{
 	
 	private Link link;
 	
-	private FormData data;
-	
-	private String text;
+//	private FormData data;
+//	
+//	private String text;
 	
 	/**
 	 * Creates a {@link Link} based on an URI
@@ -74,7 +74,7 @@ public class UriLink{
 		return new SelectionAdapter(){
 			
 			private URI removeFragment(URI uri) throws URISyntaxException{
-				String uristring = uri.toASCIIString();
+				String uristring = uri.toString();
 				uristring = uristring.substring(0, uristring.indexOf("#"));
 				return new URI(uristring);
 			}
@@ -83,13 +83,26 @@ public class UriLink{
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
+					if(uri.getScheme().equals("http")){
+						try {
+							Desktop.getDesktop().browse(uri);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						return;
+					}
 					URI newuri = removeFragment(uri);
+					// works only on files
 					File file = new File(newuri);
 					if(file.exists()){
 						try {
 							Desktop.getDesktop().open(file);
 						} catch (IOException e2) {
-							 e2.printStackTrace();
+								try {
+									Desktop.getDesktop().browse(newuri);
+								} catch (IOException e1) {
+									e1.printStackTrace();
+								}
 						}
 					} else {
 						try {
@@ -104,33 +117,33 @@ public class UriLink{
 			}
 		};
 	}
-	/**
-	 * @param data the data to set
-	 */
-	public void setData(FormData data) {
-		this.data = data;
-		link.setData(data);
-	}
+	// /**
+	 // * @param data the data to set
+	 // */
+	// public void setData(FormData data) {
+		// this.data = data;
+		// link.setData(data);
+	// }
 
-	/**
-	 * @return the data
-	 */
-	public FormData getData() {
-		return data;
-	}
+	// /**
+	 // * @return the data
+	 // */
+	// public FormData getData() {
+		// return data;
+	// }
 
-	/**
-	 * @param text the text to set
-	 */
-	public void setText(String text) {
-		this.text = text;
-		link.setText(text);
-	}
+	// /**
+	 // * @param text the text to set
+	 // */
+	// public void setText(String text) {
+		// this.text = text;
+		// link.setText(text);
+	// }
 
-	/**
-	 * @return the text
-	 */
-	public String getText() {
-		return text;
-	}
+	// /**
+	 // * @return the text
+	 // */
+	// public String getText() {
+		// return text;
+	// }
 }

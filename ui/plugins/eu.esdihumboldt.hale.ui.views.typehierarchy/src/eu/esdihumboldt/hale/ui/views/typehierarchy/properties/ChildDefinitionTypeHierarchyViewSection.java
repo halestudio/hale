@@ -14,8 +14,8 @@ package eu.esdihumboldt.hale.ui.views.typehierarchy.properties;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
@@ -31,12 +31,14 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyView;
 
 /**
- * TODO Type description
+ * View that shows the hierarchy of a {@link ChildDefinition}
  * @author Patrick Lieb
  */
 public class ChildDefinitionTypeHierarchyViewSection extends DefaultDefinitionSection<ChildDefinition<?>>{
 
 	private Link link;
+	
+	private SelectionAdapter adapter;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -55,68 +57,36 @@ public class ChildDefinitionTypeHierarchyViewSection extends DefaultDefinitionSe
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		link.setLayoutData(data);
-		link.setText("Open Type in HierarchyView");
+		link.setText("<A>Open Type in HierarchyView</A>");
 		
 		CLabel namespaceLabel = getWidgetFactory()
-		.createCLabel(composite, "TypeHierarchy"); //$NON-NLS-1$
+		.createCLabel(composite, "TypeHierarchy:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(link,
 										-ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(link, 0, SWT.CENTER);
 										namespaceLabel.setLayoutData(data);
-		
-		
-		link.addMouseListener(new MouseListener(){
-			
-			@Override
-			public void mouseUp(MouseEvent event) {
-				// only initialize
-			}
-
-			@Override
-			public void mouseDown(MouseEvent event) {
-				// only initialize
-			}
-
-			@Override
-			public void mouseDoubleClick(MouseEvent event) {
-				// only initialize
-			}
-		});
+		link.addSelectionListener(adapter);
 	}
 	
 	@Override
 	public void refresh(){
-		link.addMouseListener(new MouseListener(){
+		link.removeSelectionListener(adapter);
+		adapter = new SelectionAdapter(){
 			
 			@Override
-			public void mouseUp(MouseEvent event) {
-				// do nothing
-			}
-
-			@Override
-			public void mouseDown(MouseEvent event) {
+			public void widgetSelected(SelectionEvent e) {
 				try {
 					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(TypeHierarchyView.ID);
-					TypeHierarchyView thv = (TypeHierarchyView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(TypeHierarchyView.ID);
-//					TODO thv.setType(getDefinition().getParentType());
-				} catch (PartInitException e) {
-					// ignore
+				} catch (PartInitException e1) {
+					e1.printStackTrace();
 				}
+				TypeHierarchyView thv = (TypeHierarchyView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(TypeHierarchyView.ID);
+				thv.setType(getDefinition().getParentType());
 			}
-
-			@Override
-			public void mouseDoubleClick(MouseEvent event) {
-				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(TypeHierarchyView.ID);
-					TypeHierarchyView thv = (TypeHierarchyView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(TypeHierarchyView.ID);
-//					TODO thv.setType(getDefinition().getParentType());
-				} catch (PartInitException e) {
-					// ignore
-				}
-			}
-		});
+		};
+		link.addSelectionListener(adapter);
 	}
 	
 }
