@@ -10,25 +10,26 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.childdefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition;
 
 import org.eclipse.jface.viewers.IFilter;
 
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
- * TODO Type description
+ * Filter that lets only {@link Definition}s with a description that is not 
+ * <code>null</code> pass.
  * @author Patrick Lieb
  */
-public class ChildDefinitionFilter implements IFilter{
-
+public class DefinitionLocationFilter implements IFilter{
 	/**
 	 * @see IFilter#select(Object)
 	 */
 	@Override
 	public boolean select(Object toTest) {
-		if (toTest instanceof ChildDefinition<?>) {
-			return ((ChildDefinition<?>) toTest).getParentType() != null;
+		if (toTest instanceof EntityDefinition) {
+			return ((EntityDefinition) toTest).getDefinition().getLocation() != null;
 		}
 		
 		return false;

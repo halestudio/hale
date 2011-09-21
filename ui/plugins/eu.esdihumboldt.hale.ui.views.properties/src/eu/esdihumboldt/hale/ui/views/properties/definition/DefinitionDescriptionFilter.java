@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.views.properties.definition;
 
 import org.eclipse.jface.viewers.IFilter;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
@@ -28,8 +29,8 @@ public class DefinitionDescriptionFilter implements IFilter {
 	 */
 	@Override
 	public boolean select(Object toTest) {
-		if (toTest instanceof Definition<?>) {
-			return ((Definition<?>) toTest).getDescription() != null;
+		if (toTest instanceof EntityDefinition) {
+			return ((EntityDefinition) toTest).getDefinition().getDescription() != null;
 		}
 		
 		return false;

@@ -12,26 +12,82 @@
 
 package eu.esdihumboldt.hale.ui.views.typehierarchy.properties;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyView;
 
 /**
  * TODO Type description
  * @author Patrick Lieb
  */
-public class PropertyTypeHierarchyViewSection extends ChildDefinitionTypeHierarchyViewSection{
+public class PropertyTypeHierarchyViewSection extends DefaultDefinitionSection<PropertyDefinition>{
 
+	private Link link;
+	
+	private SelectionAdapter adapter;
+	
 	/**
-	 * @see AbstractSection#setInput(Object)
+	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
 	 */
 	@Override
-	protected void setInput(Object input) {
-		if (input instanceof EntityDefinition) {
-			setDefinition((PropertyDefinition) ((EntityDefinition) input).getDefinition());
-		}
-		else {
-			setDefinition((PropertyDefinition) input);
-		}
+	public void createControls(Composite parent,
+			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+		super.createControls(parent, aTabbedPropertySheetPage);
+		Composite composite = getWidgetFactory()
+				.createFlatFormComposite(parent);
+		FormData data;
+		link = new Link(composite, 0);
+		
+		data = new FormData();
+		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+		link.setLayoutData(data);
+		link.setText("<A>Open Type in HierarchyView</A>");
+		
+		CLabel namespaceLabel = getWidgetFactory()
+		.createCLabel(composite, "TypeHierarchy:"); //$NON-NLS-1$
+		data = new FormData();
+		data.left = new FormAttachment(0, 0);
+		data.right = new FormAttachment(link,15);
+		data.top = new FormAttachment(link, 0, SWT.CENTER);
+										namespaceLabel.setLayoutData(data);
+		adapter = new SelectionAdapter(){
+			// only initializing
+		};
+		link.addSelectionListener(adapter);
+	}
+	
+	@Override
+	public void refresh(){
+		link.removeSelectionListener(adapter);
+		adapter = new SelectionAdapter(){
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(TypeHierarchyView.ID);
+				} catch (PartInitException e1) {
+					e1.printStackTrace();
+				}
+				TypeHierarchyView thv = (TypeHierarchyView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(TypeHierarchyView.ID);
+				thv.setType(getDefinition().getPropertyType());
+			}
+		};
+		link.addSelectionListener(adapter);
 	}
 }

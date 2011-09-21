@@ -14,21 +14,23 @@ package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
 import org.eclipse.jface.viewers.IFilter;
 
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
- * TODO Type description
+ * Filter that lets only {@link PropertyDefinition}s with a description that is not 
+ * <code>null</code> pass.
  * @author Patrick Lieb
  */
-public class PropertyDescriptionFilter implements IFilter{
+public class PropertyTypeDescriptionFilter implements IFilter{
 		
 		/**
 		 * @see IFilter#select(Object)
 		 */
 		@Override
 		public boolean select(Object toTest) {
-			if (toTest instanceof PropertyDefinition) {
-				return ((PropertyDefinition) toTest).getPropertyType().getDescription() != null;
+			if (toTest instanceof PropertyEntityDefinition) {
+				return ((PropertyEntityDefinition) toTest).getDefinition().getPropertyType().getDescription() != null;
 			}
 			
 			return false;
