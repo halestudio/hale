@@ -4,13 +4,15 @@
    <extension
          point="eu.esdihumboldt.hale.ui.io.config">
       <configPage
-            class="eu.esdihumboldt.hale.io.csv.ui.SchemaTypePage">
+            class="eu.esdihumboldt.hale.io.csv.ui.SchemaTypePage"
+            order="0">
          <providerFactory
                id="eu.esdihumboldt.hale.io.csv.reader.schema">
          </providerFactory>
       </configPage>
       <configPage
-            class="eu.esdihumboldt.hale.io.csv.ui.ReadConfigurationPage">
+            class="eu.esdihumboldt.hale.io.csv.ui.ReadConfigurationPage"
+            order="-10">
          <providerFactory
                id="eu.esdihumboldt.hale.io.csv.reader.schema">
          </providerFactory>
