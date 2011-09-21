@@ -12,17 +12,20 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.GridData;
+import java.io.InputStream;
+
+import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
+import eu.esdihumboldt.hale.ui.HaleWizardPage;
+import eu.esdihumboldt.hale.ui.io.IOWizardPage;
+import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.schema.SchemaReaderConfigurationPage;
 
 /**
@@ -31,10 +34,10 @@ import eu.esdihumboldt.hale.ui.io.schema.SchemaReaderConfigurationPage;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class SchemaTypePage extends SchemaReaderConfigurationPage implements ModifyListener{
+public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
-	private Text nameText;
-	private String defaultString = "Please insert the Typename";
+	private String defaultString = "";
+	private StringFieldEditor sfe;
 
 	/**
 	 * default constructor
@@ -42,6 +45,9 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage implements Mod
 	public SchemaTypePage() {
 		super("Schema Type");
 		// is never used
+
+		setTitle("Typename Settings");
+		setDescription("Enter a valid Name for your Type");
 	}
 
 	/**
@@ -63,17 +69,44 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage implements Mod
 	}
 
 	/**
-	 * @see IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.ui.io.IOProvider)
+	 * @see IOWizardPage#updateConfiguration
 	 */
-	@SuppressWarnings("restriction")
 	@Override
 	public boolean updateConfiguration(SchemaReader provider) {
-			provider.setParameter(CSVSchemaReader.PARAM_TYPENAME,
-					nameText.getText());
-			return true;
 		
+		provider.setParameter(CSVSchemaReader.PARAM_TYPENAME,
+				sfe.getStringValue());
+		return true;
+
 	}
-	
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage()
+	 */
+	@Override
+	protected void onShowPage() {
+		
+		LocatableInputSupplier<? extends InputStream> source = getWizard()
+				.getProvider().getSource();
+		
+		int indexStart = 0;
+		int indexEnd = source.getLocation().getPath().length() - 1;
+		
+		if (source.getLocation().getPath() != null) {
+			indexStart = source.getLocation().getPath().lastIndexOf("/") + 1;
+		if(source.getLocation().getPath().lastIndexOf(".") >= 0){
+			indexEnd = source.getLocation().getPath().lastIndexOf(".");
+		}
+
+			defaultString = source.getLocation().getPath()
+					.substring(indexStart, indexEnd);
+			sfe.setStringValue(defaultString);
+			setPageComplete(sfe.isValid());
+		}
+
+		super.onShowPage();
+	}
+
 	/**
 	 * @see HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
 	 */
@@ -81,29 +114,24 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage implements Mod
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(2, false));
 
-		Label nameLabel = new Label(page, SWT.NONE);
-		nameLabel.setText("Typename:");
-
-		nameText = new Text(page, SWT.BORDER);
-		nameText.addModifyListener(this);
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = SWT.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		nameText.setLayoutData(gridData);
-		nameText.setText(defaultString);
-
-		setPageComplete(false);
+		sfe = new TypeNameField("typename", "Typename", page);
+		sfe.setEmptyStringAllowed(false);
+		sfe.setErrorMessage("Please enter a valid Typename");
+		sfe.setPropertyChangeListener(new IPropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getProperty().equals(StringFieldEditor.IS_VALID)) {
+					setPageComplete((Boolean) event.getNewValue());
+				}
+			}
+		});
 		
-		page.pack();
+		
+		sfe.setStringValue(defaultString);
+		sfe.setPage(this);
 
+		setPageComplete(sfe.isValid());
 	}
-
-/**
- * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
- */
-@Override
-public void modifyText(ModifyEvent e) {
-	setPageComplete(true);
-}
 
 }

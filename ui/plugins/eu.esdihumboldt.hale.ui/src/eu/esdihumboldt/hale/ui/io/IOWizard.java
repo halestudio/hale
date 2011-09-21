@@ -147,6 +147,10 @@ public abstract class IOWizard<P extends IOProvider, T extends IOProviderFactory
 	 */
 	@Override
 	public void handlePageChanging(PageChangingEvent event) {
+		if (getProvider() == null) {
+			return;
+		}
+		
 		if (event.getCurrentPage() instanceof IWizardPage && 
 				event.getTargetPage() == getNextPage((IWizardPage) event.getCurrentPage())) {
 			// only do automatic configuration when proceeding to next page
