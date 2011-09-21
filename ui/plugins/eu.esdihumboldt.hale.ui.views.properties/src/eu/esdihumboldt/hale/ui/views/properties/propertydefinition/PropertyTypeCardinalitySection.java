@@ -49,7 +49,15 @@ public class PropertyTypeCardinalitySection extends DefaultDefinitionSection<Pro
 	public void refresh() {
 		long minlong = getDefinition().getConstraint(Cardinality.class).getMinOccurs();
 		long maxlong = getDefinition().getConstraint(Cardinality.class).getMaxOccurs();
-		min.setText(String.valueOf(minlong));
-		max.setText(String.valueOf(maxlong));
+		if (minlong == Cardinality.UNBOUNDED) {
+			min.setText("unbounded");
+		} else {
+			min.setText(String.valueOf(minlong));
+		}
+		if (maxlong == Cardinality.UNBOUNDED) {
+			max.setText("unbounded");
+		} else {
+			max.setText(String.valueOf(maxlong));
+		}
 	}
 }
