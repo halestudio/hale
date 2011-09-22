@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.server;
+package eu.esdihumboldt.hale.server.war;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import org.osgi.framework.Bundle;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
-public class CstWps extends HttpServlet{
+public class CstWps extends HttpServlet {
 
 	/**
 	 * SerialVersion
@@ -153,7 +153,7 @@ public class CstWps extends HttpServlet{
 	 * the Execute response shall consist of a XML document that includes a URL for each stored
 	 * output, which the client can use to retrieve those outputs. Alternatively, for a single output,
 	 * the server can be directed to return that output in its raw form without
-	 * being wrapped in an XML reponse document.
+	 * being wrapped in an XML response document.
 	 * 
 	 * @param response
 	 * @param writer
