@@ -14,9 +14,11 @@ package eu.esdihumboldt.hale.io.csv.ui;
 
 import java.util.HashMap;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -119,12 +121,15 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(new GridLayout(2, false));
+		page.setLayout(new GridLayout(2, true));
+		GridData layoutData = new GridData();
+		layoutData.widthHint = 30;
 		// column 1, row 1
 		separator = new Label(page, SWT.NONE);
 		separator.setText("Select Separating Sign");
 		// column 2, row 1
 		combo = new Combo(page, SWT.NONE);
+		combo.setLayoutData(GridDataFactory.copyData(layoutData));
 		combo.setItems(new String[] { "TAB", ",", "." });
 		combo.addModifyListener(this);
 
@@ -134,6 +139,7 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 
 		// column 2, row 2
 		combo2 = new Combo(page, SWT.NONE);
+		combo2.setLayoutData(GridDataFactory.copyData(layoutData));
 		combo2.setItems(new String[] { "\" ", "\'", ",", "-" });
 		combo2.addModifyListener(this);
 
@@ -143,6 +149,7 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 
 		// column 2, row 3
 		combo3 = new Combo(page, SWT.NONE);
+		combo3.setLayoutData(GridDataFactory.copyData(layoutData));
 		combo3.setItems(new String[] { "\\", "." });
 		combo3.addModifyListener(this);
 
