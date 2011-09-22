@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="eu.esdihumboldt.hale.platform" sequenceNumber="1">
+<target name="eu.esdihumboldt.hale.platform" sequenceNumber="5">
 <locations>
 <location path="${project_loc:hale-platform}/target/com.google.guava" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/com.hp.hpl.jena" type="Directory"/>
@@ -101,5 +101,9 @@
 <unit id="org.eclipse.babel.nls_eclipse_it.feature.group" version="3.6.0.v20110723071525"/>
 <repository location="http://download.eclipse.org/technology/babel/update-site/R0.9.0/helios"/>
 </location>
+<location path="${project_loc:hale-platform}/target/org.springframework.osgi" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.springframework.osgi.web.jetty" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/net.sf.cglib" type="Directory"/>
 </locations>
 </target>
