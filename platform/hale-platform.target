@@ -64,5 +64,9 @@
 <location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.picocontainer" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/au.com.bytecode" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.springframework.osgi" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.springframework.osgi.web.jetty" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/net.sf.cglib" type="Directory"/>
 </locations>
 </target>
