@@ -45,6 +45,10 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 	private Combo combo2;
 	private Combo combo3;
 
+	private String sep;
+	private String qu;
+	private String esc;
+
 	private HashMap<String, String> map = new HashMap<String, String>();
 
 	/**
@@ -55,16 +59,34 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 
 		setTitle("Reader Settings");
 		setDescription("Set the Separating character, Quote character and Escape character");
+
+		map.put("TAB", "\t");
 	}
 
 	/**
-	 * sets the PageComplete boolean to true, if the text is modified
+	 * sets the PageComplete boolean to true, if the text is valid
 	 * 
 	 * @see org.eclipse.swt.events.ModifyListener
 	 */
 	@Override
 	public void modifyText(ModifyEvent e) {
-		setPageComplete(true);
+
+		sep = combo.getText();
+		qu = combo2.getText();
+		esc = combo3.getText();
+
+		if (sep.isEmpty() || sep.contains("/") || sep.contains(":")
+				|| (map.get(sep) == null && sep.length() > 1) || qu.isEmpty()
+				|| qu.contains("/") || qu.contains(":") || qu.contains(".")
+				|| (map.get(qu) == null && qu.length() > 1) || esc.isEmpty()
+				|| esc.contains("/") || esc.contains(":")
+				|| (map.get(esc) == null && esc.length() > 1)) {
+			setPageComplete(false);
+			setErrorMessage("You have not entered valid characters");
+		} else {
+			setPageComplete(true);
+			setErrorMessage(null);
+		}
 
 	}
 
@@ -92,27 +114,25 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 	@Override
 	public boolean updateConfiguration(SchemaReader provider) {
 
-		setErrorMessage("You have not entered valid characters");
+		sep = combo.getText();
+		qu = combo2.getText();
+		esc = combo3.getText();
 
-		map.put("TAB", "\t");
-
-//		if (map.containsKey(combo.getText())
-//				&& map.get(combo.getText()).length() <= 2) {
-//			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR,
-//					map.get(combo.getText()));
-//		} else if (combo.getText().length() == 1
-//				&& !(map.containsKey(combo.getText()))) {
-//			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR,
-//					combo.getText());
-//		}
-//		getErrorMessage();
-//		System.out.println(map.get(combo.getText()));
-//		setPageComplete(false);
-
-		provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, map.get(combo.getText()));
-		provider.setParameter(CSVSchemaReader.PARAM_QUOTE, combo2.getText());
-		provider.setParameter(CSVSchemaReader.PARAM_ESCAPE, combo3.getText());
-		
+		if (map.get(sep) != null) {
+			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, map.get(sep));
+		} else {
+			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, sep);
+		}
+		if (map.get(qu) != null) {
+			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, map.get(qu));
+		} else {
+			provider.setParameter(CSVSchemaReader.PARAM_QUOTE, qu);
+		}
+		if (map.get(esc) != null) {
+			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, map.get(esc));
+		} else {
+			provider.setParameter(CSVSchemaReader.PARAM_ESCAPE, esc);
+		}
 		return true;
 	}
 
@@ -131,6 +151,7 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 		combo = new Combo(page, SWT.NONE);
 		combo.setLayoutData(GridDataFactory.copyData(layoutData));
 		combo.setItems(new String[] { "TAB", ",", "." });
+		combo.select(0);
 		combo.addModifyListener(this);
 
 		// column 1, row 2
@@ -141,6 +162,7 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 		combo2 = new Combo(page, SWT.NONE);
 		combo2.setLayoutData(GridDataFactory.copyData(layoutData));
 		combo2.setItems(new String[] { "\" ", "\'", ",", "-" });
+		combo2.select(0);
 		combo2.addModifyListener(this);
 
 		// column 1, row 3
@@ -151,11 +173,12 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 		combo3 = new Combo(page, SWT.NONE);
 		combo3.setLayoutData(GridDataFactory.copyData(layoutData));
 		combo3.setItems(new String[] { "\\", "." });
+		combo3.select(0);
 		combo3.addModifyListener(this);
 
 		page.pack();
 
-		setPageComplete(false);
+		setPageComplete(true);
 
 	}
 
