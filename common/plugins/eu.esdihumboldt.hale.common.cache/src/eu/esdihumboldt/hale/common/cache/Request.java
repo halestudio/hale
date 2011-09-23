@@ -162,7 +162,8 @@ public class Request {
 	 */
 	public InputStream get(URI uri) throws Exception {
 		// check for local files
-		if (uri.toString().startsWith("file:")) { //$NON-NLS-1$
+		if (uri.toString().startsWith("file:") ||
+				uri.toString().startsWith("bundleresource:")) { //$NON-NLS-1$
 			return this.getLocal(uri.toURL());
 		}
 		
