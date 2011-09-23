@@ -43,7 +43,7 @@ public class TypeNameField extends StringFieldEditor {
 		boolean containsIllegalChar;
 		
 		setErrorMessage("You have not entered a valid Name");
-		
+
 		Text txtField = getTextControl(_parent);
 		String txt = txtField.getText();
 		

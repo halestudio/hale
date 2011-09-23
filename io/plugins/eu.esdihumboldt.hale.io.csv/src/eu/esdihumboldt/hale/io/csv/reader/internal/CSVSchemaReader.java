@@ -22,6 +22,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -53,20 +54,40 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 	 */
 	public static String PARAM_TYPENAME = "typename";
 	
+	/**
+	 * Name of the parameter specifying the separating sign
+	 */
 	public static String PARAM_SEPARATOR = "separator";
 	
+	/**
+	 * Name of the parameter specifying the quote sing
+	 */
 	public static String PARAM_QUOTE = "quote";
 	
+	/**
+	 * Name of the parameter specifying the escape sign
+	 */
 	public static String PARAM_ESCAPE = "escape";
+	
+	/**
+	 * The first line of the CSV file
+	 */
+	public static String[] firstLine;
 
 	/**
 	 * The separating sign for the CSV file to be read (can be '\t' or ',' or
 	 * ' ')
 	 */
 	public static final char defaultSeparator = '\t';
-	
+
+	/**
+	 * The quote sign for the CSV file to be read
+	 */	
 	public static final char defaultQuote = '\"';
 	
+	/**
+	 * The escape sign for the CSV file to be read
+	 */	
 	public static final char defaultEscape = '\\';
 
 	private DefaultSchema schema;
@@ -88,6 +109,30 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 	}
 
 	/**
+	 * Reads only the first line of a given CSV file
+	 * 
+	 * @param provider provider to get the parameters from
+	 * @return a reader containing the first line of the CSV file
+	 * @throws IOException if an I/O operation fails
+	 */
+	public static CSVReader readFirst(ImportProvider provider) throws IOException {
+		
+		String separator = provider.getParameter(PARAM_SEPARATOR);
+		char sep = (separator == null || separator.isEmpty())?(defaultSeparator):(separator.charAt(0));
+		String quote = provider.getParameter(PARAM_QUOTE);
+		char qu = (quote == null || quote.isEmpty())?(defaultQuote):(quote.charAt(0));
+		String escape = provider.getParameter(PARAM_ESCAPE);
+		char esc = (escape == null || escape.isEmpty())?(defaultEscape):(escape.charAt(0));
+		
+		Reader streamReader = new BufferedReader(new InputStreamReader(
+				provider.getSource().getInput()));
+		CSVReader reader = new CSVReader(streamReader, sep, qu, esc);
+		
+		return reader;
+		
+	}
+	
+	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
@@ -98,18 +143,7 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 		String namespace = CSVFileIO.CSVFILE_NS;
 		schema = new DefaultSchema(namespace, getSource().getLocation());
 	
-		String separator = getParameter(PARAM_SEPARATOR);
-		char sep = (separator == null || separator.isEmpty())?(defaultSeparator):(separator.charAt(0));
-		String quote = getParameter(PARAM_QUOTE);
-		char qu = (quote == null || quote.isEmpty())?(defaultQuote):(quote.charAt(0));
-		String escape = getParameter(PARAM_ESCAPE);
-		char esc = (escape == null || escape.isEmpty())?(defaultEscape):(escape.charAt(0));
-		
-		Reader streamReader = new BufferedReader(new InputStreamReader(
-				getSource().getInput()));
-		CSVReader reader = new CSVReader(streamReader, sep, qu, esc);
-
-		String[] firstLine;
+		CSVReader reader = readFirst(this);
 
 		try {
 			// create type definition
@@ -136,7 +170,7 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 			firstLine = reader.readNext();
 
 			// set properties for the main type
-			for (String part : firstLine) {
+			for (String part : firstLine) { 
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
 						new QName(part), type, propertyType); // TODO
 
@@ -166,5 +200,5 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 	protected ContentType getDefaultContentType() {
 		return CSVFileIO.CSVFILE_CT;
 	}
-
+	
 }
