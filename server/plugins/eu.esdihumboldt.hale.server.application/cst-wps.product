@@ -22,8 +22,8 @@
       <plugin id="de.cs3d.util.logging"/>
       <plugin id="de.cs3d.util.logging.logback"/>
       <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.war"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
