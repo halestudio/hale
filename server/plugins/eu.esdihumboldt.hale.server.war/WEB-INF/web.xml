@@ -7,7 +7,7 @@
 	
 	<context-param>
 		<param-name>contextClass</param-name>
-		<param-value><!-- eu.esdihumboldt.hale.server.war.WebBundleXmlWebApplication -->
+		<param-value>
 			org.springframework.web.context.support.XmlWebApplicationContext
 		</param-value>
 	</context-param>
@@ -23,7 +23,7 @@
 		<servlet-class>org.mortbay.jetty.servlet.DefaultServlet</servlet-class>
 		<init-param>
 			<param-name>dirAllowed</param-name>
-			<param-value>true</param-value>
+			<param-value>false</param-value>
 		</init-param>
 	</servlet>
 	
