@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.common.instance.helper;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -21,24 +20,26 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 
-import javax.xml.namespace.QName;
-
 import org.junit.Test;
 
+
+import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceCollection;
+import eu.esdihumboldt.hale.io.gml.reader.internal.StreamGmlReader;
 import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReaderFactory;
-import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
-import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
+
+import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader;
+import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeSchemaReader;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 
@@ -63,17 +64,63 @@ public class PropertyResolverTest {
 				getClass().getResource("/data/shiporder/shiporder.xml").toURI());
 		
 //		String ns = "http://www.example.com";
-		
+		int size = instances. size();
 		ResourceIterator<Instance> it = instances.iterator();
 		assertTrue(it.hasNext());
 		
 		Instance instance = it.next();
 		assertNotNull(instance);
+			
+	//	Filter filter = CQL.toFilter("orderperson = John Smith");	
+	//	assertTrue(filter.evaluate(instance));
 		
+		TypeDefinition test = instance.getDefinition().getChildren().iterator().next().asProperty().getParentType();
+		
+		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}orderperson"));
+		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}shipto.{http://www.example.com}city"));
+		assertTrue(PropertyResolver.hasProperty(instance, "orderperson"));
+		assertTrue(PropertyResolver.hasProperty(instance, "shipto.city"));
 		//TODO
 		
 		it.close();
 	}
+	
+	
+	@Test
+	public void testComplexInstances() throws Exception {
+		
+		SchemaReader reader = new XmlSchemaReader();
+		reader.setSharedTypes(null);
+		reader.setSource(new DefaultInputSupplier((getClass().getResource("/data/erm/inspire3/HydroPhysicalWaters.xsd").toURI())));
+		IOReport report = reader.execute(null);
+		assertTrue(report.isSuccess());
+		Schema schema = reader.getSchema();
+		
+		StreamGmlReader instanceReader = new StreamGmlReader(ContentType.getContentType("GML"), true);;
+		instanceReader.setSource(new DefaultInputSupplier(getClass().getResource("/data/out/transformWrite_ERM_HPW.gml").toURI()));
+		instanceReader.setSourceSchema(schema);
+		
+		instanceReader.validate();
+		report = instanceReader.execute(null);
+		assertTrue(report.isSuccess());
+		
+		InstanceCollection instances = instanceReader.getInstances();
+		assertFalse(instances.isEmpty());
+		
+		
+		
+		
+		ResourceIterator<Instance> ri = instances.iterator();
+		Instance instance = ri.next();
+	
+		
+	    assertTrue(PropertyResolver.hasProperty(instance, "description"));
+   assertTrue(PropertyResolver.hasProperty(instance, "boundedBy.Envelope.coordinates"));
+        assertTrue(PropertyResolver.hasProperty(instance, "boundedBy.Envelope.coordinates"));
+        
+		//TODO
+	
+	}	
 	
 	private InstanceCollection loadXMLInstances(URI schemaLocation, URI xmlLocation) throws IOException, IOProviderConfigurationException {
 		SchemaReader reader = new XmlSchemaReader();
@@ -82,6 +129,10 @@ public class PropertyResolverTest {
 		IOReport schemaReport = reader.execute(null);
 		assertTrue(schemaReport.isSuccess());
 		Schema sourceSchema = reader.getSchema();
+		
+		
+		//
+		
 		
 		XmlInstanceReaderFactory f = new XmlInstanceReaderFactory();
 		InstanceReader instanceReader = f.createProvider();
@@ -92,7 +143,13 @@ public class PropertyResolverTest {
 		IOReport instanceReport = instanceReader.execute(null);
 		assertTrue(instanceReport.isSuccess());
 		
-		return instanceReader.getInstances();
+//		 Collection<? extends TypeDefinition> coll = sourceSchema.getTypes();
+//		int size = coll.size();
+		 
+		return instanceReader.getInstances();	
 	}
 
 }
+
+
+//problem? set *spring*osgi and convert to true in runconfigs->plugins
