@@ -93,6 +93,11 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 	private DefaultSchema schema;
 
 	/**
+	 * Name of the parameter specifying the property name
+	 */
+	public static String PARAM_PROPERTY = "properties";
+
+	/**
 	 * @see IOProvider#isCancelable()
 	 */
 	@Override
@@ -170,7 +175,10 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 			firstLine = reader.readNext();
 
 			// set properties for the main type
-			for (String part : firstLine) { 
+			for (String part : firstLine) {
+				if (!(PARAM_PROPERTY.contains(part))/* strings in firstLine != strings given by the user */) {
+					// part = new parameter (getParameter(PARAM_PROPERTY)?)
+				}
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
 						new QName(part), type, propertyType); // TODO
 
