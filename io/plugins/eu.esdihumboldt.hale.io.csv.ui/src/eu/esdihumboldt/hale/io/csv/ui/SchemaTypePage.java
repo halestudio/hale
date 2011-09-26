@@ -12,9 +12,10 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
-import java.awt.GridBagLayout;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -22,7 +23,6 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -46,8 +46,9 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 	private String defaultString = "";
 	private StringFieldEditor sfe;
-	private StringFieldEditor propField;
 	private Group group;
+	private String[] last_firstLine = null;
+	private Collection<TypeNameField> fields = new ArrayList<TypeNameField>();
 
 	/**
 	 * default constructor
@@ -58,7 +59,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 		setTitle("Typename Settings");
 		setDescription("Enter a valid Name for your Type");
-		
+
 	}
 
 	/**
@@ -66,7 +67,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	 */
 	@Override
 	public void enable() {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 
 	}
 
@@ -75,7 +76,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	 */
 	@Override
 	public void disable() {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 
 	}
 
@@ -114,28 +115,63 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 			sfe.setStringValue(defaultString);
 			setPageComplete(sfe.isValid());
 		}
-		
+
 		try {
-			CSVReader reader = CSVSchemaReader.readFirst(getWizard().getProvider());
+			CSVReader reader = CSVSchemaReader.readFirst(getWizard()
+					.getProvider());
+			// TODO:
+			// String[] firstLine: should be the Array containing the property
+			// names given by the user
 			String[] firstLine = reader.readNext();
-			int length = firstLine.length;
-			
+			int length = 0;
+			if (firstLine.length != 0) {
+				length = firstLine.length;
+			}
+			// -------------------- String[] to String -------------------------
+			StringBuffer propNamesBuffer = new StringBuffer();
+			for (String prop : firstLine) {
+				propNamesBuffer.append(prop);
+				propNamesBuffer.append(",");
+			}
+			propNamesBuffer.deleteCharAt(propNamesBuffer.lastIndexOf(","));
+			String propNames = propNamesBuffer.toString();
+			// -----------------------------------------------------------------
+			CSVSchemaReader.PARAM_PROPERTY = propNames;
+
+			// disposes all property names if the read configuration has changed
+			if (last_firstLine != null && !(last_firstLine.equals(firstLine))) {
+				for (TypeNameField properties : fields) {
+					properties.dispose();
+					properties.getTextControl(group).dispose();
+					properties.getLabelControl(group).dispose();
+				}
+				fields.clear();
+			}
 			for (int i = 0; i < length; i++) {
-		        propField = new TypeNameField("properties", Integer.toString(i+1) , group);
-		        propField.setEmptyStringAllowed(false);
+				TypeNameField propField;
+
+				propField = new TypeNameField("properties",
+						Integer.toString(i + 1), group);
+				propField.setEmptyStringAllowed(false);
 				propField.setErrorMessage("Please enter a valid Property Name");
-				propField.setPropertyChangeListener(new IPropertyChangeListener() {
-		
-					@Override
-					public void propertyChange(PropertyChangeEvent event) {
-						if (event.getProperty().equals(StringFieldEditor.IS_VALID)) {
-							setPageComplete((Boolean) event.getNewValue());
-						}
-					}
-				});
-		        propField.setStringValue(firstLine[i]);
-		    }
-			
+				propField
+						.setPropertyChangeListener(new IPropertyChangeListener() {
+
+							@Override
+							public void propertyChange(PropertyChangeEvent event) {
+								if (event.getProperty().equals(
+										StringFieldEditor.IS_VALID)) {
+									setPageComplete((Boolean) event
+											.getNewValue());
+								}
+							}
+						});
+				propField.setStringValue(firstLine[i]);
+				fields.add(propField);
+			}
+
+			last_firstLine = firstLine;
+
 		} catch (IOException e) {
 			setErrorMessage("File could not be read");
 			setPageComplete(false);
@@ -172,9 +208,11 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 		group = new Group(page, SWT.NONE);
 		group.setText("Properties");
-		group.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).span(2, 1).create());
-		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false).margins(5, 5).create());
-		
+		group.setLayoutData(GridDataFactory.fillDefaults().grab(true, false)
+				.span(2, 1).create());
+		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2)
+				.equalWidth(false).margins(5, 5).create());
+
 		setPageComplete(sfe.isValid());
 	}
 

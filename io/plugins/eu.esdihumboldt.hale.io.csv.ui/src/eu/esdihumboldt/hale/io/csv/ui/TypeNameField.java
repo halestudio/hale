@@ -50,8 +50,6 @@ public class TypeNameField extends StringFieldEditor {
 		containsIllegalChar = txt.contains("/") || txt.contains(":") || txt.contains(".");
 		
 		return !(containsIllegalChar);
-	}
-
-		
+	}		
 	
 }

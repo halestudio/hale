@@ -82,7 +82,11 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 				|| esc.contains("/") || esc.contains(":")
 				|| (map.get(esc) == null && esc.length() > 1)) {
 			setPageComplete(false);
-			setErrorMessage("You have not entered valid characters");
+			setErrorMessage("You have not entered valid characters!");
+		} else if (sep.equals(qu)
+				|| qu.equals(esc) || esc.equals(sep)) {
+			setPageComplete(false);
+			setErrorMessage("Your signs must be different!");
 		} else {
 			setPageComplete(true);
 			setErrorMessage(null);
@@ -124,12 +128,12 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, sep);
 		}
 		if (map.get(qu) != null) {
-			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, map.get(qu));
+			provider.setParameter(CSVSchemaReader.PARAM_QUOTE, map.get(qu));
 		} else {
 			provider.setParameter(CSVSchemaReader.PARAM_QUOTE, qu);
 		}
 		if (map.get(esc) != null) {
-			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, map.get(esc));
+			provider.setParameter(CSVSchemaReader.PARAM_ESCAPE, map.get(esc));
 		} else {
 			provider.setParameter(CSVSchemaReader.PARAM_ESCAPE, esc);
 		}
@@ -161,7 +165,7 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 		// column 2, row 2
 		combo2 = new Combo(page, SWT.NONE);
 		combo2.setLayoutData(GridDataFactory.copyData(layoutData));
-		combo2.setItems(new String[] { "\" ", "\'", ",", "-" });
+		combo2.setItems(new String[] { "\"", "\'", ",", "-" });
 		combo2.select(0);
 		combo2.addModifyListener(this);
 
