@@ -12,6 +12,16 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
    <plugins>
       <plugin id="cal10n.api"/>
       <plugin id="ch.qos.logback.classic"/>
@@ -422,11 +432,13 @@
    </plugins>
 
    <configurations>
+      <plugin id="eu.esdihumboldt.hale.server.war" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
-      <plugin id="org.springframework.osgi.extender" autoStart="false" startLevel="4" />
-      <plugin id="org.springframework.osgi.web.extender" autoStart="false" startLevel="4" />
+      <plugin id="org.springframework.osgi.extender" autoStart="true" startLevel="4" />
+      <plugin id="org.springframework.osgi.jetty.start.osgi" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.osgi.web.extender" autoStart="true" startLevel="4" />
    </configurations>
 
 </product>
