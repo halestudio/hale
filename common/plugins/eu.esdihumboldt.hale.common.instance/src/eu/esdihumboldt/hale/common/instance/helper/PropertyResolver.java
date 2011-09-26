@@ -88,7 +88,7 @@ public class PropertyResolver {
 
 			String current = pathParts.get(i);
 
-			if (propertyPath.startsWith("{")) {
+			if (current.startsWith("{")) {
 				String uri = current.substring(current.indexOf("{") + 1,
 						current.indexOf("}"));
 				String name = current.substring(current.indexOf("}") + 1);
@@ -112,13 +112,16 @@ public class PropertyResolver {
 
 			if (qnames.size() == 1) {
 
-				return analyzeSimpleQueryChildDefinition(instance
+				analyzeSimpleQueryChildDefinition(instance
 						.getDefinition().getChildren(), qnames, qdi);
+			 
+				return !definitioncache.get(qdi).isEmpty();
 			}
 
 			else {
-				return analyzeSpecialQueryChildDefinition(instance
+				analyzeSpecialQueryChildDefinition(instance
 						.getDefinition().getChildren(), qnames, qdi);
+				return !definitioncache.get(qdi).isEmpty();
 			}
 
 
@@ -136,10 +139,10 @@ public class PropertyResolver {
 		
 		if(definitioncache.containsKey(qdi)){
 			
-			if(!definitioncache.get(qdi).isEmpty()){
-				return true;
+			if(definitioncache.get(qdi).isEmpty()){
+				return false;
 			}
-			else return false;
+			else return true;
 			
 		}
 		else return analyzeDefinition(instance, qdi);
@@ -151,7 +154,7 @@ public class PropertyResolver {
 	 * @param qci
 	 * @return
 	 */
-	private static boolean analyzeSimpleQueryChildDefinition(
+	private static void analyzeSimpleQueryChildDefinition(
 			Collection<? extends ChildDefinition<?>> children,
 			ArrayList<QName> path, QueryDefinitionIndex qdi) {
 
@@ -166,8 +169,10 @@ public class PropertyResolver {
 
 			ChildDefinition<?> child = childIterator.next();
 			//System.out.println("Adding to queue: " + child.getName().toString());
-			propertyqueue.add(new QueueDefinitionItem(child, child.getName()));
-
+			QueueDefinitionItem queueItem = new QueueDefinitionItem(child, child.getName());
+			queueItem.addQname(child.getParentType().getName());
+			propertyqueue.add(queueItem);
+			
 		}
 
 		while (!propertyqueue.isEmpty()) {
@@ -177,23 +182,17 @@ public class PropertyResolver {
 			//System.out.println("Taking from Queue: " + currentItem.getDefinition().getName().toString());
 			
 			
-			if (current.getNamespaceURI().equals("")
+			if (compareQName(current, currentItem.getDefinition().getName())
 					&& isProperty(currentItem.getDefinition())) {
 
-				if (currentItem.getDefinition().getName().getLocalPart()
-						.equals(current.getLocalPart())) {
+				
 					definitioncache.get(qdi).add(
 							currentItem.qNamesToString());
 
-				}
 			}
 
-			else if (currentItem.getDefinition().getName().equals(current)
-					&& isProperty(currentItem.getDefinition())) {
-				definitioncache.get(qdi).add(currentItem.qNamesToString());
-			}
 
-			if (!isFlatProperty(currentItem.getDefinition()) || isGroup(currentItem.getDefinition())) {
+			if (isInstance(currentItem.getDefinition()) || isGroup(currentItem.getDefinition())) {
 
 				Iterator<? extends ChildDefinition<?>> tempit; 
 				
@@ -216,9 +215,10 @@ public class PropertyResolver {
 					//System.out.println("Existing child: " + tempdef.getName().toString());
 					
 					//TODO loop-prevention - still not working
-					
-					if(currentItem.getLoopQNames().contains(tempdef.getName())){
-						continue;
+					for(ArrayList<QName> loop : currentItem.getLoopQNames()){
+						if(loop.contains(tempdef.getName())){
+							continue;
+						}
 					}
 					
 					if (currentItem.getQnames().contains(tempdef.getName())){
@@ -228,7 +228,7 @@ public class PropertyResolver {
 								i < currentItem.getQnames().size(); i++){
 							loops.add(currentItem.getQnames().get(i));							
 						}
-					currentItem.setLoopQNames(loops);
+					currentItem.addLoopQNames(loops);
 					continue;
 						
 					}
@@ -237,13 +237,13 @@ public class PropertyResolver {
 					QueueDefinitionItem qudi = new QueueDefinitionItem(
 							tempdef, tempdef.getName());
 			//TODO hier ist ein fehler		
-					for (int i = currentItem.getQnames().size() - 1; i >= 0; i--) {
-
-						qudi.addQnames(currentItem.getQnames().get(i));
 					
-					}
+					qudi.addQnames(currentItem.getQnames());
 					
-					qudi.setLoopQNames(currentItem.getLoopQNames());
+					
+					for(ArrayList<QName> loop : currentItem.getLoopQNames()){
+						qudi.addLoopQNames(loop);
+						}
 
 					propertyqueue.add(qudi);
 
@@ -252,11 +252,7 @@ public class PropertyResolver {
 			}
 
 		}
-		if (!definitioncache.get(qdi).isEmpty()) {
-			return true;
-		} else
-			return false;
-
+		
 	}
 
 	private static QueueDefinitionItem analyzeSubChild(QueueDefinitionItem qudi, QName current){
@@ -272,7 +268,11 @@ public class PropertyResolver {
 
 				ChildDefinition<?> child = childIterator.next();
 				//System.out.println("Adding to queue: " + child.getName().toString());
-				propertyqueue.add(new QueueDefinitionItem(child, child.getName()));
+				QueueDefinitionItem queueItem = new QueueDefinitionItem(child, child.getName());
+				
+				queueItem.addQnames(qudi.getQnames());
+				
+				propertyqueue.add(queueItem);
 
 			}
 
@@ -281,20 +281,13 @@ public class PropertyResolver {
 
 			QueueDefinitionItem currentItem = propertyqueue.poll();
 
-			if (current.getNamespaceURI().equals("")
+			if (compareQName(current, currentItem.getDefinition().getName())
 					&& isProperty(currentItem.getDefinition())) {
 
-				if (currentItem.getDefinition().getName().getLocalPart()
-						.equals(current.getLocalPart())) {
 					return currentItem;
 
 				}
-			}
-
-			else if (currentItem.getDefinition().getName().equals(current)
-					&& isProperty(currentItem.getDefinition())) {
-				return currentItem;
-			}
+			
 
 			if (isGroup(currentItem.getDefinition())) {
 
@@ -330,7 +323,7 @@ public class PropertyResolver {
 								i < currentItem.getQnames().size(); i++){
 							loops.add(currentItem.getQnames().get(i));							
 						}
-					currentItem.setLoopQNames(loops);
+					currentItem.addLoopQNames(loops);
 					continue;
 						
 					}
@@ -339,13 +332,14 @@ public class PropertyResolver {
 					QueueDefinitionItem quditemp = new QueueDefinitionItem(
 							tempdef, tempdef.getName());
 			//TODO hier ist ein fehler		
-					for (int i = currentItem.getQnames().size() - 1; i >= 0; i--) {
 
-						quditemp.addQnames(currentItem.getQnames().get(i));
+					quditemp.addQnames(currentItem.getQnames());
 					
-					}
 					
-					quditemp.setLoopQNames(currentItem.getLoopQNames());
+					
+					for(ArrayList<QName> loop : currentItem.getLoopQNames()){
+						qudi.addLoopQNames(loop);
+						}
 
 					propertyqueue.add(quditemp);
 
@@ -361,7 +355,7 @@ public class PropertyResolver {
 		
 
 	
-	private static boolean analyzeSpecialQueryChildDefinition(
+	private static void analyzeSpecialQueryChildDefinition(
 			Collection<? extends ChildDefinition<?>> children,
 			ArrayList<QName> path, QueryDefinitionIndex qdi) {
 
@@ -376,52 +370,35 @@ public class PropertyResolver {
 
 			ChildDefinition<?> child = childIterator.next();
 			//System.out.println("Adding to queue: " + child.getName().toString());
-			propertyqueue.add(new QueueDefinitionItem(child, child.getName()));
-
+			QueueDefinitionItem queueItem = new QueueDefinitionItem(child, child.getName());
+			queueItem.addQname(child.getParentType().getName());
+			propertyqueue.add(queueItem);
 		}
 
 		while (!propertyqueue.isEmpty()) {
 
 			QueueDefinitionItem currentItem = propertyqueue.poll();
 
-			if (current.getNamespaceURI().equals("")
-					&& isProperty(currentItem.getDefinition())){
-
-				if (currentItem.getDefinition().getName().getLocalPart()
-						.equals(current.getLocalPart())) {
-					
-						for (int i = 1; i < path.size(); i++)
-						currentItem = analyzeSubChild(currentItem, path.get(i));
-								if(currentItem == null){
-									break;
-						}
-						if(currentItem != null){
-							
-							definitioncache.get(qdi).add(
-									currentItem.qNamesToString());							
-					}
-					
-				}
-			}
-
-			else if (currentItem.getDefinition().getName().equals(current)
+			if (compareQName(current, currentItem.getDefinition().getName())
 					&& isProperty(currentItem.getDefinition())) {
-				
-
-				for (int i = 1; i < path.size(); i++)
-					currentItem = analyzeSubChild(currentItem, path.get(i));
-							if(currentItem == null){
-								break;
-					}
-				if(currentItem != null){
 					
-					definitioncache.get(qdi).add(
-							currentItem.qNamesToString());							
+					for (int i = 1; i < path.size(); i++){
+						currentItem = analyzeSubChild(currentItem, path.get(i));
+						if(currentItem == null){
+							break;
+						}
 					}
-			
+						
+					if(currentItem != null){
+							
+						definitioncache.get(qdi).add(
+								currentItem.qNamesToString());							
+					}
+					
 				}
+			
 
-			else if (!isFlatProperty(currentItem.getDefinition()) || isGroup(currentItem.getDefinition())) {
+			else if (isInstance(currentItem.getDefinition()) || isGroup(currentItem.getDefinition())) {
 
 				Iterator<? extends ChildDefinition<?>> tempit; 
 				
@@ -455,7 +432,7 @@ public class PropertyResolver {
 								i < currentItem.getQnames().size(); i++){
 							loops.add(currentItem.getQnames().get(i));							
 						}
-					currentItem.setLoopQNames(loops);
+					currentItem.addLoopQNames(loops);
 					continue;
 						
 					}
@@ -464,13 +441,16 @@ public class PropertyResolver {
 					QueueDefinitionItem qudi = new QueueDefinitionItem(
 							tempdef, tempdef.getName());
 			//TODO hier ist ein fehler		
-					for (int i = currentItem.getQnames().size() - 1; i >= 0; i--) {
-
-						qudi.addQnames(currentItem.getQnames().get(i));
 					
+
+					qudi.addQnames(currentItem.getQnames());
+					
+					
+					
+					for(ArrayList<QName> loop : currentItem.getLoopQNames()){
+					qudi.addLoopQNames(loop);
 					}
 					
-					qudi.setLoopQNames(currentItem.getLoopQNames());
 
 					propertyqueue.add(qudi);
 
@@ -480,11 +460,7 @@ public class PropertyResolver {
 			}
 
 		}
-		if (!definitioncache.get(qdi).isEmpty()) {
-			return true;
-		} else
-			return false;
-
+		
 	}
 	
 	private static boolean isGroup(ChildDefinition<?> def){
@@ -494,15 +470,37 @@ public class PropertyResolver {
 	private static boolean isProperty(ChildDefinition<?> def){
 		return def.asGroup() == null && def.asProperty() != null;
 	}
-	private static boolean isFlatProperty(ChildDefinition<?> def){
+	private static boolean isInstance(ChildDefinition<?> def){
 		
 		if(def.asProperty() == null){
 			return false;
 		}
 		else if(!def.asProperty().getPropertyType().getChildren().isEmpty()){
-			return false;
+			return true;
 		}
-		else return true;
+		else return false;
 	}
+	
+	private static boolean compareQName(QName qname1, QName qname2){
+		
+		if(qname1.getNamespaceURI().isEmpty()){
+			
+			if(qname1.getLocalPart().equals(qname2.getLocalPart())){
+				return true;
+			}
+			else return false;
+		}
+		else if (qname1.equals(qname2)){
+			return true;
+		}
+		
+		else return false;
+	}
+	
+	
 
 }
+
+
+
+

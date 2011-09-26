@@ -27,12 +27,12 @@ public class QueueDefinitionItem {
 
 	ChildDefinition<?> def;
 	ArrayList<QName> qnames;
-	ArrayList<QName> loops;
+	ArrayList<ArrayList<QName>> loops;
 	
 	public QueueDefinitionItem(ChildDefinition<?> def, QName qname){
 		this.def = def;
 		this.qnames = new ArrayList<QName>();
-		this.loops = new ArrayList<QName>();
+		this.loops = new ArrayList<ArrayList<QName>>();
 		qnames.add(qname);
 	}
 
@@ -60,17 +60,25 @@ public class QueueDefinitionItem {
 	/**
 	 * @param qname the qname to add
 	 */
-	public void addQnames(QName qname) {
+	public void addQname(QName qname) {
 		this.qnames.add(0, qname);
 	}
 	
-	public void setLoopQNames(ArrayList<QName> loopQNames) {
-		for(QName n : loopQNames){
-			loops.add(n);
+	public void addQnames(ArrayList<QName> qnames){
+		
+		int i = 0;
+		for (QName name : qnames){
+			this.qnames.add(i, name);
+			i++;
 		}
+		
 	}
 	
-	public ArrayList<QName> getLoopQNames(){
+	public void addLoopQNames(ArrayList<QName> loopQNames) {
+		loops.add(loopQNames);
+	}
+	
+	public ArrayList<ArrayList<QName>> getLoopQNames(){
 		return loops;
 	}
 	
