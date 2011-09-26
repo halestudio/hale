@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.function.generic.pages;
+package eu.esdihumboldt.hale.ui.function.generic.pages.internal;
 
 import java.util.Set;
 
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**

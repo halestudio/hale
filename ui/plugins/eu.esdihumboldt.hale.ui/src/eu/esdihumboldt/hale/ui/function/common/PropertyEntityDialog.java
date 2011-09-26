@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.function.generic.pages;
+package eu.esdihumboldt.hale.ui.function.common;
 
 import java.util.ArrayList;
 import java.util.List;

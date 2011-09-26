@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.function.generic.pages;
+package eu.esdihumboldt.hale.ui.function.common;
 
 import java.util.Set;
 
@@ -20,45 +20,28 @@ import org.eclipse.swt.widgets.Shell;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.Type;
-import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * TODO Type description
  * @author sitemple
  */
-public class PropertyEntitySelector extends EntitySelector {
-	
-	private TypeDefinition parentType;
+public class TypeEntitySelector extends EntitySelector {
 
 	/**
 	 * @param ssid
 	 * @param candidates
 	 * @param field
 	 * @param parent
-	 * @param parentType 
 	 */
-	public PropertyEntitySelector(SchemaSpaceID ssid,
+	public TypeEntitySelector(SchemaSpaceID ssid,
 			Set<EntityDefinition> candidates, AbstractParameter field,
-			Composite parent, TypeDefinition parentType) {
+			Composite parent) {
 		super(ssid, candidates, field, parent);
-		
-		this.parentType = parentType;
-	}
-
-	/**
-	 * Set the parent type
-	 * @param parentType the parentType to set
-	 */
-	public void setParentType(TypeDefinition parentType) {
-		this.parentType = parentType;
-		// reset candidates?? refresh viewer?
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -70,14 +53,14 @@ public class PropertyEntitySelector extends EntitySelector {
 		String title;
 		switch (ssid) {
 		case SOURCE:
-			title = "Select source property";
+			title = "Select source type";
 			break;
 		case TARGET:
 		default:
-			title = "Select target property";
+			title = "Select target type";
 			break;
 		}
-		return new PropertyEntityDialog(parentShell, ssid, parentType, title);
+		return new TypeEntityDialog(parentShell, ssid, title);
 	}
 
 	/**
@@ -85,13 +68,13 @@ public class PropertyEntitySelector extends EntitySelector {
 	 */
 	@Override
 	protected Entity createEntity(EntityDefinition element) {
-		if (element instanceof PropertyEntityDefinition) {
-			Property property = new DefaultProperty((PropertyEntityDefinition) element);
+		if (element instanceof TypeEntityDefinition) {
+			Type type = new DefaultType((TypeEntityDefinition) element);
 			//TODO configure entity?
-			return property;
+			return type;
 		}
 		
-		throw new IllegalArgumentException("Entity must be a property");
+		throw new IllegalArgumentException("Entity must be a type");
 	}
 
 }
