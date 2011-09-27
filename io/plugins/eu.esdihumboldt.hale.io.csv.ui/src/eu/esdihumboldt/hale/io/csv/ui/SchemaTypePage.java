@@ -88,6 +88,16 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 		provider.setParameter(CSVSchemaReader.PARAM_TYPENAME,
 				sfe.getStringValue());
+
+		StringBuffer propNamesBuffer = new StringBuffer();
+		for (TypeNameField prop : fields) {
+			propNamesBuffer.append(prop.getStringValue());
+			propNamesBuffer.append(",");
+		}
+		propNamesBuffer.deleteCharAt(propNamesBuffer.lastIndexOf(","));
+		String propNames = propNamesBuffer.toString();
+		provider.setParameter(CSVSchemaReader.PARAM_PROPERTY, propNames);
+
 		return true;
 
 	}
@@ -127,16 +137,6 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 			if (firstLine.length != 0) {
 				length = firstLine.length;
 			}
-			// -------------------- String[] to String -------------------------
-			StringBuffer propNamesBuffer = new StringBuffer();
-			for (String prop : firstLine) {
-				propNamesBuffer.append(prop);
-				propNamesBuffer.append(",");
-			}
-			propNamesBuffer.deleteCharAt(propNamesBuffer.lastIndexOf(","));
-			String propNames = propNamesBuffer.toString();
-			// -----------------------------------------------------------------
-			CSVSchemaReader.PARAM_PROPERTY = propNames;
 
 			// disposes all property names if the read configuration has changed
 			if (last_firstLine != null && !(last_firstLine.equals(firstLine))) {
