@@ -43,12 +43,7 @@ import eu.esdihumboldt.hale.io.csv.CSVFileIO;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class CSVSchemaReader extends AbstractSchemaReader {
-
-	/**
-	 * Name of the parameter specifying the type name
-	 */
-	public static String PARAM_TYPENAME = "typename";
+public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstants{
 	
 	/**
 	 * The first line of the CSV file

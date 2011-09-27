@@ -20,6 +20,13 @@
                id="eu.esdihumboldt.hale.io.csv.reader.instance">
          </providerFactory>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage"
+            order="-20">
+         <providerFactory
+               id="eu.esdihumboldt.hale.io.csv.reader.instance">
+         </providerFactory>
+      </configPage>
    </extension>
 
 </plugin>
