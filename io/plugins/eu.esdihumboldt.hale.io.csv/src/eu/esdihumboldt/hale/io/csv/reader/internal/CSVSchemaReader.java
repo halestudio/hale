@@ -95,7 +95,7 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 	/**
 	 * Name of the parameter specifying the property name
 	 */
-	public static String PARAM_PROPERTY = "properties";
+	public static final String PARAM_PROPERTY = "properties";
 
 	/**
 	 * @see IOProvider#isCancelable()
@@ -174,13 +174,12 @@ public class CSVSchemaReader extends AbstractSchemaReader {
 			// initializes the first line of the table (names of the columns)
 			firstLine = reader.readNext();
 
+			String[] properties = getParameter(PARAM_PROPERTY).split(",");
+			
 			// set properties for the main type
-			for (String part : firstLine) {
-				if (!(PARAM_PROPERTY.contains(part))/* strings in firstLine != strings given by the user */) {
-					// part = new parameter (getParameter(PARAM_PROPERTY)?)
-				}
+			for (String part : properties) {
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-						new QName(part), type, propertyType); // TODO
+						new QName(part), type, propertyType);
 
 				// set constraints on property
 				property.setConstraint(NillableFlag.DISABLED); // nillable
