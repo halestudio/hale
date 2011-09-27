@@ -68,5 +68,13 @@ public class TypeEntityDialog extends EntityDialog {
 		
 		return null;
 	}
+	
+	/**
+	 * @see EntityDialog#getEntity()
+	 */
+	@Override
+	public TypeEntityDefinition getEntity() {
+		return (TypeEntityDefinition) super.getEntity();
+	}
 
 }

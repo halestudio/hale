@@ -24,9 +24,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
-import eu.esdihumboldt.hale.ui.io.schema.SchemaReaderConfigurationPage;
+import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
+import eu.esdihumboldt.hale.ui.io.ImportWizard;
+import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Advanced configuration for the SchemaReader
@@ -34,7 +36,8 @@ import eu.esdihumboldt.hale.ui.io.schema.SchemaReaderConfigurationPage;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class ReadConfigurationPage extends SchemaReaderConfigurationPage
+public class ReadConfigurationPage extends AbstractConfigurationPage<ImportProvider, IOProviderFactory<ImportProvider>,
+	ImportWizard<ImportProvider, IOProviderFactory<ImportProvider>>>
 		implements ModifyListener {
 
 	private Label separator;
@@ -116,26 +119,26 @@ public class ReadConfigurationPage extends SchemaReaderConfigurationPage
 	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
 	 */
 	@Override
-	public boolean updateConfiguration(SchemaReader provider) {
+	public boolean updateConfiguration(ImportProvider provider) {
 
 		sep = combo.getText();
 		qu = combo2.getText();
 		esc = combo3.getText();
 
 		if (map.get(sep) != null) {
-			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, map.get(sep));
+			provider.setParameter(CSVConstants.PARAM_SEPARATOR, map.get(sep));
 		} else {
-			provider.setParameter(CSVSchemaReader.PARAM_SEPARATOR, sep);
+			provider.setParameter(CSVConstants.PARAM_SEPARATOR, sep);
 		}
 		if (map.get(qu) != null) {
-			provider.setParameter(CSVSchemaReader.PARAM_QUOTE, map.get(qu));
+			provider.setParameter(CSVConstants.PARAM_QUOTE, map.get(qu));
 		} else {
-			provider.setParameter(CSVSchemaReader.PARAM_QUOTE, qu);
+			provider.setParameter(CSVConstants.PARAM_QUOTE, qu);
 		}
 		if (map.get(esc) != null) {
-			provider.setParameter(CSVSchemaReader.PARAM_ESCAPE, map.get(esc));
+			provider.setParameter(CSVConstants.PARAM_ESCAPE, map.get(esc));
 		} else {
-			provider.setParameter(CSVSchemaReader.PARAM_ESCAPE, esc);
+			provider.setParameter(CSVConstants.PARAM_ESCAPE, esc);
 		}
 		return true;
 	}
