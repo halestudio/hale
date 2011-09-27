@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.function.generic;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.PropertyEntitiesPage;
@@ -24,7 +25,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * Generic property function wizard
  * @author Simon Templer
  */
-public class GenericPropertyFunctionWizard extends AbstractGenericFunctionWizard<PropertyFunction> {
+public class GenericPropertyFunctionWizard extends AbstractGenericFunctionWizard<PropertyParameter, PropertyFunction> {
 
 	/**
 	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(Cell)
@@ -54,7 +55,7 @@ public class GenericPropertyFunctionWizard extends AbstractGenericFunctionWizard
 	 * @see AbstractGenericFunctionWizard#createEntitiesPage(SchemaSelection, Cell)
 	 */
 	@Override
-	protected EntitiesPage<PropertyFunction, ?> createEntitiesPage(
+	protected EntitiesPage<PropertyFunction, PropertyParameter, ?> createEntitiesPage(
 			SchemaSelection initSelection, Cell initCell) {
 		return new PropertyEntitiesPage(initSelection, initCell);
 	}

@@ -80,10 +80,10 @@ public abstract class AbstractWizardAction<T extends AbstractFunctionWizardContr
 	public void run() {
 		FunctionWizard wizard = createWizard();
 		
-		// initialize the wizard
-		wizard.init();
-		
 		if (wizard != null) {
+			// initialize the wizard
+			wizard.init();
+			
 			WizardDialog dialog = new WizardDialog(
 				Display.getCurrent().getActiveShell(), wizard);
 			

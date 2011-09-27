@@ -27,10 +27,11 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
 
 /**
  * {@link IConfigurationElement} based function base class
+ * @param <P> the parameter type
  * @author Simon Templer
  */
 @Immutable
-public abstract class AbstractFunction implements Function {
+public abstract class AbstractFunction<P extends AbstractParameter> implements Function {
 
 	/**
 	 * The configuration element
@@ -66,13 +67,13 @@ public abstract class AbstractFunction implements Function {
 	 * Get the source entities
 	 * @return the source entities
 	 */
-	public abstract Set<? extends AbstractParameter> getSource();
+	public abstract Set<? extends P> getSource();
 	
 	/**
 	 * Get the target entities
 	 * @return the target entities
 	 */
-	public abstract Set<? extends AbstractParameter> getTarget();
+	public abstract Set<? extends P> getTarget();
 	
 	/**
 	 * States if the function represents an augmentation of a target instance

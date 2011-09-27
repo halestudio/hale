@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -43,10 +44,10 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * TODO Type description
- * @author sitemple
+ * Entity page for properties
+ * @author Simon Templer
  */
-public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, PropertyField> {
+public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, PropertyParameter, PropertyField> {
 	
 	private ComboViewer typeRelation;
 
@@ -117,7 +118,7 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID, Composite, Set, Cell)
 	 */
 	@Override
-	protected PropertyField createField(AbstractParameter field, SchemaSpaceID ssid,
+	protected PropertyField createField(PropertyParameter field, SchemaSpaceID ssid,
 			Composite parent, Set<EntityDefinition> candidates, Cell initialCell) {
 		return new PropertyField(field, ssid, parent, candidates, initialCell, 
 				getParentType(ssid));

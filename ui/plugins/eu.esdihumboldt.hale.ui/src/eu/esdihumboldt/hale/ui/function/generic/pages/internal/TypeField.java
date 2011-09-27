@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
@@ -26,12 +27,12 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
  * Represents named type entities in a function
  * @author Simon Templer
  */
-public class TypeField extends Field<TypeEntitySelector> {
+public class TypeField extends Field<TypeParameter, TypeEntitySelector> {
 
 	/**
 	 * @see Field#Field(AbstractParameter, SchemaSpaceID, Composite, Set, Cell)
 	 */
-	public TypeField(AbstractParameter definition, SchemaSpaceID ssid,
+	public TypeField(TypeParameter definition, SchemaSpaceID ssid,
 			Composite parent, Set<EntityDefinition> candidates, Cell initialCell) {
 		super(definition, ssid, parent, candidates, initialCell);
 	}
@@ -41,7 +42,7 @@ public class TypeField extends Field<TypeEntitySelector> {
 	 */
 	@Override
 	protected TypeEntitySelector createEntitySelector(SchemaSpaceID ssid,
-			Set<EntityDefinition> candidates, AbstractParameter field,
+			Set<EntityDefinition> candidates, TypeParameter field,
 			Composite parent) {
 		return new TypeEntitySelector(ssid, candidates, field, parent);
 	}

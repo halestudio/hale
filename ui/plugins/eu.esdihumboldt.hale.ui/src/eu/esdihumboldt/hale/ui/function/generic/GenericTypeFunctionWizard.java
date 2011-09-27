@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.function.generic;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.TypeEntitiesPage;
@@ -24,7 +25,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * Generic type function wizard
  * @author Simon Templer
  */
-public class GenericTypeFunctionWizard extends AbstractGenericFunctionWizard<TypeFunction> {
+public class GenericTypeFunctionWizard extends AbstractGenericFunctionWizard<TypeParameter, TypeFunction> {
 
 	/**
 	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(Cell)
@@ -54,7 +55,7 @@ public class GenericTypeFunctionWizard extends AbstractGenericFunctionWizard<Typ
 	 * @see AbstractGenericFunctionWizard#createEntitiesPage(SchemaSelection, Cell)
 	 */
 	@Override
-	protected EntitiesPage<TypeFunction, ?> createEntitiesPage(
+	protected EntitiesPage<TypeFunction, TypeParameter, ?> createEntitiesPage(
 			SchemaSelection initSelection, Cell initCell) {
 		return new TypeEntitiesPage(initSelection, initCell);
 	}

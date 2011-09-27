@@ -50,8 +50,6 @@ public class TypeEntityDialog extends EntityDialog {
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
 		viewer.setInput(ss.getSchemas(ssid));
-		
-		//TODO filter?
 	}
 
 	/**

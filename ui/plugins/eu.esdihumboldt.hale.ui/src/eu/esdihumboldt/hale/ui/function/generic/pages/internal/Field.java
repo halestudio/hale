@@ -37,11 +37,12 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 /**
  * Represents named entities in a function
  * @param <S> the entity selector type
+ * @param <F> the field type
  * @author Simon Templer
  */
-public abstract class Field<S extends EntitySelector> extends Observable {
+public abstract class Field<F extends AbstractParameter, S extends EntitySelector<F>> extends Observable {
 
-	private final AbstractParameter definition;
+	private final F definition;
 	private final SchemaSpaceID ssid;
 	
 	private final Set<S> selectors = new HashSet<S>();
@@ -58,7 +59,7 @@ public abstract class Field<S extends EntitySelector> extends Observable {
 	 * @param candidates the entity candidates
 	 * @param initialCell the initial cell
 	 */
-	public Field(AbstractParameter definition, SchemaSpaceID ssid, 
+	public Field(F definition, SchemaSpaceID ssid, 
 			Composite parent, Set<EntityDefinition> candidates,
 			Cell initialCell) {
 		super();
@@ -115,7 +116,7 @@ public abstract class Field<S extends EntitySelector> extends Observable {
 	 * @return the entity selector
 	 */
 	protected abstract S createEntitySelector(SchemaSpaceID ssid,
-			Set<EntityDefinition> candidates, AbstractParameter field, 
+			Set<EntityDefinition> candidates, F field, 
 			Composite parent);
 	
 	/**
@@ -162,7 +163,7 @@ public abstract class Field<S extends EntitySelector> extends Observable {
 		
 		//valid if no selection is empty
 		//TODO improve
-		for (EntitySelector selector : selectors) {
+		for (EntitySelector<F> selector : selectors) {
 			if (selector.getViewer().getSelection().isEmpty()) {
 				newValid = false;
 				break;

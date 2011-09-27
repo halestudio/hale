@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
  * @author Simon Templer
  */
 @Immutable
-public final class TypeFunction extends AbstractFunction {
+public final class TypeFunction extends AbstractFunction<TypeParameter> {
 
 	private final Set<TypeParameter> source;
 	private final Set<TypeParameter> target;

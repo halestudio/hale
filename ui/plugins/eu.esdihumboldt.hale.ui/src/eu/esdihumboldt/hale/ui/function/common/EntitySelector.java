@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -38,25 +39,26 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * Entity selector
+ * @param <F> the field type
  * @author Simon Templer
  */
-public abstract class EntitySelector {
+public abstract class EntitySelector<F extends AbstractParameter> {
 	
 	private final ComboViewer combo;
 	
 	private final Composite main;
 	
-	private final AbstractParameter field;
+	private final F field;
 
 	/**
 	 * Create an entity selector
 	 * @param ssid the schema space
 	 * @param candidates the entity candidates
-	 * @param field the field definition
+	 * @param field the field definition, may be <code>null</code>
 	 * @param parent the parent composite
 	 */
 	public EntitySelector(final SchemaSpaceID ssid, final Set<EntityDefinition> candidates,
-			AbstractParameter field, Composite parent) {
+			F field, Composite parent) {
 		this.field = field;
 		
 		main = new Composite(parent, SWT.NONE);
@@ -71,8 +73,12 @@ public abstract class EntitySelector {
 		combo.setContentProvider(ArrayContentProvider.getInstance());
 		combo.setLabelProvider(new DefinitionLabelProvider());
 
-		//FIXME the entity candidates should be filtered by the conditions
 		combo.setInput(candidates);
+		
+		ViewerFilter[] filters = createFilters(field);
+		if (filters != null) {
+			combo.setFilters(filters);
+		}
 		
 		// browse button
 		Button browse = new Button(main, SWT.PUSH);
@@ -84,6 +90,7 @@ public abstract class EntitySelector {
 				EntityDialog dialog = createEntityDialog(
 						Display.getCurrent().getActiveShell(), ssid, 
 						EntitySelector.this.field);
+				dialog.setFilters(combo.getFilters());
 				if (dialog.open() == EntityDialog.OK) {
 					EntityDefinition entity = dialog.getEntity();
 					if (entity != null) {
@@ -97,6 +104,17 @@ public abstract class EntitySelector {
 	}
 	
 	/**
+	 * Create filters for the combo viewer and the dialog. The default 
+	 * implementation creates no filters.
+	 * @param field the field definition, may be <code>null</code>
+	 * @return the array of filters or <code>null</code>
+	 */
+	protected ViewerFilter[] createFilters(F field) {
+		// override me
+		return null;
+	}
+
+	/**
 	 * Create the dialog for selecting an entity.
 	 * @param parentShell the parent shell for the dialog
 	 * @param ssid the schema space
@@ -104,7 +122,7 @@ public abstract class EntitySelector {
 	 * @return the entity dialog
 	 */
 	protected abstract EntityDialog createEntityDialog(Shell parentShell, 
-			SchemaSpaceID ssid, AbstractParameter field);
+			SchemaSpaceID ssid, F field);
 
 	/**
 	 * Get the main selector control
