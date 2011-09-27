@@ -47,9 +47,11 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
  * Page that allows assigning cell entities
  * @param <T> the function type
  * @param <F> the field type
+ * @param <D> the field definition
  * @author Simon Templer
  */
-public abstract class EntitiesPage<T extends AbstractFunction, F extends Field<?>> extends HaleWizardPage<AbstractGenericFunctionWizard<T>>
+public abstract class EntitiesPage<T extends AbstractFunction<D>, 
+		D extends AbstractParameter, F extends Field<D, ?>> extends HaleWizardPage<AbstractGenericFunctionWizard<D, T>>
 		implements FunctionWizardPage {
 
 	private final Cell initialCell;
@@ -190,7 +192,7 @@ public abstract class EntitiesPage<T extends AbstractFunction, F extends Field<?
 		
 		// determine fields
 		T function = getWizard().getFunction();
-		final Set<? extends AbstractParameter> fields;
+		final Set<? extends D> fields;
 		switch (ssid) {
 		case SOURCE:
 			fields = function.getSource();
@@ -199,11 +201,11 @@ public abstract class EntitiesPage<T extends AbstractFunction, F extends Field<?
 			fields = function.getTarget();
 			break;
 		default:
-			fields = new HashSet<AbstractParameter>();
+			fields = new HashSet<D>();
 		}
 		
 		// create fields
-		for (AbstractParameter field : fields) {
+		for (D field : fields) {
 			F functionField = createField(ssid, field, main);
 			if (functionField != null) {
 				functionFields.add(functionField);
@@ -222,7 +224,7 @@ public abstract class EntitiesPage<T extends AbstractFunction, F extends Field<?
 	 * @param parent the parent composite
 	 * @return the created field or <code>null</code>
 	 */
-	private F createField(SchemaSpaceID ssid, AbstractParameter field,
+	private F createField(SchemaSpaceID ssid, D field,
 			Composite parent) {
 		if (field.getMaxOccurrence() == 0) {
 			return null;
@@ -241,7 +243,7 @@ public abstract class EntitiesPage<T extends AbstractFunction, F extends Field<?
 	 * @param initialCell the initial cell
 	 * @return the created field or <code>null</code>
 	 */
-	protected abstract F createField(AbstractParameter field, SchemaSpaceID ssid,
+	protected abstract F createField(D field, SchemaSpaceID ssid,
 			Composite parent, Set<EntityDefinition> candidates,
 			Cell initialCell);
 
@@ -276,7 +278,7 @@ public abstract class EntitiesPage<T extends AbstractFunction, F extends Field<?
 	 */
 	private void updateState() {
 		boolean complete = true;
-		for (Field<?> field : functionFields) {
+		for (Field<?, ?> field : functionFields) {
 			if (!field.isValid()) {
 				complete = false;
 				break;

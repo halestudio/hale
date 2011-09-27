@@ -14,38 +14,38 @@ package eu.esdihumboldt.hale.ui.function.common;
 
 import java.util.Set;
 
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Property;
-import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
-import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
- * TODO Type description
- * @author sitemple
+ * Entity selector for {@link Property} entities
+ * @author Simon Templer
  */
-public class PropertyEntitySelector extends EntitySelector {
+public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	
 	private TypeDefinition parentType;
 
 	/**
-	 * @param ssid
-	 * @param candidates
-	 * @param field
-	 * @param parent
-	 * @param parentType 
+	 * Create an entity selector for {@link Property} entities
+	 * @param ssid the schema space
+	 * @param candidates the entity candidates
+	 * @param field the field definition, may be <code>null</code>
+	 * @param parent the parent composite
+	 * @param parentType the parent type
 	 */
 	public PropertyEntitySelector(SchemaSpaceID ssid,
-			Set<EntityDefinition> candidates, AbstractParameter field,
+			Set<EntityDefinition> candidates, PropertyParameter field,
 			Composite parent, TypeDefinition parentType) {
 		super(ssid, candidates, field, parent);
 		
@@ -66,7 +66,7 @@ public class PropertyEntitySelector extends EntitySelector {
 	 */
 	@Override
 	protected EntityDialog createEntityDialog(Shell parentShell,
-			SchemaSpaceID ssid, AbstractParameter field) {
+			SchemaSpaceID ssid, PropertyParameter field) {
 		String title;
 		switch (ssid) {
 		case SOURCE:
@@ -92,6 +92,15 @@ public class PropertyEntitySelector extends EntitySelector {
 		}
 		
 		throw new IllegalArgumentException("Entity must be a property");
+	}
+
+	/**
+	 * @see EntitySelector#createFilters(AbstractParameter)
+	 */
+	@Override
+	protected ViewerFilter[] createFilters(PropertyParameter field) {
+		// TODO Auto-generated method stub
+		return super.createFilters(field);
 	}
 
 }

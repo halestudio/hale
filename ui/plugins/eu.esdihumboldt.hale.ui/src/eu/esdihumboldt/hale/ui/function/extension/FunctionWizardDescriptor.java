@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface FunctionWizardDescriptor<T extends AbstractFunction> 
+public interface FunctionWizardDescriptor<T extends AbstractFunction<?>> 
 		extends ExtensionObjectFactory<FunctionWizardFactory>, FunctionWizardFactory {
 
 	/**
