@@ -53,7 +53,7 @@ public class SchemaSelectionFunctionContribution extends
 	 */
 	@Override
 	public boolean isActive(FunctionWizardDescriptor<?> descriptor) {
-		AbstractFunction function = descriptor.getFunction();
+		AbstractFunction<?> function = descriptor.getFunction();
 		if (function instanceof TypeFunction) {
 			TypeFunction tf = (TypeFunction) function;
 			// match selection against function definition

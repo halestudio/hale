@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -27,7 +28,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
  * Represents named property entities in a function
  * @author Simon Templer
  */
-public class PropertyField extends Field<PropertyEntitySelector> {
+public class PropertyField extends Field<PropertyParameter, PropertyEntitySelector> {
 	
 	private TypeDefinition parentType;
 
@@ -40,7 +41,7 @@ public class PropertyField extends Field<PropertyEntitySelector> {
 	 * @param initialCell the initial cell
 	 * @param parentType the parent type of the properties
 	 */
-	public PropertyField(AbstractParameter definition, SchemaSpaceID ssid,
+	public PropertyField(PropertyParameter definition, SchemaSpaceID ssid,
 			Composite parent, Set<EntityDefinition> candidates, Cell initialCell,
 			TypeDefinition parentType) {
 		super(definition, ssid, parent, candidates, initialCell);
@@ -67,7 +68,7 @@ public class PropertyField extends Field<PropertyEntitySelector> {
 	 */
 	@Override
 	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid,
-			Set<EntityDefinition> candidates, AbstractParameter field,
+			Set<EntityDefinition> candidates, PropertyParameter field,
 			Composite parent) {
 		return new PropertyEntitySelector(ssid, candidates, field, parent, null);
 	}

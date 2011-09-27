@@ -19,6 +19,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
@@ -31,14 +32,15 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 /**
  * Generic function wizard
  * @param <T> the function type
+ * @param <P> the field definition type
  * @author Simon Templer
  */
-public abstract class AbstractGenericFunctionWizard<T extends AbstractFunction> extends AbstractFunctionWizard {
+public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter, T extends AbstractFunction<P>> extends AbstractFunctionWizard {
 	
 	private final String functionId;
 	private MutableCell resultCell;
 	
-	private EntitiesPage<T, ?> entitiesPage;
+	private EntitiesPage<T, P, ?> entitiesPage;
 	
 	private Set<FunctionWizardPage> cellPages = new LinkedHashSet<FunctionWizardPage>();
 
@@ -84,7 +86,7 @@ public abstract class AbstractGenericFunctionWizard<T extends AbstractFunction> 
 	 * @param initCell the initial cell
 	 * @return the entities page
 	 */
-	protected abstract EntitiesPage<T, ?> createEntitiesPage(SchemaSelection initSelection,
+	protected abstract EntitiesPage<T, P, ?> createEntitiesPage(SchemaSelection initSelection,
 			Cell initCell);
 
 	/**

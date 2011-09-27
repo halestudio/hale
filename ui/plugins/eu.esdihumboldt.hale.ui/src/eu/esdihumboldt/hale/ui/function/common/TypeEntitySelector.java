@@ -14,10 +14,12 @@ package eu.esdihumboldt.hale.ui.function.common;
 
 import java.util.Set;
 
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -26,22 +28,22 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
- * TODO Type description
- * @author sitemple
+ * Entity selector for {@link Type} entities
+ * @author Simon Templer
  */
-public class TypeEntitySelector extends EntitySelector {
+public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 
 	/**
-	 * @param ssid
-	 * @param candidates
-	 * @param field
-	 * @param parent
+	 * Create an entity selector for {@link Type} entities
+	 * @param ssid the schema space
+	 * @param candidates the entity candidates
+	 * @param field the field definition, may be <code>null</code>
+	 * @param parent the parent composite
 	 */
 	public TypeEntitySelector(SchemaSpaceID ssid,
-			Set<EntityDefinition> candidates, AbstractParameter field,
+			Set<EntityDefinition> candidates, TypeParameter field,
 			Composite parent) {
 		super(ssid, candidates, field, parent);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -49,7 +51,7 @@ public class TypeEntitySelector extends EntitySelector {
 	 */
 	@Override
 	protected EntityDialog createEntityDialog(Shell parentShell,
-			SchemaSpaceID ssid, AbstractParameter field) {
+			SchemaSpaceID ssid, TypeParameter field) {
 		String title;
 		switch (ssid) {
 		case SOURCE:
@@ -75,6 +77,15 @@ public class TypeEntitySelector extends EntitySelector {
 		}
 		
 		throw new IllegalArgumentException("Entity must be a type");
+	}
+
+	/**
+	 * @see EntitySelector#createFilters(AbstractParameter)
+	 */
+	@Override
+	protected ViewerFilter[] createFilters(TypeParameter field) {
+		// TODO Auto-generated method stub
+		return super.createFilters(field);
 	}
 
 }

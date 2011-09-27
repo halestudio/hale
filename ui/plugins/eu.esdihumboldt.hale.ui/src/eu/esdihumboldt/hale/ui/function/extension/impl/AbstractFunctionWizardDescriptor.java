@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * @param <T> the function definition type
  * @author Simon Templer
  */
-public abstract class AbstractFunctionWizardDescriptor<T extends AbstractFunction> 
+public abstract class AbstractFunctionWizardDescriptor<T extends AbstractFunction<?>> 
 		extends AbstractConfigurationFactory<FunctionWizardFactory> implements
 		FunctionWizardDescriptor<T> {
 	

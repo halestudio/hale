@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -51,6 +52,8 @@ public abstract class EntityDialog extends Dialog {
 	protected final SchemaSpaceID ssid;
 	
 	private final String title;
+
+	private ViewerFilter[] filters;
 	
 	/**
 	 * Constructor
@@ -110,6 +113,9 @@ public abstract class EntityDialog extends Dialog {
 		viewer = new TreeViewer(page);
 		viewer.setComparator(new DefinitionComparator());
 		setupViewer(viewer);
+		// set filters
+		viewer.setFilters((filters == null)?(new ViewerFilter[0]):(filters));
+		
 		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().
 				grab(true, true).create());
 		
@@ -140,7 +146,9 @@ public abstract class EntityDialog extends Dialog {
 	}
 	
 	/**
-	 * Setup the tree viewer with label provider, content provider and input. 
+	 * Setup the tree viewer with label provider, content provider and input.
+	 * Don't set any viewer filters as they will be overridden by those 
+	 * provided through {@link #setFilters(ViewerFilter[])}. 
 	 * @param viewer the tree viewer
 	 */
 	protected abstract void setupViewer(TreeViewer viewer);
@@ -177,6 +185,14 @@ public abstract class EntityDialog extends Dialog {
 	 */
 	public EntityDefinition getEntity() {
 		return entity;
+	}
+
+	/**
+	 * Set the viewer filters
+	 * @param filters the filters
+	 */
+	public void setFilters(ViewerFilter[] filters) {
+		this.filters = filters;
 	}
 
 }
