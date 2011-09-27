@@ -123,10 +123,10 @@ public abstract class EntitySelector {
 	}
 
 	/**
-	 * Get the selected entity
-	 * @return the selected entity or <code>null</code>
+	 * Get the selected entity definition
+	 * @return the selected entity definition or <code>null</code>
 	 */
-	public Entity getEntity() {
+	public EntityDefinition getEntityDefinition() {
 		ISelection selection = combo.getSelection();
 		if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
 			return null;
@@ -134,7 +134,21 @@ public abstract class EntitySelector {
 		
 		Object element = ((IStructuredSelection) selection).getFirstElement();
 		if (element instanceof EntityDefinition) {
-			return createEntity((EntityDefinition) element);
+			return (EntityDefinition) element;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get the selected entity
+	 * @return the selected entity or <code>null</code>
+	 */
+	public Entity getEntity() {
+		EntityDefinition def = getEntityDefinition();
+		
+		if (def != null) {
+			return createEntity(def);
 		}
 		
 		return null;

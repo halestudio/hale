@@ -16,6 +16,9 @@
          <providerFactory
                id="eu.esdihumboldt.hale.io.csv.reader.schema">
          </providerFactory>
+         <providerFactory
+               id="eu.esdihumboldt.hale.io.csv.reader.instance">
+         </providerFactory>
       </configPage>
    </extension>
 

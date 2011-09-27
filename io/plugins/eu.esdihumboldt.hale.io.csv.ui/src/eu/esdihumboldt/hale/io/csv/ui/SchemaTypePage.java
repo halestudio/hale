@@ -31,6 +31,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVUtil;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
@@ -127,11 +128,9 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		}
 
 		try {
-			CSVReader reader = CSVSchemaReader.readFirst(getWizard()
+			CSVReader reader = CSVUtil.readFirst(getWizard()
 					.getProvider());
-			// TODO:
-			// String[] firstLine: should be the Array containing the property
-			// names given by the user
+
 			String[] firstLine = reader.readNext();
 			int length = 0;
 			if (firstLine.length != 0) {

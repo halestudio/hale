@@ -12,10 +12,7 @@
 
 package eu.esdihumboldt.hale.io.csv.reader.internal;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
@@ -35,9 +32,9 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
-import eu.esdihumboldt.hale.io.csv.CSVFileIO;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.csv.CSVFileIO;
 
 /**
  * Reads instances from a CSVfile
@@ -47,12 +44,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public class CSVInstanceReader extends AbstractInstanceReader {
 
 	private DefaultInstanceCollection instances;
-
-	/**
-	 * The separating sign for the CSV file to be read (can be '\t' or ',' or
-	 * ' ')
-	 */
-	public static char separator = '\t';
 
 	/**
 	 * @see IOProvider#isCancelable()
@@ -71,9 +62,7 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 
-		Reader streamReader = new BufferedReader(new InputStreamReader(
-				getSource().getInput()));
-		CSVReader reader = new CSVReader(streamReader, separator);
+		CSVReader reader = CSVUtil.readFirst(this);
 
 		// build instances
 		TypeDefinition type = getSourceSchema().getType(new QName("muh"));

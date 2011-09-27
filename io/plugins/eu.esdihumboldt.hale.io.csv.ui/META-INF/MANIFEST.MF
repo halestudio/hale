@@ -11,6 +11,7 @@ Import-Package: au.com.bytecode.opencsv;version="2.3.0",
  com.google.common.io;version="9.0.0",
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.schema.io,
  eu.esdihumboldt.hale.io.csv.reader.internal,
  eu.esdihumboldt.hale.ui.io.schema
