@@ -21,8 +21,9 @@ import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 
 /**
- * TODO Type description
- * @author Baboo
+ * Utils for the CSVSchemaReader and CSVInstanceReader
+ * 
+ * @author Kevin Mais
  */
 public class CSVUtil implements CSVConstants{
 

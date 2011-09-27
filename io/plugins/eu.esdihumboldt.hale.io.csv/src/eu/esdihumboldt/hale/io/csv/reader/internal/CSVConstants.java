@@ -13,8 +13,8 @@
 package eu.esdihumboldt.hale.io.csv.reader.internal;
 
 /**
- * TODO Type description
- * @author Baboo
+ * Constants for the CSV Classes
+ * @author Kevin Mais
  */
 public interface CSVConstants {
 	
@@ -48,5 +48,10 @@ public interface CSVConstants {
 	 * The escape sign for the CSV file to be read
 	 */	
 	public static final char DEFAULT_ESCAPE = '\\';
+	
+	/**
+	 * Name of the parameter specifying the type name
+	 */
+	public static String PARAM_TYPENAME = "typename";
 
 }

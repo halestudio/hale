@@ -9,9 +9,12 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  eu.esdihumboldt.hale.ui
 Import-Package: au.com.bytecode.opencsv;version="2.3.0",
  com.google.common.io;version="9.0.0",
+ eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.align.model.impl,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.schema.io,
+ eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.io.csv.reader.internal,
  eu.esdihumboldt.hale.ui.io.schema

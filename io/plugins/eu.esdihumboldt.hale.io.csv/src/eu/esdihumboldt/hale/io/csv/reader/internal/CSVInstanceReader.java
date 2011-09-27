@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
+import org.omg.CORBA.portable.ValueOutputStream;
+
 import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -43,6 +45,11 @@ import eu.esdihumboldt.hale.io.csv.CSVFileIO;
  */
 public class CSVInstanceReader extends AbstractInstanceReader {
 
+	/**
+	 * the parameter specifying the reader setting
+	 */
+	public static final String PARAM_SKIP_FIRST_LINE = "skip";
+	
 	private DefaultInstanceCollection instances;
 
 	/**
@@ -60,20 +67,23 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
+		boolean skipFirst = Boolean.parseBoolean(getParameter(PARAM_SKIP_FIRST_LINE));
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 
 		CSVReader reader = CSVUtil.readFirst(this);
 
 		// build instances
-		TypeDefinition type = getSourceSchema().getType(new QName("muh"));
+		TypeDefinition type = getSourceSchema().getType(QName.valueOf(getParameter(CSVConstants.PARAM_TYPENAME)));
 
 		PropertyDefinition[] propAr = type.getChildren().toArray(
 				new PropertyDefinition[type.getChildren().size()]);
 		String[] nextLine;
 
+		if(skipFirst) {
 		// nextLine[] is an array of values in the first line (we don't need
 		// them)
 		nextLine = reader.readNext();
+		}
 
 		while ((nextLine = reader.readNext()) != null) {
 			MutableInstance instance = new OInstance(type);
