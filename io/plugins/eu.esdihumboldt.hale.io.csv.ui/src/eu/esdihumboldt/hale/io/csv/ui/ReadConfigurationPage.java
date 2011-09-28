@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
-import java.util.HashMap;
-
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -25,6 +23,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+
+import com.google.common.collect.HashBiMap;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
@@ -51,8 +51,7 @@ public class ReadConfigurationPage
 	private Combo quote;
 	private Combo escape;
 
-	private HashMap<String, String> map = new HashMap<String, String>();
-	private HashMap<String, String> map_reverse = new HashMap<String, String>();
+	private HashBiMap<String, String> bmap;
 
 	private QName last_name;
 
@@ -65,8 +64,9 @@ public class ReadConfigurationPage
 		setTitle("Reader Settings");
 		setDescription("Set the Separating character, Quote character and Escape character");
 
-		map.put("TAB", "\t");
-		map_reverse.put("\t", "TAB");
+		bmap = HashBiMap.create();
+		bmap.put("TAB", "\t");
+
 	}
 
 	/**
@@ -82,11 +82,11 @@ public class ReadConfigurationPage
 		String esc = escape.getText();
 
 		if (sep.isEmpty() || sep.contains("/") || sep.contains(":")
-				|| (map.get(sep) == null && sep.length() > 1) || qu.isEmpty()
+				|| (bmap.get(sep) == null && sep.length() > 1) || qu.isEmpty()
 				|| qu.contains("/") || qu.contains(":") || qu.contains(".")
-				|| (map.get(qu) == null && qu.length() > 1) || esc.isEmpty()
+				|| (bmap.get(qu) == null && qu.length() > 1) || esc.isEmpty()
 				|| esc.contains("/") || esc.contains(":")
-				|| (map.get(esc) == null && esc.length() > 1)) {
+				|| (bmap.get(esc) == null && esc.length() > 1)) {
 			setPageComplete(false);
 			setErrorMessage("You have not entered valid characters!");
 		} else if (sep.equals(qu) || qu.equals(esc) || esc.equals(sep)) {
@@ -127,18 +127,18 @@ public class ReadConfigurationPage
 		String qu = quote.getText();
 		String esc = escape.getText();
 
-		if (map.get(sep) != null) {
-			provider.setParameter(CSVConstants.PARAM_SEPARATOR, map.get(sep));
+		if (bmap.get(sep) != null) {
+			provider.setParameter(CSVConstants.PARAM_SEPARATOR, bmap.get(sep));
 		} else {
 			provider.setParameter(CSVConstants.PARAM_SEPARATOR, sep);
 		}
-		if (map.get(qu) != null) {
-			provider.setParameter(CSVConstants.PARAM_QUOTE, map.get(qu));
+		if (bmap.get(qu) != null) {
+			provider.setParameter(CSVConstants.PARAM_QUOTE, bmap.get(qu));
 		} else {
 			provider.setParameter(CSVConstants.PARAM_QUOTE, qu);
 		}
-		if (map.get(esc) != null) {
-			provider.setParameter(CSVConstants.PARAM_ESCAPE, map.get(esc));
+		if (bmap.get(esc) != null) {
+			provider.setParameter(CSVConstants.PARAM_ESCAPE, bmap.get(esc));
 		} else {
 			provider.setParameter(CSVConstants.PARAM_ESCAPE, esc);
 		}
@@ -211,20 +211,20 @@ public class ReadConfigurationPage
 						.getConstraint(CSVConfiguration.class);
 
 				String sep = String.valueOf(config.getSeparator());
-				if (map_reverse.get(sep) != null) {
-					separator.setText(map_reverse.get(sep));
+				if (bmap.inverse().get(sep) != null) {
+					separator.setText(bmap.inverse().get(sep));
 				} else {
 					separator.setText(sep);
 				}
 				String qu = String.valueOf(config.getQuote());
-				if (map_reverse.get(qu) != null) {
-					quote.setText(map_reverse.get(qu));
+				if (bmap.inverse().get(qu) != null) {
+					quote.setText(bmap.inverse().get(qu));
 				} else {
 					quote.setText(qu);
 				}
 				String esc = String.valueOf(config.getEscape());
-				if (map_reverse.get(esc) != null) {
-					separator.setText(map_reverse.get(esc));
+				if (bmap.inverse().get(esc) != null) {
+					separator.setText(bmap.inverse().get(esc));
 				} else {
 					escape.setText(esc);
 				}
