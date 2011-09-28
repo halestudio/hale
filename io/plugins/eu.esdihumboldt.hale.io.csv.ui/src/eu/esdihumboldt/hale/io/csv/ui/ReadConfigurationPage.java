@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.io.csv.ui;
 
 import java.util.HashMap;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -24,8 +26,12 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
 import eu.esdihumboldt.hale.ui.io.ImportWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
@@ -36,23 +42,19 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class ReadConfigurationPage extends AbstractConfigurationPage<ImportProvider, IOProviderFactory<ImportProvider>,
-	ImportWizard<ImportProvider, IOProviderFactory<ImportProvider>>>
+public class ReadConfigurationPage
+		extends
+		AbstractConfigurationPage<ImportProvider, IOProviderFactory<ImportProvider>, ImportWizard<ImportProvider, IOProviderFactory<ImportProvider>>>
 		implements ModifyListener {
 
-	private Label separator;
-	private Label quote;
-	private Label escape;
-
-	private Combo combo;
-	private Combo combo2;
-	private Combo combo3;
-
-	private String sep;
-	private String qu;
-	private String esc;
+	private Combo separator;
+	private Combo quote;
+	private Combo escape;
 
 	private HashMap<String, String> map = new HashMap<String, String>();
+	private HashMap<String, String> map_reverse = new HashMap<String, String>();
+
+	private QName last_name;
 
 	/**
 	 * default constructor
@@ -64,6 +66,7 @@ public class ReadConfigurationPage extends AbstractConfigurationPage<ImportProvi
 		setDescription("Set the Separating character, Quote character and Escape character");
 
 		map.put("TAB", "\t");
+		map_reverse.put("\t", "TAB");
 	}
 
 	/**
@@ -74,9 +77,9 @@ public class ReadConfigurationPage extends AbstractConfigurationPage<ImportProvi
 	@Override
 	public void modifyText(ModifyEvent e) {
 
-		sep = combo.getText();
-		qu = combo2.getText();
-		esc = combo3.getText();
+		String sep = separator.getText();
+		String qu = quote.getText();
+		String esc = escape.getText();
 
 		if (sep.isEmpty() || sep.contains("/") || sep.contains(":")
 				|| (map.get(sep) == null && sep.length() > 1) || qu.isEmpty()
@@ -86,8 +89,7 @@ public class ReadConfigurationPage extends AbstractConfigurationPage<ImportProvi
 				|| (map.get(esc) == null && esc.length() > 1)) {
 			setPageComplete(false);
 			setErrorMessage("You have not entered valid characters!");
-		} else if (sep.equals(qu)
-				|| qu.equals(esc) || esc.equals(sep)) {
+		} else if (sep.equals(qu) || qu.equals(esc) || esc.equals(sep)) {
 			setPageComplete(false);
 			setErrorMessage("Your signs must be different!");
 		} else {
@@ -121,9 +123,9 @@ public class ReadConfigurationPage extends AbstractConfigurationPage<ImportProvi
 	@Override
 	public boolean updateConfiguration(ImportProvider provider) {
 
-		sep = combo.getText();
-		qu = combo2.getText();
-		esc = combo3.getText();
+		String sep = separator.getText();
+		String qu = quote.getText();
+		String esc = escape.getText();
 
 		if (map.get(sep) != null) {
 			provider.setParameter(CSVConstants.PARAM_SEPARATOR, map.get(sep));
@@ -152,41 +154,87 @@ public class ReadConfigurationPage extends AbstractConfigurationPage<ImportProvi
 		GridData layoutData = new GridData();
 		layoutData.widthHint = 30;
 		// column 1, row 1
-		separator = new Label(page, SWT.NONE);
-		separator.setText("Select Separating Sign");
+		Label separatorLabel = new Label(page, SWT.NONE);
+		separatorLabel.setText("Select Separating Sign");
 		// column 2, row 1
-		combo = new Combo(page, SWT.NONE);
-		combo.setLayoutData(GridDataFactory.copyData(layoutData));
-		combo.setItems(new String[] { "TAB", ",", "." });
-		combo.select(0);
-		combo.addModifyListener(this);
+		separator = new Combo(page, SWT.NONE);
+		separator.setLayoutData(GridDataFactory.copyData(layoutData));
+		separator.setItems(new String[] { "TAB", ",", "." });
+		separator.select(0);
+		separator.addModifyListener(this);
 
 		// column 1, row 2
-		quote = new Label(page, SWT.NONE);
-		quote.setText("Select Quote Sign");
+		Label quoteLabel = new Label(page, SWT.NONE);
+		quoteLabel.setText("Select Quote Sign");
 
 		// column 2, row 2
-		combo2 = new Combo(page, SWT.NONE);
-		combo2.setLayoutData(GridDataFactory.copyData(layoutData));
-		combo2.setItems(new String[] { "\"", "\'", ",", "-" });
-		combo2.select(0);
-		combo2.addModifyListener(this);
+		quote = new Combo(page, SWT.NONE);
+		quote.setLayoutData(GridDataFactory.copyData(layoutData));
+		quote.setItems(new String[] { "\"", "\'", ",", "-" });
+		quote.select(0);
+		quote.addModifyListener(this);
 
 		// column 1, row 3
-		escape = new Label(page, SWT.NONE);
-		escape.setText("Select Escape Sign");
+		Label escapeLabel = new Label(page, SWT.NONE);
+		escapeLabel.setText("Select Escape Sign");
 
 		// column 2, row 3
-		combo3 = new Combo(page, SWT.NONE);
-		combo3.setLayoutData(GridDataFactory.copyData(layoutData));
-		combo3.setItems(new String[] { "\\", "." });
-		combo3.select(0);
-		combo3.addModifyListener(this);
+		escape = new Combo(page, SWT.NONE);
+		escape.setLayoutData(GridDataFactory.copyData(layoutData));
+		escape.setItems(new String[] { "\\", "." });
+		escape.select(0);
+		escape.addModifyListener(this);
 
 		page.pack();
 
 		setPageComplete(true);
 
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage()
+	 */
+	@Override
+	protected void onShowPage() {
+		super.onShowPage();
+
+		IOProvider p = getWizard().getProvider();
+
+		if (p instanceof InstanceReader) {
+			QName name = QName.valueOf(p
+					.getParameter(CSVConstants.PARAM_TYPENAME));
+
+			if (last_name == null || !(last_name.equals(name))) {
+				TypeDefinition type = ((InstanceReader) p).getSourceSchema()
+						.getType(name);
+				CSVConfiguration config = type
+						.getConstraint(CSVConfiguration.class);
+
+				String sep = String.valueOf(config.getSeparator());
+				if (map_reverse.get(sep) != null) {
+					separator.setText(map_reverse.get(sep));
+				} else {
+					separator.setText(sep);
+				}
+				String qu = String.valueOf(config.getQuote());
+				if (map_reverse.get(qu) != null) {
+					quote.setText(map_reverse.get(qu));
+				} else {
+					quote.setText(qu);
+				}
+				String esc = String.valueOf(config.getEscape());
+				if (map_reverse.get(esc) != null) {
+					separator.setText(map_reverse.get(esc));
+				} else {
+					escape.setText(esc);
+				}
+
+				last_name = name;
+			}
+
+		}
+		
+		setPageComplete(true);
 	}
 
 }

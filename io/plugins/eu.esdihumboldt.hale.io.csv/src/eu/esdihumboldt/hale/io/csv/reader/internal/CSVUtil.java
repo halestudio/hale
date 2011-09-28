@@ -36,18 +36,50 @@ public class CSVUtil implements CSVConstants{
 	 */
 	public static CSVReader readFirst(ImportProvider provider) throws IOException {
 		
-		String separator = provider.getParameter(PARAM_SEPARATOR);
-		char sep = (separator == null || separator.isEmpty())?(DEFAULT_SEPARATOR):(separator.charAt(0));
-		String quote = provider.getParameter(PARAM_QUOTE);
-		char qu = (quote == null || quote.isEmpty())?(DEFAULT_QUOTE):(quote.charAt(0));
-		String escape = provider.getParameter(PARAM_ESCAPE);
-		char esc = (escape == null || escape.isEmpty())?(DEFAULT_ESCAPE):(escape.charAt(0));
-		
 		Reader streamReader = new BufferedReader(new InputStreamReader(
 				provider.getSource().getInput()));
-		CSVReader reader = new CSVReader(streamReader, sep, qu, esc);
+		CSVReader reader = new CSVReader(streamReader, getSep(provider), getQuote(provider), getEscape(provider));
 		
 		return reader;
 		
+	}
+	
+	/**
+	 * Getter for the separating sign
+	 * 
+	 * @param provider the provider given to the method
+	 * @return the separator char
+	 */
+	public static char getSep(ImportProvider provider) {
+		String separator = provider.getParameter(PARAM_SEPARATOR);
+		char sep = (separator == null || separator.isEmpty())?(DEFAULT_SEPARATOR):(separator.charAt(0));
+		
+		return sep;
+	}
+	
+	/**
+	 * Getter for the quote sign
+	 * 
+	 * @param provider the provider given to the method
+	 * @return the quote char
+	 */
+	public static char getQuote(ImportProvider provider) {
+		String quote = provider.getParameter(PARAM_QUOTE);
+		char qu = (quote == null || quote.isEmpty())?(DEFAULT_QUOTE):(quote.charAt(0));
+		
+		return qu;
+	}
+	
+	/**
+	 * Getter for the escape sign
+	 * 
+	 * @param provider the provider given to the method
+	 * @return the escape char
+	 */
+	public static char getEscape(ImportProvider provider) {
+		String escape = provider.getParameter(PARAM_ESCAPE);
+		char esc = (escape == null || escape.isEmpty())?(DEFAULT_ESCAPE):(escape.charAt(0));
+		
+		return esc;
 	}
 }

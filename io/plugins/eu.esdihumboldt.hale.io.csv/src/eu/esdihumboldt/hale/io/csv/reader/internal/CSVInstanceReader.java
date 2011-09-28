@@ -17,8 +17,6 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
-import org.omg.CORBA.portable.ValueOutputStream;
-
 import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;

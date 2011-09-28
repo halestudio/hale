@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.io.csv.reader.internal;
 
 /**
  * Constants for the CSV Classes
+ * 
  * @author Kevin Mais
  */
 public interface CSVConstants {

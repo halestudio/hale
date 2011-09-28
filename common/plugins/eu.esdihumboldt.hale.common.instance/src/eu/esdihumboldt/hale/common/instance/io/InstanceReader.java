@@ -71,5 +71,12 @@ public interface InstanceReader extends ImportProvider {
 	 * @return the instance collection
 	 */
 	public InstanceCollection getInstances();
+
+	/**
+	 * Get the source schema
+	 * 
+	 * @return the source schema
+	 */
+	public abstract TypeIndex getSourceSchema();
 	
 }
