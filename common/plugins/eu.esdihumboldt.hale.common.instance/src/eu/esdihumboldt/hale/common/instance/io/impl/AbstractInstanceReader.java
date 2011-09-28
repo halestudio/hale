@@ -43,10 +43,9 @@ public abstract class AbstractInstanceReader extends AbstractImportProvider impl
 	}
 
 	/**
-	 * Get the source schema
-	 * 
-	 * @return the source schema
+	 * @see InstanceReader#getSourceSchema()
 	 */
+	@Override
 	public TypeIndex getSourceSchema() {
 		return sourceSchema;
 	}

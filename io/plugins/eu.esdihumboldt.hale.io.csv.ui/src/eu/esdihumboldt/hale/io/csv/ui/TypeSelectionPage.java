@@ -97,7 +97,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 			types.add(new TypeEntityDefinition(td));
 		}
 		
-		// TODO Chance SSID
+		// TODO Change SSID
 		sel = new TypeEntitySelector(SchemaSpaceID.SOURCE, types, null, page);
 		sel.getControl().setLayoutData(GridDataFactory.fillDefaults().grab(true, false)
 				.span(1, 1).create());
@@ -113,21 +113,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 		button = new Button(page, SWT.CHECK);
 		button.setText("Skip first line");
 		button.setSelection(true);
-//		button.addSelectionListener(new SelectionListener() {
-//			
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				button.getSelection();
-//				
-//			}
-//			
-//			@Override
-//			public void widgetDefaultSelected(SelectionEvent e) {
-//				button.setSelection(true);
-//				
-//			}
-//		});
-//		
+	
 		page.pack();
 		
 		setPageComplete(false);
@@ -140,7 +126,6 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 	@Override
 	public boolean updateConfiguration(InstanceReader provider) {
 		
-		 // can be null
 		provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, String.valueOf(button.getSelection()));
 		if(sel.getEntityDefinition() instanceof TypeEntityDefinition) {
 			QName name = ((TypeEntityDefinition) sel.getEntityDefinition()).getDefinition().getName();

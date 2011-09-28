@@ -43,8 +43,9 @@ import eu.esdihumboldt.hale.io.csv.CSVFileIO;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstants{
-	
+public class CSVSchemaReader extends AbstractSchemaReader implements
+		CSVConstants {
+
 	/**
 	 * The first line of the CSV file
 	 */
@@ -73,8 +74,6 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 		return schema;
 	}
 
-
-	
 	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
@@ -85,7 +84,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 
 		String namespace = CSVFileIO.CSVFILE_NS;
 		schema = new DefaultSchema(namespace, getSource().getLocation());
-	
+
 		CSVReader reader = CSVUtil.readFirst(this);
 
 		try {
@@ -113,7 +112,12 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 			firstLine = reader.readNext();
 
 			String[] properties = getParameter(PARAM_PROPERTY).split(",");
-			
+
+			boolean skip = properties.equals(firstLine);
+
+			type.setConstraint(new CSVConfiguration(CSVUtil.getSep(this),
+					CSVUtil.getQuote(this), CSVUtil.getEscape(this), skip));
+
 			// set properties for the main type
 			for (String part : properties) {
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
@@ -145,5 +149,5 @@ public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstant
 	protected ContentType getDefaultContentType() {
 		return CSVFileIO.CSVFILE_CT;
 	}
-	
+
 }
