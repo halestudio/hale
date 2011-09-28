@@ -22,9 +22,9 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 
 /**
- * TODO Type description
+ * Type class for the property types
  * 
- * @author Baboo
+ * @author Kevin Mais
  */
 @Immutable
 public class PropertyType implements Identifiable {
@@ -33,6 +33,13 @@ public class PropertyType implements Identifiable {
 	private final String name;
 	private final DefaultTypeDefinition td;
 
+	/**
+	 * default constructor
+	 * 
+	 * @param id the id of the property type
+	 * @param name the name of the property type
+	 * @param binding the binding class of the property type
+	 */
 	public PropertyType(String id, String name, Class<?> binding) {
 		this.id = id;
 		this.name = name;
@@ -50,10 +57,20 @@ public class PropertyType implements Identifiable {
 		return id;
 	}
 
+	/**
+	 * Getter for the property type name
+	 * 
+	 * @return the name of the property type
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Getter for the type definition
+	 * 
+	 * @return the TypeDefinition of the property type
+	 */
 	public TypeDefinition getTypeDefinition() {
 		return td;
 	}

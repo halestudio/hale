@@ -15,9 +15,6 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
-
 import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -32,7 +29,6 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
@@ -61,6 +57,9 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 	 */
 	public static final String PARAM_PROPERTY = "properties";
 	
+	/**
+	 * Name of the parameter specifying the property type
+	 */
 	public static final String PARAM_PROPERTYTYPE = "comboviewer";
 
 	/**

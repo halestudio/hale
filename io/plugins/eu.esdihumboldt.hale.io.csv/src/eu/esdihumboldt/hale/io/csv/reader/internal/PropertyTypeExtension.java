@@ -18,11 +18,15 @@ import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 
 /**
- * TODO Type description
- * @author Baboo
+ * An extension for the property type
+ * 
+ * @author Kevin Mais
  */
 public class PropertyTypeExtension extends IdentifiableExtension<PropertyType>{
 
+	/**
+	 * the property type identifier
+	 */
 	public static final String ID = "eu.esdihumboldt.hale.io.csv.propertyType";
 	
 	private static PropertyTypeExtension instance;
@@ -50,6 +54,11 @@ public class PropertyTypeExtension extends IdentifiableExtension<PropertyType>{
 		return new PropertyType(id, conf.getAttribute("name"), ExtensionUtil.loadClass(conf, "binding"));
 	}
 	
+	/**
+	 * Getter for the PropertyTypeExtension
+	 * 
+	 * @return an Object of PropertyTypeExtension
+	 */
 	public static PropertyTypeExtension getInstance() {
 		if(instance == null) {
 			instance = new PropertyTypeExtension();
