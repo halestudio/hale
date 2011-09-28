@@ -22,6 +22,11 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -32,6 +37,8 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVUtil;
+import eu.esdihumboldt.hale.io.csv.reader.internal.PropertyType;
+import eu.esdihumboldt.hale.io.csv.reader.internal.PropertyTypeExtension;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
@@ -50,6 +57,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	private Group group;
 	private String[] last_firstLine = null;
 	private Collection<TypeNameField> fields = new ArrayList<TypeNameField>();
+	private Collection<ComboViewer> comboFields = new ArrayList<ComboViewer>();
 
 	/**
 	 * default constructor
@@ -91,6 +99,8 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				sfe.getStringValue());
 
 		StringBuffer propNamesBuffer = new StringBuffer();
+		StringBuffer comboViewerBuffer = new StringBuffer();
+		
 		for (TypeNameField prop : fields) {
 			propNamesBuffer.append(prop.getStringValue());
 			propNamesBuffer.append(",");
@@ -98,6 +108,14 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		propNamesBuffer.deleteCharAt(propNamesBuffer.lastIndexOf(","));
 		String propNames = propNamesBuffer.toString();
 		provider.setParameter(CSVSchemaReader.PARAM_PROPERTY, propNames);
+		
+		for(ComboViewer combo : comboFields) {
+			comboViewerBuffer.append(((PropertyType)((IStructuredSelection)combo.getSelection()).getFirstElement()).getId());
+			comboViewerBuffer.append(",");
+		}
+		comboViewerBuffer.deleteCharAt(comboViewerBuffer.lastIndexOf(","));
+		String combViewNames = comboViewerBuffer.toString();
+		provider.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE, combViewNames);
 
 		return true;
 
@@ -148,6 +166,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 			}
 			for (int i = 0; i < length; i++) {
 				TypeNameField propField;
+				ComboViewer cv;
 
 				propField = new TypeNameField("properties",
 						Integer.toString(i + 1), group);
@@ -166,8 +185,29 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 							}
 						});
 				propField.setStringValue(firstLine[i]);
+				cv = new ComboViewer(group);
+				cv.setContentProvider(ArrayContentProvider.getInstance());
+				cv.setLabelProvider(new LabelProvider() {
+					/**
+					 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
+					 */
+					@Override
+					public String getText(Object element) {
+						if (element instanceof PropertyType) {
+							return ((PropertyType) element).getName();
+						}
+						return super.getText(element);
+					}
+				});
+				Collection<PropertyType> elements = PropertyTypeExtension.getInstance().getElements();
+				cv.setInput(elements);
+				if (!elements.isEmpty()) {
+					cv.setSelection(new StructuredSelection(elements.iterator().next()));
+				}
+				comboFields.add(cv);
 				fields.add(propField);
 			}
+			group.setLayout(new GridLayout(3, false));
 
 			last_firstLine = firstLine;
 
@@ -209,7 +249,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		group.setText("Properties");
 		group.setLayoutData(GridDataFactory.fillDefaults().grab(true, false)
 				.span(2, 1).create());
-		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2)
+		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(3)
 				.equalWidth(false).margins(5, 5).create());
 
 		setPageComplete(sfe.isValid());

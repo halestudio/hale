@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.io.csv.propertyType" name="CSV property types" schema="schema/eu.esdihumboldt.hale.io.csv.propertyType.exsd"/>
+   <extension
+         point="eu.esdihumboldt.hale.io.csv.propertyType">
+      <propertyType
+            binding="java.lang.String"
+            id="eu.esdihumboldt.hale.io.csv.propertyType.string"
+            name="String">
+      </propertyType>
+      <propertyType
+            binding="java.lang.Integer"
+            id="eu.esdihumboldt.hale.io.csv.propertyType.integer"
+            name="Integer">
+      </propertyType>
+   </extension>
+
+</plugin>

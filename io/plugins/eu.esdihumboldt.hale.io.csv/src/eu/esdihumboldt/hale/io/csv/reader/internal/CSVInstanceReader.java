@@ -17,6 +17,10 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
+import org.springframework.core.convert.ConversionService;
+
+import de.fhg.igd.osgi.util.OsgiUtils;
+
 import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -25,6 +29,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -34,6 +39,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.io.csv.CSVFileIO;
 
 /**
@@ -47,7 +53,7 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	 * the parameter specifying the reader setting
 	 */
 	public static final String PARAM_SKIP_FIRST_LINE = "skip";
-	
+
 	private DefaultInstanceCollection instances;
 
 	/**
@@ -65,38 +71,62 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		boolean skipFirst = Boolean.parseBoolean(getParameter(PARAM_SKIP_FIRST_LINE));
+		boolean skipFirst = Boolean
+				.parseBoolean(getParameter(PARAM_SKIP_FIRST_LINE));
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
+		int line = 0;
 
 		CSVReader reader = CSVUtil.readFirst(this);
 
 		// build instances
-		TypeDefinition type = getSourceSchema().getType(QName.valueOf(getParameter(CSVConstants.PARAM_TYPENAME)));
+		TypeDefinition type = getSourceSchema().getType(
+				QName.valueOf(getParameter(CSVConstants.PARAM_TYPENAME)));
 
 		PropertyDefinition[] propAr = type.getChildren().toArray(
 				new PropertyDefinition[type.getChildren().size()]);
 		String[] nextLine;
 
-		if(skipFirst) {
-		// nextLine[] is an array of values in the first line (we don't need
-		// them)
-		nextLine = reader.readNext();
+		if (skipFirst) {
+			// nextLine[] is an array of values in the first line (we don't need
+			// them)
+			nextLine = reader.readNext();
+			line++;
 		}
 
 		while ((nextLine = reader.readNext()) != null) {
 			MutableInstance instance = new OInstance(type);
+			line++;
 			// nextLine[] is now an array of all values in the line (starting in
-			// second line)
+			// second line if skipFirst == true)
 			int index = 0;
 			for (String part : nextLine) {
 				PropertyDefinition property = propAr[index];
-				instance.addProperty(property.getName(), part);
+				Object value = part;
+				Binding binding = property.getPropertyType().getConstraint(
+						Binding.class);
+				try {
+					if (!binding.getBinding().equals(String.class)) {
+						ConversionService conversionService = OsgiUtils
+								.getService(ConversionService.class);
+						if (conversionService.canConvert(String.class,
+								binding.getBinding())) {
+							value = conversionService.convert(part,
+									binding.getBinding());
+						}
+					}
+				} catch (Exception e) {
+					reporter.error(new IOMessageImpl("Cannot convert property value to {0}", e, line , -1, binding.getBinding().getSimpleName()));
+				}
+
+				instance.addProperty(property.getName(), value);
 				index++;
 			}
 
 			instances.add(instance);
 		}
-		return null;
+		
+		reporter.setSuccess(true);
+		return reporter;
 	}
 
 	/**
