@@ -15,6 +15,9 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
+
 import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -57,6 +60,8 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 	 * Name of the parameter specifying the property name
 	 */
 	public static final String PARAM_PROPERTY = "properties";
+	
+	public static final String PARAM_PROPERTYTYPE = "comboviewer";
 
 	/**
 	 * @see IOProvider#isCancelable()
@@ -101,27 +106,15 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 			// set metadata for main type
 			type.setLocation(getSource().getLocation());
 
-			DefaultTypeDefinition propertyType = new DefaultTypeDefinition(
-					new QName("string"));
-
-			// set constraints on propertyType
-			propertyType.setConstraint(HasValueFlag.ENABLED);
-			propertyType.setConstraint(Binding.get(String.class));
-
-			// initializes the first line of the table (names of the columns)
-			firstLine = reader.readNext();
-
+			String[] comboSelections = getParameter(PARAM_PROPERTYTYPE).split(",");
 			String[] properties = getParameter(PARAM_PROPERTY).split(",");
-
-			boolean skip = properties.equals(firstLine);
-
-			type.setConstraint(new CSVConfiguration(CSVUtil.getSep(this),
-					CSVUtil.getQuote(this), CSVUtil.getEscape(this), skip));
-
-			// set properties for the main type
-			for (String part : properties) {
+			
+			for (int i=0; i < comboSelections.length; i++) {
+				PropertyType propertyType;
+				propertyType = PropertyTypeExtension.getInstance().get(comboSelections[i]);
+				
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-						new QName(part), type, propertyType);
+						new QName(properties[i]), type, propertyType.getTypeDefinition() );
 
 				// set constraints on property
 				property.setConstraint(NillableFlag.DISABLED); // nillable
@@ -130,6 +123,36 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 				// set metadata for property
 				property.setLocation(getSource().getLocation());
 			}
+			
+//			DefaultTypeDefinition propertyType = new DefaultTypeDefinition(
+//					new QName("string"));
+//
+//			// set constraints on propertyType
+//			propertyType.setConstraint(HasValueFlag.ENABLED);
+//			propertyType.setConstraint(Binding.get(String.class));
+
+			// initializes the first line of the table (names of the columns)
+			firstLine = reader.readNext();
+
+			//String[] properties = getParameter(PARAM_PROPERTY).split(",");
+
+			boolean skip = properties.equals(firstLine);
+
+			type.setConstraint(new CSVConfiguration(CSVUtil.getSep(this),
+					CSVUtil.getQuote(this), CSVUtil.getEscape(this), skip));
+
+			// set properties for the main type
+//			for (String part : properties) {
+//				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+//						new QName(part), type, propertyType.getTypeDefinition() );
+//
+//				// set constraints on property
+//				property.setConstraint(NillableFlag.DISABLED); // nillable
+//				property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
+//
+//				// set metadata for property
+//				property.setLocation(getSource().getLocation());
+//			}
 
 			schema.addType(type);
 
