@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.common.convert;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
@@ -98,7 +99,9 @@ public class ConverterPackageFactoryBean implements FactoryBean<Object>,
 			
 			for (Class<?> clazz : classes) {
 				try {
-					registerConverter(registry, clazz);
+					if (!Modifier.isAbstract(clazz.getModifiers())) {
+						registerConverter(registry, clazz);
+					}
 				} catch (Exception e) {
 					log.error("Error registering converter", e);
 				}

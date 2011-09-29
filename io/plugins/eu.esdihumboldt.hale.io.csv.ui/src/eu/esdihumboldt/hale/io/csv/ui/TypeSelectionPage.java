@@ -31,8 +31,10 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
+import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -44,8 +46,9 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class TypeSelectionPage extends InstanceReaderConfigurationPage {
-	
+public class TypeSelectionPage extends InstanceReaderConfigurationPage
+		implements CSVConstants {
+
 	TypeEntitySelector sel;
 	private Button button;
 	private Label label;
@@ -67,7 +70,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 	@Override
 	public void enable() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -76,7 +79,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 	@Override
 	public void disable() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -87,55 +90,67 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 		page.setLayout(new GridLayout(2, false));
 		GridData layoutData = new GridData();
 		layoutData.widthHint = 200;
-		
+
 		label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type:");
 
 		HashSet<EntityDefinition> types = new HashSet<EntityDefinition>();
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		for(TypeDefinition td : ss.getSchemas(SchemaSpaceID.SOURCE).getMappableTypes()) {
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
+		for (TypeDefinition td : ss.getSchemas(SchemaSpaceID.SOURCE)
+				.getMappableTypes()) {
 			types.add(new TypeEntityDefinition(td));
 		}
-		
+
 		// TODO Change SSID
 		sel = new TypeEntitySelector(SchemaSpaceID.SOURCE, types, null, page);
-		sel.getControl().setLayoutData(GridDataFactory.fillDefaults().grab(true, false)
-				.span(1, 1).create());
-		sel.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-					setPageComplete(!(event.getSelection().isEmpty()));
-			}
-		});
-		
-		
+		sel.getControl().setLayoutData(
+				GridDataFactory.fillDefaults().grab(true, false).span(1, 1)
+						.create());
+		sel.getViewer().addSelectionChangedListener(
+				new ISelectionChangedListener() {
+
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						setPageComplete(!(event.getSelection().isEmpty()));
+						if (sel.getEntityDefinition() != null) {
+							TypeEntityDefinition entityDef = (TypeEntityDefinition) sel
+									.getEntityDefinition();
+							CSVConfiguration conf = entityDef.getDefinition()
+									.getConstraint(CSVConfiguration.class);
+							Boolean skip = conf.skipFirst();
+							button.setSelection(skip);
+						}
+					}
+				});
+
 		button = new Button(page, SWT.CHECK);
 		button.setText("Skip first line");
 		button.setSelection(true);
-	
+
 		page.pack();
-		
+
 		setPageComplete(false);
 	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
 	 */
-	
+
 	@Override
 	public boolean updateConfiguration(InstanceReader provider) {
-		
-		provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, String.valueOf(button.getSelection()));
-		if(sel.getEntityDefinition() instanceof TypeEntityDefinition) {
-			QName name = ((TypeEntityDefinition) sel.getEntityDefinition()).getDefinition().getName();
+
+		provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE,
+				String.valueOf(button.getSelection()));
+		if (sel.getEntityDefinition() instanceof TypeEntityDefinition) {
+			QName name = ((TypeEntityDefinition) sel.getEntityDefinition())
+					.getDefinition().getName();
 			String param_name = name.toString();
 			provider.setParameter(CSVConstants.PARAM_TYPENAME, param_name);
-		}
-		else {
+		} else {
 			return false;
 		}
-		
+
 		return true;
 	}
 

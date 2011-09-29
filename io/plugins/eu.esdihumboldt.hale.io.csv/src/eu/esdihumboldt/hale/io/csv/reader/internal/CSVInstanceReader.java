@@ -19,9 +19,8 @@ import javax.xml.namespace.QName;
 
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-
 import au.com.bytecode.opencsv.CSVReader;
+import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -112,6 +111,9 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 								binding.getBinding())) {
 							value = conversionService.convert(part,
 									binding.getBinding());
+						}
+						else {
+							throw new IllegalStateException("Conversion not possible!");
 						}
 					}
 				} catch (Exception e) {

@@ -12,6 +12,7 @@
 package eu.esdihumboldt.hale.io.csv.reader.internal;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.xml.namespace.QName;
 
@@ -122,36 +123,16 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 				// set metadata for property
 				property.setLocation(getSource().getLocation());
 			}
-			
-//			DefaultTypeDefinition propertyType = new DefaultTypeDefinition(
-//					new QName("string"));
-//
-//			// set constraints on propertyType
-//			propertyType.setConstraint(HasValueFlag.ENABLED);
-//			propertyType.setConstraint(Binding.get(String.class));
 
 			// initializes the first line of the table (names of the columns)
 			firstLine = reader.readNext();
 
 			//String[] properties = getParameter(PARAM_PROPERTY).split(",");
 
-			boolean skip = properties.equals(firstLine);
+			boolean skip = Arrays.equals(properties, firstLine);
 
 			type.setConstraint(new CSVConfiguration(CSVUtil.getSep(this),
 					CSVUtil.getQuote(this), CSVUtil.getEscape(this), skip));
-
-			// set properties for the main type
-//			for (String part : properties) {
-//				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-//						new QName(part), type, propertyType.getTypeDefinition() );
-//
-//				// set constraints on property
-//				property.setConstraint(NillableFlag.DISABLED); // nillable
-//				property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
-//
-//				// set metadata for property
-//				property.setLocation(getSource().getLocation());
-//			}
 
 			schema.addType(type);
 
