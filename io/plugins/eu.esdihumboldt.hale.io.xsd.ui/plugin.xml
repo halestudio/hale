@@ -14,6 +14,15 @@
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
             </input>
          </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.io.xsd.ui.properties.TypeDefinitionXmlElementsSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.io.xsd.ui.properties.xmlelementssection"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
 
