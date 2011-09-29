@@ -16,7 +16,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
- * TODO Type description
+ * The default definition section
  * @author Patrick Lieb
  * @param <T> the definition type
  */

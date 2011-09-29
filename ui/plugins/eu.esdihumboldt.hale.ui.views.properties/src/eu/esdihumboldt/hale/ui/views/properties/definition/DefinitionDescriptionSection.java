@@ -27,7 +27,7 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 
 /**
- * Properties section with definition name
+ * Properties section with description
  * @author Simon Templer
  */
 public class DefinitionDescriptionSection extends DefaultDefinitionSection<Definition<?>> {

@@ -17,7 +17,7 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationLinkSection;
 
 /**
- * Creates a link to open the location in editor or browser
+ * Properties section with a link to open the location in editor or browser
  * @author Patrick Lieb
  */
 public class ChildDefinitionLocationLinkSection extends DefinitionLocationLinkSection{

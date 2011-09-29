@@ -171,7 +171,7 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
-               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionElementTypeSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionElementTypeBindingSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">

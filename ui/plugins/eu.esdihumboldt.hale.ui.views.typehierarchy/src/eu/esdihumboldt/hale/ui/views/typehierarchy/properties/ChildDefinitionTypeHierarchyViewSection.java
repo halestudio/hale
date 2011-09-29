@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyView;
 
 /**
- * View that shows the hierarchy of a {@link ChildDefinition}
+ * Properties section with the hierarchy view of a {@link ChildDefinition}
  * @author Patrick Lieb
  */
 public class ChildDefinitionTypeHierarchyViewSection extends DefaultDefinitionSection<ChildDefinition<?>>{
