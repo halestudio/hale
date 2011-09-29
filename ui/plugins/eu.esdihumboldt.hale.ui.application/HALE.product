@@ -102,6 +102,7 @@
       <plugin id="eu.esdihumboldt.hale.io.xml.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.xsd.ui"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
