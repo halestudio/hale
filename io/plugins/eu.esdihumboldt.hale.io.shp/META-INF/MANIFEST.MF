@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: HALE Shapefile Support
+Bundle-Name: Shapefile Schema/Instance I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.shp
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/ShapeSchemaReader.xml, OSGI-INF/ShapeInstanceReader.xml
 Import-Package: com.google.common.io;version="1.6.0",

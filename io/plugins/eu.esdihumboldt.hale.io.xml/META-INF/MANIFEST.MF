@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: HALE XML I/O
+Bundle-Name: XML Validation
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xml
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/XmlValidator.xml
 Import-Package: com.google.common.io;version="1.6.0",

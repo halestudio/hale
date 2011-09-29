@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Support for legacy projects based on JAXB
+Bundle-Name: Support for legacy HALE projects based on JAXB
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.project.jaxb
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/ProjectParser.xml
 Import-Package: com.google.common.io;version="1.6.0",

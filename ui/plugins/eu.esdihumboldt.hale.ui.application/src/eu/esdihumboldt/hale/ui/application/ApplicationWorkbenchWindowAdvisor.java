@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
@@ -29,6 +30,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.internal.util.PrefUtil;
+import org.osgi.framework.Version;
 
 import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
@@ -62,7 +64,7 @@ public class ApplicationWorkbenchWindowAdvisor
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 		configurer.setInitialSize(new Point(1280,1024));
 		configurer.setTitle(Messages.ApplicationWorkbenchWindowAdvisor_0 +  //$NON-NLS-1$
-				HALEApplicationPlugin.getDefault().getBundle().getVersion().toString());
+				Version.parseVersion(Display.getAppVersion()));
 		configurer.setShowCoolBar(true); // this reserves space for action bars on top.
 		configurer.setShowPerspectiveBar(true); // this reserves space for the selection of perspectives.
         configurer.setShowMenuBar(true);
