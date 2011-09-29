@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 import eu.esdihumboldt.hale.ui.views.properties.UriLink;
 
 /**
- * Creates a link to open the location in editor or browser
+ * Properties section with a link to open the location in editor or browser
  * @author Patrick Lieb
  */
 public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Definition<?>>{

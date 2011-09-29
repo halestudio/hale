@@ -17,7 +17,7 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection;
 
 /**
- * TODO Type description
+ * Properties section with name
  * @author Patrick Lieb
  */
 public class ChildDefinitionNameSection extends DefinitionNameSection{

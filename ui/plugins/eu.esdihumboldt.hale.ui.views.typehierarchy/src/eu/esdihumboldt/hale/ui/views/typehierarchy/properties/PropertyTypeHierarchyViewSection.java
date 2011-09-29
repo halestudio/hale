@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyView;
 
 /**
- * TODO Type description
+ * Properties section with the hierarchy view of a {@link PropertyDefinition}
  * @author Patrick Lieb
  */
 public class PropertyTypeHierarchyViewSection extends DefaultDefinitionSection<PropertyDefinition>{

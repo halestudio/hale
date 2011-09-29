@@ -23,10 +23,10 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 /**
- * TODO Type description
- * @author Patrick
+ * Properties section with element type and binding information
+ * @author Patrick Lieb
  */
-public class TypeDefinitionElementTypeSection extends DefaultDefinitionSection<TypeDefinition>{
+public class TypeDefinitionElementTypeBindingSection extends DefaultDefinitionSection<TypeDefinition>{
 	
 	private Text elementType;
 	

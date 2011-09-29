@@ -17,7 +17,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescriptionSection;
 
 /**
- * TODO Type description
+ * Properties section with description
  * @author Patrick Lieb
  */
 public class PropertyTypeDescriptionSection extends DefinitionDescriptionSection{

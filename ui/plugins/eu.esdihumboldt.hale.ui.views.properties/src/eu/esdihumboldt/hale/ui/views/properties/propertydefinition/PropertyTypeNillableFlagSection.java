@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 /**
- * Properties section with NillableFlag information
+ * Properties section with nillableFlag information
  * @author Patrick Lieb
  */
 public class PropertyTypeNillableFlagSection extends DefaultDefinitionSection<PropertyDefinition>{

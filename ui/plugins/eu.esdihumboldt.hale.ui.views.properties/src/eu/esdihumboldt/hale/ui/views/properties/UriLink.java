@@ -34,10 +34,6 @@ public class UriLink{
 	
 	private Link link;
 	
-//	private FormData data;
-//	
-//	private String text;
-	
 	/**
 	 * Creates a {@link Link} based on an URI
 	 * @param parent a composite control which will be the parent of the new instance (cannot be null)
@@ -118,33 +114,11 @@ public class UriLink{
 			}
 		};
 	}
-	// /**
-	 // * @param data the data to set
-	 // */
-	// public void setData(FormData data) {
-		// this.data = data;
-		// link.setData(data);
-	// }
-
-	// /**
-	 // * @return the data
-	 // */
-	// public FormData getData() {
-		// return data;
-	// }
 
 	 /**
 	  * @param text the text to set
 	  */
 	 public void setText(String text) {
-//		 this.text = text;
 		 link.setText(text);
 	 }
-
-	// /**
-	 // * @return the text
-	 // */
-	// public String getText() {
-		// return text;
-	// }
 }
