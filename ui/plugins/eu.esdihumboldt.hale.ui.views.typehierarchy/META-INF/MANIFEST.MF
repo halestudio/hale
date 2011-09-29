@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Type Hierarchy View
+Bundle-Name: HALE Type Hierarchy View
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.typehierarchy; singleton:=true
-Bundle-Version: 2.2.0.qualifier
+Bundle-Version: 2.5.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.forms;bundle-version="3.5.2"
