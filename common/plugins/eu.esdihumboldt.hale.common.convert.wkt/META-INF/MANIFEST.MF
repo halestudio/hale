@@ -6,5 +6,5 @@ Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.vividsolutions.jts,
  com.vividsolutions.jts.geom,
- com.vividsolutions.jts.io,
- org.springframework.core.convert.converter;version="3.0.0.RELEASE"
+ com.vividsolutions.jts.io
+Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.2.0"
