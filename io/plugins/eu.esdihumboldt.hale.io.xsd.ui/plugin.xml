@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="eu.esdihumboldt.hale.ui.views.properties">
+         <propertySection
+               class="eu.esdihumboldt.hale.io.xsd.ui.properties.PropertyTypeXmlAttributeFlagSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.io.xsd.ui.properties.xmlattributeflag"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+         </propertySection>
+      </propertySections>
+   </extension>
+
+</plugin>
