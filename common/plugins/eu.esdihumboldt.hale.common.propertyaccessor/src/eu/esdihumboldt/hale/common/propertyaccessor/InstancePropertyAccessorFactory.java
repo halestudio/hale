@@ -3,14 +3,12 @@
  */
 package eu.esdihumboldt.hale.common.propertyaccessor;
 
-import javax.xml.namespace.QName;
-
 import org.geotools.factory.Hints;
 import org.geotools.filter.expression.PropertyAccessor;
 import org.geotools.filter.expression.PropertyAccessorFactory;
 
-import eu.esdihumboldt.hale.instance.helper.PropertyResolver;
-import eu.esdihumboldt.hale.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * @author Basti
