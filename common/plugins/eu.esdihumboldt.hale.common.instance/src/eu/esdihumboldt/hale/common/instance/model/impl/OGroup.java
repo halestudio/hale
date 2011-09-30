@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,7 +41,6 @@ import com.orientechnologies.orient.core.record.impl.ORecordBytes;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.internal.CoreBundle;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
@@ -61,6 +61,11 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 public class OGroup implements MutableGroup {
 
 	private static final ALogger log = ALoggerFactory.getLogger(OGroup.class);
+	
+	/**
+	 * Cache for resolved classes for deserialization
+	 */
+	private static final LinkedHashMap<String, Class<?>> resolved = new LinkedHashMap<String, Class<?>>();
 	
 	/**
 	 * The document backing the group
@@ -465,10 +470,21 @@ public class OGroup implements MutableGroup {
 			ByteArrayInputStream bytes = new ByteArrayInputStream(record.toStream());
 			try {
 				ObjectInputStream in = new ObjectInputStream(bytes) {
+					
 					@Override
 					protected Class<?> resolveClass(ObjectStreamClass desc)
 							throws IOException, ClassNotFoundException {
-						return OsgiUtils.loadClass(desc.getName(), null);
+						Class<?> result = resolved.get(desc.getName());
+						if (result == null) {
+							result = OsgiUtils.loadClass(desc.getName(), null);
+							
+							if (resolved.size() > 200) {
+								resolved.entrySet().iterator().remove();
+							}
+							
+							resolved.put(desc.getName(), result);
+						}
+						return result;
 					}
 				};
 				Object object = in.readObject();
