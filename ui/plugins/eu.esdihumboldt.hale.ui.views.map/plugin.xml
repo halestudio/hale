@@ -11,5 +11,20 @@
             name="%view.map.name">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="eu.esdihumboldt.hale.ui.application.perspective.default">
+         <viewShortcut
+               id="eu.esdihumboldt.hale.ui.views.map">
+         </viewShortcut>
+         <view
+               id="eu.esdihumboldt.hale.ui.views.map"
+               minimized="false"
+               relationship="stack"
+               relative="eu.esdihumboldt.hale.ui.views.schemas">
+         </view>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>
