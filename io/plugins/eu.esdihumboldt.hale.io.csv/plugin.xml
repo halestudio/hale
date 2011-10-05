@@ -6,37 +6,30 @@
          point="eu.esdihumboldt.hale.io.csv.propertyType">
       <propertyType
             binding="java.lang.String"
-            id="eu.esdihumboldt.hale.io.csv.propertyType.string"
             name="String">
       </propertyType>
       <propertyType
             binding="java.lang.Integer"
-            id="eu.esdihumboldt.hale.io.csv.propertyType.integer"
             name="Integer">
       </propertyType>
       <propertyType
             binding="java.lang.Float"
-            id="eu.esdihumboldt.hale.io.csv.propertyType.Float"
             name="Float">
       </propertyType>
       <propertyType
             binding="com.vividsolutions.jts.geom.Geometry"
-            id="eu.esdihumboldt.hale.io.csv.propertyType.geometry"
             name="Geometry">
       </propertyType>
       <propertyType
             binding="com.vividsolutions.jts.geom.Point"
-            id="eu.esdihumboldt.hale.io.csv.propertyType.point"
             name="Point">
       </propertyType>
       <propertyType
             binding="com.vividsolutions.jts.geom.Polygon"
-            id="eu.esdihumboldt.hale.io.csv.propertyType.polygon"
             name="Polygon">
       </propertyType>
       <propertyType
             binding="com.vividsolutions.jts.geom.MultiPolygon"
-            id="eu.esdihumboldt.hale.io.csv.propertyType.multipolygon"
             name="Multipolygon">
       </propertyType>
    </extension>
