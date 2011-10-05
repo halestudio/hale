@@ -132,6 +132,14 @@
 	<!-- include property files -->
 	<property file="${additional.name}" />
 	<property file="${common.loc}/build.properties" />
+	
+	<propertyset id="proxy-props">
+	  <propertyref prefix="java.net.useSystemProxies"/>
+	  <propertyref prefix="http."/>
+	  <propertyref prefix="https."/>
+	  <propertyref prefix="ftp."/>
+	  <propertyref prefix="socksProxy"/>
+	</propertyset>
 
 	<!-- Delete the build directory -->
 	<target name="clean" description="Delete the build directory">
@@ -470,6 +478,7 @@
 			<arg value="${testlogs}" />
 			<arg value="${testBundleName}" />
 			<sysproperty key="osgi.test.plugins" value="${plugins}" />
+			<syspropertyset refid="proxy-props" />
 			<classpath>
 				<pathelement path="${plugins}/org.eclipse.osgi_3.6.2.R36x_v20110210.jar" />
 				<!--fileset dir="${plugins}">
