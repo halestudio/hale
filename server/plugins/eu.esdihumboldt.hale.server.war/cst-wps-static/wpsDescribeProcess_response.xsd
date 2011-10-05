@@ -17,6 +17,7 @@
 	<include schemaLocation="common/ResponseBaseType.xsd"/>
 	<include schemaLocation="common/DescriptionType.xsd"/>
 	<include schemaLocation="common/ProcessBriefType.xsd"/>
+	<include schemaLocation="common/ResponseBaseType.xsd"/>
 	<import namespace="http://www.opengis.net/ows/1.1" schemaLocation="http://schemas.opengis.net/ows/1.1.0/owsAll.xsd"/>
 	<!-- =============================================================
 		elements and types

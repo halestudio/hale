@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -26,12 +27,22 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.springframework.web.HttpRequestHandler;
+
+import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
+import eu.esdihumboldt.hale.server.war.wps.Execute;
+import eu.esdihumboldt.hale.server.war.wps.InputType;
+
+
 
 /**
  * @author Andreas Burchert
@@ -88,8 +99,13 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 				this.describeProcess(response, writer);
 			}
 			// do the transformation
-			else if (request.toLowerCase().equals("execute")) {
+			else if (request.toLowerCase().equals("execute") || request.toLowerCase().contains("execute")) {
 				// 
+				try {
+					this.execute(response, writer);
+				} catch (Exception e) {
+					writer.print(e.getLocalizedMessage());
+				}
 			}
 		} else {
 			// give some sample output?
@@ -167,9 +183,31 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * 
 	 * @param response the response
 	 * @param writer the writer
+	 * 
+	 * @throws JAXBException if unmarshaling fails this is thrown
 	 */
-	public void execute(HttpServletResponse response, PrintWriter writer) {
-		/* TODO imlement me */
+	public void execute(HttpServletResponse response, PrintWriter writer) throws JAXBException {
+		// test data
+		URL url = null;
+		try {
+			url = new URL("http://schemas.opengis.net/wps/1.0.0/examples/53_wpsExecute_request_ComplexValue.xml");
+		} catch (MalformedURLException e1) {
+			/* */
+		}
+		
+		JAXBContext context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class, eu.esdihumboldt.hale.server.war.ows.ObjectFactory.class);
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		
+		Execute e = (Execute) unmarshaller.unmarshal(url);
+		writer.println(e.getService());
+		writer.println(e.getIdentifier().getValue());
+		writer.println(System.currentTimeMillis());
+		
+		DataInputsType dI = e.getDataInputs();
+		
+		for (InputType t : dI.getInput()) {
+			writer.println(t.getIdentifier() + " / "+t.getData());
+		}
 	}
 
 	@Override
