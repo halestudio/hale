@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Target Platform
+Bundle-SymbolicName: hale-platform
+Bundle-Version: 2.5.0.qualifier
