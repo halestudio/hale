@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
@@ -57,7 +58,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 	 * Name of the parameter specifying the property name
 	 */
 	public static final String PARAM_PROPERTY = "properties";
-	
+
 	/**
 	 * Name of the parameter specifying the property type
 	 */
@@ -80,6 +81,18 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider#validate()
+	 */
+	@Override
+	public void validate() throws IOProviderConfigurationException {
+		super.validate();
+		if (getParameter(PARAM_TYPENAME) == null
+				|| getParameter(PARAM_TYPENAME) == "") {
+			fail("No Typename specified");
+		}
+	}
+
+	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
@@ -93,8 +106,18 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 		CSVReader reader = CSVUtil.readFirst(this);
 
 		try {
+			// initializes the first line of the table (names of the columns)
+			firstLine = reader.readNext();
+
 			// create type definition
-			String typename = getParameter(PARAM_TYPENAME);
+			String typename;
+			if(getParameter(PARAM_TYPENAME) != null && !getParameter(PARAM_TYPENAME).isEmpty()) {
+				typename = getParameter(PARAM_TYPENAME);
+			} else {
+				reporter.setSuccess(false);
+				reporter.error(new IOMessageImpl("No Typename was set", null));
+				return reporter;
+			}
 			DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(
 					typename));
 
@@ -105,16 +128,41 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 
 			// set metadata for main type
 			type.setLocation(getSource().getLocation());
-
-			String[] comboSelections = getParameter(PARAM_PROPERTYTYPE).split(",");
-			String[] properties = getParameter(PARAM_PROPERTY).split(",");
 			
-			for (int i=0; i < comboSelections.length; i++) {
+			StringBuffer muh = new StringBuffer();
+			String[] comboSelections;
+			if(getParameter(PARAM_PROPERTYTYPE) == null || getParameter(PARAM_PROPERTYTYPE) == "") {
+				for (int i = 0; i < firstLine.length; i++) {
+					muh.append("java.lang.String");
+					muh.append(",");
+				}
+				muh.deleteCharAt(muh.lastIndexOf(","));
+			String combs = muh.toString();
+			comboSelections = combs.split(",");
+			} else {
+			comboSelections = getParameter(PARAM_PROPERTYTYPE).split(
+					",");
+			}
+			String[] properties;
+			if (getParameter(PARAM_PROPERTY) == null) {
+				properties = firstLine;
+			} else {
+				properties = getParameter(PARAM_PROPERTY).split(",");
+			}
+			// fails if there are less or more property names or property types
+			// than the entries in the first line
+			if ((firstLine.length != properties.length && properties.length != 0)
+					|| (firstLine.length != comboSelections.length && comboSelections.length != 0)) {
+				fail("Not the same amount of entries for property names, property types and the first line of the file");
+			}
+			for (int i = 0; i < comboSelections.length; i++) {
 				PropertyType propertyType;
-				propertyType = PropertyTypeExtension.getInstance().get(comboSelections[i]);
-				
+				propertyType = PropertyTypeExtension.getInstance().get(
+						comboSelections[i]);
+
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-						new QName(properties[i]), type, propertyType.getTypeDefinition() );
+						new QName(properties[i]), type,
+						propertyType.getTypeDefinition());
 
 				// set constraints on property
 				property.setConstraint(NillableFlag.DISABLED); // nillable
@@ -123,11 +171,6 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 				// set metadata for property
 				property.setLocation(getSource().getLocation());
 			}
-
-			// initializes the first line of the table (names of the columns)
-			firstLine = reader.readNext();
-
-			//String[] properties = getParameter(PARAM_PROPERTY).split(",");
 
 			boolean skip = Arrays.equals(properties, firstLine);
 

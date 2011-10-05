@@ -50,7 +50,7 @@ public class PropertyTypeExtension extends IdentifiableExtension<PropertyType> {
 	 */
 	@Override
 	protected String getIdAttributeName() {
-		return "id";
+		return "binding";
 	}
 
 	/**
