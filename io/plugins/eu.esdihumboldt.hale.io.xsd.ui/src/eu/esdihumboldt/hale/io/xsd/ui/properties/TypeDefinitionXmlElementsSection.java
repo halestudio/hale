@@ -31,60 +31,33 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
 
 /**
  * Properties Section with XmlElements
+ * 
  * @author Patrick Lieb
  */
-public class TypeDefinitionXmlElementsSection extends DefaultDefinitionSection<TypeDefinition> {
-	
+public class TypeDefinitionXmlElementsSection extends
+		DefaultDefinitionSection<TypeDefinition> {
+
 	private Text[] textarray;
-	
+
 	private Text text;
 
+	private Composite parent;
+
+	private Composite composite;
+
+	private TabbedPropertySheetPage aTabbedPropertySheetPage;
+
+	private Collection<? extends XmlElement> elements;
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		Collection<? extends XmlElement> elements = getDefinition().getConstraint(XmlElements.class).getElements();
-		int length = elements.size();
-		for(int pos = 0; pos < length; pos++){
-			super.createControls(parent, aTabbedPropertySheetPage);
-			Composite composite = getWidgetFactory()
-			.createFlatFormComposite(parent);
-			FormData data;
-			
-			text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-			text.setEditable(false);
-			data = new FormData();
-			data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-			data.right = new FormAttachment(100, 0);
-			if(pos <= 0 ){
-				data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-			} else {
-				data.top = new FormAttachment(textarray[pos-1], ITabbedPropertyConstants.VSPACE);
-			}
-			text.setLayoutData(data);
-		
-			CLabel namespaceLabel;
-			if(pos <= 0 ){
-				namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, "XML-Elements"); //$NON-NLS-1$
-			} else {
-				namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, ""); //$NON-NLS-1$
-			}
-			
-			data = new FormData();
-			data.left = new FormAttachment(0, 0);
-			data.right = new FormAttachment(text,
-					10);
-			data.top = new FormAttachment(text, 0, SWT.CENTER);
-			namespaceLabel.setLayoutData(data);
-			
-			textarray[pos] = text;
-		}
-		
-		
+		this.parent = parent;
+		this.aTabbedPropertySheetPage = aTabbedPropertySheetPage;
 	}
 
 	/**
@@ -92,9 +65,66 @@ public class TypeDefinitionXmlElementsSection extends DefaultDefinitionSection<T
 	 */
 	@Override
 	public void refresh() {
-		Collection<? extends XmlElement> elements = getDefinition().getConstraint(XmlElements.class).getElements();
-		for(XmlElement element : elements){
-			textarray[0].setText(element.getName().getNamespaceURI().toString());
+		if (composite != null)
+			composite.dispose();
+		elements = getDefinition().getConstraint(XmlElements.class)
+				.getElements();
+		int size = elements.size();
+		textarray = new Text[size];
+
+		super.createControls(parent, aTabbedPropertySheetPage);
+		composite = getWidgetFactory().createFlatFormComposite(parent);
+		parent.layout();
+		parent.getParent().layout();
+		FormData data;
+
+		text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+		text.setEditable(false);
+		data = new FormData();
+		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+		text.setLayoutData(data);
+
+		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite,
+				"XML-Elements:"); //$NON-NLS-1$
+
+		data = new FormData();
+		data.left = new FormAttachment(0, 0);
+		data.right = new FormAttachment(text, 10);
+		data.top = new FormAttachment(text, 0, SWT.CENTER);
+		namespaceLabel.setLayoutData(data);
+
+		textarray[0] = text;
+
+		for (int pos = 1; pos < size; pos++) {
+
+			text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+			text.setEditable(false);
+			data = new FormData();
+			data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
+			data.right = new FormAttachment(100, 0);
+			data.top = new FormAttachment(textarray[pos - 1],
+					ITabbedPropertyConstants.VSPACE);
+			text.setLayoutData(data);
+
+			namespaceLabel = getWidgetFactory().createCLabel(composite, ""); //$NON-NLS-1$
+
+			data = new FormData();
+			data.left = new FormAttachment(0, 0);
+			data.right = new FormAttachment(text, 10);
+			data.top = new FormAttachment(text, 0, SWT.CENTER);
+			namespaceLabel.setLayoutData(data);
+
+			textarray[pos] = text;
 		}
+		int pos = 0;
+		for (XmlElement element : elements) {
+			textarray[pos].setText(element.getName().getNamespaceURI()
+					.toString());
+			pos++;
+		}
+		parent.layout();
+		parent.getParent().layout();
 	}
 }
