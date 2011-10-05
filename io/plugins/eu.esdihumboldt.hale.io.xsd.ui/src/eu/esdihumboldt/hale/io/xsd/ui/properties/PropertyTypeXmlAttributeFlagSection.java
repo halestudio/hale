@@ -54,11 +54,10 @@ public class PropertyTypeXmlAttributeFlagSection extends DefaultDefinitionSectio
 		xmlattributeflag.setLayoutData(data);
 		
 		CLabel namespaceLabel = getWidgetFactory()
-		.createCLabel(composite, "XML-Attribute-Flag"); //$NON-NLS-1$
+		.createCLabel(composite, "XML-Attribute-Flag:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(xmlattributeflag,
-				10);
+		data.right = new FormAttachment(xmlattributeflag, 10);
 		data.top = new FormAttachment(xmlattributeflag, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
 		
