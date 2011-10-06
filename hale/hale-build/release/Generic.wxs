@@ -17,7 +17,7 @@
 		
 		<!-- select UI -->
 		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
-		<UIRef Id="WixUI_@{SHORTNAME}" />
+		<!--UIRef Id="WixUI_@{SHORTNAME}" /-->
 		
 		<!-- Install for all users -->
 		<Property Id="ALLUSERS" Value="1" />
