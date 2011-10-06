@@ -143,7 +143,9 @@
 
 	<!-- Delete the build directory -->
 	<target name="clean" description="Delete the build directory">
-		<delete dir="${toString:absoluteBuild}" />
+		<!--ANT 1.8 delete dir="${toString:absoluteBuild}" followsymlinks="false" 
+			removeNotFollowedSymlinks="true" /-->
+		<delete dir="${toString:absoluteBuild}" followsymlinks="false" />
 	</target>
 
 	<!-- Copy components and target platform to build directory -->
