@@ -6,7 +6,6 @@
 
 # generic part (can be overridden locally using !pattern)
 bin/
-build/
 dist/
 logs/
 classes/
