@@ -34,23 +34,23 @@
 	<description>
 		UI Installer Build File
 	</description>
-	
+
 	<!-- ant file location -->
 	<dirname property="loc" file="${ant.file.UI Installer}"/>
-	
+
 	<!-- load ant contributions -->
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
 			<pathelement location="${loc}/../../../lib/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
-	
+
 	<property name="build" location="build" />
 	<property name="dist" location="dist" />
 	<property name="src" location="src" />
 	<property name="src.jre" location="${src}/jre" />
 	<property name="src.plugins" location="${src}/plugins" />
-	
+
 	<!-- add hyphen to tag -->
 	<condition property="tag.hyphen" value="${tag}-">
 		<and>
@@ -61,10 +61,10 @@
 		</and>
 	</condition>
 	<property name="tag.hyphen" value="" />
-	
+
 	<!-- load product information -->
 	<property file="${src}/.eclipseproduct" />
-	
+
 	<!-- set properties according to the selected language -->
 	<condition property="cultures" value="de-de">
 		<equals arg1="${language}" arg2="de" casesensitive="false" trim="true" />
@@ -78,7 +78,7 @@
 	<condition property="langid" value="1033">
 		<equals arg1="${language}" arg2="en" casesensitive="false" trim="true" />
 	</condition>
-	
+
 	<!-- set properties according to the selected architecure -->
 	<condition property="ProgramFilesFolder" value="ProgramFiles64Folder">
 		<equals arg1="${wix.arch}" arg2="x64" casesensitive="false" trim="true" />
@@ -86,9 +86,9 @@
 	<condition property="ProgramFilesFolder" value="ProgramFilesFolder">
 		<equals arg1="${wix.arch}" arg2="x86" casesensitive="false" trim="true" />
 	</condition>
-	
+
 	<!-- Target to clean everything (Deletes the directories
-	     ${build} and ${dist}) --> 
+	     ${build} and ${dist}) -->
 	<target name="clean" description="Clean output files">
 		<!-- Delete the ${build} and ${dist} directory trees -->
 		<delete dir="${build}" />
@@ -96,7 +96,7 @@
 		<echo message="All files removed successfully" />
 		<echo />
 	</target>
-	
+
 	<!-- This target compiles the files and creates the MSI
 	     installer package -->
 	<target name="all" description="Build installer">
@@ -104,16 +104,28 @@
 		<fail unless="title" message="Please provide the environment variable &quot;title&quot; defining the installer's title (for example: &quot;CityServer3D AdminTool&quot;)" />
 		<fail unless="GUID.UpgradeCode" message="Please provide the environment variable &quot;GUID.UpgradeCode&quot; defining the GUID for the installer's upgrade code" />
 		<fail unless="GUID.ApplicationShortcut" message="Please provide the environment variable &quot;GUID.ApplicationShortcut&quot; defining the GUID for the shortcuts the installer will create" />
-		
+
 		<property file="${src}/.eclipseproduct" />
-		
+
 		<echo message="Build dir: ${build}" />
 		<echo message="Version: ${version}" />
 		
+		<!-- linux workaround -->
+		<delete dir="${wine.c}/buildtemp" includes="**/*" followsymlinks="false" includeemptydirs="true" />
+		<mkdir dir="${wine.c}/buildtemp"/>
+		<property name="winesrc" value="${wine.c}/buildtemp/src" />
+		<property name="winesrc.jre" location="${winesrc}/jre" />
+		<property name="winesrc.plugins" location="${winesrc}/plugins" />
+		<exec executable="ln">
+			<arg value="-s" />
+			<arg value="${src}" />
+			<arg value="${winesrc}"/>
+		</exec>
+
 		<!-- create destination directories -->
 		<mkdir dir="${build}" />
 		<mkdir dir="${dist}" />
-		
+
 		<!-- create object which lists all components in the source
 		     directories:
 		     
@@ -123,7 +135,8 @@
 		                              components which shall
 		                              be installed
 		-->
-		<script language="javascript"><![CDATA[
+		<script language="javascript">
+			<![CDATA[
 			importClass(java.io.File);
 			
 			//counters for unique identifiers
@@ -201,9 +214,9 @@
 			}
 			
 			//get absolute path to source directories
-			var src = project.getProperty("src");
-			var srcjre = project.getProperty("src.jre");
-			var srcplugins = project.getProperty("src.plugins");
+			var src = project.getProperty("winesrc");
+			var srcjre = project.getProperty("winesrc.jre");
+			var srcplugins = project.getProperty("winesrc.plugins");
 			
 			//create result object...
 			//parse "jre/"
@@ -220,9 +233,10 @@
 			project.setProperty("components", result["components"]);
 			project.setProperty("componentrefs", result["componentrefs"]);
 		]]></script>
-		
+
 		<!-- create short version from version property -->
-		<script language="javascript"><![CDATA[
+		<script language="javascript">
+			<![CDATA[
 			var version = project.getProperty("version");
 			var shortversion = "";
 			var elements = version.split("\\.");
@@ -237,15 +251,17 @@
 			}
 			project.setProperty("shortversion", shortversion);
 		]]></script>
-		
+
 		<!-- get relative path to the folder where the source
 			 files are located -->
-		<script language="javascript"><![CDATA[
+		<script language="javascript">
+			<![CDATA[
 			var src = project.getProperty("src");
 			var relsrc = src.substring(src.lastIndexOf('\\') + 1);
 			project.setProperty("relsrc", relsrc);
-		]]></script>
-		
+		]]>
+		</script>
+
 		<copy todir="${build}" overwrite="yes" verbose="true">
 			<fileset dir="${wxs.dir}">
 				<include name="*/**" />
@@ -253,7 +269,7 @@
 				<include name="${wxs.file.config}.wxs" />
 			</fileset>
 		</copy>
-		
+
 		<!-- placeholders -->
 		<foreach target="wxs.replace" param="filename" inheritall="true">
 			<path>
@@ -263,65 +279,108 @@
 				</fileset>
 			</path>
 		</foreach>
-		
+
 		<!-- include deployment specific wxs file -->
-        <condition property="deploymentSpecificWxsInclude" value="&lt;?include ${deploymentSpecificWxs} ?&gt;">
-        	<and>
-            	<isset property="deploymentSpecificWxs" />
-            	<not>
-                	<equals arg1="${deploymentSpecificWxs}" arg2="" trim="true" />
-                </not>
+		<condition property="deploymentSpecificWxsInclude" value="&lt;?include ${deploymentSpecificWxs} ?&gt;">
+			<and>
+				<isset property="deploymentSpecificWxs" />
+				<not>
+					<equals arg1="${deploymentSpecificWxs}" arg2="" trim="true" />
+				</not>
 			</and>
-        </condition>
+		</condition>
 		<property name="deploymentSpecificWxsInclude" value="" />
 		<replace file="${build}/${wxs.file.config}.wxs" token="@{DEPLOYMENTSPECIFICWXS}" value="${deploymentSpecificWxsInclude}" />
-		
+
+		<!-- windows -->
 		<!-- compile MSI file -->
-		<echo message="Compiling WiX source files..." />
+		<!--echo message="Compiling WiX source files..." />
 		<exec executable="${wix.dir}\bin\candle" failonerror="yes" >
 			<arg value="-nologo" />
 			<arg value="-arch" />
 			<arg value="${wix.arch}" />
-			<!--
-			<arg value="-ext" />
-			<arg value="&quot;${wix.dir}\bin\WixFirewallExtension.dll&quot;" />
-			-->
 			<arg value="-out" />
 			<arg value="${build}\" />
 			<arg value="${build}/${wxs.file.config}.wxs" />
 			<arg value="${build}/${wxs.file.ui}.wxs" />
 			<arg  />
-		</exec>
-		
+		</exec -->
+
 		<!-- link MSI file -->
-		<echo message="Linking MSI file..." />
+		<!--echo message="Linking MSI file..." />
 		<exec executable="${wix.dir}\bin\light" failonerror="yes">
 			<arg value="-nologo" />
-			<!-- suppress warning about missing default language
-			     for some files -->
 			<arg value="-sw1076" />
 			<arg value="-out" />
 			<arg value="${build}/${buildId}.msi" />
 			<arg value="-cultures:${cultures}" />
 			<arg value="-ext" />
 			<arg value="&quot;${wix.dir}\bin\WixUIExtension.dll&quot;" />
-			<!--
-			<arg value="-ext" />
-			<arg value="&quot;${wix.dir}\bin\WixFirewallExtension.dll&quot;" />
-			-->
 			<arg value="${build}/${wxs.file.config}.wixobj" />
 			<arg value="${build}/${wxs.file.ui}.wixobj" />
+		</exec-->
+
+		<!-- linux -->
+		<!-- compile msi file -->
+		<echo message="Compiling WiX source files..." />
+		<exec executable="wine" failonerror="yes" dir="${build}" >
+			<arg value="${wix.dir}\bin\candle.exe" />
+			<arg value="-nologo" />
+			<arg value="-arch" />
+			<arg value="${wix.arch}" />
+			<arg value="${wxs.file.config}.wxs" />
+			<arg value="${wxs.file.ui}.wxs" />
+			<arg />
 		</exec>
 		
+		<!-- replace linux paths with windows paths -->
+		<foreach target="wixobj.replace" param="filename" inheritall="true">
+			<path>
+				<fileset dir="${build}">
+					<include name="${wxs.file.ui}.wixobj" />
+					<include name="${wxs.file.config}.wixobj" />
+				</fileset>
+			</path>
+		</foreach>
+		
+		<!--copy tofile="${build}/WixUIExtension.dll" verbose="true"
+			file="${wine.wix}/bin/WixUIExtension.dll" overwrite="yes" /-->
+		<copy tofile="${build}/winterop.dll" verbose="true"
+			file="${wine.wix}/bin/winterop.dll" overwrite="yes" />
+		
+		<copy todir="${wine.c}/buildtemp">
+			<fileset dir="${wine.wix}/bin">
+				<include name="*.dll" />
+			</fileset>
+		</copy>
+
+		<!-- link MSI file -->
+		<echo message="Linking MSI file..." />
+		<exec executable="wine" failonerror="yes" dir="${build}" >
+			<arg value="${wix.dir}\bin\light.exe" />
+			<arg value="-sval" />
+			<arg value="-nologo" />
+			<arg value="-sw1076" />
+			<arg value="-out" />
+			<arg value="${buildId}.msi" />
+			<arg value="-cultures:${cultures}" />
+			<arg value="-ext" />
+			<!--arg value="${wix}\bin\WixUIExtension.dll" /-->
+			<!--arg value="WixUIExtension.dll" /-->
+			<arg value="C:\buildtemp\WixUIExtension.dll" />
+			<arg value="${wxs.file.config}.wixobj" />
+			<arg value="${wxs.file.ui}.wixobj" />
+		</exec>
+
 		<!--copy tofile="${dist}/${buildId}-${version}-${tag.hyphen}${language}-${wix.arch}.msi"
 			file="${build}/${buildId}.msi" overwrite="yes" /-->
-    <copy tofile="${dist}/${buildId}-${version}-${tag.hyphen}${wix.arch}.msi"
+		<copy tofile="${dist}/${buildId}-${version}-${tag.hyphen}${wix.arch}.msi"
 			file="${build}/${buildId}.msi" overwrite="yes" />
 	</target>
-	
+
 	<target name="wxs.replace">
 		<echo message="Replacing placeholders in WXS file: ${filename}" />
-		
+
 		<replace file="${filename}" token="@{SHORTVERSION}" value="${shortversion}" />
 		<replace file="${filename}" token="@{SHORTNAME}" value="${shortName}" />
 		<replace file="${filename}" token="@{LANGID}" value="${langid}" />
@@ -334,5 +393,11 @@
 		<replace file="${filename}" token="@{TITLE}" value="${title}" />
 		<replace file="${filename}" token="@{GUID.UPGRADECODE}" value="${GUID.UpgradeCode}" />
 		<replace file="${filename}" token="@{GUID.APPLICATIONSHORTCUT}" value="${GUID.ApplicationShortcut}" />
+	</target>
+	
+	<target name="wixobj.replace">
+		<echo message="Replacing placeholders in wixobj file: ${filename}" />
+
+		<replace file="${filename}" token="${wine.c}" value="C:\\" />
 	</target>
 </project>
