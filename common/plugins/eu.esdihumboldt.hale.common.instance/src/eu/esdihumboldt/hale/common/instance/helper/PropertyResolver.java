@@ -17,11 +17,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 
@@ -43,11 +45,104 @@ public class PropertyResolver {
 	public static Collection<Object> getValues(Instance instance,
 			String propertyPath) {
 
-		// the old way
-		// Object[] values = instance.getProperty(new QName(propertyPath));
+		if(hasProperty(instance, propertyPath)){
+			
+			
+			LinkedList<String> paths = getKnownQueryPath(instance, propertyPath);
+			Collection<Object> result = new ArrayList<Object>();
+			
+			for(String path : paths){
+				
+				
+				ArrayList<QName> qnames = getQNamesFromPath(path);
+				
+				
+					
+				Object[] props = instance.getProperty(qnames.get(0));
+				
+				if(props == null){
+					continue;
+				}
+				
+				Queue<Object> currentQueue = new LinkedList<Object>();
+				Queue<Object> nextQueue = new LinkedList<Object>();
+				
+				for (Object prop : props){
+				
+					currentQueue.add(prop);
+					
+				}
+				
+				for(int i = 1; i < qnames.size(); i++){
+				
+					while (!currentQueue.isEmpty()){
+						
+						Object prop = currentQueue.poll();
+						
+						if(prop instanceof Group){
+							
+							Object[] nextPropertys = ((Group) prop).getProperty(qnames.get(i));
+							
+							if(nextPropertys == null){
+								continue;
+							}
+							
+							for (Object np : nextPropertys){
+								
+								nextQueue.add(np);
+								
+							}
+		
+						}
+						
+						else{
+							//TODO ERROR wrong path given from the cache
+						}
 
-		return null;
+					}
+					
+					while(!nextQueue.isEmpty()){
+					currentQueue.add(nextQueue.poll());
+					}
+				}
+				
+				
+				int i = 0;
+				while(!currentQueue.isEmpty()){
+					
+					
+					Object finalProp = currentQueue.poll();
+					
+					if (finalProp instanceof Instance){
+						
+						result.add(((Instance) finalProp).getValue());
+						
+					}
+					
+					else if (finalProp instanceof Group){
+						//TODO error
+					}
+					
+					else result.add(finalProp);
+					
+					
+				}
+				
+				
+				
+				
+			}
+			if(!result.isEmpty()) return result;
+			else return null;
+		}
+		
+		else return null;
+
+		
 	}
+	
+	
+	
 
 	private static ArrayList<String> splitPath(String propertyPath) {
 
@@ -109,8 +204,10 @@ public class PropertyResolver {
 		
 
 			definitioncache.put(qdi, new LinkedList<String>());
-
-			if (qnames.size() == 1) {
+			
+			//this can be used to search a single index over the whole Instance-Definition-Tree
+			
+		/*	if (qnames.size() == 1) {
 
 				analyzeSimpleQueryChildDefinition(instance
 						.getDefinition().getChildren(), qnames, qdi);
@@ -118,11 +215,12 @@ public class PropertyResolver {
 				return !definitioncache.get(qdi).isEmpty();
 			}
 
-			else {
+			else {*/
+			
 				analyzeSpecialQueryChildDefinition(instance
 						.getDefinition().getChildren(), qnames, qdi);
 				return !definitioncache.get(qdi).isEmpty();
-			}
+		//	}
 
 
 	}
@@ -170,7 +268,7 @@ public class PropertyResolver {
 			ChildDefinition<?> child = childIterator.next();
 			//System.out.println("Adding to queue: " + child.getName().toString());
 			QueueDefinitionItem queueItem = new QueueDefinitionItem(child, child.getName());
-			queueItem.addQname(child.getParentType().getName());
+			//queueItem.addQname(child.getParentType().getName());
 			propertyqueue.add(queueItem);
 			
 		}
@@ -271,7 +369,6 @@ public class PropertyResolver {
 				QueueDefinitionItem queueItem = new QueueDefinitionItem(child, child.getName());
 				
 				queueItem.addQnames(qudi.getQnames());
-				
 				propertyqueue.add(queueItem);
 
 			}
@@ -293,17 +390,17 @@ public class PropertyResolver {
 
 				Iterator<? extends ChildDefinition<?>> tempit; 
 				
-				if(isGroup(currentItem.getDefinition())){
+				//if(isGroup(currentItem.getDefinition())){
 					
 					tempit = currentItem
 							.getDefinition().asGroup().getDeclaredChildren().iterator();
 					
-				}
+				//}
 				
-				else{
+	/*			else{
 					tempit = currentItem.getDefinition().asProperty().getPropertyType().getChildren()
 							.iterator();
-				}
+				}*/
 
 				while (tempit.hasNext()) {
 
@@ -317,6 +414,9 @@ public class PropertyResolver {
 					}
 					
 					if (currentItem.getQnames().contains(tempdef.getName())){
+						
+						if(!compareQName(current, tempdef.getName())){
+							
 						ArrayList<QName> loops = new ArrayList<QName>();
 						
 						for (int i = currentItem.getQnames().indexOf(tempdef.getName());
@@ -325,7 +425,7 @@ public class PropertyResolver {
 						}
 					currentItem.addLoopQNames(loops);
 					continue;
-						
+						}
 					}
 					
 					
@@ -371,14 +471,14 @@ public class PropertyResolver {
 			ChildDefinition<?> child = childIterator.next();
 			//System.out.println("Adding to queue: " + child.getName().toString());
 			QueueDefinitionItem queueItem = new QueueDefinitionItem(child, child.getName());
-			queueItem.addQname(child.getParentType().getName());
+			//queueItem.addQname(child.getParentType().getName());
 			propertyqueue.add(queueItem);
 		}
 
 		while (!propertyqueue.isEmpty()) {
 
 			QueueDefinitionItem currentItem = propertyqueue.poll();
-
+			
 			if (compareQName(current, currentItem.getDefinition().getName())
 					&& isProperty(currentItem.getDefinition())) {
 					
@@ -398,28 +498,30 @@ public class PropertyResolver {
 				}
 			
 
-			else if (isInstance(currentItem.getDefinition()) || isGroup(currentItem.getDefinition())) {
-
+			else if (isGroup(currentItem.getDefinition())) {
+				//isInstance(currentItem.getDefinition()) ||
+				
+				
 				Iterator<? extends ChildDefinition<?>> tempit; 
 				
-				if(isGroup(currentItem.getDefinition())){
+				//if(isGroup(currentItem.getDefinition())){
 					
 					tempit = currentItem
 							.getDefinition().asGroup().getDeclaredChildren().iterator();
 					
-				}
+				//}
 				
-				else{
+				/*else{
 					tempit = currentItem.getDefinition().asProperty().getPropertyType().getChildren()
 							.iterator();
-				}
+				}*/
 
 				while (tempit.hasNext()) {
 
 					ChildDefinition<?> tempdef = tempit.next();
 					//System.out.println("Existing child: " + tempdef.getName().toString());
 					
-					//TODO loop-prevention - still not working
+					//TODO loop-prevention - still not working correctly
 					
 					if(currentItem.getLoopQNames().contains(tempdef.getName())){
 						continue;
@@ -498,6 +600,14 @@ public class PropertyResolver {
 	}
 	
 	
+	public static LinkedList<String> getKnownQueryPath(Instance instance, String query){
+		
+		QueryDefinitionIndex qdi = new QueryDefinitionIndex(instance.getDefinition(), query);
+		
+		
+		return definitioncache.get(qdi);
+		
+	}
 
 }
 
