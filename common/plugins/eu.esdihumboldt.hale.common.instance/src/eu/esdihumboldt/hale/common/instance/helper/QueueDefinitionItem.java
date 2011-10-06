@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * TODO Type description
- * @author Basti
+ * @author Sebastian Reinhardt
  */
 public class QueueDefinitionItem {
 
