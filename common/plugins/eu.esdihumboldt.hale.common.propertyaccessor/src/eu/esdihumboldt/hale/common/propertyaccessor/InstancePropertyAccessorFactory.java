@@ -34,32 +34,24 @@ public class InstancePropertyAccessorFactory implements PropertyAccessorFactory 
 		return new InstancePropertyAccessor();
 	}
 
-	static String stripPrefix(String xpath) {
-        int split = xpath.indexOf(":");
-        if (split != -1) {
-            return xpath.substring(split + 1);
-        }
-        return xpath;
-	}
+	
 	
 	
 	static class InstancePropertyAccessor implements PropertyAccessor {
         public boolean canHandle(Object object, String xpath, Class target) {
-        	xpath = stripPrefix(xpath);
         	
         	if ( object instanceof Instance ) {
         		
-        			return PropertyResolver.hasProperty((Instance)object, xpath);
+        			return true;
         			
         			//the old way
         			//return ((Instance) object).getProperty(new QName(xpath)) != null;
         	}
         	
-        	return false;
+        	else return false;
         }
         
         public Object get(Object object, String xpath, Class target) {
-        	xpath = stripPrefix(xpath);
         	
         	if ( object instanceof Instance ) {
         		
@@ -74,13 +66,7 @@ public class InstancePropertyAccessorFactory implements PropertyAccessorFactory 
         }		
 
         public void set(Object object, String xpath, Object value, Class target){
-        /*	xpath = stripPrefix(xpath);
-        	
-        	if ( object instanceof OInstance ) {
-        		((OInstance) object).setProperty( xpath, value );
-        	}
-        	
-        	*/
+        	throw new UnsupportedOperationException();
         	
         }
     }
