@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.common.instance.helper;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +20,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
+import java.util.LinkedList;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -44,10 +47,9 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 
 /**
- * Tests for {@link GmlInstanceCollection}
+ * Tests for {@link PropertyResolver}
  *
- * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @author Sebastian Reinhardt
  */
 @SuppressWarnings("restriction")
 public class PropertyResolverTest {
@@ -76,12 +78,19 @@ public class PropertyResolverTest {
 		
 		TypeDefinition test = instance.getDefinition().getChildren().iterator().next().asProperty().getParentType();
 		
-		//assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}orderperson"));
-	//	assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}shipto.{http://www.example.com}city"));
-	//	assertTrue(PropertyResolver.hasProperty(instance, "orderperson"));
-		//assertTrue(PropertyResolver.hasProperty(instance, "shipto.city"));
+		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}orderperson"));
+		
+		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}shipto.{http://www.example.com}city"));
+		assertTrue(PropertyResolver.getKnownQueryPath(instance, "{http://www.example.com}shipto.{http://www.example.com}city")
+				.contains("{http://www.example.com}shipto.{http://www.example.com}city"));
+		
+		assertTrue(PropertyResolver.hasProperty(instance, "orderperson"));
+		assertTrue(PropertyResolver.hasProperty(instance, "shipto.city"));
 		assertTrue(PropertyResolver.hasProperty(instance, "shipto.{http://www.example.com}city"));
-		//TODO
+		
+		assertEquals(PropertyResolver.getValues(instance, "shipto.city").iterator().next(), "4000 Stavanger");
+
+		
 		
 		it.close();
 	}
@@ -122,14 +131,16 @@ public class PropertyResolverTest {
         assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}boundedBy.{http://www.opengis.net/gml/3.2}Envelope.{http://www.opengis.net/gml/3.2}coordinates"));
         assertFalse(PropertyResolver.hasProperty(instance, "boundedBy.Envelope.{http://www.opengis.net/gml/3.2}coordinates.description"));
 		assertTrue(PropertyResolver.hasProperty(instance, "location.AbstractSolid.id"));
-		assertTrue(PropertyResolver.hasProperty(instance, "location.CompositeCurve.curveMember.type"));
 		
+		assertTrue(PropertyResolver.hasProperty(instance, "location.CompositeCurve.curveMember.CompositeCurve.curveMember.type"));
+		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}location.{http://www.opengis.net/gml/3.2}CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.{http://www.opengis.net/gml/3.2}CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.type"));
+		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}location.CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.{http://www.opengis.net/gml/3.2}CompositeCurve.curveMember.type"));
         
+		assertEquals(PropertyResolver.getValues(instance,"geometry.Polygon.srsName"), "EPSG:4326");
+		
+		
 		//TODO
-        //Aufzeichnen der Pfade funktioniert noch nicht, nur bis letztes und vorletztes item
-        //LOOP Prevention auch noch nicht richtig	
-        //nur gruppen und instanzen haben kinder
-	
+		ri.close();
 	}	
 	
 	private InstanceCollection loadXMLInstances(URI schemaLocation, URI xmlLocation) throws IOException, IOProviderConfigurationException {
