@@ -80,6 +80,7 @@
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
       <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
@@ -89,9 +90,11 @@
       <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
+      <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
+      <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
@@ -114,6 +117,7 @@
       <plugin id="eu.esdihumboldt.hale.ui.functions.core"/>
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
+      <plugin id="eu.esdihumboldt.hale.ui.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.functions"/>
@@ -127,6 +131,7 @@
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
+      <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
