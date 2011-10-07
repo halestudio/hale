@@ -47,8 +47,6 @@ public class TypeDefinitionXmlElementsSection extends
 
 	private TabbedPropertySheetPage aTabbedPropertySheetPage;
 
-	private Collection<? extends XmlElement> elements;
-
 	/**
 	 * @see AbstractPropertySection#createControls(Composite,
 	 *      TabbedPropertySheetPage)
@@ -67,15 +65,15 @@ public class TypeDefinitionXmlElementsSection extends
 	public void refresh() {
 		if (composite != null)
 			composite.dispose();
-		elements = getDefinition().getConstraint(XmlElements.class)
-				.getElements();
+		Collection<? extends XmlElement> elements = getDefinition()
+				.getConstraint(XmlElements.class).getElements();
 		int size = elements.size();
+		XmlElement elm[] = elements.toArray(new XmlElement[size]);
 		textarray = new Text[size];
 
 		super.createControls(parent, aTabbedPropertySheetPage);
 		composite = getWidgetFactory().createFlatFormComposite(parent);
-		parent.layout();
-		parent.getParent().layout();
+		
 		FormData data;
 
 		text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
@@ -94,6 +92,8 @@ public class TypeDefinitionXmlElementsSection extends
 		data.right = new FormAttachment(text, 10);
 		data.top = new FormAttachment(text, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
+
+		text.setText(elm[0].getName().getNamespaceURI().toString());
 
 		textarray[0] = text;
 
@@ -116,13 +116,9 @@ public class TypeDefinitionXmlElementsSection extends
 			data.top = new FormAttachment(text, 0, SWT.CENTER);
 			namespaceLabel.setLayoutData(data);
 
+			text.setText(elm[pos].getName().getNamespaceURI().toString());
+
 			textarray[pos] = text;
-		}
-		int pos = 0;
-		for (XmlElement element : elements) {
-			textarray[pos].setText(element.getName().getNamespaceURI()
-					.toString());
-			pos++;
 		}
 		parent.layout();
 		parent.getParent().layout();
