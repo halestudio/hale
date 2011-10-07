@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 
 /**
  * Tests for {@link StreamGmlWriter}
@@ -22,6 +25,15 @@ package eu.esdihumboldt.hale.io.gml.writer.internal;
  */
 @SuppressWarnings("restriction")
 public class StreamGmlWriterTest {
+	
+	/**
+	 * Tests are currently ignored
+	 */
+	@Test
+	@Ignore
+	public void test() {
+		// placeholder for all the tests currently commented out
+	}
 	
 //	/**
 //	 * If temporary files shall be deleted
