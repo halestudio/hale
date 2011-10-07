@@ -52,41 +52,6 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 @SuppressWarnings("restriction")
 public class PropertyResolverTest {
 	
-	/**
-	 * Test loading a simple XML file with one instance
-	 * 
-	 * @throws Exception if an error occurs
-	 */
-	@Test
-	public void testLoadShiporder() throws Exception {
-		InstanceCollection instances = loadXMLInstances(
-				getClass().getResource("/data/shiporder/shiporder.xsd").toURI(),
-				getClass().getResource("/data/shiporder/shiporder.xml").toURI());
-		
-//		String ns = "http://www.example.com";
-		int size = instances. size();
-		ResourceIterator<Instance> it = instances.iterator();
-		assertTrue(it.hasNext());
-		
-		Instance instance = it.next();
-		assertNotNull(instance);
-			
-	//	Filter filter = CQL.toFilter("orderperson = John Smith");	
-	//	assertTrue(filter.evaluate(instance));
-		
-		TypeDefinition test = instance.getDefinition().getChildren().iterator().next().asProperty().getParentType();
-		
-		//assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}orderperson"));
-	//	assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}shipto.{http://www.example.com}city"));
-	//	assertTrue(PropertyResolver.hasProperty(instance, "orderperson"));
-		//assertTrue(PropertyResolver.hasProperty(instance, "shipto.city"));
-		assertTrue(PropertyResolver.hasProperty(instance, "shipto.{http://www.example.com}city"));
-		//TODO
-		
-		it.close();
-	}
-	
-	
 	@Test
 	public void testComplexInstances() throws Exception {
 		
@@ -130,7 +95,41 @@ public class PropertyResolverTest {
         //LOOP Prevention auch noch nicht richtig	
         //nur gruppen und instanzen haben kinder
 	
-	}	
+	}
+	
+	/**
+	 * Test loading a simple XML file with one instance
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadShiporder() throws Exception {
+		InstanceCollection instances = loadXMLInstances(
+				getClass().getResource("/data/shiporder/shiporder.xsd").toURI(),
+				getClass().getResource("/data/shiporder/shiporder.xml").toURI());
+		
+//		String ns = "http://www.example.com";
+		int size = instances. size();
+		ResourceIterator<Instance> it = instances.iterator();
+		assertTrue(it.hasNext());
+		
+		Instance instance = it.next();
+		assertNotNull(instance);
+			
+	//	Filter filter = CQL.toFilter("orderperson = John Smith");	
+	//	assertTrue(filter.evaluate(instance));
+		
+		TypeDefinition test = instance.getDefinition().getChildren().iterator().next().asProperty().getParentType();
+		
+		//assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}orderperson"));
+	//	assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}shipto.{http://www.example.com}city"));
+	//	assertTrue(PropertyResolver.hasProperty(instance, "orderperson"));
+		//assertTrue(PropertyResolver.hasProperty(instance, "shipto.city"));
+		assertTrue(PropertyResolver.hasProperty(instance, "shipto.{http://www.example.com}city"));
+		//TODO
+		
+		it.close();
+	}
 	
 	private InstanceCollection loadXMLInstances(URI schemaLocation, URI xmlLocation) throws IOException, IOProviderConfigurationException {
 		SchemaReader reader = new XmlSchemaReader();
