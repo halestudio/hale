@@ -23,7 +23,12 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.core.convert.ConversionService;
+
+import de.fhg.igd.osgi.util.OsgiUtils;
+import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -47,6 +52,19 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  */
 @SuppressWarnings("restriction")
 public class GmlInstanceCollectionTest {
+	
+	/**
+	 * Wait for needed services to be running
+	 */
+	@BeforeClass
+	public static void waitForServices() {
+		assertTrue("Conversion service not available", OsgiUtils.waitUntil(new Condition() {
+			@Override
+			public boolean evaluate() {
+				return OsgiUtils.getService(ConversionService.class) != null;
+			}
+		}, 30));
+	}
 	
 	/**
 	 * Test loading a simple XML file with one instance
@@ -266,7 +284,7 @@ public class GmlInstanceCollectionTest {
 		Object[] srsName = ((Instance) multiLineString[0]).getProperty(new QName("srsName"));
 		assertNotNull(srsName);
 		assertEquals(1, srsName.length);
-		assertEquals("EPSG:31251", srsName[0]);
+		assertEquals("EPSG:31251", srsName[0].toString());
 		
 		// lineStringMember
 		Object[] lineStringMember = ((Instance) multiLineString[0]).getProperty(new QName(gmlNs, "lineStringMember"));
