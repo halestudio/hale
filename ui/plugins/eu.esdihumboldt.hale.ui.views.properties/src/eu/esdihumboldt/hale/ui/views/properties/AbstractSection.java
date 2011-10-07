@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.properties;
 
-import java.util.HashMap;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -34,16 +32,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public abstract class AbstractSection extends AbstractPropertySection{
 	
-	
-	private HashMap<String, Text> textmap = new HashMap<String, Text>();
-	
 	private Text text;
 	
 	private Text text2;
-	
-//	private int pos = -1;
-//	
-//	private String[] list;
 
 	/**
 	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
@@ -60,22 +51,6 @@ public abstract class AbstractSection extends AbstractPropertySection{
 	 * @param input the definition as object
 	 */
 	protected abstract void setInput(Object input);
-	
-//	/**
-//	 * Abstract version of createControls for more than 
-//	 * one control in one line
-//	 * @param parent the parent composite for the section
-//	 * @param aTabbedPropertySheetPage the tabbed property sheet page
-//	 * @param list the identifier for the property
-//	 */
-//	protected void createControlsOnList(Composite parent,
-//			TabbedPropertySheetPage aTabbedPropertySheetPage, String[] list){
-//		this.list = list;
-//		for(pos = 0; pos < list.length; pos++){
-//			abstractCreateControls(parent, aTabbedPropertySheetPage, list[pos]);
-//			textmap.put(list[pos], text);
-//		}
-//	}
 
 	/**
 	 * Creates the controls for two lines @seeAbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -86,8 +61,7 @@ public abstract class AbstractSection extends AbstractPropertySection{
 	 */
 	protected void abstractCreateControls(Composite parent,
 		TabbedPropertySheetPage aTabbedPropertySheetPage, String title, String title2){
-//		if (pos <= 0)
-			super.createControls(parent, aTabbedPropertySheetPage);
+		super.createControls(parent, aTabbedPropertySheetPage);
 		Composite composite = getWidgetFactory()
 		.createFlatFormComposite(parent);
 		FormData data;
@@ -97,11 +71,7 @@ public abstract class AbstractSection extends AbstractPropertySection{
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
-//		if(pos <= 0 ){
-			data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-//		} else {
-//			data.top = new FormAttachment(textmap.get(list[pos-1]), ITabbedPropertyConstants.VSPACE);
-//		}
+		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		text.setLayoutData(data);
 	
 		CLabel namespaceLabel = getWidgetFactory()
@@ -143,13 +113,5 @@ public abstract class AbstractSection extends AbstractPropertySection{
 	 */
 	public Text getText2(){
 		return text2;
-	}
-	
-	/**
-	 * @param key the key for the text element
-	 * @return the text element
-	 */
-	public Text getMapText(String key){
-		return textmap.get(key);
 	}
 }
