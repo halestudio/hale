@@ -52,7 +52,7 @@ public class CSVUtil implements CSVConstants{
 	 */
 	public static char getSep(ImportProvider provider) {
 		String separator = provider.getParameter(PARAM_SEPARATOR);
-		char sep = (separator == null || separator.isEmpty())?(DEFAULT_SEPARATOR):(separator.charAt(0));
+		char sep = ((separator == null || separator.isEmpty())?(DEFAULT_SEPARATOR):(separator.charAt(0)));
 		
 		return sep;
 	}

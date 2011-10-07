@@ -12,6 +12,10 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -153,14 +157,16 @@ public class ReadConfigurationPage
 		page.setLayout(new GridLayout(2, true));
 		GridData layoutData = new GridData();
 		layoutData.widthHint = 30;
+
+		String[] separatorSelection = new String[] { "TAB", ",", "|", "." };
+
 		// column 1, row 1
 		Label separatorLabel = new Label(page, SWT.NONE);
 		separatorLabel.setText("Select Separating Sign");
 		// column 2, row 1
 		separator = new Combo(page, SWT.NONE);
 		separator.setLayoutData(GridDataFactory.copyData(layoutData));
-		separator.setItems(new String[] { "TAB", ",", "." });
-		separator.select(0);
+		separator.setItems(separatorSelection);
 		separator.addModifyListener(this);
 
 		// column 1, row 2
@@ -192,6 +198,22 @@ public class ReadConfigurationPage
 	}
 
 	/**
+	 * Counts the number of a Character in a String
+	 * 
+	 * @param input the String
+	 * @param toCount the Character to be count
+	 * @return the number of the Character in the String
+	 */
+	private static int countChar(String input, char toCount) {
+		int counter = 0;
+		for (char c : input.toCharArray()) {
+			if (c == toCount)
+				counter++;
+		}
+		return counter;
+	}
+
+	/**
 	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage()
 	 */
 	@Override
@@ -199,6 +221,40 @@ public class ReadConfigurationPage
 		super.onShowPage();
 
 		IOProvider p = getWizard().getProvider();
+		String[] separatorSelection = new String[] { "TAB", ",", "|", "." };
+
+		try {
+			BufferedReader streamReader = new BufferedReader(
+					new InputStreamReader(getWizard().getProvider().getSource()
+							.getInput()));
+			String line = streamReader.readLine();
+			int tab = countChar(line, '\t');
+			int comma = countChar(line, ',');
+			int bla = countChar(line, '|'); // TODO: rename/refactor
+
+			if (Math.max(tab, comma) == tab && Math.max(tab, bla) == tab) {
+				p.setParameter(CSVConstants.PARAM_SEPARATOR, "TAB");
+			} else if (Math.max(comma, tab) == comma
+					&& Math.max(comma, bla) == comma) {
+				p.setParameter(CSVConstants.PARAM_SEPARATOR, ",");
+			} else {
+				p.setParameter(CSVConstants.PARAM_SEPARATOR, "|");
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		String selection = getWizard().getProvider().getParameter(
+				CSVConstants.PARAM_SEPARATOR);
+		for (int i = 0; i < separatorSelection.length; i++) {
+			if (separatorSelection[i] == selection) {
+				separator.select(i);
+				break;
+			} else {
+				separator.select(0);
+			}
+		}
 
 		if (p instanceof InstanceReader) {
 			QName name = QName.valueOf(p
@@ -233,7 +289,7 @@ public class ReadConfigurationPage
 			}
 
 		}
-		
+
 		setPageComplete(true);
 	}
 

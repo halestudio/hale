@@ -129,15 +129,15 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 			// set metadata for main type
 			type.setLocation(getSource().getLocation());
 			
-			StringBuffer muh = new StringBuffer();
+			StringBuffer defaultPropertyTypeBuffer = new StringBuffer();
 			String[] comboSelections;
 			if(getParameter(PARAM_PROPERTYTYPE) == null || getParameter(PARAM_PROPERTYTYPE) == "") {
 				for (int i = 0; i < firstLine.length; i++) {
-					muh.append("java.lang.String");
-					muh.append(",");
+					defaultPropertyTypeBuffer.append("java.lang.String");
+					defaultPropertyTypeBuffer.append(",");
 				}
-				muh.deleteCharAt(muh.lastIndexOf(","));
-			String combs = muh.toString();
+				defaultPropertyTypeBuffer.deleteCharAt(defaultPropertyTypeBuffer.lastIndexOf(","));
+			String combs = defaultPropertyTypeBuffer.toString();
 			comboSelections = combs.split(",");
 			} else {
 			comboSelections = getParameter(PARAM_PROPERTYTYPE).split(
@@ -153,7 +153,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 			// than the entries in the first line
 			if ((firstLine.length != properties.length && properties.length != 0)
 					|| (firstLine.length != comboSelections.length && comboSelections.length != 0)) {
-				fail("Not the same amount of entries for property names, property types and the first line of the file");
+				fail("Not the same number of entries for property names, property types and words in the first line of the file");
 			}
 			for (int i = 0; i < comboSelections.length; i++) {
 				PropertyType propertyType;
