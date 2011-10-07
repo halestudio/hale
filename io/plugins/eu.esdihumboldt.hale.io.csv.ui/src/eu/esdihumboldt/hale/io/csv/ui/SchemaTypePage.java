@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.io.csv.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -185,7 +186,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 			}
 
 			// disposes all property names if the read configuration has changed
-			if (last_firstLine != null && !(last_firstLine.equals(firstLine))) {
+			if (last_firstLine != null && !Arrays.equals(firstLine, last_firstLine)) {
 				for (TypeNameField properties : fields) {
 					properties.dispose();
 					properties.getTextControl(group).dispose();
@@ -197,6 +198,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				fields.clear();
 				comboFields.clear();
 			}
+			if(!Arrays.equals(firstLine, last_firstLine)) {
 			for (int i = 0; i < length; i++) {
 				TypeNameField propField;
 				final ComboViewer cv;
@@ -219,7 +221,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								}
 							}
 						});
-				propField.setStringValue(firstLine[i]);
+					propField.setStringValue(firstLine[i]);
 				cv = new ComboViewer(group);
 				comboFields.add(cv);
 				cv.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -276,16 +278,17 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				}
 				fields.add(propField);
 			}
+			}
 			group.setLayout(new GridLayout(3, false));
 
 			last_firstLine = firstLine;
-
+			
 		} catch (IOException e) {
 			setErrorMessage("File could not be read");
 			setPageComplete(false);
 			e.printStackTrace();
 		}
-
+		
 		group.layout();
 		group.getParent().layout(true, true);
 		super.onShowPage();
