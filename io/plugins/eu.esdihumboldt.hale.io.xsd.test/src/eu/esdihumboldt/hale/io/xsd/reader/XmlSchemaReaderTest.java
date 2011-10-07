@@ -600,9 +600,6 @@ public class XmlSchemaReaderTest {
 		// property type must be a complex type
 		assertFalse(shipto.getPropertyType().getConstraint(
 				HasValueFlag.class).isEnabled());
-		// binding must be Instance
-		assertEquals(Instance.class, shipto.getPropertyType().getConstraint(
-				Binding.class).getBinding());
 		
 		// item
 		PropertyDefinition item = shiporderType.getChild(new QName(ns, "item")).asProperty();
