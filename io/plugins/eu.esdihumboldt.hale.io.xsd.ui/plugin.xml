@@ -6,6 +6,7 @@
       <propertySections
             contributorId="eu.esdihumboldt.hale.ui.views.properties">
          <propertySection
+               afterSection="eu.esdihumboldt.hale.io.xsd.ui.properties.xmlelementssection"
                class="eu.esdihumboldt.hale.io.xsd.ui.properties.PropertyTypeXmlAttributeFlagSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.io.xsd.ui.properties.xmlattributeflag"
@@ -15,6 +16,7 @@
             </input>
          </propertySection>
          <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.nillableflag"
                class="eu.esdihumboldt.hale.io.xsd.ui.properties.TypeDefinitionXmlElementsSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.io.xsd.ui.properties.xmlelementssection"
