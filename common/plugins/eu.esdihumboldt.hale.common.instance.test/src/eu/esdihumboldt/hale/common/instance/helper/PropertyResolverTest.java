@@ -12,19 +12,20 @@
 
 package eu.esdihumboldt.hale.common.instance.helper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collection;
-import java.util.LinkedList;
 
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.core.convert.ConversionService;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
+import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 
 import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -37,12 +38,8 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceCollection;
 import eu.esdihumboldt.hale.io.gml.reader.internal.StreamGmlReader;
 import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReaderFactory;
-
-import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader;
-import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeSchemaReader;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 
@@ -53,6 +50,19 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  */
 @SuppressWarnings("restriction")
 public class PropertyResolverTest {
+	
+	/**
+	 * Wait for needed services to be running
+	 */
+	@BeforeClass
+	public static void waitForServices() {
+		assertTrue("Conversion service not available", OsgiUtils.waitUntil(new Condition() {
+			@Override
+			public boolean evaluate() {
+				return OsgiUtils.getService(ConversionService.class) != null;
+			}
+		}, 30));
+	}
 	
 	/**
 	 * Test loading a simple XML file with one instance
@@ -95,7 +105,6 @@ public class PropertyResolverTest {
 		it.close();
 	}
 	
-	
 	@Test
 	public void testComplexInstances() throws Exception {
 		
@@ -136,7 +145,7 @@ public class PropertyResolverTest {
 		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}location.{http://www.opengis.net/gml/3.2}CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.{http://www.opengis.net/gml/3.2}CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.type"));
 		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}location.CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.{http://www.opengis.net/gml/3.2}CompositeCurve.curveMember.type"));
         
-		assertEquals(PropertyResolver.getValues(instance,"geometry.Polygon.srsName"), "EPSG:4326");
+		assertEquals("EPSG:4326", PropertyResolver.getValues(instance,"geometry.Polygon.srsName").iterator().next().toString());
 		
 		
 		//TODO
