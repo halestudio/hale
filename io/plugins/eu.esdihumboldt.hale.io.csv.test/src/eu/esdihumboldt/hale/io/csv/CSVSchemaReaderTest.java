@@ -16,7 +16,12 @@ import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.core.convert.ConversionService;
+
+import de.fhg.igd.osgi.util.OsgiUtils;
+import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -32,6 +37,19 @@ import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
  * @author Kevin Mais
  */
 public class CSVSchemaReaderTest {
+	
+	/**
+	 * Wait for needed services to be running
+	 */
+	@BeforeClass
+	public static void waitForServices() {
+		assertTrue("Conversion service not available", OsgiUtils.waitUntil(new Condition() {
+			@Override
+			public boolean evaluate() {
+				return OsgiUtils.getService(ConversionService.class) != null;
+			}
+		}, 30));
+	}
 
 	/**
 	 * Reader Test for given property names and property types
