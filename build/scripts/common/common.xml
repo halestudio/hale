@@ -477,6 +477,8 @@
 			<arg value="-todir" />
 			<arg value="${testlogs}" />
 			<arg value="${testBundleName}" />
+			<arg value="-bundlePath" />
+			<arg value="${plugins}" />
 			<sysproperty key="osgi.test.plugins" value="${plugins}" />
 			<syspropertyset refid="proxy-props" />
 			<classpath>
