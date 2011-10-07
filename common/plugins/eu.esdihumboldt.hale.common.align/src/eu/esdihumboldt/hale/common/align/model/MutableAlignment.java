@@ -24,7 +24,8 @@ public interface MutableAlignment extends Alignment {
 
 	/**
 	 * Add a cell to the alignment
-	 * @param cell the cell to add
+	 * @param cell the cell to add. It should be already configured,
+	 *   especially with the cell target
 	 * @return <code>true</code> if the cell replaced an existing cell,
 	 *   otherwise <code>false</code> 
 	 */

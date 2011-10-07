@@ -5,9 +5,9 @@
 	<class name="eu.esdihumboldt.hale.common.align.io.internal.AlignmentBean" auto-complete="true">
 		<map-to xml="hale-alignment" />
 	
-		<field name="cells" collection="collection" set-method="addCell" get-method="getCells">
+		<!-- field name="cells" collection="collection" set-method="addCell" get-method="getCells">
 			<bind-xml name="cell" node="element" />
-		</field>
+		</field-->
 		
 	</class>
 	<!-- class name="eu.esdihumboldt.hale.common.align.model.impl.DefaultCell" auto-complete="true">
