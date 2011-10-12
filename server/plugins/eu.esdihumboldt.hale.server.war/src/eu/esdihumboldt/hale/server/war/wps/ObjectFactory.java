@@ -148,4 +148,91 @@ public class ObjectFactory {
         return new InputReferenceType.BodyReference();
     }
 
+    /**
+     * Create an instance of {@link ExecuteResponse }
+     * 
+     */
+    public ExecuteResponse createExecuteResponse() {
+        return new ExecuteResponse();
+    }
+
+    /**
+     * Create an instance of {@link ResponseBaseType }
+     * 
+     */
+    public ResponseBaseType createResponseBaseType() {
+        return new ResponseBaseType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessBriefType }
+     * 
+     */
+    public ProcessBriefType createProcessBriefType() {
+        return new ProcessBriefType();
+    }
+
+    /**
+     * Create an instance of {@link StatusType }
+     * 
+     */
+    public StatusType createStatusType() {
+        return new StatusType();
+    }
+
+    /**
+     * Create an instance of {@link OutputDefinitionsType }
+     * 
+     */
+    public OutputDefinitionsType createOutputDefinitionsType() {
+        return new OutputDefinitionsType();
+    }
+
+    /**
+     * Create an instance of {@link ExecuteResponse.ProcessOutputs }
+     * 
+     */
+    public ExecuteResponse.ProcessOutputs createExecuteResponseProcessOutputs() {
+        return new ExecuteResponse.ProcessOutputs();
+    }
+
+    /**
+     * Create an instance of {@link WSDL }
+     * 
+     */
+    public WSDL createWSDL() {
+        return new WSDL();
+    }
+
+    /**
+     * Create an instance of {@link OutputReferenceType }
+     * 
+     */
+    public OutputReferenceType createOutputReferenceType() {
+        return new OutputReferenceType();
+    }
+
+    /**
+     * Create an instance of {@link OutputDataType }
+     * 
+     */
+    public OutputDataType createOutputDataType() {
+        return new OutputDataType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessFailedType }
+     * 
+     */
+    public ProcessFailedType createProcessFailedType() {
+        return new ProcessFailedType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessStartedType }
+     * 
+     */
+    public ProcessStartedType createProcessStartedType() {
+        return new ProcessStartedType();
+    }
 }
