@@ -59,7 +59,7 @@ import eu.esdihumboldt.hale.cache.Request;
  */
 public class DefaultCstServiceBridge implements CstServiceBridge {
 
-	private URL outputDirectory;
+	private String outputDirectory;
 
 	/**
 	 * 
@@ -122,11 +122,11 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 		return outputFilename.toString();
 	}
 
-	public URL getOutputDir() {
+	public String getOutputDir() {
 		return outputDirectory;
 	}
 
-	public void setOutputDir(URL output) {
+	public void setOutputDir(String output) {
 		this.outputDirectory = output;
 	}
 
@@ -247,10 +247,16 @@ public class DefaultCstServiceBridge implements CstServiceBridge {
 	@Override
 	public String transform(String schemaFilename, String omlFilename,
 			String gmlFilename, String sourceSchema, ConfigurationType sourceVersion) throws TransformationException  {
-		String outputFilename =(this.getClass().getResource("") //$NON-NLS-1$
-				.toExternalForm()
-				+ UUID.randomUUID() + ".gml"); //$NON-NLS-1$
-		return transform(schemaFilename, omlFilename,
-				gmlFilename, outputFilename, sourceSchema, sourceVersion);
+		String outputFilename;
+		
+		if (!this.outputDirectory.equals("")) {
+			outputFilename = this.outputDirectory + UUID.randomUUID() + ".gml";
+		} else {
+			outputFilename = (this.getClass().getResource("") //$NON-NLS-1$
+					.toExternalForm()
+					+ UUID.randomUUID() + ".gml"); //$NON-NLS-1$
+		}
+		
+		return transform(schemaFilename, omlFilename, gmlFilename, outputFilename, sourceSchema, sourceVersion);
 	}
 }
