@@ -130,7 +130,8 @@ public class OmlRdfReader {
 		JAXBContext jc;
 		JAXBElement<AlignmentType> root = null;
 		try {
-			jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
+//			jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
+			jc = JAXBContext.newInstance(eu.esdihumboldt.generated.oml.ObjectFactory.class);
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling
