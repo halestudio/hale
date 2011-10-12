@@ -18,3 +18,5 @@ Import-Package: eu.esdihumboldt.hale.core.io,
  org.apache.log4j,
  org.apache.ws.commons.schema,
  org.eclipse.xsd
+Export-Package: eu.esdihumboldt.cst.iobridge,
+ eu.esdihumboldt.cst.iobridge.impl

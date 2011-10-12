@@ -41,7 +41,8 @@ public class TypeIndex {
 	 * @param type the type to add
 	 */
 	public void addType(TypeDefinition type) {
-		index.put(type.getFeatureType().getName(), type);
+		if (type.getFeatureType() != null)
+			index.put(type.getFeatureType().getName(), type);
 	}
 	
 	/**
