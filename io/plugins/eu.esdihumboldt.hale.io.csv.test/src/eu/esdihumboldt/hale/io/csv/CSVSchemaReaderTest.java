@@ -37,22 +37,23 @@ import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
  * @author Kevin Mais
  */
 public class CSVSchemaReaderTest {
-	
+
 	/**
 	 * Wait for needed services to be running
 	 */
 	@BeforeClass
 	public static void waitForServices() {
-		assertTrue("Conversion service not available", OsgiUtils.waitUntil(new Condition() {
-			@Override
-			public boolean evaluate() {
-				return OsgiUtils.getService(ConversionService.class) != null;
-			}
-		}, 30));
+		assertTrue("Conversion service not available",
+				OsgiUtils.waitUntil(new Condition() {
+					@Override
+					public boolean evaluate() {
+						return OsgiUtils.getService(ConversionService.class) != null;
+					}
+				}, 30));
 	}
 
 	/**
-	 * Reader Test for given property names and property types
+	 * Test for given property names and property types
 	 * 
 	 * @throws Exception
 	 *             the Exception thrown if the test fails
@@ -90,7 +91,8 @@ public class CSVSchemaReaderTest {
 	}
 
 	/**
-	 * Reader Test for no given property names and property types (using default settings)
+	 * Test for no given property names and property types (using default
+	 * settings)
 	 * 
 	 * @throws Exception
 	 *             the Exception thrown if the test fails
@@ -124,14 +126,16 @@ public class CSVSchemaReaderTest {
 			assertTrue(prop.contains(it.next().getName().getLocalPart()));
 		}
 	}
-	
+
 	/**
-	 * Reader Test for no given property names and property types (using default settings)
+	 * Test for no given property names and only 2 (of 4) given property
+	 * types (if there are not given 0 or maximum, in this case 4, property types
+	 * we expect an error)
 	 * 
 	 * @throws Exception
 	 *             the Exception thrown if the test fails
 	 */
-	@Test(expected=RuntimeException.class)
+	@Test(expected = RuntimeException.class)
 	public void failTest() throws Exception {
 
 		CSVSchemaReader schemaReader = new CSVSchemaReader();
@@ -139,19 +143,20 @@ public class CSVSchemaReaderTest {
 				"/data/test1.csv").toURI()));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_TYPENAME, "TestTyp");
 		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTY, null);
-		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE, "java.lang.String,java.lang.String");
+		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE,
+				"java.lang.String,java.lang.String");
 		schemaReader.setParameter(CSVSchemaReader.PARAM_SEPARATOR, null);
 		schemaReader.setParameter(CSVSchemaReader.PARAM_QUOTE, null);
 		schemaReader.setParameter(CSVSchemaReader.PARAM_ESCAPE, null);
 
-		// unused because we expect a runtimeexception
+		// unused because we expect a RuntimeException
 		@SuppressWarnings("unused")
 		IOReport report = schemaReader.execute(new LogProgressIndicator());
 
 	}
 
 	/**
-	 * Reader Test
+	 * Test for no given type name. So we expect the reporter not to be successful.
 	 * 
 	 * @throws Exception
 	 *             the Exception thrown if the test fails

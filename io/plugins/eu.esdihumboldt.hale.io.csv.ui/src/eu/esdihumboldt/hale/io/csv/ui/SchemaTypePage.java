@@ -17,7 +17,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -38,6 +40,9 @@ import org.eclipse.swt.widgets.Group;
 import org.springframework.core.convert.ConversionService;
 
 import au.com.bytecode.opencsv.CSVReader;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.osgi.util.OsgiUtils;
@@ -64,11 +69,20 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 	private String defaultString = "";
 	private StringFieldEditor sfe;
+	private TypeNameField geoField;
 	private Group group;
+	private Group geom;
+	private ComboViewer cvgeo;
 	private String[] last_firstLine = null;
 	private List<TypeNameField> fields = new ArrayList<TypeNameField>();
 	private List<ComboViewer> comboFields = new ArrayList<ComboViewer>();
+	private List<TypeNameField> geoNameFields = new ArrayList<TypeNameField>();
+	private Map<Integer, TypeNameField> geomap = new HashMap<Integer, TypeNameField>();
+	private Map<Integer, ComboViewer> combomap = new HashMap<Integer, ComboViewer>();
+	private List<ComboViewer> geoComboFields = new ArrayList<ComboViewer>();
 	private List<Boolean> validSel = new ArrayList<Boolean>();
+	private Map<Integer, Boolean> map = new HashMap<Integer, Boolean>();
+	private Integer index;
 	private static final ALogger log = ALoggerFactory
 			.getLogger(PropertyTypeExtension.class);
 
@@ -186,7 +200,8 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 			}
 
 			// disposes all property names if the read configuration has changed
-			if (last_firstLine != null && !Arrays.equals(firstLine, last_firstLine)) {
+			if (last_firstLine != null
+					&& !Arrays.equals(firstLine, last_firstLine)) {
 				for (TypeNameField properties : fields) {
 					properties.dispose();
 					properties.getTextControl(group).dispose();
@@ -198,99 +213,178 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				fields.clear();
 				comboFields.clear();
 			}
-			if(!Arrays.equals(firstLine, last_firstLine)) {
-			for (int i = 0; i < length; i++) {
-				TypeNameField propField;
-				final ComboViewer cv;
-				validSel.add(true);
-				
+			if (!Arrays.equals(firstLine, last_firstLine)) {
+				for (int i = 0; i < length; i++) {
+					final TypeNameField propField;
+					final ComboViewer cv;
+					validSel.add(true);
 
-				propField = new TypeNameField("properties",
-						Integer.toString(i + 1), group);
-				propField.setEmptyStringAllowed(false);
-				propField.setErrorMessage("Please enter a valid Property Name");
-				propField
-						.setPropertyChangeListener(new IPropertyChangeListener() {
+					propField = new TypeNameField("properties",
+							Integer.toString(i + 1), group);
+					propField.setEmptyStringAllowed(false);
+					propField
+							.setErrorMessage("Please enter a valid Property Name");
+					propField
+							.setPropertyChangeListener(new IPropertyChangeListener() {
 
-							@Override
-							public void propertyChange(PropertyChangeEvent event) {
-								if (event.getProperty().equals(
-										StringFieldEditor.IS_VALID)) {
-									setPageComplete((Boolean) event
-											.getNewValue());
+								@Override
+								public void propertyChange(
+										PropertyChangeEvent event) {
+									if (event.getProperty().equals(
+											StringFieldEditor.IS_VALID)) {
+										setPageComplete((Boolean) event
+												.getNewValue());
+									}
+									if (event.getProperty().equals(TypeNameField.TXT_CHNGD)) {
+										if (geoNameFields.indexOf(geoField) != -1) {
+											geoNameFields.get(geoNameFields.indexOf(geoField)).setStringValue((String)event.getNewValue());
+										}
+									}
 								}
-							}
-						});
+							});
 					propField.setStringValue(firstLine[i]);
-				cv = new ComboViewer(group);
-				comboFields.add(cv);
-				cv.addSelectionChangedListener(new ISelectionChangedListener() {
+					cv = new ComboViewer(group);
+					comboFields.add(cv);
+					cv.addSelectionChangedListener(new ISelectionChangedListener() {
 
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						ConversionService conversionService = OsgiUtils
-								.getService(ConversionService.class);
+						@Override
+						public void selectionChanged(SelectionChangedEvent event) {
+							ConversionService conversionService = OsgiUtils
+									.getService(ConversionService.class);
 
-						int i = comboFields.indexOf(event.getSource());
-						PropertyType actualSelection = ((PropertyType) ((IStructuredSelection) cv
-								.getSelection()).getFirstElement());
+							int i = comboFields.indexOf(event.getSource());
+							PropertyType actualSelection = ((PropertyType) ((IStructuredSelection) cv
+									.getSelection()).getFirstElement());
 
-						try {
-							conversionService.convert(nextLine[i],
-									actualSelection.getTypeDefinition()
-											.getConstraint(Binding.class)
-											.getBinding());
-							validSel.set(i, true);
-							
+							try {
+								conversionService.convert(nextLine[i],
+										actualSelection.getTypeDefinition()
+												.getConstraint(Binding.class)
+												.getBinding());
+								validSel.set(i, true);
 
-						} catch (Exception e) {
-							log.warn("Selection invalid!");
-							validSel.set(i, false);
-						}
-							if(validSel.contains(false)) {
-								int j = validSel.indexOf(false)+1;
+							} catch (Exception e) {
+								log.warn("Selection invalid!");
+								validSel.set(i, false);
+							}
+							if (validSel.contains(false)) {
+								int j = validSel.indexOf(false) + 1;
 								setMessage("Your selection in field # " + j
 										+ " is not valid!", WARNING);
-							}else {
+							} else {
 								setMessage(null);
 							}
-					}
-				});
-				cv.setContentProvider(ArrayContentProvider.getInstance());
-				cv.setLabelProvider(new LabelProvider() {
-					/**
-					 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-					 */
-					@Override
-					public String getText(Object element) {
-						if (element instanceof PropertyType) {
-							return ((PropertyType) element).getName();
+
+//							int index;
+							// if actualSelection is from Type Geometry
+							// (geometry,point, ...)
+							if (Geometry.class.isAssignableFrom(actualSelection
+									.getTypeDefinition()
+									.getConstraint(Binding.class).getBinding())) {
+								// if map is empty ( = default/first call) or
+								// map
+								// has an element at index i and this element is
+								// assigned to "false" ( = this field was no
+								// geometry before SelectionChanged) or the
+								// object in the map assigned to number i is
+								// null
+								if (map.isEmpty()
+										|| (map.get(i) != null && map.get(i) == false)
+										|| map.get(i) == null) {
+									map.put(i, true);
+
+									geoField = new TypeNameField("geometries",
+											Integer.toString(i + 1), geom);
+									geoNameFields.add(geoField);
+									geomap.put(i, geoField);
+
+									geoField.setStringValue(propField
+											.getStringValue());
+									geoField.getTextControl(geom).setEnabled(
+											false);
+
+									cvgeo = new ComboViewer(geom);
+									geoComboFields.add(cvgeo);
+									combomap.put(i, cvgeo);
+									cvgeo.setContentProvider(ArrayContentProvider
+											.getInstance());
+									cvgeo.setLabelProvider(new LabelProvider());
+									cvgeo.addSelectionChangedListener(new ISelectionChangedListener() {
+
+										@Override
+										public void selectionChanged(
+												SelectionChangedEvent event) {
+											String coordsys = cvgeo.getCombo()
+													.getText();
+
+											if (coordsys.isEmpty()) {
+												setErrorMessage("You have not selected a valid coordinate system!");
+											} else {
+												setErrorMessage(null);
+											}
+
+										}
+									});
+									// cvgeo.setInput(); TODO coordinate systems
+								}
+
+								geom.setLayout(new GridLayout(3, false));
+								geom.layout();
+								geom.getParent().layout(true, true);
+							} else if (map.get(i) != null && map.get(i) == true) {
+								index = geoNameFields.indexOf(geomap.get(i));
+
+								geoNameFields.get(index).dispose();
+								geoNameFields.get(index).getTextControl(geom)
+										.dispose();
+								geoNameFields.get(index).getLabelControl(geom)
+										.dispose();
+
+								geoComboFields.get(index).getCombo().dispose();
+
+								geoNameFields.set(index, null);
+								geoComboFields.set(index, null);
+								map.put(i, false);
+							}
 						}
-						return super.getText(element);
+					});
+					cv.setContentProvider(ArrayContentProvider.getInstance());
+					cv.setLabelProvider(new LabelProvider() {
+						/**
+						 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
+						 */
+						@Override
+						public String getText(Object element) {
+							if (element instanceof PropertyType) {
+								return ((PropertyType) element).getName();
+							}
+							return super.getText(element);
+						}
+					});
+					Collection<PropertyType> elements = PropertyTypeExtension
+							.getInstance().getElements();
+					cv.setInput(elements);
+					if (!elements.isEmpty()) {
+						cv.setSelection(new StructuredSelection(elements
+								.iterator().next()));
 					}
-				});
-				Collection<PropertyType> elements = PropertyTypeExtension
-						.getInstance().getElements();
-				cv.setInput(elements);
-				if (!elements.isEmpty()) {
-					cv.setSelection(new StructuredSelection(elements.iterator()
-							.next()));
+
+					fields.add(propField);
 				}
-				fields.add(propField);
-			}
 			}
 			group.setLayout(new GridLayout(3, false));
 
 			last_firstLine = firstLine;
-			
+
 		} catch (IOException e) {
 			setErrorMessage("File could not be read");
 			setPageComplete(false);
 			e.printStackTrace();
 		}
-		
+
 		group.layout();
 		group.getParent().layout(true, true);
+
 		super.onShowPage();
 	}
 
@@ -323,6 +417,17 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				.span(2, 1).create());
 		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(3)
 				.equalWidth(false).margins(5, 5).create());
+
+		geom = new Group(page, SWT.NONE);
+		geom.setText("Geometry Settings");
+		geom.setLayoutData(GridDataFactory.fillDefaults().grab(true, false)
+				.span(2, 1).create());
+		geom.setLayout(GridLayoutFactory.swtDefaults().numColumns(3)
+				.equalWidth(false).margins(5, 5).create());
+
+		// ScrolledComposite sc = new ScrolledComposite(page, SWT.V_SCROLL);
+		// sc.setExpandVertical(true);
+		// sc.setAlwaysShowScrollBars(true);
 
 		setPageComplete(sfe.isValid());
 	}
