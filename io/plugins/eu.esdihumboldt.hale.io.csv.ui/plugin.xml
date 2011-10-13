@@ -27,13 +27,6 @@
                id="eu.esdihumboldt.hale.io.csv.reader.instance">
          </providerFactory>
       </configPage>
-      <configPage
-            class="eu.esdihumboldt.hale.io.csv.ui.GeoConfigurationPage"
-            order="10">
-         <providerFactory
-               id="eu.esdihumboldt.hale.io.csv.reader.schema">
-         </providerFactory>
-      </configPage>
    </extension>
 
 </plugin>

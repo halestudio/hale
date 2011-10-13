@@ -25,6 +25,8 @@ public class TypeNameField extends StringFieldEditor {
 
 	Composite _parent;
 	
+	public static final String TXT_CHNGD = "text_has_changed";
+	
 	/**
 	 * @param name the name intern
 	 * @param labelText the label to be set in the StringFieldEditor
@@ -50,6 +52,26 @@ public class TypeNameField extends StringFieldEditor {
 		containsIllegalChar = txt.contains("/") || txt.contains(":") || txt.contains(".");
 		
 		return !(containsIllegalChar);
-	}		
+	}
+
 	
+	
+	/**
+	 * @see org.eclipse.jface.preference.StringFieldEditor#valueChanged()
+	 */
+	@Override
+	protected void valueChanged() {
+		fireValueChanged(TXT_CHNGD, "", getStringValue());
+		super.valueChanged();
+	}
+
+	/**
+	 * @see org.eclipse.jface.preference.StringFieldEditor#setStringValue(java.lang.String)
+	 */
+	@Override
+	public void setStringValue(String value) {
+		
+		super.setStringValue(value);
+	}
+
 }
