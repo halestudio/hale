@@ -107,6 +107,27 @@
             </input>
          </propertySection>
          <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
+               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionElementTypeBindingSection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype"
+               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionEnumeration"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionEnumerationFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.enumeration"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
+         <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.name"
                class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionDescriptionSection"
                enablesFor="1"
@@ -167,16 +188,6 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
-            </input>
-         </propertySection>
-         <propertySection
-               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
-               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionElementTypeBindingSection"
-               enablesFor="1"
-               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype"
-               tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
-            <input
-                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
             </input>
          </propertySection>
       </propertySections>
