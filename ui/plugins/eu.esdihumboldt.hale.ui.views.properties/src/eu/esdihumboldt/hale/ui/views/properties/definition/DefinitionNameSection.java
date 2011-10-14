@@ -47,16 +47,8 @@ public class DefinitionNameSection extends DefaultDefinitionSection<Definition<?
 	 */
 	@Override
 	public void refresh() {
-		if((getDefinition().getName().getNamespaceURI()).equals("")){
-			namespaceText.setText("(not set)");
-		} else {
-			namespaceText.setText(getDefinition().getName().getNamespaceURI());
-		}
-		if((getDefinition().getName().getLocalPart()).equals("")){
-			localNameText.setText("(not set)");
-		} else {
-			localNameText.setText(getDefinition().getName().getLocalPart());
-		}
+		namespaceText.setText(getDefinition().getName().getNamespaceURI());
+		localNameText.setText(getDefinition().getName().getLocalPart());
 	}
 	
 	/**
