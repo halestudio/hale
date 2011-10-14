@@ -12,26 +12,30 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.definition;
 
-import org.eclipse.jface.viewers.IFilter;
-
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
 
 /**
  * Filter that lets only {@link Definition}s with a description that is not 
  * <code>null</code> pass.
  * @author Patrick Lieb
  */
-public class DefinitionLocationFilter implements IFilter{
+public class DefinitionLocationFilter extends DefaultFilter{
+
 	/**
-	 * @see IFilter#select(Object)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
 	 */
 	@Override
-	public boolean select(Object toTest) {
-		if (toTest instanceof EntityDefinition) {
-			return ((EntityDefinition) toTest).getDefinition().getLocation() != null;
-		}
-		
-		return false;
+	public boolean isFiltered(EntityDefinition input) {
+		return input.getDefinition().getLocation() == null;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
+	 */
+	@Override
+	public boolean isFiltered(Definition<?> input) {
+		return input.getLocation() == null;
 	}
 }
