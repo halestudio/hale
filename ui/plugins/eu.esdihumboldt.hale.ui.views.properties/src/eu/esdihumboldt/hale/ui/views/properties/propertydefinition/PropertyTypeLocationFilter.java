@@ -14,33 +14,49 @@ package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
 import java.net.URI;
 
-import org.eclipse.jface.viewers.IFilter;
-
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
 
 /**
  * Filter that lets only {@link PropertyDefinition}s with a location that is not 
  * <code>null</code> pass.
  * @author Patrick Lieb
  */
-public class PropertyTypeLocationFilter implements IFilter{
+public class PropertyTypeLocationFilter extends DefaultFilter{
 
 	/**
-	 * @see IFilter#select(Object)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
 	 */
 	@Override
-	public boolean select(Object toTest) {
-		URI location;
-		if (toTest instanceof PropertyEntityDefinition) {
+	public boolean isFiltered(EntityDefinition input) {
+		if(input instanceof PropertyEntityDefinition){
+			URI location;
 			try {
-				location = ((PropertyEntityDefinition) toTest).getDefinition().getPropertyType().getLocation();
+				location = ((PropertyEntityDefinition)input).getDefinition().getPropertyType().getLocation();
 			} catch(IllegalStateException e){
-				return false;
-			}
-			return location != null;
+					return true;
+				}
+				return location == null;
 		}
-		
-		return false;
+		return true;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
+	 */
+	@Override
+	public boolean isFiltered(Definition<?> input) {
+		if(input instanceof PropertyDefinition){
+			URI location;
+			try {
+				location = ((PropertyDefinition)input).getPropertyType().getLocation();
+			} catch(IllegalStateException e){
+					return true;
+				}
+				return location == null;
+		}		return true;
 	}
 }
