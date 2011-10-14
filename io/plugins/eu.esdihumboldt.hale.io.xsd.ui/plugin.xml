@@ -19,6 +19,7 @@
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.nillableflag"
                class="eu.esdihumboldt.hale.io.xsd.ui.properties.TypeDefinitionXmlElementsSection"
                enablesFor="1"
+               filter="eu.esdihumboldt.hale.io.xsd.ui.properties.TypeDefinitionXmlElementsFilter"
                id="eu.esdihumboldt.hale.io.xsd.ui.properties.xmlelementssection"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
             <input

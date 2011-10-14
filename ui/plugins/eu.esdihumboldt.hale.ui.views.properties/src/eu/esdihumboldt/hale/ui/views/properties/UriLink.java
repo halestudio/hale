@@ -18,11 +18,17 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.GCData;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.MessageBox;
 
 /**
  * Link class based on URIs
@@ -48,6 +54,18 @@ public class UriLink{
 		link.addSelectionListener(adapter);
 		link.setLayoutData(data);
 		link.setText(text);
+		link.setBackground(new Color(new Device(){
+
+			@Override
+			public long internal_new_GC(GCData data) {
+				return 0;
+			}
+
+			@Override
+			public void internal_dispose_GC(long hDC, GCData data) {
+				// not needed
+				
+			}},255,255,255));
 	}
 	
 	/**
@@ -76,19 +94,28 @@ public class UriLink{
 				return new URI(uristring);
 			}
 			
+			private void giveError(){
+				MessageBox error = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
+				error.setText("Opening Error");
+				error.setMessage("No standard application is set!");
+				error.open();
+			}
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				URI newuri = uri;
 				try {
 					if(uri.getScheme().equals("http")){
 						try {
 							Desktop.getDesktop().browse(uri);
 						} catch (IOException e1) {
-							e1.printStackTrace();
+							giveError();
 						}
 						return;
 					}
-					URI newuri = removeFragment(uri);
+					if(uri.toString().contains("#")){
+						newuri =  removeFragment(uri);
+					}
 					// works only on files
 					File file = new File(newuri);
 					if(file.exists()){
@@ -98,18 +125,18 @@ public class UriLink{
 								try {
 									Desktop.getDesktop().browse(newuri);
 								} catch (IOException e1) {
-									e1.printStackTrace();
+									giveError();
 								}
 						}
 					} else {
 						try {
 							Desktop.getDesktop().browse(newuri);
 						} catch (IOException e1) {
-							e1.printStackTrace();
+							giveError();
 						}
 					}
 				} catch (URISyntaxException e1) {
-					e1.printStackTrace();
+					//
 				}
 			}
 		};

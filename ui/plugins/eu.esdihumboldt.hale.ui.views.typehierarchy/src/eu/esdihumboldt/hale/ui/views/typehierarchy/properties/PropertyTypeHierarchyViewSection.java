@@ -16,6 +16,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.GCData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
@@ -51,6 +54,18 @@ public class PropertyTypeHierarchyViewSection extends DefaultDefinitionSection<P
 				.createFlatFormComposite(parent);
 		FormData data;
 		link = new Link(composite, 0);
+		link.setBackground(new Color(new Device(){
+
+			@Override
+			public long internal_new_GC(GCData data) {
+				return 0;
+			}
+
+			@Override
+			public void internal_dispose_GC(long hDC, GCData data) {
+				// not needed
+				
+			}},255,255,255));
 		
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
