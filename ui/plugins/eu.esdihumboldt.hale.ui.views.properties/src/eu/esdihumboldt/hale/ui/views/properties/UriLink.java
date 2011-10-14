@@ -18,10 +18,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Link;
 
 /**
@@ -39,14 +40,12 @@ public class UriLink{
 	 * @param parent a composite control which will be the parent of the new instance (cannot be null)
 	 * @param style the style of control to construct
 	 * @param uri the URI of the file
-	 * @param data the FormData for the layout
 	 * @param text the text which should be displayed
 	 */
-	public UriLink(Composite parent, int style, final URI uri, FormData data, String text){
+	public UriLink(Composite parent, int style, final URI uri, String text){
 		adapter = createDefaultSelectionAdapter(uri);
 		link = new Link(parent, style);
 		link.addSelectionListener(adapter);
-		link.setLayoutData(data);
 		link.setText(text);
 	}
 	
@@ -75,20 +74,22 @@ public class UriLink{
 				uristring = uristring.substring(0, uristring.indexOf("#"));
 				return new URI(uristring);
 			}
-			
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				URI newuri = uri;
 				try {
 					if(uri.getScheme().equals("http")){
 						try {
 							Desktop.getDesktop().browse(uri);
 						} catch (IOException e1) {
-							e1.printStackTrace();
+							MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Opening Error", "No standard application is set!");
 						}
 						return;
 					}
-					URI newuri = removeFragment(uri);
+					if(uri.toString().contains("#")){
+						newuri =  removeFragment(uri);
+					}
 					// works only on files
 					File file = new File(newuri);
 					if(file.exists()){
@@ -98,18 +99,18 @@ public class UriLink{
 								try {
 									Desktop.getDesktop().browse(newuri);
 								} catch (IOException e1) {
-									e1.printStackTrace();
+									MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Opening Error", "No standard application is set!");
 								}
 						}
 					} else {
 						try {
 							Desktop.getDesktop().browse(newuri);
 						} catch (IOException e1) {
-							e1.printStackTrace();
+							MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Opening Error", "No standard application is set!");
 						}
 					}
 				} catch (URISyntaxException e1) {
-					e1.printStackTrace();
+					//
 				}
 			}
 		};

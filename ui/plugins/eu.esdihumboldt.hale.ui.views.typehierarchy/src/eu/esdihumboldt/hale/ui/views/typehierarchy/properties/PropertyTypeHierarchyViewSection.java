@@ -51,6 +51,7 @@ public class PropertyTypeHierarchyViewSection extends DefaultDefinitionSection<P
 				.createFlatFormComposite(parent);
 		FormData data;
 		link = new Link(composite, 0);
+		link.setBackground(getWidgetFactory().getColors().getBackground());
 		
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
