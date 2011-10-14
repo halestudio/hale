@@ -233,7 +233,8 @@ public class SchemasView extends PropertiesViewPart {
 					}
 				}
 				else {
-					log.error("Could determine entity definition for object, skipping object for selection.");
+					//XXX include GroupPropertyDefinitions also in selection?
+					log.debug("Could determine entity definition for object, skipping object for selection.");
 				}
 			}
 			
