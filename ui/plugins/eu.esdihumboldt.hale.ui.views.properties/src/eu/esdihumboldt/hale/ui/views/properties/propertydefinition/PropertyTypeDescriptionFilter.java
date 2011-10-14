@@ -12,28 +12,39 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
-import org.eclipse.jface.viewers.IFilter;
-
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
 
 /**
  * Filter that lets only {@link PropertyDefinition}s with a description that is not 
  * <code>null</code> pass.
  * @author Patrick Lieb
  */
-public class PropertyTypeDescriptionFilter implements IFilter{
-		
+public class PropertyTypeDescriptionFilter extends DefaultFilter{
+
 		/**
-		 * @see IFilter#select(Object)
+		 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 		 */
 		@Override
-		public boolean select(Object toTest) {
-			if (toTest instanceof PropertyEntityDefinition) {
-				return ((PropertyEntityDefinition) toTest).getDefinition().getPropertyType().getDescription() != null;
+		public boolean isFiltered(Definition<?> input) {
+			if(input instanceof PropertyDefinition){
+				return ((PropertyDefinition)input).getPropertyType().getDescription() == null;
 			}
-			
-			return false;
+			return true;
+		}
+
+		/**
+		 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
+		 */
+		@Override
+		public boolean isFiltered(EntityDefinition input) {
+			if(input instanceof PropertyEntityDefinition){
+				return ((PropertyEntityDefinition)input).getDefinition().getPropertyType().getDescription() == null;
+			}
+			return true;
 		}
 
 }

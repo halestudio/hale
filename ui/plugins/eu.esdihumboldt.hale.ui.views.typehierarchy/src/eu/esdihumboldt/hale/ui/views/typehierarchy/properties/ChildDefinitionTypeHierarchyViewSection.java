@@ -16,6 +16,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.GCData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
@@ -51,6 +54,7 @@ public class ChildDefinitionTypeHierarchyViewSection extends DefaultDefinitionSe
 				.createFlatFormComposite(parent);
 		FormData data;
 		link = new Link(composite, 0);
+		link.setBackground(getWidgetFactory().getColors().getBackground());
 		
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
