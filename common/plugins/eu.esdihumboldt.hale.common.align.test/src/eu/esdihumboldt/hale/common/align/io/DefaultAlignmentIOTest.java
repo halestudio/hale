@@ -111,12 +111,12 @@ public class DefaultAlignmentIOTest {
 		AlignmentIO.save(align, new FileOutputStream(alignmentFile));
 		
 		//FIXME remove
-//		Desktop.getDesktop().open(alignmentFile);
-//		Thread.sleep(1000);
+		Desktop.getDesktop().open(alignmentFile);
+		Thread.sleep(3000);
 		
 		// load alignment
-		MutableAlignment align2 = AlignmentIO.load(new FileInputStream(
-				alignmentFile), null);
+//		MutableAlignment align2 = AlignmentIO.load(new FileInputStream(
+//				alignmentFile), null);
 		
 		//TODO test alignment
 //		Collection<? extends MutableCell> cells = align2.getCells();

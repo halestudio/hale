@@ -19,6 +19,8 @@ import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * Entity definition for a type
  * @author Simon Templer
@@ -34,6 +36,9 @@ public class TypeEntityDefinition implements EntityDefinition {
 	 */
 	public TypeEntityDefinition(TypeDefinition typeDefinition) {
 		super();
+		
+		checkNotNull(typeDefinition, "Null type definition not allowed for type entity definition");
+		
 		this.typeDefinition = typeDefinition;
 	}
 
