@@ -12,13 +12,13 @@
 
 package eu.esdihumboldt.hale.common.align.io;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 
@@ -30,8 +30,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
-import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -40,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 
 /**
@@ -63,6 +63,9 @@ public class DefaultAlignmentIOTest {
 		// populate alignment 
 		MutableAlignment align = new DefaultAlignment();
 		
+		DefaultSchema source = new DefaultSchema("", null);
+		DefaultSchema target = new DefaultSchema("", null);
+		
 		// cell 1
 		MutableCell cell1 = new DefaultCell();
 		String id1;
@@ -76,10 +79,11 @@ public class DefaultAlignmentIOTest {
 		
 		ListMultimap<String, Type> target1 = ArrayListMultimap.create();
 		TypeDefinition targetType1 = new DefaultTypeDefinition(
-				new QName("target1Type"));
+				new QName("http://some.name.space/t1", "target1Type"));
 		target1.put("Some name", new DefaultType(new TypeEntityDefinition(
 				targetType1)));
 		cell1.setTarget(target1);
+		target.addType(targetType1);
 		
 		align.addCell(cell1);
 		
@@ -101,6 +105,7 @@ public class DefaultAlignmentIOTest {
 		target2.put("Some other name", new DefaultType(new TypeEntityDefinition(
 				targetType2)));
 		cell2.setTarget(target2);
+		target.addType(targetType2);
 		
 		align.addCell(cell2);
 		
@@ -110,17 +115,27 @@ public class DefaultAlignmentIOTest {
 		
 		AlignmentIO.save(align, new FileOutputStream(alignmentFile));
 		
-		//FIXME remove
-//		Desktop.getDesktop().open(alignmentFile);
-//		Thread.sleep(1000);
-		
 		// load alignment
 		MutableAlignment align2 = AlignmentIO.load(new FileInputStream(
-				alignmentFile), null);
+				alignmentFile), null, source, target);
 		
-		//TODO test alignment
-//		Collection<? extends MutableCell> cells = align2.getCells();
-//		assertFalse(cells.isEmpty());
+		// compare loaded alignment
+		Collection<? extends MutableCell> cells = align2.getCells();
+		assertFalse(cells.isEmpty());
+		
+		Iterator<? extends MutableCell> it = cells.iterator();
+		
+		// cell 1
+		Cell ncell1 = it.next();
+		assertNotNull(ncell1);
+		assertEquals(id1, ncell1.getTransformationIdentifier());
+		
+		// cell 2
+		Cell ncell2 = it.next();
+		assertNotNull(ncell2);
+		assertEquals(id2, ncell2.getTransformationIdentifier());
+		
+		//TODO improve test
 	}
 
 }
