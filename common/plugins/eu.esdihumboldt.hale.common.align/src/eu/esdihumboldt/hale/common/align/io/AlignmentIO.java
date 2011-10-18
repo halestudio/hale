@@ -31,6 +31,7 @@ import org.xml.sax.InputSource;
 import eu.esdihumboldt.hale.common.align.io.internal.AlignmentBean;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Save or load an alignment
@@ -42,13 +43,16 @@ public class AlignmentIO {
 	 * Load a default alignment from an input stream.
 	 * @param in the input stream
 	 * @param reporter the I/O reporter to report any errors to, may be <code>null</code>
+	 * @param sourceTypes the source types to use for resolving definition references
+	 * @param targetTypes the target types to use for resolving definition references
 	 * @return the alignment
 	 * 
 	 * @throws MappingException if the mapping could not be loaded
 	 * @throws MarshalException if the alignment could not be read
 	 * @throws ValidationException if the input stream did not provide valid XML
 	 */
-	public static MutableAlignment load(InputStream in, IOReporter reporter) 
+	public static MutableAlignment load(InputStream in, IOReporter reporter, 
+			TypeIndex sourceTypes, TypeIndex targetTypes) 
 			throws MappingException, MarshalException, ValidationException {
 		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
 		mapping.loadMapping(new InputSource(
@@ -60,7 +64,7 @@ public class AlignmentIO {
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 		try {
 			AlignmentBean bean = (AlignmentBean) unmarshaller.unmarshal(new InputSource(in));
-			return bean.createAlignment(reporter);
+			return bean.createAlignment(reporter, sourceTypes, targetTypes);
 		} finally {
 			try {
 				in.close();
