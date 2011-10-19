@@ -25,6 +25,7 @@ import java.util.Map;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
+@Deprecated
 public final class ContentType {
 	
 	private static final Map<String, ContentType> types = new HashMap<String, ContentType>();

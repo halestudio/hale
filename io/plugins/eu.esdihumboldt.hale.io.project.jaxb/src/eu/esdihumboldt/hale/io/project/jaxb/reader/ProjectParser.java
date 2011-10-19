@@ -214,7 +214,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			
 			// configure for source schema
 			IOConfiguration conf = new IOConfiguration();
-			conf.setAdvisorId("eu.esdihumboldt.hale.ui.io.schema.source");
+			conf.setActionId("eu.esdihumboldt.hale.ui.io.schema.source");
 			loadSchema(conf, source);
 		}
 		
@@ -224,7 +224,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			
 			// configure for target schema
 			IOConfiguration conf = new IOConfiguration();
-			conf.setAdvisorId("eu.esdihumboldt.hale.ui.io.schema.target");
+			conf.setActionId("eu.esdihumboldt.hale.ui.io.schema.target");
 			loadSchema(conf, source);
 		}
 	}
@@ -291,7 +291,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			
 			// populate IOConfiguration
 			// set advisor ID
-			conf.setAdvisorId("eu.esdihumboldt.hale.ui.io.instance.source");
+			conf.setActionId("eu.esdihumboldt.hale.ui.io.instance.source");
 			
 			// provider type (fixed)
 			conf.setProviderType(InstanceReaderFactory.class);

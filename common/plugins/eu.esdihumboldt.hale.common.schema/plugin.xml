@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            id="eu.esdihumboldt.hale.io.schema.read.source"
+            name="Load source schema"
+            type="eu.esdihumboldt.hale.common.schema.io.SchemaReader">
+      </action>
+      <action
+            id="eu.esdihumboldt.hale.io.schema.read.target"
+            name="Load target schema"
+            type="eu.esdihumboldt.hale.common.schema.io.SchemaReader">
+      </action>
+   </extension>
+
+</plugin>

@@ -16,26 +16,25 @@ import org.eclipse.jface.wizard.Wizard;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 
 /**
  * Abstract export wizard
  * @param <P> the {@link IOProvider} type used in the wizard
- * @param <T> the {@link IOProviderFactory} type used in the wizard
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @since 2.5
  */
-public abstract class ExportWizard<P extends ExportProvider, T extends IOProviderFactory<P>> extends IOWizard<P, T> {
+public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P> {
 
-	private ExportSelectTargetPage<P, T, ? extends ExportWizard<P, T>> selectTargetPage;
+	private ExportSelectTargetPage<P, ? extends ExportWizard<P>> selectTargetPage;
 
 	/**
 	 * @see IOWizard#IOWizard(Class)
 	 */
-	public ExportWizard(Class<T> factoryClass) {
-		super(factoryClass);
+	public ExportWizard(Class<P> providerType) {
+		super(providerType);
 		
 		setWindowTitle("Export wizard");
 		
@@ -55,7 +54,7 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 			setProviderFactory(getFactories().iterator().next());
 		}
 		else {
-			addPage(new ExportSelectProviderPage<P, T, ExportWizard<P,T>>());
+			addPage(new ExportSelectProviderPage<P, ExportWizard<P>>());
 		}
 		addPage(selectTargetPage = createSelectTargetPage());
 	}
@@ -65,8 +64,8 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 	 * 
 	 * @return the created page
 	 */
-	protected ExportSelectProviderPage<P, T, ? extends ExportWizard<P,T>> createSelectProviderPage() {
-		return new ExportSelectProviderPage<P, T, ExportWizard<P,T>>();
+	protected ExportSelectProviderPage<P, ? extends ExportWizard<P>> createSelectProviderPage() {
+		return new ExportSelectProviderPage<P, ExportWizard<P>>();
 	}
 	
 	/**
@@ -74,14 +73,14 @@ public abstract class ExportWizard<P extends ExportProvider, T extends IOProvide
 	 * 
 	 * @return the created page
 	 */
-	protected ExportSelectTargetPage<P, T, ? extends ExportWizard<P,T>> createSelectTargetPage() {
-		return new ExportSelectTargetPage<P, T, ExportWizard<P,T>>();
+	protected ExportSelectTargetPage<P, ? extends ExportWizard<P>> createSelectTargetPage() {
+		return new ExportSelectTargetPage<P, ExportWizard<P>>();
 	}
 
 	/**
 	 * @return the selectTargetPage
 	 */
-	protected ExportSelectTargetPage<P, T, ? extends ExportWizard<P, T>> getSelectTargetPage() {
+	protected ExportSelectTargetPage<P, ? extends ExportWizard<P>> getSelectTargetPage() {
 		return selectTargetPage;
 	}
 

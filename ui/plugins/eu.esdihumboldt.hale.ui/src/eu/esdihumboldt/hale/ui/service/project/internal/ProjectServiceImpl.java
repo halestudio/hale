@@ -38,6 +38,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Version;
 
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
@@ -46,16 +48,19 @@ import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOAction;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.extension.IOActionExtension;
+import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
+import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectReaderFactory;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectWriterFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
@@ -63,8 +68,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
-import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorExtension;
-import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
+import eu.esdihumboldt.hale.ui.io.action.ActionUI;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
@@ -336,27 +340,52 @@ public class ProjectServiceImpl extends AbstractProjectService
 
 	private void executeConfiguration(IOConfiguration conf) {
 		// get provider ...
-		Collection<? extends IOProviderFactory<?>> providers = HaleIO.getProviderFactories(conf.getProviderType());
 		IOProvider provider = null;
-		for (IOProviderFactory<?> factory : providers) {
-			if (factory.getIdentifier().equals(conf.getProviderId())) {
-				provider = factory.createProvider();
-			}
-		}
-		
-		if (provider != null) {
-			// ... and advisor
-			IOAdvisorFactory advisorFactory = IOAdvisorExtension.getInstance().getFactory(conf.getAdvisorId());
+		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(conf.getProviderId());
+		if (descriptor != null) {
 			try {
-				IOAdvisor<?> advisor = advisorFactory.createExtensionObject();
+				provider = descriptor.createExtensionObject();
+			} catch (Exception e) {
+				log.error(MessageFormat.format(
+						"Could not execute I/O configuration, provider with ID {0} could not be created.",
+						conf.getProviderId()), e);
+				return;
+			}
+			
+			// ... and advisor
+			final String actionId = conf.getActionId();
+			List<IOAdvisorFactory> advisors = IOAdvisorExtension.getInstance().getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
+				
+				@Override
+				public boolean acceptFactory(IOAdvisorFactory factory) {
+					return factory.getActionID().equals(actionId);
+				}
+				
+				@Override
+				public boolean acceptCollection(
+						ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
+					return true;
+				}
+			});
+			if (advisors != null && !advisors.isEmpty()) {
+				IOAdvisor<?> advisor;
+				try {
+					advisor = advisors.get(0).createExtensionObject();
+				} catch (Exception e) {
+					log.error(MessageFormat.format(
+							"Could not execute I/O configuration, advisor with ID {0} could not be created.",
+							advisors.get(0).getIdentifier()), e);
+					return;
+				}
 				// configure settings
 				provider.loadConfiguration(conf.getProviderConfiguration());
 				// execute provider
 				executeProvider(provider, advisor);
-			} catch (Exception e) {
+			}
+			else {
 				log.error(MessageFormat.format(
-						"Could not execute I/O configuration, advisor with ID {0} could not be created.",
-						conf.getAdvisorId()), e);
+						"Could not execute I/O configuration, no advisor for action {0} found.",
+						actionId));
 			}
 		}
 		else {
@@ -616,18 +645,18 @@ public class ProjectServiceImpl extends AbstractProjectService
 	}
 
 	/**
-	 * @see ProjectService#rememberIO(IOAdvisorFactory, Class, String, IOProvider)
+	 * @see ProjectService#rememberIO(String, String, IOProvider)
 	 */
 	@Override
-	public void rememberIO(IOAdvisorFactory advisorFactory,
-			Class<? extends IOProviderFactory<?>> providerType, 
-			String providerId, IOProvider provider) {
+	public void rememberIO(String actionId, String providerId, IOProvider provider) {
 		// populate an IOConfiguration from the given data
 		IOConfiguration conf = new IOConfiguration();
-		conf.setAdvisorId(advisorFactory.getIdentifier());
+		conf.setActionId(actionId);
 		conf.setProviderId(providerId);
-		conf.setProviderType(providerType);
-		conf.getDependencies().addAll(advisorFactory.getDependencies());
+		IOAction action = IOActionExtension.getInstance().get(actionId);
+		if (action != null) {
+			conf.getDependencies().addAll(action.getDependencies());
+		}
 		provider.storeConfiguration(conf.getProviderConfiguration());
 		
 		// add configuration to project

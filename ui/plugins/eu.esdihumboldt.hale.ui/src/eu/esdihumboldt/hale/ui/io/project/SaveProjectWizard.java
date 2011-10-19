@@ -58,7 +58,7 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter, ProjectWriter
 		
 		// populate and set the save configuration
 		IOConfiguration saveConfiguration = new IOConfiguration();
-		saveConfiguration.setAdvisorId(ADVISOR_PROJECT_SAVE);
+		saveConfiguration.setActionId(ADVISOR_PROJECT_SAVE);
 		saveConfiguration.setProviderId(getProviderFactory().getIdentifier());
 		saveConfiguration.setProviderType(getFactoryClass());
 		provider.storeConfiguration(saveConfiguration.getProviderConfiguration());

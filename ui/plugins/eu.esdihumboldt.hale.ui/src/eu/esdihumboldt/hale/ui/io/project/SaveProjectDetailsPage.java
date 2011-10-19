@@ -97,7 +97,7 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectW
 		// listen for provider changes
 		getWizard().addIOWizardListener(new IOWizardListener<ProjectWriter, ProjectWriterFactory, SaveProjectWizard>() {
 			@Override
-			public void providerFactoryChanged(
+			public void providerDescriptorChanged(
 					ProjectWriterFactory providerFactory) {
 				// update fields as the provider will have changed
 				updateFields();

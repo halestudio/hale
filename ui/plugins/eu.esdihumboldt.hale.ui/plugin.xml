@@ -4,7 +4,7 @@
    <extension-point id="eu.esdihumboldt.hale.ui.io.config" name="I/O configuration wizard pages" schema="schema/eu.esdihumboldt.hale.ui.io.config.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.MappingExport" name="Mapping Export Providers" schema="schema/eu.esdihumboldt.hale.MappingExport.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.function" name="Function wizards" schema="schema/eu.esdihumboldt.hale.ui.function.exsd"/>
-   <extension-point id="eu.esdihumboldt.hale.ui.io.advisor" name="I/O advisors in the context of the UI services" schema="schema/eu.esdihumboldt.hale.ui.io.advisor.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.ui.io.action" name="UI extensions for I/O actions" schema="schema/eu.esdihumboldt.hale.ui.io.action.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.io.source" name="Import sources" schema="schema/eu.esdihumboldt.hale.ui.io.source.exsd"/>
    <extension
          point="org.eclipse.ui.commands">
@@ -87,36 +87,30 @@
       </sourceProvider>
    </extension>
    <extension
-         point="eu.esdihumboldt.hale.ui.io.advisor">
-      <advisor
-            class="eu.esdihumboldt.hale.ui.io.schema.SourceSchemaImportAdvisor"
-            id="eu.esdihumboldt.hale.ui.io.schema.source"
+         point="eu.esdihumboldt.hale.ui.io.action">
+      <action-ui
+            action="eu.esdihumboldt.hale.io.schema.read.source"
+            id="eu.esdihumboldt.hale.io.schema.read.source.ui"
             label="Source schema..."
             priority="-10"
-            providerType="eu.esdihumboldt.hale.common.schema.io.SchemaReader"
             projectResource="true"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
-      </advisor>
-      <advisor
-            class="eu.esdihumboldt.hale.ui.io.schema.TargetSchemaImportAdvisor"
-            id="eu.esdihumboldt.hale.ui.io.schema.target"
+      </action-ui>
+      <action-ui
+            action="eu.esdihumboldt.hale.io.schema.read.target"
+            id="eu.esdihumboldt.hale.io.schema.read.target.ui"
             label="Target schema..."
             priority="-9"
-            providerType="eu.esdihumboldt.hale.common.schema.io.SchemaReader"
             projectResource="true"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
-      </advisor>
-      <advisor
-            class="eu.esdihumboldt.hale.ui.io.instance.InstanceImportAdvisor"
+      </action-ui>
+      <action-ui
+            action="eu.esdihumboldt.hale.io.instance.read.source"
             id="eu.esdihumboldt.hale.ui.io.instance.source"
             label="Source data..."
             priority="-6"
-            providerType="eu.esdihumboldt.hale.common.instance.io.InstanceReader"
             projectResource="true"
             wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard">
-         <dependsOn
-               advisor="eu.esdihumboldt.hale.ui.io.schema.source">
-         </dependsOn>
          <enabledWhen>
             <with
                   variable="hale.schemas.has_source">
@@ -125,7 +119,7 @@
                </equals>
             </with>
          </enabledWhen>
-      </advisor>
+      </action-ui>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">
@@ -152,6 +146,24 @@
             id="eu.esdihumboldt.hale.ui"
             name="HALE">
       </category>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <advisor
+            action="eu.esdihumboldt.hale.io.schema.read.source"
+            class="eu.esdihumboldt.hale.ui.io.schema.SourceSchemaImportAdvisor"
+            id="eu.esdihumboldt.hale.ui.io.schema.read.source">
+      </advisor>
+      <advisor
+            action="eu.esdihumboldt.hale.io.schema.read.target"
+            class="eu.esdihumboldt.hale.ui.io.schema.TargetSchemaImportAdvisor"
+            id="eu.esdihumboldt.hale.ui.io.schema.read.target">
+      </advisor>
+      <advisor
+            action="eu.esdihumboldt.hale.io.instance.read.source"
+            class="eu.esdihumboldt.hale.ui.io.instance.InstanceImportAdvisor"
+            id="eu.esdihumboldt.hale.ui.io.instance.read.source">
+      </advisor>
    </extension>
 
 </plugin>

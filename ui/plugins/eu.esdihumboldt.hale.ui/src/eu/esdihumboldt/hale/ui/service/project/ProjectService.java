@@ -16,9 +16,7 @@ import java.io.File;
 
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.ui.io.advisor.IOAdvisorFactory;
 
 /**
  * The {@link ProjectService} manages information on a HALE project,
@@ -45,14 +43,12 @@ public interface ProjectService {
 	 * Remember I/O operations after the execution of the corresponding I/O 
 	 * provider for storing it in the project.
 	 * 
-	 * @param advisorFactory the advisor factory
-	 * @param providerType the I/O provider type
+	 * @param actionId the I/O action identifier
 	 * @param providerId the I/O provider identifier
 	 * @param provider the I/O provider instance used for the I/O operation
 	 */
-	public void rememberIO(IOAdvisorFactory advisorFactory, 
-			Class<? extends IOProviderFactory<?>> providerType, 
-			String providerId, IOProvider provider);
+	public void rememberIO(String actionId, String providerId, 
+			IOProvider provider);
 	
 	/**
 	 * Get a project scoped configuration service

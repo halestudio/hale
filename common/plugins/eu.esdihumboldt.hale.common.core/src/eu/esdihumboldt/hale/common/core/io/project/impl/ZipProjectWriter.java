@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -183,13 +182,13 @@ public class ZipProjectWriter extends AbstractExportProvider implements ProjectW
 	}
 
 	/**
-	 * @see AbstractIOProvider#getDefaultContentType()
+	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
-	protected ContentType getDefaultContentType() {
-		return ContentType.getContentType(ProjectIO.PROJECT_CT_ID);
+	protected String getDefaultTypeName() {
+		return ProjectIO.PROJECT_TYPE_NAME;
 	}
-	
+
 	/**
 	 * @see IOProvider#isCancelable()
 	 */

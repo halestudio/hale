@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.core.io.ContentType;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
+@Deprecated
 public class ContentTypeDefinition {
 	
 	/**

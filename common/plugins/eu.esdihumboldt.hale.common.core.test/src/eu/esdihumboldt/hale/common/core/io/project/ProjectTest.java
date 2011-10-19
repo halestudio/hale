@@ -71,7 +71,7 @@ public class ProjectTest {
 		project.getResources().add(conf1 = new IOConfiguration());
 		
 		String advisorId1;
-		conf1.setAdvisorId(advisorId1 = "some advisor");
+		conf1.setActionId(advisorId1 = "some advisor");
 		String providerId1;
 		conf1.setProviderId(providerId1 = "some provider");
 		String depend1;
@@ -90,7 +90,7 @@ public class ProjectTest {
 		IOConfiguration conf2;
 		project.getResources().add(conf2 = new IOConfiguration());
 		String advisorId2;
-		conf2.setAdvisorId(advisorId2 = "a certain advisor");
+		conf2.setActionId(advisorId2 = "a certain advisor");
 		String providerId2;
 		conf2.setProviderId(providerId2 = "a special provider");
 		Class<ProjectReaderFactory> type2;
@@ -119,7 +119,7 @@ public class ProjectTest {
 		IOConfiguration c1 = it.next();
 		assertNotNull(c1);
 		
-		assertEquals(advisorId1, c1.getAdvisorId());
+		assertEquals(advisorId1, c1.getActionId());
 		assertEquals(providerId1, c1.getProviderId());
 		assertEquals(2, c1.getDependencies().size());
 		assertTrue(c1.getDependencies().contains(depend1));
@@ -132,7 +132,7 @@ public class ProjectTest {
 		IOConfiguration c2 = it.next();
 		assertNotNull(c2);
 		
-		assertEquals(advisorId2, c2.getAdvisorId());
+		assertEquals(advisorId2, c2.getActionId());
 		assertEquals(providerId2, c2.getProviderId());
 		assertEquals(type2, c2.getProviderType());
 	}

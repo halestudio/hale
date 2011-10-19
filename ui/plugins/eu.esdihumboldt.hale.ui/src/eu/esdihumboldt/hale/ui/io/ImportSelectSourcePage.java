@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -36,10 +37,9 @@ import org.eclipse.swt.widgets.TabItem;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.ImportSource.SourceConfiguration;
 import eu.esdihumboldt.hale.ui.io.internal.WizardPageDecorator;
@@ -50,26 +50,26 @@ import eu.esdihumboldt.hale.ui.io.source.internal.ImportSourceFactory;
  * Wizard page that allows selecting a source file or provider
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- * @param <T> the {@link IOProviderFactory} type used in the wizard
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @since 2.5
  */
-public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProviderFactory<P>, 
-	W extends ImportWizard<P, T>> extends IOWizardPage<P, T, W> {
+public class ImportSelectSourcePage<P extends ImportProvider, 
+	W extends ImportWizard<P>> extends IOWizardPage<P, W> {
 	
 	/**
 	 * Import source page
 	 */
-	public class SourcePage extends WizardPageDecorator implements SourceConfiguration<P, T> {
+	public class SourcePage extends WizardPageDecorator implements SourceConfiguration<P> {
 
-		private final ImportSource<P, T> importSource;
+		private final ImportSource<P> importSource;
 		
 		private final int index;
 
-		private T factory;
+		private IOProviderDescriptor factory;
 
-		private ContentType contentType;
+		private IContentType contentType;
 
 		private String message;
 
@@ -87,8 +87,8 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		 * @param initialContentType the content type the import source page
 		 *   should be initialized with, may be <code>null</code>
 		 */
-		public SourcePage(ImportSource<P, T> importSource, Composite parent,
-				ContentType initialContentType) {
+		public SourcePage(ImportSource<P> importSource, Composite parent,
+				IContentType initialContentType) {
 			super(ImportSelectSourcePage.this);
 			
 			this.importSource = importSource;
@@ -136,15 +136,15 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		 * @see SourceConfiguration#getFactories()
 		 */
 		@Override
-		public Collection<T> getFactories() {
+		public Collection<IOProviderDescriptor> getFactories() {
 			return getWizard().getFactories();
 		}
 
 		/**
-		 * @see SourceConfiguration#setProviderFactory(IOProviderFactory)
+		 * @see SourceConfiguration#setProviderFactory(IOProviderDescriptor)
 		 */
 		@Override
-		public void setProviderFactory(T factory) {
+		public void setProviderFactory(IOProviderDescriptor factory) {
 			this.factory = factory;
 						
 			if (isActive()) {
@@ -156,15 +156,15 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		 * @see ImportSource.SourceConfiguration#getProviderFactory()
 		 */
 		@Override
-		public T getProviderFactory() {
+		public IOProviderDescriptor getProviderFactory() {
 			return factory;
 		}
 
 		/**
-		 * @see ImportSource.SourceConfiguration#setContentType(ContentType)
+		 * @see ImportSource.SourceConfiguration#setContentType(IContentType)
 		 */
 		@Override
-		public void setContentType(ContentType contentType) {
+		public void setContentType(IContentType contentType) {
 			this.contentType = contentType;
 			
 			if (isActive()) {
@@ -257,14 +257,14 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		 * @see SourceConfiguration#getContentType()
 		 */
 		@Override
-		public ContentType getContentType() {
+		public IContentType getContentType() {
 			return contentType;
 		}
 
 		/**
 		 * @return the importSource
 		 */
-		public ImportSource<P, T> getImportSource() {
+		public ImportSource<P> getImportSource() {
 			return importSource;
 		}
 
@@ -306,25 +306,25 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 	@Override
 	protected void createContent(Composite page) {
 		// set content types for file field
-		Collection<T> factories = getWizard().getFactories();
-		final Set<ContentType> supportedTypes = new HashSet<ContentType>();
-		for (T factory : factories) {
+		List<IOProviderDescriptor> factories = getWizard().getFactories();
+		final Set<IContentType> supportedTypes = new HashSet<IContentType>();
+		for (IOProviderDescriptor factory : factories) {
 			supportedTypes.addAll(factory.getSupportedTypes());
 		}
 		
 		// get compatible sources
-		List<ImportSourceFactory> availableSources = ImportSourceExtension.getInstance().getFactories(new FactoryFilter<ImportSource<?,?>, ImportSourceFactory>() {
+		List<ImportSourceFactory> availableSources = ImportSourceExtension.getInstance().getFactories(new FactoryFilter<ImportSource<?>, ImportSourceFactory>() {
 			
 			@Override
 			public boolean acceptFactory(ImportSourceFactory factory) {
 				// check provider factory compatibility
-				boolean providerMatch = factory.getProviderFactoryType().isAssignableFrom(getWizard().getFactoryClass());
+				boolean providerMatch = factory.getProviderType().isAssignableFrom(getWizard().getProviderType());
 				if (!providerMatch) {
 					return false;
 				}
 				
 				// check content type compatibility
-				ContentType ct = factory.getContentType();
+				IContentType ct = factory.getContentType();
 				if (ct == null) {
 					return true; // any content type supported
 				}
@@ -336,7 +336,7 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 			
 			@Override
 			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<ImportSource<?, ?>, ImportSourceFactory> collection) {
+					ExtensionObjectFactoryCollection<ImportSource<?>, ImportSourceFactory> collection) {
 				return false;
 			}
 		});
@@ -431,8 +431,8 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 	 */
 	@SuppressWarnings("unchecked")
 	private void createSource(ImportSourceFactory sourceFactory,
-			Composite parent, Set<ContentType> supportedTypes) {
-		ImportSource<?, ?> source;
+			Composite parent, Set<IContentType> supportedTypes) {
+		ImportSource<?> source;
 		try {
 			source = sourceFactory.createExtensionObject();
 		} catch (Exception e) {
@@ -442,10 +442,10 @@ public class ImportSelectSourcePage<P extends ImportProvider, T extends IOProvid
 		}
 		
 		// determine initial content type
-		ContentType initialContentType = sourceFactory.getContentType();
+		IContentType initialContentType = sourceFactory.getContentType();
 		assert supportedTypes.contains(initialContentType);
 		
-		ImportSource<P, T> compatibleSource = ((ImportSource<P, T>) source); //XXX alternative to casting?
+		ImportSource<P> compatibleSource = ((ImportSource<P>) source); //XXX alternative to casting?
 		
 		// create the source page
 		new SourcePage(compatibleSource, parent, initialContentType);

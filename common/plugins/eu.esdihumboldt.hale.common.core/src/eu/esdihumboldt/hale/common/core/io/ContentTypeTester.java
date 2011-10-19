@@ -24,6 +24,7 @@ import java.io.InputStream;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
+@Deprecated
 public interface ContentTypeTester {
 	
 	/**

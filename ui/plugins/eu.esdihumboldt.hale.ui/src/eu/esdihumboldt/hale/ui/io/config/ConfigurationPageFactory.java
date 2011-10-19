@@ -10,16 +10,23 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.core.io.project;
+package eu.esdihumboldt.hale.ui.io.config;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import java.util.Set;
+
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 
 /**
- * Factory for {@link ProjectReader}s
+ * TODO Type description
  * @author Simon Templer
  */
-public interface ProjectReaderFactory extends IOProviderFactory<ProjectReader> {
-
-	// concrete typed interface
+public interface ConfigurationPageFactory extends
+		ExtensionObjectFactory<AbstractConfigurationPage<?, ?>> {
 	
+	/**
+	 * Get the identifiers of the supported providers
+	 * @return the set of supported provider identifiers
+	 */
+	public Set<String> getSupportedProviderIDs();
+
 }

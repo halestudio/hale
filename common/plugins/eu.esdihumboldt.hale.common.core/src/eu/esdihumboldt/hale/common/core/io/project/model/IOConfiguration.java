@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 
 /**
  * Object holding all information necessary to reproduce an {@link IOProvider}
@@ -27,7 +26,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
  */
 public class IOConfiguration {
 	
-	private String advisorId;
+	private String actionId;
 	
 	private String providerId;
 	
@@ -35,20 +34,18 @@ public class IOConfiguration {
 	
 	private final Set<String> dependencies = new HashSet<String>();
 	
-	private Class<? extends IOProviderFactory<?>> providerType;
-
 	/**
-	 * @return the advisorId
+	 * @return the action ID
 	 */
-	public String getAdvisorId() {
-		return advisorId;
+	public String getActionId() {
+		return actionId;
 	}
 
 	/**
-	 * @param advisorId the advisorId to set
+	 * @param actionId the action ID to set
 	 */
-	public void setAdvisorId(String advisorId) {
-		this.advisorId = advisorId;
+	public void setActionId(String actionId) {
+		this.actionId = actionId;
 	}
 
 	/**
@@ -77,20 +74,6 @@ public class IOConfiguration {
 	 */
 	public Set<String> getDependencies() {
 		return dependencies;
-	}
-
-	/**
-	 * @return the providerType
-	 */
-	public Class<? extends IOProviderFactory<?>> getProviderType() {
-		return providerType;
-	}
-
-	/**
-	 * @param providerType the providerType to set
-	 */
-	public void setProviderType(Class<? extends IOProviderFactory<?>> providerType) {
-		this.providerType = providerType;
 	}
 
 }

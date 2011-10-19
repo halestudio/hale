@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="eu.esdihumboldt.hale.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="eu.esdihumboldt.hale.common.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="eu.esdihumboldt.hale.ui" id="eu.esdihumboldt.ui.io.source" name="Import sources"/>
+         <meta.schema plugin="eu.esdihumboldt.hale.common.core" id="eu.esdihumboldt.hale.io.provider" name="I/O providers"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -17,9 +17,10 @@
          </appinfo>
       </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="source"/>
-         </sequence>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="factory"/>
+            <element ref="provider"/>
+         </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
@@ -47,8 +48,11 @@
       </complexType>
    </element>
 
-   <element name="source">
+   <element name="provider">
       <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="contentType"/>
+         </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
@@ -56,70 +60,53 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  An implementation class of import source with a default constructor.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.ui.io.ImportSource"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="providerType" type="string" use="default" value="eu.esdihumboldt.hale.common.core.io.ImportProvider">
-            <annotation>
-               <documentation>
-                  The supported ImportProvider type. Should be an interface. By default ImportProvider itself.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.io.ImportProvider"/>
-               </appinfo>
-            </annotation>
-         </attribute>
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  The human readable name of the import source.
+                  
                </documentation>
                <appinfo>
                   <meta.attribute translatable="true"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="description" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  Description, e.g. for a tooltip.
+                  
                </documentation>
                <appinfo>
-                  <meta.attribute translatable="true"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.io.IOProvider"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="icon" type="string">
+      </complexType>
+   </element>
+
+   <element name="contentType">
+      <complexType>
+         <attribute name="ref" type="string" use="required">
             <annotation>
                <documentation>
-                  Source icon.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="resource"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="priority" type="string" use="default" value="0">
-            <annotation>
-               <documentation>
-                  Priority value. Sources with lesser values will be displayed first. Default is zero.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="contentType" type="string">
-            <annotation>
-               <documentation>
-                  The identifier of the content type the source supports. If left empty support for any content type is assumed (this also means that the source has to set the content type on the source configuration).
+                  
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.core.contenttype.contentTypes/content-type/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="factory">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.io.extension.IOProviderFactory"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -131,7 +118,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         2.2
+         [Enter the first release in which this extension point appears.]
       </documentation>
    </annotation>
 

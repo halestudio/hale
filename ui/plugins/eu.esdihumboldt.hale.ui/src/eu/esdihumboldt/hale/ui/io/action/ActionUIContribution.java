@@ -10,7 +10,10 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.io.advisor;
+package eu.esdihumboldt.hale.ui.io.action;
+
+import java.text.MessageFormat;
+import java.util.List;
 
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.jface.action.Action;
@@ -26,22 +29,26 @@ import org.eclipse.ui.services.IEvaluationService;
 import de.cs3d.ui.util.eclipse.extension.AbstractExtensionContribution;
 import de.cs3d.ui.util.eclipse.extension.AbstractFactoryAction;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
+import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * Contribution for launching {@link IOWizard}s based on an {@link IOAdvisor}
  * @author Simon Templer
  */
-public class IOAdvisorContribution extends
-		AbstractExtensionContribution<IOAdvisor<?>, IOAdvisorFactory, IOAdvisorExtension> {
+public class ActionUIContribution extends
+		AbstractExtensionContribution<IOWizard<?>, ActionUI, ActionUIExtension> {
 	
 	/**
 	 * Action that launches an {@link IOWizard}
 	 */
-	private static class IOWizardAction extends AbstractFactoryAction<IOAdvisorFactory> {
+	private static class IOWizardAction extends AbstractFactoryAction<ActionUI> {
 		
 		private static final ALogger log = ALoggerFactory.getLogger(IOWizardAction.class);
 		
@@ -50,7 +57,7 @@ public class IOAdvisorContribution extends
 		 * 
 		 * @param factory the extension object factory
 		 */
-		public IOWizardAction(IOAdvisorFactory factory) {
+		public IOWizardAction(ActionUI factory) {
 			super(factory, IAction.AS_PUSH_BUTTON);
 			
 			Expression enabledWhen = factory.getEnabledWhen();
@@ -75,9 +82,44 @@ public class IOAdvisorContribution extends
 		@Override
 		public void run() {
 			try {
-				IOWizard<?, ?> wizard = getFactory().createWizard();
-				IOAdvisor<?> advisor = getFactory().createExtensionObject();
-				((IOWizard) wizard).setAdvisor(advisor, getFactory().getIdentifier());
+				// retrieve action ID
+				final String actionId = getFactory().getActionID();
+				
+				// find associated advisor(s)
+				List<IOAdvisorFactory> advisors = IOAdvisorExtension.getInstance().getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
+					
+					@Override
+					public boolean acceptFactory(IOAdvisorFactory factory) {
+						return factory.getActionID().equals(actionId);
+					}
+					
+					@Override
+					public boolean acceptCollection(
+							ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
+						return true;
+					}
+				});
+				
+				// create advisor if possible
+				IOAdvisor<?> advisor;
+				if (advisors == null || advisors.isEmpty()) {
+					throw new IllegalStateException(MessageFormat.format(
+							"No advisor for action {0} found", actionId));
+				}
+				else {
+					if (advisors.size() > 1) {
+						log.warn(MessageFormat.format(
+								"Multiple advisors for action {0} found", 
+								actionId));
+					}
+					
+					advisor = advisors.get(0).createExtensionObject();
+				}
+				
+				// create wizard
+				IOWizard<?> wizard = getFactory().createExtensionObject();
+				// set advisor and action ID
+				((IOWizard) wizard).setAdvisor(advisor, actionId);
 				Shell shell = Display.getCurrent().getActiveShell();
 				WizardDialog dialog = new WizardDialog(shell, wizard);
 				dialog.open();
@@ -109,7 +151,7 @@ public class IOAdvisorContribution extends
 	 * @see AbstractExtensionContribution#createFactoryAction(ExtensionObjectFactory)
 	 */
 	@Override
-	protected IAction createFactoryAction(IOAdvisorFactory factory) {
+	protected IAction createFactoryAction(ActionUI factory) {
 		return new IOWizardAction(factory);
 	}
 
@@ -117,15 +159,15 @@ public class IOAdvisorContribution extends
 	 * @see AbstractExtensionContribution#initExtension()
 	 */
 	@Override
-	protected IOAdvisorExtension initExtension() {
-		return IOAdvisorExtension.getInstance();
+	protected ActionUIExtension initExtension() {
+		return ActionUIExtension.getInstance();
 	}
 
 	/**
 	 * @see AbstractExtensionContribution#onAdd(ExtensionObjectFactory)
 	 */
 	@Override
-	protected void onAdd(IOAdvisorFactory factory) {
+	protected void onAdd(ActionUI factory) {
 		// do nothing
 	}
 
@@ -133,7 +175,7 @@ public class IOAdvisorContribution extends
 	 * @see AbstractExtensionContribution#onConfigure(ExtensionObjectFactory)
 	 */
 	@Override
-	protected void onConfigure(IOAdvisorFactory factory) {
+	protected void onConfigure(ActionUI factory) {
 		// do nothing
 	}
 
@@ -141,7 +183,7 @@ public class IOAdvisorContribution extends
 	 * @see AbstractExtensionContribution#onRemove(ExtensionObjectFactory)
 	 */
 	@Override
-	protected void onRemove(IOAdvisorFactory factory) {
+	protected void onRemove(ActionUI factory) {
 		// do nothing
 	}
 

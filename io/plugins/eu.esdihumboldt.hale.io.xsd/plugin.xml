@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            alias-for="org.eclipse.xsd"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xsd,xml"
+            id="eu.esdihumboldt.hale.io.xsd"
+            name="XML schema"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{http://www.w3.org/2001/XMLSchema}schema">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader"
+            id="eu.esdihumboldt.hale.io.xsd.reader"
+            name="XML schema">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xsd">
+         </contentType>
+      </provider>
+   </extension>
+
+</plugin>

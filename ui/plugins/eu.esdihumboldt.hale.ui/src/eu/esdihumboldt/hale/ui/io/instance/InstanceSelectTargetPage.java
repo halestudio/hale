@@ -201,7 +201,7 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 	}
 
 	/**
-	 * @see IOWizardListener#providerFactoryChanged(IOProviderFactory)
+	 * @see IOWizardListener#providerDescriptorChanged(IOProviderFactory)
 	 */
 	@Override
 	public void providerFactoryChanged(InstanceWriterFactory providerFactory) {

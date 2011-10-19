@@ -10,16 +10,21 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.core.io.project;
+package eu.esdihumboldt.hale.common.core.io.extension;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 
 /**
- * Factory for {@link ProjectWriter}s
+ * Factory for {@link IOAdvisor}s
  * @author Simon Templer
  */
-public interface ProjectWriterFactory extends IOProviderFactory<ProjectWriter> {
-
-	// concrete typed interface
+public interface IOAdvisorFactory extends ExtensionObjectFactory<IOAdvisor<?>> {
 	
+	/**
+	 * Get the identifier of the action the advisor is associated with
+	 * @return the associated action ID
+	 */
+	public String getActionID();
+
 }

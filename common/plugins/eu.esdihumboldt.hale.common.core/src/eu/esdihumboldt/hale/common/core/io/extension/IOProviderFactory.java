@@ -10,22 +10,18 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.core.io.project;
+package eu.esdihumboldt.hale.common.core.io.extension;
+
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
- * Common utilities and constants regarding project I/O
+ * Interface for {@link IOProviderDescriptor} factories
  * @author Simon Templer
  */
-public abstract class ProjectIO {
+public interface IOProviderFactory extends
+		ExtensionObjectFactoryCollection<IOProvider, IOProviderDescriptor> {
 	
-	/**
-	 * Project file default type name
-	 */
-	public static final String PROJECT_TYPE_NAME = "HALE project";
-	
-	/**
-	 * Name of the internal project file
-	 */
-	public static final String PROJECT_FILE = "project.xml";
+	// concrete typed interface
 
 }

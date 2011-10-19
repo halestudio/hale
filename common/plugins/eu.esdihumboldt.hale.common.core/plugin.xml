@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.io.provider" name="I/O providers" schema="schema/eu.esdihumboldt.hale.io.provider.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.io.action" name="I/O actions and advisors" schema="schema/eu.esdihumboldt.hale.io.action.exsd"/>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="hale"
+            id="eu.esdihumboldt.hale.common.core.hale25"
+            name="HALE project"
+            priority="normal">
+      </content-type>
+   </extension>
+
+</plugin>
