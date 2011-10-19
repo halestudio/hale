@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.cst.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -22,8 +24,6 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -36,7 +36,6 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
-import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 /**
@@ -93,7 +92,7 @@ public class DefaultAlignmentProcessorTest {
 	 */
 	private Schema readXMLSchema(LocatableInputSupplier<? extends InputStream> input) throws IOProviderConfigurationException, IOException {
 		XmlSchemaReader reader = new XmlSchemaReader();
-		reader.setContentType(XMLSchemaIO.XSD_CT);
+//		reader.setContentType(XMLSchemaIO.XSD_CT);
 		reader.setSharedTypes(new DefaultTypeIndex());
 		reader.setSource(input);
 		

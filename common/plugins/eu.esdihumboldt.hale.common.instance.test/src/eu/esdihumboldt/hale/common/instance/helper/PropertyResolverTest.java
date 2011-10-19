@@ -26,8 +26,6 @@ import org.springframework.core.convert.ConversionService;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.OsgiUtils.Condition;
-
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -38,8 +36,9 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceReader;
 import eu.esdihumboldt.hale.io.gml.reader.internal.StreamGmlReader;
-import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReaderFactory;
+import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 
@@ -115,7 +114,7 @@ public class PropertyResolverTest {
 		assertTrue(report.isSuccess());
 		Schema schema = reader.getSchema();
 		
-		StreamGmlReader instanceReader = new StreamGmlReader(ContentType.getContentType("GML"), true);;
+		StreamGmlReader instanceReader = new GmlInstanceReader();
 		instanceReader.setSource(new DefaultInputSupplier(getClass().getResource("/data/out/transformWrite_ERM_HPW.gml").toURI()));
 		instanceReader.setSourceSchema(schema);
 		
@@ -164,8 +163,7 @@ public class PropertyResolverTest {
 		//
 		
 		
-		XmlInstanceReaderFactory f = new XmlInstanceReaderFactory();
-		InstanceReader instanceReader = f.createProvider();
+		InstanceReader instanceReader = new XmlInstanceReader();
 		
 		instanceReader.setSource(new DefaultInputSupplier(xmlLocation));
 		instanceReader.setSourceSchema(sourceSchema);

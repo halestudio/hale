@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Label;
 import com.google.common.collect.HashBiMap;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -48,7 +47,7 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 @SuppressWarnings("restriction")
 public class ReadConfigurationPage
 		extends
-		AbstractConfigurationPage<ImportProvider, IOProviderFactory<ImportProvider>, ImportWizard<ImportProvider, IOProviderFactory<ImportProvider>>>
+		AbstractConfigurationPage<ImportProvider, ImportWizard<ImportProvider>>
 		implements ModifyListener {
 
 	private Combo separator;

@@ -10,16 +10,18 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.core.io.project;
+package eu.esdihumboldt.hale.common.core.io.extension;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
- * Factory for {@link ProjectReader}s
+ * Interface for {@link IOProviderDescriptor} factories
  * @author Simon Templer
  */
-public interface ProjectReaderFactory extends IOProviderFactory<ProjectReader> {
-
-	// concrete typed interface
+public interface IOProviderFactory extends
+		ExtensionObjectFactoryCollection<IOProvider, IOProviderDescriptor> {
 	
+	// concrete typed interface
+
 }

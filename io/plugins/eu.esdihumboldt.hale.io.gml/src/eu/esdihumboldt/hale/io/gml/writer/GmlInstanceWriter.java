@@ -10,16 +10,21 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.core.io.project;
+package eu.esdihumboldt.hale.io.gml.writer;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 
 /**
- * Factory for {@link ProjectWriter}s
+ * Writes instances to a GML FeatureCollection
  * @author Simon Templer
  */
-public interface ProjectWriterFactory extends IOProviderFactory<ProjectWriter> {
+public class GmlInstanceWriter extends StreamGmlWriter {
 
-	// concrete typed interface
-	
+	/**
+	 * Default constructor
+	 */
+	public GmlInstanceWriter() {
+		super(true);
+	}
+
 }

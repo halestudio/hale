@@ -27,8 +27,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.osgi.framework.Version;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectReaderFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 
@@ -48,7 +46,6 @@ public class ProjectTest {
 	 * Test saving and loading an example project
 	 * @throws Exception if an error occurs
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testSaveLoad() throws Exception {
 		// populate project 
@@ -71,7 +68,7 @@ public class ProjectTest {
 		project.getResources().add(conf1 = new IOConfiguration());
 		
 		String advisorId1;
-		conf1.setAdvisorId(advisorId1 = "some advisor");
+		conf1.setActionId(advisorId1 = "some advisor");
 		String providerId1;
 		conf1.setProviderId(providerId1 = "some provider");
 		String depend1;
@@ -84,17 +81,13 @@ public class ProjectTest {
 		String value2;
 		String key2;
 		conf1.getProviderConfiguration().put(key2 = "some other key", value2 = "some other value");
-		Class<? extends IOProviderFactory<?>> type1;
-		conf1.setProviderType(type1 = (Class<? extends IOProviderFactory<?>>) IOProviderFactory.class);
 		
 		IOConfiguration conf2;
 		project.getResources().add(conf2 = new IOConfiguration());
 		String advisorId2;
-		conf2.setAdvisorId(advisorId2 = "a certain advisor");
+		conf2.setActionId(advisorId2 = "a certain advisor");
 		String providerId2;
 		conf2.setProviderId(providerId2 = "a special provider");
-		Class<ProjectReaderFactory> type2;
-		conf2.setProviderType(type2 = ProjectReaderFactory.class);
 		
 		// write project
 		File projectFile = tmp.newFile("project.xml");
@@ -119,7 +112,7 @@ public class ProjectTest {
 		IOConfiguration c1 = it.next();
 		assertNotNull(c1);
 		
-		assertEquals(advisorId1, c1.getAdvisorId());
+		assertEquals(advisorId1, c1.getActionId());
 		assertEquals(providerId1, c1.getProviderId());
 		assertEquals(2, c1.getDependencies().size());
 		assertTrue(c1.getDependencies().contains(depend1));
@@ -127,14 +120,12 @@ public class ProjectTest {
 		assertEquals(2, c1.getProviderConfiguration().size());
 		assertTrue(c1.getProviderConfiguration().get(key1).equals(value1));
 		assertTrue(c1.getProviderConfiguration().get(key2).equals(value2));
-		assertEquals(type1, c1.getProviderType());
 		
 		IOConfiguration c2 = it.next();
 		assertNotNull(c2);
 		
-		assertEquals(advisorId2, c2.getAdvisorId());
+		assertEquals(advisorId2, c2.getActionId());
 		assertEquals(providerId2, c2.getProviderId());
-		assertEquals(type2, c2.getProviderType());
 	}
 
 }

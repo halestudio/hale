@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.io.provider" name="I/O providers" schema="schema/eu.esdihumboldt.hale.io.provider.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.io.action" name="I/O actions and advisors" schema="schema/eu.esdihumboldt.hale.io.action.exsd"/>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="hale"
+            id="eu.esdihumboldt.hale.io.project.hale25"
+            name="HALE project"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.common.core.io.project.impl.ZipProjectReader"
+            id="eu.esdihumboldt.hale.io.project.hale25.reader"
+            name="HALE project">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.project.hale25">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.core.io.project.impl.ZipProjectWriter"
+            id="eu.esdihumboldt.hale.io.project.hale25.writer"
+            name="HALE project">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.project.hale25">
+         </contentType>
+      </provider>
+   </extension>
+
+</plugin>

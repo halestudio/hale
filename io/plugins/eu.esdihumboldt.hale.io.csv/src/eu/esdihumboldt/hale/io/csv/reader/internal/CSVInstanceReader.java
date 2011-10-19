@@ -21,7 +21,6 @@ import org.springframework.core.convert.ConversionService;
 
 import au.com.bytecode.opencsv.CSVReader;
 import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -132,11 +131,11 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	}
 
 	/**
-	 * @see AbstractIOProvider#getDefaultContentType()
+	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
-	protected ContentType getDefaultContentType() {
-		return CSVFileIO.CSVFILE_CT;
+	protected String getDefaultTypeName() {
+		return CSVFileIO.DEFAULT_TYPE_NAME;
 	}
 
 	/**

@@ -22,7 +22,7 @@ public interface InstanceCollection {
 	
 	/**
 	 * Get an iterator over all instances contained in the collection. The
-	 * iterator must be disposed after use (using {@link ResourceIterator#dispose()}).
+	 * iterator must be disposed after use (using {@link ResourceIterator#close()}).
 	 * 
 	 * @return an iterator over the instances 
 	 */

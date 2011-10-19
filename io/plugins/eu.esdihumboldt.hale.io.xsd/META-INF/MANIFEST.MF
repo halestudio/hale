@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XML Schema I/O
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.xsd
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.xsd;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/XmlSchemaReader.xml
@@ -46,3 +46,4 @@ Export-Package: eu.esdihumboldt.hale.io.xsd,
  eu.esdihumboldt.hale.io.xsd.reader,
  eu.esdihumboldt.hale.io.xsd.reader.internal;x-internal:=true,
  eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;x-internal:=true
+Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100"

@@ -19,18 +19,16 @@ import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
-
 /**
  * Utilities and constants for XML schemas
  * @author Simon Templer
  */
 public abstract class XMLSchemaIO {
 	
-	/**
-	 * The Shapefile content type
-	 */
-	public static final ContentType XSD_CT = ContentType.getContentType("XSD");
+//	/**
+//	 * The XML schema content type ID
+//	 */
+//	public static final ContentType XSD_CT = ContentType.getContentType("XSD");
 	
 	/**
 	 * Get the documentation from an annotated XML object

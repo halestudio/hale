@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
@@ -37,11 +36,10 @@ import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
 /**
  * Abstract base implementation for import sources based on WFS 
  * @param <P> the supported {@link IOProvider} type
- * @param <T> the supported {@link IOProviderFactory} type
  * 
  * @author Simon Templer
  */
-public abstract class AbstractWFSSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractProviderSource<P, T> {
+public abstract class AbstractWFSSource<P extends ImportProvider> extends AbstractProviderSource<P> {
 
 	private WfsUrlFieldEditor sourceURL;
 	

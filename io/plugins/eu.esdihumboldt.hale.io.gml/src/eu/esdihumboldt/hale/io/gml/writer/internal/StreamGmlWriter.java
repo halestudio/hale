@@ -50,7 +50,6 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.commons.tools.AttributeProperty;
 import eu.esdihumboldt.commons.tools.FeatureInspector;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -263,11 +262,11 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	}
 
 	/**
-	 * @see AbstractIOProvider#getDefaultContentType()
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
-	protected ContentType getDefaultContentType() {
-		return ContentType.getContentType("GML");
+	protected String getDefaultTypeName() {
+		return "GML/XML";
 	}
 
 	/**

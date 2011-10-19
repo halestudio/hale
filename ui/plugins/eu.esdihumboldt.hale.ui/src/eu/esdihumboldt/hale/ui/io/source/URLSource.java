@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -50,13 +51,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
-import eu.esdihumboldt.hale.common.core.io.service.ContentTypeService;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
@@ -66,12 +64,11 @@ import eu.esdihumboldt.hale.ui.io.util.URLFieldEditor;
 /**
  * URL import source
  * @param <P> the supported {@link IOProvider} type
- * @param <T> the supported {@link IOProviderFactory} type
  * 
  * @author Simon Templer
- * @since 2.2 
+ * @since 2.5 
  */
-public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractProviderSource<P, T> {
+public class URLSource<P extends ImportProvider> extends AbstractProviderSource<P> {
 	
 	/**
 	 * The file field editor for the source URL
@@ -81,7 +78,7 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 	/**
 	 * The set of supported content types
 	 */
-	private Set<ContentType> supportedTypes;
+	private Set<IContentType> supportedTypes;
 
 	private ComboViewer types;
 
@@ -103,9 +100,9 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		sourceURL.setPage(getPage());
 		
 		// set content types for file field
-		Collection<T> factories = getConfiguration().getFactories();
-		supportedTypes = new HashSet<ContentType>();
-		for (T factory : factories) {
+		Collection<IOProviderDescriptor> factories = getConfiguration().getFactories();
+		supportedTypes = new HashSet<IContentType>();
+		for (IOProviderDescriptor factory : factories) {
 			supportedTypes.addAll(factory.getSupportedTypes());
 		}
 		
@@ -141,8 +138,8 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 
 			@Override
 			public String getText(Object element) {
-				if (element instanceof ContentType) {
-					return HaleIO.getDisplayName((ContentType) element);
+				if (element instanceof IContentType) {
+					return ((IContentType) element).getName();
 				}
 				return super.getText(element);
 			}
@@ -175,7 +172,7 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 								InterruptedException {
 							monitor.beginTask("Detect content type", IProgressMonitor.UNKNOWN);
 							
-							final ContentType detected = detectContentType();
+							final IContentType detected = detectContentType();
 							
 							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 								
@@ -185,7 +182,7 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 										types.setSelection(new StructuredSelection(detected));
 										getPage().setMessage(MessageFormat.format(
 												"Detected {0} as content type",
-												HaleIO.getDisplayName(detected)), 
+												detected.getName()), 
 												DialogPage.INFORMATION);
 										updateState(true);
 									}
@@ -226,9 +223,7 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 	 * Detect the content type
 	 * @return the detected content type or <code>null</code>
 	 */
-	private ContentType detectContentType() {
-		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
-		
+	private IContentType detectContentType() {
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 		final AtomicReference<String> sourceString = new AtomicReference<String>();
 		final AtomicReference<URI> sourceURI = new AtomicReference<URI>();
@@ -250,8 +245,8 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 		
 		if (sourceURI.get() != null && sourceString.get() != null) {
 			// determine content type
-			Collection<ContentType> filteredTypes;
-			filteredTypes = cts.findContentTypesFor(
+			Collection<IContentType> filteredTypes;
+			filteredTypes = HaleIO.findContentTypesFor(
 					supportedTypes, new DefaultInputSupplier(sourceURI.get()), 
 					sourceString.get());
 			
@@ -268,10 +263,10 @@ public class URLSource<P extends ImportProvider, T extends IOProviderFactory<P>>
 	 */
 	@Override
 	protected void updateContentType() {
-		ContentType ct = null;
+		IContentType ct = null;
 		ISelection typeSel = types.getSelection();
 		if (!typeSel.isEmpty() && typeSel instanceof IStructuredSelection) {
-			ct = (ContentType) ((IStructuredSelection) typeSel).getFirstElement();
+			ct = (IContentType) ((IStructuredSelection) typeSel).getFirstElement();
 		}
 		
 		getConfiguration().setContentType(ct);

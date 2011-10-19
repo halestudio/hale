@@ -12,9 +12,10 @@
 
 package eu.esdihumboldt.hale.ui.io.source.internal;
 
+import org.eclipse.core.runtime.content.IContentType;
+
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**
@@ -23,13 +24,13 @@ import eu.esdihumboldt.hale.ui.io.ImportSource;
  * 
  * @author Simon Templer
  */
-public interface ImportSourceFactory extends ExtensionObjectFactory<ImportSource<?, ?>> {
+public interface ImportSourceFactory extends ExtensionObjectFactory<ImportSource<?>> {
 
 	/**
 	 * Get the I/O provider factory type supported by the import source.
 	 * @return the I/O provider factory type
 	 */
-	public Class<? extends IOProviderFactory<?>> getProviderFactoryType();
+	public Class<? extends ImportProvider> getProviderType();
 	
 	/**
 	 * Get the source description.
@@ -42,6 +43,6 @@ public interface ImportSourceFactory extends ExtensionObjectFactory<ImportSource
 	 * content type is supported.
 	 * @return the supported content type or <code>null</code>
 	 */
-	public ContentType getContentType();
+	public IContentType getContentType();
 	
 }

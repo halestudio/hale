@@ -74,8 +74,8 @@
 	</class>
 	<class name="eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration" auto-complete="true">
 	
-		<field name="advisorId" type="string" required="true">
-			<bind-xml name="advisor-id" node="attribute" />
+		<field name="actionId" type="string" required="true">
+			<bind-xml name="action-id" node="attribute" />
 		</field>
 		
 		<field name="providerId" type="string" required="true">
@@ -102,8 +102,8 @@
 			<bind-xml name="depends-on" node="element" />
 		</field>
 		
-		<field name="providerType" type="string" handler="eu.esdihumboldt.hale.common.core.io.project.model.internal.OsgiClassFieldHandler" required="true">
+		<!-- field name="providerType" type="string" handler="eu.esdihumboldt.hale.common.core.io.project.model.internal.OsgiClassFieldHandler" required="true">
 			<bind-xml name="provider-type" node="attribute" />
-		</field>
+		</field -->
 	</class>
 </mapping>

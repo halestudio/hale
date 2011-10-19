@@ -10,19 +10,21 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.instance.io;
+package eu.esdihumboldt.hale.common.core.io.extension;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 
 /**
- * Provides support for reading instances
- *
+ * Factory for {@link IOAdvisor}s
  * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
  */
-public interface InstanceReaderFactory extends IOProviderFactory<InstanceReader> {
-
-	// concrete typed interface
+public interface IOAdvisorFactory extends ExtensionObjectFactory<IOAdvisor<?>> {
 	
+	/**
+	 * Get the identifier of the action the advisor is associated with
+	 * @return the associated action ID
+	 */
+	public String getActionID();
+
 }
