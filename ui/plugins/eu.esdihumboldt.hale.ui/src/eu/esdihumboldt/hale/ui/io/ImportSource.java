@@ -14,65 +14,58 @@ package eu.esdihumboldt.hale.ui.io;
 
 import java.util.Collection;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 
 /**
  * Import source for an {@link ImportWizard}
  * @param <P> the supported {@link IOProvider} type
- * @param <T> the supported {@link IOProviderFactory} type
  * 
  * @author Simon Templer
- * @since 2.2
+ * @since 2.5
  */
-public interface ImportSource<P extends ImportProvider, T extends IOProviderFactory<P>> {
+public interface ImportSource<P extends ImportProvider> {
 
 	/**
 	 * Configuration based on an import source.
 	 * @param <P> the supported {@link IOProvider} type
-	 * @param <T> the supported {@link IOProviderFactory} type
 	 */
-	public static interface SourceConfiguration<P extends ImportProvider, T extends IOProviderFactory<P>> {
+	public static interface SourceConfiguration<P extends ImportProvider> {
 
 		/**
-		 * Get the available factories. 
-		 * 
+		 * Get the available provider descriptors. 
 		 * @return the available factories
 		 */
-		public Collection<T> getFactories();
+		public Collection<IOProviderDescriptor> getFactories();
 		
 		/**
 		 * Assign an I/O provider factory to the configuration
-		 * 
-		 * @param factory the provider factory to set
+		 * @param descriptor the provider descriptor to set
 		 */
-		public void setProviderFactory(T factory);
+		public void setProviderFactory(IOProviderDescriptor descriptor);
 		
 		/**
 		 * Get the provider factory assigned to the configuration.
-		 * 
 		 * @return the I/O provider factory
 		 */
-		public T getProviderFactory();
+		public IOProviderDescriptor getProviderFactory();
 		
 		/**
 		 * Assign a content type to the configuration
-		 * 
 		 * @param contentType the content type to set
 		 */
-		public void setContentType(ContentType contentType);
+		public void setContentType(IContentType contentType);
 		
 		/**
 		 * Get the content type assigned to the configuration
-		 * 
 		 * @return the content type, may be <code>null</code>
 		 */
-		public ContentType getContentType();
+		public IContentType getContentType();
 		
 	}
 
@@ -86,7 +79,7 @@ public interface ImportSource<P extends ImportProvider, T extends IOProviderFact
 	 * Sets the source configuration to populate.
 	 * @param config the source configuration
 	 */
-	public void setConfiguration(SourceConfiguration<P, T> config); //TODO replace by interface? change generic typisation?
+	public void setConfiguration(SourceConfiguration<P> config); //TODO replace by interface? change generic typisation?
 	
 	/**
 	 * Create the controls that enable the user to define the import source.

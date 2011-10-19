@@ -15,17 +15,15 @@ package eu.esdihumboldt.hale.io.gml.ui.wfs;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 
 /**
  * Import source based on WFS DescribeFeatureType requests. 
  * @param <P> the supported {@link IOProvider} type
- * @param <T> the supported {@link IOProviderFactory} type
  * 
  * @author Simon Templer
  */
-public class WFSDescribeFeatureSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractWFSSource<P, T> {
+public class WFSDescribeFeatureSource<P extends ImportProvider> extends AbstractWFSSource<P> {
 
 	/**
 	 * @see AbstractWFSSource#createWfsFieldEditor(Composite)

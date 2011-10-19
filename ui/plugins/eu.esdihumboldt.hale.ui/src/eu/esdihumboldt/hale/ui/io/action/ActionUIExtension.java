@@ -10,12 +10,10 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.io.advisor;
+package eu.esdihumboldt.hale.ui.io.action;
 
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.core.expressions.ElementHandler;
 import org.eclipse.core.expressions.Expression;
@@ -29,37 +27,37 @@ import de.cs3d.util.eclipse.extension.AbstractObjectDefinition;
 import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
 import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import de.cs3d.util.eclipse.extension.ExtensionUtil;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * {@link IOAdvisor} extension
  * @author Simon Templer
  */
-public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdvisorFactory> {
+public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(IOAdvisorExtension.class);
+	private static final ALogger log = ALoggerFactory.getLogger(ActionUIExtension.class);
 
 	/**
 	 * Factory for {@link IOAdvisor}s based on a {@link IConfigurationElement}
 	 */
-	private static class ConfigurationFactory extends AbstractConfigurationFactory<IOAdvisor<?>>
-			implements IOAdvisorFactory {
+	private static class ConfigurationFactory extends AbstractConfigurationFactory<IOWizard<?>>
+			implements ActionUI {
 
 		/**
 		 * Create a factory based on the given configuration element
 		 * @param conf the configuration
 		 */
 		protected ConfigurationFactory(IConfigurationElement conf) {
-			super(conf, "class");
+			super(conf, "wizard");
 		}
 
 		/**
-		 * @see IOAdvisorFactory#getEnabledWhen()
+		 * @see ActionUI#getEnabledWhen()
 		 */
 		@Override
 		public Expression getEnabledWhen() {
@@ -85,7 +83,7 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		 * @see ExtensionObjectFactory#dispose(Object)
 		 */
 		@Override
-		public void dispose(IOAdvisor<?> advisor) {
+		public void dispose(IOWizard<?> wizard) {
 			// do nothing
 		}
 
@@ -106,15 +104,6 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		}
 
 		/**
-		 * @see IOAdvisorFactory#getProviderType()
-		 */
-		@SuppressWarnings("unchecked")
-		@Override
-		public Class<? extends IOProvider> getProviderType() {
-			return (Class<? extends IOProvider>) ExtensionUtil.loadClass(conf, "providerType");
-		}
-
-		/**
 		 * @see AbstractObjectDefinition#getPriority()
 		 */
 		@Override
@@ -127,18 +116,6 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		}
 
 		/**
-		 * @see IOAdvisorFactory#createWizard()
-		 */
-		@Override
-		public IOWizard<?, ?> createWizard() {
-			try {
-				return (IOWizard<?, ?>) conf.createExecutableExtension("wizard");
-			} catch (CoreException e) {
-				throw new IllegalStateException(e);
-			}
-		}
-
-		/**
 		 * @see AbstractObjectFactory#getIconURL()
 		 */
 		@Override
@@ -147,32 +124,19 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		}
 
 		/**
-		 * @see IOAdvisorFactory#getDependencies()
-		 */
-		@Override
-		public Set<String> getDependencies() {
-			IConfigurationElement[] children = conf.getChildren("dependsOn");
-			
-			if (children != null) {
-				Set<String> result = new HashSet<String>();
-				
-				for (IConfigurationElement child : children) {
-					result.add(child.getAttribute("advisor"));
-				}
-				
-				return result;
-			}
-			else {
-				return Collections.emptySet();
-			}
-		}
-
-		/**
-		 * @see IOAdvisorFactory#isProjectResource()
+		 * @see ActionUI#isProjectResource()
 		 */
 		@Override
 		public boolean isProjectResource() {
 			return Boolean.parseBoolean(conf.getAttribute("projectResource"));
+		}
+		
+		/**
+		 * @see ActionUI#getActionID()
+		 */
+		@Override
+		public String getActionID() {
+			return conf.getAttribute("action");
 		}
 
 	}
@@ -180,17 +144,17 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 	/**
 	 * The extension point ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.ui.io.advisor";
+	public static final String ID = "eu.esdihumboldt.hale.ui.io.action";
 	
-	private static IOAdvisorExtension instance;
+	private static ActionUIExtension instance;
 	
 	/**
 	 * Get the extension instance
 	 * @return the instance
 	 */
-	public static IOAdvisorExtension getInstance() {
+	public static ActionUIExtension getInstance() {
 		if (instance == null) {
-			instance = new IOAdvisorExtension();
+			instance = new ActionUIExtension();
 		}
 		return instance;
 	}
@@ -198,7 +162,7 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 	/**
 	 * Default constructor
 	 */
-	private IOAdvisorExtension() {
+	private ActionUIExtension() {
 		super(ID);
 	}
 
@@ -206,30 +170,39 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected IOAdvisorFactory createFactory(IConfigurationElement conf)
+	protected ActionUI createFactory(IConfigurationElement conf)
 			throws Exception {
-		if (conf.getName().equals("advisor")) {
+		if (conf.getName().equals("action-ui")) {
 			return new ConfigurationFactory(conf);
 		}
 		
 		return null;
 	}
-	
+
 	/**
-	 * XXX should be implemented in {@link AbstractExtension}
-	 * Get the factory for the given identifier
-	 * @param identifier the identifier
-	 * @return the factory with the given identifier or <code>null</code> if it
-	 *   doesn't exist
+	 * Find the {@link ActionUI} associated with a certain action
+	 * @param actionId the action identifier
+	 * @return the action UI or <code>null</code>
 	 */
-	public IOAdvisorFactory getFactory(String identifier) {
-		for (IOAdvisorFactory factory : getFactories()) {
-			if (identifier.equals(factory.getIdentifier())) {
-				return factory;
+	public ActionUI findActionUI(final String actionId) {
+		List<ActionUI> factories = getFactories(new FactoryFilter<IOWizard<?>, ActionUI>() {
+			
+			@Override
+			public boolean acceptFactory(ActionUI factory) {
+				return factory.getActionID().equals(actionId);
 			}
+			
+			@Override
+			public boolean acceptCollection(
+					ExtensionObjectFactoryCollection<IOWizard<?>, ActionUI> collection) {
+				return true;
+			}
+		});
+		if (factories == null || factories.isEmpty()) {
+			return null;
 		}
-		
-		return null;
+		//XXX what if there are multiple ActionUIs for an action?
+		return factories.get(0);
 	}
 
 }

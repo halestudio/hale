@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XML CodeList I/O
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.codelist.xml
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.codelist.xml;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/XmlCodeListReader.xml
@@ -18,4 +18,5 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.common.core.report,
  org.eclipse.osgi.util,
  org.slf4j;version="1.5.11"
-Require-Bundle: eu.esdihumboldt.hale.common.core
+Require-Bundle: eu.esdihumboldt.hale.common.core,
+ org.eclipse.core.contenttype;bundle-version="3.4.100"

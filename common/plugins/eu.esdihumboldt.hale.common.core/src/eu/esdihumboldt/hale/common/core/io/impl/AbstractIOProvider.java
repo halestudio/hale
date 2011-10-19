@@ -17,11 +17,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
-import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
+
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -50,7 +51,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 	/**
 	 * The content type
 	 */
-	private ContentType contentType = null;
+	private IContentType contentType = null;
 
 	/**
 	 * Default constructor 
@@ -87,24 +88,22 @@ public abstract class AbstractIOProvider implements IOProvider {
 	
 	/**
 	 * Get the content type name.
-	 * 
 	 * @return the content type name
 	 */
 	protected String getTypeName() {
-		ContentType ct = getContentType();
+		IContentType ct = getContentType();
 		if (ct != null) {
-			return HaleIO.getDisplayName(ct);
+			return ct.getName();
 		}
 		
-		return HaleIO.getDisplayName(getDefaultContentType());
+		return getDefaultTypeName();
 	}
 
 	/**
-	 * Get the default content type
-	 * 
+	 * Get the default type name if no content type is provided
 	 * @return the default content type
 	 */
-	protected abstract ContentType getDefaultContentType();
+	protected abstract String getDefaultTypeName();
 
 	/**
 	 * @see IOProvider#validate()
@@ -138,7 +137,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 	public void storeConfiguration(Map<String, String> configuration) {
 		// store content type (if set)
 		if (contentType != null) {
-			configuration.put(PARAM_CONTENT_TYPE, contentType.getIdentifier());
+			configuration.put(PARAM_CONTENT_TYPE, contentType.getId());
 		}
 		
 		// store generic parameters
@@ -188,7 +187,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 	public void setParameter(String name, String value) {
 		if (name.equals(PARAM_CONTENT_TYPE)) {
 			// configure content type
-			setContentType(ContentType.getContentType(value));
+			setContentType(Platform.getContentTypeManager().getContentType(value));
 		}
 		else {
 			// load generic parameter
@@ -200,15 +199,15 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 * @see IOProvider#getContentType()
 	 */
 	@Override
-	public ContentType getContentType() {
+	public IContentType getContentType() {
 		return contentType;
 	}
 
 	/**
-	 * @see IOProvider#setContentType(ContentType)
+	 * @see IOProvider#setContentType(IContentType)
 	 */
 	@Override
-	public void setContentType(ContentType contentType) {
+	public void setContentType(IContentType contentType) {
 		this.contentType = contentType;
 	}
 

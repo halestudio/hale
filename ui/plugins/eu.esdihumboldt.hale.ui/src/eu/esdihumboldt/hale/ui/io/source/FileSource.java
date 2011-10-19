@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -30,12 +31,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
-import eu.esdihumboldt.hale.common.core.io.service.ContentTypeService;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
@@ -44,12 +43,11 @@ import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
 /**
  * File import source
  * @param <P> the supported {@link IOProvider} type
- * @param <T> the supported {@link IOProviderFactory} type
  * 
  * @author Simon Templer
- * @since 2.2 
+ * @since 2.5 
  */
-public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractProviderSource<P, T> {
+public class FileSource<P extends ImportProvider> extends AbstractProviderSource<P> {
 	
 	/**
 	 * The file field editor for the source file
@@ -59,7 +57,7 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 	/**
 	 * The set of supported content types
 	 */
-	private Set<ContentType> supportedTypes;
+	private Set<IContentType> supportedTypes;
 
 	/**
 	 * @see ImportSource#createControls(Composite)
@@ -75,9 +73,9 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 		sourceFile.setPage(getPage());
 		
 		// set content types for file field
-		Collection<T> factories = getConfiguration().getFactories();
-		supportedTypes = new HashSet<ContentType>();
-		for (T factory : factories) {
+		Collection<IOProviderDescriptor> factories = getConfiguration().getFactories();
+		supportedTypes = new HashSet<IContentType>();
+		for (IOProviderDescriptor factory : factories) {
 			supportedTypes.addAll(factory.getSupportedTypes());
 		}
 		
@@ -115,12 +113,11 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 	 */
 	@Override
 	protected void updateContentType() {
-		ContentType contentType = null;
-		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+		IContentType contentType = null;
 		
 		if (sourceFile.isValid()) {
 			// determine content type
-			Collection<ContentType> filteredTypes = cts.findContentTypesFor(
+			Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(
 					supportedTypes, null, sourceFile.getStringValue());
 			if (!filteredTypes.isEmpty()) {
 				contentType = filteredTypes.iterator().next();
@@ -129,7 +126,7 @@ public class FileSource<P extends ImportProvider, T extends IOProviderFactory<P>
 		
 		getConfiguration().setContentType(contentType);
 		if (contentType != null) {
-			getPage().setMessage(cts.getDisplayName(contentType), DialogPage.INFORMATION);
+			getPage().setMessage(contentType.getName(), DialogPage.INFORMATION);
 		}
 		else {
 			getPage().setMessage(null);

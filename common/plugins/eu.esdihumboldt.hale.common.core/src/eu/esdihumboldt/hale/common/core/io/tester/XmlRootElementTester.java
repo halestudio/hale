@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamReader;
  * Content type tester that checks the root element of an XML file.
  * @author Simon Templer
  */
+@Deprecated
 public abstract class XmlRootElementTester extends AbstractXmlTester {
 
 	private final String localName;

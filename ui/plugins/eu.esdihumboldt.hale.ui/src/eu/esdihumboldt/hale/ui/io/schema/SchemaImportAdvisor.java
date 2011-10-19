@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 /**
  * Advisor for schema import to the {@link SchemaService}
  * @author Simon Templer
+ * @since 2.5
  */
 public class SchemaImportAdvisor extends AbstractIOAdvisor<SchemaReader> {
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            id="eu.esdihumboldt.hale.io.instance.read.source"
+            name="Load source data"
+            type="eu.esdihumboldt.hale.common.instance.io.InstanceReader">
+         <dependsOn
+               action="eu.esdihumboldt.hale.io.schema.read.source">
+         </dependsOn>
+      </action>
+   </extension>
+
+</plugin>

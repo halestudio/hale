@@ -11,15 +11,22 @@
       </serviceFactory>
    </extension>
    <extension
-         point="eu.esdihumboldt.hale.ui.io.advisor">
-      <advisor
-            class="eu.esdihumboldt.hale.ui.codelist.io.CodeListImportAdvisor"
-            id="eu.esdihumboldt.hale.codelist"
+         point="eu.esdihumboldt.hale.ui.io.action">
+      <action-ui
+            action="eu.esdihumboldt.hale.codelist.read"
+            id="eu.esdihumboldt.hale.codelist.ui"
             label="Code list..."
             priority="0"
             projectResource="true"
-            providerType="eu.esdihumboldt.hale.common.codelist.io.CodeListReader"
             wizard="eu.esdihumboldt.hale.ui.codelist.io.CodeListImportWizard">
+      </action-ui>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <advisor
+            action="eu.esdihumboldt.hale.codelist.read"
+            class="eu.esdihumboldt.hale.ui.codelist.io.CodeListImportAdvisor"
+            id="eu.esdihumboldt.hale.ui.codelist.service">
       </advisor>
    </extension>
 

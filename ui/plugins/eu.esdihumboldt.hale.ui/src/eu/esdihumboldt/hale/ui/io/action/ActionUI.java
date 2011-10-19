@@ -10,44 +10,27 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.io.advisor;
-
-import java.util.Set;
+package eu.esdihumboldt.hale.ui.io.action;
 
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.ui.services.IEvaluationService;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
- * Interface for {@link IOAdvisor} factories provided by the 
- * {@link IOAdvisorExtension}.
+ * Interface for {@link IOWizard} factories provided by the 
+ * {@link ActionUIExtension}.
  * 
  * @author Simon Templer
  */
-public interface IOAdvisorFactory extends ExtensionObjectFactory<IOAdvisor<?>> {
+public interface ActionUI extends ExtensionObjectFactory<IOWizard<?>> {
 
 	/**
-	 * Get the I/O provider type supported by the advisor.
-	 * @return the I/O provider type
+	 * Get the identifier of the associated action
+	 * @return the associated action ID
 	 */
-	public Class<? extends IOProvider> getProviderType();
-	
-	/**
-	 * Create an I/O wizard configured with the advisor.
-	 * @return the I/O wizard
-	 */
-	public IOWizard<?, ?> createWizard();
-	
-	/**
-	 * Get the dependencies of the advisor.
-	 * @return the list of identifiers of other advisors the advisor depends on
-	 *   for sequential execution, e.g. when loading a project
-	 */
-	public Set<String> getDependencies();
+	public String getActionID();
 	
 	/**
 	 * States if I/O operations based on this advisor represent project 

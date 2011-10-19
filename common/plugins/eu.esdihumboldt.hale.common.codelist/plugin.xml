@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            id="eu.esdihumboldt.hale.codelist.read"
+            name="Load code lists"
+            type="eu.esdihumboldt.hale.common.codelist.io.CodeListReader">
+      </action>
+   </extension>
+
+</plugin>

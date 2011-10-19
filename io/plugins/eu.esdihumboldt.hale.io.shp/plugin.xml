@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="shp"
+            id="eu.esdihumboldt.hale.io.shp"
+            name="Shapefile"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.shp.reader.internal.ShapeSchemaReader"
+            id="eu.esdihumboldt.hale.io.shape.reader.schema"
+            name="Shapefile">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.shp">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader"
+            id="eu.esdihumboldt.hale.io.shape.reader.instance"
+            name="Shapefile">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.shp">
+         </contentType>
+      </provider>
+   </extension>
+
+</plugin>
