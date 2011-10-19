@@ -12,13 +12,16 @@
 
 package eu.esdihumboldt.hale.common.align.io;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -31,6 +34,7 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -77,11 +81,23 @@ public class DefaultAlignmentIOTest {
 		parameters1.put("t", "3");
 		cell1.setTransformationParameters(parameters1);
 		
+		ListMultimap<String, Type> source1 = ArrayListMultimap.create();
+		QName source1TypeName;
+		String source1EntityName;
+		TypeDefinition sourceType1 = new DefaultTypeDefinition(
+				source1TypeName = new QName("source1Type"));
+		source1.put(source1EntityName = null, 
+				new DefaultType(new TypeEntityDefinition(sourceType1)));
+		cell1.setSource(source1);
+		source.addType(sourceType1);
+		
 		ListMultimap<String, Type> target1 = ArrayListMultimap.create();
+		QName target1TypeName;
+		String target1EntityName;
 		TypeDefinition targetType1 = new DefaultTypeDefinition(
-				new QName("http://some.name.space/t1", "target1Type"));
-		target1.put("Some name", new DefaultType(new TypeEntityDefinition(
-				targetType1)));
+				target1TypeName = new QName("http://some.name.space/t1", "target1Type"));
+		target1.put(target1EntityName = "Some name", 
+				new DefaultType(new TypeEntityDefinition(targetType1)));
 		cell1.setTarget(target1);
 		target.addType(targetType1);
 		
@@ -116,6 +132,7 @@ public class DefaultAlignmentIOTest {
 		AlignmentIO.save(align, new FileOutputStream(alignmentFile));
 		
 		// load alignment
+		//TODO use and check reporter?
 		MutableAlignment align2 = AlignmentIO.load(new FileInputStream(
 				alignmentFile), null, source, target);
 		
@@ -130,12 +147,29 @@ public class DefaultAlignmentIOTest {
 		assertNotNull(ncell1);
 		assertEquals(id1, ncell1.getTransformationIdentifier());
 		
+		// source 1
+		ListMultimap<String, ? extends Entity> source1Entities = ncell1.getSource();
+		assertEquals(1, source1Entities.size());
+		List<? extends Entity> s1list = source1Entities.get(source1EntityName);
+		assertFalse(s1list.isEmpty());
+		assertEquals(source1TypeName, s1list.get(0).getDefinition().getDefinition().getName());
+		
+		// target 1
+		ListMultimap<String, ? extends Entity> target1Entities = ncell1.getTarget();
+		assertEquals(1, target1Entities.size());
+		List<? extends Entity> t1list = target1Entities.get(target1EntityName);
+		assertFalse(t1list.isEmpty());
+		assertEquals(target1TypeName, t1list.get(0).getDefinition().getDefinition().getName());
+		
 		// cell 2
 		Cell ncell2 = it.next();
 		assertNotNull(ncell2);
 		assertEquals(id2, ncell2.getTransformationIdentifier());
 		
-		//TODO improve test
+		// parameters
+		ListMultimap<String, String> param2 = ncell2.getTransformationParameters();
+		assertEquals(2, param2.keySet().size());
+		assertEquals(3, param2.values().size());
 	}
 
 }
