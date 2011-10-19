@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t2/" targetNamespace="http://www.example.org/t2/">
+    <complexType name="T2">
+    	<sequence>
+    		<element name="name" maxOccurs="unbounded" minOccurs="0">
+    			<complexType>
+    				<sequence>
+    					<element name="nilReason" type="string"></element>
+    					<element name="Name" type="tns:NameType"></element>
+    				</sequence>
+    			</complexType>
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <element name="t2" type="tns:T2"></element>
+
+    <complexType name="NameType">
+    	<sequence>
+    		<element name="language" type="string"></element>
+    		<element name="spelling" type="tns:SpellingType"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="SpellingType">
+    	<sequence>
+    		<element name="text" type="string"></element>
+    	</sequence>
+    </complexType>
+</schema>
