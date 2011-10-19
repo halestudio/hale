@@ -25,6 +25,9 @@ public class TypeNameField extends StringFieldEditor {
 
 	Composite _parent;
 	
+	/**
+	 * Parameter that signals when a test has changed
+	 */
 	public static final String TXT_CHNGD = "text_has_changed";
 	
 	/**
@@ -61,17 +64,8 @@ public class TypeNameField extends StringFieldEditor {
 	 */
 	@Override
 	protected void valueChanged() {
-		fireValueChanged(TXT_CHNGD, "", getStringValue());
 		super.valueChanged();
-	}
-
-	/**
-	 * @see org.eclipse.jface.preference.StringFieldEditor#setStringValue(java.lang.String)
-	 */
-	@Override
-	public void setStringValue(String value) {
-		
-		super.setStringValue(value);
+		fireValueChanged(TXT_CHNGD, "", getStringValue());
 	}
 
 }
