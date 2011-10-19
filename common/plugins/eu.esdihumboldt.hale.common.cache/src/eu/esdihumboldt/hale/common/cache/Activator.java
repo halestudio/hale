@@ -20,7 +20,6 @@ import org.osgi.framework.BundleContext;
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public class Activator implements BundleActivator {
 
