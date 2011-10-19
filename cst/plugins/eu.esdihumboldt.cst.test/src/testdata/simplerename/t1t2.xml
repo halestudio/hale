@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<alignment>
+	<cell transformation="retype">
+		<source>
+			<class>
+				<type>{http://www.example.org/t1/}T1</type>
+			</class>
+		</source>
+		<target>
+			<class>
+				<type>{http://www.example.org/t2/}T2</type>
+			</class>
+		</target>
+	</cell>
+	<cell transformation="rename">
+		<source>
+			<property>
+				<type>{http://www.example.org/t1/}T1</type>
+				<child>a1</child>
+			</property>
+		</source>
+		<target>
+			<property>
+				<type>{http://www.example.org/t2/}T2</type>
+				<child>a2</child>
+			</property>
+		</target>
+	</cell>
+	<cell transformation="rename">
+		<source>
+			<property>
+				<type>{http://www.example.org/t1/}T1</type>
+				<child>b1</child>
+			</property>
+		</source>
+		<target>
+			<property>
+				<type>{http://www.example.org/t2/}T2</type>
+				<child>b2</child>
+			</property>
+		</target>
+	</cell>
+	<cell transformation="rename">
+		<source>
+			<property>
+				<type>{http://www.example.org/t1/}T1</type>
+				<child>c1</child>
+			</property>
+		</source>
+		<target>
+			<property>
+				<type>{http://www.example.org/t2/}T2</type>
+				<child>c2</child>
+			</property>
+		</target>
+	</cell>
+</alignment>
