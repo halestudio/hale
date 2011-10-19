@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.io.source;
 import java.io.InputStream;
 import java.util.List;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
@@ -26,22 +27,21 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**
  * Abstract {@link ImportSource} implementation offering provider selection.
  * @param <P> the supported {@link IOProvider} type
- * @param <T> the supported {@link IOProviderFactory} type
  * 
  * @author Simon Templer
+ * @since 2.5
  */
-public abstract class AbstractProviderSource<P extends ImportProvider, T extends IOProviderFactory<P>> extends AbstractSource<P, T> {
+public abstract class AbstractProviderSource<P extends ImportProvider> extends AbstractSource<P> {
 
 	private ComboViewer providers;
 	
@@ -61,8 +61,8 @@ public abstract class AbstractProviderSource<P extends ImportProvider, T extends
 
 			@Override
 			public String getText(Object element) {
-				if (element instanceof IOProviderFactory<?>) {
-					return ((IOProviderFactory<?>) element).getDisplayName();
+				if (element instanceof IOProviderDescriptor) {
+					return ((IOProviderDescriptor) element).getDisplayName();
 				}
 				return super.getText(element);
 			}
@@ -101,17 +101,17 @@ public abstract class AbstractProviderSource<P extends ImportProvider, T extends
 	 * Update the provider selector when the content type has changed. This
 	 * is based on the content type stored in the source configuration.
 	 */
-	@SuppressWarnings("unchecked")
 	protected void updateProvider() {
-		ContentType contentType = getConfiguration().getContentType();
+		IContentType contentType = getConfiguration().getContentType();
 		if (contentType  != null) {
-			T lastSelected = null;
+			IOProviderDescriptor lastSelected = null;
 			ISelection provSel = providers.getSelection();
 			if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-				lastSelected = (T) ((IStructuredSelection) provSel).getFirstElement();
+				lastSelected = (IOProviderDescriptor) ((IStructuredSelection) provSel).getFirstElement();
 			}
 			
-			List<T> supported = HaleIO.filterFactories(getConfiguration().getFactories(), contentType);
+			List<IOProviderDescriptor> supported = HaleIO.filterFactories(
+					getConfiguration().getFactories(), contentType);
 			providers.setInput(supported);
 			
 			if (lastSelected != null && supported.contains(lastSelected)) {
@@ -141,7 +141,6 @@ public abstract class AbstractProviderSource<P extends ImportProvider, T extends
 	 * @param updateContentType if <code>true</code> the content type and the
 	 *   supported providers will be updated before updating the page state
 	 */
-	@SuppressWarnings("unchecked")
 	protected void updateState(boolean updateContentType) {
 		if (updateContentType) {
 			updateContentType();
@@ -150,7 +149,7 @@ public abstract class AbstractProviderSource<P extends ImportProvider, T extends
 		// update provider factory
 		ISelection provSel = providers.getSelection();
 		if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-			getConfiguration().setProviderFactory((T) ((IStructuredSelection) provSel).getFirstElement());
+			getConfiguration().setProviderFactory((IOProviderDescriptor) ((IStructuredSelection) provSel).getFirstElement());
 		}
 		else {
 			getConfiguration().setProviderFactory(null);

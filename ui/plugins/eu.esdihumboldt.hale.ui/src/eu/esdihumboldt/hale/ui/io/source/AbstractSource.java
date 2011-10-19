@@ -15,22 +15,20 @@ package eu.esdihumboldt.hale.ui.io.source;
 import org.eclipse.jface.wizard.WizardPage;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**
  * Abstract {@link ImportSource} implementation
  * @param <P> the supported {@link IOProvider} type
- * @param <T> the supported {@link IOProviderFactory} type
  * 
  * @author Simon Templer
- * @since 2.2
+ * @since 2.5
  */
-public abstract class AbstractSource<P extends ImportProvider, T extends IOProviderFactory<P>> implements ImportSource<P, T> {
+public abstract class AbstractSource<P extends ImportProvider> implements ImportSource<P> {
 
 	private WizardPage page;
-	private SourceConfiguration<P, T> configuration;
+	private SourceConfiguration<P> configuration;
 
 	/**
 	 * @see ImportSource#setPage(WizardPage)
@@ -44,7 +42,7 @@ public abstract class AbstractSource<P extends ImportProvider, T extends IOProvi
 	 * @see ImportSource#setConfiguration(SourceConfiguration)
 	 */
 	@Override
-	public void setConfiguration(SourceConfiguration<P, T> configuration) {
+	public void setConfiguration(SourceConfiguration<P> configuration) {
 		this.configuration = configuration;
 	}
 
@@ -58,7 +56,7 @@ public abstract class AbstractSource<P extends ImportProvider, T extends IOProvi
 	/**
 	 * @return the wizard
 	 */
-	protected SourceConfiguration<P, T> getConfiguration() {
+	protected SourceConfiguration<P> getConfiguration() {
 		return configuration;
 	}
 

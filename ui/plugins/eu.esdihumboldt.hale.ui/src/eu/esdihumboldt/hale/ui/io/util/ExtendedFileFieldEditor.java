@@ -17,18 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
-import eu.esdihumboldt.hale.common.core.io.service.ContentTypeService;
-
 /**
  * File field editor that allows setting the file dialog style and filter 
- * names or {@link ContentType}s
+ * names or {@link IContentType}s
  */
 public class ExtendedFileFieldEditor extends FileFieldEditor {
 	
@@ -178,16 +175,15 @@ public class ExtendedFileFieldEditor extends FileFieldEditor {
 	 * 
 	 * @param types the content types
 	 */
-	public void setContentTypes(Set<ContentType> types) {
+	public void setContentTypes(Set<IContentType> types) {
 		List<String> filters = new ArrayList<String>();
 		List<String> extensions = new ArrayList<String>();
-		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
-		for (ContentType type : types) {
-			String[] exts = cts.getFileExtensions(type);
+		for (IContentType type : types) {
+			String[] exts = type.getFileSpecs(IContentType.FILE_EXTENSION_SPEC);
 			if (exts != null && exts.length > 0) {
 				StringBuffer filterName = new StringBuffer();
 				StringBuffer filterExtension = new StringBuffer();
-				filterName.append(cts.getDisplayName(type));
+				filterName.append(type.getName());
 				filterName.append(" (");
 				boolean first = true;
 				for (String ext : exts) {

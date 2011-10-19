@@ -3,10 +3,10 @@
 <schema targetNamespace="eu.esdihumboldt.hale.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="eu.esdihumboldt.hale.ui" id="eu.esdihumboldt.hale.ui.io.advisor" name="I/O advisors in the context of the UI services"/>
+         <meta.schema plugin="eu.esdihumboldt.hale.ui" id="eu.esdihumboldt.hale.ui.io.action" name="UI extensions for I/O actions"/>
       </appinfo>
       <documentation>
-         I/O advisors in the context of the UI services. Needed for any I/O wizard.
+         UI extensions for I/O actions. Needed for any I/O wizard.
       </documentation>
    </annotation>
 
@@ -20,7 +20,7 @@
       </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="advisor"/>
+            <element ref="action-ui"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -49,22 +49,11 @@
       </complexType>
    </element>
 
-   <element name="advisor">
+   <element name="action-ui">
       <complexType>
          <sequence>
             <element ref="enabledWhen" minOccurs="0" maxOccurs="1"/>
-            <element ref="dependsOn" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  The I/O advisor implementation for the given provider type that can be used in the context of the UI services.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.core.io.IOAdvisor"/>
-               </appinfo>
-            </annotation>
-         </attribute>
          <attribute name="wizard" type="string" use="required">
             <annotation>
                <documentation>
@@ -72,16 +61,6 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn="eu.esdihumboldt.hale.ui.io.IOWizard:"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="providerType" type="string" use="required">
-            <annotation>
-               <documentation>
-                  The supported I/O provider type. Should be an interface.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.core.io.IOProvider"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -126,18 +105,13 @@
                </documentation>
             </annotation>
          </attribute>
-      </complexType>
-   </element>
-
-   <element name="dependsOn">
-      <complexType>
-         <attribute name="advisor" type="string" use="required">
+         <attribute name="action" type="string" use="required">
             <annotation>
                <documentation>
-                  References an advisor that the defined advisor depends on, e.g. for the sequential execution when loading a project.
+                  
                </documentation>
                <appinfo>
-                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.ui.io.advisor/advisor/@id"/>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.action/action/@id"/>
                </appinfo>
             </annotation>
          </attribute>

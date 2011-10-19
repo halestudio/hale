@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Shapefile Schema/Instance I/O
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.shp
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.shp;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/ShapeSchemaReader.xml, OSGI-INF/ShapeInstanceReader.xml
@@ -28,8 +28,8 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.schema.model.impl,
  org.eclipse.osgi.util
-Require-Bundle: org.geotools;bundle-version="2.6.4"
+Require-Bundle: org.geotools;bundle-version="2.6.4",
+ org.eclipse.core.contenttype;bundle-version="3.4.100"
 Export-Package: eu.esdihumboldt.hale.io.shp,
  eu.esdihumboldt.hale.io.shp.internal;x-internal:=true,
- eu.esdihumboldt.hale.io.shp.reader,
  eu.esdihumboldt.hale.io.shp.reader.internal;x-internal:=true

@@ -10,19 +10,20 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.instance.io;
+package eu.esdihumboldt.hale.io.gml.reader.internal;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 
 /**
- * Provides support for writing instances
- *
+ * Factory for XML instance readers
  * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
  */
-public interface InstanceWriterFactory extends IOProviderFactory<InstanceWriter> {
+public class XmlInstanceReader extends StreamGmlReader {
 
-	// concrete typed interface
-	
+	/**
+	 * Default constructor
+	 */
+	public XmlInstanceReader() {
+		super(false);
+	}
+
 }

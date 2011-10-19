@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.core.io.internal.ContentTypeDefinition;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
+@Deprecated
 public class BundleContentType {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(BundleContentType.class);

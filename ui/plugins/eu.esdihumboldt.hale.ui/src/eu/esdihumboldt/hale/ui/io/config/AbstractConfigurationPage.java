@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.ui.io.config;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 
@@ -24,14 +23,13 @@ import eu.esdihumboldt.hale.ui.io.IOWizardPage;
  * be enabled or disabled, when created it is disabled.
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- * @param <T> the {@link IOProviderFactory} type used in the wizard
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
-public abstract class AbstractConfigurationPage<P extends IOProvider, T extends IOProviderFactory<P>, 
-	W extends IOWizard<P, T>> extends IOWizardPage<P, T, W> {
+public abstract class AbstractConfigurationPage<P extends IOProvider, 
+	W extends IOWizard<P>> extends IOWizardPage<P, W> {
 	
 	/**
 	 * @see IOWizardPage#IOWizardPage(String, String, ImageDescriptor)

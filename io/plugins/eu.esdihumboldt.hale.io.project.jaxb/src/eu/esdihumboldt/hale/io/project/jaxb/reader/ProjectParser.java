@@ -26,15 +26,16 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.FilenameUtils;
+import org.eclipse.core.runtime.content.IContentType;
 import org.osgi.framework.Version;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
@@ -45,8 +46,10 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.common.instance.io.InstanceReaderFactory;
-import eu.esdihumboldt.hale.common.schema.io.SchemaReaderFactory;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
+import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
+import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigData;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigSection;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
@@ -102,11 +105,11 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 	}
 	
 	/**
-	 * @see AbstractIOProvider#getDefaultContentType()
+	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
-	protected ContentType getDefaultContentType() {
-		return ContentType.getContentType("HaleProject");
+	protected String getDefaultTypeName() {
+		return "HALE project (up to 2.1.x)";
 	}
 
 	/**
@@ -214,7 +217,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			
 			// configure for source schema
 			IOConfiguration conf = new IOConfiguration();
-			conf.setAdvisorId("eu.esdihumboldt.hale.ui.io.schema.source");
+			conf.setActionId(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA);
 			loadSchema(conf, source);
 		}
 		
@@ -224,7 +227,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			
 			// configure for target schema
 			IOConfiguration conf = new IOConfiguration();
-			conf.setAdvisorId("eu.esdihumboldt.hale.ui.io.schema.target");
+			conf.setActionId(SchemaIO.ACTION_LOAD_TARGET_SCHEMA);
 			loadSchema(conf, source);
 		}
 	}
@@ -233,9 +236,6 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 		// populate IOConfiguration
 		// advisor ID must be already set
 		
-		// provider type (fixed)
-		conf.setProviderType(SchemaReaderFactory.class);
-		
 		// find provider
 		File file;
 		try {
@@ -243,14 +243,14 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 		} catch (IllegalArgumentException e) {
 			file = null;
 		}
-		ContentType ct = HaleIO.findContentType(SchemaReaderFactory.class, 
+		IContentType ct = HaleIO.findContentType(SchemaReader.class, 
 				new DefaultInputSupplier(source), (file == null)?(null):(file.getAbsolutePath()));
 		if (ct == null) {
 			report.error(new IOMessageImpl("Could not load schema at {0}, the content type could not be identified.", 
 					null, source));
 			return;
 		}
-		SchemaReaderFactory srf = HaleIO.findIOProviderFactory(SchemaReaderFactory.class, ct, null);
+		IOProviderDescriptor srf = HaleIO.findIOProviderFactory(SchemaReader.class, ct, null);
 		if (srf == null) {
 			report.error(new IOMessageImpl("Could not load schema at {0}, no matching I/O provider could be found.", 
 					null, source));
@@ -262,7 +262,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 		// source
 		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE, source.toString());
 		// content type
-		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getIdentifier());
+		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
 		
 		// no dependencies needed
 		
@@ -290,11 +290,8 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			IOConfiguration conf = new IOConfiguration();
 			
 			// populate IOConfiguration
-			// set advisor ID
-			conf.setAdvisorId("eu.esdihumboldt.hale.ui.io.instance.source");
-			
-			// provider type (fixed)
-			conf.setProviderType(InstanceReaderFactory.class);
+			// set action ID
+			conf.setActionId(InstanceIO.ACTION_LOAD_SOURCE_DATA);
 			
 			// find provider
 			File file;
@@ -303,14 +300,14 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			} catch (IllegalArgumentException e) {
 				file = null;
 			}
-			ContentType ct = HaleIO.findContentType(InstanceReaderFactory.class, 
+			IContentType ct = HaleIO.findContentType(InstanceReader.class, 
 					new DefaultInputSupplier(source), (file == null)?(null):(file.getAbsolutePath()));
 			if (ct == null) {
 				report.error(new IOMessageImpl("Could not load instance data at {0}, the content type could not be identified.", 
 						null, source));
 				return;
 			}
-			InstanceReaderFactory irf = HaleIO.findIOProviderFactory(InstanceReaderFactory.class, ct, null);
+			IOProviderDescriptor irf = HaleIO.findIOProviderFactory(InstanceReader.class, ct, null);
 			if (irf == null) {
 				report.error(new IOMessageImpl("Could not load instance data at {0}, no matching I/O provider could be found.", 
 						null, source));
@@ -322,7 +319,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			// source
 			conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE, source.toString());
 			// content type
-			conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getIdentifier());
+			conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
 			//TODO default crs?
 			
 			// dependencies: source schema needed

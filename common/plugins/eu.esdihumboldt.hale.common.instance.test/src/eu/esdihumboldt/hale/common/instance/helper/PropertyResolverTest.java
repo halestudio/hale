@@ -39,7 +39,7 @@ import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.reader.internal.StreamGmlReader;
-import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReaderFactory;
+import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 
@@ -164,7 +164,7 @@ public class PropertyResolverTest {
 		//
 		
 		
-		XmlInstanceReaderFactory f = new XmlInstanceReaderFactory();
+		XmlInstanceReader f = new XmlInstanceReader();
 		InstanceReader instanceReader = f.createProvider();
 		
 		instanceReader.setSource(new DefaultInputSupplier(xmlLocation));

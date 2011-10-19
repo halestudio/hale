@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.ui.io.schema;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.common.schema.io.SchemaReaderFactory;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
@@ -23,11 +22,10 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
+ * @since 2.5
  */
 public abstract class SchemaReaderConfigurationPage
-		extends AbstractConfigurationPage<SchemaReader, SchemaReaderFactory, 
-		SchemaImportWizard> {
+		extends AbstractConfigurationPage<SchemaReader, SchemaImportWizard> {
 
 	/**
 	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String, ImageDescriptor)

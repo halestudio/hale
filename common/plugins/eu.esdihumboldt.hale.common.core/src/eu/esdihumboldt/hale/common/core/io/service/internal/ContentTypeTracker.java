@@ -46,6 +46,7 @@ import eu.esdihumboldt.util.DependencyOrderedList;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
+@Deprecated
 public class ContentTypeTracker extends ContextBundleTracker implements ContentTypeService {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(ContentTypeTracker.class);

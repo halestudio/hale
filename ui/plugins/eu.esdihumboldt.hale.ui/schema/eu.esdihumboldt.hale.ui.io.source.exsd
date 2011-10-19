@@ -66,13 +66,13 @@
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="providerFactoryType" type="string" use="default" value="eu.esdihumboldt.hale.core.io.IOProviderFactory">
+         <attribute name="providerType" type="string" use="default" value="eu.esdihumboldt.hale.common.core.io.ImportProvider">
             <annotation>
                <documentation>
-                  The supported ImportProvider factory type. Should be an interface. By default IOProviderFactory.
+                  The supported ImportProvider type. Should be an interface. By default ImportProvider itself.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.core.io.IOProviderFactory"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.io.ImportProvider"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -118,6 +118,9 @@
                <documentation>
                   The identifier of the content type the source supports. If left empty support for any content type is assumed (this also means that the source has to set the content type on the source configuration).
                </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.contenttype.contentTypes/content-type/@id"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
