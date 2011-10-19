@@ -77,7 +77,7 @@ public class DefaultAlignmentProcessorTest {
 
 		// load alignment
 		IOReporter reporter = null; //FIXME use report?!
-		return DefaultAlignmentIO.load(alignmentLocation.toURL().openStream(), reporter , 
+		return DefaultAlignmentIO.load(alignmentLocation.toURL().openStream(), reporter, 
 				source, target);
 	}
 	
