@@ -34,6 +34,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -83,6 +85,8 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	private List<Boolean> validSel = new ArrayList<Boolean>();
 	private Map<Integer, Boolean> map = new HashMap<Integer, Boolean>();
 	private Integer index;
+	private Boolean valid = true;
+	private Boolean isValid = true;
 	private static final ALogger log = ALoggerFactory
 			.getLogger(PropertyTypeExtension.class);
 
@@ -213,14 +217,17 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				fields.clear();
 				comboFields.clear();
 			}
+			
 			if (!Arrays.equals(firstLine, last_firstLine)) {
 				for (int i = 0; i < length; i++) {
 					final TypeNameField propField;
 					final ComboViewer cv;
+					
 					validSel.add(true);
 
 					propField = new TypeNameField("properties",
 							Integer.toString(i + 1), group);
+					fields.add(propField);
 					propField.setEmptyStringAllowed(false);
 					propField
 							.setErrorMessage("Please enter a valid Property Name");
@@ -230,14 +237,49 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								@Override
 								public void propertyChange(
 										PropertyChangeEvent event) {
+									int j = fields.indexOf(event.getSource());
+									
+									if (event.getProperty().equals(
+											StringFieldEditor.VALUE)) {
+
+										TypeNameField eventField = fields.get(j);
+										fields.remove(j);
+										for (TypeNameField restFields : fields) {
+											if (restFields.getStringValue().equals(
+													eventField.getStringValue())) {
+												valid = false;
+												break;
+											}
+											else {
+												valid = true;
+											}
+										}
+										fields.add(j, (TypeNameField) event
+												.getSource());
+
+									}
+
 									if (event.getProperty().equals(
 											StringFieldEditor.IS_VALID)) {
-										setPageComplete((Boolean) event
-												.getNewValue());
+										isValid = (Boolean)event.getNewValue();
+//										setPageComplete(((Boolean) event
+//												.getNewValue()) && valid);
 									}
-									if (event.getProperty().equals(TypeNameField.TXT_CHNGD)) {
-										if (geoNameFields.indexOf(geoField) != -1) {
-											geoNameFields.get(geoNameFields.indexOf(geoField)).setStringValue((String)event.getNewValue());
+									setPageComplete(isValid && valid);
+
+									if (event.getProperty().equals(
+											TypeNameField.TXT_CHNGD)) {
+
+										if (!geoNameFields.isEmpty()
+												&& geoNameFields.get(geoNameFields
+														.indexOf(geomap.get(j))) != null) {
+											geoNameFields
+													.get(geoNameFields
+															.indexOf(geomap
+																	.get(j)))
+													.setStringValue(
+															(String) event
+																	.getNewValue());
 										}
 									}
 								}
@@ -275,7 +317,6 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								setMessage(null);
 							}
 
-//							int index;
 							// if actualSelection is from Type Geometry
 							// (geometry,point, ...)
 							if (Geometry.class.isAssignableFrom(actualSelection
@@ -287,7 +328,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								// assigned to "false" ( = this field was no
 								// geometry before SelectionChanged) or the
 								// object in the map assigned to number i is
-								// null
+								// null, a new geoField will be created
 								if (map.isEmpty()
 										|| (map.get(i) != null && map.get(i) == false)
 										|| map.get(i) == null) {
@@ -346,6 +387,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								geoComboFields.set(index, null);
 								map.put(i, false);
 							}
+							geom.layout();
 						}
 					});
 					cv.setContentProvider(ArrayContentProvider.getInstance());
@@ -369,7 +411,6 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								.iterator().next()));
 					}
 
-					fields.add(propField);
 				}
 			}
 			group.setLayout(new GridLayout(3, false));
@@ -392,7 +433,16 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	 * @see HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected void createContent(Composite page) {
+	protected void createContent(Composite parent) {
+		// ScrolledComposite in development
+		ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
+		
+		sc.setExpandVertical(true);
+		sc.setExpandHorizontal(true);
+		sc.setMinSize(200, 200);
+		sc.setLayout(new FillLayout());
+		Composite page = new Composite(sc, SWT.NONE);
+		sc.setContent(page);
 		page.setLayout(new GridLayout(2, false));
 
 		sfe = new TypeNameField("typename", "Typename", page);
@@ -424,10 +474,6 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				.span(2, 1).create());
 		geom.setLayout(GridLayoutFactory.swtDefaults().numColumns(3)
 				.equalWidth(false).margins(5, 5).create());
-
-		// ScrolledComposite sc = new ScrolledComposite(page, SWT.V_SCROLL);
-		// sc.setExpandVertical(true);
-		// sc.setAlwaysShowScrollBars(true);
 
 		setPageComplete(sfe.isValid());
 	}
