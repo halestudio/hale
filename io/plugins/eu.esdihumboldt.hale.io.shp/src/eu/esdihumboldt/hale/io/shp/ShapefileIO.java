@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.io.shp;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 
 /**
  * Utilities and constants for Shapefile I/O 
@@ -26,13 +25,18 @@ public abstract class ShapefileIO {
 	public static final String SHAPEFILE_NS = "http://www.esdi-humboldt.eu/hale/shp";
 	
 	/**
-	 * The Shapefile content type identifier 
+	 * The default type name
 	 */
-	public static final String SHAPEFILE_CT_ID = "Shapefile";
+	public static final String DEFAULT_TYPE_NAME = "Shapefile";
 	
-	/**
-	 * The Shapefile content type
-	 */
-	public static final ContentType SHAPEFILE_CT = ContentType.getContentType(SHAPEFILE_CT_ID);
+//	/**
+//	 * The Shapefile content type identifier 
+//	 */
+//	public static final String SHAPEFILE_CT_ID = "Shapefile";
+//	
+//	/**
+//	 * The Shapefile content type
+//	 */
+//	public static final ContentType SHAPEFILE_CT = ContentType.getContentType(SHAPEFILE_CT_ID);
 
 }

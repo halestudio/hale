@@ -10,19 +10,23 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.instance.io;
+package eu.esdihumboldt.hale.ui.io.config;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import java.util.Set;
+
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 
 /**
- * Provides support for validating instances
- *
+ * TODO Type description
  * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
  */
-public interface InstanceValidatorFactory extends IOProviderFactory<InstanceValidator> {
-
-	// concrete typed interface
+public interface ConfigurationPageFactory extends
+		ExtensionObjectFactory<AbstractConfigurationPage<?, ?>> {
 	
+	/**
+	 * Get the identifiers of the supported providers
+	 * @return the set of supported provider identifiers
+	 */
+	public Set<String> getSupportedProviderIDs();
+
 }

@@ -18,9 +18,10 @@ import java.net.URI;
 
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -35,7 +36,7 @@ public class XmlCodeListReader extends AbstractImportProvider implements
 	private CodeList codelist;
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
+	 * @see IOProvider#isCancelable()
 	 */
 	@Override
 	public boolean isCancelable() {
@@ -44,7 +45,7 @@ public class XmlCodeListReader extends AbstractImportProvider implements
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.codelist.io.CodeListReader#getCodeList()
+	 * @see CodeListReader#getCodeList()
 	 */
 	@Override
 	public CodeList getCodeList() {
@@ -53,7 +54,7 @@ public class XmlCodeListReader extends AbstractImportProvider implements
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator, eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
@@ -73,12 +74,11 @@ public class XmlCodeListReader extends AbstractImportProvider implements
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultContentType()
+	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
-	protected ContentType getDefaultContentType() {
-		
-		return ContentType.getContentType("XMLCodelist");
+	protected String getDefaultTypeName() {
+		return "XML code list";
 	}
 
 }

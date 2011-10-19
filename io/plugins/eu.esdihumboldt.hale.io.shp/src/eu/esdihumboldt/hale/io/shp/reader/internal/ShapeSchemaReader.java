@@ -25,7 +25,6 @@ import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -187,11 +186,11 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 	}
 
 	/**
-	 * @see AbstractIOProvider#getDefaultContentType()
+	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
-	protected ContentType getDefaultContentType() {
-		return ShapefileIO.SHAPEFILE_CT;
+	protected String getDefaultTypeName() {
+		return ShapefileIO.DEFAULT_TYPE_NAME;
 	}
 
 }

@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.io.csv;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 
 /**
  * Utilities and constants for CSVfile I/O
@@ -27,14 +26,8 @@ public abstract class CSVFileIO {
 	public static final String CSVFILE_NS = "http://www.esdi-humboldt.eu/hale/csv";
 
 	/**
-	 * The CSVfile content type identifier
+	 * Default type name
 	 */
-	public static final String CSVFILE_CT_ID = "CSV";
-
-	/**
-	 * The CSVfile content type
-	 */
-	public static final ContentType CSVFILE_CT = ContentType
-			.getContentType(CSVFILE_CT_ID);
+	public static final String DEFAULT_TYPE_NAME = "CSV file";
 
 }

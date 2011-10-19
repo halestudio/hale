@@ -32,7 +32,6 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.osgi.framework.Version;
 
-import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTracker;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerImpl;

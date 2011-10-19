@@ -13,20 +13,19 @@
 package eu.esdihumboldt.hale.ui.io.project;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectReaderFactory;
 import eu.esdihumboldt.hale.ui.io.ImportWizard;
 
 /**
  * Wizard for opening a project
  * @author Simon Templer
  */
-public class OpenProjectWizard extends ImportWizard<ProjectReader, ProjectReaderFactory> {
+public class OpenProjectWizard extends ImportWizard<ProjectReader> {
 
 	/**
 	 * Create a wizard that opens a project
 	 */
 	public OpenProjectWizard() {
-		super(ProjectReaderFactory.class);
+		super(ProjectReader.class);
 	}
 
 }

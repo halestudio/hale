@@ -22,14 +22,13 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
-import eu.esdihumboldt.hale.common.instance.io.InstanceValidatorFactory;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
-import eu.esdihumboldt.hale.common.instance.io.InstanceWriterFactory;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
@@ -41,18 +40,19 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @since 2.5
  */
-public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceWriterFactory> {
+public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceExportWizard.class);
 	
-	private InstanceValidatorFactory validatorFactory;
+	private IOProviderDescriptor validatorFactory;
 
 	/**
 	 * Default constructor
 	 */
 	public InstanceExportWizard() {
-		super(InstanceWriterFactory.class);
+		super(InstanceWriter.class);
 		
 		setWindowTitle("Export instances");
 	}
@@ -78,7 +78,13 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 			// validate the written output
 			
 			// create validator
-			InstanceValidator validator = validatorFactory.createProvider();
+			InstanceValidator validator;
+			try {
+				validator = (InstanceValidator) validatorFactory.createExtensionObject();
+			} catch (Exception e) {
+				log.userError("The validator could not be instantiated", e);
+				return false;
+			}
 			
 			// configure validator
 			List<Schema> schemas = getProvider().getValidationSchemas();
@@ -119,7 +125,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 	 * @see ExportWizard#createSelectTargetPage()
 	 */
 	@Override
-	protected ExportSelectTargetPage<InstanceWriter, InstanceWriterFactory, ? extends ExportWizard<InstanceWriter, InstanceWriterFactory>> createSelectTargetPage() {
+	protected ExportSelectTargetPage<InstanceWriter, ? extends ExportWizard<InstanceWriter>> createSelectTargetPage() {
 		return new InstanceSelectTargetPage();
 	}
 	
@@ -166,14 +172,14 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter, InstanceW
 	/**
 	 * @return the validatorFactory
 	 */
-	public InstanceValidatorFactory getValidatorFactory() {
+	public IOProviderDescriptor getValidatorFactory() {
 		return validatorFactory;
 	}
 
 	/**
 	 * @param validatorFactory the validatorFactory to set
 	 */
-	public void setValidatorFactory(InstanceValidatorFactory validatorFactory) {
+	public void setValidatorFactory(IOProviderDescriptor validatorFactory) {
 		this.validatorFactory = validatorFactory;
 	}
 

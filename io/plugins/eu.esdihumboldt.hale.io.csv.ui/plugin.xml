@@ -6,26 +6,26 @@
       <configPage
             class="eu.esdihumboldt.hale.io.csv.ui.SchemaTypePage"
             order="0">
-         <providerFactory
-               id="eu.esdihumboldt.hale.io.csv.reader.schema">
-         </providerFactory>
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.schema">
+         </provider>
       </configPage>
       <configPage
             class="eu.esdihumboldt.hale.io.csv.ui.ReadConfigurationPage"
             order="-10">
-         <providerFactory
-               id="eu.esdihumboldt.hale.io.csv.reader.schema">
-         </providerFactory>
-         <providerFactory
-               id="eu.esdihumboldt.hale.io.csv.reader.instance">
-         </providerFactory>
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.schema">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.instance">
+         </provider>
       </configPage>
       <configPage
             class="eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage"
             order="-20">
-         <providerFactory
-               id="eu.esdihumboldt.hale.io.csv.reader.instance">
-         </providerFactory>
+         <provider
+               ref="eu.esdihumboldt.hale.io.csv.reader.instance">
+         </provider>
       </configPage>
    </extension>
 

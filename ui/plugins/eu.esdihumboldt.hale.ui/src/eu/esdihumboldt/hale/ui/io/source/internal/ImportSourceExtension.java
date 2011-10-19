@@ -15,6 +15,8 @@ package eu.esdihumboldt.hale.ui.io.source.internal;
 import java.net.URL;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
 
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.AbstractExtension;
@@ -22,21 +24,20 @@ import de.cs3d.util.eclipse.extension.AbstractObjectDefinition;
 import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
 import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import de.cs3d.util.eclipse.extension.ExtensionUtil;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**
  * {@link ImportSource} extension
  * @author Simon Templer
  */
-public class ImportSourceExtension extends AbstractExtension<ImportSource<?, ?>, ImportSourceFactory> {
+public class ImportSourceExtension extends AbstractExtension<ImportSource<?>, ImportSourceFactory> {
 	
 	/**
 	 * Factory for {@link ImportSource}s based on a {@link IConfigurationElement}
 	 */
-	private static class ConfigurationFactory extends AbstractConfigurationFactory<ImportSource<?, ?>>
+	private static class ConfigurationFactory extends AbstractConfigurationFactory<ImportSource<?>>
 			implements ImportSourceFactory {
 
 		/**
@@ -51,7 +52,7 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?, ?>,
 		 * @see ExtensionObjectFactory#dispose(Object)
 		 */
 		@Override
-		public void dispose(ImportSource<?, ?> source) {
+		public void dispose(ImportSource<?> source) {
 			// do nothing
 		}
 
@@ -72,23 +73,17 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?, ?>,
 		}
 
 		/**
-		 * @see ImportSourceFactory#getProviderFactoryType()
+		 * @see ImportSourceFactory#getProviderType()
 		 */
 		@SuppressWarnings("unchecked")
 		@Override
-		public Class<? extends IOProviderFactory<?>> getProviderFactoryType() {
-			String factoryType = conf.getAttribute("providerFactoryType");
-			if (factoryType != null && !factoryType.isEmpty()) {
-				String bundleName = conf.getContributor().getName();
-				//TODO move method from InstanceBundle to OsgiUtils
-				Class<? extends IOProviderFactory<?>> result = (Class<? extends IOProviderFactory<?>>) 
-						OsgiUtils.loadClass(factoryType, bundleName);
-				if (result != null) {
-					return result;
-				}
+		public Class<? extends ImportProvider> getProviderType() {
+			String val = conf.getAttribute("providerType");
+			if (val == null || val.isEmpty()) {
+				// default value
+				return ImportProvider.class;
 			}
-			
-			return (Class<? extends IOProviderFactory<?>>) IOProviderFactory.class;
+			return (Class<? extends ImportProvider>) ExtensionUtil.loadClass(conf, "providerType");
 		}
 
 		/**
@@ -123,13 +118,13 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?, ?>,
 		 * @see ImportSourceFactory#getContentType()
 		 */
 		@Override
-		public ContentType getContentType() {
+		public IContentType getContentType() {
 			String ct = conf.getAttribute("contentType");
 			if (ct == null || ct.isEmpty()) {
 				return null;
 			}
 			else {
-				return ContentType.getContentType(ct);
+				return Platform.getContentTypeManager().getContentType(ct);
 			}
 		}
 

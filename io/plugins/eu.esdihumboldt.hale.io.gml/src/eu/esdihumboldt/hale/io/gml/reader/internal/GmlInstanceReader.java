@@ -10,15 +10,20 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.codelist.io;
+package eu.esdihumboldt.hale.io.gml.reader.internal;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
 
 /**
- * Factory for {@link CodeListReader}
- * @author Patrick Lieb
+ * Factory for XML instance readers
+ * @author Simon Templer
  */
-public interface CodeListReaderFactory extends
-		IOProviderFactory<CodeListReader> {
-	// concrete typed interface
+public class GmlInstanceReader extends StreamGmlReader {
+
+	/**
+	 * Default constructor
+	 */
+	public GmlInstanceReader() {
+		super(true);
+	}
+
 }

@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.io.project;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -23,11 +24,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectWriterFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardListener;
@@ -39,7 +39,7 @@ import eu.esdihumboldt.hale.ui.io.IOWizardPage;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectWriterFactory, SaveProjectWizard> {
+public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, SaveProjectWizard> {
 	
 	private StringFieldEditor name;
 	private StringFieldEditor author;
@@ -95,16 +95,16 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, ProjectW
 		author.setPropertyChangeListener(stateListener);
 		
 		// listen for provider changes
-		getWizard().addIOWizardListener(new IOWizardListener<ProjectWriter, ProjectWriterFactory, SaveProjectWizard>() {
+		getWizard().addIOWizardListener(new IOWizardListener<ProjectWriter, SaveProjectWizard>() {
 			@Override
-			public void providerFactoryChanged(
-					ProjectWriterFactory providerFactory) {
+			public void providerDescriptorChanged(
+					IOProviderDescriptor providerFactory) {
 				// update fields as the provider will have changed
 				updateFields();
 			}
 
 			@Override
-			public void contentTypeChanged(ContentType contentType) {
+			public void contentTypeChanged(IContentType contentType) {
 				// ignore
 			}
 		});

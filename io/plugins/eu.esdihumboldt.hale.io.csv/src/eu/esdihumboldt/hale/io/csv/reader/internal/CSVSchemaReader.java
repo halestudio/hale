@@ -17,7 +17,6 @@ import java.util.Arrays;
 import javax.xml.namespace.QName;
 
 import au.com.bytecode.opencsv.CSVReader;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -187,13 +186,13 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 		reporter.setSuccess(true);
 		return reporter;
 	}
-
+	
 	/**
-	 * @see AbstractIOProvider#getDefaultContentType()
+	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
-	protected ContentType getDefaultContentType() {
-		return CSVFileIO.CSVFILE_CT;
+	protected String getDefaultTypeName() {
+		return CSVFileIO.DEFAULT_TYPE_NAME;
 	}
 
 }

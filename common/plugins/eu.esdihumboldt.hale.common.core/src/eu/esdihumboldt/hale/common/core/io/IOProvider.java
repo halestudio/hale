@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.content.IContentType;
+
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
@@ -76,14 +78,14 @@ public interface IOProvider {
 	 * 
 	 * @param contentType the content type
 	 */
-	public void setContentType(ContentType contentType);
+	public void setContentType(IContentType contentType);
 	
 	/**
 	 * Get the content type
 	 * 
 	 * @return the content type, may be <code>null</code>
 	 */
-	public ContentType getContentType();
+	public IContentType getContentType();
 	
 	/**
 	 * Get the supported configuration parameters.

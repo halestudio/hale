@@ -10,19 +10,21 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.schema.io;
+package eu.esdihumboldt.hale.io.gml.writer;
 
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 
 /**
- * Provides support for reading schemas
- *
+ * Writes instances to a XML file
  * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
  */
-public interface SchemaReaderFactory extends IOProviderFactory<SchemaReader> {
+public class XmlInstanceWriter extends StreamGmlWriter {
 
-	// concrete typed interface
-	
+	/**
+	 * Default constructor
+	 */
+	public XmlInstanceWriter() {
+		super(false);
+	}
+
 }
