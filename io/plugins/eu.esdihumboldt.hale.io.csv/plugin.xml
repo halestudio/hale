@@ -33,5 +33,34 @@
             name="Multipolygon">
       </propertyType>
    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="csv"
+            id="eu.esdihumboldt.hale.io.csv"
+            name="CSV file"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader"
+            id="eu.esdihumboldt.hale.io.csv.reader.schema"
+            name="CSV file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.csv">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader"
+            id="eu.esdihumboldt.hale.io.csv.reader.instance"
+            name="CSV file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.csv">
+         </contentType>
+      </provider>
+   </extension>
 
 </plugin>

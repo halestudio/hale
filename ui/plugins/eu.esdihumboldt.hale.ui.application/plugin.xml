@@ -149,7 +149,7 @@
                   icon="icons/import_wiz.gif"
                   label="Import">
                <dynamic
-                     class="eu.esdihumboldt.hale.ui.io.advisor.ImportContribution"
+                     class="eu.esdihumboldt.hale.ui.io.action.ImportContribution"
                      id="eu.esdihumboldt.hale.ui.application.import">
                </dynamic>
             </menu>
@@ -157,7 +157,7 @@
                   icon="icons/export_wiz.gif"
                   label="Export">
                <dynamic
-                     class="eu.esdihumboldt.hale.ui.io.advisor.ExportContribution"
+                     class="eu.esdihumboldt.hale.ui.io.action.ExportContribution"
                      id="eu.esdihumboldt.hale.ui.application.export">
                </dynamic>
             </menu>

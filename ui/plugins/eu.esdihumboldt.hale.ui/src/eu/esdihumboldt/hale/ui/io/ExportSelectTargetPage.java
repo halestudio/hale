@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.io;
 import java.io.File;
 import java.util.Collection;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -25,12 +26,9 @@ import org.eclipse.swt.widgets.Composite;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.common.core.io.service.ContentTypeService;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
@@ -39,13 +37,12 @@ import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
  * Wizard page that allows selecting a target file
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- * @param <T> the {@link IOProviderFactory} type used in the wizard
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProviderFactory<P>, 
-	W extends ExportWizard<P, T>> extends IOWizardPage<P, T, W> {
+public class ExportSelectTargetPage<P extends ExportProvider, 
+	W extends ExportWizard<P>> extends IOWizardPage<P, W> {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(ExportSelectTargetPage.class);
 	
@@ -94,18 +91,18 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 	 * Update the content type
 	 */
 	private void updateContentType() {
-		ContentType contentType = null;
-		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+		IContentType contentType = null;
 		
 		if (getWizard().getProviderFactory() != null && targetFile.isValid()) {
-			Collection<ContentType> types = getWizard().getProviderFactory().getSupportedTypes();
+			Collection<IContentType> types = getWizard().getProviderFactory().getSupportedTypes();
 			if (types != null && !types.isEmpty()) {
 				if (types.size() == 1) {
 					// if only one content type is possible for the export we can assume that it is used
 					contentType = types.iterator().next();
 				}
 				else {
-					Collection<ContentType> filteredTypes = cts.findContentTypesFor(types, null, targetFile.getStringValue());
+					Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(
+							types, null, targetFile.getStringValue());
 					if (!filteredTypes.isEmpty()) {
 						contentType = filteredTypes.iterator().next();
 					}
@@ -120,7 +117,7 @@ public class ExportSelectTargetPage<P extends ExportProvider, T extends IOProvid
 		
 		getWizard().setContentType(contentType);
 		if (contentType != null) {
-			setMessage(cts.getDisplayName(contentType), DialogPage.INFORMATION);
+			setMessage(contentType.getName(), DialogPage.INFORMATION);
 		}
 		else {
 			setMessage(null);

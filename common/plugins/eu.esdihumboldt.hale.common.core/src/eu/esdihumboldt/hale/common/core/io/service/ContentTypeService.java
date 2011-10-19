@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.core.io.ContentType;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
+@Deprecated
 public interface ContentTypeService {
 	
 	/**

@@ -55,7 +55,7 @@
       </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="providerFactory"/>
+            <element ref="provider"/>
          </sequence>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -77,18 +77,21 @@
       </complexType>
    </element>
 
-   <element name="providerFactory">
+   <element name="provider">
       <annotation>
          <documentation>
-            References a provider factory
+            References an I/O provider
          </documentation>
       </annotation>
       <complexType>
-         <attribute name="id" type="string" use="required">
+         <attribute name="ref" type="string" use="required">
             <annotation>
                <documentation>
-                  The provider factory identifier
+                  The provider identifier
                </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.provider/provider/@id"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

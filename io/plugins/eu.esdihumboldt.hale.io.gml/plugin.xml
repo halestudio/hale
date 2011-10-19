@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="gml,xml"
+            id="eu.esdihumboldt.hale.io.gml"
+            name="GML file"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="FeatureCollection">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceReader"
+            id="eu.esdihumboldt.hale.io.gml.reader"
+            name="GML (Features)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader"
+            id="eu.esdihumboldt.hale.io.xml.reader"
+            name="XML">
+         <contentType
+               ref="org.eclipse.core.runtime.xml">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriter"
+            id="eu.esdihumboldt.hale.io.gml.writer"
+            name="GML (FeatureCollection)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.gml">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
+            id="eu.esdihumboldt.hale.io.xml.writer"
+            name="XML (Custom root element)">
+         <contentType
+               ref="org.eclipse.core.runtime.xml">
+         </contentType>
+      </provider>
+   </extension>
+
+</plugin>

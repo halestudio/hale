@@ -29,20 +29,20 @@ import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 
 /**
  * Wizard page that allows selecting an I/O provider
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- * @param <T> the {@link IOProviderFactory} type used in the wizard
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @since 2.5
  */
-public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProviderFactory<P>, 
-	W extends ExportWizard<P, T>> extends IOWizardPage<P, T, W> {
+public class ExportSelectProviderPage<P extends ExportProvider, 
+	W extends ExportWizard<P>> extends IOWizardPage<P, W> {
 
 	/**
 	 * Default constructor
@@ -68,14 +68,14 @@ public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProv
 
 			@Override
 			public String getText(Object element) {
-				if (element instanceof IOProviderFactory<?>) {
-					return ((IOProviderFactory<?>) element).getDisplayName();
+				if (element instanceof IOProviderDescriptor) {
+					return ((IOProviderDescriptor) element).getDisplayName();
 				}
 				return super.getText(element);
 			}
 			
 		});
-		Collection<T> factories = getWizard().getFactories();
+		Collection<IOProviderDescriptor> factories = getWizard().getFactories();
 		providers.setInput(factories);
 		
 		// set selection
@@ -106,7 +106,6 @@ public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProv
 	 * 
 	 * @param selection the current selection
 	 */
-	@SuppressWarnings("unchecked")
 	private void updateWizard(ISelection selection) {
 		if (selection.isEmpty()) {
 			providerFactoryChanged(null);
@@ -114,7 +113,7 @@ public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProv
 		else if (selection instanceof IStructuredSelection) {
 			IStructuredSelection sel = (IStructuredSelection) selection;
 			Object element = sel.getFirstElement();
-			providerFactoryChanged((T) element);
+			providerFactoryChanged((IOProviderDescriptor) element);
 		}
 	}
 	
@@ -123,7 +122,7 @@ public class ExportSelectProviderPage<P extends ExportProvider, T extends IOProv
 	 * 
 	 * @param providerFactory the provider factory
 	 */
-	protected void providerFactoryChanged(T providerFactory) {
+	protected void providerFactoryChanged(IOProviderDescriptor providerFactory) {
 		getWizard().setProviderFactory(providerFactory);
 	}
 

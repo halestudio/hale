@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -33,13 +34,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
-import eu.esdihumboldt.hale.common.core.io.IOProviderFactory;
-import eu.esdihumboldt.hale.common.instance.io.InstanceValidatorFactory;
+import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
-import eu.esdihumboldt.hale.common.instance.io.InstanceWriterFactory;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardListener;
@@ -52,7 +50,7 @@ import eu.esdihumboldt.hale.ui.io.IOWizardListener;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWriter, 
-		InstanceWriterFactory, InstanceExportWizard> implements IOWizardListener<InstanceWriter, InstanceWriterFactory, InstanceExportWizard> {
+		InstanceExportWizard> implements IOWizardListener<InstanceWriter, InstanceExportWizard> {
 
 	private ComboViewer validators;
 	
@@ -88,8 +86,8 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 
 			@Override
 			public String getText(Object element) {
-				if (element instanceof IOProviderFactory<?>) {
-					return ((IOProviderFactory<?>) element).getDisplayName();
+				if (element instanceof IOProviderDescriptor) {
+					return ((IOProviderDescriptor) element).getDisplayName();
 				}
 				return super.getText(element);
 			}
@@ -120,9 +118,9 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 		// populate input
 		List<Object> input = new ArrayList<Object>();
 		
-		ContentType contentType = getWizard().getContentType();
+		IContentType contentType = getWizard().getContentType();
 		if (contentType != null) {
-			Collection<InstanceValidatorFactory> factories = OsgiUtils.getServices(InstanceValidatorFactory.class);
+			Collection<IOProviderDescriptor> factories = HaleIO.getProviderFactories(InstanceValidator.class);
 			factories = HaleIO.filterFactories(factories, contentType);
 			if (!factories.isEmpty()) {
 				input.add("No validation");
@@ -134,7 +132,7 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 			input.add((contentType == null)
 					?("Unrecognized content type")
 					:(MessageFormat.format("No validator available for {0}", 
-							HaleIO.getDisplayName(contentType))));
+							contentType.getName())));
 			validators.getControl().setEnabled(false);
 		}
 		else {
@@ -172,8 +170,8 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 		else if (selection instanceof IStructuredSelection) {
 			IStructuredSelection sel = (IStructuredSelection) selection;
 			Object element = sel.getFirstElement();
-			if (element instanceof InstanceValidatorFactory) {
-				getWizard().setValidatorFactory((InstanceValidatorFactory) element);
+			if (element instanceof IOProviderDescriptor) {
+				getWizard().setValidatorFactory((IOProviderDescriptor) element);
 			}
 			else {
 				// element that disables validating
@@ -193,18 +191,18 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 	}
 
 	/**
-	 * @see IOWizardListener#contentTypeChanged(ContentType)
+	 * @see IOWizardListener#contentTypeChanged(IContentType)
 	 */
 	@Override
-	public void contentTypeChanged(ContentType contentType) {
+	public void contentTypeChanged(IContentType contentType) {
 		updateInput();
 	}
 
 	/**
-	 * @see IOWizardListener#providerFactoryChanged(IOProviderFactory)
+	 * @see IOWizardListener#providerDescriptorChanged(IOProviderDescriptor)
 	 */
 	@Override
-	public void providerFactoryChanged(InstanceWriterFactory providerFactory) {
+	public void providerDescriptorChanged(IOProviderDescriptor providerFactory) {
 		// do nothing
 	}
 

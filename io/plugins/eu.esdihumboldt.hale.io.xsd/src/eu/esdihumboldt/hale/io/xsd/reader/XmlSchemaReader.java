@@ -62,7 +62,6 @@ import org.apache.ws.commons.schema.utils.NamespacePrefixList;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -521,13 +520,13 @@ public class XmlSchemaReader
 	}
 
 	/**
-	 * @see AbstractIOProvider#getDefaultContentType()
+	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
-	protected ContentType getDefaultContentType() {
-		return XMLSchemaIO.XSD_CT;
+	protected String getDefaultTypeName() {
+		return "XML schema";
 	}
-	
+
 	/**
 	 * Extracts attribute definitions from a {@link XmlSchemaParticle}.
 	 * 

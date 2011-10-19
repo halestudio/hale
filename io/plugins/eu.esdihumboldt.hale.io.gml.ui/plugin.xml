@@ -5,16 +5,16 @@
          point="eu.esdihumboldt.hale.ui.io.config">
       <configPage
             class="eu.esdihumboldt.hale.io.gml.ui.RootElementPage">
-         <providerFactory
-               id="eu.esdihumboldt.hale.io.xml.writer">
-         </providerFactory>
+         <provider
+               ref="eu.esdihumboldt.hale.io.xml.writer">
+         </provider>
       </configPage>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">
       <source
             class="eu.esdihumboldt.hale.io.gml.ui.wfs.WFSDescribeFeatureSource"
-            contentType="XSD"
+            contentType="eu.esdihumboldt.hale.io.xsd"
             description="Load a XML schema using a WFS DescribeFeatureType request"
             icon="icons/service.gif"
             id="eu.esdihumboldt.hale.io.gml.ui.source.wfs.schema"
@@ -23,7 +23,7 @@
       </source>
       <source
             class="eu.esdihumboldt.hale.io.gml.ui.wfs.WFSGetFeatureSource"
-            contentType="GML"
+            contentType="eu.esdihumboldt.hale.io.gml"
             description="Load GML data using a WFS GetFeature request"
             icon="icons/service.gif"
             id="eu.esdihumboldt.hale.io.gml.ui.source.wfs.instance"

@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.ui.io.project;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectReaderFactory;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
@@ -25,10 +24,10 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
+ * @since 2.5
  */
 public abstract class OpenProjectConfigurationPage
-		extends AbstractConfigurationPage<ProjectReader, ProjectReaderFactory, 
+		extends AbstractConfigurationPage<ProjectReader, 
 		OpenProjectWizard> {
 
 	/**

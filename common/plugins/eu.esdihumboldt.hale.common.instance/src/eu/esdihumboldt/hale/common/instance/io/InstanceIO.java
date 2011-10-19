@@ -12,7 +12,8 @@
 
 package eu.esdihumboldt.hale.common.instance.io;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
+import org.eclipse.core.runtime.content.IContentType;
+
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 
 /**
@@ -20,19 +21,17 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
+ * @since 2.5
  */
 public abstract class InstanceIO {
-
-	/**
-	 * Get the {@link InstanceWriter} factories
-	 * 
-	 * @return the factories currently registered in the system
-	 */
-	public static Iterable<InstanceWriterFactory> getWriterFactories() {
-		return HaleIO.getProviderFactories(InstanceWriterFactory.class);
-	}
 	
+	/**
+	 * ID of the action to load source data.
+	 * Reflects the ID defined in the extension.
+	 */
+	public static final String ACTION_LOAD_SOURCE_DATA = 
+			"eu.esdihumboldt.hale.io.instance.read.source";
+
 	/**
 	 * Creates an instance writer instance
 	 * 
@@ -43,9 +42,9 @@ public abstract class InstanceIO {
 	 * @return the I/O provider preconfigured with the content type if it was 
 	 *   given or <code>null</code> if no matching I/O provider is found
 	 */
-	public static InstanceWriter createInstanceWriter(ContentType contentType, 
+	public static InstanceWriter createInstanceWriter(IContentType contentType, 
 			String providerId) {
-		return HaleIO.createIOProvider(InstanceWriterFactory.class, contentType, providerId);
+		return HaleIO.createIOProvider(InstanceWriter.class, contentType, providerId);
 	}
 	
 }

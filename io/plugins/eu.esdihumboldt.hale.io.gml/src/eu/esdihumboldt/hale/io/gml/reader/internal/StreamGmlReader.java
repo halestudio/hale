@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 
 import java.io.IOException;
 
-import eu.esdihumboldt.hale.common.core.io.ContentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -35,21 +34,16 @@ public class StreamGmlReader extends AbstractInstanceReader {
 
 	private InstanceCollection instances;
 	
-	private final ContentType defaultContentType;
-
 	private final boolean restrictToFeatures;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param defaultContentType the default content type
 	 * @param restrictToFeatures if only instances that are GML features shall
 	 *   be loaded
 	 */
-	public StreamGmlReader(ContentType defaultContentType, 
-			boolean restrictToFeatures) {
+	public StreamGmlReader(boolean restrictToFeatures) {
 		super();
-		this.defaultContentType = defaultContentType;
 		this.restrictToFeatures = restrictToFeatures;
 	}
 
@@ -82,11 +76,11 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	}
 
 	/**
-	 * @see AbstractIOProvider#getDefaultContentType()
+	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
-	protected ContentType getDefaultContentType() {
-		return defaultContentType;
+	protected String getDefaultTypeName() {
+		return "GML";
 	}
 
 	/**
