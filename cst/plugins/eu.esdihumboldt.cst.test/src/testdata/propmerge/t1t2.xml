@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-alignment>
+    <cell transformation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}Multiname</type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type>{http://www.example.org/t2/}Singlename</type>
+            </class>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}Multiname</type>
+                <child>id</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}Singlename</type>
+                <child>id</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}Multiname</type>
+                <child>name1</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}Singlename</type>
+                <child>name</child>
+                <child>spelling</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}Multiname</type>
+                <child>name2</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}Singlename</type>
+                <child>name</child>
+                <child>spelling</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}Multiname</type>
+                <child>name3</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}Singlename</type>
+                <child>name</child>
+                <child>spelling</child>
+            </property>
+        </target>
+    </cell>
+</hale-alignment>
