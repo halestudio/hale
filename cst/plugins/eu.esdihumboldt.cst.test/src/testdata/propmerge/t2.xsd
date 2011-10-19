@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t2/" targetNamespace="http://www.example.org/t2/">
+    <complexType name="Singlename">
+    	<sequence>
+    		<element name="name" maxOccurs="1" minOccurs="1">
+    			<complexType>
+    				<sequence>
+    					<element name="spelling" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+    				</sequence>
+    			</complexType>
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <element name="singlename" type="tns:Singlename"></element>
+</schema>
