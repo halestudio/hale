@@ -78,6 +78,7 @@
       <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
+      <plugin id="eu.esdihumboldt.cst.hale" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.cache"/>
       <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>
@@ -942,6 +943,8 @@
       <plugin id="org.junit4"/>
       <plugin id="org.libtiff.jai"/>
       <plugin id="org.slf4j.api"/>
+      <plugin id="org.springframework.beans"/>
+      <plugin id="org.springframework.core"/>
       <plugin id="org.springframework.transaction"/>
       <plugin id="relaxngDatatype"/>
       <plugin id="slf4j.ext"/>

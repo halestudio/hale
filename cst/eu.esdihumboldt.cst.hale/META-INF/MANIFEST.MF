@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hale CST Service
+Bundle-SymbolicName: eu.esdihumboldt.cst.hale;singleton:=true
+Bundle-Version: 2.1.2.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
+ eu.esdihumboldt.transformer.cst;bundle-version="1.0.6"
