@@ -27,21 +27,89 @@
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.google.guava"/>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.orientechnologies.orient"/>
+      <plugin id="com.springsource.com.sun.xml.bind"/>
+      <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
+      <plugin id="com.springsource.javax.activation"/>
+      <plugin id="com.springsource.javax.el"/>
+      <plugin id="com.springsource.javax.media.jai.codec"/>
+      <plugin id="com.springsource.javax.media.jai.core"/>
+      <plugin id="com.springsource.javax.persistence"/>
+      <plugin id="com.springsource.javax.servlet.jsp"/>
+      <plugin id="com.springsource.javax.xml.bind"/>
+      <plugin id="com.springsource.javax.xml.stream"/>
       <plugin id="com.springsource.net.sf.cglib"/>
       <plugin id="com.springsource.org.aopalliance"/>
+      <plugin id="com.springsource.org.apache.commons.beanutils"/>
+      <plugin id="com.springsource.org.apache.commons.collections"/>
+      <plugin id="com.springsource.org.apache.commons.configuration"/>
+      <plugin id="com.springsource.org.apache.commons.digester"/>
+      <plugin id="com.springsource.org.apache.commons.jxpath"/>
+      <plugin id="com.springsource.org.apache.commons.pool"/>
+      <plugin id="com.springsource.org.apache.xerces" fragment="true"/>
+      <plugin id="com.springsource.org.apache.xml.resolver"/>
+      <plugin id="com.springsource.org.apache.xmlcommons"/>
+      <plugin id="com.springsource.org.castor"/>
+      <plugin id="com.springsource.org.custommonkey.xmlunit"/>
+      <plugin id="com.springsource.org.dom4j"/>
+      <plugin id="com.springsource.org.jvnet.staxex"/>
+      <plugin id="com.vividsolutions.jts"/>
       <plugin id="de.cs3d.util.logging"/>
       <plugin id="de.cs3d.util.logging.logback"/>
       <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
+      <plugin id="de.fhg.igd.osgi.util"/>
+      <plugin id="edu.umd.cs.findbugs.annotations"/>
+      <plugin id="eu.esdihumboldt.commons"/>
+      <plugin id="eu.esdihumboldt.cst.iobridge"/>
+      <plugin id="eu.esdihumboldt.gmlhandler"/>
+      <plugin id="eu.esdihumboldt.hale"/>
+      <plugin id="eu.esdihumboldt.hale.cache"/>
+      <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.core"/>
+      <plugin id="eu.esdihumboldt.hale.core.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.gmlparser"/>
+      <plugin id="eu.esdihumboldt.hale.instance"/>
+      <plugin id="eu.esdihumboldt.hale.instanceprovider"/>
+      <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
+      <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.war"/>
+      <plugin id="eu.esdihumboldt.specification"/>
+      <plugin id="eu.esdihumboldt.transformer.cst"/>
+      <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
+      <plugin id="jul.to.slf4j"/>
+      <plugin id="log4j.over.slf4j"/>
+      <plugin id="net.sf.ehcache"/>
+      <plugin id="org.apache.commons.httpclient"/>
+      <plugin id="org.apache.commons.io"/>
+      <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.httpcomponents.httpclient"/>
+      <plugin id="org.apache.httpcomponents.httpcore"/>
+      <plugin id="org.apache.ws.commons.schema"/>
+      <plugin id="org.castor.core"/>
+      <plugin id="org.castor.xml"/>
+      <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.databinding.observable"/>
+      <plugin id="org.eclipse.core.databinding.property"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.draw2d"/>
+      <plugin id="org.eclipse.emf.common"/>
+      <plugin id="org.eclipse.emf.ecore"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.http.jetty"/>
@@ -49,8 +117,27 @@
       <plugin id="org.eclipse.equinox.http.servlet"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.jface.text"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.text"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.xsd"/>
+      <plugin id="org.eclipse.zest.core"/>
+      <plugin id="org.eclipse.zest.layouts"/>
+      <plugin id="org.geotools"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.jdom"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.junit4"/>
+      <plugin id="org.libtiff.jai"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.slf4j.api"/>
@@ -68,6 +155,7 @@
       <plugin id="org.springframework.osgi.jetty.web.extender.fragment.osgi" fragment="true"/>
       <plugin id="org.springframework.osgi.web"/>
       <plugin id="org.springframework.osgi.web.extender"/>
+      <plugin id="org.springframework.transaction"/>
       <plugin id="org.springframework.web"/>
       <plugin id="org.springframework.web.servlet"/>
       <plugin id="slf4j.ext"/>
