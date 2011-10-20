@@ -41,8 +41,7 @@ public class ServiceFactory
 	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	public Object create(Class serviceInterface, IServiceLocator parentLocator,
+	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
 		if (serviceInterface.equals(CstService.class)) {
 			return this.transform;

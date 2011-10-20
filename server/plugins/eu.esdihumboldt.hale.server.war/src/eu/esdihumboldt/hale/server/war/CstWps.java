@@ -13,15 +13,27 @@
 package eu.esdihumboldt.hale.server.war;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -30,17 +42,55 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.springframework.web.HttpRequestHandler;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
+import eu.esdihumboldt.cst.iobridge.CstServiceBridge;
+import eu.esdihumboldt.cst.iobridge.TransformationException;
+import eu.esdihumboldt.cst.iobridge.impl.DefaultCstServiceBridge;
+import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
+import eu.esdihumboldt.hale.server.war.ows.CodeType;
+import eu.esdihumboldt.hale.server.war.ows.DescriptionType;
+import eu.esdihumboldt.hale.server.war.ows.ExceptionReport;
+import eu.esdihumboldt.hale.server.war.ows.ExceptionType;
+import eu.esdihumboldt.hale.server.war.ows.KeywordsType;
+import eu.esdihumboldt.hale.server.war.ows.LanguageStringType;
+import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
+import eu.esdihumboldt.hale.server.war.wps.DataType;
 import eu.esdihumboldt.hale.server.war.wps.Execute;
+import eu.esdihumboldt.hale.server.war.wps.ExecuteResponse;
+import eu.esdihumboldt.hale.server.war.wps.ProcessBriefType;
+import eu.esdihumboldt.hale.server.war.wps.ProcessFailedType;
+import eu.esdihumboldt.hale.server.war.wps.StatusType;
+import eu.esdihumboldt.hale.server.war.wps.WSDL;
+import eu.esdihumboldt.hale.server.war.wps.ExecuteResponse.ProcessOutputs;
 import eu.esdihumboldt.hale.server.war.wps.InputType;
+import eu.esdihumboldt.hale.server.war.wps.OutputDataType;
 
 
 
@@ -56,10 +106,20 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 */
 	private static final long serialVersionUID = -8128494354035680094L;
 	
+	private final ALogger _log = ALoggerFactory.getLogger(CstWps.class);
+	
 	/**
 	 * Bundlename
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.server.war";
+	
+	public static final String inputSourceData = "SourceData";
+	
+	public static final String inputSourceXml = "SourceXmlSchemaDefinition";
+	
+	public static final String inputTargetXml = "TargetXmlSchemaDefinition";
+	
+	public static final String inputMapping = "Mapping";
 	
 	/**
 	 * @see javax.servlet.http.HttpServlet#doGet
@@ -77,7 +137,13 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		while (parameterNames.hasMoreElements()) {
 			String key = (String) parameterNames.nextElement();
 			String val = httpRequest.getParameter(key);
-			params.put(key.toLowerCase(), val.toLowerCase());
+			
+			// save request data not as lower case
+			if (key.toLowerCase().equals("request")) {
+				params.put(key.toLowerCase(), val);
+			} else {
+				params.put(key.toLowerCase(), val.toLowerCase());
+			}
 		}
 		
 		// create a writer
@@ -99,12 +165,64 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 				this.describeProcess(response, writer);
 			}
 			// do the transformation
-			else if (request.toLowerCase().equals("execute") || request.toLowerCase().contains("execute")) {
+			// TODO check if it's a POST request
+			else if (httpRequest.getMethod().toLowerCase().equals("post") && 
+						( request.toLowerCase().equals("execute") 
+								|| request.toLowerCase().contains("execute")
+						)
+					) {
 				// 
 				try {
-					this.execute(response, writer);
+					this.execute(params, response, writer);
 				} catch (Exception e) {
-					writer.print(e.getLocalizedMessage());
+//					writer.println(e.getMessage());
+					if (e.getCause() != null) {
+//						writer.print(e.getCause().getMessage());
+						_log.error(e.getCause().getMessage(), e);
+					} else {
+						_log.error(e.getMessage(), e);
+					}
+					
+					try {
+						JAXBContext context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class, eu.esdihumboldt.hale.server.war.ows.ObjectFactory.class);
+						Marshaller marshaller = context.createMarshaller();
+						
+						ProcessFailedType failed = new ProcessFailedType();
+						ExceptionReport report = new ExceptionReport();
+						ExceptionType type = new ExceptionType();
+						
+						type.setExceptionCode("OperationNotSupported");
+						type.getExceptionText().add(e.getMessage());
+						report.getException().add(type);
+						report.setLang("en-CA");
+						report.setVersion("1.0.0");
+						failed.setExceptionReport(report);
+						
+						marshaller.marshal(report, writer); // using ProcessFailedType does not work
+					} catch (JAXBException e1) {
+						/* */
+					}
+					
+				}
+			}
+			else {
+				try {
+					JAXBContext context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class, eu.esdihumboldt.hale.server.war.ows.ObjectFactory.class);
+					Marshaller marshaller = context.createMarshaller();
+					
+					ProcessFailedType failed = new ProcessFailedType();
+					ExceptionReport report = new ExceptionReport();
+					ExceptionType type = new ExceptionType();
+					
+					type.setExceptionCode("OperationNotSupported");
+					report.getException().add(type);
+					report.setLang("en-CA");
+					report.setVersion("1.0.0");
+					failed.setExceptionReport(report);
+					
+					marshaller.marshal(report, writer); // using ProcessFailedType does not work
+				} catch (JAXBException e1) {
+					/* */
 				}
 			}
 		} else {
@@ -183,30 +301,178 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * 
 	 * @param response the response
 	 * @param writer the writer
-	 * 
-	 * @throws JAXBException if unmarshaling fails this is thrown
+	 * @throws Exception 
 	 */
-	public void execute(HttpServletResponse response, PrintWriter writer) throws JAXBException {
-		// test data
-		URL url = null;
-		try {
-			url = new URL("http://schemas.opengis.net/wps/1.0.0/examples/53_wpsExecute_request_ComplexValue.xml");
-		} catch (MalformedURLException e1) {
-			/* */
+	public void execute(Map<String, String> params, HttpServletResponse response, PrintWriter writer) throws Exception {
+		// create temp folder
+		String temp = Platform.getLocation().toString() + "/tmp/cst_" + System.currentTimeMillis() + "/";
+//		String temp = Platform.getLocation().toString() + "/tmp/cst_test/";
+		
+		if (!new File(temp).mkdirs()) {
+			// could not create temp directory
 		}
 		
+		// save request data to disk
+		String xmlData = params.get("request");
+		File fXmldata = new File(temp+"xmlRequestData.xml");
+		FileWriter wr = new FileWriter(fXmldata);
+		wr.write(xmlData);
+		wr.flush();
+		wr.close();
+		
+		// minOccurs="1" maxOccurs="unbounded"
+		List<DataType> sourceData = new ArrayList<DataType>();
+		int iSourceData = 0;
+		
+		// minOccurs="1" maxOccurs="unbounded"
+		List<DataType> sourceXmlSchemaDefinition = new ArrayList<DataType>();
+		int iSourceXSD = 0;
+		
+		// minOccurs="1" maxOccurs="unbounded"
+		List<DataType> targetXmlSchemaDefinition = new ArrayList<DataType>();
+		int iTargetXSD = 0;
+		
+		// minOccurs="1" maxOccurs="1"
+		List<DataType> mapping = new ArrayList<DataType>();
+		int iMapping = 0;
+		
+		// create jaxbcontext and unmarshaller
 		JAXBContext context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class, eu.esdihumboldt.hale.server.war.ows.ObjectFactory.class);
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 		
-		Execute e = (Execute) unmarshaller.unmarshal(url);
-		writer.println(e.getService());
-		writer.println(e.getIdentifier().getValue());
-		writer.println(System.currentTimeMillis());
+		// umarshall request
+		Execute exec = (Execute) unmarshaller.unmarshal(fXmldata);
 		
-		DataInputsType dI = e.getDataInputs();
+		// check if the right identifier is set
+		if (!exec.getIdentifier().getValue().equals("translate")) {
+			// not supported identifier!
+			throw new Exception("Identifier is not supported!");
+		}
 		
+		DataInputsType dI = exec.getDataInputs();
+		
+		// iterate through data
 		for (InputType t : dI.getInput()) {
-			writer.println(t.getIdentifier() + " / "+t.getData());
+			String ident = t.getIdentifier().getValue();
+			
+			int fileNumber = 0;
+			
+			if (ident.equals(CstWps.inputSourceData)) {
+				sourceData.add(t.getData());
+				iSourceData++;
+				fileNumber = iSourceData;
+			} else if (ident.equals(CstWps.inputSourceXml)) {
+				sourceXmlSchemaDefinition.add(t.getData());
+				iSourceXSD++;
+				fileNumber = iSourceXSD;
+			} else if (ident.equals(CstWps.inputTargetXml)) {
+				targetXmlSchemaDefinition.add(t.getData());
+				iTargetXSD++;
+				fileNumber = iTargetXSD;
+			} else if (ident.equals(CstWps.inputMapping)) {
+				mapping.add(t.getData());
+				iMapping++;
+				fileNumber = iMapping;
+			} else {
+				// not allowed input type
+				throw new Exception("Not supported InputType is provided!");
+			}
+			
+			// check if ComplexData is available
+			if (t.getData() != null && t.getData().getComplexData() != null && t.getData().getComplexData().getContent().size() > 0) {
+				List<?> list = t.getData().getComplexData().getContent();
+				
+				for (Object o : list) {
+					if (o instanceof Element) {
+						// create a element
+						Element element = (Element) o;
+						
+						TransformerFactory transFactory = TransformerFactory.newInstance();
+						Transformer transformer = null;
+						
+						transformer = transFactory.newTransformer();
+						
+						StringWriter buffer = new StringWriter();
+						transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+						
+						transformer.transform(new DOMSource(element), new StreamResult(buffer));
+						
+						String str = buffer.toString();
+						
+						// write to disk
+						FileWriter fw = new FileWriter(temp+ident+"_"+fileNumber);
+						fw.write(str);
+						fw.close();
+					}
+				}
+			}
+		}
+		
+		// check occurrence
+		if (iSourceData < 1) {
+			/* throw or generate exception */
+			throw new Exception("No SourceData provided.");
+		} else if (iSourceXSD < 1) {
+			/* throw or generate exception */
+			throw new Exception("No SourceSchema provided.");
+		} else if (iTargetXSD < 1) {
+			/* throw or generate exception */
+			throw new Exception("No TargetSchema provided.");
+		} else if (iMapping != 1) {
+			/* throw or generate exception */
+			throw new Exception("No Mapping provided.");
+		} else {
+			/* everything alright -> start transformation */
+			DefaultCstServiceBridge cst = new DefaultCstServiceBridge();
+			cst.setOutputDir("file:/"+temp);
+
+			String outputFile = cst.transform("file:/"+temp+"TargetXmlSchemaDefinition_1", "file:/"+temp+"Mapping_1", "file:/"+temp+"SourceData_1");
+			
+			ExecuteResponse resp = new ExecuteResponse();
+			ProcessOutputs pOut = new ProcessOutputs();
+			OutputDataType data = new OutputDataType();
+			DataType type = new DataType();
+			ComplexDataType cData = new ComplexDataType();
+			StatusType statusType = new StatusType();
+			statusType.setProcessSucceeded("");
+//			statusType.setCreationTime(value) TODO add this information
+			
+			ProcessBriefType pbt = new ProcessBriefType();
+//			pbt.getProfile().add("profile");
+			
+			
+			cData.setEncoding("utf-8");
+			cData.setMimeType("text/xml");
+			FileReader fReader = new FileReader(outputFile.replace("file:/", ""));
+			BufferedReader reader = new BufferedReader(fReader);
+			String txt;
+			String xml = "";
+			while ((txt = reader.readLine()) != null) {
+				xml += txt+"\n";
+			}
+			cData.getContent().add(xml); // TODO remove with loaded xml/check why < and > are removed with html entities
+			
+			type.setComplexData(cData);
+			data.setData(type);
+			
+			LanguageStringType lst = new LanguageStringType();
+			lst.setValue("translate");
+			data.getTitle().add(lst);
+//			data.getAbstract().add(lst);
+
+			pOut.getOutput().add(data);
+			resp.setProcessOutputs(pOut);
+			resp.setLang("en-CA");
+			resp.setService("WPS");
+			resp.setVersion("1.0.0");
+			resp.setProcess(pbt);
+			resp.setStatus(statusType);
+//			resp.setServiceInstance("url.of.getcapabilities.wps"); // FIXME set to a real URL from GetCapabilities
+			
+			Marshaller marshaller = context.createMarshaller();
+			marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
+					new NamespacePrefixMapperImpl());
+			marshaller.marshal(resp, writer);
 		}
 	}
 
