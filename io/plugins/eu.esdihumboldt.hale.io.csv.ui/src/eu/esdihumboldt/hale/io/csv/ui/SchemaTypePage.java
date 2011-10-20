@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -87,6 +86,9 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	private Integer index;
 	private Boolean valid = true;
 	private Boolean isValid = true;
+	private ScrolledComposite sc;
+	private int dynY = 0;
+	private int predynY = 0;
 	private static final ALogger log = ALoggerFactory
 			.getLogger(PropertyTypeExtension.class);
 
@@ -262,8 +264,6 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 									if (event.getProperty().equals(
 											StringFieldEditor.IS_VALID)) {
 										isValid = (Boolean)event.getNewValue();
-//										setPageComplete(((Boolean) event
-//												.getNewValue()) && valid);
 									}
 									setPageComplete(isValid && valid);
 
@@ -371,9 +371,14 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 								geom.setLayout(new GridLayout(3, false));
 								geom.layout();
+								dynY = geom.getSize().y;
+								sc.setMinHeight(sc.getSize().y + dynY);
+								dynY = 0;
+								
 								geom.getParent().layout(true, true);
 							} else if (map.get(i) != null && map.get(i) == true) {
 								index = geoNameFields.indexOf(geomap.get(i));
+								predynY = geom.getSize().y;
 
 								geoNameFields.get(index).dispose();
 								geoNameFields.get(index).getTextControl(geom)
@@ -382,7 +387,19 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 										.dispose();
 
 								geoComboFields.get(index).getCombo().dispose();
-
+								
+								geom.layout();
+								
+								geom.getParent().layout(true, true);
+								
+								// adjust the size of the scroll bar
+								dynY = geom.getSize().y;
+								int temp = predynY - dynY;
+								int tempY = sc.getMinHeight();
+								sc.setMinHeight(tempY - temp);
+								dynY = 0;
+								predynY = 0;
+								
 								geoNameFields.set(index, null);
 								geoComboFields.set(index, null);
 								map.put(i, false);
@@ -434,15 +451,15 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	 */
 	@Override
 	protected void createContent(Composite parent) {
-		// ScrolledComposite in development
-		ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
+		
+		sc = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL);
 		
 		sc.setExpandVertical(true);
 		sc.setExpandHorizontal(true);
-		sc.setMinSize(200, 200);
-		sc.setLayout(new FillLayout());
+		sc.setMinWidth(parent.getSize().x);
+		sc.setMinHeight(parent.getSize().y);
+		
 		Composite page = new Composite(sc, SWT.NONE);
-		sc.setContent(page);
 		page.setLayout(new GridLayout(2, false));
 
 		sfe = new TypeNameField("typename", "Typename", page);
@@ -474,6 +491,8 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				.span(2, 1).create());
 		geom.setLayout(GridLayoutFactory.swtDefaults().numColumns(3)
 				.equalWidth(false).margins(5, 5).create());
+		
+		sc.setContent(page);
 
 		setPageComplete(sfe.isValid());
 	}
