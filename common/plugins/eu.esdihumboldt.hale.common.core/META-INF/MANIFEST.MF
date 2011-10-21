@@ -6,7 +6,6 @@ Bundle-Version: 2.5.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.core.internal.CoreBundle
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/ZipProjectReader.xml, OSGI-INF/ZipProjectWriter.xml
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect,
  com.google.common.io;version="1.6.0",
@@ -27,17 +26,13 @@ Export-Package: eu.esdihumboldt.hale.common.core.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.extension,
  eu.esdihumboldt.hale.common.core.io.impl,
- eu.esdihumboldt.hale.common.core.io.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.core.io.project,
  eu.esdihumboldt.hale.common.core.io.project.impl,
  eu.esdihumboldt.hale.common.core.io.project.model,
  eu.esdihumboldt.hale.common.core.io.project.model.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.core.io.report,
  eu.esdihumboldt.hale.common.core.io.report.impl,
- eu.esdihumboldt.hale.common.core.io.service,
- eu.esdihumboldt.hale.common.core.io.service.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.core.io.supplier,
- eu.esdihumboldt.hale.common.core.io.tester,
  eu.esdihumboldt.hale.common.core.io.util,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.core.report.impl,

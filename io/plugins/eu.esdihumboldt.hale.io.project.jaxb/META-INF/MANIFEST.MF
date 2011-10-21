@@ -4,7 +4,6 @@ Bundle-Name: Support for legacy HALE projects based on JAXB
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.project.jaxb;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/ProjectParser.xml
 Import-Package: com.google.common.io;version="1.6.0",
  de.cs3d.util.eclipse.extension,
  de.cs3d.util.logging,
@@ -16,7 +15,6 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.common.core.io.report,
  eu.esdihumboldt.hale.common.core.io.report.impl,
  eu.esdihumboldt.hale.common.core.io.supplier,
- eu.esdihumboldt.hale.common.core.io.tester,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.schema.io,
