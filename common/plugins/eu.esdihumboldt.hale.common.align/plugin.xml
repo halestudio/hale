@@ -60,5 +60,24 @@
             name="Java transformation functions">
       </engine>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            id="eu.esdihumboldt.hale.io.align.read"
+            name="Load alignment"
+            type="eu.esdihumboldt.hale.common.align.io.AlignmentReader">
+         <dependsOn
+               action="eu.esdihumboldt.hale.io.schema.read.source">
+         </dependsOn>
+         <dependsOn
+               action="eu.esdihumboldt.hale.io.schema.read.target">
+         </dependsOn>
+      </action>
+      <action
+            id="eu.esdihumboldt.hale.io.align.write"
+            name="Save alignment"
+            type="eu.esdihumboldt.hale.common.align.io.AlignmentWriter">
+      </action>
+   </extension>
 
 </plugin>

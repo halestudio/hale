@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.common.align.io.internal;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
@@ -41,7 +42,7 @@ public class AlignmentBean {
 	 * Create a bean for the given alignment
 	 * @param alignment the alignment
 	 */
-	public AlignmentBean(MutableAlignment alignment) {
+	public AlignmentBean(Alignment alignment) {
 		super();
 		
 		// populate bean from alignment
