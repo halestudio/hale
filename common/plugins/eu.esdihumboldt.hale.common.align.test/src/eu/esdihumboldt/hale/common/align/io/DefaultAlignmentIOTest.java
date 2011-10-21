@@ -129,11 +129,11 @@ public class DefaultAlignmentIOTest {
 		File alignmentFile = tmp.newFile("alignment.xml");
 		System.out.println(alignmentFile.getAbsolutePath());
 		
-		AlignmentIO.save(align, new FileOutputStream(alignmentFile));
+		DefaultAlignmentIO.save(align, new FileOutputStream(alignmentFile));
 		
 		// load alignment
 		//TODO use and check reporter?
-		MutableAlignment align2 = AlignmentIO.load(new FileInputStream(
+		MutableAlignment align2 = DefaultAlignmentIO.load(new FileInputStream(
 				alignmentFile), null, source, target);
 		
 		// compare loaded alignment

@@ -25,7 +25,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.junit.Test;
 
-import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
+import eu.esdihumboldt.hale.common.align.io.DefaultAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Transformation;
 import eu.esdihumboldt.hale.common.align.transformation.service.AlignmentProcessor;
@@ -77,7 +77,7 @@ public class DefaultAlignmentProcessorTest {
 
 		// load alignment
 		IOReporter reporter = null; //FIXME use report?!
-		return AlignmentIO.load(alignmentLocation.toURL().openStream(), reporter , 
+		return DefaultAlignmentIO.load(alignmentLocation.toURL().openStream(), reporter , 
 				source, target);
 	}
 	
