@@ -15,32 +15,20 @@ package eu.esdihumboldt.hale.common.core.internal;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.core.io.service.ContentTypeService;
-import eu.esdihumboldt.hale.common.core.io.service.internal.ContentTypeTracker;
-
 /**
  * Bundle activator
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
+ * @since 2.5
  */
 public class CoreBundle implements BundleActivator {
-	
-	private ContentTypeTracker contentTypeService;
 	
 	/**
 	 * @see BundleActivator#start(BundleContext)
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
-		contentTypeService = new ContentTypeTracker();
-		// start tracking content types
-		contentTypeService.start(context);
-		// register service
-		OsgiUtils.registerService(ContentTypeService.class, contentTypeService);
-		
 		// stuff to allow class loading FIXME move to osgi utils
 		this.context = context;
 	}
@@ -50,10 +38,7 @@ public class CoreBundle implements BundleActivator {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		// unregister service
-		OsgiUtils.unregisterService(contentTypeService);
-		// stop tracking content types
-		contentTypeService.stop();
+		// do nothing
 	}
 	
 	private BundleContext context;

@@ -299,7 +299,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				// no FeatureCollection defined and "old" namespace -> GML 2
 				// include WFS 1.0.0 for the FeatureCollection element
 				try {
-					URI location = getClass().getResource("/schemas/wfs/1.0.0/WFS-basic.xsd").toURI(); //$NON-NLS-1$
+					URI location = StreamGmlWriter.class.getResource("/schemas/wfs/1.0.0/WFS-basic.xsd").toURI(); //$NON-NLS-1$
 					Schema wfsSchema = new ApacheSchemaProvider().loadSchema(location, null);
 					// replace location for verification
 					wfsSchema = new Schema(wfsSchema.getElements(), wfsSchema.getNamespace(), 
