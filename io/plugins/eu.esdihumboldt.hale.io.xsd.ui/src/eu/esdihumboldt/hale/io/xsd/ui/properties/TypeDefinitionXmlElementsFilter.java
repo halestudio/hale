@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.io.xsd.ui.properties;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
