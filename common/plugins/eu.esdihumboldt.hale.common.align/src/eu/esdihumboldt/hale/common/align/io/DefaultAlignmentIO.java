@@ -29,6 +29,7 @@ import org.exolab.castor.xml.XMLContext;
 import org.xml.sax.InputSource;
 
 import eu.esdihumboldt.hale.common.align.io.internal.AlignmentBean;
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
@@ -37,7 +38,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * Save or load an alignment
  * @author Simon Templer
  */
-public class AlignmentIO {
+public class DefaultAlignmentIO {
 	
 	/**
 	 * Load a default alignment from an input stream.
@@ -83,7 +84,7 @@ public class AlignmentIO {
 	 * @throws MarshalException if the alignment could not be marshaled 
 	 * @throws IOException if the output could not be written 
 	 */
-	public static void save(MutableAlignment alignment, OutputStream out) throws MappingException, MarshalException, ValidationException, IOException {
+	public static void save(Alignment alignment, OutputStream out) throws MappingException, MarshalException, ValidationException, IOException {
 		AlignmentBean bean = new AlignmentBean(alignment);
 		
 		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
