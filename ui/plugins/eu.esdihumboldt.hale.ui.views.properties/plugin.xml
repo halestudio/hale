@@ -152,7 +152,7 @@
          <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionNameSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.AbstractChildDefinitionFilter"
+               filter="eu.esdihumboldt.hale.ui.views.properties.ChildDefinitionDefaultFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.name"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input

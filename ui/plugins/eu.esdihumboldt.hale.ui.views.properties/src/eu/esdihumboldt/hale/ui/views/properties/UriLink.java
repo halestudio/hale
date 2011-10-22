@@ -50,6 +50,7 @@ public class UriLink{
 	}
 	
 	/**
+	 * Refresh the UriLink with the given URI
 	 * @param uri the URI of the of the file
 	 */
 	public void refresh(URI uri){
@@ -66,6 +67,7 @@ public class UriLink{
 		return link;
 	}
 
+	// create the the SelectionAdapter for the UriLink
 	private SelectionAdapter createDefaultSelectionAdapter(final URI uri){
 		return new SelectionAdapter(){
 			
@@ -75,6 +77,7 @@ public class UriLink{
 				return new URI(uristring);
 			}
 
+			// the URI has to be an existing file on the local drive or on a server
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				URI newuri = uri;
@@ -90,7 +93,6 @@ public class UriLink{
 					if(uri.toString().contains("#")){
 						newuri =  removeFragment(uri);
 					}
-					// works only on files
 					File file = new File(newuri);
 					if(file.exists()){
 						try {
@@ -110,7 +112,7 @@ public class UriLink{
 						}
 					}
 				} catch (URISyntaxException e1) {
-					//
+					// do nothing
 				}
 			}
 		};
