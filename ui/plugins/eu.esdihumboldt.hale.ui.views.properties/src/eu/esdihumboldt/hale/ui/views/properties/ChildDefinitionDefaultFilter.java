@@ -10,31 +10,33 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.typedefinition;
+package eu.esdihumboldt.hale.ui.views.properties;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
- * Filter that lets only {@link TypeDefinition}s with enumeration values which
- * are not <code>null</code> pass.
- * 
+ * Filter that lets only {@link ChildDefinition}s with a ParentType that is
+ * defined pass.
  * @author Patrick Lieb
  */
-public class TypeDefinitionEnumerationFilter extends DefaultFilter {
+public class ChildDefinitionDefaultFilter extends DefaultFilter{
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
 	 */
 	@Override
 	public boolean isFiltered(EntityDefinition input) {
-		if (input instanceof TypeEntityDefinition) {
-			return ((TypeEntityDefinition) input).getDefinition()
-					.getConstraint(Enumeration.class).getValues() == null;
+		if (input instanceof PropertyEntityDefinition) {
+			try {
+				((PropertyEntityDefinition) input).getDefinition().getParentType();
+			} catch(IllegalStateException e){
+				return true;
+			}
+			return false;
 		}
 		return true;
 	}
@@ -44,9 +46,13 @@ public class TypeDefinitionEnumerationFilter extends DefaultFilter {
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {
-		if (input instanceof TypeDefinition) {
-			return ((TypeDefinition) input).getConstraint(Enumeration.class)
-					.getValues() == null;
+		if (input instanceof PropertyDefinition) {
+			try {
+				((PropertyDefinition) input).getParentType();
+			} catch(IllegalStateException e){
+				return true;
+			}
+			return false;
 		}
 		return true;
 	}

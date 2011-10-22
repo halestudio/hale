@@ -20,7 +20,7 @@
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.location"
                class="eu.esdihumboldt.hale.ui.views.typehierarchy.properties.ChildDefinitionTypeHierarchyViewSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.AbstractChildDefinitionFilter"
+               filter="eu.esdihumboldt.hale.ui.views.properties.ChildDefinitionDefaultFilter"
                id="eu.esdihumboldt.hale.ui.views.typehierarchy.parenttype.link"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input
