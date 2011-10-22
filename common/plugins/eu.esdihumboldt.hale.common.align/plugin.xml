@@ -79,5 +79,41 @@
             type="eu.esdihumboldt.hale.common.align.io.AlignmentWriter">
       </action>
    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="align,xml"
+            id="eu.esdihumboldt.hale.io.align.default"
+            name="HALE alignment"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="hale-alignment">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.common.align.io.impl.DefaultAlignmentReader"
+            id="eu.esdihumboldt.hale.io.align.default.reader"
+            name="HALE alignment">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.align.default">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.align.io.impl.DefaultAlignmentWriter"
+            id="eu.esdihumboldt.hale.io.align.default.writer"
+            name="HALE alignment">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.align.default">
+         </contentType>
+      </provider>
+   </extension>
 
 </plugin>
