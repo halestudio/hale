@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.io;
+package eu.esdihumboldt.hale.common.align.io.impl;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import org.exolab.castor.xml.ValidationException;
 import org.exolab.castor.xml.XMLContext;
 import org.xml.sax.InputSource;
 
-import eu.esdihumboldt.hale.common.align.io.internal.AlignmentBean;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.AlignmentBean;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;

@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.io.internal;
+package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
