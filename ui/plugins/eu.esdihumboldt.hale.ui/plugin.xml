@@ -85,6 +85,13 @@
                priorityLevel="workbench">
          </variable>
       </sourceProvider>
+      <sourceProvider
+            provider="eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceSource">
+         <variable
+               name="hale.alignment.has_cells"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.action">
@@ -106,7 +113,7 @@
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.instance.read.source"
-            id="eu.esdihumboldt.hale.ui.io.instance.source"
+            id="eu.esdihumboldt.hale.io.instance.read.source.ui"
             label="Source data..."
             priority="-6"
             projectResource="true"
@@ -114,6 +121,46 @@
          <enabledWhen>
             <with
                   variable="hale.schemas.has_source">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
+      </action-ui>
+      <action-ui
+            action="eu.esdihumboldt.hale.io.align.read"
+            id="eu.esdihumboldt.hale.io.align.read.ui"
+            label="Alignment..."
+            priority="0"
+            projectResource="false"
+            wizard="eu.esdihumboldt.hale.ui.io.align.AlignmentImportWizard">
+         <enabledWhen>
+            <and>
+               <with
+                     variable="hale.schemas.has_source">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.schemas.has_target">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </and>
+         </enabledWhen>
+      </action-ui>
+      <action-ui
+            action="eu.esdihumboldt.hale.io.align.write"
+            id="eu.esdihumboldt.hale.io.align.write.ui"
+            label="Alignment..."
+            priority="0"
+            projectResource="false"
+            wizard="eu.esdihumboldt.hale.ui.io.align.AlignmentExportWizard">
+         <enabledWhen>
+            <with
+                  variable="hale.alignment.has_cells">
                <equals
                      value="true">
                </equals>
@@ -163,6 +210,16 @@
             action="eu.esdihumboldt.hale.io.instance.read.source"
             class="eu.esdihumboldt.hale.ui.io.instance.InstanceImportAdvisor"
             id="eu.esdihumboldt.hale.ui.io.instance.read.source">
+      </advisor>
+      <advisor
+            action="eu.esdihumboldt.hale.io.align.read"
+            class="eu.esdihumboldt.hale.ui.io.align.AlignmentImportAdvisor"
+            id="eu.esdihumboldt.hale.ui.io.align.read">
+      </advisor>
+      <advisor
+            action="eu.esdihumboldt.hale.io.align.write"
+            class="eu.esdihumboldt.hale.ui.io.align.AlignmentExportAdvisor"
+            id="eu.esdihumboldt.hale.ui.io.align.write">
       </advisor>
    </extension>
 

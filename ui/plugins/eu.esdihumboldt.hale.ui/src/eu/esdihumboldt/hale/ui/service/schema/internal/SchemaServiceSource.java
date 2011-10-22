@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.5
  */
 public class SchemaServiceSource extends AbstractSourceProvider {
 

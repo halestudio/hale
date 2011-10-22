@@ -59,7 +59,7 @@ public class DefaultAlignmentReader extends AbstractAlignmentReader {
 
 		InputStream in = getSource().getInput();
 		try {
-			DefaultAlignmentIO.load(in , reporter, getTargetSchema(), 
+			alignment = DefaultAlignmentIO.load(in , reporter, getSourceSchema(), 
 					getTargetSchema());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
