@@ -12,12 +12,19 @@
 
 package eu.esdihumboldt.hale.common.core.io.extension;
 
+import java.text.MessageFormat;
+import java.util.List;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.AbstractExtension;
 import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import de.cs3d.util.eclipse.extension.FactoryFilter;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 
 /**
@@ -75,6 +82,8 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 
 	}
 	
+	private static final ALogger log = ALoggerFactory.getLogger(IOAdvisorExtension.class);
+	
 	private static IOAdvisorExtension instance;
 	
 	/**
@@ -105,6 +114,50 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 			return new ConfigurationFactory(conf);
 		}
 		return null;
+	}
+	
+	/**
+	 * Find the advisor for an action
+	 * @param actionId the action identifier
+	 * @return the advisor or <code>null</code>
+	 */
+	public IOAdvisor<?> findAdvisor(final String actionId) {
+		// find associated advisor(s)
+		List<IOAdvisorFactory> advisors = getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
+			
+			@Override
+			public boolean acceptFactory(IOAdvisorFactory factory) {
+				return factory.getActionID().equals(actionId);
+			}
+			
+			@Override
+			public boolean acceptCollection(
+					ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
+				return true;
+			}
+		});
+		
+		// create advisor if possible
+		IOAdvisor<?> advisor;
+		if (advisors == null || advisors.isEmpty()) {
+			throw new IllegalStateException(MessageFormat.format(
+					"No advisor for action {0} found", actionId));
+		}
+		else {
+			if (advisors.size() > 1) {
+				log.warn(MessageFormat.format(
+						"Multiple advisors for action {0} found", 
+						actionId));
+			}
+			
+			try {
+				advisor = advisors.get(0).createExtensionObject();
+			} catch (Exception e) {
+				log.error("Error creating advisor instance", e);
+				advisor = null;
+			}
+		}
+		return advisor;
 	}
 
 }

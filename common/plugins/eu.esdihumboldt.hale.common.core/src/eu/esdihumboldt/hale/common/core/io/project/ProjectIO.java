@@ -12,6 +12,14 @@
 
 package eu.esdihumboldt.hale.common.core.io.project;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileExtension;
+import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileFactory;
+import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+
 /**
  * Common utilities and constants regarding project I/O
  * @author Simon Templer
@@ -27,5 +35,21 @@ public abstract class ProjectIO {
 	 * Name of the internal project file
 	 */
 	public static final String PROJECT_FILE = "project.xml";
+	
+	/**
+	 * Create a set of default project files for use with {@link ProjectReader}
+	 * and {@link ProjectWriter}
+	 * @return the default project files
+	 */
+	public static Map<String, ProjectFile> createDefaultProjectFiles() {
+		Map<String, ProjectFile> result = new HashMap<String, ProjectFile>();
+		
+		Collection<ProjectFileFactory> elements = ProjectFileExtension.getInstance().getElements();
+		for (ProjectFileFactory element : elements) {
+			result.put(element.getId(), element.createProjectFile());
+		}
+		
+		return result;
+	}
 
 }

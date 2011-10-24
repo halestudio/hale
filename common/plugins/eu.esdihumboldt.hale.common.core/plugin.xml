@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="eu.esdihumboldt.hale.io.provider" name="I/O providers" schema="schema/eu.esdihumboldt.hale.io.provider.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.io.action" name="I/O actions and advisors" schema="schema/eu.esdihumboldt.hale.io.action.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.io.project" name="Project extensions" schema="schema/eu.esdihumboldt.hale.io.project.exsd"/>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type

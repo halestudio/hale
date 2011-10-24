@@ -150,11 +150,6 @@ public class Project implements ProjectInfo {
 	private final Map<String, String> properties = new HashMap<String, String>();
 	
 	/**
-	 * File names and classes of additional project files
-	 */
-	private final Map<String, Class<? extends ProjectFile>> files = new HashMap<String, Class<? extends ProjectFile>>();
-	
-	/**
 	 * @return the configurations
 	 */
 	public List<IOConfiguration> getResources() {
@@ -241,13 +236,6 @@ public class Project implements ProjectInfo {
 	 */
 	public Map<String, String> getProperties() {
 		return properties;
-	}
-
-	/**
-	 * @return the files
-	 */
-	public Map<String, Class<? extends ProjectFile>> getFiles() {
-		return files;
 	}
 
 	/**
