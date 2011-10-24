@@ -1,36 +1,36 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?p2f version='1.0.0'?>
 <p2f version='1.0.0'>
-  <ius size='27'>
+  <ius size='21'>
     <iu id='de.loskutov.BytecodeOutline.feature.feature.group' name='Bytecode Outline' version='2.3.1'>
       <repositories size='1'>
         <repository location='http://andrei.gmxhome.de/eclipse'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.egit.feature.group' name='Eclipse EGit' version='1.0.0.201106090707-r'>
+    <iu id='com.tetrade.eclipse.plugins.easyshell.feature.feature.group' name='Easy Shell Feature' version='1.3.5'>
       <repositories size='1'>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://pluginbox.sourceforge.net'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.sdk.ide' name='Eclipse SDK' version='3.7.0.I20110613-1736'>
-      <repositories size='2'>
+    <iu id='org.eclipse.egit.feature.group' name='Eclipse EGit' version='1.1.0.201109151100-r'>
+      <repositories size='3'>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
+        <repository location='http://download.eclipse.org/egit/updates'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.jgit.feature.group' name='Eclipse JGit' version='1.1.0.201109151100-r'>
+      <repositories size='3'>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
+        <repository location='http://download.eclipse.org/egit/updates'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.rcp.source.feature.group' name='Eclipse RCP Plug-in Developer Resources' version='3.7.1.r37x_v20110729-9DB5FmNFnFLSFCtLxnRfMqt15A4A'>
+      <repositories size='3'>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
         <repository location='http://download.eclipse.org/eclipse/updates/3.7'/>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
-      </repositories>
-    </iu>
-    <iu id='org.eclipse.wst.web_ui.feature.feature.group' name='Eclipse Web Developer Tools' version='3.3.0.v201102200555-7O7IFhJEMiB5vNMYta56_GonLeahqrwnYjv2mBz-'>
-      <repositories size='1'>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
-      </repositories>
-    </iu>
-    <iu id='org.eclipse.wst.xml_ui.feature.feature.group' name='Eclipse XML Editors and Tools' version='3.3.0.v201103310011-7H7EFZ-DxumTla66ahfUnHfpsz0u5Z92pU4TxSL'>
-      <repositories size='1'>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
-      </repositories>
-    </iu>
-    <iu id='org.eclipse.egit.mylyn.feature.group' name='EGit Mylyn' version='1.0.0.201106090707-r'>
-      <repositories size='1'>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
       </repositories>
     </iu>
     <iu id='edu.umd.cs.findbugs.plugin.eclipse.feature.group' name='FindBugs Feature' version='1.3.9.20090821'>
@@ -43,59 +43,44 @@
         <repository location='http://javadude.googlecode.com/svn/trunk/com.javadude.updatesite'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.epp.mpc.feature.group' name='Marketplace Client' version='1.1.0.I20110525-0742'>
+    <iu id='jd.edi.eclipse.feature.feature.group' name='JD-Eclipse Plug-in' version='0.1.3'>
       <repositories size='1'>
+        <repository location='http://java.decompiler.free.fr/jd-eclipse/update'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.mylyn.builds.feature.group' name='Mylyn Builds (Incubation)' version='0.8.2.v20110908-0706'>
+      <repositories size='4'>
         <repository location='http://download.eclipse.org/releases/indigo'/>
-      </repositories>
-    </iu>
-    <iu id='org.eclipse.mylyn.builds.feature.group' name='Mylyn Builds (Incubation)' version='0.8.0.v20110608-1400'>
-      <repositories size='2'>
         <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
-        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
+        <repository location='http://download.eclipse.org/mylyn/releases/indigo'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.mylyn.hudson.feature.group' name='Mylyn Builds Connector: Hudson/Jenkins (Incubation)' version='0.8.0.v20110608-1400'>
-      <repositories size='2'>
+    <iu id='org.eclipse.mylyn.hudson.feature.group' name='Mylyn Builds Connector: Hudson/Jenkins (Incubation)' version='0.8.1.v20110728-0200'>
+      <repositories size='5'>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
         <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
-        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
+        <repository location='http://download.eclipse.org/mylyn/releases/indigo'/>
       </repositories>
     </iu>
-    <iu id='net.sf.redmine_mylyn.feature.feature.group' name='Mylyn Connector: Redmine' version='0.3.2.201108282058'>
+    <iu id='net.sf.redmine_mylyn.feature.feature.group' name='Mylyn Connector: Redmine' version='0.3.4.201109150625'>
       <repositories size='1'>
         <repository location='http://redmin-mylyncon.sourceforge.net/update-site/N/'/>
       </repositories>
     </iu>
-    <iu id='net.sf.redmine_mylyn.extensions.feature.feature.group' name='Mylyn Connector: Redmine - Redmine-Plugin-Support' version='0.1.0.201108282058'>
+    <iu id='net.sf.redmine_mylyn.extensions.feature.feature.group' name='Mylyn Connector: Redmine - Redmine-Plugin-Support' version='0.1.0.201109150625'>
       <repositories size='1'>
         <repository location='http://redmin-mylyncon.sourceforge.net/update-site/N/'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.mylyn.ide_feature.feature.group' name='Mylyn Context Connector: Eclipse IDE' version='3.6.0.v20110608-1400'>
-      <repositories size='3'>
-        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+    <iu id='org.eclipse.mylyn.pde_feature.feature.group' name='Mylyn Context Connector: Plug-in Development' version='3.6.2.v20110908-0706'>
+      <repositories size='4'>
         <repository location='http://download.eclipse.org/releases/indigo'/>
-        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
-      </repositories>
-    </iu>
-    <iu id='org.eclipse.mylyn.java_feature.feature.group' name='Mylyn Context Connector: Java Development' version='3.6.0.v20110608-1400'>
-      <repositories size='3'>
         <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
-        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
-      </repositories>
-    </iu>
-    <iu id='org.eclipse.mylyn.pde_feature.feature.group' name='Mylyn Context Connector: Plug-in Development' version='3.6.0.v20110608-1400'>
-      <repositories size='3'>
-        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
-        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
-      </repositories>
-    </iu>
-    <iu id='org.eclipse.mylyn.team_feature.feature.group' name='Mylyn Context Connector: Team Support' version='3.6.0.v20110608-1400'>
-      <repositories size='3'>
-        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
-        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
+        <repository location='http://download.eclipse.org/mylyn/releases/indigo'/>
       </repositories>
     </iu>
     <iu id='org.eclipse.mylyn.reviews.feature.feature.group' name='Mylyn Reviews (Incubation)' version='0.8.0.v20110608-1400'>
@@ -108,49 +93,42 @@
         <repository location='http://download.eclipse.org/reviews/updates'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.mylyn_feature.feature.group' name='Mylyn Task List' version='3.6.0.v20110608-1400'>
-      <repositories size='3'>
-        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+    <iu id='org.eclipse.mylyn.versions.feature.group' name='Mylyn Versions (Incubation)' version='0.8.2.v20110908-0706'>
+      <repositories size='4'>
         <repository location='http://download.eclipse.org/releases/indigo'/>
-        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
+        <repository location='http://download.eclipse.org/mylyn/releases/indigo'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.mylyn.context_feature.feature.group' name='Mylyn Task-Focused Interface' version='3.6.0.v20110608-1400'>
-      <repositories size='3'>
-        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
-        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
-      </repositories>
-    </iu>
-    <iu id='org.eclipse.mylyn.versions.feature.group' name='Mylyn Versions (Incubation)' version='0.8.0.v20110608-1400'>
+    <iu id='org.eclipse.wb.core.feature.feature.group' name='WindowBuilder Core' version='1.1.0.r37x201109091012'>
       <repositories size='2'>
-        <repository location='http://download.eclipse.org/mylyn/releases/latest'/>
-        <repository location='http://tasktop.com/downloads/discovery/update-3.6'/>
+        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.wb.core.feature.feature.group' name='WindowBuilder Core' version='1.0.0.r37x201106081531'>
-      <repositories size='1'>
+    <iu id='org.eclipse.wb.doc.user.feature.feature.group' name='WindowBuilder Core Documentation' version='1.1.0.r37x201109091024'>
+      <repositories size='2'>
         <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.wb.doc.user.feature.feature.group' name='WindowBuilder Core Documentation' version='1.0.0.r37x201106081535'>
-      <repositories size='1'>
+    <iu id='org.eclipse.wb.core.ui.feature.feature.group' name='WindowBuilder Core UI' version='1.1.0.r37x201109091028'>
+      <repositories size='2'>
         <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
       </repositories>
     </iu>
-    <iu id='org.eclipse.wb.core.ui.feature.feature.group' name='WindowBuilder Core UI' version='1.0.0.r37x201106081733'>
-      <repositories size='1'>
+    <iu id='org.eclipse.wb.layout.group.feature.feature.group' name='WindowBuilder GroupLayout Support' version='1.1.0.r37x201109091112'>
+      <repositories size='2'>
         <repository location='http://download.eclipse.org/releases/indigo'/>
-      </repositories>
-    </iu>
-    <iu id='org.eclipse.wb.layout.group.feature.feature.group' name='WindowBuilder GroupLayout Support' version='1.0.0.r37x201106081642'>
-      <repositories size='1'>
-        <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
       </repositories>
     </iu>
     <iu id='org.eclipse.wb.core.xml.feature.feature.group' name='WindowBuilder XML Core' version='1.0.0.r37x201106081533'>
-      <repositories size='1'>
+      <repositories size='2'>
         <repository location='http://download.eclipse.org/releases/indigo'/>
+        <repository location='http://marketplace.eclipse.org/repo/'/>
       </repositories>
     </iu>
   </ius>
