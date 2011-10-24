@@ -12,8 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.io.action;
 
-import java.text.MessageFormat;
-import java.util.List;
+import static com.google.common.base.Preconditions.checkState;
 
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.jface.action.Action;
@@ -29,13 +28,10 @@ import org.eclipse.ui.services.IEvaluationService;
 import de.cs3d.ui.util.eclipse.extension.AbstractExtensionContribution;
 import de.cs3d.ui.util.eclipse.extension.AbstractFactoryAction;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
-import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
-import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
-import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
@@ -85,36 +81,9 @@ public class ActionUIContribution extends
 				// retrieve action ID
 				final String actionId = getFactory().getActionID();
 				
-				// find associated advisor(s)
-				List<IOAdvisorFactory> advisors = IOAdvisorExtension.getInstance().getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
-					
-					@Override
-					public boolean acceptFactory(IOAdvisorFactory factory) {
-						return factory.getActionID().equals(actionId);
-					}
-					
-					@Override
-					public boolean acceptCollection(
-							ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
-						return true;
-					}
-				});
-				
-				// create advisor if possible
-				IOAdvisor<?> advisor;
-				if (advisors == null || advisors.isEmpty()) {
-					throw new IllegalStateException(MessageFormat.format(
-							"No advisor for action {0} found", actionId));
-				}
-				else {
-					if (advisors.size() > 1) {
-						log.warn(MessageFormat.format(
-								"Multiple advisors for action {0} found", 
-								actionId));
-					}
-					
-					advisor = advisors.get(0).createExtensionObject();
-				}
+				// find associated advisor
+				IOAdvisor<?> advisor = IOAdvisorExtension.getInstance().findAdvisor(actionId);
+				checkState(advisor != null, "No advisor for action found");
 				
 				// create wizard
 				IOWizard<?> wizard = getFactory().createExtensionObject();

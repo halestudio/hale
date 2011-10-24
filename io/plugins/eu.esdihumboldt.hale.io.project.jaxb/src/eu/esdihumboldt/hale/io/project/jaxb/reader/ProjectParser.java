@@ -89,6 +89,14 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 	}
 
 	/**
+	 * @see ProjectReader#setProjectFiles(Map)
+	 */
+	@Override
+	public void setProjectFiles(Map<String, ProjectFile> projectFiles) {
+		this.projectFiles = projectFiles;
+	}
+
+	/**
 	 * @see ProjectReader#getProjectFiles()
 	 */
 	@Override
@@ -330,6 +338,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 	private void loadAlignment(HaleProject haleProject, String basePath) {
 		if (haleProject.getOmlPath() != null && !haleProject.getOmlPath().isEmpty()) {
 			URI omlPath = getLocation(haleProject.getOmlPath(), basePath);
+			//XXX how to handle project files?
 			//TODO create OML Alignment ProjectFile
 			
 //			try {

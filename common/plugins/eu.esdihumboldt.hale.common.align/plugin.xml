@@ -115,5 +115,18 @@
          </contentType>
       </provider>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.project">
+      <action-file
+            name="alignment.xml">
+         <load
+               action="eu.esdihumboldt.hale.io.align.read">
+         </load>
+         <save
+               action="eu.esdihumboldt.hale.io.align.write"
+               provider="eu.esdihumboldt.hale.io.align.default.writer">
+         </save>
+      </action-file>
+   </extension>
 
 </plugin>

@@ -20,7 +20,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -57,6 +56,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
@@ -165,6 +165,15 @@ public class ProjectServiceImpl extends AbstractProjectService
 		openProjectAdvisor = new AbstractIOAdvisor<ProjectReader>() {
 			
 			@Override
+			public void updateConfiguration(ProjectReader provider) {
+				super.updateConfiguration(provider);
+				
+				// set project files
+				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles();
+				provider.setProjectFiles(projectFiles);
+			}
+
+			@Override
 			public void handleResults(ProjectReader provider) {
 				clean();
 				
@@ -188,8 +197,13 @@ public class ProjectServiceImpl extends AbstractProjectService
 				executeConfigurations(confs);
 				
 				// notify listeners
-				Map<String, ProjectFile> projectFiles = provider.getProjectFiles(); //TODO store somewhere for later use?
+				Map<String, ProjectFile> projectFiles = provider.getProjectFiles();
 				notifyAfterLoad(projectFiles);
+				// apply remaining project files
+				for (ProjectFile file : projectFiles.values()) {
+					//XXX do this in a Job or something?
+					file.apply();
+				}
 			}
 
 			// uses paths based on "/" in FilePathUpdate
@@ -267,7 +281,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 			public void updateConfiguration(ProjectWriter provider) {
 				provider.getProject().setModified(new Date());
 				provider.getProject().setHaleVersion(haleVersion);
-				Map<String, ProjectFile> projectFiles = new HashMap<String, ProjectFile>();
+				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles();
 				notifyBeforeSave(projectFiles); // get additional files from listeners
 				provider.setProjectFiles(projectFiles);
 			}

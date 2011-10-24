@@ -101,15 +101,6 @@ public class ZipProjectWriter extends AbstractExportProvider implements ProjectW
 		}
 		progress.begin("Save project", entries);
 		
-		// update project with file information
-		project.getFiles().clear();
-		if (projectFiles != null) {
-			for (Entry<String, ProjectFile> entry : projectFiles.entrySet()) {
-				// remember project file classes
-				project.getFiles().put(entry.getKey(), entry.getValue().getClass());
-			}
-		}
-		
 		ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(
 				getTarget().getOutput()));
 		try {

@@ -91,7 +91,6 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Load project", ProgressIndicator.UNKNOWN);
 		
-		projectFiles = new HashMap<String, ProjectFile>();
 		project = null;
 		
 		InputStream in = getSource().getInput();
@@ -112,40 +111,20 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 								"Source is no valid project file", e);
 					}
 				}
-				else if (project != null) {
-					Class<? extends ProjectFile> fileClass = project.getFiles().get(name);
-					if (fileClass != null) {
-						ProjectFile file;
+				else  {
+					ProjectFile file = projectFiles.get(name);
+					
+					if (file != null) {
 						try {
-							file = fileClass.newInstance();
+							file.load(new EntryInputStream(entry, zip));
 						} catch (Exception e) {
 							reporter.error(new IOMessageImpl(
-									"Could not create instance of project file class: {0}", 
-									e, fileClass.getName()));
-							file = null;
-						}
-						
-						if (file != null) {
-							try {
-								file.load(new EntryInputStream(entry, zip));
-							} catch (Exception e) {
-								reporter.error(new IOMessageImpl(
-										"Error while loading project file {0}, file will be reset.", 
-										e, name));
-								// reset file
-								file.reset();
-							}
-							
-							projectFiles.put(name, file);
+									"Error while loading project file {0}, file will be reset.", 
+									e, name));
+							// reset file
+							file.reset();
 						}
 					}
-					else {
-						reporter.error(new IOMessageImpl("Project file {0} has no associated class and cannot be loaded.", 
-								null, name));
-					}
-				}
-				else {
-					throw new IllegalStateException("Main project file must be first entry.");
 				}
 			}
 		} finally {
@@ -158,7 +137,15 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectReader#getProjectFiles()
+	 * @see ProjectReader#setProjectFiles(Map)
+	 */
+	@Override
+	public void setProjectFiles(Map<String, ProjectFile> projectFiles) {
+		this.projectFiles = projectFiles;
+	}
+
+	/**
+	 * @see ProjectReader#getProjectFiles()
 	 */
 	@Override
 	public Map<String, ProjectFile> getProjectFiles() {
@@ -166,7 +153,7 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectReader#getProject()
+	 * @see ProjectReader#getProject()
 	 */
 	@Override
 	public Project getProject() {
