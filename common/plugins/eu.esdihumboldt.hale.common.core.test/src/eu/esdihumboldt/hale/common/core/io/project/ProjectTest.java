@@ -71,10 +71,6 @@ public class ProjectTest {
 		conf1.setActionId(advisorId1 = "some advisor");
 		String providerId1;
 		conf1.setProviderId(providerId1 = "some provider");
-		String depend1;
-		conf1.getDependencies().add(depend1 = "some dependency");
-		String depend2;
-		conf1.getDependencies().add(depend2 = "some other dependency");
 		String key1;
 		String value1;
 		conf1.getProviderConfiguration().put(key1 = "some key", value1 = "some value");
@@ -114,9 +110,6 @@ public class ProjectTest {
 		
 		assertEquals(advisorId1, c1.getActionId());
 		assertEquals(providerId1, c1.getProviderId());
-		assertEquals(2, c1.getDependencies().size());
-		assertTrue(c1.getDependencies().contains(depend1));
-		assertTrue(c1.getDependencies().contains(depend2));
 		assertEquals(2, c1.getProviderConfiguration().size());
 		assertTrue(c1.getProviderConfiguration().get(key1).equals(value1));
 		assertTrue(c1.getProviderConfiguration().get(key2).equals(value2));

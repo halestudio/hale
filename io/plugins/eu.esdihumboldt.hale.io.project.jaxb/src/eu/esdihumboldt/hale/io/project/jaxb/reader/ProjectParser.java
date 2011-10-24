@@ -322,9 +322,6 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
 			//TODO default crs?
 			
-			// dependencies: source schema needed
-			conf.getDependencies().add(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA);
-			
 			// add configuration to project
 			project.getResources().add(conf);
 		}

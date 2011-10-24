@@ -49,11 +49,9 @@ import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
-import eu.esdihumboldt.hale.common.core.io.IOAction;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
-import eu.esdihumboldt.hale.common.core.io.extension.IOActionExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -663,10 +661,6 @@ public class ProjectServiceImpl extends AbstractProjectService
 		IOConfiguration conf = new IOConfiguration();
 		conf.setActionId(actionId);
 		conf.setProviderId(providerId);
-		IOAction action = IOActionExtension.getInstance().get(actionId);
-		if (action != null) {
-			conf.getDependencies().addAll(action.getDependencies());
-		}
 		provider.storeConfiguration(conf.getProviderConfiguration());
 		
 		// add configuration to project
