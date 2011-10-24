@@ -95,15 +95,5 @@
 				</class>
 			</bind-xml>
 		</field>
-		
-		<field name="dependencies" 
-			type="string" collection="set" required="false">
-
-			<bind-xml name="depends-on" node="element" />
-		</field>
-		
-		<!-- field name="providerType" type="string" handler="eu.esdihumboldt.hale.common.core.io.project.model.internal.OsgiClassFieldHandler" required="true">
-			<bind-xml name="provider-type" node="attribute" />
-		</field -->
 	</class>
 </mapping>

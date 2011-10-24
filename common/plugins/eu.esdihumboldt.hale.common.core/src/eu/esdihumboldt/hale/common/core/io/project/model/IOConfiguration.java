@@ -13,9 +13,7 @@
 package eu.esdihumboldt.hale.common.core.io.project.model;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
@@ -31,8 +29,6 @@ public class IOConfiguration {
 	private String providerId;
 	
 	private final Map<String, String> providerConfiguration = new HashMap<String, String>();
-	
-	private final Set<String> dependencies = new HashSet<String>();
 	
 	/**
 	 * @return the action ID
@@ -67,13 +63,6 @@ public class IOConfiguration {
 	 */
 	public Map<String, String> getProviderConfiguration() {
 		return providerConfiguration;
-	}
-
-	/**
-	 * @return the dependencies
-	 */
-	public Set<String> getDependencies() {
-		return dependencies;
 	}
 
 }
