@@ -150,8 +150,6 @@ public class ProjectServiceImpl extends AbstractProjectService
 	
 	private boolean changed = false;
 	
-	private String loc;		//added to get the location
-	
 	/**
 	 * Default constructor
 	 */
@@ -179,8 +177,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 				
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
-					loc = provider.getSource().getLocation().toASCIIString(); // for the location
-					updatePaths(main);
+					updatePaths(main, provider.getSource().getLocation());
 					projectFile = new File(provider.getSource().getLocation());
 					changed = false;
 					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
@@ -207,14 +204,18 @@ public class ProjectServiceImpl extends AbstractProjectService
 			}
 
 			// uses paths based on "/" in FilePathUpdate
-			private void updatePaths(Project main) {
-				FilePathUpdate update = new FilePathUpdate();
+			private void updatePaths(Project main, URI newProjectLoc) {
 				IOConfiguration saveconfig = main.getSaveConfiguration();
 				if(saveconfig == null)
 					return;
+				//FIXME use URI instead of String where possible
 				String exptargetfile = saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET);
 				String exptarget = exptargetfile.substring(0, exptargetfile.lastIndexOf("/"));
+				String loc = newProjectLoc.toASCIIString();
 				String location = loc.substring(loc.indexOf("/")+1, loc.length());
+				
+				FilePathUpdate update = new FilePathUpdate(
+						URI.create(exptargetfile), newProjectLoc);
 				
 				if(!location.equals(exptarget)){
 					List<IOConfiguration> configuration = main.getResources();
@@ -228,7 +229,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 							URI uri = new URI(impsrc);
 							File file = new File(uri);
 							if(!file.exists()){
-								String newsrc = update.changePath(impsrc, location);
+								String newsrc = update.changePath(URI.create(impsrc));
 								
 								URI newuri = new URI(newsrc);
 								File newfile = new File(newuri);
