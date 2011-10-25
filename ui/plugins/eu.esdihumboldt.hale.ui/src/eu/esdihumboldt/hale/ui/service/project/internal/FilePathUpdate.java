@@ -19,14 +19,37 @@ import java.net.URI;
  * @author Patrick Lieb
  */
 public class FilePathUpdate {
+	
+	private final String newlocation;
+	
+	/**
+	 * Create a path updater based on a pair of known old and new locations
+	 * @param oldLocation the old location of a file
+	 * @param newLocation the new location of the same file
+	 *   (though the file name may be different)
+	 */
+	public FilePathUpdate(URI oldLocation, URI newLocation) {
+		super();
+		
+		/* 
+		 * TODO
+		 * analyze paths (w/o file name) of both URIs to find out which of the 
+		 * later parts are equal, to determine which part of the old location 
+		 * has to be replaced by which part of the new location for other files 
+		 * that have been moved in a similar way to the analyzed file.
+		 */
+		
+		this.newlocation = newLocation.getPath().substring(1); 
+	}
 
 	/**
-	 * Tries to build a new path on two strings
-	 * @param oldsource path where the file was saved to (has to be a string representation of an {@link URI})
-	 * @param newlocation directory path where the program is running now
+	 * Create an alternative path for the given location if the corresponding
+	 * file has been moved along to the project file
+	 * @param oldsource path where the file was saved to (has to be a string 
+	 *   representation of an {@link URI}) FIXME then it should be typed as a URI to be sure!
 	 * @return the constructed string
 	 */
-	protected String changePath(String oldsource, String newlocation) {
+	protected String changePath(String oldsource) {
 		String src = oldsource.substring(oldsource.indexOf("/") + 1, oldsource.lastIndexOf("/"));
 		String prefex = oldsource.substring(0, oldsource.indexOf("/")+ 1);
 		String data = oldsource.substring(oldsource.lastIndexOf("/") +1);
