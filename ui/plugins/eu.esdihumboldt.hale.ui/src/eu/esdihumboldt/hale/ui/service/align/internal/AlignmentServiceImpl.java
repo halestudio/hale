@@ -21,6 +21,8 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
 /**
  * Default {@link AlignmentService} implementation
@@ -37,11 +39,21 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 
 	/**
 	 * Default constructor
+	 * @param projectService the project service 
 	 */
-	public AlignmentServiceImpl() {
+	public AlignmentServiceImpl(ProjectService projectService) {
 		super();
 		
 		alignment = new DefaultAlignment();
+		
+		projectService.addListener(new ProjectServiceAdapter() {
+
+			@Override
+			public void onClean() {
+				clean();
+			}
+			
+		});
 	}
 
 	/**
