@@ -45,6 +45,26 @@
 					</Default>
 				</ComplexData>
 			</Input>
+			<Input minOccurs="0" maxOccurs="1">
+				<ows:Identifier>AuxiliarySourceXmlSchemaArchive</ows:Identifier>
+				<ows:Title>Source XML Schema Archive</ows:Title>
+				<ows:Abstract>URI to a ZIP archive contaning referenced data or the package itself.</ows:Abstract>
+				<ComplexData maximumMegabytes="50">
+					<Default>
+						<Format>
+							<MimeType>text/plain</MimeType>
+							<Encoding>UTF-8</Encoding>
+							<Schema>http://www.w3.org/1999/xlink.xsd</Schema>
+						</Format>
+					</Default>
+					<Supported>
+						<Format>
+							<MimeType>application/zip</MimeType>
+							<Encoding>Base64</Encoding>
+						</Format>
+					</Supported>
+				</ComplexData>
+			</Input>	
 			<Input minOccurs="1" maxOccurs="unbounded">
 				<ows:Identifier>TargetXmlSchemaDefinition</ows:Identifier>
 				<ows:Title>Target XML Schema Definition</ows:Title>
@@ -59,6 +79,26 @@
 					</Default>
 				</ComplexData>
 			</Input>
+			<Input minOccurs="0" maxOccurs="1">
+				<ows:Identifier>AuxiliaryTargetXmlSchemaArchive</ows:Identifier>
+				<ows:Title>Target XML Schema Archive</ows:Title>
+				<ows:Abstract>URI to a ZIP archive contaning referenced data or the package itself.</ows:Abstract>
+				<ComplexData maximumMegabytes="50">
+					<Default>
+						<Format>
+							<MimeType>text/plain</MimeType>
+							<Encoding>UTF-8</Encoding>
+							<Schema>http://www.w3.org/1999/xlink.xsd</Schema>
+						</Format>
+					</Default>
+					<Supported>
+						<Format>
+							<MimeType>application/zip</MimeType>
+							<Encoding>Base64</Encoding>
+						</Format>
+					</Supported>
+				</ComplexData>
+			</Input>	
 			<Input minOccurs="1" maxOccurs="1">
 				<ows:Identifier>Mapping</ows:Identifier>
 				<ows:Title>Ontology Mapping Language File</ows:Title>
