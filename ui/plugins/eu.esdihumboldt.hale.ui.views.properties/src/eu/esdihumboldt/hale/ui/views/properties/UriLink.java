@@ -86,7 +86,7 @@ public class UriLink{
 						try {
 							Desktop.getDesktop().browse(uri);
 						} catch (IOException e1) {
-							MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Opening Error", "No standard application is set!");
+							MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Opening Error", "No default application set!");
 						}
 						return;
 					}
@@ -101,14 +101,14 @@ public class UriLink{
 								try {
 									Desktop.getDesktop().browse(newuri);
 								} catch (IOException e1) {
-									MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Opening Error", "No standard application is set!");
+									MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Opening Error", "No default application set!");
 								}
 						}
 					} else {
 						try {
 							Desktop.getDesktop().browse(newuri);
 						} catch (IOException e1) {
-							MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Opening Error", "No standard application is set!");
+							MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Opening Error", "No default application set!");
 						}
 					}
 				} catch (URISyntaxException e1) {
