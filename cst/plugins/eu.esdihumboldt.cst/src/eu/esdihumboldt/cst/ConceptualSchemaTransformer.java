@@ -197,22 +197,26 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		// in case of a SingleTypeTransformation each instances may be
 		// transformed separately
 		ResourceIterator<Instance> it = source.iterator();
-		while (it.hasNext()) {
-			Instance sourceInstance = it.next();
-			
-			//XXX sanity check on type as long as selection isn't implemented
-			if (sourceType.getDefinition().getDefinition().equals(sourceInstance.getDefinition())) { 
-				function.setSource(sourceType, sourceInstance);
-				function.setPropertyTransformer(transformer);
-				function.setParameters(parameters);
-				function.setTarget(targetTypes);
+		try {
+			while (it.hasNext()) {
+				Instance sourceInstance = it.next();
 				
-				((SingleTypeTransformation) function).execute(transformation.getFunctionId(), engine, 
-						executionParameters, cellLog);
+				//XXX sanity check on type as long as selection isn't implemented
+				if (sourceType.getDefinition().getDefinition().equals(sourceInstance.getDefinition())) { 
+					function.setSource(sourceType, sourceInstance);
+					function.setPropertyTransformer(transformer);
+					function.setParameters(parameters);
+					function.setTarget(targetTypes);
+					
+					((SingleTypeTransformation) function).execute(transformation.getFunctionId(), engine, 
+							executionParameters, cellLog);
+				}
+				else {
+					cellLog.error(cellLog.createMessage("Source type sanity check failed", null));
+				}
 			}
-			else {
-				cellLog.error(cellLog.createMessage("Source type sanity check failed", null));
-			}
+		} finally {
+			it.close();
 		}
 	}
 
