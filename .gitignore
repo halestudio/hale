@@ -10,7 +10,7 @@ dist/
 logs/
 classes/
 target/
-_testdata/
+/_*/
 !platform/target/
 !legacy/plugins/eu.esdihumboldt.commons/target/
 *.patch
