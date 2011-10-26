@@ -93,6 +93,9 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	private static final ALogger log = ALoggerFactory
 			.getLogger(PropertyTypeExtension.class);
 
+	// manual activator for adding geometries or not
+	private boolean activateGeometries = false;
+
 	/**
 	 * default constructor
 	 */
@@ -314,94 +317,105 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								setMessage(null);
 							}
 
-							// if actualSelection is from Type Geometry
-							// (geometry,point, ...)
-							if (Geometry.class.isAssignableFrom(actualSelection
-									.getTypeDefinition()
-									.getConstraint(Binding.class).getBinding())) {
-								// if map is empty ( = default/first call) or
-								// map
-								// has an element at index i and this element is
-								// assigned to "false" ( = this field was no
-								// geometry before SelectionChanged) or the
-								// object in the map assigned to number i is
-								// null, a new geoField will be created
-								if (map.isEmpty()
-										|| (map.get(i) != null && map.get(i) == false)
-										|| map.get(i) == null) {
-									map.put(i, true);
+							if (activateGeometries) {
+								// if actualSelection is from Type Geometry
+								// (geometry,point, ...)
+								if (Geometry.class
+										.isAssignableFrom(actualSelection
+												.getTypeDefinition()
+												.getConstraint(Binding.class)
+												.getBinding())) {
+									// if map is empty ( = default/first call)
+									// or
+									// map
+									// has an element at index i and this
+									// element is
+									// assigned to "false" ( = this field was no
+									// geometry before SelectionChanged) or the
+									// object in the map assigned to number i is
+									// null, a new geoField will be created
+									if (map.isEmpty()
+											|| (map.get(i) != null && map
+													.get(i) == false)
+											|| map.get(i) == null) {
+										map.put(i, true);
 
-									geoField = new TypeNameField("geometries",
-											Integer.toString(i + 1), geom);
-									geoNameFields.add(geoField);
-									geomap.put(i, geoField);
+										geoField = new TypeNameField(
+												"geometries", Integer
+														.toString(i + 1), geom);
+										geoNameFields.add(geoField);
+										geomap.put(i, geoField);
 
-									geoField.setStringValue(propField
-											.getStringValue());
-									geoField.getTextControl(geom).setEnabled(
-											false);
+										geoField.setStringValue(propField
+												.getStringValue());
+										geoField.getTextControl(geom)
+												.setEnabled(false);
 
-									cvgeo = new ComboViewer(geom);
-									geoComboFields.add(cvgeo);
-									combomap.put(i, cvgeo);
-									cvgeo.setContentProvider(ArrayContentProvider
-											.getInstance());
-									cvgeo.setLabelProvider(new LabelProvider());
-									cvgeo.addSelectionChangedListener(new ISelectionChangedListener() {
+										cvgeo = new ComboViewer(geom);
+										geoComboFields.add(cvgeo);
+										combomap.put(i, cvgeo);
+										cvgeo.setContentProvider(ArrayContentProvider
+												.getInstance());
+										cvgeo.setLabelProvider(new LabelProvider());
+										cvgeo.addSelectionChangedListener(new ISelectionChangedListener() {
 
-										@Override
-										public void selectionChanged(
-												SelectionChangedEvent event) {
-											String coordsys = cvgeo.getCombo()
-													.getText();
+											@Override
+											public void selectionChanged(
+													SelectionChangedEvent event) {
+												String coordsys = cvgeo
+														.getCombo().getText();
 
-											if (coordsys.isEmpty()) {
-												setErrorMessage("You have not selected a valid coordinate system!");
-											} else {
-												setErrorMessage(null);
+												if (coordsys.isEmpty()) {
+													setErrorMessage("You have not selected a valid coordinate system!");
+												} else {
+													setErrorMessage(null);
+												}
+
 											}
+										});
+										// cvgeo.setInput(); TODO coordinate
+										// systems
+									}
 
-										}
-									});
-									// cvgeo.setInput(); TODO coordinate systems
+									geom.setLayout(new GridLayout(3, false));
+									geom.layout();
+									dynY = geom.getSize().y;
+									sc.setMinHeight(sc.getSize().y + dynY);
+									dynY = 0;
+
+									geom.getParent().layout(true, true);
+								} else if (map.get(i) != null
+										&& map.get(i) == true) {
+									index = geoNameFields.indexOf(geomap.get(i));
+									predynY = geom.getSize().y;
+
+									geoNameFields.get(index).dispose();
+									geoNameFields.get(index)
+											.getTextControl(geom).dispose();
+									geoNameFields.get(index)
+											.getLabelControl(geom).dispose();
+
+									geoComboFields.get(index).getCombo()
+											.dispose();
+
+									geom.layout();
+
+									geom.getParent().layout(true, true);
+
+									// adjust the size of the scroll bar
+									dynY = geom.getSize().y;
+									int temp = predynY - dynY;
+									int tempY = sc.getMinHeight();
+									sc.setMinHeight(tempY - temp);
+									dynY = 0;
+									predynY = 0;
+
+									geoNameFields.set(index, null);
+									geoComboFields.set(index, null);
+									map.put(i, false);
 								}
-
-								geom.setLayout(new GridLayout(3, false));
 								geom.layout();
-								dynY = geom.getSize().y;
-								sc.setMinHeight(sc.getSize().y + dynY);
-								dynY = 0;
-
-								geom.getParent().layout(true, true);
-							} else if (map.get(i) != null && map.get(i) == true) {
-								index = geoNameFields.indexOf(geomap.get(i));
-								predynY = geom.getSize().y;
-
-								geoNameFields.get(index).dispose();
-								geoNameFields.get(index).getTextControl(geom)
-										.dispose();
-								geoNameFields.get(index).getLabelControl(geom)
-										.dispose();
-
-								geoComboFields.get(index).getCombo().dispose();
-
-								geom.layout();
-
-								geom.getParent().layout(true, true);
-
-								// adjust the size of the scroll bar
-								dynY = geom.getSize().y;
-								int temp = predynY - dynY;
-								int tempY = sc.getMinHeight();
-								sc.setMinHeight(tempY - temp);
-								dynY = 0;
-								predynY = 0;
-
-								geoNameFields.set(index, null);
-								geoComboFields.set(index, null);
-								map.put(i, false);
 							}
-							geom.layout();
 						}
 					});
 					cv.setContentProvider(ArrayContentProvider.getInstance());
