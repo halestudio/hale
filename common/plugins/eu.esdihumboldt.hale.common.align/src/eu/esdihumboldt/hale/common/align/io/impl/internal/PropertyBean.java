@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -100,6 +101,9 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 			
 			if (child instanceof DefinitionGroup) {
 				parent = (DefinitionGroup) child;
+			}
+			else if (child.asProperty() != null) {
+				parent = child.asProperty().getPropertyType();
 			}
 			else {
 				parent = null;
