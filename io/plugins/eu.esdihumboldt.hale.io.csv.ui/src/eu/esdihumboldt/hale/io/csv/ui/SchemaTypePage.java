@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -219,12 +220,12 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				fields.clear();
 				comboFields.clear();
 			}
-			
+
 			if (!Arrays.equals(firstLine, last_firstLine)) {
 				for (int i = 0; i < length; i++) {
 					final TypeNameField propField;
 					final ComboViewer cv;
-					
+
 					validSel.add(true);
 
 					propField = new TypeNameField("properties",
@@ -239,31 +240,27 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								@Override
 								public void propertyChange(
 										PropertyChangeEvent event) {
+
+									HashSet<String> hs = new HashSet<String>();
 									int j = fields.indexOf(event.getSource());
-									
+
 									if (event.getProperty().equals(
 											StringFieldEditor.VALUE)) {
-
-										TypeNameField eventField = fields.get(j);
-										fields.remove(j);
-										for (TypeNameField restFields : fields) {
-											if (restFields.getStringValue().equals(
-													eventField.getStringValue())) {
+										for (TypeNameField field : fields) {
+											if (!hs.add(field.getStringValue())) {
 												valid = false;
 												break;
-											}
-											else {
+											} else {
 												valid = true;
 											}
+
 										}
-										fields.add(j, (TypeNameField) event
-												.getSource());
 
 									}
 
 									if (event.getProperty().equals(
 											StringFieldEditor.IS_VALID)) {
-										isValid = (Boolean)event.getNewValue();
+										isValid = (Boolean) event.getNewValue();
 									}
 									setPageComplete(isValid && valid);
 
@@ -374,7 +371,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								dynY = geom.getSize().y;
 								sc.setMinHeight(sc.getSize().y + dynY);
 								dynY = 0;
-								
+
 								geom.getParent().layout(true, true);
 							} else if (map.get(i) != null && map.get(i) == true) {
 								index = geoNameFields.indexOf(geomap.get(i));
@@ -387,11 +384,11 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 										.dispose();
 
 								geoComboFields.get(index).getCombo().dispose();
-								
+
 								geom.layout();
-								
+
 								geom.getParent().layout(true, true);
-								
+
 								// adjust the size of the scroll bar
 								dynY = geom.getSize().y;
 								int temp = predynY - dynY;
@@ -399,7 +396,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								sc.setMinHeight(tempY - temp);
 								dynY = 0;
 								predynY = 0;
-								
+
 								geoNameFields.set(index, null);
 								geoComboFields.set(index, null);
 								map.put(i, false);
@@ -451,14 +448,14 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	 */
 	@Override
 	protected void createContent(Composite parent) {
-		
+
 		sc = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL);
-		
+
 		sc.setExpandVertical(true);
 		sc.setExpandHorizontal(true);
 		sc.setMinWidth(parent.getSize().x);
 		sc.setMinHeight(parent.getSize().y);
-		
+
 		Composite page = new Composite(sc, SWT.NONE);
 		page.setLayout(new GridLayout(2, false));
 
@@ -491,7 +488,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				.span(2, 1).create());
 		geom.setLayout(GridLayoutFactory.swtDefaults().numColumns(3)
 				.equalWidth(false).margins(5, 5).create());
-		
+
 		sc.setContent(page);
 
 		setPageComplete(sfe.isValid());
