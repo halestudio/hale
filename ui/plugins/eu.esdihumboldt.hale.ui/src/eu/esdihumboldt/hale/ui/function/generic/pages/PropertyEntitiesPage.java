@@ -84,6 +84,11 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 			}
 		}
 		
+		if (relations.isEmpty()) {
+			//XXX this may not happen, i.e. the wizard being created in the first place should be prevented
+			throw new IllegalStateException("No compatible type relations defined"); 
+		}
+		
 		typeRelation = new ComboViewer(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 		typeRelation.setContentProvider(ArrayContentProvider.getInstance());
 		typeRelation.setLabelProvider(new LabelProvider() {
