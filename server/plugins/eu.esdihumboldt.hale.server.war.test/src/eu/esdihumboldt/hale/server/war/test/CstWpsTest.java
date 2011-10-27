@@ -32,6 +32,8 @@ public class CstWpsTest {
 
 	@Before
 	public void setUp() throws Exception {
+		Thread.sleep(30000);
+		
 		url = new URL(host+":"+port+path);
 	}
 
