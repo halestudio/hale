@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- <wps:Reference xlink:href="http://link.to/dummy.zip" method="GET"/> -->
+<!-- <wps:ComplexData mimeType="application/zip" encoding="Base64"><![CDATA[UEsDBBQAAA...AAA==]]></wps:ComplexData>  -->
+			
+
+<wps:Execute service="WPS" version="1.0.0" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 ../wpsExecute_request.xsd">
+	<ows:Identifier>translate</ows:Identifier>
+	
+	<wps:DataInputs>
+		<wps:Input>
+			<ows:Identifier>SourceData</ows:Identifier>
+			<ows:Title>Source Data set to be transformed</ows:Title>
+			<ows:Abstract>URI to a GML source (file or service) that contains the source data to be transformed. Important: All source data sets need to be of the same GML Application Schema!</ows:Abstract>
+			
+			<wps:Data>
+				<wps:ComplexData>
+<tns:t1 id="" xmlns:tns="http://www.example.org/t1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t1/ t1.xsd ">
+  <a1>a1</a1>
+  <b1>b1</b1>
+  <c1>c1</c1>
+</tns:t1>
+				</wps:ComplexData>
+			</wps:Data>
+		</wps:Input>
+		
+		<wps:Input>
+			<ows:Identifier>SourceXmlSchemaDefinition</ows:Identifier>
+			<ows:Title>Source XML Schema Definition</ows:Title>
+			<ows:Abstract>XSD(s) used to define the source data's GML Application Schema. The first input needs to be the "primary" GML Application Schema.</ows:Abstract>
+				
+			<wps:Data>
+				<wps:ComplexData>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t1/" targetNamespace="http://www.example.org/t1/">
+    <complexType name="T1">
+    	<sequence>
+    		<element name="a1" type="string"></element>
+    		<element name="b1" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element name="c1" type="string" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <element name="t1" type="tns:T1"></element>
+</schema>			
+				</wps:ComplexData>
+			</wps:Data>
+		</wps:Input>
+		
+		<wps:Input>
+			<ows:Identifier>TargetXmlSchemaDefinition</ows:Identifier>
+			<ows:Title>Target XML Schema Definition</ows:Title>
+			<ows:Abstract>XSD(s) used to define the resulting target data's GML Application Schema. The first input needs to be the "primary" GML Application Schema.</ows:Abstract>
+			
+			
+			<wps:Data>
+				<wps:ComplexData>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t2/" targetNamespace="http://www.example.org/t2/">
+    <complexType name="T2">
+    	<sequence>
+    		<element name="a2" type="string" maxOccurs="unbounded" minOccurs="0"></element>
+    		<element name="b2" type="string" maxOccurs="unbounded" minOccurs="0"></element>
+    		<element name="c2" type="string" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <element name="t2" type="tns:T2"></element>
+</schema>
+				</wps:ComplexData>
+			</wps:Data>
+			
+		</wps:Input>
+		
+		<wps:Input>
+			<ows:Identifier>Mapping</ows:Identifier>
+			<ows:Title>Ontology Mapping Language File</ows:Title>
+			<ows:Abstract>OML file that contains a mapping between the primary source and the primary target XSD/GML Application Schema.</ows:Abstract>
+					
+			<wps:Data>
+				<wps:ComplexData>
+
+<align:Alignment xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" xsi:schemaLocation="http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd">
+    <align:level></align:level>
+    <align:onto1>
+        <align:Ontology rdf:about="http://www.example.org/t1/">
+            <align:location>file:/C:/Users/andi/Desktop/Projekte/fraunhofer/testdaten-hale/simple/t1.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto1>
+    <align:onto2>
+        <align:Ontology rdf:about="http://www.example.org/t2/">
+            <align:location>file:/C:/Users/andi/Desktop/Projekte/fraunhofer/testdaten-hale/simple/t2.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto2>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://www.example.org/t1/t1/id">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConcatenationOfAttributesFunction">
+                        <omwg:param>
+                            <omwg:name>seperator</omwg:name>
+                            <omwg:value>:</omwg:value>
+                        </omwg:param>
+                        <omwg:param>
+                            <omwg:name>concatenation</omwg:name>
+                            <omwg:value>id</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="http://www.example.org/t2/t2/id"/>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://www.example.org/t1/3a77686c-7e0b-4dea-b1e1-338fa2501e8b">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConcatenationOfAttributesFunction">
+                        <omwg:param>
+                            <omwg:name>seperator</omwg:name>
+                            <omwg:value>:</omwg:value>
+                        </omwg:param>
+                        <omwg:param>
+                            <omwg:name>concatenation</omwg:name>
+                            <omwg:value>a1--!-split-!--b1--!-split-!--</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                    <omwg:propertyComposition>
+                        <omwg:operator>UNION</omwg:operator>
+                        <omwg:collection>
+                            <omwg:item>
+<omwg:Property rdf:about="http://www.example.org/t1/t1/a1"/>
+                            </omwg:item>
+                            <omwg:item>
+<omwg:Property rdf:about="http://www.example.org/t1/t1/b1"/>
+                            </omwg:item>
+                        </omwg:collection>
+                        <omwg:Relation/>
+                    </omwg:propertyComposition>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="http://www.example.org/t2/t2/a2"/>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+</align:Alignment>
+
+				</wps:ComplexData>
+			</wps:Data>
+		</wps:Input>
+	</wps:DataInputs>
+	
+	<wps:ResponseForm>
+		<wps:ResponseDocument storeExecuteResponse="true" lineage="true" status="true">
+			<wps:Output asReference="true">
+				<ows:Identifier>TargetData</ows:Identifier>
+				<ows:Title>Transformed Data in Target Schema</ows:Title>
+				<ows:Abstract>Transformed Data in Target Schema. Note that the schema of the output parameter is equal to the schema used for the Input TargetXmlSchemaDefinition.</ows:Abstract>
+			</wps:Output>
+		</wps:ResponseDocument>
+	</wps:ResponseForm>
+</wps:Execute>
