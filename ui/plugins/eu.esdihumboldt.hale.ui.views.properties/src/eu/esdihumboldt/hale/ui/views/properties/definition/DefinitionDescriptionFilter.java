@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.definition;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
 
@@ -22,14 +21,6 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
  * @author Simon Templer
  */
 public class DefinitionDescriptionFilter extends DefaultFilter{
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
-	 */
-	@Override
-	public boolean isFiltered(EntityDefinition input) {
-		return input.getDefinition().getDescription() == null;
-	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
