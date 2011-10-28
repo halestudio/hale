@@ -14,8 +14,6 @@ package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
 import java.net.URI;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
@@ -26,23 +24,6 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
  * @author Patrick Lieb
  */
 public class PropertyTypeLocationFilter extends DefaultFilter{
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
-	 */
-	@Override
-	public boolean isFiltered(EntityDefinition input) {
-		if(input instanceof PropertyEntityDefinition){
-			URI location;
-			try {
-				location = ((PropertyEntityDefinition)input).getDefinition().getPropertyType().getLocation();
-			} catch(IllegalStateException e){
-					return true;
-				}
-				return location == null;
-		}
-		return true;
-	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)

@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.typedefinition;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
@@ -28,24 +26,13 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
 public class TypeDefinitionEnumerationFilter extends DefaultFilter {
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
-	 */
-	@Override
-	public boolean isFiltered(EntityDefinition input) {
-		if (input instanceof TypeEntityDefinition) {
-			return ((TypeEntityDefinition) input).getDefinition()
-					.getConstraint(Enumeration.class).getValues() == null;
-		}
-		return true;
-	}
-
-	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {
 		if (input instanceof TypeDefinition) {
-			return ((TypeDefinition) input).getConstraint(Enumeration.class)
+			TypeDefinition type = ((TypeDefinition) input);
+			return type.getConstraint(Enumeration.class)
 					.getValues() == null;
 		}
 		return true;

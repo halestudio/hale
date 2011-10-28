@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.io.xsd.ui.properties;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
@@ -25,17 +23,6 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
  * @author Patrick Lieb
  */
 public class TypeDefinitionXmlElementsFilter extends DefaultFilter{
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
-	 */
-	@Override
-	public boolean isFiltered(EntityDefinition input) {
-		if(input instanceof TypeEntityDefinition){
-			return ((TypeEntityDefinition)input).getDefinition().getConstraint(XmlElements.class).getElements().isEmpty();
-		}
-		return true;
-	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)

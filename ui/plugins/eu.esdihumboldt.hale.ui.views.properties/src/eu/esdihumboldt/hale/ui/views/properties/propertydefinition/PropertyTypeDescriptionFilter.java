@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
@@ -32,17 +30,6 @@ public class PropertyTypeDescriptionFilter extends DefaultFilter{
 		public boolean isFiltered(Definition<?> input) {
 			if(input instanceof PropertyDefinition){
 				return ((PropertyDefinition)input).getPropertyType().getDescription() == null;
-			}
-			return true;
-		}
-
-		/**
-		 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
-		 */
-		@Override
-		public boolean isFiltered(EntityDefinition input) {
-			if(input instanceof PropertyEntityDefinition){
-				return ((PropertyEntityDefinition)input).getDefinition().getPropertyType().getDescription() == null;
 			}
 			return true;
 		}
