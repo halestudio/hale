@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -75,14 +76,13 @@ public class SchemaExplorer {
 		tree = filteredTree.getViewer();
 		tree.setUseHashlookup(true);
 		SchemaExplorerLabelProvider labelProvider = new SchemaExplorerLabelProvider();
-		tree.setLabelProvider(labelProvider );
-		tree.setContentProvider(new TreePathProviderAdapter(
-				new TypeIndexContentProvider(tree)));
+		tree.setLabelProvider(labelProvider);
+		tree.setContentProvider(createContentProvider(tree));
 		tree.getControl().setLayoutData(GridDataFactory.fillDefaults().
 				grab(true, true).create());
 		
 		ClassificationFilter classFilter = new ClassificationFilter(tree);
-		tree.addFilter(classFilter );
+		tree.addFilter(classFilter);
 		
 		tree.setComparator(new DefinitionComparator());
 		
@@ -94,6 +94,15 @@ public class SchemaExplorer {
 //		new ColumnBrowserTip(tree, 400, 300, true, 0, labelProvider);
 	}
 	
+	/**
+	 * Create the content provider
+	 * @param tree the tree viewer
+	 * @return the content provider
+	 */
+	protected IContentProvider createContentProvider(TreeViewer tree) {
+		return new TreePathProviderAdapter(new TypeIndexContentProvider(tree));
+	}
+
 	/**
 	 * Create the tool-bar
 	 * 

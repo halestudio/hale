@@ -73,6 +73,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.ui.service.schema.SchemaService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService">
+         </service>
       </serviceFactory>
       <sourceProvider
             provider="eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceSource">

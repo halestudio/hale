@@ -15,10 +15,12 @@ package eu.esdihumboldt.hale.common.align.model;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Definition of an entity
+ * Definition of an entity. Represents either a type or a property.
  * @author Simon Templer
+ * @since 2.5
  */
 public interface EntityDefinition {
 	
@@ -30,11 +32,20 @@ public interface EntityDefinition {
 	public Definition<?> getDefinition();
 	
 	/**
-	 * Get the definition path. For a type this only consists of the type 
-	 * definition, for a property the path ends with the property definition,
-	 * the first element in the path is always a type definition. 
-	 * @return the definition path
+	 * Get the type definition that is associated with the entity. This is
+	 * either the type represented by the entity or the topmost parent to the
+	 * property represented by the entity.
+	 * @return the type definition
 	 */
-	public List<? extends Definition<?>> getPath();
+	public TypeDefinition getType();
+	
+	/**
+	 * Get the property path. Each path item is an instance context name
+	 * paired with a child definition. The default instance context name
+	 * is <code>null</code>.
+	 * @return the path down to the property represented by the entity,
+	 *   an empty list if the entity represents a type
+	 */
+	public List<ChildContext> getPropertyPath();
 
 }

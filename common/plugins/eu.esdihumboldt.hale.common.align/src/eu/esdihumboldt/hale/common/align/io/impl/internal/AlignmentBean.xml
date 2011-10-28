@@ -55,19 +55,17 @@
 			extends="eu.esdihumboldt.hale.common.align.io.impl.internal.EntityBean">
 		<map-to xml="property" />
 		
-		<field name="properties" collection="arraylist" type="string" handler="eu.esdihumboldt.hale.common.align.io.impl.internal.QNameFieldHandler">
+		<field name="properties" collection="arraylist" type="eu.esdihumboldt.hale.common.align.io.impl.internal.ChildContextBean">
 			<bind-xml name="child" node="element" />
 		</field>
 	</class>
-	<!-- class name="javax.xml.namespace.QName" verify-constructable="false">
-		<field name="namespaceURI" type="string" set-method="%1" get-method="getNamespaceURI">
-			<bind-xml name="ns" node="attribute" />
+	<class name="eu.esdihumboldt.hale.common.align.io.impl.internal.ChildContextBean" auto-complete="true">
+		<field name="contextName" type="integer">
+			<bind-xml name="context" node="attribute" />
 		</field>
-		<field name="localPart" type="string" set-method="%2" get-method="getLocalPart">
-			<bind-xml name="name" node="attribute" />
+	
+		<field name="childName" type="string" handler="eu.esdihumboldt.hale.common.align.io.impl.internal.QNameFieldHandler">
+			<bind-xml name="name" node="text" />
 		</field>
-		<field name="prefix" type="string" set-method="%3" get-method="getPrefix">
-			<bind-xml name="prefix" node="attribute" />
-		</field>
-	</class-->
+	</class>
 </mapping>

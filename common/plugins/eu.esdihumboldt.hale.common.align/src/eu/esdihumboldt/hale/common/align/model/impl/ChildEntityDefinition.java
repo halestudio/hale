@@ -12,43 +12,45 @@
 
 package eu.esdihumboldt.hale.common.align.model.impl;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Collections;
 import java.util.List;
 
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Entity definition for a type
+ * Entity definition for a property or group property
  * @author Simon Templer
  */
 @Immutable
-public class TypeEntityDefinition implements EntityDefinition {
-	
-	private final TypeDefinition typeDefinition;
+public class ChildEntityDefinition implements EntityDefinition {
 
+	private final TypeDefinition type;
+	
+	private final List<ChildContext> path;
+	
 	/**
-	 * Create an entity definition for the given type
-	 * @param typeDefinition the type definition
+	 * Create an entity definition specified by the given child path.
+	 * @param type the topmost parent of the property
+	 * @param path the child path down from the type
 	 */
-	public TypeEntityDefinition(TypeDefinition typeDefinition) {
+	public ChildEntityDefinition(TypeDefinition type,
+			List<ChildContext> path) {
 		super();
 		
-		checkNotNull(typeDefinition, "Null type definition not allowed for type entity definition");
-		
-		this.typeDefinition = typeDefinition;
+		this.type = type;
+		this.path = Collections.unmodifiableList(path);
 	}
 
 	/**
 	 * @see EntityDefinition#getDefinition()
 	 */
 	@Override
-	public TypeDefinition getDefinition() {
-		return typeDefinition;
+	public ChildDefinition<?> getDefinition() {
+		return path.get(path.size() -1).getChild();
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class TypeEntityDefinition implements EntityDefinition {
 	 */
 	@Override
 	public TypeDefinition getType() {
-		return typeDefinition;
+		return type;
 	}
 
 	/**
@@ -64,7 +66,7 @@ public class TypeEntityDefinition implements EntityDefinition {
 	 */
 	@Override
 	public List<ChildContext> getPropertyPath() {
-		return Collections.emptyList();
+		return path;
 	}
 
 	/**
@@ -74,8 +76,7 @@ public class TypeEntityDefinition implements EntityDefinition {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((typeDefinition == null) ? 0 : typeDefinition.hashCode());
+		result = prime * result + ((path == null) ? 0 : path.hashCode());
 		return result;
 	}
 
@@ -90,11 +91,11 @@ public class TypeEntityDefinition implements EntityDefinition {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TypeEntityDefinition other = (TypeEntityDefinition) obj;
-		if (typeDefinition == null) {
-			if (other.typeDefinition != null)
+		ChildEntityDefinition other = (ChildEntityDefinition) obj;
+		if (path == null) {
+			if (other.path != null)
 				return false;
-		} else if (!typeDefinition.equals(other.typeDefinition))
+		} else if (!path.equals(other.path))
 			return false;
 		return true;
 	}

@@ -16,6 +16,7 @@ import java.util.Comparator;
 
 import org.eclipse.jface.viewers.ViewerComparator;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -45,6 +46,10 @@ public class DefinitionComparator extends ViewerComparator {
 	 */
 	@Override
 	public int category(Object element) {
+		if (element instanceof EntityDefinition) {
+			element = ((EntityDefinition) element).getDefinition();
+		}
+		
 		if (element instanceof GroupPropertyDefinition) {
 			return 0;
 		}
