@@ -14,12 +14,11 @@ package eu.esdihumboldt.hale.common.align.model.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.util.Collections;
 import java.util.List;
 
 import net.jcip.annotations.Immutable;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -28,24 +27,20 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 @Immutable
-public class PropertyEntityDefinition implements EntityDefinition {
+public class PropertyEntityDefinition extends ChildEntityDefinition {
 
-	private final List<Definition<?>> path;
-	
 	/**
 	 * Create an entity definition specified by the given property path. The 
-	 * property path must contain the property definition as last element,
-	 * the first element must be a type definition
-	 * @param path the property path
+	 * property path must contain the property definition as last element.
+	 * @param type the topmost parent of the property
+	 * @param path the property path down from the type
 	 */
-	public PropertyEntityDefinition(List<Definition<?>> path) {
-		super();
+	public PropertyEntityDefinition(TypeDefinition type,
+			List<ChildContext> path) {
+		super(type, path);
 		
-		checkArgument(path != null && !path.isEmpty() && path.size() >= 2 && 
-				path.get(path.size() - 1) instanceof PropertyDefinition &&
-				path.get(0) instanceof TypeDefinition);
-		
-		this.path = Collections.unmodifiableList(path);
+		checkArgument(path != null && !path.isEmpty() && path.size() >= 1 && 
+				path.get(path.size() - 1).getChild() instanceof PropertyDefinition);
 	}
 
 	/**
@@ -53,46 +48,7 @@ public class PropertyEntityDefinition implements EntityDefinition {
 	 */
 	@Override
 	public PropertyDefinition getDefinition() {
-		return (PropertyDefinition) path.get(path.size() -1);
-	}
-
-	/**
-	 * @see EntityDefinition#getPath()
-	 */
-	@Override
-	public List<? extends Definition<?>> getPath() {
-		return path;
-	}
-
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((path == null) ? 0 : path.hashCode());
-		return result;
-	}
-
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		PropertyEntityDefinition other = (PropertyEntityDefinition) obj;
-		if (path == null) {
-			if (other.path != null)
-				return false;
-		} else if (!path.equals(other.path))
-			return false;
-		return true;
+		return (PropertyDefinition) super.getDefinition();
 	}
 
 }

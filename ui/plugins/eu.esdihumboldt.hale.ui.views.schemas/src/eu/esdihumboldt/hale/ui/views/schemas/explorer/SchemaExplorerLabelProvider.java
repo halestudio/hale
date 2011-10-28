@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
@@ -43,6 +44,10 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 	@Override
 	public void update(ViewerCell cell) {
 		Object element = cell.getElement();
+		
+		if (element instanceof EntityDefinition) {
+			element = ((EntityDefinition) element).getDefinition();
+		}
 		
 		StyledString text = new StyledString(defaultLabels.getText(element));
 		
@@ -80,6 +85,10 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 	 */
 	@Override
 	public String getToolTip(Object element) {
+		if (element instanceof EntityDefinition) {
+			element = ((EntityDefinition) element).getDefinition();
+		}
+		
 		if (element instanceof Definition<?>) {
 			String description = ((Definition<?>) element).getDescription();
 			if (description != null && !description.isEmpty()) {
@@ -109,6 +118,10 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 	 */
 	@Override
 	public String getText(Object element) {
+		if (element instanceof EntityDefinition) {
+			element = ((EntityDefinition) element).getDefinition();
+		}
+		
 		if (element instanceof Definition<?>) {
 			return ((Definition<?>) element).getDisplayName();
 		}

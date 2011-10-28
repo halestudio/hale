@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
@@ -34,7 +35,7 @@ public class ClassificationFilter extends ViewerFilter {
 	
 	/**
 	 * Create a classification filter
-	 * @param viewer the viewser the fitler is associated to
+	 * @param viewer the viewer the filter is associated to
 	 */
 	public ClassificationFilter(Viewer viewer) {
 		super();
@@ -76,6 +77,10 @@ public class ClassificationFilter extends ViewerFilter {
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		if (element instanceof TreePath) {
 			element = ((TreePath) element).getLastSegment();
+		}
+		
+		if (element instanceof EntityDefinition) {
+			element = ((EntityDefinition) element).getDefinition();
 		}
 		
 		if (hidden.isEmpty() || !(element instanceof Definition<?>)) {

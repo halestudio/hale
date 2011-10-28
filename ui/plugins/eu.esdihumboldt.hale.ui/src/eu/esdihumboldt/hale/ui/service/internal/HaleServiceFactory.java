@@ -17,6 +17,8 @@ import org.eclipse.ui.services.IServiceLocator;
 
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceImpl;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceImpl;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -33,7 +35,6 @@ import eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceImpl;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
  */
 public class HaleServiceFactory extends AbstractServiceFactory {
 
@@ -70,6 +71,10 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (SchemaService.class.equals(serviceInterface)) {
 			return new SchemaServiceImpl(
 					(ProjectService) locator.getService(ProjectService.class));
+		}
+		
+		if (EntityDefinitionService.class.equals(serviceInterface)) {
+			return new EntityDefinitionServiceImpl();
 		}
 		
 		return null;

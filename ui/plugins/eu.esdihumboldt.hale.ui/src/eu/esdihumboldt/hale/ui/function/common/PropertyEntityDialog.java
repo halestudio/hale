@@ -16,18 +16,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypePropertyContentProvider;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypePropertyContentProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
@@ -58,7 +63,17 @@ public class PropertyEntityDialog extends EntityDialog {
 	@Override
 	protected void setupViewer(TreeViewer viewer) {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
-		viewer.setContentProvider(new TypePropertyContentProvider(viewer));
+		//XXX entity content provider for both source and target?
+		switch (ssid) {
+		case SOURCE:
+			viewer.setContentProvider(new TypePropertyContentProvider(viewer));
+			break;
+		case TARGET:
+		default:
+			EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+			viewer.setContentProvider(new EntityTypePropertyContentProvider(
+					viewer, entityDefinitionService));
+		}
 		
 		viewer.setInput(parentType);
 
@@ -70,17 +85,26 @@ public class PropertyEntityDialog extends EntityDialog {
 	 */
 	@Override
 	protected EntityDefinition getEntityFromSelection(ISelection selection) {
+		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+			Object element = ((IStructuredSelection) selection).getFirstElement();
+			if (element instanceof EntityDefinition) {
+				return (EntityDefinition) element;
+			}
+		}
+		
 		if (!selection.isEmpty() && selection instanceof ITreeSelection) {
+			// create property definition w/ default contexts 
 			TreePath path = ((ITreeSelection) selection).getPaths()[0];
 			
-			List<Definition<?>> defPath = new ArrayList<Definition<?>>();
-			// add parent type
-			defPath.add(((PropertyDefinition) path.getFirstSegment()).getParentType());
-			// add properties
+			// get parent type
+			TypeDefinition type = ((PropertyDefinition) path.getFirstSegment()).getParentType();
+			// determine definition path
+			List<ChildContext> defPath = new ArrayList<ChildContext>();
 			for (int i = 0; i < path.getSegmentCount(); i++) {
-				defPath.add((Definition<?>) path.getSegment(i));
+				defPath.add(new ChildContext((ChildDefinition<?>) path.getSegment(i)));
 			}
-			return new PropertyEntityDefinition(defPath);
+			//TODO check if property entity definition is applicable? 
+			return new PropertyEntityDefinition(type, defPath);
 		}
 		
 		return null;

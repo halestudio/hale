@@ -45,9 +45,11 @@ import org.eclipse.ui.part.WorkbenchPart;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
@@ -60,6 +62,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
+import eu.esdihumboldt.hale.ui.views.schemas.explorer.EntitySchemaExplorer;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.SchemaExplorer;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
@@ -205,15 +208,23 @@ public class SchemasView extends PropertiesViewPart {
 			
 			for (TreePath path : paths) {
 				Object last = path.getLastSegment();
-				if (last instanceof TypeDefinition) {
+				
+				if (last instanceof EntityDefinition) {
+					// use entity definition directly
+					result.add((EntityDefinition) last);
+				}
+				else if (last instanceof TypeDefinition) {
+					// create entity definition for type
 					result.add(new TypeEntityDefinition((TypeDefinition) last));
 				}
 				else if (last instanceof PropertyDefinition) {
-					List<Definition<?>> propertyPath = new ArrayList<Definition<?>>();
+					// create property entity definition w/ default instance contexts 
+					List<ChildContext> propertyPath = new ArrayList<ChildContext>();
 					Definition<?> element = (Definition<?>) last;
 					int index = path.getSegmentCount() - 1;
 					while (element != null && !(element instanceof TypeDefinition)) {
-						propertyPath.add(0, element);
+						ChildContext context = new ChildContext((ChildDefinition<?>) element);
+						propertyPath.add(0, context);
 						Object segment = path.getSegment(--index);
 						if (segment instanceof Definition<?>) {
 							element = (Definition<?>) segment;
@@ -224,9 +235,9 @@ public class SchemasView extends PropertiesViewPart {
 					}
 					
 					if (element != null) {
-						// prepend type definition to path 
-						propertyPath.add(0, element);
-						result.add(new PropertyEntityDefinition(propertyPath));
+						// remaining element is the type definition
+						result.add(new PropertyEntityDefinition(
+								(TypeDefinition) element, propertyPath));
 					}
 					else {
 						log.error("No parent type definition for property path found, skipping object for selection.");
@@ -363,6 +374,7 @@ public class SchemasView extends PropertiesViewPart {
 		modelComposite.setLayout(layout);
 		
 		// source schema toolbar, filter and explorer
+		//TODO use an EntitySchemaExplorer?
 		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
 		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
@@ -400,7 +412,7 @@ public class SchemasView extends PropertiesViewPart {
 		});
 
 		// target schema toolbar, filter and explorer
-		targetExplorer = new SchemaExplorer(modelComposite, "Target");
+		targetExplorer = new EntitySchemaExplorer(modelComposite, "Target");
 		targetExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
 		

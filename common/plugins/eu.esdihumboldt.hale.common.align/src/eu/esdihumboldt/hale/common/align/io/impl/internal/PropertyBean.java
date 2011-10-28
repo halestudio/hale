@@ -16,16 +16,13 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -35,7 +32,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  */
 public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 
-	private List<QName> properties = new ArrayList<QName>();
+	private List<ChildContextBean> properties = new ArrayList<ChildContextBean>();
 	
 	/**
 	 * Default constructor 
@@ -50,17 +47,11 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 	 */
 	public PropertyBean(Property property) {
 		super();
+
+		setTypeName(property.getDefinition().getType().getName());
 		
-		boolean first = true;
-		for (Definition<?> definition : property.getDefinition().getPath()) {
-			if (first) {
-				setTypeName(definition.getName());
-				
-				first = false;
-			}
-			else {
-				properties.add(definition.getName());
-			}
+		for (ChildContext child : property.getDefinition().getPropertyPath()) {
+			properties.add(new ChildContextBean(child));
 		}
 	}
 
@@ -83,21 +74,20 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 					"TypeDefinition for type {0} not found", getTypeName()));
 		}
 		
-		List<Definition<?>> path = new ArrayList<Definition<?>>();
-		path.add(typeDef);
+		List<ChildContext> path = new ArrayList<ChildContext>();
 		
 		DefinitionGroup parent = typeDef;
-		for (QName propertyName : properties) {
+		for (ChildContextBean childContext : properties) {
 			if (parent == null) {
 				throw new IllegalStateException("Could not resolve property entity definition: child not present");
 			}
 			
-			ChildDefinition<?> child = parent.getChild(propertyName);
+			ChildDefinition<?> child = parent.getChild(childContext.getChildName());
 			if (child == null) {
 				throw new IllegalStateException("Could not resolve property entity definition: child not found");
 			}
 			
-			path.add(child);
+			path.add(new ChildContext(childContext.getContextName(), child));
 			
 			if (child instanceof DefinitionGroup) {
 				parent = (DefinitionGroup) child;
@@ -110,14 +100,14 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 			}
 		}
 		
-		return new PropertyEntityDefinition(path);
+		return new PropertyEntityDefinition(typeDef, path);
 	}
 
 	/**
 	 * Get the property names
 	 * @return the property names
 	 */
-	public List<QName> getProperties() {
+	public List<ChildContextBean> getProperties() {
 		return properties;
 	}
 
@@ -125,7 +115,7 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 	 * Set the property names
 	 * @param properties the property names to set
 	 */
-	public void setProperties(List<QName> properties) {
+	public void setProperties(List<ChildContextBean> properties) {
 		this.properties = properties;
 	}
 
