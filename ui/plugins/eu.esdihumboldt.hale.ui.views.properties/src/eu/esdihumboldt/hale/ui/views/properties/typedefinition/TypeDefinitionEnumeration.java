@@ -65,10 +65,10 @@ public class TypeDefinitionEnumeration extends
 		if (composite != null)
 			composite.dispose();
 		@SuppressWarnings("unchecked")
-		Collection<? extends TypeDefinition> elements = getDefinition()
+		Collection<? extends Object> elements = getDefinition()
 				.getConstraint(Enumeration.class).getValues();
 		int size = elements.size();
-		TypeDefinition type[] = elements.toArray(new TypeDefinition[size]);
+		Object type[] = elements.toArray();
 		textarray = new Text[size];
 
 		super.createControls(parent, aTabbedPropertySheetPage);
@@ -93,7 +93,7 @@ public class TypeDefinitionEnumeration extends
 		data.top = new FormAttachment(text, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
 
-		text.setText(type[0].getName().getNamespaceURI().toString());
+		text.setText(type[0].toString());
 
 		textarray[0] = text;
 
@@ -116,7 +116,7 @@ public class TypeDefinitionEnumeration extends
 			data.top = new FormAttachment(text, 0, SWT.CENTER);
 			namespaceLabel.setLayoutData(data);
 
-			text.setText(type[pos].getName().getNamespaceURI().toString());
+			text.setText(type[pos].toString());
 
 			textarray[pos] = text;
 		}

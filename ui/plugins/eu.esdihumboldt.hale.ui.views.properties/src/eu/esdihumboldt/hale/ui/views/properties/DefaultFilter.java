@@ -22,12 +22,6 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
  * @author Patrick Lieb
  */
 public abstract class DefaultFilter implements IFilter{
-
-	/**
-	 * @param input the entity definition
-	 * @return true if should be filtered, false otherwise
-	 */
-	public abstract boolean isFiltered(EntityDefinition input);
 	
 	/**
 	 * @param input the definition type
@@ -41,7 +35,7 @@ public abstract class DefaultFilter implements IFilter{
 	@Override
 	public boolean select(Object input) {
 		if(input instanceof EntityDefinition){
-			return !isFiltered((EntityDefinition) input);
+			return !isFiltered(((EntityDefinition) input).getDefinition());
 			}
 		if(input instanceof Definition<?>){
 			return !isFiltered((Definition<?>) input);

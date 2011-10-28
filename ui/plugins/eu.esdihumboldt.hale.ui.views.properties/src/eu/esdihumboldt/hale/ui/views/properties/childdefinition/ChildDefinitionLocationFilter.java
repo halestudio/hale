@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.childdefinition;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -27,23 +25,17 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
 public class ChildDefinitionLocationFilter extends DefaultFilter{
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
-	 */
-	@Override
-	public boolean isFiltered(EntityDefinition input) {
-		if(input instanceof PropertyEntityDefinition){
-			return ((PropertyEntityDefinition)input).getDefinition().getParentType().getLocation() == null;
-		}
-		return true;
-	}
-
-	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {
 		if(input instanceof PropertyDefinition){
-			return ((PropertyDefinition)input).getParentType().getLocation() == null;
+			try{
+				return ((PropertyDefinition)input).getParentType().getLocation() == null;
+			} catch (IllegalStateException e){
+				return true;
+			}
+			
 		}
 		return true;
 	}
