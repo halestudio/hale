@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="eu.esdihumboldt.hale.platform" sequenceNumber="5">
+<target name="eu.esdihumboldt.hale.platform" sequenceNumber="7">
 <locations>
 <location path="${project_loc:hale-platform}/target/com.google.guava" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/com.hp.hpl.jena" type="Directory"/>
@@ -18,7 +18,6 @@
 <location path="${project_loc:hale-platform}/target/org.w3c.css.sac" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/eu.esdihumboldt.hale.prefixmapper" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.xerces" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.xml.stream" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.xml.serializer" type="Directory"/>
@@ -105,5 +104,6 @@
 <location path="${project_loc:hale-platform}/target/org.springframework.osgi.web.jetty" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/net.sf.cglib" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.commons" type="Directory"/>
 </locations>
 </target>
