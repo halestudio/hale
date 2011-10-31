@@ -34,6 +34,16 @@
 		</wps:Input>
 		
 		<wps:Input>
+			<ows:Identifier>AuxiliarySourceXmlSchemaArchive</ows:Identifier>
+		
+			<wps:Data>
+				<wps:ComplexData mimeType="application/zip" xlink:href="http://scasoft.de/igd/cst_test.zip">
+					<wps:Reference xlink:href="http://scasoft.de/igd/cst_test.zip" method="GET"/>
+				</wps:ComplexData>
+			</wps:Data>
+		</wps:Input>
+		
+		<wps:Input>
 			<ows:Identifier>TargetXmlSchemaDefinition</ows:Identifier>
 			<ows:Title>Target XML Schema Definition</ows:Title>
 			<ows:Abstract>XSD(s) used to define the resulting target data's GML Application Schema. The first input needs to be the "primary" GML Application Schema.</ows:Abstract>
