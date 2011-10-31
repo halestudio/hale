@@ -12,10 +12,13 @@
 
 package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
@@ -33,12 +36,24 @@ public class DefinitionLabelProvider extends LabelProvider {
 	 */
 	@Override
 	public String getText(Object element) {
+		boolean defContext = true;
 		if (element instanceof EntityDefinition) {
-			element = ((EntityDefinition) element).getDefinition();
+			EntityDefinition entityDef = (EntityDefinition) element;
+			element = entityDef.getDefinition();
+			
+			List<ChildContext> path = entityDef.getPropertyPath();
+			if (path != null && !path.isEmpty()) {
+				ChildContext lastContext = path.get(path.size() - 1);
+				defContext = lastContext.getContextName() == null;
+			}
 		}
 		
 		if (element instanceof Definition<?>) {
-			return ((Definition<?>) element).getDisplayName();
+			String name = ((Definition<?>) element).getDisplayName();
+			if (!defContext) {
+				name = "(" + name + ")";
+			}
+			return name;
 		}
 		
 		return super.getText(element);

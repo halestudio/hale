@@ -22,6 +22,7 @@ import java.util.Set;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -39,6 +40,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
@@ -58,6 +60,8 @@ import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionCont
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection.SchemaStructuredMode;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
@@ -318,6 +322,8 @@ public class SchemasView extends PropertiesViewPart {
 	private SchemaServiceListener schemaListener;
 
 	private SchemasSelectionProvider selectionProvider;
+	
+	private EntityDefinitionServiceListener entityListener;
 
 //	private HaleServiceListener alignmentListener;
 //
@@ -456,38 +462,59 @@ public class SchemasView extends PropertiesViewPart {
 //			}
 //		});
 		
-//		MenuManager sourceMenuManager = new MenuManager();
-//		sourceMenuManager.setRemoveAllWhenShown(true);
+		EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+		eds.addListener(entityListener = new EntityDefinitionServiceListener() {
+			
+			@Override
+			public void contextRemoved(EntityDefinition contextEntity) {
+				//XXX improve?
+				refreshInDisplayThread();
+			}
+			
+			@Override
+			public void contextAdded(EntityDefinition contextEntity) {
+				//XXX improve?
+				refreshInDisplayThread();
+			}
+		});
+		
+		// source context menu
+		MenuManager sourceMenuManager = new MenuManager();
+		sourceMenuManager.setRemoveAllWhenShown(true);
 //		final IContributionItem sourceContextFunctions = new SchemaItemContribution(sourceSchemaViewer, false);
-//		sourceMenuManager.addMenuListener(new IMenuListener() {
-//
-//			@Override
-//			public void menuAboutToShow(IMenuManager manager) {
+		sourceMenuManager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
 //				manager.add(sourceContextFunctions);
-//			}
-//			
-//		});
-//		
-//		Menu sourceMenu = sourceMenuManager.createContextMenu(sourceSchemaViewer.getControl());
-//		sourceSchemaViewer.getControl().setMenu(sourceMenu);
-//		
-//		MenuManager targetMenuManager = new MenuManager();
-//		targetMenuManager.setRemoveAllWhenShown(true);
+				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+			
+		});
+		Menu sourceMenu = sourceMenuManager.createContextMenu(
+				sourceExplorer.getTreeViewer().getControl());
+		sourceExplorer.getTreeViewer().getControl().setMenu(sourceMenu);
+		
+		// target context menu
+		MenuManager targetMenuManager = new MenuManager();
+		targetMenuManager.setRemoveAllWhenShown(true);
 //		final IContributionItem targetContextFunctions = new SchemaItemContribution(targetSchemaViewer, true);
-//		targetMenuManager.addMenuListener(new IMenuListener() {
-//
-//			@Override
-//			public void menuAboutToShow(IMenuManager manager) {
+		targetMenuManager.addMenuListener(new IMenuListener() {
+
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
 //				manager.add(targetContextFunctions);
-//			}
-//			
-//		});
-//		
-//		Menu targetMenu = targetMenuManager.createContextMenu(targetSchemaViewer.getControl());
-//		targetSchemaViewer.getControl().setMenu(targetMenu);
-//		
-//		getSite().registerContextMenu(sourceMenuManager, sourceSchemaViewer);
-//		getSite().registerContextMenu(targetMenuManager, targetSchemaViewer);
+				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+			
+		});
+		Menu targetMenu = targetMenuManager.createContextMenu(
+				targetExplorer.getTreeViewer().getControl());
+		targetExplorer.getTreeViewer().getControl().setMenu(targetMenu);
+		
+		// register context menus
+		getSite().registerContextMenu(sourceMenuManager, sourceExplorer.getTreeViewer());
+		getSite().registerContextMenu(targetMenuManager, targetExplorer.getTreeViewer());
 
 		// initialization of explorers
 		sourceExplorer.setSchema(schemaService.getSchemas(SchemaSpaceID.SOURCE));
@@ -518,24 +545,24 @@ public class SchemasView extends PropertiesViewPart {
 		});
 	}
 
-//	/**
-//	 * Refresh map in the display thread
-//	 */
-//	protected void refreshInDisplayThread() {
-//		if (Display.getCurrent() != null) {
-//			refresh();
-//		}
-//		else {
-//			final Display display = PlatformUI.getWorkbench().getDisplay();
-//			display.syncExec(new Runnable() {
-//				
-//				@Override
-//				public void run() {
-//					refresh();
-//				}
-//			});
-//		}
-//	}
+	/**
+	 * Refresh map in the display thread
+	 */
+	protected void refreshInDisplayThread() {
+		if (Display.getCurrent() != null) {
+			refresh();
+		}
+		else {
+			final Display display = PlatformUI.getWorkbench().getDisplay();
+			display.syncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					refresh();
+				}
+			});
+		}
+	}
 
 	/**
 	 * @see WorkbenchPart#setFocus()
@@ -605,6 +632,11 @@ public class SchemasView extends PropertiesViewPart {
 //			styleService.removeListener(styleListener);
 //		}
 		
+		if (entityListener != null) {
+			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+			eds.removeListener(entityListener);
+		}
+		
 		if (functionImage != null) {
 			functionImage.dispose();
 		}
@@ -615,12 +647,12 @@ public class SchemasView extends PropertiesViewPart {
 		super.dispose();
 	}
 
-//	/**
-//	 * Refresh both tree viewers
-//	 */
-//	public void refresh() {
-//		sourceSchemaViewer.refresh();
-//		targetSchemaViewer.refresh();
-//	}
+	/**
+	 * Refresh both tree viewers
+	 */
+	public void refresh() {
+		sourceExplorer.getTreeViewer().refresh();
+		targetExplorer.getTreeViewer().refresh();
+	}
 
 }
