@@ -76,6 +76,7 @@
       <plugin id="jcl.over.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>
+      <plugin id="org.apache.commons.compress"/>
       <plugin id="org.apache.commons.convert"/>
       <plugin id="org.apache.commons.httpclient"/>
       <plugin id="org.apache.commons.io"/>
