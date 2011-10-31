@@ -12,17 +12,24 @@
 
 package eu.esdihumboldt.hale.server.war;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
@@ -35,7 +42,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.Platform;
 import org.w3c.dom.Element;
 
@@ -85,6 +96,16 @@ public class ExecuteProcess {
 	public static final String inputTargetXml = "TargetXmlSchemaDefinition";
 	
 	/**
+	 * Name of input field: TargetXmlSchemaDefinition
+	 */
+	public static final String inputSourceArchive = "AuxiliarySourceXmlSchemaArchive";
+	
+	/**
+	 * Name of input field: TargetXmlSchemaDefinition
+	 */
+	public static final String inputTargetArchive = "AuxiliaryTargetXmlSchemaArchive";
+	
+	/**
 	 * Name of input field: Mapping
 	 */
 	public static final String inputMapping = "Mapping";
@@ -124,6 +145,10 @@ public class ExecuteProcess {
 	 * Count of mapping elements
 	 */
 	int iMapping = 0;
+	
+	int iSourceArchive = 0;
+	
+	int iTargetArchive = 0;
 	
 	/**
 	 * Constructor. Does all processing.
@@ -238,6 +263,14 @@ public class ExecuteProcess {
 //				mapping.add(t.getData());
 				iMapping++;
 				fileNumber = iMapping;
+			} else if (identifier.equals(ExecuteProcess.inputSourceArchive)) {
+				iSourceArchive++;
+				fileNumber = iSourceArchive;
+				this.saveArchive(t.getData().getComplexData(), ExecuteProcess.inputSourceArchive);
+			} else if (identifier.equals(ExecuteProcess.inputTargetArchive)) {
+				iTargetArchive++;
+				fileNumber = iTargetArchive;
+				this.saveArchive(t.getData().getComplexData(), ExecuteProcess.inputTargetArchive);
 			} else {
 				// not allowed input type
 				throw new Exception("Not supported InputType is provided!");
@@ -295,6 +328,121 @@ public class ExecuteProcess {
 		}
 	}
 	
+	/**
+	 * Extracts information from request data and saves given
+	 * archive data (either from url or from data).
+	 * 
+	 * @param data contain information (xlink, data, etc.)
+	 * @param ident identifier for the archive
+	 * @throws Exception if something goes wrong
+	 */
+	private void saveArchive(ComplexDataType data, String ident) throws Exception {
+		String fileName = workspace+ident+".zip";
+		if (data.getMimeType().equals("text/plain") && data.getEncoding().equalsIgnoreCase("base64")) {
+			
+		} else if(data.getMimeType().equals("application/zip")) {
+			String uri = "";
+			
+			for (Object o : data.getContent()) {
+				// check if it's a wps:reference
+				if (o instanceof Element) {
+					Element e = (Element) o;
+					uri = e.getAttribute("xlink:href");
+					break;
+				} else if(o instanceof String) {
+					// try to convert a String to a URL
+					try {
+						URL tmp = new URL(o.toString());
+						uri = tmp.toExternalForm();
+					} catch(Exception e) {
+						/* do nothing */
+					}
+				}
+			}
+			
+			// create url
+			URL url = new URL(uri);
+			
+			// create inputStream
+			InputStream is = url.openStream();
+			
+			// create file
+			FileOutputStream fos = new FileOutputStream(fileName);
+			BufferedOutputStream os = new BufferedOutputStream(fos);
+			
+			// read only available byte
+			/* NOTE: setting this to a fix value does somehow NOT work
+			 * 		 they resulted in broken archives
+			 */
+			int avail = is.available();
+			byte[] zipData = new byte[avail];
+			while (is.read(zipData, 0, avail)>=0) {
+				os.write(zipData);
+				os.flush();
+				avail = is.available();
+				zipData = new byte[avail];
+			}
+			
+			// flush and close
+			os.flush();
+			os.close();
+			fos.close();
+			is.close();
+		}
+		
+		// check the existence of the file and unzip it
+		if (new File(fileName).exists()) {
+			this.extractArchive(fileName);
+		}
+	}
+	
+	/**
+	 * Extracts all data from an archive into current workspace folder.
+	 * 
+	 * @param name of archive
+	 * @throws IOException if something goes wrong
+	 */
+	private void extractArchive(String name) throws IOException {
+		ZipFile file = new ZipFile(name);
+		File workFile = new File(workspace);
+		
+		for (Enumeration<?> e = file.getEntries(); e.hasMoreElements(); ) {
+			ZipArchiveEntry entry = (ZipArchiveEntry) e.nextElement();
+			
+			if (entry.isDirectory()) {
+				// create new directory
+				new File(workFile, entry.getName()).mkdirs();
+				continue;
+			}
+			
+			// create new file
+			File outFile = new File(workFile, entry.getName());
+			
+			// check if parent directory exists
+			if (!outFile.getParentFile().exists()){
+				outFile.getParentFile().mkdirs();
+			}
+			
+			// create streams
+			BufferedInputStream inputStream = new BufferedInputStream(file.getInputStream(entry));
+			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outFile));
+			
+			try {
+				// copy data
+	            IOUtils.copy(inputStream, outputStream);
+	        } finally {
+	        	// close streams
+	            outputStream.close();
+	            inputStream.close();
+	        }
+		}
+	}
+	
+	/**
+	 * This proccesses all data and creates the transformation.
+	 * 
+	 * @throws Exception if something goes wrong during execution
+	 */
 	private void processData() throws Exception {
 		DefaultCstServiceBridge cst = new DefaultCstServiceBridge();
 		cst.setOutputDir("file:/"+workspace);
@@ -366,7 +514,7 @@ public class ExecuteProcess {
 	 * This function handles all occurrence of Exceptions
 	 * and generates output for the user.
 	 * 
-	 * @param e thrown Execption
+	 * @param e thrown Exception
 	 */
 	private void exceptionHandler(Exception e) {
 		if (e.getCause() != null) {
