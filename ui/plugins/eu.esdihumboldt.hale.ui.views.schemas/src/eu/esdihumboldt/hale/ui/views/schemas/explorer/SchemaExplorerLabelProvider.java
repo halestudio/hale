@@ -45,11 +45,20 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 	public void update(ViewerCell cell) {
 		Object element = cell.getElement();
 		
-		if (element instanceof EntityDefinition) {
-			element = ((EntityDefinition) element).getDefinition();
-		}
-		
 		StyledString text = new StyledString(defaultLabels.getText(element));
+		
+//		boolean defContext = true;
+		if (element instanceof EntityDefinition) {
+			EntityDefinition entityDef = (EntityDefinition) element;
+			element = entityDef.getDefinition();
+//			
+//			List<ChildContext> path = entityDef.getPropertyPath();
+//			if (path != null && !path.isEmpty()) {
+//				ChildContext lastContext = path.get(path.size() - 1);
+//				defContext = lastContext.getContextName() == null;
+//			}
+		}
+		//TODO different styling for non-default context?
 		
 		// append cardinality
 		if (element instanceof ChildDefinition<?>) {

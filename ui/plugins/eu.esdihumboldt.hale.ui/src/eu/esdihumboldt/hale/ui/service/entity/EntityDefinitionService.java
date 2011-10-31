@@ -40,9 +40,34 @@ public interface EntityDefinitionService {
 	 */
 	public EntityDefinition getParent(EntityDefinition entity);
 	
-//	public EntityDefinition addContext(EntityDefinition parent, 
-//			QName contextChildName);
-//
-//	public void removeContext(EntityDefinition entity);
+	/**
+	 * Add a new instance context for the given entity definition and create
+	 * a new sibling associated to the new context.
+	 * @param sibling the entity definition which is a sibling of the entity
+	 *   definition to create
+	 * @return the entity definition associated to the new instance context
+	 */
+	public EntityDefinition addContext(EntityDefinition sibling);
+
+	/**
+	 * Remove the instance context associated with the given entity definition
+	 * (if possible).
+	 * @param entity the entity definition or <code>null</code> if creating an
+	 * instance context is not possible
+	 * FIXME report success/failure?
+	 */
+	public void removeContext(EntityDefinition entity);
+	
+	/**
+	 * Adds a listener to the service
+	 * @param listener the listener to add
+	 */
+	public void addListener(EntityDefinitionServiceListener listener);
+	
+	/**
+	 * Removes a listener from the service
+	 * @param listener the listener to remove
+	 */
+	public void removeListener(EntityDefinitionServiceListener listener);
 	
 }
