@@ -68,7 +68,6 @@ public class CstWpsTest {
 			txt = "";
 			String output = "";
 			while ((txt = reader.readLine()) != null) {
-//				System.out.println(txt);
 				output += txt;
 			}
 			
@@ -120,6 +119,57 @@ public class CstWpsTest {
 		if (output.equals("")) {
 			Assert.assertTrue(true);
 		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testExecuteComplex() {
+		try {
+			// get test data
+			InputStream is = CstWpsTest.class.getResourceAsStream("data/execute_complex.xml");
+			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+			String txt, xml = "";
+			while ((txt = reader.readLine()) != null) {
+				xml += txt;
+			}
+			
+			// construct data
+			String data = "";
+			data += "Request="+URLEncoder.encode(xml, "UTF-8");
+			data += "&service=WPS";
+			
+			// open connection
+			URLConnection con = url.openConnection();
+			con.setDoOutput(true);
+			
+			// send data
+			OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+			writer.write(data);
+			writer.flush();
+			
+			// get the response
+			reader.close();
+			reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			txt = "";
+			String output = "";
+			while ((txt = reader.readLine()) != null) {
+				output += txt;
+			}
+			
+			// close open streams
+			writer.close();
+			reader.close();
+			
+			if (output.contains("Exception")) {
+				Assert.assertTrue(false);
+			}
+			
+			Assert.assertTrue(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
