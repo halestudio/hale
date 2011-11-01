@@ -120,6 +120,7 @@
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.functions"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.map"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.mapping"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.properties"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
