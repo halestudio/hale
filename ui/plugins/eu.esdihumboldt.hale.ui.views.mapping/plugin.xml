@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.mapping.AlignmentView"
+            id="eu.esdihumboldt.hale.ui.views.mapping.alignment"
+            name="Alignment"
+            restorable="true">
+      </view>
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.mapping.MappingView"
+            icon="icons/mapping.gif"
+            id="eu.esdihumboldt.hale.ui.views.mapping"
+            name="Mapping"
+            restorable="true">
+      </view>
+   </extension>
+
+</plugin>

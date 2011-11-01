@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
@@ -53,7 +54,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		cells.add(cell);
 		
 		// check if cell is a type cell
-		if (cell.getTarget().values().iterator().next() instanceof Type) {
+		if (AlignmentUtil.isTypeCell(cell)) {
 			typeCells.add(cell);
 		}
 	}
