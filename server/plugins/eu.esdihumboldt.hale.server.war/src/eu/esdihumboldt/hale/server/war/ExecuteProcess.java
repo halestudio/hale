@@ -444,13 +444,16 @@ public class ExecuteProcess {
 			
 			try {
 				// copy data
-	            IOUtils.copy(inputStream, outputStream);
-	        } finally {
-	        	// close streams
-	            outputStream.close();
-	            inputStream.close();
+				IOUtils.copy(inputStream, outputStream);
+			} finally {
+				// close streams
+				outputStream.close();
+				inputStream.close();
 	        }
 		}
+		
+		// close the file
+		file.close();
 	}
 	
 	/**
