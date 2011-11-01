@@ -182,7 +182,11 @@ public class ExecuteProcess {
 			// and clean up workspace
 			this.cleanup();
 		} catch(Exception e) {
+			// handle exceptions
 			this.exceptionHandler(e);
+			
+			// and do a cleanup
+			this.cleanup();
 		}
 	}
 
@@ -339,7 +343,18 @@ public class ExecuteProcess {
 	private void saveArchive(ComplexDataType data, String ident) throws Exception {
 		String fileName = workspace+ident+".zip";
 		if (data.getMimeType().equals("text/plain") && data.getEncoding().equalsIgnoreCase("base64")) {
-			
+//			// get binary content
+//			byte[] content = Base64.decodeBase64(data.getContent().get(1).toString());
+//			
+//			// create file and output stream
+//			ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(fileName));
+//			
+//			// write content
+//			zos.write(content);
+//			
+//			// flush and close stream
+//			zos.flush();
+//			zos.close();
 		} else if(data.getMimeType().equals("application/zip")) {
 			String uri = "";
 			
@@ -506,7 +521,7 @@ public class ExecuteProcess {
 		try {
 			FileUtils.deleteDirectory(new File(workspace));
 		} catch (IOException e) {
-			e.printStackTrace();
+			_log.error("IOException during cleanup: ", e);
 		}
 	}
 	
