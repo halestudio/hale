@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.functions;
+package eu.esdihumboldt.hale.ui.common.function.viewer;
 
 import java.net.URL;
 import java.util.HashMap;
