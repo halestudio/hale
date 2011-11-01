@@ -47,6 +47,7 @@ import org.eclipse.ui.part.WorkbenchPart;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -60,6 +61,8 @@ import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionCont
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection.SchemaStructuredMode;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -325,7 +328,7 @@ public class SchemasView extends PropertiesViewPart {
 	
 	private EntityDefinitionServiceListener entityListener;
 
-//	private HaleServiceListener alignmentListener;
+	private AlignmentServiceListener alignmentListener;
 //
 //	private StyleServiceListener styleListener;
 	
@@ -380,8 +383,8 @@ public class SchemasView extends PropertiesViewPart {
 		modelComposite.setLayout(layout);
 		
 		// source schema toolbar, filter and explorer
-		//TODO use an EntitySchemaExplorer?
-		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
+//		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
+		sourceExplorer = new EntitySchemaExplorer(modelComposite, "Source");
 		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
 		
@@ -423,15 +426,29 @@ public class SchemasView extends PropertiesViewPart {
 				true));
 		
 		// redraw on alignment change
-//		AlignmentService as = (AlignmentService) getSite().getService(AlignmentService.class);
-//		as.addListener(alignmentListener = new HaleServiceListener() {
-//
-//			@Override
-//			public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
-//				refreshInDisplayThread();
-//			}
-//			
-//		});
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		as.addListener(alignmentListener = new AlignmentServiceListener() {
+			
+			@Override
+			public void cellsUpdated(Iterable<Cell> cells) {
+				refreshInDisplayThread();
+			}
+			
+			@Override
+			public void cellsAdded(Iterable<Cell> cells) {
+				refreshInDisplayThread();
+			}
+			
+			@Override
+			public void cellRemoved(Cell cell) {
+				refreshInDisplayThread();
+			}
+			
+			@Override
+			public void alignmentCleared() {
+				refreshInDisplayThread();
+			}
+		});
 		
 		// also add the alignment listener to the style service (for refreshing icons when style changes)
 //		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
@@ -625,12 +642,12 @@ public class SchemasView extends PropertiesViewPart {
 			schemaService.removeSchemaServiceListener(schemaListener);
 		}
 		
-//		if (alignmentListener != null) {
-//			AlignmentService as = (AlignmentService) getSite().getService(AlignmentService.class);
-//			as.removeListener(alignmentListener);
+		if (alignmentListener != null) {
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			as.removeListener(alignmentListener);
 //			StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 //			styleService.removeListener(styleListener);
-//		}
+		}
 		
 		if (entityListener != null) {
 			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);

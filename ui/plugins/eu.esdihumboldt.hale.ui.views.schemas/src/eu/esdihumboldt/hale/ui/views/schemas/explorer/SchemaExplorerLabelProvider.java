@@ -13,20 +13,29 @@
 package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;
 
 /**
@@ -34,9 +43,26 @@ import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;
  * @author Simon Templer
  */
 public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
-		implements TipProvider, ILabelProvider {
+		implements TipProvider, ILabelProvider, IColorProvider {
 	
 	private final DefinitionLabelProvider defaultLabels = new DefinitionLabelProvider();
+	
+	private final Color typeCellColor;
+	private final Color propertyCellColor;
+	private final Color augmentedColor;
+
+	/**
+	 * Default constructor 
+	 */
+	public SchemaExplorerLabelProvider() {
+		super();
+		
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		
+		typeCellColor = new Color(display, 150, 190, 120);
+		propertyCellColor = new Color(display, 190, 220, 170);
+		augmentedColor = new Color(display, 184, 181, 220);
+	}
 
 	/**
 	 * @see StyledCellLabelProvider#update(ViewerCell)
@@ -85,6 +111,16 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 		cell.setStyleRanges(text.getStyleRanges());
 		
 		cell.setImage(defaultLabels.getImage(element));
+		
+		Color foreground = getForeground(cell.getElement());
+		if (foreground != null) {
+			cell.setForeground(foreground);
+		}
+		
+		Color background = getBackground(cell.getElement());
+		if (background != null) {
+			cell.setBackground(background);
+		}
 		
 		super.update(cell);
 	}
@@ -145,7 +181,56 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 	public void dispose() {
 		defaultLabels.dispose();
 		
+		typeCellColor.dispose();
+		propertyCellColor.dispose();
+		augmentedColor.dispose();
+		
 		super.dispose();
+	}
+
+	/**
+	 * @see IColorProvider#getForeground(Object)
+	 */
+	@Override
+	public Color getForeground(Object element) {
+		// default foreground
+		return null;
+	}
+
+	/**
+	 * @see IColorProvider#getBackground(Object)
+	 */
+	@Override
+	public Color getBackground(Object element) {
+		if (element instanceof EntityDefinition) {
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			Alignment alignment = as.getAlignment();
+			
+			EntityDefinition entityDef = (EntityDefinition) element;
+			return getEntityBackground(alignment.getCells(entityDef), 
+					entityDef.getPropertyPath().isEmpty());
+		}
+		
+		return null;
+	}
+
+	private Color getEntityBackground(Collection<? extends Cell> cells, 
+			boolean isType) {
+		if (cells.isEmpty()) {
+			return null;
+		}
+		
+		if (isType) {
+			return typeCellColor;
+		}
+		
+		for (Cell cell : cells) {
+			if (!AlignmentUtil.isAugmentation(cell)) {
+				return propertyCellColor;
+			}
+		}
+		
+		return augmentedColor;
 	}
 
 }

@@ -34,6 +34,14 @@ public interface Alignment {
 	 */
 	public Collection<? extends Cell> getTypeCells();
 	
+	/**
+	 * Get the cells associated w/ the given entity definition.
+	 * @param entityDefinition the entity definition
+	 * @return the associated cells or an empty collection
+	 * FIXME what about identifying if it's related to source or target schema?!
+	 */
+	public Collection<? extends Cell> getCells(EntityDefinition entityDefinition);
+	
 	// getTypeCells(TypeEntityDefinition)
 	
 	// getTypeCells(TypeEntityDefinition, TypeEntityDefinition)

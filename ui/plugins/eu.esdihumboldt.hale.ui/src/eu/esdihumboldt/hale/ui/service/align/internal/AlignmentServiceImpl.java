@@ -81,6 +81,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 		synchronized (this) {
 			alignment = new DefaultAlignment();
 		}
+		notifyAlignmentCleared();
 	}
 
 	

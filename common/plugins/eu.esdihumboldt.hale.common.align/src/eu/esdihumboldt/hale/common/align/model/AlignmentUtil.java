@@ -27,5 +27,15 @@ public abstract class AlignmentUtil {
 		// check if cell is a type cell
 		return cell.getTarget().values().iterator().next() instanceof Type;
 	}
+	
+	/**
+	 * Determines if the given cell is an augmentation.
+	 * @param cell the cell
+	 * @return if the cell is an augmentation
+	 */
+	public static boolean isAugmentation(Cell cell) {
+		// check if cell is an augmentation cell
+		return cell.getSource().isEmpty();
+	}
 
 }
