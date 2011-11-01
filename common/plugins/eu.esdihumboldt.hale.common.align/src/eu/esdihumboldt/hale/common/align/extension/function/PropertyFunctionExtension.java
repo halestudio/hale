@@ -27,11 +27,25 @@ public class PropertyFunctionExtension extends
 	 * Property function extension point
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.function";
+	
+	private static PropertyFunctionExtension instance;
+	
+	/**
+	 * Get the extension instance
+	 * @return the extension
+	 */
+	public static PropertyFunctionExtension getInstance() {
+		if (instance == null) {
+			instance = new PropertyFunctionExtension();
+		}
+		
+		return instance;
+	}
 
 	/**
 	 * Default constructor
 	 */
-	public PropertyFunctionExtension() {
+	protected PropertyFunctionExtension() {
 		super(EXTENSION_ID);
 	}
 

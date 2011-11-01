@@ -29,7 +29,7 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractFunctionExtension<T extends AbstractFunction> extends IdentifiableExtension<T> {
+public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> extends IdentifiableExtension<T> {
 
 	private ListMultimap<String, T> categoryFunctions;
 	

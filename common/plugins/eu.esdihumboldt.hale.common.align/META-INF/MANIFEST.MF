@@ -51,4 +51,3 @@ Export-Package: eu.esdihumboldt.hale.common.align.extension.category,
  eu.esdihumboldt.hale.common.align.transformation.report.impl,
  eu.esdihumboldt.hale.common.align.transformation.service,
  eu.esdihumboldt.hale.common.align.transformation.service.impl
-Service-Component: OSGI-INF/CategoryExtension.xml, OSGI-INF/EngineExtension.xml, OSGI-INF/TypeFunctionExtension.xml, OSGI-INF/PropertyFunctionExtension.xml, OSGI-INF/PropertyTransformationExtension.xml, OSGI-INF/TypeTransformationExtension.xml

@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.ui.function.extension.impl;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
@@ -42,7 +41,7 @@ public class PropertyFunctionWizardDescriptorImpl extends
 	 */
 	@Override
 	public PropertyFunction getFunction() {
-		PropertyFunctionExtension pfe = OsgiUtils.getService(PropertyFunctionExtension.class);
+		PropertyFunctionExtension pfe = PropertyFunctionExtension.getInstance();
 		return pfe.get(getFunctionId());
 	}
 

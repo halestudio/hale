@@ -27,10 +27,24 @@ public class CategoryExtension extends IdentifiableExtension<Category> {
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.category";
 	
+	private static CategoryExtension instance;
+	
+	/**
+	 * Get the extension instance
+	 * @return the extension
+	 */
+	public static CategoryExtension getInstance() {
+		if (instance == null) {
+			instance = new CategoryExtension();
+		}
+		
+		return instance;
+	}
+	
 	/**
 	 * Default constructor
 	 */
-	public CategoryExtension() {
+	protected CategoryExtension() {
 		super(EXTENSION_ID);
 	}
 

@@ -47,7 +47,7 @@ public class GenericTypeFunctionWizard extends AbstractGenericFunctionWizard<Typ
 	 */
 	@Override
 	public TypeFunction getFunction() {
-		TypeFunctionExtension tfe = OsgiUtils.getService(TypeFunctionExtension.class);
+		TypeFunctionExtension tfe = TypeFunctionExtension.getInstance();
 		return tfe.get(getFunctionId());
 	}
 

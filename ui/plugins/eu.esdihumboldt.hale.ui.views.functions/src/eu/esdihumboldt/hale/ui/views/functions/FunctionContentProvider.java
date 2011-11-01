@@ -19,7 +19,6 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
@@ -37,45 +36,6 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	private static final Category CAT_OTHER = new Category(null, "Others", 
 			"Any functions not associated to a category");
 	
-	private CategoryExtension categoryExtension;
-	
-	private TypeFunctionExtension typeFunctionExtension;
-	
-	private PropertyFunctionExtension propertyFunctionExtension;
-	
-	/**
-	 * Get the category extension
-	 * @return the category extension
-	 */
-	protected CategoryExtension getCategoryExtension() {
-		if (categoryExtension == null) {
-			categoryExtension = OsgiUtils.getService(CategoryExtension.class);
-		}
-		return categoryExtension;
-	}
-	
-	/**
-	 * Get the type function extension
-	 * @return the type function extension
-	 */
-	protected TypeFunctionExtension getTypeFunctionExtension() {
-		if (typeFunctionExtension == null) {
-			typeFunctionExtension = OsgiUtils.getService(TypeFunctionExtension.class);
-		}
-		return typeFunctionExtension;
-	}
-	
-	/**
-	 * Get the property function extension
-	 * @return the property function extension
-	 */
-	protected PropertyFunctionExtension getPropertyFunctionExtension() {
-		if (propertyFunctionExtension == null) {
-			propertyFunctionExtension = OsgiUtils.getService(PropertyFunctionExtension.class);
-		}
-		return propertyFunctionExtension;
-	}
-
 	/**
 	 * @see IContentProvider#dispose()
 	 */
@@ -97,7 +57,8 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		List<Category> cats = new ArrayList<Category>(getCategoryExtension().getElements());
+		List<Category> cats = new ArrayList<Category>(
+				CategoryExtension.getInstance().getElements());
 		cats.add(CAT_OTHER);
 		return cats.toArray();
 	}
@@ -110,10 +71,10 @@ public class FunctionContentProvider implements ITreeContentProvider {
 		if (parentElement instanceof Category) {
 			Category category = (Category) parentElement;
 			
-			List<AbstractFunction> functions = new ArrayList<AbstractFunction>();
-			functions.addAll(getTypeFunctionExtension().getFunctions(
+			List<AbstractFunction<?>> functions = new ArrayList<AbstractFunction<?>>();
+			functions.addAll(TypeFunctionExtension.getInstance().getFunctions(
 					category.getId()));
-			functions.addAll(getPropertyFunctionExtension().getFunctions(
+			functions.addAll(PropertyFunctionExtension.getInstance().getFunctions(
 					category.getId()));
 			
 			return functions.toArray();
@@ -139,14 +100,14 @@ public class FunctionContentProvider implements ITreeContentProvider {
 		if (element instanceof Category) {
 			Category category = (Category) element;
 			
-			List<TypeFunction> typeFunctions = getTypeFunctionExtension().getFunctions(
-					category.getId());
+			List<TypeFunction> typeFunctions = TypeFunctionExtension
+					.getInstance().getFunctions(category.getId());
 			if (!typeFunctions.isEmpty()) {
 				return true;
 			}
-			
-			List<PropertyFunction> properyFunctions = getPropertyFunctionExtension().getFunctions(
-					category.getId());
+
+			List<PropertyFunction> properyFunctions = PropertyFunctionExtension
+					.getInstance().getFunctions(category.getId());
 			if (!properyFunctions.isEmpty()) {
 				return true;
 			}
