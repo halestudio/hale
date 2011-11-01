@@ -61,7 +61,7 @@ public class EngineManager {
 		TransformationEngine engine = engines.get(engineId);
 		
 		if (engine == null) {
-			EngineExtension ee = OsgiUtils.getService(EngineExtension.class);
+			EngineExtension ee = EngineExtension.getInstance();
 			EngineFactory engineFactory = ee.getFactory(engineId);
 			
 			if (engineFactory == null) {

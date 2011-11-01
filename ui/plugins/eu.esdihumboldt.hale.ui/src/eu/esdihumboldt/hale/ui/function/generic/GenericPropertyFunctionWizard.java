@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.function.generic;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
@@ -47,7 +46,7 @@ public class GenericPropertyFunctionWizard extends AbstractGenericFunctionWizard
 	 */
 	@Override
 	public PropertyFunction getFunction() {
-		PropertyFunctionExtension pfe = OsgiUtils.getService(PropertyFunctionExtension.class);
+		PropertyFunctionExtension pfe = PropertyFunctionExtension.getInstance();
 		return pfe.get(getFunctionId());
 	}
 

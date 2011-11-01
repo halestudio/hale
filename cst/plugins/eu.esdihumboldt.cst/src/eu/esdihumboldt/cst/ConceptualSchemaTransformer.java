@@ -23,7 +23,6 @@ import net.jcip.annotations.Immutable;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.cst.internal.EngineManager;
 import eu.esdihumboldt.cst.internal.SimplePropertyTransformer;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension;
@@ -86,7 +85,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 				alignment, reporter, target);
 		
 		TypeTransformationExtension typesTransformations = 
-				OsgiUtils.getService(TypeTransformationExtension.class);
+				TypeTransformationExtension.getInstance();
 		
 		Collection<? extends Cell> typeCells = alignment.getTypeCells();
 		for (Cell typeCell : typeCells) {

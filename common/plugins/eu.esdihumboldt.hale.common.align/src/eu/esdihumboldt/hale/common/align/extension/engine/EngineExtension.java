@@ -77,11 +77,25 @@ public class EngineExtension extends AbstractExtension<TransformationEngine, Eng
 	}
 
 	private static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.engine";
+	
+	private static EngineExtension instance;
+	
+	/**
+	 * Get the extension instance
+	 * @return the extension
+	 */
+	public static EngineExtension getInstance() {
+		if (instance == null) {
+			instance = new EngineExtension();
+		}
+		
+		return instance;
+	}
 
 	/**
 	 * Default constructor
 	 */
-	public EngineExtension() {
+	protected EngineExtension() {
 		super(EXTENSION_ID);
 	}
 

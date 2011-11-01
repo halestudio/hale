@@ -43,7 +43,7 @@ public class FunctionLabelProvider extends LabelProvider {
 			return ((Category) element).getName();
 		}
 		if (element instanceof AbstractFunction) {
-			return ((AbstractFunction) element).getDisplayName();
+			return ((AbstractFunction<?>) element).getDisplayName();
 		}
 		
 		return super.getText(element);
@@ -61,7 +61,7 @@ public class FunctionLabelProvider extends LabelProvider {
 		
 		// get image based on getIconURL in AbstractFunction (and cache them)
 		if (element instanceof AbstractFunction) {
-			URL iconUrl = ((AbstractFunction) element).getIconURL();
+			URL iconUrl = ((AbstractFunction<?>) element).getIconURL();
 			String iconString = iconUrl.toString();
 			
 			Image image = urlImages.get(iconString);

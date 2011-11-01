@@ -27,11 +27,25 @@ public class TypeFunctionExtension extends
 	 * Property function extension point
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.function";
+	
+	private static TypeFunctionExtension instance;
+	
+	/**
+	 * Get the extension instance
+	 * @return the extension
+	 */
+	public static TypeFunctionExtension getInstance() {
+		if (instance == null) {
+			instance = new TypeFunctionExtension();
+		}
+		
+		return instance;
+	}
 
 	/**
 	 * Default constructor
 	 */
-	public TypeFunctionExtension() {
+	protected TypeFunctionExtension() {
 		super(EXTENSION_ID);
 	}
 

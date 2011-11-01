@@ -41,6 +41,20 @@ public class TypeTransformationExtension
 	}
 
 	private static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.transformation";
+	
+	private static TypeTransformationExtension instance;
+	
+	/**
+	 * Get the extension instance
+	 * @return the extension
+	 */
+	public static TypeTransformationExtension getInstance() {
+		if (instance == null) {
+			instance = new TypeTransformationExtension();
+		}
+		
+		return instance;
+	}
 
 	/**
 	 * Default constructor

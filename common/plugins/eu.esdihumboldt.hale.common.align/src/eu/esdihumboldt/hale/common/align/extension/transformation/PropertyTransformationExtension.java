@@ -72,11 +72,25 @@ public class PropertyTransformationExtension
 	}
 
 	private static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.transformation";
+	
+	private static PropertyTransformationExtension instance;
+	
+	/**
+	 * Get the extension instance
+	 * @return the extension
+	 */
+	public static PropertyTransformationExtension getInstance() {
+		if (instance == null) {
+			instance = new PropertyTransformationExtension();
+		}
+		
+		return instance;
+	}
 
 	/**
 	 * Default constructor
 	 */
-	public PropertyTransformationExtension() {
+	protected PropertyTransformationExtension() {
 		super(EXTENSION_ID);
 	}
 
