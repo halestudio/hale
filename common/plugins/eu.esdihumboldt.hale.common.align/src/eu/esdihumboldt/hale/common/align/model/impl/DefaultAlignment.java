@@ -15,13 +15,17 @@ package eu.esdihumboldt.hale.common.align.model.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
-import eu.esdihumboldt.hale.common.align.model.Type;
 
 /**
  * Default alignment implementation
@@ -57,6 +61,36 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		if (AlignmentUtil.isTypeCell(cell)) {
 			typeCells.add(cell);
 		}
+	}
+
+	/**
+	 * @see Alignment#getCells(EntityDefinition)
+	 */
+	@Override
+	public Collection<? extends Cell> getCells(EntityDefinition entityDefinition) {
+		List<Cell> cells = new ArrayList<Cell>(); 
+		
+		for (Cell cell : getCells()) {
+			//XXX any way to determine if it's source or target related?
+			if (associatedWith(cell.getSource(), entityDefinition)
+					|| associatedWith(cell.getTarget(), entityDefinition)) {
+				cells.add(cell);
+			}
+		}
+		
+		return cells;
+	}
+	
+	private boolean associatedWith(
+			ListMultimap<String, ? extends Entity> entities,
+			EntityDefinition entityDef) {
+		for (Entity entity : entities.values()) {
+			if (entityDef.equals(entity.getDefinition())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	/**
