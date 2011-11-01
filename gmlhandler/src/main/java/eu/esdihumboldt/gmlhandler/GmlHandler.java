@@ -200,8 +200,9 @@ public class GmlHandler {
 				new Boolean(true));
 
 		// create XML File Stream Writer
+		FileOutputStream fos = new FileOutputStream(new File(this.targetGmlUrl));
 		XMLStreamWriter writer = outputFactory.createXMLStreamWriter(
-				new FileOutputStream(new File(this.targetGmlUrl)), "UTF-8"); //$NON-NLS-1$
+				fos, "UTF-8"); //$NON-NLS-1$
 //		SchemaLocationXMLStreamWriter writer = new SchemaLocationXMLStreamWriter(
 //				xmlStreamWriter, this.schemaUrl);
 
@@ -224,6 +225,12 @@ public class GmlHandler {
 			writer.flush();
 		} finally {
 			exporter.close();
+			writer.close();
+			try {
+				fos.close();
+			} catch (IOException e) {
+				LOG.error("Could not close stream.", e);
+			}
 		}
 
 		LOG.debug("Gml instance has been exported successfully "); //$NON-NLS-1$
