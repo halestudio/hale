@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.views.properties;
 
 import org.eclipse.jface.viewers.IFilter;
 
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
@@ -30,16 +31,22 @@ public abstract class DefaultFilter implements IFilter{
 	public abstract boolean isFiltered(Definition<?> input);
 
 	/**
-	 * @see org.eclipse.jface.viewers.IFilter#select(java.lang.Object)
+	 * @see IFilter#select(Object)
 	 */
 	@Override
 	public boolean select(Object input) {
-		if(input instanceof EntityDefinition){
-			return !isFiltered(((EntityDefinition) input).getDefinition());
-			}
-		if(input instanceof Definition<?>){
+		if (input instanceof Entity) {
+			input = ((Entity) input).getDefinition();
+		}
+		
+		if (input instanceof EntityDefinition){
+			input = ((EntityDefinition) input).getDefinition();
+		}
+		
+		if (input instanceof Definition<?>){
 			return !isFiltered((Definition<?>) input);
 		}
+		
 		return false;
 	}
 }

@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 
 /**
- * Basic label provider for {@link Definition}s
+ * Basic label provider for {@link Definition}s and {@link EntityDefinition}s
  * @author Simon Templer
  */
 public class DefinitionLabelProvider extends LabelProvider {

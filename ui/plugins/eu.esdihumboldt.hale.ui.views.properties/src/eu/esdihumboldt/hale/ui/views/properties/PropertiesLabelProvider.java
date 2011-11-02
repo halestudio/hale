@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -39,11 +40,11 @@ public class PropertiesLabelProvider extends LabelProvider {
 			element = ((IStructuredSelection) element).getFirstElement();
 		}
 		
-		if (element instanceof EntityDefinition) {
-			element = ((EntityDefinition) element).getDefinition();
+		if (element instanceof Entity) {
+			element = ((Entity) element).getDefinition();
 		}
 		
-		if (element instanceof Definition<?>) {
+		if (element instanceof EntityDefinition || element instanceof Definition<?>) {
 			return definitionLabels.getImage(element);
 		}
 		
@@ -59,17 +60,23 @@ public class PropertiesLabelProvider extends LabelProvider {
 			element = ((IStructuredSelection) element).getFirstElement();
 		}
 		
-		if (element instanceof EntityDefinition) {
-			element = ((EntityDefinition) element).getDefinition();
+		if (element instanceof Entity) {
+			element = ((Entity) element).getDefinition();
 		}
 		
-		if (element instanceof TypeDefinition) {
+		if ((element instanceof EntityDefinition && ((EntityDefinition) element)
+				.getDefinition() instanceof TypeDefinition)
+				|| element instanceof TypeDefinition) {
+			if (element instanceof EntityDefinition) {
+				element = ((EntityDefinition) element).getDefinition();
+			}
+			
 			// return the local name of the type instead of the display name
 			// XXX as it may be masked by an XML element name
 			return ((TypeDefinition) element).getName().getLocalPart();
 		}
 		
-		if (element instanceof Definition<?>) {
+		if (element instanceof EntityDefinition || element instanceof Definition<?>) {
 			return definitionLabels.getText(element);
 		}
 		
