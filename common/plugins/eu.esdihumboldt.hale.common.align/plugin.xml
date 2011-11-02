@@ -50,6 +50,18 @@
             </property>
          </targetProperties>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.hale.align.general"
+            description="Assigns a value to a target property"
+            identifier="eu.esdihumboldt.hale.align.assign"
+            name="Assign">
+         <targetProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">
