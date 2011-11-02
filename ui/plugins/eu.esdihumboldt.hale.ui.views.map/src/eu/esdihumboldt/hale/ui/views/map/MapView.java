@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.ui.style.LoadStylesAction;
 import eu.esdihumboldt.hale.ui.style.SaveStylesAction;
 import eu.esdihumboldt.hale.ui.style.StyleDropdown;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
+import eu.esdihumboldt.hale.ui.util.ViewContextMenu;
 import eu.esdihumboldt.hale.ui.util.action.DropdownAction;
 import eu.esdihumboldt.hale.ui.views.map.internal.MapViewPlugin;
 import eu.esdihumboldt.hale.ui.views.map.internal.Messages;
@@ -145,6 +146,8 @@ public class MapView extends ViewPart {
 		painter = new FeatureTilePainter(mapCanvas);
 		
 		getSite().setSelectionProvider(painter.getSelectionProvider());
+		// setup context menu
+		new ViewContextMenu(getSite(), painter.getSelectionProvider(), mapCanvas);
 		
 		// create position status
 		status = new PositionStatus(painter, mapCanvas, getViewSite(), getTitleImage());
