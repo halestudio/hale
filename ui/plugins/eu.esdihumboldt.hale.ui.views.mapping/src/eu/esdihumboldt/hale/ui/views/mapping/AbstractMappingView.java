@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.ui.views.mapping;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.zest.core.viewers.AbstractZoomableViewer;
 import org.eclipse.zest.core.viewers.GraphViewer;
@@ -25,14 +24,17 @@ import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.HorizontalTreeLayoutAlgorithm;
 
+import eu.esdihumboldt.hale.ui.util.viewer.PostSelectionSupport;
 import eu.esdihumboldt.hale.ui.views.mapping.graph.CellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.views.mapping.graph.GraphLabelProvider;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
- * TODO Type description
+ * Abstract mapping graph view. Subclasses are responsible for setting the
+ * viewer input.
  * @author Simon Templer
  */
-public abstract class AbstractMappingView extends ViewPart implements IZoomableWorkbenchPart {
+public abstract class AbstractMappingView extends PropertiesViewPart implements IZoomableWorkbenchPart {
 	
 	private GraphViewer viewer;
 
@@ -52,7 +54,7 @@ public abstract class AbstractMappingView extends ViewPart implements IZoomableW
 		viewer.applyLayout();
 		fillToolBar();
 		
-		getSite().setSelectionProvider(getViewer());
+		getSite().setSelectionProvider(new PostSelectionSupport(getViewer()));
 	}
 	
 	private LayoutAlgorithm createLayout() {
