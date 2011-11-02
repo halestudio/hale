@@ -10,26 +10,24 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.grouppropertydefinition;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 
 /**
- * Properties section with cardinality information
+ * Properties section with choiceflag information
  * @author Patrick Lieb
  */
-public class PropertyTypeCardinalitySection extends DefaultDefinitionSection<PropertyDefinition>{
+public class GroupPropertyChoiceFlagSection extends DefaultDefinitionSection<GroupPropertyDefinition>{
 	
-	private Text min;
-	
-	private Text max;
+	private Text choiceflag;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -37,27 +35,19 @@ public class PropertyTypeCardinalitySection extends DefaultDefinitionSection<Pro
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "Minimum:", "Maximum:");
-		min = getText();
-		max = getText2();
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "ChoiceFlag:", null);
+		choiceflag = getText();
 	}
-
+	
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		long minlong = getDefinition().getConstraint(Cardinality.class).getMinOccurs();
-		long maxlong = getDefinition().getConstraint(Cardinality.class).getMaxOccurs();
-		if (minlong == Cardinality.UNBOUNDED) {
-			min.setText("unbounded");
+		if(getDefinition().getConstraint(ChoiceFlag.class).isEnabled()){
+			choiceflag.setText("true");
 		} else {
-			min.setText(String.valueOf(minlong));
-		}
-		if (maxlong == Cardinality.UNBOUNDED) {
-			max.setText("unbounded");
-		} else {
-			max.setText(String.valueOf(maxlong));
+			choiceflag.setText("false");
 		}
 	}
 }

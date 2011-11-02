@@ -10,12 +10,12 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.typedefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter;
 
 /**
  * Filter that lets only {@link TypeDefinition}s with enumeration values which
@@ -23,10 +23,10 @@ import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
  * 
  * @author Patrick Lieb
  */
-public class TypeDefinitionEnumerationFilter extends DefaultFilter {
+public class TypeDefinitionEnumerationFilter extends DefaultDefinitionFilter {
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {

@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.typedefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -18,25 +18,25 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 
 /**
- * Properties section with HasValueFlag information
+ * Properties section with AbstractFlag information
  * @author Patrick Lieb
  */
-public class TypeDefinitionHasValueFlagSection extends DefaultDefinitionSection<TypeDefinition>{
+public class TypeDefinitionAbstractFlagSection extends DefaultDefinitionSection<TypeDefinition>{
 	
-	private Text hasValueFlag;
-	
+	private Text abstractFlag;
+
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "HasValueFlag:", null);
-		hasValueFlag = getText();
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "AbstractFlag:", null);
+		abstractFlag = getText();
 	}
 
 	/**
@@ -44,10 +44,10 @@ public class TypeDefinitionHasValueFlagSection extends DefaultDefinitionSection<
 	 */
 	@Override
 	public void refresh() {
-		if (getDefinition().getConstraint(HasValueFlag.class).isEnabled()){
-			hasValueFlag.setText("true");
+		if (getDefinition().getConstraint(AbstractFlag.class).isEnabled()){
+			abstractFlag.setText("true");
 		} else {
-			hasValueFlag.setText("false");
+			abstractFlag.setText("false");
 		}
 	}
 }

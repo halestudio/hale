@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties;
+package eu.esdihumboldt.hale.ui.util.components;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Link;
  * Link class based on URIs
  * @author Patrick Lieb
  */
-public class UriLink{
+public class URILink{
 	
 	private SelectionAdapter adapter;
 	
@@ -42,7 +42,7 @@ public class UriLink{
 	 * @param uri the URI of the file
 	 * @param text the text which should be displayed
 	 */
-	public UriLink(Composite parent, int style, final URI uri, String text){
+	public URILink(Composite parent, int style, final URI uri, String text){
 		adapter = createDefaultSelectionAdapter(uri);
 		link = new Link(parent, style);
 		link.addSelectionListener(adapter);

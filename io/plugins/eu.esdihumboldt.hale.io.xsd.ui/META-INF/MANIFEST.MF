@@ -16,4 +16,5 @@ Import-Package: eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.schema.model.impl,
  eu.esdihumboldt.hale.io.xsd.constraint,
- eu.esdihumboldt.hale.ui.views.properties
+ eu.esdihumboldt.hale.ui.views.properties,
+ eu.esdihumboldt.hale.ui.views.properties.definition

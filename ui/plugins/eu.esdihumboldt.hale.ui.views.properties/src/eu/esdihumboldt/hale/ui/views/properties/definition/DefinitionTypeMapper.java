@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties;
+package eu.esdihumboldt.hale.ui.views.properties.definition;
 
 import org.eclipse.ui.views.properties.tabbed.AbstractTypeMapper;
 import org.eclipse.ui.views.properties.tabbed.ITypeMapper;

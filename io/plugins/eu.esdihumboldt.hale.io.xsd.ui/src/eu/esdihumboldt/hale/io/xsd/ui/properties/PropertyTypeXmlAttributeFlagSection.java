@@ -24,7 +24,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 
 /**
  * Properties section with XmlAttributeFlag

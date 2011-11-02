@@ -26,8 +26,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
-import eu.esdihumboldt.hale.ui.views.properties.UriLink;
+import eu.esdihumboldt.hale.ui.util.components.URILink;
 
 /**
  * Properties section with a link to open the location in editor or browser
@@ -35,7 +34,7 @@ import eu.esdihumboldt.hale.ui.views.properties.UriLink;
  */
 public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Definition<?>>{
 	
-	private UriLink location;
+	private URILink location;
 	
 	private Link link;
 	
@@ -50,7 +49,7 @@ public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Defi
 		super.createControls(parent, aTabbedPropertySheetPage);
 		Composite composite = getWidgetFactory()
 				.createFlatFormComposite(parent);
-		location = new UriLink(composite, 0, null, "<A>Open Location</A>");
+		location = new URILink(composite, 0, null, "<A>Open Location</A>");
 		
 		link = location.getLink();
 		

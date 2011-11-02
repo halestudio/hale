@@ -10,21 +10,22 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties;
+package eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition;
 
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter;
 
 /**
  * Filter that lets only {@link ChildDefinition}s with a ParentType that is
  * defined pass.
  * @author Patrick Lieb
  */
-public class ChildDefinitionDefaultFilter extends DefaultFilter{
+public class ChildDefinitionDefaultFilter extends DefaultDefinitionFilter{
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {
