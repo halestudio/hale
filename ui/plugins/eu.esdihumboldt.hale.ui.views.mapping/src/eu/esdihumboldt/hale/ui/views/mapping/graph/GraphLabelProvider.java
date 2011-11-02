@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
@@ -40,14 +41,17 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	private final int entityBorderWidth = 2;
 	private final Color entityBorderColor;
 	private final Color entityBorderHighlightColor;
-	private final Color entityBackgroundColor;
+	private final Color typeBackgroundColor;
+	private final Color propertyBackgroundColor;
 	private final Color entityHighlightColor;
+	private final Color entityForegorundColor;
 	
 	private final int cellBorderWidth = 2;
 	private final Color cellBorderColor;
 	private final Color cellBorderHighlightColor;
 	private final Color cellBackgroundColor;
 	private final Color cellHighlightColor;
+	private final Color cellForegroundColor;
 	
 	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider();
 	
@@ -61,17 +65,23 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 		
+		//XXX keep entity colors in a central place?
+		//XXX colors dependent of mapping context?
+		
 		// entity colors
-		entityBorderColor = display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
-		entityBorderHighlightColor = display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
-		entityBackgroundColor = new Color(display, 250, 150, 150);
-		entityHighlightColor = new Color(display, 230, 70, 70);
+		entityBorderColor = null;
+		entityForegorundColor = null; //display.getSystemColor(SWT.COLOR_BLACK);
+		typeBackgroundColor = new Color(display, 190, 230, 160);
+		propertyBackgroundColor = new Color(display, 220, 250, 200);
+		entityHighlightColor = new Color(display, 250, 250, 130);
+		entityBorderHighlightColor = display.getSystemColor(SWT.COLOR_GRAY);
 		
 		// cell colors
-		cellBorderColor = null; //display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
-		cellBorderHighlightColor = null; //display.getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT);
-		cellBackgroundColor = null; //new Color(display, 250, 150, 150);
-		cellHighlightColor = null; //new Color(display, 230, 70, 70);
+		cellBorderColor = null;
+		cellBorderHighlightColor = display.getSystemColor(SWT.COLOR_GRAY);
+		cellBackgroundColor = null;
+		cellForegroundColor = null;
+		cellHighlightColor = entityHighlightColor;
 	}
 
 	/**
@@ -143,11 +153,12 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		functionLabels.dispose();
 		
 		// dispose created colors
-		entityBackgroundColor.dispose();
+		typeBackgroundColor.dispose();
+		propertyBackgroundColor.dispose();
+		entityHighlightColor.dispose();
 		entityHighlightColor.dispose();
 		
-//		cellBackgroundColor.dispose();
-//		cellHighlightColor.dispose();
+//		cellBorderHighlightColor.dispose();
 		
 		super.dispose();
 	}
@@ -222,7 +233,10 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	@Override
 	public Color getBackgroundColour(Object entity) {
 		if (entity instanceof Entity) {
-			return entityBackgroundColor;
+			if (entity instanceof Type) {
+				return typeBackgroundColor;
+			}
+			return propertyBackgroundColor;
 		}
 		
 		if (entity instanceof Cell) {
@@ -237,7 +251,14 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public Color getForegroundColour(Object entity) {
-		// TODO Auto-generated method stub
+		if (entity instanceof Entity) {
+			return entityForegorundColor;
+		}
+		
+		if (entity instanceof Cell) {
+			return cellForegroundColor;
+		}
+		
 		return null;
 	}
 
