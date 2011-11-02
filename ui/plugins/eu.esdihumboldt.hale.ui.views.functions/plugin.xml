@@ -5,6 +5,7 @@
          point="org.eclipse.ui.views">
       <view
             class="eu.esdihumboldt.hale.ui.views.functions.FunctionsView"
+            icon="icons/function.png"
             id="eu.esdihumboldt.hale.ui.views.functions"
             name="Functions"
             restorable="true">
