@@ -69,6 +69,21 @@
             </reference>
          </activeWhen>
       </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.align.internal.handler.RemoveCellHandler"
+            commandId="org.eclipse.ui.edit.delete">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     operator="or">
+                  <instanceof
+                        value="eu.esdihumboldt.hale.common.align.model.Cell">
+                  </instanceof>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.services">
@@ -282,6 +297,29 @@
                </with>
             </visibleWhen>
          </command>
+         <command
+               commandId="org.eclipse.ui.edit.delete"
+               label="Delete"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?after=file">
+         <menu
+               id="edit"
+               label="Edit"
+               mnemonic="e">
+            <command
+                  commandId="org.eclipse.ui.edit.delete"
+                  label="Delete"
+                  mnemonic="d"
+                  style="push">
+            </command>
+         </menu>
       </menuContribution>
    </extension>
    <extension

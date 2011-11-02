@@ -240,6 +240,11 @@
             schemeId="eu.esdihumboldt.hale.ui.application.bindings"
             sequence="M1+S">
       </key>
+      <key
+            commandId="org.eclipse.ui.edit.delete"
+            schemeId="eu.esdihumboldt.hale.ui.application.bindings"
+            sequence="DEL">
+      </key>
    </extension>
 
 </plugin>

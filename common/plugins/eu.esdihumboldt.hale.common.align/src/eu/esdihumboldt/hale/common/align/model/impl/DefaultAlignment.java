@@ -106,7 +106,11 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	@Override
 	public boolean removeCell(Cell cell) {
-		return cells.remove(cell);
+		boolean removed = cells.remove(cell);
+		if (removed) {
+			typeCells.remove(cell);
+		}
+		return removed;
 	}
 
 	/**
