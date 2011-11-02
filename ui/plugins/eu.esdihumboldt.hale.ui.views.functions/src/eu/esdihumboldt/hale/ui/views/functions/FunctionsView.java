@@ -18,6 +18,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
+import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 
 /**
  * Functions view
@@ -52,6 +53,8 @@ public class FunctionsView extends ViewPart {
 		viewer.setContentProvider(new FunctionContentProvider());
 		
 		viewer.setInput(Mode.ANY);
+		
+		new ViewerMenu(getSite(), viewer);
 	}
 
 	/**

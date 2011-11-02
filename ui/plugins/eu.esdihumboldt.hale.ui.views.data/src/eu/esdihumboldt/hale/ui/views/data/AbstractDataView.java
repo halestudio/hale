@@ -21,6 +21,7 @@ import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
 import eu.esdihumboldt.hale.ui.views.data.internal.tree.DefinitionInstanceTreeViewer;
@@ -108,6 +109,8 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		setInstanceSelector(featureSelector);
 		
 		getSite().setSelectionProvider(tree.getTreeViewer());
+		
+		new ViewerMenu(getSite(), tree.getTreeViewer());
 	}
 
 	/**

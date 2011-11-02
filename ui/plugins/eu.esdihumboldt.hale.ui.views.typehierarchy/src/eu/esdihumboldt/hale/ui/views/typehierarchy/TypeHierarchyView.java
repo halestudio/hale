@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionFilter;
+import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyContentProvider.ParentPath;
 
@@ -63,7 +64,6 @@ public class TypeHierarchyView extends PropertiesViewPart {
 		viewer.setLabelProvider(new TypeHierarchyLabelProvider());
 		viewer.setComparator(new DefinitionComparator());
 		
-		hookContextMenu();
 		contributeToActionBars();
 		
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -112,6 +112,8 @@ public class TypeHierarchyView extends PropertiesViewPart {
 				}
 			}
 		});
+		
+		new ViewerMenu(getSite(), viewer);
 	}
 
 	/**
@@ -140,20 +142,6 @@ public class TypeHierarchyView extends PropertiesViewPart {
 		else {
 			viewer.setInput(null);
 		}
-	}
-
-	private void hookContextMenu() {
-//		MenuManager menuMgr = new MenuManager("#PopupMenu");
-//		menuMgr.setRemoveAllWhenShown(true);
-//		menuMgr.addMenuListener(new IMenuListener() {
-//			@Override
-//			public void menuAboutToShow(IMenuManager manager) {
-//				TypeHierarchyView.this.fillContextMenu(manager);
-//			}
-//		});
-//		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-//		viewer.getControl().setMenu(menu);
-//		getSite().registerContextMenu(menuMgr, viewer);
 	}
 
 	private void contributeToActionBars() {
