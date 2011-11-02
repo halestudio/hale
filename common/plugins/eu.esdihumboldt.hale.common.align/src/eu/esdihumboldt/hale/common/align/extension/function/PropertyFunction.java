@@ -85,7 +85,12 @@ public final class PropertyFunction extends AbstractFunction<PropertyParameter> 
 	public URL getIconURL() {
 		URL icon = super.getIconURL();
 		if (icon == null)  {
-			icon = getClass().getResource("/icons/propertyFunction.gif");
+			if (isAugmentation()) {
+				icon = getClass().getResource("/icons/augmentation.gif");
+			}
+			else {
+				icon = getClass().getResource("/icons/propertyFunction.gif");
+			}
 		}
 		return icon;
 	}
