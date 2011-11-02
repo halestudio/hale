@@ -6,6 +6,7 @@
       <view
             category="eu.esdihumboldt.hale.ui"
             class="eu.esdihumboldt.hale.ui.views.mapping.AlignmentView"
+            icon="icons/alignment.gif"
             id="eu.esdihumboldt.hale.ui.views.mapping.alignment"
             name="Alignment"
             restorable="true">
