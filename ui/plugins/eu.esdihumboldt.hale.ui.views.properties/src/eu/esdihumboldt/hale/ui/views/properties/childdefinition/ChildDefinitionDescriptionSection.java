@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.childdefinition;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescriptionSection;
 
@@ -27,11 +26,8 @@ public class ChildDefinitionDescriptionSection extends DefinitionDescriptionSect
 	 */
 	@Override
 	protected void setInput(Object input) {
-		if (input instanceof EntityDefinition) {
-			setDefinition(((ChildDefinition<?>) ((EntityDefinition) input).getDefinition()).getParentType());
-		}
-		else {
-			setDefinition(((ChildDefinition<?>) input).getParentType());
-		}
+		super.setInput(input);
+		
+		setDefinition(((ChildDefinition<?>) getDefinition()).getParentType());
 	}
 }

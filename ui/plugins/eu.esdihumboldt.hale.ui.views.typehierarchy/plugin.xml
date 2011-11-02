@@ -26,6 +26,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.ChildDefinition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
+            </input>
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype.location"
@@ -35,6 +38,9 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
             </input>
          </propertySection>
       </propertySections>

@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.properties;
 
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
@@ -28,12 +29,15 @@ public abstract class DefaultDefinitionSection<T extends Definition<?>> extends 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void setInput(Object input) {
+		if (input instanceof Entity) {
+			input = ((Entity) input).getDefinition();
+		}
+			
 		if (input instanceof EntityDefinition) {
-			setDefinition((T) ((EntityDefinition) input).getDefinition());
+			input = ((EntityDefinition) input).getDefinition();
 		}
-		else {
-			setDefinition((T) input);
-		}
+			
+		setDefinition((T) input);
 	}
 	
 }

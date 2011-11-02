@@ -14,6 +14,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.Definition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Entity">
+            </input>
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.general.name"
@@ -24,6 +27,9 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.Definition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Entity">
             </input>
          </propertySection>
          <propertySection
@@ -36,6 +42,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.Definition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Entity">
+            </input>
          </propertySection>
          <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionAbstractFlagSection"
@@ -44,6 +53,9 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Type">
             </input>
          </propertySection>
          <propertySection
@@ -65,6 +77,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Type">
+            </input>
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.hasvalueflag"
@@ -74,6 +89,9 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Type">
             </input>
          </propertySection>
          <propertySection
@@ -95,6 +113,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
+            </input>
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.grouppropertycardinality"
@@ -105,6 +126,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
+            </input>
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
@@ -114,6 +138,9 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Type">
             </input>
          </propertySection>
          <propertySection
@@ -126,6 +153,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Type">
+            </input>
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.name"
@@ -136,6 +166,9 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.ChildDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
             </input>
          </propertySection>
          <propertySection
@@ -148,6 +181,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.ChildDefinition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
+            </input>
          </propertySection>
          <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionNameSection"
@@ -158,6 +194,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.ChildDefinition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
+            </input>
          </propertySection>
          <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.PropertyTypeNameSection"
@@ -166,6 +205,9 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
             </input>
          </propertySection>
          <propertySection
@@ -178,6 +220,9 @@
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
             </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
+            </input>
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype.name"
@@ -188,6 +233,9 @@
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
             </input>
          </propertySection>
       </propertySections>
