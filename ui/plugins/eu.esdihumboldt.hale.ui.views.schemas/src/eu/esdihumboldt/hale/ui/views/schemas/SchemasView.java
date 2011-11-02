@@ -22,7 +22,6 @@ import java.util.Set;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -40,13 +39,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -68,6 +65,7 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.EntitySchemaExplorer;
 import eu.esdihumboldt.hale.ui.views.schemas.explorer.SchemaExplorer;
@@ -496,42 +494,9 @@ public class SchemasView extends PropertiesViewPart {
 		});
 		
 		// source context menu
-		MenuManager sourceMenuManager = new MenuManager();
-		sourceMenuManager.setRemoveAllWhenShown(true);
-//		final IContributionItem sourceContextFunctions = new SchemaItemContribution(sourceSchemaViewer, false);
-		sourceMenuManager.addMenuListener(new IMenuListener() {
-
-			@Override
-			public void menuAboutToShow(IMenuManager manager) {
-//				manager.add(sourceContextFunctions);
-				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-			}
-			
-		});
-		Menu sourceMenu = sourceMenuManager.createContextMenu(
-				sourceExplorer.getTreeViewer().getControl());
-		sourceExplorer.getTreeViewer().getControl().setMenu(sourceMenu);
-		
+		new ViewerMenu(getSite(), sourceExplorer.getTreeViewer());
 		// target context menu
-		MenuManager targetMenuManager = new MenuManager();
-		targetMenuManager.setRemoveAllWhenShown(true);
-//		final IContributionItem targetContextFunctions = new SchemaItemContribution(targetSchemaViewer, true);
-		targetMenuManager.addMenuListener(new IMenuListener() {
-
-			@Override
-			public void menuAboutToShow(IMenuManager manager) {
-//				manager.add(targetContextFunctions);
-				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-			}
-			
-		});
-		Menu targetMenu = targetMenuManager.createContextMenu(
-				targetExplorer.getTreeViewer().getControl());
-		targetExplorer.getTreeViewer().getControl().setMenu(targetMenu);
-		
-		// register context menus
-		getSite().registerContextMenu(sourceMenuManager, sourceExplorer.getTreeViewer());
-		getSite().registerContextMenu(targetMenuManager, targetExplorer.getTreeViewer());
+		new ViewerMenu(getSite(), targetExplorer.getTreeViewer());
 
 		// initialization of explorers
 		sourceExplorer.setSchema(schemaService.getSchemas(SchemaSpaceID.SOURCE));

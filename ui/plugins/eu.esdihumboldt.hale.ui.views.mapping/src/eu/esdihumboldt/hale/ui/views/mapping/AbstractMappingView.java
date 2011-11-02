@@ -25,6 +25,7 @@ import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.HorizontalTreeLayoutAlgorithm;
 
 import eu.esdihumboldt.hale.ui.util.viewer.PostSelectionSupport;
+import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.mapping.graph.CellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.views.mapping.graph.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
@@ -54,7 +55,11 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 		viewer.applyLayout();
 		fillToolBar();
 		
+		// set selection provider
 		getSite().setSelectionProvider(new PostSelectionSupport(getViewer()));
+		
+		// create context menu
+		new ViewerMenu(getSite(), getViewer());
 	}
 	
 	private LayoutAlgorithm createLayout() {

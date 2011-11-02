@@ -12,6 +12,7 @@ Import-Package: eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.ui.common.definition.viewer,
  eu.esdihumboldt.hale.ui.util.selection,
+ eu.esdihumboldt.hale.ui.util.viewer,
  eu.esdihumboldt.hale.ui.views.properties,
  org.eclipse.ui.views.properties.tabbed
 Export-Package: eu.esdihumboldt.hale.ui.views.typehierarchy,
