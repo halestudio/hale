@@ -12,20 +12,16 @@
 
 package eu.esdihumboldt.hale.ui.util.viewer;
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
+
+import eu.esdihumboldt.hale.ui.util.ViewContextMenu;
 
 /**
  * A viewer context menu.
  * @author Simon Templer
  */
-public class ViewerMenu implements IMenuListener {
+public class ViewerMenu extends ViewContextMenu {
 	
 	/**
 	 * Create a viewer context menu.
@@ -33,24 +29,7 @@ public class ViewerMenu implements IMenuListener {
 	 * @param viewer the viewer
 	 */
 	public ViewerMenu(IWorkbenchPartSite site, Viewer viewer) {
-		MenuManager menuManager = new MenuManager();
-		menuManager.setRemoveAllWhenShown(true);
-		menuManager.addMenuListener(this);
-		Menu targetMenu = menuManager.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(targetMenu);
-		
-		// register context menus
-		site.registerContextMenu(menuManager, viewer);
-	}
-
-	/**
-	 * Override to change menu contents. By default only a marker for menu
-	 * additions is part of the context menu.
-	 * @see IMenuListener#menuAboutToShow(IMenuManager)
-	 */
-	@Override
-	public void menuAboutToShow(IMenuManager manager) {
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		super(site, viewer, viewer.getControl());
 	}
 
 }
