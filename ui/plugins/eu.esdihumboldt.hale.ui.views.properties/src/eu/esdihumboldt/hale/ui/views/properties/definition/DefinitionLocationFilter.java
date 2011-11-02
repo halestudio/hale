@@ -13,17 +13,16 @@
 package eu.esdihumboldt.hale.ui.views.properties.definition;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
 
 /**
  * Filter that lets only {@link Definition}s with a description that is not 
  * <code>null</code> pass.
  * @author Patrick Lieb
  */
-public class DefinitionLocationFilter extends DefaultFilter{
+public class DefinitionLocationFilter extends DefaultDefinitionFilter{
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {

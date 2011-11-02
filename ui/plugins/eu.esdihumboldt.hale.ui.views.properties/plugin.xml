@@ -47,7 +47,7 @@
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionAbstractFlagSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionAbstractFlagSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.abstractflag"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
@@ -60,7 +60,7 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
-               class="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition.GroupPropertyChoiceFlagSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.grouppropertydefinition.GroupPropertyChoiceFlagSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.choiceflag"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
@@ -70,7 +70,7 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.choiceflag"
-               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionHasValueFlagSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionHasValueFlagSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.hasvalueflag"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
@@ -83,7 +83,7 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.hasvalueflag"
-               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionMappableFlagSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionMappableFlagSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.mappableflag"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
@@ -96,7 +96,7 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.abstractflag"
-               class="eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition.GroupPropertyCardinalitySection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.grouppropertydefinition.GroupPropertyCardinalitySection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.grouppropertycardinality"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
@@ -106,7 +106,7 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.mappableflag"
-               class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.PropertyTypeNillableFlagSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeNillableFlagSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.nillableflag"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
@@ -119,7 +119,7 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.grouppropertycardinality"
-               class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.PropertyTypeCardinalitySection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeCardinalitySection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
@@ -132,7 +132,7 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
-               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionElementTypeBindingSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionElementTypeBindingSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
@@ -145,9 +145,9 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.elementtype"
-               class="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionEnumeration"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionEnumeration"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.typedefinition.TypeDefinitionEnumerationFilter"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionEnumerationFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.enumeration"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
             <input
@@ -159,9 +159,9 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.name"
-               class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionDescriptionSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition.ChildDefinitionDescriptionSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionDescriptionFilter"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition.ChildDefinitionDescriptionFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.description"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input
@@ -173,9 +173,9 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.description"
-               class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionLocationLinkSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition.ChildDefinitionLocationLinkSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionLocationFilter"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition.ChildDefinitionLocationFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.location"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input
@@ -186,9 +186,9 @@
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.properties.childdefinition.ChildDefinitionNameSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition.ChildDefinitionNameSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.ChildDefinitionDefaultFilter"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition.ChildDefinitionDefaultFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype.name"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parenttype">
             <input
@@ -199,7 +199,7 @@
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.PropertyTypeNameSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeNameSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype.name"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
@@ -212,9 +212,9 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype.description"
-               class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.PropertyTypeLocationLinkSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeLocationLinkSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.PropertyTypeLocationFilter"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeLocationFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype.location"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
             <input
@@ -226,9 +226,9 @@
          </propertySection>
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype.name"
-               class="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.PropertyTypeDescriptionSection"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeDescriptionSection"
                enablesFor="1"
-               filter="eu.esdihumboldt.hale.ui.views.properties.propertydefinition.PropertyTypeDescriptionFilter"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeDescriptionFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype.description"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
             <input
@@ -275,7 +275,7 @@
       <propertyContributor
             contributorId="eu.esdihumboldt.hale.ui.views.properties"
             labelProvider="eu.esdihumboldt.hale.ui.views.properties.PropertiesLabelProvider"
-            typeMapper="eu.esdihumboldt.hale.ui.views.properties.DefinitionTypeMapper">
+            typeMapper="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionTypeMapper">
          <propertyCategory
                category="eu.esdihumboldt.hale.ui.views.properties.definition">
          </propertyCategory>

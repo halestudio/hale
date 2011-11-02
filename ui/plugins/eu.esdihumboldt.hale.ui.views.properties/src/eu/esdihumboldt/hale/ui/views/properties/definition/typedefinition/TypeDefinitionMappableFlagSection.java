@@ -10,24 +10,24 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.grouppropertydefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 
 /**
- * Properties section with choiceflag information
+ * Properties section with MappableFlag information
  * @author Patrick Lieb
  */
-public class GroupPropertyChoiceFlagSection extends DefaultDefinitionSection<GroupPropertyDefinition>{
+public class TypeDefinitionMappableFlagSection extends DefaultDefinitionSection<TypeDefinition>{
 	
-	private Text choiceflag;
+	private Text mappableFlag;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -35,19 +35,19 @@ public class GroupPropertyChoiceFlagSection extends DefaultDefinitionSection<Gro
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "ChoiceFlag:", null);
-		choiceflag = getText();
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "MappableFlag:", null);
+		mappableFlag = getText();
 	}
-	
+
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		if(getDefinition().getConstraint(ChoiceFlag.class).isEnabled()){
-			choiceflag.setText("true");
+		if (getDefinition().getConstraint(MappableFlag.class).isEnabled()){
+			mappableFlag.setText("true");
 		} else {
-			choiceflag.setText("false");
+			mappableFlag.setText("false");
 		}
 	}
 }

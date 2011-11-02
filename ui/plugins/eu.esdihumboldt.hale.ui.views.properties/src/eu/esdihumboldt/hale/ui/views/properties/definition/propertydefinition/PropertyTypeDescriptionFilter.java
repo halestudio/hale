@@ -10,21 +10,21 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter;
 
 /**
  * Filter that lets only {@link PropertyDefinition}s with a description that is not 
  * <code>null</code> pass.
  * @author Patrick Lieb
  */
-public class PropertyTypeDescriptionFilter extends DefaultFilter{
+public class PropertyTypeDescriptionFilter extends DefaultDefinitionFilter{
 
 		/**
-		 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
+		 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 		 */
 		@Override
 		public boolean isFiltered(Definition<?> input) {

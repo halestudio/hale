@@ -10,17 +10,17 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition;
 
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
-import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationLinkSection;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescriptionSection;
 
 /**
- * Properties section with a link to open the location in editor or browser
+ * Properties section with description
  * @author Patrick Lieb
  */
-public class PropertyTypeLocationLinkSection extends DefinitionLocationLinkSection{
+public class PropertyTypeDescriptionSection extends DefinitionDescriptionSection{
 
 	/**
 	 * @see DefaultDefinitionSection#setInput(Object)

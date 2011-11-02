@@ -19,5 +19,11 @@ Import-Package: eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.schema.model.impl,
  eu.esdihumboldt.hale.io.xsd.constraint,
  eu.esdihumboldt.hale.ui.common.definition.viewer,
+ eu.esdihumboldt.hale.ui.util.components,
  eu.esdihumboldt.hale.ui.util.selection
-Export-Package: eu.esdihumboldt.hale.ui.views.properties
+Export-Package: eu.esdihumboldt.hale.ui.views.properties,
+ eu.esdihumboldt.hale.ui.views.properties.definition,
+ eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition,
+ eu.esdihumboldt.hale.ui.views.properties.definition.grouppropertydefinition,
+ eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition,
+ eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition

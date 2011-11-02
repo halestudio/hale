@@ -10,9 +10,10 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties;
+package eu.esdihumboldt.hale.ui.views.properties.definition;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
  * Abstract section for definition properties

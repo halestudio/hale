@@ -10,20 +10,19 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.childdefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition;
 
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
-import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationLinkSection;
 
 /**
- * Properties section with name
+ * Properties section with a link to open the location in editor or browser
  * @author Patrick Lieb
  */
-public class ChildDefinitionNameSection extends DefinitionNameSection{
-
+public class ChildDefinitionLocationLinkSection extends DefinitionLocationLinkSection{
+	
 	/**
-	 * @see DefaultDefinitionSection#setInput(Object)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection#setInput(java.lang.Object)
 	 */
 	@Override
 	protected void setInput(Object input) {

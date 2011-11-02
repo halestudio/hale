@@ -27,7 +27,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyView;
 
 /**

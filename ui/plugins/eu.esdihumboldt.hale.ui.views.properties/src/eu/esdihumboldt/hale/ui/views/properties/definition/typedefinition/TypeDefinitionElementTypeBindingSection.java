@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.typedefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -18,25 +18,29 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 
 /**
- * Properties section with MappableFlag information
+ * Properties section with element type and binding information
  * @author Patrick Lieb
  */
-public class TypeDefinitionMappableFlagSection extends DefaultDefinitionSection<TypeDefinition>{
+public class TypeDefinitionElementTypeBindingSection extends DefaultDefinitionSection<TypeDefinition>{
 	
-	private Text mappableFlag;
+	private Text elementType;
 	
+	private Text binding;
+
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		abstractCreateControls(parent, aTabbedPropertySheetPage, "MappableFlag:", null);
-		mappableFlag = getText();
+		abstractCreateControls(parent, aTabbedPropertySheetPage, "ElementType:", "Binding:");
+		elementType = getText();
+		binding = getText2();
 	}
 
 	/**
@@ -44,10 +48,8 @@ public class TypeDefinitionMappableFlagSection extends DefaultDefinitionSection<
 	 */
 	@Override
 	public void refresh() {
-		if (getDefinition().getConstraint(MappableFlag.class).isEnabled()){
-			mappableFlag.setText("true");
-		} else {
-			mappableFlag.setText("false");
-		}
+		elementType.setText(getDefinition().getConstraint(ElementType.class).getDefinition().getIdentifier());
+		binding.setText(getDefinition().getConstraint(Binding.class).getBinding().getName());
 	}
+
 }
