@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.typedefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition;
 
 import java.util.Collection;
 
@@ -26,7 +26,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 
 /**
  * Properties section with Enumeration information

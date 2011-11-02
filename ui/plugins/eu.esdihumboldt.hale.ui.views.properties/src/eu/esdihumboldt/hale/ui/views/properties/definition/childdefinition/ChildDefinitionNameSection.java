@@ -10,17 +10,17 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition;
 
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection;
 
 /**
- * Properties section with property type name
+ * Properties section with name
  * @author Patrick Lieb
  */
-public class PropertyTypeNameSection extends DefinitionNameSection {
+public class ChildDefinitionNameSection extends DefinitionNameSection{
 
 	/**
 	 * @see DefaultDefinitionSection#setInput(Object)
@@ -29,7 +29,6 @@ public class PropertyTypeNameSection extends DefinitionNameSection {
 	protected void setInput(Object input) {
 		super.setInput(input);
 		
-		setDefinition(((PropertyDefinition) getDefinition()).getPropertyType());
+		setDefinition(((ChildDefinition<?>) getDefinition()).getParentType());
 	}
-
 }

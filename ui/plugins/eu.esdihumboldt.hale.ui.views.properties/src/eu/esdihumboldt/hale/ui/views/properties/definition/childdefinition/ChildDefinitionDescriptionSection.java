@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.childdefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition;
 
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescriptionSection;
@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescription
 public class ChildDefinitionDescriptionSection extends DefinitionDescriptionSection{
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultDefinitionSection#setInput(java.lang.Object)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection#setInput(java.lang.Object)
 	 */
 	@Override
 	protected void setInput(Object input) {

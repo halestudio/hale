@@ -10,34 +10,43 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties;
+package eu.esdihumboldt.hale.ui.views.properties.definition;
+
+import org.eclipse.jface.viewers.IFilter;
 
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
- * The default definition section
+ * The default filter for all filters
  * @author Patrick Lieb
- * @param <T> the definition type
  */
-public abstract class DefaultDefinitionSection<T extends Definition<?>> extends AbstractDefinitionSection<T> {
+public abstract class DefaultDefinitionFilter implements IFilter{
 	
 	/**
-	 * @see AbstractSection#setInput(Object)
+	 * @param input the definition type
+	 * @return true if should be filtered, false otherwise
 	 */
-	@SuppressWarnings("unchecked")
+	public abstract boolean isFiltered(Definition<?> input);
+
+	/**
+	 * @see IFilter#select(Object)
+	 */
 	@Override
-	protected void setInput(Object input) {
+	public boolean select(Object input) {
 		if (input instanceof Entity) {
 			input = ((Entity) input).getDefinition();
 		}
-			
-		if (input instanceof EntityDefinition) {
+		
+		if (input instanceof EntityDefinition){
 			input = ((EntityDefinition) input).getDefinition();
 		}
-			
-		setDefinition((T) input);
+		
+		if (input instanceof Definition<?>){
+			return !isFiltered((Definition<?>) input);
+		}
+		
+		return false;
 	}
-	
 }

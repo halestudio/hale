@@ -10,34 +10,33 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.propertydefinition;
+package eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition;
 
-import java.net.URI;
-
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
-import eu.esdihumboldt.hale.ui.views.properties.DefaultFilter;
+import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter;
 
 /**
- * Filter that lets only {@link PropertyDefinition}s with a location that is not 
+ * Filter that lets only {@link ChildDefinition}s with a location that is not 
  * <code>null</code> pass.
  * @author Patrick Lieb
  */
-public class PropertyTypeLocationFilter extends DefaultFilter{
+public class ChildDefinitionLocationFilter extends DefaultDefinitionFilter{
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.DefaultFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {
 		if(input instanceof PropertyDefinition){
-			URI location;
-			try {
-				location = ((PropertyDefinition)input).getPropertyType().getLocation();
-			} catch(IllegalStateException e){
-					return true;
-				}
-				return location == null;
-		}		return true;
+			try{
+				return ((PropertyDefinition)input).getParentType().getLocation() == null;
+			} catch (IllegalStateException e){
+				return true;
+			}
+			
+		}
+		return true;
 	}
 }
