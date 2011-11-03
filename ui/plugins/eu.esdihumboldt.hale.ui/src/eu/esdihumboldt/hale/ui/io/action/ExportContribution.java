@@ -30,6 +30,37 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 public class ExportContribution extends ActionUIContribution {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(ExportContribution.class);
+	
+	/**
+	 * Filter for export {@link ActionUI}s
+	 */
+	public static final FactoryFilter<IOWizard<?>, ActionUI> EXPORT_FILTER = new FactoryFilter<IOWizard<?>, ActionUI>() {
+		
+		@Override
+		public boolean acceptFactory(ActionUI factory) {
+			// accept if action is an export action
+			final String actionId = factory.getActionID();
+			IOAction action = IOActionExtension.getInstance().get(actionId);
+			boolean isExport = ExportProvider.class.isAssignableFrom(action.getProviderType());
+			if (isExport) {
+				// and if there are any advisors present for the action
+				for (IOAdvisorFactory advisorFactory : IOAdvisorExtension.getInstance().getFactories()) {
+					if (advisorFactory.getActionID().equals(actionId)) {
+						return true;
+					}
+				}
+				
+				log.warn("No advisors present for action " + actionId);
+			}
+			return false;
+		}
+		
+		@Override
+		public boolean acceptCollection(
+				ExtensionObjectFactoryCollection<IOWizard<?>, ActionUI> collection) {
+			return true;
+		}
+	};
 
 	/**
 	 * Default constructor
@@ -37,33 +68,7 @@ public class ExportContribution extends ActionUIContribution {
 	public ExportContribution() {
 		super();
 		
-		setFilter(new FactoryFilter<IOWizard<?>, ActionUI>() {
-			
-			@Override
-			public boolean acceptFactory(ActionUI factory) {
-				// accept if action is an export action
-				final String actionId = factory.getActionID();
-				IOAction action = IOActionExtension.getInstance().get(actionId);
-				boolean isExport = ExportProvider.class.isAssignableFrom(action.getProviderType());
-				if (isExport) {
-					// and if there are any advisors present for the action
-					for (IOAdvisorFactory advisorFactory : IOAdvisorExtension.getInstance().getFactories()) {
-						if (advisorFactory.getActionID().equals(actionId)) {
-							return true;
-						}
-					}
-					
-					log.warn("No advisors present for action " + actionId);
-				}
-				return false;
-			}
-			
-			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<IOWizard<?>, ActionUI> collection) {
-				return true;
-			}
-		});
+		setFilter(EXPORT_FILTER);
 	}
 
 }
