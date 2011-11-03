@@ -25,9 +25,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -66,7 +63,6 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
-import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
@@ -328,33 +324,35 @@ public class ProjectServiceImpl extends AbstractProjectService
 		//TODO sort by dependencies
 		
 		// combine inside job (or with progress monitor?) if no monitor is running
-		if (ThreadProgressMonitor.getCurrent() == null) {
-			Job job = new Job("Load I/O configurations") {
-				
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					ThreadProgressMonitor.register(monitor);
-					try {
-						monitor.beginTask("Load I/O configurations", configurations.size());
-						for (IOConfiguration conf : configurations) {
-							executeConfiguration(conf);
-							monitor.worked(1);
-						}
-						return new Status(IStatus.OK, HALEUIPlugin.PLUGIN_ID, "Loaded I/O configurations");
-					} finally {
-						monitor.done();
-						ThreadProgressMonitor.remove(monitor);
-					}
-				}
-			};
-			job.setUser(true);
-			job.schedule();
-		}
-		else {
+		//XXX doing this in a job breaks project loading through the OpenProjectWizard when an alignment is loaded (as internal project file)
+		//TODO rework progress sharing?!
+//		if (ThreadProgressMonitor.getCurrent() == null) {
+//			Job job = new Job("Load I/O configurations") {
+//				
+//				@Override
+//				protected IStatus run(IProgressMonitor monitor) {
+//					ThreadProgressMonitor.register(monitor);
+//					try {
+//						monitor.beginTask("Load I/O configurations", configurations.size());
+//						for (IOConfiguration conf : configurations) {
+//							executeConfiguration(conf);
+//							monitor.worked(1);
+//						}
+//						return new Status(IStatus.OK, HALEUIPlugin.PLUGIN_ID, "Loaded I/O configurations");
+//					} finally {
+//						monitor.done();
+//						ThreadProgressMonitor.remove(monitor);
+//					}
+//				}
+//			};
+//			job.setUser(true);
+//			job.schedule();
+//		}
+//		else {
 			for (IOConfiguration conf : configurations) {
 				executeConfiguration(conf);
 			}
-		}
+//		}
 	}
 
 	private void executeConfiguration(IOConfiguration conf) {
