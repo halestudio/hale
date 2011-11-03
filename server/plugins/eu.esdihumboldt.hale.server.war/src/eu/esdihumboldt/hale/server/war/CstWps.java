@@ -126,6 +126,10 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		while ((txt = reader.readLine()) != null) {
 			writer.println(txt);
 		}
+		
+		// close streams
+		reader.close();
+		in.close();
 	}
 	
 	/**
@@ -154,6 +158,10 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		while ((txt = reader.readLine()) != null) {
 			writer.println(txt);
 		}
+		
+		// close streams
+		reader.close();
+		in.close();
 	}
 	
 	/**
