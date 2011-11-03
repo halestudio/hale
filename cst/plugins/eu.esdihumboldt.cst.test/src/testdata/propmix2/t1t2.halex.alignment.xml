@@ -16,60 +16,13 @@
         <source>
             <property>
                 <type>{http://www.example.org/t1/}T1</type>
-                <child>id</child>
+                <child>personName</child>
             </property>
         </source>
         <target>
             <property>
                 <type>{http://www.example.org/t2/}PersonType</type>
-                <child>id</child>
-            </property>
-        </target>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
-        <source>
-            <property>
-                <type>{http://www.example.org/t1/}T1</type>
-                <child>personAge</child>
-            </property>
-        </source>
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>age</child>
-            </property>
-        </target>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
-        <source>
-            <property>
-                <type>{http://www.example.org/t1/}T1</type>
-                <child>personCity</child>
-            </property>
-        </source>
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>{http://www.example.org/t2//PersonType/details/AnonymousType}sequence_1</child>
-                <child>city</child>
-            </property>
-        </target>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
-        <source>
-            <property>
-                <type>{http://www.example.org/t1/}T1</type>
-                <child>personCity2</child>
-            </property>
-        </source>
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>{http://www.example.org/t2//PersonType/details/AnonymousType}sequence_1</child>
-                <child>city</child>
+                <child>name</child>
             </property>
         </target>
     </cell>
@@ -92,13 +45,28 @@
         <source>
             <property>
                 <type>{http://www.example.org/t1/}T1</type>
-                <child>personName</child>
+                <child>personAge</child>
             </property>
         </source>
         <target>
             <property>
                 <type>{http://www.example.org/t2/}PersonType</type>
-                <child>name</child>
+                <child>details</child>
+                <child>age</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}T1</type>
+                <child>id</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>id</child>
             </property>
         </target>
     </cell>
@@ -113,8 +81,40 @@
             <property>
                 <type>{http://www.example.org/t2/}PersonType</type>
                 <child>details</child>
-                <child>{http://www.example.org/t2//PersonType/details/AnonymousType}sequence_1</child>
+                <child>address</child>
                 <child>street</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}T1</type>
+                <child>personCity</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>details</child>
+                <child>address</child>
+                <child>city</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}T1</type>
+                <child>personCity2</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>details</child>
+                <child context="0">address</child>
+                <child>city</child>
             </property>
         </target>
     </cell>
@@ -129,7 +129,7 @@
             <property>
                 <type>{http://www.example.org/t2/}PersonType</type>
                 <child>details</child>
-                <child>{http://www.example.org/t2//PersonType/details/AnonymousType}sequence_1</child>
+                <child context="0">address</child>
                 <child>street</child>
             </property>
         </target>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <hale-alignment>
-	<!-- Alignment still misses assignments for language values -->
     <cell transformation="eu.esdihumboldt.hale.align.retype">
         <source>
             <class>
@@ -31,23 +30,6 @@
         <source>
             <property>
                 <type>{http://www.example.org/t1/}T1</type>
-                <child>name_de</child>
-            </property>
-        </source>
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child>name</child>
-                <child>Name</child>
-                <child>spelling</child>
-                <child>text</child>
-            </property>
-        </target>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
-        <source>
-            <property>
-                <type>{http://www.example.org/t1/}T1</type>
                 <child>name_en</child>
             </property>
         </source>
@@ -61,6 +43,43 @@
             </property>
         </target>
     </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child>name</child>
+                <child>Name</child>
+                <child>language</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}T1</type>
+                <child>name_de</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child context="0">name</child>
+                <child>Name</child>
+                <child>spelling</child>
+                <child>text</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child context="0">name</child>
+                <child>Name</child>
+                <child>language</child>
+            </property>
+        </target>
+    </cell>
     <cell transformation="eu.esdihumboldt.hale.align.rename">
         <source>
             <property>
@@ -71,10 +90,20 @@
         <target>
             <property>
                 <type>{http://www.example.org/t2/}T2</type>
-                <child>name</child>
+                <child context="1">name</child>
                 <child>Name</child>
                 <child>spelling</child>
                 <child>text</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child context="1">name</child>
+                <child>Name</child>
+                <child>language</child>
             </property>
         </target>
     </cell>

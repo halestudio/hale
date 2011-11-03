@@ -52,7 +52,7 @@
             <property>
                 <type>{http://www.example.org/t2/}Singlename</type>
                 <child>name</child>
-                <child>spelling</child>
+                <child context="0">spelling</child>
             </property>
         </target>
     </cell>
@@ -67,7 +67,7 @@
             <property>
                 <type>{http://www.example.org/t2/}Singlename</type>
                 <child>name</child>
-                <child>spelling</child>
+                <child context="1">spelling</child>
             </property>
         </target>
     </cell>
