@@ -1,12 +1,11 @@
 package eu.esdihumboldt.specification.workflow.transformer.inputoutputs;
 
+import java.util.Map;
+import java.util.Set;
+
 import eu.esdihumboldt.specification.mediator.TypeKey;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 import eu.esdihumboldt.specification.workflow.repository.Connector;
-import eu.esdihumboldt.specification.workflow.transformer.inputoutputs.Format;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * This is a super class for complex data types

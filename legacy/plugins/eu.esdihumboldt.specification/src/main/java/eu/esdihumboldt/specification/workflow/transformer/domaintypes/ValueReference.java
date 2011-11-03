@@ -13,9 +13,9 @@
 package eu.esdihumboldt.specification.workflow.transformer.domaintypes;
 
 
-import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
-
 import java.net.URI;
+
+import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
 
 

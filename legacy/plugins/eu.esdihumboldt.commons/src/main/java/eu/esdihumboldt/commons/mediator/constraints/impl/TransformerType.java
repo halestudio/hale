@@ -12,9 +12,9 @@
 
 package eu.esdihumboldt.commons.mediator.constraints.impl;
 
-import eu.esdihumboldt.specification.mediator.constraints.Constraint;
-
 import java.util.UUID;
+
+import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 
 /**
  *This constraint is used to define the type of a processing Transformer that is not a

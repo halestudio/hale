@@ -11,13 +11,14 @@
  */
 package eu.esdihumboldt.commons.mediator.constraints.impl;
 
-import eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers.DBLocale;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers.DBLocale;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 import eu.esdihumboldt.specification.mediator.constraints.LanguageConstraint;
 import eu.esdihumboldt.specification.util.IdentifierManager;

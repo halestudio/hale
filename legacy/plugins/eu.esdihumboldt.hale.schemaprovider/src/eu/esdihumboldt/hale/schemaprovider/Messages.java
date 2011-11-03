@@ -3,8 +3,6 @@ package eu.esdihumboldt.hale.schemaprovider;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.eclipse.osgi.util.NLS;
-
 @SuppressWarnings("all")
 public class Messages {
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.schemaprovider.messages"; //$NON-NLS-1$

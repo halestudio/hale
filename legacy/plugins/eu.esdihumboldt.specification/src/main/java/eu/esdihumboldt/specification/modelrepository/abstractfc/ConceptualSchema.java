@@ -17,10 +17,6 @@ import java.util.Set;
 import org.opengis.metadata.citation.Citation;
 import org.opengis.metadata.citation.ResponsibleParty;
 
-import eu.esdihumboldt.specification.modelrepository.abstractfc.AccessConstraint;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.Concept;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.VersionInformation;
-
 /**
  * The ConceptualSchema summarizes all information required to 
  * describe the conceptual application schema for a single domain. It contains 

@@ -14,8 +14,8 @@ package eu.esdihumboldt.commons.mediator.constraints.portrayal.impl;
 import java.io.Serializable;
 import java.util.Set;
 
-import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint.ConstraintSource;
+import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.NamedLayer;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.NamedStyle;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.UserStyle;

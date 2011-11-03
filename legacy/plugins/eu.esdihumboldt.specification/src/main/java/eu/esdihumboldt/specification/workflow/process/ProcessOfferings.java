@@ -11,9 +11,9 @@
  */
 package eu.esdihumboldt.specification.workflow.process;
 
-import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
-
 import java.util.List;
+
+import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
 /**This interface is used to provide metadata on each of the processes offered 
  * by the service.

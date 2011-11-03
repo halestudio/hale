@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.specification.informationgrounding.exceptions;
 
+import eu.esdihumboldt.specification.informationgrounding.gcmanager.GroundingCatalogue;
+
 /**   
 * Name: eu.esdihumboldt.informationgrounding.exceptions / 
 * GroundingCatalogueNotFoundException<br/>   

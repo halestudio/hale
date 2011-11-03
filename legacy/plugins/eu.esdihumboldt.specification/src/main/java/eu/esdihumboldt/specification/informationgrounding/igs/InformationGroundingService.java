@@ -14,6 +14,7 @@ package eu.esdihumboldt.specification.informationgrounding.igs;
 
 
 import eu.esdihumboldt.specification.informationgrounding.gcmanager.GC_Manager;
+import eu.esdihumboldt.specification.informationgrounding.gcmanager.GroundingCatalogue;
 import eu.esdihumboldt.specification.informationgrounding.requesthandler.GroundingService;
 import eu.esdihumboldt.specification.informationgrounding.requesthandler.RequestHandler;
 

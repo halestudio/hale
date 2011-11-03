@@ -10,8 +10,6 @@ package eu.esdihumboldt.commons.mediator.usermanagement.impl;
 import java.util.List;
 
 import eu.esdihumboldt.specification.mediator.usermanagement.UserAddress;
-import eu.esdihumboldt.specification.mediator.usermanagement.Address.CountryCode;
-import eu.esdihumboldt.specification.mediator.usermanagement.UserAddress.CommunicationDetail;
 
 /**
  * It describes the user-specific address information.

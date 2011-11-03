@@ -16,10 +16,6 @@ import java.util.Enumeration;
 
 import org.opengis.metadata.identification.Identification;
 
-import eu.esdihumboldt.specification.modelrepository.abstractfc.Concept;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptProperty;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptualSchema;
-
 /**
  * A ConceptAttribute is just that - a field that each instance of a {@link Concept}
  * has and that is a defining characteristic for it. It is conceptually similar 

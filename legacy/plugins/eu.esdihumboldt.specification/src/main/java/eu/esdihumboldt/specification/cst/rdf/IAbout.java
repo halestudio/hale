@@ -14,6 +14,8 @@ package eu.esdihumboldt.specification.cst.rdf;
 
 import java.util.UUID;
 
+import eu.esdihumboldt.specification.cst.align.IEntity;
+
 /**
  * A {@link IAbout} contains the identifier for OML objects such as {@link IEntity}s.
  * 

@@ -13,10 +13,6 @@ package eu.esdihumboldt.specification.modelrepository.abstractfc;
 
 import java.util.Set;
 
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptProperty;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptualSchema;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.Relation;
-
 /**
  * A {@link Concept} describes a class of objects, i.e. sets, collections, or types of 
  * objects. Concepts are core elements of an {@link ConceptualSchema}. An example of a

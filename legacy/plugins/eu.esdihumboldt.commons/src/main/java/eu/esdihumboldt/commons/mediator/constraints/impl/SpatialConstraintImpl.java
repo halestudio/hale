@@ -17,13 +17,13 @@ import java.util.UUID;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.geometry.Envelope;
 import org.opengis.geometry.Geometry;
+import org.opengis.referencing.ReferenceIdentifier;
+
 import eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers.GeneralEnvelopeImpl;
 import eu.esdihumboldt.specification.annotations.concurrency.Immutable;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.util.IdentifierManager;
-
-import org.opengis.referencing.ReferenceIdentifier;
 
 /**
  * Prototype Immplementation of the SpatialConstraint that is {@link Immutable}

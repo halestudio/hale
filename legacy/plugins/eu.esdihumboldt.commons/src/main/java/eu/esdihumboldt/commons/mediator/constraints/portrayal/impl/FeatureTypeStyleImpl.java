@@ -2,8 +2,8 @@ package eu.esdihumboldt.commons.mediator.constraints.portrayal.impl;
 
 import java.io.Serializable;
 
-import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint.ConstraintSource;
+import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.FeatureTypeStyle;
 
 public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {

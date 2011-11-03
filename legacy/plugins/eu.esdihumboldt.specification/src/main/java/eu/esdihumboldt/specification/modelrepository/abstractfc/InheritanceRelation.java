@@ -11,8 +11,6 @@
  */
 package eu.esdihumboldt.specification.modelrepository.abstractfc;
 
-import eu.esdihumboldt.specification.modelrepository.abstractfc.Concept;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.Relation;
 
 /**
  * This type of {@link Relation} is used to describe is-a relationships 

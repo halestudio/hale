@@ -11,9 +11,9 @@
  */
 package eu.esdihumboldt.specification.workflow.process;
 
-import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
-
 import java.io.Serializable;
+
+import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
 /**This is a super interface for describing processes
  * 

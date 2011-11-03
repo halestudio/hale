@@ -11,9 +11,9 @@
  */
 package eu.esdihumboldt.specification.workflow.transformer.domaintypes;
 
-import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
-
 import java.util.Set;
+
+import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
 
 /**This interface defines the finite set of values and ranges allowed for the input

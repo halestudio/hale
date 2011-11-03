@@ -14,7 +14,7 @@ package eu.esdihumboldt.commons.mediator.usermanagement.impl;
 
 
 import org.exolab.castor.mapping.GeneralizedFieldHandler;
-  
+
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.RemoteOWS.OnlineResource;
 
 

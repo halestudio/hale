@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * TODO Type description

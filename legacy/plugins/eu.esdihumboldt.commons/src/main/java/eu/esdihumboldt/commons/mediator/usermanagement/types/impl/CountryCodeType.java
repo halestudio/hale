@@ -7,12 +7,6 @@
 
 package eu.esdihumboldt.commons.mediator.usermanagement.types.impl;
 
-import eu.esdihumboldt.specification.mediator.usermanagement.Address;
-
-  //---------------------------------/
- //- Imported classes and packages -/
-//---------------------------------/
-
 import java.util.Hashtable;
 
 /**

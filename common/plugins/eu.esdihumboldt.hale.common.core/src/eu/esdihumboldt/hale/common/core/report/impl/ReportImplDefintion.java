@@ -12,9 +12,7 @@
 
 package eu.esdihumboldt.hale.common.core.report.impl;
 
-import java.util.Arrays;
 import java.util.Properties;
-import org.apache.commons.lang.StringUtils;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;

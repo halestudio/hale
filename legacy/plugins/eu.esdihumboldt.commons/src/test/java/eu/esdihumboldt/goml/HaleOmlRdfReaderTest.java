@@ -13,7 +13,9 @@
 
 package eu.esdihumboldt.goml;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -23,18 +25,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-
-
 import eu.esdihumboldt.commons.goml.align.Alignment;
-import eu.esdihumboldt.commons.goml.align.Cell;
 import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.commons.goml.omwg.ComparatorType;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
-import eu.esdihumboldt.commons.goml.omwg.Restriction;
-import eu.esdihumboldt.commons.goml.rdf.About;
 import eu.esdihumboldt.specification.cst.align.ICell;
-import eu.esdihumboldt.specification.cst.align.ICell.RelationType;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**

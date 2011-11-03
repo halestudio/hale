@@ -1,7 +1,5 @@
 package eu.esdihumboldt.commons.mediator.usermanagement.impl;
 
-import java.util.Locale;
-
 import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
 /**

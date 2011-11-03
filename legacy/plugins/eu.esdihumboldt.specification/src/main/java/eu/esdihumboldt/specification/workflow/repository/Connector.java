@@ -12,13 +12,13 @@
 
 package eu.esdihumboldt.specification.workflow.repository;
 
+import java.util.Set;
+import java.util.UUID;
+
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 import eu.esdihumboldt.specification.workflow.process.Description;
 import eu.esdihumboldt.specification.workflow.transformer.inputoutputs.ProcessInput;
 import eu.esdihumboldt.specification.workflow.transformer.inputoutputs.ProcessOutput;
-
-import java.util.Set;
-import java.util.UUID;
 
 /**
  *This is an interface that defines the connectors used to connect two transfomers

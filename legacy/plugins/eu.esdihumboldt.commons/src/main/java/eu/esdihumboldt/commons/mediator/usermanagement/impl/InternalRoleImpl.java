@@ -11,8 +11,6 @@ package eu.esdihumboldt.commons.mediator.usermanagement.impl;
  //- Imported classes and packages -/
 //---------------------------------/
 
-import java.util.UUID;
-
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 

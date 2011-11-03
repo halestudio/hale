@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.commons.goml.oml.io;
 
-import org.apache.log4j.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -30,6 +28,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Logger;
+
 import eu.esdihumboldt.commons.goml.align.Alignment;
 import eu.esdihumboldt.commons.goml.align.Cell;
 import eu.esdihumboldt.commons.goml.align.Entity;
@@ -41,14 +41,15 @@ import eu.esdihumboldt.commons.goml.oml.ext.ValueClass;
 import eu.esdihumboldt.commons.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.commons.goml.omwg.ComparatorType;
 import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.omwg.Relation;
 import eu.esdihumboldt.commons.goml.omwg.Restriction;
-import eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType;
 import eu.esdihumboldt.commons.goml.rdf.About;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
 import eu.esdihumboldt.generated.oml.AlignmentType;
+import eu.esdihumboldt.generated.oml.AlignmentType.Map;
 import eu.esdihumboldt.generated.oml.CellType;
 import eu.esdihumboldt.generated.oml.ClassConditionType;
 import eu.esdihumboldt.generated.oml.ClassType;
@@ -60,6 +61,7 @@ import eu.esdihumboldt.generated.oml.FunctionType;
 import eu.esdihumboldt.generated.oml.OntologyType;
 import eu.esdihumboldt.generated.oml.ParamType;
 import eu.esdihumboldt.generated.oml.PropertyCollectionType;
+import eu.esdihumboldt.generated.oml.PropertyCollectionType.Item;
 import eu.esdihumboldt.generated.oml.PropertyCompositionType;
 import eu.esdihumboldt.generated.oml.PropertyType;
 import eu.esdihumboldt.generated.oml.RangeRestrictionType;
@@ -68,12 +70,10 @@ import eu.esdihumboldt.generated.oml.RestrictionType;
 import eu.esdihumboldt.generated.oml.ValueClassType;
 import eu.esdihumboldt.generated.oml.ValueConditionType;
 import eu.esdihumboldt.generated.oml.ValueExprType;
-import eu.esdihumboldt.generated.oml.AlignmentType.Map;
-import eu.esdihumboldt.generated.oml.PropertyCollectionType.Item;
 import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.ICell.RelationType;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 import eu.esdihumboldt.specification.cst.align.ISchema;
-import eu.esdihumboldt.specification.cst.align.ICell.RelationType;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 import eu.esdihumboldt.specification.cst.align.ext.IValueClass;
 import eu.esdihumboldt.specification.cst.align.ext.IValueExpression;

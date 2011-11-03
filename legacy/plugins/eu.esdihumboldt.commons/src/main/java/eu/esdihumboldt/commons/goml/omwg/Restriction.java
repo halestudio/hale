@@ -16,7 +16,6 @@ import java.math.BigInteger;
 import java.util.List;
 
 import eu.esdihumboldt.commons.goml.oml.ext.ValueClass;
-import eu.esdihumboldt.commons.goml.oml.ext.ValueExpression;
 import eu.esdihumboldt.specification.cst.align.ext.IValueExpression;
 
 /**

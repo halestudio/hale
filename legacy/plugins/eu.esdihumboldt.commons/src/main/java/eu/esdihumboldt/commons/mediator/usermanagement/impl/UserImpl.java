@@ -14,8 +14,6 @@ package eu.esdihumboldt.commons.mediator.usermanagement.impl;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 
-import eu.esdihumboldt.commons.mediator.usermanagement.impl.UserType;
-
 
 /**
  * Class User.

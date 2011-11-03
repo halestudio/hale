@@ -1,7 +1,6 @@
 package eu.esdihumboldt.commons.mediator.util;
 
 import java.io.ByteArrayInputStream;
-
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;

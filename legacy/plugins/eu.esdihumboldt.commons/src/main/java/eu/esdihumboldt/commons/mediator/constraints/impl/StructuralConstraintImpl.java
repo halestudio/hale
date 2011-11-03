@@ -12,12 +12,11 @@
 
 package eu.esdihumboldt.commons.mediator.constraints.impl;
 
-import eu.esdihumboldt.specification.mediator.constraints.Constraint;
-import eu.esdihumboldt.specification.mediator.constraints.StructuralConstraint;
-import eu.esdihumboldt.specification.mediator.constraints.Constraint.ConstraintSource;
-
 import java.util.List;
 import java.util.UUID;
+
+import eu.esdihumboldt.specification.mediator.constraints.Constraint;
+import eu.esdihumboldt.specification.mediator.constraints.StructuralConstraint;
 
 /**
  *

@@ -15,8 +15,6 @@ import java.util.Set;
 
 import org.opengis.metadata.Identifier;
 
-import eu.esdihumboldt.specification.modelrepository.abstractfc.AccessConstraint;
-
 /**
  * An AccessConstraint explains what access right a party has. A party in this 
  * context can be either an individual or a organization or everybody.

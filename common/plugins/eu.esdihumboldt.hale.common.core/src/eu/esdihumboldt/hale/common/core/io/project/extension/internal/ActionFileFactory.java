@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.common.core.io.project.extension.internal;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,8 +22,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
 import eu.esdihumboldt.hale.common.core.io.project.extension.ProjectFileFactory;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
-
-import static com.google.common.base.Preconditions.*;
 
 /**
  * Factory for I/O action related project files

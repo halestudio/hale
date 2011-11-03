@@ -1,7 +1,6 @@
 package eu.esdihumboldt.commons.modelmapping.imm.impl;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.opengis.metadata.identification.Identification;

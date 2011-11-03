@@ -14,8 +14,8 @@ package eu.esdihumboldt.commons.modelmapping.imm.impl;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,7 +23,6 @@ import org.geotools.metadata.iso.IdentifierImpl;
 import org.geotools.metadata.iso.citation.CitationImpl;
 import org.geotools.metadata.iso.identification.IdentificationImpl;
 import org.geotools.util.SimpleInternationalString;
-import org.opengis.metadata.Identifier;
 import org.opengis.metadata.identification.Identification;
 
 import eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers.IdentificationHelper;

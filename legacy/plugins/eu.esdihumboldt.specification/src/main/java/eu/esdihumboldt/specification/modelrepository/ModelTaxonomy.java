@@ -13,7 +13,6 @@ package eu.esdihumboldt.specification.modelrepository;
 
 import java.util.List;
 
-import eu.esdihumboldt.specification.modelrepository.ModelTaxonomyNode;
 import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptualSchema;
 
 /**

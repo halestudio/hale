@@ -15,6 +15,7 @@ package eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers;
 
 import java.util.Collection;
 import java.util.Set;
+
 import org.opengis.metadata.extent.Extent;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;

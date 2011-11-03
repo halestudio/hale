@@ -12,13 +12,12 @@
 package eu.esdihumboldt.commons.mediator.constraints.portrayal.impl;
 
 import java.io.Serializable;
+import java.util.Set;
 
-import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint.ConstraintSource;
+import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.FeatureTypeStyle;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.UserStyle;
-
-import java.util.Set;
 
 /**
  * A UserStyle allows user-defined styling and is semantically equivalent to a WMS named style.

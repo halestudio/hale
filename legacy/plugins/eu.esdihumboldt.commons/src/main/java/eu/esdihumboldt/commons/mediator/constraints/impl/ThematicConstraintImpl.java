@@ -11,13 +11,12 @@
  */
 package eu.esdihumboldt.commons.mediator.constraints.impl;
 
-import eu.esdihumboldt.commons.modelmapping.imm.impl.PrototypeInformationModel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
+import eu.esdihumboldt.commons.modelmapping.imm.impl.PrototypeInformationModel;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 import eu.esdihumboldt.specification.mediator.constraints.ThematicConstraint;
 import eu.esdihumboldt.specification.modelrepository.abstractfc.Concept;

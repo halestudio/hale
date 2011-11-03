@@ -16,21 +16,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.esdihumboldt.commons.mediator.usermanagement.impl.OrganizationImpl;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
-import eu.esdihumboldt.specification.mediator.constraints.LanguageConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.MetadataConstraint;
-import eu.esdihumboldt.specification.mediator.constraints.PortrayalConstraint;
-import eu.esdihumboldt.specification.mediator.constraints.QualityConstraint;
-import eu.esdihumboldt.specification.mediator.constraints.ResolutionConstraint;
-import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
-import eu.esdihumboldt.specification.mediator.constraints.TemporalConstraint;
-import eu.esdihumboldt.specification.mediator.constraints.ThematicConstraint;
 import eu.esdihumboldt.specification.mediator.context.Context;
 import eu.esdihumboldt.specification.mediator.context.DefaultContext;
 import eu.esdihumboldt.specification.mediator.context.OrganizationContext;
 import eu.esdihumboldt.specification.mediator.context.UserContext;
-import eu.esdihumboldt.specification.mediator.context.Context.ContextType;
 import eu.esdihumboldt.specification.mediator.usermanagement.Organization;
 import eu.esdihumboldt.specification.mediator.usermanagement.User;
 

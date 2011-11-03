@@ -15,6 +15,7 @@ package eu.esdihumboldt.specification.informationgrounding.gcmanager;
 import java.util.Date;
 
 import eu.esdihumboldt.specification.informationgrounding.exceptions.InconsistentGroundingCatalogueException;
+import eu.esdihumboldt.specification.informationgrounding.requesthandler.GroundingService;
 
 /**
  * Name: eu.esdihumboldt.informationgrounding.gcmanager / GroundingCatalogue<br/>
