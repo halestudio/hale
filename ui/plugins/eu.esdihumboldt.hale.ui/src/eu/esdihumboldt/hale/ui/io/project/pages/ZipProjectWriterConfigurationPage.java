@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.project.impl.DefaultProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ZipProjectWriter;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
@@ -29,7 +30,7 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * @author Simon Templer
  */
 public class ZipProjectWriterConfigurationPage extends
-		AbstractConfigurationPage<ZipProjectWriter, IOWizard<ZipProjectWriter>> {
+		AbstractConfigurationPage<DefaultProjectWriter, IOWizard<DefaultProjectWriter>> {
 
 	private Button checkSeparateFiles;
 	
@@ -63,7 +64,7 @@ public class ZipProjectWriterConfigurationPage extends
 	 * @see IOWizardPage#updateConfiguration(IOProvider)
 	 */
 	@Override
-	public boolean updateConfiguration(ZipProjectWriter provider) {
+	public boolean updateConfiguration(DefaultProjectWriter provider) {
 		provider.setUseSeparateFiles(checkSeparateFiles.getSelection());
 		return true;
 	}

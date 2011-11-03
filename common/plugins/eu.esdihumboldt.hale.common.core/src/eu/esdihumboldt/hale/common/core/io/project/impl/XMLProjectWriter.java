@@ -13,16 +13,16 @@
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 /**
- * Writes archived projects
+ * Writes projects to XML files
  * @author Simon Templer
  */
-public class ZipProjectWriter extends DefaultProjectWriter {
+public class XMLProjectWriter extends DefaultProjectWriter {
 
 	/**
 	 * Default constructor
 	 */
-	public ZipProjectWriter() {
-		super(true);
+	public XMLProjectWriter() {
+		super(false);
 	}
 
 }
