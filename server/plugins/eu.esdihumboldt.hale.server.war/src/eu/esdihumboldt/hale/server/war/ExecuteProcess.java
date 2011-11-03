@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -149,6 +150,11 @@ public class ExecuteProcess {
 	int iSourceArchive = 0;
 	
 	int iTargetArchive = 0;
+	
+	/**
+	 * Contains the outputFile, which is needed for {@link GMLFileFilter}
+	 */
+	public static File outputFile;
 	
 	/**
 	 * Constructor. Does all processing.
@@ -466,6 +472,7 @@ public class ExecuteProcess {
 		cst.setOutputDir("file:/"+workspace);
 
 		String outputFile = cst.transform("file:/"+workspace+"TargetXmlSchemaDefinition_1", "file:/"+workspace+"Mapping_1", "file:/"+workspace+"SourceData_1", "file:/"+workspace+"SourceXmlSchemaDefinition_1", null);
+		ExecuteProcess.outputFile = new File(outputFile);
 		
 		ExecuteResponse resp = new ExecuteResponse();
 		ProcessOutputs pOut = new ProcessOutputs();
@@ -518,13 +525,34 @@ public class ExecuteProcess {
 	}
 	
 	/**
-	 * Remove the working directory after the transformation has finished.
+	 * Remove all files, except the result, from working directory.
 	 */
 	private void cleanup() {
 		try {
-			FileUtils.deleteDirectory(new File(workspace));
+			File home = new File(workspace);
+			
+			File[] files = home.listFiles(new GMLFileFilter());
+			
+			for (File f : files) {
+				if (f.isDirectory()) {
+					FileUtils.deleteDirectory(f);
+				} else {
+					FileUtils.deleteQuietly(f);
+				}
+			}
 		} catch (IOException e) {
 			_log.error("IOException during cleanup: ", e);
+		}
+	}
+	
+	/**
+	 * Remove the working directory after the transformation has finished.
+	 */
+	private void deleteAll() {
+		try {
+			FileUtils.deleteDirectory(new File(workspace));
+		} catch (IOException e) {
+			_log.error("IOException during full cleanup: ", e);
 		}
 	}
 	
@@ -569,5 +597,25 @@ public class ExecuteProcess {
 			}
 		}
 		
+	}
+	
+	/**
+	 * This implements a FilenameFilter, which is used in {@link ExecuteProcess#cleanup()}
+	 * 
+	 * @author Andreas Burchert
+	 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+	 */
+	public class GMLFileFilter implements FilenameFilter {
+		/**
+		 * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
+		 */
+		@Override
+		public boolean accept(File dir, String name) {
+			if (name.equals(ExecuteProcess.outputFile.getName())) {
+				return false;
+			}
+			
+			return true;
+		}
 	}
 }
