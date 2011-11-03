@@ -32,6 +32,14 @@
             id="eu.esdihumboldt.hale.ui.entity.removecontext"
             name="Remove instance context">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.io.import"
+            name="Import">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.io.export"
+            name="Export">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -83,6 +91,14 @@
                </iterate>
             </with>
          </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.action.wizard.SelectImportHandler"
+            commandId="eu.esdihumboldt.hale.ui.io.import">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.io.action.wizard.SelectExportHandler"
+            commandId="eu.esdihumboldt.hale.ui.io.export">
       </handler>
    </extension>
    <extension
@@ -321,6 +337,42 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="eu.esdihumboldt.hale.ui.io">
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.io.import"
+                  icon="icons/import_wiz.gif"
+                  id="eu.esdihumboldt.hale.ui.io.import"
+                  label="Import"
+                  style="pulldown">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.io.export"
+                  icon="icons/export_wiz.gif"
+                  id="eu.esdihumboldt.hale.ui.io.export"
+                  label="Export"
+                  style="pulldown">
+            </command>
+         </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:eu.esdihumboldt.hale.ui.io.import">
+         <dynamic
+               class="eu.esdihumboldt.hale.ui.io.action.ImportContribution"
+               id="eu.esdihumboldt.hale.ui.io.import.list">
+         </dynamic>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:eu.esdihumboldt.hale.ui.io.export">
+         <dynamic
+               class="eu.esdihumboldt.hale.ui.io.action.ExportContribution"
+               id="eu.esdihumboldt.hale.ui.io.export.list">
+         </dynamic>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
@@ -377,6 +429,14 @@
                ref="eu.esdihumboldt.hale.io.project.hale25.writer">
          </provider>
       </configPage>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            class="eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard"
+            id="eu.esdihumboldt.hale.ui.wizard2"
+            name="Project">
+      </wizard>
    </extension>
 
 </plugin>
