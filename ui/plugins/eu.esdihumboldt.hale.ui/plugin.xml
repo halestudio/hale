@@ -368,5 +368,15 @@
          </with>
       </definition>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.project.pages.ZipProjectWriterConfigurationPage"
+            order="10">
+         <provider
+               ref="eu.esdihumboldt.hale.io.project.hale25.writer">
+         </provider>
+      </configPage>
+   </extension>
 
 </plugin>
