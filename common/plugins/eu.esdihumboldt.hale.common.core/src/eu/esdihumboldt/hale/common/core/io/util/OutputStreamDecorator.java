@@ -41,27 +41,11 @@ public class OutputStreamDecorator extends OutputStream {
 	}
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		return out.equals(obj);
-	}
-
-	/**
 	 * @see java.io.OutputStream#flush()
 	 */
 	@Override
 	public void flush() throws IOException {
 		out.flush();
-	}
-
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return out.hashCode();
 	}
 
 	/**

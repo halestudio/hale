@@ -44,6 +44,12 @@
 			<bind-xml name="resource" node="element" />
 		</field>
 		
+		<field name="projectFiles" 
+			type="eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo" collection="arraylist" required="false">
+
+			<bind-xml name="file" node="element" />
+		</field>
+		
 		<field name="properties" collection="map" required="false">
 			<bind-xml name="property">
 				<class name="org.exolab.castor.mapping.MapItem">
@@ -80,6 +86,16 @@
 					</field>
 				</class>
 			</bind-xml>
+		</field>
+	</class>
+	<class name="eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo" auto-complete="true">
+	
+		<field name="name" type="string" required="true">
+			<bind-xml name="name" node="attribute" />
+		</field>
+		
+		<field name="location" type="string" handler="eu.esdihumboldt.hale.common.core.io.project.model.internal.URIFieldHandler" required="true">
+			<bind-xml name="location" node="attribute" />
 		</field>
 	</class>
 </mapping>
