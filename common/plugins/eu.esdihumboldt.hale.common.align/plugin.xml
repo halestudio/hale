@@ -61,6 +61,11 @@
                   minOccurrence="1">
             </property>
          </targetProperties>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="value">
+         </functionParameter>
       </propertyFunction>
    </extension>
    <extension
