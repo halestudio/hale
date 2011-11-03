@@ -21,7 +21,8 @@ Export-Package: eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.tip,
  eu.esdihumboldt.hale.ui.util.tree,
  eu.esdihumboldt.hale.ui.util.viewer,
- eu.esdihumboldt.hale.ui.util.viewer.tree
+ eu.esdihumboldt.hale.ui.util.viewer.tree,
+ eu.esdihumboldt.hale.ui.util.wizard
 Import-Package: de.cs3d.util.eclipse,
  de.cs3d.util.logging,
  org.apache.http,
