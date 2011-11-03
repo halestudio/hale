@@ -11,6 +11,10 @@
             function="eu.esdihumboldt.hale.align.rename"
             id="eu.esdihumboldt.hale.align.rename.generic">
       </propertyWizard>
+      <propertyWizard
+            function="eu.esdihumboldt.hale.align.assign"
+            id="eu.esdihumboldt.hale.align.assign.generic">
+      </propertyWizard>
    </extension>
 
 </plugin>
