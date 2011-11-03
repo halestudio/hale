@@ -13,11 +13,9 @@ package eu.esdihumboldt.commons.mediator.constraints.portrayal.impl;
 
 import java.io.Serializable;
 
-import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint.ConstraintSource;
+import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.RemoteOWS;
-import eu.esdihumboldt.specification.mediator.constraints.portrayal.RemoteOWS.OnlineResource;
-import eu.esdihumboldt.specification.mediator.constraints.portrayal.RemoteOWS.Service;
 
 /**
  * A RemoteOWS gives a referense to a remote WFS/WCS/other-OWS server.

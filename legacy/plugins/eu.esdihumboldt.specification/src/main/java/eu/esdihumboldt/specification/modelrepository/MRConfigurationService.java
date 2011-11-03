@@ -12,8 +12,8 @@
 package eu.esdihumboldt.specification.modelrepository;
 
 import java.net.URL;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This interface allows to define the configuration of a Model Repository node.

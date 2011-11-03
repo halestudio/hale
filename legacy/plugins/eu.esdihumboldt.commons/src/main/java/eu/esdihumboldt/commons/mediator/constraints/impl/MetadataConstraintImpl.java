@@ -12,14 +12,14 @@
 package eu.esdihumboldt.commons.mediator.constraints.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
+import eu.esdihumboldt.specification.mediator.constraints.LanguageConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.MetadataConstraint;
 import eu.esdihumboldt.specification.util.IdentifierManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This constraint allows to define a metadata item to test against. It is 

@@ -2,7 +2,6 @@ package eu.esdihumboldt.hale.ui.codelist.io;
 
 import org.eclipse.ui.PlatformUI;
 
-
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;

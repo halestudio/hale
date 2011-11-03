@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.specification.informationgrounding.exceptions;
 
+import eu.esdihumboldt.specification.informationgrounding.requesthandler.GroundingService;
+
 /**   
 * Name: eu.esdihumboldt.informationgrounding.exceptions / 
 * GroundingServiceNotFoundException<br/>   

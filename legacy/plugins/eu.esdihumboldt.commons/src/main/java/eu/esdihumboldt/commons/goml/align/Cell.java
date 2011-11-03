@@ -11,14 +11,14 @@
  */
 package eu.esdihumboldt.commons.goml.align;
 
-import eu.esdihumboldt.commons.goml.rdf.About;
+import java.util.ArrayList;
+import java.util.List;
 
+import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
+import eu.esdihumboldt.commons.goml.rdf.About;
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 import eu.esdihumboldt.specification.cst.rdf.IAbout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A {@link Cell} contains a mapping between two Entities, such as {@link FeatureClass}es

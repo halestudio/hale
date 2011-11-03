@@ -12,10 +12,9 @@
 package eu.esdihumboldt.specification.workflow.transformer.inputoutputs;
 
 
-import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
-import eu.esdihumboldt.specification.workflow.transformer.inputoutputs.InputOutput;
-
 import java.net.URI;
+
+import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
 /**This interface describe complex data structure used to represent an input or
  * output

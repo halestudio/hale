@@ -3,10 +3,9 @@
  */
 package eu.esdihumboldt.commons.goml.omwg.comparator;
 
-import org.apache.log4j.Logger;
-
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.opengis.feature.Property;
 
 import eu.esdihumboldt.commons.goml.omwg.Restriction;

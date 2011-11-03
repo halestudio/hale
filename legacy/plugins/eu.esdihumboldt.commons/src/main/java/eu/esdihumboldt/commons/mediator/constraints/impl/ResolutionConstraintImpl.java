@@ -19,7 +19,7 @@ import org.opengis.metadata.identification.Resolution;
 
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 import eu.esdihumboldt.specification.mediator.constraints.ResolutionConstraint;
-import eu.esdihumboldt.specification.mediator.constraints.Constraint.ConstraintSource;
+import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 
 /**
  * A ResolutionConstraint Interface allows access to the WindowElement,

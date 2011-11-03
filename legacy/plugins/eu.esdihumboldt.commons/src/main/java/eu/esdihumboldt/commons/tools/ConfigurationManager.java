@@ -12,12 +12,10 @@
 
 package eu.esdihumboldt.commons.tools;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,7 +27,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import eu.esdihumboldt.commons.mediator.util.XMLHandler;
 import eu.esdihumboldt.generated.configuration.Configuration;
-
 import eu.esdihumboldt.generated.configuration.PropertyType;
 
 

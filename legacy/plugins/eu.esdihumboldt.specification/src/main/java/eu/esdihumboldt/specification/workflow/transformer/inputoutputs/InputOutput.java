@@ -1,11 +1,11 @@
 package eu.esdihumboldt.specification.workflow.transformer.inputoutputs;
 
+import java.io.Serializable;
+import java.util.UUID;
+
 import eu.esdihumboldt.specification.workflow.exceptions.IncompatibleTransformersException;
 import eu.esdihumboldt.specification.workflow.process.Description;
 import eu.esdihumboldt.specification.workflow.repository.Transformer;
-
-import java.io.Serializable;
-import java.util.UUID;
 
 /**
  *  @author mgone

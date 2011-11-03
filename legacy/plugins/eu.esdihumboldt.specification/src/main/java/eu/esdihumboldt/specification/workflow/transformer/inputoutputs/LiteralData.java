@@ -1,8 +1,8 @@
 package eu.esdihumboldt.specification.workflow.transformer.inputoutputs;
 
-import eu.esdihumboldt.specification.workflow.transformer.domaintypes.LiteralValuesChoice;
-
 import java.util.Set;
+
+import eu.esdihumboldt.specification.workflow.transformer.domaintypes.LiteralValuesChoice;
 
 public interface LiteralData{
 

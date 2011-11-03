@@ -11,9 +11,9 @@
  */
 package eu.esdihumboldt.specification.workflow.transformer.domaintypes;
 
-import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
-
 import java.io.Serializable;
+
+import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
 
 /**A super interface that identifies the type of literal input/output and 

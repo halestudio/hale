@@ -12,6 +12,7 @@
 package eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers;
 
 import java.io.Serializable;
+
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 

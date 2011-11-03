@@ -14,9 +14,6 @@ package eu.esdihumboldt.specification.modelrepository.abstractfc;
 import java.util.Map;
 
 import eu.esdihumboldt.specification.mediator.MediatorComplexRequest;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.Concept;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptProperty;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.Relation;
 
 /**
  * A Transition is a special type of {@link Relation} that could be described as

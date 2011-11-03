@@ -3,9 +3,8 @@ package eu.esdihumboldt.commons.mediator.usermanagement.impl;
 
 import java.util.Locale;
 
-import org.geotools.util.SimpleInternationalString;
-
 import org.exolab.castor.mapping.GeneralizedFieldHandler;
+import org.geotools.util.SimpleInternationalString;
 
 /**
  * @author pitaeva

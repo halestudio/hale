@@ -11,10 +11,6 @@
  */
 package eu.esdihumboldt.specification.modelrepository.abstractfc;
 
-import eu.esdihumboldt.specification.modelrepository.abstractfc.Concept;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptAssociation;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptProperty;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptualSchema;
 
 /**
  * A ConceptAssociation is a type of {@link ConceptProperty} that is defined

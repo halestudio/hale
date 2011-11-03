@@ -3,13 +3,11 @@ package eu.esdihumboldt.commons.modelmapping.imm.impl;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.geotools.metadata.iso.citation.ResponsiblePartyImpl;
 import org.opengis.metadata.citation.Citation;
-import org.opengis.metadata.citation.ResponsibleParty;
 
 import eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers.ResponsiblePartyHelper;
 import eu.esdihumboldt.specification.modelrepository.abstractfc.AccessConstraint;

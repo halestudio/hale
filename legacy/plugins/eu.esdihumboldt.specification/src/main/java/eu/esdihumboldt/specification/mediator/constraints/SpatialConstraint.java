@@ -12,8 +12,6 @@
 package eu.esdihumboldt.specification.mediator.constraints;
 
 import org.opengis.geometry.Envelope;
-
-
 import org.opengis.geometry.Geometry;
 
 

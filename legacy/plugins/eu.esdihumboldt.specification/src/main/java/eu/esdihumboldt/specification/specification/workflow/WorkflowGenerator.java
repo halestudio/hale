@@ -11,10 +11,10 @@
  */
 package eu.esdihumboldt.specification.specification.workflow;
 
+import org.dom4j.Document;
+
 import eu.esdihumboldt.specification.mediator.MediatorComplexRequest;
 import eu.esdihumboldt.specification.workflow.exceptions.InconsistentWorkflowException;
-
-import org.dom4j.Document;
 
 /**The workflow generator provide an interface that has got the sole purpose of 
  * generating an executable and grounded workflow and supplying it to its clients

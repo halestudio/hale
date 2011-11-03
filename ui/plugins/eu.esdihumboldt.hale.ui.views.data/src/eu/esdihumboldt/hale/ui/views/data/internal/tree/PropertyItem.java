@@ -25,7 +25,6 @@ import org.opengis.feature.Property;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.commons.tools.FeatureInspector;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 

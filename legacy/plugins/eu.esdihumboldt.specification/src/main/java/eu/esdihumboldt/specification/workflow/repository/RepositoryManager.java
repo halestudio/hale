@@ -11,12 +11,12 @@
  */
 package eu.esdihumboldt.specification.workflow.repository;
 
+import java.util.Set;
+import java.util.UUID;
+
 import eu.esdihumboldt.specification.modelrepository.abstractfc.Concept;
 import eu.esdihumboldt.specification.workflow.exceptions.InconsistentWorkflowException;
 import eu.esdihumboldt.specification.workflow.process.Description;
-
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

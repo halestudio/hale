@@ -24,7 +24,6 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.ui.common.crs.WKTPreferencesCRSFactory;
 import eu.esdihumboldt.hale.ui.util.proxy.ProxySettings;
 

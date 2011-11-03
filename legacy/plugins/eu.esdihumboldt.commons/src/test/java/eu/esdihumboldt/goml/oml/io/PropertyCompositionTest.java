@@ -13,18 +13,18 @@
 package eu.esdihumboldt.goml.oml.io;
 
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import javax.xml.transform.stream.StreamSource;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,19 +39,14 @@ import eu.esdihumboldt.commons.goml.oml.ext.Parameter;
 import eu.esdihumboldt.commons.goml.oml.ext.Transformation;
 import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType;
 import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.Property;
-import eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType;
 import eu.esdihumboldt.commons.goml.rdf.About;
 import eu.esdihumboldt.commons.goml.rdf.Resource;
-import eu.esdihumboldt.goml.ComposedPropertyTest;
-import eu.esdihumboldt.goml.HaleOmlRdfReaderTest;
-
 import eu.esdihumboldt.specification.cst.align.ICell;
 import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
-import eu.esdihumboldt.specification.cst.rdf.IAbout;
-import eu.esdihumboldt.specification.mediator.TransformationQueueManager.ProcessStatus;
 
 /**
  * A Test for the deserialization of the PropertyComposition.

@@ -19,7 +19,6 @@ import java.util.Properties;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.MessageDefinition;
 import eu.esdihumboldt.util.definition.ObjectDefinition;

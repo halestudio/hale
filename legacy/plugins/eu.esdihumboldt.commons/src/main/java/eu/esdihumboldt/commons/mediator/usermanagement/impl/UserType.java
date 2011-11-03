@@ -9,10 +9,8 @@ package eu.esdihumboldt.commons.mediator.usermanagement.impl;
 import java.util.List;
 import java.util.UUID;
 
-import eu.esdihumboldt.commons.mediator.context.impl.OrganizationContextImpl;
 import eu.esdihumboldt.commons.mediator.context.impl.UserContextImpl;
 import eu.esdihumboldt.specification.mediator.context.Context;
-import eu.esdihumboldt.specification.mediator.context.UserContext;
 import eu.esdihumboldt.specification.mediator.usermanagement.PersonProfile;
 import eu.esdihumboldt.specification.mediator.usermanagement.User;
 import eu.esdihumboldt.specification.mediator.usermanagement.ValidatyDates;

@@ -9,8 +9,8 @@ import org.opengis.style.StyleVisitor;
 import org.opengis.style.Symbolizer;
 import org.opengis.util.InternationalString;
 
-import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint.ConstraintSource;
+import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 
 public class StyleImpl implements Style {
 

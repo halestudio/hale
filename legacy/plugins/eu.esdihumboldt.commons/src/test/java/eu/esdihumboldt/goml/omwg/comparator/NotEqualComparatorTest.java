@@ -3,21 +3,18 @@
  */
 package eu.esdihumboldt.goml.omwg.comparator;
 
-import org.apache.log4j.Logger;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
@@ -29,7 +26,6 @@ import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.commons.goml.omwg.Restriction;
 import eu.esdihumboldt.commons.goml.omwg.comparator.IComparator;
 import eu.esdihumboldt.commons.goml.omwg.comparator.NotEqualComparator;
-import eu.esdihumboldt.goml.oml.io.OmlRdfReaderTest;
 import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**

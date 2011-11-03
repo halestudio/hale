@@ -14,9 +14,6 @@ package eu.esdihumboldt.specification.modelrepository.abstractfc;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptAttribute;
-import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptProperty;
-
 /**
  * A ConceptOperation describes an operation that every instance of an
  * associated Concept has to implement. It is similar to ISO 19110's

@@ -20,6 +20,7 @@ import org.opengis.style.Style;
 
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 import eu.esdihumboldt.specification.mediator.constraints.PortrayalConstraint;
+import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.NamedLayer;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.UserLayer;
 

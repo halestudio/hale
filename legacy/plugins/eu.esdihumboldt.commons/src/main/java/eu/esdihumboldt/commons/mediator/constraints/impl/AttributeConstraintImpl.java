@@ -6,7 +6,6 @@ import org.opengis.filter.expression.Expression;
 
 import eu.esdihumboldt.specification.mediator.constraints.AttributeConstraint;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
-import eu.esdihumboldt.specification.mediator.constraints.Constraint.ConstraintSource;
 
 public class AttributeConstraintImpl implements AttributeConstraint{
 

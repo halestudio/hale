@@ -12,9 +12,6 @@
 
 package eu.esdihumboldt.hale.common.instance.helper;
 
-import java.util.ArrayList;
-
-import javax.xml.namespace.QName;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**

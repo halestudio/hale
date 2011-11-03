@@ -9,7 +9,11 @@
  */
 
 package eu.esdihumboldt.specification.annotations.concurrency;
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The class to which this annotation is applied is thread-safe.  This means that
