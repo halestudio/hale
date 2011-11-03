@@ -58,7 +58,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/simplerename/t1.xsd").toURI(), 
 				getClass().getResource("/testdata/simplerename/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/simplerename/t1t2.xml").toURI());
+				getClass().getResource("/testdata/simplerename/t1t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(5, alignment.getCells().size());
@@ -79,7 +79,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/cardrename/t1.xsd").toURI(), 
 				getClass().getResource("/testdata/cardrename/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/cardrename/t1t2.xml").toURI());
+				getClass().getResource("/testdata/cardrename/t1t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(5, alignment.getCells().size());
@@ -100,7 +100,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/propmerge/t1.xsd").toURI(), 
 				getClass().getResource("/testdata/propmerge/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/propmerge/t1t2.xml").toURI());
+				getClass().getResource("/testdata/propmerge/t1t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(5, alignment.getCells().size());
@@ -121,7 +121,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/choice/t1.xsd").toURI(), 
 				getClass().getResource("/testdata/choice/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/choice/t1t2.xml").toURI());
+				getClass().getResource("/testdata/choice/t1t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(8, alignment.getCells().size());
@@ -142,7 +142,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/propmix/t1.xsd").toURI(), 
 				getClass().getResource("/testdata/propmix/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/propmix/t1t2.xml").toURI());
+				getClass().getResource("/testdata/propmix/t1t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(7, alignment.getCells().size());
@@ -163,7 +163,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/propmix/t2.xsd").toURI(), 
 				getClass().getResource("/testdata/propmix/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/propmix/t2t1.xml").toURI());
+				getClass().getResource("/testdata/propmix/t2t1.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(7, alignment.getCells().size());
@@ -186,7 +186,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/propmix2/t1.xsd").toURI(), 
 				getClass().getResource("/testdata/propmix2/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/propmix2/t1t2.xml").toURI());
+				getClass().getResource("/testdata/propmix2/t1t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(9, alignment.getCells().size());
@@ -209,7 +209,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/group/t1.xsd").toURI(), 
 				getClass().getResource("/testdata/group/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/group/t1t2.xml").toURI());
+				getClass().getResource("/testdata/group/t1t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(9, alignment.getCells().size());
@@ -232,7 +232,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/impassign/t1.xsd").toURI(), 
 				getClass().getResource("/testdata/impassign/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/impassign/t1t2.xml").toURI());
+				getClass().getResource("/testdata/impassign/t1t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		/*
@@ -257,7 +257,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/simpleatt/t1.xsd").toURI(), 
 				getClass().getResource("/testdata/simpleatt/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/simpleatt/t1t2.xml").toURI());
+				getClass().getResource("/testdata/simpleatt/t1t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(7, alignment.getCells().size());
@@ -278,7 +278,7 @@ public class DefaultAlignmentProcessorTest {
 		Alignment alignment = loadAlignment(
 				getClass().getResource("/testdata/simplecomplex/t2.xsd").toURI(), 
 				getClass().getResource("/testdata/simplecomplex/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/simplecomplex/t2t2.xml").toURI());
+				getClass().getResource("/testdata/simplecomplex/t2t2.halex.alignment.xml").toURI());
 		
 		assertNotNull(alignment);
 		assertEquals(7, alignment.getCells().size());
