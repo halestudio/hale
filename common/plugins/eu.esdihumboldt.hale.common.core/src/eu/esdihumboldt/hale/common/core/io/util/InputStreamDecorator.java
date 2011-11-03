@@ -49,22 +49,6 @@ public class InputStreamDecorator extends InputStream {
 	}
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		return in.equals(obj);
-	}
-
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return in.hashCode();
-	}
-
-	/**
 	 * @see java.io.InputStream#mark(int)
 	 */
 	@Override

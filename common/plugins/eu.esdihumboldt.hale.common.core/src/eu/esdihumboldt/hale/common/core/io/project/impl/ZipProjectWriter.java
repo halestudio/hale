@@ -13,7 +13,10 @@
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
@@ -28,6 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -66,6 +70,12 @@ public class ZipProjectWriter extends AbstractExportProvider implements ProjectW
 		}
 
 	}
+	
+	/**
+	 * The configuration parameter name for detailing if project files are to 
+	 * be placed outside the project archive
+	 */
+	public static final String PARAM_SEPARATE_FILES = "projectFiles.separate";
 
 	/**
 	 * The additional project files, file names are mapped to project file objects
@@ -76,6 +86,11 @@ public class ZipProjectWriter extends AbstractExportProvider implements ProjectW
 	 * The main project file
 	 */
 	private Project project;
+	
+	/**
+	 * If project files are to be placed outside the archive
+	 */
+	private boolean useSeparateFiles = false;
 
 	/**
 	 * @see AbstractExportProvider#validate()
@@ -90,16 +105,83 @@ public class ZipProjectWriter extends AbstractExportProvider implements ProjectW
 	}
 
 	/**
+	 * @see AbstractExportProvider#storeConfiguration(Map)
+	 */
+	@Override
+	public void storeConfiguration(Map<String, String> configuration) {
+		// store if separate files are to be used
+		configuration.put(PARAM_SEPARATE_FILES, String.valueOf(useSeparateFiles));
+		
+		super.storeConfiguration(configuration);
+	}
+
+	/**
+	 * @see AbstractExportProvider#setParameter(String, String)
+	 */
+	@Override
+	public void setParameter(String name, String value) {
+		if (name.equals(PARAM_SEPARATE_FILES)) {
+			setUseSeparateFiles(Boolean.valueOf(value));
+		}
+		else {
+			super.setParameter(name, value);
+		}
+	}
+
+	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+		boolean separateProjectFiles = isUseSeparateFiles();
+		URI targetLocation = getTarget().getLocation();
+		File targetFile;
+		try {
+			targetFile = new File(targetLocation);
+		} catch (Exception e) {
+			targetFile = null;
+			// if it's not a file, we must save the project files inside the zip stream
+			separateProjectFiles = false;
+		}
+		
 		int entries = 1;
 		if (projectFiles != null) {
 			entries += projectFiles.size();
 		}
 		progress.begin("Save project", entries);
+		
+		// clear project file information in project
+		project.getProjectFiles().clear();
+		
+		// write additional project files if they are to be placed in separate files
+		if (separateProjectFiles && targetFile != null) {
+			for (Entry<String, ProjectFile> entry : projectFiles.entrySet()) {
+				String name = entry.getKey();
+				
+				// determine target file for project file
+				File pfile = new File(targetFile.getParentFile(), 
+						targetFile.getName() + "." + name);
+				
+				// add project file information to project
+				project.getProjectFiles().add(new ProjectFileInfo(name, pfile.toURI()));
+				
+				// write entry
+				ProjectFile file = entry.getValue();
+				FileOutputStream out = new FileOutputStream(pfile);
+				try {
+					file.store(out);
+				} catch (Exception e) {
+					reporter.error(new IOMessageImpl("Error saving a project file.", e));
+					reporter.setSuccess(false);
+					return reporter;
+				} finally {
+					out.close();
+				}
+				
+				progress.advance(1);
+			}
+		}
 		
 		ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(
 				getTarget().getOutput()));
@@ -116,29 +198,31 @@ public class ZipProjectWriter extends AbstractExportProvider implements ProjectW
 			zip.closeEntry();
 			progress.advance(1);
 			
-			// write additional project files
-			for (Entry<String, ProjectFile> entry : projectFiles.entrySet()) {
-				String name = entry.getKey();
-				if (name.equalsIgnoreCase(ProjectIO.PROJECT_FILE)) {
-					reporter.error(new IOMessageImpl(
-							"Invalid file name {0}. File name may not match the name of the main project configuration.", 
-							null, name));
-				}
-				else {
-					// write entry
-					zip.putNextEntry(new ZipEntry(name));
-					ProjectFile file = entry.getValue();
-					try {
-						file.store(new EntryOutputStream(zip));
-					} catch (Exception e) {
-						reporter.error(new IOMessageImpl("Error saving a project file.", e));
-						reporter.setSuccess(false);
-						return reporter;
+			// write additional project files to zip stream
+			if (projectFiles != null && !separateProjectFiles) {
+				for (Entry<String, ProjectFile> entry : projectFiles.entrySet()) {
+					String name = entry.getKey();
+					if (name.equalsIgnoreCase(ProjectIO.PROJECT_FILE)) {
+						reporter.error(new IOMessageImpl(
+								"Invalid file name {0}. File name may not match the name of the main project configuration.", 
+								null, name));
 					}
-					zip.closeEntry();
+					else {
+						// write entry
+						zip.putNextEntry(new ZipEntry(name));
+						ProjectFile file = entry.getValue();
+						try {
+							file.store(new EntryOutputStream(zip));
+						} catch (Exception e) {
+							reporter.error(new IOMessageImpl("Error saving a project file.", e));
+							reporter.setSuccess(false);
+							return reporter;
+						}
+						zip.closeEntry();
+					}
+					
+					progress.advance(1);
 				}
-				
-				progress.advance(1);
 			}
 		} finally {
 			zip.close();
@@ -186,6 +270,20 @@ public class ZipProjectWriter extends AbstractExportProvider implements ProjectW
 	@Override
 	public boolean isCancelable() {
 		return false;
+	}
+
+	/**
+	 * @return the useSeparateFiles
+	 */
+	public boolean isUseSeparateFiles() {
+		return useSeparateFiles;
+	}
+
+	/**
+	 * @param useSeparateFiles the useSeparateFiles to set
+	 */
+	public void setUseSeparateFiles(boolean useSeparateFiles) {
+		this.useSeparateFiles = useSeparateFiles;
 	}
 
 }

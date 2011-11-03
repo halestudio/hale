@@ -148,6 +148,11 @@ public class Project implements ProjectInfo {
 	 * Project properties
 	 */
 	private final Map<String, String> properties = new HashMap<String, String>();
+
+	/**
+	 * Project file locations
+	 */
+	private final List<ProjectFileInfo> projectFiles = new ArrayList<ProjectFileInfo>();
 	
 	/**
 	 * @return the configurations
@@ -265,6 +270,13 @@ public class Project implements ProjectInfo {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return the list of external project file locations 
+	 */
+	public List<ProjectFileInfo> getProjectFiles() {
+		return projectFiles;
 	}
 	
 }

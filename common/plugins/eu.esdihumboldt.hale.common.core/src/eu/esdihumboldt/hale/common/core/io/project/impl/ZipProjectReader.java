@@ -13,12 +13,18 @@
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -29,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -47,18 +54,14 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 
 		private final ZipInputStream zip;
 		
-		private final ZipEntry entry;
-		
 		/**
 		 * Create an input stream for a ZIP entry
-		 * @param entry the ZIP entry
 		 * @param zip the ZIP input stream
 		 */
-		public EntryInputStream(ZipEntry entry, ZipInputStream zip) {
+		public EntryInputStream(ZipInputStream zip) {
 			super(zip);
 			
 			this.zip = zip;
-			this.entry = entry;
 		}
 
 		/**
@@ -71,6 +74,8 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 		}
 
 	}
+	
+	private static final ALogger log = ALoggerFactory.getLogger(ZipProjectReader.class);
 	
 	/**
 	 * The additional project files, file names are mapped to project file objects
@@ -103,7 +108,7 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 				
 				if (name.equals(ProjectIO.PROJECT_FILE)) {
 					try {
-						project = Project.load(new EntryInputStream(entry, zip));
+						project = Project.load(new EntryInputStream(zip));
 					} catch (Exception e) {
 						// fail if main project file cannot be loaded 
 						throw new IOProviderConfigurationException(
@@ -115,7 +120,7 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 					
 					if (file != null) {
 						try {
-							file.load(new EntryInputStream(entry, zip));
+							file.load(new EntryInputStream(zip));
 						} catch (Exception e) {
 							reporter.error(new IOMessageImpl(
 									"Error while loading project file {0}, file will be reset.", 
@@ -129,6 +134,61 @@ public class ZipProjectReader extends AbstractImportProvider implements ProjectR
 		} finally {
 			zip.close();
 		}
+		
+		// check if there are any external project files listed
+		for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
+			ProjectFile projectFile = projectFiles.get(fileInfo.getName());
+			
+			if (projectFile != null) {
+				// try to load the file from the given location
+				URI location = fileInfo.getLocation();
+				InputStream input = location.toURL().openStream();
+				boolean fileSuccess = false;
+				try {
+					projectFile.load(input);
+					fileSuccess = true;
+				} catch (Exception e) {
+					log.debug("Loading project file failed", e);
+				} finally {
+					input.close();
+				}
+				
+				// try to load the file from the main project file directory
+				try {
+					File projectLocation = new File(getSource().getLocation());
+					String filePath = location.getPath();
+					String filename = filePath.substring(filePath.lastIndexOf('/') + 1);
+					File file = new File(projectLocation.getParentFile(), filename);
+					if (file.exists()) {
+						FileInputStream fis = new FileInputStream(file);
+						try {
+							projectFile.load(fis);
+							fileSuccess = true;
+						} catch (Exception e) {
+							log.debug("Loading project file from default location failed", e);
+						} finally {
+							fis.close();
+						}
+					}
+				} catch (Exception e) {
+					log.debug("Unable to determine default location for project file", e);
+				}
+				
+				if (!fileSuccess) {
+					reporter.error(new IOMessageImpl(
+							"Error while loading project file {0}, file will be reset.", 
+							null, fileInfo.getName()));
+					projectFile.reset();
+				}
+			}
+			else {
+				reporter.error(new IOMessageImpl("No handler for external project file {0} found.", 
+						null, fileInfo.getName()));
+			}
+		}
+		
+		// clear project infos
+		project.getProjectFiles().clear();
 		
 		progress.end();
 		reporter.setSuccess(true);
