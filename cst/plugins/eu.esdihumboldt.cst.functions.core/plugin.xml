@@ -15,6 +15,12 @@
             function="eu.esdihumboldt.hale.align.rename"
             id="eu.esdihumboldt.cst.functions.core.rename">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.core.Assign"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.hale.align.assign"
+            id="eu.esdihumboldt.cst.functions.core.assign">
+      </propertyTransformation>
    </extension>
 
 </plugin>
