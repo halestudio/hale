@@ -120,7 +120,7 @@
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.functions"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.map"/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.mapping"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.mapping" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.properties"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
@@ -154,6 +154,7 @@
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
       <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.runtime"/>
@@ -164,11 +165,13 @@
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.ds"/>
       <plugin id="org.eclipse.equinox.launcher"/>
+      <plugin id="org.eclipse.equinox.launcher.cocoa.macosx.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.launcher.win32.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.jface"/>
@@ -177,6 +180,7 @@
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
