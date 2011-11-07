@@ -80,11 +80,20 @@
                name="windowImages"
                value="images/hale_icon.png">
          </property>
+         <property
+               name="aboutImage"
+               value="images/hale_icon.png">
+         </property>
+         <property
+               name="aboutText"
+               value="HUMBOLDT Alignment Editor">
+         </property>
       </product>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
+            categoryId="org.eclipse.ui.category.help"
             defaultHandler="eu.esdihumboldt.hale.ui.application.handler.ShowHandbookHandler"
             id="eu.esdihumboldt.hale.ui.applications.commands.manual"
             name="%command.showManual.name">
@@ -92,21 +101,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=configure">
-         <menu
-               id="help"
-               label="%menu.help.label"
-               mnemonic="%menu.help.mnemonic">
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.applications.commands.manual"
-                  id="ShowManual"
-                  label="%command.showManual.label"
-                  mnemonic="s"
-                  style="push">
-            </command>
-         </menu>
-      </menuContribution>
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
@@ -177,15 +171,50 @@
             </command>
          </menu>
          <menu
-               id="configure"
+               id="edit"
+               label="Edit"
+               mnemonic="e">
+            <command
+                  commandId="org.eclipse.ui.edit.cut"
+                  label="Cut"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.copy"
+                  label="Copy"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.paste"
+                  label="Paste"
+                  style="push">
+            </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.edit.clipboard"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.edit.delete"
+                  label="Delete"
+                  mnemonic="d"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.selectAll"
+                  label="Select all"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               id="window"
                label="%menu.configure.label"
                mnemonic="%menu.configure.mnemonic">
-            <menu
-                  id="configureTasks"
-                  label="%menu.tasks.label">
-            </menu>
+            <command
+                  commandId="org.eclipse.ui.window.newWindow"
+                  style="push">
+            </command>
             <separator
-                  name="HALE.separator1"
+                  name="eu.esdihumboldt.hale.ui.window.new"
                   visible="true">
             </separator>
             <command
@@ -198,7 +227,8 @@
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
-               id="eu.esdihumboldt.hale.ui.application.toolbar.main">
+               id="eu.esdihumboldt.hale.ui.application.toolbar.main"
+               label="File">
             <command
                   commandId="eu.esdihumboldt.hale.ui.project.new"
                   icon="icons/new.gif"
@@ -226,24 +256,77 @@
                   label="%command.saveProject.label"
                   style="push">
             </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.file.project"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.io.import"
+                  icon="icons/import_wiz.gif"
+                  id="eu.esdihumboldt.hale.ui.io.import"
+                  label="Import"
+                  style="pulldown">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.io.export"
+                  icon="icons/export_wiz.gif"
+                  id="eu.esdihumboldt.hale.ui.io.export"
+                  label="Export"
+                  style="pulldown">
+            </command>
          </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:eu.esdihumboldt.hale.ui.io.import">
+         <dynamic
+               class="eu.esdihumboldt.hale.ui.io.action.ImportContribution"
+               id="eu.esdihumboldt.hale.ui.io.import.list">
+         </dynamic>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:eu.esdihumboldt.hale.ui.io.export">
+         <dynamic
+               class="eu.esdihumboldt.hale.ui.io.action.ExportContribution"
+               id="eu.esdihumboldt.hale.ui.io.export.list">
+         </dynamic>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=window">
+         <menu
+               id="help"
+               label="%menu.help.label"
+               mnemonic="%menu.help.mnemonic">
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.applications.commands.manual"
+                  id="ShowManual"
+                  label="%command.showManual.label"
+                  mnemonic="s"
+                  style="push">
+            </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.help.1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.help.aboutAction"
+                  style="push">
+            </command>
+         </menu>
       </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <scheme
             id="eu.esdihumboldt.hale.ui.application.bindings"
-            name="HALE Key bindings">
+            name="HALE Key bindings"
+            parentId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </scheme>
       <key
             commandId="eu.esdihumboldt.hale.ui.project.save"
             schemeId="eu.esdihumboldt.hale.ui.application.bindings"
             sequence="M1+S">
-      </key>
-      <key
-            commandId="org.eclipse.ui.edit.delete"
-            schemeId="eu.esdihumboldt.hale.ui.application.bindings"
-            sequence="DEL">
       </key>
    </extension>
 

@@ -3,6 +3,12 @@
 
 <product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.5.0.qualifier" useFeatures="false" includeLaunchers="true">
 
+   <aboutInfo>
+      <text>
+         HUMBOLDT Alignment Editor (HALE)
+      </text>
+   </aboutInfo>
+
    <configIni use="default">
    </configIni>
 
@@ -23,6 +29,7 @@
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -120,7 +127,7 @@
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.functions"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.map"/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.mapping" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.mapping"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.properties"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
