@@ -6,6 +6,9 @@
    <aboutInfo>
       <text>
          HUMBOLDT Alignment Editor (HALE)
+
+Version @version@
+Build @build@
       </text>
    </aboutInfo>
 
