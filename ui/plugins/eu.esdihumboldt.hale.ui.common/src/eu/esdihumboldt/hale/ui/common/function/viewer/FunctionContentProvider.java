@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.functions;
+package eu.esdihumboldt.hale.ui.common.function.viewer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,8 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
 
 /**
- * Function content provider
+ * Function content provider. Expects no input and displays all 
+ * available functions.
  * @author Simon Templer
  */
 public class FunctionContentProvider implements ITreeContentProvider {
