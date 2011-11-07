@@ -15,14 +15,22 @@ package eu.esdihumboldt.hale.ui.io.action.wizard;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.expressions.EvaluationResult;
+import org.eclipse.core.expressions.Expression;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.wizard.IWizardNode;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.services.IEvaluationService;
 
 import de.cs3d.util.eclipse.extension.FactoryFilter;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.action.ActionUI;
@@ -34,6 +42,8 @@ import eu.esdihumboldt.hale.ui.util.wizard.ViewerWizardSelectionPage;
  * @author Simon Templer
  */
 public class ActionUIWizardPage extends ViewerWizardSelectionPage {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(ActionUIWizardPage.class);
 
 	private final FactoryFilter<IOWizard<?>, ActionUI> filter;
 	
@@ -89,6 +99,37 @@ public class ActionUIWizardPage extends ViewerWizardSelectionPage {
 		viewer.setInput(nodes);
 		
 		return viewer;
+	}
+
+	/**
+	 * @see ViewerWizardSelectionPage#acceptWizard(IWizardNode)
+	 */
+	@Override
+	protected String acceptWizard(IWizardNode wizardNode) {
+		if (wizardNode instanceof ActionUIWizardNode) {
+			ActionUI actionUI = ((ActionUIWizardNode) wizardNode).getActionUI();
+			Expression enabledWhen = actionUI.getEnabledWhen();
+			if (enabledWhen == null) {
+				return null;
+			}
+			
+			IEvaluationService ies = (IEvaluationService) PlatformUI.getWorkbench().getService(IEvaluationService.class);
+			try {
+				EvaluationResult evalResult = enabledWhen.evaluate(ies.getCurrentState());
+				if (evalResult == EvaluationResult.FALSE) {
+					// disabled
+					return actionUI.getDisabledReason();
+				}
+				// enabled
+				return null;
+			} catch (CoreException e) {
+				String message = "Could not evaluate enabledWhen expression";
+				log.error(message, e);
+				return message ;
+			}
+		}
+		
+		return super.acceptWizard(wizardNode);
 	}
 
 }

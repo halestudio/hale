@@ -135,6 +135,16 @@
             <element ref="iterate"/>
             <element ref="reference"/>
          </choice>
+         <attribute name="disabledReason" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Gives a human readable reason why the action is not enabled.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

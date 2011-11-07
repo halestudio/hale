@@ -178,7 +178,8 @@
             priority="-6"
             projectResource="true"
             wizard="eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard">
-         <enabledWhen>
+         <enabledWhen
+               disabledReason="Load a source schema first">
             <with
                   variable="hale.schemas.has_source">
                <equals
@@ -194,7 +195,8 @@
             priority="0"
             projectResource="false"
             wizard="eu.esdihumboldt.hale.ui.io.align.AlignmentImportWizard">
-         <enabledWhen>
+         <enabledWhen
+               disabledReason="Load source and target schemas first">
             <and>
                <with
                      variable="hale.schemas.has_source">
@@ -218,7 +220,8 @@
             priority="0"
             projectResource="false"
             wizard="eu.esdihumboldt.hale.ui.io.align.AlignmentExportWizard">
-         <enabledWhen>
+         <enabledWhen
+               disabledReason="The current alignment is empty">
             <with
                   variable="hale.alignment.has_cells">
                <equals
