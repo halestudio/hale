@@ -293,5 +293,57 @@
          </propertyCategory>
       </propertyContributor>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="eu.esdihumboldt.hale.ui.views.properties.open"
+            name="Properties">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eu.esdihumboldt.hale.ui.views.properties.handler.OpenPropertiesHandler"
+            commandId="eu.esdihumboldt.hale.ui.views.properties.open">
+         <activeWhen>
+            <and>
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+               </with>
+               <with
+                     variable="activePart">
+                  <instanceof
+                        value="eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart">
+                  </instanceof>
+               </with>
+            </and>
+         </activeWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=eu.esdihumboldt.hale.ui.popup.end">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.views.properties.open"
+               icon="icons/properties.gif"
+               style="push"
+               tooltip="Open in properties view">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activePart">
+                  <instanceof
+                        value="eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart">
+                  </instanceof>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
 
 </plugin>
