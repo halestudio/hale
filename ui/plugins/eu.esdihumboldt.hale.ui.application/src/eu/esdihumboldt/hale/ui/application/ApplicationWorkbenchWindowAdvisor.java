@@ -116,7 +116,7 @@ public class ApplicationWorkbenchWindowAdvisor
 				IContributionItem item = ContributionItemFactory.VIEWS_SHORTLIST
 						.create(configurer.getWindowConfigurer().getWindow());
 				
-				IMenuManager windowMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_1, "configure"); //$NON-NLS-1$ //$NON-NLS-2$
+				IMenuManager windowMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_1, "window"); //$NON-NLS-1$ //$NON-NLS-2$
 				IMenuManager viewMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_3); //$NON-NLS-1$
 				windowMenu.add(viewMenu);
 				viewMenu.add(item);

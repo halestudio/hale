@@ -322,57 +322,6 @@
             </visibleWhen>
          </command>
       </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:org.eclipse.ui.main.menu?after=file">
-         <menu
-               id="edit"
-               label="Edit"
-               mnemonic="e">
-            <command
-                  commandId="org.eclipse.ui.edit.delete"
-                  label="Delete"
-                  mnemonic="d"
-                  style="push">
-            </command>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            locationURI="toolbar:org.eclipse.ui.main.toolbar">
-         <toolbar
-               id="eu.esdihumboldt.hale.ui.io">
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.io.import"
-                  icon="icons/import_wiz.gif"
-                  id="eu.esdihumboldt.hale.ui.io.import"
-                  label="Import"
-                  style="pulldown">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.io.export"
-                  icon="icons/export_wiz.gif"
-                  id="eu.esdihumboldt.hale.ui.io.export"
-                  label="Export"
-                  style="pulldown">
-            </command>
-         </toolbar>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:eu.esdihumboldt.hale.ui.io.import">
-         <dynamic
-               class="eu.esdihumboldt.hale.ui.io.action.ImportContribution"
-               id="eu.esdihumboldt.hale.ui.io.import.list">
-         </dynamic>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:eu.esdihumboldt.hale.ui.io.export">
-         <dynamic
-               class="eu.esdihumboldt.hale.ui.io.action.ExportContribution"
-               id="eu.esdihumboldt.hale.ui.io.export.list">
-         </dynamic>
-      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
