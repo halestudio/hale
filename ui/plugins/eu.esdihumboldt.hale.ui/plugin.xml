@@ -324,6 +324,10 @@
                   checkEnabled="true">
             </visibleWhen>
          </command>
+         <separator
+               name="eu.esdihumboldt.hale.ui.popup.end"
+               visible="true">
+         </separator>
       </menuContribution>
    </extension>
    <extension
