@@ -12,32 +12,22 @@
 
 package eu.esdihumboldt.hale.ui.io.action.wizard;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+
+import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
 
 /**
  * Show the {@link SelectExportWizard}
  * @author Simon Templer
  */
-public class SelectExportHandler extends AbstractHandler {
+public class SelectExportHandler extends AbstractWizardHandler {
 
 	/**
-	 * @see IHandler#execute(ExecutionEvent)
+	 * @see AbstractWizardHandler#createWizard()
 	 */
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWizard wizard = new SelectExportWizard();
-		Shell shell = Display.getCurrent().getActiveShell();
-		WizardDialog dialog = new WizardDialog(shell, wizard);
-		dialog.open();
-		
-		return null;
+	protected IWizard createWizard() {
+		return new SelectExportWizard();
 	}
 
 }
