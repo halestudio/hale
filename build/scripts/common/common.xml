@@ -234,9 +234,16 @@
 
 		<!-- convert relative paths to absolute paths -->
 		<path id="absoluteEclipse" path="${eclipse}" />
-
+		
 		<echo message="Starting headless build of ${product}" />
 		<echo message="Using eclipse installation at ${eclipse}" />
+			
+		<!-- customize product file -->
+		<property name="buildproduct" value="${build}/build.product" />
+		<copy file="${product}" tofile="${buildproduct}/" />
+		<!-- replace file="${buildproduct}" token="@version@" value="XXXX" /-->
+		<property environment="env" />
+		<replace file="${buildproduct}" token="__build__" value="${env.GIT_COMMIT}" />
 
 		<!-- run PDE build -->
 		<java classname="org.eclipse.core.launcher.Main" fork="true" failonerror="true">
@@ -249,7 +256,7 @@
 			<arg value="-DbuildDirectory=${toString:absoluteBuild}" />
 			<arg value="-Dbase=${toString:absoluteEclipse}" />
 			<arg value="-DbaseLocation=${toString:absoluteEclipse}" />
-			<arg value="-Dproduct=${product}" />
+			<arg value="-Dproduct=${buildproduct}" />
 			<arg value="-DbuildId=${buildId}" />
 			<arg value="-DtopLevelElementId=${topLevelElementId}" />
 			<arg value="-Dconfigs=${os},${ws},${arch}" />

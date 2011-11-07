@@ -81,12 +81,8 @@
                value="images/hale_icon.png">
          </property>
          <property
-               name="aboutImage"
-               value="images/hale_icon.png">
-         </property>
-         <property
                name="aboutText"
-               value="HUMBOLDT Alignment Editor">
+               value="HUMBOLDT Alignment Editor (HALE)&#x0D;&#x0A;&#x0D;&#x0A;Version 2.5.0.alpha&#x0D;&#x0A;&#x0D;&#x0A;Build @build@">
          </property>
       </product>
    </extension>
