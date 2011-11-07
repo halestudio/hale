@@ -41,7 +41,7 @@ public class CellWizardAction extends AbstractWizardAction<CellFunctionContribut
 	 */
 	@Override
 	protected FunctionWizard createWizard() {
-		return descriptor.createWizard(functionContribution.getCell());
+		return descriptor.createEditWizard(functionContribution.getCell());
 	}
 
 }

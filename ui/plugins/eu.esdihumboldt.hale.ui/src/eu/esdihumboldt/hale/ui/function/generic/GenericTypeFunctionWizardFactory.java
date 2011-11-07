@@ -32,18 +32,18 @@ public class GenericTypeFunctionWizardFactory extends
 	}
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(SchemaSelection)
+	 * @see FunctionWizardFactory#createNewWizard(SchemaSelection)
 	 */
 	@Override
-	public FunctionWizard createWizard(SchemaSelection schemaSelection) {
+	public FunctionWizard createNewWizard(SchemaSelection schemaSelection) {
 		return new GenericTypeFunctionWizard(schemaSelection, getFunctionId());
 	}
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(Cell)
+	 * @see FunctionWizardFactory#createEditWizard(Cell)
 	 */
 	@Override
-	public FunctionWizard createWizard(Cell cell) {
+	public FunctionWizard createEditWizard(Cell cell) {
 		assert getFunctionId().equals(cell.getTransformationIdentifier());
 		return new GenericTypeFunctionWizard(cell);
 	}

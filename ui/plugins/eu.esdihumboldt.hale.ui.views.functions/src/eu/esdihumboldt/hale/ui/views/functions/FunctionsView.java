@@ -32,16 +32,6 @@ public class FunctionsView extends ViewPart {
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.functions";
 
-	/**
-	 * View modes
-	 */
-	public enum Mode {
-		/**
-		 * Any function
-		 */
-		ANY
-	}
-
 	private TreeViewer viewer;
 	
 	/**
@@ -53,7 +43,8 @@ public class FunctionsView extends ViewPart {
 		viewer.setLabelProvider(new FunctionLabelProvider());
 		viewer.setContentProvider(new FunctionContentProvider());
 		
-		viewer.setInput(Mode.ANY);
+		// no input needed, but we have to set something
+		viewer.setInput(Boolean.TRUE);
 		
 		new ViewerMenu(getSite(), viewer);
 	}

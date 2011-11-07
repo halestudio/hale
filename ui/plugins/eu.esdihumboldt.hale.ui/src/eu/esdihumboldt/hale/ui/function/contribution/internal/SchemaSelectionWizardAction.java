@@ -41,7 +41,7 @@ public class SchemaSelectionWizardAction extends AbstractWizardAction<SchemaSele
 	 */
 	@Override
 	protected FunctionWizard createWizard() {
-		return descriptor.createWizard(functionContribution.getSelection());
+		return descriptor.createNewWizard(functionContribution.getSelection());
 	}
 
 }
