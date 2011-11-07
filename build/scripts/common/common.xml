@@ -234,7 +234,7 @@
 
 		<!-- convert relative paths to absolute paths -->
 		<path id="absoluteEclipse" path="${eclipse}" />
-
+		
 		<echo message="Starting headless build of ${product}" />
 		<echo message="Using eclipse installation at ${eclipse}" />
 
