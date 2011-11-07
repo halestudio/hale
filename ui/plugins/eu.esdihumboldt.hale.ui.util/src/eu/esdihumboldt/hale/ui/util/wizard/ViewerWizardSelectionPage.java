@@ -109,9 +109,6 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
             return;
         }
 
-        // set the selected node
-        setSelectedNode(wizardNode);
-        
         // set the message based on the wizard description
         if (wizardNode instanceof ExtendedWizardNode) {
         	setMessage(((ExtendedWizardNode) wizardNode).getDescription()); 
@@ -119,9 +116,42 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
         else {
         	setMessage(null);
         }
+        
+        // set the selected node
+        setSelectedNode(wizardNode);
     }
     
     /**
+	 * @see WizardSelectionPage#setSelectedNode(IWizardNode)
+	 */
+	@Override
+	protected void setSelectedNode(IWizardNode node) {
+		if (node != null) {
+			String message = acceptWizard(node);
+			
+			if (message != null) {
+				// display warning message
+	        	setMessage(message, WARNING);
+	        	// disable next
+	        	super.setSelectedNode(null);
+	        	return;
+			}
+		}
+		
+		super.setSelectedNode(node);
+	}
+
+	/**
+     * Accepts or doesn't accept a wizard node as a valid selection.
+	 * @param wizardNode the wizard node
+	 * @return <code>null</code> if the node is accepted or a reason
+	 * why it is not accepted.
+	 */
+	protected String acceptWizard(IWizardNode wizardNode) {
+		return null;
+	}
+
+	/**
      * Update the selected node based on the viewer selection.
      */
     protected void updateMessage(){
