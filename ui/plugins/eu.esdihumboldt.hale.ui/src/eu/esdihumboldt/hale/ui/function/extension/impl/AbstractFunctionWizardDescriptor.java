@@ -127,19 +127,19 @@ public abstract class AbstractFunctionWizardDescriptor<T extends AbstractFunctio
 	}
 	
 	/**
-	 * @see FunctionWizardFactory#createWizard(SchemaSelection)
+	 * @see FunctionWizardFactory#createNewWizard(SchemaSelection)
 	 */
 	@Override
-	public FunctionWizard createWizard(SchemaSelection schemaSelection) {
-		return getFactory().createWizard(schemaSelection);
+	public FunctionWizard createNewWizard(SchemaSelection schemaSelection) {
+		return getFactory().createNewWizard(schemaSelection);
 	}
 
 	/**
-	 * @see FunctionWizardFactory#createWizard(Cell)
+	 * @see FunctionWizardFactory#createEditWizard(Cell)
 	 */
 	@Override
-	public FunctionWizard createWizard(Cell cell) {
-		return getFactory().createWizard(cell);
+	public FunctionWizard createEditWizard(Cell cell) {
+		return getFactory().createEditWizard(cell);
 	}
 
 }

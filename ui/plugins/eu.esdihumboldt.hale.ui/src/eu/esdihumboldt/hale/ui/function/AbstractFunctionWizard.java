@@ -40,7 +40,7 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 	
 	/**
 	 * Create a function wizard based on a schema selection
-	 * @param selection the schema selection
+	 * @param selection the schema selection, may be <code>null</code>
 	 */
 	public AbstractFunctionWizard(SchemaSelection selection) {
 		super();

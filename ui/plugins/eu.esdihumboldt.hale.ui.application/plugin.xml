@@ -200,6 +200,17 @@
                   label="Select all"
                   style="push">
             </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.edit.add"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.align.add_relation"
+                  icon="icons/add_relation.gif"
+                  label="Add relation..."
+                  style="push"
+                  tooltip="Add a new relation">
+            </command>
          </menu>
          <menu
                id="window"
@@ -223,7 +234,7 @@
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
-               id="eu.esdihumboldt.hale.ui.application.toolbar.main"
+               id="eu.esdihumboldt.hale.ui.file"
                label="File">
             <command
                   commandId="eu.esdihumboldt.hale.ui.project.new"
@@ -269,6 +280,17 @@
                   id="eu.esdihumboldt.hale.ui.io.export"
                   label="Export"
                   style="pulldown">
+            </command>
+         </toolbar>
+         <toolbar
+               id="eu.esdihumboldt.hale.ui.edit"
+               label="Edit">
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.align.add_relation"
+                  icon="icons/add_relation.gif"
+                  label="Add relation..."
+                  style="push"
+                  tooltip="Add a new relation">
             </command>
          </toolbar>
       </menuContribution>

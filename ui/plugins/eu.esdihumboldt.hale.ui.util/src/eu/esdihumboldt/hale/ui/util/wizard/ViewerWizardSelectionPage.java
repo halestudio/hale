@@ -111,7 +111,8 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
 
         // set the message based on the wizard description
         if (wizardNode instanceof ExtendedWizardNode) {
-        	setMessage(((ExtendedWizardNode) wizardNode).getDescription()); 
+        	setMessage(((ExtendedWizardNode) wizardNode).getDescription(), 
+        			INFORMATION); 
         }
         else {
         	setMessage(null);

@@ -40,6 +40,10 @@
             id="eu.esdihumboldt.hale.ui.io.export"
             name="Export">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.align.add_relation"
+            name="Add relation">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -99,6 +103,26 @@
       <handler
             class="eu.esdihumboldt.hale.ui.io.action.wizard.SelectExportHandler"
             commandId="eu.esdihumboldt.hale.ui.io.export">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.function.internal.NewRelationHandler"
+            commandId="eu.esdihumboldt.hale.ui.align.add_relation">
+         <activeWhen>
+            <and>
+               <with
+                     variable="hale.schemas.has_source">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.schemas.has_target">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </and>
+         </activeWhen>
       </handler>
    </extension>
    <extension

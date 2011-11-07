@@ -47,7 +47,7 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	/**
 	 * Create a generic function wizard for a certain function based on a 
 	 * schema selection
-	 * @param selection the schema selection
+	 * @param selection the schema selection, may be <code>null</code>
 	 * @param functionId the function identifier
 	 */
 	public AbstractGenericFunctionWizard(SchemaSelection selection, String functionId) {

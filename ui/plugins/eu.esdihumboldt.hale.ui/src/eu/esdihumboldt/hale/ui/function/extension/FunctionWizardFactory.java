@@ -25,17 +25,18 @@ public interface FunctionWizardFactory {
 	
 	/**
 	 * Creates a wizard for creating a new cell based on the given schema
-	 * selection
-	 * @param schemaSelection the schema selection
+	 * selection.
+	 * @param schemaSelection the schema selection or <code>null</code> if no
+	 *   pre-selection is available
 	 * @return the new wizard instance
 	 */
-	public FunctionWizard createWizard(SchemaSelection schemaSelection);
+	public FunctionWizard createNewWizard(SchemaSelection schemaSelection);
 	
 	/**
-	 * Creates a wizard for editing an existing cell
+	 * Creates a wizard for editing an existing cell.
 	 * @param cell the cell to edit
 	 * @return the new wizard instance
 	 */
-	public FunctionWizard createWizard(Cell cell);
+	public FunctionWizard createEditWizard(Cell cell);
 
 }
