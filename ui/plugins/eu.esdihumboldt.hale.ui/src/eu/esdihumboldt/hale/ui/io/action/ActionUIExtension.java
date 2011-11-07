@@ -104,6 +104,20 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		}
 
 		/**
+		 * @see ActionUI#getDisabledReason()
+		 */
+		@Override
+		public String getDisabledReason() {
+			IConfigurationElement[] children = conf.getChildren("enabledWhen");
+			if (children != null && children.length > 0) {
+				// get child of enabled when
+				return children[0].getAttribute("disabledReason");
+			}
+			
+			return null;
+		}
+
+		/**
 		 * @see AbstractObjectDefinition#getPriority()
 		 */
 		@Override

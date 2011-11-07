@@ -50,4 +50,11 @@ public interface ActionUI extends ExtensionObjectFactory<IOWizard<?>> {
 	 */
 	public Expression getEnabledWhen();
 	
+	/**
+	 * Get the reason why the action is disabled in a human understandable way.
+	 * May for instance state what the user must do to enable the action.
+	 * @return the reason message
+	 */
+	public String getDisabledReason();
+	
 }
