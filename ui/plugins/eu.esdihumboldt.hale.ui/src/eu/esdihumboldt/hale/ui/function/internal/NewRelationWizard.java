@@ -17,6 +17,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.util.wizard.MultiWizard;
 
 /**
@@ -60,6 +61,10 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 			as.addOrUpdateCell(cell);
 		}
+		
+		// save page configuration
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		getSelectionPage().store(ps.getConfigurationService());
 		
 		return true;
 	}
