@@ -55,6 +55,10 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 	}
 
 	private Object[] toNodes(Object[] children) {
+		if (children == null || children.length == 0) {
+			return children;
+		}
+		
 		List<Object> result = new ArrayList<Object>(children.length);
 		
 		for (Object child : children) {
