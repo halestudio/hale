@@ -113,14 +113,10 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 		cell.setImage(defaultLabels.getImage(element));
 		
 		Color foreground = getForeground(cell.getElement());
-		if (foreground != null) {
-			cell.setForeground(foreground);
-		}
+		cell.setForeground(foreground);
 		
 		Color background = getBackground(cell.getElement());
-		if (background != null) {
-			cell.setBackground(background);
-		}
+		cell.setBackground(background);
 		
 		super.update(cell);
 	}
@@ -217,7 +213,7 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 	private Color getEntityBackground(Collection<? extends Cell> cells, 
 			boolean isType) {
 		if (cells.isEmpty()) {
-			return null;
+			return null; 
 		}
 		
 		if (isType) {

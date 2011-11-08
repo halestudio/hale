@@ -633,8 +633,8 @@ public class SchemasView extends PropertiesViewPart {
 	 * Refresh both tree viewers
 	 */
 	public void refresh() {
-		sourceExplorer.getTreeViewer().refresh();
-		targetExplorer.getTreeViewer().refresh();
+		sourceExplorer.getTreeViewer().refresh(true);
+		targetExplorer.getTreeViewer().refresh(true);
 	}
 
 }
