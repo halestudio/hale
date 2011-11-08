@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.wizard.IWizardNode;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IEvaluationService;
 
@@ -36,6 +37,7 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.action.ActionUI;
 import eu.esdihumboldt.hale.ui.io.action.ActionUIExtension;
 import eu.esdihumboldt.hale.ui.util.wizard.ViewerWizardSelectionPage;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Wizard selection page based on {@link ActionUI}s 
@@ -64,7 +66,7 @@ public class ActionUIWizardPage extends ViewerWizardSelectionPage {
 	 * @see ViewerWizardSelectionPage#createViewer(Composite)
 	 */
 	@Override
-	protected StructuredViewer createViewer(Composite parent) {
+	protected Pair<StructuredViewer, Control> createViewer(Composite parent) {
 		ListViewer viewer = new ListViewer(parent);
 		
 		viewer.setLabelProvider(new LabelProvider() {
@@ -98,7 +100,7 @@ public class ActionUIWizardPage extends ViewerWizardSelectionPage {
 		}
 		viewer.setInput(nodes);
 		
-		return viewer;
+		return new Pair<StructuredViewer, Control>(viewer, viewer.getControl());
 	}
 
 	/**

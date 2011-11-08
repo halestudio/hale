@@ -28,6 +28,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Wizard selection page based on a structured viewer.
@@ -58,8 +61,9 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
 				.grab(true, true).create());
 		outerContainer.setFont(font);
 
-		viewer = createViewer(outerContainer);
-		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults()
+		Pair<StructuredViewer, Control> viewerControl = createViewer(outerContainer);
+		viewer = viewerControl.getFirst();
+		viewerControl.getSecond().setLayoutData(GridDataFactory.fillDefaults()
 				.grab(true, true).create());
 		
 		// wire viewer
@@ -195,8 +199,9 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
 	 * providers as well as the input. The viewer must provide
 	 * {@link IStructuredSelection}s with {@link IWizardNode}s.
 	 * @param parent the parent composite
-	 * @return the viewer
+	 * @return the viewer paired with the main control that should fill the
+	 * parent composite
 	 */
-	protected abstract StructuredViewer createViewer(Composite parent);
+	protected abstract Pair<StructuredViewer, Control> createViewer(Composite parent);
 
 }
