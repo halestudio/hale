@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compositeCheatsheet name="First steps">
+   <taskGroup name= "First steps" kind="sequence">
+      <intro> This cheat sheet will guide you through the process of starting a new
+              project, creating some mappings and finally exporting results.
+      </intro>  
+      <onCompletion>Congratulations you finished this tutorial.</onCompletion>             
+      <task kind="cheatsheet" name= "Creating a new project">
+         <param name="id" value="eu.esdihumboldt.hale.ui.firststeps.createNewProjectCS" />
+         <intro>This cheat sheet is intended to set up your environment.
+         </intro>
+         <onCompletion>Congratulations you now are able to set up a project.</onCompletion>                  
+      </task>
+   </taskGroup>
+</compositeCheatsheet>

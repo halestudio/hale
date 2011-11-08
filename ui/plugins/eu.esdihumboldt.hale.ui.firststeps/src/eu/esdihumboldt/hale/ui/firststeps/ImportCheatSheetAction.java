@@ -50,7 +50,7 @@ public class ImportCheatSheetAction extends Action implements ICheatSheetAction 
 			} else {
 				MessageDialog.openWarning(
 						Display.getCurrent().getActiveShell(),
-						"Requirment missing", action.getFactory()
+						"Action disabled", action.getFactory()
 								.getDisabledReason());
 				notifyResult(false);
 			}
