@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.intro">
+      <introProductBinding
+         introId="org.eclipse.ui.intro.universal"
+         productId="eu.esdihumboldt.hale.ui.application.HALE">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="$nl$/intro/firststeps.xml">
+      </configExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <standbyContentPart
+            class="org.eclipse.platform.internal.CheatSheetStandbyContent"
+            id="eu.esdihumboldt.hale.ui.firststeps.createNewProjectCS"
+            pluginId="org.eclipse.platform">
+      </standbyContentPart>
+   </extension>
+   <extension
+         point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+      <category
+            id="firststeps"
+            name="%firststeps">
+      </category>
+      <cheatsheet
+            category="firststeps"
+            composite="false"
+            contentFile="$nl$/cheatsheets/createNewProjectCS.xml"
+            id="eu.esdihumboldt.hale.ui.firststeps.createNewProjectCS"
+            listener="eu.esdihumboldt.hale.ui.firststeps.NewProjectCheatSheetListener"
+            name="Create new project">
+         <description>
+            Create a new project.
+         </description>
+      </cheatsheet>
+   </extension>
+</plugin>

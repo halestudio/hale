@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<cheatsheet title="Creating a new project">
+   <intro>
+      <description>
+Welcome to the tutorial to create a new project.<br />
+It will help you loading schemes in order to make your beginning easier.
+Let's get started!
+      </description>
+   </intro>
+   <item
+         title="Create a new project">
+      <action
+            pluginId="eu.esdihumboldt.hale.ui.firststeps"
+            class="eu.esdihumboldt.hale.ui.firststeps.NewProjectAction"
+            required="false" />
+      <description>
+Select <b>File->New Alignment Project</b> in the menu bar at the top of the workbench.
+This step creates a new empty project.<br />
+You can click the "Click to Perform" button to have the new project created automatically.
+      </description>
+   </item>
+   <item
+         title="Load a source schema">
+      <action
+            pluginId="eu.esdihumboldt.hale.ui.firststeps"
+            class="eu.esdihumboldt.hale.ui.firststeps.ImportCheatSheetAction"
+            param1="eu.esdihumboldt.hale.io.schema.read.source"
+            required="false" /> 
+      <description>
+Select <b>File->Import->Source schema...</b> to load a source schema.
+      </description>
+   </item>
+   <item
+         title="Load source data"
+         skip="true">
+      <action
+            pluginId="eu.esdihumboldt.hale.ui.firststeps"
+            class="eu.esdihumboldt.hale.ui.firststeps.ImportCheatSheetAction"
+            param1="eu.esdihumboldt.hale.io.instance.read.source"
+            required="false" /> 
+      <description>
+Select <b>File->Import->Source data...</b> to load source data.<br />
+This step is optional and needs a loaded source schema.
+      </description>
+   </item>
+   <item
+         title="Load a target schema">
+      <action
+            pluginId="eu.esdihumboldt.hale.ui.firststeps"
+            class="eu.esdihumboldt.hale.ui.firststeps.ImportCheatSheetAction"
+            param1="eu.esdihumboldt.hale.io.schema.read.target"
+            required="false" /> 
+      <description>
+Select <b>File->Import->Target schema...</b> to load a target schema.
+      </description>
+      <onCompletion>
+Congratulations you created a new project, loaded source and target schemas and maybe some 
+source data. Now you can continue with your first mappings.
+      </onCompletion>
+   </item>
+</cheatsheet>
