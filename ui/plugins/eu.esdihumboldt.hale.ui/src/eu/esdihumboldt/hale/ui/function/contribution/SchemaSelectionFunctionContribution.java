@@ -14,12 +14,15 @@ package eu.esdihumboldt.hale.ui.function.contribution;
 
 import java.util.Set;
 
+import org.eclipse.ui.PlatformUI;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
@@ -79,6 +82,14 @@ public class SchemaSelectionFunctionContribution extends
 	 */
 	private boolean matchPropertyFunction(PropertyFunction function,
 			SchemaSelection selection) {
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		
+		if (selection == null || selection.isEmpty()) {
+			// for no selection always allow creating a new cell if there are
+			// type relations present
+			return AlignmentUtil.hasTypeRelation(as.getAlignment());
+		}
+		
 		// check types
 		Set<EntityDefinition> sourceItems = selection.getSourceItems();
 		if (!checkType(sourceItems, PropertyEntityDefinition.class)) {

@@ -288,6 +288,7 @@
             <command
                   commandId="eu.esdihumboldt.hale.ui.align.add_relation"
                   icon="icons/add_relation.gif"
+                  id="eu.esdihumboldt.hale.ui.edit.add_relation"
                   label="Add relation..."
                   style="push"
                   tooltip="Add a new relation">
@@ -332,6 +333,14 @@
                   style="push">
             </command>
          </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:eu.esdihumboldt.hale.ui.edit.add_relation">
+         <dynamic
+               class="eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionContribution"
+               id="eu.esdihumboldt.hale.ui.edit.add_relation.list">
+         </dynamic>
       </menuContribution>
    </extension>
    <extension
