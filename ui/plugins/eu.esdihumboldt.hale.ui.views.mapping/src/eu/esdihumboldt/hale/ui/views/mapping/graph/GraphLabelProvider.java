@@ -53,7 +53,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	private final Color cellHighlightColor;
 	private final Color cellForegroundColor;
 	
-	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider();
+	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider(true);
 	
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
