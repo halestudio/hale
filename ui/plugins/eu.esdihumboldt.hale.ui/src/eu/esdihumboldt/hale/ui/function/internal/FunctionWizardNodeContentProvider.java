@@ -54,6 +54,18 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 		return toNodes(super.getChildren(parentElement));
 	}
 
+	/**
+	 * @see FunctionContentProvider#getParent(Object)
+	 */
+	@Override
+	public Object getParent(Object element) {
+		if (element instanceof FunctionWizardNode) {
+			element = ((FunctionWizardNode) element).getFunction();
+		}
+		
+		return super.getParent(element);
+	}
+
 	private Object[] toNodes(Object[] children) {
 		if (children == null || children.length == 0) {
 			return children;

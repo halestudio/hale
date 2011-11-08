@@ -99,7 +99,17 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object getParent(Object element) {
-		//TODO implement?
+		if (element instanceof AbstractFunction<?>) {
+			String catId = ((AbstractFunction<?>) element).getCategoryId();
+			
+			Category cat = CategoryExtension.getInstance().get(catId);
+			if (cat == null) {
+				cat = CAT_OTHER;
+			}
+			
+			return cat;
+		}
+		
 		return null;
 	}
 
