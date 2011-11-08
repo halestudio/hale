@@ -16,9 +16,11 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardNode;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.util.wizard.ViewerWizardSelectionPage;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Page for creating a new relation
@@ -39,7 +41,7 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 	 * @see ViewerWizardSelectionPage#createViewer(Composite)
 	 */
 	@Override
-	protected StructuredViewer createViewer(Composite parent) {
+	protected Pair<StructuredViewer, Control> createViewer(Composite parent) {
 		TreeViewer viewer = new TreeViewer(parent);
 		viewer.setContentProvider(new FunctionWizardNodeContentProvider(getContainer()));
 		viewer.setLabelProvider(new FunctionWizardNodeLabelProvider());
@@ -48,7 +50,7 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 		
 		//TODO set filter?!
 		
-		return viewer;
+		return new Pair<StructuredViewer, Control>(viewer, viewer.getControl());
 	}
 
 	/**
