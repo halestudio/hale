@@ -2,7 +2,7 @@
 <introContent>
   	<extensionContent id="euesdihumboldthaleuifirststeps-introExtension" style="css/sample.css" name="Sample Extension" path="firststeps/@">
 		<group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
-       	<link label="Create a new project" url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=eu.esdihumboldt.hale.ui.firststeps.createNewProjectCS" id="euesdihumboldthaleuifirststeps-introLink" style-id="content-link">
+       	<link label="Create a new project" url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=eu.esdihumboldt.hale.ui.firststeps.firststepsCS" id="euesdihumboldthaleuifirststeps-introLink" style-id="content-link">
             <text>Get a guide along your way to create a new project.</text>
          </link>
       </group>
