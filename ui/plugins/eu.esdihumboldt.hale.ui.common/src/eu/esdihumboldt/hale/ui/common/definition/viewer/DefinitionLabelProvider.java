@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.viewers.BaseLabelProvider;
@@ -30,30 +31,67 @@ import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 public class DefinitionLabelProvider extends LabelProvider {
 	
 	private final DefinitionImages images = new DefinitionImages();
+	
+	private final boolean longNames;
+
+	/**
+	 * Create a label provider that will use short names for 
+	 * {@link EntityDefinition}s. 
+	 */
+	public DefinitionLabelProvider() {
+		this(false);
+	}
+
+	/**
+	 * Create a label provider for {@link Definition}s and 
+	 * {@link EntityDefinition}.
+	 * @param longNames if for {@link EntityDefinition}s long names shall
+	 *   be used
+	 */
+	public DefinitionLabelProvider(boolean longNames) {
+		super();
+		this.longNames = longNames;
+	}
 
 	/**
 	 * @see LabelProvider#getText(Object)
 	 */
 	@Override
 	public String getText(Object element) {
-		boolean defContext = true;
 		if (element instanceof EntityDefinition) {
 			EntityDefinition entityDef = (EntityDefinition) element;
 			element = entityDef.getDefinition();
 			
 			List<ChildContext> path = entityDef.getPropertyPath();
 			if (path != null && !path.isEmpty()) {
-				ChildContext lastContext = path.get(path.size() - 1);
-				defContext = lastContext.getContextName() == null;
+				if (!longNames) {
+					path = Collections.singletonList(path.get(path.size() - 1));
+				}
+				
+				StringBuffer name = new StringBuffer();
+				boolean first = true;
+				for (ChildContext context : path) {
+					if (first) {
+						first = false;
+					}
+					else {
+						name.append('.');
+					}
+					boolean defContext = context.getContextName() == null;
+					if (!defContext) {
+						name.append('(');
+					}
+					name.append(getText(context.getChild()));
+					if (!defContext) {
+						name.append(')');
+					}
+				}
+				return name.toString();
 			}
 		}
 		
 		if (element instanceof Definition<?>) {
-			String name = ((Definition<?>) element).getDisplayName();
-			if (!defContext) {
-				name = "(" + name + ")";
-			}
-			return name;
+			return ((Definition<?>) element).getDisplayName();
 		}
 		
 		return super.getText(element);
