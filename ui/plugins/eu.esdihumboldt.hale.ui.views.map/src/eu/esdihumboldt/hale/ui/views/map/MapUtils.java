@@ -11,6 +11,7 @@
  */
 package eu.esdihumboldt.hale.ui.views.map;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
@@ -25,6 +26,8 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.feature.type.AttributeDescriptorImpl;
 import org.geotools.feature.type.AttributeTypeImpl;
+import org.geotools.feature.type.GeometryDescriptorImpl;
+import org.geotools.feature.type.GeometryTypeImpl;
 import org.geotools.gml3.GMLSchema;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
@@ -33,9 +36,11 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.GeometryType;
 import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.util.InternationalString;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -67,6 +72,12 @@ public abstract class MapUtils {
 	 * 
 	 */
 	public static final String REFERENCE_PROPERTY = "reference";
+	
+	private static final GeometryType GEOMETRY_TYPE = new GeometryTypeImpl(
+			new NameImpl("http://www.opengis.net/gml", "AbstractGeometryType"), 
+			Geometry.class, (CoordinateReferenceSystem) null, false, true, 
+			new ArrayList<Filter>(), 
+			GMLSchema.ABSTRACTGEOMETRYTYPE_TYPE, (InternationalString) null);
 
 	private static SimpleFeatureType geometryFeatureType;
 	
@@ -203,8 +214,8 @@ public abstract class MapUtils {
 
 			// geometry
 			Name geometryName = new NameImpl(null, GEOMETRY_PROPERTY); // must be null namespace because otherwise the StreamingRenderer and some other Geotools components choke on it
-			AttributeType type = GMLSchema.ABSTRACTGEOMETRYTYPE_TYPE;
-			AttributeDescriptor desc =  new AttributeDescriptorImpl(
+			GeometryType type = GEOMETRY_TYPE;
+			AttributeDescriptor desc = new GeometryDescriptorImpl(
 					type,
 					geometryName, 
 					1,
