@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.common.function.viewer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -61,6 +62,15 @@ public class FunctionContentProvider implements ITreeContentProvider {
 		List<Category> cats = new ArrayList<Category>(
 				CategoryExtension.getInstance().getElements());
 		cats.add(CAT_OTHER);
+		
+		// remove categories w/o functions
+		ListIterator<Category> it = cats.listIterator();
+		while (it.hasNext()) {
+			if (!hasChildren(it.next())) {
+				it.remove();
+			}
+		}
+		
 		return cats.toArray();
 	}
 
@@ -89,7 +99,7 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object getParent(Object element) {
-		// TODO Auto-generated method stub
+		//TODO implement?
 		return null;
 	}
 
