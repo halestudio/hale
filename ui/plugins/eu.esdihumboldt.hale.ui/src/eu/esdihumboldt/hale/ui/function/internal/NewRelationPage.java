@@ -15,8 +15,11 @@ package eu.esdihumboldt.hale.ui.function.internal;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardNode;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.util.wizard.ViewerWizardSelectionPage;
@@ -42,15 +45,20 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 	 */
 	@Override
 	protected Pair<StructuredViewer, Control> createViewer(Composite parent) {
-		TreeViewer viewer = new TreeViewer(parent);
+		PatternFilter filter = new PatternFilter();
+		filter.setIncludeLeadingWildcard(true);
+		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.BORDER
+				| SWT.H_SCROLL | SWT.V_SCROLL, filter , true);
+		
+		TreeViewer viewer = tree.getViewer();
 		viewer.setContentProvider(new FunctionWizardNodeContentProvider(getContainer()));
 		viewer.setLabelProvider(new FunctionWizardNodeLabelProvider());
 		// no input needed, but we have to set something
 		viewer.setInput(Boolean.TRUE);
 		
-		//TODO set filter?!
+		//TODO set viewer filter?!
 		
-		return new Pair<StructuredViewer, Control>(viewer, viewer.getControl());
+		return new Pair<StructuredViewer, Control>(viewer, tree);
 	}
 
 	/**
