@@ -106,7 +106,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		sel.getControl().setLayoutData(
 				GridDataFactory.fillDefaults().grab(true, false).span(1, 1)
 						.create());
-		sel.getViewer().addSelectionChangedListener(
+		sel.addSelectionChangedListener(
 				new ISelectionChangedListener() {
 
 					@Override

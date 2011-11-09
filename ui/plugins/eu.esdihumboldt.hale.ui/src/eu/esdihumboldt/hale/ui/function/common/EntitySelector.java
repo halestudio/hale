@@ -16,39 +16,49 @@ import java.util.Set;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.ui.util.viewer.ObjectContentProvider;
 
 /**
  * Entity selector
  * @param <F> the field type
  * @author Simon Templer
  */
-public abstract class EntitySelector<F extends AbstractParameter> {
+public abstract class EntitySelector<F extends AbstractParameter> implements ISelectionProvider {
 	
-	private final ComboViewer combo;
+	private static enum NoObject {
+		NONE
+	}
+	
+	private final TypeSafeListenerList<ISelectionChangedListener> listeners = new TypeSafeListenerList<ISelectionChangedListener>();
+	
+	private final TableViewer viewer;
 	
 	private final Composite main;
 	
 	private final F field;
+	
+	private final ViewerFilter[] filters;
 
 	/**
 	 * Create an entity selector
@@ -66,43 +76,95 @@ public abstract class EntitySelector<F extends AbstractParameter> {
 				equalWidth(false).margins(0, 0).create());
 		
 		// entity selection combo
-		combo = new ComboViewer(main, SWT.DROP_DOWN | SWT.READ_ONLY);
-		combo.getControl().setLayoutData(GridDataFactory.swtDefaults().
-				align(SWT.FILL, SWT.CENTER).grab(true, false).create());
+		viewer = new TableViewer(main, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION | SWT.NO_SCROLL);
+		viewer.getControl().setLayoutData(
+				GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
+						.grab(true, false)
+						//.hint(SWT.DEFAULT, viewer.getTable().getItemHeight())
+						.create());
 		
-		combo.setContentProvider(ArrayContentProvider.getInstance());
-		combo.setLabelProvider(new DefinitionLabelProvider());
+		viewer.setContentProvider(new ObjectContentProvider() {
 
-		combo.setInput(candidates);
-		
-		ViewerFilter[] filters = createFilters(field);
+			@Override
+			public void inputChanged(Viewer viewer, Object oldInput,
+					Object newInput) {
+				// inform about the input change
+				fireSelectionChange();
+			}
+			
+		});
+		viewer.setLabelProvider(new DefinitionLabelProvider(true) {
+
+			@Override
+			public String getText(Object element) {
+				if (element == NoObject.NONE) {
+					return "<Click to select>";
+				}
+				return super.getText(element);
+			}
+			
+		});
+
+		filters = createFilters(field);
 		if (filters != null) {
-			combo.setFilters(filters);
+			viewer.setFilters(filters);
 		}
 		
-		// browse button
-		Button browse = new Button(main, SWT.PUSH);
-		browse.setText("...");
-		browse.setLayoutData(GridDataFactory.swtDefaults().create());
-		browse.addSelectionListener(new SelectionAdapter() {
+		// apply filter to candidates and select one of the remaining
+		Object select = NoObject.NONE;
+		if (candidates != null) {
+			for (EntityDefinition candidate : candidates) {
+				if (acceptObject(candidate)) {
+					select = candidate;
+					break;
+				}
+			}
+		}
+		
+		viewer.setInput(select);
+		
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void selectionChanged(SelectionChangedEvent event) {
+				if (event.getSelection().isEmpty()) {
+					return;
+				}
+				
 				EntityDialog dialog = createEntityDialog(
 						Display.getCurrent().getActiveShell(), ssid, 
 						EntitySelector.this.field);
-				dialog.setFilters(combo.getFilters());
+				dialog.setFilters(viewer.getFilters());
 				if (dialog.open() == EntityDialog.OK) {
 					EntityDefinition entity = dialog.getEntity();
 					if (entity != null) {
-						candidates.add(entity);
-						combo.refresh();
-						combo.setSelection(new StructuredSelection(entity));
+						viewer.setInput(entity);
+						viewer.setSelection(new StructuredSelection());
 					}
 				}
 			}
+			
 		});
 	}
 	
+	/**
+	 * Determines if the given object matches the filters
+	 * @param candidate the object to test
+	 * @return if the object is accepted by all filters
+	 */
+	protected boolean acceptObject(Object candidate) {
+		if (filters == null) {
+			return true;
+		}
+		
+		for (ViewerFilter filter : filters) {
+			if (!filter.select(viewer, null, candidate)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Create filters for the combo viewer and the dialog. The default 
 	 * implementation creates no filters.
@@ -112,6 +174,70 @@ public abstract class EntitySelector<F extends AbstractParameter> {
 	protected ViewerFilter[] createFilters(F field) {
 		// override me
 		return null;
+	}
+
+	/**
+	 * @see ISelectionProvider#addSelectionChangedListener(ISelectionChangedListener)
+	 */
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		listeners.add(listener);
+	}
+
+	/**
+	 * @see ISelectionProvider#getSelection()
+	 */
+	@Override
+	public ISelection getSelection() {
+		Object input = viewer.getInput();
+		if (input == null || input == NoObject.NONE) {
+			return new StructuredSelection();
+		}
+		return new StructuredSelection(input);
+	}
+
+	/**
+	 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
+	 */
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * @see ISelectionProvider#setSelection(ISelection)
+	 */
+	@Override
+	public void setSelection(ISelection selection) {
+		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) selection).getFirstElement();
+			if (selected != null) {
+				// run against filters
+				if (acceptObject(selected)) {
+					// valid selection
+					viewer.setInput(selected);
+					return;
+				}
+				else {
+					//TODO user error message?
+				}
+			}
+		}
+		
+		viewer.setInput(NoObject.NONE);
+	}
+	
+	/**
+	 * Fires a selection change and sets the last selection to the given 
+	 * selection.
+	 */
+	protected void fireSelectionChange() {
+		SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
+		
+		for (ISelectionChangedListener listener : listeners) {
+			listener.selectionChanged(event);
+		}
 	}
 
 	/**
@@ -133,19 +259,11 @@ public abstract class EntitySelector<F extends AbstractParameter> {
 	}
 
 	/**
-	 * Get the viewer
-	 * @return the viewer
-	 */
-	public ComboViewer getViewer() {
-		return combo;
-	}
-
-	/**
 	 * Get the selected entity definition
 	 * @return the selected entity definition or <code>null</code>
 	 */
 	public EntityDefinition getEntityDefinition() {
-		ISelection selection = combo.getSelection();
+		ISelection selection = getSelection();
 		if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
 			return null;
 		}

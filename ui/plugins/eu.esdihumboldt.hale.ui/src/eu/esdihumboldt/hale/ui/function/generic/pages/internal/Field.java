@@ -133,7 +133,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 	 */
 	protected void addSelector(S selector) {
 		selectors.add(selector);
-		selector.getViewer().addSelectionChangedListener(selectionChangedListener);
+		selector.addSelectionChangedListener(selectionChangedListener);
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		//valid if no selection is empty
 		//TODO improve
 		for (EntitySelector<F> selector : selectors) {
-			if (selector.getViewer().getSelection().isEmpty()) {
+			if (selector.getSelection().isEmpty()) {
 				newValid = false;
 				break;
 			}
