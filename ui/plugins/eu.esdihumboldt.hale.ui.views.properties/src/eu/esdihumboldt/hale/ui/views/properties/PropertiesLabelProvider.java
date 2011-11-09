@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
  */
 public class PropertiesLabelProvider extends LabelProvider {
 	
-	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider();
+	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider(true);
 
 	/**
 	 * @see LabelProvider#getImage(Object)
