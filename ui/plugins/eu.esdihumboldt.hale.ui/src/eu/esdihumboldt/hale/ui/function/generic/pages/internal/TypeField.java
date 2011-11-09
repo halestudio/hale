@@ -20,8 +20,8 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * Represents named type entities in a function

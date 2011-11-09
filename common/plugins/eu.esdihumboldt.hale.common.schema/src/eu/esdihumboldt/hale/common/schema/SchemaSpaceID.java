@@ -9,12 +9,11 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.service.schema;
+package eu.esdihumboldt.hale.common.schema;
+
 
 /**
- * Declares identifiers of different schema spaces available in a 
- * {@link SchemaService}
- * 
+ * Declares identifiers of different schema spaces available.
  * @author Thorsten Reitz
  */
 public enum SchemaSpaceID {

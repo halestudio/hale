@@ -17,11 +17,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 
 /**
@@ -144,7 +144,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, Schema
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID, eu.esdihumboldt.hale.common.schema.model.Schema)
+	 * @see SchemaServiceListener#schemaAdded(SchemaSpaceID, Schema)
 	 */
 	@Override
 	public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {
@@ -152,7 +152,7 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, Schema
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemasCleared(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID)
+	 * @see SchemaServiceListener#schemasCleared(SchemaSpaceID)
 	 */
 	@Override
 	public void schemasCleared(SchemaSpaceID spaceID) {

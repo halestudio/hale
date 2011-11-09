@@ -24,8 +24,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 
 /**
  * A selection with source and target {@link EntityDefinition}s

@@ -35,8 +35,8 @@ import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.util.viewer.ObjectContentProvider;
 
 /**

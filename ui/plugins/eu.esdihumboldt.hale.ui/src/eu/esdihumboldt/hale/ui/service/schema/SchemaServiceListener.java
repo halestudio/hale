@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.service.schema;
 
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 
 
