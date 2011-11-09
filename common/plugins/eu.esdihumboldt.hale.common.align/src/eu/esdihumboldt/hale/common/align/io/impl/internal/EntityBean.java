@@ -16,6 +16,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -46,16 +47,20 @@ public abstract class EntityBean<T extends EntityDefinition> {
 	/**
 	 * Get the entity definition
 	 * @param index the type index
+	 * @param schemaSpace the associated schema space
 	 * @return the entity definition
 	 */
-	protected abstract T createEntityDefinition(TypeIndex index);
+	protected abstract T createEntityDefinition(TypeIndex index, 
+			SchemaSpaceID schemaSpace);
 	
 	/**
 	 * Create the represented entity
 	 * @param types the type index
+	 * @param schemaSpace the associated schema space
 	 * @return the entity
 	 */
-	public abstract Entity createEntity(TypeIndex types);
+	public abstract Entity createEntity(TypeIndex types, 
+			SchemaSpaceID schemaSpace);
 
 	/**
 	 * Get the type name

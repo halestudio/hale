@@ -28,6 +28,7 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.schema.Classification;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
@@ -47,13 +48,17 @@ public class SchemaExplorer {
 	
 	private final TreeViewer tree;
 
+	private SchemaSpaceID schemaSpace;
+
 	/**
 	 * Create a schema explorer
 	 * @param parent the parent composite
 	 * @param title the title
+	 * @param schemaSpace the associated schema space
 	 */
-	public SchemaExplorer(Composite parent, String title) {
+	public SchemaExplorer(Composite parent, String title, SchemaSpaceID schemaSpace) {
 		main = new Composite(parent, SWT.NONE);
+		this.schemaSpace = schemaSpace;
 		
 		// set main layout
 		main.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).create());
@@ -94,6 +99,13 @@ public class SchemaExplorer {
 //		new ColumnBrowserTip(tree, 400, 300, true, 0, labelProvider);
 	}
 	
+	/**
+	 * @return the associated schema space
+	 */
+	public SchemaSpaceID getSchemaSpace() {
+		return schemaSpace;
+	}
+
 	/**
 	 * Create the content provider
 	 * @param tree the tree viewer

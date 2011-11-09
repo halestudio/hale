@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -41,20 +42,21 @@ public class TypeBean extends EntityBean<TypeEntityDefinition> {
 	}
 
 	/**
-	 * @see EntityBean#createEntity(TypeIndex)
+	 * @see EntityBean#createEntity(TypeIndex, SchemaSpaceID)
 	 */
 	@Override
-	public Entity createEntity(TypeIndex types) {
-		return new DefaultType(createEntityDefinition(types));
+	public Entity createEntity(TypeIndex types, SchemaSpaceID schemaSpace) {
+		return new DefaultType(createEntityDefinition(types, schemaSpace));
 	}
 
 	/**
-	 * @see EntityBean#createEntityDefinition(TypeIndex)
+	 * @see EntityBean#createEntityDefinition(TypeIndex, SchemaSpaceID)
 	 */
 	@Override
-	protected TypeEntityDefinition createEntityDefinition(TypeIndex index) {
+	protected TypeEntityDefinition createEntityDefinition(TypeIndex index,
+			SchemaSpaceID schemaSpace) {
 		TypeDefinition typeDef = index.getType(getTypeName());
-		return new TypeEntityDefinition(typeDef);
+		return new TypeEntityDefinition(typeDef, schemaSpace);
 	}
 
 }

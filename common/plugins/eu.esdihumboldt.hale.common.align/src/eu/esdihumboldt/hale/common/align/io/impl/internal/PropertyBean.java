@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -56,18 +57,19 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 	}
 
 	/**
-	 * @see EntityBean#createEntity(TypeIndex)
+	 * @see EntityBean#createEntity(TypeIndex, SchemaSpaceID)
 	 */
 	@Override
-	public Entity createEntity(TypeIndex types) {
-		return new DefaultProperty(createEntityDefinition(types));
+	public Entity createEntity(TypeIndex types, SchemaSpaceID schemaSpace) {
+		return new DefaultProperty(createEntityDefinition(types, schemaSpace));
 	}
 
 	/**
-	 * @see EntityBean#createEntityDefinition(TypeIndex)
+	 * @see EntityBean#createEntityDefinition(TypeIndex, SchemaSpaceID)
 	 */
 	@Override
-	protected PropertyEntityDefinition createEntityDefinition(TypeIndex index) {
+	protected PropertyEntityDefinition createEntityDefinition(TypeIndex index,
+			SchemaSpaceID schemaSpace) {
 		TypeDefinition typeDef = index.getType(getTypeName());
 		if (typeDef == null) {
 			throw new IllegalStateException(MessageFormat.format(
@@ -100,7 +102,7 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 			}
 		}
 		
-		return new PropertyEntityDefinition(typeDef, path);
+		return new PropertyEntityDefinition(typeDef, path, schemaSpace);
 	}
 
 	/**

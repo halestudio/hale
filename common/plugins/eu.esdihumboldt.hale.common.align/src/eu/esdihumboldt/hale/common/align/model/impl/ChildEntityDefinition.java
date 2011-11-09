@@ -18,6 +18,7 @@ import java.util.List;
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -32,17 +33,29 @@ public class ChildEntityDefinition implements EntityDefinition {
 	
 	private final List<ChildContext> path;
 	
+	private final SchemaSpaceID schemaSpace;
+	
 	/**
 	 * Create an entity definition specified by the given child path.
 	 * @param type the topmost parent of the property
 	 * @param path the child path down from the type
+	 * @param schemaSpace the schema space identifier
 	 */
 	public ChildEntityDefinition(TypeDefinition type,
-			List<ChildContext> path) {
+			List<ChildContext> path, SchemaSpaceID schemaSpace) {
 		super();
 		
 		this.type = type;
 		this.path = Collections.unmodifiableList(path);
+		this.schemaSpace = schemaSpace;
+	}
+
+	/**
+	 * @see EntityDefinition#getSchemaSpace()
+	 */
+	@Override
+	public SchemaSpaceID getSchemaSpace() {
+		return schemaSpace;
 	}
 
 	/**
@@ -77,6 +90,8 @@ public class ChildEntityDefinition implements EntityDefinition {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		result = prime * result
+				+ ((schemaSpace == null) ? 0 : schemaSpace.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -97,6 +112,8 @@ public class ChildEntityDefinition implements EntityDefinition {
 			if (other.path != null)
 				return false;
 		} else if (!path.equals(other.path))
+			return false;
+		if (schemaSpace != other.schemaSpace)
 			return false;
 		if (type == null) {
 			if (other.type != null)

@@ -65,18 +65,18 @@ public abstract class AlignmentUtil {
 		}
 		else if (sourceType == null) {
 			// accept any relation to the given target type
-			Collection<? extends Cell> cells = alignment.getCells(targetType); //FIXME only target!
+			Collection<? extends Cell> cells = alignment.getCells(targetType);
 			return !cells.isEmpty();
 		}
 		else if (targetType == null) {
 			// accept any relation to the given source type
-			Collection<? extends Cell> cells = alignment.getCells(sourceType); //FIXME only source!
+			Collection<? extends Cell> cells = alignment.getCells(sourceType);
 			return !cells.isEmpty();
 		}
 		else {
 			// accept relations only if they combine both types
-			Collection<? extends Cell> targetCells = alignment.getCells(targetType); //FIXME only target!
-			Collection<? extends Cell> sourceCells = alignment.getCells(sourceType); //FIXME only source!
+			Collection<? extends Cell> targetCells = alignment.getCells(targetType);
+			Collection<? extends Cell> sourceCells = alignment.getCells(sourceType);
 			targetCells.retainAll(sourceCells);
 			return !targetCells.isEmpty();
 		}

@@ -71,9 +71,21 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		List<Cell> cells = new ArrayList<Cell>(); 
 		
 		for (Cell cell : getCells()) {
-			//XXX any way to determine if it's source or target related?
-			if (associatedWith(cell.getSource(), entityDefinition)
-					|| associatedWith(cell.getTarget(), entityDefinition)) {
+			// determine if the cell is associated to the entity definition
+			boolean isAssociated;
+			switch (entityDefinition.getSchemaSpace()) {
+			case SOURCE:
+				isAssociated = associatedWith(cell.getSource(), entityDefinition);
+				break;
+			case TARGET:
+				isAssociated = associatedWith(cell.getTarget(), entityDefinition);
+				break;
+			default:
+				isAssociated = associatedWith(cell.getSource(), entityDefinition)
+						|| associatedWith(cell.getTarget(), entityDefinition); 
+			}
+			
+			if (isAssociated) {
 				cells.add(cell);
 			}
 		}

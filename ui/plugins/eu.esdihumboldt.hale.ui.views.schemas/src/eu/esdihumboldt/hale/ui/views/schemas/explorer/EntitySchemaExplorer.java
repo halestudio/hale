@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
@@ -31,10 +32,13 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 public class EntitySchemaExplorer extends SchemaExplorer {
 
 	/**
-	 * @see SchemaExplorer#SchemaExplorer(Composite, String)
+	 * Create an {@link EntityDefinition} based schema explorer
+	 * @param parent the parent composite
+	 * @param title the title
+	 * @param schemaSpace the associated schema space
 	 */
-	public EntitySchemaExplorer(Composite parent, String title) {
-		super(parent, title);
+	public EntitySchemaExplorer(Composite parent, String title, SchemaSpaceID schemaSpace) {
+		super(parent, title, schemaSpace);
 	}
 
 	/**
@@ -44,7 +48,7 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 	protected IContentProvider createContentProvider(TreeViewer tree) {
 		EntityDefinitionService service = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
 		return new TreePathProviderAdapter(
-				new EntityTypeIndexContentProvider(tree, service ));
+				new EntityTypeIndexContentProvider(tree, service, getSchemaSpace()));
 	}
 
 }
