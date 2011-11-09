@@ -12,13 +12,15 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages;
 
+import org.eclipse.jface.wizard.IWizardPage;
+
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 
 /**
  * Function wizard page interface
  * @author Simon Templer
  */
-public interface FunctionWizardPage {
+public interface FunctionWizardPage extends IWizardPage {
 	
 	/**
 	 * Configure the given cell

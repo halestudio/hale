@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.ui.function.AbstractFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.FunctionWizardPage;
+import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
@@ -41,6 +42,8 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	private MutableCell resultCell;
 	
 	private EntitiesPage<T, P, ?> entitiesPage;
+	
+	private FunctionWizardPage parameterPage;
 	
 	private Set<FunctionWizardPage> cellPages = new LinkedHashSet<FunctionWizardPage>();
 
@@ -70,24 +73,54 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	 */
 	@Override
 	public void init() {
+		super.init();
+		
 		setWindowTitle(getFunction().getDisplayName());
 		
-		resultCell = new DefaultCell();
-		resultCell.setTransformationIdentifier(getFunctionId());
-		
+		//XXX create entities page even for cell editing?
 		entitiesPage = createEntitiesPage(getInitSelection(), getInitCell());
 		
-		super.init();
+		if (!getFunction().getDefinedParameters().isEmpty()) {
+			parameterPage = createParameterPage(getInitCell());
+		}
+	}
+
+	/**
+	 * @see AbstractFunctionWizard#init(SchemaSelection)
+	 */
+	@Override
+	protected void init(SchemaSelection selection) {
+		resultCell = new DefaultCell();
+		resultCell.setTransformationIdentifier(getFunctionId());
+	}
+
+	/**
+	 * @see AbstractFunctionWizard#init(Cell)
+	 */
+	@Override
+	protected void init(Cell cell) {
+		//FIXME only accept MutableCells? see FunctionWizardFactory
+		resultCell = (MutableCell) cell;
 	}
 
 	/**
 	 * Create the entities page
-	 * @param initSelection the initial selection
-	 * @param initCell the initial cell
+	 * @param initSelection the initial selection, may be <code>null</code>
+	 * @param initCell the initial cell, may be <code>null</code>
 	 * @return the entities page
 	 */
 	protected abstract EntitiesPage<T, P, ?> createEntitiesPage(SchemaSelection initSelection,
 			Cell initCell);
+	
+	/**
+	 * Create the page for configuring the function parameters.
+	 * @param initialCell the initial cell, may be <code>null</code>
+	 * @return the parameter configuration page or <code>null</code>
+	 */
+	protected FunctionWizardPage createParameterPage(Cell initialCell) {
+		// TODO Auto-generated method stub
+		return new ParameterPage();
+	}
 
 	/**
 	 * @see Wizard#addPages()
@@ -98,6 +131,10 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 		
 		if (entitiesPage != null) {
 			addPage(entitiesPage);
+		}
+		
+		if (parameterPage != null) {
+			addPage(parameterPage);
 		}
 	}
 
