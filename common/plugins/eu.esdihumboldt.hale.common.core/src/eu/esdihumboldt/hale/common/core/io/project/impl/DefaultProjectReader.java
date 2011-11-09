@@ -169,15 +169,19 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 			if (projectFile != null) {
 				// try to load the file from the given location
 				URI location = fileInfo.getLocation();
-				InputStream input = location.toURL().openStream();
 				boolean fileSuccess = false;
 				try {
-					projectFile.load(input);
-					fileSuccess = true;
+					InputStream input = location.toURL().openStream();
+					try {
+						projectFile.load(input);
+						fileSuccess = true;
+					} catch (Exception e) {
+						throw e; // hand down
+					} finally {
+						input.close();
+					}
 				} catch (Exception e) {
 					log.debug("Loading project file failed", e);
-				} finally {
-					input.close();
 				}
 				
 				// try to load the file from the main project file directory
