@@ -62,7 +62,8 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 			title = "Select target type";
 			break;
 		}
-		return new TypeEntityDialog(parentShell, ssid, title);
+		return new TypeEntityDialog(parentShell, ssid, title,
+				getEntityDefinition());
 	}
 
 	/**

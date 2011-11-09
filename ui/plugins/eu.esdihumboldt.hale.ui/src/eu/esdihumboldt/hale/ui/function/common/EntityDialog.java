@@ -54,6 +54,8 @@ public abstract class EntityDialog extends Dialog {
 	private final String title;
 
 	private ViewerFilter[] filters;
+
+	private final EntityDefinition initialSelection;
 	
 	/**
 	 * Constructor
@@ -61,12 +63,16 @@ public abstract class EntityDialog extends Dialog {
 	 * @param parentShell the parent shell
 	 * @param ssid the schema space
 	 * @param title the dialog title
+	 * @param initialSelection the entity definition to select initially (if
+	 *   possible), may be <code>null</code>
 	 */
-	public EntityDialog(Shell parentShell, SchemaSpaceID ssid, String title) {
+	public EntityDialog(Shell parentShell, SchemaSpaceID ssid, String title,
+			EntityDefinition initialSelection) {
 		super(parentShell);
 		
 		this.ssid = ssid;
 		this.title = title;
+		this.initialSelection = initialSelection;
 	}
 	
 	/**
@@ -112,7 +118,7 @@ public abstract class EntityDialog extends Dialog {
 		// create viewer
 		viewer = new TreeViewer(page);
 		viewer.setComparator(new DefinitionComparator());
-		setupViewer(viewer);
+		setupViewer(viewer, initialSelection);
 		// set filters
 		viewer.setFilters((filters == null)?(new ViewerFilter[0]):(filters));
 		
@@ -133,6 +139,8 @@ public abstract class EntityDialog extends Dialog {
 			}
 		});
 		
+		updateState();
+		
 		return page;
 	}
 	
@@ -150,8 +158,11 @@ public abstract class EntityDialog extends Dialog {
 	 * Don't set any viewer filters as they will be overridden by those 
 	 * provided through {@link #setFilters(ViewerFilter[])}. 
 	 * @param viewer the tree viewer
+	 * @param initialSelection the entity definition to select (if possible),
+	 *   may be <code>null</code> 
 	 */
-	protected abstract void setupViewer(TreeViewer viewer);
+	protected abstract void setupViewer(TreeViewer viewer, 
+			EntityDefinition initialSelection);
 
 	/**
 	 * @see Dialog#okPressed()

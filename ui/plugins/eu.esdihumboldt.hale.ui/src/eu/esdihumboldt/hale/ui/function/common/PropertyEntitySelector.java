@@ -77,7 +77,8 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 			title = "Select target property";
 			break;
 		}
-		return new PropertyEntityDialog(parentShell, ssid, parentType, title);
+		return new PropertyEntityDialog(parentShell, ssid, parentType, title,
+				getEntityDefinition());
 	}
 
 	/**
