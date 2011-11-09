@@ -46,6 +46,7 @@ public class IOWizardAction extends AbstractFactoryAction<ActionUI> {
 	 * Constructor
 	 * 
 	 * @param actionId the actionId
+	 * @throws NullPointerException if no ActionUI can be found for the given actionId
 	 */
 	public IOWizardAction(String actionId) {
 		this(ActionUIExtension.getInstance().findActionUI(actionId));

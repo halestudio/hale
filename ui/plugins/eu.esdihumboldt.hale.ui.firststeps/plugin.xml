@@ -49,5 +49,15 @@
             Create a new project, import needed schemas, create some mapping and export your results.
          </description>
       </cheatsheet>
+      <cheatsheet
+            category="firststeps"
+            composite="false"
+            contentFile="$nl$/cheatsheets/createMappingsCS.xml"
+            id="eu.esdihumboldt.hale.ui.firststeps.createMappingsCS"
+            name="Create mappings">
+         <description>
+            Create some mapping (retype / rename).
+         </description>
+      </cheatsheet>
    </extension>
 </plugin>

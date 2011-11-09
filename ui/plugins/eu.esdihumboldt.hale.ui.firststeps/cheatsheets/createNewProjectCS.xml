@@ -9,14 +9,12 @@ Let's get started!
    </intro>
    <item
          title="Create a new project">
-      <action
-            pluginId="eu.esdihumboldt.hale.ui.firststeps"
-            class="eu.esdihumboldt.hale.ui.firststeps.NewProjectAction"
-            required="false" />
+      <command
+            serialization="eu.esdihumboldt.hale.ui.project.new" />
       <description>
 Select <b>File->New Alignment Project</b> in the menu bar at the top of the workbench.
 This step creates a new empty project.<br />
-You can click the "Click to Perform" button to have the new project created automatically.
+Now please click the "Click to Perform" button to have the new project created automatically.
       </description>
    </item>
    <item

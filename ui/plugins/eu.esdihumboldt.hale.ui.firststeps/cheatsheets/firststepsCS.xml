@@ -11,5 +11,11 @@
          </intro>
          <onCompletion>Congratulations you now are able to set up a project.</onCompletion>                  
       </task>
+      <task kind="cheatsheet" name= "Creating some mappings">
+         <param name="id" value="eu.esdihumboldt.hale.ui.firststeps.createMappingsCS" />
+         <intro>This cheat sheet will show you how to create some mappings between source and target schema.
+         </intro>
+         <onCompletion>Congratulations you now know how to create mappings.</onCompletion>                  
+      </task>
    </taskGroup>
 </compositeCheatsheet>
