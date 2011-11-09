@@ -67,7 +67,7 @@ public class PropertyEntityDialog extends EntityDialog {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
 		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
 		viewer.setContentProvider(new EntityTypePropertyContentProvider(
-				viewer, entityDefinitionService));
+				viewer, entityDefinitionService, ssid));
 		
 		viewer.setInput(parentType);
 		
@@ -100,7 +100,7 @@ public class PropertyEntityDialog extends EntityDialog {
 				defPath.add(new ChildContext((ChildDefinition<?>) path.getSegment(i)));
 			}
 			//TODO check if property entity definition is applicable? 
-			return new PropertyEntityDefinition(type, defPath);
+			return new PropertyEntityDefinition(type, defPath, ssid);
 		}
 		
 		return null;

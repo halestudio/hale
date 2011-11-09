@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
@@ -39,18 +40,26 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	 * The entity definition service instance
 	 */
 	protected final EntityDefinitionService entityDefinitionService;
+
+	/**
+	 * The identifier of the schema space associated to the entities
+	 */
+	protected final SchemaSpaceID schemaSpace;
 	
 	/**
 	 * Create a content provider based on a {@link TypeIndex} as input.
 	 * @param tree the associated tree viewer
 	 * @param entityDefinitionService the entity definition service
+	 * @param schemaSpace the associated schema space
 	 */
 	public EntityTypeIndexContentProvider(TreeViewer tree,
-			EntityDefinitionService entityDefinitionService) {
+			EntityDefinitionService entityDefinitionService,
+			SchemaSpaceID schemaSpace) {
 		super();
 		
 		this.tree = tree;
 		this.entityDefinitionService = entityDefinitionService;
+		this.schemaSpace = schemaSpace;
 	}
 	
 	/**
@@ -69,7 +78,7 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 		if (inputElement instanceof TypeIndex) {
 			List<TypeEntityDefinition> types = new ArrayList<TypeEntityDefinition>(); 
 			for (TypeDefinition type : ((TypeIndex) inputElement).getMappableTypes()) {
-				types.add(new TypeEntityDefinition(type));
+				types.add(new TypeEntityDefinition(type, schemaSpace));
 			}
 			return types.toArray();
 		}

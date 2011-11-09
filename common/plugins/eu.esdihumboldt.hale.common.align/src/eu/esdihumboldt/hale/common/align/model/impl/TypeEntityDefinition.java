@@ -20,6 +20,7 @@ import java.util.List;
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -29,18 +30,31 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 @Immutable
 public class TypeEntityDefinition implements EntityDefinition {
 	
+	private final SchemaSpaceID schemaSpace;
+	
 	private final TypeDefinition typeDefinition;
 
 	/**
 	 * Create an entity definition for the given type
 	 * @param typeDefinition the type definition
+	 * @param schemaSpace the schema space identifier
 	 */
-	public TypeEntityDefinition(TypeDefinition typeDefinition) {
+	public TypeEntityDefinition(TypeDefinition typeDefinition, 
+			SchemaSpaceID schemaSpace) {
 		super();
 		
 		checkNotNull(typeDefinition, "Null type definition not allowed for type entity definition");
 		
 		this.typeDefinition = typeDefinition;
+		this.schemaSpace = schemaSpace;
+	}
+
+	/**
+	 * @see EntityDefinition#getSchemaSpace()
+	 */
+	@Override
+	public SchemaSpaceID getSchemaSpace() {
+		return schemaSpace;
 	}
 
 	/**
@@ -75,6 +89,8 @@ public class TypeEntityDefinition implements EntityDefinition {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
+				+ ((schemaSpace == null) ? 0 : schemaSpace.hashCode());
+		result = prime * result
 				+ ((typeDefinition == null) ? 0 : typeDefinition.hashCode());
 		return result;
 	}
@@ -91,6 +107,8 @@ public class TypeEntityDefinition implements EntityDefinition {
 		if (getClass() != obj.getClass())
 			return false;
 		TypeEntityDefinition other = (TypeEntityDefinition) obj;
+		if (schemaSpace != other.schemaSpace)
+			return false;
 		if (typeDefinition == null) {
 			if (other.typeDefinition != null)
 				return false;

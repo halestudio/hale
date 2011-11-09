@@ -78,7 +78,8 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		ChildDefinition<?> lastChild = newPath.get(newPath.size() - 1).getChild();
 		newPath.remove(path.size() - 1);
 		newPath.add(new ChildContext(newName, lastChild));
-		EntityDefinition result = createEntity(def.getType(), newPath);
+		EntityDefinition result = createEntity(def.getType(), newPath,
+				sibling.getSchemaSpace());
 		
 		notifyContextAdded(result);
 		
@@ -145,13 +146,15 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			// add default child entity definition to result
 			ChildContext context = new ChildContext(child);
 			EntityDefinition defaultEntity = createEntity(entity.getType(), 
-					createPath(entity.getPropertyPath(), context));
+					createPath(entity.getPropertyPath(), context), 
+					entity.getSchemaSpace());
 			result.add(defaultEntity);
 			// look up additional instance contexts and add them
 			for (Integer contextName : additionalContexts.get(defaultEntity)) {
 				ChildContext namedContext = new ChildContext(contextName, child);
 				EntityDefinition namedChild = createEntity(entity.getType(), 
-						createPath(entity.getPropertyPath(), namedContext));
+						createPath(entity.getPropertyPath(), namedContext),
+						entity.getSchemaSpace());
 				result.add(namedChild);
 			}
 		}
@@ -195,7 +198,7 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		ChildDefinition<?> lastChild = newPath.get(newPath.size() - 1).getChild();
 		newPath.remove(newPath.size() - 1);
 		newPath.add(new ChildContext(lastChild));
-		return createEntity(entity.getType(), newPath);
+		return createEntity(entity.getType(), newPath, entity.getSchemaSpace());
 	}
 
 }

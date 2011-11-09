@@ -98,7 +98,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 				.getService(SchemaService.class);
 		for (TypeDefinition td : ss.getSchemas(SchemaSpaceID.SOURCE)
 				.getMappableTypes()) {
-			types.add(new TypeEntityDefinition(td));
+			types.add(new TypeEntityDefinition(td, SchemaSpaceID.SOURCE));
 		}
 
 		// TODO Change SSID

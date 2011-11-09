@@ -188,8 +188,10 @@ public class SchemasView extends PropertiesViewPart {
 					(SchemaStructuredMode.ONLY_SOURCE):
 					(SchemaStructuredMode.ONLY_TARGET);
 					
-			Collection<EntityDefinition> sourceItems = collectDefinitions(sourceSelection);
-			Collection<EntityDefinition> targetItems = collectDefinitions(targetSelection);
+			Collection<EntityDefinition> sourceItems = collectDefinitions(
+					sourceSelection, SchemaSpaceID.SOURCE);
+			Collection<EntityDefinition> targetItems = collectDefinitions(
+					targetSelection, SchemaSpaceID.TARGET);
 			DefaultSchemaSelection selection = new DefaultSchemaSelection(
 					sourceItems, targetItems, selectionMode);
 			
@@ -200,10 +202,11 @@ public class SchemasView extends PropertiesViewPart {
 		 * Collect {@link EntityDefinition} from a {@link TreeSelection} 
 		 * containing {@link TypeDefinition}s and {@link PropertyDefinition}s
 		 * @param selection the tree selection
+		 * @param schemaSpace the schema space identifier
 		 * @return the collected entity definitions
 		 */
 		private Collection<EntityDefinition> collectDefinitions(
-				ITreeSelection selection) {
+				ITreeSelection selection, SchemaSpaceID schemaSpace) {
 			if (selection.isEmpty()) {
 				return Collections.emptyList();
 			}
@@ -220,7 +223,8 @@ public class SchemasView extends PropertiesViewPart {
 				}
 				else if (last instanceof TypeDefinition) {
 					// create entity definition for type
-					result.add(new TypeEntityDefinition((TypeDefinition) last));
+					result.add(new TypeEntityDefinition((TypeDefinition) last,
+							schemaSpace));
 				}
 				else if (last instanceof PropertyDefinition) {
 					// create property entity definition w/ default instance contexts 
@@ -242,7 +246,8 @@ public class SchemasView extends PropertiesViewPart {
 					if (element != null) {
 						// remaining element is the type definition
 						result.add(new PropertyEntityDefinition(
-								(TypeDefinition) element, propertyPath));
+								(TypeDefinition) element, propertyPath,
+								schemaSpace));
 					}
 					else {
 						log.error("No parent type definition for property path found, skipping object for selection.");
@@ -382,7 +387,8 @@ public class SchemasView extends PropertiesViewPart {
 		
 		// source schema toolbar, filter and explorer
 //		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
-		sourceExplorer = new EntitySchemaExplorer(modelComposite, "Source");
+		sourceExplorer = new EntitySchemaExplorer(modelComposite, "Source",
+				SchemaSpaceID.SOURCE);
 		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
 		
@@ -419,7 +425,8 @@ public class SchemasView extends PropertiesViewPart {
 		});
 
 		// target schema toolbar, filter and explorer
-		targetExplorer = new EntitySchemaExplorer(modelComposite, "Target");
+		targetExplorer = new EntitySchemaExplorer(modelComposite, "Target",
+				SchemaSpaceID.TARGET);
 		targetExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true));
 		

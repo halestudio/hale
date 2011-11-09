@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.ChildEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
@@ -87,7 +88,8 @@ public abstract class AbstractEntityDefinitionService implements
 		else {
 			List<ChildContext> newPath = new ArrayList<ChildContext>(path);
 			newPath.remove(newPath.size() - 1);
-			return createEntity(entity.getType(), newPath);
+			return createEntity(entity.getType(), newPath, 
+					entity.getSchemaSpace());
 		}
 	}
 
@@ -95,21 +97,22 @@ public abstract class AbstractEntityDefinitionService implements
 	 * Create an entity definition from a type and a child path
 	 * @param type the path parent
 	 * @param path the child path 
+	 * @param schemaSpace the associated schema space
 	 * @return the created entity definition
 	 */
 	protected EntityDefinition createEntity(TypeDefinition type, 
-			List<ChildContext> path) {
+			List<ChildContext> path, SchemaSpaceID schemaSpace) {
 		if (path == null || path.isEmpty()) {
 			// entity is a type
-			return new TypeEntityDefinition(type);
+			return new TypeEntityDefinition(type, schemaSpace);
 		}
 		else if (path.get(path.size() - 1).getChild() instanceof PropertyDefinition) {
 			// last element in path is a property
-			return new PropertyEntityDefinition(type, path);
+			return new PropertyEntityDefinition(type, path, schemaSpace);
 		}
 		else {
 			// last element is a child but no property
-			return new ChildEntityDefinition(type, path);
+			return new ChildEntityDefinition(type, path, schemaSpace);
 		}
 	}
 

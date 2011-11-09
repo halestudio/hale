@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.service.entity.util;
 import org.eclipse.jface.viewers.TreeViewer;
 
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
@@ -26,11 +27,11 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 public class EntityTypePropertyContentProvider extends EntityTypeIndexContentProvider {
 
 	/**
-	 * @see EntityTypeIndexContentProvider#EntityTypeIndexContentProvider(TreeViewer, EntityDefinitionService)
+	 * @see EntityTypeIndexContentProvider#EntityTypeIndexContentProvider(TreeViewer, EntityDefinitionService, SchemaSpaceID)
 	 */
 	public EntityTypePropertyContentProvider(TreeViewer tree, 
-			EntityDefinitionService entityDefinitionService) {
-		super(tree, entityDefinitionService);
+			EntityDefinitionService entityDefinitionService, SchemaSpaceID schemaSpace) {
+		super(tree, entityDefinitionService, schemaSpace);
 	}
 
 	/**
@@ -39,7 +40,8 @@ public class EntityTypePropertyContentProvider extends EntityTypeIndexContentPro
 	@Override
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof TypeDefinition) {
-			return getChildren(new TypeEntityDefinition((TypeDefinition) inputElement));
+			return getChildren(new TypeEntityDefinition(
+					(TypeDefinition) inputElement, schemaSpace));
 		}
 		else {
 			throw new IllegalArgumentException("Content provider only applicable for type definitions.");

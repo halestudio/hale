@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -99,8 +100,8 @@ public class CellBean {
 		}
 		
 		try {
-			cell.setSource(createEntities(source, sourceTypes));
-			cell.setTarget(createEntities(target, targetTypes));
+			cell.setSource(createEntities(source, sourceTypes, SchemaSpaceID.SOURCE));
+			cell.setTarget(createEntities(target, targetTypes, SchemaSpaceID.TARGET));
 		} catch (Throwable e) {
 			reporter.error(new IOMessageImpl("Could not create cell", e));
 			return null;
@@ -110,7 +111,8 @@ public class CellBean {
 	}
 
 	private static ListMultimap<String, ? extends Entity> createEntities(
-			List<NamedEntityBean> namedEntities, TypeIndex types) {
+			List<NamedEntityBean> namedEntities, TypeIndex types, 
+			SchemaSpaceID schemaSpace) {
 		if (namedEntities == null || namedEntities.isEmpty()) {
 			return null;
 		}
@@ -119,7 +121,7 @@ public class CellBean {
 		
 		for (NamedEntityBean namedEntity : namedEntities) {
 			result.put(namedEntity.getName(), 
-					namedEntity.getEntity().createEntity(types));
+					namedEntity.getEntity().createEntity(types, schemaSpace));
 		}
 		
 		return result;

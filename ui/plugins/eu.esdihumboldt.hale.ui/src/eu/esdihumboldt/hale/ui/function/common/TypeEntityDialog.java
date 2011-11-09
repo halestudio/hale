@@ -67,7 +67,7 @@ public class TypeEntityDialog extends EntityDialog {
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
 			if (element instanceof TypeDefinition) {
-				return new TypeEntityDefinition((TypeDefinition) element);
+				return new TypeEntityDefinition((TypeDefinition) element, ssid);
 			}
 		}
 		

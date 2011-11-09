@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import java.util.List;
 
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -47,5 +48,14 @@ public interface EntityDefinition {
 	 *   an empty list if the entity represents a type
 	 */
 	public List<ChildContext> getPropertyPath();
+	
+	/**
+	 * Get the schema space the entity definition is associated to.
+	 * The schema space itself is no characteristic of the entity, but is needed
+	 * as additional information to differentiate between source and target
+	 * schema entities with the same names.
+	 * @return the identifier of the entity definition's schema space
+	 */
+	public SchemaSpaceID getSchemaSpace();
 
 }
