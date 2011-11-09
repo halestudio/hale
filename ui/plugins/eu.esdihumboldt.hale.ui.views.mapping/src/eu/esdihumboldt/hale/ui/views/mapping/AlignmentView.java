@@ -27,6 +27,11 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
  * @author Simon Templer
  */
 public class AlignmentView extends AbstractMappingView {
+	
+	/**
+	 * The view ID
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping.alignment";
 
 	private AlignmentServiceListener alignmentListener;
 
