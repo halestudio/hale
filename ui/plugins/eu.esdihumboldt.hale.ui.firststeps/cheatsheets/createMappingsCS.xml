@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Create mappings">
+   <intro>
+      <description>
+Welcome to the tutorial to create some mappings.<br />
+It will step by step guide you through the process of retyping and renaming.<br />
+<b>You must have loaded a source and a target schema before following this guide.</b>
+      </description>
+   </intro>
+   <item
+         title="Retype"
+         dialog="true">
+      <command
+            serialization="eu.esdihumboldt.hale.ui.align.add_relation"
+            required="false">
+      </command>
+      <description>
+You first need to retype once between features from your source and target schema.<br />
+<br />
+Click the <b>Add new Relation</b> button in the top toolbar to open the "New Relation" wizard.<br />
+Choose <b>Retype</b>.<br />
+Now a type from source and target. Click on "..." to see a list of possible types.<br />
+Click <b>Finish</b>.<br />
+<br />
+<b>Alternatively</b> you can select a source and target type in the Schema Explorer, click the arrow in between and choose <b>Retype</b>.<br />
+Then the Retype dialog opens, but now you can directly choose the selected types from the dropdown field.
+      </description>
+   </item>
+</cheatsheet>

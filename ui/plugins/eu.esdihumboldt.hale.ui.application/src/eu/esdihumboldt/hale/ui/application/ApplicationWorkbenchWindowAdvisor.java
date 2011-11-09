@@ -127,6 +127,10 @@ public class ApplicationWorkbenchWindowAdvisor
 				windowMenu.add(perspectiveItem);
 
 				menuBar.add(windowMenu);
+				
+				IMenuManager helpMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_2, "help"); //$NON-NLS-1$ //$NON-NLS-2$
+				helpMenu.add(ActionFactory.INTRO.create(configurer.getWindowConfigurer().getWindow()));
+				menuBar.add(helpMenu);
 			}
 		};
 	}
