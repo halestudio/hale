@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.function.common;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -33,23 +34,29 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 public class TypeEntityDialog extends EntityDialog {
 
 	/**
-	 * @see EntityDialog#EntityDialog(Shell, SchemaSpaceID, String) 
+	 * @see EntityDialog#EntityDialog(Shell, SchemaSpaceID, String, EntityDefinition) 
 	 */
-	public TypeEntityDialog(Shell parentShell, SchemaSpaceID ssid, String title) {
-		super(parentShell, ssid, title);
+	public TypeEntityDialog(Shell parentShell, SchemaSpaceID ssid, String title, 
+			EntityDefinition initialSelection) {
+		super(parentShell, ssid, title, initialSelection);
 	}
 
 	/**
-	 * @see EntityDialog#setupViewer(TreeViewer)
+	 * @see EntityDialog#setupViewer(TreeViewer, EntityDefinition)
 	 */
 	@Override
-	protected void setupViewer(TreeViewer viewer) {
+	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
 		viewer.setContentProvider(new TypesContentProvider(viewer));
 		
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
 		viewer.setInput(ss.getSchemas(ssid));
+		
+		if (initialSelection instanceof TypeEntityDefinition) {
+			viewer.setSelection(new StructuredSelection(
+					initialSelection.getType()));
+		}
 	}
 
 	/**

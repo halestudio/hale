@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
@@ -31,7 +32,6 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.TypePropertyContentProvider;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypePropertyContentProvider;
 
@@ -49,35 +49,31 @@ public class PropertyEntityDialog extends EntityDialog {
 	 * @param ssid the schema space
 	 * @param parentType the parent type for the property to be selected
 	 * @param title the dialog title
+	 * @param initialSelection the entity definition to select initially (if
+	 *   possible), may be <code>null</code>
 	 */
 	public PropertyEntityDialog(Shell parentShell, SchemaSpaceID ssid,
-			TypeDefinition parentType, String title) {
-		super(parentShell, ssid, title);
+			TypeDefinition parentType, String title, EntityDefinition initialSelection) {
+		super(parentShell, ssid, title, initialSelection);
 		
 		this.parentType = parentType;
 	}
 
 	/**
-	 * @see EntityDialog#setupViewer(TreeViewer)
+	 * @see EntityDialog#setupViewer(TreeViewer, EntityDefinition)
 	 */
 	@Override
-	protected void setupViewer(TreeViewer viewer) {
+	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
-		//XXX entity content provider for both source and target?
-		switch (ssid) {
-		case SOURCE:
-			viewer.setContentProvider(new TypePropertyContentProvider(viewer));
-			break;
-		case TARGET:
-		default:
-			EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-			viewer.setContentProvider(new EntityTypePropertyContentProvider(
-					viewer, entityDefinitionService));
-		}
+		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+		viewer.setContentProvider(new EntityTypePropertyContentProvider(
+				viewer, entityDefinitionService));
 		
 		viewer.setInput(parentType);
-
-		//TODO filter??
+		
+		if (initialSelection != null) {
+			viewer.setSelection(new StructuredSelection(initialSelection));
+		}
 	}
 
 	/**
