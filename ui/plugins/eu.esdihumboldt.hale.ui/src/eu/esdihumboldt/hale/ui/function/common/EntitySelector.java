@@ -140,6 +140,13 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 					if (entity != null) {
 						viewer.setInput(entity);
 						viewer.setSelection(new StructuredSelection());
+						/*
+						 * XXX Bug on Mac? - Viewer is not refreshed correctly until 
+						 * user clicks on the wizard.
+						 * Manually refreshing, layouting the parent composite or
+						 * calling forceActive/forceFocus/setActive on the Shell 
+						 * doesn't help.
+						 */
 					}
 				}
 			}
