@@ -28,13 +28,6 @@
       </perspective>
    </extension>
    <extension
-         point="org.eclipse.ui.splashHandlers">
-      <splashHandler
-            class="eu.esdihumboldt.hale.ui.application.HaleSplashHandler"
-            id="eu.esdihumboldt.hale.ui.application.splash">
-      </splashHandler>
-   </extension>
-   <extension
          id="id1"
          point="org.eclipse.equinox.security.secureStorage">
       <provider

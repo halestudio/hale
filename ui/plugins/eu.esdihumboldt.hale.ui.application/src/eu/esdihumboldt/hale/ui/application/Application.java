@@ -11,8 +11,6 @@
  */
 package eu.esdihumboldt.hale.ui.application;
 
-import java.net.URL;
-
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.SWT;
@@ -37,8 +35,6 @@ public class Application implements IApplication {
 	
 	private static ALogger _log = ALoggerFactory.getLogger(Application.class);
 	
-	private static String basepath;
-
 	/**
 	 * @see IApplication#start(IApplicationContext)
 	 */
@@ -57,11 +53,11 @@ public class Application implements IApplication {
 		}
 		
 		// find base path of the application.
-		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
-		String location_path = location.getPath().replace(" ", "+"); //$NON-NLS-1$ //$NON-NLS-2$
-		location_path = location_path.replace("bin/", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		_log.debug(location_path);
-		Application.basepath = location_path;
+//		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
+//		String location_path = location.getPath().replace(" ", "+"); //$NON-NLS-1$ //$NON-NLS-2$
+//		location_path = location_path.replace("bin/", ""); //$NON-NLS-1$ //$NON-NLS-2$
+//		_log.debug(location_path);
+//		Application.basepath = location_path;
 		
 		// read and set proxy settings
 		try {	        
@@ -111,12 +107,4 @@ public class Application implements IApplication {
 		});
 	}
 	
-	/**
-	 * Get the base path
-	 * 
-	 * @return the application base path
-	 */
-	public static String getBasePath() {
-		return basepath;
-	}
 }
