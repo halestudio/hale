@@ -59,8 +59,7 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 		if (initCell != null) {
 			init(initCell);
 		}
-		
-		if (initSelection != null) {
+		else {
 			init(initSelection);
 		}
 	}
@@ -81,7 +80,7 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 
 	/**
 	 * Initialize the wizard based on a schema selection.
-	 * @param selection the schema selection
+	 * @param selection the schema selection, may be <code>null</code>
 	 */
 	protected void init(SchemaSelection selection) {
 		// override me
