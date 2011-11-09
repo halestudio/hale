@@ -40,6 +40,7 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
@@ -47,7 +48,6 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
@@ -92,7 +92,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 		schema.addSchemaServiceListener(new SchemaServiceListener() {
 			
 			/**
-			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID, eu.esdihumboldt.hale.common.schema.model.Schema)
+			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.common.schema.SchemaSpaceID, eu.esdihumboldt.hale.common.schema.model.Schema)
 			 */
 			@Override
 			public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {
@@ -100,7 +100,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 			}
 
 			/**
-			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemasCleared(eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID)
+			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemasCleared(eu.esdihumboldt.hale.common.schema.SchemaSpaceID)
 			 */
 			@Override
 			public void schemasCleared(SchemaSpaceID spaceID) {

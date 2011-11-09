@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.io.schema;
 
-import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
  * Advisor for source schema import

@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
  * Entity selector for {@link Type} entities
