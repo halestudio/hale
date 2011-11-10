@@ -28,6 +28,13 @@ public interface EntityDefinitionServiceListener {
 	public void contextAdded(EntityDefinition contextEntity);
 	
 	/**
+	 * Called when multiple new instance contexts have been added.
+	 * @param contextEntities the entity definitions representing the instance
+	 *   contexts
+	 */
+	public void contextsAdded(Iterable<EntityDefinition> contextEntities);
+	
+	/**
 	 * Called when an instance context has been removed.
 	 * @param contextEntity the entity definition representing the instance
 	 *   context

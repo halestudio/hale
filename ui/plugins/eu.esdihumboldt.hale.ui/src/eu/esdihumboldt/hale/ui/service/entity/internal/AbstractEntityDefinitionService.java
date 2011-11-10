@@ -64,6 +64,17 @@ public abstract class AbstractEntityDefinitionService implements
 	}
 	
 	/**
+	 * Called when multiple new instance contexts have been added.
+	 * @param contextEntities the entity definitions representing the instance
+	 *   contexts
+	 */
+	public void notifyContextsAdded(Iterable<EntityDefinition> contextEntities) {
+		for (EntityDefinitionServiceListener listener : listeners) {
+			listener.contextsAdded(contextEntities);
+		}
+	}
+	
+	/**
 	 * Called when an instance context has been removed.
 	 * @param contextEntity the entity definition representing the instance
 	 *   context
