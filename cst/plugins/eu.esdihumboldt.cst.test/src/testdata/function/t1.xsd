@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t1/" targetNamespace="http://www.example.org/t1/">
+    <complexType name="NumbersType">
+    	<sequence>
+    		<element name="x" type="double" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="y" type="double" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="z" type="int" maxOccurs="1" minOccurs="0"></element>
+    		<element name="height" type="double" maxOccurs="1" minOccurs="0"></element>
+    		<element name="width" type="float" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <element name="numbers" type="tns:NumbersType"></element>
+</schema>
