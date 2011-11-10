@@ -44,6 +44,10 @@
             id="eu.esdihumboldt.hale.ui.align.add_relation"
             name="Add relation">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.edit.modify"
+            name="Edit">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -122,6 +126,27 @@
                   </equals>
                </with>
             </and>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.function.internal.EditRelationHandler"
+            commandId="eu.esdihumboldt.hale.ui.edit.modify">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <and>
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.Cell">
+                     </instanceof>
+                  </iterate>
+                  <count
+                        value="1">
+                  </count>
+               </and>
+            </with>
          </activeWhen>
       </handler>
    </extension>
@@ -341,6 +366,14 @@
             </visibleWhen>
          </command>
          <command
+               commandId="eu.esdihumboldt.hale.ui.edit.modify"
+               label="Edit..."
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <command
                commandId="org.eclipse.ui.edit.delete"
                label="Delete"
                style="push">
@@ -409,6 +442,17 @@
                ref="eu.esdihumboldt.hale.io.project.hale25.writer">
          </provider>
       </configPage>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="eu.esdihumboldt.hale.ui.edit.modify"
+            icon="icons/edit.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.align.add_relation"
+            icon="icons/add_relation.gif">
+      </image>
    </extension>
 
 </plugin>

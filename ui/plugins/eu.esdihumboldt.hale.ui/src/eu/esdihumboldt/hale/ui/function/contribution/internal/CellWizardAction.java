@@ -54,7 +54,7 @@ public class CellWizardAction extends AbstractWizardAction<CellFunctionContribut
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction#handleResult(eu.esdihumboldt.hale.common.align.model.MutableCell)
+	 * @see AbstractWizardAction#handleResult(MutableCell)
 	 */
 	@Override
 	protected void handleResult(MutableCell cell) {
