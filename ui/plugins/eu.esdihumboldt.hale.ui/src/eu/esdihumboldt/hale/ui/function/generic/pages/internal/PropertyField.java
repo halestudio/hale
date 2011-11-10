@@ -64,13 +64,12 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	}
 
 	/**
-	 * @see Field#createEntitySelector(SchemaSpaceID, Set, AbstractParameter, Composite)
+	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter, Composite)
 	 */
 	@Override
-	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid,
-			Set<EntityDefinition> candidates, PropertyParameter field,
-			Composite parent) {
-		return new PropertyEntitySelector(ssid, candidates, field, parent, null);
+	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid, 
+			PropertyParameter field, Composite parent) {
+		return new PropertyEntitySelector(ssid, field, parent, null);
 	}
 
 	/**

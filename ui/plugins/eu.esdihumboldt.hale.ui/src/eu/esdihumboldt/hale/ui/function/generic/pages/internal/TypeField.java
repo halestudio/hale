@@ -38,13 +38,12 @@ public class TypeField extends Field<TypeParameter, TypeEntitySelector> {
 	}
 
 	/**
-	 * @see Field#createEntitySelector(SchemaSpaceID, Set, AbstractParameter, Composite)
+	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter, Composite)
 	 */
 	@Override
 	protected TypeEntitySelector createEntitySelector(SchemaSpaceID ssid,
-			Set<EntityDefinition> candidates, TypeParameter field,
-			Composite parent) {
-		return new TypeEntitySelector(ssid, candidates, field, parent);
+			TypeParameter field, Composite parent) {
+		return new TypeEntitySelector(ssid, field, parent);
 	}
 
 }
