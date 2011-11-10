@@ -488,6 +488,12 @@ public class SchemasView extends PropertiesViewPart {
 		eds.addListener(entityListener = new EntityDefinitionServiceListener() {
 			
 			@Override
+			public void contextsAdded(Iterable<EntityDefinition> contextEntities) {
+				//XXX improve?
+				refreshInDisplayThread();
+			}
+
+			@Override
 			public void contextRemoved(EntityDefinition contextEntity) {
 				//XXX improve?
 				refreshInDisplayThread();

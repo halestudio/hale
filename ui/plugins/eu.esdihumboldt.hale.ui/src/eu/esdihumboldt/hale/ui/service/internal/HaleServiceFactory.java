@@ -74,7 +74,9 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 		
 		if (EntityDefinitionService.class.equals(serviceInterface)) {
-			return new EntityDefinitionServiceImpl();
+			return new EntityDefinitionServiceImpl(
+					(AlignmentService) locator.getService(AlignmentService.class),
+					(ProjectService) locator.getService(ProjectService.class));
 		}
 		
 		return null;
