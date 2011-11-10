@@ -60,6 +60,11 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 	private final F field;
 	
 	private final ViewerFilter[] filters;
+	
+	/**
+	 * Tracks the current input. Set by inputChanged of the content provider.
+	 */
+	private Object currentInput;
 
 	/**
 	 * Create an entity selector
@@ -87,6 +92,7 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 			@Override
 			public void inputChanged(Viewer viewer, Object oldInput,
 					Object newInput) {
+				currentInput = newInput;
 				// inform about the input change
 				fireSelectionChange();
 			}
@@ -119,7 +125,8 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 				}
 			}
 		}
-		
+
+		currentInput = select;
 		viewer.setInput(select);
 		
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -195,7 +202,7 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 	 */
 	@Override
 	public ISelection getSelection() {
-		Object input = viewer.getInput();
+		Object input = currentInput;
 		if (input == null || input == NoObject.NONE) {
 			return new StructuredSelection();
 		}
