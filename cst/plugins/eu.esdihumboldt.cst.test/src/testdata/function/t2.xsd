@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:hale="eu:esdihumboldt:hale:test" xmlns:sample="eu:esdihumboldt:hale:sample" xmlns:gml="http://www.opengis.net/gml/3.2" elementFormDefault="qualified" targetNamespace="eu:esdihumboldt:hale:sample">
+
+  <import namespace="eu:esdihumboldt:hale:test" schemaLocation="geom-gml32.xsd"/>
+  
+  <element name="PrimitiveSample" substitutionGroup="hale:PrimitiveTest" type="sample:PrimitiveSampleType" />
+    
+  <complexType name="PrimitiveSampleType">
+    <complexContent>
+      <extension base="hale:PrimitiveTestType">
+        <sequence>
+          <element name="area" type="double" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+</schema>

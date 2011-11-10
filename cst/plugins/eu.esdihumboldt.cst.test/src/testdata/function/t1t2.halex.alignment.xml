@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-alignment>
+    <cell transformation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}NumbersType</type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type>{eu:esdihumboldt:hale:sample}PrimitiveSampleType</type>
+            </class>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.cst.functions.geometric.ordinates_to_point">
+        <source name="z">
+            <property>
+                <type>{http://www.example.org/t1/}NumbersType</type>
+                <child>z</child>
+            </property>
+        </source>
+        <source name="y">
+            <property>
+                <type>{http://www.example.org/t1/}NumbersType</type>
+                <child>y</child>
+            </property>
+        </source>
+        <source name="x">
+            <property>
+                <type>{http://www.example.org/t1/}NumbersType</type>
+                <child>x</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{eu:esdihumboldt:hale:sample}PrimitiveSampleType</type>
+                <child>{eu:esdihumboldt:hale:test}geometry</child>
+                <child>{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</child>
+                <child>{http://www.opengis.net/gml/3.2}Point</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.cst.functions.numeric.mathexpression">
+        <source name="variable">
+            <property>
+                <type>{http://www.example.org/t1/}NumbersType</type>
+                <child>width</child>
+            </property>
+        </source>
+        <source name="variable">
+            <property>
+                <type>{http://www.example.org/t1/}NumbersType</type>
+                <child>height</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{eu:esdihumboldt:hale:sample}PrimitiveSampleType</type>
+                <child>{eu:esdihumboldt:hale:sample}area</child>
+            </property>
+        </target>
+    </cell>
+</hale-alignment>
