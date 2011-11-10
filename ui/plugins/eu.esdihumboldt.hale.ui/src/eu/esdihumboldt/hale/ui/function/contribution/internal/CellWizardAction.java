@@ -13,8 +13,8 @@
 package eu.esdihumboldt.hale.ui.function.contribution.internal;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
-import eu.esdihumboldt.hale.ui.function.contribution.AbstractFunctionWizardContribution;
 import eu.esdihumboldt.hale.ui.function.contribution.CellFunctionContribution;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -26,14 +26,23 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
  */
 public class CellWizardAction extends AbstractWizardAction<CellFunctionContribution> {
 
+	private final Cell originalCell;
+
 	/**
-	 * @see AbstractWizardAction#AbstractWizardAction(AbstractFunctionWizardContribution, FunctionWizardDescriptor, AlignmentService)
+	 * Constructor
+	 *
+	 * @param functionContribution the parent contribution
+	 * @param originalCell the original cell
+	 * @param descriptor the function wizard descriptor
+	 * @param alignmentService the alignment service
 	 */
 	public CellWizardAction(
 			CellFunctionContribution functionContribution,
-			FunctionWizardDescriptor<?> descriptor,
+			Cell originalCell, FunctionWizardDescriptor<?> descriptor,
 			AlignmentService alignmentService) {
 		super(functionContribution, descriptor, alignmentService);
+		
+		this.originalCell = originalCell;
 	}
 
 	/**
@@ -42,6 +51,18 @@ public class CellWizardAction extends AbstractWizardAction<CellFunctionContribut
 	@Override
 	protected FunctionWizard createWizard() {
 		return descriptor.createEditWizard(functionContribution.getCell());
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction#handleResult(eu.esdihumboldt.hale.common.align.model.MutableCell)
+	 */
+	@Override
+	protected void handleResult(MutableCell cell) {
+		//TODO do this in one step (e.g. add replaceCell method to AlignmentService)
+		// remove the original cell
+		alignmentService.removeCell(originalCell);
+		// add the new cell
+		alignmentService.addOrUpdateCell(cell);
 	}
 
 }
