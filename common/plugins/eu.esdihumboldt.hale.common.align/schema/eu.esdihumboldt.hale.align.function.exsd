@@ -214,14 +214,14 @@
          <attribute name="minOccurrence" type="string" use="default" value="0">
             <annotation>
                <documentation>
-                  The minimum occurrence of the property as parameter to the function, defaults to 0
+                  The minimum occurrence of the property as parameter to the function, defaults to 0.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="maxOccurrence" type="string" use="default" value="1">
             <annotation>
                <documentation>
-                  The maximum occurrence of the property as parameter to the function, defaults to 1
+                  The maximum occurrence of the property as parameter to the function, defaults to 1. Use -1, n or * for unbounded maximum occurrence.
                </documentation>
             </annotation>
          </attribute>
@@ -243,14 +243,14 @@
          <attribute name="minOccurrence" type="string" use="default" value="0">
             <annotation>
                <documentation>
-                  The minimum occurrence of the property as parameter to the function, defaults to 0
+                  The minimum occurrence of the type as parameter to the function, defaults to 0.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="maxOccurrence" type="string" use="default" value="1">
             <annotation>
                <documentation>
-                  The maximum occurrence of the property as parameter to the function, defaults to 1
+                  The maximum occurrence of the type as parameter to the function, defaults to 1. Use -1, n or * for unbounded maximum occurrence.
                </documentation>
             </annotation>
          </attribute>
@@ -359,14 +359,14 @@
          <attribute name="minOccurrence" type="string" use="default" value="0">
             <annotation>
                <documentation>
-                  The minimum occurrence of the function parameter, defaults to 0
+                  The minimum occurrence of the function parameter, defaults to 0.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="maxOccurrence" type="string" use="default" value="1">
             <annotation>
                <documentation>
-                  The maximum occurrence of the function parameter, defaults to 1. Use -1 for unbounded maximum occurrence.
+                  The maximum occurrence of the function parameter, defaults to 1. Use -1, n or * for unbounded maximum occurrence.
                </documentation>
             </annotation>
          </attribute>

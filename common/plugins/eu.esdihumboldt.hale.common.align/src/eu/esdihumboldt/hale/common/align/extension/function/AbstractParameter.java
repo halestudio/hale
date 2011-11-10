@@ -52,10 +52,16 @@ public abstract class AbstractParameter {
 		}
 		
 		int max;
-		try {
-			max = Integer.parseInt(maxOccurrence);
-		} catch (Throwable e) {
-			max = 1; // default
+		if (maxOccurrence.equalsIgnoreCase("n") || maxOccurrence.equals("*")) {
+			// allow 'n' and '*' specifying unbounded max occurrence
+			max = UNBOUNDED;
+		}
+		else {
+			try {
+				max = Integer.parseInt(maxOccurrence);
+			} catch (Throwable e) {
+				max = 1; // default
+			}
 		}
 		
 		this.minOccurrence = min;
