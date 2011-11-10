@@ -20,7 +20,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IDisposable;
+import org.eclipse.zest.core.viewers.IEntityConnectionStyleProvider;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
+import org.eclipse.zest.core.widgets.ZestStyles;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
@@ -36,7 +38,8 @@ import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
  * Label provider for mapping graphs.
  * @author Simon Templer
  */
-public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider {
+public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider,
+		IEntityConnectionStyleProvider {
 	
 	private final int entityBorderWidth = 2;
 	private final Color entityBorderColor;
@@ -278,6 +281,41 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public boolean fisheyeNode(Object entity) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/**
+	 * @see IEntityConnectionStyleProvider#getConnectionStyle(Object, Object)
+	 */
+	@Override
+	public int getConnectionStyle(Object src, Object dest) {
+		return ZestStyles.CONNECTIONS_SOLID; // | ZestStyles.CONNECTIONS_DIRECTED;
+	}
+
+	/**
+	 * @see IEntityConnectionStyleProvider#getColor(Object, Object)
+	 */
+	@Override
+	public Color getColor(Object src, Object dest) {
+		// default
+		return null;
+	}
+
+	/**
+	 * @see IEntityConnectionStyleProvider#getHighlightColor(Object, Object)
+	 */
+	@Override
+	public Color getHighlightColor(Object src, Object dest) {
+		// default
+		return null;
+	}
+
+	/**
+	 * @see IEntityConnectionStyleProvider#getLineWidth(Object, Object)
+	 */
+	@Override
+	public int getLineWidth(Object src, Object dest) {
+		// default
+		return -1;
 	}
 
 }
