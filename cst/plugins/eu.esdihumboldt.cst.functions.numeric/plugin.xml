@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.align.category">
+      <category
+            description="Functions dealing with numerical values"
+            id="eu.esdihumboldt.cst.functions.numeric"
+            name="Numeric">
+      </category>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.function">
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.numeric"
+            description="Define a value using a mathematical expression with support for variables"
+            icon="icons/number.png"
+            identifier="eu.esdihumboldt.cst.functions.numeric.mathexpression"
+            name="Mathematical Expression">
+         <targetProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.lang.Double">
+               </bindingCondition>
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  maxOccurrence="n"
+                  minOccurrence="0"
+                  name="variable">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.lang.Double">
+               </bindingCondition>
+            </property>
+         </sourceProperties>
+      </propertyFunction>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.transformation">
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.numeric.MathematicalExpression"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.numeric.mathexpression"
+            id="eu.esdihumboldt.cst.functions.numeric.mathexpression">
+      </propertyTransformation>
+   </extension>
+
+</plugin>
