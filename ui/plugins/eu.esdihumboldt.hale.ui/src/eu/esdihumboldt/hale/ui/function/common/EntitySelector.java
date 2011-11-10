@@ -14,8 +14,8 @@ package eu.esdihumboldt.hale.ui.function.common;
 
 import java.util.Set;
 
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
@@ -72,16 +73,14 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 		this.field = field;
 		
 		main = new Composite(parent, SWT.NONE);
-		main.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).
-				equalWidth(false).margins(0, 0).create());
+		TableColumnLayout columnLayout = new TableColumnLayout();
+		main.setLayout(columnLayout);
 		
 		// entity selection combo
 		viewer = new TableViewer(main, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION | SWT.NO_SCROLL);
-		viewer.getControl().setLayoutData(
-				GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
-						.grab(true, false)
-						//.hint(SWT.DEFAULT, viewer.getTable().getItemHeight())
-						.create());
+		
+		TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
+		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
 		
 		viewer.setContentProvider(new ObjectContentProvider() {
 
