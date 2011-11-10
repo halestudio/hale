@@ -40,6 +40,11 @@
                </bindingCondition>
             </property>
          </sourceProperties>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="expression">
+         </functionParameter>
       </propertyFunction>
    </extension>
    <extension
