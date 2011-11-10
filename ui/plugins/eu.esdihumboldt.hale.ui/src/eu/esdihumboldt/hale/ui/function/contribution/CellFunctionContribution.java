@@ -44,7 +44,7 @@ public class CellFunctionContribution extends
 	protected AbstractWizardAction<?> createWizardAction(
 			FunctionWizardDescriptor<?> descriptor,
 			AlignmentService alignmentService) {
-		return new CellWizardAction(this, descriptor, alignmentService);
+		return new CellWizardAction(this, cell, descriptor, alignmentService);
 	}
 
 	/**

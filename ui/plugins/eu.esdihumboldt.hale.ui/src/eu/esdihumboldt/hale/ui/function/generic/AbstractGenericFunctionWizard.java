@@ -77,10 +77,13 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 		
 		setWindowTitle(getFunction().getDisplayName());
 		
-		//XXX create entities page even for cell editing?
+		// create the entities page
+		// it is needed for creating a new cell to allow assigning the entities
+		// and when editing a cell to populate its copy with the same configuration
 		entitiesPage = createEntitiesPage(getInitSelection(), getInitCell());
 		
 		if (!getFunction().getDefinedParameters().isEmpty()) {
+			// create the parameter page
 			parameterPage = createParameterPage(getInitCell());
 		}
 	}
@@ -90,6 +93,7 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	 */
 	@Override
 	protected void init(SchemaSelection selection) {
+		// create a new cell
 		resultCell = new DefaultCell();
 		resultCell.setTransformationIdentifier(getFunctionId());
 	}
@@ -99,8 +103,11 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	 */
 	@Override
 	protected void init(Cell cell) {
-		//FIXME only accept MutableCells? see FunctionWizardFactory
-		resultCell = (MutableCell) cell;
+		// create a new cell even if a cell is already present
+		resultCell = new DefaultCell();
+		resultCell.setTransformationIdentifier(getFunctionId());
+		// the cell configuration will be duplicated or changed by the wizard
+		// afterwards the old cell is replaced by the new cell in the alignment
 	}
 
 	/**
@@ -118,8 +125,7 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	 * @return the parameter configuration page or <code>null</code>
 	 */
 	protected FunctionWizardPage createParameterPage(Cell initialCell) {
-		// TODO Auto-generated method stub
-		return new ParameterPage();
+		return new ParameterPage(initialCell);
 	}
 
 	/**

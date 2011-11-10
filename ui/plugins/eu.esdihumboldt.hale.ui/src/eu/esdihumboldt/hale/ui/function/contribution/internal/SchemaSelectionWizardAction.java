@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.function.contribution.internal;
 
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.contribution.AbstractFunctionWizardContribution;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionContribution;
@@ -42,6 +43,15 @@ public class SchemaSelectionWizardAction extends AbstractWizardAction<SchemaSele
 	@Override
 	protected FunctionWizard createWizard() {
 		return descriptor.createNewWizard(functionContribution.getSelection());
+	}
+
+	/**
+	 * @see AbstractWizardAction#handleResult(MutableCell)
+	 */
+	@Override
+	protected void handleResult(MutableCell cell) {
+		// add the new cell
+		alignmentService.addOrUpdateCell(cell);
 	}
 
 }

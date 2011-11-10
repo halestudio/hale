@@ -89,10 +89,16 @@ public abstract class AbstractWizardAction<T extends AbstractFunctionWizardContr
 			
 			if (dialog.open() == WizardDialog.OK) {
 				MutableCell cell = wizard.getResult();
-				alignmentService.addOrUpdateCell(cell);
+				handleResult(cell);
 			}
 		}
 	}
+
+	/**
+	 * Handle the wizard result
+	 * @param cell the result cell
+	 */
+	protected abstract void handleResult(MutableCell cell);
 
 	/**
 	 * Create the function wizard

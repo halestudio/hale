@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.function.generic.pages;
 
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
@@ -25,14 +26,19 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 public class ParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> 
 		implements FunctionWizardPage {
 
+	private final Cell initialCell;
+
 	/**
 	 * Default constructor
+	 * @param initialCell the initial cell, may be <code>null</code>
 	 */
-	public ParameterPage() {
+	public ParameterPage(Cell initialCell) {
 		super("parameters");
 		
 		setTitle("Function parameters");
 		setDescription("Specify the parameters for the relation");
+		
+		this.initialCell = initialCell;
 		
 		setPageComplete(false);
 	}
@@ -69,6 +75,15 @@ public class ParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<
 	protected void createContent(Composite page) {
 		// TODO Auto-generated method stub
 		
+		//TODO create controls
+		//TODO configure with initial cell if present
+	}
+
+	/**
+	 * @return the initialCell
+	 */
+	public Cell getInitialCell() {
+		return initialCell;
 	}
 
 }
