@@ -191,6 +191,11 @@
                   visible="true">
             </separator>
             <command
+                  commandId="eu.esdihumboldt.hale.ui.edit.modify"
+                  label="Edit..."
+                  style="push">
+            </command>
+            <command
                   commandId="org.eclipse.ui.edit.delete"
                   label="Delete"
                   mnemonic="d"
@@ -207,7 +212,6 @@
             </separator>
             <command
                   commandId="eu.esdihumboldt.hale.ui.align.add_relation"
-                  icon="icons/add_relation.gif"
                   label="Add relation..."
                   style="push"
                   tooltip="Add a new relation">
@@ -288,7 +292,6 @@
                label="Edit">
             <command
                   commandId="eu.esdihumboldt.hale.ui.align.add_relation"
-                  icon="icons/add_relation.gif"
                   id="eu.esdihumboldt.hale.ui.edit.add_relation"
                   label="Add relation..."
                   style="push"
@@ -355,6 +358,12 @@
             commandId="eu.esdihumboldt.hale.ui.project.save"
             schemeId="eu.esdihumboldt.hale.ui.application.bindings"
             sequence="M1+S">
+      </key>
+      <key
+            commandId="eu.esdihumboldt.hale.ui.edit.modify"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="eu.esdihumboldt.hale.ui.application.bindings"
+            sequence="M1+E">
       </key>
    </extension>
 
