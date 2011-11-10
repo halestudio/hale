@@ -21,6 +21,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -87,8 +88,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		};
 		
 		// mandatory fields
-		S selector = createEntitySelector(ssid, 
-				candidates, definition, selectorContainer);
+		S selector = createEntitySelector(ssid, definition, selectorContainer);
 		selector.getControl().setLayoutData(GridDataFactory.swtDefaults().
 				align(SWT.FILL, SWT.CENTER).grab(true, false).create());
 		addSelector(selector);
@@ -102,6 +102,13 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		}
 		else {
 			//TODO automatic population for simple cases?
+			//XXX improve
+			for (EntityDefinition candidate : candidates) {
+				if (selector.acceptObject(candidate)) {
+					selector.setSelection(new StructuredSelection(candidate));
+					break;
+				}
+			}
 		}
 		
 		updateState();
@@ -110,14 +117,12 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 	/**
 	 * Create an entity selector
 	 * @param ssid the schema space
-	 * @param candidates the entity candidates
 	 * @param field the field definition
 	 * @param parent the parent composite
 	 * @return the entity selector
 	 */
 	protected abstract S createEntitySelector(SchemaSpaceID ssid,
-			Set<EntityDefinition> candidates, F field, 
-			Composite parent);
+			F field, Composite parent);
 	
 	/**
 	 * Get the selectors associated with the field
@@ -164,7 +169,8 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		//valid if no selection is empty
 		//TODO improve
 		for (EntitySelector<F> selector : selectors) {
-			if (selector.getSelection().isEmpty()) {
+			boolean optional = selector.getField().getMinOccurrence() == 0; //XXX improve, other cases
+			if (!optional && selector.getSelection().isEmpty()) {
 				newValid = false;
 				break;
 			}

@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.function.common;
 
-import java.util.Set;
-
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
@@ -69,12 +67,10 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 	/**
 	 * Create an entity selector
 	 * @param ssid the schema space
-	 * @param candidates the entity candidates
 	 * @param field the field definition, may be <code>null</code>
 	 * @param parent the parent composite
 	 */
-	public EntitySelector(final SchemaSpaceID ssid, final Set<EntityDefinition> candidates,
-			F field, Composite parent) {
+	public EntitySelector(final SchemaSpaceID ssid,	F field, Composite parent) {
 		this.field = field;
 		
 		main = new Composite(parent, SWT.NONE);
@@ -115,17 +111,8 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 			viewer.setFilters(filters);
 		}
 		
-		// apply filter to candidates and select one of the remaining
+		// initial selection
 		Object select = NoObject.NONE;
-		if (candidates != null) {
-			for (EntityDefinition candidate : candidates) {
-				if (acceptObject(candidate)) {
-					select = candidate;
-					break;
-				}
-			}
-		}
-
 		currentInput = select;
 		viewer.setInput(select);
 		
@@ -161,11 +148,11 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 	}
 	
 	/**
-	 * Determines if the given object matches the filters
+	 * Determines if the given object matches the selector's filters
 	 * @param candidate the object to test
 	 * @return if the object is accepted by all filters
 	 */
-	protected boolean acceptObject(Object candidate) {
+	public boolean acceptObject(Object candidate) {
 		if (filters == null) {
 			return true;
 		}
@@ -207,6 +194,14 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 			return new StructuredSelection();
 		}
 		return new StructuredSelection(input);
+	}
+
+	/**
+	 * Get the field definition associated with the selector.
+	 * @return the field definition
+	 */
+	public F getField() {
+		return field;
 	}
 
 	/**

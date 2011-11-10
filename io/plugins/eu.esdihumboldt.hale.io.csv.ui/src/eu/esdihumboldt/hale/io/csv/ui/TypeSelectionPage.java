@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
-import java.util.HashSet;
-
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -25,19 +23,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
-import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Advanced configuration for the instance reader
@@ -93,16 +87,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type:");
 
-		HashSet<EntityDefinition> types = new HashSet<EntityDefinition>();
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
-		for (TypeDefinition td : ss.getSchemas(SchemaSpaceID.SOURCE)
-				.getMappableTypes()) {
-			types.add(new TypeEntityDefinition(td, SchemaSpaceID.SOURCE));
-		}
-
 		// TODO Change SSID
-		sel = new TypeEntitySelector(SchemaSpaceID.SOURCE, types, null, page);
+		sel = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, page);
 		sel.getControl().setLayoutData(
 				GridDataFactory.fillDefaults().grab(true, false).span(1, 1)
 						.create());
@@ -135,7 +121,6 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 	/**
 	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
 	 */
-
 	@Override
 	public boolean updateConfiguration(InstanceReader provider) {
 
