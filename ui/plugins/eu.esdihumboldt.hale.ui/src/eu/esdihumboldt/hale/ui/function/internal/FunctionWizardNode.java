@@ -62,7 +62,7 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	 */
 	@Override
 	protected FunctionWizard createWizard() {
-		FunctionWizard result;
+		FunctionWizard result = null;
 		List<FunctionWizardDescriptor<?>> factories = FunctionWizardExtension.getInstance().getFactories(new FactoryFilter<FunctionWizardFactory, FunctionWizardDescriptor<?>>() {
 			
 			@Override
@@ -83,12 +83,14 @@ public class FunctionWizardNode extends AbstractWizardNode {
 			result = fwd.createNewWizard(null);
 		}
 		
-		// create generic wizard
-		if (function instanceof TypeFunction) {
-			result = new GenericTypeFunctionWizard(null, function.getId());
-		}
-		else {
-			result = new GenericPropertyFunctionWizard(null, function.getId());
+		if (result == null) {
+			// create generic wizard
+			if (function instanceof TypeFunction) {
+				result = new GenericTypeFunctionWizard(null, function.getId());
+			}
+			else {
+				result = new GenericPropertyFunctionWizard(null, function.getId());
+			}
 		}
 		
 		// initialize wizard
