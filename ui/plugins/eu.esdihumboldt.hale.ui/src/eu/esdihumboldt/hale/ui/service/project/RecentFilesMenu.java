@@ -32,6 +32,16 @@ import org.eclipse.ui.PlatformUI;
 public class RecentFilesMenu extends ContributionItem {
 	
 	/**
+	 * The string filled in for the gap in the filename
+	 */
+	private static final String FILLSTRING = "...";
+	
+	/**
+	 * Maximum length of the string displayed in the menu 
+	 */
+	private static final int MAX_LENGTH = 40;
+
+	/**
 	 * A selection listener for the menu items
 	 */
 	private static class MenuItemSelectionListener extends SelectionAdapter {
@@ -86,16 +96,34 @@ public class RecentFilesMenu extends ContributionItem {
 		int i = files.length;
 		for (String file : files) {
 			MenuItem mi = new MenuItem(menu, SWT.PUSH, index);
-			String ustr = FilenameUtils.getName(file);
+			String filename = FilenameUtils.getName(file);
+			String shortened = shorten(file, MAX_LENGTH, filename.length());
 			String nr = String.valueOf(i);
 			if (i <= 9) {
 				//add mnemonic for the first 9 items
 				nr = "&" + nr; //$NON-NLS-1$
 			}
-			mi.setText(nr + "  " + ustr); //$NON-NLS-1$
+			mi.setText(nr + "  " + shortened); //$NON-NLS-1$
 			mi.setData(file);
 			mi.addSelectionListener(new MenuItemSelectionListener(new File(file)));
 			--i;
+		}
+	}
+
+	private String shorten(String file, int maxLength, int endKeep) {
+		if (file.length() <= maxLength) {
+			return file;
+		}
+		else if (maxLength - endKeep > (FILLSTRING.length() + 2)) {
+			int partLength = (maxLength - endKeep - FILLSTRING.length()) / 2;
+			StringBuffer buff = new StringBuffer();
+			buff.append(file.substring(0, partLength));
+			buff.append(FILLSTRING);
+			buff.append(file.substring(file.length() - endKeep - partLength));
+			return buff.toString();
+		}
+		else {
+			return file.substring(file.length() - endKeep);
 		}
 	}
 }
