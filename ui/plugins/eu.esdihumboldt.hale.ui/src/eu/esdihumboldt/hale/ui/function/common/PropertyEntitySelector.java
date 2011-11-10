@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.function.common;
 
-import java.util.Set;
-
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -39,15 +37,13 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	/**
 	 * Create an entity selector for {@link Property} entities
 	 * @param ssid the schema space
-	 * @param candidates the entity candidates
 	 * @param field the field definition, may be <code>null</code>
 	 * @param parent the parent composite
 	 * @param parentType the parent type
 	 */
-	public PropertyEntitySelector(SchemaSpaceID ssid,
-			Set<EntityDefinition> candidates, PropertyParameter field,
+	public PropertyEntitySelector(SchemaSpaceID ssid, PropertyParameter field,
 			Composite parent, TypeDefinition parentType) {
-		super(ssid, candidates, field, parent);
+		super(ssid, field, parent);
 		
 		this.parentType = parentType;
 	}
