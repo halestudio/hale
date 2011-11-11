@@ -22,6 +22,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
 import org.eclipse.ui.intro.config.IIntroContentProvider;
@@ -108,9 +109,7 @@ public class RecentFilesContentProvider implements IIntroContentProvider,
 		formText.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
-				ProjectService project = (ProjectService) PlatformUI
-						.getWorkbench().getService(ProjectService.class);
-				project.load(new File((String) e.getHref()));
+				open((String) e.getHref());
 			}
 		});
 
@@ -170,8 +169,13 @@ public class RecentFilesContentProvider implements IIntroContentProvider,
 	 */
 	@Override
 	public void run(IIntroSite site, Properties params) {
-		ProjectService project = (ProjectService) PlatformUI.getWorkbench()
-				.getService(ProjectService.class);
-		project.load(new File(params.getProperty("file"))); //$NON-NLS-1$
+		open(params.getProperty("file")); //$NON-NLS-1$
+	}
+	
+	private void open(String file) {
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ps.load(new File(file));
+		IIntroPart introPart = PlatformUI.getWorkbench().getIntroManager().getIntro();
+		PlatformUI.getWorkbench().getIntroManager().closeIntro(introPart);
 	}
 }
