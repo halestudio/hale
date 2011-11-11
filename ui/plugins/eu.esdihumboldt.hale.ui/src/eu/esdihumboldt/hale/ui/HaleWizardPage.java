@@ -35,6 +35,8 @@ import org.eclipse.swt.widgets.Composite;
 public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 	
 	private IPageChangedListener changeListener;
+	
+	private boolean wasShown = false;
 
 	/**
 	 * @see WizardPage#WizardPage(String, String, ImageDescriptor)
@@ -73,7 +75,13 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 				@Override
 				public void pageChanged(PageChangedEvent event) {
 					if (event.getSelectedPage() == HaleWizardPage.this) {
-						onShowPage();
+						if (wasShown) {
+							onShowPage(false);
+						}
+						else {
+							wasShown = true;
+							onShowPage(true);
+						}
 					}
 				}
 				
@@ -90,8 +98,10 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 
 	/**
 	 * Called when this page is shown
+	 * @param firstShow specifies if it is the first time the page is shown
+	 *   since its creation
 	 */
-	protected void onShowPage() {
+	protected void onShowPage(boolean firstShow) {
 		// do nothing
 	}
 

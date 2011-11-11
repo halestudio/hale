@@ -44,10 +44,10 @@ public class ParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<
 	}
 
 	/**
-	 * @see HaleWizardPage#onShowPage()
+	 * @see HaleWizardPage#onShowPage(boolean)
 	 */
 	@Override
-	protected void onShowPage() {
+	protected void onShowPage(boolean firstShow) {
 		updateState();
 	}
 

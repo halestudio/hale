@@ -175,10 +175,10 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage()
+	 * @see HaleWizardPage#onShowPage(boolean)
 	 */
 	@Override
-	protected void onShowPage() {
+	protected void onShowPage(boolean firstShow) {
 
 		LocatableInputSupplier<? extends InputStream> source = getWizard()
 				.getProvider().getSource();
@@ -454,7 +454,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		group.layout();
 		group.getParent().layout(true, true);
 
-		super.onShowPage();
+		super.onShowPage(firstShow);
 	}
 
 	/**

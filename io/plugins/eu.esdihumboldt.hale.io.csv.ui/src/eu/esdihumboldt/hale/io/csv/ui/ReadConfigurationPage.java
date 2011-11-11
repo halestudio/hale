@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
+import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.ImportWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
@@ -213,11 +214,11 @@ public class ReadConfigurationPage
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage()
+	 * @see HaleWizardPage#onShowPage(boolean)
 	 */
 	@Override
-	protected void onShowPage() {
-		super.onShowPage();
+	protected void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
 
 		IOProvider p = getWizard().getProvider();
 		String[] separatorSelection = new String[] { "TAB", ",", "|", "." };

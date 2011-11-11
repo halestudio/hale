@@ -131,11 +131,11 @@ public class ExportSelectTargetPage<P extends ExportProvider,
 	}
 
 	/**
-	 * @see HaleWizardPage#onShowPage()
+	 * @see HaleWizardPage#onShowPage(boolean)
 	 */
 	@Override
-	protected void onShowPage() {
-		super.onShowPage();
+	protected void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
 		
 		// update file editor with possibly changed file extensions
 		targetFile.setContentTypes(getWizard().getProviderFactory().getSupportedTypes());
