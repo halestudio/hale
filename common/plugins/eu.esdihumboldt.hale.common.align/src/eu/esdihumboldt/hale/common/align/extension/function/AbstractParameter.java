@@ -33,6 +33,9 @@ public abstract class AbstractParameter {
 	private final int minOccurrence;
 	private final int maxOccurrence;
 	
+	private final String label;
+	private final String description;
+	
 	/**
 	 * Create a parameter definition
 	 * @param conf the configuration element
@@ -41,6 +44,9 @@ public abstract class AbstractParameter {
 		super();
 		
 		this.name = conf.getAttribute("name");
+		this.label = conf.getAttribute("label");
+		this.description = conf.getAttribute("description");
+		
 		String minOccurrence = conf.getAttribute("minOccurrence");
 		String maxOccurrence = conf.getAttribute("maxOccurrence");
 		
@@ -86,6 +92,31 @@ public abstract class AbstractParameter {
 	 */
 	public final int getMaxOccurrence() {
 		return maxOccurrence;
+	}
+	
+	/**
+	 * Get the display name for the parameter. If present the parameter label
+	 * will be used, otherwise the parameter name is returned. In case the
+	 * parameter name is <code>null</code> an empty string is returned.
+	 * @return the parameter display name
+	 */
+	public String getDisplayName() {
+		String displayName = label;
+		if (displayName == null) {
+			displayName = name;
+		}
+		if (displayName == null) {
+			displayName = "";
+		}
+		return displayName;
+	}
+
+	/**
+	 * Get the parameter description
+	 * @return the description, may be <code>null</code>
+	 */
+	public String getDescription() {
+		return description;
 	}
 
 	/**
