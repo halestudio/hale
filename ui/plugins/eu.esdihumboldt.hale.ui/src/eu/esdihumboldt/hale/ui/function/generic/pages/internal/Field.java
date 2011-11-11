@@ -118,6 +118,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		}
 		
 		//TODO conditions/filters etc. ?!
+		//XXX -> create a wrapper to EntitySelector for this?
 		
 		//TODO optional fields (+)
 		
