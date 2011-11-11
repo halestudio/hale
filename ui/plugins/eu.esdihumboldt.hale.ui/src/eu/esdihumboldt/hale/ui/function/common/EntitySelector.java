@@ -136,7 +136,6 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 					else {
 						viewer.setInput(NoObject.NONE);
 					}
-					viewer.setSelection(new StructuredSelection());
 					/*
 					 * XXX Bug on Mac? - Viewer is not refreshed correctly until 
 					 * user clicks on the wizard.
@@ -146,6 +145,7 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 					 * XXX is this fixed with TableColumnLayout?
 					 */
 				}
+				viewer.setSelection(new StructuredSelection());
 			}
 			
 		});
