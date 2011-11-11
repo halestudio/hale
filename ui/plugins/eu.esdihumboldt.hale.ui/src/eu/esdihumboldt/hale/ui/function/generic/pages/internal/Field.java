@@ -38,7 +38,9 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.ui.HaleSharedImages;
 import eu.esdihumboldt.hale.ui.function.common.EntitySelector;
+import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 
 /**
  * Represents named entities in a function
@@ -84,7 +86,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 			if (definition.getDescription() != null) {
 				// add decoration
 				descriptionDecoration = new ControlDecoration(name,
-						SWT.RIGHT | SWT.TOP);
+						SWT.RIGHT);
 			}
 		}
 		
@@ -170,6 +172,19 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 					align(SWT.FILL, SWT.CENTER).grab(true, false).create());
 			addSelector(selector);
 			
+			// add mandatory decoration
+			if (num < definition.getMinOccurrence()) {
+				ControlDecoration mandatory = new ControlDecoration(
+						selector.getControl(), SWT.LEFT | SWT.TOP);
+				FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+						.getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+//				mandatory.setImage(fieldDecoration.getImage());
+				mandatory.setImage(HALEUIPlugin.getDefault().getImageRegistry()
+						.get(HaleSharedImages.IMG_DECORATION_MANDATORY));
+				mandatory.setDescriptionText(fieldDecoration.getDescription());
+//				mandatory.setMarginWidth(1);
+			}
+			
 			// do initial selection
 			EntityDefinition value = (num < fieldValues.size())?(fieldValues.get(num)):(null);
 			if (value == null) {
@@ -181,7 +196,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 			
 			if (descriptionDecoration == null && definition.getDescription() != null) {
 				descriptionDecoration = new ControlDecoration(selector.getControl(),
-						SWT.LEFT | SWT.TOP);
+						SWT.RIGHT | SWT.TOP);
 			}
 		}
 		

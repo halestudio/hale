@@ -16,10 +16,12 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import eu.esdihumboldt.hale.ui.HaleSharedImages;
+
 /**
  * The activator class controls the plug-in life cycle
  */
-public class HALEUIPlugin extends AbstractUIPlugin {
+public class HALEUIPlugin extends AbstractUIPlugin implements HaleSharedImages {
 
 	/**
 	 * The plug-in ID
@@ -81,6 +83,6 @@ public class HALEUIPlugin extends AbstractUIPlugin {
 	protected void initializeImageRegistry(ImageRegistry reg) {
 		super.initializeImageRegistry(reg);
 		
-//		reg.put(IMG_EXPORT_WIZARD, imageDescriptorFromPlugin(PLUGIN_ID, "/icons/export_wiz.gif"));
+		reg.put(IMG_DECORATION_MANDATORY, imageDescriptorFromPlugin(PLUGIN_ID, "/icons/mandatory.gif"));
 	}
 }
