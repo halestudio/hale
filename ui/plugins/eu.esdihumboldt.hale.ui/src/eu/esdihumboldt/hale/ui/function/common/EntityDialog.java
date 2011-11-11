@@ -42,6 +42,8 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
  */
 public abstract class EntityDialog extends Dialog {
 	
+	private static final int NONE_ID = IDialogConstants.CLIENT_ID + 1;
+
 	private EntityDefinition entity;
 	
 	private TreeViewer viewer;
@@ -144,6 +146,33 @@ public abstract class EntityDialog extends Dialog {
 		return page;
 	}
 	
+	/**
+	 * @see Dialog#createButtonsForButtonBar(Composite)
+	 */
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		super.createButtonsForButtonBar(parent);
+		
+		createButton(parent, NONE_ID, "None", //$NON-NLS-1$
+				false);
+	}
+
+	/**
+	 * @see Dialog#buttonPressed(int)
+	 */
+	@Override
+	protected void buttonPressed(int buttonId) {
+		switch (buttonId) {
+		case NONE_ID:
+			this.entity = null;
+			setReturnCode(OK);
+			close();
+			break;
+		default:
+			super.buttonPressed(buttonId);
+		}
+	}
+
 	private void updateState() {
 		Button ok = getButton(IDialogConstants.OK_ID);
 		
@@ -192,7 +221,8 @@ public abstract class EntityDialog extends Dialog {
 	}
 
 	/**
-	 * @return the entity
+	 * Get the selected entity definition
+	 * @return the entity definition or <code>null</code>
 	 */
 	public EntityDefinition getEntity() {
 		return entity;
