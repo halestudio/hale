@@ -12,8 +12,10 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages.internal;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Observable;
 import java.util.Set;
 
@@ -49,7 +51,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 	private final F definition;
 	private final SchemaSpaceID ssid;
 	
-	private final Set<S> selectors = new HashSet<S>();
+	private final List<S> selectors = new ArrayList<S>();
 	private final Composite selectorContainer;
 	private final ISelectionChangedListener selectionChangedListener;
 	
@@ -97,15 +99,90 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 				updateState();
 			}
 		};
+
+		// determine number of contained fields and the corresponding values
+		int minCount = definition.getMinOccurrence();
 		
-		// mandatory fields
-		S selector = createEntitySelector(ssid, definition, selectorContainer);
-		selector.getControl().setLayoutData(GridDataFactory.swtDefaults().
-				align(SWT.FILL, SWT.CENTER).grab(true, false).create());
-		addSelector(selector);
-		if (descriptionDecoration == null && definition.getDescription() != null) {
-			descriptionDecoration = new ControlDecoration(selector.getControl(),
-					SWT.LEFT | SWT.TOP);
+		//TODO determine filters from definition
+		
+		List<EntityDefinition> fieldValues = new ArrayList<EntityDefinition>();
+		if (initialCell != null) {
+			// entities from cell
+			List<? extends Entity> entities;
+			switch (ssid) {
+			case SOURCE:
+				entities = initialCell.getSource().get(definition.getName());
+				break;
+			case TARGET:
+				entities= initialCell.getTarget().get(definition.getName());
+				break;
+			default:
+				throw new IllegalStateException("Illegal schema space");
+			}
+			for (Entity entity : entities) {
+				fieldValues.add(entity.getDefinition()); //FIXME what about the information in the entity?!
+			}
+			// adapt minCount if needed (and possible)
+			if (fieldValues.size() > minCount) {
+				if (definition.getMaxOccurrence() == F.UNBOUNDED) {
+					minCount = fieldValues.size();
+				}
+				else {
+					minCount = Math.min(fieldValues.size(), definition.getMaxOccurrence());
+				}
+			}
+		}
+		else {
+			// populate from candidates
+			if (candidates != null && !candidates.isEmpty()) {
+				LinkedHashSet<EntityDefinition> rotatingCandidates = new LinkedHashSet<EntityDefinition>(candidates);
+
+				// try to add candidates for each required entity
+				for (int i = 0; i < definition.getMinOccurrence(); i++) {
+					boolean found = false;
+					for (EntityDefinition candidate : candidates) {
+						if (true) { //TODO check against filters
+							fieldValues.add(candidate);
+							rotatingCandidates.remove(candidate);
+							rotatingCandidates.add(candidate);
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						fieldValues.add(null);
+					}
+				}
+			}
+		}
+		
+		// add a field w/o value if additional values are supported
+		if (definition.getMaxOccurrence() == F.UNBOUNDED ||
+				definition.getMaxOccurrence() > minCount) {
+			minCount++;
+		}
+		
+		// add fields
+		for (int num = 0; num < minCount; num++) {
+			// create entity selector
+			S selector = createEntitySelector(ssid, definition, selectorContainer);
+			selector.getControl().setLayoutData(GridDataFactory.swtDefaults().
+					align(SWT.FILL, SWT.CENTER).grab(true, false).create());
+			addSelector(selector);
+			
+			// do initial selection
+			EntityDefinition value = (num < fieldValues.size())?(fieldValues.get(num)):(null);
+			if (value == null) {
+				selector.setSelection(new StructuredSelection());
+			}
+			else {
+				selector.setSelection(new StructuredSelection(value));
+			}
+			
+			if (descriptionDecoration == null && definition.getDescription() != null) {
+				descriptionDecoration = new ControlDecoration(selector.getControl(),
+						SWT.LEFT | SWT.TOP);
+			}
 		}
 		
 		// setup description decoration
@@ -124,20 +201,6 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		
 		//TODO "required" decorations for required fields
 		
-		if (initialCell != null) {
-			//TODO populate with entities from cell
-		}
-		else {
-			//TODO automatic population for simple cases?
-			//XXX improve
-			for (EntityDefinition candidate : candidates) {
-				if (selector.acceptObject(candidate)) {
-					selector.setSelection(new StructuredSelection(candidate));
-					break;
-				}
-			}
-		}
-		
 		updateState();
 	}
 	
@@ -155,8 +218,8 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 	 * Get the selectors associated with the field
 	 * @return the selectors
 	 */
-	protected Set<S> getSelectors() {
-		return Collections.unmodifiableSet(selectors);
+	protected List<S> getSelectors() {
+		return Collections.unmodifiableList(selectors);
 	}
 
 	/**
