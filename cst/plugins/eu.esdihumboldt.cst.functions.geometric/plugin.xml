@@ -18,6 +18,7 @@
             name="Ordinates to Point">
          <targetProperties>
             <property
+                  description="The property that shall hold the created point"
                   maxOccurrence="1"
                   minOccurrence="1">
                <bindingCondition
@@ -29,8 +30,10 @@
          </targetProperties>
          <sourceProperties>
             <property
+                  description="The X ordinate for the point to create"
+                  label="X"
                   maxOccurrence="1"
-                  minOccurrence="0"
+                  minOccurrence="1"
                   name="x">
                <bindingCondition
                      allowCollection="false"
@@ -39,6 +42,8 @@
                </bindingCondition>
             </property>
             <property
+                  description="The Y ordinate for the point to create"
+                  label="Y"
                   maxOccurrence="1"
                   minOccurrence="1"
                   name="y">
@@ -49,6 +54,8 @@
                </bindingCondition>
             </property>
             <property
+                  description="The Z ordinate for the point to create"
+                  label="Z"
                   maxOccurrence="1"
                   minOccurrence="0"
                   name="z">
@@ -60,6 +67,8 @@
             </property>
          </sourceProperties>
          <functionParameter
+               description="Specify the coordinate reference system for the created Point"
+               label="Coordinate Reference System"
                maxOccurrence="1"
                minOccurrence="0"
                name="referenceSystem">
