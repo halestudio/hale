@@ -125,14 +125,16 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>,
 	}
 	
 	/**
-	 * @see HaleWizardPage#onShowPage()
+	 * @see HaleWizardPage#onShowPage(boolean)
 	 */
 	@Override
-	protected void onShowPage() {
-		super.onShowPage();
+	protected void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
 		
-		// redraw to prevent ghost images drawn by ControlDecoration
-		getControl().getParent().redraw();
+		if (firstShow) {
+			// redraw to prevent ghost images drawn by ControlDecoration
+			getControl().getParent().redraw();
+		}
 	}
 
 	/**

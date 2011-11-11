@@ -181,11 +181,11 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 	}
 
 	/**
-	 * @see ExportSelectTargetPage#onShowPage()
+	 * @see ExportSelectTargetPage#onShowPage(boolean)
 	 */
 	@Override
-	protected void onShowPage() {
-		super.onShowPage();
+	protected void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
 		
 		updateInput();
 	}
