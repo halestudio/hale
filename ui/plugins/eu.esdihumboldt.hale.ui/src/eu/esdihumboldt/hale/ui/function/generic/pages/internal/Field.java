@@ -121,6 +121,8 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		
 		//TODO optional fields (+)
 		
+		//TODO "required" decorations for required fields
+		
 		if (initialCell != null) {
 			//TODO populate with entities from cell
 		}
@@ -188,14 +190,16 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 	 * Updates the valid state
 	 */
 	private void updateState() {
-		boolean newValid = true;
+		boolean newValid = false;
 		
-		//valid if no selection is empty
-		//TODO improve
+		// valid if minimum occurrence is met
+		int validCount = 0;
 		for (EntitySelector<F> selector : selectors) {
-			boolean optional = selector.getField().getMinOccurrence() == 0; //XXX improve, other cases
-			if (!optional && selector.getSelection().isEmpty()) {
-				newValid = false;
+			if (!selector.getSelection().isEmpty()) { //TODO improve condition
+				validCount++;
+			}
+			if (validCount >= selector.getField().getMinOccurrence()) {
+				newValid = true;
 				break;
 			}
 		}
