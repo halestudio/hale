@@ -17,6 +17,9 @@ import java.util.HashSet;
 import java.util.Observable;
 import java.util.Set;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -68,11 +71,19 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		this.definition = definition;
 		this.ssid = ssid;
 		
+		ControlDecoration descriptionDecoration = null;
+		
 		// field name
-		if (definition.getName() != null && !definition.getName().isEmpty()) {
+		if (!definition.getDisplayName().isEmpty()) {
 			Label name = new Label(parent, SWT.NONE);
-			name.setText(definition.getName());
+			name.setText(definition.getDisplayName());
 			name.setLayoutData(GridDataFactory.swtDefaults().create());
+			
+			if (definition.getDescription() != null) {
+				// add decoration
+				descriptionDecoration = new ControlDecoration(name,
+						SWT.RIGHT | SWT.TOP);
+			}
 		}
 		
 		selectorContainer = new Composite(parent, SWT.NONE);
@@ -92,6 +103,19 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		selector.getControl().setLayoutData(GridDataFactory.swtDefaults().
 				align(SWT.FILL, SWT.CENTER).grab(true, false).create());
 		addSelector(selector);
+		if (descriptionDecoration == null && definition.getDescription() != null) {
+			descriptionDecoration = new ControlDecoration(selector.getControl(),
+					SWT.LEFT | SWT.TOP);
+		}
+		
+		// setup description decoration
+		if (descriptionDecoration != null) {
+			descriptionDecoration.setDescriptionText(definition.getDescription());
+			FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+			descriptionDecoration.setImage(fieldDecoration.getImage());
+			descriptionDecoration.setMarginWidth(2);
+		}
 		
 		//TODO conditions/filters etc. ?!
 		

@@ -19,9 +19,9 @@ import java.util.Observer;
 import java.util.Set;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -105,7 +105,8 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>,
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(new GridLayout(2, true));
+		page.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).
+				equalWidth(true).margins(0, 0).create());
 		
 		Control header = createHeader(page);
 		if (header != null) {
@@ -123,6 +124,17 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>,
 		updateState();
 	}
 	
+	/**
+	 * @see HaleWizardPage#onShowPage()
+	 */
+	@Override
+	protected void onShowPage() {
+		super.onShowPage();
+		
+		// redraw to prevent ghost images drawn by ControlDecoration
+		getControl().getParent().redraw();
+	}
+
 	/**
 	 * @return the initial cell
 	 */
@@ -178,7 +190,8 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>,
 	 */
 	protected Control createEntityGroup(SchemaSpaceID ssid, Composite parent) {
 		Group main = new Group(parent, SWT.NONE);
-		main.setLayout(new GridLayout(1, true));
+		main.setLayout(GridLayoutFactory.swtDefaults().numColumns(1)
+				.margins(10, 5).create());
 		
 		// set group title
 		switch (ssid) {
