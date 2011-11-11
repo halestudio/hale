@@ -1,3 +1,34 @@
 
 a#euesdihumboldthaleuifirststeps-introLink img { background-image : url(graphics/sample.gif); }
 a#euesdihumboldthaleuifirststeps-introLink:hover img { background-image : url(graphics/sample_hov.gif); }
+
+div#recent-files {
+  position: relative;
+  top: -25px;
+  margin-bottom: -25px;
+  margin-left: 52px;
+}
+
+#recent-files .div-label {
+font-size: 9pt;
+}
+
+#rss-news .status-text {
+  font-weight: normal;
+  color: #909090;
+  font-size: 8pt;
+}
+	
+ul#recent-files-list {
+  list-style-type: none;
+  margin-left: 10px;
+  margin-top: 5px;
+}
+
+ul#recent-files-list li {
+  font-weight: normal;
+}
+
+ul#recent-files-list a:hover {
+  text-decoration: underline;
+}

@@ -14,13 +14,12 @@ package eu.esdihumboldt.hale.ui.firststeps;
 
 import java.util.Properties;
 
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
 
-import eu.esdihumboldt.hale.ui.service.project.handler.OpenProjectHandler;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * An IIntroAction to open the load project dialog and close the intro part at
@@ -32,13 +31,9 @@ public class LoadProjectAndCloseAction implements IIntroAction {
 
 	@Override
 	public void run(IIntroSite site, Properties params) {
-		try {
-			new OpenProjectHandler().execute(null);
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-		final IIntroPart introPart = PlatformUI.getWorkbench()
-				.getIntroManager().getIntro();
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ps.open();
+		IIntroPart introPart = PlatformUI.getWorkbench().getIntroManager().getIntro();
 		PlatformUI.getWorkbench().getIntroManager().closeIntro(introPart);
 	}
 

@@ -34,12 +34,12 @@ public class RecentFilesMenu extends ContributionItem {
 	/**
 	 * The string filled in for the gap in the filename
 	 */
-	private static final String FILLSTRING = "...";
+	public static final String FILLSTRING = "...";
 	
 	/**
 	 * Maximum length of the string displayed in the menu 
 	 */
-	private static final int MAX_LENGTH = 40;
+	public static final int MAX_LENGTH = 40;
 
 	/**
 	 * A selection listener for the menu items
@@ -85,16 +85,17 @@ public class RecentFilesMenu extends ContributionItem {
 	public void fill(final Menu menu, int index) {
 		RecentFilesService rfs = (RecentFilesService)PlatformUI
 			.getWorkbench().getService(RecentFilesService.class);
-		String[] files = rfs.getRecentFiles();
-		if (files == null || files.length == 0) {
+		RecentFilesService.Entry[] entries = rfs.getRecentFiles();
+		if (entries == null || entries.length == 0) {
 			return;
 		}
 		
 		//add separator
 		new MenuItem(menu, SWT.SEPARATOR, index);
 		
-		int i = files.length;
-		for (String file : files) {
+		int i = entries.length;
+		for (RecentFilesService.Entry entry : entries) {
+			String file = entry.getFile();
 			MenuItem mi = new MenuItem(menu, SWT.PUSH, index);
 			String filename = FilenameUtils.getName(file);
 			String shortened = shorten(file, MAX_LENGTH, filename.length());
@@ -110,7 +111,15 @@ public class RecentFilesMenu extends ContributionItem {
 		}
 	}
 
-	private String shorten(String file, int maxLength, int endKeep) {
+	/**
+	 * Shortens the given file path.
+	 * 
+	 * @param file the complete file path to shorten
+	 * @param maxLength the maximum length the shortened verison should have
+	 * @param endKeep the length at the end of the string that should not be removed
+	 * @return a shortened version of the file path
+	 */
+	public static String shorten(String file, int maxLength, int endKeep) {
 		if (file.length() <= maxLength) {
 			return file;
 		}

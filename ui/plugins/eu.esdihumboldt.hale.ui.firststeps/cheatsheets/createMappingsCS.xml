@@ -18,13 +18,32 @@ It will step by step guide you through the process of retyping and renaming.<br 
       <description>
 You first need to retype once between features from your source and target schema.<br />
 <br />
-Click the <b>Add new Relation</b> button in the top toolbar to open the "New Relation" wizard.<br />
-Choose <b>Retype</b>.<br />
-Now a type from source and target. Click on "..." to see a list of possible types.<br />
+Go to <b>Edit -> Add relation...</b> or click the corresponding button in the top toolbar to open the "New Relation" wizard.<br />
+Choose <b>Retype</b> and click <b>Next</b>.<br />
+Now choose a type from source and target.<br />
 Click <b>Finish</b>.<br />
 <br />
 <b>Alternatively</b> you can select a source and target type in the Schema Explorer, click the arrow in between and choose <b>Retype</b>.<br />
-Then the Retype dialog opens, but now you can directly choose the selected types from the dropdown field.
+Then the Retype dialog opens, but with the selected types already chosen. Click <b>Finish</b>.
+      </description>
+   </item>
+   <item
+         title="Rename"
+         dialog="true">
+      <command
+            serialization="eu.esdihumboldt.hale.ui.align.add_relation"
+            required="false">
+      </command>
+      <description>
+After retyping you can now map attributes.<br />
+<br />
+Again, go to <b>Edit -> Add relation...</b> or click the corresponding button in the top toolbar to open the "New Relation" wizard.<br />
+Choose <b>Rename</b> and click <b>Next</b>.<br />
+Now choose an attribute from source and target.<br />
+Click <b>Finish</b>.<br />
+<br />
+<b>Alternatively</b> you can select a source and target type in the Schema Explorer, click the arrow in between and choose <b>Rename</b>.<br />
+Then the Retype dialog opens, but with the selected types already chosen. Click <b>Finish</b>.
       </description>
    </item>
 </cheatsheet>

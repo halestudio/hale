@@ -17,31 +17,51 @@ import org.eclipse.ui.IMemento;
 
 /**
  * Service that manages recent projects
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface RecentFilesService {
-
 	/**
-	 * Add a file
+	 * Add a file.
 	 * 
 	 * @param file the file name
+	 * @param projectName the project name
 	 */
-	public abstract void add(String file);
+	public abstract void add(String file, String projectName);
+
+	/**
+	 * A recent files entry.
+	 * 
+	 * @author Kai Schwierczek
+	 */
+	interface Entry {
+		/**
+		 * Get the file name.
+		 * 
+		 * @return the file name
+		 */
+		String getFile();
+
+		/**
+		 * Get the project name.
+		 * 
+		 * @return the project name
+		 */
+		String getProjectName();
+	}
 
 	/**
 	 * Get the recent files
 	 * 
 	 * @return the recent files
 	 */
-	public abstract String[] getRecentFiles();
+	public abstract Entry[] getRecentFiles();
 
 	/**
 	 * Restore the state
 	 * 
 	 * @param memento the memento
-	 * 
 	 * @return the status
 	 */
 	public abstract IStatus restoreState(IMemento memento);
@@ -50,7 +70,6 @@ public interface RecentFilesService {
 	 * Save the state
 	 * 
 	 * @param memento the memento
-	 * 
 	 * @return the status
 	 */
 	public abstract IStatus saveState(IMemento memento);
