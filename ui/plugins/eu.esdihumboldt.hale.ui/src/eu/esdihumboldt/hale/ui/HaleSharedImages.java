@@ -19,14 +19,14 @@ import org.eclipse.ui.ISharedImages;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
+ * @since 2.5
  */
 public interface HaleSharedImages {
 	
 	/**
-	 * Export wizard image
-	 * @since 2.2
+	 * Decoration image for mandatory fields
+	 * @since 2.5
 	 */
-	public static final String IMG_EXPORT_WIZARD = "HALE_IMG_EXPORT_WIZARD";
+	public static final String IMG_DECORATION_MANDATORY = "HALE_IMG_DECORATION_MANDATORY";
 
 }
