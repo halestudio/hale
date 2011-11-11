@@ -82,6 +82,9 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
 
 		Dialog.applyDialogFont(outerContainer);
 
+		// apply the initial selection
+		viewerSelectionChanged(viewer.getSelection());
+		
 		setControl(outerContainer);
 	}
 	
