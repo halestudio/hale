@@ -41,13 +41,13 @@
         </target>
     </cell>
     <cell transformation="eu.esdihumboldt.cst.functions.numeric.mathexpression">
-        <source name="variable">
+        <source name="var">
             <property>
                 <type>{http://www.example.org/t1/}NumbersType</type>
                 <child>width</child>
             </property>
         </source>
-        <source name="variable">
+        <source name="var">
             <property>
                 <type>{http://www.example.org/t1/}NumbersType</type>
                 <child>height</child>
