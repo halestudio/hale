@@ -94,7 +94,7 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 			}
 			
 		});
-		viewer.setLabelProvider(new DefinitionLabelProvider(true) {
+		viewer.setLabelProvider(new DefinitionLabelProvider(true, true) {
 
 			@Override
 			public String getText(Object element) {
