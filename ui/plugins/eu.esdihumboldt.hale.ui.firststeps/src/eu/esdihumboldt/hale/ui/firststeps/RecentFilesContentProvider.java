@@ -22,6 +22,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
 import org.eclipse.ui.intro.config.IIntroContentProvider;
@@ -170,6 +171,10 @@ public class RecentFilesContentProvider implements IIntroContentProvider,
 	 */
 	@Override
 	public void run(IIntroSite site, Properties params) {
+		final IIntroPart introPart = PlatformUI.getWorkbench()
+				.getIntroManager().getIntro();
+		PlatformUI.getWorkbench().getIntroManager().closeIntro(introPart);
+		
 		ProjectService project = (ProjectService) PlatformUI.getWorkbench()
 				.getService(ProjectService.class);
 		project.load(new File(params.getProperty("file"))); //$NON-NLS-1$
