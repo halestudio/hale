@@ -225,6 +225,26 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  Display name for the parameter.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  Parameter description.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -252,6 +272,26 @@
                <documentation>
                   The maximum occurrence of the type as parameter to the function, defaults to 1. Use -1, n or * for unbounded maximum occurrence.
                </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  Display name for the parameter.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  Parameter description.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
@@ -368,6 +408,26 @@
                <documentation>
                   The maximum occurrence of the function parameter, defaults to 1. Use -1, n or * for unbounded maximum occurrence.
                </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  Display name for the parameter.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  Parameter description.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
