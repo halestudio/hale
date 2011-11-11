@@ -19,6 +19,7 @@
             name="Mathematical Expression">
          <targetProperties>
             <property
+                  description="The poperty to assign the result of the expression evaluation to"
                   maxOccurrence="1"
                   minOccurrence="1">
                <bindingCondition
@@ -30,9 +31,11 @@
          </targetProperties>
          <sourceProperties>
             <property
+                  description="Source properties that may be used as variable in the mathematical expression"
+                  label="Variable"
                   maxOccurrence="n"
                   minOccurrence="0"
-                  name="variable">
+                  name="var">
                <bindingCondition
                      allowCollection="false"
                      allowConversion="true"
@@ -41,6 +44,8 @@
             </property>
          </sourceProperties>
          <functionParameter
+               description="The mathematical expression to evaluate"
+               label="Expression"
                maxOccurrence="1"
                minOccurrence="1"
                name="expression">

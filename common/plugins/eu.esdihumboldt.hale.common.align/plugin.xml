@@ -21,12 +21,14 @@
             name="Retype">
          <sourceTypes>
             <type
+                  description="The source type to be mapped to a type in the target schema"
                   maxOccurrence="1"
                   minOccurrence="1">
             </type>
          </sourceTypes>
          <targetTypes>
             <type
+                  description="The target type that corresponds to the source type"
                   maxOccurrence="1"
                   minOccurrence="1">
             </type>
@@ -39,12 +41,14 @@
             name="Rename">
          <sourceProperties>
             <property
+                  description="The source property to be mapped to a property in the target schema"
                   maxOccurrence="1"
                   minOccurrence="1">
             </property>
          </sourceProperties>
          <targetProperties>
             <property
+                  description="The target property that corresponds to the source property"
                   maxOccurrence="1"
                   minOccurrence="1">
             </property>
@@ -57,11 +61,13 @@
             name="Assign">
          <targetProperties>
             <property
+                  description="The property a value shall be assigned to"
                   maxOccurrence="1"
                   minOccurrence="1">
             </property>
          </targetProperties>
          <functionParameter
+               label="Value"
                maxOccurrence="1"
                minOccurrence="1"
                name="value">
