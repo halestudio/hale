@@ -33,7 +33,7 @@ public class DefinitionLabelProvider extends LabelProvider {
 	private final DefinitionImages images = new DefinitionImages();
 	
 	private final boolean longNames;
-
+	
 	/**
 	 * Create a label provider that will use short names for 
 	 * {@link EntityDefinition}s. 
@@ -41,7 +41,7 @@ public class DefinitionLabelProvider extends LabelProvider {
 	public DefinitionLabelProvider() {
 		this(false);
 	}
-
+	
 	/**
 	 * Create a label provider for {@link Definition}s and 
 	 * {@link EntityDefinition}.
@@ -49,8 +49,22 @@ public class DefinitionLabelProvider extends LabelProvider {
 	 *   be used
 	 */
 	public DefinitionLabelProvider(boolean longNames) {
+		this(longNames, false);
+	}
+
+	/**
+	 * Create a label provider for {@link Definition}s and 
+	 * {@link EntityDefinition}.
+	 * @param longNames if for {@link EntityDefinition}s long names shall
+	 *   be used
+	 * @param suppressMandatory if the mandatory overlay for properties shall
+	 *   be suppressed (defaults to <code>false</code>)
+	 */
+	public DefinitionLabelProvider(boolean longNames, boolean suppressMandatory) {
 		super();
+		
 		this.longNames = longNames;
+		images.setSuppressMandatory(suppressMandatory);
 	}
 
 	/**

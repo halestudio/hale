@@ -124,6 +124,8 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 	
 //	private final Map<String, Image> styleImages = new HashMap<String, Image>();
 	
+	private boolean suppressMandatory = false;
+	
 	/**
 	 * Dispose all images. {@link #getImage(Definition)} may not be called after 
 	 * calling this method.
@@ -192,18 +194,17 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 //		else {
 			boolean attribute = (def instanceof PropertyDefinition) && 
 				((PropertyDefinition) def).getConstraint(XmlAttributeFlag.class).isEnabled();
-			boolean mandatory;
-			if (def instanceof PropertyDefinition) {
-				Cardinality cardinality = ((PropertyDefinition) def).getConstraint(Cardinality.class);
-				mandatory = cardinality.getMinOccurs() > 0 && 
-					!((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled();
-			}
-			else if (def instanceof GroupPropertyDefinition) {
-				Cardinality cardinality = ((GroupPropertyDefinition) def).getConstraint(Cardinality.class);
-				mandatory = cardinality.getMinOccurs() > 0;
-			}
-			else {
-				mandatory = false; 
+			boolean mandatory = false;
+			if (!suppressMandatory) {
+				if (def instanceof PropertyDefinition) {
+					Cardinality cardinality = ((PropertyDefinition) def).getConstraint(Cardinality.class);
+					mandatory = cardinality.getMinOccurs() > 0 && 
+						!((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled();
+				}
+				else if (def instanceof GroupPropertyDefinition) {
+					Cardinality cardinality = ((GroupPropertyDefinition) def).getConstraint(Cardinality.class);
+					mandatory = cardinality.getMinOccurs() > 0;
+				}
 			}
 			
 			boolean deflt = false; //to.isAttribute() && to.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE && to.getParent().isType() && isDefaultGeometry((FeatureType) to.getParent().getPropertyType(), to.getName().getLocalPart());
@@ -276,6 +277,20 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 			// where no dedicated image is available yet
 			return null;
 		}
+	}
+
+	/**
+	 * @return the suppressMandatory
+	 */
+	public boolean isSuppressMandatory() {
+		return suppressMandatory;
+	}
+
+	/**
+	 * @param suppressMandatory the suppressMandatory to set
+	 */
+	public void setSuppressMandatory(boolean suppressMandatory) {
+		this.suppressMandatory = suppressMandatory;
 	}
 
 }
