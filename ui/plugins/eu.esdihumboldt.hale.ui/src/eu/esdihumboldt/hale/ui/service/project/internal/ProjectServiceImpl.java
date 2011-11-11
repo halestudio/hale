@@ -177,7 +177,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 					projectFile = new File(provider.getSource().getLocation());
 					changed = false;
 					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
-					rfs.add(projectFile.getAbsolutePath());
+					rfs.add(projectFile.getAbsolutePath(), main.getName());
 				}
 				
 				updateWindowTitle();
@@ -289,7 +289,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 					projectFile = new File(provider.getTarget().getLocation());
 					changed = false;
 					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
-					rfs.add(projectFile.getAbsolutePath());
+					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
 				}
 				
 				updateWindowTitle();
@@ -692,6 +692,4 @@ public class ProjectServiceImpl extends AbstractProjectService
 			return main;
 		}
 	}
-
-	
 }
