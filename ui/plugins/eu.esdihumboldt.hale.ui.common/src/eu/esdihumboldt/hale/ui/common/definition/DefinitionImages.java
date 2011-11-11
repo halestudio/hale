@@ -27,6 +27,8 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants;
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
 
 /**
@@ -34,7 +36,7 @@ import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
  * are not used any more.
  * @author Simon Templer
  */
-public class DefinitionImages {
+public class DefinitionImages implements CommonSharedImagesConstants {
 	
 	/**
 	 * Represents a image configuration
@@ -118,8 +120,6 @@ public class DefinitionImages {
 	private final Image mandatoryOverlay = CommonUIPlugin.getImageDescriptor(
 		"/icons/mandatory_ov2.gif").createImage(); //$NON-NLS-1$
 	
-	private final Map<String, Image> images = new HashMap<String, Image>();
-	
 	private final Map<ImageConf, Image> overlayedImages = new HashMap<ImageConf, Image>();
 	
 //	private final Map<String, Image> styleImages = new HashMap<String, Image>();
@@ -129,11 +129,6 @@ public class DefinitionImages {
 	 * calling this method.
 	 */
 	public void dispose() {
-		for (Image image : images.values()) {
-			image.dispose();
-		}
-		images.clear();
-		
 		for (Image image : overlayedImages.values()) {
 			image.dispose();
 		}
@@ -167,12 +162,7 @@ public class DefinitionImages {
 			image = PlatformUI.getWorkbench().getSharedImages().getImage(imageName);
 		}
 		else  {
-			image = images.get(imageName);
-			if (image == null) {
-				image = CommonUIPlugin.getImageDescriptor(
-					"/icons/" + imageName).createImage(); //$NON-NLS-1$
-				images.put(imageName, image);
-			}
+			image = CommonSharedImages.getImageRegistry().get(imageName);
 		}
 		
 		// legend image
@@ -265,23 +255,23 @@ public class DefinitionImages {
 	private String getImageForClassification(Classification clazz) {
 		switch (clazz) {
 		case ABSTRACT_FT:
-			return "abstract_ft.png"; //$NON-NLS-1$
+			return IMG_DEFINITION_ABSTRACT_FT;
 		case CONCRETE_FT:
-			return "concrete_ft.png"; //$NON-NLS-1$
+			return IMG_DEFINITION_CONCRETE_FT;
 		case STRING_PROPERTY:
-			return "string_attribute.png"; //$NON-NLS-1$
+			return IMG_DEFINITION_STRING_PROPERTY;
 		case NUMERIC_PROPERTY:
-			return "number_attribute.png"; //$NON-NLS-1$
+			return IMG_DEFINITION_NUMERIC_PROPERTY;
 		case GEOMETRIC_PROPERTY:
-			return "geometry_attribute.png"; //$NON-NLS-1$
+			return IMG_DEFINITION_GEOMETRIC_PROPERTY;
 		case GROUP:
-			return "package.gif";
+			return IMG_DEFINITION_GROUP;
 		case CHOICE:
-			return "choice.gif";
+			return IMG_DEFINITION_CHOICE;
 		case CONCRETE_TYPE:
-			return "concrete_type.png";
+			return IMG_DEFINITION_CONCRETE_TYPE;
 		case ABSTRACT_TYPE:
-			return "abstract_type.png"; 
+			return IMG_DEFINITION_ABSTRACT_TYPE; 
 		default:
 			// where no dedicated image is available yet
 			return null;
