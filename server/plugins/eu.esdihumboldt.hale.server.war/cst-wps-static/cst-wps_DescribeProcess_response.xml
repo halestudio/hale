@@ -82,7 +82,7 @@
 			<Input minOccurs="0" maxOccurs="1">
 				<ows:Identifier>AuxiliaryTargetXmlSchemaArchive</ows:Identifier>
 				<ows:Title>Target XML Schema Archive</ows:Title>
-				<ows:Abstract>URI to a ZIP archive contaning referenced data or the package itself.</ows:Abstract>
+				<ows:Abstract>URI to a ZIP archive containing referenced data or the package itself.</ows:Abstract>
 				<ComplexData maximumMegabytes="50">
 					<Default>
 						<Format>
