@@ -32,7 +32,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipOutputStream;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -113,6 +115,7 @@ public class ExecuteProcess {
 	
 	private Map<String, String> params;
 	private HttpServletResponse response;
+	private HttpServletRequest request;
 	private PrintWriter writer;
 	
 	private File fXmldata;
@@ -166,6 +169,7 @@ public class ExecuteProcess {
 	public ExecuteProcess(Map<String, String> params, HttpServletResponse response, PrintWriter writer) {
 		this.params = params;
 		this.response = response;
+		this.request = request;
 		this.writer = writer;
 		
 		try {
@@ -202,7 +206,12 @@ public class ExecuteProcess {
 	 * @throws FileNotFoundException if the workspace could not be created
 	 */
 	private void prepareWorkspace() throws FileNotFoundException {
-		workspace = Platform.getLocation().toString() + "/tmp/cst_" + UUID.randomUUID() + "/";
+		HttpSession session = request.getSession(true);
+		if (!session.getId().isEmpty()) {
+			workspace = session.getId();
+		} else {
+			workspace = Platform.getLocation().toString() + "/tmp/cst_" + UUID.randomUUID() + "/";
+		}
 		
 		if(!new File(workspace).mkdirs()) {
 			throw new FileNotFoundException("Could not create directory: "+workspace);
