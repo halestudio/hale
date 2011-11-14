@@ -40,9 +40,28 @@
 		</init-param>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
+
+	<servlet>
+		<servlet-name>client</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>
+				org.springframework.web.context.support.XmlWebApplicationContext
+			</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
 	
 	<servlet-mapping>
 		<servlet-name>cst</servlet-name>
 		<url-pattern>/cst/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>client</servlet-name>
+		<url-pattern>/client/*</url-pattern>
 	</servlet-mapping>
 </web-app>
