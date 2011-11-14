@@ -166,13 +166,16 @@ public class ExecuteProcess {
 	 * @param response the response
 	 * @param writer the writer
 	 */
-	public ExecuteProcess(Map<String, String> params, HttpServletResponse response, PrintWriter writer) {
+	public ExecuteProcess(Map<String, String> params, HttpServletResponse response, HttpServletRequest request, PrintWriter writer) {
 		this.params = params;
 		this.response = response;
 		this.request = request;
 		this.writer = writer;
 		
 		try {
+			// create session
+			HttpSession session = request.getSession(true);
+			
 			// init jaxb
 			this.initJAXB();
 			
@@ -206,9 +209,10 @@ public class ExecuteProcess {
 	 * @throws FileNotFoundException if the workspace could not be created
 	 */
 	private void prepareWorkspace() throws FileNotFoundException {
-		HttpSession session = request.getSession(true);
+		HttpSession session = request.getSession();
+		_log.info("Session ID: "+session.getId());
 		if (!session.getId().isEmpty()) {
-			workspace = session.getId();
+			workspace = Platform.getLocation().toString() + "/tmp/cst_" + session.getId() + "/";
 		} else {
 			workspace = Platform.getLocation().toString() + "/tmp/cst_" + UUID.randomUUID() + "/";
 		}

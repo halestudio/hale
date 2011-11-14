@@ -26,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -56,6 +57,9 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {		
 		Map<String, String> params = new HashMap<String, String>();
 		Enumeration<?> parameterNames = httpRequest.getParameterNames();
+		
+		// create session
+		HttpSession session = httpRequest.getSession(true);
 		
 		// build a lower case Map
 		while (parameterNames.hasMoreElements()) {
@@ -91,7 +95,7 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 			// do the transformation
 			else if (httpRequest.getMethod().toLowerCase().equals("post") && 
 						request.toLowerCase().contains("execute")) {
-				this.execute(params, response, writer);
+				this.execute(params, response, httpRequest, writer);
 			}
 		} else {
 			// give some sample output?
@@ -179,8 +183,8 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * @param response the response
 	 * @param writer the writer
 	 */
-	public void execute(Map<String, String> params, HttpServletResponse response, PrintWriter writer) {
-		new ExecuteProcess(params, response, writer);
+	public void execute(Map<String, String> params, HttpServletResponse response, HttpServletRequest request, PrintWriter writer) {
+		new ExecuteProcess(params, response, request, writer);
 	}
 
 	@Override
