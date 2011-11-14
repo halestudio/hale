@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>WPS-Client</title>
+
+<!--
+<script src="cst-wps-static/generic/mootools/mootools-core-1.4.1.js" type="text/javascript"></script>
+<script src="cst-wps-static/generic/mootools/Stickman.MultiUpload.js" type="text/javascript"></script>
+-->
+
+
+<style type="text/css">
+fieldset {
+	width: 500px;
+}
+
+div.multiupload{
+	border:1px outset gray;
+	padding:3px;
+	background:#eee;
+}
+div.multiupload div.list{
+	border:1px inset gray;
+	background: #fff;
+}
+div.multiupload div.list div.item{
+	margin:1px;
+	background: #eee;
+}
+div.multiupload div.list div.item:hover{
+	background: #ccc;
+}
+div.multiupload div.list img{
+	float:left;
+	margin: 3px;
+	cursor:pointer;
+}
+
+
+</style>
+</head>
+<body>
+	<div id="fileupload">
+		<form method="post" enctype="multipart/form-data" action="?upload" id="upload">
+
+			<fieldset>
+				<legend>InputSourceData - Source Data set to be transformed</legend>
+				<p>URI to a GML source (file or service) that contains the
+					source data to be transformed. Important: All source data sets need
+					to be of the same GML Application Schema!</p>
+
+				<div class="multiupload">
+					<label for="InputSourceData">InputSourceData</label><br />
+					<input type="file" id="InputSourceData" name="InputSourceData[]" multiple="multiple" />
+				</div>
+				
+				<div class="url">
+					<label>URL</label><br />
+					<input type="text" name="InputSourceDataURL" />
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<legend>AuxiliarySourceXmlSchemaArchive - Source XML Schema Archive</legend>
+				<p>URI to a ZIP archive containing referenced data or the package itself.</p>
+
+				<div class="multiupload">
+					<label for="AuxiliarySourceXmlSchemaArchive">InputSourceData</label><br />
+					<input type="file" id="AuxiliarySourceXmlSchemaArchive" name="AuxiliarySourceXmlSchemaArchive" />
+				</div>
+				
+				<div class="url">
+					<label>URL</label><br />
+					<input type="text" name="InputSourceDataURL" />
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<legend>TargetXmlSchemaDefinition - Target XML Schema Definition</legend>
+				<p>XSD(s) used to define the resulting target data's GML Application Schema. The first input needs to be the "primary" GML Application Schema.</p>
+
+				<div class="multiupload">
+					<label for="TargetXmlSchemaDefinition">InputSourceData</label><br />
+					<input type="file" id="TargetXmlSchemaDefinition" name="TargetXmlSchemaDefinition[]" multiple="multiple" />
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<legend>AuxiliaryTargetXmlSchemaArchive - Source Data set to be transformed</legend>
+				<p>URI to a ZIP archive containing referenced data or the package itself.</p>
+
+				<div class="multiupload">
+					<label for="AuxiliaryTargetXmlSchemaArchive">InputSourceData</label><br />
+					<input type="file" id="AuxiliaryTargetXmlSchemaArchive" name="AuxiliaryTargetXmlSchemaArchive" />
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<legend>Mapping - Ontology Mapping Language File</legend>
+				<p>OML file that contains a mapping between the primary source and the primary target XSD/GML Application Schema..</p>
+
+				<div class="multiupload">
+					<label for="Mapping">InputSourceData</label><br />
+					<input type="file" id="Mapping" name="Mapping" />
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<legend>Service</legend>
+				<p>
+				<input type="submit" name="send" />
+				<input type="reset" name="rest" />
+				<input type="button" name="clear" value="Clear Workspace" />
+				</p>
+			</fieldset>
+		</form>
+	</div>
+
+<script type="text/javascript">
+	window.addEvent('domready', function(){
+		// new MultiUpload( $( 'upload' ).InputSourceData,0,null,true );
+	});
+</script>
+</body>
+</html>
