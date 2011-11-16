@@ -76,7 +76,7 @@ import eu.esdihumboldt.hale.server.war.wps.StatusType;
  */
 public class ExecuteProcess {
 	
-	private final ALogger _log = ALoggerFactory.getLogger(CstWps.class);
+	private final static ALogger _log = ALoggerFactory.getLogger(CstWps.class);
 	
 	private String workspace;
 	private String requestDataFileName = "xmlRequestData_"+UUID.randomUUID()+".xml";
@@ -179,7 +179,7 @@ public class ExecuteProcess {
 			this.initJAXB();
 			
 			// create workspace dir
-			this.prepareWorkspace();
+			this.workspace = ExecuteProcess.prepareWorkspace(request);
 			
 			// save data from request to file
 			this.saveRequestData();
@@ -205,20 +205,34 @@ public class ExecuteProcess {
 	/**
 	 * Create workspace.
 	 * 
+	 * @param request the request
+	 * 
+	 * @return a String with current path to workspace
+	 * 
 	 * @throws FileNotFoundException if the workspace could not be created
 	 */
-	private void prepareWorkspace() throws FileNotFoundException {
+	public static String prepareWorkspace(HttpServletRequest request) throws FileNotFoundException {
 		HttpSession session = request.getSession();
+		String workspace;
+		
 		_log.info("Session ID: "+session.getId());
+		
 		if (!session.getId().isEmpty()) {
 			workspace = Platform.getLocation().toString() + "/tmp/cst_" + session.getId() + "/";
 		} else {
+			// this should not happen as this might cause trouble
 			workspace = Platform.getLocation().toString() + "/tmp/cst_" + UUID.randomUUID() + "/";
 		}
 		
+		// save path in session
+		session.setAttribute("workspace", workspace);
+		
+		// try to create all dirs
 		if(!new File(workspace).mkdirs()) {
 			throw new FileNotFoundException("Could not create directory: "+workspace);
 		}
+		
+		return workspace;
 	}
 	
 	/**
