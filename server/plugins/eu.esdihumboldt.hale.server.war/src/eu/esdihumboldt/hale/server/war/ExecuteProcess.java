@@ -30,7 +30,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +44,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
@@ -164,6 +162,7 @@ public class ExecuteProcess {
 	 * 
 	 * @param params all given (http)parameter in lowercase
 	 * @param response the response
+	 * @param request the request
 	 * @param writer the writer
 	 */
 	public ExecuteProcess(Map<String, String> params, HttpServletResponse response, HttpServletRequest request, PrintWriter writer) {
@@ -174,7 +173,7 @@ public class ExecuteProcess {
 		
 		try {
 			// create session
-			HttpSession session = request.getSession(true);
+//			HttpSession session = request.getSession(true);
 			
 			// init jaxb
 			this.initJAXB();

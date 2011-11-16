@@ -61,6 +61,9 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		// create session
 		HttpSession session = httpRequest.getSession(true);
 		
+		// set session time to 5 minutes
+		session.setMaxInactiveInterval(300);
+		
 		// build a lower case Map
 		while (parameterNames.hasMoreElements()) {
 			String key = (String) parameterNames.nextElement();
@@ -181,6 +184,7 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * 
 	 * @param params all given parameter in lowercase
 	 * @param response the response
+	 * @param request the request
 	 * @param writer the writer
 	 */
 	public void execute(Map<String, String> params, HttpServletResponse response, HttpServletRequest request, PrintWriter writer) {
