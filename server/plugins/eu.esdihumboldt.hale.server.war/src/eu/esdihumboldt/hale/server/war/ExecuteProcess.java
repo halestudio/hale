@@ -574,7 +574,9 @@ public class ExecuteProcess {
 	/**
 	 * Remove the working directory after the transformation has finished.
 	 */
-	private void deleteAll() {
+	public static void deleteAll(HttpServletRequest request) {
+		String workspace = request.getSession().getAttribute("workspace").toString();
+		
 		try {
 			FileUtils.deleteDirectory(new File(workspace));
 		} catch (IOException e) {
