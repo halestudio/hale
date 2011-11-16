@@ -37,6 +37,7 @@ http://www.esdi-community.eu/projects/show/hale
       </win>
    </launcher>
 
+
    <vm>
    </vm>
 
@@ -129,6 +130,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.common"/>
       <plugin id="eu.esdihumboldt.hale.ui.firststeps"/>
       <plugin id="eu.esdihumboldt.hale.ui.functions.core"/>
+      <plugin id="eu.esdihumboldt.hale.ui.help"/>
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.test" fragment="true"/>
@@ -149,16 +151,19 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.sf.ehcache"/>
       <plugin id="org.apache.commons.convert"/>
+      <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.httpclient"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
+      <plugin id="org.apache.jasper"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.apache.lucene.core"/>
@@ -183,6 +188,11 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.http.jetty"/>
+      <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.http.servlet"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
       <plugin id="org.eclipse.equinox.launcher"/>
       <plugin id="org.eclipse.equinox.launcher.cocoa.macosx.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64" fragment="true"/>
@@ -195,6 +205,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.base"/>
       <plugin id="org.eclipse.help.ui"/>
+      <plugin id="org.eclipse.help.webapp"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>
@@ -224,6 +235,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.jdom"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
+      <plugin id="org.mortbay.jetty.server"/>
+      <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.asm"/>

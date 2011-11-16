@@ -29,5 +29,16 @@
          </service>
       </serviceFactory>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.views.xml"
+            primary="false">
+      </toc>
+      <toc
+            file="toc.views.subtopic.xml"
+            primary="false">
+      </toc>
+   </extension>
 
 </plugin>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="HALE Help">
+   <link toc="../eu.esdihumboldt.hale.ui.views.data/toc.views.xml"/>
+   <anchor id="dataViewsHelp"/>
+   <topic label="View Data Help">
+      <anchor id="dataViewsHelp"/>
+   </topic>
+</toc>
