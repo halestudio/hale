@@ -336,6 +336,11 @@
                   commandId="org.eclipse.ui.help.aboutAction"
                   style="push">
             </command>
+            <command
+                  commandId="org.eclipse.ui.help.displayHelp"
+                  label="Help"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
       <menuContribution

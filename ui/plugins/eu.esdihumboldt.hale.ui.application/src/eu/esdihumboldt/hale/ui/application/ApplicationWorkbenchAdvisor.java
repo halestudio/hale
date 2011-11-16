@@ -100,7 +100,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	@Override
 	public boolean preShutdown() {
-		// ask for save if thee are changes
+		// ask for save if there are changes
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 		if (ps.isChanged()) {
 			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
