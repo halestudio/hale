@@ -12,17 +12,13 @@
 
 package eu.esdihumboldt.hale.ui.service.entity.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.cs3d.util.eclipse.TypeSafeListenerList;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.ChildEntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
@@ -90,18 +86,7 @@ public abstract class AbstractEntityDefinitionService implements
 	 */
 	@Override
 	public EntityDefinition getParent(EntityDefinition entity) {
-		List<ChildContext> path = entity.getPropertyPath();
-		
-		if (path == null || path.isEmpty()) {
-			// entity is a type and has no parent
-			return null;
-		}
-		else {
-			List<ChildContext> newPath = new ArrayList<ChildContext>(path);
-			newPath.remove(newPath.size() - 1);
-			return createEntity(entity.getType(), newPath, 
-					entity.getSchemaSpace());
-		}
+		return AlignmentUtil.getParent(entity);
 	}
 
 	/**
@@ -113,18 +98,7 @@ public abstract class AbstractEntityDefinitionService implements
 	 */
 	protected EntityDefinition createEntity(TypeDefinition type, 
 			List<ChildContext> path, SchemaSpaceID schemaSpace) {
-		if (path == null || path.isEmpty()) {
-			// entity is a type
-			return new TypeEntityDefinition(type, schemaSpace);
-		}
-		else if (path.get(path.size() - 1).getChild() instanceof PropertyDefinition) {
-			// last element in path is a property
-			return new PropertyEntityDefinition(type, path, schemaSpace);
-		}
-		else {
-			// last element is a child but no property
-			return new ChildEntityDefinition(type, path, schemaSpace);
-		}
+		return AlignmentUtil.createEntity(type, path, schemaSpace);
 	}
 
 }
