@@ -12,9 +12,16 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import eu.esdihumboldt.hale.common.align.model.impl.ChildEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Alignment model utility methods.
@@ -90,6 +97,50 @@ public abstract class AlignmentUtil {
 	public static boolean isAugmentation(Cell cell) {
 		// check if cell is an augmentation cell
 		return cell.getSource().isEmpty();
+	}
+	
+	/**
+	 * Get the parent entity definition for the given entity definition.
+	 * @param entity the entity definition
+	 * @return the parent entity definition or <code>null</code> if it has no 
+	 * parent
+	 */
+	public static EntityDefinition getParent(EntityDefinition entity) {
+		List<ChildContext> path = entity.getPropertyPath();
+		
+		if (path == null || path.isEmpty()) {
+			// entity is a type and has no parent
+			return null;
+		}
+		else {
+			List<ChildContext> newPath = new ArrayList<ChildContext>(path);
+			newPath.remove(newPath.size() - 1);
+			return createEntity(entity.getType(), newPath, 
+					entity.getSchemaSpace());
+		}
+	}
+
+	/**
+	 * Create an entity definition from a type and a child path
+	 * @param type the path parent
+	 * @param path the child path 
+	 * @param schemaSpace the associated schema space
+	 * @return the created entity definition
+	 */
+	public static EntityDefinition createEntity(TypeDefinition type, 
+			List<ChildContext> path, SchemaSpaceID schemaSpace) {
+		if (path == null || path.isEmpty()) {
+			// entity is a type
+			return new TypeEntityDefinition(type, schemaSpace);
+		}
+		else if (path.get(path.size() - 1).getChild() instanceof PropertyDefinition) {
+			// last element in path is a property
+			return new PropertyEntityDefinition(type, path, schemaSpace);
+		}
+		else {
+			// last element is a child but no property
+			return new ChildEntityDefinition(type, path, schemaSpace);
+		}
 	}
 
 }
