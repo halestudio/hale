@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Default alignment implementation
@@ -93,12 +94,78 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		return cells;
 	}
 	
+	/**
+	 * Determines if the given entity definition is contained in the given
+	 * entity list.
+	 * @param entities the (named) entity list
+	 * @param entityDef the entity definition
+	 * @return if the entity definition is contained in the given entities
+	 */
 	private boolean associatedWith(
 			ListMultimap<String, ? extends Entity> entities,
 			EntityDefinition entityDef) {
 		for (Entity entity : entities.values()) {
 			if (entityDef.equals(entity.getDefinition())) {
 				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	/**
+	 * @see Alignment#getPropertyCells(Iterable, TypeEntityDefinition)
+	 */
+	@Override
+	public Collection<? extends Cell> getPropertyCells(
+			Iterable<TypeEntityDefinition> sourceTypes,
+			TypeEntityDefinition targetType) {
+		List<Cell> result = new ArrayList<Cell>();
+		
+		for (Cell cell : cells) {
+			if (!AlignmentUtil.isTypeCell(cell)) {
+				// cell is a property cell
+				if (AlignmentUtil.isAugmentation(cell)) {
+					// cell is an augmentation
+					if (associatedWithType(cell.getTarget(), 
+							Collections.singleton(targetType))) {
+						// cell is associated to the target type
+						result.add(cell);
+					}
+				}
+				else {
+					// cell is a property mapping
+					if (associatedWithType(cell.getSource(), 
+							sourceTypes)
+						&& associatedWithType(cell.getTarget(), 
+							Collections.singleton(targetType))) {
+						// cell is associated to a relation between a source
+						// type and the target type
+						result.add(cell);
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Determines if any of the given entities is associated to at least one of
+	 * the given type entity definitions. 
+	 * @param entities the entities
+	 * @param types the type entity definitions
+	 * @return if there is an entity associated to one of the types
+	 */
+	private boolean associatedWithType(
+			ListMultimap<String, ? extends Entity> entities,
+			Iterable<TypeEntityDefinition> types) {
+		for (Entity entity : entities.values()) {
+			TypeDefinition entityType = entity.getDefinition().getType();
+			for (TypeEntityDefinition type : types) {
+				if (entityType.equals(type.getDefinition())) {
+					return true;
+				}
 			}
 		}
 		

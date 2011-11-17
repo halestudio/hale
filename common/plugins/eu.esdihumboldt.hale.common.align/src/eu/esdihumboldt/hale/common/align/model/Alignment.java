@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import java.util.Collection;
 
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+
 /**
  * An alignment contains alignment cells 
  * @author Simon Templer
@@ -50,6 +52,17 @@ public interface Alignment {
 	
 	// getPropertyCells(PropertyEntityDefinition)
 	
-	// getPropertyCells(TypeEntityDefinition, TypeEntityDefinition)
+	/**
+	 * Get the cells representing a mapping between properties that are
+	 * associated with the given source and target types. Augmentations for the
+	 * given target type will also be returned.
+	 * @param sourceTypes the source types
+	 * @param targetType the target types
+	 * @return the property cells associated with the relation between the given
+	 * source and target types. 
+	 */
+	public Collection<? extends Cell> getPropertyCells(
+			Iterable<TypeEntityDefinition> sourceTypes, 
+			TypeEntityDefinition targetType);
 
 }
