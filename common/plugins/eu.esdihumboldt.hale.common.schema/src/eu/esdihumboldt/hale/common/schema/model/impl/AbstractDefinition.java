@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractDefinition<C> implements Definition<C>, Comparable<AbstractDefinition<?>> {
+public abstract class AbstractDefinition<C> implements Definition<C> {
 
 	/**
 	 * The qualified definition name
@@ -230,10 +230,10 @@ public abstract class AbstractDefinition<C> implements Definition<C>, Comparable
 	 * @see Comparable#compareTo(Object)
 	 */
 	@Override
-	public int compareTo(AbstractDefinition<?> other) {
-		int result = name.getLocalPart().compareToIgnoreCase(other.name.getLocalPart());
+	public int compareTo(Definition<?> other) {
+		int result = name.getLocalPart().compareToIgnoreCase(other.getName().getLocalPart());
 		if (result == 0) {
-			return name.getNamespaceURI().compareToIgnoreCase(other.name.getNamespaceURI());
+			return name.getNamespaceURI().compareToIgnoreCase(other.getName().getNamespaceURI());
 		}
 		
 		return result;
