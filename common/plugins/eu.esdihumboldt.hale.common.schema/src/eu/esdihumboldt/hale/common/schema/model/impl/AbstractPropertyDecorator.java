@@ -50,6 +50,14 @@ public abstract class AbstractPropertyDecorator implements PropertyDefinition {
 	}
 
 	/**
+	 * @see Comparable#compareTo(Object)
+	 */
+	@Override
+	public int compareTo(Definition<?> o) {
+		return property.compareTo(o);
+	}
+
+	/**
 	 * @see Locatable#getLocation()
 	 */
 	@Override

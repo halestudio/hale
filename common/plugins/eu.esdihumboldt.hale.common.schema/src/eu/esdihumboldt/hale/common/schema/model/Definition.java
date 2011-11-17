@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface Definition<C> extends Locatable {
+public interface Definition<C> extends Locatable, Comparable<Definition<?>> {
 	
 	/**
 	 * Get the definitions identifier

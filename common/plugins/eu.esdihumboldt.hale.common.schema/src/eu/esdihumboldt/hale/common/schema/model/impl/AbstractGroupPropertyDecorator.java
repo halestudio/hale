@@ -50,6 +50,14 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 	}
 
 	/**
+	 * @see Comparable#compareTo(Object)
+	 */
+	@Override
+	public int compareTo(Definition<?> o) {
+		return propertyGroup.compareTo(o);
+	}
+
+	/**
 	 * @see Locatable#getLocation()
 	 */
 	@Override
