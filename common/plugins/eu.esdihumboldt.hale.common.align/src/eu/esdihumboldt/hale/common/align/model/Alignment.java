@@ -56,7 +56,8 @@ public interface Alignment {
 	 * Get the cells representing a mapping between properties that are
 	 * associated with the given source and target types. Augmentations for the
 	 * given target type will also be returned.
-	 * @param sourceTypes the source types
+	 * @param sourceTypes the source types or <code>null</code> for any source 
+	 *   type
 	 * @param targetType the target types
 	 * @return the property cells associated with the relation between the given
 	 * source and target types. 
