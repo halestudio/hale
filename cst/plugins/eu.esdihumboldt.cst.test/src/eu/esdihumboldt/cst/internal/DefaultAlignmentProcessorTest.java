@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import eu.esdihumboldt.hale.common.align.io.impl.DefaultAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.Transformation;
+import eu.esdihumboldt.hale.common.align.model.transformation.Transformation;
 import eu.esdihumboldt.hale.common.align.transformation.service.AlignmentProcessor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;

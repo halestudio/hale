@@ -10,13 +10,28 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.model;
+package eu.esdihumboldt.hale.common.align.model.transformation.tree;
+
+import java.util.Set;
+
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 
 /**
- * A transformation is an {@link Alignment} that has been processed to a set of
- * instructions to be executed to perform that transformation on instances.
+ * Target group or property
  * @author Simon Templer
  */
-public interface Transformation {
+public interface TargetNode extends GroupNode {
+	
+	/**
+	 * Get the assignment to this property
+	 * @return the property assignments
+	 */
+	public Set<CellNode> getAssignments();
+	
+	/**
+	 * Get the associated definition
+	 * @return the group or property definition
+	 */
+	public ChildDefinition<?> getDefinition();
 
 }

@@ -19,6 +19,13 @@
             name="Mapping"
             restorable="true">
       </view>
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.mapping.TransformationView"
+            id="eu.esdihumboldt.hale.ui.views.mapping.transformation"
+            name="Transformation"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>

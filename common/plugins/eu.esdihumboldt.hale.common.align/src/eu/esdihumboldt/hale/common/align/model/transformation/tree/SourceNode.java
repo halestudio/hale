@@ -10,22 +10,26 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.transformation.service;
+package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 
-import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.transformation.Transformation;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
- * Processes an alignment and creates transformation instructions
+ * Represents a source type, group or property
  * @author Simon Templer
  */
-public interface AlignmentProcessor {
+public interface SourceNode {
 	
 	/**
-	 * Process an alignment to create transformation instructions
-	 * @param alignment the alignment
-	 * @return the transformation instructions
+	 * Get the associated definition
+	 * @return the type, group or property definition
 	 */
-	public Transformation process(Alignment alignment);
+	public Definition<?> getDefinition();
+	
+	/**
+	 * Get the group or property's parent
+	 * @return the parent node or <code>null</code>
+	 */
+	public SourceNode getParent();
 
 }

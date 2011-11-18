@@ -13,7 +13,7 @@
 package eu.esdihumboldt.cst.internal;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.Transformation;
+import eu.esdihumboldt.hale.common.align.model.transformation.Transformation;
 import eu.esdihumboldt.hale.common.align.transformation.service.AlignmentProcessor;
 
 /**
