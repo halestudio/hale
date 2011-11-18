@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.mapping;
 
+import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
@@ -45,10 +47,10 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 	@Override
 	public void createPartControl(Composite parent) {
 		viewer = new GraphViewer(parent, SWT.BORDER);
-		viewer.setContentProvider(new CellGraphContentProvider());
+		viewer.setContentProvider(createContentProvider());
 //		viewer.setContentProvider(new CellRelationshipContentProvider());
 //		viewer.setContentProvider(new NestedCellRelationshipContentProvider());
-		viewer.setLabelProvider(new GraphLabelProvider());
+		viewer.setLabelProvider(createLabelProvider());
 		viewer.setInput(null);
 		LayoutAlgorithm layout = createLayout();
 		viewer.setLayoutAlgorithm(layout, true);
@@ -62,7 +64,27 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 		new ViewerMenu(getSite(), getViewer());
 	}
 	
-	private LayoutAlgorithm createLayout() {
+	/**
+	 * Create the label provider to be used for the graph
+	 * @return the label provider
+	 */
+	protected IBaseLabelProvider createLabelProvider() {
+		return new GraphLabelProvider();
+	}
+
+	/**
+	 * Create the content provider to be used for the graph
+	 * @return the content provider
+	 */
+	protected IContentProvider createContentProvider() {
+		return new CellGraphContentProvider();
+	}
+
+	/**
+	 * Create the initial layout to use
+	 * @return the layout
+	 */
+	protected LayoutAlgorithm createLayout() {
 		LayoutAlgorithm layout;
 //		layout = new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
 //		layout = new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
@@ -77,6 +99,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 				this);
 		IActionBars bars = getViewSite().getActionBars();
 		bars.getMenuManager().add(toolbarZoomContributionViewItem);
+		bars.getToolBarManager().add(new LayoutAction(viewer));
 	}
 
 	/**
