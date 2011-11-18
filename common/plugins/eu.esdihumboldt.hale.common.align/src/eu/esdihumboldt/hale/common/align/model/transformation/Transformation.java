@@ -10,22 +10,19 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.transformation.service;
+package eu.esdihumboldt.hale.common.align.model.transformation;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.transformation.Transformation;
 
 /**
- * Processes an alignment and creates transformation instructions
+ * A transformation is an {@link Alignment} that has been processed to a set of
+ * transformation cells that can be converted to instructions to be executed to 
+ * perform that transformation on instances.
  * @author Simon Templer
  */
-public interface AlignmentProcessor {
+public interface Transformation {
 	
-	/**
-	 * Process an alignment to create transformation instructions
-	 * @param alignment the alignment
-	 * @return the transformation instructions
-	 */
-	public Transformation process(Alignment alignment);
+	//TODO add method to generate specific transformation instructions given a source instance
+//	public X y(Collection<? extends Type> sourceTypes, Instance source);
 
 }

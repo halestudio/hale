@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 
@@ -133,6 +134,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return definitionLabels.getText(element);
 		}
 		
+		if (element instanceof Definition<?>) {
+			// use definition text
+			return definitionLabels.getText(element);
+		}
+		
 		if (element instanceof Cell) {
 			// use function name if possible
 			Cell cell = (Cell) element;
@@ -171,7 +177,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public Color getNodeHighlightColor(Object entity) {
-		if (entity instanceof Entity) {
+		if (entity instanceof Entity || entity instanceof Definition<?>) {
 			return entityHighlightColor;
 		}
 		
@@ -187,7 +193,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public Color getBorderColor(Object entity) {
-		if (entity instanceof Entity) {
+		if (entity instanceof Entity || entity instanceof Definition<?>) {
 			return entityBorderColor;
 		}
 		
@@ -203,7 +209,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public Color getBorderHighlightColor(Object entity) {
-		if (entity instanceof Entity) {
+		if (entity instanceof Entity || entity instanceof Definition<?>) {
 			return entityBorderHighlightColor;
 		}
 		
@@ -219,7 +225,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public int getBorderWidth(Object entity) {
-		if (entity instanceof Entity) {
+		if (entity instanceof Entity || entity instanceof Definition<?>) {
 			return entityBorderWidth;
 		}
 		
@@ -235,8 +241,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public Color getBackgroundColour(Object entity) {
-		if (entity instanceof Entity) {
-			if (entity instanceof Type) {
+		if (entity instanceof Entity || entity instanceof Definition<?>) {
+			if (entity instanceof Type || entity instanceof TypeDefinition) {
 				return typeBackgroundColor;
 			}
 			return propertyBackgroundColor;
@@ -254,7 +260,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public Color getForegroundColour(Object entity) {
-		if (entity instanceof Entity) {
+		if (entity instanceof Entity || entity instanceof Definition<?>) {
 			return entityForegorundColor;
 		}
 		

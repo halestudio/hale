@@ -125,8 +125,8 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		for (Cell cell : cells) {
 			if (!AlignmentUtil.isTypeCell(cell)) {
 				// cell is a property cell
-				if (AlignmentUtil.isAugmentation(cell)) {
-					// cell is an augmentation
+				if (sourceTypes == null || AlignmentUtil.isAugmentation(cell)) {
+					// cell is an augmentation or we accept any source type
 					if (associatedWithType(cell.getTarget(), 
 							Collections.singleton(targetType))) {
 						// cell is associated to the target type

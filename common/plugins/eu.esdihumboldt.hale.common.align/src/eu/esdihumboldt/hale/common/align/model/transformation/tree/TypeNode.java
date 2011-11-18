@@ -10,22 +10,20 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.transformation.service;
+package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 
-import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.transformation.Transformation;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Processes an alignment and creates transformation instructions
+ * Represents the root in transformation tree
  * @author Simon Templer
  */
-public interface AlignmentProcessor {
+public interface TypeNode extends GroupNode {
 	
 	/**
-	 * Process an alignment to create transformation instructions
-	 * @param alignment the alignment
-	 * @return the transformation instructions
+	 * Get the associated type definition
+	 * @return the type definition
 	 */
-	public Transformation process(Alignment alignment);
+	public TypeDefinition getType();
 
 }

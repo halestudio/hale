@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -114,7 +115,7 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		
 		//XXX any checks? see InstanceContextTester
 		
-		EntityDefinition def = getDefaultEntity(sibling);
+		EntityDefinition def = AlignmentUtil.getDefaultEntity(sibling);
 		Integer newName;
 		
 		synchronized (additionalContexts) {
@@ -188,7 +189,7 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 				if (contextName != null) {
 					// add context
 					boolean added = additionalContexts.put(
-							getDefaultEntity(candidate), contextName);
+							AlignmentUtil.getDefaultEntity(candidate), contextName);
 					if (added) {
 						addedContexts.add(candidate);
 					}
@@ -233,7 +234,7 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		
 		//XXX any checks? Alignment must still be valid! see also InstanceContextTester
 		
-		EntityDefinition def = getDefaultEntity(entity);
+		EntityDefinition def = AlignmentUtil.getDefaultEntity(entity);
 		synchronized (additionalContexts) {
 			additionalContexts.remove(def, lastContext.getContextName());
 		}
@@ -312,27 +313,6 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			result.add(context);
 			return result;
 		}
-	}
-
-	/**
-	 * Get the entity definition with the default instance context which
-	 * is a sibling to (or the same as) the given entity definition.
-	 * @param entity the entity definition
-	 * @return the entity definition with the default context in the last
-	 * path element
-	 */
-	private EntityDefinition getDefaultEntity(EntityDefinition entity) {
-		List<ChildContext> path = entity.getPropertyPath();
-		
-		if (path == null || path.isEmpty() || path.get(path.size() - 1).getContextName() == null) {
-			return entity;
-		}
-		
-		List<ChildContext> newPath = new ArrayList<ChildContext>(path);
-		ChildDefinition<?> lastChild = newPath.get(newPath.size() - 1).getChild();
-		newPath.remove(newPath.size() - 1);
-		newPath.add(new ChildContext(lastChild));
-		return createEntity(entity.getType(), newPath, entity.getSchemaSpace());
 	}
 
 }

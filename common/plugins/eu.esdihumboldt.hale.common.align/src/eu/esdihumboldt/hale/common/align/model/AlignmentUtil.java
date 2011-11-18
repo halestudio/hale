@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.ChildEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -141,6 +142,50 @@ public abstract class AlignmentUtil {
 			// last element is a child but no property
 			return new ChildEntityDefinition(type, path, schemaSpace);
 		}
+	}
+	
+	/**
+	 * Get the entity definition with the default instance context which
+	 * is a sibling to (or the same as) the given entity definition.
+	 * @param entity the entity definition
+	 * @return the entity definition with the default context in the last
+	 * path element
+	 */
+	public static EntityDefinition getDefaultEntity(EntityDefinition entity) {
+		List<ChildContext> path = entity.getPropertyPath();
+		
+		if (path == null || path.isEmpty() || path.get(path.size() - 1).getContextName() == null) {
+			return entity;
+		}
+		
+		List<ChildContext> newPath = new ArrayList<ChildContext>(path);
+		ChildDefinition<?> lastChild = newPath.get(newPath.size() - 1).getChild();
+		newPath.remove(newPath.size() - 1);
+		newPath.add(new ChildContext(lastChild));
+		return createEntity(entity.getType(), newPath, entity.getSchemaSpace());
+	}
+
+	/**
+	 * Get the entity definition based on the given entity definition with the 
+	 * default instance context for each path entry.
+	 * @param entity the entity definition
+	 * @return the entity definition with the default context in all path 
+	 * elements
+	 */
+	public static EntityDefinition getAllDefaultEntity(
+			EntityDefinition entity) {
+		List<ChildContext> path = entity.getPropertyPath();
+		
+		if (path == null || path.isEmpty() || path.get(path.size() - 1).getContextName() == null) {
+			return entity;
+		}
+		
+		List<ChildContext> newPath = new ArrayList<ChildContext>();
+		for (ChildContext context : path) {
+			ChildContext newcontext = new ChildContext(context.getChild());
+			newPath.add(newcontext);
+		}
+		return createEntity(entity.getType(), newPath, entity.getSchemaSpace());
 	}
 
 }
