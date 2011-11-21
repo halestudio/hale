@@ -30,6 +30,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +45,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
@@ -97,12 +99,12 @@ public class ExecuteProcess {
 	public static final String inputTargetXml = "TargetXmlSchemaDefinition";
 	
 	/**
-	 * Name of input field: TargetXmlSchemaDefinition
+	 * Name of input field: AuxiliarySourceXmlSchemaArchive
 	 */
 	public static final String inputSourceArchive = "AuxiliarySourceXmlSchemaArchive";
 	
 	/**
-	 * Name of input field: TargetXmlSchemaDefinition
+	 * Name of input field: AuxiliaryTargetXmlSchemaArchive
 	 */
 	public static final String inputTargetArchive = "AuxiliaryTargetXmlSchemaArchive";
 	
@@ -228,7 +230,9 @@ public class ExecuteProcess {
 		session.setAttribute("workspace", workspace);
 		
 		// try to create all dirs
-		if(!new File(workspace).mkdirs()) {
+		File work = new File(workspace);
+		work.mkdirs();
+		if(!work.exists()) {
 			throw new FileNotFoundException("Could not create directory: "+workspace);
 		}
 		
@@ -309,7 +313,7 @@ public class ExecuteProcess {
 				this.saveArchive(t.getData().getComplexData(), ExecuteProcess.inputTargetArchive);
 			} else {
 				// not allowed input type
-				throw new Exception("Not supported InputType is provided!");
+				throw new Exception("Not supported InputType is provided! Identifier: "+identifier);
 			}
 			
 			// check if ComplexData is available
@@ -374,20 +378,25 @@ public class ExecuteProcess {
 	 */
 	private void saveArchive(ComplexDataType data, String ident) throws Exception {
 		String fileName = workspace+ident+".zip";
-		if (data.getMimeType().equals("text/plain") && data.getEncoding().equalsIgnoreCase("base64")) {
-//			// get binary content
-//			byte[] content = Base64.decodeBase64(data.getContent().get(1).toString());
-//			
-//			// create file and output stream
-//			ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(fileName));
-//			
-//			// write content
-//			zos.write(content);
-//			
-//			// flush and close stream
-//			zos.flush();
-//			zos.close();
-		} else if(data.getMimeType().equals("application/zip")) {
+		String mimeType = data.getMimeType();
+		String encoding = data.getEncoding();
+		if (mimeType != null && mimeType.equals("text/plain") && encoding.equalsIgnoreCase("base64")) {
+			/*
+			 * TODO this hasn't been tested! (bas64 encoded zip archive)
+			 */
+			// get binary content
+			byte[] content = Base64.decodeBase64(data.getContent().get(1).toString());
+			
+			// create file and output stream
+			ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(fileName));
+			
+			// write content
+			zos.write(content);
+			
+			// flush and close stream
+			zos.flush();
+			zos.close();
+		} else if(mimeType.equals("application/zip")) {
 			String uri = "";
 			
 			for (Object o : data.getContent()) {
@@ -405,6 +414,15 @@ public class ExecuteProcess {
 						/* do nothing */
 					}
 				}
+			}
+			
+			/*
+			 * check if this file already exists in workspace
+			 * else process data, download file and check again
+			 */
+			if (new File(fileName).exists() || uri.startsWith("file://") && uri.endsWith("zip")) {
+				this.extractArchive(uri.replace("file://", ""));
+				return;
 			}
 			
 			// create url
@@ -440,6 +458,8 @@ public class ExecuteProcess {
 		// check the existence of the file and unzip it
 		if (new File(fileName).exists()) {
 			this.extractArchive(fileName);
+		} else {
+			//TODO throw Exception
 		}
 	}
 	
@@ -599,6 +619,8 @@ public class ExecuteProcess {
 		
 		try {
 			Marshaller marshaller = context.createMarshaller();
+			marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
+					new NamespacePrefixMapperImpl());
 			
 			ProcessFailedType failed = new ProcessFailedType();
 			ExceptionReport report = new ExceptionReport();
