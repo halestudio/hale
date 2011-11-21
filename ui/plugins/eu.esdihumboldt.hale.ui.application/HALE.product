@@ -161,6 +161,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.lucene.core"/>
       <plugin id="org.apache.ws.commons.schema"/>
       <plugin id="org.castor.core"/>
       <plugin id="org.castor.xml"/>
@@ -239,7 +240,7 @@ http://www.esdi-community.eu/projects/show/hale
    </plugins>
 
    <configurations>
-      <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="2" />
+      <plugin id="de.cs3d.ui.util.logging.errorlog" autoStart="true" startLevel="0" />
       <plugin id="de.cs3d.util.logging.logback" autoStart="true" startLevel="1" />
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
