@@ -98,9 +98,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 		// handle upload data
 		if (request.getParameter("upload") != null) {
 			// check if the workspace is available
-//			if (session.getAttribute("workspace") == null) {
-				ExecuteProcess.prepareWorkspace(request);
-//			}
+			ExecuteProcess.prepareWorkspace(request);
 			
 			try {
 				Execute exec = this.handleUploadData(request, session.getAttribute("workspace").toString(), writer);
@@ -109,14 +107,15 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 				marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
 						new NamespacePrefixMapperImpl());
 				
-//				StringWriter sw = new StringWriter();
-				marshaller.marshal(exec, writer);
-//				
-//				//
-//				Map<String, String> params = new HashMap<String, String>();
-//				params.put("request", sw.toString());
-//				
-//				ExecuteProcess process = new ExecuteProcess(params, null, request, writer);
+				StringWriter sw = new StringWriter();
+				marshaller.marshal(exec, sw);
+				
+				// generate "virtual" request
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("request", sw.toString());
+				
+				// execute process
+				ExecuteProcess process = new ExecuteProcess(params, response, request, writer);
 			} catch (Exception e) {
 				_log.error(e.getMessage(), "Error during data processing.");
 			}
@@ -217,11 +216,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 							continue;
 						}
 					} else {
-						
 						String fileName = item.getName();
-//						String contentType = item.getContentType();
-//						boolean isInMemory = item.isInMemory();
-//						long sizeInBytes = item.getSize();
 						
 						if (fileName.equals("")) {
 							continue;
@@ -245,7 +240,9 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 						}
 						
 						filePath = "file://"+filePath;
-						mimeType = "application/zip";
+						if (fileName.endsWith("zip")) {
+							mimeType = "application/zip";
+						}
 						
 						// flush and close
 						os.flush();
