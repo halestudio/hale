@@ -126,12 +126,22 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 			if (session.getId() != null && session.getAttribute("workspace") != null) {
 				// delete workspace
 				ExecuteProcess.deleteAll(request);
+			} else if (request.getParameter("id") != null) {
+				// set the given session id
+				session.setAttribute("id", request.getParameter("id"));
+				
+				// create the workspace
+				// this is needed as we can't guess where the workspace is
+				ExecuteProcess.prepareWorkspace(request);
+				
+				// and delete it
+				ExecuteProcess.deleteAll(request);
 			}
 		}
 		// nothing requested, just show the upload form
 		else {
 			try {
-				this.showForm(writer);
+				this.showForm(request, writer);
 			} catch (Exception e) {
 				_log.error(e.getMessage(), "Could not load static form.");
 			}
@@ -147,7 +157,8 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 	 * @param writer outputstream
 	 * @throws Exception if something goes wrong
 	 */
-	private void showForm(PrintWriter writer) throws Exception {
+	private void showForm(HttpServletRequest request, PrintWriter writer) throws Exception {
+		HttpSession session = request.getSession();
 		BufferedReader reader;
 		
 		Bundle bundle = Platform.getBundle(CstWps.ID);
@@ -159,9 +170,13 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 
 		
 		String txt;
+		StringBuilder sb = new StringBuilder();
 		while ((txt = reader.readLine()) != null) {
-			writer.println(txt);
+			sb.append(txt+"\n");
 		}
+		
+		// remove templating and write it to screen
+		writer.print(sb.toString().replace("@SESSIONID@", session.getId()));
 		
 		// close streams
 		reader.close();

@@ -38,7 +38,13 @@ div.multiupload div.list img{
 	cursor:pointer;
 }
 
-
+a {
+	text-decoration: none;
+	color: #000;
+	height: 22px;
+	font-size: 14px;
+	padding:2px;
+}
 </style>
 </head>
 <body>
@@ -122,16 +128,16 @@ div.multiupload div.list img{
 				<p>
 				<input type="submit" />
 				<input type="reset" name="rest" />
-				<input type="button" name="clear" value="Clear Workspace" />
+				<a href="?deleteAll&amp;id=@SESSIONID@">Clear Workspace</a>
 				</p>
 			</fieldset>
 		</form>
 	</div>
 
 <script type="text/javascript">
-	window.addEvent('domready', function(){
+	/*window.addEvent('domready', function(){
 		// new MultiUpload( $( 'upload' ).InputSourceData,0,null,true );
-	});
+	});*/
 </script>
 </body>
 </html>
