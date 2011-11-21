@@ -243,7 +243,7 @@
 			<arg value="-application" />
 			<arg value="org.eclipse.ant.core.antRunner" />
 			<arg value="-buildfile" />
-			<arg value="${eclipse}/plugins/org.eclipse.pde.build_3.6.2.R36x_20110203/scripts/productBuild/productBuild.xml" />
+			<arg value="${eclipse}/plugins/org.eclipse.pde.build_3.7.0.v20110512-1320/scripts/productBuild/productBuild.xml" />
 			<arg value="-Dbuilder=${toString:absoluteCommon}" />
 			<!-- path to build.properties -->
 			<arg value="-DbuildDirectory=${toString:absoluteBuild}" />
@@ -254,7 +254,7 @@
 			<arg value="-DtopLevelElementId=${topLevelElementId}" />
 			<arg value="-Dconfigs=${os},${ws},${arch}" />
 			<classpath>
-				<pathelement location="${eclipse}/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar" />
+				<pathelement location="${eclipse}/plugins/org.eclipse.equinox.launcher_1.2.0.v20110502.jar" />
 			</classpath>
 		</java>
 
@@ -482,7 +482,7 @@
 			<sysproperty key="osgi.test.plugins" value="${plugins}" />
 			<syspropertyset refid="proxy-props" />
 			<classpath>
-				<pathelement path="${plugins}/org.eclipse.osgi_3.6.2.R36x_v20110210.jar" />
+				<pathelement path="${plugins}/org.eclipse.osgi_3.7.1.201111171613.jar" />
 				<!--fileset dir="${plugins}">
 					<include name="de.cs3d.util.osgi.test_*.jar" />
 				</fileset-->
