@@ -53,12 +53,22 @@ div.multiupload div.list img{
 
 				<div class="multiupload">
 					<label for="InputSourceData">InputSourceData</label><br />
-					<input type="file" id="InputSourceData" name="InputSourceData[]" multiple="multiple" />
+					<input type="file" id="InputSourceData" name="SourceData[]" multiple="multiple" />
 				</div>
 				
 				<div class="url">
 					<label>URL</label><br />
-					<input type="text" name="InputSourceDataURL" />
+					<input type="text" name="SourceDataURL" />
+				</div>
+			</fieldset>
+						
+			<fieldset>
+				<legend>SourceXmlSchemaDefinition - Source XML Schema Definition</legend>
+				<p>XSD(s) used to define the source data's GML Application Schema. The first input needs to be the "primary" GML Application Schema.</p>
+
+				<div class="multiupload">
+					<label for="SourceXmlSchemaDefinition">SourceXmlSchemaDefinition</label><br />
+					<input type="file" id="SourceXmlSchemaDefinition" name="SourceXmlSchemaDefinition[]" multiple="multiple" />
 				</div>
 			</fieldset>
 			
@@ -110,7 +120,7 @@ div.multiupload div.list img{
 			<fieldset>
 				<legend>Service</legend>
 				<p>
-				<input type="submit" name="send" />
+				<input type="submit" />
 				<input type="reset" name="rest" />
 				<input type="button" name="clear" value="Clear Workspace" />
 				</p>
