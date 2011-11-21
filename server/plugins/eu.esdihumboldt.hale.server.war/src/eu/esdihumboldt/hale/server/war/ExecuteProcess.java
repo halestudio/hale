@@ -16,6 +16,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -23,6 +24,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
@@ -324,18 +326,34 @@ public class ExecuteProcess {
 					if (o instanceof Element) {
 						// create a element
 						Element element = (Element) o;
-						
-						TransformerFactory transFactory = TransformerFactory.newInstance();
-						Transformer transformer = null;
-						
-						transformer = transFactory.newTransformer();
-						
-						StringWriter buffer = new StringWriter();
-						transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-						
-						transformer.transform(new DOMSource(element), new StreamResult(buffer));
-						
-						String str = buffer.toString();
+						String str;
+						if (!element.getAttribute("xlink:href").equals("") && element.getAttribute("xlink:href").startsWith("file://")) {
+							FileInputStream in = new FileInputStream(element.getAttribute("xlink:href").replace("file://", ""));
+							BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+							String txt;
+							StringBuilder sb = new StringBuilder();
+							while ((txt = reader.readLine()) != null) {
+								sb.append(txt); 
+							}
+							
+							str = sb.toString();
+							
+							// close streams
+							reader.close();
+							in.close();
+						} else {
+							TransformerFactory transFactory = TransformerFactory.newInstance();
+							Transformer transformer = null;
+							
+							transformer = transFactory.newTransformer();
+							
+							StringWriter buffer = new StringWriter();
+							transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+							
+							transformer.transform(new DOMSource(element), new StreamResult(buffer));
+							
+							str = buffer.toString();
+						}
 						
 						// write to disk
 						FileWriter fw = new FileWriter(workspace+identifier+"_"+fileNumber);
@@ -396,7 +414,7 @@ public class ExecuteProcess {
 			// flush and close stream
 			zos.flush();
 			zos.close();
-		} else if(mimeType.equals("application/zip")) {
+		} else if(mimeType != null && mimeType.equals("application/zip")) {
 			String uri = "";
 			
 			for (Object o : data.getContent()) {
@@ -593,6 +611,7 @@ public class ExecuteProcess {
 	
 	/**
 	 * Remove the working directory after the transformation has finished.
+	 * @param request the request
 	 */
 	public static void deleteAll(HttpServletRequest request) {
 		String workspace = request.getSession().getAttribute("workspace").toString();
