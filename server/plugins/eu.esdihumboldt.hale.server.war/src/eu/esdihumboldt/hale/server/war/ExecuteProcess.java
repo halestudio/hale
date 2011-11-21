@@ -222,11 +222,18 @@ public class ExecuteProcess {
 		_log.info("Session ID: "+session.getId());
 		
 		if (!session.getId().isEmpty()) {
-			workspace = Platform.getLocation().toString() + "/tmp/cst_" + session.getId() + "/";
+			workspace = session.getId();
+			
+			// check if a url provided id is given
+			if (session.getAttribute("id") != null) {
+				workspace = session.getAttribute("id").toString();
+			}
 		} else {
 			// this should not happen as this might cause trouble
-			workspace = Platform.getLocation().toString() + "/tmp/cst_" + UUID.randomUUID() + "/";
+			workspace = UUID.randomUUID().toString();
 		}
+		
+		workspace = Platform.getLocation().toString() + "/tmp/cst_" +workspace + "/";
 		
 		// save path in session
 		session.setAttribute("workspace", workspace);
