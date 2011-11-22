@@ -310,21 +310,24 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 			exec.setDataInputs(dataInputType);
 			
 			ResponseFormType formType = new ResponseFormType();
-			ResponseDocumentType docuemntType = new ResponseDocumentType();
+			ResponseDocumentType documentType = new ResponseDocumentType();
 			DocumentOutputDefinitionType type = new DocumentOutputDefinitionType();
+			CodeType targetData = new CodeType();
+			codeType.setValue("TargetData");
+			type.setIdentifier(targetData);
 			
 			if (request.getSession().getAttribute("save").equals("link")) {
 				// display as reference
 				type.setAsReference(true);
-				docuemntType.setStoreExecuteResponse(true);
+				documentType.setStoreExecuteResponse(true);
 			} else {
 				// display on screen
 				type.setAsReference(false);
-				docuemntType.setStoreExecuteResponse(false);
+				documentType.setStoreExecuteResponse(false);
 			}
 			
-			docuemntType.getOutput().add(type);
-			formType.setResponseDocument(docuemntType);
+			documentType.getOutput().add(type);
+			formType.setResponseDocument(documentType);
 			exec.setResponseForm(formType);
 			
 			return exec;
