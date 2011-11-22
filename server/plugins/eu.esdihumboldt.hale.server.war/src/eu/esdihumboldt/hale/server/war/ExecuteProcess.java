@@ -245,8 +245,7 @@ public class ExecuteProcess {
 		
 		// try to create all dirs
 		File work = new File(workspace);
-		work.mkdirs();
-		if(!work.exists()) {
+		if(!work.mkdirs() && !work.exists()) {
 			throw new FileNotFoundException("Could not create directory: "+workspace);
 		}
 		
@@ -527,7 +526,9 @@ public class ExecuteProcess {
 			
 			if (entry.isDirectory()) {
 				// create new directory
-				new File(workFile, entry.getName()).mkdirs();
+				if (!new File(workFile, entry.getName()).mkdirs()) {
+					throw new FileNotFoundException("Could not create directory: "+workFile+"/"+entry.getName());
+				}
 				continue;
 			}
 			
@@ -536,7 +537,10 @@ public class ExecuteProcess {
 			
 			// check if parent directory exists
 			if (!outFile.getParentFile().exists()){
-				outFile.getParentFile().mkdirs();
+				if (!outFile.getParentFile().mkdirs()) {
+					// TODO maybe an Exception should be thrown: could not create parent dir... hope it will work anyway
+					continue;
+				}
 			}
 			
 			// create streams
@@ -588,9 +592,11 @@ public class ExecuteProcess {
 		BufferedReader reader = new BufferedReader(fReader);
 		String txt;
 		String xml = "";
+		StringBuilder sb = new StringBuilder();
 		while ((txt = reader.readLine()) != null) {
-			xml += txt+"\n";
+			sb.append(txt+"\n");
 		}
+		xml = sb.toString();
 		reader.close();
 		fReader.close();
 		
@@ -718,7 +724,7 @@ public class ExecuteProcess {
 	 * @author Andreas Burchert
 	 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
 	 */
-	public class GMLFileFilter implements FilenameFilter {
+	public static class GMLFileFilter implements FilenameFilter {
 		/**
 		 * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
 		 */
