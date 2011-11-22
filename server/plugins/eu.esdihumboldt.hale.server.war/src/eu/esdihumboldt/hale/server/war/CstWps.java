@@ -51,6 +51,11 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	public static final String ID = "eu.esdihumboldt.hale.server.war";
 	
 	/**
+	 * Service url.
+	 */
+	public static final String SERVICEURL = "http://localhost:8080/";
+	
+	/**
 	 * @see javax.servlet.http.HttpServlet#doGet
 	 */
 	@Override
@@ -130,9 +135,12 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		reader = new BufferedReader(new InputStreamReader(in));
 		
 		String txt;
+		StringBuilder sb = new StringBuilder();
 		while ((txt = reader.readLine()) != null) {
-			writer.println(txt);
+			sb.append(txt+"\n");
 		}
+		
+		writer.print(sb.toString().replace("FIXME", CstWps.SERVICEURL));
 		
 		// close streams
 		reader.close();
