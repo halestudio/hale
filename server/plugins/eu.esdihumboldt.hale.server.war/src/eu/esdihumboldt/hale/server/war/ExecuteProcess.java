@@ -62,16 +62,21 @@ import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.server.war.ows.ExceptionReport;
 import eu.esdihumboldt.hale.server.war.ows.ExceptionType;
 import eu.esdihumboldt.hale.server.war.ows.LanguageStringType;
+import eu.esdihumboldt.hale.server.war.ows.ReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
 import eu.esdihumboldt.hale.server.war.wps.DataType;
+import eu.esdihumboldt.hale.server.war.wps.DocumentOutputDefinitionType;
 import eu.esdihumboldt.hale.server.war.wps.Execute;
 import eu.esdihumboldt.hale.server.war.wps.ExecuteResponse;
 import eu.esdihumboldt.hale.server.war.wps.ExecuteResponse.ProcessOutputs;
 import eu.esdihumboldt.hale.server.war.wps.InputType;
 import eu.esdihumboldt.hale.server.war.wps.OutputDataType;
+import eu.esdihumboldt.hale.server.war.wps.OutputReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ProcessBriefType;
 import eu.esdihumboldt.hale.server.war.wps.ProcessFailedType;
+import eu.esdihumboldt.hale.server.war.wps.ResponseDocumentType;
+import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
 import eu.esdihumboldt.hale.server.war.wps.StatusType;
 
 /**
@@ -288,7 +293,24 @@ public class ExecuteProcess {
 			throw new Exception("Identifier is not supported!");
 		}
 		
+		// data inputs
 		DataInputsType dI = exec.getDataInputs();
+		
+		// check for ResponseForm
+		ResponseFormType responseFormType = exec.getResponseForm();
+		if (responseFormType != null) {
+			boolean dataAsReference = false;
+			ResponseDocumentType documentType = responseFormType.getResponseDocument();
+			dataAsReference = dataAsReference | documentType.isStoreExecuteResponse();
+			
+			for (DocumentOutputDefinitionType t : documentType.getOutput()) {
+				dataAsReference = dataAsReference & t.isAsReference();
+			}
+			
+			if (dataAsReference) {
+				request.getSession().setAttribute("save", "link");
+			}
+		}
 		
 		// iterate through data
 		for (InputType t : dI.getInput()) {
@@ -369,6 +391,8 @@ public class ExecuteProcess {
 					}
 				}
 			}
+			
+			//
 		}
 	}
 	
@@ -580,6 +604,19 @@ public class ExecuteProcess {
 		data.getTitle().add(lst);
 //		data.getAbstract().add(lst);
 
+		if (request.getSession().getAttribute("save").equals("link")) {
+			File result = new File(outputFile);
+			String href = CstWps.SERVICEURL+"download?id="+request.getSession().getId()+"&amp;file="+result.getName();
+			
+			ReferenceType ref = new ReferenceType();
+			ref.setHref(href);
+			
+			OutputReferenceType outputReferenceType = new OutputReferenceType();
+			outputReferenceType.setHref(href);
+			
+			data.setReference(outputReferenceType);
+		}
+		
 		pOut.getOutput().add(data);
 		resp.setProcessOutputs(pOut);
 		resp.setLang("en-CA"); // TODO support different languages
@@ -587,7 +624,7 @@ public class ExecuteProcess {
 		resp.setVersion("1.0.0");
 		resp.setProcess(pbt);
 		resp.setStatus(statusType);
-//		resp.setServiceInstance("url.of.getcapabilities.wps"); // FIXME set to a real URL from GetCapabilities
+		resp.setServiceInstance(CstWps.SERVICEURL); // FIXME set to a real URL from GetCapabilities
 		
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
