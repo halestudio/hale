@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-nl en_GB -clean</programArgs>
-      <vmArgs>-Xmx512m</vmArgs>
+      <vmArgs>-Xmx720m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -79,7 +79,7 @@
       <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst.corefunctions"/>
-      <plugin id="eu.esdihumboldt.cst.hale" fragment="true"/>
+      <plugin id="eu.esdihumboldt.cst.hale"/>
       <plugin id="eu.esdihumboldt.hale"/>
       <plugin id="eu.esdihumboldt.hale.cache"/>
       <plugin id="eu.esdihumboldt.hale.cache.test" fragment="true"/>

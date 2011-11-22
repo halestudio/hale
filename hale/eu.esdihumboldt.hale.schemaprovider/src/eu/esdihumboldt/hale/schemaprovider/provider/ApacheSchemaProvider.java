@@ -692,7 +692,7 @@ public class ApacheSchemaProvider
 		
 		// Set of include locations
 		Set<String> includes = new HashSet<String>();
-		//XXX
+		// Set of imports that should be treated as includes and searched for FeatureTypes
 		Set<String> ftIncludes = new HashSet<String>();
 		
 		// handle imports
@@ -716,8 +716,8 @@ public class ApacheSchemaProvider
 				if (imp instanceof XmlSchemaInclude) {
 					includes.add(location);
 				}
-				//XXX
-				else if ((depth < 5 )) { // &&)
+				// import to treat like include for FeatureTypes
+				else if ((depth < 5 )) { //TODO configurable depth? // &&)
 					//importedSchema.getTargetNamespace().contains("geosciml") ||
 					//importedSchema.getTargetNamespace().contains("http://inspire.jrc.ec.europa.eu/schemas/ge"))) {
 					ftIncludes.add(location);
@@ -751,7 +751,7 @@ public class ApacheSchemaProvider
 					schemaAttributes.putAll(entry.getValue().getSchemaAttributes());
 					schemaAttributeGroups.putAll(entry.getValue().getSchemaAttributeGroups());
 				}
-				//XXX
+				// handle imports to search for FeatureTypes
 				else if (ftIncludes.contains(entry.getKey())) {
 					// add only feature types to result
 					for (Entry<Name, TypeDefinition> typeEntry : entry.getValue().getTypes().entrySet()) {
@@ -770,9 +770,6 @@ public class ApacheSchemaProvider
 							importedElements.put(elementEntry.getKey(), elementEntry.getValue());
 						}
 					}
-					
-//					featureTypes.putAll(entry.getValue().getTypes());
-//					elements.putAll(entry.getValue().getElements());
 					
 					// imported attributes
 					importedSchemaAttributes.putAll(entry.getValue().getSchemaAttributes());
