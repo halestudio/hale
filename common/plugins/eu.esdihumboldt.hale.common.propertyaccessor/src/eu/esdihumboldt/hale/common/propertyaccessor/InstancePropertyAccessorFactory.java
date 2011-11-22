@@ -11,7 +11,7 @@ import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
- * @author Basti
+ * @author Sebastian Reinhardt
  *
  */
 public class InstancePropertyAccessorFactory implements PropertyAccessorFactory {
@@ -43,9 +43,7 @@ public class InstancePropertyAccessorFactory implements PropertyAccessorFactory 
         	if ( object instanceof Instance ) {
         		
         			return true;
-        			
-        			//the old way
-        			//return ((Instance) object).getProperty(new QName(xpath)) != null;
+        	
         	}
         	
         	else return false;
@@ -55,8 +53,6 @@ public class InstancePropertyAccessorFactory implements PropertyAccessorFactory 
         	
         	if ( object instanceof Instance ) {
         		
-        		//theold way
-        		//Object[] property = ((Instance) object).getProperty(new QName(xpath));
         		
         		return PropertyResolver.getValues((Instance)object, xpath);
         			
