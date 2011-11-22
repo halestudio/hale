@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.convert.ConversionService;
 
@@ -74,16 +75,11 @@ public class PropertyResolverTest {
 				getClass().getResource("/data/shiporder/shiporder.xsd").toURI(),
 				getClass().getResource("/data/shiporder/shiporder.xml").toURI());
 		
-//		String ns = "http://www.example.com";
-		int size = instances. size();
 		ResourceIterator<Instance> it = instances.iterator();
 		assertTrue(it.hasNext());
 		
 		Instance instance = it.next();
 		assertNotNull(instance);
-			
-	//	Filter filter = CQL.toFilter("orderperson = John Smith");	
-	//	assertTrue(filter.evaluate(instance));
 		
 		TypeDefinition test = instance.getDefinition().getChildren().iterator().next().asProperty().getParentType();
 		
@@ -104,7 +100,7 @@ public class PropertyResolverTest {
 		it.close();
 	}
 	
-	@Test
+	@Ignore
 	public void testComplexInstances() throws Exception {
 		
 		SchemaReader reader = new XmlSchemaReader();
@@ -171,9 +167,6 @@ public class PropertyResolverTest {
 		IOReport instanceReport = instanceReader.execute(null);
 		assertTrue(instanceReport.isSuccess());
 		
-//		 Collection<? extends TypeDefinition> coll = sourceSchema.getTypes();
-//		int size = coll.size();
-		 
 		return instanceReader.getInstances();	
 	}
 
