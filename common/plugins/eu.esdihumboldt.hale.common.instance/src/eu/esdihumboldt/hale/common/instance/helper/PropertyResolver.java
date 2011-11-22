@@ -28,15 +28,23 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 
 
 /**
- * TODO Type description
+ * This class provides plubic static methods for resolving propertys from instances.
+ * A cache provides that former accessed propertys are found faster and the programm 
+ * does not need to search over the whole definitiontree of the instances again.
+ * Note: stringquery or querypath in comments references to a path of indicies reassambling a path of definitions inside the instance-definition-tree
  * 
  * @author Sebastian Reinhardt
  */
 public class PropertyResolver {
 
+	
+	//the cache for storing found paths in instance definitions for certain querys
 	private static Map<QueryDefinitionIndex, LinkedList<String>> definitioncache = new HashMap<QueryDefinitionIndex, LinkedList<String>>();
 
 	/**
+	 * method for retrieving values from instances using a certain pathquery for searching trough the instance definitions
+	 * calls methods for traversing over the definitiontree
+	 * 
 	 * @param instance
 	 * @param propertyPath
 	 * @return
@@ -143,6 +151,12 @@ public class PropertyResolver {
 	
 	
 
+	/**
+	 * Method for spliting up the path in the given query. The Method splits the String when a dot occurs.
+	 * Are there an URL-parts inside the path, all dots inside thos parts are ignored ( checks of "{}" )
+	 * @param propertyPath The definitionpath part of the query
+	 * @return An arraylist of split up parts of the path
+	 */
 	private static ArrayList<String> splitPath(String propertyPath) {
 
 		ArrayList<String> pathParts = new ArrayList<String>();
@@ -152,13 +166,15 @@ public class PropertyResolver {
 		for (int i = 0; i < propertyPath.length(); i++) {
 
 			char c = propertyPath.charAt(i);
-
+			
+			//check if there is an URL-part
 			if (c == '{')
+				//dont split if a dot occurs now
 				dotsplit = false;
 			else if (c == '}')
 				dotsplit = true;
-
-			if (dotsplit == true && c == '.') {
+				
+			if (dotsplit == true && (c == '/' || c == '.')) {
 
 				pathParts.add(propertyPath.substring(lastSplitPosition, i));
 				lastSplitPosition = i + 1;
@@ -196,6 +212,13 @@ public class PropertyResolver {
 
 	}
 
+	
+	/**
+	 * this method starts the analysis of the instance-definition-tree
+	 * @param instance the given instance we are analysing
+	 * @param qdi the cache index object with the querypath 
+	 * @return true, if the cache is not empty for the given cache index object after the analysis
+	 */
 	private static boolean analyzeDefinition(Instance instance, QueryDefinitionIndex qdi) {
 
 		ArrayList<QName> qnames = getQNamesFromPath(qdi.getQuery());
@@ -225,9 +248,12 @@ public class PropertyResolver {
 	}
 
 	/**
-	 * @param instance
-	 * @param query
-	 * @return
+	 * Determines of the given Instance contains certain definitions questioned by a given stringquery.
+	 * If the cache allready contains this special path of the instance-definition-tree, true will be returned,
+	 * else the method calls the analysismethods for searching of the definition-tree
+	 * @param instance the given instance we are searching in
+	 * @param query the given pathquery we are searching inside the definition-tree
+	 * @return true if the path was found, else false
 	 */
 	public static boolean hasProperty(Instance instance, String query) {
 
@@ -246,10 +272,11 @@ public class PropertyResolver {
 	}
 
 	/**
-	 * @param children
-	 * @param path
-	 * @param qci
-	 * @return
+	 * this method can be used to search a single index over the whole instance-definition-tree (for example "*"querys)
+	 * the method writes the found paths into the cache
+	 * @param children a list of Childdefinitions from the rootdefinition of the instance-definition-tree
+	 * @param path the list of QNames split up from the original querypath
+	 * @param qci the cacheindex produced from the instance root definition and the querypath
 	 */
 	private static void analyzeSimpleQueryChildDefinition(
 			Collection<? extends ChildDefinition<?>> children,
@@ -265,9 +292,7 @@ public class PropertyResolver {
 		while (childIterator.hasNext()) {
 
 			ChildDefinition<?> child = childIterator.next();
-			//System.out.println("Adding to queue: " + child.getName().toString());
 			QueueDefinitionItem queueItem = new QueueDefinitionItem(child, child.getName());
-			//queueItem.addQname(child.getParentType().getName());
 			propertyqueue.add(queueItem);
 			
 		}
@@ -275,9 +300,6 @@ public class PropertyResolver {
 		while (!propertyqueue.isEmpty()) {
 
 			QueueDefinitionItem currentItem = propertyqueue.poll();
-			
-			//System.out.println("Taking from Queue: " + currentItem.getDefinition().getName().toString());
-			
 			
 			if (compareQName(current, currentItem.getDefinition().getName())
 					&& isProperty(currentItem.getDefinition())) {
@@ -309,9 +331,7 @@ public class PropertyResolver {
 				while (tempit.hasNext()) {
 
 					ChildDefinition<?> tempdef = tempit.next();
-					//System.out.println("Existing child: " + tempdef.getName().toString());
-					
-					//TODO loop-prevention - still not working
+
 					for(ArrayList<QName> loop : currentItem.getLoopQNames()){
 						if(loop.contains(tempdef.getName())){
 							continue;
@@ -333,8 +353,7 @@ public class PropertyResolver {
 					
 					QueueDefinitionItem qudi = new QueueDefinitionItem(
 							tempdef, tempdef.getName());
-			//TODO hier ist ein fehler		
-					
+
 					qudi.addQnames(currentItem.getQnames());
 					
 					
@@ -352,6 +371,15 @@ public class PropertyResolver {
 		
 	}
 
+	/**
+	 * this method searches for the indices given from the querypath inside the instance-definition-tree
+	 * but only for one iteration. this is used to avoid recursion and is used by the analyzeSpecialQueryChild method.
+	 * the indices must be children in order to their appearance in the path. only groups may be between them.
+	 * 
+	 * @param current the current searched index as a QName
+	 * @param qudi a queue item of the current found index and its definition
+	 * @return returns a queue item of the searched index, if it has been found
+	 */
 	private static QueueDefinitionItem analyzeSubChild(QueueDefinitionItem qudi, QName current){
 		
 
@@ -364,7 +392,6 @@ public class PropertyResolver {
 			while (childIterator.hasNext()) {
 
 				ChildDefinition<?> child = childIterator.next();
-				//System.out.println("Adding to queue: " + child.getName().toString());
 				QueueDefinitionItem queueItem = new QueueDefinitionItem(child, child.getName());
 				
 				queueItem.addQnames(qudi.getQnames());
@@ -388,25 +415,14 @@ public class PropertyResolver {
 			if (isGroup(currentItem.getDefinition())) {
 
 				Iterator<? extends ChildDefinition<?>> tempit; 
-				
-				//if(isGroup(currentItem.getDefinition())){
 					
 					tempit = currentItem
 							.getDefinition().asGroup().getDeclaredChildren().iterator();
-					
-				//}
-				
-	/*			else{
-					tempit = currentItem.getDefinition().asProperty().getPropertyType().getChildren()
-							.iterator();
-				}*/
+	
 
 				while (tempit.hasNext()) {
 
 					ChildDefinition<?> tempdef = tempit.next();
-					//System.out.println("Existing child: " + tempdef.getName().toString());
-					
-					//TODO loop-prevention - still not working
 					
 					if(currentItem.getLoopQNames().contains(tempdef.getName())){
 						continue;
@@ -430,7 +446,6 @@ public class PropertyResolver {
 					
 					QueueDefinitionItem quditemp = new QueueDefinitionItem(
 							tempdef, tempdef.getName());
-			//TODO hier ist ein fehler		
 
 					quditemp.addQnames(currentItem.getQnames());
 					
@@ -453,7 +468,14 @@ public class PropertyResolver {
 	}
 		
 
-	
+	/**
+	 * this method searches for the indices given from the querypath inside the instance-definition-tree
+	 * the indices must be children in order to their appearance in the path. only groups may be between them.
+	 * the method writes the found paths into the cache
+	 * @param children a list of Childdefinitions from the rootdefinition of the instance-definition-tree
+	 * @param path the list of QNames split up from the original querypath
+	 * @param qci the cacheindex produced from the instance root definition and the querypath
+	 */
 	private static void analyzeSpecialQueryChildDefinition(
 			Collection<? extends ChildDefinition<?>> children,
 			ArrayList<QName> path, QueryDefinitionIndex qdi) {
@@ -468,9 +490,7 @@ public class PropertyResolver {
 		while (childIterator.hasNext()) {
 
 			ChildDefinition<?> child = childIterator.next();
-			//System.out.println("Adding to queue: " + child.getName().toString());
 			QueueDefinitionItem queueItem = new QueueDefinitionItem(child, child.getName());
-			//queueItem.addQname(child.getParentType().getName());
 			propertyqueue.add(queueItem);
 		}
 
@@ -498,30 +518,19 @@ public class PropertyResolver {
 			
 
 			else if (isGroup(currentItem.getDefinition())) {
-				//isInstance(currentItem.getDefinition()) ||
 				
 				
 				Iterator<? extends ChildDefinition<?>> tempit; 
 				
-				//if(isGroup(currentItem.getDefinition())){
-					
+
 					tempit = currentItem
 							.getDefinition().asGroup().getDeclaredChildren().iterator();
 					
-				//}
-				
-				/*else{
-					tempit = currentItem.getDefinition().asProperty().getPropertyType().getChildren()
-							.iterator();
-				}*/
 
 				while (tempit.hasNext()) {
 
 					ChildDefinition<?> tempdef = tempit.next();
-					//System.out.println("Existing child: " + tempdef.getName().toString());
-					
-					//TODO loop-prevention - still not working correctly
-					
+
 					if(currentItem.getLoopQNames().contains(tempdef.getName())){
 						continue;
 					}
@@ -541,7 +550,6 @@ public class PropertyResolver {
 					
 					QueueDefinitionItem qudi = new QueueDefinitionItem(
 							tempdef, tempdef.getName());
-			//TODO hier ist ein fehler		
 					
 
 					qudi.addQnames(currentItem.getQnames());
@@ -582,15 +590,28 @@ public class PropertyResolver {
 		else return false;
 	}
 	
+	
+	
+	/**
+	 * Method for easy comparing of two QName objects. 
+	 * The first QName can miss the URI part. Then only the local parts getting compared.
+	 * @param qname1 the QName (usually from the filterquery), wich can miss an URI part
+	 * @param qname2 the second QName
+	 * @return true, if both are equal or if the first QName doesn't have an URI part 
+	 *         and poth localparts are equal. Else false...
+	 */
 	private static boolean compareQName(QName qname1, QName qname2){
 		
+		//contains the first QName an URI part?
 		if(qname1.getNamespaceURI().isEmpty()){
 			
+			//only compare the local parts
 			if(qname1.getLocalPart().equals(qname2.getLocalPart())){
 				return true;
 			}
 			else return false;
 		}
+		//first Qname does contain the URI part -> compare them completely
 		else if (qname1.equals(qname2)){
 			return true;
 		}
@@ -599,6 +620,14 @@ public class PropertyResolver {
 	}
 	
 	
+	
+	/**
+	 * Gets a certain definitionpath from the Cache by generating the cacheindex object 
+	 * from a given Instance (its Definitions) and the pathquery
+	 * @param instance the given instance wich should contain the definitions mentioned in the paths
+	 * @param query the pathstring from the filterquery
+	 * @return a list of Strings with possible paths inside the definitions of the instance
+	 */
 	public static LinkedList<String> getKnownQueryPath(Instance instance, String query){
 		
 		QueryDefinitionIndex qdi = new QueryDefinitionIndex(instance.getDefinition(), query);
