@@ -15,14 +15,12 @@ package eu.esdihumboldt.hale.server.war.generic;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +36,9 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.eclipse.core.internal.jobs.Worker;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -59,10 +55,15 @@ import eu.esdihumboldt.hale.server.war.ows.ReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
 import eu.esdihumboldt.hale.server.war.wps.DataType;
+import eu.esdihumboldt.hale.server.war.wps.DocumentOutputDefinitionType;
 import eu.esdihumboldt.hale.server.war.wps.Execute;
 import eu.esdihumboldt.hale.server.war.wps.InputType;
+import eu.esdihumboldt.hale.server.war.wps.ResponseDocumentType;
+import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
 
 /**
+ * This implements a gernic web client for CST-WPS.
+ * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -101,7 +102,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 			ExecuteProcess.prepareWorkspace(request);
 			
 			try {
-				Execute exec = this.handleUploadData(request, session.getAttribute("workspace").toString(), writer);
+				Execute exec = this.handleUploadData(request, session.getAttribute("workspace").toString());
 				
 				Marshaller marshaller = context.createMarshaller();
 				marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
@@ -115,7 +116,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 				params.put("request", sw.toString());
 				
 				// execute process
-				ExecuteProcess process = new ExecuteProcess(params, response, request, writer);
+				new ExecuteProcess(params, response, request, writer);
 			} catch (Exception e) {
 				_log.error(e.getMessage(), "Error during data processing.");
 			}
@@ -154,6 +155,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 	/**
 	 * Loads the static form.
 	 * 
+	 * @param request the request
 	 * @param writer outputstream
 	 * @throws Exception if something goes wrong
 	 */
@@ -189,7 +191,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 		this.doGet(request, response);
 	}
 	
-	private Execute handleUploadData(HttpServletRequest request, String path, PrintWriter writer) throws Exception {
+	private Execute handleUploadData(HttpServletRequest request, String path) throws Exception {
 		if (ServletFileUpload.isMultipartContent(request)) {
 			Execute exec = new Execute();
 			
@@ -221,6 +223,12 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 					fieldName = fieldName.replace("URL", "");
 					String filePath = "";
 					String mimeType = "";
+					
+					// display check
+					if (fieldName.equals("save")) {
+						// save the value to session
+						request.getSession().setAttribute("save", item.getString());
+					}
 					
 					// Process a regular form field
 					if (item.isFormField()) {
@@ -300,6 +308,24 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 			
 			//
 			exec.setDataInputs(dataInputType);
+			
+			ResponseFormType formType = new ResponseFormType();
+			ResponseDocumentType docuemntType = new ResponseDocumentType();
+			DocumentOutputDefinitionType type = new DocumentOutputDefinitionType();
+			
+			if (request.getSession().getAttribute("save").equals("link")) {
+				// display as reference
+				type.setAsReference(true);
+				docuemntType.setStoreExecuteResponse(true);
+			} else {
+				// display on screen
+				type.setAsReference(false);
+				docuemntType.setStoreExecuteResponse(false);
+			}
+			
+			docuemntType.getOutput().add(type);
+			formType.setResponseDocument(docuemntType);
+			exec.setResponseForm(formType);
 			
 			return exec;
 		}
