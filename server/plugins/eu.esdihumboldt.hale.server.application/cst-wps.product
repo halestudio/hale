@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CST Web Processing Service" application="org.eclipse.ui.ide.workbench" version="2.1.1" useFeatures="false" includeLaunchers="true">
+<product name="CST Web Processing Service" id="eu.esdihumboldt.hale.server.application.product" application="org.eclipse.ui.ide.workbench" version="2.1.1" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-consoleLog -console</programArgs>
-      <vmArgs>-Declipse.ignoreApp=true -Dosgi.noShutdown=true</vmArgs>
+      <vmArgs>-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Xmx1024m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
