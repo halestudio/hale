@@ -27,6 +27,7 @@ ul#recent-files-list {
 
 ul#recent-files-list li {
   font-weight: normal;
+  margin-bottom: 2pt;
 }
 
 ul#recent-files-list a:hover {
