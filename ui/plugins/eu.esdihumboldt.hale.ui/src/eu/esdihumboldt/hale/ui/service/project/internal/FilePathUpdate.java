@@ -85,8 +85,8 @@ public class FilePathUpdate {
 	
 	// Analyses the old and the new project path and tries to return the new one
 	private static String analysePaths(URI oldlocation, URI newlocation){
-		String old = oldlocation.getPath().substring(1);
-		String newloc = newlocation.getPath().substring(1);
+		String old = oldlocation.getRawPath().substring(1);
+		String newloc = newlocation.getRawPath().substring(1);
 //		String data = old.substring(old.lastIndexOf("/") +1);
 		old = old.substring(0, old.lastIndexOf("/"));
 		String newpath = newloc.substring(0, newloc.lastIndexOf("/"));

@@ -157,7 +157,6 @@ public class ProjectServiceImpl extends AbstractProjectService
 		
 		// create advisors
 		openProjectAdvisor = new AbstractIOAdvisor<ProjectReader>() {
-			
 			@Override
 			public void updateConfiguration(ProjectReader provider) {
 				super.updateConfiguration(provider);
@@ -210,33 +209,30 @@ public class ProjectServiceImpl extends AbstractProjectService
 				String loc = newProjectLoc.toASCIIString();
 				String location = loc.substring(loc.indexOf("/")+1, loc.length());
 				
-				FilePathUpdate update = new FilePathUpdate(
-						URI.create(exptargetfile), newProjectLoc);
+				FilePathUpdate update = new FilePathUpdate(URI.create(exptargetfile), newProjectLoc);
 				
 				if(!location.equals(exptarget)){
 					List<IOConfiguration> configuration = main.getResources();
 					for(IOConfiguration providerconf : configuration){
 						Map<String, String> conf = providerconf.getProviderConfiguration();
 						String impsrc = conf.get(ImportProvider.PARAM_SOURCE);
-						String target = impsrc.substring(impsrc.lastIndexOf("/") + 1);
-						String extension = "*" + impsrc.substring(impsrc.lastIndexOf("."));
-						String[] extensions = new String[]{extension};
 						try { 
 							URI uri = new URI(impsrc);
 							File file = new File(uri);
 							if(!file.exists()){
 								String newsrc = update.changePath(URI.create(impsrc));
-								
 								URI newuri = new URI(newsrc);
 								File newfile = new File(newuri);
-								if(newfile.exists()){
-									conf.remove(ImportProvider.PARAM_SOURCE);
+								if(newfile.exists()) 
 									conf.put(ImportProvider.PARAM_SOURCE, newsrc);
-								} else {
+								else {
 									MessageBox error = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
 									error.setText("Loading Error");
 									error.setMessage("Can't load " + impsrc);
 									error.open();
+									String target = impsrc.substring(impsrc.lastIndexOf("/") + 1);
+									String extension = "*" + impsrc.substring(impsrc.lastIndexOf("."));
+									String[] extensions = new String[]{extension};
 									FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN | SWT.SHEET);
 									filedialog.setFilterExtensions(extensions);
 									filedialog.setFileName(target);
@@ -259,7 +255,6 @@ public class ProjectServiceImpl extends AbstractProjectService
 						}
 					}
 				}
-
 			}
 		};
 							
