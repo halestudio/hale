@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HALE Infocenter" id="eu.esdihumboldt.hale.ui.help.InfoCenter" application="org.eclipse.help.base.infocenterApplication" version="2.5.0" useFeatures="false" includeLaunchers="true">
+<product name="HALE Infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="org.eclipse.help.base.infocenterApplication" version="2.5.0" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -31,9 +31,10 @@
       <plugin id="de.cs3d.util.logging"/>
       <plugin id="de.cs3d.util.logging.logback"/>
       <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.doc.application"/>
+      <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.ui.help"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="jcl.over.slf4j"/>
