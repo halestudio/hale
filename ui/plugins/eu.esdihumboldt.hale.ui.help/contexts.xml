@@ -1,16 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <contexts>
-
-	<context
-		id="newMessageDialog">
-		<description>Create a new Message</description>
-		<topic href="html/dialogs/newMessageDialog.html" label="Create a new Message" />
-		</context> 
-
-	<context
-		id="newMessageDialog_recipients">
-		<description>About the Recipients field:</description>
-		<topic href="html/dialogs/newMessageDialog.html#recipients"	label="What are recipients?" />
-		<topic href="html/dialogs/newMessageDialog.html" label="Create a new message"/>
-	</context>
-	
+   <context id="schemas">
+      <description>bla description</description>
+      <topic href="html/concepts/what_is_schema.html" label="What is a Schema ?"/>
+   </context>
 </contexts>

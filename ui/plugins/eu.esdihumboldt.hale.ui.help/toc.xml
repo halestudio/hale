@@ -1,8 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="HALE Help">
-   <link toc="../eu.esdihumboldt.hale.ui.views.data/toc.views.xml"/>
-   <anchor id="dataViewsHelp"/>
-   <topic label="View Data Help">
-      <anchor id="dataViewsHelp"/>
+<toc label="HALE User Guide">
+   <topic label="Introduction">
+      <topic href="html/introduction_project.html" label="Introduction to the Project">
+      </topic>
+      <topic href="html/introduction_HALE.html" label="Introduction to HALE">
+         <topic href="html/introduction_HALE/data_harmonisation.html" label="Supporting Data harmonisation">
+         </topic>
+         <topic href="html/introduction_HALE/terminology.html" label="Terminology">
+         </topic>
+      </topic>
+   </topic>
+   <topic label="Getting Started with HALE">
+      <topic href="html/getting_started/confWorkbench.html" label="Configuring your Workbench">
+      </topic>
+      <topic href="html/getting_started/main_workflow.html" label="Main Workflow">
+      </topic>
+      <topic label="Loading and browsing schemas">
+         <topic href="html/dummy.html" label="Using multiple source schemas">
+         </topic>
+         <topic href="html/dummy.html" label="Troubleshooting Schema Loading">
+         </topic>
+         <topic href="html/dummy.html" label="Exploring a loaded schema">
+         </topic>
+      </topic>
+      <topic label="Mapping schema elements">
+         <topic href="html/dummy.html" label="Available attributive transformation functions">
+         </topic>
+         <topic href="html/dummy.html" label="Using the Mapping View">
+         </topic>
+         <topic href="html/dummy.html" label="Examples for typical mapping cases">
+         </topic>
+         <topic href="html/dummy.html" label="Renaming Attributes">
+         </topic>
+         <topic href="html/dummy.html" label="Reclassification">
+         </topic>
+         <topic href="html/dummy.html" label="Using Code Lists">
+         </topic>
+      </topic>
+      <topic label="Working with tasks">
+         <topic href="html/dummy.html" label="Configuring Task Creation">
+         </topic>
+      </topic>
+      <topic label="Working with a source data set">
+         <topic href="html/dummy.html" label="Troubleshooting source data loading">
+         </topic>
+         <topic href="html/dummy.html" label="The Map Viewer">
+         </topic>
+         <topic href="html/dummy.html" label="Styling of your data">
+         </topic>
+         <link toc="../eu.esdihumboldt.hale.ui.views.data/toc.views.xml"/>
+         <topic href="html/dummy.html" label="Saving the transformed data">
+         </topic>
+      </topic>
+      <topic label="Saving and loading projects and alignments">
+         <topic href="html/dummy.html" label="Exporting your mapping">
+         </topic>
+         <topic href="html/dummy.html" label="Saving and Loading of Alignment Projects">
+         </topic>
+      </topic>
+   </topic>
+   <topic label="Concepts">
+      <topic href="html/concepts/what_is_schema.html" label="What is a Schema?">
+      </topic>
+      <topic href="html/dummy.html" label="What is an Instance?">
+      </topic>
+      <topic href="html/dummy.html" label="What is a Cell?">
+      </topic>
+   </topic>
+   <topic label="Views">
+      <link toc="Link from other bundles"/>
+      <topic href="html/views/map_viewer.html" label="Map Viewer">
+      </topic>
+      <topic href="html/views/styling_data.html" label="Styling of your Data">
+      </topic>
+      <topic href="html/views/data_views.html" label="Data Views">
+         <topic href="html/views/data_views/source_data.html" label="Source Data">
+         </topic>
+         <topic href="html/views/data_views/transformed_data.html" label="Transformed Data">
+         </topic>
+      </topic>
+   </topic>
+   <topic label="Tasks">
+      <topic href="html/dummy.html" label="How to ... ?">
+      </topic>
+      <topic label="Schemas">
+         <topic href="html/tasks/schemas/load_browse_schema.html" label="Loading and browsing schemas">
+         </topic>
+         <topic href="html/tasks/schemas/multiple_source_schemas.html" label="Using multiple source schemas">
+         </topic>
+         <topic href="html/tasks/schemas/troubleshooting_schema.html" label="Troubleshooting Schema Loading">
+         </topic>
+         <topic href="html/tasks/schemas/exploring_schema.html" label="Exploring a loaded Schema">
+         </topic>
+         <topic href="html/tasks/schemas/mapping_schema_elem.html" label="Mapping schema elements">
+         </topic>
+      </topic>
+      <topic label="Datas">
+         <topic href="html/tasks/datas/working_source_data.html" label="Working with a source data set">
+         </topic>
+         <topic href="html/tasks/datas/troubleshooting_source_data.html" label="Troubleshooting source data loading">
+         </topic>
+      </topic>
+   </topic>
+   <topic label="Reference">
+      <topic href="html/dummy.html" label="Functions">
+      </topic>
+   </topic>
+   <topic label="Tips and Tricks">
+      <link toc="Link from other bundles"/>
+   </topic>
+   <topic href="html/dummy.html" label="Point of Contact">
    </topic>
 </toc>
