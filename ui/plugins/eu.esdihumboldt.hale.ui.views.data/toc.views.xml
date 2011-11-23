@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="Views Data Help">
-   <topic href="html/data.html" label="Views Data Help">
-   </topic>
-   <topic label="SubTopic">
-      <anchor id="sub"/>
-   </topic>
-   <topic href="html/LinkedHelp.html" label="HelpText with Links">
+<toc label="The Data Views">
+   <topic label="The Data Views">
+      <topic href="html/data.html" label="Data">
+      </topic>
+      <topic href="html/LinkedHelp.html" label="Text with Links">
+      </topic>
    </topic>
 </toc>

@@ -370,6 +370,11 @@
             schemeId="eu.esdihumboldt.hale.ui.application.bindings"
             sequence="M1+E">
       </key>
+      <key
+            commandId="org.eclipse.ui.help.displayHelp"
+            schemeId="eu.esdihumboldt.hale.ui.application.bindings"
+            sequence="F1">
+      </key>
    </extension>
 
 </plugin>

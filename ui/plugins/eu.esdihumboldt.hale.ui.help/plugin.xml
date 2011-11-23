@@ -17,28 +17,4 @@
             primary="true">
       </toc>
    </extension>
-<extension
-point="org.eclipse.ui.menus">
-<menuContribution
-locationURI="menu:org.eclipse.ui.main.menu">
-<menu
-      id="help"
-      label="Hilfe">
-<command
-      commandId="org.eclipse.ui.help.displayHelp"
-      id="help"
-      label="Help"
-      style="push">
-</command>
-</menu>
-</menuContribution>
-</extension>
-<extension
-point="org.eclipse.ui.bindings">
-<key
-commandId="org.eclipse.ui.help.displayHelp"
-schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-sequence="F1">
-</key>
-</extension>
 </plugin>
