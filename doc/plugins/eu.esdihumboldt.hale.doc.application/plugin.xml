@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
-<plugin
-   id="org.eclipse.helprcp.help"
-   name="Help Content"
-   version="1.0.0.qualifier"
->
-   <requires>
-      <import plugin="org.eclipse.ui" version="3.6.2"/>
-      <import plugin="org.eclipse.help.ui" version="3.5.3"/>
-   </requires>
-
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc.xml"
-            primary="true">
-      </toc>
-   </extension>
+<plugin>
    <extension
          id="InfoCenter"
          point="org.eclipse.core.runtime.products">
