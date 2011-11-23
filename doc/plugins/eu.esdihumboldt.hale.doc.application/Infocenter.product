@@ -12,7 +12,7 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <launcher>
+   <launcher name="Infocenter">
       <solaris/>
       <win useIco="false">
          <bmp/>
