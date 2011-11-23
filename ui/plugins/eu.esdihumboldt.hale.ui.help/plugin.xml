@@ -17,4 +17,16 @@
             primary="true">
       </toc>
    </extension>
+   <extension
+         id="InfoCenter"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.help.base.infocenterApplication"
+            name="HALE Infocenter">
+         <property
+               name="appName"
+               value="HALE Infocenter">
+         </property>
+      </product>
+   </extension>
 </plugin>
