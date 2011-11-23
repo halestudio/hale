@@ -4,8 +4,6 @@ Bundle-Name: HALE Help
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.help;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
-Require-Bundle: org.eclipse.ui,
- org.eclipse.help.ui,
- org.eclipse.help,
+Require-Bundle: org.eclipse.help,
  org.eclipse.help.webapp,
  org.eclipse.equinox.http.jetty

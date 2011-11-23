@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="HALE Infocenter" id="eu.esdihumboldt.hale.ui.help.InfoCenter" application="org.eclipse.help.base.infocenterApplication" version="2.5.0" useFeatures="false" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-clean</programArgs>
+      <vmArgs>-Dserver_port=8082 -Dserver_host=localhost</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="cal10n.api"/>
+      <plugin id="ch.qos.logback.classic"/>
+      <plugin id="ch.qos.logback.core"/>
+      <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="de.cs3d.util.logging"/>
+      <plugin id="de.cs3d.util.logging.logback"/>
+      <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.help"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="jcl.over.slf4j"/>
+      <plugin id="org.apache.commons.el"/>
+      <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.lucene.core"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.http.jetty"/>
+      <plugin id="org.eclipse.equinox.http.registry"/>
+      <plugin id="org.eclipse.equinox.http.servlet"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper"/>
+      <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.help.appserver"/>
+      <plugin id="org.eclipse.help.base"/>
+      <plugin id="org.eclipse.help.webapp"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.mortbay.jetty.server"/>
+      <plugin id="org.mortbay.jetty.util"/>
+      <plugin id="org.slf4j.api"/>
+      <plugin id="slf4j.ext"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.help.base" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.help.webapp" autoStart="true" startLevel="0" />
+      <plugin id="org.mortbay.jetty.server" autoStart="true" startLevel="0" />
+      <plugin id="org.mortbay.jetty.util" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>
