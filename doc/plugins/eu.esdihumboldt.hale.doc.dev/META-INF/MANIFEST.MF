@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Developer Guide
+Bundle-SymbolicName: eu.esdihumboldt.hale.doc.dev;singleton:=true
+Bundle-Version: 2.5.0.qualifier
+Bundle-Vendor: Fraunhofer IGD
+Require-Bundle: org.eclipse.help;bundle-version="3.5.100"

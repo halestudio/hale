@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="HALE Developer Guide">
+   <topic label="Getting Started">
+   </topic>
+   <topic label="Concepts">
+      <anchor id="concepts"/>
+   </topic>
+   <topic label="Tasks">
+      <anchor id="tasks"/>
+      <topic label="Add help functionality to your extensions">
+         <anchor id="help"/>
+      </topic>
+   </topic>
+   <topic label="Reference">
+      <anchor id="reference"/>
+   </topic>
+   <topic label="Tips and Tricks">
+      <anchor id="tips"/>
+   </topic>
+</toc>
