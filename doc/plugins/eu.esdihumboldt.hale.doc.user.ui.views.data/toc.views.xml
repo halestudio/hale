@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="The Data Views">
-   <topic label="The Data Views">
-      <topic href="html/data.html" label="Data">
+<toc label="Data Views" link_to="../eu.esdihumboldt.hale.doc.user/toc.xml#views">
+   <topic href="html/data_views.html" label="Data Views">
+      <topic href="html/data_views/source_data.html" label="Source Data">
       </topic>
-      <topic href="html/LinkedHelp.html" label="Text with Links">
+      <topic href="html/data_views/transformed_data.html" label="Transformed Data">
       </topic>
    </topic>
 </toc>
