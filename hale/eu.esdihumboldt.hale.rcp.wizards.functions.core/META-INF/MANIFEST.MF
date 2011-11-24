@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Function Wizards for Core CST Functions
 Bundle-SymbolicName: eu.esdihumboldt.hale.rcp.wizards.functions.core;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 2.1.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.iabcinc.jmep,
  com.iabcinc.jmep.hooks,
