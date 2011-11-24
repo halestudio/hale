@@ -105,6 +105,7 @@
    <topic label="Reference">
       <topic href="html/dummy.html" label="Functions">
       </topic>
+      <anchor id="reference"/>
    </topic>
    <topic label="Tips and Tricks">
       <link toc="Link from other bundles"/>

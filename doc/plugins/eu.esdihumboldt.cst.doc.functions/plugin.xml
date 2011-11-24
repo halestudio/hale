@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.help.toc">
+      <tocProvider
+            class="eu.esdihumboldt.cst.doc.functions.FunctionReferenceToc">
+      </tocProvider>
+   </extension>
+   <extension
+         point="org.eclipse.help.contentProducer">
+      <contentProducer
+            producer="eu.esdihumboldt.cst.doc.functions.FunctionReferenceContent">
+      </contentProducer>
+   </extension>
+
+</plugin>
