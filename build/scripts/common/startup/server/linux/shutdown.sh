@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec ./@LAUNCHER.sh stop
+exec ./@LAUNCHER.sh stop $*
