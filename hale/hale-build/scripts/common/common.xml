@@ -430,6 +430,10 @@
 			</tarfileset>
 		</tar>
 	</target>
+	
+	<target name="server-pack-macosx">
+		<antcall target="server-pack-linux" />
+	</target>
 
 	<!-- run all unit test bundles found in the plugins directory -->
 	<target name="run-unit-tests">
