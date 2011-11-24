@@ -5,12 +5,25 @@
          id="InfoCenter"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.eclipse.help.base.infocenterApplication"
+            application="eu.esdihumboldt.hale.doc.application.infocenterApplication"
             name="HALE Infocenter">
          <property
                name="appName"
                value="HALE Infocenter">
          </property>
       </product>
+   </extension>
+   <extension
+         id="infocenterApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="eu.esdihumboldt.hale.doc.application.CustomHelpApplication">
+            <parameter
+                  name="mode"
+                  value="infocenter">
+            </parameter>
+         </run>
+      </application>
    </extension>
 </plugin>
