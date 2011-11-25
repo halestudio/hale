@@ -110,7 +110,7 @@ public class QueueDefinitionItem {
 				result = qnames.get(i).toString();
 			}
 			else{ 
-				result = result.concat("/" + qnames.get(i));
+				result = result.concat("." + qnames.get(i));
 			}
 		}
 		
