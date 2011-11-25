@@ -13,5 +13,11 @@
             producer="eu.esdihumboldt.cst.doc.functions.internal.content.FunctionReferenceContent">
       </contentProducer>
    </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contextProvider
+            class="eu.esdihumboldt.cst.doc.functions.internal.context.FunctionContextProvider">
+      </contextProvider>
+   </extension>
 
 </plugin>
