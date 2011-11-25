@@ -58,7 +58,8 @@ public class FunctionTopic implements ITopic, FunctionReferenceConstants {
 	 */
 	@Override
 	public String getHref() {
-		return FUNCTION_TOPIC_PATH + function.getId();
+		return PLUGINS_ROOT + "/" + PLUGIN_ID + "/" + FUNCTION_TOPIC_PATH
+				+ function.getId();
 	}
 
 	/**
@@ -75,6 +76,38 @@ public class FunctionTopic implements ITopic, FunctionReferenceConstants {
 	@Override
 	public ITopic[] getSubtopics() {
 		return NO_TOPICS;
+	}
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((function == null) ? 0 : function.getId().hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FunctionTopic other = (FunctionTopic) obj;
+		if (function == null) {
+			if (other.function != null)
+				return false;
+		} else if (!function.getId().equals(other.function.getId()))
+			return false;
+		return true;
 	}
 
 }

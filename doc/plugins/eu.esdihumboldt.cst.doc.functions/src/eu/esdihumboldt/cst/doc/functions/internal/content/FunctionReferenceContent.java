@@ -22,7 +22,7 @@ import org.eclipse.help.IHelpContentProducer;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 
 /**
- * TODO Type description
+ * Provides content for function documentation.
  * @author Simon Templer
  */
 public class FunctionReferenceContent implements IHelpContentProducer, FunctionReferenceConstants {
@@ -36,6 +36,7 @@ public class FunctionReferenceContent implements IHelpContentProducer, FunctionR
 		if (href.startsWith(FUNCTION_TOPIC_PATH)) {
 			// it's a function
 			//TODO return filled template for function doc
+			//XXX use Xtend? (alternatives mvel, play?)
 			try {
 				return new ByteArrayInputStream(href.getBytes("UTF-8"));
 			} catch (UnsupportedEncodingException e) {
