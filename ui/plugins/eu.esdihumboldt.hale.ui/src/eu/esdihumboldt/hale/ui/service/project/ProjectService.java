@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.service.project;
 
-import java.io.File;
+import java.net.URI;
 
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -83,9 +83,9 @@ public interface ProjectService {
 	/**
 	 * Load a project from a given file.
 	 * 
-	 * @param file the project file
+	 * @param uri the project file
 	 */
-	public void load(File file);
+	public void load(URI uri);
 	
 	/**
 	 * Open a project.
