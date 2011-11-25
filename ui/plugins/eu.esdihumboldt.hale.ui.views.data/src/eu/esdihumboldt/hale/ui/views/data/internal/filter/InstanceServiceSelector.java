@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -36,14 +37,19 @@ import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.filter.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.filter.FeatureFilterField;
+import eu.esdihumboldt.hale.ui.common.filter.FeatureFilterField.FilterListener;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
@@ -74,7 +80,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 		
 		private final ComboViewer count;
 		
-//		private final FeatureFilterField filterField;
+		 final FeatureFilterField filterField;
 		
 		private Iterable<Instance> selection;
 		
@@ -139,17 +145,20 @@ public class InstanceServiceSelector implements InstanceSelector {
 				
 			});
 			
+			//TODO Definitionswahnsinn
+			
+			
 			// filter field
-//			filterField = new FeatureFilterField((selectedType == null)?(null):(DefinitionUtil.getType(selectedType)), this, SWT.NONE);
-//			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-//			filterField.addListener(new FilterListener() {
-//				
-//				@Override
-//				public void filterChanged() {
-//					updateSelection();
-//				}
-//				
-//			});
+			filterField = new FeatureFilterField((selectedType == null)?(null):(selectedType), this, SWT.NONE);
+			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+			filterField.addListener(new FilterListener() {
+				
+				@Override
+				public void filterChanged() {
+					updateSelection();
+				}
+				
+			});
 			
 			// refresh button
 			/*XXX disabled for now - Button refresh = new Button(this, SWT.PUSH);
@@ -306,7 +315,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 			if (!typeDefinitions.getSelection().isEmpty()) {
 				TypeDefinition type = (TypeDefinition) ((IStructuredSelection) typeDefinitions.getSelection()).getFirstElement();
 				
-//				filterField.setType(type);
+				filterField.setType(type);
 				
 				SchemaSpaceID space = getSchemaSpace();
 				
@@ -317,12 +326,14 @@ public class InstanceServiceSelector implements InstanceSelector {
 				List<Instance> instanceList = new ArrayList<Instance>();
 				DataSet dataset = (space == SchemaSpaceID.SOURCE)?(DataSet.SOURCE):(DataSet.TRANSFORMED);
 				try {
-//					Filter filter = filterField.getFilter();
-//					
-//					if (filter == null) {
-						InstanceCollection instances = is.getInstances(dataset); //FIXME return instances by type
-						
-						ResourceIterator<Instance> it = instances.iterator();
+					//TODO Filter Fun
+					Filter filter = filterField.getCQLFilter();
+					
+					InstanceCollection instances = is.getInstances(dataset); //FIXME return instances by type
+					ResourceIterator<Instance> it = instances.iterator();
+					
+					
+					if (filter == null) {					
 						try {
 							int num = 0;
 							while (it.hasNext() && num < max) {
@@ -336,20 +347,18 @@ public class InstanceServiceSelector implements InstanceSelector {
 						} finally {
 							it.close();
 						}
-//					}
-//					else {
-//						FeatureCollection<FeatureType, Feature> fc = is.getFeatures(dataset);
-//						
-//						FeatureIterator<Feature> it = fc.subCollection(filter).features();
-//						int num = 0;
-//						while (it.hasNext() && num < max) {
-//							Feature feature = it.next();
-//							if (feature.getType().getName().getLocalPart().equals(type.getDisplayName())) {
-//								featureList.add(feature);
-//								num++;
-//							}
-//						}
-//					}
+					}
+					else {
+					
+						int num = 0;
+						while (it.hasNext() && num < max) {
+							Instance instance = it.next();
+						if (filter.match(instance)) {
+								instanceList.add(instance);
+								num++;
+							}
+						}		
+				}
 				} catch (Exception e) {
 					log.warn("Error creating filter"); //$NON-NLS-1$
 				}
@@ -361,7 +370,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 				selection = null;
 				selectedType = null;
 				
-//				filterField.setType(null);
+				filterField.setType(null);
 			}
 			
 			for (InstanceSelectionListener listener : listeners) {
