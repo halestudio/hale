@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.ui.service.project.internal;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,12 +24,12 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Version;
@@ -62,6 +61,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
@@ -70,6 +70,8 @@ import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.util.io.IOUtils;
+import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Default implementation of the {@link ProjectService}.
@@ -77,14 +79,12 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class ProjectServiceImpl extends AbstractProjectService 
-	implements ProjectService {
-	
+public class ProjectServiceImpl extends AbstractProjectService implements ProjectService {
+
 	/**
 	 * Configuration service backed by the internal {@link Project}
 	 */
-	private class ProjectConfigurationService extends
-			AbstractDefaultConfigurationService implements
+	private class ProjectConfigurationService extends AbstractDefaultConfigurationService implements
 			IConfigurationService {
 
 		/**
@@ -127,40 +127,40 @@ public class ProjectServiceImpl extends AbstractProjectService
 		}
 
 	}
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ProjectServiceImpl.class);
 
 	private Project main;
-	
+
 	private final Version haleVersion;
-	
+
 	private File projectFile;
-	
+
 	private String appTitle;
 
 	private final IOAdvisor<ProjectWriter> saveProjectAdvisor;
-	
+
 	private final IOAdvisor<ProjectReader> openProjectAdvisor;
-	
+
 	private final ProjectConfigurationService configurationService = new ProjectConfigurationService();
-	
+
 	private boolean changed = false;
-	
+
 	/**
 	 * Default constructor
 	 */
-	public ProjectServiceImpl(){
+	public ProjectServiceImpl() {
 		haleVersion = Version.parseVersion(Display.getAppVersion());
 		synchronized (this) {
 			main = createDefaultProject();
 		}
-		
+
 		// create advisors
 		openProjectAdvisor = new AbstractIOAdvisor<ProjectReader>() {
 			@Override
 			public void updateConfiguration(ProjectReader provider) {
 				super.updateConfiguration(provider);
-				
+
 				// set project files
 				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles();
 				provider.setProjectFiles(projectFiles);
@@ -169,25 +169,32 @@ public class ProjectServiceImpl extends AbstractProjectService
 			@Override
 			public void handleResults(ProjectReader provider) {
 				clean();
-				
+
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
 					updatePaths(main, provider.getSource().getLocation());
-					projectFile = new File(provider.getSource().getLocation());
+					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme()))
+						projectFile = new File(provider.getSource().getLocation());
 					changed = false;
-					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
-					rfs.add(projectFile.getAbsolutePath(), main.getName());
+					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(
+							RecentFilesService.class);
+					if (projectFile != null)
+						rfs.add(projectFile.getAbsolutePath(), main.getName());
+					// XXX safe history in case of non-file loaded projects?
+					// possibly always safe URI raw paths (and show the history with decoded paths and removed file:/ in case of files)?
+					//else
+					//	rfs.add(provider.getSource().getLocation().getRawPath(), main.getName());
 				}
-				
+
 				updateWindowTitle();
-				
+
 				// execute loaded I/O configurations
 				List<IOConfiguration> confs;
 				synchronized (ProjectServiceImpl.this) {
 					confs = new ArrayList<IOConfiguration>(main.getResources());
 				}
 				executeConfigurations(confs);
-				
+
 				// notify listeners
 				Map<String, ProjectFile> projectFiles = provider.getProjectFiles();
 				notifyAfterLoad(projectFiles);
@@ -201,67 +208,51 @@ public class ProjectServiceImpl extends AbstractProjectService
 			// uses paths based on "/" in FilePathUpdate
 			private void updatePaths(Project main, URI newProjectLoc) {
 				IOConfiguration saveconfig = main.getSaveConfiguration();
-				if(saveconfig == null)
+				if (saveconfig == null)
 					return;
-				//FIXME use URI instead of String where possible
-				String exptargetfile = saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET);
-				String exptarget = exptargetfile.substring(0, exptargetfile.lastIndexOf("/"));
-				String loc = newProjectLoc.toASCIIString();
-				String location = loc.substring(loc.indexOf("/")+1, loc.length());
-				
-				FilePathUpdate update = new FilePathUpdate(URI.create(exptargetfile), newProjectLoc);
-				
-				if(!location.equals(exptarget)){
+
+				URI targetLoc = URI.create(saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET));
+				if (!targetLoc.equals(newProjectLoc)) {
+					PathUpdate update = new PathUpdate(targetLoc, newProjectLoc);
+
 					List<IOConfiguration> configuration = main.getResources();
-					for(IOConfiguration providerconf : configuration){
+					for (IOConfiguration providerconf : configuration) {
 						Map<String, String> conf = providerconf.getProviderConfiguration();
-						String impsrc = conf.get(ImportProvider.PARAM_SOURCE);
-						try { 
-							URI uri = new URI(impsrc);
-							File file = new File(uri);
-							if(!file.exists()){
-								String newsrc = update.changePath(URI.create(impsrc));
-								URI newuri = new URI(newsrc);
-								File newfile = new File(newuri);
-								if(newfile.exists()) 
-									conf.put(ImportProvider.PARAM_SOURCE, newsrc);
-								else {
-									MessageBox error = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
-									error.setText("Loading Error");
-									error.setMessage("Can't load " + impsrc);
-									error.open();
-									String target = impsrc.substring(impsrc.lastIndexOf("/") + 1);
-									String extension = "*" + impsrc.substring(impsrc.lastIndexOf("."));
-									String[] extensions = new String[]{extension};
-									FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN | SWT.SHEET);
-									filedialog.setFilterExtensions(extensions);
-									filedialog.setFileName(target);
-									
-							        String openfile = filedialog.open();
-							        if (openfile != null) {
-							            openfile = openfile.trim();
-							            if (openfile.length() > 0) {
-							            	openfile = "file:/" + openfile;
-							            	openfile = openfile.replace("\\", "/");
-							            	conf.remove(ImportProvider.PARAM_SOURCE);
-											conf.put(ImportProvider.PARAM_SOURCE, openfile);
-										}
-							        }
-							        }
+						URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE));
+						if (!IOUtils.testStream(uri)) {
+							URI newUri = update.changePath(uri);
+							if (IOUtils.testStream(newUri))
+								conf.put(ImportProvider.PARAM_SOURCE, newUri.toString());
+							else {
+								Shell shell = null;
+								if (Display.getCurrent() != null)
+									shell = Display.getCurrent().getActiveShell();
+								String uriString = uri.toString();
+								MessageDialog.openWarning(shell, "Loading Error", "Can't find " + uriString);
+
+								String target = uriString.substring(uriString.lastIndexOf("/") + 1);
+								String extension = "*" + uriString.substring(uriString.lastIndexOf("."));
+								String[] extensions = new String[] { extension };
+								FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN
+										| SWT.SHEET);
+								filedialog.setFilterExtensions(extensions);
+								filedialog.setFileName(target);
+
+								String openfile = filedialog.open();
+								if (openfile != null) {
+									openfile = openfile.trim();
+									if (openfile.length() > 0)
+										conf.put(ImportProvider.PARAM_SOURCE, new File(openfile).toURI().toString());
 								}
-							
-						} catch (URISyntaxException e) {
-							// ignore?
+							}
 						}
 					}
 				}
 			}
 		};
-							
-		
-		
+
 		saveProjectAdvisor = new AbstractIOAdvisor<ProjectWriter>() {
-			
+
 			@Override
 			public void prepareProvider(ProjectWriter provider) {
 				synchronized (ProjectServiceImpl.this) {
@@ -277,21 +268,22 @@ public class ProjectServiceImpl extends AbstractProjectService
 				notifyBeforeSave(projectFiles); // get additional files from listeners
 				provider.setProjectFiles(projectFiles);
 			}
-			
+
 			@Override
 			public void handleResults(ProjectWriter provider) {
 				synchronized (ProjectServiceImpl.this) {
 					projectFile = new File(provider.getTarget().getLocation());
 					changed = false;
-					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
+					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(
+							RecentFilesService.class);
 					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
 				}
-				
+
 				updateWindowTitle();
 			}
 		};
 	}
-	
+
 	/**
 	 * @see ProjectService#isChanged()
 	 */
@@ -313,41 +305,42 @@ public class ProjectServiceImpl extends AbstractProjectService
 
 	/**
 	 * Execute a set of I/O configurations
+	 * 
 	 * @param configurations the I/O configurations
 	 */
 	protected void executeConfigurations(final List<IOConfiguration> configurations) {
 		//TODO sort by dependencies
-		
+
 		// combine inside job (or with progress monitor?) if no monitor is running
 		//XXX doing this in a job breaks project loading through the OpenProjectWizard when an alignment is loaded (as internal project file)
 		//TODO rework progress sharing?!
-//		if (ThreadProgressMonitor.getCurrent() == null) {
-//			Job job = new Job("Load I/O configurations") {
-//				
-//				@Override
-//				protected IStatus run(IProgressMonitor monitor) {
-//					ThreadProgressMonitor.register(monitor);
-//					try {
-//						monitor.beginTask("Load I/O configurations", configurations.size());
-//						for (IOConfiguration conf : configurations) {
-//							executeConfiguration(conf);
-//							monitor.worked(1);
-//						}
-//						return new Status(IStatus.OK, HALEUIPlugin.PLUGIN_ID, "Loaded I/O configurations");
-//					} finally {
-//						monitor.done();
-//						ThreadProgressMonitor.remove(monitor);
-//					}
-//				}
-//			};
-//			job.setUser(true);
-//			job.schedule();
-//		}
-//		else {
-			for (IOConfiguration conf : configurations) {
-				executeConfiguration(conf);
-			}
-//		}
+		//		if (ThreadProgressMonitor.getCurrent() == null) {
+		//			Job job = new Job("Load I/O configurations") {
+		//				
+		//				@Override
+		//				protected IStatus run(IProgressMonitor monitor) {
+		//					ThreadProgressMonitor.register(monitor);
+		//					try {
+		//						monitor.beginTask("Load I/O configurations", configurations.size());
+		//						for (IOConfiguration conf : configurations) {
+		//							executeConfiguration(conf);
+		//							monitor.worked(1);
+		//						}
+		//						return new Status(IStatus.OK, HALEUIPlugin.PLUGIN_ID, "Loaded I/O configurations");
+		//					} finally {
+		//						monitor.done();
+		//						ThreadProgressMonitor.remove(monitor);
+		//					}
+		//				}
+		//			};
+		//			job.setUser(true);
+		//			job.schedule();
+		//		}
+		//		else {
+		for (IOConfiguration conf : configurations) {
+			executeConfiguration(conf);
+		}
+		//		}
 	}
 
 	private void executeConfiguration(IOConfiguration conf) {
@@ -363,57 +356,53 @@ public class ProjectServiceImpl extends AbstractProjectService
 						conf.getProviderId()), e);
 				return;
 			}
-			
+
 			// ... and advisor
 			final String actionId = conf.getActionId();
-			List<IOAdvisorFactory> advisors = IOAdvisorExtension.getInstance().getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
-				
-				@Override
-				public boolean acceptFactory(IOAdvisorFactory factory) {
-					return factory.getActionID().equals(actionId);
-				}
-				
-				@Override
-				public boolean acceptCollection(
-						ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
-					return true;
-				}
-			});
+			List<IOAdvisorFactory> advisors = IOAdvisorExtension.getInstance().getFactories(
+					new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
+
+						@Override
+						public boolean acceptFactory(IOAdvisorFactory factory) {
+							return factory.getActionID().equals(actionId);
+						}
+
+						@Override
+						public boolean acceptCollection(
+								ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
+							return true;
+						}
+					});
 			if (advisors != null && !advisors.isEmpty()) {
 				IOAdvisor<?> advisor;
 				try {
 					advisor = advisors.get(0).createExtensionObject();
 				} catch (Exception e) {
 					log.error(MessageFormat.format(
-							"Could not execute I/O configuration, advisor with ID {0} could not be created.",
-							advisors.get(0).getIdentifier()), e);
+							"Could not execute I/O configuration, advisor with ID {0} could not be created.", advisors
+									.get(0).getIdentifier()), e);
 					return;
 				}
 				// configure settings
 				provider.loadConfiguration(conf.getProviderConfiguration());
 				// execute provider
 				executeProvider(provider, advisor);
-			}
-			else {
-				log.error(MessageFormat.format(
-						"Could not execute I/O configuration, no advisor for action {0} found.",
+			} else {
+				log.error(MessageFormat.format("Could not execute I/O configuration, no advisor for action {0} found.",
 						actionId));
 			}
-		}
-		else {
-			log.error(MessageFormat.format(
-					"Could not execute I/O configuration, provider with ID {0} not found.",
+		} else {
+			log.error(MessageFormat.format("Could not execute I/O configuration, provider with ID {0} not found.",
 					conf.getProviderId()));
 		}
 	}
 
 	private void executeProvider(final IOProvider provider, @SuppressWarnings("rawtypes") final IOAdvisor advisor) {
 		IRunnableWithProgress op = new IRunnableWithProgress() {
-			
+
 			@SuppressWarnings("unchecked")
 			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				IOReporter reporter = provider.createReporter();
 				ATransaction trans = log.begin(reporter.getTaskName());
 				ThreadProgressMonitor.register(monitor);
@@ -421,14 +410,14 @@ public class ProjectServiceImpl extends AbstractProjectService
 					// use advisor to configure provider
 					advisor.prepareProvider(provider);
 					advisor.updateConfiguration(provider);
-					
+
 					// execute
 					IOReport report = provider.execute(new ProgressMonitorIndicator(monitor));
-					
+
 					// publish report
 					ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
 					rs.addReport(report);
-					
+
 					// handle results
 					if (report.isSuccess()) {
 						advisor.handleResults(provider);
@@ -455,8 +444,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 	public void clean() {
 		final IRunnableWithProgress op = new IRunnableWithProgress() {
 			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				ATransaction trans = log.begin("Clean project");
 				monitor.beginTask("Clean project", IProgressMonitor.UNKNOWN);
 				try {
@@ -473,7 +461,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 				}
 			}
 		};
-		
+
 		try {
 			ThreadProgressMonitor.runWithProgressDialog(op, false);
 		} catch (Exception e) {
@@ -482,20 +470,18 @@ public class ProjectServiceImpl extends AbstractProjectService
 	}
 
 	/**
-	 * @see ProjectService#load(File)
+	 * @see ProjectService#load(URI)
 	 */
 	@Override
-	public void load(File file) {
+	public void load(URI uri) {
 		// use I/O provider and content type mechanisms to enable loading of a project file
-		ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class, 
-				new FileIOSupplier(file), file.getAbsolutePath());
+		ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class, new DefaultInputSupplier(uri), uri.getPath());
 		if (reader != null) {
 			// configure reader
-			reader.setSource(new FileIOSupplier(file));
-			
+			reader.setSource(new DefaultInputSupplier(uri));
+
 			executeProvider(reader, openProjectAdvisor);
-		}
-		else {
+		} else {
 			log.userError("The project format is not supported.");
 		}
 	}
@@ -505,36 +491,36 @@ public class ProjectServiceImpl extends AbstractProjectService
 	 */
 	private void updateWindowTitle() {
 		Runnable run = new Runnable() {
-			
+
 			@Override
 			public void run() {
 				// init appTitle
 				if (appTitle == null) {
 					if (PlatformUI.getWorkbench().getWorkbenchWindowCount() > 0) {
-						appTitle = PlatformUI.getWorkbench()./*getWorkbenchWindows()[0]*/getActiveWorkbenchWindow().getShell().getText();
-					}
-					else {
+						appTitle = PlatformUI.getWorkbench()./*getWorkbenchWindows()[0]*/getActiveWorkbenchWindow()
+								.getShell().getText();
+					} else {
 						return;
 					}
 				}
-				
+
 				String title;
 				if (projectFile == null) {
 					title = appTitle;
-				}
-				else {
+				} else {
 					String pn = getProjectInfo().getName();
-					title = appTitle + " - " + ((pn == null || pn.isEmpty())?("Unnamed"):(pn)) + " - " + projectFile;
+					title = appTitle + " - " + ((pn == null || pn.isEmpty()) ? ("Unnamed") : (pn)) + " - "
+							+ projectFile;
 				}
-				
+
 				if (changed) {
 					title = title + "*"; //$NON-NLS-1$
 				}
-				
+
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setText(title);
 			}
 		};
-		
+
 		PlatformUI.getWorkbench().getDisplay().syncExec(run);
 	}
 
@@ -549,11 +535,10 @@ public class ProjectServiceImpl extends AbstractProjectService
 			projectFile = this.projectFile;
 			saveConfig = main.getSaveConfiguration();
 		}
-		
+
 		if (projectFile != null) {
-			Collection<IOProviderDescriptor> providers = 
-				HaleIO.getProviderFactories(ProjectWriter.class);
-			
+			Collection<IOProviderDescriptor> providers = HaleIO.getProviderFactories(ProjectWriter.class);
+
 			// use configuration from previous save if possible
 			if (saveConfig != null) {
 				// get provider ...
@@ -567,36 +552,32 @@ public class ProjectServiceImpl extends AbstractProjectService
 						}
 					}
 				}
-				
+
 				if (writer != null) {
 					// configure provider
 					writer.loadConfiguration(saveConfig.getProviderConfiguration());
 					// overwrite target with projectFile (as it may have been moved externally)
 					writer.setTarget(new FileIOSupplier(projectFile));
-					
+
 					executeProvider(writer, saveProjectAdvisor);
-				}
-				else {
+				} else {
 					log.error("The project cannot be saved because the format is not available.");
 					// use save as instead
 					saveAs();
 				}
-			}
-			else {
+			} else {
 				// use I/O provider and content type mechanisms to try saving the project file
-				ProjectWriter writer = HaleIO.findIOProvider(ProjectWriter.class, 
-						new FileIOSupplier(projectFile), projectFile.getAbsolutePath());
+				ProjectWriter writer = HaleIO.findIOProvider(ProjectWriter.class, new FileIOSupplier(projectFile),
+						projectFile.getAbsolutePath());
 				if (writer != null) {
 					executeProvider(writer, saveProjectAdvisor);
-				}
-				else {
+				} else {
 					log.error("The project cannot be saved because the format is not available.");
 					// use save as instead
 					saveAs();
 				}
 			}
-		}
-		else {
+		} else {
 			saveAs();
 		}
 	}
@@ -619,7 +600,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 			public void run() {
 				SaveProjectWizard wizard = new SaveProjectWizard();
 				wizard.setAdvisor(saveProjectAdvisor, null);
-				
+
 				Shell shell = Display.getCurrent().getActiveShell();
 				WizardDialog dialog = new WizardDialog(shell, wizard);
 				dialog.open();
@@ -637,7 +618,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 			public void run() {
 				OpenProjectWizard wizard = new OpenProjectWizard();
 				wizard.setAdvisor(openProjectAdvisor, null);
-				
+
 				Shell shell = Display.getCurrent().getActiveShell();
 				WizardDialog dialog = new WizardDialog(shell, wizard);
 				dialog.open();
@@ -647,16 +628,17 @@ public class ProjectServiceImpl extends AbstractProjectService
 
 	/**
 	 * Create a project with default values
+	 * 
 	 * @return the created project
 	 */
 	private Project createDefaultProject() {
 		Project project = new Project();
-		
+
 		project.setCreated(new Date());
 		project.setAuthor(System.getProperty("user.name"));
 		project.setHaleVersion(haleVersion);
 		project.setName(null);
-		
+
 		return project;
 	}
 
@@ -670,7 +652,7 @@ public class ProjectServiceImpl extends AbstractProjectService
 		conf.setActionId(actionId);
 		conf.setProviderId(providerId);
 		provider.storeConfiguration(conf.getProviderConfiguration());
-		
+
 		// add configuration to project
 		synchronized (this) {
 			main.getResources().add(conf);

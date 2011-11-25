@@ -59,5 +59,12 @@
             Create some mapping (retype / rename).
          </description>
       </cheatsheet>
+      <cheatsheet
+            category="firststeps"
+            composite="false"
+            contentFile="$nl$/cheatsheets/createMappingsExampleCS.xml"
+            id="eu.esdihumboldt.hale.ui.firststeps.createMappingsExampleCS"
+            name="Create mappings on example data">
+      </cheatsheet>
    </extension>
 </plugin>
