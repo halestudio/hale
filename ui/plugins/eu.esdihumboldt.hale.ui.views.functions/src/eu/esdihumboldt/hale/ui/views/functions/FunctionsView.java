@@ -14,18 +14,18 @@ package eu.esdihumboldt.hale.ui.views.functions;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionContentProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
  * Functions view
  * @author Simon Templer
  */
-public class FunctionsView extends ViewPart {
+public class FunctionsView extends PropertiesViewPart {
 	
 	/**
 	 * The view ID
@@ -47,6 +47,8 @@ public class FunctionsView extends ViewPart {
 		viewer.setInput(Boolean.TRUE);
 		
 		new ViewerMenu(getSite(), viewer);
+
+		getSite().setSelectionProvider(viewer);
 	}
 
 	/**
