@@ -33,12 +33,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.dialogs.ListDialog;
-import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.feature.type.PropertyDescriptor;
-import org.opengis.filter.Filter;
 
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.filter.Filter;
+import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
+import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
@@ -63,7 +65,7 @@ public class FeatureFilterField extends Composite {
 	}
 	
 	private final Text filterText;
-	private final Button openForm;
+	//private final Button openForm;
 	private final Button insertVar;
 	private final Button clearFilter;
 	
@@ -141,7 +143,7 @@ public class FeatureFilterField extends Composite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				SortedSet<String> attributeNames = new TreeSet<String>();
+			/*	SortedSet<String> attributeNames = new TreeSet<String>();
 				//TODO adapt to TypeDefinition?
 				for (PropertyDescriptor property : FeatureFilterField.this.type.getFeatureType().getDescriptors()) {
 					attributeNames.add(property.getName().getLocalPart());
@@ -159,13 +161,14 @@ public class FeatureFilterField extends Composite {
 					String var = (String) dialog.getResult()[0];
 					filterText.insert(var);
 					filterText.setFocus();
-				}
+				}*/
 			}
 			
 		});
 		
 		// open form
-		openForm = new Button(this, SWT.PUSH);
+		/*openForm = new Button(this, SWT.PUSH);
+		
 		openForm.setImage(openFormImage);
 		openForm.setToolTipText(Messages.FeatureFilterField_9); //$NON-NLS-1$
 		openForm.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
@@ -184,6 +187,7 @@ public class FeatureFilterField extends Composite {
 		});
 		
 		setType(type);
+		*/
 	}
 	
 	/**
@@ -194,7 +198,7 @@ public class FeatureFilterField extends Composite {
 	public void setType(TypeDefinition type) {
 		this.type = type;
 		
-		openForm.setEnabled(type != null);
+	//	openForm.setEnabled(type != null);
 		insertVar.setEnabled(type != null);
 	}
 	
@@ -210,18 +214,35 @@ public class FeatureFilterField extends Composite {
 	/**
 	 * Get the filter
 	 * 
-	 * @return the filter
+	 * @return the cql filter
 	 * @throws CQLException if the filter cannot be created
 	 */
-	public Filter getFilter() throws CQLException {
+	public Filter getCQLFilter() throws CQLException  {
 		String expr = getFilterExpression();
 		if (expr == null || expr.isEmpty()) {
 			return null;
 		}
 		else {
-			return CQL.toFilter(expr);
+			return new FilterGeoCqlImpl(expr);
 		}
 	}
+	
+	/**
+	 * Get the filter
+	 * 
+	 * @return the ecql filter
+	 * @throws CQLException if the filter cannot be created
+	 */
+	public Filter getECQLFilter() throws CQLException  {
+		String expr = getFilterExpression();
+		if (expr == null || expr.isEmpty()) {
+			return null;
+		}
+		else {
+			return new FilterGeoECqlImpl(expr);
+		}
+	}
+	
 	
 	/**
 	 * Set the filter expression
