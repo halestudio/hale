@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Create mappings">
+   <intro>
+      <description>
+Welcome to the tutorial to create some mappings.<br />
+It will load an example project and guide you through renaming attributes.<br />
+      </description>
+   </intro>
+   <item
+         title="Load example">
+      <action
+            class="eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction"
+            pluginId="eu.esdihumboldt.hale.ui.firststeps"
+            param1="false"
+            param2="/exampleschema/t1t2.halex"
+            param3="bundle"
+            param4="eu.esdihumboldt.hale.ui.firststeps"
+            required="true">
+      </action>
+      <description>
+Click on <b>Click to perform</b> to load the example project.
+      </description>
+   </item>
+</cheatsheet>

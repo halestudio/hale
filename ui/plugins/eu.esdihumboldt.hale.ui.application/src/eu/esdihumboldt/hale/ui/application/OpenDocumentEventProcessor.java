@@ -70,7 +70,7 @@ public class OpenDocumentEventProcessor implements Listener {
 		String path = filePaths[filePaths.length - 1];
 		File file = new File(path);
 		
-		ps.load(file);
+		ps.load(file.toURI());
 	}
 
 }
