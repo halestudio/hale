@@ -164,14 +164,21 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		return reporter;
 	}
 
+//	/**
+//	 * @see AbstractInstanceWriter#getValidationSchemas()
+//	 */
+//	@Override
+//	public List<Schema> getValidationSchemas() {
+//		List<Schema> result = new ArrayList<Schema>(super.getValidationSchemas());
+//		result.addAll(additionalSchemas);
+//		return result;
+//	}
+	
 	/**
-	 * @see AbstractInstanceWriter#getValidationSchemas()
+	 * FIXME Dummy method!
 	 */
-	@Override
-	public List<Schema> getValidationSchemas() {
-		List<Schema> result = new ArrayList<Schema>(super.getValidationSchemas());
-		result.addAll(additionalSchemas);
-		return result;
+	protected Schema getTargetSchema() {
+		return null;
 	}
 
 	/**

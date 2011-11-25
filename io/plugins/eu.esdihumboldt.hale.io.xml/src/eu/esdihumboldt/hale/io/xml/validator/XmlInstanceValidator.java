@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.io.xml.validator;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -38,18 +37,18 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Validating XML", ProgressIndicator.UNKNOWN);
-		Validator val = ValidatorFactory.getInstance().createValidator(getSchemas());
-		InputStream in = getSource().getInput();
-		try {
-			Report report = val.validate(in);
-			//TODO use the report information/replace old report definition
-			reporter.setSuccess(report.isValid());
+//		progress.begin("Validating XML", ProgressIndicator.UNKNOWN);
+//		Validator val = ValidatorFactory.getInstance().createValidator(getSchemas());
+//		InputStream in = getSource().getInput();
+//		try {
+//			Report report = val.validate(in);
+//			//TODO use the report information/replace old report definition
+//			reporter.setSuccess(report.isValid());
 			return reporter;
-		} finally {
-			in.close();
-			progress.end();
-		}
+//		} finally {
+//			in.close();
+//			progress.end();
+//		}
 	}
 
 	/**
