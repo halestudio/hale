@@ -17,7 +17,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -114,7 +113,18 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		new ViewerMenu(getSite(), tree.getTreeViewer());
 		
 		// set the help ID for context sensitive help (anchor has to be set in */doc.user.ui.views.data/toc.views.xml)
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(page, "eu.esdihumboldt.hale.doc.user.dataView");
+		//XXX anchor? what for regarding context help?
+		//XXX replaced by getViewContext
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(page, "eu.esdihumboldt.hale.doc.user.dataView");
+	}
+
+	/**
+	 * @see PropertiesViewPart#getViewContext()
+	 */
+	@Override
+	protected String getViewContext() {
+		return "eu.esdihumboldt.hale.doc.user.ui.views.data.dataViews";
+//		return "eu.esdihumboldt.hale.doc.user.dataView";
 	}
 
 	/**
