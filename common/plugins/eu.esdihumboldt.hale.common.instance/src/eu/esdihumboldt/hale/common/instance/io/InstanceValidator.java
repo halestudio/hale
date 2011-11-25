@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.common.instance.io;
 
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
 
 /**
  * Provides support for validating instances
@@ -24,12 +23,12 @@ import eu.esdihumboldt.hale.schemaprovider.Schema;
  */
 public interface InstanceValidator extends ImportProvider {
 	
-	/**
-	 * Set the schemas to be used for validation
-	 * 
-	 * @param schemas the validation schemas
-	 */
-	public void setSchemas(Schema... schemas);
+//	/**
+//	 * Set the schemas to be used for validation
+//	 * 
+//	 * @param schemas the validation schemas
+//	 */
+//	public void setSchemas(Schema... schemas);
 	
 	//TODO add getter for report? need to define ValidationReport interface?
 

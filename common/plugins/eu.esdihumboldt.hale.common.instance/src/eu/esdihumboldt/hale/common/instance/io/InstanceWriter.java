@@ -12,15 +12,11 @@
 
 package eu.esdihumboldt.hale.common.instance.io;
 
-import java.util.List;
-
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
-import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
 
 /**
  * Provides support for writing instances
@@ -55,13 +51,13 @@ public interface InstanceWriter extends ExportProvider {
 	 */
 	public void setInstances(FeatureCollection<FeatureType, Feature> instances);
 	
-	/**
-	 * Set the target schema for the output
-	 * FIXME legacy method, to be replaced when new schema model is ready
-	 * 
-	 * @param targetSchema the target schema
-	 */
-	public void setTargetSchema(Schema targetSchema);
+//	/**
+//	 * Set the target schema for the output
+//	 * FIXME legacy method, to be replaced when new schema model is ready
+//	 * 
+//	 * @param targetSchema the target schema
+//	 */
+//	public void setTargetSchema(Schema targetSchema);
 	
 	/**
 	 * Set the common SRS name
@@ -72,13 +68,13 @@ public interface InstanceWriter extends ExportProvider {
 	 */
 	public void setCommonSRSName(String commonSRSName);
 	
-	/**
-	 * Get the schemas needed for validation of the output written using 
-	 * {@link #execute(ProgressIndicator)}, this usually is at least the 
-	 * target schema.
-	 * 
-	 * @return the schemas needed for validation
-	 */
-	public List<Schema> getValidationSchemas();
+//	/**
+//	 * Get the schemas needed for validation of the output written using 
+//	 * {@link #execute(ProgressIndicator)}, this usually is at least the 
+//	 * target schema.
+//	 * 
+//	 * @return the schemas needed for validation
+//	 */
+//	public List<Schema> getValidationSchemas();
 
 }
