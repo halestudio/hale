@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.ui.firststeps;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Properties;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
@@ -22,13 +21,9 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.intro.IIntroPart;
-import org.eclipse.ui.intro.IIntroSite;
-import org.eclipse.ui.intro.config.IIntroAction;
 import org.eclipse.ui.intro.config.IIntroContentProvider;
 import org.eclipse.ui.intro.config.IIntroContentProviderSite;
 
-import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesMenu;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 
@@ -37,7 +32,7 @@ import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
  * 
  * @author Kai Schwierczek
  */
-public class RecentFilesContentProvider implements IIntroContentProvider, IIntroAction {
+public class RecentFilesContentProvider implements IIntroContentProvider {
 	private boolean disposed = false;
 
 	/**
@@ -78,8 +73,9 @@ public class RecentFilesContentProvider implements IIntroContentProvider, IIntro
 				out.print("<a class=\"recentFile\" href=\""); //$NON-NLS-1$
 				out.print("http://org.eclipse.ui.intro/runAction?"); //$NON-NLS-1$
 				out.print("pluginId=eu.esdihumboldt.hale.ui.firststeps&"); //$NON-NLS-1$
-				out.print("class=" + this.getClass().getName() + "&"); //$NON-NLS-1$ //$NON-NLS-2$
-				out.print("file=" + entry.getFile()); //$NON-NLS-1$
+				out.print("class=eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction&"); //$NON-NLS-1$
+				out.print("closeIntro=true&path="); //$NON-NLS-1$
+				out.print(entry.getFile());
 				out.print("\">"); //$NON-NLS-1$
 				out.print(RecentFilesMenu.shorten(entry.getFile(), MAX_LENGTH, new File(entry.getFile()).getName()
 						.length()));
@@ -112,7 +108,7 @@ public class RecentFilesContentProvider implements IIntroContentProvider, IIntro
 		formText.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
-				open((String) e.getHref());
+				new LoadProjectAction().execute(true, (String) e.getHref());
 			}
 		});
 
@@ -163,26 +159,5 @@ public class RecentFilesContentProvider implements IIntroContentProvider, IIntro
 	@Override
 	public void dispose() {
 		disposed = true;
-	}
-
-	/**
-	 * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite,
-	 *      java.util.Properties)
-	 */
-	@Override
-	public void run(IIntroSite site, Properties params) {
-		open(params.getProperty("file")); //$NON-NLS-1$
-	}
-
-	/**
-	 * Opens the specified project file and closes the intro part.
-	 * 
-	 * @param file the project file
-	 */
-	private void open(String file) {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-		ps.load(new File(file));
-		IIntroPart introPart = PlatformUI.getWorkbench().getIntroManager().getIntro();
-		PlatformUI.getWorkbench().getIntroManager().closeIntro(introPart);
 	}
 }

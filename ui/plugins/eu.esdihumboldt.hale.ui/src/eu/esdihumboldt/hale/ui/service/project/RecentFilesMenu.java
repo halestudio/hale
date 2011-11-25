@@ -66,7 +66,7 @@ public class RecentFilesMenu extends ContributionItem {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-			ps.load(file);
+			ps.load(file.toURI());
 		}
 	}
 	
