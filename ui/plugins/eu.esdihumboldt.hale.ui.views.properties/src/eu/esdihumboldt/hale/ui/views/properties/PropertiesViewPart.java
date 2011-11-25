@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.properties;
 
+import org.eclipse.help.IContext;
+import org.eclipse.help.IContextProvider;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
@@ -19,6 +21,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributo
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.ui.common.help.HALEContextProvider;
 
 /**
  * View part that provides support for association with the properties view
@@ -43,7 +46,19 @@ public abstract class PropertiesViewPart extends ViewPart
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if (adapter == IPropertySheetPage.class)
             return new TabbedPropertySheetPage(this);
+		if (adapter.equals(IContextProvider.class)) {
+			return new HALEContextProvider(
+					getSite().getSelectionProvider(),
+					getDefaultContext());
+		}
         return super.getAdapter(adapter);
+	}
+
+	/**
+	 * @return
+	 */
+	private IContext getDefaultContext() {
+		return null;
 	}
 
 }
