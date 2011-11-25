@@ -65,6 +65,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.org.apache.commons.beanutils"/>
       <plugin id="com.springsource.org.apache.commons.collections"/>
       <plugin id="com.springsource.org.apache.commons.jxpath"/>
+      <plugin id="com.springsource.org.apache.commons.lang"/>
       <plugin id="com.springsource.org.apache.commons.pool"/>
       <plugin id="com.springsource.org.apache.velocity"/>
       <plugin id="com.springsource.org.apache.xerces" fragment="true"/>
@@ -103,11 +104,14 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
       <plugin id="eu.esdihumboldt.hale.common.core"/>
       <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.filter"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.logback.config.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
-      <plugin id="eu.esdihumboldt.hale.doc.dev"/>
-      <plugin id="eu.esdihumboldt.hale.doc.user"/>
-      <plugin id="eu.esdihumboldt.hale.doc.user.ui.views.data"/>
+      <plugin id="eu.esdihumboldt.hale.doc.dev" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.doc.user" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.doc.user.ui.views.data" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
@@ -180,9 +184,12 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.eclipse.core.filesystem"/>
       <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.emf.common"/>
       <plugin id="org.eclipse.emf.ecore"/>
@@ -197,11 +204,13 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.eclipse.equinox.launcher"/>
       <plugin id="org.eclipse.equinox.launcher.cocoa.macosx.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.launcher.win32.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.base"/>
