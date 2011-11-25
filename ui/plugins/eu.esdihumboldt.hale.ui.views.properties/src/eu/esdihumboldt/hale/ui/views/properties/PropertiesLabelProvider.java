@@ -16,11 +16,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 
 /**
  * Label provider for use with a property contributor. Supports 
@@ -30,6 +32,8 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 public class PropertiesLabelProvider extends LabelProvider {
 	
 	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider(true);
+	
+	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
 	/**
 	 * @see LabelProvider#getImage(Object)
@@ -46,6 +50,10 @@ public class PropertiesLabelProvider extends LabelProvider {
 		
 		if (element instanceof EntityDefinition || element instanceof Definition<?>) {
 			return definitionLabels.getImage(element);
+		}
+		
+		if (element instanceof Function){
+			return functionLabels.getImage(element);
 		}
 		
 		return super.getImage(element);
@@ -78,6 +86,10 @@ public class PropertiesLabelProvider extends LabelProvider {
 		
 		if (element instanceof EntityDefinition || element instanceof Definition<?>) {
 			return definitionLabels.getText(element);
+		}
+		
+		if (element instanceof Function){
+			return functionLabels.getText(element);
 		}
 		
 		return super.getText(element);

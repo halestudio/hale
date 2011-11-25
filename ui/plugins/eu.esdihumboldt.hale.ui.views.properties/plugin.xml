@@ -238,6 +238,38 @@
                   type="eu.esdihumboldt.hale.common.align.model.Property">
             </input>
          </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionNameSection"
+               id="eu.esdihumboldt.hale.ui.views.properties.function.name"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
+            <input
+                  type="eu.esdihumboldt.hale.common.align.extension.function.Function">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionIdSection"
+               id="eu.esdihumboldt.hale.ui.views.properties.function.id"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
+            <input
+                  type="eu.esdihumboldt.hale.common.align.extension.function.Function">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionDescriptionSection"
+               id="eu.esdihumboldt.hale.ui.views.properties.function.description"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
+            <input
+                  type="eu.esdihumboldt.hale.common.align.extension.function.Function">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionParameterSection"
+               id="eu.esdihumboldt.hale.ui.views.properties.function.parameters.abstractfunction"
+               tab="eu.esdihumboldt.hale.ui.views.properties.function.parameters">
+            <input
+                  type="eu.esdihumboldt.hale.common.align.extension.function.Function">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -267,6 +299,11 @@
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype"
                label="PropertyType">
+         </propertyTab>
+         <propertyTab
+               category="eu.esdihumboldt.hale.ui.views.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.properties.function.parameters"
+               label="Parameters">
          </propertyTab>
       </propertyTabs>
    </extension>
