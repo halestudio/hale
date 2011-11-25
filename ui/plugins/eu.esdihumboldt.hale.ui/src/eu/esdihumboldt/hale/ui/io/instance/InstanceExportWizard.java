@@ -12,28 +12,15 @@
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-
-import org.eclipse.ui.PlatformUI;
-
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
-import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
-import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
-import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.ui.io.ExportSelectTargetPage;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
-import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * Wizard for exporting instances
@@ -74,49 +61,49 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	public boolean performFinish() {
 		boolean success = super.performFinish();
 		
-		if (success && validatorFactory != null) {
-			// validate the written output
-			
-			// create validator
-			InstanceValidator validator;
-			try {
-				validator = (InstanceValidator) validatorFactory.createExtensionObject();
-			} catch (Exception e) {
-				log.userError("The validator could not be instantiated", e);
-				return false;
-			}
-			
-			// configure validator
-			List<Schema> schemas = getProvider().getValidationSchemas();
-			validator.setSchemas(schemas.toArray(new Schema[schemas.size()]));
-			String fileName = getSelectTargetPage().getTargetFileName();
-			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(fileName));
-			validator.setSource(source);
-			
-			//XXX configuration pages for validator?
-			
-			IOReporter defReport = validator.createReporter();
-			
-			// validate and execute provider
-			try {
-				IOReport report = validateAndExecute(validator, defReport);
-				// add report to report server
-				ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
-				repService.addReport(report);
-				// show message to user
-				if (report.isSuccess()) {
-					// info message
-					log.userInfo(report.getSummary());
-				}
-				else {
-					// error message
-					log.userError(report.getSummary());
-				}
-			} catch (IOProviderConfigurationException e) {
-				log.userError("The validator could not be executed", e);
-				return false;
-			}
-		}
+//		if (success && validatorFactory != null) {
+//			// validate the written output
+//			
+//			// create validator
+//			InstanceValidator validator;
+//			try {
+//				validator = (InstanceValidator) validatorFactory.createExtensionObject();
+//			} catch (Exception e) {
+//				log.userError("The validator could not be instantiated", e);
+//				return false;
+//			}
+//			
+//			// configure validator
+//			List<Schema> schemas = getProvider().getValidationSchemas();
+//			validator.setSchemas(schemas.toArray(new Schema[schemas.size()]));
+//			String fileName = getSelectTargetPage().getTargetFileName();
+//			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(fileName));
+//			validator.setSource(source);
+//			
+//			//XXX configuration pages for validator?
+//			
+//			IOReporter defReport = validator.createReporter();
+//			
+//			// validate and execute provider
+//			try {
+//				IOReport report = validateAndExecute(validator, defReport);
+//				// add report to report server
+//				ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+//				repService.addReport(report);
+//				// show message to user
+//				if (report.isSuccess()) {
+//					// info message
+//					log.userInfo(report.getSummary());
+//				}
+//				else {
+//					// error message
+//					log.userError(report.getSummary());
+//				}
+//			} catch (IOProviderConfigurationException e) {
+//				log.userError("The validator could not be executed", e);
+//				return false;
+//			}
+//		}
 		
 		return success;
 	}
