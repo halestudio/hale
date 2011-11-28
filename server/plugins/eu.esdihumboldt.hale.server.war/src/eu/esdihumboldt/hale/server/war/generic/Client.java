@@ -62,7 +62,7 @@ import eu.esdihumboldt.hale.server.war.wps.ResponseDocumentType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
 
 /**
- * This implements a gernic web client for CST-WPS.
+ * This implements a generic web client for CST-WPS.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -177,7 +177,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 			sb.append(txt+"\n");
 		}
 		
-		// remove templating and write it to screen
+		// remove placeholder and write it to screen
 		writer.print(sb.toString().replace("@SESSIONID@", session.getId()));
 		
 		// close streams
