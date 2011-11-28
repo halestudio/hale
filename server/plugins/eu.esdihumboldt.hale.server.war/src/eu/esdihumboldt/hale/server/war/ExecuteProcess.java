@@ -612,7 +612,9 @@ public class ExecuteProcess {
 
 		if (request.getSession().getAttribute("save").equals("link")) {
 			File result = new File(outputFile);
-			String href = CstWps.SERVICEURL+"download?id="+request.getSession().getId()+"&amp;file="+result.getName();
+			String href = CstWps.getServiceURL(request, false) + "download?id="
+					+ request.getSession().getId() + "&amp;file="
+					+ result.getName();
 			
 			ReferenceType ref = new ReferenceType();
 			ref.setHref(href);
@@ -630,7 +632,7 @@ public class ExecuteProcess {
 		resp.setVersion("1.0.0");
 		resp.setProcess(pbt);
 		resp.setStatus(statusType);
-		resp.setServiceInstance(CstWps.SERVICEURL); // FIXME set to a real URL from GetCapabilities
+		resp.setServiceInstance(CstWps.getServiceURL(request, false) + "cst?"); // FIXME set to a real URL from GetCapabilities
 		
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
