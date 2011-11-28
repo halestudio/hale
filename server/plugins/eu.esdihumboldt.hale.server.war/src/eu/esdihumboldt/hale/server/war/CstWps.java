@@ -50,10 +50,10 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.server.war";
 	
-	/**
-	 * Service url.
-	 */
-	public static final String SERVICEURL = "http://localhost:8080/";
+//	/**
+//	 * Service url.
+//	 */
+//	public static final String SERVICEURL = "http://localhost:8080/";
 	
 	/**
 	 * @see javax.servlet.http.HttpServlet#doGet
@@ -94,7 +94,7 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 			}
 			// call getCapabilities
 			else if (request.toLowerCase().equals("getcapabilities")) {
-				this.getCapabilities(response, writer);
+				this.getCapabilities(httpRequest, response, writer);
 			}
 			// call describeProcess
 			else if (request.toLowerCase().equals("describeprocess")) {
@@ -120,11 +120,12 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * metadata describing all the processes implemented. This clause specifies
 	 * the XML document that a WPS server must return to describe its capabilities.
 	 * 
+	 * @param httpRequest the request 
 	 * @param response the response
 	 * @param writer the writer
 	 * @throws IOException will be thrown if the static file can't be found
 	 */
-	public void getCapabilities(HttpServletResponse response, PrintWriter writer) throws IOException {
+	public void getCapabilities(HttpServletRequest httpRequest, HttpServletResponse response, PrintWriter writer) throws IOException {
 		BufferedReader reader;
 		
 		Bundle bundle = Platform.getBundle(CstWps.ID);
@@ -140,13 +141,35 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 			sb.append(txt+"\n");
 		}
 		
-		writer.print(sb.toString().replace("FIXME", CstWps.SERVICEURL));
+		// determine service URL from request
+		String serviceURL = getServiceURL(httpRequest, true);
+		writer.print(sb.toString().replace("___HREF___", serviceURL));
 		
 		// close streams
 		reader.close();
 		in.close();
 	}
 	
+	/**
+	 * Get the service URL from a HTTP request
+	 * @param httpRequest the HTTP servlet request
+	 * @param includeServletPath if the servlet path shall be included in the
+	 *   service URL
+	 * @return the service URL
+	 */
+	public static String getServiceURL(HttpServletRequest httpRequest, 
+			boolean includeServletPath) {
+		String serviceURL = httpRequest.getScheme() + "://"
+				+ httpRequest.getServerName() + ":"
+				+ httpRequest.getServerPort();
+		String servletPath = (includeServletPath) ? (httpRequest
+				.getServletPath()) : ("");
+		if (servletPath.isEmpty()) {
+			servletPath = "/";
+		}
+		return serviceURL + servletPath;
+	}
+
 	/**
 	 * The mandatory DescribeProcess operation allows WPS clients to request
 	 * a full description of one or more processes that can be executed by the Execute operation.
