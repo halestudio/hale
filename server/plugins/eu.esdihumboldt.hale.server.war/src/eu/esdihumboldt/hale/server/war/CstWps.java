@@ -44,7 +44,7 @@ import de.cs3d.util.logging.ALoggerFactory;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class CstWps extends HttpServlet implements HttpRequestHandler {
+public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConstants {
 
 	/**
 	 * Name of the system property that may be used to override the service URL
@@ -62,7 +62,7 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	public static final String ID = "eu.esdihumboldt.hale.server.war";
 	
 	private static final ALogger log = ALoggerFactory.getLogger(CstWps.class);
-	
+
 //	/**
 //	 * Service url.
 //	 */
@@ -78,31 +78,45 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		Map<String, String> params = initRequest(httpRequest);
 		
 		if (params.get("service") != null && params.get("service").equals("wps")) {
+			String version = params.get("version");
+			if (version != null && !version.equals("1.0.0")) {
+				WpsUtil.printError(EXCEPTION_CODE_INVALID_VERSION,
+						"Only WPS version 1.0.0 is supported.", null, null,
+						response);
+				return;
+			}
+			
 			String request = params.get("request");
 			
-			// no request, maybe display manpage?
 			if (request == null) {
-				//XXX well-formed error?
-				PrintWriter writer = response.getWriter();
-				writer.println("CstWps Service. Not enough parameter!");
-				// close the writer
-				writer.close();
+				WpsUtil.printError(EXCEPTION_CODE_MISSING_PARAM,
+						"Parameter request is missing.", "request", null,
+						response);
+				return;
 			}
-			// call getCapabilities
 			else if (request.toLowerCase().equals("getcapabilities")) {
+				// call getCapabilities
 				this.getCapabilities(httpRequest, response);
 			}
-			// call describeProcess
 			else if (request.toLowerCase().equals("describeprocess")) {
+				// call describeProcess
 				this.describeProcess(response);
 			}
-			// do the transformation
 			else if (httpRequest.getMethod().toLowerCase().equals("post") && 
 						request.toLowerCase().contains("execute")) {
+				// do the transformation
 				this.execute(params, response, httpRequest);
 			}
+			
+			WpsUtil.printError(EXCEPTION_CODE_INVALID_PARAM,
+					"Parameter request is invalid: " + request, "request", null,
+					response);
+			return;
 		} else {
-			// give some sample output?
+			WpsUtil.printError(EXCEPTION_CODE_MISSING_PARAM,
+					"Parameter service is missing.", "service", null,
+					response);
+			return;
 		}
 	}
 
