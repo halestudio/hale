@@ -59,8 +59,6 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.iobridge.impl.DefaultCstServiceBridge;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
-import eu.esdihumboldt.hale.server.war.ows.ExceptionReport;
-import eu.esdihumboldt.hale.server.war.ows.ExceptionType;
 import eu.esdihumboldt.hale.server.war.ows.LanguageStringType;
 import eu.esdihumboldt.hale.server.war.ows.ReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
@@ -74,7 +72,6 @@ import eu.esdihumboldt.hale.server.war.wps.InputType;
 import eu.esdihumboldt.hale.server.war.wps.OutputDataType;
 import eu.esdihumboldt.hale.server.war.wps.OutputReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ProcessBriefType;
-import eu.esdihumboldt.hale.server.war.wps.ProcessFailedType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseDocumentType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
 import eu.esdihumboldt.hale.server.war.wps.StatusType;
@@ -83,7 +80,7 @@ import eu.esdihumboldt.hale.server.war.wps.StatusType;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ExecuteProcess {
+public class ExecuteProcess implements WpsConstants {
 	
 	private final static ALogger _log = ALoggerFactory.getLogger(CstWps.class);
 	
@@ -133,32 +130,32 @@ public class ExecuteProcess {
 	/**
 	 * Count of sourceData elements
 	 */
-	int iSourceData = 0;
+	private int iSourceData = 0;
 	
 	// minOccurs="1" maxOccurs="unbounded"
 //	List<DataType> sourceXmlSchemaDefinition = new ArrayList<DataType>();
 	/**
 	 * Count of souceSchema elements
 	 */
-	int iSourceXSD = 0;
+	private int iSourceXSD = 0;
 	
 	// minOccurs="1" maxOccurs="unbounded"
 //	List<DataType> targetXmlSchemaDefinition = new ArrayList<DataType>();
 	/**
 	 * Count of targetSchema elements
 	 */
-	int iTargetXSD = 0;
+	private int iTargetXSD = 0;
 	
 	// minOccurs="1" maxOccurs="1"
 //	List<DataType> mapping = new ArrayList<DataType>();
 	/**
 	 * Count of mapping elements
 	 */
-	int iMapping = 0;
+	private int iMapping = 0;
 	
-	int iSourceArchive = 0;
+	private int iSourceArchive = 0;
 	
-	int iTargetArchive = 0;
+	private int iTargetArchive = 0;
 	
 	/**
 	 * Contains the outputFile, which is needed for {@link GMLFileFilter}
@@ -192,17 +189,30 @@ public class ExecuteProcess {
 			this.saveRequestData();
 			
 			// preprocess the data and check for consistency
-			this.preprocessData();
-			this.checkData();
+			// unmarshall request
+			Execute exec = (Execute) unmarshaller.unmarshal(fXmldata);
 			
-			// now process the data
-			this.processData();
-			
-			// and clean up workspace
-			this.cleanup();
+			// check if the right identifier is set
+			if (!exec.getIdentifier().getValue().equals("translate")) {
+				// translate is the only supported process
+				WpsUtil.printError(EXCEPTION_CODE_INVALID_PARAM,
+						"Invalid process identifier: "
+								+ exec.getIdentifier().getValue(),
+						"Identifier", null, response);
+			}
+			else {
+				this.preprocessData(exec);
+				this.checkData();
+				
+				// now process the data
+				this.processData();
+				
+				// and clean up workspace
+				this.cleanup();
+			}
 		} catch(Exception e) {
 			// handle exceptions
-			this.exceptionHandler(e);
+			WpsUtil.printError(EXCEPTION_CODE_OTHER, null, null, e, response);
 			
 			// and do a cleanup
 			this.cleanup();
@@ -277,19 +287,11 @@ public class ExecuteProcess {
 	
 	/**
 	 * Analyzes the requestData and saves provided data to disk.
+	 * @param exec the execution request
 	 *  
 	 * @throws Exception if something goes wrong
 	 */
-	private void preprocessData() throws Exception {
-		// umarshall request
-		Execute exec = (Execute) unmarshaller.unmarshal(fXmldata);
-		
-		// check if the right identifier is set
-		if (!exec.getIdentifier().getValue().equals("translate")) {
-			// not supported identifier!
-			throw new Exception("Identifier is not supported!");
-		}
-		
+	private void preprocessData(Execute exec) throws Exception {
 		// data inputs
 		DataInputsType dI = exec.getDataInputs();
 		
@@ -681,58 +683,6 @@ public class ExecuteProcess {
 		} catch (IOException e) {
 			_log.error("IOException during full cleanup: ", e);
 		}
-	}
-	
-	/**
-	 * This function handles all occurrence of Exceptions
-	 * and generates output for the user.
-	 * 
-	 * @param e thrown Exception
-	 */
-	private void exceptionHandler(Exception e) {
-		if (e.getCause() != null) {
-			_log.error(e.getCause().getMessage(), e);
-		} else {
-			_log.error(e.getMessage(), e);
-		}
-		
-		try {
-			Marshaller marshaller = context.createMarshaller();
-			marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
-					new NamespacePrefixMapperImpl());
-			
-			ProcessFailedType failed = new ProcessFailedType();
-			ExceptionReport report = new ExceptionReport();
-			ExceptionType type = new ExceptionType();
-			
-			type.setExceptionCode("OperationNotSupported");
-			type.getExceptionText().add(e.getMessage());
-			report.getException().add(type);
-			report.setLang("en-CA");
-			report.setVersion("1.0.0");
-			failed.setExceptionReport(report);
-			
-			response.setContentType("text/xml");
-			response.setCharacterEncoding("UTF-8");
-			PrintWriter writer = response.getWriter();
-			try {
-				marshaller.marshal(report, writer); // using ProcessFailedType does not work
-			} finally {
-				writer.close();
-			}
-		} catch (Exception e1) {
-			/* 
-			 * If we get here something really important does not work.
-			 * TODO add some kind of static error report instead of showing a blank page
-			 */
-			try {
-				// send "internal server error"
-				response.sendError(505);
-			} catch (IOException e2) {
-				/* if we get here... everything is broken! */
-			}
-		}
-		
 	}
 	
 	/**
