@@ -56,6 +56,8 @@ public class Download extends HttpServlet implements HttpRequestHandler{
 		
 		// check if both is set
 		if (id != null && fileName != null) {
+			//response.setContentType(...)
+			
 			// create the filepath
 			String filePath = Platform.getLocation().toString() + "/tmp/cst_" +id + "/"+fileName;
 			
@@ -64,6 +66,8 @@ public class Download extends HttpServlet implements HttpRequestHandler{
 			// check if it exists and is readable 
 			if (file.exists() && file.canRead()) {
 				// create the printwriter
+				response.setContentType("text/xml");
+				response.setCharacterEncoding("UTF-8");
 				PrintWriter writer = response.getWriter();
 				
 				// read file

@@ -94,7 +94,6 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 		}
 		
 		// create a writer
-		PrintWriter writer = response.getWriter();
 		
 		// handle upload data
 		if (request.getParameter("upload") != null) {
@@ -116,7 +115,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 				params.put("request", sw.toString());
 				
 				// execute process
-				new ExecuteProcess(params, response, request, writer);
+				new ExecuteProcess(params, response, request);
 			} catch (Exception e) {
 				_log.error(e.getMessage(), "Error during data processing.");
 			}
@@ -141,15 +140,18 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 		}
 		// nothing requested, just show the upload form
 		else {
+			response.setContentType("text/html");
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter writer = response.getWriter();
 			try {
 				this.showForm(request, writer);
 			} catch (Exception e) {
 				_log.error(e.getMessage(), "Could not load static form.");
+			} finally {
+				// close output stream
+				writer.close();
 			}
 		}
-		
-		// close output stream
-		writer.close();
 	}
 	
 	/**

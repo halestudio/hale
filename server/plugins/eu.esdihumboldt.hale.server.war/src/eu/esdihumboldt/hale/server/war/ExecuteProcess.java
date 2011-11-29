@@ -123,7 +123,6 @@ public class ExecuteProcess {
 	private Map<String, String> params;
 	private HttpServletResponse response;
 	private HttpServletRequest request;
-	private PrintWriter writer;
 	
 	private File fXmldata;
 	private JAXBContext context;
@@ -172,13 +171,12 @@ public class ExecuteProcess {
 	 * @param params all given (http)parameter in lowercase
 	 * @param response the response
 	 * @param request the request
-	 * @param writer the writer
 	 */
-	public ExecuteProcess(Map<String, String> params, HttpServletResponse response, HttpServletRequest request, PrintWriter writer) {
+	public ExecuteProcess(Map<String, String> params, HttpServletResponse response, HttpServletRequest request) {
 		this.params = params;
 		this.response = response;
 		this.request = request;
-		this.writer = writer;
+//		this.writer = writer;
 		
 		try {
 			// create session
@@ -638,7 +636,15 @@ public class ExecuteProcess {
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
 				new NamespacePrefixMapperImpl());
-		marshaller.marshal(resp, writer);
+		
+		response.setContentType("text/xml");
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter writer = response.getWriter();
+		try {
+			marshaller.marshal(resp, writer);
+		} finally {
+			writer.close();
+		}
 	}
 	
 	/**
@@ -705,8 +711,15 @@ public class ExecuteProcess {
 			report.setVersion("1.0.0");
 			failed.setExceptionReport(report);
 			
-			marshaller.marshal(report, writer); // using ProcessFailedType does not work
-		} catch (JAXBException e1) {
+			response.setContentType("text/xml");
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter writer = response.getWriter();
+			try {
+				marshaller.marshal(report, writer); // using ProcessFailedType does not work
+			} finally {
+				writer.close();
+			}
+		} catch (Exception e1) {
 			/* 
 			 * If we get here something really important does not work.
 			 * TODO add some kind of static error report instead of showing a blank page

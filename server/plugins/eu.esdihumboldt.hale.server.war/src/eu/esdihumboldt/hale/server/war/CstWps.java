@@ -77,35 +77,33 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		
 		Map<String, String> params = initRequest(httpRequest);
 		
-		// create a writer
-		PrintWriter writer = response.getWriter();
-		
 		if (params.get("service") != null && params.get("service").equals("wps")) {
 			String request = params.get("request");
 			
 			// no request, maybe display manpage?
 			if (request == null) {
+				//XXX well-formed error?
+				PrintWriter writer = response.getWriter();
 				writer.println("CstWps Service. Not enough parameter!");
+				// close the writer
+				writer.close();
 			}
 			// call getCapabilities
 			else if (request.toLowerCase().equals("getcapabilities")) {
-				this.getCapabilities(httpRequest, response, writer);
+				this.getCapabilities(httpRequest, response);
 			}
 			// call describeProcess
 			else if (request.toLowerCase().equals("describeprocess")) {
-				this.describeProcess(response, writer);
+				this.describeProcess(response);
 			}
 			// do the transformation
 			else if (httpRequest.getMethod().toLowerCase().equals("post") && 
 						request.toLowerCase().contains("execute")) {
-				this.execute(params, response, httpRequest, writer);
+				this.execute(params, response, httpRequest);
 			}
 		} else {
 			// give some sample output?
 		}
-		
-		// close the writer
-		writer.close();
 	}
 
 	private Map<String, String> initRequest(HttpServletRequest httpRequest) {
@@ -153,8 +151,7 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		//XXX execute thinks the XML request comes as request parameter
 		params.put("request", writer.toString());
 		
-		PrintWriter respWriter = resp.getWriter();
-		this.execute(params, resp, req, respWriter);
+		this.execute(params, resp, req);
 	}
 
 	/**
@@ -166,10 +163,9 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * 
 	 * @param httpRequest the request 
 	 * @param response the response
-	 * @param writer the writer
 	 * @throws IOException will be thrown if the static file can't be found
 	 */
-	public void getCapabilities(HttpServletRequest httpRequest, HttpServletResponse response, PrintWriter writer) throws IOException {
+	public void getCapabilities(HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
 		BufferedReader reader;
 		
 		Bundle bundle = Platform.getBundle(CstWps.ID);
@@ -187,11 +183,20 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		
 		// determine service URL from request
 		String serviceURL = getServiceURL(httpRequest, true);
-		writer.print(sb.toString().replace("___HREF___", serviceURL));
 		
-		// close streams
-		reader.close();
-		in.close();
+		response.setContentType("text/xml");
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter writer = response.getWriter();
+		try {
+			writer.print(sb.toString().replace("___HREF___", serviceURL));
+			
+			// close streams
+			reader.close();
+			in.close();
+		} finally {
+			// close the writer
+			writer.close();
+		}
 	}
 	
 	/**
@@ -233,10 +238,9 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * the parameter values to be used to execute a process instance.
 	 * 
 	 * @param response the response
-	 * @param writer the writer
 	 * @throws IOException will be thrown if the static file can't be found
 	 */
-	public void describeProcess(HttpServletResponse response, PrintWriter writer) throws IOException {
+	public void describeProcess(HttpServletResponse response) throws IOException {
 		BufferedReader reader;
 		
 		Bundle bundle = Platform.getBundle(CstWps.ID);
@@ -246,15 +250,23 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		InputStream in = url.openStream();
 		reader = new BufferedReader(new InputStreamReader(in));
 
+		response.setContentType("text/xml");
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter writer = response.getWriter();
 		
-		String txt;
-		while ((txt = reader.readLine()) != null) {
-			writer.println(txt);
+		try {
+			String txt;
+			while ((txt = reader.readLine()) != null) {
+				writer.println(txt);
+			}
+			
+			// close streams
+			reader.close();
+			in.close();
+		} finally {
+			// close the writer
+			writer.close();
 		}
-		
-		// close streams
-		reader.close();
-		in.close();
 	}
 	
 	/**
@@ -271,10 +283,9 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * @param params all given parameter in lowercase
 	 * @param response the response
 	 * @param request the request
-	 * @param writer the writer
 	 */
-	public void execute(Map<String, String> params, HttpServletResponse response, HttpServletRequest request, PrintWriter writer) {
-		new ExecuteProcess(params, response, request, writer);
+	public void execute(Map<String, String> params, HttpServletResponse response, HttpServletRequest request) {
+		new ExecuteProcess(params, response, request);
 	}
 
 	@Override
