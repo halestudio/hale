@@ -575,34 +575,12 @@ public class ExecuteProcess {
 		ExecuteResponse resp = new ExecuteResponse();
 		ProcessOutputs pOut = new ProcessOutputs();
 		OutputDataType data = new OutputDataType();
-		DataType type = new DataType();
-		ComplexDataType cData = new ComplexDataType();
 		StatusType statusType = new StatusType();
 		statusType.setProcessSucceeded("");
 //		statusType.setCreationTime(value) TODO add this information
 		
 		ProcessBriefType pbt = new ProcessBriefType();
 //		pbt.getProfile().add("profile");
-		
-		
-		cData.setEncoding("utf-8");
-		cData.setMimeType("text/xml");
-		FileReader fReader = new FileReader(outputFile.replace("file:/", ""));
-		BufferedReader reader = new BufferedReader(fReader);
-		String txt;
-		String xml = "";
-		StringBuilder sb = new StringBuilder();
-		while ((txt = reader.readLine()) != null) {
-			sb.append(txt+"\n");
-		}
-		xml = sb.toString();
-		reader.close();
-		fReader.close();
-		
-		cData.getContent().add(xml); // TODO remove with loaded xml/check why < and > are removed with html entities
-		
-		type.setComplexData(cData);
-		data.setData(type);
 		
 		LanguageStringType lst = new LanguageStringType();
 		lst.setValue("translate");
@@ -622,6 +600,29 @@ public class ExecuteProcess {
 			outputReferenceType.setHref(href);
 			
 			data.setReference(outputReferenceType);
+		}
+		else {
+			DataType type = new DataType();
+			ComplexDataType cData = new ComplexDataType();
+			
+			cData.setEncoding("utf-8");
+			cData.setMimeType("text/xml");
+			FileReader fReader = new FileReader(outputFile.replace("file:/", ""));
+			BufferedReader reader = new BufferedReader(fReader);
+			String txt;
+			String xml = "";
+			StringBuilder sb = new StringBuilder();
+			while ((txt = reader.readLine()) != null) {
+				sb.append(txt+"\n");
+			}
+			xml = sb.toString();
+			reader.close();
+			fReader.close();
+			
+			cData.getContent().add(xml); // TODO remove with loaded xml/check why < and > are removed with html entities
+			
+			type.setComplexData(cData);
+			data.setData(type);
 		}
 		
 		pOut.getOutput().add(data);
