@@ -264,6 +264,15 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	@Override
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		@SuppressWarnings("unchecked")
+		Enumeration<String> enumHeaders = request.getHeaderNames();
+		while (enumHeaders.hasMoreElements()) {
+			String header = enumHeaders.nextElement();
+			
+			log.debug("Found header " + header + " with value: " + request.getHeader(header));
+		}
+		log.debug("Request was: " + request.getRequestURL().toString());
+		
 		service(request, response);
 //		this.doGet(request, response);
 	}
