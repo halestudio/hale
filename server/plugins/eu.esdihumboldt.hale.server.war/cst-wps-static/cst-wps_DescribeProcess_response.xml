@@ -39,7 +39,7 @@
 			<Input minOccurs="1" maxOccurs="1">
 				<ows:Identifier>SourceXmlSchemaDefinition</ows:Identifier>
 				<ows:Title>Source XML Schema Definition</ows:Title>
-				<ows:Abstract>XSD(s) used to define the source data's GML Application Schema. The first input needs to be the "primary" GML Application Schema.</ows:Abstract>
+				<ows:Abstract>XSD(s) used to define the source data's GML Application Schema. The first input needs to be the "primary" GML Application Schema. If it has dependencies to other schemata, they should be either on the web or provided through AuxiliarySourceXmlSchemaArchive.</ows:Abstract>
 				<ComplexData>
 					<Default>
 						<Format>
@@ -60,7 +60,7 @@
 			<Input minOccurs="0" maxOccurs="1">
 				<ows:Identifier>AuxiliarySourceXmlSchemaArchive</ows:Identifier>
 				<ows:Title>Source XML Schema Archive</ows:Title>
-				<ows:Abstract>URI to a ZIP archive contaning referenced data or the package itself.</ows:Abstract>
+				<ows:Abstract>URI to a ZIP archive containing source schema dependencies or the archive itself.</ows:Abstract>
 				<ComplexData maximumMegabytes="50">
 					<Default>
 						<Format>
@@ -79,7 +79,7 @@
 			<Input minOccurs="1" maxOccurs="1">
 				<ows:Identifier>TargetXmlSchemaDefinition</ows:Identifier>
 				<ows:Title>Target XML Schema Definition</ows:Title>
-				<ows:Abstract>XSD(s) used to define the resulting target data's GML Application Schema. The first input needs to be the "primary" GML Application Schema.</ows:Abstract>
+				<ows:Abstract>XSD(s) used to define the resulting target data's GML Application Schema. The first input needs to be the "primary" GML Application Schema. If it has dependencies to other schemata, they should be either on the web or provided through AuxiliaryTargetXmlSchemaArchive.</ows:Abstract>
 				<ComplexData>
 					<Default>
 						<Format>
@@ -100,7 +100,7 @@
 			<Input minOccurs="0" maxOccurs="1">
 				<ows:Identifier>AuxiliaryTargetXmlSchemaArchive</ows:Identifier>
 				<ows:Title>Target XML Schema Archive</ows:Title>
-				<ows:Abstract>URI to a ZIP archive containing referenced data or the package itself.</ows:Abstract>
+				<ows:Abstract>URI to a ZIP archive containing target schema dependencies or the archive itself.</ows:Abstract>
 				<ComplexData maximumMegabytes="50">
 					<Default>
 						<Format>
@@ -119,7 +119,7 @@
 			<Input minOccurs="1" maxOccurs="1">
 				<ows:Identifier>Mapping</ows:Identifier>
 				<ows:Title>Ontology Mapping Language File</ows:Title>
-				<ows:Abstract>OML file that contains a mapping between the primary source and the primary target XSD/GML Application Schema.</ows:Abstract>
+				<ows:Abstract>OML file that specifies a mapping between the primary source and the primary target XSD/GML Application Schema.</ows:Abstract>
 				<ComplexData>
 					<Default>
 						<Format>
