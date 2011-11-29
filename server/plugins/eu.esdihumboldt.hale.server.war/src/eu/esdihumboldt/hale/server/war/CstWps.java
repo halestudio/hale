@@ -47,6 +47,11 @@ import de.cs3d.util.logging.ALoggerFactory;
 public class CstWps extends HttpServlet implements HttpRequestHandler {
 
 	/**
+	 * Name of the system property that may be used to override the service URL
+	 */
+	public static final String PROPERTY_SERVICE_URL = "service_url";
+
+	/**
 	 * SerialVersion
 	 */
 	private static final long serialVersionUID = -8128494354035680094L;
@@ -198,9 +203,20 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 */
 	public static String getServiceURL(HttpServletRequest httpRequest, 
 			boolean includeServletPath) {
-		String serviceURL = httpRequest.getScheme() + "://"
-				+ httpRequest.getServerName() + ":"
-				+ httpRequest.getServerPort();
+		String serviceURL = System.getProperty(PROPERTY_SERVICE_URL);
+		if (serviceURL != null && !serviceURL.isEmpty()) {
+			// system property overrides the request information
+			if (serviceURL.endsWith("/")) {
+				// remove / from end
+				serviceURL = serviceURL.substring(0, serviceURL.length() - 1);
+			}
+		}
+		else {
+			serviceURL = httpRequest.getScheme() + "://"
+					+ httpRequest.getServerName() + ":"
+					+ httpRequest.getServerPort();
+		}
+		
 		String servletPath = (includeServletPath) ? (httpRequest
 				.getServletPath()) : ("");
 		if (servletPath.isEmpty()) {
