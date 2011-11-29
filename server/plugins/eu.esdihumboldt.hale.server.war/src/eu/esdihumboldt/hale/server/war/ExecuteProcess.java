@@ -570,6 +570,7 @@ public class ExecuteProcess {
 		DefaultCstServiceBridge cst = new DefaultCstServiceBridge();
 		cst.setOutputDir("file:/"+workspace);
 
+		// currently supports only one of each: source schema, target schema, source data and mapping
 		String outputFile = cst.transform("file:/"+workspace+"TargetXmlSchemaDefinition_1", "file:/"+workspace+"Mapping_1", "file:/"+workspace+"SourceData_1", "file:/"+workspace+"SourceXmlSchemaDefinition_1", null);
 		ExecuteProcess.outputFile = new File(outputFile);
 		
