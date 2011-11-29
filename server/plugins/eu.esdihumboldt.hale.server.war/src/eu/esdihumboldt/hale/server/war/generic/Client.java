@@ -315,7 +315,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 			ResponseDocumentType documentType = new ResponseDocumentType();
 			DocumentOutputDefinitionType type = new DocumentOutputDefinitionType();
 			CodeType targetData = new CodeType();
-			codeType.setValue("TargetData");
+			targetData.setValue("TargetData");
 			type.setIdentifier(targetData);
 			
 			if (request.getSession().getAttribute("save").equals("link")) {
