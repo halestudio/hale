@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -28,11 +30,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.springframework.web.HttpRequestHandler;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 
 /**
  * @author Andreas Burchert
@@ -50,6 +56,8 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.server.war";
 	
+	private static final ALogger log = ALoggerFactory.getLogger(CstWps.class);
+	
 //	/**
 //	 * Service url.
 //	 */
@@ -59,28 +67,10 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * @see javax.servlet.http.HttpServlet#doGet
 	 */
 	@Override
-	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {		
-		Map<String, String> params = new HashMap<String, String>();
-		Enumeration<?> parameterNames = httpRequest.getParameterNames();
+	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
+		log.debug("Handling Get request: " + httpRequest.getRequestURI());
 		
-		// create session
-		HttpSession session = httpRequest.getSession(true);
-		
-		// set session time to 5 minutes
-		session.setMaxInactiveInterval(300);
-		
-		// build a lower case Map
-		while (parameterNames.hasMoreElements()) {
-			String key = (String) parameterNames.nextElement();
-			String val = httpRequest.getParameter(key);
-			
-			// save request data not as lower case
-			if (key.toLowerCase().equals("request")) {
-				params.put(key.toLowerCase(), val);
-			} else {
-				params.put(key.toLowerCase(), val.toLowerCase());
-			}
-		}
+		Map<String, String> params = initRequest(httpRequest);
 		
 		// create a writer
 		PrintWriter writer = response.getWriter();
@@ -111,6 +101,55 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		
 		// close the writer
 		writer.close();
+	}
+
+	private Map<String, String> initRequest(HttpServletRequest httpRequest) {
+		Map<String, String> params = new HashMap<String, String>();
+		Enumeration<?> parameterNames = httpRequest.getParameterNames();
+
+		// create session
+		HttpSession session = httpRequest.getSession(true);
+
+		// set session time to 5 minutes
+		session.setMaxInactiveInterval(300);
+
+		// build a lower case Map
+		while (parameterNames.hasMoreElements()) {
+			String key = (String) parameterNames.nextElement();
+			String val = httpRequest.getParameter(key);
+
+			// save request data not as lower case
+			if (key.toLowerCase().equals("request")) {
+				params.put(key.toLowerCase(), val);
+			} else {
+				params.put(key.toLowerCase(), val.toLowerCase());
+			}
+		}
+
+		return params;
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest, HttpServletResponse)
+	 */
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		log.debug("Handling Post request: " + req.getRequestURI());
+		
+		StringWriter writer = new StringWriter();
+		Reader reader = req.getReader();
+		IOUtils.copy(reader, writer);
+		writer.flush();
+		writer.close();
+		reader.close();
+		
+		Map<String, String> params = initRequest(req);
+		//XXX execute thinks the XML request comes as request parameter
+		params.put("request", writer.toString());
+		
+		PrintWriter respWriter = resp.getWriter();
+		this.execute(params, resp, req, respWriter);
 	}
 
 	/**
@@ -225,6 +264,7 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	@Override
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		this.doGet(request, response);
+		service(request, response);
+//		this.doGet(request, response);
 	}
 }
