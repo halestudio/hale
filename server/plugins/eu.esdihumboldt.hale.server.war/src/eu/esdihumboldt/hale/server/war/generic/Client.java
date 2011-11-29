@@ -230,6 +230,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 					if (fieldName.equals("save")) {
 						// save the value to session
 						request.getSession().setAttribute("save", item.getString());
+						continue;
 					}
 					
 					// Process a regular form field
