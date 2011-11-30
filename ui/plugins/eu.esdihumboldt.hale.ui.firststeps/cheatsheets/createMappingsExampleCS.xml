@@ -22,4 +22,18 @@ It will load an example project and guide you through renaming attributes.<br />
 Click on <b>Click to perform</b> to load the example project.
       </description>
    </item>
+   <item
+         title="Add missing alignments">
+      <description>
+Use the <b>Schema Explorer</b> to find missing alignments. <br />
+Select them in <b>Edit->Add relation...->General->Rename</b> and click <b>Finish</b>,
+or select them directly in the Schema Explorer, click the arrow in between, click <b>Rename</b>
+and then <b>Finish</b> in the opened dialog. <br />
+<br />
+Note, that you are mapping a simple type to a complex nested type. You are done, if you found the two missing alignments.
+      </description>
+      <onCompletion>
+Congratulations, you added mappings to an existing project, now continue with you own project!
+      </onCompletion>
+   </item>
 </cheatsheet>
