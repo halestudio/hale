@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wps:ProcessDescriptions xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0/wpsDescribeProcess_response.xsd" service="WPS" version="1.0.0" xml:lang="en-CA">
-	<ProcessDescription wps:processVersion="2.1.1" storeSupported="false" statusSupported="false">
+	<ProcessDescription wps:processVersion="2.1.2" storeSupported="false" statusSupported="false">
 		<ows:Identifier>translate</ows:Identifier>
 		<ows:Title>Execute Schema Transformation.</ows:Title>
 		<ows:Abstract>Use one or multiple input data sets, a  schema mapping in OML, as well as source an target schema defintions for a schema transformation.</ows:Abstract>

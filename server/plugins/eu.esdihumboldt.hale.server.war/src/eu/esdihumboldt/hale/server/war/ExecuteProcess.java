@@ -29,8 +29,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.zip.ZipOutputStream;
 
@@ -41,6 +43,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -582,14 +585,15 @@ public class ExecuteProcess implements WpsConstants {
 		ExecuteProcess.outputFile = outputFile;
 		
 		ExecuteResponse resp = new ExecuteResponse();
+		resp.setProcess(new ProcessBriefType());
+		resp.getProcess().setProcessVersion("2.1.2"); // must match DescribeProcess TODO determine both from application version
+		//FIXME process identifier! (not included in generated classes)
 		ProcessOutputs pOut = new ProcessOutputs();
 		OutputDataType data = new OutputDataType();
 		StatusType statusType = new StatusType();
-		statusType.setProcessSucceeded("");
-//		statusType.setCreationTime(value) TODO add this information
-		
-		ProcessBriefType pbt = new ProcessBriefType();
-//		pbt.getProfile().add("profile");
+		statusType.setProcessSucceeded("Successfully transformed source data");
+		GregorianCalendar c = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+		statusType.setCreationTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
 		
 		LanguageStringType lst = new LanguageStringType();
 		lst.setValue("translate");
@@ -636,12 +640,11 @@ public class ExecuteProcess implements WpsConstants {
 		
 		pOut.getOutput().add(data);
 		resp.setProcessOutputs(pOut);
-		resp.setLang("en-CA"); // TODO support different languages
+		resp.setLang("en-GB"); // TODO support different languages
 		resp.setService("WPS");
 		resp.setVersion("1.0.0");
-		resp.setProcess(pbt);
 		resp.setStatus(statusType);
-		resp.setServiceInstance(CstWps.getServiceURL(request, false) + "cst?"); // FIXME set to a real URL from GetCapabilities
+		resp.setServiceInstance(CstWps.getServiceURL(request, false) + "cst?");
 		
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
