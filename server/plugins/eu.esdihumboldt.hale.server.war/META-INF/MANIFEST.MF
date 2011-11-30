@@ -9,7 +9,10 @@ Require-Bundle: org.eclipse.core.runtime,
  javax.servlet;bundle-version="2.5.0",
  org.springframework.osgi.jetty.start.osgi;bundle-version="1.0.0",
  org.springframework.osgi.extender;bundle-version="2.0.0",
- org.springframework.osgi.web.extender;bundle-version="2.0.0"
+ org.springframework.osgi.web.extender;bundle-version="2.0.0",
+ org.geotools;bundle-version="2.6.4",
+ eu.esdihumboldt.hale.schemaprovider;bundle-version="2.1.1",
+ eu.esdihumboldt.specification;bundle-version="2.0.5"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.cs3d.util.logging,

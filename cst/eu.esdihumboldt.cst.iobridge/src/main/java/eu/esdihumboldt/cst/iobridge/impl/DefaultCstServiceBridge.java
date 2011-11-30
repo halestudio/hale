@@ -57,6 +57,7 @@ import eu.esdihumboldt.hale.cache.Request;
  * @author Thorsten Reitz, Simon Templer
  * @version $Id$
  */
+@Deprecated
 public class DefaultCstServiceBridge implements CstServiceBridge {
 
 	private String outputDirectory;
