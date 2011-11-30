@@ -45,5 +45,9 @@ Click <b>Finish</b>.<br />
 <b>Alternatively</b> you can select a source and target type in the Schema Explorer, click the arrow in between and choose <b>Rename</b>.<br />
 Then the Retype dialog opens, but with the selected types already chosen. Click <b>Finish</b>.
       </description>
+      <onCompletion>
+Congratulations, you managed to add mappings to your own project!
+Explore the other features of the Humboldt Alignment Editor and get your work started.
+      </onCompletion>
    </item>
 </cheatsheet>

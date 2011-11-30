@@ -17,6 +17,13 @@
    </extension>
    <extension
          point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="$nl$/intro/firststeps_part2.xml">
+      </configExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
       <standbyContentPart
             class="org.eclipse.platform.internal.CheatSheetStandbyContent"
             id="eu.esdihumboldt.hale.ui.firststeps.createNewProjectCS"

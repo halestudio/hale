@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  * An IIntroAction and ICheatSheetAction to open a project. <br>
  * Parameters are <code>closeIntro</code> (or param1 in case of a cheatsheet),
  * <code>path</code> (param2), <code>type</code> (param3) and
- * <code>bundle</code>. All are optional. <br>
+ * <code>bundle</code> (param4). All are optional. <br>
  * <br>
  * If <code>closeIntro</code> is set to "true" an opened intro is closed after a
  * project was successfully opened. <br>

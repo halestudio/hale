@@ -2,11 +2,6 @@
 <introContent>
    <extensionContent id="euesdihumboldthaleuifirststeps-introExtension" style="css/sample.css" name="Firststeps" path="firststeps/@">
       <group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
-         <link label="Create a new project" url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=eu.esdihumboldt.hale.ui.firststeps.firststepsCS" id="euesdihumboldthaleuifirststeps-introLink" style-id="content-link">
-            <text>Get a guide along your way to create a new project.</text>
-         </link>
-      </group>
-      <group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
          <link label="Load Project" url="http://org.eclipse.ui.intro/runAction?class=eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction&amp;closeIntro=true&amp;pluginId=eu.esdihumboldt.hale.ui.firststeps" id="euesdihumboldthaleuifirststeps-introLink" style-id="content-link">
             <text>Load an existing project or choose one of the recently opened projects.</text>
          </link>
@@ -15,10 +10,7 @@
             </contentProvider>
          </group>
       </group>
-      <group>
-         <!-- space -->
-      </group>
-      <group>
+      <group style-id="content-group" id="awcgroup">
          <contentProvider id="awc" class="org.eclipse.ui.intro.contentproviders.AlwaysWelcomeCheckbox" pluginId="org.eclipse.ui.intro">
          </contentProvider>
       </group>

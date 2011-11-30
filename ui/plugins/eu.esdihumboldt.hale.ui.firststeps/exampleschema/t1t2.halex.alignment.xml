@@ -30,21 +30,6 @@
         <source>
             <property>
                 <type>{http://www.example.org/t1/}T1</type>
-                <child>personIncome</child>
-            </property>
-        </source>
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>income</child>
-            </property>
-        </target>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
-        <source>
-            <property>
-                <type>{http://www.example.org/t1/}T1</type>
                 <child>personAge</child>
             </property>
         </source>
@@ -83,22 +68,6 @@
                 <child>details</child>
                 <child>address</child>
                 <child>street</child>
-            </property>
-        </target>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
-        <source>
-            <property>
-                <type>{http://www.example.org/t1/}T1</type>
-                <child>personCity</child>
-            </property>
-        </source>
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}PersonType</type>
-                <child>details</child>
-                <child>address</child>
-                <child>city</child>
             </property>
         </target>
     </cell>

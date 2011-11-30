@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extensions>
+   <page id="tutorials">
+      <group path="page-content/bottom-left" default="true">
+      </group>
+      <group path="page-content/bottom-right" default="true">
+      </group>
+      <hidden>         <extension id="org.eclipse.team" importance="low"/>
+      </hidden>
+   </page>
+   <page id="whatsnew">
+      <group path="page-content/bottom-left" default="true">
+      </group>
+      <group path="page-content/bottom-right" default="true">
+      </group>
+      <hidden>         <extension id="org.eclipse.ui.workbench.news" importance="low"/>
+         <extension id="org.eclipse.ui.workbench.migration" importance="low"/>
+         <extension id="org.eclipse.ui.workbench" importance="low"/>
+      </hidden>
+   </page>
+   <page id="firststeps">
+      <group path="page-content/bottom-left" default="true">
+      </group>
+      <group path="page-content/bottom-right" default="true">
+      </group>
+      <group path="page-content/top-left">
+         <extension id="euesdihumboldthaleuifirststeps-introExtension" importance="low"/>
+      </group>
+      <group path="page-content/top-right">
+         <extension id="euesdihumboldthaleuifirststeps-introExtension_part2" importance="low"/>
+      </group>
+   </page>
+   <page id="overview">
+      <group path="page-content/bottom-left" default="true">
+      </group>
+      <group path="page-content/bottom-right" default="true">
+      </group>
+      <hidden>         <extension id="org.eclipse.ui.workbench" importance="low"/>
+      </hidden>
+   </page>
+</extensions>
