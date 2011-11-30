@@ -92,7 +92,6 @@ public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConsta
 				WpsUtil.printError(EXCEPTION_CODE_MISSING_PARAM,
 						"Parameter request is missing.", "request", null,
 						response);
-				return;
 			}
 			else if (request.toLowerCase().equals("getcapabilities")) {
 				// call getCapabilities
@@ -107,11 +106,11 @@ public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConsta
 				// do the transformation
 				this.execute(params, response, httpRequest);
 			}
-			
-			WpsUtil.printError(EXCEPTION_CODE_INVALID_PARAM,
-					"Parameter request is invalid: " + request, "request", null,
-					response);
-			return;
+			else {
+				WpsUtil.printError(EXCEPTION_CODE_INVALID_PARAM,
+						"Parameter request is invalid: " + request, "request", null,
+						response);
+			}
 		} else {
 			WpsUtil.printError(EXCEPTION_CODE_MISSING_PARAM,
 					"Parameter service is missing.", "service", null,
