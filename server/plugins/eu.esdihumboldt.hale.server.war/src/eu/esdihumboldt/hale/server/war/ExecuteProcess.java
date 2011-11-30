@@ -586,7 +586,7 @@ public class ExecuteProcess implements WpsConstants {
 		
 		ExecuteResponse resp = new ExecuteResponse();
 		resp.setProcess(new ProcessBriefType());
-		resp.getProcess().setProcessVersion("2.1.2"); // must match DescribeProcess TODO determine both from application version
+		resp.getProcess().setProcessVersion("2.1.2"); // must match version in DescribeProcess,GetCapabilities TODO determine both from application version
 		//FIXME process identifier! (not included in generated classes)
 		ProcessOutputs pOut = new ProcessOutputs();
 		OutputDataType data = new OutputDataType();
