@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wps:Capabilities service="WPS" version="1.0.0" xml:lang="en-GB" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd" updateSequence="1">
+<wps:Capabilities service="WPS" version="1.0.0" xml:lang="en-GB" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsGetCapabilities_response.xsd" updateSequence="1">
 	<ows:ServiceIdentification>
 		<ows:Title>HUMBOLDT Conceptual Schema Translation Service</ows:Title>
 		<ows:Abstract>The Conceptual Schema Transformer (CST) is a Web Processing Service that is able to apply a schema transformation to a geodata set (using a specific source Application Schema (A)) in order to provide a geodata set (expressed in a specific target Application Schema B). A schema mapping between schema A and schema B has to be defined beforehand in order to accomplish the transformation.</ows:Abstract>
