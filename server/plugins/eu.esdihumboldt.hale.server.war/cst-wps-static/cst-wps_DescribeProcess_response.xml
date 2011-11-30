@@ -60,7 +60,7 @@
 			<Input minOccurs="0" maxOccurs="1">
 				<ows:Identifier>AuxiliarySourceXmlSchemaArchive</ows:Identifier>
 				<ows:Title>Source XML Schema Archive</ows:Title>
-				<ows:Abstract>URI to a ZIP archive containing source schema dependencies or the archive itself.</ows:Abstract>
+				<ows:Abstract>ZIP archive containing source schema dependencies.</ows:Abstract>
 				<ComplexData maximumMegabytes="50">
 					<Default>
 						<Format>
@@ -100,7 +100,7 @@
 			<Input minOccurs="0" maxOccurs="1">
 				<ows:Identifier>AuxiliaryTargetXmlSchemaArchive</ows:Identifier>
 				<ows:Title>Target XML Schema Archive</ows:Title>
-				<ows:Abstract>URI to a ZIP archive containing target schema dependencies or the archive itself.</ows:Abstract>
+				<ows:Abstract>ZIP archive containing target schema dependencies.</ows:Abstract>
 				<ComplexData maximumMegabytes="50">
 					<Default>
 						<Format>

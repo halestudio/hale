@@ -70,7 +70,7 @@ a {
 						
 			<fieldset>
 				<legend>SourceXmlSchemaDefinition - Source XML Schema Definition</legend>
-				<p>XSD(s) used to define the source data's GML Application Schema. The first input needs to be the "primary" GML Application Schema.</p>
+				<p>XSD(s) used to define the source data's GML Application Schema. The first input needs to be the "primary" GML Application Schema. If it has dependencies to other schemata, they should be either on the web or provided through AuxiliarySourceXmlSchemaArchive.</p>
 
 				<div class="multiupload">
 					<label for="SourceXmlSchemaDefinition">SourceXmlSchemaDefinition</label><br />
@@ -79,8 +79,8 @@ a {
 			</fieldset>
 			
 			<fieldset>
-				<legend>AuxiliarySourceXmlSchemaArchive - Source XML Schema Archive</legend>
-				<p>URI to a ZIP archive containing referenced data or the package itself.</p>
+				<legend>AuxiliarySourceXmlSchemaArchive - Source XML Schema Dependencies Archive</legend>
+				<p>ZIP archive containing source schema dependencies.</p>
 
 				<div class="multiupload">
 					<label for="AuxiliarySourceXmlSchemaArchive">AuxiliarySourceXmlSchemaArchive</label><br />
@@ -95,7 +95,7 @@ a {
 			
 			<fieldset>
 				<legend>TargetXmlSchemaDefinition - Target XML Schema Definition</legend>
-				<p>XSD(s) used to define the resulting target data's GML Application Schema. The first input needs to be the "primary" GML Application Schema.</p>
+				<p>XSD(s) used to define the resulting target data's GML Application Schema. The first input needs to be the "primary" GML Application Schema. If it has dependencies to other schemata, they should be either on the web or provided through AuxiliaryTargetXmlSchemaArchive.</p>
 
 				<div class="multiupload">
 					<label for="TargetXmlSchemaDefinition">TargetXmlSchemaDefinition</label><br />
@@ -104,8 +104,8 @@ a {
 			</fieldset>
 			
 			<fieldset>
-				<legend>AuxiliaryTargetXmlSchemaArchive - Source Data set to be transformed</legend>
-				<p>URI to a ZIP archive containing referenced data or the package itself.</p>
+				<legend>AuxiliaryTargetXmlSchemaArchive - Target XML Schema Dependencies Archive</legend>
+				<p>ZIP archive containing target schema dependencies.</p>
 
 				<div class="multiupload">
 					<label for="AuxiliaryTargetXmlSchemaArchive">AuxiliaryTargetXmlSchemaArchive</label><br />
