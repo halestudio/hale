@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
  * 
  * @author Thorsten Reitz
  */
+@Deprecated
 public interface CstServiceBridge {
 
 	/**

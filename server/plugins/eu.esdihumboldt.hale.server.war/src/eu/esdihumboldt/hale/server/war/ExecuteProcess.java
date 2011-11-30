@@ -57,7 +57,7 @@ import org.w3c.dom.Element;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.cst.iobridge.impl.DefaultCstServiceBridge;
+import eu.esdihumboldt.cst.iobridge.impl.CstTransformation;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.server.war.ows.LanguageStringType;
 import eu.esdihumboldt.hale.server.war.ows.ReferenceType;
@@ -567,12 +567,19 @@ public class ExecuteProcess implements WpsConstants {
 	 * @throws Exception if something goes wrong during execution
 	 */
 	private void processData() throws Exception {
-		DefaultCstServiceBridge cst = new DefaultCstServiceBridge();
-		cst.setOutputDir("file:/"+workspace);
-
+//		DefaultCstServiceBridge cst = new DefaultCstServiceBridge();
+		File outputFile = new File(workspace, UUID.randomUUID() + ".gml");
+		
 		// currently supports only one of each: source schema, target schema, source data and mapping
-		String outputFile = cst.transform("file:/"+workspace+"TargetXmlSchemaDefinition_1", "file:/"+workspace+"Mapping_1", "file:/"+workspace+"SourceData_1", "file:/"+workspace+"SourceXmlSchemaDefinition_1", null);
-		ExecuteProcess.outputFile = new File(outputFile);
+		CstTransformation.transform(
+				new File(workspace, "SourceData_1").toURI(), 
+				new File(workspace, "SourceXmlSchemaDefinition_1").toURI(), 
+				new File(workspace, "Mapping_1").toURI(), 
+				new File(workspace, "TargetXmlSchemaDefinition_1").toURI(), 
+				outputFile, 
+				null);
+		
+		ExecuteProcess.outputFile = outputFile;
 		
 		ExecuteResponse resp = new ExecuteResponse();
 		ProcessOutputs pOut = new ProcessOutputs();
@@ -590,7 +597,7 @@ public class ExecuteProcess implements WpsConstants {
 //		data.getAbstract().add(lst);
 
 		if (request.getSession().getAttribute("save").equals("link")) {
-			File result = new File(outputFile);
+			File result = outputFile;
 			String href = CstWps.getServiceURL(request, false) + "download?id="
 					+ request.getSession().getId() + "&amp;file="
 					+ result.getName();
@@ -609,7 +616,7 @@ public class ExecuteProcess implements WpsConstants {
 			
 			cData.setEncoding("utf-8");
 			cData.setMimeType("text/xml");
-			FileReader fReader = new FileReader(outputFile.replace("file:/", ""));
+			FileReader fReader = new FileReader(outputFile);
 			BufferedReader reader = new BufferedReader(fReader);
 			String txt;
 			String xml = "";

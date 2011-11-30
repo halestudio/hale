@@ -30,12 +30,14 @@
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.iabcinc.jmep"/>
+      <plugin id="com.orientechnologies.orient"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
       <plugin id="com.springsource.javax.activation"/>
       <plugin id="com.springsource.javax.el"/>
       <plugin id="com.springsource.javax.media.jai.codec"/>
       <plugin id="com.springsource.javax.media.jai.core"/>
+      <plugin id="com.springsource.javax.persistence"/>
       <plugin id="com.springsource.javax.servlet.jsp"/>
       <plugin id="com.springsource.javax.xml.bind"/>
       <plugin id="com.springsource.javax.xml.stream"/>
@@ -48,6 +50,7 @@
       <plugin id="com.springsource.org.apache.commons.pool"/>
       <plugin id="com.springsource.org.apache.xerces" fragment="true"/>
       <plugin id="com.springsource.org.apache.xml.resolver"/>
+      <plugin id="com.springsource.org.apache.xmlbeans"/>
       <plugin id="com.springsource.org.apache.xmlcommons"/>
       <plugin id="com.springsource.org.castor"/>
       <plugin id="com.springsource.org.custommonkey.xmlunit"/>
@@ -66,6 +69,8 @@
       <plugin id="eu.esdihumboldt.hale.cache"/>
       <plugin id="eu.esdihumboldt.hale.core"/>
       <plugin id="eu.esdihumboldt.hale.gmlparser"/>
+      <plugin id="eu.esdihumboldt.hale.instance"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.schemaprovider"/>
