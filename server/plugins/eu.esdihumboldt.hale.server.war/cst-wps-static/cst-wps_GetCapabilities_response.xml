@@ -54,7 +54,7 @@
 		</ows:Operation>
 	</ows:OperationsMetadata>
 	<wps:ProcessOfferings>
-		<wps:Process wps:processVersion="2.1.1">
+		<wps:Process wps:processVersion="2.1.2">
 			<ows:Identifier>translate</ows:Identifier>
 			<ows:Title>Execute Schema Transformation</ows:Title>
 			<ows:Abstract>Use one or multiple input data sets, a  schema mapping in OML, as well as source an target schema defintions for a schema transformation.</ows:Abstract>
