@@ -7,3 +7,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: eu.esdihumboldt.hale.server.war,
  org.junit
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0"
+Bundle-ClassPath: lib/gt-wps-8.0-M3.jar,
+ .
