@@ -3,7 +3,7 @@
 	<ProcessDescription wps:processVersion="$process_version" storeSupported="false" statusSupported="false">
 		<ows:Identifier>translate</ows:Identifier>
 		<ows:Title>Execute Schema Transformation.</ows:Title>
-		<ows:Abstract>Use one or multiple input data sets, a  schema mapping in OML, as well as source an target schema defintions for a schema transformation.</ows:Abstract>
+		<ows:Abstract>Use one or multiple input data sets, a  schema mapping in OML, as well as source and target schema defintions for a schema transformation.</ows:Abstract>
 		<DataInputs>
 			<Input minOccurs="1" maxOccurs="1"> <!-- unbounded not supported by the schema -->
 				<ows:Identifier>SourceData</ows:Identifier>
