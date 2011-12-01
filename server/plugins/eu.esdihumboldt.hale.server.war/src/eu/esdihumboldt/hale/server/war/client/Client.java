@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,7 +199,7 @@ public class Client implements HttpRequestHandler {
 				List<FileItem> items = upload.parseRequest(request);
 				
 				for (FileItem item : items) {
-					File file = null;
+					URL fileURL = null;
 					InputType input = new InputType();
 					
 					// remove chars so we can use the fieldname as element data
@@ -222,6 +223,9 @@ public class Client implements HttpRequestHandler {
 						if (filePath.equals("")) {
 							continue;
 						}
+						else {
+							fileURL = new URL(filePath);
+						}
 					} else {
 						String fileName = item.getName();
 						
@@ -229,7 +233,8 @@ public class Client implements HttpRequestHandler {
 							continue;
 						}
 						
-						file = new File(path + fileName);
+						File file = new File(path + fileName);
+						fileURL = file.toURI().toURL();
 						
 						InputStream is = item.getInputStream();
 						
@@ -253,7 +258,7 @@ public class Client implements HttpRequestHandler {
 						is.close();
 					}
 					
-					if (file != null) {
+					if (fileURL != null) {
 						// create data identifier
 						CodeType ct = new CodeType();
 						ct.setValue(fieldName);
@@ -262,7 +267,7 @@ public class Client implements HttpRequestHandler {
 						input.setIdentifier(ct);
 						
 						InputReferenceType inputReference = new InputReferenceType();
-						inputReference.setHref(file.toURI().toURL().toExternalForm());
+						inputReference.setHref(fileURL.toExternalForm());
 						
 						input.setReference(inputReference);
 						
