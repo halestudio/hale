@@ -18,8 +18,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,29 +25,17 @@ import org.eclipse.core.runtime.Platform;
 import org.springframework.web.HttpRequestHandler;
 
 /**
+ * Offers result files for download
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class Download extends HttpServlet implements HttpRequestHandler{
+public class Download implements HttpRequestHandler{
 
 	/**
-	 * Version.
-	 */
-	private static final long serialVersionUID = -4128005019884386215L;
-
-	/**
-	 * @see org.springframework.web.HttpRequestHandler#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see HttpRequestHandler#handleRequest(HttpServletRequest, HttpServletResponse)
 	 */
 	@Override
-	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		this.doGet(request, response);
-	}
-
-	/**
-	 * @see javax.servlet.http.HttpServlet#doGet
-	 */
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// get parameter
 		String id = request.getParameter("id");
 		String fileName = request.getParameter("file");
@@ -59,7 +45,8 @@ public class Download extends HttpServlet implements HttpRequestHandler{
 			//response.setContentType(...)
 			
 			// create the filepath
-			String filePath = Platform.getLocation().toString() + "/tmp/cst_" +id + "/"+fileName;
+			String filePath = Platform.getLocation().toString() + 
+					"/tmp/cst_" +id + "/" + fileName;
 			
 			File file = new File(filePath);
 			

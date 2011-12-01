@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -43,6 +42,8 @@ import org.springframework.web.HttpRequestHandler;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
+import eu.esdihumboldt.hale.server.war.WpsException;
+import eu.esdihumboldt.hale.server.war.WpsException.WpsErrorCode;
 import eu.esdihumboldt.hale.server.war.WpsUtil;
 import eu.esdihumboldt.hale.server.war.handler.ExecuteProcess;
 import eu.esdihumboldt.hale.server.war.wps.CodeType;
@@ -60,92 +61,94 @@ import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class Client extends HttpServlet implements HttpRequestHandler {
+public class Client implements HttpRequestHandler {
 
-	/**
-	 * Version.
-	 */
-	private static final long serialVersionUID = -5590628346583308498L;
-	
 	private final ALogger _log = ALoggerFactory.getLogger(Client.class);
 	
 	private JAXBContext context;
 
 	@Override
-	protected void doGet(HttpServletRequest request,
+	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession(true);
-		
-		// session should not timeout
-		session.setMaxInactiveInterval(-1);
-		
-		_log.info("Session ID: "+session.getId());
-		if (context == null) {
-			try {
-				context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
-			} catch (JAXBException e1) {
-				/* FIXME! */
-			}
-		}
-		
-		// create a writer
-		
-		// handle upload data
-		if (request.getParameter("upload") != null) {
-			// check if the workspace is available
-			ExecuteProcess.prepareWorkspace(request);
+		try {
+			HttpSession session = request.getSession(true);
 			
-			try {
-				Execute exec = this.handleUploadData(request, session.getAttribute("workspace").toString());
-				
-				Marshaller marshaller = context.createMarshaller();
-				marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
-						new NamespacePrefixMapperImpl());
-				
-				StringWriter sw = new StringWriter();
-				marshaller.marshal(exec, sw);
-				
-				// generate "virtual" request
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("request", sw.toString());
-				
-				// execute process
-				new ExecuteProcess(params, response, request);
-			} catch (Exception e) {
-				_log.error("Error during data processing.", e);
+			// session should not timeout
+			session.setMaxInactiveInterval(-1);
+			
+			_log.info("Session ID: "+ session.getId());
+			if (context == null) {
+				try {
+					context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
+				} catch (JAXBException e) {
+					throw new WpsException("Error initializing JAXB context.",
+							WpsErrorCode.NoApplicableCode, e, null);
+				}
 			}
-		}
-		// delete workspace
-		else if (request.getParameter("deleteAll") != null) {
-			// check if a session is available AND a workspace is set
-			if (session.getId() != null && session.getAttribute("workspace") != null) {
-				// delete workspace
-				ExecuteProcess.deleteAll(request);
-			} else if (request.getParameter("id") != null) {
-				// set the given session id
-				session.setAttribute("id", request.getParameter("id"));
-				
-				// create the workspace
-				// this is needed as we can't guess where the workspace is
+			
+			// create a writer
+			
+			// handle upload data
+			if (request.getParameter("upload") != null) {
+				// check if the workspace is available
 				ExecuteProcess.prepareWorkspace(request);
 				
-				// and delete it
-				ExecuteProcess.deleteAll(request);
+				try {
+					Execute exec = this.handleUploadData(request, session.getAttribute("workspace").toString());
+					
+					Marshaller marshaller = context.createMarshaller();
+					marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
+							new NamespacePrefixMapperImpl());
+					
+					StringWriter sw = new StringWriter();
+					marshaller.marshal(exec, sw);
+					
+					// generate "virtual" request
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("request", sw.toString());
+					
+					// execute process
+					new ExecuteProcess(params, response, request);
+				} catch (Exception e) {
+					throw new WpsException("Error processing form input.",
+							WpsErrorCode.NoApplicableCode, e, null);
+				}
 			}
-		}
-		// nothing requested, just show the upload form
-		else {
-			response.setContentType("text/html");
-			response.setCharacterEncoding("UTF-8");
-			PrintWriter writer = response.getWriter();
-			try {
-				this.showForm(request, writer);
-			} catch (Exception e) {
-				_log.error(e.getMessage(), "Could not load static form.");
-			} finally {
-				// close output stream
-				writer.close();
+			// delete workspace
+			else if (request.getParameter("deleteAll") != null) {
+				// check if a session is available AND a workspace is set
+				if (session.getId() != null && session.getAttribute("workspace") != null) {
+					// delete workspace
+					ExecuteProcess.deleteAll(request);
+				} else if (request.getParameter("id") != null) {
+					// set the given session id
+					session.setAttribute("id", request.getParameter("id"));
+					
+					// create the workspace
+					// this is needed as we can't guess where the workspace is
+					ExecuteProcess.prepareWorkspace(request);
+					
+					// and delete it
+					ExecuteProcess.deleteAll(request);
+				}
 			}
+			// nothing requested, just show the upload form
+			else {
+				response.setContentType("text/html");
+				response.setCharacterEncoding("UTF-8");
+				PrintWriter writer = response.getWriter();
+				try {
+					this.showForm(request, writer);
+				} catch (Exception e) {
+					throw new WpsException("Could not load client template.",
+							WpsErrorCode.NoApplicableCode, e, null);
+				} finally {
+					// close output stream
+					writer.close();
+				}
+			}
+		} catch (Exception e) {
+			WpsUtil.printError(e, null, response);
 		}
 	}
 	
@@ -165,12 +168,6 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 		WpsUtil.mergeTemplate(
 				"cst-wps-static/client/client.html",
 				context, "UTF-8", writer);
-	}
-	
-	@Override
-	public void handleRequest(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		this.doGet(request, response);
 	}
 	
 	private Execute handleUploadData(HttpServletRequest request, String path) throws Exception {
