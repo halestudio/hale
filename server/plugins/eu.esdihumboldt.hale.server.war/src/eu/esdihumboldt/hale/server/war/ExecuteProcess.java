@@ -650,18 +650,10 @@ public class ExecuteProcess implements WpsConstants {
 			return;
 		}
 		
-		try {
-			File[] files = workspace.listFiles(new GMLFileFilter(outputFile));
-			
-			for (File f : files) {
-				if (f.isDirectory()) {
-					FileUtils.deleteDirectory(f);
-				} else {
-					FileUtils.deleteQuietly(f);
-				}
-			}
-		} catch (IOException e) {
-			_log.error("IOException during cleanup: ", e);
+		File[] files = workspace.listFiles(new GMLFileFilter(outputFile));
+		
+		for (File f : files) {
+				FileUtils.deleteQuietly(f);
 		}
 	}
 	
