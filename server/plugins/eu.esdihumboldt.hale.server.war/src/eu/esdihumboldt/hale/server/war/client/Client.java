@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.server.war.wps.DocumentOutputDefinitionType;
 import eu.esdihumboldt.hale.server.war.wps.Execute;
 import eu.esdihumboldt.hale.server.war.wps.InputReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.InputType;
+import eu.esdihumboldt.hale.server.war.wps.OutputDefinitionType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseDocumentType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
 
@@ -174,6 +175,8 @@ public class Client implements HttpRequestHandler {
 		if (ServletFileUpload.isMultipartContent(request)) {
 			Execute exec = new Execute();
 			
+			boolean asReference = false;
+			
 			// set identifier
 			CodeType codeType = new CodeType();
 			codeType.setValue("translate");
@@ -205,7 +208,9 @@ public class Client implements HttpRequestHandler {
 					// display check
 					if (fieldName.equals("save")) {
 						// save the value to session
-						request.getSession().setAttribute("save", item.getString());
+						if (item.getString().equals("link")) {
+							asReference = true;
+						}
 						continue;
 					}
 					
@@ -273,24 +278,30 @@ public class Client implements HttpRequestHandler {
 			exec.setDataInputs(dataInputType);
 			
 			ResponseFormType formType = new ResponseFormType();
-			ResponseDocumentType documentType = new ResponseDocumentType();
-			DocumentOutputDefinitionType type = new DocumentOutputDefinitionType();
-			CodeType targetData = new CodeType();
-			targetData.setValue("TargetData");
-			type.setIdentifier(targetData);
 			
-			if (request.getSession().getAttribute("save").equals("link")) {
+			if (asReference) {
+				ResponseDocumentType documentType = new ResponseDocumentType();
+				DocumentOutputDefinitionType type = new DocumentOutputDefinitionType();
+				CodeType targetData = new CodeType();
+				targetData.setValue("TargetData");
+				type.setIdentifier(targetData);
+				
 				// display as reference
 				type.setAsReference(true);
-				documentType.setStoreExecuteResponse(true);
-			} else {
-				// display on screen
-				type.setAsReference(false);
 				documentType.setStoreExecuteResponse(false);
+				
+				documentType.getOutput().add(type);
+				formType.setResponseDocument(documentType);
+			}
+			else {
+				// request raw data output
+				OutputDefinitionType outputDef = new OutputDefinitionType();
+				CodeType outputIdentifier = new CodeType();
+				outputIdentifier.setValue("TargetData");
+				outputDef.setIdentifier(outputIdentifier );
+				formType.setRawDataOutput(outputDef );
 			}
 			
-			documentType.getOutput().add(type);
-			formType.setResponseDocument(documentType);
 			exec.setResponseForm(formType);
 			
 			return exec;
