@@ -61,6 +61,7 @@ import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.server.war.WpsException;
 import eu.esdihumboldt.hale.server.war.WpsUtil;
 import eu.esdihumboldt.hale.server.war.WpsException.WpsErrorCode;
+import eu.esdihumboldt.hale.server.war.wps.CodeType;
 import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
 import eu.esdihumboldt.hale.server.war.wps.DataType;
@@ -600,7 +601,12 @@ public class ExecuteProcess {
 		ExecuteResponse resp = new ExecuteResponse();
 		resp.setProcess(new ProcessBriefType());
 		resp.getProcess().setProcessVersion(WpsUtil.getProcessVersion());
-		//FIXME process identifier! (not included in generated classes)
+		CodeType identifier = new CodeType();
+		identifier.setValue("translate");
+		resp.getProcess().setIdentifier(identifier);
+		LanguageStringType title = new LanguageStringType();
+		title.setValue("Execute Schema Transformation.");
+		resp.getProcess().setTitle(title);
 		ProcessOutputs pOut = new ProcessOutputs();
 		OutputDataType data = new OutputDataType();
 		StatusType statusType = new StatusType();
@@ -608,8 +614,11 @@ public class ExecuteProcess {
 		GregorianCalendar c = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
 		statusType.setCreationTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
 		
+		CodeType outputIdentifier = new CodeType();
+		outputIdentifier.setValue("TargetData");
+		data.setIdentifier(outputIdentifier);
 		LanguageStringType lst = new LanguageStringType();
-		lst.setValue("translate");
+		lst.setValue("Transformed Data in Target Schema");
 		data.setTitle(lst);
 
 		if (request.getSession().getAttribute("save").equals("link")) {
