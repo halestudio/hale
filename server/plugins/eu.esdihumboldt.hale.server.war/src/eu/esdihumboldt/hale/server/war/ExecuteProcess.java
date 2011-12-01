@@ -163,7 +163,7 @@ public class ExecuteProcess implements WpsConstants {
 	/**
 	 * Contains the outputFile, which is needed for {@link GMLFileFilter}
 	 */
-	public static File outputFile;
+	private File outputFile;
 	
 	/**
 	 * Constructor. Does all processing.
@@ -582,7 +582,7 @@ public class ExecuteProcess implements WpsConstants {
 				outputFile, 
 				null);
 		
-		ExecuteProcess.outputFile = outputFile;
+		this.outputFile = outputFile;
 		
 		ExecuteResponse resp = new ExecuteResponse();
 		resp.setProcess(new ProcessBriefType());
@@ -666,7 +666,7 @@ public class ExecuteProcess implements WpsConstants {
 		try {
 			File home = new File(workspace);
 			
-			File[] files = home.listFiles(new GMLFileFilter());
+			File[] files = home.listFiles(new GMLFileFilter(outputFile));
 			
 			for (File f : files) {
 				if (f.isDirectory()) {
@@ -701,12 +701,27 @@ public class ExecuteProcess implements WpsConstants {
 	 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
 	 */
 	public static class GMLFileFilter implements FilenameFilter {
+		
+		private final File toKeep;
+		
 		/**
-		 * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
+		 * @param toKeep the file to keep
+		 */
+		public GMLFileFilter(File toKeep) {
+			super();
+			this.toKeep = toKeep;
+		}
+
+		/**
+		 * @see FilenameFilter#accept(File, String)
 		 */
 		@Override
 		public boolean accept(File dir, String name) {
-			if (name.equals(ExecuteProcess.outputFile.getName())) {
+			if (toKeep == null) {
+				return true;
+			}
+			
+			if (name.equals(toKeep.getName())) {
 				return false;
 			}
 			
