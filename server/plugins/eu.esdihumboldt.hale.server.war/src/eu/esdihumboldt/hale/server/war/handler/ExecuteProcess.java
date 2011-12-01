@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.server.war;
+package eu.esdihumboldt.hale.server.war.handler;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -58,6 +58,8 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.iobridge.impl.CstTransformation;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
+import eu.esdihumboldt.hale.server.war.WpsException;
+import eu.esdihumboldt.hale.server.war.WpsUtil;
 import eu.esdihumboldt.hale.server.war.WpsException.WpsErrorCode;
 import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
@@ -597,7 +599,7 @@ public class ExecuteProcess {
 		
 		ExecuteResponse resp = new ExecuteResponse();
 		resp.setProcess(new ProcessBriefType());
-		resp.getProcess().setProcessVersion("2.1.2"); // must match version in DescribeProcess,GetCapabilities TODO determine both from application version
+		resp.getProcess().setProcessVersion(WpsUtil.getProcessVersion());
 		//FIXME process identifier! (not included in generated classes)
 		ProcessOutputs pOut = new ProcessOutputs();
 		OutputDataType data = new OutputDataType();
@@ -612,7 +614,7 @@ public class ExecuteProcess {
 
 		if (request.getSession().getAttribute("save").equals("link")) {
 			File result = outputFile;
-			String href = CstWps.getServiceURL(request, false) + "download?id="
+			String href = WpsUtil.getServiceURL(request, false) + "download?id="
 					+ request.getSession().getId() + "&amp;file="
 					+ result.getName();
 			
@@ -654,7 +656,7 @@ public class ExecuteProcess {
 		resp.setService("WPS");
 		resp.setVersion("1.0.0");
 		resp.setStatus(statusType);
-		resp.setServiceInstance(CstWps.getServiceURL(request, false) + "cst?");
+		resp.setServiceInstance(WpsUtil.getServiceURL(request, false) + "cst?");
 		
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$

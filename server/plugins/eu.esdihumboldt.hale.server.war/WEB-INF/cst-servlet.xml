@@ -3,6 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
-	<bean name="/cst" class="eu.esdihumboldt.hale.server.war.CstWps" />
-	<bean name="cst" class="eu.esdihumboldt.hale.server.war.CstWps" />
+	<bean name="/cst" class="eu.esdihumboldt.hale.server.war.handler.CstWps" />
+	
+	<bean name="/client" class="eu.esdihumboldt.hale.server.war.client.Client" />
+	
+	<bean name="/download" class="eu.esdihumboldt.hale.server.war.handler.Download" />
 </beans>

@@ -48,6 +48,7 @@
       <plugin id="com.springsource.org.apache.commons.jxpath"/>
       <plugin id="com.springsource.org.apache.commons.lang"/>
       <plugin id="com.springsource.org.apache.commons.pool"/>
+      <plugin id="com.springsource.org.apache.velocity"/>
       <plugin id="com.springsource.org.apache.xerces" fragment="true"/>
       <plugin id="com.springsource.org.apache.xml.resolver"/>
       <plugin id="com.springsource.org.apache.xmlbeans"/>

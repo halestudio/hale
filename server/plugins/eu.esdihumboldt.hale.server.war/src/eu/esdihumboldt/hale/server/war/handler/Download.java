@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.server.war;
+package eu.esdihumboldt.hale.server.war.handler;
 
 import java.io.BufferedReader;
 import java.io.File;
