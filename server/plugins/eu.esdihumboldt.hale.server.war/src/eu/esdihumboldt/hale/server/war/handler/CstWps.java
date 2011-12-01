@@ -79,10 +79,11 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 					// call describeProcess
 					describeProcess(response);
 				}
-				else if (httpRequest.getMethod().toLowerCase().equals("post") && 
-							request.toLowerCase().contains("execute")) {
-					// do the transformation
-					execute(params, response, httpRequest);
+				else if (request.toLowerCase().contains("execute")) {
+					// execute only supported per post
+					throw new WpsException(
+							"Execute operation only supported with POST method." + request,
+							WpsErrorCode.InvalidParameterValue, null, "request");
 				}
 				else {
 					throw new WpsException(
