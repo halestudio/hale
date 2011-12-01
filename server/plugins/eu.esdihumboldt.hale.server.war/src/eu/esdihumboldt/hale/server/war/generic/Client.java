@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.server.war.generic;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,13 +52,11 @@ import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.server.war.CstWps;
 import eu.esdihumboldt.hale.server.war.ExecuteProcess;
 import eu.esdihumboldt.hale.server.war.wps.CodeType;
-import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
-import eu.esdihumboldt.hale.server.war.wps.DataType;
 import eu.esdihumboldt.hale.server.war.wps.DocumentOutputDefinitionType;
 import eu.esdihumboldt.hale.server.war.wps.Execute;
+import eu.esdihumboldt.hale.server.war.wps.InputReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.InputType;
-import eu.esdihumboldt.hale.server.war.wps.ReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseDocumentType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
 
@@ -117,7 +116,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 				// execute process
 				new ExecuteProcess(params, response, request);
 			} catch (Exception e) {
-				_log.error(e.getMessage(), "Error during data processing.");
+				_log.error("Error during data processing.", e);
 			}
 		}
 		// delete workspace
@@ -218,13 +217,12 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 				List<FileItem> items = upload.parseRequest(request);
 				
 				for (FileItem item : items) {
+					File file = null;
 					InputType input = new InputType();
 					
 					// remove chars so we can use the fieldname as element data
 					String fieldName = item.getFieldName().replace("[]", "");
 					fieldName = fieldName.replace("URL", "");
-					String filePath = "";
-					String mimeType = "";
 					
 					// display check
 					if (fieldName.equals("save")) {
@@ -235,7 +233,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 					
 					// Process a regular form field
 					if (item.isFormField()) {
-						filePath = item.getString();
+						String filePath = item.getString();
 						
 						// skip if no url is given
 						if (filePath.equals("")) {
@@ -248,12 +246,12 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 							continue;
 						}
 						
-						filePath = path+fileName;
+						file = new File(path + fileName);
 						
 						InputStream is = item.getInputStream();
 						
 						// create file
-						FileOutputStream fos = new FileOutputStream(filePath);
+						FileOutputStream fos = new FileOutputStream(file);
 						BufferedOutputStream os = new BufferedOutputStream(fos);
 						
 						int avail = is.available();
@@ -265,11 +263,6 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 							data = new byte[avail];
 						}
 						
-						filePath = "file://"+filePath;
-						if (fileName.endsWith("zip")) {
-							mimeType = "application/zip";
-						}
-						
 						// flush and close
 						os.flush();
 						os.close();
@@ -277,33 +270,22 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 						is.close();
 					}
 					
-					// create data identifier
-					CodeType ct = new CodeType();
-					ct.setValue(fieldName);
-					
-					// set identifier
-					input.setIdentifier(ct);
-					
-					// create data segment
-					DataType dataType = new DataType();
-					ComplexDataType data = new ComplexDataType();
-					
-					// create link element
-					// TODO check the data
-					ReferenceType link = new ReferenceType();
-					link.setHref(filePath);
-					
-					data.getContent().add(link);
-					data.setMimeType(mimeType);
-					
-					// add to <wps:Data>
-					dataType.setComplexData(data);
-					
-					//
-					input.setData(dataType);
-					
-					// add to <wps:DataInputs>
-					dataInputType.getInput().add(input);
+					if (file != null) {
+						// create data identifier
+						CodeType ct = new CodeType();
+						ct.setValue(fieldName);
+						
+						// set identifier
+						input.setIdentifier(ct);
+						
+						InputReferenceType inputReference = new InputReferenceType();
+						inputReference.setHref(file.toURI().toURL().toExternalForm());
+						
+						input.setReference(inputReference);
+						
+						// add to <wps:DataInputs>
+						dataInputType.getInput().add(input);
+					}
 				}
 			} catch (FileUploadException e) {
 				_log.error(e.getMessage(), "Error during multipart parsing.");
