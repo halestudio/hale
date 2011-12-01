@@ -12,20 +12,32 @@
 
 package eu.esdihumboldt.cst.doc.functions.internal.content;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.OutputStreamWriter;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.net.URL;
 import java.util.Locale;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.eclipse.help.IHelpContentProducer;
 
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 
 /**
  * Provides content for function documentation.
+ * 
  * @author Simon Templer
  */
-public class FunctionReferenceContent implements IHelpContentProducer, FunctionReferenceConstants {
+public class FunctionReferenceContent implements IHelpContentProducer,
+		FunctionReferenceConstants {
 
 	/**
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
@@ -35,18 +47,81 @@ public class FunctionReferenceContent implements IHelpContentProducer, FunctionR
 			Locale locale) {
 		if (href.startsWith(FUNCTION_TOPIC_PATH)) {
 			// it's a function
-			//TODO return filled template for function doc
-			//XXX use Xtend? (alternatives mvel, play?)
+			String func_id = href.substring(FUNCTION_TOPIC_PATH.length());
 			try {
-				return new ByteArrayInputStream(href.getBytes("UTF-8"));
-			} catch (UnsupportedEncodingException e) {
+				return getFunctionContent(func_id);
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return null;
 			}
 		}
-		
+
 		return null;
+	}
+
+	private InputStream getFunctionContent(String func_id) throws Exception {
+		Template template = null;
+
+		//creates the temporary file
+		File tempFile = null;
+		tempFile = File.createTempFile("template", ".vm"); //$NON-NLS-1$ //$NON-NLS-2$
+		URL templatePath = this.getClass().getResource("template.html");
+		FileOutputStream fos = new FileOutputStream(tempFile);	
+		InputStream stream = templatePath.openStream();
+		
+		// copys the InputStream into FileOutputStream
+		IOUtils.copy(stream, fos);
+		
+		stream.close();
+		fos.close();
+		
+		Velocity.setProperty("file.resource.loader.path", tempFile.getParent());
+		
+		// initialize Velocity
+		Velocity.init();
+
+		VelocityContext context = new VelocityContext();
+		
+		// maps "function" to the real function ID (used by the template)
+		AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
+		context.put( "function", function);
+		
+		// creating the full IconURL
+		// ------ STARTS HERE ------
+		URL url = function.getIconURL();
+		String urlString = url.toString();
+		int i = urlString.lastIndexOf("/");
+		// "/picture.png"
+		String sub = urlString.substring(i, urlString.length());
+		
+		// "eu.esdihumboldt.cst.functions.TYPE"
+		String category = function.getCategoryId();
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append(category);
+		sb.append("/icons");
+		sb.append(sub);
+		
+		// eu.esdihumboldt.cst.functions.TYPE/icons/picture.png
+		String final_url = sb.toString();
+		
+		context.put("url", final_url);
+		// ------ ENDS HERE ------
+		
+		template = Velocity.getTemplate(tempFile.getName(), "UTF-8");
+
+		PipedInputStream pis = new PipedInputStream();
+		
+		PipedOutputStream pos = new PipedOutputStream(pis);
+		
+		OutputStreamWriter osw = new OutputStreamWriter(pos, "UTF-8");
+
+		template.merge( context, osw );
+		
+		osw.close();
+		
+		return pis;
+
 	}
 
 }
