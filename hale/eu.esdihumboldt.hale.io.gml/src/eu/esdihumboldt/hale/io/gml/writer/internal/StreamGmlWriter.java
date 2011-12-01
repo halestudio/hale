@@ -128,6 +128,11 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	private final boolean useFeatureCollection;
 	
 	/**
+	 * States if the schema location shall be included in the document
+	 */
+	private boolean includedSchemaLocation = true;
+	
+	/**
 	 * Create a GML writer
 	 * 
 	 * @param useFeatureCollection if a GML feature collection shall be used to 
@@ -272,6 +277,14 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	}
 
 	/**
+	 * Set if the schema location shall be included in the document
+	 * @param includedSchemaLocation the includedSchemaLocation to set
+	 */
+	public void setIncludedSchemaLocation(boolean includedSchemaLocation) {
+		this.includedSchemaLocation = includedSchemaLocation;
+	}
+
+	/**
 	 * Write the given instances
 	 * 
 	 * @param features the feature collection
@@ -369,18 +382,20 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		// generate mandatory id attribute (for feature collection)
 		GmlWriterUtil.writeRequiredID(writer, containerDefinition, null, false);
 		
-		// write schema locations
-		StringBuffer locations = new StringBuffer();
-		locations.append(getTargetSchema().getNamespace());
-		locations.append(" "); //$NON-NLS-1$
-		locations.append(getTargetSchema().getLocation().toString());
-		for (Schema schema : additionalSchemas) {
+		if (includedSchemaLocation) {
+			// write schema locations
+			StringBuffer locations = new StringBuffer();
+			locations.append(getTargetSchema().getNamespace());
 			locations.append(" "); //$NON-NLS-1$
-			locations.append(schema.getNamespace());
-			locations.append(" "); //$NON-NLS-1$
-			locations.append(schema.getLocation().toString());
+			locations.append(getTargetSchema().getLocation().toString());
+			for (Schema schema : additionalSchemas) {
+				locations.append(" "); //$NON-NLS-1$
+				locations.append(schema.getNamespace());
+				locations.append(" "); //$NON-NLS-1$
+				locations.append(schema.getLocation().toString());
+			}
+			writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
 		}
-		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
 		
 		// boundedBy is needed for GML 2 FeatureCollections
 		AttributeDefinition boundedBy = containerDefinition.getAttribute("boundedBy"); //$NON-NLS-1$
