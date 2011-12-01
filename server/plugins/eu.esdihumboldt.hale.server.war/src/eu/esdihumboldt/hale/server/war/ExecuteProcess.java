@@ -16,7 +16,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -24,7 +23,6 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
@@ -34,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
-import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -87,7 +84,7 @@ public class ExecuteProcess implements WpsConstants {
 	
 	private final static ALogger _log = ALoggerFactory.getLogger(CstWps.class);
 	
-	private String workspace;
+	private final File workspace;
 	private String requestDataFileName = "xmlRequestData_"+UUID.randomUUID()+".xml";
 	
 	/**
@@ -176,49 +173,59 @@ public class ExecuteProcess implements WpsConstants {
 		this.params = params;
 		this.response = response;
 		this.request = request;
-//		this.writer = writer;
 		
+		// create workspace dir
+		File work = null;
 		try {
-			// create session
-//			HttpSession session = request.getSession(true);
-			
-			// init jaxb
-			this.initJAXB();
-			
-			// create workspace dir
-			this.workspace = ExecuteProcess.prepareWorkspace(request);
-			
-			// save data from request to file
-			this.saveRequestData();
-			
-			// preprocess the data and check for consistency
-			// unmarshall request
-			Execute exec = (Execute) unmarshaller.unmarshal(fXmldata);
-			
-			// check if the right identifier is set
-			if (!exec.getIdentifier().getValue().equals("translate")) {
-				// translate is the only supported process
-				WpsUtil.printError(EXCEPTION_CODE_INVALID_PARAM,
-						"Invalid process identifier: "
-								+ exec.getIdentifier().getValue(),
-						"Identifier", null, response);
-			}
-			else {
-				this.preprocessData(exec);
-				this.checkData();
+			work = ExecuteProcess.prepareWorkspace(request);
+		} catch (Exception e) {
+			WpsUtil.printError(EXCEPTION_CODE_OTHER,
+					"Error creating process workspace",
+					null, e, response);
+		}
+		
+		this.workspace = work;
+		
+		if (workspace != null) {
+			try {
+				// create session
+	//			HttpSession session = request.getSession(true);
 				
-				// now process the data
-				this.processData();
+				// init jaxb
+				initJAXB();
 				
-				// and clean up workspace
-				this.cleanup();
+				// save data from request to file
+				saveRequestData();
+				
+				// preprocess the data and check for consistency
+				// unmarshall request
+				Execute exec = (Execute) unmarshaller.unmarshal(fXmldata);
+				
+				// check if the right identifier is set
+				if (!exec.getIdentifier().getValue().equals("translate")) {
+					// translate is the only supported process
+					WpsUtil.printError(EXCEPTION_CODE_INVALID_PARAM,
+							"Invalid process identifier: "
+									+ exec.getIdentifier().getValue(),
+							"Identifier", null, response);
+				}
+				else {
+					preprocessData(exec);
+					checkData();
+					
+					// now process the data
+					processData();
+					
+					// and clean up workspace
+					cleanup();
+				}
+			} catch(Exception e) {
+				// handle exceptions
+				WpsUtil.printError(EXCEPTION_CODE_OTHER, null, null, e, response);
+				
+				// and do a cleanup
+				cleanup();
 			}
-		} catch(Exception e) {
-			// handle exceptions
-			WpsUtil.printError(EXCEPTION_CODE_OTHER, null, null, e, response);
-			
-			// and do a cleanup
-			this.cleanup();
 		}
 	}
 
@@ -231,7 +238,7 @@ public class ExecuteProcess implements WpsConstants {
 	 * 
 	 * @throws FileNotFoundException if the workspace could not be created
 	 */
-	public static String prepareWorkspace(HttpServletRequest request) throws FileNotFoundException {
+	public static File prepareWorkspace(HttpServletRequest request) throws FileNotFoundException {
 		HttpSession session = request.getSession();
 		String workspace;
 		
@@ -257,10 +264,10 @@ public class ExecuteProcess implements WpsConstants {
 		// try to create all dirs
 		File work = new File(workspace);
 		if(!work.mkdirs() && !work.exists()) {
-			throw new FileNotFoundException("Could not create directory: "+workspace);
+			throw new FileNotFoundException("Could not create directory: " + workspace);
 		}
 		
-		return workspace;
+		return work;
 	}
 	
 	/**
@@ -269,8 +276,9 @@ public class ExecuteProcess implements WpsConstants {
 	 * @throws JAXBException if something is missing in the ObjectFactory
 	 */
 	private void initJAXB() throws JAXBException {
-			context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
-			unmarshaller = context.createUnmarshaller();
+		context = JAXBContext
+				.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
+		unmarshaller = context.createUnmarshaller();
 	}
 	
 	/**
@@ -280,7 +288,7 @@ public class ExecuteProcess implements WpsConstants {
 	 */
 	private void saveRequestData() throws IOException {
 		String xmlData = params.get("request");
-		fXmldata = new File(workspace+requestDataFileName);
+		fXmldata = new File(workspace, requestDataFileName);
 
 		FileWriter wr = new FileWriter(fXmldata);
 		wr.write(xmlData);
@@ -312,6 +320,8 @@ public class ExecuteProcess implements WpsConstants {
 			if (dataAsReference) {
 				request.getSession().setAttribute("save", "link");
 			}
+			
+			//TODO other types of response form?!, e.g. raw data
 		}
 		
 		// iterate through data
@@ -339,18 +349,24 @@ public class ExecuteProcess implements WpsConstants {
 			} else if (identifier.equals(ExecuteProcess.inputSourceArchive)) {
 				iSourceArchive++;
 				fileNumber = iSourceArchive;
-				this.saveArchive(t.getData().getComplexData(), ExecuteProcess.inputSourceArchive);
+				saveArchive(t, ExecuteProcess.inputSourceArchive);
+				continue;
 			} else if (identifier.equals(ExecuteProcess.inputTargetArchive)) {
 				iTargetArchive++;
 				fileNumber = iTargetArchive;
-				this.saveArchive(t.getData().getComplexData(), ExecuteProcess.inputTargetArchive);
+				saveArchive(t, ExecuteProcess.inputTargetArchive);
+				continue;
 			} else {
 				// not allowed input type
 				throw new Exception("Not supported InputType is provided! Identifier: "+identifier);
 			}
 			
+			// save files that are no archives
+			File file = new File(workspace, identifier+"_"+fileNumber);
+			
 			// check if ComplexData is available
 			if (t.getData() != null && t.getData().getComplexData() != null && t.getData().getComplexData().getContent().size() > 0) {
+				// save inline complex content
 				List<?> list = t.getData().getComplexData().getContent();
 				
 				for (Object o : list) {
@@ -358,43 +374,40 @@ public class ExecuteProcess implements WpsConstants {
 						// create a element
 						Element element = (Element) o;
 						String str;
-						if (!element.getAttribute("xlink:href").equals("") && element.getAttribute("xlink:href").startsWith("file://")) {
-							FileInputStream in = new FileInputStream(element.getAttribute("xlink:href").replace("file://", ""));
-							BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-							String txt;
-							StringBuilder sb = new StringBuilder();
-							while ((txt = reader.readLine()) != null) {
-								sb.append(txt); 
-							}
-							
-							str = sb.toString();
-							
-							// close streams
-							reader.close();
-							in.close();
-						} else {
-							TransformerFactory transFactory = TransformerFactory.newInstance();
-							Transformer transformer = null;
-							
-							transformer = transFactory.newTransformer();
-							
-							StringWriter buffer = new StringWriter();
-							transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-							
-							transformer.transform(new DOMSource(element), new StreamResult(buffer));
-							
-							str = buffer.toString();
-						}
+						
+						TransformerFactory transFactory = TransformerFactory.newInstance();
+						Transformer transformer = null;
+						
+						transformer = transFactory.newTransformer();
+						
+						StringWriter buffer = new StringWriter();
+						transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+						
+						transformer.transform(new DOMSource(element), new StreamResult(buffer));
+						
+						str = buffer.toString();
 						
 						// write to disk
-						FileWriter fw = new FileWriter(workspace+identifier+"_"+fileNumber);
+						FileWriter fw = new FileWriter(file);
 						fw.write(str);
 						fw.close();
 					}
 				}
 			}
-			
-			//
+			else if (t.getReference() != null) {
+				// save referenced file
+				String href = t.getReference().getHref();
+				URL url = new URL(href);
+				
+				InputStream in = url.openStream();
+				FileOutputStream out = new FileOutputStream(file);
+				IOUtils.copy(in, out);
+				in.close();
+				out.close();
+			}
+			else {
+				//TODO error - not supported
+			}
 		}
 	}
 	
@@ -423,92 +436,63 @@ public class ExecuteProcess implements WpsConstants {
 	 * Extracts information from request data and saves given
 	 * archive data (either from url or from data).
 	 * 
-	 * @param data contain information (xlink, data, etc.)
+	 * @param t contain information (xlink, data, etc.)
 	 * @param ident identifier for the archive
 	 * @throws Exception if something goes wrong
 	 */
-	private void saveArchive(ComplexDataType data, String ident) throws Exception {
-		String fileName = workspace+ident+".zip";
-		String mimeType = data.getMimeType();
-		String encoding = data.getEncoding();
-		if (mimeType != null && mimeType.equals("text/plain") && encoding.equalsIgnoreCase("base64")) {
-			/*
-			 * TODO this hasn't been tested! (bas64 encoded zip archive)
-			 */
-			// get binary content
-			byte[] content = Base64.decodeBase64(data.getContent().get(1).toString());
+	private void saveArchive(InputType t, String ident) throws Exception {
+		File zipFile = new File(workspace, ident + ".zip");
+		
+		if (t.getData() != null && t.getData().getComplexData() != null) {
+			// archive is present as complex data
+			ComplexDataType complexData = t.getData().getComplexData();
 			
-			// create file and output stream
-			ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(fileName));
+//			String mimeType = complexData.getMimeType();
+//			String encoding = complexData.getEncoding();
 			
-			// write content
-			zos.write(content);
-			
-			// flush and close stream
-			zos.flush();
-			zos.close();
-		} else if(mimeType != null && mimeType.equals("application/zip")) {
-			String uri = "";
-			
-			for (Object o : data.getContent()) {
-				// check if it's a wps:reference
-				if (o instanceof Element) {
-					Element e = (Element) o;
-					uri = e.getAttribute("xlink:href");
-					break;
-				} else if(o instanceof String) {
-					// try to convert a String to a URL
-					try {
-						URL tmp = new URL(o.toString());
-						uri = tmp.toExternalForm();
-					} catch(Exception e) {
-						/* do nothing */
-					}
+//			if (mimeType != null && mimeType.equals("text/plain") && encoding.equalsIgnoreCase("base64")) {
+				/*
+				 * TODO this hasn't been tested! (bas64 encoded zip archive)
+				 */
+				
+				// create file and output stream
+				FileOutputStream zos = new FileOutputStream(zipFile);
+				
+				for (Object line : complexData.getContent()) {
+					// get binary content
+					byte[] content = Base64.decodeBase64(line.toString().trim());
+					
+					// write content
+					zos.write(content);
 				}
-			}
-			
-			/*
-			 * check if this file already exists in workspace
-			 * else process data, download file and check again
-			 */
-			if (new File(fileName).exists() || uri.startsWith("file://") && uri.endsWith("zip")) {
-				this.extractArchive(uri.replace("file://", ""));
-				return;
-			}
-			
-			// create url
-			URL url = new URL(uri);
+				
+				// flush and close stream
+				zos.flush();
+				zos.close();
+//			}
+		}
+		else if (t.getReference() != null) {
+			URL url = new URL(t.getReference().getHref());
 			
 			// create inputStream
 			InputStream is = url.openStream();
 			
 			// create file
-			FileOutputStream fos = new FileOutputStream(fileName);
-			BufferedOutputStream os = new BufferedOutputStream(fos);
-			
-			// read only available byte
-			/* NOTE: setting this to a fix value does somehow NOT work
-			 * 		 they resulted in broken archives
-			 */
-			int avail = is.available();
-			byte[] zipData = new byte[avail];
-			while (is.read(zipData, 0, avail)>=0) {
-				os.write(zipData);
-				os.flush();
-				avail = is.available();
-				zipData = new byte[avail];
-			}
+			FileOutputStream fos = new FileOutputStream(zipFile);
+			IOUtils.copy(is, fos);
 			
 			// flush and close
-			os.flush();
-			os.close();
-			fos.close();
 			is.close();
+			fos.flush();
+			fos.close();
+		}
+		else {
+			//TODO error - not supported
 		}
 		
 		// check the existence of the file and unzip it
-		if (new File(fileName).exists()) {
-			this.extractArchive(fileName);
+		if (zipFile.exists()) {
+			this.extractArchive(zipFile);
 		} else {
 			//TODO throw Exception
 		}
@@ -517,26 +501,25 @@ public class ExecuteProcess implements WpsConstants {
 	/**
 	 * Extracts all data from an archive into current workspace folder.
 	 * 
-	 * @param name of archive
+	 * @param zipFile of archive
 	 * @throws IOException if something goes wrong
 	 */
-	private void extractArchive(String name) throws IOException {
-		ZipFile file = new ZipFile(name);
-		File workFile = new File(workspace);
+	private void extractArchive(File zipFile) throws IOException {
+		ZipFile file = new ZipFile(zipFile);
 		
 		for (Enumeration<?> e = file.getEntries(); e.hasMoreElements(); ) {
 			ZipArchiveEntry entry = (ZipArchiveEntry) e.nextElement();
 			
 			if (entry.isDirectory()) {
 				// create new directory
-				if (!new File(workFile, entry.getName()).mkdirs()) {
-					throw new FileNotFoundException("Could not create directory: "+workFile+"/"+entry.getName());
+				if (!new File(workspace, entry.getName()).mkdirs()) {
+					throw new FileNotFoundException("Could not create directory: "+workspace+"/"+entry.getName());
 				}
 				continue;
 			}
 			
 			// create new file
-			File outFile = new File(workFile, entry.getName());
+			File outFile = new File(workspace, entry.getName());
 			
 			// check if parent directory exists
 			if (!outFile.getParentFile().exists()){
@@ -555,8 +538,8 @@ public class ExecuteProcess implements WpsConstants {
 				IOUtils.copy(inputStream, outputStream);
 			} finally {
 				// close streams
-				outputStream.close();
 				inputStream.close();
+				outputStream.close();
 	        }
 		}
 		
@@ -663,10 +646,12 @@ public class ExecuteProcess implements WpsConstants {
 	 * Remove all files, except the result, from working directory.
 	 */
 	private void cleanup() {
+		if (workspace == null) {
+			return;
+		}
+		
 		try {
-			File home = new File(workspace);
-			
-			File[] files = home.listFiles(new GMLFileFilter(outputFile));
+			File[] files = workspace.listFiles(new GMLFileFilter(outputFile));
 			
 			for (File f : files) {
 				if (f.isDirectory()) {
