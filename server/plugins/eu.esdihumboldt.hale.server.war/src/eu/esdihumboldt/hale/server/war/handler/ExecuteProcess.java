@@ -198,7 +198,14 @@ public class ExecuteProcess {
 				
 				// preprocess the data and check for consistency
 				// unmarshall request
-				Execute exec = (Execute) unmarshaller.unmarshal(fXmldata);
+				Execute exec;
+				try {
+					exec = (Execute) unmarshaller.unmarshal(fXmldata);
+				} catch (ClassCastException e) {
+					throw new WpsException(
+							"Only process execution is supported using HTTP POST.",
+							WpsErrorCode.InvalidParameterValue, e, "request");
+				}
 				
 				// check if the right identifier is set
 				if (!exec.getIdentifier().getValue().equals("translate")) {
