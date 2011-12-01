@@ -164,7 +164,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 		HttpSession session = request.getSession();
 		BufferedReader reader;
 		
-		Bundle bundle = Platform.getBundle(CstWps.ID);
+		Bundle bundle = Platform.getBundle(CstWps.BUNDLE_ID);
 		Path path = new Path("cst-wps-static/generic/client.html");
 
 		URL url = FileLocator.find(bundle, path, null);

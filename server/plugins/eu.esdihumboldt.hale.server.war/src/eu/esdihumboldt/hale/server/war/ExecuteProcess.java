@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeFactory;
@@ -59,6 +58,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.iobridge.impl.CstTransformation;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
+import eu.esdihumboldt.hale.server.war.WpsException.WpsErrorCode;
 import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
 import eu.esdihumboldt.hale.server.war.wps.DataType;
@@ -80,7 +80,7 @@ import eu.esdihumboldt.hale.server.war.wps.StatusType;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ExecuteProcess implements WpsConstants {
+public class ExecuteProcess {
 	
 	private final static ALogger _log = ALoggerFactory.getLogger(CstWps.class);
 	
@@ -168,8 +168,9 @@ public class ExecuteProcess implements WpsConstants {
 	 * @param params all given (http)parameter in lowercase
 	 * @param response the response
 	 * @param request the request
+	 * @throws WpsException if an error occurs handling the execute request
 	 */
-	public ExecuteProcess(Map<String, String> params, HttpServletResponse response, HttpServletRequest request) {
+	public ExecuteProcess(Map<String, String> params, HttpServletResponse response, HttpServletRequest request) throws WpsException {
 		this.params = params;
 		this.response = response;
 		this.request = request;
@@ -179,18 +180,14 @@ public class ExecuteProcess implements WpsConstants {
 		try {
 			work = ExecuteProcess.prepareWorkspace(request);
 		} catch (Exception e) {
-			WpsUtil.printError(EXCEPTION_CODE_OTHER,
-					"Error creating process workspace",
-					null, e, response);
+			throw new WpsException("Error creating process workspace.",
+					WpsErrorCode.NoApplicableCode, e, null);
 		}
 		
 		this.workspace = work;
 		
 		if (workspace != null) {
 			try {
-				// create session
-	//			HttpSession session = request.getSession(true);
-				
 				// init jaxb
 				initJAXB();
 				
@@ -204,25 +201,24 @@ public class ExecuteProcess implements WpsConstants {
 				// check if the right identifier is set
 				if (!exec.getIdentifier().getValue().equals("translate")) {
 					// translate is the only supported process
-					WpsUtil.printError(EXCEPTION_CODE_INVALID_PARAM,
-							"Invalid process identifier: "
-									+ exec.getIdentifier().getValue(),
-							"Identifier", null, response);
+					throw new WpsException("Invalid process identifier: "
+							+ exec.getIdentifier().getValue(),
+							WpsErrorCode.InvalidParameterValue, null,
+							"Identifier");
 				}
-				else {
-					preprocessData(exec);
-					checkData();
-					
-					// now process the data
-					processData();
-					
-					// and clean up workspace
-					cleanup();
-				}
-			} catch(Exception e) {
-				// handle exceptions
-				WpsUtil.printError(EXCEPTION_CODE_OTHER, null, null, e, response);
 				
+				preprocessData(exec);
+				
+				checkData();
+				
+				// now process the data
+				processData();
+			} catch (WpsException e) {
+				throw e;
+			} catch(Exception e) {
+				throw new WpsException("Error executing process.",
+						WpsErrorCode.NoApplicableCode, e, null);
+			} finally {
 				// and do a cleanup
 				cleanup();
 			}
@@ -272,163 +268,191 @@ public class ExecuteProcess implements WpsConstants {
 	
 	/**
 	 * Initialize the JAXBContext and the Unmarshaller.
-	 * 
-	 * @throws JAXBException if something is missing in the ObjectFactory
+	 * @throws WpsException if initializing the the context fails 
 	 */
-	private void initJAXB() throws JAXBException {
-		context = JAXBContext
-				.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
-		unmarshaller = context.createUnmarshaller();
+	private void initJAXB() throws WpsException {
+		try {
+			context = JAXBContext
+					.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
+			unmarshaller = context.createUnmarshaller();
+		} catch (Exception e) {
+			throw new WpsException("Error initializing JAXB context",
+					WpsErrorCode.NoApplicableCode, e, null);
+		}
 	}
 	
 	/**
 	 * Save the requestData to disk as JAXB only can unmarshall from a File.
 	 * 
-	 * @throws IOException if the file can't be written
+	 * @throws WpsException if the file can't be written
 	 */
-	private void saveRequestData() throws IOException {
-		String xmlData = params.get("request");
-		fXmldata = new File(workspace, requestDataFileName);
-
-		FileWriter wr = new FileWriter(fXmldata);
-		wr.write(xmlData);
-		wr.flush();
-		wr.close();
+	private void saveRequestData() throws WpsException {
+		try {
+			String xmlData = params.get("request");
+			fXmldata = new File(workspace, requestDataFileName);
+	
+			FileWriter wr = new FileWriter(fXmldata);
+			wr.write(xmlData);
+			wr.flush();
+			wr.close();
+		} catch (Exception e) {
+			throw new WpsException("Error saving request body.",
+					WpsErrorCode.NoApplicableCode, e, null);
+		}
 	}
 	
 	/**
 	 * Analyzes the requestData and saves provided data to disk.
 	 * @param exec the execution request
 	 *  
-	 * @throws Exception if something goes wrong
+	 * @throws WpsException if saving the request data fails
 	 */
-	private void preprocessData(Execute exec) throws Exception {
-		// data inputs
-		DataInputsType dI = exec.getDataInputs();
-		
-		// check for ResponseForm
-		ResponseFormType responseFormType = exec.getResponseForm();
-		if (responseFormType != null) {
-			boolean dataAsReference = false;
-			ResponseDocumentType documentType = responseFormType.getResponseDocument();
-			dataAsReference = dataAsReference | documentType.isStoreExecuteResponse();
+	private void preprocessData(Execute exec) throws WpsException {
+		try {
+			// data inputs
+			DataInputsType dI = exec.getDataInputs();
 			
-			for (DocumentOutputDefinitionType t : documentType.getOutput()) {
-				dataAsReference = dataAsReference & t.isAsReference();
-			}
-			
-			if (dataAsReference) {
-				request.getSession().setAttribute("save", "link");
-			}
-			
-			//TODO other types of response form?!, e.g. raw data
-		}
-		
-		// iterate through data
-		for (InputType t : dI.getInput()) {
-			String identifier = t.getIdentifier().getValue();
-			
-			int fileNumber = 0;
-			
-			if (identifier.equals(ExecuteProcess.inputSourceData)) {
-//				sourceData.add(t.getData());
-				iSourceData++;
-				fileNumber = iSourceData;
-			} else if (identifier.equals(ExecuteProcess.inputSourceXml)) {
-//				sourceXmlSchemaDefinition.add(t.getData());
-				iSourceXSD++;
-				fileNumber = iSourceXSD;
-			} else if (identifier.equals(ExecuteProcess.inputTargetXml)) {
-//				targetXmlSchemaDefinition.add(t.getData());
-				iTargetXSD++;
-				fileNumber = iTargetXSD;
-			} else if (identifier.equals(ExecuteProcess.inputMapping)) {
-//				mapping.add(t.getData());
-				iMapping++;
-				fileNumber = iMapping;
-			} else if (identifier.equals(ExecuteProcess.inputSourceArchive)) {
-				iSourceArchive++;
-				fileNumber = iSourceArchive;
-				saveArchive(t, ExecuteProcess.inputSourceArchive);
-				continue;
-			} else if (identifier.equals(ExecuteProcess.inputTargetArchive)) {
-				iTargetArchive++;
-				fileNumber = iTargetArchive;
-				saveArchive(t, ExecuteProcess.inputTargetArchive);
-				continue;
-			} else {
-				// not allowed input type
-				throw new Exception("Not supported InputType is provided! Identifier: "+identifier);
-			}
-			
-			// save files that are no archives
-			File file = new File(workspace, identifier+"_"+fileNumber);
-			
-			// check if ComplexData is available
-			if (t.getData() != null && t.getData().getComplexData() != null && t.getData().getComplexData().getContent().size() > 0) {
-				// save inline complex content
-				List<?> list = t.getData().getComplexData().getContent();
+			// check for ResponseForm
+			ResponseFormType responseFormType = exec.getResponseForm();
+			if (responseFormType != null) {
+				boolean dataAsReference = false;
+				ResponseDocumentType documentType = responseFormType.getResponseDocument();
+				dataAsReference = dataAsReference | documentType.isStoreExecuteResponse();
 				
-				for (Object o : list) {
-					if (o instanceof Element) {
-						// create a element
-						Element element = (Element) o;
-						String str;
-						
-						TransformerFactory transFactory = TransformerFactory.newInstance();
-						Transformer transformer = null;
-						
-						transformer = transFactory.newTransformer();
-						
-						StringWriter buffer = new StringWriter();
-						transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-						
-						transformer.transform(new DOMSource(element), new StreamResult(buffer));
-						
-						str = buffer.toString();
-						
-						// write to disk
-						FileWriter fw = new FileWriter(file);
-						fw.write(str);
-						fw.close();
+				for (DocumentOutputDefinitionType t : documentType.getOutput()) {
+					dataAsReference = dataAsReference & t.isAsReference();
+				}
+				
+				if (dataAsReference) {
+					request.getSession().setAttribute("save", "link");
+				}
+				
+				//TODO other types of response form?!, e.g. raw data
+			}
+			
+			// iterate through data
+			for (InputType t : dI.getInput()) {
+				String identifier = t.getIdentifier().getValue();
+				
+				int fileNumber = 0;
+				
+				if (identifier.equals(ExecuteProcess.inputSourceData)) {
+	//				sourceData.add(t.getData());
+					iSourceData++;
+					fileNumber = iSourceData;
+				} else if (identifier.equals(ExecuteProcess.inputSourceXml)) {
+	//				sourceXmlSchemaDefinition.add(t.getData());
+					iSourceXSD++;
+					fileNumber = iSourceXSD;
+				} else if (identifier.equals(ExecuteProcess.inputTargetXml)) {
+	//				targetXmlSchemaDefinition.add(t.getData());
+					iTargetXSD++;
+					fileNumber = iTargetXSD;
+				} else if (identifier.equals(ExecuteProcess.inputMapping)) {
+	//				mapping.add(t.getData());
+					iMapping++;
+					fileNumber = iMapping;
+				} else if (identifier.equals(ExecuteProcess.inputSourceArchive)) {
+					iSourceArchive++;
+					fileNumber = iSourceArchive;
+					saveArchive(t, ExecuteProcess.inputSourceArchive);
+					continue;
+				} else if (identifier.equals(ExecuteProcess.inputTargetArchive)) {
+					iTargetArchive++;
+					fileNumber = iTargetArchive;
+					saveArchive(t, ExecuteProcess.inputTargetArchive);
+					continue;
+				} else {
+					// not allowed input type
+					throw new WpsException(
+							"Unknown input: " + identifier,
+							WpsErrorCode.NoApplicableCode, null, null);
+				}
+				
+				// save files that are no archives
+				File file = new File(workspace, identifier+"_"+fileNumber);
+				
+				// check if ComplexData is available
+				if (t.getData() != null && t.getData().getComplexData() != null && t.getData().getComplexData().getContent().size() > 0) {
+					// save inline complex content
+					List<?> list = t.getData().getComplexData().getContent();
+					
+					for (Object o : list) {
+						if (o instanceof Element) {
+							// create a element
+							Element element = (Element) o;
+							String str;
+							
+							TransformerFactory transFactory = TransformerFactory.newInstance();
+							Transformer transformer = null;
+							
+							transformer = transFactory.newTransformer();
+							
+							StringWriter buffer = new StringWriter();
+							transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+							
+							transformer.transform(new DOMSource(element), new StreamResult(buffer));
+							
+							str = buffer.toString();
+							
+							// write to disk
+							FileWriter fw = new FileWriter(file);
+							fw.write(str);
+							fw.close();
+						}
 					}
 				}
+				else if (t.getReference() != null) {
+					// save referenced file
+					String href = t.getReference().getHref();
+					URL url = new URL(href);
+					
+					InputStream in = url.openStream();
+					FileOutputStream out = new FileOutputStream(file);
+					IOUtils.copy(in, out);
+					in.close();
+					out.close();
+				}
+				else {
+					// not supported
+					throw new WpsException(
+							"Input must be given either as reference or as complex inline data.",
+							WpsErrorCode.InvalidParameterValue, null,
+							identifier);
+				}
 			}
-			else if (t.getReference() != null) {
-				// save referenced file
-				String href = t.getReference().getHref();
-				URL url = new URL(href);
-				
-				InputStream in = url.openStream();
-				FileOutputStream out = new FileOutputStream(file);
-				IOUtils.copy(in, out);
-				in.close();
-				out.close();
-			}
-			else {
-				//TODO error - not supported
-			}
+		} catch (WpsException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new WpsException("Error saving the request inputs.",
+					WpsErrorCode.NoApplicableCode, e, null);
 		}
 	}
 	
 	/**
 	 * Checks if mandatory elements are provided.
 	 * 
-	 * @throws Exception if something is missing
+	 * @throws WpsException if a required input is missing
 	 */
-	private void checkData() throws Exception {
+	private void checkData() throws WpsException {
+		String locator = null;
 		if (iSourceData < 1) {
 			/* throw or generate exception */
-			throw new Exception("No SourceData provided.");
+			locator = inputSourceData;
 		} else if (iSourceXSD < 1) {
 			/* throw or generate exception */
-			throw new Exception("No SourceSchema provided.");
+			locator = inputSourceXml;
 		} else if (iTargetXSD < 1) {
 			/* throw or generate exception */
-			throw new Exception("No TargetSchema provided.");
+			locator = inputTargetXml;
 		} else if (iMapping != 1) {
 			/* throw or generate exception */
-			throw new Exception("No Mapping provided.");
+			locator = inputMapping;
+		}
+		
+		if (locator != null) {
+			throw new WpsException("Missing required input.",
+					WpsErrorCode.MissingParameterValue, null, locator);
 		}
 	}
 	
@@ -487,7 +511,11 @@ public class ExecuteProcess implements WpsConstants {
 			fos.close();
 		}
 		else {
-			//TODO error - not supported
+			// not supported
+			throw new WpsException(
+					"Input must be given either as reference or as complex inline data.",
+					WpsErrorCode.InvalidParameterValue, null,
+					t.getIdentifier().getValue());
 		}
 		
 		// check the existence of the file and unzip it

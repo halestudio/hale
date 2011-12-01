@@ -39,87 +39,88 @@ import org.springframework.web.HttpRequestHandler;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.server.war.WpsException.WpsErrorCode;
 
 /**
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConstants {
+public class CstWps extends HttpServlet implements HttpRequestHandler {
 
+	private static final long serialVersionUID = -8128494354035680094L;
+	
 	/**
 	 * Name of the system property that may be used to override the service URL
 	 */
 	public static final String PROPERTY_SERVICE_URL = "service_url";
 
 	/**
-	 * SerialVersion
+	 * Bundle symbolic name
 	 */
-	private static final long serialVersionUID = -8128494354035680094L;
-	
-	/**
-	 * Bundlename
-	 */
-	public static final String ID = "eu.esdihumboldt.hale.server.war";
+	public static final String BUNDLE_ID = "eu.esdihumboldt.hale.server.war";
 	
 	private static final ALogger log = ALoggerFactory.getLogger(CstWps.class);
 
-//	/**
-//	 * Service url.
-//	 */
-//	public static final String SERVICEURL = "http://localhost:8080/";
-	
 	/**
-	 * @see javax.servlet.http.HttpServlet#doGet
+	 * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse)
 	 */
 	@Override
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
 		log.debug("Handling Get request: " + httpRequest.getRequestURI());
 		
-		Map<String, String> params = initRequest(httpRequest);
-		
-		if (params.get("service") != null && params.get("service").equals("wps")) {
-			String version = params.get("version");
-			if (version != null && !version.equals("1.0.0")) {
-				WpsUtil.printError(EXCEPTION_CODE_INVALID_VERSION,
-						"Only WPS version 1.0.0 is supported.", null, null,
-						response);
-				return;
-			}
+		try {
+			Map<String, String> params = initSession(httpRequest);
 			
-			String request = params.get("request");
-			
-			if (request == null) {
-				WpsUtil.printError(EXCEPTION_CODE_MISSING_PARAM,
-						"Parameter request is missing.", "request", null,
-						response);
+			if (params.get("service") != null && params.get("service").equals("wps")) {
+				String version = params.get("version");
+				if (version != null && !version.equals("1.0.0")) {
+					throw new WpsException(
+							"Only WPS version 1.0.0 is supported.",
+							WpsErrorCode.VersionNegotiationFailed, null, null);
+				}
+				
+				String request = params.get("request");
+				
+				if (request == null) {
+					throw new WpsException(
+							"Parameter request is missing.",
+							WpsErrorCode.MissingParameterValue, null, "request");
+				}
+				else if (request.toLowerCase().equals("getcapabilities")) {
+					// call getCapabilities
+					getCapabilities(httpRequest, response);
+				}
+				else if (request.toLowerCase().equals("describeprocess")) {
+					// call describeProcess
+					describeProcess(response);
+				}
+				else if (httpRequest.getMethod().toLowerCase().equals("post") && 
+							request.toLowerCase().contains("execute")) {
+					// do the transformation
+					execute(params, response, httpRequest);
+				}
+				else {
+					throw new WpsException(
+							"Parameter request is invalid: " + request,
+							WpsErrorCode.InvalidParameterValue, null, "request");
+				}
+			} else {
+				throw new WpsException(
+						"Parameter service is missing.",
+						WpsErrorCode.MissingParameterValue, null, "service");
 			}
-			else if (request.toLowerCase().equals("getcapabilities")) {
-				// call getCapabilities
-				this.getCapabilities(httpRequest, response);
-			}
-			else if (request.toLowerCase().equals("describeprocess")) {
-				// call describeProcess
-				this.describeProcess(response);
-			}
-			else if (httpRequest.getMethod().toLowerCase().equals("post") && 
-						request.toLowerCase().contains("execute")) {
-				// do the transformation
-				this.execute(params, response, httpRequest);
-			}
-			else {
-				WpsUtil.printError(EXCEPTION_CODE_INVALID_PARAM,
-						"Parameter request is invalid: " + request, "request", null,
-						response);
-			}
-		} else {
-			WpsUtil.printError(EXCEPTION_CODE_MISSING_PARAM,
-					"Parameter service is missing.", "service", null,
-					response);
-			return;
+		} catch (WpsException e) {
+			WpsUtil.printError(e, null, response);
 		}
 	}
 
-	private Map<String, String> initRequest(HttpServletRequest httpRequest) {
+	/**
+	 * Creates and configures the session and stores all parameters in a map
+	 * with lowercase keys and values. 
+	 * @param httpRequest the HTTP request
+	 * @return the parameter map with lowercase keys and values
+	 */
+	private Map<String, String> initSession(HttpServletRequest httpRequest) {
 		Map<String, String> params = new HashMap<String, String>();
 		Enumeration<?> parameterNames = httpRequest.getParameterNames();
 
@@ -153,18 +154,28 @@ public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConsta
 			throws ServletException, IOException {
 		log.debug("Handling Post request: " + req.getRequestURI());
 		
-		StringWriter writer = new StringWriter();
-		Reader reader = req.getReader();
-		IOUtils.copy(reader, writer);
-		writer.flush();
-		writer.close();
-		reader.close();
+		Map<String, String> params;
+		try {
+			StringWriter writer = new StringWriter();
+			Reader reader = req.getReader();
+			IOUtils.copy(reader, writer);
+			writer.flush();
+			writer.close();
+			reader.close();
+			
+			params = initSession(req);
+			//XXX execute thinks the XML request comes as request parameter
+			params.put("request", writer.toString());
+		} catch (Exception e) {
+			WpsUtil.printError(e, "Error parsing request.", resp);
+			return;
+		}
 		
-		Map<String, String> params = initRequest(req);
-		//XXX execute thinks the XML request comes as request parameter
-		params.put("request", writer.toString());
-		
-		this.execute(params, resp, req);
+		try {
+			this.execute(params, resp, req);
+		} catch (WpsException e) {
+			WpsUtil.printError(e, null, resp);
+		}
 	}
 
 	/**
@@ -176,39 +187,44 @@ public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConsta
 	 * 
 	 * @param httpRequest the request 
 	 * @param response the response
-	 * @throws IOException will be thrown if the static file can't be found
+	 * @throws WpsException if an error occurs generating the capabilities 
 	 */
-	public void getCapabilities(HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
-		BufferedReader reader;
-		
-		Bundle bundle = Platform.getBundle(CstWps.ID);
-		Path path = new Path("cst-wps-static/cst-wps_GetCapabilities_response.xml");
-
-		URL url = FileLocator.find(bundle, path, null);
-		InputStream in = url.openStream();
-		reader = new BufferedReader(new InputStreamReader(in));
-		
-		String txt;
-		StringBuilder sb = new StringBuilder();
-		while ((txt = reader.readLine()) != null) {
-			sb.append(txt+"\n");
-		}
-		
-		// determine service URL from request
-		String serviceURL = getServiceURL(httpRequest, true);
-		
-		response.setContentType("text/xml");
-		response.setCharacterEncoding("UTF-8");
-		PrintWriter writer = response.getWriter();
+	public void getCapabilities(HttpServletRequest httpRequest, HttpServletResponse response) throws WpsException {
 		try {
-			writer.print(sb.toString().replace("___HREF___", serviceURL));
+			BufferedReader reader;
 			
-			// close streams
-			reader.close();
-			in.close();
-		} finally {
-			// close the writer
-			writer.close();
+			Bundle bundle = Platform.getBundle(CstWps.BUNDLE_ID);
+			Path path = new Path("cst-wps-static/cst-wps_GetCapabilities_response.xml");
+	
+			URL url = FileLocator.find(bundle, path, null);
+			InputStream in = url.openStream();
+			reader = new BufferedReader(new InputStreamReader(in));
+			
+			String txt;
+			StringBuilder sb = new StringBuilder();
+			while ((txt = reader.readLine()) != null) {
+				sb.append(txt+"\n");
+			}
+			
+			// determine service URL from request
+			String serviceURL = getServiceURL(httpRequest, true);
+			
+			response.setContentType("text/xml");
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter writer = response.getWriter();
+			try {
+				writer.print(sb.toString().replace("___HREF___", serviceURL));
+				
+				// close streams
+				reader.close();
+				in.close();
+			} finally {
+				// close the writer
+				writer.close();
+			}
+		} catch (Exception e) {
+			throw new WpsException("Error generating service capabilities.",
+					WpsErrorCode.NoApplicableCode, e, null);
 		}
 	}
 	
@@ -217,7 +233,7 @@ public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConsta
 	 * @param httpRequest the HTTP servlet request
 	 * @param includeServletPath if the servlet path shall be included in the
 	 *   service URL
-	 * @return the service URL
+	 * @return the service URL, it ends with a slash
 	 */
 	public static String getServiceURL(HttpServletRequest httpRequest, 
 			boolean includeServletPath) {
@@ -251,34 +267,39 @@ public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConsta
 	 * the parameter values to be used to execute a process instance.
 	 * 
 	 * @param response the response
-	 * @throws IOException will be thrown if the static file can't be found
+	 * @throws WpsException if an error occurs generating the describe process response
 	 */
-	public void describeProcess(HttpServletResponse response) throws IOException {
-		BufferedReader reader;
-		
-		Bundle bundle = Platform.getBundle(CstWps.ID);
-		Path path = new Path("cst-wps-static/cst-wps_DescribeProcess_response.xml");
-
-		URL url = FileLocator.find(bundle, path, null);
-		InputStream in = url.openStream();
-		reader = new BufferedReader(new InputStreamReader(in));
-
-		response.setContentType("text/xml");
-		response.setCharacterEncoding("UTF-8");
-		PrintWriter writer = response.getWriter();
-		
+	public void describeProcess(HttpServletResponse response) throws WpsException {
 		try {
-			String txt;
-			while ((txt = reader.readLine()) != null) {
-				writer.println(txt);
-			}
+			BufferedReader reader;
 			
-			// close streams
-			reader.close();
-			in.close();
-		} finally {
-			// close the writer
-			writer.close();
+			Bundle bundle = Platform.getBundle(CstWps.BUNDLE_ID);
+			Path path = new Path("cst-wps-static/cst-wps_DescribeProcess_response.xml");
+	
+			URL url = FileLocator.find(bundle, path, null);
+			InputStream in = url.openStream();
+			reader = new BufferedReader(new InputStreamReader(in));
+	
+			response.setContentType("text/xml");
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter writer = response.getWriter();
+			
+			try {
+				String txt;
+				while ((txt = reader.readLine()) != null) {
+					writer.println(txt);
+				}
+				
+				// close streams
+				reader.close();
+				in.close();
+			} finally {
+				// close the writer
+				writer.close();
+			}
+		} catch (Exception e) {
+			throw new WpsException("Error generating service capabilities.",
+					WpsErrorCode.NoApplicableCode, e, null);
 		}
 	}
 	
@@ -296,8 +317,9 @@ public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConsta
 	 * @param params all given parameter in lowercase
 	 * @param response the response
 	 * @param request the request
+	 * @throws WpsException if processing the execute request fails
 	 */
-	public void execute(Map<String, String> params, HttpServletResponse response, HttpServletRequest request) {
+	public void execute(Map<String, String> params, HttpServletResponse response, HttpServletRequest request) throws WpsException {
 		new ExecuteProcess(params, response, request);
 	}
 
@@ -305,6 +327,5 @@ public class CstWps extends HttpServlet implements HttpRequestHandler, WpsConsta
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		service(request, response);
-//		this.doGet(request, response);
 	}
 }
