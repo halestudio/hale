@@ -21,10 +21,9 @@ import javax.xml.bind.Marshaller;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
-import eu.esdihumboldt.hale.server.war.ows.ExceptionReport;
-import eu.esdihumboldt.hale.server.war.ows.ExceptionType;
+import eu.esdihumboldt.hale.server.war.wps.ExceptionReport;
+import eu.esdihumboldt.hale.server.war.wps.ExceptionType;
 import eu.esdihumboldt.hale.server.war.wps.ProcessFailedType;
 
 /**
@@ -50,8 +49,7 @@ public abstract class WpsUtil implements WpsConstants {
 		
 		try {
 			JAXBContext context = JAXBContext.newInstance(
-					eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class, 
-					eu.esdihumboldt.hale.server.war.ows.ObjectFactory.class);
+					eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
 					new NamespacePrefixMapperImpl());

@@ -62,8 +62,6 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.iobridge.impl.CstTransformation;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
-import eu.esdihumboldt.hale.server.war.ows.LanguageStringType;
-import eu.esdihumboldt.hale.server.war.ows.ReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
 import eu.esdihumboldt.hale.server.war.wps.DataType;
@@ -72,9 +70,11 @@ import eu.esdihumboldt.hale.server.war.wps.Execute;
 import eu.esdihumboldt.hale.server.war.wps.ExecuteResponse;
 import eu.esdihumboldt.hale.server.war.wps.ExecuteResponse.ProcessOutputs;
 import eu.esdihumboldt.hale.server.war.wps.InputType;
+import eu.esdihumboldt.hale.server.war.wps.LanguageStringType;
 import eu.esdihumboldt.hale.server.war.wps.OutputDataType;
 import eu.esdihumboldt.hale.server.war.wps.OutputReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ProcessBriefType;
+import eu.esdihumboldt.hale.server.war.wps.ReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseDocumentType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
 import eu.esdihumboldt.hale.server.war.wps.StatusType;
@@ -269,7 +269,7 @@ public class ExecuteProcess implements WpsConstants {
 	 * @throws JAXBException if something is missing in the ObjectFactory
 	 */
 	private void initJAXB() throws JAXBException {
-			context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class, eu.esdihumboldt.hale.server.war.ows.ObjectFactory.class);
+			context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
 			unmarshaller = context.createUnmarshaller();
 	}
 	
@@ -597,8 +597,7 @@ public class ExecuteProcess implements WpsConstants {
 		
 		LanguageStringType lst = new LanguageStringType();
 		lst.setValue("translate");
-		data.getTitle().add(lst);
-//		data.getAbstract().add(lst);
+		data.setTitle(lst);
 
 		if (request.getSession().getAttribute("save").equals("link")) {
 			File result = outputFile;
