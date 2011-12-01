@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.gmlparser.GmlHelper;
 import eu.esdihumboldt.hale.gmlparser.GmlHelper.ConfigurationType;
 import eu.esdihumboldt.hale.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriterFactory;
+import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.SchemaProvider;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
@@ -43,6 +44,7 @@ import eu.esdihumboldt.specification.cst.align.IAlignment;
  * Transformation with output based on {@link InstanceWriter} 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 public class CstTransformation {
 
 	/**
@@ -86,6 +88,10 @@ public class CstTransformation {
 			// GML
 			writer = new GmlInstanceWriterFactory().createProvider();
 //		}
+			
+		if (writer instanceof StreamGmlWriter) {
+			((StreamGmlWriter) writer).setIncludedSchemaLocation(false);
+		}
 		
 		writer.setContentType(ContentType.getContentType("GML"));
 		writer.setCommonSRSName(srsName);
