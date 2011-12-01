@@ -15,49 +15,6 @@
       </topic>
       <topic href="html/getting_started/main_workflow.html" label="Main Workflow">
       </topic>
-      <topic label="Loading and browsing schemas">
-         <topic href="html/dummy.html" label="Using multiple source schemas">
-         </topic>
-         <topic href="html/dummy.html" label="Troubleshooting Schema Loading">
-         </topic>
-         <topic href="html/dummy.html" label="Exploring a loaded schema">
-         </topic>
-      </topic>
-      <topic label="Mapping schema elements">
-         <topic href="html/dummy.html" label="Available attributive transformation functions">
-         </topic>
-         <topic href="html/dummy.html" label="Using the Mapping View">
-         </topic>
-         <topic href="html/dummy.html" label="Examples for typical mapping cases">
-         </topic>
-         <topic href="html/dummy.html" label="Renaming Attributes">
-         </topic>
-         <topic href="html/dummy.html" label="Reclassification">
-         </topic>
-         <topic href="html/dummy.html" label="Using Code Lists">
-         </topic>
-      </topic>
-      <topic label="Working with tasks">
-         <topic href="html/dummy.html" label="Configuring Task Creation">
-         </topic>
-      </topic>
-      <topic label="Working with a source data set">
-         <topic href="html/dummy.html" label="Troubleshooting source data loading">
-         </topic>
-         <topic href="html/dummy.html" label="The Map Viewer">
-         </topic>
-         <topic href="html/dummy.html" label="Styling of your data">
-         </topic>
-         <link toc="../eu.esdihumboldt.hale.ui.views.data/toc.views.xml"/>
-         <topic href="html/dummy.html" label="Saving the transformed data">
-         </topic>
-      </topic>
-      <topic label="Saving and loading projects and alignments">
-         <topic href="html/dummy.html" label="Exporting your mapping">
-         </topic>
-         <topic href="html/dummy.html" label="Saving and Loading of Alignment Projects">
-         </topic>
-      </topic>
    </topic>
    <topic label="Concepts">
       <topic href="html/concepts/what_is_schema.html" label="What is a Schema?">
@@ -68,17 +25,11 @@
       </topic>
    </topic>
    <topic label="Views">
-      <link toc="Link from other bundles"/>
       <topic href="html/views/map_viewer.html" label="Map Viewer">
       </topic>
       <topic href="html/views/styling_data.html" label="Styling of your Data">
       </topic>
-      <topic href="html/views/data_views.html" label="Data Views">
-         <topic href="html/views/data_views/source_data.html" label="Source Data">
-         </topic>
-         <topic href="html/views/data_views/transformed_data.html" label="Transformed Data">
-         </topic>
-      </topic>
+      <anchor id="views"/>
    </topic>
    <topic label="Tasks">
       <topic href="html/dummy.html" label="How to ... ?">
@@ -106,8 +57,8 @@
       <anchor id="reference"/>
    </topic>
    <topic label="Tips and Tricks">
-      <link toc="Link from other bundles"/>
+      <anchor id="tips"/>
    </topic>
-   <topic href="html/dummy.html" label="Point of Contact">
+   <topic href="html/pointofcontact.html" label="Point of Contact">
    </topic>
 </toc>
