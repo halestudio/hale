@@ -10,18 +10,15 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.server.war.generic;
+package eu.esdihumboldt.hale.server.war.client;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,17 +37,14 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
+import org.apache.velocity.VelocityContext;
 import org.springframework.web.HttpRequestHandler;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
-import eu.esdihumboldt.hale.server.war.CstWps;
-import eu.esdihumboldt.hale.server.war.ExecuteProcess;
+import eu.esdihumboldt.hale.server.war.WpsUtil;
+import eu.esdihumboldt.hale.server.war.handler.ExecuteProcess;
 import eu.esdihumboldt.hale.server.war.wps.CodeType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
 import eu.esdihumboldt.hale.server.war.wps.DocumentOutputDefinitionType;
@@ -86,10 +80,12 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 		session.setMaxInactiveInterval(-1);
 		
 		_log.info("Session ID: "+session.getId());
-		try {
-			context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
-		} catch (JAXBException e1) {
-			/* */
+		if (context == null) {
+			try {
+				context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
+			} catch (JAXBException e1) {
+				/* FIXME! */
+			}
 		}
 		
 		// create a writer
@@ -162,28 +158,13 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 	 */
 	private void showForm(HttpServletRequest request, PrintWriter writer) throws Exception {
 		HttpSession session = request.getSession();
-		BufferedReader reader;
 		
-		Bundle bundle = Platform.getBundle(CstWps.BUNDLE_ID);
-		Path path = new Path("cst-wps-static/generic/client.html");
-
-		URL url = FileLocator.find(bundle, path, null);
-		InputStream in = url.openStream();
-		reader = new BufferedReader(new InputStreamReader(in));
-
+		VelocityContext context = new VelocityContext();
+		context.put("session_id", session.getId());
 		
-		String txt;
-		StringBuilder sb = new StringBuilder();
-		while ((txt = reader.readLine()) != null) {
-			sb.append(txt+"\n");
-		}
-		
-		// remove placeholder and write it to screen
-		writer.print(sb.toString().replace("@SESSIONID@", session.getId()));
-		
-		// close streams
-		reader.close();
-		in.close();
+		WpsUtil.mergeTemplate(
+				"cst-wps-static/client/client.html",
+				context, "UTF-8", writer);
 	}
 	
 	@Override

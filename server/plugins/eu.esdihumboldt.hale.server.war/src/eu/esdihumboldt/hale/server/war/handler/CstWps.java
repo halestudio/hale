@@ -10,16 +10,12 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.server.war;
+package eu.esdihumboldt.hale.server.war.handler;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,14 +27,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
+import org.apache.velocity.VelocityContext;
 import org.springframework.web.HttpRequestHandler;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.server.war.WpsException;
+import eu.esdihumboldt.hale.server.war.WpsUtil;
 import eu.esdihumboldt.hale.server.war.WpsException.WpsErrorCode;
 
 /**
@@ -48,16 +43,6 @@ import eu.esdihumboldt.hale.server.war.WpsException.WpsErrorCode;
 public class CstWps extends HttpServlet implements HttpRequestHandler {
 
 	private static final long serialVersionUID = -8128494354035680094L;
-	
-	/**
-	 * Name of the system property that may be used to override the service URL
-	 */
-	public static final String PROPERTY_SERVICE_URL = "service_url";
-
-	/**
-	 * Bundle symbolic name
-	 */
-	public static final String BUNDLE_ID = "eu.esdihumboldt.hale.server.war";
 	
 	private static final ALogger log = ALoggerFactory.getLogger(CstWps.class);
 
@@ -191,33 +176,20 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 */
 	public void getCapabilities(HttpServletRequest httpRequest, HttpServletResponse response) throws WpsException {
 		try {
-			BufferedReader reader;
-			
-			Bundle bundle = Platform.getBundle(CstWps.BUNDLE_ID);
-			Path path = new Path("cst-wps-static/cst-wps_GetCapabilities_response.xml");
-	
-			URL url = FileLocator.find(bundle, path, null);
-			InputStream in = url.openStream();
-			reader = new BufferedReader(new InputStreamReader(in));
-			
-			String txt;
-			StringBuilder sb = new StringBuilder();
-			while ((txt = reader.readLine()) != null) {
-				sb.append(txt+"\n");
-			}
-			
 			// determine service URL from request
-			String serviceURL = getServiceURL(httpRequest, true);
+			String serviceURL = WpsUtil.getServiceURL(httpRequest, true);
+			
+			VelocityContext context = new VelocityContext();
+			context.put("service_url", serviceURL);
+			context.put("process_version", WpsUtil.getProcessVersion());
 			
 			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter writer = response.getWriter();
 			try {
-				writer.print(sb.toString().replace("___HREF___", serviceURL));
-				
-				// close streams
-				reader.close();
-				in.close();
+				WpsUtil.mergeTemplate(
+						"cst-wps-static/cst-wps_GetCapabilities_response.xml",
+						context, "UTF-8", writer);
 			} finally {
 				// close the writer
 				writer.close();
@@ -228,37 +200,6 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		}
 	}
 	
-	/**
-	 * Get the service URL from a HTTP request
-	 * @param httpRequest the HTTP servlet request
-	 * @param includeServletPath if the servlet path shall be included in the
-	 *   service URL
-	 * @return the service URL, it ends with a slash
-	 */
-	public static String getServiceURL(HttpServletRequest httpRequest, 
-			boolean includeServletPath) {
-		String serviceURL = System.getProperty(PROPERTY_SERVICE_URL);
-		if (serviceURL != null && !serviceURL.isEmpty()) {
-			// system property overrides the request information
-			if (serviceURL.endsWith("/")) {
-				// remove / from end
-				serviceURL = serviceURL.substring(0, serviceURL.length() - 1);
-			}
-		}
-		else {
-			serviceURL = httpRequest.getScheme() + "://"
-					+ httpRequest.getServerName() + ":"
-					+ httpRequest.getServerPort();
-		}
-		
-		String servletPath = (includeServletPath) ? (httpRequest
-				.getServletPath()) : ("");
-		if (servletPath.isEmpty()) {
-			servletPath = "/";
-		}
-		return serviceURL + servletPath;
-	}
-
 	/**
 	 * The mandatory DescribeProcess operation allows WPS clients to request
 	 * a full description of one or more processes that can be executed by the Execute operation.
@@ -271,34 +212,22 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 */
 	public void describeProcess(HttpServletResponse response) throws WpsException {
 		try {
-			BufferedReader reader;
+			VelocityContext context = new VelocityContext();
+			context.put("process_version", WpsUtil.getProcessVersion());
 			
-			Bundle bundle = Platform.getBundle(CstWps.BUNDLE_ID);
-			Path path = new Path("cst-wps-static/cst-wps_DescribeProcess_response.xml");
-	
-			URL url = FileLocator.find(bundle, path, null);
-			InputStream in = url.openStream();
-			reader = new BufferedReader(new InputStreamReader(in));
-	
 			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter writer = response.getWriter();
-			
 			try {
-				String txt;
-				while ((txt = reader.readLine()) != null) {
-					writer.println(txt);
-				}
-				
-				// close streams
-				reader.close();
-				in.close();
+				WpsUtil.mergeTemplate(
+						"cst-wps-static/cst-wps_DescribeProcess_response.xml",
+						context, "UTF-8", writer);
 			} finally {
 				// close the writer
 				writer.close();
 			}
 		} catch (Exception e) {
-			throw new WpsException("Error generating service capabilities.",
+			throw new WpsException("Error generating process description.",
 					WpsErrorCode.NoApplicableCode, e, null);
 		}
 	}

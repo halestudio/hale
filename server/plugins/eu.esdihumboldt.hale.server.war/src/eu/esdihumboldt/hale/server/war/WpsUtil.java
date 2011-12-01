@@ -12,12 +12,28 @@
 
 package eu.esdihumboldt.hale.server.war;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.Writer;
+import java.net.URL;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
+
+import com.google.common.io.Files;
+import com.google.common.io.InputSupplier;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -35,6 +51,21 @@ import eu.esdihumboldt.hale.server.war.wps.ProcessFailedType;
 public abstract class WpsUtil {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(WpsUtil.class);
+	
+	/**
+	 * Bundle symbolic name
+	 */
+	public static final String BUNDLE_ID = "eu.esdihumboldt.hale.server.war";
+	
+	/**
+	 * Name of the system property that may be used to override the service URL
+	 */
+	public static final String PROPERTY_SERVICE_URL = "service_url";
+	
+	/**
+	 * The template directory for velocity
+	 */
+	private static File velocityTemplates = null;
 	
 	/**
 	 * This function handles all occurrence of Exceptions
@@ -105,5 +136,97 @@ public abstract class WpsUtil {
 		}
 		
 	}
+	
+	/**
+	 * Merge a template with the given context to a writer
+	 * @param templatePath the template path (in the bundle)
+	 * @param context the context
+	 * @param encoding the template encoding
+	 * @param output the writer for the merged output
+	 * @throws Exception if an error occurs
+	 */
+	public static synchronized void mergeTemplate(String templatePath,
+			VelocityContext context, String encoding, Writer output)
+			throws Exception {
+		if (velocityTemplates == null) {
+			velocityTemplates = Files.createTempDir();
+			velocityTemplates.deleteOnExit();
+			
+			Velocity.setProperty("file.resource.loader.path", velocityTemplates.getAbsolutePath());
+			// initialize Velocity
+			Velocity.init(); //TODO use non-singleton instead?
+		}
+		
+		File templateFile = new File(velocityTemplates, templatePath);
+		if (!templateFile.exists()) {
+			templateFile.getParentFile().mkdirs();
+			
+			// copy template
+			final URL url = findResource(templatePath);
+			Files.copy(new InputSupplier<InputStream>() {
 
+				@Override
+				public InputStream getInput() throws IOException {
+					return url.openStream();
+				}
+			}, templateFile);
+			
+			templateFile.deleteOnExit();
+		}
+		
+		Template template = Velocity.getTemplate(templatePath, encoding);
+		template.merge(context, output);
+	}
+	
+	/**
+	 * Find a resource in the bundle
+	 * @param path the resource path in the bundle
+	 * @return the resource URL
+	 */
+	public static URL findResource(String path) {
+		Bundle bundle = Platform.getBundle(BUNDLE_ID);
+		Path bundlePath = new Path(path);
+
+		return FileLocator.find(bundle, bundlePath, null);
+	}
+
+	/**
+	 * Get the process version
+	 * @return the process version
+	 */
+	public static String getProcessVersion() {
+		return Platform.getBundle(BUNDLE_ID).getVersion().toString();
+	}
+
+	/**
+	 * Get the service URL from a HTTP request
+	 * @param httpRequest the HTTP servlet request
+	 * @param includeServletPath if the servlet path shall be included in the
+	 *   service URL
+	 * @return the service URL, it ends with a slash
+	 */
+	public static String getServiceURL(HttpServletRequest httpRequest, 
+			boolean includeServletPath) {
+		String serviceURL = System.getProperty(PROPERTY_SERVICE_URL);
+		if (serviceURL != null && !serviceURL.isEmpty()) {
+			// system property overrides the request information
+			if (serviceURL.endsWith("/")) {
+				// remove / from end
+				serviceURL = serviceURL.substring(0, serviceURL.length() - 1);
+			}
+		}
+		else {
+			serviceURL = httpRequest.getScheme() + "://"
+					+ httpRequest.getServerName() + ":"
+					+ httpRequest.getServerPort();
+		}
+		
+		String servletPath = (includeServletPath) ? (httpRequest
+				.getServletPath()) : ("");
+		if (servletPath.isEmpty()) {
+			servletPath = "/";
+		}
+		return serviceURL + servletPath;
+	}
+	
 }
