@@ -59,8 +59,8 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.iobridge.impl.CstTransformation;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.server.war.WpsException;
-import eu.esdihumboldt.hale.server.war.WpsUtil;
 import eu.esdihumboldt.hale.server.war.WpsException.WpsErrorCode;
+import eu.esdihumboldt.hale.server.war.WpsUtil;
 import eu.esdihumboldt.hale.server.war.wps.CodeType;
 import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
@@ -76,7 +76,6 @@ import eu.esdihumboldt.hale.server.war.wps.OutputReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ProcessBriefType;
 import eu.esdihumboldt.hale.server.war.wps.ReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseDocumentType;
-import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
 import eu.esdihumboldt.hale.server.war.wps.StatusType;
 
 /**
@@ -215,7 +214,7 @@ public class ExecuteProcess {
 				checkData();
 				
 				// now process the data
-				processData();
+				processData(exec);
 			} catch (WpsException e) {
 				throw e;
 			} catch(Exception e) {
@@ -314,24 +313,6 @@ public class ExecuteProcess {
 		try {
 			// data inputs
 			DataInputsType dI = exec.getDataInputs();
-			
-			// check for ResponseForm
-			ResponseFormType responseFormType = exec.getResponseForm();
-			if (responseFormType != null) {
-				boolean dataAsReference = false;
-				ResponseDocumentType documentType = responseFormType.getResponseDocument();
-				dataAsReference = dataAsReference | documentType.isStoreExecuteResponse();
-				
-				for (DocumentOutputDefinitionType t : documentType.getOutput()) {
-					dataAsReference = dataAsReference & t.isAsReference();
-				}
-				
-				if (dataAsReference) {
-					request.getSession().setAttribute("save", "link");
-				}
-				
-				//TODO other types of response form?!, e.g. raw data
-			}
 			
 			// iterate through data
 			for (InputType t : dI.getInput()) {
@@ -580,10 +561,11 @@ public class ExecuteProcess {
 	
 	/**
 	 * This proccesses all data and creates the transformation.
+	 * @param exec the execution request
 	 * 
 	 * @throws Exception if something goes wrong during execution
 	 */
-	private void processData() throws Exception {
+	private void processData(Execute exec) throws Exception {
 //		DefaultCstServiceBridge cst = new DefaultCstServiceBridge();
 		File outputFile = new File(workspace, UUID.randomUUID() + ".gml");
 		
@@ -598,86 +580,119 @@ public class ExecuteProcess {
 		
 		this.outputFile = outputFile;
 		
-		ExecuteResponse resp = new ExecuteResponse();
-		resp.setProcess(new ProcessBriefType());
-		resp.getProcess().setProcessVersion(WpsUtil.getProcessVersion());
-		CodeType identifier = new CodeType();
-		identifier.setValue("translate");
-		resp.getProcess().setIdentifier(identifier);
-		LanguageStringType title = new LanguageStringType();
-		title.setValue("Execute Schema Transformation.");
-		resp.getProcess().setTitle(title);
-		ProcessOutputs pOut = new ProcessOutputs();
-		OutputDataType data = new OutputDataType();
-		StatusType statusType = new StatusType();
-		statusType.setProcessSucceeded("Successfully transformed source data");
-		GregorianCalendar c = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-		statusType.setCreationTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
-		
-		CodeType outputIdentifier = new CodeType();
-		outputIdentifier.setValue("TargetData");
-		data.setIdentifier(outputIdentifier);
-		LanguageStringType lst = new LanguageStringType();
-		lst.setValue("Transformed Data in Target Schema");
-		data.setTitle(lst);
-
-		if (request.getSession().getAttribute("save").equals("link")) {
-			File result = outputFile;
-			String href = WpsUtil.getServiceURL(request, false) + "download?id="
-					+ request.getSession().getId() + "&amp;file="
-					+ result.getName();
+		if (exec.getResponseForm().getRawDataOutput() != null) {
+			// output raw data
+			response.setContentType("text/xml");
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter writer = response.getWriter();
+			try {
+				IOUtils.copy(new FileReader(outputFile), writer);
+			} finally {
+				writer.close();
+			}
 			
-			ReferenceType ref = new ReferenceType();
-			ref.setHref(href);
-			
-			OutputReferenceType outputReferenceType = new OutputReferenceType();
-			outputReferenceType.setHref(href);
-			
-			data.setReference(outputReferenceType);
+			// no longer needed
+			outputFile.delete();
 		}
 		else {
-			DataType type = new DataType();
-			ComplexDataType cData = new ComplexDataType();
+			// output response document
+			ExecuteResponse resp = new ExecuteResponse();
+			resp.setProcess(new ProcessBriefType());
+			resp.getProcess().setProcessVersion(WpsUtil.getProcessVersion());
+			CodeType identifier = new CodeType();
+			identifier.setValue("translate");
+			resp.getProcess().setIdentifier(identifier);
+			LanguageStringType title = new LanguageStringType();
+			title.setValue("Execute Schema Transformation");
+			resp.getProcess().setTitle(title);
+			ProcessOutputs pOut = new ProcessOutputs();
+			OutputDataType data = new OutputDataType();
+			StatusType statusType = new StatusType();
+			statusType.setProcessSucceeded("Successfully transformed source data");
+			GregorianCalendar c = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+			statusType.setCreationTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
 			
-			cData.setEncoding("utf-8");
-			cData.setMimeType("text/xml");
-			FileReader fReader = new FileReader(outputFile);
-			BufferedReader reader = new BufferedReader(fReader);
-			String txt;
-			String xml = "";
-			StringBuilder sb = new StringBuilder();
-			while ((txt = reader.readLine()) != null) {
-				sb.append(txt+"\n");
+			CodeType outputIdentifier = new CodeType();
+			outputIdentifier.setValue("TargetData");
+			data.setIdentifier(outputIdentifier);
+			LanguageStringType lst = new LanguageStringType();
+			lst.setValue("Transformed Data in Target Schema");
+			data.setTitle(lst);
+	
+			// determine response document form
+			ResponseDocumentType respDoc = exec.getResponseForm().getResponseDocument();
+			boolean dataAsReference = false;
+			for (DocumentOutputDefinitionType t : respDoc.getOutput()) {
+				if (t.isAsReference()) {
+					dataAsReference = true;
+				}
 			}
-			xml = sb.toString();
-			reader.close();
-			fReader.close();
+			//XXX store response document is ignored
 			
-			cData.getContent().add(xml); // TODO remove with loaded xml/check why < and > are removed with html entities
+			//FIXME inline data is currently escaped and as such valid but not right
+			//FIXME for now always use asReference
+			dataAsReference = true;
 			
-			type.setComplexData(cData);
-			data.setData(type);
-		}
-		
-		pOut.getOutput().add(data);
-		resp.setProcessOutputs(pOut);
-		resp.setLang("en-GB"); // TODO support different languages
-		resp.setService("WPS");
-		resp.setVersion("1.0.0");
-		resp.setStatus(statusType);
-		resp.setServiceInstance(WpsUtil.getServiceURL(request, false) + "cst?");
-		
-		Marshaller marshaller = context.createMarshaller();
-		marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
-				new NamespacePrefixMapperImpl());
-		
-		response.setContentType("text/xml");
-		response.setCharacterEncoding("UTF-8");
-		PrintWriter writer = response.getWriter();
-		try {
-			marshaller.marshal(resp, writer);
-		} finally {
-			writer.close();
+			if (dataAsReference) {
+				File result = outputFile;
+				String href = WpsUtil.getServiceURL(request, false) + "download?id="
+						+ request.getSession().getId() + "&amp;file="
+						+ result.getName();
+				
+				ReferenceType ref = new ReferenceType();
+				ref.setHref(href);
+				
+				OutputReferenceType outputReferenceType = new OutputReferenceType();
+				outputReferenceType.setHref(href);
+				
+				data.setReference(outputReferenceType);
+			}
+			else {
+				DataType type = new DataType();
+				ComplexDataType cData = new ComplexDataType();
+				
+				cData.setEncoding("utf-8");
+				cData.setMimeType("text/xml");
+				FileReader fReader = new FileReader(outputFile);
+				BufferedReader reader = new BufferedReader(fReader);
+				String txt;
+				String xml = "";
+				StringBuilder sb = new StringBuilder();
+				while ((txt = reader.readLine()) != null) {
+					sb.append(txt+"\n");
+				}
+				xml = sb.toString();
+				reader.close();
+				fReader.close();
+				
+				//XXX content is escaped - here some hints for the solution?
+				//XXX http://stackoverflow.com/questions/1506663/can-i-force-jaxb-not-to-convert-into-quot-for-example-when-marshalling-to
+				cData.getContent().add(xml); // TODO remove with loaded xml/check why < and > are removed with html entities
+				
+				type.setComplexData(cData);
+				data.setData(type);
+			}
+			
+			pOut.getOutput().add(data);
+			resp.setProcessOutputs(pOut);
+			resp.setLang("en-GB"); // TODO support different languages
+			resp.setService("WPS");
+			resp.setVersion("1.0.0");
+			resp.setStatus(statusType);
+			resp.setServiceInstance(WpsUtil.getServiceURL(request, false) + "cst?");
+			
+			Marshaller marshaller = context.createMarshaller();
+			marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
+					new NamespacePrefixMapperImpl());
+			
+			response.setContentType("text/xml");
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter writer = response.getWriter();
+			try {
+				marshaller.marshal(resp, writer);
+			} finally {
+				writer.close();
+			}
 		}
 	}
 	
