@@ -1,0 +1,1 @@
+xjc wps/1.0.0/wpsAll.xsd -d ../src -p eu.esdihumboldt.hale.server.war.wps -mark-generated

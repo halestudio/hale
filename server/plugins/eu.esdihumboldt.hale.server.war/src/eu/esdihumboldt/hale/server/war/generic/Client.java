@@ -50,14 +50,14 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 import eu.esdihumboldt.hale.server.war.CstWps;
 import eu.esdihumboldt.hale.server.war.ExecuteProcess;
-import eu.esdihumboldt.hale.server.war.ows.CodeType;
-import eu.esdihumboldt.hale.server.war.ows.ReferenceType;
+import eu.esdihumboldt.hale.server.war.wps.CodeType;
 import eu.esdihumboldt.hale.server.war.wps.ComplexDataType;
 import eu.esdihumboldt.hale.server.war.wps.DataInputsType;
 import eu.esdihumboldt.hale.server.war.wps.DataType;
 import eu.esdihumboldt.hale.server.war.wps.DocumentOutputDefinitionType;
 import eu.esdihumboldt.hale.server.war.wps.Execute;
 import eu.esdihumboldt.hale.server.war.wps.InputType;
+import eu.esdihumboldt.hale.server.war.wps.ReferenceType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseDocumentType;
 import eu.esdihumboldt.hale.server.war.wps.ResponseFormType;
 
@@ -88,7 +88,7 @@ public class Client extends HttpServlet implements HttpRequestHandler {
 		
 		_log.info("Session ID: "+session.getId());
 		try {
-			context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class, eu.esdihumboldt.hale.server.war.ows.ObjectFactory.class);
+			context = JAXBContext.newInstance(eu.esdihumboldt.hale.server.war.wps.ObjectFactory.class);
 		} catch (JAXBException e1) {
 			/* */
 		}
