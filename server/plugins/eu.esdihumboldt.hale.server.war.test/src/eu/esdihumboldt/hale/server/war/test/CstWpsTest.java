@@ -18,7 +18,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,9 +48,9 @@ public class CstWpsTest {
 			}
 			
 			// construct data
-			String data = "";
-			data += "Request="+URLEncoder.encode(xml, "UTF-8");
-			data += "&service=WPS";
+//			String data = "";
+//			data += "Request="+URLEncoder.encode(xml, "UTF-8");
+//			data += "&service=WPS";
 			
 			// open connection
 			URLConnection con = url.openConnection();
@@ -59,7 +58,7 @@ public class CstWpsTest {
 			
 			// send data
 			OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-			writer.write(data);
+			writer.write(xml);
 			writer.flush();
 			
 			// get the response
@@ -90,9 +89,9 @@ public class CstWpsTest {
 	public void testExecuteFail() {
 		try {
 		// construct data
-		String data = "";
-		data += "Request="+URLEncoder.encode("", "UTF-8");
-		data += "&service=WPS";
+//		String data = "";
+//		data += "Request="+URLEncoder.encode("", "UTF-8");
+//		data += "&service=WPS";
 		
 		// open connection
 		URLConnection con = url.openConnection();
@@ -100,7 +99,7 @@ public class CstWpsTest {
 		
 		// send data
 		OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-		writer.write(data);
+		writer.write("");
 		writer.flush();
 		
 		// get the response
@@ -139,9 +138,9 @@ public class CstWpsTest {
 			}
 			
 			// construct data
-			String data = "";
-			data += "Request="+URLEncoder.encode(xml, "UTF-8");
-			data += "&service=WPS";
+//			String data = "";
+//			data += "Request="+URLEncoder.encode(xml, "UTF-8");
+//			data += "&service=WPS";
 			
 			// open connection
 			URLConnection con = url.openConnection();
@@ -149,7 +148,7 @@ public class CstWpsTest {
 			
 			// send data
 			OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-			writer.write(data);
+			writer.write(xml);
 			writer.flush();
 			
 			// get the response
