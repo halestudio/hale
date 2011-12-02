@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Server Application
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.application;singleton:=true
-Bundle-Version: 2.1.2.qualifier
+Bundle-Version: 2.1.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
