@@ -463,7 +463,22 @@ public class ExecuteProcess {
 	private void saveArchive(InputType t, String ident) throws Exception {
 		File zipFile = new File(workspace, ident + ".zip");
 		
-		if (t.getData() != null && t.getData().getComplexData() != null) {
+		if (t.getReference() != null) {
+			URL url = new URL(t.getReference().getHref());
+			
+			// create inputStream
+			InputStream is = url.openStream();
+			
+			// create file
+			FileOutputStream fos = new FileOutputStream(zipFile);
+			IOUtils.copy(is, fos);
+			
+			// flush and close
+			is.close();
+			fos.flush();
+			fos.close();
+		}
+		else if (t.getData() != null && t.getData().getComplexData() != null) {
 			// archive is present as complex data
 			ComplexDataType complexData = t.getData().getComplexData();
 			
@@ -490,21 +505,6 @@ public class ExecuteProcess {
 				zos.flush();
 				zos.close();
 //			}
-		}
-		else if (t.getReference() != null) {
-			URL url = new URL(t.getReference().getHref());
-			
-			// create inputStream
-			InputStream is = url.openStream();
-			
-			// create file
-			FileOutputStream fos = new FileOutputStream(zipFile);
-			IOUtils.copy(is, fos);
-			
-			// flush and close
-			is.close();
-			fos.flush();
-			fos.close();
 		}
 		else {
 			// not supported
