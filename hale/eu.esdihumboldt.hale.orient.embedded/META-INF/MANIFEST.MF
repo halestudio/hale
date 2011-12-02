@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Embedded OrientDB Bundle
 Bundle-SymbolicName: eu.esdihumboldt.hale.orient.embedded;singleton:=true
-Bundle-Version: 2.1.1.qualifier
+Bundle-Version: 2.1.2.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.orient.embedded.EmbeddedOrientDB
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

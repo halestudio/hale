@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Server
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.war;singleton:=true
-Bundle-Version: 2.1.1.qualifier
+Bundle-Version: 2.1.2.qualifier
 Web-ContextPath: /
 Require-Bundle: org.eclipse.core.runtime,
  javax.servlet;bundle-version="2.5.0",

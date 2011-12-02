@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE GML I/O Test Bundle
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.test
-Bundle-Version: 2.1.1.qualifier
+Bundle-Version: 2.1.2.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.io;version="1.6.0",
  com.vividsolutions.jts.geom,

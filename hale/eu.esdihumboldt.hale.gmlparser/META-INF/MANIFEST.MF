@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GMLParser
 Bundle-SymbolicName: eu.esdihumboldt.hale.gmlparser
-Bundle-Version: 2.1.1.qualifier
+Bundle-Version: 2.1.2.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  LIB/com.springsource.org.apache.xerces-2.8.1.jar
