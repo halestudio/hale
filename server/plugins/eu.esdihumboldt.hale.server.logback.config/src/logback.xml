@@ -3,7 +3,7 @@
 <configuration>
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
-    <file>logs/ObjectsServer.log</file>
+    <file>logs/hale-server.log</file>
     <filter class="de.cs3d.util.logging.logback.appender.FlattenFilter" />
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <pattern>%d{ISO8601} %-5level [%mdc{user}] %C{1}:%L - %m%n</pattern>
