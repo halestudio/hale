@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CST Web Processing Service" id="eu.esdihumboldt.hale.server.application.webapp" application="org.eclipse.ui.ide.workbench" version="2.1.1" useFeatures="false" includeLaunchers="true">
+<product name="CST Web Processing Service" id="eu.esdihumboldt.hale.server.application.webapp" application="org.eclipse.ui.ide.workbench" version="2.1.2" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

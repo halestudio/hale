@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: csvexporter
 Bundle-SymbolicName: eu.esdihumboldt.hale.csvexporter;singleton:=true
-Bundle-Version: 2.1.1.qualifier
+Bundle-Version: 2.1.2.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: eu.esdihumboldt.hale;bundle-version="2.0.0",
  eu.esdihumboldt.commons;bundle-version="3.0.4",
