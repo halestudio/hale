@@ -66,7 +66,6 @@
 		</wps:Default>
 		<wps:Supported>
 			<ows:Language>en-GB</ows:Language>
-			<ows:Language>de-DE</ows:Language>
 		</wps:Supported>
 	</wps:Languages> 
 </wps:Capabilities>
