@@ -54,7 +54,7 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 		log.debug("Handling Get request: " + httpRequest.getRequestURI());
 		
 		try {
-			Map<String, String> params = initSession(httpRequest);
+			Map<String, String> params = initSession(httpRequest, true);
 			
 			if (params.get("service") != null && params.get("service").equals("wps")) {
 				String version = params.get("version");
@@ -104,28 +104,33 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 	 * Creates and configures the session and stores all parameters in a map
 	 * with lowercase keys and values. 
 	 * @param httpRequest the HTTP request
+	 * @param fillParams if the parameters shall be retrieved from the request
 	 * @return the parameter map with lowercase keys and values
 	 */
-	private Map<String, String> initSession(HttpServletRequest httpRequest) {
-		Map<String, String> params = new HashMap<String, String>();
-		Enumeration<?> parameterNames = httpRequest.getParameterNames();
-
+	private Map<String, String> initSession(HttpServletRequest httpRequest,
+			boolean fillParams) {
 		// create session
 		HttpSession session = httpRequest.getSession(true);
 
 		// set session time to 5 minutes
 		session.setMaxInactiveInterval(300);
-
-		// build a lower case Map
-		while (parameterNames.hasMoreElements()) {
-			String key = (String) parameterNames.nextElement();
-			String val = httpRequest.getParameter(key);
-
-			// save request data not as lower case
-			if (key.toLowerCase().equals("request")) {
-				params.put(key.toLowerCase(), val);
-			} else {
-				params.put(key.toLowerCase(), val.toLowerCase());
+		
+		Map<String, String> params = new HashMap<String, String>();
+		
+		if (fillParams) {
+			Enumeration<?> parameterNames = httpRequest.getParameterNames();
+	
+			// build a lower case Map
+			while (parameterNames.hasMoreElements()) {
+				String key = (String) parameterNames.nextElement();
+				String val = httpRequest.getParameter(key);
+	
+				// save request data not as lower case
+				if (key.toLowerCase().equals("request")) {
+					params.put(key.toLowerCase(), val);
+				} else {
+					params.put(key.toLowerCase(), val.toLowerCase());
+				}
 			}
 		}
 
@@ -149,7 +154,7 @@ public class CstWps extends HttpServlet implements HttpRequestHandler {
 			writer.close();
 			reader.close();
 			
-			params = initSession(req);
+			params = initSession(req, false);
 			//XXX execute thinks the XML request comes as request parameter
 			params.put("request", writer.toString());
 		} catch (Exception e) {
