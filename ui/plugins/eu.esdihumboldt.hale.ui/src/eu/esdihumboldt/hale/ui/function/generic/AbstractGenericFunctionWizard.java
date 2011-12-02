@@ -12,59 +12,77 @@
 
 package eu.esdihumboldt.hale.ui.function.generic;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
+
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
+import de.cs3d.util.eclipse.extension.FactoryFilter;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.ui.function.AbstractFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
+import eu.esdihumboldt.hale.ui.function.extension.ParameterPageExtension;
+import eu.esdihumboldt.hale.ui.function.extension.ParameterPageFactory;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.FunctionWizardPage;
+import eu.esdihumboldt.hale.ui.function.generic.pages.GenericParameterPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Generic function wizard
+ * 
  * @param <T> the function type
  * @param <P> the field definition type
  * @author Simon Templer
  */
-public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter, T extends AbstractFunction<P>> extends AbstractFunctionWizard {
-	
+public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter, T extends AbstractFunction<P>> extends
+		AbstractFunctionWizard {
+
+	private static final ALogger log = ALoggerFactory.getLogger(AbstractGenericFunctionWizard.class);
+
 	private final String functionId;
 	private MutableCell resultCell;
-	
+
 	private EntitiesPage<T, P, ?> entitiesPage;
-	
-	private FunctionWizardPage parameterPage;
-	
-	private Set<FunctionWizardPage> cellPages = new LinkedHashSet<FunctionWizardPage>();
+
+	private List<ParameterPage> parameterPages;
 
 	/**
-	 * Create a generic function wizard for a certain function based on a 
-	 * schema selection
+	 * Create a generic function wizard for a certain function based on a schema
+	 * selection
+	 * 
 	 * @param selection the schema selection, may be <code>null</code>
 	 * @param functionId the function identifier
 	 */
 	public AbstractGenericFunctionWizard(SchemaSelection selection, String functionId) {
 		super(selection);
-		
+
 		this.functionId = functionId;
 	}
-	
+
 	/**
 	 * @see AbstractFunctionWizard#AbstractFunctionWizard(Cell)
 	 */
 	public AbstractGenericFunctionWizard(Cell cell) {
 		super(cell);
-		
+
 		this.functionId = cell.getTransformationIdentifier();
 	}
 
@@ -74,18 +92,17 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	@Override
 	public void init() {
 		super.init();
-		
+
 		setWindowTitle(getFunction().getDisplayName());
-		
+
 		// create the entities page
 		// it is needed for creating a new cell to allow assigning the entities
 		// and when editing a cell to populate its copy with the same configuration
 		entitiesPage = createEntitiesPage(getInitSelection(), getInitCell());
-		
-		if (!getFunction().getDefinedParameters().isEmpty()) {
-			// create the parameter page
-			parameterPage = createParameterPage(getInitCell());
-		}
+
+		// create parameter pages
+		if (!getFunction().getDefinedParameters().isEmpty())
+			parameterPages = createParameterPages(getInitCell());
 	}
 
 	/**
@@ -112,20 +129,71 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 
 	/**
 	 * Create the entities page
+	 * 
 	 * @param initSelection the initial selection, may be <code>null</code>
 	 * @param initCell the initial cell, may be <code>null</code>
 	 * @return the entities page
 	 */
-	protected abstract EntitiesPage<T, P, ?> createEntitiesPage(SchemaSelection initSelection,
-			Cell initCell);
-	
+	protected abstract EntitiesPage<T, P, ?> createEntitiesPage(SchemaSelection initSelection, Cell initCell);
+
 	/**
 	 * Create the page for configuring the function parameters.
+	 * 
 	 * @param initialCell the initial cell, may be <code>null</code>
 	 * @return the parameter configuration page or <code>null</code>
 	 */
-	protected FunctionWizardPage createParameterPage(Cell initialCell) {
-		return new ParameterPage(initialCell);
+	protected List<ParameterPage> createParameterPages(Cell initialCell) {
+		LinkedList<ParameterPage> parameterPages = new LinkedList<ParameterPage>();
+		// create copy of function parameter set
+		Set<FunctionParameter> functionParameters = new LinkedHashSet<FunctionParameter>();
+		for (FunctionParameter param : getFunction().getDefinedParameters())
+			functionParameters.add(param);
+		// get initial values
+		ListMultimap<String, String> initialValues = initialCell == null ? null : initialCell
+				.getTransformationParameters();
+		if (initialValues != null)
+			initialValues = Multimaps.unmodifiableListMultimap(initialValues);
+		// get available parameter pages
+		List<ParameterPageFactory> paramPageFactories = ParameterPageExtension.getInstance().getFactories(
+				new FactoryFilter<ParameterPage, ParameterPageFactory>() {
+					@Override
+					public boolean acceptFactory(ParameterPageFactory factory) {
+						return factory.getFunctionId().equals(getFunctionId());
+					}
+
+					@Override
+					public boolean acceptCollection(
+							ExtensionObjectFactoryCollection<ParameterPage, ParameterPageFactory> collection) {
+						return true;
+					}
+				});
+		// use available parameter pages (first come first serve)
+		for (ParameterPageFactory paramPageFactory : paramPageFactories) {
+			Set<FunctionParameter> pageFunctionParameters = new HashSet<FunctionParameter>();
+			for (FunctionParameter fp : paramPageFactory.getAssociatedParameters())
+				if (functionParameters.contains(fp))
+					pageFunctionParameters.add(fp);
+			if (!pageFunctionParameters.isEmpty()) {
+				ParameterPage paramPage;
+				try {
+					paramPage = paramPageFactory.createExtensionObject();
+				} catch (Exception e) {
+					log.error("Could not creating parameter page " + paramPageFactory.getIdentifier(), e);
+					continue;
+				}
+				functionParameters.removeAll(pageFunctionParameters);
+				parameterPages.add(paramPage);
+				paramPage.setParameter(pageFunctionParameters, initialValues);
+			}
+		}
+		// use generic parameter page for remaining parameters
+		if (!functionParameters.isEmpty()) {
+			ParameterPage generic = new GenericParameterPage();
+			generic.setParameter(functionParameters, initialValues);
+			parameterPages.add(generic);
+		}
+
+		return parameterPages;
 	}
 
 	/**
@@ -134,27 +202,15 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	@Override
 	public void addPages() {
 		super.addPages();
-		
+
 		if (entitiesPage != null) {
 			addPage(entitiesPage);
 		}
-		
-		if (parameterPage != null) {
-			addPage(parameterPage);
-		}
-	}
 
-	/**
-	 * @see Wizard#addPage(IWizardPage)
-	 */
-	@Override
-	public void addPage(IWizardPage page) {
-		// track FunctionWizardPages
-		if (page instanceof FunctionWizardPage) {
-			cellPages.add((FunctionWizardPage) page);
+		if (parameterPages != null) {
+			for (ParameterPage parameterPage : parameterPages)
+				addPage(parameterPage);
 		}
-		
-		super.addPage(page);
 	}
 
 	/**
@@ -164,17 +220,19 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	public MutableCell getResult() {
 		return resultCell;
 	}
-	
+
 	/**
 	 * Get the function identifier
+	 * 
 	 * @return the function identifier
 	 */
 	public String getFunctionId() {
 		return functionId;
 	}
-	
+
 	/**
 	 * Get the function
+	 * 
 	 * @return the function
 	 */
 	public abstract T getFunction();
@@ -184,11 +242,15 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	 */
 	@Override
 	public boolean performFinish() {
+		ListMultimap<String, String> parameters = ArrayListMultimap.create();
+		resultCell.setTransformationParameters(parameters);
 		// configure cell with all pages
-		for (FunctionWizardPage page : cellPages) {
-			page.configureCell(resultCell);
-		}
-		
+		for (IWizardPage page : getPages())
+			if (page instanceof FunctionWizardPage)
+				((FunctionWizardPage) page).configureCell(resultCell);
+			else if (page instanceof ParameterPage)
+				parameters.putAll(((ParameterPage) page).getConfiguration());
+
 		return true;
 	}
 
