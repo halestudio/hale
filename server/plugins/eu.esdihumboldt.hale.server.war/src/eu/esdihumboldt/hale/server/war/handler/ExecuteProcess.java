@@ -321,6 +321,11 @@ public class ExecuteProcess {
 			// data inputs
 			DataInputsType dI = exec.getDataInputs();
 			
+			if (dI == null) {
+				throw new WpsException("No inputs provided.",
+						WpsErrorCode.MissingParameterValue, null, null);
+			}
+			
 			// iterate through data
 			for (InputType t : dI.getInput()) {
 				String identifier = t.getIdentifier().getValue();
