@@ -20,11 +20,18 @@
 
     <element name="person" type="tns:PersonType"></element>
 
-
     <complexType name="AddressType">
     	<sequence>
     		<element name="street" type="string"></element>
     		<element name="city" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:person" maxOccurs="unbounded" minOccurs="0"></element>
     	</sequence>
     </complexType>
 </schema>
