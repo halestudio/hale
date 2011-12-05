@@ -64,8 +64,10 @@ public class PathUpdate {
 		n = n.substring(0, n.lastIndexOf('/'));
 		
 		int commonEndLength = 0;
-		while (o.charAt(o.length() - commonEndLength - 1) == n.charAt(n.length() - commonEndLength - 1))
+		while (commonEndLength < o.length() && commonEndLength < n.length() && 
+				o.charAt(o.length() - commonEndLength - 1) == n.charAt(n.length() - commonEndLength - 1)) {
 			commonEndLength++;
+		}
 		oldRaw = o.substring(0, o.length() - commonEndLength);
 		newRaw = n.substring(0, n.length() - commonEndLength);
 	}

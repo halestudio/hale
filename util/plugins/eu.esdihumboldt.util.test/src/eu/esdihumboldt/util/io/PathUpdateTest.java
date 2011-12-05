@@ -74,6 +74,21 @@ public class PathUpdateTest {
 		String newpath = update.changePath(file).toString();
 		assertEquals(correct, newpath);
 	}
+	
+	/**
+	 * Extended real world example - project file renamed, but in the same folder
+	 */
+	@Test
+	public void testSame() {
+		String orgPath = "C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/unification/t1t2.hale";
+		String path = "C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/unification/t1t2_alt.hale";
+		PathUpdate update = new PathUpdate(URI.create("file:/" + orgPath), URI.create("file:/" + path));
+		URI file = URI
+				.create("file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/unification/schemas/t1.xsd");
+		String correct = "file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/unification/schemas/t1.xsd";
+		String newpath = update.changePath(file).toString();
+		assertEquals(correct, newpath);
+	}
 
 	/**
 	 * Extended real world example - file in a subsubfolder
