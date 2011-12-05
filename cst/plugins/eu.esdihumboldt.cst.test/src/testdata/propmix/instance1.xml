@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:t1 id="id0">
+        <personName>personName0</personName>
+        <personAge>personAge0</personAge>
+        <personIncome>personIncome0</personIncome>
+        <personStreet>personStreet0</personStreet>
+        <personCity>personCity0</personCity>
+    </tns:t1>
+    <tns:t1 id="id1">
+        <personName>personName1</personName>
+        <personAge>personAge1</personAge>
+        <personIncome>personIncome1</personIncome>
+        <personStreet>personStreet1</personStreet>
+        <personCity>personCity1</personCity>
+    </tns:t1>
+    <tns:t1 id="id2">
+        <personName>personName2</personName>
+        <personAge>personAge2</personAge>
+        <personIncome>personIncome2</personIncome>
+        <personStreet>personStreet2</personStreet>
+        <personCity>personCity2</personCity>
+    </tns:t1>
+    <tns:t1 id="id3">
+        <personName>personName3</personName>
+        <personAge>personAge3</personAge>
+        <personIncome>personIncome3</personIncome>
+        <personStreet>personStreet3</personStreet>
+        <personCity>personCity3</personCity>
+    </tns:t1>
+</tns:collection>

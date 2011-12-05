@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:t1 id="id0">
+        <name_en>name_en0</name_en>
+        <name_fr>name_fr0</name_fr>
+        <name_de>name_de0</name_de>
+    </tns:t1>
+    <tns:t1 id="id1">
+        <name_en>name_en1</name_en>
+        <name_de>name_de1</name_de>
+    </tns:t1>
+    <tns:t1 id="id2">
+        <name_en>name_en2</name_en>
+        <name_fr>name_fr2</name_fr>
+    </tns:t1>
+    <tns:t1 id="id3">
+        <name_en>name_en3</name_en>
+        <name_de>name_de3</name_de>
+    </tns:t1>
+    <tns:t1 id="id4">
+        <name_en>name_en4</name_en>
+        <name_fr>name_fr4</name_fr>
+        <name_de>name_de4</name_de>
+    </tns:t1>
+    <tns:t1>
+        <name_en>name_en5</name_en>
+        <name_de>name_de5</name_de>
+    </tns:t1>
+    <tns:t1 id="id6">
+        <name_en>name_en6</name_en>
+        <name_fr>name_fr6</name_fr>
+        <name_de>name_de6</name_de>
+    </tns:t1>
+</tns:collection>

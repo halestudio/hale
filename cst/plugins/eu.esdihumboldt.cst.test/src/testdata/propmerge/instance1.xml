@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:multiname id="id0">
+        <name1>name10</name1>
+    </tns:multiname>
+    <tns:multiname id="id1">
+        <name1>name11</name1>
+        <name2>name21</name2>
+        <name3>name31</name3>
+    </tns:multiname>
+    <tns:multiname id="id2">
+        <name1>name12</name1>
+        <name2>name22</name2>
+        <name3>name32</name3>
+    </tns:multiname>
+    <tns:multiname id="id3">
+        <name1>name13</name1>
+        <name2>name23</name2>
+    </tns:multiname>
+    <tns:multiname id="id4">
+        <name1>name14</name1>
+        <name3>name34</name3>
+    </tns:multiname>
+    <tns:multiname id="id5">
+        <name1>name15</name1>
+        <name2>name25</name2>
+        <name3>name35</name3>
+    </tns:multiname>
+    <tns:multiname id="id6">
+        <name1>name16</name1>
+        <name2>name26</name2>
+        <name3>name36</name3>
+    </tns:multiname>
+    <tns:multiname id="id7">
+        <name1>name17</name1>
+        <name2>name27</name2>
+        <name3>name37</name3>
+    </tns:multiname>
+    <tns:multiname id="id8">
+        <name1>name18</name1>
+        <name2>name28</name2>
+        <name3>name38</name3>
+    </tns:multiname>
+    <tns:multiname id="id9">
+        <name1>name19</name1>
+        <name3>name39</name3>
+    </tns:multiname>
+    <tns:multiname id="id10">
+        <name1>name110</name1>
+        <name2>name210</name2>
+        <name3>name310</name3>
+    </tns:multiname>
+</tns:collection>
