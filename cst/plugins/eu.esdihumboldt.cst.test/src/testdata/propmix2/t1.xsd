@@ -19,9 +19,6 @@
     			minOccurs="0">
     		</element>
     		<element name="personCity2" type="string" maxOccurs="1" minOccurs="0"></element>
-    		<element name="personIncome" type="string" maxOccurs="1"
-    			minOccurs="0">
-    		</element>
     	</sequence>
     	<attribute name="id" type="string"></attribute>
     </complexType>
