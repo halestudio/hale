@@ -9,4 +9,5 @@ Import-Package: eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.schema.model
 Bundle-ClassPath: .
 Export-Package: eu.esdihumboldt.hale.common.filter
-Require-Bundle: org.geotools
+Require-Bundle: org.geotools,
+ org.opengis;bundle-version="8.0.0"
