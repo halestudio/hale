@@ -15,8 +15,7 @@ package eu.esdihumboldt.hale.ui.views.mapping;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.LayoutStyles;
-import org.eclipse.zest.layouts.algorithms.HorizontalTreeLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import eu.esdihumboldt.hale.ui.views.mapping.graph.TransformationTreeContentProvider;
 import eu.esdihumboldt.hale.ui.views.mapping.graph.TransformationTreeLabelProvider;
@@ -48,12 +47,7 @@ public class TransformationView extends AlignmentView {
 	 */
 	@Override
 	protected LayoutAlgorithm createLayout() {
-//		return new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-//		return new DirectedGraphLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-//		return new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-//		return new HorizontalLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-//		return new HorizontalShift(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-		return new HorizontalTreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
+		return new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT);
 //		return super.createLayout();
 	}
 
