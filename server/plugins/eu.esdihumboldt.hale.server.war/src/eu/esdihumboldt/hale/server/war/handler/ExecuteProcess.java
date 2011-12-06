@@ -643,7 +643,7 @@ public class ExecuteProcess {
 			
 			//FIXME inline data is currently escaped and as such valid but not right
 			//FIXME for now always use asReference
-			dataAsReference = true;
+//			dataAsReference = true;
 			
 			if (dataAsReference) {
 				File result = outputFile;
@@ -696,6 +696,22 @@ public class ExecuteProcess {
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
 					new NamespacePrefixMapperImpl());
+			
+			if (!dataAsReference) {
+				//XXX don't escape any chars (ok only because there is nothing else to escape in the response)
+				//FIXME leads to an exception, most likely because not the JRE6 CharacterEscapeHandler is used
+//				marshaller.setProperty("com.sun.xml.bind.marshaller.CharacterEscapeHandler", //$NON-NLS-1$
+//						new NoCharacterEscapeHandler());
+			}
+			
+			/*
+			 * This is needed as somehow the implementation for UTF-8 does NOT
+			 * support a custom escapehandler and therefore we change it to
+			 * anything else.
+			 * NOTE: http://java.net/jira/browse/JAXB-693 this seems to be fixed BUT
+			 * 		 I took a look into the source code and it's not used.
+			 */
+//			marshaller.setProperty(Marshaller.JAXB_ENCODING, "ASCII");
 			
 			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
