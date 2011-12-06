@@ -40,7 +40,6 @@ http://www.esdi-community.eu/projects/show/hale
    <vm>
    </vm>
 
-
    <plugins>
       <plugin id="au.com.bytecode.opencsv"/>
       <plugin id="cal10n.api"/>
@@ -94,8 +93,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
-      <plugin id="eu.esdihumboldt.cst.functions.geometric" fragment=""/>
-      <plugin id="eu.esdihumboldt.cst.functions.numeric" fragment=""/>
+      <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
+      <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
@@ -107,9 +106,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
-      <plugin id="eu.esdihumboldt.hale.doc.dev" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.doc.user" fragment=""/>
-      <plugin id="eu.esdihumboldt.hale.doc.user.ui.views.data" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.doc.dev"/>
+      <plugin id="eu.esdihumboldt.hale.doc.user"/>
+      <plugin id="eu.esdihumboldt.hale.doc.user.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
@@ -239,6 +238,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.junit4"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
+      <plugin id="org.opengis"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.asm"/>
