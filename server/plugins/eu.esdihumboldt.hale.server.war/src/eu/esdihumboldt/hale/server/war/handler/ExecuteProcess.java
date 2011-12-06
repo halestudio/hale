@@ -697,6 +697,16 @@ public class ExecuteProcess {
 			marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
 					new NamespacePrefixMapperImpl());
 			
+			marshaller.setProperty("com.sun.xml.bind.marshaller.CharacterEscapeHandler", //$NON-NLS-1$
+					new NoCharacterEscapeHandler());
+			
+			/*
+			 * This is needed as somehow the implementation for UTF-8 does NOT
+			 * support a custom escapehandler and therefore we change it to
+			 * anything else.
+			 */
+			marshaller.setProperty(Marshaller.JAXB_ENCODING, "ASCII");
+			
 			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter writer = response.getWriter();
