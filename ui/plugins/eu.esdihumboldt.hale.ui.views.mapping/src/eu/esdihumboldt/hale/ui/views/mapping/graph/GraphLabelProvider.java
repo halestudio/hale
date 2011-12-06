@@ -23,6 +23,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IDisposable;
 import org.eclipse.zest.core.viewers.IEntityConnectionStyleProvider;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
+import org.eclipse.zest.core.viewers.IFigureProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
@@ -35,15 +36,16 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
+import eu.esdihumboldt.hale.ui.views.mapping.graph.figures.CellFigure;
 
 /**
  * Label provider for mapping graphs.
  * @author Simon Templer
  */
 public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider,
-		IEntityConnectionStyleProvider {
+		IEntityConnectionStyleProvider, IFigureProvider {
 	
-	private final int entityBorderWidth = 2;
+	private final int entityBorderWidth = 1;
 	private final Color entityBorderColor;
 	private final Color entityBorderHighlightColor;
 	private final Color typeBackgroundColor;
@@ -51,7 +53,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	private final Color entityHighlightColor;
 	private final Color entityForegorundColor;
 	
-	private final int cellBorderWidth = 2;
+	private final int cellBorderWidth = 1;
 	private final Color cellBorderColor;
 	private final Color cellBorderHighlightColor;
 	private final Color cellBackgroundColor;
@@ -339,6 +341,19 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public ConnectionRouter getRouter(Object src, Object dest) {
+		// default
+		return null;
+	}
+
+	/**
+	 * @see IFigureProvider#getFigure(Object)
+	 */
+	@Override
+	public IFigure getFigure(Object element) {
+		if (element instanceof Cell) {
+			return new CellFigure();
+		}
+		
 		// default
 		return null;
 	}
