@@ -17,7 +17,6 @@ import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.common.schema.helper.FeatureTypeHelper;
 import eu.esdihumboldt.hale.ui.style.dialog.FeatureStyleDialog;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 
@@ -48,9 +47,10 @@ public class FeatureTypeStyleAction extends Action {
 		
 		init();
 		
-		setImageDescriptor(
-				(FeatureTypeHelper.isAbstract(type))
-				?(abstractImage):(featureImage));
+//		setImageDescriptor(
+//				(FeatureTypeHelper.isAbstract(type))
+//				?(abstractImage):(featureImage));
+		setImageDescriptor(featureImage);
 	}
 
 	/**
