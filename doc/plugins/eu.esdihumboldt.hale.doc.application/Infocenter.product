@@ -71,6 +71,7 @@
       <plugin id="eu.esdihumboldt.hale.platform.extension" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.util"/>
+      <plugin id="javax.measure"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="jcl.over.slf4j"/>
@@ -114,6 +115,7 @@
       <plugin id="org.jdom"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
+      <plugin id="org.opengis"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.beans"/>
