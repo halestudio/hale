@@ -28,7 +28,8 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.common.schema.model.impl,
  org.eclipse.osgi.util
 Require-Bundle: org.geotools;bundle-version="2.6.4",
- org.eclipse.core.contenttype;bundle-version="3.4.100"
+ org.eclipse.core.contenttype;bundle-version="3.4.100",
+ org.opengis;bundle-version="8.0.0"
 Export-Package: eu.esdihumboldt.hale.io.shp,
  eu.esdihumboldt.hale.io.shp.internal;x-internal:=true,
  eu.esdihumboldt.hale.io.shp.reader.internal;x-internal:=true
