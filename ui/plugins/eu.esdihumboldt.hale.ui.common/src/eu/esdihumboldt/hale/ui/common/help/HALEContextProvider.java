@@ -17,6 +17,10 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TypeNode;
 import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
 
 /**
@@ -39,6 +43,8 @@ public class HALEContextProvider extends SelectionContextProvider {
 	 */
 	@Override
 	protected String getContextId(Object object) {
+		object = extractObject(object);
+		
 		if (object instanceof Cell) {
 			Cell cell = (Cell) object;
 			return FunctionReferenceConstants.PLUGIN_ID + "." + 
@@ -54,6 +60,23 @@ public class HALEContextProvider extends SelectionContextProvider {
 		//TODO for other kinds of selection
 		
 		return null;
+	}
+	
+	private Object extractObject(Object node) {
+		if (node instanceof TypeNode) {
+			return ((TypeNode) node).getType();
+		}
+		if (node instanceof TargetNode) {
+			return ((TargetNode) node).getDefinition();
+		}
+		if (node instanceof CellNode) {
+			return ((CellNode) node).getCell();
+		}
+		if (node instanceof SourceNode) {
+			return ((SourceNode) node).getDefinition();
+		}
+		
+		return node;
 	}
 
 }
