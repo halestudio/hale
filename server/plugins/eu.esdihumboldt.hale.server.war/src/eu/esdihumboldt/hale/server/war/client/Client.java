@@ -165,10 +165,12 @@ public class Client implements HttpRequestHandler {
 		HttpSession session = request.getSession();
 		
 		String mail = System.getProperty("webmaster_mail", "webmaster@esdi-humboldt.eu");
+		String serviceUrl = WpsUtil.getServiceURL(request, false);
 		
 		VelocityContext context = new VelocityContext();
 		context.put("session_id", session.getId());
 		context.put("webmaster_mail", mail);
+		context.put("service_url", serviceUrl);
 		
 		WpsUtil.mergeTemplate(
 				"cst-wps-static/client/client.html",
