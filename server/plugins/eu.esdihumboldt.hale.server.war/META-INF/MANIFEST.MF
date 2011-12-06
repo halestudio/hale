@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
  com.springsource.org.apache.velocity;bundle-version="1.6.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.io;version="9.0.0",
+ com.sun.xml.bind.marshaller;version="2.1.7",
  de.cs3d.util.logging,
  eu.esdihumboldt.cst.iobridge,
  eu.esdihumboldt.cst.iobridge.impl,
