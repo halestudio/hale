@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.mapping.graph;
 
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
@@ -99,6 +100,16 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		entity = extractObject(entity);
 		
 		return super.getForegroundColour(entity);
+	}
+
+	/**
+	 * @see GraphLabelProvider#getFigure(Object)
+	 */
+	@Override
+	public IFigure getFigure(Object element) {
+		element = extractObject(element);
+		
+		return super.getFigure(element);
 	}
 
 	/**
