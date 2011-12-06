@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.mapping.graph;
 
+import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -322,6 +323,24 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public int getLineWidth(Object src, Object dest) {
 		// default
 		return -1;
+	}
+
+	/**
+	 * @see IEntityConnectionStyleProvider#getTooltip(Object, Object)
+	 */
+	@Override
+	public IFigure getTooltip(Object src, Object dest) {
+		// default
+		return null;
+	}
+
+	/**
+	 * @see IEntityConnectionStyleProvider#getRouter(Object, Object)
+	 */
+	@Override
+	public ConnectionRouter getRouter(Object src, Object dest) {
+		// default
+		return null;
 	}
 
 }

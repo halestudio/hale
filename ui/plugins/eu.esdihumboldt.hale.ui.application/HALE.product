@@ -240,6 +240,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.eclipse.zest.core"/>
+      <plugin id="org.eclipse.zest.jface"/>
       <plugin id="org.eclipse.zest.layouts"/>
       <plugin id="org.geotools"/>
       <plugin id="org.hamcrest.core"/>

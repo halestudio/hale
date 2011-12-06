@@ -23,8 +23,7 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.viewers.IZoomableWorkbenchPart;
 import org.eclipse.zest.core.viewers.ZoomContributionViewItem;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.LayoutStyles;
-import org.eclipse.zest.layouts.algorithms.HorizontalTreeLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import eu.esdihumboldt.hale.ui.util.viewer.PostSelectionSupport;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
@@ -86,11 +85,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 	 */
 	protected LayoutAlgorithm createLayout() {
 		LayoutAlgorithm layout;
-//		layout = new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-//		layout = new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-//		layout = new GridLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-		layout = new HorizontalTreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-//		layout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
+		layout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT);
 		return layout;
 	}
 	
