@@ -95,6 +95,8 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 		IActionBars bars = getViewSite().getActionBars();
 		bars.getMenuManager().add(toolbarZoomContributionViewItem);
 		bars.getToolBarManager().add(new LayoutAction(viewer));
+		
+		bars.getToolBarManager().add(new RenderAction(viewer));
 	}
 
 	/**
