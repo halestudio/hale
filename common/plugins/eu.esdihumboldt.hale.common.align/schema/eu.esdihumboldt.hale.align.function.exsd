@@ -375,7 +375,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.model.condition.PropertyCondition"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.model.condition.TypeCondition"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -389,6 +389,9 @@
          </documentation>
       </annotation>
       <complexType>
+         <choice minOccurs="0" maxOccurs="1">
+            <element ref="validator"/>
+         </choice>
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
@@ -428,6 +431,43 @@
                <appinfo>
                   <meta.attribute translatable="true"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="validator">
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="parameter"/>
+         </choice>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.extension.function.Validator"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parameter">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
