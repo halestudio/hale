@@ -20,6 +20,8 @@
          <choice minOccurs="0" maxOccurs="unbounded">
             <element ref="typeWizard"/>
             <element ref="propertyWizard"/>
+            <element ref="typeParameterPage"/>
+            <element ref="propertyParameterPage"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
