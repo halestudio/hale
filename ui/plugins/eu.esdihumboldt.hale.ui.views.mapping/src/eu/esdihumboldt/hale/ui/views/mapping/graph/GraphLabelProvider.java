@@ -25,6 +25,8 @@ import org.eclipse.zest.core.viewers.IEntityConnectionStyleProvider;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
 import org.eclipse.zest.core.viewers.IFigureProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
+import org.eclipse.zest.core.widgets.custom.CustomShapeLabel;
+import org.eclipse.zest.core.widgets.custom.shapes.FingerPost;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
@@ -352,6 +354,15 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public IFigure getFigure(Object element) {
 		if (element instanceof Cell) {
 			return new CellFigure();
+		}
+		
+		if (element instanceof Entity) {
+			switch (((Entity) element).getDefinition().getSchemaSpace()) {
+			case SOURCE:
+				return new CustomShapeLabel(new FingerPost(10, SWT.RIGHT));
+			case TARGET:
+				return new CustomShapeLabel(new FingerPost(10, SWT.LEFT));
+			}
 		}
 		
 		// default
