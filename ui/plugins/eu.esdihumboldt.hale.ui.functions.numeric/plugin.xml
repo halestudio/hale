@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.function">
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.numeric.MathExpressionParameterPage"
+            function="eu.esdihumboldt.cst.functions.numeric.mathexpression"
+            id="eu.esdihumboldt.hale.ui.functions.numeric.mathexpression">
+         <parameter
+               name="expression">
+         </parameter>
+      </propertyParameterPage>
+   </extension>
+
+</plugin>

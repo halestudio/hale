@@ -254,4 +254,25 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 		return true;
 	}
 
+	/**
+	 * Returns the cell that would be created if the wizard would be finished now.
+	 * 
+	 * @return the cell
+	 */
+	public Cell getUnfinishedCell() {
+		MutableCell current = new DefaultCell();
+		current.setTransformationIdentifier(getFunctionId());
+		ListMultimap<String, String> parameters = ArrayListMultimap.create();
+		current.setTransformationParameters(parameters);
+		for (IWizardPage page : getPages()) {
+			// stop at first uncompleted page
+			if (!page.isPageComplete())
+				break;
+			if (page instanceof FunctionWizardPage)
+				((FunctionWizardPage) page).configureCell(current);
+			else if (page instanceof ParameterPage)
+				parameters.putAll(((ParameterPage) page).getConfiguration());
+		}
+		return current;
+	}
 }
