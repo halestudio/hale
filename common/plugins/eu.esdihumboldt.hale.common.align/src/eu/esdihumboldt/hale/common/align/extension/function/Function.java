@@ -52,5 +52,11 @@ public interface Function extends Identifiable {
 	 * @return the icon URL, may be <code>null</code>
 	 */
 	public URL getIconURL();
+	
+	/**
+	 * Get the symbolic name of the bundle defining the function.
+	 * @return the bundle symbolic name
+	 */
+	public String getDefiningBundle();
 
 }
