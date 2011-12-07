@@ -50,6 +50,10 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		if (href.startsWith(FUNCTION_TOPIC_PATH)) {
 			// it's a function
 			String func_id = href.substring(FUNCTION_TOPIC_PATH.length());
+			// strip the .*htm? ending
+			if (func_id.endsWith("html") || func_id.endsWith("htm")) {
+				func_id = func_id.substring(0, func_id.lastIndexOf('.'));
+			}
 			try {
 				return getFunctionContent(func_id);
 			} catch (Exception e) {

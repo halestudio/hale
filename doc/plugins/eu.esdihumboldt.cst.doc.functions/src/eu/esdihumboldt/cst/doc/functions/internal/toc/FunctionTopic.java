@@ -59,7 +59,7 @@ public class FunctionTopic implements ITopic, FunctionReferenceConstants {
 	@Override
 	public String getHref() {
 		return PLUGINS_ROOT + "/" + PLUGIN_ID + "/" + FUNCTION_TOPIC_PATH
-				+ function.getId();
+				+ function.getId() + ".html";
 	}
 
 	/**
