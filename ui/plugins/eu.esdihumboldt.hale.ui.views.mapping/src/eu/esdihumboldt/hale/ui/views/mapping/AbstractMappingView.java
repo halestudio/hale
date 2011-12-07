@@ -25,6 +25,7 @@ import org.eclipse.zest.core.viewers.ZoomContributionViewItem;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
+import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
 import eu.esdihumboldt.hale.ui.util.viewer.PostSelectionSupport;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.mapping.graph.CellGraphContentProvider;
@@ -95,6 +96,8 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 		IActionBars bars = getViewSite().getActionBars();
 		bars.getMenuManager().add(toolbarZoomContributionViewItem);
 		bars.getToolBarManager().add(new LayoutAction(viewer));
+		
+		bars.getToolBarManager().add(new ExportGraphAction(viewer));
 	}
 
 	/**
