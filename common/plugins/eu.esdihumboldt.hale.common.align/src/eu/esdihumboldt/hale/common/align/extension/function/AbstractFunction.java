@@ -47,6 +47,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	protected AbstractFunction(IConfigurationElement conf) {
 		super();
 		this.conf = conf;
+		
 		this.parameters = createParameters(conf);
 	}
 
@@ -90,6 +91,14 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	@Override
 	public final String getId() {
 		return conf.getAttribute("identifier");
+	}
+
+	/**
+	 * @see Function#getDefiningBundle()
+	 */
+	@Override
+	public String getDefiningBundle() {
+		return conf.getContributor().getName();
 	}
 
 	/**
