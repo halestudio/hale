@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="Data Views" link_to="../eu.esdihumboldt.hale.doc.user/toc.xml#views">
+<toc label="Data Views" link_to="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/toc.xml#views">
    <topic href="html/data_views.html" label="Data Views">
       <topic href="html/data_views/source_data.html" label="Source Data">
       </topic>
