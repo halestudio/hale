@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -78,7 +81,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		// XXX how to validate fields? -> bindings!?
 		// for testing: check whether all fields aren't empty.
 		for (Map.Entry<FunctionParameter, Text> entry : inputFields.entries())
-			if (entry.getValue().getText().isEmpty()) {
+			if (entry.getKey().getValidator() != null
+					&& entry.getKey().getValidator().validate(entry.getValue().getText()) != null) {
 				setPageComplete(false);
 				return;
 			}
@@ -138,7 +142,6 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 					createField(group, fp, null);
 
 			// create further fields if initial cell has more
-			// XXX check for max occurrence necessary? Is initialCell always correct?
 			for (; initialDataIter.hasNext()
 					&& (fp.getMaxOccurrence() == AbstractParameter.UNBOUNDED || i < fp.getMaxOccurrence()); i++)
 				createField(group, fp, initialDataIter.next());
@@ -154,6 +157,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 
 			group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		}
+
+		// update state now that all texts (with validators) are generated
 		updateState();
 	}
 
@@ -217,25 +222,57 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 
 	/**
 	 * Creates a text field for the given function parameter and given initial
-	 * value.
+	 * value. Does not call updateState!
 	 * 
 	 * @param parent the composite in which to place the text field
 	 * @param fp the function parameter
 	 * @param initialData initial value or null
 	 * @return the created text field
 	 */
-	private Text createField(Composite parent, FunctionParameter fp, String initialData) {
-		Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+	private Text createField(Composite parent, final FunctionParameter fp, String initialData) {
+		final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+
+		// set initial text
 		if (initialData != null)
 			text.setText(initialData);
-		text.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				updateState();
-			}
-		});
+
+		// add text to map
 		inputFields.put(fp, text);
+
+		// add validator 
+		if (fp.getValidator() != null) {
+			final ControlDecoration decorator = new ControlDecoration(text, SWT.LEFT | SWT.TOP);
+			
+			// set initial status
+			String result = fp.getValidator().validate(text.getText());
+			if (result == null)
+				decorator.hide();
+			else
+				decorator.setDescriptionText(result);
+			
+			// set image
+			FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+					FieldDecorationRegistry.DEC_ERROR);
+			decorator.setImage(fieldDecoration.getImage());
+
+			// add modify listener
+			text.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent e) {
+					// update decorator and state
+					String result = fp.getValidator().validate(text.getText());
+					if (result == null)
+						decorator.hide();
+					else {
+						decorator.setDescriptionText(result);
+						decorator.show();
+					}
+					updateState();
+				}
+			});
+		}
+
 		return text;
 	}
 }
