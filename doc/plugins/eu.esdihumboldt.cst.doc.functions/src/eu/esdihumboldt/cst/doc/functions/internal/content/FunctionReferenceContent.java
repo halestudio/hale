@@ -24,7 +24,7 @@ import java.util.Locale;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.help.IHelpContentProducer;
 
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
@@ -38,6 +38,8 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
  */
 public class FunctionReferenceContent implements IHelpContentProducer,
 		FunctionReferenceConstants {
+	
+	VelocityEngine ve = new VelocityEngine();
 
 	/**
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
@@ -75,10 +77,10 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		stream.close();
 		fos.close();
 		
-		Velocity.setProperty("file.resource.loader.path", tempFile.getParent());
+		ve.setProperty("file.resource.loader.path", tempFile.getParent());
 		
-		// initialize Velocity
-		Velocity.init();
+		// initialize VelocityEngine
+		ve.init();
 
 		VelocityContext context = new VelocityContext();
 		
@@ -89,26 +91,25 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		// creating the full IconURL
 		// ------ STARTS HERE ------
 		URL url = function.getIconURL();
-		String urlString = url.toString();
-		int i = urlString.lastIndexOf("/");
-		// "/picture.png"
-		String sub = urlString.substring(i, urlString.length());
 		
+		// "/icons/ICONNAME.png"
+		String path = url.getPath();
+				
 		// "eu.esdihumboldt.cst.functions.TYPE"
-		String category = function.getCategoryId();
+		String bundle = function.getDefiningBundle();
 		
 		StringBuffer sb = new StringBuffer();
-		sb.append(category);
-		sb.append("/icons");
-		sb.append(sub);
+		sb.append("PLUGINS_ROOT/");
+		sb.append(bundle);
+		sb.append(path);
 		
-		// eu.esdihumboldt.cst.functions.TYPE/icons/picture.png
+		// PLUGINS_ROOT/eu.esdihumboldt.cst.functions.TYPE/icons/ICONNAME.png
 		String final_url = sb.toString();
 		
 		context.put("url", final_url);
 		// ------ ENDS HERE ------
 		
-		template = Velocity.getTemplate(tempFile.getName(), "UTF-8");
+		template = ve.getTemplate(tempFile.getName(), "UTF-8");
 
 		PipedInputStream pis = new PipedInputStream();
 		
