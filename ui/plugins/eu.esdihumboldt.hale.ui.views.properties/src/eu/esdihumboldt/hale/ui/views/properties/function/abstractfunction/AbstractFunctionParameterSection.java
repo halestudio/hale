@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
@@ -134,6 +135,14 @@ public class AbstractFunctionParameterSection extends
 			}
 
 		});
+	}
+
+	/**
+	 * @see AbstractPropertySection#shouldUseExtraSpace()
+	 */
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
 	}
 
 	/**
