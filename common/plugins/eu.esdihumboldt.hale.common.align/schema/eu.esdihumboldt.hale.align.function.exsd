@@ -107,7 +107,8 @@
          <attribute name="help" type="string">
             <annotation>
                <documentation>
-                  Additional help for the function (include ID must be &quot;help&quot;).
+                  Additional help for the function. The resource must be a XHTML document and contain an element with the ID &quot;help&quot; (e.g. &amp;lt;div id=&quot;help&quot;&amp;gt;). This element will be included in the function&apos;s page of the function reference.
+For references, e.g. to images, use absolute references to plugin and path, led by &quot;../../&quot;.
                </documentation>
                <appinfo>
                   <meta.attribute kind="resource"/>
@@ -176,7 +177,8 @@
          <attribute name="help" type="string">
             <annotation>
                <documentation>
-                  Additional help for the function (include ID must be &quot;help&quot;).
+                  Additional help for the function. The resource must be a XHTML document and contain an element with the ID &quot;help&quot; (e.g. &amp;lt;div id=&quot;help&quot;&amp;gt;). This element will be included in the function&apos;s page of the function reference.
+For references, e.g. to images, use absolute references to plugin and path, led by &quot;../../&quot;.
                </documentation>
                <appinfo>
                   <meta.attribute kind="resource"/>
