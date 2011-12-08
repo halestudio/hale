@@ -58,5 +58,17 @@ public interface Function extends Identifiable {
 	 * @return the bundle symbolic name
 	 */
 	public String getDefiningBundle();
+	
+	/**
+	 * Get the help file URL
+	 * @return the help file URL, may be <code>null</code>
+	 */
+	public URL getHelpURL();
+	
+//	/**
+//	 * Get the help file ID of the text to be included
+//	 * @return the help file ID, my be <code>null</code>
+//	 */
+//	public String getHelpFileID();
 
 }

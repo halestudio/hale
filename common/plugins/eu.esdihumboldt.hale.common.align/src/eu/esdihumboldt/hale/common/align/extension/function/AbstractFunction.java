@@ -154,5 +154,21 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		
 		return null;
 	}
+	/**
+	 * @see Function#getHelpURL
+	 */
+	@Override
+	public URL getHelpURL() {
+		String help = conf.getAttribute("help");
+		return getURL(help);
+	}
+	
+//	/**
+//	 * @see Function#getHelpFileID()
+//	 */
+//	@Override
+//	public final String getHelpFileID() {
+//		return conf.getAttribute("helpID");
+//	}
 
 }

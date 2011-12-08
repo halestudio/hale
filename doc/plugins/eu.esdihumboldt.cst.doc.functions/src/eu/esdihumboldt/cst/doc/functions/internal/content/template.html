@@ -1,7 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="content-type" content="text/html;charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>Functions Template</title>
 </head>
 <body>
@@ -9,11 +9,13 @@
 <h2>$function.displayName</h2>
 
 <p>
-<b>Icon:</b> <img alt="" src="PLUGINS_ROOT/$url"> <br>
-<b>Function Name:</b> $function.displayName <br>
-<b>Function ID:</b> $function.id <br>
-<b>Description:</b> $function.description<br>
-<b>Category:</b> $function.categoryId<br>
+<b>Icon:</b> <img alt="" src="PLUGINS_ROOT/$url"></img> <br />
+<b>Function Name:</b> $function.displayName <br />
+<b>Function ID:</b> $function.id <br />
+<b>Description:</b> $function.description<br />
+<b>Category:</b> $function.categoryId<br />
 </p>
+<!-- TODO: Add parameters to template @see FunctionReferenceContent -->
+<include path="$include"/>
 </body>
 </html>
