@@ -247,6 +247,7 @@
             </input>
          </propertySection>
          <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.function.name"
                class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionIdSection"
                id="eu.esdihumboldt.hale.ui.views.properties.function.id"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
@@ -255,6 +256,7 @@
             </input>
          </propertySection>
          <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.function.id"
                class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionDescriptionSection"
                id="eu.esdihumboldt.hale.ui.views.properties.function.description"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
@@ -301,6 +303,7 @@
                label="PropertyType">
          </propertyTab>
          <propertyTab
+               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.general"
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.properties.function.parameters"
                label="Parameters">
