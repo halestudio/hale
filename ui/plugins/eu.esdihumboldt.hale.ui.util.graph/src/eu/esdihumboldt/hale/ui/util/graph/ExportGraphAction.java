@@ -27,12 +27,12 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.Graph;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.ui.util.graph.internal.GraphUIUtilBundle;
 
 /**
  * Renders a graph and saves it to a file.
@@ -40,11 +40,6 @@ import de.cs3d.util.logging.ALoggerFactory;
  */
 public class ExportGraphAction extends Action {
 	
-	/**
-	 * The bundle ID
-	 */
-	private static final String BUNDLE_ID = "eu.esdihumboldt.hale.ui.util.graph";
-
 	private static final ALogger log = ALoggerFactory.getLogger(ExportGraphAction.class);
 
 	private GraphViewer viewer;
@@ -58,8 +53,8 @@ public class ExportGraphAction extends Action {
 		
 		setText("Export to file");
 		setToolTipText("Export the graph to an image or SVG file");
-		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-				BUNDLE_ID, "icons/export.gif"));
+		setImageDescriptor(GraphUIUtilBundle.getImageDescriptor(
+				"icons/export.gif"));
 	}
 
 	/**
