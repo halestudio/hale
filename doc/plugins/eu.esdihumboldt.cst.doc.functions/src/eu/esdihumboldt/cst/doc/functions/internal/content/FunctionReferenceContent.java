@@ -72,6 +72,13 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 	}
 
 	private InputStream getFunctionContent(String func_id) throws Exception {
+		// maps "function" to the real function ID (used by the template)
+		AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
+		
+		if (function == null) {
+			return null;
+		}
+		
 		Template template = null;
 
 		synchronized (this) {
@@ -100,8 +107,6 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 
 		VelocityContext context = new VelocityContext();
 
-		// maps "function" to the real function ID (used by the template)
-		AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
 		context.put("function", function);
 
 		// creating the full IconURL
