@@ -10,12 +10,12 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.mapping;
+package eu.esdihumboldt.hale.ui.util.graph;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.core.viewers.GraphViewer;
 
-import eu.esdihumboldt.hale.ui.views.mapping.internal.MappingViewPlugin;
+import eu.esdihumboldt.hale.ui.util.graph.internal.GraphUIUtilBundle;
 
 /**
  * Action that triggers relayouting a {@link GraphViewer}
@@ -34,7 +34,9 @@ public class LayoutAction extends Action {
 		
 		this.viewer = viewer;
 		
-		setImageDescriptor(MappingViewPlugin.getImageDescriptor("icons/layout.gif"));
+		setText("Apply layout");
+		setToolTipText("Layout the graph");
+		setImageDescriptor(GraphUIUtilBundle.getImageDescriptor("icons/layout.gif"));
 	}
 
 	/**

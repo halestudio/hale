@@ -26,6 +26,7 @@ import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
+import eu.esdihumboldt.hale.ui.util.graph.LayoutAction;
 import eu.esdihumboldt.hale.ui.util.viewer.PostSelectionSupport;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.mapping.graph.CellGraphContentProvider;
