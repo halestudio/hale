@@ -30,6 +30,8 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.help.IHelpContentProducer;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
@@ -44,6 +46,8 @@ import com.google.common.io.Files;
  */
 public class FunctionReferenceContent implements IHelpContentProducer,
 		FunctionReferenceConstants {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(FunctionReferenceContent.class);
 
 	private VelocityEngine ve;
 	private File tempDir;
@@ -57,6 +61,11 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		if (href.startsWith(FUNCTION_TOPIC_PATH)) {
 			// it's a function
 			String func_id = href.substring(FUNCTION_TOPIC_PATH.length());
+			// strip everything after a ?
+			int ind = func_id.indexOf('?');
+			if (ind >= 0) {
+				func_id = func_id.substring(0, ind);
+			}
 			// strip the .*htm? ending
 			if (func_id.endsWith("html") || func_id.endsWith("htm")) {
 				func_id = func_id.substring(0, func_id.lastIndexOf('.'));
@@ -64,7 +73,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			try {
 				return getFunctionContent(func_id);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Error creating help content", e);
 			}
 		}
 
@@ -76,6 +85,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
 		
 		if (function == null) {
+			log.warn("Unknown function " + func_id);
 			return null;
 		}
 		
@@ -175,7 +185,6 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		osw.close();
 
 		return pis;
-
 	}
 
 }
