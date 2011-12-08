@@ -92,7 +92,7 @@ public class AbstractFunctionParameterSection extends
 				SWT.NONE);
 		TableColumn lablecol = lableviewercol.getColumn();
 		columnLayout.setColumnData(lablecol, new ColumnWeightData(20));
-		lablecol.setText("Lable");
+		lablecol.setText("Label");
 		lableviewercol.setLabelProvider(new CellLabelProvider() {
 
 			@Override
@@ -106,7 +106,7 @@ public class AbstractFunctionParameterSection extends
 		TableViewerColumn occurenceviewercol = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		TableColumn occurencecol = occurenceviewercol.getColumn();
-		columnLayout.setColumnData(occurencecol, new ColumnWeightData(20));
+		columnLayout.setColumnData(occurencecol, new ColumnWeightData(10));
 		occurencecol.setText("Occurence");
 		occurenceviewercol.setLabelProvider(new CellLabelProvider() {
 
@@ -124,7 +124,7 @@ public class AbstractFunctionParameterSection extends
 		TableViewerColumn descriptionviewercol = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		TableColumn descriptioncol = descriptionviewercol.getColumn();
-		columnLayout.setColumnData(descriptioncol, new ColumnWeightData(20));
+		columnLayout.setColumnData(descriptioncol, new ColumnWeightData(40));
 		descriptioncol.setText("Description");
 		descriptionviewercol.setLabelProvider(new CellLabelProvider() {
 
