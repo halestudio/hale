@@ -160,6 +160,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		}
 		
 		// TODO: getting parameters
+		//FIXME the parameters should not be retrieved here, but in the template!
 		Set<FunctionParameter> params = function.getDefinedParameters();
 		Iterator<FunctionParameter> it = params.iterator();
 		ArrayList<FunctionParameter> funcparams = new ArrayList<FunctionParameter>();
@@ -167,7 +168,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			funcparams.add(it.next());
 		}
 		String bla = "funcparams is leer";
-		if(funcparams != null) {
+		if(!funcparams.isEmpty()) {
 			// FunctionOutOfBoundsException if there are no parameters for the function
 			bla = funcparams.get(0).getName();
 		}
