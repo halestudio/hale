@@ -15,11 +15,12 @@ package eu.esdihumboldt.hale.common.align.extension.function;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.SetMultimap;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 
@@ -31,7 +32,7 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
  */
 public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> extends IdentifiableExtension<T> {
 
-	private ListMultimap<String, T> categoryFunctions;
+	private SetMultimap<String, T> categoryFunctions;
 	
 	/**
 	 * @see IdentifiableExtension#IdentifiableExtension(String)
@@ -51,7 +52,7 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 		T function = doCreate(elementId, element);
 		if (function != null) {
 			if (categoryFunctions == null) {
-				categoryFunctions = ArrayListMultimap.create();
+				categoryFunctions = LinkedHashMultimap.create();
 			}
 			categoryFunctions.put(function.getCategoryId(), function);
 		}
@@ -70,7 +71,7 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 		}
 		
 		if (categoryFunctions != null) {
-			List<T> res = categoryFunctions.get(category);
+			Set<T> res = categoryFunctions.get(category);
 			return new ArrayList<T>(res);
 		}
 		
