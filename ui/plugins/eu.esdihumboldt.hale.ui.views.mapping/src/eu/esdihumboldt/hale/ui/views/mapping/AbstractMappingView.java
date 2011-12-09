@@ -25,12 +25,12 @@ import org.eclipse.zest.core.viewers.ZoomContributionViewItem;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
+import eu.esdihumboldt.hale.ui.common.graph.content.CellGraphContentProvider;
+import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
 import eu.esdihumboldt.hale.ui.util.graph.LayoutAction;
 import eu.esdihumboldt.hale.ui.util.viewer.PostSelectionSupport;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
-import eu.esdihumboldt.hale.ui.views.mapping.graph.CellGraphContentProvider;
-import eu.esdihumboldt.hale.ui.views.mapping.graph.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**

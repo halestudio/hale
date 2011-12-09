@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.mapping.graph;
+package eu.esdihumboldt.hale.ui.common.graph.labels;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;

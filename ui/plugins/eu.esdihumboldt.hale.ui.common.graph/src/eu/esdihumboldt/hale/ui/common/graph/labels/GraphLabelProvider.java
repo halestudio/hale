@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.mapping.graph;
+package eu.esdihumboldt.hale.ui.common.graph.labels;
 
 import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
-import eu.esdihumboldt.hale.ui.views.mapping.graph.figures.CellFigure;
+import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
 
 /**
  * Label provider for mapping graphs.

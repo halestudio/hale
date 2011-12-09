@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.mapping.graph.figures;
+package eu.esdihumboldt.hale.ui.common.graph.figures;
 
 import org.eclipse.zest.core.widgets.custom.CustomShapeLabel;
 import org.eclipse.zest.core.widgets.custom.shapes.StretchedHexagon;
