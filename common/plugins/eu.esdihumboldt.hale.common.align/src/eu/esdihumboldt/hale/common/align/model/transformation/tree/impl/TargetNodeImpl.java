@@ -118,6 +118,14 @@ public class TargetNodeImpl implements TargetNode {
 	}
 
 	/**
+	 * @see TargetNode#getAssignmentNames(CellNode)
+	 */
+	@Override
+	public Set<String> getAssignmentNames(CellNode assignment) {
+		return assignments.get(assignment);
+	}
+
+	/**
 	 * @see TargetNode#getDefinition()
 	 */
 	@Override
