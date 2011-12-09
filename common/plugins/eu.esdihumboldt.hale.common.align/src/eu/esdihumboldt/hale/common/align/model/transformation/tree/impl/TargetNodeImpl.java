@@ -25,8 +25,10 @@ import net.jcip.annotations.Immutable;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
@@ -40,7 +42,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 @Immutable
 public class TargetNodeImpl implements TargetNode {
 
-	private final ChildDefinition<?> child;
+	private final EntityDefinition child;
 	private final Set<CellNode> assignments;
 	private final List<TargetNode> children;
 
@@ -51,26 +53,27 @@ public class TargetNodeImpl implements TargetNode {
 	 * @param parentType the type representing the root
 	 * @param depth the depth down from the root node
 	 */
-	public TargetNodeImpl(ChildDefinition<?> child, Collection<CellNode> cells,
+	public TargetNodeImpl(EntityDefinition child, Collection<CellNode> cells,
 			TypeDefinition parentType, int depth) {
 		this.child = child;
 		
 		// partition cells by child
-		ListMultimap<ChildDefinition<?>, CellNode> childCells = ArrayListMultimap.create();
+		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
 		//... and for this node
 		Set<CellNode> assignSet = new LinkedHashSet<CellNode>();
 		for (CellNode cell : cells) {
 			for (Entity target : cell.getCell().getTarget().values()) {
 				if (target.getDefinition().getType().equals(parentType)) {
 					List<ChildContext> path = target.getDefinition().getPropertyPath();
-					if (path.get(depth - 1).getChild().equals(child)) {
+					if (path.get(depth - 1).getChild().equals(child.getDefinition())) {
 						if (path.size() <= depth) {
 							// this cell belongs to this node
-							assignSet.add(cell);
+							assignSet.add(cell); //XXX TODO store associated entity name(s)?!
 						}
 						else {
 							// this cell belongs to a child node
-							childCells.put(path.get(depth).getChild(), cell);
+							childCells.put(AlignmentUtil.deriveEntity(
+									target.getDefinition(), depth + 1), cell);
 						}
 					}
 				}
@@ -81,7 +84,7 @@ public class TargetNodeImpl implements TargetNode {
 		
 		// create child cells
 		List<TargetNode> childList = new ArrayList<TargetNode>();
-		for (Entry<ChildDefinition<?>, Collection<CellNode>> childEntry : childCells.asMap().entrySet()) {
+		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap().entrySet()) {
 			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), 
 					childEntry.getValue(), parentType, depth + 1);
 			childList.add(childNode);
@@ -111,6 +114,14 @@ public class TargetNodeImpl implements TargetNode {
 	 */
 	@Override
 	public ChildDefinition<?> getDefinition() {
+		return (ChildDefinition<?>) child.getDefinition();
+	}
+
+	/**
+	 * @see TargetNode#getEntityDefinition()
+	 */
+	@Override
+	public EntityDefinition getEntityDefinition() {
 		return child;
 	}
 

@@ -60,4 +60,12 @@ public class SourceNodeImpl implements SourceNode {
 		return parent;
 	}
 
+	/**
+	 * @see SourceNode#getEntityDefinition()
+	 */
+	@Override
+	public EntityDefinition getEntityDefinition() {
+		return entityDefinition;
+	}
+
 }
