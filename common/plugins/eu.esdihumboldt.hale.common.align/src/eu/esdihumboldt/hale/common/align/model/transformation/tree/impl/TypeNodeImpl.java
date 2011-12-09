@@ -24,16 +24,17 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TypeNode;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -61,7 +62,7 @@ public class TypeNodeImpl implements TypeNode {
 		Collection<? extends Cell> cells = alignment.getPropertyCells(null, targetType);
 		
 		// partition cells by child
-		ListMultimap<ChildDefinition<?>, CellNode> childCells = ArrayListMultimap.create();
+		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
 		for (Cell cell : cells) {
 			CellNode node = new CellNodeImpl(cell, sourceNodes);
 			for (Entity target : cell.getTarget().values()) {
@@ -69,7 +70,8 @@ public class TypeNodeImpl implements TypeNode {
 					List<ChildContext> path = target.getDefinition().getPropertyPath();
 					if (path != null && !path.isEmpty()) {
 						// store cell with child
-						childCells.put(path.get(0).getChild(), node);
+						childCells.put(AlignmentUtil.deriveEntity(
+								target.getDefinition(), 1), node);
 					}
 				}
 				else {
@@ -81,7 +83,7 @@ public class TypeNodeImpl implements TypeNode {
 		
 		// create child cells
 		List<TargetNode> childList = new ArrayList<TargetNode>();
-		for (Entry<ChildDefinition<?>, Collection<CellNode>> childEntry : childCells.asMap().entrySet()) {
+		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap().entrySet()) {
 			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), 
 					childEntry.getValue(), type, 1);
 			childList.add(childNode);

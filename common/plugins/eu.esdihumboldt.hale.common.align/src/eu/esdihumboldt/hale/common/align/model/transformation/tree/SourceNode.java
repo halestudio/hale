@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
@@ -31,5 +32,11 @@ public interface SourceNode {
 	 * @return the parent node or <code>null</code>
 	 */
 	public SourceNode getParent();
+	
+	/**
+	 * Get the full entity definition associated with the node.
+	 * @return the entity definition
+	 */
+	public EntityDefinition getEntityDefinition();
 
 }

@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 
 import java.util.Set;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 
 /**
@@ -33,5 +34,11 @@ public interface TargetNode extends GroupNode {
 	 * @return the group or property definition
 	 */
 	public ChildDefinition<?> getDefinition();
+	
+	/**
+	 * Get the full entity definition associated with the node.
+	 * @return the entity definition
+	 */
+	public EntityDefinition getEntityDefinition();
 
 }

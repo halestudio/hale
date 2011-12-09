@@ -188,4 +188,33 @@ public abstract class AlignmentUtil {
 		return createEntity(entity.getType(), newPath, entity.getSchemaSpace());
 	}
 
+	/**
+	 * Derive an entity definition from the given one but with a maximum path 
+	 * length.
+	 * @param entity the entity definition
+	 * @param pathLength the maximum path length
+	 * @return the entity definition derived from the given entity definition
+	 *   but with the property path shortened if needed, otherwise the given
+	 *   definition will be returned 
+	 */
+	public static EntityDefinition deriveEntity(EntityDefinition entity, int pathLength) {
+		if (pathLength < 0) {
+			pathLength = 0;
+		}
+		
+		List<ChildContext> path = entity.getPropertyPath();
+		
+		if (path == null || path.size() <= pathLength) {
+			return entity;
+		}
+		
+		List<ChildContext> newPath = new ArrayList<ChildContext>(pathLength); 
+		
+		for (int i = 0; i < pathLength; i++) {
+			newPath.add(path.get(i));
+		}
+		
+		return createEntity(entity.getType(), newPath, entity.getSchemaSpace());
+	}
+
 }

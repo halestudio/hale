@@ -17,8 +17,6 @@ import java.util.Collections;
 import java.util.List;
 
 import net.jcip.annotations.Immutable;
-
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
@@ -46,9 +44,8 @@ public class CellNodeImpl implements CellNode {
 		List<SourceNode> sourceList = new ArrayList<SourceNode>();
 		
 		for (Entity entity : cell.getSource().values()) {
-			SourceNode node = sourceNodes.getSourceNode(
-					AlignmentUtil.getAllDefaultEntity(entity.getDefinition()));
-			//XXX what about filter, context etc.?!
+			SourceNode node = sourceNodes.getSourceNode(entity.getDefinition());
+			//XXX what about filter etc.?!
 			sourceList.add(node);
 		}
 		
