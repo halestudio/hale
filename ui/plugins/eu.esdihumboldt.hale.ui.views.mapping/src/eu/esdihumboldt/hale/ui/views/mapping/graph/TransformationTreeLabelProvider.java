@@ -66,22 +66,29 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		if (element instanceof EntityConnectionData) {
 			EntityConnectionData connection = (EntityConnectionData) element;
 			
+			Set<String> names = null;
 			if (connection.source instanceof TargetNode
 					&& connection.dest instanceof CellNode) {
-				Set<String> names = ((TargetNode) connection.source)
+				names = ((TargetNode) connection.source)
 						.getAssignmentNames((CellNode) connection.dest);
-				if (names != null && !names.isEmpty()) {
-					if (names.contains(null)) {
-						names = new HashSet<String>(names);
-						names.remove(null);
-						if (!names.isEmpty()) {
-							names.add("(unnamed)");
-						}
+			}
+			if (connection.source instanceof CellNode
+					&& connection.dest instanceof SourceNode) {
+				names = ((CellNode) connection.source)
+						.getSourceNames((SourceNode) connection.dest);
+			}
+			
+			if (names != null && !names.isEmpty()) {
+				if (names.contains(null)) {
+					names = new HashSet<String>(names);
+					names.remove(null);
+					if (!names.isEmpty()) {
+						names.add("(unnamed)");
 					}
-					// build name string
-					Joiner joiner = Joiner.on(',');
-					return joiner.join(names);
 				}
+				// build name string
+				Joiner joiner = Joiner.on(',');
+				return joiner.join(names);
 			}
 			
 			return "";
