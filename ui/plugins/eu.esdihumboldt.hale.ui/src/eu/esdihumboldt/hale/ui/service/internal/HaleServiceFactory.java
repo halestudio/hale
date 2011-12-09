@@ -21,6 +21,8 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceImpl;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
+import eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceSampleServiceImpl;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.service.project.internal.ProjectServiceImpl;
@@ -77,6 +79,10 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 			return new EntityDefinitionServiceImpl(
 					(AlignmentService) locator.getService(AlignmentService.class),
 					(ProjectService) locator.getService(ProjectService.class));
+		}
+		
+		if (serviceInterface.equals(InstanceSampleService.class)) {
+			return new InstanceSampleServiceImpl();
 		}
 		
 		return null;

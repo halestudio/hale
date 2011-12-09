@@ -20,14 +20,5 @@
             restorable="true">
       </view>
    </extension>
-   <extension
-         point="org.eclipse.ui.services">
-      <serviceFactory
-            factoryClass="eu.esdihumboldt.hale.ui.views.data.internal.ServiceFactory">
-         <service
-               serviceClass="eu.esdihumboldt.hale.ui.views.data.ReferenceSampleService">
-         </service>
-      </serviceFactory>
-   </extension>
 
 </plugin>
