@@ -14,15 +14,20 @@ package eu.esdihumboldt.hale.ui.common.graph.labels;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
+import org.eclipse.zest.core.widgets.custom.CustomShapeFigure.ShapePainter;
+import org.eclipse.zest.core.widgets.custom.CustomShapeLabel;
+import org.eclipse.zest.core.widgets.custom.shapes.FingerPost;
 
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TypeNode;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
 
 /**
  * Label provider for transformation trees
@@ -117,6 +122,36 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public IFigure getFigure(Object element) {
+		ShapePainter shape = null;
+		
+		if (element instanceof TypeNode) {
+			shape = new TransformationNodeShape(10, SWT.NONE);
+		}
+		else if (element instanceof TargetNode) {
+			TargetNode node = (TargetNode) element;
+			
+			if (node.getAssignments().isEmpty()) {
+				shape = new TransformationNodeShape(10, SWT.NONE);
+			}
+			else {
+				shape = new TransformationNodeShape(10, SWT.RIGHT);
+			}
+		}
+		else if (element instanceof SourceNode) {
+			SourceNode node = (SourceNode) element;
+			
+			if (node.getParent() == null) {
+				shape = new TransformationNodeShape(10, SWT.NONE);
+			}
+			else {
+				shape = new FingerPost(10, SWT.LEFT);
+			}
+		}
+		
+		if (shape != null) {
+			return new CustomShapeLabel(shape);
+		}
+		
 		element = extractObject(element);
 		
 		return super.getFigure(element);
