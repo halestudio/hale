@@ -41,4 +41,12 @@ public interface TargetNode extends GroupNode {
 	 */
 	public EntityDefinition getEntityDefinition();
 
+	/**
+	 * Get the assignment names for the given cell. These are the names of the
+	 * cell entities the node is associated to.
+	 * @param assignment the assigned cell
+	 * @return the assignment name or <code>null</code>
+	 */
+	public Set<String> getAssignmentNames(CellNode assignment);
+
 }
