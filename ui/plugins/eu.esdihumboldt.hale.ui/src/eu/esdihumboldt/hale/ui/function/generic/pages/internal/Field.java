@@ -140,7 +140,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 				LinkedHashSet<EntityDefinition> rotatingCandidates = new LinkedHashSet<EntityDefinition>(candidates);
 
 				// try to add candidates for each required entity
-				for (int i = 0; i < definition.getMinOccurrence(); i++) {
+				for (int i = 0; i < minCount; i++) {
 					boolean found = false;
 					for (EntityDefinition candidate : candidates) {
 						if (true) { //TODO check against filters

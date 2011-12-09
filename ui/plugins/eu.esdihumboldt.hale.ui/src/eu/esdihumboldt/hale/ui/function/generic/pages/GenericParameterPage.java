@@ -26,6 +26,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -40,6 +41,8 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
+import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Page for configuring function parameters.
@@ -50,7 +53,9 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
 	private ListMultimap<String, String> initialValues;
 	private Set<FunctionParameter> params;
-	private ListMultimap<FunctionParameter, Text> inputFields;
+	private ListMultimap<FunctionParameter, Pair<Text, Button>> inputFields;
+	private Button addButton;
+	private static final Image removeImage = HALEUIPlugin.getImageDescriptor("icons/remove.gif").createImage();
 
 	/**
 	 * Default constructor.
@@ -78,11 +83,9 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * Update the page state.
 	 */
 	private void updateState() {
-		// XXX how to validate fields? -> bindings!?
-		// for testing: check whether all fields aren't empty.
-		for (Map.Entry<FunctionParameter, Text> entry : inputFields.entries())
+		for (Map.Entry<FunctionParameter, Pair<Text, Button>> entry : inputFields.entries())
 			if (entry.getKey().getValidator() != null
-					&& entry.getKey().getValidator().validate(entry.getValue().getText()) != null) {
+					&& entry.getKey().getValidator().validate(entry.getValue().getFirst().getText()) != null) {
 				setPageComplete(false);
 				return;
 			}
@@ -107,8 +110,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
 		ListMultimap<String, String> conf = ArrayListMultimap.create();
-		for (Map.Entry<FunctionParameter, Text> entry : inputFields.entries())
-			conf.put(entry.getKey().getName(), entry.getValue().getText());
+		for (Map.Entry<FunctionParameter, Pair<Text, Button>> entry : inputFields.entries())
+			conf.put(entry.getKey().getName(), entry.getValue().getFirst().getText());
 		return conf;
 	}
 
@@ -122,8 +125,9 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		// create section for each function parameter
 		for (final FunctionParameter fp : params) {
 			Group group = new Group(page, SWT.NONE);
+			group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 			group.setText(fp.getDisplayName());
-			group.setLayout(GridLayoutFactory.swtDefaults().create());
+			group.setLayout(GridLayoutFactory.swtDefaults().extendedMargins(5, 0, 0, 0).numColumns(2).create());
 			if (fp.getDescription() != null) {
 				Label description = new Label(group, SWT.NONE);
 				description.setText(fp.getDescription());
@@ -139,7 +143,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 				if (initialDataIter.hasNext())
 					createField(group, fp, initialDataIter.next());
 				else
-					createField(group, fp, null);
+					createField(group, fp, ""); // important "" not null! runs validator.
 
 			// create further fields if initial cell has more
 			for (; initialDataIter.hasNext()
@@ -147,15 +151,13 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 				createField(group, fp, initialDataIter.next());
 
 			// create control buttons if max occurrence != min occurrence
-			if (fp.getMaxOccurrence() != fp.getMinOccurrence()) {
-				final Composite buttons = new Composite(group, SWT.NONE);
-				buttons.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
-				buttons.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-				createButtons(buttons, fp, i < fp.getMaxOccurrence()
-						|| fp.getMaxOccurrence() == AbstractParameter.UNBOUNDED, i > fp.getMinOccurrence());
-			}
+			if (fp.getMaxOccurrence() != fp.getMinOccurrence())
+				createAddButton(group, fp, i < fp.getMaxOccurrence());
 
-			group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+			// enable remove buttons if initial cell added more fields than required
+			if (i > fp.getMinOccurrence())
+				for (Pair<Text, Button> pair : inputFields.get(fp))
+					pair.getSecond().setEnabled(true);
 		}
 
 		// update state now that all texts (with validators) are generated
@@ -168,53 +170,42 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * 
 	 * @param parent the composite
 	 * @param fp the function parameter
-	 * @param addVisible whether the add button is visible in the beginning
-	 * @param removeVisible whether the remove button is visible in the
-	 *            beginning
+	 * @param addEnabled whether the add button is enabled in the beginning
 	 */
-	private void createButtons(final Composite parent, final FunctionParameter fp, boolean addVisible,
-			boolean removeVisible) {
+	private void createAddButton(final Composite parent, final FunctionParameter fp, boolean addEnabled) {
 		// create add button -> left
-		final Button addButton = new Button(parent, SWT.PUSH);
-		addButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false));
+		addButton = new Button(parent, SWT.PUSH);
+		addButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 2, 1));
 		addButton.setText("Add parameter value");
-		addButton.setVisible(addVisible);
-
-		// create remove button -> right
-		final Button removeButton = new Button(parent, SWT.PUSH);
-		removeButton.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, true, false));
-		removeButton.setText("Remove parameter value");
-		removeButton.setVisible(removeVisible);
+		addButton.setEnabled(addEnabled);
 
 		// create selection listeners
-		removeButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// remove last text field
-				List<Text> texts = inputFields.get(fp);
-				Text removed = texts.remove(texts.size() - 1);
-				updateState();
-				removed.dispose();
-				addButton.setVisible(true);
-				if (texts.size() == fp.getMinOccurrence())
-					removeButton.setVisible(false);
-				((Composite) getControl()).layout();
-				getWizard().getShell().pack();
-			}
-		});
-
 		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// add text field
-				List<Text> texts = inputFields.get(fp);
-				Text added = createField(parent.getParent(), fp, null);
-				updateState();
-				added.moveAbove(parent);
+				List<Pair<Text, Button>> texts = inputFields.get(fp);
+				boolean removeButtonsDisabled = texts.size() == fp.getMinOccurrence();
+				Pair<Text, Button> added = createField(addButton.getParent(), fp, null);
+				added.getFirst().moveAbove(addButton);
+				added.getSecond().moveAbove(addButton);
+				
+				// update add button
 				if (texts.size() == fp.getMaxOccurrence())
-					addButton.setVisible(false);
-				removeButton.setVisible(true);
+					addButton.setEnabled(false);
+
+				// need to enable all remove buttons or only the new one?
+				if (removeButtonsDisabled)
+					for (Pair<Text, Button> pair : texts)
+						pair.getSecond().setEnabled(true);
+				else
+					added.getSecond().setEnabled(true);
+
+				// do layout
 				((Composite) getControl()).layout();
+				// run validator to update ControlDecoration and updateState
+				added.getFirst().setText("");
+				// pack to make wizard larger if necessary
 				getWizard().getShell().pack();
 			}
 		});
@@ -229,28 +220,22 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * @param initialData initial value or null
 	 * @return the created text field
 	 */
-	private Text createField(Composite parent, final FunctionParameter fp, String initialData) {
+	private Pair<Text, Button> createField(Composite parent, final FunctionParameter fp, String initialData) {
+		// create text, button and pair
 		final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		final Button removeButton = new Button(parent, SWT.NONE);
+		final Pair<Text, Button> pair = new Pair<Text, Button>(text, removeButton);
+
+		// configure text
 		text.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-
-		// set initial text
-		if (initialData != null)
-			text.setText(initialData);
-
-		// add text to map
-		inputFields.put(fp, text);
 
 		// add validator 
 		if (fp.getValidator() != null) {
 			final ControlDecoration decorator = new ControlDecoration(text, SWT.LEFT | SWT.TOP);
-			
+
 			// set initial status
-			String result = fp.getValidator().validate(text.getText());
-			if (result == null)
-				decorator.hide();
-			else
-				decorator.setDescriptionText(result);
-			
+			decorator.hide();
+
 			// set image
 			FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
 					FieldDecorationRegistry.DEC_ERROR);
@@ -273,6 +258,37 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			});
 		}
 
-		return text;
+		// set initial text
+		if (initialData != null)
+			text.setText(initialData);
+
+		// configure button
+		removeButton.setImage(removeImage);
+		removeButton.setEnabled(false);
+		removeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// remove last text field
+				List<Pair<Text, Button>> texts = inputFields.get(fp);
+				texts.remove(pair);
+				updateState();
+				removeButton.dispose();
+				text.dispose();
+				addButton.setEnabled(true);
+				if (texts.size() == fp.getMinOccurrence())
+					for (Pair<Text, Button> otherPair : texts)
+						otherPair.getSecond().setEnabled(false);
+
+				// do layout
+				((Composite) getControl()).layout();
+				// pack to make wizard smaller if possible
+				getWizard().getShell().pack();
+			}
+		});
+
+		// add field to map
+		inputFields.put(fp, pair);
+
+		return pair;
 	}
 }
