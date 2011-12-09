@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -26,6 +29,7 @@ import com.iabcinc.jmep.hooks.Constant;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
@@ -40,8 +44,8 @@ public class MathExpressionParameterPage extends HaleWizardPage<AbstractGenericF
 		ParameterPage {
 	private String initialExpression = "";
 	private Text expressionField;
-	private ListViewer varList;
-	private String[] variables = new String[0];
+	private TableViewer varTable;
+	private EntityDefinition[] variables = new EntityDefinition[0];
 	private Environment environment = new Environment();
 
 	/**
@@ -89,24 +93,21 @@ public class MathExpressionParameterPage extends HaleWizardPage<AbstractGenericF
 
 		// update variables as they could have changed
 		List<? extends Entity> sourceEntities = cell.getSource().get("var");
-		variables = new String[sourceEntities.size()];
+		variables = new EntityDefinition[sourceEntities.size()];
 		Iterator<? extends Entity> iter = sourceEntities.iterator();
 		DefinitionLabelProvider dlp = new DefinitionLabelProvider(true, true);
-		for (int i = 0; i < variables.length; i++)
-			variables[i] = dlp.getText(iter.next().getDefinition());
-		varList.setInput(variables);
-
-		// update environment for verifier
-		environment = new Environment();
-		// add dummy variables
-		for (String var : variables) {
-			environment.addVariable(var, new Constant(new Double(1)));
+		environment = new Environment(); // update environment, too
+		for (int i = 0; i < variables.length; i++) {
+			variables[i] = iter.next().getDefinition();
+			// add dummy variables to environment
+			environment.addVariable(dlp.getText(variables[i]), new Constant(new Double(1)));
 		}
+		varTable.setInput(variables);
+
 		// update check whether current value is valid
 		expressionField.setText(expressionField.getText());
 
 		((Composite) getControl()).layout();
-		getWizard().getShell().pack();
 	}
 
 	/**
@@ -144,18 +145,25 @@ public class MathExpressionParameterPage extends HaleWizardPage<AbstractGenericF
 		label.setText("Available variables (double click to insert)");
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
-		varList = new ListViewer(page);
-		varList.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		varList.setContentProvider(new ArrayContentProvider());
-		varList.getList().addMouseListener(new MouseAdapter() {
+		// variables table
+		Composite tableComposite = new Composite(page, SWT.NONE);
+		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		TableColumnLayout columnLayout = new TableColumnLayout();
+		tableComposite.setLayout(columnLayout);
+		varTable = new TableViewer(tableComposite, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
+		TableViewerColumn column = new TableViewerColumn(varTable, SWT.NONE);
+		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
+		varTable.setContentProvider(ArrayContentProvider.getInstance());
+		varTable.setLabelProvider(new DefinitionLabelProvider(true, true));
+		varTable.getTable().addMouseListener(new MouseAdapter() {
 			/**
 			 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
 			 */
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				int index = varList.getList().getSelectionIndex();
+				int index = varTable.getTable().getSelectionIndex();
 				if (index >= 0) {
-					String var = varList.getList().getItem(index);
+					String var = varTable.getTable().getItem(index).getText();
 					expressionField.insert(var);
 					expressionField.setFocus();
 				}

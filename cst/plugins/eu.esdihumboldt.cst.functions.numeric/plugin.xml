@@ -20,7 +20,7 @@
             name="Mathematical Expression">
          <targetProperties>
             <property
-                  description="The poperty to assign the result of the expression evaluation to"
+                  description="The property to assign the result of the expression evaluation to"
                   maxOccurrence="1"
                   minOccurrence="1">
                <bindingCondition
