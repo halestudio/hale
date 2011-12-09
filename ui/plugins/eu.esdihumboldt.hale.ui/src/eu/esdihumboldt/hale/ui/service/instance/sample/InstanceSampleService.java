@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.views.data;
+package eu.esdihumboldt.hale.ui.service.instance.sample;
 
 import java.util.Collection;
 import java.util.Observer;
@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface ReferenceSampleService {
+public interface InstanceSampleService {
 	
 	/**
 	 * Set the reference instance sample

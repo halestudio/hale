@@ -10,14 +10,14 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.views.data.internal;
+package eu.esdihumboldt.hale.ui.service.instance.sample.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Observable;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.ui.views.data.ReferenceSampleService;
+import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 
 /**
  * Reference data sample service implementation
@@ -25,12 +25,12 @@ import eu.esdihumboldt.hale.ui.views.data.ReferenceSampleService;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReferenceSampleServiceImpl extends Observable implements ReferenceSampleService {
+public class InstanceSampleServiceImpl extends Observable implements InstanceSampleService {
 	
 	private Collection<Instance> sample = new ArrayList<Instance>();
 
 	/**
-	 * @see ReferenceSampleService#getReferenceInstances()
+	 * @see InstanceSampleService#getReferenceInstances()
 	 */
 	@Override
 	public Collection<Instance> getReferenceInstances() {
@@ -38,7 +38,7 @@ public class ReferenceSampleServiceImpl extends Observable implements ReferenceS
 	}
 
 	/**
-	 * @see ReferenceSampleService#setReferenceInstances(Collection)
+	 * @see InstanceSampleService#setReferenceInstances(Collection)
 	 */
 	@Override
 	public void setReferenceInstances(Collection<Instance> instances) {

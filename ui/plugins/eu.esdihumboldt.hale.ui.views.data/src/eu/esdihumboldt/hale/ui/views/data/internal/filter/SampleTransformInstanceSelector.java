@@ -49,7 +49,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
-import eu.esdihumboldt.hale.ui.views.data.ReferenceSampleService;
+import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 
 /**
  * Instance selector based on a transformation sample
@@ -100,7 +100,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 			updateFeatureTypesSelection();
 			
 			// service listeners
-			ReferenceSampleService rss = (ReferenceSampleService) PlatformUI.getWorkbench().getService(ReferenceSampleService.class);
+			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
 			rss.addObserver(referenceListener = new Observer() {
 				
 				@Override
@@ -155,7 +155,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 		protected void updateFeatureTypesSelection() {
 			instanceMap.clear();
 			
-			final ReferenceSampleService rss = (ReferenceSampleService) PlatformUI.getWorkbench().getService(ReferenceSampleService.class);
+			final InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
 			final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 			final TransformationService cst = OsgiUtils.getService(TransformationService.class);
 			
@@ -237,7 +237,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 		 */
 		@Override
 		public void dispose() {
-			ReferenceSampleService rss = (ReferenceSampleService) PlatformUI.getWorkbench().getService(ReferenceSampleService.class);
+			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
 			rss.deleteObserver(referenceListener);
 			
 			AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
