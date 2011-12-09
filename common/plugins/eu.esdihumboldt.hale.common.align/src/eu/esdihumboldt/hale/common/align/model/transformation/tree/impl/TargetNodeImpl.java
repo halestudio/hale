@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.common.align.model.transformation.tree.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -23,7 +22,10 @@ import java.util.Set;
 import net.jcip.annotations.Immutable;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
@@ -43,7 +45,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public class TargetNodeImpl implements TargetNode {
 
 	private final EntityDefinition child;
-	private final Set<CellNode> assignments;
+	private final SetMultimap<CellNode, String> assignments;
 	private final List<TargetNode> children;
 
 	/**
@@ -60,27 +62,33 @@ public class TargetNodeImpl implements TargetNode {
 		// partition cells by child
 		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
 		//... and for this node
-		Set<CellNode> assignSet = new LinkedHashSet<CellNode>();
+		SetMultimap<CellNode, String> assignSet = HashMultimap.create();
 		for (CellNode cell : cells) {
-			for (Entity target : cell.getCell().getTarget().values()) {
-				if (target.getDefinition().getType().equals(parentType)) {
-					List<ChildContext> path = target.getDefinition().getPropertyPath();
-					if (path.get(depth - 1).getChild().equals(child.getDefinition())) {
-						if (path.size() <= depth) {
-							// this cell belongs to this node
-							assignSet.add(cell); //XXX TODO store associated entity name(s)?!
-						}
-						else {
-							// this cell belongs to a child node
-							childCells.put(AlignmentUtil.deriveEntity(
-									target.getDefinition(), depth + 1), cell);
+			for (Entry<String, ?> entry : cell.getCell().getTarget().asMap().entrySet()) {
+				String name = entry.getKey();
+				@SuppressWarnings("unchecked")
+				Collection<? extends Entity> entities = (Collection<? extends Entity>) entry.getValue(); 
+				
+				for (Entity target : entities) {
+					if (target.getDefinition().getType().equals(parentType)) {
+						List<ChildContext> path = target.getDefinition().getPropertyPath();
+						if (path.get(depth - 1).getChild().equals(child.getDefinition())) {
+							if (path.size() <= depth) {
+								// this cell belongs to this node
+								assignSet.put(cell, name);
+							}
+							else {
+								// this cell belongs to a child node
+								childCells.put(AlignmentUtil.deriveEntity(
+										target.getDefinition(), depth + 1), cell);
+							}
 						}
 					}
 				}
 			}
 		}
 		
-		assignments = Collections.unmodifiableSet(assignSet);
+		assignments = Multimaps.unmodifiableSetMultimap(assignSet);
 		
 		// create child cells
 		List<TargetNode> childList = new ArrayList<TargetNode>();
@@ -106,7 +114,7 @@ public class TargetNodeImpl implements TargetNode {
 	 */
 	@Override
 	public Set<CellNode> getAssignments() {
-		return assignments;
+		return assignments.keySet();
 	}
 
 	/**
