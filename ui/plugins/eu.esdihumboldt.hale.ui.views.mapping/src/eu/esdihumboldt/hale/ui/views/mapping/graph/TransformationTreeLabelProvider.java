@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.mapping.graph;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
@@ -21,12 +22,21 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TypeNode;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 
 /**
  * Label provider for transformation trees
  * @author Simon Templer
  */
 public class TransformationTreeLabelProvider extends GraphLabelProvider {
+
+	/**
+	 * @see GraphLabelProvider#createDefinitionLabels()
+	 */
+	@Override
+	protected LabelProvider createDefinitionLabels() {
+		return new DefinitionLabelProvider(false);
+	}
 
 	/**
 	 * @see GraphLabelProvider#getImage(Object)
@@ -122,13 +132,13 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 			return ((TypeNode) node).getType();
 		}
 		if (node instanceof TargetNode) {
-			return ((TargetNode) node).getDefinition();
+			return ((TargetNode) node).getEntityDefinition();
 		}
 		if (node instanceof CellNode) {
 			return ((CellNode) node).getCell();
 		}
 		if (node instanceof SourceNode) {
-			return ((SourceNode) node).getDefinition();
+			return ((SourceNode) node).getEntityDefinition();
 		}
 		
 		return node;
