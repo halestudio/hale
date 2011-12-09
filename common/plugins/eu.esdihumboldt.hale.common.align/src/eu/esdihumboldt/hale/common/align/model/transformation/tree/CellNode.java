@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 
 import java.util.List;
+import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 
@@ -33,5 +34,13 @@ public interface CellNode {
 	 * @return the source entities represented by source nodes
 	 */
 	public List<SourceNode> getSources();
+	
+	/**
+	 * Get the entity names for the given source node. These are the names of 
+	 * the cell entities the node is associated to.
+	 * @param source the source node
+	 * @return the source names
+	 */
+	public Set<String> getSourceNames(SourceNode source);
 
 }

@@ -13,10 +13,17 @@
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import net.jcip.annotations.Immutable;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
@@ -30,7 +37,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 public class CellNodeImpl implements CellNode {
 
 	private final Cell cell;
-	private final List<SourceNode> sources;
+	private final ListMultimap<SourceNode, String> sources;
 
 	/**
 	 * Constructor
@@ -41,15 +48,16 @@ public class CellNodeImpl implements CellNode {
 		super();
 		this.cell = cell;
 		
-		List<SourceNode> sourceList = new ArrayList<SourceNode>();
+		ListMultimap<SourceNode, String> sourceList = ArrayListMultimap.create();
 		
-		for (Entity entity : cell.getSource().values()) {
-			SourceNode node = sourceNodes.getSourceNode(entity.getDefinition());
+		for (Entry<String, ? extends Entity> namedEntity : cell.getSource().entries()) {
+			SourceNode node = sourceNodes.getSourceNode(
+					namedEntity.getValue().getDefinition());
 			//XXX what about filter etc.?!
-			sourceList.add(node);
+			sourceList.put(node, namedEntity.getKey());
 		}
 		
-		sources = Collections.unmodifiableList(sourceList);
+		sources = Multimaps.unmodifiableListMultimap(sourceList);
 	}
 
 	/**
@@ -65,7 +73,15 @@ public class CellNodeImpl implements CellNode {
 	 */
 	@Override
 	public List<SourceNode> getSources() {
-		return sources;
+		return new ArrayList<SourceNode>(sources.keySet());
+	}
+
+	/**
+	 * @see CellNode#getSourceNames(SourceNode)
+	 */
+	@Override
+	public Set<String> getSourceNames(SourceNode source) {
+		return new HashSet<String>(sources.get(source));
 	}
 
 }
