@@ -17,8 +17,8 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
-import eu.esdihumboldt.hale.ui.views.mapping.graph.TransformationTreeContentProvider;
-import eu.esdihumboldt.hale.ui.views.mapping.graph.TransformationTreeLabelProvider;
+import eu.esdihumboldt.hale.ui.common.graph.content.TransformationTreeContentProvider;
+import eu.esdihumboldt.hale.ui.common.graph.labels.TransformationTreeLabelProvider;
 
 /**
  * TODO Type description
