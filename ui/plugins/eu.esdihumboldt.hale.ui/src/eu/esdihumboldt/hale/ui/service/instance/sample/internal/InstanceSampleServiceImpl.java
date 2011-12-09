@@ -44,6 +44,7 @@ public class InstanceSampleServiceImpl extends Observable implements InstanceSam
 	public void setReferenceInstances(Collection<Instance> instances) {
 		this.sample = instances;
 		
+		setChanged();
 		notifyObservers();
 	}
 
