@@ -172,6 +172,18 @@
                label="Edit"
                mnemonic="e">
             <command
+                  commandId="org.eclipse.ui.edit.undo"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.redo"
+                  style="push">
+            </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.edit.undoredo"
+                  visible="true">
+            </separator>
+            <command
                   commandId="org.eclipse.ui.edit.cut"
                   label="Cut"
                   style="push">
