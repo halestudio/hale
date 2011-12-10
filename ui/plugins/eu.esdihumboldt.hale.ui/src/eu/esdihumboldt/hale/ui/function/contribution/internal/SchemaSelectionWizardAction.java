@@ -51,7 +51,7 @@ public class SchemaSelectionWizardAction extends AbstractWizardAction<SchemaSele
 	@Override
 	protected void handleResult(MutableCell cell) {
 		// add the new cell
-		alignmentService.addOrUpdateCell(cell);
+		alignmentService.addCell(cell);
 	}
 
 }
