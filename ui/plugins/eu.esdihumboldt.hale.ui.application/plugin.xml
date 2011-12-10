@@ -291,6 +291,18 @@
                id="eu.esdihumboldt.hale.ui.edit"
                label="Edit">
             <command
+                  commandId="org.eclipse.ui.edit.undo"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.redo"
+                  style="push">
+            </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.edit.undoredo"
+                  visible="true">
+            </separator>
+            <command
                   commandId="eu.esdihumboldt.hale.ui.align.add_relation"
                   id="eu.esdihumboldt.hale.ui.edit.add_relation"
                   label="Add relation..."
