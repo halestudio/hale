@@ -55,6 +55,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionContribution;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
@@ -538,6 +539,9 @@ public class SchemasView extends PropertiesViewPart {
 			}
 			
 		});
+		
+		// register for workbench undo/redo
+		HaleUI.registerWorkbenchUndoRedo(getViewSite());
 	}
 
 	/**

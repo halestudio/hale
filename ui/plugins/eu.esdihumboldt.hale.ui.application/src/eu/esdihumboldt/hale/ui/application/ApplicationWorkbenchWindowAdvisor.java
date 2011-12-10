@@ -11,20 +11,11 @@
  */
 package eu.esdihumboldt.hale.ui.application;
 
-import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -102,37 +93,7 @@ public class ApplicationWorkbenchWindowAdvisor
 	@Override
 	public ActionBarAdvisor createActionBarAdvisor(
 			final IActionBarConfigurer configurer) {
-		return new ApplicationActionBarAdvisor(configurer) {
-			/**
-			 * @see ActionBarAdvisor#fillMenuBar(IMenuManager)
-			 */
-        	@Override
-			protected void fillMenuBar(final IMenuManager menuBar) {
-				super.fillMenuBar(menuBar);
-
-				menuBar.add(new GroupMarker(
-						IWorkbenchActionConstants.MB_ADDITIONS));
-
-				IContributionItem item = ContributionItemFactory.VIEWS_SHORTLIST
-						.create(configurer.getWindowConfigurer().getWindow());
-				
-				IMenuManager windowMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_1, "window"); //$NON-NLS-1$ //$NON-NLS-2$
-				IMenuManager viewMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_3); //$NON-NLS-1$
-				windowMenu.add(viewMenu);
-				viewMenu.add(item);
-				
-				//XXX
-				IWorkbenchAction perspectiveAction = ActionFactory.SAVE_PERSPECTIVE.create(configurer.getWindowConfigurer().getWindow());
-				IContributionItem perspectiveItem = new ActionContributionItem(perspectiveAction);
-				windowMenu.add(perspectiveItem);
-
-				menuBar.add(windowMenu);
-				
-				IMenuManager helpMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_2, "help"); //$NON-NLS-1$ //$NON-NLS-2$
-				helpMenu.add(ActionFactory.INTRO.create(configurer.getWindowConfigurer().getWindow()));
-				menuBar.add(helpMenu);
-			}
-		};
+		return new ApplicationActionBarAdvisor(configurer);
 	}
 	
 }
