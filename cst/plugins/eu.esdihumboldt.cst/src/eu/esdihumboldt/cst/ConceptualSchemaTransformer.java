@@ -211,7 +211,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 							executionParameters, cellLog);
 				}
 				else {
-					cellLog.error(cellLog.createMessage("Source type sanity check failed", null));
+					cellLog.warn(cellLog.createMessage("Source type sanity check failed", null));
 				}
 			}
 		} finally {
