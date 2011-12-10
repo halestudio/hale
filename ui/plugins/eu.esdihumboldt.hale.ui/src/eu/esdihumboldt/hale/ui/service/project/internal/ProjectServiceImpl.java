@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.osgi.framework.Version;
 
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
@@ -446,6 +447,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				ATransaction trans = log.begin("Clean project");
+				
+				// clean workbench history
+				IWorkbenchOperationSupport os = PlatformUI.getWorkbench().getOperationSupport();
+				os.getOperationHistory().dispose(os.getUndoContext(), true, true, false);
+				
 				monitor.beginTask("Clean project", IProgressMonitor.UNKNOWN);
 				try {
 					synchronized (this) {
