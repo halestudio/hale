@@ -57,10 +57,10 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	}
 
 	/**
-	 * @see AlignmentService#addOrUpdateCell(MutableCell)
+	 * @see AlignmentService#addCell(MutableCell)
 	 */
 	@Override
-	public void addOrUpdateCell(MutableCell cell) {
+	public void addCell(MutableCell cell) {
 		boolean replaced;
 		synchronized (this) {
 			replaced = alignment.addCell(cell);
@@ -71,6 +71,15 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 		else {
 			notifyCellsUpdated(Collections.singletonList((Cell) cell));
 		}
+	}
+
+	/**
+	 * @see AlignmentService#replaceCell(Cell, MutableCell)
+	 */
+	@Override
+	public void replaceCell(Cell oldCell, MutableCell newCell) {
+		removeCell(oldCell);
+		addCell(newCell);
 	}
 
 	/**

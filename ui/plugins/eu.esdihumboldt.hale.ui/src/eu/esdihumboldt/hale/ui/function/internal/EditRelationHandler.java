@@ -110,11 +110,9 @@ public class EditRelationHandler extends AbstractHandler {
 					MutableCell cell = wizard.getResult();
 					
 					AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-					//TODO do this in one step (e.g. add replaceCell method to AlignmentService)
 					// remove the original cell
-					alignmentService.removeCell(originalCell);
-					// add the new cell
-					alignmentService.addOrUpdateCell(cell);
+					// and add the new cell
+					alignmentService.replaceCell(originalCell, cell);
 				}
 			}
 		}

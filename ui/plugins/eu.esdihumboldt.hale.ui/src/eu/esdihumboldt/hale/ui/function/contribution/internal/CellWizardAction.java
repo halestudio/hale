@@ -58,11 +58,9 @@ public class CellWizardAction extends AbstractWizardAction<CellFunctionContribut
 	 */
 	@Override
 	protected void handleResult(MutableCell cell) {
-		//TODO do this in one step (e.g. add replaceCell method to AlignmentService)
 		// remove the original cell
-		alignmentService.removeCell(originalCell);
-		// add the new cell
-		alignmentService.addOrUpdateCell(cell);
+		// and add the new cell
+		alignmentService.replaceCell(originalCell, cell);
 	}
 
 }

@@ -42,11 +42,17 @@ public interface AlignmentService {
 	public void addOrUpdateAlignment(MutableAlignment alignment);
 	
 	/**
-	 * Adds the given cell to the current alignment. If a cell with the same
-	 * entities and transformation already exists it will be replaced. 
+	 * Adds the given cell to the current alignment.
 	 * @param cell the cell to add
 	 */
-	public void addOrUpdateCell(MutableCell cell);
+	public void addCell(MutableCell cell);
+	
+	/**
+	 * Replace a cell with a new cell.
+	 * @param oldCell the old cell that should be removed from the alignment
+	 * @param newCell the new cell that should be added to the alignment
+	 */
+	public void replaceCell(Cell oldCell, MutableCell newCell);
 	
 	/**
 	 * Removes the given cell

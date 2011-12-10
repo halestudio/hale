@@ -59,7 +59,7 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 		MutableCell cell = functionWizard.getResult();
 		if (cell != null) {
 			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-			as.addOrUpdateCell(cell);
+			as.addCell(cell);
 		}
 		
 		// save page configuration
