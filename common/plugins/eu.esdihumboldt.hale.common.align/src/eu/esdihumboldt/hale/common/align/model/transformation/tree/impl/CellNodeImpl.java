@@ -28,13 +28,15 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 
 /**
  * Default {@link CellNode} implementation
  * @author Simon Templer
  */
 @Immutable
-public class CellNodeImpl implements CellNode {
+public class CellNodeImpl extends AbstractTransformationNode implements CellNode {
 
 	private final Cell cell;
 	private final ListMultimap<SourceNode, String> sources;
@@ -59,6 +61,24 @@ public class CellNodeImpl implements CellNode {
 		}
 		
 		sources = Multimaps.unmodifiableListMultimap(sourceList);
+	}
+
+	/**
+	 * @see TransformationNode#accept(TransformationNodeVisitor)
+	 */
+	@Override
+	public void accept(TransformationNodeVisitor visitor) {
+		if (visitor.visit(this)) {
+			if (visitor.isFromTargetToSource()) {
+				// visit sources
+				for (SourceNode source : sources.keySet()) {
+					source.accept(visitor);
+				}
+			}
+			else {
+				//XXX not supported yet
+			}
+		}
 	}
 
 	/**
