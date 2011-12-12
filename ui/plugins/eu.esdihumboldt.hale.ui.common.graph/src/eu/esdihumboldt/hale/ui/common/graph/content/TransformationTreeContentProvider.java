@@ -29,12 +29,12 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.TypeNode;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TypeNodeImpl;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Transformation graph based on {@link TypeNode} derived from an 
+ * Transformation graph based on {@link TransformationTree} derived from an 
  * {@link Alignment}
  * @author Simon Templer
  */
@@ -61,7 +61,7 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 				Collection<Object> result = new ArrayList<Object>();
 				for (TypeDefinition type : types) {
 					// create tree and add nodes for each type
-					result.addAll(collectNodes(new TypeNodeImpl(
+					result.addAll(collectNodes(new TransformationTreeImpl(
 							type, (Alignment) inputElement)));
 				}
 				return result.toArray();
@@ -76,7 +76,7 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 	 * @param typeNode the type node
 	 * @return the nodes
 	 */
-	private Collection<Object> collectNodes(TypeNode typeNode) {
+	private Collection<Object> collectNodes(TransformationTree typeNode) {
 		Queue<Object> toTest = new LinkedList<Object>();
 		Set<Object> nodes = new LinkedHashSet<Object>();
 		
@@ -106,8 +106,8 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 	 * @return the node's children
 	 */
 	private Collection<? extends Object> getChilddren(Object node) {
-		if (node instanceof TypeNode) {
-			return ((TypeNode) node).getChildren();
+		if (node instanceof TransformationTree) {
+			return ((TransformationTree) node).getChildren();
 		}
 		if (node instanceof TargetNode) {
 			Collection<Object> children = new ArrayList<Object>();

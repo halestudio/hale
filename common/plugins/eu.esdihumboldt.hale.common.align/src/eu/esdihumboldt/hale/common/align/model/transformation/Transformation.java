@@ -24,5 +24,15 @@ public interface Transformation {
 	
 	//TODO add method to generate specific transformation instructions given a source instance
 //	public X y(Collection<? extends Type> sourceTypes, Instance source);
+	
+//	/**
+//	 * 
+//	 * @param tree
+//	 * @param sourceTypes
+//	 * @param source the source instance XXX eventually multiple?
+//	 * @return
+//	 */
+//	public X prepare(TransformationTree tree, 
+//			Collection<? extends Type> sourceTypes, Instance source);
 
 }
