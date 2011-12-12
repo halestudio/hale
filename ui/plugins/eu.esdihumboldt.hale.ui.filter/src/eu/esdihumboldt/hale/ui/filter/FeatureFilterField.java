@@ -10,13 +10,15 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.filter;
+package eu.esdihumboldt.hale.ui.filter;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -39,10 +41,13 @@ import org.opengis.feature.type.PropertyDescriptor;
 import eu.esdihumboldt.hale.common.filter.Filter;
 import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
 import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
+import eu.esdihumboldt.hale.ui.function.common.PropertyEntityDialog;
 
 /**
  * Field for editing a filter
@@ -68,8 +73,10 @@ public class FeatureFilterField extends Composite {
 	//private final Button openForm;
 	private final Button insertVar;
 	private final Button clearFilter;
+	ControlDecoration decoration;
 	
 	private TypeDefinition type;
+	private SchemaSpaceID ssid;
 	
 	private final Image insertVarImage;
 	private final Image openFormImage;
@@ -84,14 +91,15 @@ public class FeatureFilterField extends Composite {
 	 * @param parent the parent composite
 	 * @param style the composite style
 	 */
-	public FeatureFilterField(TypeDefinition type, Composite parent, int style) {
+	public FeatureFilterField(TypeDefinition type, Composite parent, int style, SchemaSpaceID ssid) {
 		super(parent, style);
 		
 		this.type = type;
-		
+		this.ssid = ssid;
 		GridLayout layout = new GridLayout(4, false);
-		layout.horizontalSpacing = 0;
+		layout.horizontalSpacing = 8;
 		layout.verticalSpacing = 0;
+		
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
 		setLayout(layout);
@@ -111,11 +119,22 @@ public class FeatureFilterField extends Composite {
 			
 			@Override
 			public void modifyText(ModifyEvent e) {
-				clearFilter.setEnabled(filterText.getText() != null && !filterText.getText().isEmpty());
+				if(filterText.getText() != null && !filterText.getText().isEmpty()){
+					clearFilter.setEnabled(true);
+				}
+				else{
+					setDecorationDefault();
+				}
 				notifyListeners();
 			}
 			
 		});
+		
+		 decoration = new ControlDecoration(filterText, SWT.RIGHT | SWT.TOP);
+		 setDecorationDefault();
+
+		 
+		 
 		
 		// clear filter
 		clearFilter = new Button(this, SWT.PUSH);
@@ -143,28 +162,30 @@ public class FeatureFilterField extends Composite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-			/*	SortedSet<String> attributeNames = new TreeSet<String>();
-				//TODO adapt to TypeDefinition?
-				for (PropertyDescriptor property : FeatureFilterField.this.type.getFeatureType().getDescriptors()) {
-					attributeNames.add(property.getName().getLocalPart());
-				}
+				PropertyEntityDialog dialog = new PropertyEntityDialog(Display.getCurrent().getActiveShell()
+						, FeatureFilterField.this.ssid, FeatureFilterField.this.type
+						, Messages.FeatureFilterField_7, null);
 				
-				ListDialog dialog = new ListDialog(Display.getCurrent().getActiveShell());
-				dialog.setTitle(Messages.FeatureFilterField_7); //$NON-NLS-1$
-				dialog.setMessage(Messages.FeatureFilterField_8); //$NON-NLS-1$
-				dialog.setContentProvider(ArrayContentProvider.getInstance());
-				dialog.setLabelProvider(new LabelProvider());
-				dialog.setInput(attributeNames);
-				
-				if (dialog.open() == ListDialog.OK && dialog.getResult() != null
-						&& dialog.getResult().length >= 1) {
-					String var = (String) dialog.getResult()[0];
+				if (dialog.open() == PropertyEntityDialog.OK && dialog.getEntity() != null
+						&& dialog.getEntity().getType().getName().toString().length() >= 1) {
+					String var = "";
+					for(int i = 0; i< dialog.getEntity().getPropertyPath().size(); i++) {
+					if(i == 0) var = var.concat(dialog.getEntity().getPropertyPath().get(i).getChild().getName().getLocalPart().toString());
+					else var = var.concat("." + dialog.getEntity().getPropertyPath().get(i).getChild().getName().getLocalPart().toString());
+					}
 					filterText.insert(var);
 					filterText.setFocus();
-				}*/
+				}
 			}
 			
 		});
+		
+		
+		
+		
+		
+		
+		
 		
 		// open form
 		/*openForm = new Button(this, SWT.PUSH);
@@ -188,6 +209,9 @@ public class FeatureFilterField extends Composite {
 		
 		setType(type);
 		*/
+		
+		
+		
 	}
 	
 	/**
@@ -223,6 +247,8 @@ public class FeatureFilterField extends Composite {
 			return null;
 		}
 		else {
+			
+			
 			return new FilterGeoCqlImpl(expr);
 		}
 	}
@@ -293,5 +319,28 @@ public class FeatureFilterField extends Composite {
 			listener.filterChanged();
 		}
 	}
+
+	public void setDecoration(String type, String message) {
+		
+		if(type.equals("ERROR")){
+		decoration.setImage(FieldDecorationRegistry.getDefault()
+                .getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage());
+		decoration.setDescriptionText(message);
+		decoration.show();
+		}
+		
+		if(type.equals("DEFAULT")){
+			setDecorationDefault();
+		}
+	}
+	
+	private void setDecorationDefault(){
+		 decoration.setImage(FieldDecorationRegistry.getDefault()
+	                .getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+		 decoration.setDescriptionText("for Example: \"HERP.DERP\" = 'DURR'");
+		 decoration.show();
+
+	}
+	
 	
 }
