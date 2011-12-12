@@ -48,8 +48,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.common.filter.FeatureFilterField;
-import eu.esdihumboldt.hale.ui.common.filter.FeatureFilterField.FilterListener;
+import eu.esdihumboldt.hale.ui.filter.FeatureFilterField;
+import eu.esdihumboldt.hale.ui.filter.FeatureFilterField.FilterListener;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
@@ -149,7 +149,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 			
 			
 			// filter field
-			filterField = new FeatureFilterField((selectedType == null)?(null):(selectedType), this, SWT.NONE);
+			filterField = new FeatureFilterField((selectedType == null)?(null):(selectedType), this,  SWT.NONE, spaceID);
 			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			filterField.addListener(new FilterListener() {
 				
@@ -349,7 +349,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 						}
 					}
 					else {
-					
+						
 						int num = 0;
 						while (it.hasNext() && num < max) {
 							Instance instance = it.next();
@@ -358,9 +358,11 @@ public class InstanceServiceSelector implements InstanceSelector {
 								num++;
 							}
 						}		
+						filterField.setDecoration("DEFAULT", null);
 				}
 				} catch (Exception e) {
-					log.warn("Error creating filter"); //$NON-NLS-1$
+					//log.warn("Error creating filter"); //$NON-NLS-1$
+					filterField.setDecoration("ERROR", e.getMessage());
 				}
 				
 				selection = instanceList;
