@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.filter;
+package eu.esdihumboldt.hale.ui.filter;
 
 import java.util.Collection;
 import java.util.SortedSet;
