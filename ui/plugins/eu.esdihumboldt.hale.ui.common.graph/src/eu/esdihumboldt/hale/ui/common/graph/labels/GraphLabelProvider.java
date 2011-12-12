@@ -29,6 +29,8 @@ import org.eclipse.zest.core.widgets.custom.CustomShapeLabel;
 import org.eclipse.zest.core.widgets.custom.shapes.FingerPost;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -66,6 +68,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	private final LabelProvider definitionLabels;
 	
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
+	
+	//TODO set colors for function in graph?
 
 	/**
 	 * Default constructor
@@ -133,6 +137,10 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			}
 			return null;
 		}
+		// TODO is this correct?
+		if(element instanceof Function){
+			return functionLabels.getImage(element);
+		}
 		
 		return super.getImage(element);
 	}
@@ -166,6 +174,18 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			}
 			return functionId;
 		}
+			// TODO is this correct?
+			if(element instanceof Function){
+				return functionLabels.getText(element);
+			}
+			// TODO what about abstract parameters?
+			if(element instanceof AbstractParameter){
+				String result = ((AbstractParameter) element).getDisplayName();
+				if(!result.equals(""))
+					return result;
+				// XXX only for developing use
+				return "(not set)";
+			}
 		
 		return super.getText(element);
 	}

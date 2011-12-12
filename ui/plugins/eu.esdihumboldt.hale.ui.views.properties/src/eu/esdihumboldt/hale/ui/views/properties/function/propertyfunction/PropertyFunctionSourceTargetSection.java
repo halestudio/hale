@@ -12,19 +12,14 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction;
 
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.ui.views.properties.function.FunctionSourceTargetSection;
 
 /**
  * Property function section with source information
  * @author Patrick Lieb
  */
-public class PropertyFunctionSourceSection extends AbstractPropertyFunctionSection<PropertyParameter>{
+public class PropertyFunctionSourceTargetSection extends FunctionSourceTargetSection<PropertyFunction>{
 
-	/**
-	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#refresh()
-	 */
-	@Override
-	public void refresh() {
-		abstractRefresh(getFunction().getSource(), "Source");
-	}
+	// specifies the function type only
 }
