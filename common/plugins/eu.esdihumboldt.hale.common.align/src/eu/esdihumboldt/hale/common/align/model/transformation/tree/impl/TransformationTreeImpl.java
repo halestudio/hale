@@ -34,6 +34,8 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -43,7 +45,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 @Immutable
-public class TransformationTreeImpl implements TransformationTree {
+public class TransformationTreeImpl extends AbstractTransformationNode implements TransformationTree {
 	
 	private final TypeDefinition type;
 	private final List<TargetNode> children;
@@ -92,6 +94,29 @@ public class TransformationTreeImpl implements TransformationTree {
 		}
 		
 		children = Collections.unmodifiableList(childList);
+	}
+
+	/**
+	 * @see TransformationNode#accept(TransformationNodeVisitor)
+	 */
+	@Override
+	public void accept(TransformationNodeVisitor visitor) {
+		if (visitor.isFromTargetToSource()) {
+			if (visitor.visit(this)) {
+				// visit children
+				for (TargetNode child : children) {
+					child.accept(visitor);
+				}
+			}
+			else {
+				// visit leafs
+				for (SourceNode node : sourceNodes.getNodes()) {
+					if (node.getParent() == null) {
+						node.accept(visitor);
+					}
+				}
+			}
+		}
 	}
 
 	/**

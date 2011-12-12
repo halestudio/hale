@@ -34,6 +34,8 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -42,7 +44,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 @Immutable
-public class TargetNodeImpl implements TargetNode {
+public class TargetNodeImpl extends AbstractTransformationNode implements TargetNode {
 
 	private final EntityDefinition child;
 	private final SetMultimap<CellNode, String> assignments;
@@ -99,6 +101,28 @@ public class TargetNodeImpl implements TargetNode {
 		}
 		
 		children = Collections.unmodifiableList(childList);
+	}
+
+	/**
+	 * @see TransformationNode#accept(TransformationNodeVisitor)
+	 */
+	@Override
+	public void accept(TransformationNodeVisitor visitor) {
+		if (visitor.visit(this)) {
+			if (visitor.isFromTargetToSource()) {
+				// visit children
+				for (TargetNode child : children) {
+					child.accept(visitor);
+				}
+				// visit cells
+				for (CellNode cell : assignments.keySet()) {
+					cell.accept(visitor);
+				}
+			}
+			else {
+				//XXX not supported yet
+			}
+		}
 	}
 
 	/**

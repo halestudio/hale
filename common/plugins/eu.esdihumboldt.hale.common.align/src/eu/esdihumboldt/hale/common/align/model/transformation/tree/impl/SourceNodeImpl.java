@@ -20,13 +20,15 @@ import java.util.Set;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * Default {@link SourceNode} implementation
  * @author Simon Templer
  */
-public class SourceNodeImpl implements SourceNode {
+public class SourceNodeImpl extends AbstractTransformationNode implements SourceNode {
 
 	private final EntityDefinition entityDefinition;
 	private final SourceNode parent;
@@ -89,6 +91,46 @@ public class SourceNodeImpl implements SourceNode {
 	@Override
 	public Collection<SourceNode> getChildren() {
 		return Collections.unmodifiableCollection(children);
+	}
+
+	/**
+	 * @see TransformationNode#accept(TransformationNodeVisitor)
+	 */
+	@Override
+	public void accept(TransformationNodeVisitor visitor) {
+		if (visitor.visit(this)) {
+			if (visitor.isFromTargetToSource()) {
+				if (parent != null) {
+					parent.accept(visitor);
+				}
+			}
+			else {
+				// visit children
+				for (SourceNode child : children) {
+					child.accept(visitor);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @see SourceNode#getOccurrence()
+	 */
+	@Override
+	public int getOccurrence() {
+		Integer occurrence = (Integer) getAnnotation(ANNOTATION_OCCURRENCE);
+		if (occurrence == null) {
+			return 0;
+		}
+		return occurrence;
+	}
+
+	/**
+	 * @see SourceNode#setOccurrence(int)
+	 */
+	@Override
+	public void setOccurrence(int occurrence) {
+		setAnnotation(ANNOTATION_OCCURRENCE, Integer.valueOf(occurrence));
 	}
 
 	/**

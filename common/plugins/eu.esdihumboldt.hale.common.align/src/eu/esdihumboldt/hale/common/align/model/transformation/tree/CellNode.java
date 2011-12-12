@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
  * Represents a cell in the transformation tree
  * @author Simon Templer
  */
-public interface CellNode {
+public interface CellNode extends TransformationNode {
 	
 	/**
 	 * Get the associated cell.
