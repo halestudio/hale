@@ -21,7 +21,12 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
  * Represents a source type, group or property
  * @author Simon Templer
  */
-public interface SourceNode {
+public interface SourceNode extends TransformationNode {
+	
+	/**
+	 * Name of the occurrence annotation 
+	 */
+	public static final String ANNOTATION_OCCURRENCE = "occurrence";
 	
 	/**
 	 * Get the associated definition
@@ -52,6 +57,23 @@ public interface SourceNode {
 	 * @return the collection of child nodes
 	 */
 	public Collection<SourceNode> getChildren();
+	
+	/**
+	 * Get the occurrence of the node in the context of specific source
+	 * instances.
+	 * @see #ANNOTATION_OCCURRENCE
+	 * @return the value of the occurrence annotation, or <code>0</code> if it
+	 *   is not set
+	 */
+	public int getOccurrence();
+	
+	/**
+	 * Set the value of the occurrence annotation.
+	 * @see #ANNOTATION_OCCURRENCE
+	 * @param occurrence the occurence of the node in the context of specific
+	 *   source instances
+	 */
+	public void setOccurrence(int occurrence);
 
 //	/**
 //	 * Add a relation.

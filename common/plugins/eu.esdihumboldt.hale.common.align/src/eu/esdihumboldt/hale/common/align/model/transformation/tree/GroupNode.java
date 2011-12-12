@@ -18,7 +18,7 @@ import java.util.List;
  * A target type, group or property node 
  * @author Simon Templer
  */
-public interface GroupNode {
+public interface GroupNode extends TransformationNode {
 	
 	/**
 	 * Get the type/group/property's children

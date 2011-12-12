@@ -53,4 +53,12 @@ public class SourceNodeFactory {
 		return nodes.get(entityDefinition);
 	}
 
+	/**
+	 * Get the existing source nodes.
+	 * @return the source nodes
+	 */
+	public Iterable<SourceNode> getNodes() {
+		return nodes.values();
+	}
+
 }
