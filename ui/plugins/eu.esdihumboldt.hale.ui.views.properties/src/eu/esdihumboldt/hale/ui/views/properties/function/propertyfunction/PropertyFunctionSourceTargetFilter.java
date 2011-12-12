@@ -12,19 +12,24 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction;
 
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import org.eclipse.jface.viewers.IFilter;
+
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 
 /**
- * Property function section with target information
- * @author Patrick Lieb
+ * TODO Type description
+ * @author Patrick
  */
-public class PropertyFunctionTargetSection extends AbstractPropertyFunctionSection<PropertyParameter>{
+public class PropertyFunctionSourceTargetFilter implements IFilter{
 
 	/**
-	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#refresh()
+	 * @see org.eclipse.jface.viewers.IFilter#select(java.lang.Object)
 	 */
 	@Override
-	public void refresh() {
-		abstractRefresh(getFunction().getTarget(), "Target");
+	public boolean select(Object toTest) {
+		if(toTest instanceof PropertyFunction){
+			return !(((PropertyFunction)toTest).getSource().isEmpty() && ((PropertyFunction)toTest).getTarget().isEmpty());
+		}
+		return false;
 	}
 }

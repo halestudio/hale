@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction;
+package eu.esdihumboldt.hale.ui.views.properties.function;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -26,23 +26,27 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
-import eu.esdihumboldt.hale.ui.views.properties.function.AbstractFunctionSection;
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
- * Abstract function section with information of parameters
- * 
- * @author Patrick Lieb
+ * TODO Type description
+ * @author Patrick
+ * @param <P> the Function parameter
  */
-public class AbstractFunctionParameterSection extends AbstractFunctionSection<AbstractFunction<?>> {
+public abstract class AbstractFunctionTableSection<P extends AbstractParameter> extends AbstractSection{
 
 	private TableViewer tableViewer;
+
+	/**
+	 * @return the tableViewer
+	 */
+	public TableViewer getTableViewer() {
+		return tableViewer;
+	}
 
 	/**
 	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite,
@@ -80,9 +84,10 @@ public class AbstractFunctionParameterSection extends AbstractFunctionSection<Ab
 		namecol.setText("Name");
 		nameviewercol.setLabelProvider(new CellLabelProvider() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(((FunctionParameter) cell.getElement()).getName());
+				cell.setText(((P) cell.getElement()).getName());
 			}
 
 		});
@@ -91,12 +96,13 @@ public class AbstractFunctionParameterSection extends AbstractFunctionSection<Ab
 				SWT.NONE);
 		TableColumn lablecol = lableviewercol.getColumn();
 		columnLayout.setColumnData(lablecol, new ColumnWeightData(20));
-		lablecol.setText("Label");
+		lablecol.setText("Lable");
 		lableviewercol.setLabelProvider(new CellLabelProvider() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(((FunctionParameter) cell.getElement())
+				cell.setText(((P) cell.getElement())
 						.getDisplayName());
 			}
 
@@ -105,13 +111,14 @@ public class AbstractFunctionParameterSection extends AbstractFunctionSection<Ab
 		TableViewerColumn occurenceviewercol = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		TableColumn occurencecol = occurenceviewercol.getColumn();
-		columnLayout.setColumnData(occurencecol, new ColumnWeightData(10));
+		columnLayout.setColumnData(occurencecol, new ColumnWeightData(20));
 		occurencecol.setText("Occurence");
 		occurenceviewercol.setLabelProvider(new CellLabelProvider() {
 
 			@Override
 			public void update(ViewerCell cell) {
-				FunctionParameter cellparameter = ((FunctionParameter) cell
+				@SuppressWarnings("unchecked")
+				P cellparameter = ((P) cell
 						.getElement());
 				cell.setText(String.valueOf(cellparameter.getMinOccurrence())
 						+ ".."
@@ -123,25 +130,18 @@ public class AbstractFunctionParameterSection extends AbstractFunctionSection<Ab
 		TableViewerColumn descriptionviewercol = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		TableColumn descriptioncol = descriptionviewercol.getColumn();
-		columnLayout.setColumnData(descriptioncol, new ColumnWeightData(40));
+		columnLayout.setColumnData(descriptioncol, new ColumnWeightData(20));
 		descriptioncol.setText("Description");
 		descriptionviewercol.setLabelProvider(new CellLabelProvider() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(String.valueOf(((FunctionParameter) cell
+				cell.setText(String.valueOf(((P) cell
 						.getElement()).getDescription()));
 			}
 
 		});
-	}
-
-	/**
-	 * @see AbstractPropertySection#shouldUseExtraSpace()
-	 */
-	@Override
-	public boolean shouldUseExtraSpace() {
-		return true;
 	}
 
 	/**
@@ -150,17 +150,6 @@ public class AbstractFunctionParameterSection extends AbstractFunctionSection<Ab
 	@Override
 	public void refresh() {
 		tableViewer.refresh();
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.AbstractSection#setInput(java.lang.Object)
-	 */
-	@Override
-	protected void setInput(Object input) {
-		if (input instanceof Function) {
-			tableViewer.setInput(((Function) input).getDefinedParameters());
-		}
-
 	}
 
 }

@@ -266,10 +266,29 @@
          </propertySection>
          <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionParameterSection"
+               filter="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionParameterFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.function.parameters.abstractfunction"
-               tab="eu.esdihumboldt.hale.ui.views.properties.function.parameters">
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.parameters">
             <input
                   type="eu.esdihumboldt.hale.common.align.extension.function.Function">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionSourceTargetSection"
+               filter="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionSourceTargetFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.function.typefunctionsource"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.sourcetarget">
+            <input
+                  type="eu.esdihumboldt.hale.common.align.extension.function.TypeFunction">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionSourceTargetSection"
+               filter="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionSourceTargetFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunctionsource"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.sourcetarget">
+            <input
+                  type="eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction">
             </input>
          </propertySection>
       </propertySections>
@@ -305,8 +324,14 @@
          <propertyTab
                afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.general"
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
-               id="eu.esdihumboldt.hale.ui.views.properties.function.parameters"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.parameters"
                label="Parameters">
+         </propertyTab>
+         <propertyTab
+               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.parameters"
+               category="eu.esdihumboldt.hale.ui.views.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.sourcetarget"
+               label="SourceTarget">
          </propertyTab>
       </propertyTabs>
    </extension>
