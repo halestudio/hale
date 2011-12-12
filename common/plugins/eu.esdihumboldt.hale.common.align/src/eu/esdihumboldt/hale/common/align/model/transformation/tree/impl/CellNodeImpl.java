@@ -54,6 +54,7 @@ public class CellNodeImpl implements CellNode {
 			SourceNode node = sourceNodes.getSourceNode(
 					namedEntity.getValue().getDefinition());
 			//XXX what about filter etc.?!
+//			node.addRelation(this);
 			sourceList.put(node, namedEntity.getKey());
 		}
 		

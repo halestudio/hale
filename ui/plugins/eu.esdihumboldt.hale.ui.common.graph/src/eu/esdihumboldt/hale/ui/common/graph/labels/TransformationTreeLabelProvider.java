@@ -30,7 +30,7 @@ import com.google.common.base.Joiner;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.TypeNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
 
@@ -156,7 +156,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	public IFigure getFigure(Object element) {
 		ShapePainter shape = null;
 		
-		if (element instanceof TypeNode) {
+		if (element instanceof TransformationTree) {
 			shape = new TransformationNodeShape(10, SWT.NONE);
 		}
 		else if (element instanceof TargetNode) {
@@ -195,8 +195,8 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 * @return the contained definition, cell or the node itself
 	 */
 	private Object extractObject(Object node) {
-		if (node instanceof TypeNode) {
-			return ((TypeNode) node).getType();
+		if (node instanceof TransformationTree) {
+			return ((TransformationTree) node).getType();
 		}
 		if (node instanceof TargetNode) {
 			return ((TargetNode) node).getEntityDefinition();

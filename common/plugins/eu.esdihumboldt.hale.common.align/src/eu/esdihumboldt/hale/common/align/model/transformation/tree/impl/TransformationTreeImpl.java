@@ -32,30 +32,32 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.TypeNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Default {@link TypeNode} implementation
+ * Default {@link TransformationTree} implementation
  * @author Simon Templer
  */
 @Immutable
-public class TypeNodeImpl implements TypeNode {
+public class TransformationTreeImpl implements TransformationTree {
 	
 	private final TypeDefinition type;
 	private final List<TargetNode> children;
+	private final SourceNodeFactory sourceNodes;
 
 	/**
 	 * Create a transformation tree
 	 * @param type the type definition serving as root
 	 * @param alignment the alignment holding the cells
 	 */
-	public TypeNodeImpl(TypeDefinition type, Alignment alignment) {
+	public TransformationTreeImpl(TypeDefinition type, Alignment alignment) {
 		this.type = type;
 		
-		SourceNodeFactory sourceNodes = new SourceNodeFactory();
+		sourceNodes = new SourceNodeFactory();
 		
 		TypeEntityDefinition targetType = new TypeEntityDefinition(type, 
 				SchemaSpaceID.TARGET);
@@ -93,6 +95,14 @@ public class TypeNodeImpl implements TypeNode {
 	}
 
 	/**
+	 * @see TransformationTree#getSourceNode(TypeEntityDefinition)
+	 */
+	@Override
+	public SourceNode getSourceNode(TypeEntityDefinition type) {
+		return sourceNodes.getSourceNode(type);
+	}
+
+	/**
 	 * @see GroupNode#getChildren()
 	 */
 	@Override
@@ -101,7 +111,7 @@ public class TypeNodeImpl implements TypeNode {
 	}
 
 	/**
-	 * @see TypeNode#getType()
+	 * @see TransformationTree#getType()
 	 */
 	@Override
 	public TypeDefinition getType() {

@@ -20,7 +20,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.TypeNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
 
 /**
@@ -63,8 +63,8 @@ public class HALEContextProvider extends SelectionContextProvider {
 	}
 	
 	private Object extractObject(Object node) {
-		if (node instanceof TypeNode) {
-			return ((TypeNode) node).getType();
+		if (node instanceof TransformationTree) {
+			return ((TransformationTree) node).getType();
 		}
 		if (node instanceof TargetNode) {
 			return ((TargetNode) node).getDefinition();
