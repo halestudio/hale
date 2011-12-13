@@ -53,7 +53,7 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 			String name = sourceEntry.getKey();
 			Entity entity = sourceEntry.getValue();
 			SourceNode sourceNode = findSourceNode(node, entity);
-			if (sourceNode != null && sourceNode.getOccurrence() > 0) { //XXX replace occurrence
+			if (sourceNode != null && sourceNode.isDefined()) {
 				sources.put(name, new Pair<SourceNode, Entity>(sourceNode, entity));
 			}
 			else {

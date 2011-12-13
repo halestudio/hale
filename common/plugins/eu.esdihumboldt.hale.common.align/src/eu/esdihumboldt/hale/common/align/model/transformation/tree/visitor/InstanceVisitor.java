@@ -54,8 +54,7 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 		if (source.getParent() == null) {
 			// source root
 			if (source.getDefinition().equals(instance.getDefinition())) {
-				source.setOccurrence(1); //XXX what to do with the occurrence
-				source.setValue(instance);
+				source.setValue(instance); // also sets the node to defined
 				return true;
 			}
 			else {
@@ -66,7 +65,7 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 			Object parentValue = source.getParent().getValue();
 			
 			if (parentValue == null || !(parentValue instanceof Group)) {
-				source.setOccurrence(0);
+				source.setDefined(false);
 			}
 			else {
 				Group parentGroup = (Group) parentValue;
@@ -74,16 +73,17 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 				Definition<?> currentDef = source.getDefinition();
 				Object[] values = parentGroup.getProperty(currentDef.getName());
 				if (values == null) {
-					source.setOccurrence(0);
+					source.setDefined(false);
 				}
 				else {
-					source.setOccurrence(values.length); //XXX what to do with the occurrence
-					
 					if (values.length >= 1) {
 						// annotate with the first value
 						Object value = values[0];
 						source.setValue(value);
 						//XXX using only this value is similar to the strategy used in HALE 2.1.x
+					}
+					else {
+						source.setDefined(false);
 					}
 					
 					if (values.length > 1) {

@@ -116,23 +116,23 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	}
 
 	/**
-	 * @see SourceNode#getOccurrence()
+	 * @see SourceNode#isDefined()
 	 */
 	@Override
-	public int getOccurrence() {
-		Integer occurrence = (Integer) getAnnotation(ANNOTATION_OCCURRENCE);
-		if (occurrence == null) {
-			return 0;
+	public boolean isDefined() {
+		Object value = getAnnotation(ANNOTATION_DEFINED);
+		if (value instanceof Boolean) {
+			return (Boolean) value;
 		}
-		return occurrence;
+		return false;
 	}
 
 	/**
-	 * @see SourceNode#setOccurrence(int)
+	 * @see SourceNode#setDefined(boolean)
 	 */
 	@Override
-	public void setOccurrence(int occurrence) {
-		setAnnotation(ANNOTATION_OCCURRENCE, Integer.valueOf(occurrence));
+	public void setDefined(boolean defined) {
+		setAnnotation(ANNOTATION_DEFINED, defined);
 	}
 
 	/**
@@ -149,6 +149,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	@Override
 	public void setValue(Object value) {
 		setAnnotation(ANNOTATION_VALUE, value);
+		setDefined(true);
 	}
 
 	/**
