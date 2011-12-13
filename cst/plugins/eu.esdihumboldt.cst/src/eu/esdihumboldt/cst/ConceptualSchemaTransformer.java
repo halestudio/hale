@@ -82,7 +82,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		EngineManager engines = new EngineManager();
 		
 		PropertyTransformer transformer = new TreePropertyTransformer(
-				alignment, reporter, target);
+				alignment, reporter, target, engines);
 		
 		TypeTransformationExtension typesTransformations = 
 				TypeTransformationExtension.getInstance();

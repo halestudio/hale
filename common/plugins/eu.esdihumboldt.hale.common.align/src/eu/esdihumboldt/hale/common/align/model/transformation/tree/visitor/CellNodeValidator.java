@@ -93,7 +93,7 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 	 * @param targets the named target entities and nodes
 	 * @return if the cell node is valid for execution
 	 */
-	private boolean validate(CellNode node,
+	protected boolean validate(CellNode node,
 			ListMultimap<String, Pair<SourceNode, Entity>> sources,
 			ListMultimap<String, Pair<TargetNode, Entity>> targets) {
 		String functionId = node.getCell().getTransformationIdentifier();
