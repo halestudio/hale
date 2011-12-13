@@ -35,6 +35,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	private final InstanceSink sink;
 	
 	private final TransformationTreePool treePool;
+	
+	private final FunctionExecutor executor;
 
 	/**
 	 * Create a simple property transformer
@@ -42,12 +44,16 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	 * @param reporter the transformation log to report any transformation 
 	 *   messages to
 	 * @param sink the target instance sink
+	 * @param engines the transformation engine manager
 	 */
-	public TreePropertyTransformer(Alignment alignment, TransformationReporter reporter, InstanceSink sink) {
+	public TreePropertyTransformer(Alignment alignment, 
+			TransformationReporter reporter, InstanceSink sink, 
+			EngineManager engines) {
 		this.reporter = reporter;
 		this.sink = sink;
 		
 		treePool = new TransformationTreePool(alignment);
+		executor = new FunctionExecutor(reporter, engines);
 	}
 
 	/**
@@ -66,7 +72,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 		InstanceVisitor instanceVisitor = new InstanceVisitor(source);
 		tree.accept(instanceVisitor);
 		
-		//TODO apply functions
+		// apply functions
+		tree.accept(executor);
 		
 		//TODO fill instance
 		
