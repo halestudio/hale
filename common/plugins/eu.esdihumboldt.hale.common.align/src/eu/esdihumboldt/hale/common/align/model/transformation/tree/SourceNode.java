@@ -24,12 +24,14 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 public interface SourceNode extends TransformationNode {
 	
 	/**
-	 * Name of the occurrence annotation 
+	 * Name of the defined annotation. It specifies if a value is defined for 
+	 * the source node.
 	 */
-	public static final String ANNOTATION_OCCURRENCE = "occurrence";
+	public static final String ANNOTATION_DEFINED = "defined";
 	
 	/**
-	 * Name of the value annotation 
+	 * Name of the value annotation. It specifies a concrete value for the node
+	 * from an instance.
 	 */
 	public static final String ANNOTATION_VALUE = "value";
 	
@@ -64,21 +66,19 @@ public interface SourceNode extends TransformationNode {
 	public Collection<SourceNode> getChildren();
 	
 	/**
-	 * Get the occurrence of the node in the context of specific source
-	 * instances.
-	 * @see #ANNOTATION_OCCURRENCE
-	 * @return the value of the occurrence annotation, or <code>0</code> if it
+	 * Get if the source node value is defined.
+	 * @see #ANNOTATION_DEFINED
+	 * @return the value of the defined annotation, or <code>false</code> if it
 	 *   is not set
 	 */
-	public int getOccurrence();
+	public boolean isDefined();
 	
 	/**
-	 * Set the value of the occurrence annotation.
-	 * @see #ANNOTATION_OCCURRENCE
-	 * @param occurrence the occurence of the node in the context of specific
-	 *   source instances
+	 * Set the value of the defined annotation.
+	 * @see #ANNOTATION_DEFINED
+	 * @param defined if the node value is defined
 	 */
-	public void setOccurrence(int occurrence);
+	public void setDefined(boolean defined);
 	
 	/**
 	 * Get the value of the node in the context of a specific source
@@ -90,8 +90,10 @@ public interface SourceNode extends TransformationNode {
 	public Object getValue();
 	
 	/**
-	 * Set the value of the value annotation.
+	 * Set the value of the value annotation. When setting a value the value
+	 * of the defined annotation is set to <code>true</code>.
 	 * @see #ANNOTATION_VALUE
+	 * @see #ANNOTATION_DEFINED
 	 * @param value the value of the node in the context of a specific
 	 *   source instance
 	 */

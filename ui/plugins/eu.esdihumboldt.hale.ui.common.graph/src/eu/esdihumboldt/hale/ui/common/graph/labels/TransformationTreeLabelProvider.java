@@ -115,7 +115,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		if (hasTransformationAnnotations(element)) {
 			if (element instanceof SourceNode) {
 				SourceNode node = (SourceNode) element;
-				if (node.getOccurrence() > 0) {
+				if (node.isDefined()) {
 					Object value = node.getValue();
 					
 					if (value == null) {
@@ -203,7 +203,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	private boolean isDisabled(Object entity) {
 		if (entity instanceof SourceNode) {
-			return ((SourceNode) entity).getOccurrence() == 0;
+			return !((SourceNode) entity).isDefined();
 		}
 		if (entity instanceof CellNode) {
 			return !((CellNode) entity).isValid();
