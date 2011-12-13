@@ -78,6 +78,7 @@ public class TargetNodeImpl extends AbstractTransformationNode implements Target
 							if (path.size() <= depth) {
 								// this cell belongs to this node
 								assignSet.put(cell, name);
+								cell.addTarget(this);
 							}
 							else {
 								// this cell belongs to a child node

@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -28,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 
@@ -40,6 +42,7 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 
 	private final Cell cell;
 	private final ListMultimap<SourceNode, String> sources;
+	private final List<TargetNode> targets = new ArrayList<TargetNode>();
 
 	/**
 	 * Constructor
@@ -103,6 +106,42 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 	@Override
 	public Set<String> getSourceNames(SourceNode source) {
 		return new HashSet<String>(sources.get(source));
+	}
+
+	/**
+	 * @see CellNode#addTarget(TargetNode)
+	 */
+	@Override
+	public void addTarget(TargetNode target) {
+		targets.add(target);
+	}
+
+	/**
+	 * @see CellNode#getTargets()
+	 */
+	@Override
+	public List<TargetNode> getTargets() {
+		return Collections.unmodifiableList(targets);
+	}
+
+	/**
+	 * @see CellNode#setValid(boolean)
+	 */
+	@Override
+	public void setValid(boolean valid) {
+		setAnnotation(ANNOTATION_VALID, valid);
+	}
+
+	/**
+	 * @see CellNode#isValid()
+	 */
+	@Override
+	public boolean isValid() {
+		Object value = getAnnotation(ANNOTATION_VALID);
+		if (value instanceof Boolean) {
+			return (Boolean) value;
+		}
+		return false;
 	}
 
 }
