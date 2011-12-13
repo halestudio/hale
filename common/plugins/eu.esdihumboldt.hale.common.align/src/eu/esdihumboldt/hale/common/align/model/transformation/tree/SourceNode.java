@@ -29,6 +29,11 @@ public interface SourceNode extends TransformationNode {
 	public static final String ANNOTATION_OCCURRENCE = "occurrence";
 	
 	/**
+	 * Name of the value annotation 
+	 */
+	public static final String ANNOTATION_VALUE = "value";
+	
+	/**
 	 * Get the associated definition
 	 * @return the type, group or property definition
 	 */
@@ -74,6 +79,23 @@ public interface SourceNode extends TransformationNode {
 	 *   source instances
 	 */
 	public void setOccurrence(int occurrence);
+	
+	/**
+	 * Get the value of the node in the context of a specific source
+	 * instance.
+	 * @see #ANNOTATION_VALUE
+	 * @return the property value associated to the node, may be 
+	 *   <code>null</code>
+	 */
+	public Object getValue();
+	
+	/**
+	 * Set the value of the value annotation.
+	 * @see #ANNOTATION_VALUE
+	 * @param value the value of the node in the context of a specific
+	 *   source instance
+	 */
+	public void setValue(Object value);
 
 //	/**
 //	 * Add a relation.
