@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	private ListMultimap<String, String> initialValues;
 	private Set<FunctionParameter> params;
 	private ListMultimap<FunctionParameter, Pair<Text, Button>> inputFields;
-	private Button addButton;
+	private HashMap<FunctionParameter, Button> addButtons;
 	private static final Image removeImage = HALEUIPlugin.getImageDescriptor("icons/remove.gif").createImage();
 
 	/**
@@ -67,6 +68,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		setDescription("Specify the parameters for the relation");
 
 		inputFields = ArrayListMultimap.create();
+		addButtons = new HashMap<FunctionParameter, Button>();
 
 		setPageComplete(false);
 	}
@@ -174,7 +176,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 */
 	private void createAddButton(final Composite parent, final FunctionParameter fp, boolean addEnabled) {
 		// create add button -> left
-		addButton = new Button(parent, SWT.PUSH);
+		final Button addButton = new Button(parent, SWT.PUSH);
+		addButtons.put(fp, addButton);
 		addButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 2, 1));
 		addButton.setText("Add parameter value");
 		addButton.setEnabled(addEnabled);
@@ -274,7 +277,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 				updateState();
 				removeButton.dispose();
 				text.dispose();
-				addButton.setEnabled(true);
+				addButtons.get(fp).setEnabled(true);
 				if (texts.size() == fp.getMinOccurrence())
 					for (Pair<Text, Button> otherPair : texts)
 						otherPair.getSecond().setEnabled(false);
