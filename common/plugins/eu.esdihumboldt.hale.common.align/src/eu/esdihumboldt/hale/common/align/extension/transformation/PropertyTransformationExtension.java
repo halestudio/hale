@@ -14,11 +14,8 @@ package eu.esdihumboldt.hale.common.align.extension.transformation;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.AbstractExtension;
-import eu.esdihumboldt.hale.common.align.transformation.function.EvaluationFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
-import eu.esdihumboldt.hale.common.align.transformation.function.impl.EvaluationPropertyTransformation;
 
 /**
  * Extension for {@link PropertyTransformation}s
@@ -39,34 +36,6 @@ public class PropertyTransformationExtension
 		 */
 		protected PropertyTransformationConfiguration(IConfigurationElement conf) {
 			super(conf);
-		}
-
-	}
-	
-	/**
-	 * Factory for {@link PropertyTransformation}s that are defined through a
-	 * {@link EvaluationFunction}
-	 */
-	public static class EvaluatorConfiguration extends
-			AbstractTransformationFactory<PropertyTransformation<?>> implements
-			PropertyTransformationFactory {
-
-		/**
-		 * @see AbstractTransformationFactory#AbstractTransformationFactory(IConfigurationElement)
-		 */
-		protected EvaluatorConfiguration(IConfigurationElement conf) {
-			super(conf);
-		}
-
-		/**
-		 * @see AbstractConfigurationFactory#createExtensionObject()
-		 */
-		@Override
-		public PropertyTransformation<?> createExtensionObject()
-				throws Exception {
-			EvaluationFunction<?> evaluator = (EvaluationFunction<?>) conf.createExecutableExtension("class");
-			
-			return EvaluationPropertyTransformation.createTransformation(evaluator);
 		}
 
 	}
@@ -102,10 +71,6 @@ public class PropertyTransformationExtension
 			IConfigurationElement conf) throws Exception {
 		if (conf.getName().equals("propertyTransformation")) {
 			return new PropertyTransformationConfiguration(conf);
-		}
-		
-		if (conf.getName().equals("evaluator")) {
-			return new EvaluatorConfiguration(conf);
 		}
 		
 		return null;

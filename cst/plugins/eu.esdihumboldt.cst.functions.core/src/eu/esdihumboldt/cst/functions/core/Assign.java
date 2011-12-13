@@ -14,28 +14,41 @@ package eu.esdihumboldt.cst.functions.core;
 
 import java.util.Map;
 
-import net.jcip.annotations.Immutable;
+import com.google.common.collect.ListMultimap;
 
+import net.jcip.annotations.Immutable;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
-import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractPropertyTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
- * Property value assignment function
+ * Property value assignment function.
  * @author Simon Templer
  */
 @Immutable
-public class Assign extends AbstractPropertyTransformation<TransformationEngine> {
-
+public class Assign extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
+	
 	/**
-	 * @see TransformationFunction#execute(String, TransformationEngine, Map, TransformationLog)
+	 * Name of the parameter specifying the value to assign. See the function
+	 * definition on <code>eu.esdihumboldt.hale.common.align</code>.
 	 */
+	public static final String PARAMETER_VALUE = "value";
+
 	@Override
-	public void execute(String transformationIdentifier,
-			TransformationEngine engine,
-			Map<String, String> executionParameters, TransformationLog log) {
-		//TODO
+	protected Object evaluate(
+			String transformationIdentifier, TransformationEngine engine,
+			ListMultimap<String, PropertyValue> variables,
+			String resultName, PropertyEntityDefinition resultProperty,
+			Map<String, String> executionParameters, TransformationLog log) 
+			throws TransformationException {
+		ListMultimap<String, String> parameters = getParameters();
+		if (parameters == null) {
+			throw new TransformationException("No parameters defined.");
+		}
+		// get the value parameter
+		return parameters.get(PARAMETER_VALUE); // rely on automatic conversion
 	}
 
 }

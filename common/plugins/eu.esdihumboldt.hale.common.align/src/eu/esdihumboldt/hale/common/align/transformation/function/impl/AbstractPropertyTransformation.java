@@ -12,83 +12,98 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.function.impl;
 
+import java.util.Map;
+
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
-import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
- * Property transformation base class
+ * Base class for implementing {@link PropertyTransformation}s
  * @param <E> the transformation engine type
  * 
  * @author Simon Templer
  */
-public abstract class AbstractPropertyTransformation<E extends TransformationEngine>
-		extends AbstractTransformationFunction<E>  implements
-		PropertyTransformation<E> {
+public abstract class AbstractPropertyTransformation<E extends TransformationEngine> extends
+		AbstractTransformationFunction<E> implements PropertyTransformation<E> {
 
-	private ListMultimap<String, ? extends Property> sourceProperties;
-	private Instance sourceInstance;
+	private ListMultimap<String, Object> results;
+	private ListMultimap<String, PropertyValue> variables;
+	private ListMultimap<String, PropertyEntityDefinition> resultNames;
+
+	/**
+	 * @see PropertyTransformation#setVariables(ListMultimap)
+	 */
+	@Override
+	public void setVariables(
+			ListMultimap<String, PropertyValue> variables) {
+		this.variables = Multimaps.unmodifiableListMultimap(variables);
+	}
+
+	/**
+	 * @see PropertyTransformation#getResults()
+	 */
+	@Override
+	public ListMultimap<String, Object> getResults() {
+		return results;
+	}
+
+	/**
+	 * @see PropertyTransformation#setExpectedResult(ListMultimap)
+	 */
+	@Override
+	public void setExpectedResult(ListMultimap<String, PropertyEntityDefinition> resultNames) {
+		this.resultNames = Multimaps.unmodifiableListMultimap(resultNames);
+	}
+
+	/**
+	 * @see TransformationFunction#execute(String, TransformationEngine, Map, TransformationLog)
+	 */
+	@Override
+	public void execute(String transformationIdentifier, E engine,
+			Map<String, String> executionParameters, TransformationLog log)
+			throws TransformationException {
+		results = evaluate(transformationIdentifier, engine, variables, 
+				resultNames, executionParameters, log);
+	}
 	
-	private ListMultimap<String, ? extends Property> targetProperties;
-	private MutableInstance targetInstance;
+	/**
+	 * Execute the evaluation function as configured.
+	 * @param transformationIdentifier the transformation function identifier
+	 * @param engine the transformation engine that may be used for the
+	 *   function execution
+	 * @param variables the input variables
+	 * @param resultNames the expected results (names associated with the
+	 *   corresponding entity definitions)
+	 * @param executionParameters additional parameters for the execution, 
+	 *   may be <code>null</code>
+	 * @param log the transformation log to report any information about the
+	 *   execution of the transformation to
+	 * @return the evaluation result
+	 * @throws TransformationException if an unrecoverable error occurs during
+	 *   transformation
+	 */
+	protected abstract ListMultimap<String, Object> evaluate(
+			String transformationIdentifier, E engine,
+			ListMultimap<String, PropertyValue> variables,
+			ListMultimap<String, PropertyEntityDefinition> resultNames, 
+			Map<String, String> executionParameters, 
+			TransformationLog log) throws TransformationException;
 
 	/**
-	 * @see PropertyTransformation#setSource(ListMultimap, Instance)
+	 * Automatic result conversion allowed by default. Override to change
+	 * this behavior.
+	 * @see PropertyTransformation#allowAutomatedResultConversion()
 	 */
 	@Override
-	public void setSource(
-			ListMultimap<String, ? extends Property> sourceProperties,
-			Instance sourceInstance) {
-		this.sourceProperties = Multimaps.unmodifiableListMultimap(sourceProperties);
-		this.sourceInstance = sourceInstance;
-	}
-
-	/**
-	 * @see PropertyTransformation#setTarget(ListMultimap, MutableInstance)
-	 */
-	@Override
-	public void setTarget(
-			ListMultimap<String, ? extends Property> targetProperties,
-			MutableInstance targetInstance) {
-		this.targetProperties = Multimaps.unmodifiableListMultimap(targetProperties);
-		this.targetInstance = targetInstance;
-	}
-
-	/**
-	 * Get the source properties
-	 * @return the source properties
-	 */
-	public ListMultimap<String, ? extends Property> getSourceProperties() {
-		return sourceProperties;
-	}
-
-	/**
-	 * Get the source instance
-	 * @return the source instance
-	 */
-	public Instance getSourceInstance() {
-		return sourceInstance;
-	}
-
-	/**
-	 * Get the target properties
-	 * @return the target properties
-	 */
-	public ListMultimap<String, ? extends Property> getTargetProperties() {
-		return targetProperties;
-	}
-
-	/**
-	 * Get the target instance
-	 * @return the target instance
-	 */
-	public MutableInstance getTargetInstance() {
-		return targetInstance;
+	public boolean allowAutomatedResultConversion() {
+		return true;
 	}
 
 }

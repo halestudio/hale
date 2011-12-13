@@ -20,7 +20,6 @@
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="propertyTransformation"/>
             <element ref="typeTransformation"/>
-            <element ref="evaluator"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -126,51 +125,6 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.align.transformation.function.PropertyTransformation"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="evaluator">
-      <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="executionParameter"/>
-         </choice>
-         <attribute name="engine" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.engine/engine/@id"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="function" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.function/propertyFunction/@identifier"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.transformation.function.EvaluationFunction"/>
                </appinfo>
             </annotation>
          </attribute>
