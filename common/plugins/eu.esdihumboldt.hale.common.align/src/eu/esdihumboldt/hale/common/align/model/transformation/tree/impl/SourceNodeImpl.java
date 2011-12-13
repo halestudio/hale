@@ -134,6 +134,22 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	}
 
 	/**
+	 * @see SourceNode#getValue()
+	 */
+	@Override
+	public Object getValue() {
+		return getAnnotation(ANNOTATION_VALUE);
+	}
+
+	/**
+	 * @see SourceNode#setValue(java.lang.Object)
+	 */
+	@Override
+	public void setValue(Object value) {
+		setAnnotation(ANNOTATION_VALUE, value);
+	}
+
+	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
