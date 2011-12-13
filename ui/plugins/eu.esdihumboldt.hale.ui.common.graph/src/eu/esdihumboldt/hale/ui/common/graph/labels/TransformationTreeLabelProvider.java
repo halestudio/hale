@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 import org.eclipse.zest.core.widgets.custom.CustomShapeFigure.ShapePainter;
 import org.eclipse.zest.core.widgets.custom.CustomShapeLabel;
@@ -30,7 +32,10 @@ import com.google.common.base.Joiner;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
 
@@ -39,13 +44,25 @@ import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
  * @author Simon Templer
  */
 public class TransformationTreeLabelProvider extends GraphLabelProvider {
+	
+	private Color disabledBackgroundColor;
+
+	/**
+	 * Default constructor 
+	 */
+	public TransformationTreeLabelProvider() {
+		super();
+		
+		Display display = PlatformUI.getWorkbench().getDisplay();
+		disabledBackgroundColor = new Color(display, 240, 240, 240);
+	}
 
 	/**
 	 * @see GraphLabelProvider#createDefinitionLabels()
 	 */
 	@Override
 	protected LabelProvider createDefinitionLabels() {
-		return new DefinitionLabelProvider(false);
+		return new DefinitionLabelProvider(false, true);
 	}
 
 	/**
@@ -64,6 +81,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	@Override
 	public String getText(Object element) {
 		if (element instanceof EntityConnectionData) {
+			// text for connections
 			EntityConnectionData connection = (EntityConnectionData) element;
 			
 			Set<String> names = null;
@@ -92,6 +110,30 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 			}
 			
 			return "";
+		}
+		
+		if (hasTransformationAnnotations(element)) {
+			if (element instanceof SourceNode) {
+				SourceNode node = (SourceNode) element;
+				if (node.getOccurrence() > 0) {
+					Object value = node.getValue();
+					
+					if (value == null) {
+						// no value
+						return "(not set)";
+					}
+					else if (value instanceof Instance) {
+						// use the instance value if present
+						value = ((Instance) value).getValue();
+					}
+					
+					if (value != null && !(value instanceof Group)) {
+						// the value string representation
+						return value.toString(); //TODO shorten if needed?
+					}
+					// otherwise, just display the definition name
+				}
+			}
 		}
 		
 		element = extractObject(element);
@@ -134,9 +176,37 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public Color getBackgroundColour(Object entity) {
+		if (hasTransformationAnnotations(entity) && isDisabled(entity)) {
+			return disabledBackgroundColor;
+		}
+		
 		entity = extractObject(entity);
 		
 		return super.getBackgroundColour(entity);
+	}
+
+	/**
+	 * Determines if the given node is a transformation node and
+	 * has transformation annotations.
+	 * @param entity the node
+	 * @return if there a transformation annotations present
+	 */
+	private boolean hasTransformationAnnotations(Object entity) {
+		return entity instanceof TransformationNode && 
+				((TransformationNode) entity).hasAnnotations();
+	}
+
+	/**
+	 * Determines if a node is disabled.
+	 * @param entity the node
+	 * @return if the node is disabled
+	 */
+	private boolean isDisabled(Object entity) {
+		if (entity instanceof SourceNode) {
+			return ((SourceNode) entity).getOccurrence() == 0;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -209,6 +279,16 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		}
 		
 		return node;
+	}
+
+	/**
+	 * @see GraphLabelProvider#dispose()
+	 */
+	@Override
+	public void dispose() {
+		disabledBackgroundColor.dispose();
+		
+		super.dispose();
 	}
 
 }
