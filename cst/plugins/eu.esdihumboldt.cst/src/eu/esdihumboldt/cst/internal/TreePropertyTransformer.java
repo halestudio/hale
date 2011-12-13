@@ -16,6 +16,8 @@ import java.util.Collection;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
@@ -23,16 +25,16 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
 /**
- * TODO Type description
+ * Property transformer based on a {@link TransformationTree}.
  * @author Simon Templer
  */
-public class SimplePropertyTransformer implements PropertyTransformer {
-	
-	private final Alignment alignment;
+public class TreePropertyTransformer implements PropertyTransformer {
 	
 	private final TransformationReporter reporter;
 
 	private final InstanceSink sink;
+	
+	private final TransformationTreePool treePool;
 
 	/**
 	 * Create a simple property transformer
@@ -41,10 +43,11 @@ public class SimplePropertyTransformer implements PropertyTransformer {
 	 *   messages to
 	 * @param sink the target instance sink
 	 */
-	public SimplePropertyTransformer(Alignment alignment, TransformationReporter reporter, InstanceSink sink) {
-		this.alignment = alignment;
+	public TreePropertyTransformer(Alignment alignment, TransformationReporter reporter, InstanceSink sink) {
 		this.reporter = reporter;
 		this.sink = sink;
+		
+		treePool = new TransformationTreePool(alignment);
 	}
 
 	/**
@@ -53,11 +56,24 @@ public class SimplePropertyTransformer implements PropertyTransformer {
 	@Override
 	public void publish(Collection<? extends Type> sourceTypes,
 			Instance source, MutableInstance target) {
-		// TODO Auto-generated method stub
-		//TODO identify transformations to be executed on given instances
+		//TODO do actual transformation in a job or worker thread
 		
-		//XXX after property transformations, publish target instance
+		// identify transformations to be executed on given instances
+		// create/get a transformation tree
+		TransformationTree tree = treePool.getTree(target.getDefinition());
+		
+		// apply instance values to transformation tree
+		InstanceVisitor instanceVisitor = new InstanceVisitor(source);
+		tree.accept(instanceVisitor);
+		
+		//TODO apply functions
+		
+		//TODO fill instance
+		
+		// after property transformations, publish target instance
 		sink.addInstance(target);
+		// and release the tree for further use
+		treePool.releaseTree(tree);
 	}
 
 }
