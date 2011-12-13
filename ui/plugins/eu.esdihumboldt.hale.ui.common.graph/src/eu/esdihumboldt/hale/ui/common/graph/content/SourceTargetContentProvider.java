@@ -14,13 +14,13 @@ package eu.esdihumboldt.hale.ui.common.graph.content;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
@@ -44,16 +44,11 @@ public class SourceTargetContentProvider extends ArrayContentProvider implements
 	// complication with other pairs?
 	public Object[] getConnectedTo(Object entity) {
 		Collection<Object> result = new ArrayList<Object>();
+		if (entity instanceof Function) {
+			return ((Function) entity).getTarget().toArray();
+		}
 		if (entity instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) entity;
-			if (pair.getFirst() instanceof AbstractFunction<?>) {
-				// set must be of type AbstractParameter
-				if (pair.getSecond() instanceof Set<?>) {
-					Set<?> set = ((Set<?>) (pair
-							.getSecond()));
-					return set.toArray();
-				}
-			}
 			if (pair.getFirst() instanceof AbstractParameter) {
 				result.add(pair.getSecond());
 				return result.toArray();
@@ -69,18 +64,15 @@ public class SourceTargetContentProvider extends ArrayContentProvider implements
 	public Object[] getElements(Object inputElement) {
 //		init();
 		Collection<Object> collection = new ArrayList<Object>();
-		Pair<AbstractFunction<?>, Set<?>> functionpair;
 		if (inputElement instanceof AbstractFunction<?>) {
 			AbstractFunction<?> function = (AbstractFunction<?>) inputElement;
-			functionpair = new Pair<AbstractFunction<?>, Set<?>>(function,
-					function.getTarget());
-			collection.add(functionpair);
+			collection.add(function);
 
 			if (inputElement instanceof TypeFunction) {
 				for (TypeParameter type : ((TypeFunction) function).getSource()) {
 					// TODO save pair with correct classes?
 					collection
-							.add(new Pair<Object, Object>(type, functionpair));
+							.add(new Pair<Object, Object>(type, function));
 				}
 				for (TypeParameter type : ((TypeFunction) function).getTarget()) {
 					collection.add(type);
@@ -92,7 +84,7 @@ public class SourceTargetContentProvider extends ArrayContentProvider implements
 						.getSource()) {
 					// TODO save pair with correct classes
 					collection
-							.add(new Pair<Object, Object>(prop, functionpair));
+							.add(new Pair<Object, Object>(prop, function));
 				}
 				for (PropertyParameter prop : ((PropertyFunction) function)
 						.getTarget()) {

@@ -15,11 +15,12 @@ package eu.esdihumboldt.hale.ui.common.graph.labels;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * TODO Type description
- * @author Patrick
+ * Label provider for graphs based on function(s).
+ * @author Patrick Lieb
  */
 public class FunctionGraphLabelProvider extends GraphLabelProvider {
 
@@ -31,6 +32,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 		if(element instanceof Pair<?,?>){
 			return super.getImage(((Pair<?,?>) element).getFirst());
 		}
+		
 		return super.getImage(element);
 	}
 
@@ -40,11 +42,21 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	@Override
 	public String getText(Object element) {
 		if(element instanceof Pair<?,?>){
-			return super.getText(((Pair<?,?>) element).getFirst());
+			element = ((Pair<?,?>) element).getFirst();
 		}
+		
 		if (element instanceof EntityConnectionData) {
 			return "";
 		}
+		
+		if(element instanceof AbstractParameter){
+			String result = ((AbstractParameter) element).getDisplayName();
+			if(!result.equals(""))
+				return result;
+			// XXX only for developing use
+			return "(not set)";
+		}
+		
 		return super.getText(element);
 	}
 

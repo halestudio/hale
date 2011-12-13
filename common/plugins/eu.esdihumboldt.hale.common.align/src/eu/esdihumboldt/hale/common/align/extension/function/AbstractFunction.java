@@ -68,12 +68,14 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	 * Get the source entities
 	 * @return the source entities
 	 */
+	@Override
 	public abstract Set<? extends P> getSource();
 	
 	/**
 	 * Get the target entities
 	 * @return the target entities
 	 */
+	@Override
 	public abstract Set<? extends P> getTarget();
 	
 	/**
