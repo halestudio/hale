@@ -33,6 +33,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	private final EntityDefinition entityDefinition;
 	private final SourceNode parent;
 	private final Set<SourceNode> children = new HashSet<SourceNode>();
+	private final SourceNodeFactory sourceNodeFactory;
 
 	/**
 	 * Constructor
@@ -42,6 +43,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	public SourceNodeImpl(EntityDefinition definition, 
 			SourceNodeFactory sourceNodeFactory) {
 		this.entityDefinition = definition;
+		this.sourceNodeFactory = sourceNodeFactory;
 		
 		EntityDefinition parentDef = AlignmentUtil.getParent(definition);
 		if (parentDef != null) {
@@ -159,6 +161,10 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 		result = prime
 				* result
 				+ ((entityDefinition == null) ? 0 : entityDefinition.hashCode());
+		result = prime
+				* result
+				+ ((sourceNodeFactory == null) ? 0 : sourceNodeFactory
+						.hashCode());
 		return result;
 	}
 
@@ -178,6 +184,11 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 			if (other.entityDefinition != null)
 				return false;
 		} else if (!entityDefinition.equals(other.entityDefinition))
+			return false;
+		if (sourceNodeFactory == null) {
+			if (other.sourceNodeFactory != null)
+				return false;
+		} else if (!sourceNodeFactory.equals(other.sourceNodeFactory))
 			return false;
 		return true;
 	}
