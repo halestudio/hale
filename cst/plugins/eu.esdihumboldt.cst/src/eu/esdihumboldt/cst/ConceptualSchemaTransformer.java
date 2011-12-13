@@ -24,7 +24,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.internal.EngineManager;
-import eu.esdihumboldt.cst.internal.SimplePropertyTransformer;
+import eu.esdihumboldt.cst.internal.TreePropertyTransformer;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -81,7 +81,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		
 		EngineManager engines = new EngineManager();
 		
-		PropertyTransformer transformer = new SimplePropertyTransformer(
+		PropertyTransformer transformer = new TreePropertyTransformer(
 				alignment, reporter, target);
 		
 		TypeTransformationExtension typesTransformations = 
