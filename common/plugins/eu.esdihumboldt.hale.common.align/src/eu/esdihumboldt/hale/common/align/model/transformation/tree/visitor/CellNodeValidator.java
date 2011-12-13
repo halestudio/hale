@@ -53,8 +53,10 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 			String name = sourceEntry.getKey();
 			Entity entity = sourceEntry.getValue();
 			SourceNode sourceNode = findSourceNode(node, entity);
-			if (sourceNode != null && sourceNode.isDefined()) {
-				sources.put(name, new Pair<SourceNode, Entity>(sourceNode, entity));
+			if (sourceNode != null) {
+				if (sourceNode.isDefined()) {
+					sources.put(name, new Pair<SourceNode, Entity>(sourceNode, entity));
+				}
 			}
 			else {
 				log.error("Source node for entity not found.");
@@ -62,7 +64,7 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 		}
 		
 		ListMultimap<String, Pair<TargetNode, Entity>> targets = ArrayListMultimap.create();
-		for (Entry<String, ? extends Entity> targetEntry : cell.getSource().entries()) {
+		for (Entry<String, ? extends Entity> targetEntry : cell.getTarget().entries()) {
 			String name = targetEntry.getKey();
 			Entity entity = targetEntry.getValue();
 			TargetNode targetNode = findTargetNode(node, entity);
