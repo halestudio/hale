@@ -24,6 +24,11 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 public interface CellNode extends TransformationNode {
 	
 	/**
+	 * Name of the valid annotation
+	 */
+	public static final String ANNOTATION_VALID = "valid";
+	
+	/**
 	 * Get the associated cell.
 	 * @return the cell
 	 */
@@ -42,5 +47,33 @@ public interface CellNode extends TransformationNode {
 	 * @return the source names
 	 */
 	public Set<String> getSourceNames(SourceNode source);
+
+	/**
+	 * Add an associated target node to the cell.
+	 * @param target the target node
+	 */
+	public void addTarget(TargetNode target);
+	
+	/**
+	 * Get the associated target nodes.
+	 * @return the list of target nodes
+	 */
+	public List<TargetNode> getTargets();
+	
+	/**
+	 * Set the value of the valid annotation.
+	 * @see #ANNOTATION_VALID
+	 * @param valid if the cell node is valid in its configuration for
+	 * transformation execution
+	 */
+	public void setValid(boolean valid);
+	
+	/**
+	 * Get the value of the valid annotation. Returns <code>false</code> in any
+	 * case if no validation has been performed yet.
+	 * @return if the cell node is valid in its configuration for transformation
+	 * execution
+	 */
+	public boolean isValid();
 
 }

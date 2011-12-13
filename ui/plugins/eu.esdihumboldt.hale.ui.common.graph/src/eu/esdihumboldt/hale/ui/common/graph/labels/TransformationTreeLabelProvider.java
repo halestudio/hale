@@ -205,6 +205,9 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		if (entity instanceof SourceNode) {
 			return ((SourceNode) entity).getOccurrence() == 0;
 		}
+		if (entity instanceof CellNode) {
+			return !((CellNode) entity).isValid();
+		}
 		
 		return false;
 	}
