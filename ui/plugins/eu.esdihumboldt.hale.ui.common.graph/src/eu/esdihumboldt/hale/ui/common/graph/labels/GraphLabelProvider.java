@@ -29,7 +29,6 @@ import org.eclipse.zest.core.widgets.custom.CustomShapeLabel;
 import org.eclipse.zest.core.widgets.custom.shapes.FingerPost;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -137,7 +136,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			}
 			return null;
 		}
-		// TODO is this correct?
+		
 		if(element instanceof Function){
 			return functionLabels.getImage(element);
 		}
@@ -174,18 +173,10 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			}
 			return functionId;
 		}
-			// TODO is this correct?
-			if(element instanceof Function){
-				return functionLabels.getText(element);
-			}
-			// TODO what about abstract parameters?
-			if(element instanceof AbstractParameter){
-				String result = ((AbstractParameter) element).getDisplayName();
-				if(!result.equals(""))
-					return result;
-				// XXX only for developing use
-				return "(not set)";
-			}
+			
+		if(element instanceof Function){
+			return functionLabels.getText(element);
+		}
 		
 		return super.getText(element);
 	}
@@ -219,7 +210,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityHighlightColor;
 		}
 		
-		if (entity instanceof Cell) {
+		if (entity instanceof Cell || entity instanceof Function) {
 			return cellHighlightColor;
 		}
 		
@@ -236,7 +227,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityBorderColor;
 		}
 		
-		if (entity instanceof Cell) {
+		if (entity instanceof Cell || entity instanceof Function) {
 			return cellBorderColor;
 		}
 		
@@ -253,7 +244,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityBorderHighlightColor;
 		}
 		
-		if (entity instanceof Cell) {
+		if (entity instanceof Cell || entity instanceof Function) {
 			return cellBorderHighlightColor;
 		}
 		
@@ -270,7 +261,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityBorderWidth;
 		}
 		
-		if (entity instanceof Cell) {
+		if (entity instanceof Cell || entity instanceof Function) {
 			return cellBorderWidth;
 		}
 		
@@ -292,7 +283,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return propertyBackgroundColor;
 		}
 		
-		if (entity instanceof Cell) {
+		if (entity instanceof Cell || entity instanceof Function) {
 			return cellBackgroundColor;
 		}
 		
@@ -309,7 +300,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityForegorundColor;
 		}
 		
-		if (entity instanceof Cell) {
+		if (entity instanceof Cell || entity instanceof Function) {
 			return cellForegroundColor;
 		}
 		
@@ -392,7 +383,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public IFigure getFigure(Object element) {
-		if (element instanceof Cell) {
+		if (element instanceof Cell || element instanceof Function) {
 			return new CellFigure();
 		}
 		

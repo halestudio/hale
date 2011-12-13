@@ -65,6 +65,18 @@ public interface Function extends Identifiable {
 	 */
 	public URL getHelpURL();
 	
+	/**
+	 * Get the source entities
+	 * @return the source entities
+	 */
+	public Set<? extends AbstractParameter> getSource();
+	
+	/**
+	 * Get the target entities
+	 * @return the target entities
+	 */
+	public Set<? extends AbstractParameter> getTarget();
+	
 //	/**
 //	 * Get the help file ID of the text to be included
 //	 * @return the help file ID, my be <code>null</code>
