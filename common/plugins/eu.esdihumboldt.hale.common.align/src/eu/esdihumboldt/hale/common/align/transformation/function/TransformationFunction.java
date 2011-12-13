@@ -42,9 +42,12 @@ public interface TransformationFunction<E extends TransformationEngine> {
 	 *   may be <code>null</code>
 	 * @param log the transformation log to report any information about the
 	 *   execution of the transformation to
+	 * @throws TransformationException if an unrecoverable error occurs during
+	 *   transformation
 	 */
-	public void execute(String transformationIdentifier, E engine, 
-			Map<String, String> executionParameters, TransformationLog log);
+	public void execute(String transformationIdentifier, E engine,
+			Map<String, String> executionParameters, TransformationLog log)
+			throws TransformationException;
 	
 	//TODO reset method? or something like it
 	

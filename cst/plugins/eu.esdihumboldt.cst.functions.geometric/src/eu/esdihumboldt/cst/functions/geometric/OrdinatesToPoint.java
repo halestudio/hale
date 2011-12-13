@@ -16,8 +16,11 @@ import java.util.Map;
 
 import net.jcip.annotations.Immutable;
 
+import com.google.common.collect.ListMultimap;
+
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
@@ -28,14 +31,15 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 @Immutable
 public class OrdinatesToPoint extends AbstractPropertyTransformation<TransformationEngine> {
 
-	/**
-	 * @see TransformationFunction#execute(String, TransformationEngine, Map, TransformationLog)
-	 */
 	@Override
-	public void execute(String transformationIdentifier,
-			TransformationEngine engine,
-			Map<String, String> executionParameters, TransformationLog log) {
-		//TODO
+	protected ListMultimap<String, Object> evaluate(
+			String transformationIdentifier, TransformationEngine engine,
+			ListMultimap<String, PropertyValue> variables,
+			ListMultimap<String, PropertyEntityDefinition> resultNames,
+			Map<String, String> executionParameters, TransformationLog log)
+			throws TransformationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

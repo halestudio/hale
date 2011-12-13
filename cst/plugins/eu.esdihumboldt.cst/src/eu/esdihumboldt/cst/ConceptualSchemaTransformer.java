@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.MultiTypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.SingleTypeTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.TypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
@@ -207,8 +208,12 @@ public class ConceptualSchemaTransformer implements TransformationService {
 					function.setParameters(parameters);
 					function.setTarget(targetTypes);
 					
-					((SingleTypeTransformation) function).execute(transformation.getFunctionId(), engine, 
-							executionParameters, cellLog);
+					try {
+						((SingleTypeTransformation) function).execute(transformation.getFunctionId(), engine, 
+								executionParameters, cellLog);
+					} catch (TransformationException e) {
+						cellLog.error(cellLog.createMessage("Type transformation failed, skipping instance.", e));
+					}
 				}
 				else {
 					cellLog.warn(cellLog.createMessage("Source type sanity check failed", null));
