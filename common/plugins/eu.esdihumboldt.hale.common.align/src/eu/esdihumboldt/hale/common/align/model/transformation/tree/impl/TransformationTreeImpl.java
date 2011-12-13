@@ -108,12 +108,12 @@ public class TransformationTreeImpl extends AbstractTransformationNode implement
 					child.accept(visitor);
 				}
 			}
-			else {
-				// visit leafs
-				for (SourceNode node : sourceNodes.getNodes()) {
-					if (node.getParent() == null) {
-						node.accept(visitor);
-					}
+		}
+		else {
+			// visit leafs
+			for (SourceNode node : sourceNodes.getNodes()) {
+				if (node.getParent() == null) {
+					node.accept(visitor);
 				}
 			}
 		}
