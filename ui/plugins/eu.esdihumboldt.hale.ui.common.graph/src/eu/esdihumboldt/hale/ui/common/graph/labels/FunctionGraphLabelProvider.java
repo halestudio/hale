@@ -17,7 +17,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
@@ -38,17 +37,18 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	private final Color sourcebackgroundcolor;
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#getImage(java.lang.Object)
+	 * Default constructor
 	 */
-
 	public FunctionGraphLabelProvider() {
-
-		final Display display = PlatformUI.getWorkbench().getDisplay();
+		final Display display = Display.getCurrent();
 
 		targetbackgroundcolor = new Color(display, 255, 160, 122);
 		sourcebackgroundcolor = new Color(display, 255, 236, 139);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#getImage(java.lang.Object)
+	 */
 	@Override
 	public Image getImage(Object element) {
 
