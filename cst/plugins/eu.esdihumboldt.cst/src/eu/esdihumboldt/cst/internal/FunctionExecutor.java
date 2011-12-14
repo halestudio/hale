@@ -172,41 +172,43 @@ public class FunctionExecutor extends CellNodeValidator {
 		
 		// apply function results
 		ListMultimap<String, Object> results = function.getResults();
-		for (String name : results.keySet()) {
-			List<Object> values = results.get(name);
-			List<Pair<TargetNode, Entity>> nodes = targets.get(name);
-			
-			int count = Math.min(values.size(), nodes.size());
-			
-			if (count > values.size()) {
-				cellLog.warn(cellLog.createMessage(MessageFormat.format(
-						"Transformation result misses values for result with name {0}",
-						name), null));
-			}
-			if (count > nodes.size()) {
-				cellLog.warn(cellLog.createMessage(MessageFormat.format(
-						"More transformation results than target nodes for result with name {0}",
-						name), null));
-			}
-			
-			for (int i = 0; i < count; i++) {
-				Object value = values.get(i);
-				TargetNode node = nodes.get(i).getFirst();
+		if (results != null) {
+			for (String name : results.keySet()) {
+				List<Object> values = results.get(name);
+				List<Pair<TargetNode, Entity>> nodes = targets.get(name);
 				
-				if (function.allowAutomatedResultConversion()) {
-					// convert value for target
-					try {
-						value = convert(value, toPropertyEntityDefinition(
-								node.getEntityDefinition()));
-					} catch (Throwable e) {
-						// ignore, but create error
-						cellLog.error(cellLog.createMessage(
-								"Conversion according to target property failed, using value as is.", e));
-					}
+				int count = Math.min(values.size(), nodes.size());
+				
+				if (count > values.size()) {
+					cellLog.warn(cellLog.createMessage(MessageFormat.format(
+							"Transformation result misses values for result with name {0}",
+							name), null));
+				}
+				if (count > nodes.size()) {
+					cellLog.warn(cellLog.createMessage(MessageFormat.format(
+							"More transformation results than target nodes for result with name {0}",
+							name), null));
 				}
 				
-				// set node value
-				node.setResult(value);
+				for (int i = 0; i < count; i++) {
+					Object value = values.get(i);
+					TargetNode node = nodes.get(i).getFirst();
+					
+					if (function.allowAutomatedResultConversion()) {
+						// convert value for target
+						try {
+							value = convert(value, toPropertyEntityDefinition(
+									node.getEntityDefinition()));
+						} catch (Throwable e) {
+							// ignore, but create error
+							cellLog.error(cellLog.createMessage(
+									"Conversion according to target property failed, using value as is.", e));
+						}
+					}
+					
+					// set node value
+					node.setResult(value);
+				}
 			}
 		}
 	}
