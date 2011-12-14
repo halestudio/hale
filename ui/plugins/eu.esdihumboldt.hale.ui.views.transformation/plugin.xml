@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.transformation.TransformationView"
+            icon="icons/transformation.gif"
+            id="eu.esdihumboldt.hale.ui.views.transformation"
+            name="Transformation"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="eu.esdihumboldt.hale.ui.views.transformation.TransformationPerspective"
+            icon="icons/transformation.gif"
+            id="eu.esdihumboldt.hale.ui.views.transformation.perspective"
+            name="Transformation">
+      </perspective>
+   </extension>
+
+</plugin>
