@@ -222,7 +222,7 @@ public class TransformationView extends AbstractMappingView {
 	 */
 	@Override
 	protected LayoutAlgorithm createLayout() {
-		return new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT);
+		return new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
 	}
 
 }
