@@ -14,8 +14,10 @@ package eu.esdihumboldt.hale.ui.views.transformation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
@@ -86,11 +88,39 @@ public class TransformationView extends AbstractMappingView {
 			}
 		});
 		
-		InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
+		final InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
 		iss.addObserver(instanceSampleObserver = new Observer() {
 			
+			@SuppressWarnings("unchecked")
 			@Override
 			public void update(Observable o, Object arg) {
+				Object input = getViewer().getInput();
+				
+				Collection<Instance> oldInstances = null;
+				int sampleCount = 0;
+				if (input instanceof Pair<?, ?>) {
+					Object second = ((Pair<?, ?>) input).getSecond();
+					if (second instanceof Collection<?>) {
+						oldInstances = (Collection<Instance>) second;
+						sampleCount = oldInstances.size();
+					}
+				}
+				
+				Collection<Instance> newSamples = iss.getReferenceInstances();
+				if (sampleCount == newSamples.size()) {
+					// still to decide if update is necessary
+					if (sampleCount == 0) {
+						return;
+					}
+					
+					// check if instances equal?
+					Set<Instance> test = new HashSet<Instance>(oldInstances);
+					test.removeAll(newSamples);
+					if (test.isEmpty()) {
+						return;
+					}
+				}
+				
 				TransformationView.this.update();
 			}
 		});
