@@ -54,7 +54,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 			if(!result.equals(""))
 				return result;
 			// XXX only for developing use
-			return "(not set)";
+			return "(no name set)";
 		}
 		
 		return super.getText(element);

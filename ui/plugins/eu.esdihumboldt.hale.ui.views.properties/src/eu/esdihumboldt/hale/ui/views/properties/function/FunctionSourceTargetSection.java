@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.function;
 
-import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -30,7 +29,7 @@ import eu.esdihumboldt.hale.ui.common.graph.content.SourceTargetContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
 
 /**
- * TODO Type description
+ * Function section with source and target information modeled in a graph
  * 
  * @author Patrick Lieb
  * @param <F>
@@ -68,7 +67,6 @@ public class FunctionSourceTargetSection<F extends Function> extends
 		LayoutAlgorithm algo = new TreeLayoutAlgorithm(
 				TreeLayoutAlgorithm.LEFT_RIGHT);
 		viewer.setLayoutAlgorithm(algo, true);
-//		viewer.applyLayout();
 		viewer.setContentProvider(new SourceTargetContentProvider());
 		viewer.setLabelProvider(new FunctionGraphLabelProvider());
 
