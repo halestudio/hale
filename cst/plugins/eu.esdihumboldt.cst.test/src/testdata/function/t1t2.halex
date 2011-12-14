@@ -3,7 +3,7 @@
     <name>Function demo</name>
     <author>sitemple</author>
     <created>2011-11-10T14:29:07.334+01:00</created>
-    <modified>2011-11-10T14:33:50.419+01:00</modified>
+    <modified>2011-12-14T18:36:47.684+01:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="projectFiles.separate">false</setting>
         <setting name="target">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/function/t1t2.halex</setting>

@@ -3,7 +3,7 @@
     <name>Implicit assignments</name>
     <author>sitemple</author>
     <created>2011-11-03T11:26:04.528+01:00</created>
-    <modified>2011-11-03T11:29:28.971+01:00</modified>
+    <modified>2011-12-14T18:31:38.458+01:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="projectFiles.separate">false</setting>
         <setting name="target">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/impassign/t1t2.halex</setting>

@@ -43,16 +43,6 @@
             </property>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child>name</child>
-                <child>Name</child>
-                <child>language</child>
-            </property>
-        </target>
-    </cell>
     <cell transformation="eu.esdihumboldt.hale.align.rename">
         <source>
             <property>
@@ -67,16 +57,6 @@
                 <child>Name</child>
                 <child>spelling</child>
                 <child>text</child>
-            </property>
-        </target>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}T2</type>
-                <child context="0">name</child>
-                <child>Name</child>
-                <child>language</child>
             </property>
         </target>
     </cell>
@@ -101,10 +81,33 @@
         <target>
             <property>
                 <type>{http://www.example.org/t2/}T2</type>
+                <child>name</child>
+                <child>Name</child>
+                <child>language</child>
+            </property>
+        </target>
+        <parameter name="value" value="en"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child context="0">name</child>
+                <child>Name</child>
+                <child>language</child>
+            </property>
+        </target>
+        <parameter name="value" value="de"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
                 <child context="1">name</child>
                 <child>Name</child>
                 <child>language</child>
             </property>
         </target>
+        <parameter name="value" value="fr"/>
     </cell>
 </hale-alignment>
