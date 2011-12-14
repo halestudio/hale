@@ -18,11 +18,13 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="eu.esdihumboldt.hale.ui.application.DefaultPerspective"
+            icon="icons/mapping.gif"
             id="eu.esdihumboldt.hale.ui.application.perspective.default"
             name="%perspective.default.name">
       </perspective>
       <perspective
             class="eu.esdihumboldt.hale.ui.application.DataPerspective"
+            icon="icons/data.gif"
             id="eu.esdihumboldt.hale.ui.application.perspective.data"
             name="%perspective.data.name">
       </perspective>
