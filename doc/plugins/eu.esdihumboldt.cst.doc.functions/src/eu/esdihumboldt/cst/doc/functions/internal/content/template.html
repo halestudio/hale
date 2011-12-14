@@ -14,8 +14,13 @@
 <b>Function ID:</b> $function.id <br />
 <b>Description:</b> $function.description<br />
 <b>Category:</b> $function.categoryId<br />
+#if( $function.definedParameters.size() > 0 )
+<b>Parameter:</b> <br />
+   	#foreach ($param in $function.definedParameters.iterator())
+		<li>$param.getDisplayName()</li>
+	#end
+#end
 </p>
-<!-- TODO: Add parameters to template @see FunctionReferenceContent -->
 <include path="$include"/>
 </body>
 </html>

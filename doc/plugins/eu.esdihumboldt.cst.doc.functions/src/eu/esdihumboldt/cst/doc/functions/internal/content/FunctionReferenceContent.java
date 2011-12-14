@@ -14,15 +14,10 @@ package eu.esdihumboldt.cst.doc.functions.internal.content;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
@@ -30,14 +25,13 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.help.IHelpContentProducer;
 
+import com.google.common.io.Files;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
-
-import com.google.common.io.Files;
 
 /**
  * Provides content for function documentation.
@@ -46,11 +40,14 @@ import com.google.common.io.Files;
  */
 public class FunctionReferenceContent implements IHelpContentProducer,
 		FunctionReferenceConstants {
-	
-	private static final ALogger log = ALoggerFactory.getLogger(FunctionReferenceContent.class);
+
+	private static final ALogger log = ALoggerFactory
+			.getLogger(FunctionReferenceContent.class);
 
 	private VelocityEngine ve;
 	private File tempDir;
+
+	private File file_template;
 
 	/**
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
@@ -83,12 +80,12 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 	private InputStream getFunctionContent(String func_id) throws Exception {
 		// maps "function" to the real function ID (used by the template)
 		AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
-		
+
 		if (function == null) {
 			log.warn("Unknown function " + func_id);
 			return null;
 		}
-		
+
 		Template template = null;
 
 		synchronized (this) {
@@ -96,96 +93,92 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 				ve = new VelocityEngine();
 				// create a temporary directory
 				tempDir = Files.createTempDir();
-				ve.setProperty("file.resource.loader.path", tempDir.getAbsolutePath());
+
+				file_template = new File(tempDir, "template.vm");
+				URL templatePath = this.getClass().getResource("template.html");
+				FileOutputStream fos = new FileOutputStream(file_template);
+				InputStream stream = templatePath.openStream();
+
+				// copys the InputStream into FileOutputStream
+				IOUtils.copy(stream, fos);
+
+				stream.close();
+				fos.close();
+
+				ve.setProperty("file.resource.loader.path",
+						tempDir.getAbsolutePath());
 				// initialize VelocityEngine
 				ve.init();
 			}
 		}
 
-		// creates the temporary file into the temporary directory
-		File tempFile = null;
-		tempFile = File.createTempFile("template", ".vm", tempDir); //$NON-NLS-1$ //$NON-NLS-2$
-		URL templatePath = this.getClass().getResource("template.html");
-		FileOutputStream fos = new FileOutputStream(tempFile);
-		InputStream stream = templatePath.openStream();
+		// creates the template file into the temporary directory
+		File functionFile = new File(tempDir, func_id + ".html");
+		if (!functionFile.exists()) {
 
-		// copys the InputStream into FileOutputStream
-		IOUtils.copy(stream, fos);
+			VelocityContext context = new VelocityContext();
 
-		stream.close();
-		fos.close();
+			context.put("function", function);
 
-		VelocityContext context = new VelocityContext();
+			// creating the full IconURL
+			// ------ STARTS HERE ------
+			URL url = function.getIconURL();
 
-		context.put("function", function);
+			// "/icons/ICONNAME.png"
+			String path = url.getPath();
 
-		// creating the full IconURL
-		// ------ STARTS HERE ------
-		URL url = function.getIconURL();
+			// "eu.esdihumboldt.cst.functions.TYPE"
+			String bundle = function.getDefiningBundle();
 
-		// "/icons/ICONNAME.png"
-		String path = url.getPath();
+			StringBuffer sb = new StringBuffer();
+			sb.append("PLUGINS_ROOT/");
+			sb.append(bundle);
+			sb.append(path);
 
-		// "eu.esdihumboldt.cst.functions.TYPE"
-		String bundle = function.getDefiningBundle();
+			// PLUGINS_ROOT/eu.esdihumboldt.cst.functions.TYPE/icons/ICONNAME.png
+			String final_url = sb.toString();
 
-		StringBuffer sb = new StringBuffer();
-		sb.append("PLUGINS_ROOT/");
-		sb.append(bundle);
-		sb.append(path);
+			context.put("url", final_url);
+			// ------ ENDS HERE ------
 
-		// PLUGINS_ROOT/eu.esdihumboldt.cst.functions.TYPE/icons/ICONNAME.png
-		String final_url = sb.toString();
+			// creating path for the file to be included
+			URL help_url = function.getHelpURL();
+			if (help_url != null) {
+				String help_path = help_url.getPath();
 
-		context.put("url", final_url);
-		// ------ ENDS HERE ------
+				// String help_id = function.getHelpFileID();
 
-		// creating path for the file to be included
-		URL help_url = function.getHelpURL();
-		if (help_url != null) {
-			String help_path = help_url.getPath();
+				StringBuffer sb_include = new StringBuffer();
+				// sb_include.append("PLUGINS_ROOT/");
+				sb_include.append(bundle);
+				sb_include.append(help_path);
+				sb_include.append("/help");
+				// sb_include.append(help_id);
 
-			//String help_id = function.getHelpFileID();
+				String final_help_url = sb_include.toString();
 
-			StringBuffer sb_include = new StringBuffer();
-			// sb_include.append("PLUGINS_ROOT/");
-			sb_include.append(bundle);
-			sb_include.append(help_path);
-			sb_include.append("/help");
-			// sb_include.append(help_id);
+				context.put("include", final_help_url);
+			}
 
-			String final_help_url = sb_include.toString();
+			template = ve.getTemplate(file_template.getName(), "UTF-8");
 
-			context.put("include", final_help_url);
+			FileWriter fw = new FileWriter(functionFile);
+			
+//			PipedInputStream pis = new PipedInputStream();
+//
+//			PipedOutputStream pos = new PipedOutputStream(pis);
+//
+//			OutputStreamWriter osw = new OutputStreamWriter(pos, "UTF-8");
+
+			// TODO: write templates for the functions to files into tempDir
+			// 		 -> no need to create new content on the 2nd/3rd/... call
+			template.merge(context, fw);
+
+			fw.close();
+
 		}
-		
-		// TODO: getting parameters
-		//FIXME the parameters should not be retrieved here, but in the template!
-		Set<FunctionParameter> params = function.getDefinedParameters();
-		Iterator<FunctionParameter> it = params.iterator();
-		ArrayList<FunctionParameter> funcparams = new ArrayList<FunctionParameter>();
-		while(it.hasNext()) {
-			funcparams.add(it.next());
-		}
-		String bla = "funcparams is leer";
-		if(!funcparams.isEmpty()) {
-			// FunctionOutOfBoundsException if there are no parameters for the function
-			bla = funcparams.get(0).getName();
-		}
-//		System.out.println(bla);
-		template = ve.getTemplate(tempFile.getName(), "UTF-8");
-
-		PipedInputStream pis = new PipedInputStream();
-
-		PipedOutputStream pos = new PipedOutputStream(pis);
-
-		OutputStreamWriter osw = new OutputStreamWriter(pos, "UTF-8");
-
-		template.merge(context, osw);
-
-		osw.close();
-
-		return pis;
+		// return an InputStream ...
+		return null;
 	}
 
 }
