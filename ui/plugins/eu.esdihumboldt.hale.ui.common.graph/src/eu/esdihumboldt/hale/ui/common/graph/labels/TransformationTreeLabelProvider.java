@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
 public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	
 	private Color disabledBackgroundColor;
+	private Color valueBackgroundColor;
 
 	/**
 	 * Default constructor 
@@ -55,6 +56,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		disabledBackgroundColor = new Color(display, 240, 240, 240);
+		valueBackgroundColor = new Color(display, 220, 245, 245);
 	}
 
 	/**
@@ -176,13 +178,31 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public Color getBackgroundColour(Object entity) {
-		if (hasTransformationAnnotations(entity) && isDisabled(entity)) {
-			return disabledBackgroundColor;
+		if (hasTransformationAnnotations(entity)) {
+			if (isDisabled(entity)) {
+				return disabledBackgroundColor;
+			}
+			if (hasValue(entity)) {
+				return valueBackgroundColor;
+			}
 		}
 		
 		entity = extractObject(entity);
 		
 		return super.getBackgroundColour(entity);
+	}
+
+	/**
+	 * Determines if a node shows a value.
+	 * @param entity the node
+	 * @return if the node has a value
+	 */
+	private boolean hasValue(Object entity) {
+		if (entity instanceof SourceNode) {
+			return ((SourceNode) entity).isDefined();
+		}
+		
+		return false;
 	}
 
 	/**
@@ -291,6 +311,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	@Override
 	public void dispose() {
 		disabledBackgroundColor.dispose();
+		valueBackgroundColor.dispose();
 		
 		super.dispose();
 	}
