@@ -19,6 +19,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
 
 /**
  * Function that is evaluated based on variables populated by property values.
@@ -51,7 +52,8 @@ public interface PropertyTransformation<E extends TransformationEngine> extends 
 	
 	/**
 	 * Specifies if the automatic conversion of the execution results according
-	 * to the corresponding property definitions is allowed.
+	 * to the corresponding property definitions is allowed and therefore should
+	 * be performed by the {@link PropertyTransformer}.
 	 * @return if automated conversion of the result values is allowed
 	 */
 	public boolean allowAutomatedResultConversion();

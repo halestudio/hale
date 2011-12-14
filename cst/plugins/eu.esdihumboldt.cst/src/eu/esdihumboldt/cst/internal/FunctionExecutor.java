@@ -13,23 +13,40 @@
 package eu.esdihumboldt.cst.internal;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
+import org.springframework.core.convert.ConversionException;
+import org.springframework.core.convert.ConversionService;
+
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+
+import de.fhg.igd.osgi.util.OsgiUtils;
 
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.CellNodeValidator;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
+import eu.esdihumboldt.hale.common.convert.ConversionServiceNotAvailableException;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -87,6 +104,7 @@ public class FunctionExecutor extends CellNodeValidator {
 	 * @param sources the named source entities and nodes
 	 * @param targets the named target entities and nodes
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void executeTransformation(
 			PropertyTransformationFactory transformation, Cell cell,
 			ListMultimap<String, Pair<SourceNode, Entity>> sources,
@@ -113,14 +131,130 @@ public class FunctionExecutor extends CellNodeValidator {
 			return;
 		}
 		
-		//TODO configure function
-//		function.setParameters(parameters);
-//		function.setSource(sourceProperties, sourceInstance);
-//		function.setTarget(targetProperties, targetInstance);
-		//TODO execute function
-//		function.execute(transformationIdentifier, engine, executionParameters, log);
-		//TODO apply function results
-		//XXX
+		// configure function
+		
+		// set expected result
+		ListMultimap<String, PropertyEntityDefinition> expectedResult = 
+				ArrayListMultimap.create(targets.keySet().size(), 1);
+		for (Entry<String, Pair<TargetNode, Entity>> targetEntry : targets.entries()) {
+			EntityDefinition def = targetEntry.getValue().getSecond().getDefinition();
+			expectedResult.put(targetEntry.getKey(), toPropertyEntityDefinition(def));
+		}
+		function.setExpectedResult(expectedResult);
+		
+		// set source variables
+		ListMultimap<String, PropertyValue> variables = ArrayListMultimap.create();
+		for (Entry<String, Pair<SourceNode, Entity>> sourceEntry : sources.entries()) {
+			EntityDefinition def = sourceEntry.getValue().getSecond().getDefinition();
+			Object value = sourceEntry.getValue().getFirst().getValue();
+			PropertyValue propertyValue = new PropertyValueImpl(value, 
+					toPropertyEntityDefinition(def));
+			variables.put(sourceEntry.getKey(), propertyValue );
+		}
+		function.setVariables(variables);
+		
+		// set parameters
+		function.setParameters(cell.getTransformationParameters());
+		
+		// execute function
+		try {
+			((PropertyTransformation) function).execute(
+					transformation.getIdentifier(), 
+					engine, 
+					transformation.getExecutionParameters(), 
+					cellLog);
+		} catch (TransformationException e) {
+			//TODO instead try another transformation
+			cellLog.error(cellLog.createMessage(
+					"Skipping property transformation: Executing property transformation failed.", e));
+			return;
+		}
+		
+		// apply function results
+		ListMultimap<String, Object> results = function.getResults();
+		for (String name : results.keySet()) {
+			List<Object> values = results.get(name);
+			List<Pair<TargetNode, Entity>> nodes = targets.get(name);
+			
+			int count = Math.min(values.size(), nodes.size());
+			
+			if (count > values.size()) {
+				cellLog.warn(cellLog.createMessage(MessageFormat.format(
+						"Transformation result misses values for result with name {0}",
+						name), null));
+			}
+			if (count > nodes.size()) {
+				cellLog.warn(cellLog.createMessage(MessageFormat.format(
+						"More transformation results than target nodes for result with name {0}",
+						name), null));
+			}
+			
+			for (int i = 0; i < count; i++) {
+				Object value = values.get(i);
+				TargetNode node = nodes.get(i).getFirst();
+				
+				if (function.allowAutomatedResultConversion()) {
+					// convert value for target
+					try {
+						value = convert(value, toPropertyEntityDefinition(
+								node.getEntityDefinition()));
+					} catch (Throwable e) {
+						// ignore, but create error
+						cellLog.error(cellLog.createMessage(
+								"Conversion according to target property failed, using value as is.", e));
+					}
+				}
+				
+				// set node value
+				node.setResult(value);
+			}
+		}
+	}
+
+	/**
+	 * Convert a value according to a target property entity definition.
+	 * @param value the value to convert
+	 * @param propertyEntityDefinition the target property entity definition
+	 * @return the converted object
+	 * @throws ConversionException if an error occurs during conversion
+	 */
+	private Object convert(Object value,
+			PropertyEntityDefinition propertyEntityDefinition) throws ConversionException {
+		if (value == null) {
+			return null;
+		}
+		
+		PropertyDefinition def = propertyEntityDefinition.getDefinition();
+		//XXX what about lists?!
+		Binding binding = def.getPropertyType().getConstraint(Binding.class);
+		Class<?> target = binding.getBinding();
+		
+		if (target.isAssignableFrom(value.getClass())) {
+			return value;
+		}
+		
+		ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		if (cs == null) {
+			throw new ConversionServiceNotAvailableException();
+		}
+		
+		return cs.convert(value, target);
+	}
+
+	/**
+	 * Returns a {@link PropertyEntityDefinition} for a given entity definition.
+	 * @param def the entity definition
+	 * @return the property entity definition
+	 */
+	private PropertyEntityDefinition toPropertyEntityDefinition(
+			EntityDefinition def) {
+		if (def instanceof PropertyEntityDefinition) {
+			return (PropertyEntityDefinition) def;
+		}
+		
+		return new PropertyEntityDefinition(def.getType(), 
+				new ArrayList<ChildContext>(def.getPropertyPath()), 
+				def.getSchemaSpace());
 	}
 	
 }
