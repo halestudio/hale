@@ -19,10 +19,13 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
@@ -38,6 +41,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 import eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView;
+import eu.esdihumboldt.hale.ui.views.transformation.internal.TransformationViewPlugin;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -55,12 +59,27 @@ public class TransformationView extends AbstractMappingView {
 	
 	private Observer instanceSampleObserver;
 	
+	private IAction instanceAction;
+	
 	/**
 	 * @see AbstractMappingView#createPartControl(Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
+		
+		IActionBars bars = getViewSite().getActionBars();
+		bars.getToolBarManager().add(instanceAction = new Action(
+				"Apply sample instances", IAction.AS_CHECK_BOX) {
+
+			@Override
+			public void run() {
+				update();
+			}
+			
+		});
+		instanceAction.setImageDescriptor(TransformationViewPlugin
+				.getImageDescriptor("icons/samples.gif"));
 		
 		update();
 
@@ -94,6 +113,10 @@ public class TransformationView extends AbstractMappingView {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(Observable o, Object arg) {
+				if (!instanceAction.isChecked()) {
+					return;
+				}
+				
 				Object input = getViewer().getInput();
 				
 				Collection<Instance> oldInstances = null;
@@ -140,10 +163,15 @@ public class TransformationView extends AbstractMappingView {
 				
 				InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
 				Collection<Instance> instances = iss.getReferenceInstances();
-				if (instances != null && !instances.isEmpty()) {
-					instances = new ArrayList<Instance>(instances);
-					// alignment paired with instances as input
-					getViewer().setInput(new Pair<Object, Object>(alignment, instances));
+				if (instanceAction.isChecked()) {
+					if (instances != null && !instances.isEmpty()) {
+						instances = new ArrayList<Instance>(instances);
+						// alignment paired with instances as input
+						getViewer().setInput(new Pair<Object, Object>(alignment, instances));
+					}
+					else {
+						getViewer().setInput(null);
+					}
 				}
 				else {
 					// only the alignment as input
