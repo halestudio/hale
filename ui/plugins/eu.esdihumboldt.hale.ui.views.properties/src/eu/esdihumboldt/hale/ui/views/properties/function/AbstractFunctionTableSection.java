@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
- * TODO Type description
+ * Abstract function section with general information on functions displayed in a table
  * @author Patrick
  * @param <P> the Function parameter
  */

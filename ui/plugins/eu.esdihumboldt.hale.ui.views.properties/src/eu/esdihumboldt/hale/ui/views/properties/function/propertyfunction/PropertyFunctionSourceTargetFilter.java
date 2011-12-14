@@ -17,8 +17,9 @@ import org.eclipse.jface.viewers.IFilter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 
 /**
- * TODO Type description
- * @author Patrick
+ * Filter that lets only {@link PropertyFunction}s with a source or a target that is not 
+ * empty pass.
+ * @author Patrick Lieb
  */
 public class PropertyFunctionSourceTargetFilter implements IFilter{
 

@@ -17,8 +17,9 @@ import org.eclipse.jface.viewers.IFilter;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 
 /**
- * TODO Type description
- * @author Patrick
+ * Filter that lets only {@link Function}s with defined parameters that are not 
+ * empty pass.
+ * @author Patrick Lieb
  */
 public class AbstractFunctionParameterFilter implements IFilter{
 

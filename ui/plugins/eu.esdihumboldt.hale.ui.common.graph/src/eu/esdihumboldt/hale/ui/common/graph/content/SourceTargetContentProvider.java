@@ -28,20 +28,17 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * TODO Type description
+ * Graph content provider to model the source and target of a function
  * 
  * @author Patrick Lieb
  */
 public class SourceTargetContentProvider extends ArrayContentProvider implements
 		IGraphEntityContentProvider {
 
-//	private Collection<Object> collection;
-
 	/**
 	 * @see IGraphEntityContentProvider#getConnectedTo(Object)
 	 */
 	@Override
-	// complication with other pairs?
 	public Object[] getConnectedTo(Object entity) {
 		Collection<Object> result = new ArrayList<Object>();
 		if (entity instanceof Function) {
@@ -70,7 +67,6 @@ public class SourceTargetContentProvider extends ArrayContentProvider implements
 
 			if (inputElement instanceof TypeFunction) {
 				for (TypeParameter type : ((TypeFunction) function).getSource()) {
-					// TODO save pair with correct classes?
 					collection
 							.add(new Pair<Object, Object>(type, function));
 				}
@@ -82,7 +78,6 @@ public class SourceTargetContentProvider extends ArrayContentProvider implements
 			if (inputElement instanceof PropertyFunction) {
 				for (PropertyParameter prop : ((PropertyFunction) function)
 						.getSource()) {
-					// TODO save pair with correct classes
 					collection
 							.add(new Pair<Object, Object>(prop, function));
 				}
@@ -96,11 +91,5 @@ public class SourceTargetContentProvider extends ArrayContentProvider implements
 		}
 		return super.getElements(inputElement);
 	}
-
-//	private void init() {
-//		if (collection == null) {
-//			collection = new ArrayList<Object>();
-//		}
-//	}
 
 }
