@@ -24,6 +24,18 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 public interface TargetNode extends GroupNode {
 	
 	/**
+	 * Name of the value defined annotation. It specifies if a value is defined 
+	 * for the source node.
+	 */
+	public static final String ANNOTATION_RESULT_DEFINED = "result:defined";
+	
+	/**
+	 * Name of the value annotation. It specifies a concrete value for the node
+	 * from an instance.
+	 */
+	public static final String ANNOTATION_RESULT = "result";
+	
+	/**
 	 * Get the assignment to this property
 	 * @return the property assignments
 	 */
@@ -48,5 +60,38 @@ public interface TargetNode extends GroupNode {
 	 * @return the assignment names
 	 */
 	public Set<String> getAssignmentNames(CellNode assignment);
+	
+	/**
+	 * Get if the node result is defined.
+	 * @see #ANNOTATION_RESULT_DEFINED
+	 * @return the value of the result defined annotation, or <code>false</code>
+	 *   if it is not set
+	 */
+	public boolean isDefined();
+	
+	/**
+	 * Set the value of the result defined annotation.
+	 * @see #ANNOTATION_RESULT_DEFINED
+	 * @param defined if the node result is defined
+	 */
+	public void setDefined(boolean defined);
+	
+	/**
+	 * Get the result value of the node as assigned through a property
+	 * transformation.
+	 * @see #ANNOTATION_RESULT
+	 * @return the property value associated to the node, may be 
+	 *   <code>null</code>
+	 */
+	public Object getResult();
+	
+	/**
+	 * Set the value of the result annotation. When setting a result the value
+	 * of the result defined annotation is set to <code>true</code>.
+	 * @see #ANNOTATION_RESULT
+	 * @see #ANNOTATION_RESULT_DEFINED
+	 * @param value the result value of the node
+	 */
+	public void setResult(Object value);
 
 }

@@ -165,5 +165,42 @@ public class TargetNodeImpl extends AbstractTransformationNode implements Target
 	public EntityDefinition getEntityDefinition() {
 		return child;
 	}
+	
+	/**
+	 * @see TargetNode#isDefined()
+	 */
+	@Override
+	public boolean isDefined() {
+		Object value = getAnnotation(ANNOTATION_RESULT_DEFINED);
+		if (value instanceof Boolean) {
+			return (Boolean) value;
+		}
+		return false;
+	}
+
+	/**
+	 * @see TargetNode#setDefined(boolean)
+	 */
+	@Override
+	public void setDefined(boolean defined) {
+		setAnnotation(ANNOTATION_RESULT_DEFINED, defined);
+	}
+
+	/**
+	 * @see TargetNode#getResult()
+	 */
+	@Override
+	public Object getResult() {
+		return getAnnotation(ANNOTATION_RESULT);
+	}
+
+	/**
+	 * @see TargetNode#setResult(Object)
+	 */
+	@Override
+	public void setResult(Object value) {
+		setAnnotation(ANNOTATION_RESULT, value);
+		setDefined(true);
+	}
 
 }

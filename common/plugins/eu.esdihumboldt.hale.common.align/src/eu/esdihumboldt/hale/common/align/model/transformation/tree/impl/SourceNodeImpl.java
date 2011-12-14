@@ -120,7 +120,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	 */
 	@Override
 	public boolean isDefined() {
-		Object value = getAnnotation(ANNOTATION_DEFINED);
+		Object value = getAnnotation(ANNOTATION_VALUE_DEFINED);
 		if (value instanceof Boolean) {
 			return (Boolean) value;
 		}
@@ -132,7 +132,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	 */
 	@Override
 	public void setDefined(boolean defined) {
-		setAnnotation(ANNOTATION_DEFINED, defined);
+		setAnnotation(ANNOTATION_VALUE_DEFINED, defined);
 	}
 
 	/**
