@@ -239,7 +239,8 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 				shape = new TransformationNodeShape(10, SWT.NONE);
 			}
 			else {
-				shape = new TransformationNodeShape(10, SWT.RIGHT);
+//				shape = new TransformationNodeShape(10, SWT.LEFT);
+				shape = new FingerPost(10, SWT.LEFT);
 			}
 		}
 		else if (element instanceof SourceNode) {
@@ -249,7 +250,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 				shape = new TransformationNodeShape(10, SWT.NONE);
 			}
 			else {
-				shape = new FingerPost(10, SWT.LEFT);
+				shape = new FingerPost(10, SWT.RIGHT);
 			}
 		}
 		
