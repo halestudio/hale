@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.mapping;
+package eu.esdihumboldt.hale.ui.views.transformation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
+import eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -42,6 +43,11 @@ import eu.esdihumboldt.util.Pair;
  * @author Simon Templer
  */
 public class TransformationView extends AbstractMappingView {
+
+	/**
+	 * The view ID
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.ui.views.transformation";
 
 	private AlignmentServiceListener alignmentListener;
 	
