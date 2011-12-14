@@ -25,6 +25,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.help.IHelpContentProducer;
+import org.eclipse.zest.core.viewers.GraphViewer;
 
 import com.google.common.io.Files;
 
@@ -33,6 +34,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 
 /**
  * Provides content for function documentation.
@@ -68,10 +70,17 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			if (func_id.endsWith("html") || func_id.endsWith("htm")) {
 				func_id = func_id.substring(0, func_id.lastIndexOf('.'));
 			}
-			try {
-				return getFunctionContent(func_id);
-			} catch (Exception e) {
-				log.error("Error creating help content", e);
+			// .png ending
+			if(func_id.endsWith(".png")) {
+				func_id = func_id.substring(0, func_id.lastIndexOf('.'));
+				//TODO return image content
+			}
+			else {
+				try {
+					return getFunctionContent(func_id);
+				} catch (Exception e) {
+					log.error("Error creating help content", e);
+				}
 			}
 		}
 
@@ -173,6 +182,33 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		}
 
 		return new FileInputStream(functionFile);
+	}
+	
+	private InputStream getImageContent(String func_id) {
+		// maps "function" to the real function ID (used by the template)
+		final AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
+
+		if (function == null) {
+			log.warn("Unknown function " + func_id);
+			return null;
+		}
+		
+		//TODO ensure initialization
+		
+		File functionFile = new File(tempDir, func_id + ".png");
+		if (!functionFile.exists()) {
+			OffscreenGraph graph = new OffscreenGraph(200, 100) {
+
+				@Override
+				protected void configureViewer(GraphViewer viewer) {
+					// TODO Auto-generated method stub
+					
+					viewer.setInput(function);
+				}
+			};
+		}
+		
+		return null;//new FileInputStream(functionFile);
 	}
 
 }
