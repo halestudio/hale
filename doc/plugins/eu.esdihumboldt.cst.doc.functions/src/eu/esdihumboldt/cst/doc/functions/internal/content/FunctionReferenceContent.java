@@ -13,6 +13,7 @@
 package eu.esdihumboldt.cst.doc.functions.internal.content;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
@@ -113,6 +114,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		}
 
 		// creates the template file into the temporary directory
+		// if it doesn't already exist
 		File functionFile = new File(tempDir, func_id + ".html");
 		if (!functionFile.exists()) {
 
@@ -163,22 +165,14 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			template = ve.getTemplate(file_template.getName(), "UTF-8");
 
 			FileWriter fw = new FileWriter(functionFile);
-			
-//			PipedInputStream pis = new PipedInputStream();
-//
-//			PipedOutputStream pos = new PipedOutputStream(pis);
-//
-//			OutputStreamWriter osw = new OutputStreamWriter(pos, "UTF-8");
 
-			// TODO: write templates for the functions to files into tempDir
-			// 		 -> no need to create new content on the 2nd/3rd/... call
 			template.merge(context, fw);
 
 			fw.close();
-
+			
 		}
-		// return an InputStream ...
-		return null;
+
+		return new FileInputStream(functionFile);
 	}
 
 }
