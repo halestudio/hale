@@ -26,7 +26,11 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
@@ -55,11 +59,30 @@ public class TransformationView extends AbstractMappingView {
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.transformation";
 
+	private static final String MEMENTO_KEY_INSTANCE_SAMPLE = "apply_sample_instances";
+
 	private AlignmentServiceListener alignmentListener;
 	
 	private Observer instanceSampleObserver;
 	
 	private IAction instanceAction;
+	
+	private boolean initInstanceAction = false;
+	
+	/**
+	 * @see ViewPart#init(IViewSite, IMemento)
+	 */
+	@Override
+	public void init(IViewSite site, IMemento memento) throws PartInitException {
+		super.init(site, memento);
+		
+		if (memento != null) {
+			Boolean value = memento.getBoolean(MEMENTO_KEY_INSTANCE_SAMPLE);
+			if (value != null) {
+				initInstanceAction = value;
+			}
+		}
+	}
 	
 	/**
 	 * @see AbstractMappingView#createPartControl(Composite)
@@ -80,6 +103,7 @@ public class TransformationView extends AbstractMappingView {
 		});
 		instanceAction.setImageDescriptor(TransformationViewPlugin
 				.getImageDescriptor("icons/samples.gif"));
+		instanceAction.setChecked(initInstanceAction);
 		
 		update();
 
@@ -223,6 +247,16 @@ public class TransformationView extends AbstractMappingView {
 	@Override
 	protected LayoutAlgorithm createLayout() {
 		return new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
+	}
+
+	/**
+	 * @see ViewPart#saveState(IMemento)
+	 */
+	@Override
+	public void saveState(IMemento memento) {
+		super.saveState(memento);
+		
+		memento.putBoolean(MEMENTO_KEY_INSTANCE_SAMPLE, instanceAction.isChecked());
 	}
 
 }
