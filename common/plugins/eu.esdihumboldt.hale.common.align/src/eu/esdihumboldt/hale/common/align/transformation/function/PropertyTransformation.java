@@ -29,44 +29,6 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 public interface PropertyTransformation<E extends TransformationEngine> extends TransformationFunction<E> {
 	
 	/**
-	 * Represents a property value for use in an {@link PropertyTransformation}
-	 */
-	public static class PropertyValue {
-		
-		private final Object value;
-		
-		private final PropertyEntityDefinition property;
-		
-		/**
-		 * Create a property value associated with its definition
-		 * @param value the property value
-		 * @param property the property entity definition
-		 */
-		public PropertyValue(Object value, PropertyEntityDefinition property) {
-			super();
-			this.value = value;
-			this.property = property;
-		}
-
-		/**
-		 * Get the property value.
-		 * @return the property value
-		 */
-		public Object getValue() {
-			return value;
-		}
-
-		/**
-		 * Get the property.
-		 * @return the property entity definition
-		 */
-		public PropertyEntityDefinition getProperty() {
-			return property;
-		}
-
-	}
-	
-	/**
 	 * Set the property values serving as variables for the function.
 	 * @param variables the property values, variable names are mapped to
 	 *   property values
