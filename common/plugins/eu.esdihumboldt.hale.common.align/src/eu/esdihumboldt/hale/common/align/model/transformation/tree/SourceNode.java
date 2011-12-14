@@ -24,10 +24,10 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 public interface SourceNode extends TransformationNode {
 	
 	/**
-	 * Name of the defined annotation. It specifies if a value is defined for 
-	 * the source node.
+	 * Name of the value defined annotation. It specifies if a value is defined 
+	 * for the source node.
 	 */
-	public static final String ANNOTATION_DEFINED = "defined";
+	public static final String ANNOTATION_VALUE_DEFINED = "value:defined";
 	
 	/**
 	 * Name of the value annotation. It specifies a concrete value for the node
@@ -67,7 +67,7 @@ public interface SourceNode extends TransformationNode {
 	
 	/**
 	 * Get if the source node value is defined.
-	 * @see #ANNOTATION_DEFINED
+	 * @see #ANNOTATION_VALUE_DEFINED
 	 * @return the value of the defined annotation, or <code>false</code> if it
 	 *   is not set
 	 */
@@ -75,7 +75,7 @@ public interface SourceNode extends TransformationNode {
 	
 	/**
 	 * Set the value of the defined annotation.
-	 * @see #ANNOTATION_DEFINED
+	 * @see #ANNOTATION_VALUE_DEFINED
 	 * @param defined if the node value is defined
 	 */
 	public void setDefined(boolean defined);
@@ -93,7 +93,7 @@ public interface SourceNode extends TransformationNode {
 	 * Set the value of the value annotation. When setting a value the value
 	 * of the defined annotation is set to <code>true</code>.
 	 * @see #ANNOTATION_VALUE
-	 * @see #ANNOTATION_DEFINED
+	 * @see #ANNOTATION_VALUE_DEFINED
 	 * @param value the value of the node in the context of a specific
 	 *   source instance
 	 */
