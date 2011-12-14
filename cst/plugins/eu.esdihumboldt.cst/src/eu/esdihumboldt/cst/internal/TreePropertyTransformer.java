@@ -30,13 +30,15 @@ import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
  */
 public class TreePropertyTransformer implements PropertyTransformer {
 	
-	private final TransformationReporter reporter;
+//	private final TransformationReporter reporter;
 
 	private final InstanceSink sink;
 	
 	private final TransformationTreePool treePool;
 	
 	private final FunctionExecutor executor;
+	
+	private final InstanceBuilder builder;
 
 	/**
 	 * Create a simple property transformer
@@ -49,11 +51,12 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	public TreePropertyTransformer(Alignment alignment, 
 			TransformationReporter reporter, InstanceSink sink, 
 			EngineManager engines) {
-		this.reporter = reporter;
+//		this.reporter = reporter;
 		this.sink = sink;
 		
 		treePool = new TransformationTreePool(alignment);
 		executor = new FunctionExecutor(reporter, engines);
+		builder = new InstanceBuilder();
 	}
 
 	/**
@@ -75,7 +78,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 		// apply functions
 		tree.accept(executor);
 		
-		//TODO fill instance
+		// fill instance
+		builder.populate(target, tree);
 		
 		// after property transformations, publish target instance
 		sink.addInstance(target);
