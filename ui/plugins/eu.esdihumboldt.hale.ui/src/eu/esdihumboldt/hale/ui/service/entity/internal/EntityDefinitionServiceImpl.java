@@ -155,7 +155,9 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		for (Cell cell : cells) {
 			Collection<EntityDefinition> addedContexts = new ArrayList<EntityDefinition>();
 			synchronized (additionalContexts) {
-				addedContexts.addAll(addMissingEntityContexts(cell.getSource().values()));
+				if (cell.getSource() != null) {
+					addedContexts.addAll(addMissingEntityContexts(cell.getSource().values()));
+				}
 				addedContexts.addAll(addMissingEntityContexts(cell.getTarget().values()));
 			}
 			if (!addedContexts.isEmpty()) {

@@ -97,7 +97,7 @@ public abstract class AlignmentUtil {
 	 */
 	public static boolean isAugmentation(Cell cell) {
 		// check if cell is an augmentation cell
-		return cell.getSource().isEmpty();
+		return cell.getSource() == null || cell.getSource().isEmpty();
 	}
 	
 	/**

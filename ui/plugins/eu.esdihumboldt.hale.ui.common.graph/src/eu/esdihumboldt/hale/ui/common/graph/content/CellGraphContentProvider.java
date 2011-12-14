@@ -92,8 +92,10 @@ public class CellGraphContentProvider extends ArrayContentProvider implements IG
 				Cell cell = (Cell) object;
 				
 				// add edges leading to the cell for each source entity
-				for (Entry<String, ? extends Entity> entry : cell.getSource().entries()) {
-					edges.add(new Edge(entry.getValue(), cell, entry.getKey()));
+				if (cell.getSource() != null) {
+					for (Entry<String, ? extends Entity> entry : cell.getSource().entries()) {
+						edges.add(new Edge(entry.getValue(), cell, entry.getKey()));
+					}
 				}
 				
 				// add edges leading to the target entities from the cell
