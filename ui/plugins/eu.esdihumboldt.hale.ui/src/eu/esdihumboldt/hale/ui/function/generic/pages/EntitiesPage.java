@@ -91,8 +91,10 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>,
 			targetCandidates.addAll(initialSelection.getTargetItems());
 		}
 		if (initialCell != null) {
-			for (Entity entity : initialCell.getSource().values()) {
-				sourceCandidates.add(entity.getDefinition());
+			if (initialCell.getSource() != null) {
+				for (Entity entity : initialCell.getSource().values()) {
+					sourceCandidates.add(entity.getDefinition());
+				}
 			}
 			for (Entity entity : initialCell.getTarget().values()) {
 				targetCandidates.add(entity.getDefinition());

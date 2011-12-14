@@ -55,12 +55,14 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 		
 		ListMultimap<SourceNode, String> sourceList = ArrayListMultimap.create();
 		
-		for (Entry<String, ? extends Entity> namedEntity : cell.getSource().entries()) {
-			SourceNode node = sourceNodes.getSourceNode(
-					namedEntity.getValue().getDefinition());
-			//XXX what about filter etc.?!
-//			node.addRelation(this);
-			sourceList.put(node, namedEntity.getKey());
+		if (cell.getSource() != null) {
+			for (Entry<String, ? extends Entity> namedEntity : cell.getSource().entries()) {
+				SourceNode node = sourceNodes.getSourceNode(
+						namedEntity.getValue().getDefinition());
+				//XXX what about filter etc.?!
+//				node.addRelation(this);
+				sourceList.put(node, namedEntity.getKey());
+			}
 		}
 		
 		sources = Multimaps.unmodifiableListMultimap(sourceList);

@@ -104,9 +104,11 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	private boolean associatedWith(
 			ListMultimap<String, ? extends Entity> entities,
 			EntityDefinition entityDef) {
-		for (Entity entity : entities.values()) {
-			if (entityDef.equals(entity.getDefinition())) {
-				return true;
+		if (entities != null) {
+			for (Entity entity : entities.values()) {
+				if (entityDef.equals(entity.getDefinition())) {
+					return true;
+				}
 			}
 		}
 		

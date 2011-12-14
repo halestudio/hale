@@ -24,7 +24,7 @@ public interface Cell {
 	 * Get the source entities.
 	 * For each the name is mapped to the entity. Multiple entities may share
 	 * the same name. The map may not be modified.
-	 * @return the source entities
+	 * @return the source entities, may be <code>null</code>
 	 */
 	public ListMultimap<String, ? extends Entity> getSource();
 	
