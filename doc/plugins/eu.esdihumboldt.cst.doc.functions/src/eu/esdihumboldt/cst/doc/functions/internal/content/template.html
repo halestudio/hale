@@ -13,12 +13,24 @@
 <b>Function Name:</b> $function.displayName <br />
 <b>Function ID:</b> $function.id <br />
 <b>Description:</b> $function.description<br />
-<b>Category:</b> $function.categoryId<br />
+#if($function.categoryId)
+<b>Category:</b> $!function.categoryId<br />
+#end
+<br />
+<img src="${function.id}.png" />
+<br />
 #if( $function.definedParameters.size() > 0 )
 <b>Parameter:</b> <br />
-   	#foreach ($param in $function.definedParameters.iterator())
+<ul>#foreach ($param in $function.definedParameters.iterator())
 		<li>$param.getDisplayName()</li>
+		<ul>
+		#if($param.getDescription())
+			<li><u>Description:</u> $!param.getDescription()</li>
+		#end
+			<li><u>Occurrence:</u> $param.getMinOccurrence() ... $param.getMaxOccurrence()</li>
+		</ul>
 	#end
+</ul>
 #end
 </p>
 <include path="$include"/>
