@@ -59,5 +59,6 @@
                 <child>{eu:esdihumboldt:hale:sample}area</child>
             </property>
         </target>
+        <parameter name="expression" value="width * height"/>
     </cell>
 </hale-alignment>
