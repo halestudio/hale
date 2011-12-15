@@ -35,8 +35,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.filter.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -65,7 +63,7 @@ import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
  */
 public class InstanceServiceSelector implements InstanceSelector {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(InstanceServiceSelector.class);
+//	private static final ALogger log = ALoggerFactory.getLogger(InstanceServiceSelector.class);
 	
 	/**
 	 * Instance selector control
