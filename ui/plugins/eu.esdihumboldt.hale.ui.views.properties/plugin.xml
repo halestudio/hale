@@ -340,7 +340,7 @@
       <propertyContributor
             contributorId="eu.esdihumboldt.hale.ui.views.properties"
             labelProvider="eu.esdihumboldt.hale.ui.views.properties.PropertiesLabelProvider"
-            typeMapper="eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionTypeMapper">
+            typeMapper="eu.esdihumboldt.hale.ui.views.properties.PropertiesTypeMapper">
          <propertyCategory
                category="eu.esdihumboldt.hale.ui.views.properties.definition">
          </propertyCategory>

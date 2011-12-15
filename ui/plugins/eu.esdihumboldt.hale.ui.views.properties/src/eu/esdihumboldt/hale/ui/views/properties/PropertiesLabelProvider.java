@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
@@ -44,6 +45,8 @@ public class PropertiesLabelProvider extends LabelProvider {
 			element = ((IStructuredSelection) element).getFirstElement();
 		}
 		
+		element = TransformationTreeUtil.extractObject(element);
+		
 		if (element instanceof Entity) {
 			element = ((Entity) element).getDefinition();
 		}
@@ -67,6 +70,8 @@ public class PropertiesLabelProvider extends LabelProvider {
 		if (element instanceof IStructuredSelection) {
 			element = ((IStructuredSelection) element).getFirstElement();
 		}
+		
+		element = TransformationTreeUtil.extractObject(element);
 		
 		if (element instanceof Entity) {
 			element = ((Entity) element).getDefinition();

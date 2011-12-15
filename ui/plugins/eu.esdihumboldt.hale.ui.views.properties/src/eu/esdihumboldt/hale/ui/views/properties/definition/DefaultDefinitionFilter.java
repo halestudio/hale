@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.IFilter;
 
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
@@ -35,6 +36,8 @@ public abstract class DefaultDefinitionFilter implements IFilter{
 	 */
 	@Override
 	public boolean select(Object input) {
+		input = TransformationTreeUtil.extractObject(input);
+		
 		if (input instanceof Entity) {
 			input = ((Entity) input).getDefinition();
 		}

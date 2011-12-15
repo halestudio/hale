@@ -10,29 +10,32 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.properties.definition;
+package eu.esdihumboldt.hale.ui.views.properties;
 
 import org.eclipse.ui.views.properties.tabbed.AbstractTypeMapper;
 import org.eclipse.ui.views.properties.tabbed.ITypeMapper;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 
 /**
  * Type mapper for objects containing definitions
  * @author Simon Templer
  */
-public class DefinitionTypeMapper extends AbstractTypeMapper {
+public class PropertiesTypeMapper extends AbstractTypeMapper {
 
 	/**
 	 * @see ITypeMapper#mapType(Object)
 	 */
 	@Override
 	public Class<?> mapType(Object object) {
+		object = TransformationTreeUtil.extractObject(object);
+		
 		if (object instanceof EntityDefinition) {
 			return ((EntityDefinition) object).getDefinition().getClass();
 		}
 		
-		return object.getClass();
+		return super.mapType(object);
 	}
 
 }
