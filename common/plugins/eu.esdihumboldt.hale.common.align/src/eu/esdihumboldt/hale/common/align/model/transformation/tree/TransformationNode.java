@@ -20,7 +20,8 @@ package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 public interface TransformationNode {
 	
 	/**
-	 * Clear all temporary transformation information, i.e all annotations.
+	 * Clear all temporary transformation information in the node, i.e all 
+	 * annotations.
 	 */
 	public void reset();
 	
