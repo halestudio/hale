@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.TreeColumn;
 
@@ -28,6 +29,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
 
 /**
  * Tree viewer for {@link Instance}s of a common type, based on the corresponding
@@ -36,7 +38,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class DefinitionInstanceTreeViewer {
+public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	
 	private static ALogger _log = ALoggerFactory.getLogger(DefinitionInstanceTreeViewer.class);
 	
@@ -66,11 +68,9 @@ public class DefinitionInstanceTreeViewer {
 	}
 	
 	/**
-	 * Set the tree view input
-	 * 
-	 * @param type the type definition
-	 * @param instances the instances to display
+	 * @see eu.esdihumboldt.hale.ui.views.data.InstanceViewer#setInput(eu.esdihumboldt.hale.common.schema.model.TypeDefinition, java.lang.Iterable)
 	 */
+	@Override
 	public void setInput(TypeDefinition type, Iterable<Instance> instances) {
 		// remove old columns
 		TreeColumn[] columns = treeViewer.getTree().getColumns();
@@ -191,11 +191,19 @@ public class DefinitionInstanceTreeViewer {
 	}
 
 	/**
-	 * Get the internal tree viewer.
-	 * @return the tree viewer
+	 * @see InstanceViewer#getViewer()
 	 */
-	public TreeViewer getTreeViewer() {
+	@Override
+	public TreeViewer getViewer() {
 		return treeViewer;
+	}
+
+	/**
+	 * @see InstanceViewer#getControl()
+	 */
+	@Override
+	public Control getControl() {
+		return treeViewer.getControl();
 	}
 
 }
