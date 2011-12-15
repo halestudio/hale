@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.hale.ui.views.data" name="Data View Extensions" schema="schema/eu.esdihumboldt.hale.ui.views.data.exsd"/>
    <extension
          point="org.eclipse.ui.views">
       <view
@@ -19,6 +20,19 @@
             name="%view.transformedTable.name"
             restorable="true">
       </view>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.views.data">
+      <instanceView
+            class="eu.esdihumboldt.hale.ui.views.data.internal.compare.DefinitionInstanceTreeViewer"
+            id="eu.esdihumboldt.hale.ui.views.data.compare"
+            name="Compare">
+      </instanceView>
+      <instanceView
+            class="eu.esdihumboldt.hale.ui.views.data.internal.explore.InstanceExplorer"
+            id="eu.esdihumboldt.hale.ui.views.data.explore"
+            name="Explore">
+      </instanceView>
    </extension>
 
 </plugin>

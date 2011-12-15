@@ -11,6 +11,9 @@
  */
 package eu.esdihumboldt.hale.ui.views.data;
 
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -20,10 +23,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.WorkbenchPart;
 
+import de.cs3d.ui.util.eclipse.extension.exclusive.ExclusiveExtensionContribution;
+import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
+import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
-import eu.esdihumboldt.hale.ui.views.data.internal.compare.DefinitionInstanceTreeViewer;
+import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
+import eu.esdihumboldt.hale.ui.views.data.internal.extension.InstanceViewController;
+import eu.esdihumboldt.hale.ui.views.data.internal.extension.InstanceViewFactory;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
@@ -40,23 +48,37 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	/**
 	 * The instance viewer
 	 */
-	private InstanceViewer tree;
+	private InstanceViewer viewer;
 	
 	private Composite selectorComposite;
 	
-	private InstanceSelector featureSelector;
+	private InstanceSelector instanceSelector;
 	
 	private Control selectorControl;
+
+	private Composite viewerComposite;
+	
+	private final InstanceViewController controller;
+
+	private TypeDefinition lastType;
+
+	private Iterable<Instance> lastSelection;
 	
 	/**
 	 * Creates a table view
 	 * 
-	 * @param featureSelector the feature selector
+	 * @param instanceSelector the feature selector
+	 * @param controllerPreferenceKey the preference key for storing the
+	 *   instance view controller configuration
 	 */
-	public AbstractDataView(InstanceSelector featureSelector) {
+	public AbstractDataView(InstanceSelector instanceSelector, 
+			String controllerPreferenceKey) {
 		super();
 		
-		this.featureSelector = featureSelector;
+		this.instanceSelector = instanceSelector;
+		this.controller = new InstanceViewController(
+				DataViewPlugin.getDefault().getPreferenceStore(), 
+				controllerPreferenceKey);
 	}
 
 	/**
@@ -96,29 +118,75 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		selectorComposite.setLayout(gridLayout);
 		
 		// tree composite
-		Composite viewerComposite = new Composite(page, SWT.NONE);
+		viewerComposite = new Composite(page, SWT.NONE);
 		viewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		// tree column layout
 		FillLayout fillLayout = new FillLayout();
 		fillLayout.marginHeight = 0;
 		fillLayout.marginWidth = 0;
-		viewerComposite.setLayout(fillLayout );
+		viewerComposite.setLayout(fillLayout);
 		
-		// tree viewer
-		tree = new DefinitionInstanceTreeViewer(viewerComposite);
+		fillActionBars();
 		
 		// selector
-		setInstanceSelector(featureSelector);
+		setInstanceSelector(instanceSelector);
 		
-		getSite().setSelectionProvider(tree.getViewer());
+		// tree viewer
+		updateViewer(controller.getCurrent());
 		
-		new ViewerMenu(getSite(), tree.getViewer());
+		controller.addListener(new ExclusiveExtensionListener<InstanceViewer, InstanceViewFactory>() {
+			
+			@Override
+			public void currentObjectChanged(InstanceViewer current,
+					InstanceViewFactory definition) {
+				updateViewer(current);
+			}
+		});
+	}
+
+	/**
+	 * Fill the action bars
+	 */
+	private void fillActionBars() {
+		IContributionItem viewSelector = new ExclusiveExtensionContribution<InstanceViewer, InstanceViewFactory>() {
+			@Override
+			protected ExclusiveExtension<InstanceViewer, InstanceViewFactory> initExtension() {
+				return controller;
+			}
+		};
 		
-		// set the help ID for context sensitive help (anchor has to be set in */doc.user.ui.views.data/toc.views.xml)
-		//XXX anchor? what for regarding context help?
-		//XXX replaced by getViewContext
-//		PlatformUI.getWorkbench().getHelpSystem().setHelp(page, "eu.esdihumboldt.hale.doc.user.dataView");
+		IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+		toolbar.add(viewSelector);
+		
+		IMenuManager menu = getViewSite().getActionBars().getMenuManager();
+		menu.add(viewSelector);
+	}
+
+	/**
+	 * Update on viewer change.
+	 * @param viewer the new viewer
+	 */
+	private void updateViewer(InstanceViewer viewer) {
+		if (this.viewer != null) {
+			// clear selection provider
+			getSite().setSelectionProvider(null);
+			// dispose old viewer
+			this.viewer.getControl().dispose();
+		}
+
+		// create new viewer controls
+		viewer.createControls(viewerComposite);
+		
+		viewer.setInput(lastType, lastSelection);
+		
+		viewerComposite.layout(true, true);
+		
+		// setup selection provider and menu
+		getSite().setSelectionProvider(viewer.getViewer());
+		new ViewerMenu(getSite(), viewer.getViewer());
+		
+		this.viewer = viewer;
 	}
 
 	/**
@@ -127,7 +195,6 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	@Override
 	protected String getViewContext() {
 		return "eu.esdihumboldt.hale.doc.user.ui.views.data.dataViews";
-//		return "eu.esdihumboldt.hale.doc.user.dataView";
 	}
 
 	/**
@@ -147,21 +214,21 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	 */
 	@Override
 	public void setFocus() {
-		tree.getViewer().getControl().setFocus();
+		viewer.getViewer().getControl().setFocus();
 	}
 
 	/**
 	 * @return the featureSelector
 	 */
 	public InstanceSelector getFeatureSelector() {
-		return featureSelector;
+		return instanceSelector;
 	}
 
 	/**
 	 * @param instanceSelector the instance selector to set
 	 */
 	public void setInstanceSelector(InstanceSelector instanceSelector) {
-		this.featureSelector = instanceSelector;
+		this.instanceSelector = instanceSelector;
 		
 		// remove old control
 		if (selectorControl != null) {
@@ -180,7 +247,11 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 			
 			@Override
 			public void selectionChanged(TypeDefinition type, Iterable<Instance> selection) {
-				tree.setInput(type, selection);
+				if (viewer != null) {
+					viewer.setInput(type, selection);
+				}
+				lastType = type;
+				lastSelection = selection;
 				onSelectionChange(selection);
 			}
 		});
