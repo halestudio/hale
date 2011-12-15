@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.data.internal.tree;
+package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
 import java.text.MessageFormat;
 

@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.views.data.internal.tree;
+package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -23,8 +23,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.TreeColumn;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
@@ -40,9 +38,11 @@ import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
  */
 public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	
-	private static ALogger _log = ALoggerFactory.getLogger(DefinitionInstanceTreeViewer.class);
+//	private static ALogger _log = ALoggerFactory.getLogger(DefinitionInstanceTreeViewer.class);
 	
 	private final TreeViewer treeViewer;
+	
+	private final Composite main;
 	
 	/**
 	 * Create a feature tree viewer
@@ -52,7 +52,10 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	public DefinitionInstanceTreeViewer(final Composite parent) {
 		super();
 		
-		treeViewer = new TreeViewer(parent, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
+		main = new Composite(parent, SWT.NONE);
+		main.setLayout(new TreeColumnLayout());
+		
+		treeViewer = new TreeViewer(main, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 		
 		treeViewer.setContentProvider(new TypeDefinitionContentProvider(treeViewer));
 		treeViewer.setLabelProvider(new DefinitionLabelProvider());

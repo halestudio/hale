@@ -11,8 +11,9 @@
  */
 package eu.esdihumboldt.hale.ui.views.data;
 
-import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -22,9 +23,9 @@ import org.eclipse.ui.part.WorkbenchPart;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
+import eu.esdihumboldt.hale.ui.views.data.internal.compare.DefinitionInstanceTreeViewer;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
-import eu.esdihumboldt.hale.ui.views.data.internal.tree.DefinitionInstanceTreeViewer;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
@@ -37,7 +38,7 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 public abstract class AbstractDataView extends PropertiesViewPart {
 
 	/**
-	 * The feature tree viewer
+	 * The instance viewer
 	 */
 	private InstanceViewer tree;
 	
@@ -67,7 +68,7 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.heightHint = 300;
 		page.setLayoutData(data);
-		page.setLayout(new GridLayout(1, false));
+		page.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
 		
 		// bar composite
 		Composite bar = new Composite(page, SWT.NONE);
@@ -95,15 +96,17 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		selectorComposite.setLayout(gridLayout);
 		
 		// tree composite
-		Composite treeComposite = new Composite(page, SWT.NONE);
-		treeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		Composite viewerComposite = new Composite(page, SWT.NONE);
+		viewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		// tree column layout
-		TreeColumnLayout layout = new TreeColumnLayout(); 
-		treeComposite.setLayout(layout);
+		FillLayout fillLayout = new FillLayout();
+		fillLayout.marginHeight = 0;
+		fillLayout.marginWidth = 0;
+		viewerComposite.setLayout(fillLayout );
 		
 		// tree viewer
-		tree = new DefinitionInstanceTreeViewer(treeComposite); //new FeatureTreeViewer(treeComposite);
+		tree = new DefinitionInstanceTreeViewer(viewerComposite);
 		
 		// selector
 		setInstanceSelector(featureSelector);
