@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.data;
 
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -24,6 +25,12 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 public interface InstanceViewer {
 
+	/**
+	 * Create the viewer controls.
+	 * @param parent the parent composite
+	 */
+	public void createControls(Composite parent);
+	
 	/**
 	 * Set the input.
 	 * @param type the type definition
