@@ -57,7 +57,7 @@ public class SourceDataView extends AbstractDataView {
 	 * Default constructor
 	 */
 	public SourceDataView() {
-		super(new InstanceServiceSelector(SchemaSpaceID.SOURCE));
+		super(new InstanceServiceSelector(SchemaSpaceID.SOURCE), ID + ".viewer");
 		
 		instanceSelector = (InstanceServiceSelector) getFeatureSelector();
 		// another selector based on the map selection

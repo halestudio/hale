@@ -96,7 +96,10 @@ public class InstanceServiceSelector implements InstanceSelector {
 			
 			refreshImage = DataViewPlugin.getImageDescriptor("icons/refresh.gif").createImage(); //$NON-NLS-1$
 			
-			setLayout(new GridLayout((spaceID == null)?(4):(3), false));
+			GridLayout layout = new GridLayout((spaceID == null)?(4):(3), false);
+			layout.marginHeight = 2;
+			layout.marginWidth = 3;
+			setLayout(layout );
 			
 			// schema type selector
 			if (spaceID == null) {

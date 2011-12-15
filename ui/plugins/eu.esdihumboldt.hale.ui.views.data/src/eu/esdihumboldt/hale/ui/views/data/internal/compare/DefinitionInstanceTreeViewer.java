@@ -40,18 +40,15 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	
 //	private static ALogger _log = ALoggerFactory.getLogger(DefinitionInstanceTreeViewer.class);
 	
-	private final TreeViewer treeViewer;
+	private TreeViewer treeViewer;
 	
-	private final Composite main;
+	private Composite main;
 	
 	/**
-	 * Create a feature tree viewer
-	 * 
-	 * @param parent the parent composite of the tree widget
+	 * @see InstanceViewer#createControls(Composite)
 	 */
-	public DefinitionInstanceTreeViewer(final Composite parent) {
-		super();
-		
+	@Override
+	public void createControls(Composite parent) {
 		main = new Composite(parent, SWT.NONE);
 		main.setLayout(new TreeColumnLayout());
 		
@@ -71,7 +68,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	}
 	
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.data.InstanceViewer#setInput(eu.esdihumboldt.hale.common.schema.model.TypeDefinition, java.lang.Iterable)
+	 * @see InstanceViewer#setInput(TypeDefinition, Iterable)
 	 */
 	@Override
 	public void setInput(TypeDefinition type, Iterable<Instance> instances) {
@@ -206,7 +203,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	 */
 	@Override
 	public Control getControl() {
-		return treeViewer.getControl();
+		return main;
 	}
 
 }
