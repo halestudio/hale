@@ -13,6 +13,10 @@
 package eu.esdihumboldt.hale.ui.views.properties.function;
 
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
+import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
  * The default functions section
@@ -22,15 +26,21 @@ import eu.esdihumboldt.hale.common.align.extension.function.Function;
 public class DefaultFunctionSection<F extends Function> extends AbstractFunctionSection<F>{
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.AbstractSection#setInput(java.lang.Object)
+	 * @see AbstractSection#setInput(Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void setInput(Object input) {
+		input = TransformationTreeUtil.extractObject(input);
+		
+		if (input instanceof Cell) {
+			String id = ((Cell) input).getTransformationIdentifier();
+			input = FunctionUtil.getFunction(id);
+		}
+		
 		if (input instanceof Function) {
 			setFunction((F) input);
 		}
-		
 	}
 
 }

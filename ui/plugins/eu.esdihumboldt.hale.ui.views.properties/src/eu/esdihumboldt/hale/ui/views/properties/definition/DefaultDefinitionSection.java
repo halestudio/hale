@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.views.properties.definition;
 
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
@@ -30,6 +31,8 @@ public abstract class DefaultDefinitionSection<T extends Definition<?>> extends 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void setInput(Object input) {
+		input = TransformationTreeUtil.extractObject(input);
+		
 		if (input instanceof Entity) {
 			input = ((Entity) input).getDefinition();
 		}

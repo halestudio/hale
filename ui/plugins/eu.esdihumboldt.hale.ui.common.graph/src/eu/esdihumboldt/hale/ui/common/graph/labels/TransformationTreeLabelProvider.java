@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
@@ -72,7 +73,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public Image getImage(Object element) {
-		element = extractObject(element);
+		element = TransformationTreeUtil.extractObject(element);
 		
 		return super.getImage(element);
 	}
@@ -138,7 +139,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 			}
 		}
 		
-		element = extractObject(element);
+		element = TransformationTreeUtil.extractObject(element);
 		
 		return super.getText(element);
 	}
@@ -148,7 +149,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public Color getNodeHighlightColor(Object entity) {
-		entity = extractObject(entity);
+		entity = TransformationTreeUtil.extractObject(entity);
 		
 		return super.getNodeHighlightColor(entity);
 	}
@@ -158,7 +159,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public Color getBorderColor(Object entity) {
-		entity = extractObject(entity);
+		entity = TransformationTreeUtil.extractObject(entity);
 		
 		return super.getBorderColor(entity);
 	}
@@ -168,7 +169,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public Color getBorderHighlightColor(Object entity) {
-		entity = extractObject(entity);
+		entity = TransformationTreeUtil.extractObject(entity);
 		
 		return super.getBorderHighlightColor(entity);
 	}
@@ -187,7 +188,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 			}
 		}
 		
-		entity = extractObject(entity);
+		entity = TransformationTreeUtil.extractObject(entity);
 		
 		return super.getBackgroundColour(entity);
 	}
@@ -237,7 +238,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public Color getForegroundColour(Object entity) {
-		entity = extractObject(entity);
+		entity = TransformationTreeUtil.extractObject(entity);
 		
 		return super.getForegroundColour(entity);
 	}
@@ -278,31 +279,9 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 			return new CustomShapeLabel(shape);
 		}
 		
-		element = extractObject(element);
+		element = TransformationTreeUtil.extractObject(element);
 		
 		return super.getFigure(element);
-	}
-
-	/**
-	 * Extract the definition or cell contained in a node
-	 * @param node the node
-	 * @return the contained definition, cell or the node itself
-	 */
-	private Object extractObject(Object node) {
-		if (node instanceof TransformationTree) {
-			return ((TransformationTree) node).getType();
-		}
-		if (node instanceof TargetNode) {
-			return ((TargetNode) node).getEntityDefinition();
-		}
-		if (node instanceof CellNode) {
-			return ((CellNode) node).getCell();
-		}
-		if (node instanceof SourceNode) {
-			return ((SourceNode) node).getEntityDefinition();
-		}
-		
-		return node;
 	}
 
 	/**
