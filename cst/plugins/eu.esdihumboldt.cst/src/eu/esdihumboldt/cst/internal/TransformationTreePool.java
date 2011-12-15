@@ -20,6 +20,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.ResetVisitor;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -31,6 +32,8 @@ public class TransformationTreePool {
 	private final Alignment alignment;
 	
 	private final ListMultimap<TypeDefinition, TransformationTree> trees;
+	
+	private final ResetVisitor resetVisitor = new ResetVisitor();
 
 	/**
 	 * Create a transformation tree pool.
@@ -67,7 +70,7 @@ public class TransformationTreePool {
 	 * @param tree the transformation tree that is no longer needed
 	 */
 	public void releaseTree(TransformationTree tree) {
-		tree.reset(); // remove all annotations
+		tree.accept(resetVisitor); // remove all annotations
 		synchronized (trees) {
 			trees.put(tree.getType(), tree);
 		}
