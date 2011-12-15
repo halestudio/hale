@@ -39,7 +39,7 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	/**
 	 * The feature tree viewer
 	 */
-	private DefinitionInstanceTreeViewer tree;
+	private InstanceViewer tree;
 	
 	private Composite selectorComposite;
 	
@@ -108,9 +108,9 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		// selector
 		setInstanceSelector(featureSelector);
 		
-		getSite().setSelectionProvider(tree.getTreeViewer());
+		getSite().setSelectionProvider(tree.getViewer());
 		
-		new ViewerMenu(getSite(), tree.getTreeViewer());
+		new ViewerMenu(getSite(), tree.getViewer());
 		
 		// set the help ID for context sensitive help (anchor has to be set in */doc.user.ui.views.data/toc.views.xml)
 		//XXX anchor? what for regarding context help?
@@ -144,7 +144,7 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	 */
 	@Override
 	public void setFocus() {
-		tree.getTreeViewer().getControl().setFocus();
+		tree.getViewer().getControl().setFocus();
 	}
 
 	/**
