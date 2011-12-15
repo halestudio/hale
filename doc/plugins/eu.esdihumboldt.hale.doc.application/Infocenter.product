@@ -28,6 +28,7 @@
       <plugin id="ch.qos.logback.core"/>
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.google.guava"/>
+      <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.orientechnologies.orient"/>
       <plugin id="com.springsource.javax.el"/>
