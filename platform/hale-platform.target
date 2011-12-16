@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="eu.esdihumboldt.hale.platform" sequenceNumber="11">
+<target name="eu.esdihumboldt.hale.platform" sequenceNumber="13">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.apache.xml.serializer" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.el" type="Directory"/>
@@ -65,5 +65,7 @@
 <unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.5.0.v20110607-1200-67N09E9QnChoWswz-3wf_rz0kQ8Y"/>
 <repository location="http://www.cityserver3d.de/updates/releases/indigo"/>
 </location>
+<location path="${project_loc:hale-platform}/target/org.codehaus.groovy" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.antlr" type="Directory"/>
 </locations>
 </target>
