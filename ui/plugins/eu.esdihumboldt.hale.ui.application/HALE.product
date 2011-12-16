@@ -51,6 +51,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.orientechnologies.orient"/>
+      <plugin id="com.springsource.antlr"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
       <plugin id="com.springsource.javax.activation"/>
@@ -73,6 +74,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.org.apache.xmlbeans"/>
       <plugin id="com.springsource.org.apache.xmlcommons"/>
       <plugin id="com.springsource.org.castor"/>
+      <plugin id="com.springsource.org.codehaus.groovy"/>
       <plugin id="com.springsource.org.custommonkey.xmlunit"/>
       <plugin id="com.springsource.org.dom4j"/>
       <plugin id="com.springsource.org.jvnet.staxex"/>
@@ -95,6 +97,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
       <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test" fragment="true"/>
@@ -275,6 +278,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.junit4"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
+      <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
