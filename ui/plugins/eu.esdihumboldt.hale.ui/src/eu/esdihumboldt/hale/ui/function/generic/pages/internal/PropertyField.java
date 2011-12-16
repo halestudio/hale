@@ -69,7 +69,7 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	@Override
 	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid, 
 			PropertyParameter field, Composite parent) {
-		return new PropertyEntitySelector(ssid, field, parent, null);
+		return new PropertyEntitySelector(ssid, field, parent, parentType);
 	}
 
 	/**

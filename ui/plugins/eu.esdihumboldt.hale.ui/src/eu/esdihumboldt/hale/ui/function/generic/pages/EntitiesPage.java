@@ -21,10 +21,13 @@ import java.util.Set;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -118,10 +121,10 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>,
 		}
 		
 		Control source = createEntityGroup(SchemaSpaceID.SOURCE, page);
-		source.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		source.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		Control target = createEntityGroup(SchemaSpaceID.TARGET, page);
-		target.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		target.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		updateState();
 	}
@@ -193,7 +196,18 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>,
 	 * @return the main group control
 	 */
 	protected Control createEntityGroup(SchemaSpaceID ssid, Composite parent) {
-		Group main = new Group(parent, SWT.NONE);
+		// return another Composite, since the returned Control's layoutData are overwritten.
+		Composite holder = new Composite(parent, SWT.NONE);
+		holder.setLayout(GridLayoutFactory.fillDefaults().create());
+		
+		// Important: Field does rely on DynamicScrolledComposite to be the parent of its parent,
+		// because sadly layout(true, true) on the Shell does not seem to propagate to this place.
+		ScrolledComposite sc = new DynamicScrolledComposite(holder, SWT.V_SCROLL);
+		sc.setExpandHorizontal(true);
+		sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200).create());
+		
+		Group main = new Group(sc, SWT.NONE);
+		sc.setContent(main);
 		main.setLayout(GridLayoutFactory.swtDefaults().numColumns(1)
 				.margins(10, 5).create());
 		
@@ -229,8 +243,8 @@ public abstract class EntitiesPage<T extends AbstractFunction<D>,
 				functionField.addObserver(fieldObserver);
 			}
 		}
-		
-		return main;
+
+		return holder;
 	}
 
 	/**
