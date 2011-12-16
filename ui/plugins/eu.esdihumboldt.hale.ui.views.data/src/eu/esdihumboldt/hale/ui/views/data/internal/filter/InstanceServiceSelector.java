@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.filter.Filter;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -144,7 +145,6 @@ public class InstanceServiceSelector implements InstanceSelector {
 				
 			});
 			
-			//TODO Definitionswahnsinn
 			
 			
 			// filter field
@@ -325,10 +325,10 @@ public class InstanceServiceSelector implements InstanceSelector {
 				List<Instance> instanceList = new ArrayList<Instance>();
 				DataSet dataset = (space == SchemaSpaceID.SOURCE)?(DataSet.SOURCE):(DataSet.TRANSFORMED);
 				try {
-					//TODO Filter Fun
+					//Filter Fun
 					Filter filter = filterField.getCQLFilter();
 					
-					InstanceCollection instances = is.getInstances(dataset); //FIXME return instances by type
+					InstanceCollection instances = is.getInstances(dataset);
 					ResourceIterator<Instance> it = instances.iterator();
 					
 					
@@ -336,7 +336,6 @@ public class InstanceServiceSelector implements InstanceSelector {
 						try {
 							int num = 0;
 							while (it.hasNext() && num < max) {
-								//XXX only correct type XXX should not be necessary
 								Instance instance = it.next();
 								if (instance.getDefinition().equals(type)) {
 									instanceList.add(instance);
@@ -353,6 +352,10 @@ public class InstanceServiceSelector implements InstanceSelector {
 						while (it.hasNext() && num < max) {
 							Instance instance = it.next();
 						if (filter.match(instance)) {
+							
+							if(!PropertyResolver.isLastQueryPathUnique()){
+								filterField.setDecoration("WARNING", "More then one possible match in the instance was found. \n Please specify you Query with namespaces,\n for example: \"{http://example.com}foo.{http://example2.com}.bar\" = 'nill'");
+							}
 								instanceList.add(instance);
 								num++;
 							}

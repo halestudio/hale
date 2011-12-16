@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.feature.type.PropertyDescriptor;
@@ -129,6 +130,8 @@ public class FeatureFilterField extends Composite {
 			}
 			
 		});
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(filterText, 
+				"eu.esdihumboldt.hale.doc.user.filter_field");
 		
 		 decoration = new ControlDecoration(filterText, SWT.RIGHT | SWT.TOP);
 		 setDecorationDefault();
@@ -320,6 +323,10 @@ public class FeatureFilterField extends Composite {
 		}
 	}
 
+	/**
+	 * @param type
+	 * @param message
+	 */
 	public void setDecoration(String type, String message) {
 		
 		if(type.equals("ERROR")){
@@ -332,6 +339,13 @@ public class FeatureFilterField extends Composite {
 		if(type.equals("DEFAULT")){
 			setDecorationDefault();
 		}
+		if(type.equals("WARNING")){
+			decoration.setImage(FieldDecorationRegistry.getDefault()
+	                .getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage());
+			decoration.setDescriptionText(message);
+			decoration.show();
+		}
+		
 	}
 	
 	private void setDecorationDefault(){

@@ -40,6 +40,7 @@ public class PropertyResolver {
 	
 	//the cache for storing found paths in instance definitions for certain querys
 	private static Map<QueryDefinitionIndex, LinkedList<String>> definitioncache = new HashMap<QueryDefinitionIndex, LinkedList<String>>();
+	private static QueryDefinitionIndex lastQDI;
 
 	/**
 	 * method for retrieving values from instances using a certain pathquery for searching trough the instance definitions
@@ -260,6 +261,8 @@ public class PropertyResolver {
 		QueryDefinitionIndex qdi = new QueryDefinitionIndex(
 				instance.getDefinition(), query);
 		
+		lastQDI = qdi;
+		
 		if(definitioncache.containsKey(qdi)){
 			
 			if(definitioncache.get(qdi).isEmpty()){
@@ -276,8 +279,10 @@ public class PropertyResolver {
 	 * the method writes the found paths into the cache
 	 * @param children a list of Childdefinitions from the rootdefinition of the instance-definition-tree
 	 * @param path the list of QNames split up from the original querypath
+	 * @param qdi 
 	 * @param qci the cacheindex produced from the instance root definition and the querypath
 	 */
+	@SuppressWarnings("unused")
 	private static void analyzeSimpleQueryChildDefinition(
 			Collection<? extends ChildDefinition<?>> children,
 			ArrayList<QName> path, QueryDefinitionIndex qdi) {
@@ -474,6 +479,7 @@ public class PropertyResolver {
 	 * the method writes the found paths into the cache
 	 * @param children a list of Childdefinitions from the rootdefinition of the instance-definition-tree
 	 * @param path the list of QNames split up from the original querypath
+	 * @param qdi 
 	 * @param qci the cacheindex produced from the instance root definition and the querypath
 	 */
 	private static void analyzeSpecialQueryChildDefinition(
@@ -634,6 +640,16 @@ public class PropertyResolver {
 		
 		
 		return definitioncache.get(qdi);
+		
+	}
+	
+	public static boolean isLastQueryPathUnique(){
+		
+		if(definitioncache.get(lastQDI).size() > 1) {
+			return false;
+		}
+		
+		else return true;
 		
 	}
 
