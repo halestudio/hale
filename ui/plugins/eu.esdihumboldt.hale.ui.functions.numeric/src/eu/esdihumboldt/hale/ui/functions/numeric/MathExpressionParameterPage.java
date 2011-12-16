@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -147,7 +148,7 @@ public class MathExpressionParameterPage extends HaleWizardPage<AbstractGenericF
 
 		// variables table
 		Composite tableComposite = new Composite(page, SWT.NONE);
-		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		tableComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		TableColumnLayout columnLayout = new TableColumnLayout();
 		tableComposite.setLayout(columnLayout);
 		varTable = new TableViewer(tableComposite, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);

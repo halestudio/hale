@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -82,20 +81,9 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 		
 		TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
 		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
-		
-		viewer.setContentProvider(new ObjectContentProvider() {
 
-			@Override
-			public void inputChanged(Viewer viewer, Object oldInput,
-					Object newInput) {
-				currentInput = newInput;
-				// inform about the input change
-				fireSelectionChange();
-			}
-			
-		});
+		viewer.setContentProvider(ObjectContentProvider.getInstance());
 		viewer.setLabelProvider(new DefinitionLabelProvider(true, true) {
-
 			@Override
 			public String getText(Object element) {
 				if (element == NoObject.NONE) {
@@ -103,7 +91,6 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 				}
 				return super.getText(element);
 			}
-			
 		});
 
 		filters = createFilters(field);
@@ -117,7 +104,6 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 		viewer.setInput(select);
 		
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (event.getSelection().isEmpty()) {
@@ -130,12 +116,15 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 				dialog.setFilters(viewer.getFilters());
 				if (dialog.open() == EntityDialog.OK) {
 					EntityDefinition entity = dialog.getEntity();
+					if ((entity == null && currentInput == null) || (entity != null && entity.equals(currentInput)))
+						return;
 					if (entity != null) {
-						viewer.setInput(entity);
+						currentInput = entity;
 					}
 					else {
-						viewer.setInput(NoObject.NONE);
+						currentInput = NoObject.NONE;
 					}
+					viewer.setInput(currentInput);
 					/*
 					 * XXX Bug on Mac? - Viewer is not refreshed correctly until 
 					 * user clicks on the wizard.
@@ -146,6 +135,9 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 					 */
 				}
 				viewer.setSelection(new StructuredSelection());
+
+				// inform about the input change
+				fireSelectionChange();
 			}
 			
 		});
