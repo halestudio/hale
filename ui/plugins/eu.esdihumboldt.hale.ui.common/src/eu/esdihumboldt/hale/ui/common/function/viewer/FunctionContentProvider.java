@@ -102,7 +102,7 @@ public class FunctionContentProvider implements ITreeContentProvider {
 		if (element instanceof AbstractFunction<?>) {
 			String catId = ((AbstractFunction<?>) element).getCategoryId();
 			
-			Category cat = CategoryExtension.getInstance().get(catId);
+			Category cat = (catId == null)?(null):(CategoryExtension.getInstance().get(catId));
 			if (cat == null) {
 				cat = CAT_OTHER;
 			}
