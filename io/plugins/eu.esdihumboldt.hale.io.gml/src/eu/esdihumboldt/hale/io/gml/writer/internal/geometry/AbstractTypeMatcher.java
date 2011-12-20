@@ -18,13 +18,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 
-import org.opengis.feature.type.Name;
+import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
  * Abstract type matcher. Finds candidates matching a custom parameter.
@@ -93,7 +95,7 @@ public abstract class AbstractTypeMatcher<T> {
 	 * @return the path candidates
 	 */
 	public List<DefinitionPath> findCandidates(TypeDefinition elementType, 
-			Name elementName, boolean unique, T matchParam) {
+			QName elementName, boolean unique, T matchParam) {
 		Queue<PathCandidate> candidates = new LinkedList<PathCandidate>();
 		PathCandidate base = new PathCandidate(elementType, 
 				new DefinitionPath(elementType, elementName, unique),
@@ -120,42 +122,43 @@ public abstract class AbstractTypeMatcher<T> {
 				//XXX currently always only one path is returned - this might change if we allow matchPath to yield multiple results
 			}
 			
-			if (!type.isAbstract()) { // only allow stepping down properties if the type is not abstract
+			if (!type.getConstraint(AbstractFlag.class).isEnabled()) { // only allow stepping down properties if the type is not abstract
 				// step down properties
-				Iterable<AttributeDefinition> properties = (basePath.isEmpty() || basePath.getLastElement().isProperty())?(type.getAttributes()):(type.getDeclaredAttributes());
-				for (AttributeDefinition att : properties) {
-					if (att.isElement() && att.getAttributeType() != null) { // only descend into elements, only descend if there actually is a type definition available
-						candidates.add(new PathCandidate(att.getAttributeType(), 
-								new DefinitionPath(basePath).addProperty(att), 
+				//XXX why differentiate here?
+				@SuppressWarnings("unchecked")
+				Iterable<ChildDefinition<?>> children = (Iterable<ChildDefinition<?>>) ((basePath.isEmpty() || basePath.getLastElement().isProperty())?(type.getChildren()):(type.getDeclaredChildren()));
+				Iterable<PropertyDefinition> properties = GmlWriterUtil.collectProperties(children);
+				for (PropertyDefinition prop : properties) {
+					if (!prop.getConstraint(XmlAttributeFlag.class).isEnabled()) {
+						// only descend into elements
+						candidates.add(new PathCandidate(prop.getPropertyType(), 
+								new DefinitionPath(basePath).addProperty(prop), 
 								new HashSet<TypeDefinition>(checkedTypes)));
 					}
 				}
 			}
 			
 			// step down sub-types
-//			for (TypeDefinition subtype : type.getSubTypes()) {
-//				candidates.add(new PathCandidate(subtype,
-//						new DefinitionPath(basePath).addSubType(subtype),
+			//XXX done through choice
+//			Set<TypeDefinition> substitutionTypes = new HashSet<TypeDefinition>();
+//			for (SchemaElement element : type.getSubstitutions(basePath.getLastName())) {
+//				substitutionTypes.add(element.getType());
+//				candidates.add(new PathCandidate(element.getType(),
+//						new DefinitionPath(basePath).addSubstitution(element),
 //						new HashSet<TypeDefinition>(checkedTypes)));
 //			}
-			Set<TypeDefinition> substitutionTypes = new HashSet<TypeDefinition>();
-			for (SchemaElement element : type.getSubstitutions(basePath.getLastName())) {
-				substitutionTypes.add(element.getType());
-				candidates.add(new PathCandidate(element.getType(),
-						new DefinitionPath(basePath).addSubstitution(element),
-						new HashSet<TypeDefinition>(checkedTypes)));
-			}
 			
 			// step down sub-types - elements may be downcast using xsi:type
-			if (!type.isAbstract()) { // don't do it for abstract types as they have no element that may be used XXX is this true?
+			if (!type.getConstraint(AbstractFlag.class).isEnabled()) { // don't do it for abstract types as they have no element that may be used XXX is this true?
 				for (TypeDefinition subtype : type.getSubTypes()) {
-					if (!substitutionTypes.contains(subtype)) { // only types that are no valid substitutions
-						// add candidate
-//						Name element = basePath.getLastName(); // the element name that will be extended with xsi:type
-						candidates.add(new PathCandidate(subtype,
-								new DefinitionPath(basePath).addDowncast(subtype),
-								new HashSet<TypeDefinition>(checkedTypes)));
-					}
+					//FIXME how to determine which types are ok for xsi:type?!
+//					if (!substitutionTypes.contains(subtype)) { // only types that are no valid substitutions
+//						// add candidate
+////						Name element = basePath.getLastName(); // the element name that will be extended with xsi:type
+//						candidates.add(new PathCandidate(subtype,
+//								new DefinitionPath(basePath).addDowncast(subtype),
+//								new HashSet<TypeDefinition>(checkedTypes)));
+//					}
 				}
 			}
 		}

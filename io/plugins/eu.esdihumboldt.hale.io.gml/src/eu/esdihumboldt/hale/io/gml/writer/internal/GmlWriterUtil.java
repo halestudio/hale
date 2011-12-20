@@ -12,25 +12,29 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal;
 
-import java.util.Arrays;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.geotools.feature.NameImpl;
-import org.opengis.feature.ComplexAttribute;
-import org.opengis.feature.Property;
-import org.opengis.feature.type.Name;
-
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.commons.tools.FeatureInspector;
+import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
  * Utility methods used for the GML writer
@@ -48,15 +52,15 @@ public abstract class GmlWriterUtil {
 	 * @param type the type definition
 	 * @return the element name
 	 */
-	public static Name getElementName(TypeDefinition type) {
-		Set<SchemaElement> elements = type.getDeclaringElements();
+	public static QName getElementName(TypeDefinition type) {
+		Collection<? extends XmlElement> elements = type.getConstraint(XmlElements.class).getElements();
 		if (elements == null || elements.isEmpty()) {
 			log.debug("No schema element for type " + type.getDisplayName() +  //$NON-NLS-1$
 					" found, using type name instead"); //$NON-NLS-1$
 			return type.getName();
 		}
 		else {
-			Name elementName = elements.iterator().next().getElementName();
+			QName elementName = elements.iterator().next().getName();
 			if (elements.size() > 1) {
 				log.warn("Multiple element definitions for type " +  //$NON-NLS-1$
 						type.getDisplayName() + " found, using element " +  //$NON-NLS-1$
@@ -103,7 +107,7 @@ public abstract class GmlWriterUtil {
 	 * @return if the type represents an ID
 	 */
 	public static boolean isID(TypeDefinition type) {
-		if (type.getName().equals(new NameImpl("http://www.w3.org/2001/XMLSchema", "ID"))) { //$NON-NLS-1$ //$NON-NLS-2$
+		if (type.getName().equals(new QName("http://www.w3.org/2001/XMLSchema", "ID"))) { //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
@@ -120,37 +124,38 @@ public abstract class GmlWriterUtil {
 	 * 
 	 * @param writer the XML stream writer 
 	 * @param value the attribute value, may be <code>null</code>
-	 * @param attDef the attribute definition
+	 * @param propDef the attribute definition
 	 * @throws XMLStreamException if writing the attribute fails 
 	 */
 	public static void writeAttribute(XMLStreamWriter writer, Object value, 
-			AttributeDefinition attDef) throws XMLStreamException {
+			PropertyDefinition propDef) throws XMLStreamException {
 		if (value == null) {
-			if (attDef.getMinOccurs() > 0) {
-				if (!attDef.isNillable()) {
-					log.warn("Non-nillable attribute " + attDef.getName() + " is null"); //$NON-NLS-1$ //$NON-NLS-2$
+			long min = propDef.getConstraint(Cardinality.class).getMinOccurs();
+			if (min > 0) {
+				if (!propDef.getConstraint(NillableFlag.class).isEnabled()) {
+					log.warn("Non-nillable attribute " + propDef.getName() + " is null"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				else {
 					//XXX write null attribute?!
-					writeAtt(writer, null, attDef);
+					writeAtt(writer, null, propDef);
 				}
 			}
 		}
 		else {
-			writeAtt(writer, value.toString() /*FIXME SimpleTypeUtil.convertToXml(value, attDef.getAttributeType())*/, attDef);
+			writeAtt(writer, value.toString() /*FIXME SimpleTypeUtil.convertToXml(value, attDef.getAttributeType())*/, propDef);
 		}
 	}
 
 	private static void writeAtt(XMLStreamWriter writer, String value, 
-			AttributeDefinition attDef) throws XMLStreamException {
-		String ns = attDef.getNamespace();
+			PropertyDefinition propDef) throws XMLStreamException {
+		String ns = propDef.getName().getNamespaceURI();
 		if (ns != null && !ns.isEmpty()) {
-			writer.writeAttribute(attDef.getNamespace(), attDef.getName(), 
+			writer.writeAttribute(ns, propDef.getName().getLocalPart(), 
 					(value != null)?(value):(null));
 		}
 		else {
 			// no namespace
-			writer.writeAttribute(attDef.getName(), 
+			writer.writeAttribute(propDef.getName().getLocalPart(), 
 					(value != null)?(value):(null));
 		}
 	}
@@ -168,26 +173,29 @@ public abstract class GmlWriterUtil {
 	 * @throws XMLStreamException if an error occurs writing the ID
 	 */
 	public static void writeRequiredID(XMLStreamWriter writer,
-			TypeDefinition type, ComplexAttribute parent, boolean onlyIfNotSet) throws XMLStreamException {
+			DefinitionGroup type, Group parent, boolean onlyIfNotSet) throws XMLStreamException {
 		// find ID attribute
-		AttributeDefinition idAtt = null;
-		for (AttributeDefinition att : type.getAttributes()) {
-			if (att.isAttribute() && att.getMinOccurs() > 0 && isID(att.getAttributeType())) {
-				idAtt = att;
+		PropertyDefinition idProp = null;
+		for (PropertyDefinition prop : collectProperties(
+				DefinitionUtil.getAllChildren(type))) {
+			if (prop.getConstraint(XmlAttributeFlag.class).isEnabled() 
+					&& prop.getConstraint(Cardinality.class).getMinOccurs() > 0 
+					&& isID(prop.getPropertyType())) {
+				idProp = prop;
 				break; // we assume there is only one ID attribute
 			}
 		}
 		
-		if (idAtt == null) {
+		if (idProp == null) {
 			// no ID attribute found
 			return;
 		}
 		
 		Object value = null;
 		if (parent != null) {
-			Property prop = FeatureInspector.getProperty(parent, Arrays.asList(idAtt.getName()), false);
-			if (prop != null) {
-				value = prop.getValue();
+			Object[] values = parent.getProperty(idProp.getName());
+			if (values != null && values.length > 0) {
+				value = values[0];
 			}
 			
 			if (value != null && onlyIfNotSet) {
@@ -197,11 +205,11 @@ public abstract class GmlWriterUtil {
 		}
 		
 		if (value != null) {
-			writeAttribute(writer, value, idAtt);
+			writeAttribute(writer, value, idProp);
 		}
 		else {
 			UUID genID = UUID.randomUUID();
-			writeAttribute(writer, "_" + genID.toString(), idAtt); //$NON-NLS-1$
+			writeAttribute(writer, "_" + genID.toString(), idProp); //$NON-NLS-1$
 		}
 	}
 
@@ -217,7 +225,7 @@ public abstract class GmlWriterUtil {
 	 */
 	public static void writeStartPathElement(XMLStreamWriter writer, PathElement step, 
 			boolean generateRequiredID) throws XMLStreamException {
-		Name name = step.getName();
+		QName name = step.getName();
 		writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
 		if (step.isDowncast()) {
 			// add xsi:type
@@ -228,6 +236,27 @@ public abstract class GmlWriterUtil {
 		if (generateRequiredID) {
 			GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
 		}
+	}
+
+	/**
+	 * Collect all property definitions defined by the given child definitions,
+	 * i.e. returns a flattened version of the children.
+	 * @param children the child definitions 
+	 * @return the property definitions
+	 */
+	public static Collection<PropertyDefinition> collectProperties(
+			Iterable<? extends ChildDefinition<?>> children) {
+		List<PropertyDefinition> result = new ArrayList<PropertyDefinition>();
+		for (ChildDefinition<?> child : children) {
+			if (child.asProperty() != null) {
+				result.add(child.asProperty());
+			}
+			else if (child.asGroup() != null) {
+				result.addAll(collectProperties(
+						child.asGroup().getDeclaredChildren()));
+			}
+		}
+		return result;
 	}
 
 }

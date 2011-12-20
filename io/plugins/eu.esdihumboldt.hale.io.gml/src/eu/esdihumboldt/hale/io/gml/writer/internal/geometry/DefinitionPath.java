@@ -16,12 +16,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.geotools.feature.NameImpl;
-import org.opengis.feature.type.Name;
+import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 
 /**
  * Represents a path in a type definition hierarchy (regarding subtypes 
@@ -29,7 +28,6 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class DefinitionPath {
 	
@@ -38,7 +36,7 @@ public class DefinitionPath {
 	 */
 	private static class DowncastElement implements PathElement {
 
-		private final Name elementName;
+		private final QName elementName;
 		
 		private final TypeDefinition type;
 
@@ -51,7 +49,7 @@ public class DefinitionPath {
 		 * @param type the definition of the type that is downcast to
 		 * @param unique if the represented element cannot be repeated
 		 */
-		public DowncastElement(Name elementName, TypeDefinition type,
+		public DowncastElement(QName elementName, TypeDefinition type,
 				boolean unique) {
 			super();
 			this.elementName = elementName;
@@ -63,7 +61,7 @@ public class DefinitionPath {
 		 * @see PathElement#getName()
 		 */
 		@Override
-		public Name getName() {
+		public QName getName() {
 			return elementName;
 		}
 
@@ -139,122 +137,124 @@ public class DefinitionPath {
 
 	}
 	
-	/**
-	 * Sub-type path element
-	 */
-	private static class SubstitutionElement implements PathElement {
-
-		private final SchemaElement element;
-		
-		private final boolean unique;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param element the substitution element
-		 * @param unique if the represented element cannot be repeated
-		 */
-		public SubstitutionElement(SchemaElement element, boolean unique) {
-			this.element = element;
-			this.unique = unique;
-		}
-
-		/**
-		 * @see PathElement#getName()
-		 */
-		@Override
-		public Name getName() {
-			return element.getElementName();
-		}
-
-		/**
-		 * @see PathElement#getType()
-		 */
-		@Override
-		public TypeDefinition getType() {
-			return element.getType();
-		}
-
-		/**
-		 * @see PathElement#isProperty()
-		 */
-		@Override
-		public boolean isProperty() {
-			return false;
-		}
-
-		/**
-		 * @see PathElement#isDowncast()
-		 */
-		@Override
-		public boolean isDowncast() {
-			return false;
-		}
-
-		/**
-		 * @see PathElement#isUnique()
-		 */
-		@Override
-		public boolean isUnique() {
-			return unique;
-		}
-
-		/**
-		 * @see Object#hashCode()
-		 */
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-					+ ((element == null) ? 0 : element.hashCode());
-			return result;
-		}
-
-		/**
-		 * @see Object#equals(Object)
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			SubstitutionElement other = (SubstitutionElement) obj;
-			if (element == null) {
-				if (other.element != null)
-					return false;
-			} else if (!element.equals(other.element))
-				return false;
-			return true;
-		}
-
-	}
+//	/**
+//	 * Sub-type path element
+//	 */
+//	private static class SubstitutionElement implements PathElement {
+//
+//		private final SchemaElement element;
+//		
+//		private final boolean unique;
+//		
+//		/**
+//		 * Constructor
+//		 * 
+//		 * @param element the substitution element
+//		 * @param unique if the represented element cannot be repeated
+//		 */
+//		public SubstitutionElement(SchemaElement element, boolean unique) {
+//			this.element = element;
+//			this.unique = unique;
+//		}
+//
+//		/**
+//		 * @see PathElement#getName()
+//		 */
+//		@Override
+//		public Name getName() {
+//			return element.getElementName();
+//		}
+//
+//		/**
+//		 * @see PathElement#getType()
+//		 */
+//		@Override
+//		public TypeDefinition getType() {
+//			return element.getType();
+//		}
+//
+//		/**
+//		 * @see PathElement#isProperty()
+//		 */
+//		@Override
+//		public boolean isProperty() {
+//			return false;
+//		}
+//
+//		/**
+//		 * @see PathElement#isDowncast()
+//		 */
+//		@Override
+//		public boolean isDowncast() {
+//			return false;
+//		}
+//
+//		/**
+//		 * @see PathElement#isUnique()
+//		 */
+//		@Override
+//		public boolean isUnique() {
+//			return unique;
+//		}
+//
+//		/**
+//		 * @see Object#hashCode()
+//		 */
+//		@Override
+//		public int hashCode() {
+//			final int prime = 31;
+//			int result = 1;
+//			result = prime * result
+//					+ ((element == null) ? 0 : element.hashCode());
+//			return result;
+//		}
+//
+//		/**
+//		 * @see Object#equals(Object)
+//		 */
+//		@Override
+//		public boolean equals(Object obj) {
+//			if (this == obj)
+//				return true;
+//			if (obj == null)
+//				return false;
+//			if (getClass() != obj.getClass())
+//				return false;
+//			SubstitutionElement other = (SubstitutionElement) obj;
+//			if (element == null) {
+//				if (other.element != null)
+//					return false;
+//			} else if (!element.equals(other.element))
+//				return false;
+//			return true;
+//		}
+//
+//	}
+	
+	//FIXME path element for groups?
 
 	/**
 	 * A property path element 
 	 */
 	private static class PropertyElement implements PathElement {
 		
-		private final AttributeDefinition attdef;
+		private final PropertyDefinition propDef;
 
 		/**
 		 * Constructor
 		 * 
 		 * @param attdef the attribute definition
 		 */
-		public PropertyElement(AttributeDefinition attdef) {
-			this.attdef = attdef;
+		public PropertyElement(PropertyDefinition attdef) {
+			this.propDef = attdef;
 		}
 
 		/**
 		 * @see PathElement#getName()
 		 */
 		@Override
-		public Name getName() {
-			return new NameImpl(attdef.getNamespace(), attdef.getName());
+		public QName getName() {
+			return propDef.getName();
 		}
 		
 		/**
@@ -262,7 +262,7 @@ public class DefinitionPath {
 		 */
 		@Override
 		public TypeDefinition getType() {
-			return attdef.getAttributeType();
+			return propDef.getPropertyType();
 		}
 		
 		/**
@@ -286,7 +286,8 @@ public class DefinitionPath {
 		 */
 		@Override
 		public boolean isUnique() {
-			return attdef.getMaxOccurs() <= 1;
+			long max = propDef.getConstraint(Cardinality.class).getMaxOccurs();
+			return max != Cardinality.UNBOUNDED && max <= 1;
 		}
 
 		/**
@@ -297,7 +298,7 @@ public class DefinitionPath {
 			final int prime = 31;
 			int result = 1;
 			result = prime * result
-					+ ((attdef == null) ? 0 : attdef.hashCode());
+					+ ((propDef == null) ? 0 : propDef.hashCode());
 			return result;
 		}
 
@@ -313,10 +314,10 @@ public class DefinitionPath {
 			if (getClass() != obj.getClass())
 				return false;
 			PropertyElement other = (PropertyElement) obj;
-			if (attdef == null) {
-				if (other.attdef != null)
+			if (propDef == null) {
+				if (other.propDef != null)
 					return false;
-			} else if (!attdef.equals(other.attdef))
+			} else if (!propDef.equals(other.propDef))
 				return false;
 			return true;
 		}
@@ -327,7 +328,7 @@ public class DefinitionPath {
 	
 	private TypeDefinition lastType;
 	
-	private Name lastName;
+	private QName lastName;
 	
 	private GeometryWriter<?> geometryWriter;
 
@@ -351,7 +352,7 @@ public class DefinitionPath {
 	 * @param elementName the corresponding element name
 	 * @param unique if the element starting the path cannot be repeated
 	 */
-	public DefinitionPath(TypeDefinition firstType, Name elementName, boolean unique) {
+	public DefinitionPath(TypeDefinition firstType, QName elementName, boolean unique) {
 		super();
 		
 		lastType = firstType;
@@ -359,27 +360,27 @@ public class DefinitionPath {
 		lastUnique = unique; 
 	}
 
-	/**
-	 * Add a substitution
-	 * 
-	 * @param element the substitution element
-	 * 
-	 * @return this path for chaining 
-	 */
-	public DefinitionPath addSubstitution(SchemaElement element) {
-		// 1. sub-type must override previous sub-type
-		// 2. sub-type must override a previous property XXX check this!!! or only the first?
-		// XXX -> therefore removing the previous path element
-		boolean unique = isLastUnique();
-		
-		if (steps.size() > 0) {
-			steps.remove(steps.size() - 1);
-		}
-		
-		addStep(new SubstitutionElement(element, unique));
-		
-		return this;
-	}
+//	/**
+//	 * Add a substitution
+//	 * 
+//	 * @param element the substitution element
+//	 * 
+//	 * @return this path for chaining 
+//	 */
+//	public DefinitionPath addSubstitution(SchemaElement element) {
+//		// 1. sub-type must override previous sub-type
+//		// 2. sub-type must override a previous property XXX check this!!! or only the first?
+//		// XXX -> therefore removing the previous path element
+//		boolean unique = isLastUnique();
+//		
+//		if (steps.size() > 0) {
+//			steps.remove(steps.size() - 1);
+//		}
+//		
+//		addStep(new SubstitutionElement(element, unique));
+//		
+//		return this;
+//	}
 	
 	/**
 	 * Add a downcast
@@ -391,7 +392,7 @@ public class DefinitionPath {
 		// 1. sub-type must override previous sub-type
 		// 2. sub-type must override a previous property XXX check this!!! or only the first?
 		// XXX -> therefore removing the previous path element
-		Name elementName = getLastName();
+		QName elementName = getLastName();
 		boolean unique = isLastUnique();
 		
 		if (steps.size() > 0) {
@@ -418,7 +419,7 @@ public class DefinitionPath {
 	 * 
 	 * @return this path for chaining 
 	 */
-	public DefinitionPath addProperty(AttributeDefinition property) {
+	public DefinitionPath addProperty(PropertyDefinition property) {
 		addStep(new PropertyElement(property));
 		
 		return this;
@@ -470,7 +471,7 @@ public class DefinitionPath {
 	 * 
 	 * @return the last type
 	 */
-	public Name getLastName() {
+	public QName getLastName() {
 		return lastName;
 	}
 
