@@ -15,16 +15,11 @@ package eu.esdihumboldt.hale.io.gml.writer.internal;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
@@ -33,14 +28,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.geotools.feature.ComplexAttributeImpl;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
 import org.geotools.gml3.GML;
 import org.geotools.gml3.GMLSchema;
 import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
-import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.opengis.filter.identity.FeatureId;
 
@@ -58,14 +51,12 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.AbstractTypeMatcher;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
-import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.StreamGeometryWriter;
 import eu.esdihumboldt.hale.schemaprovider.Schema;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
@@ -175,13 +166,6 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 //	}
 	
 	/**
-	 * FIXME Dummy method!
-	 */
-	protected Schema getTargetSchema() {
-		return null;
-	}
-
-	/**
 	 * Create and setup the stream writer, the type index and the GML namespace
 	 * (Initializes {@link #writer}, {@link #gmlNs} and {@link #types},
 	 * resets {@link #geometryWriter} and {@link #additionalSchemas}).
@@ -205,17 +189,17 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 
 		String defNamespace = null;
 		
-		// read the namespaces from the map containing namespaces
-		if (getTargetSchema().getPrefixes() != null) {
-			for (Entry<String, String> entry : getTargetSchema().getPrefixes().entrySet()) {
-				if (entry.getValue().isEmpty()) {
-					defNamespace = entry.getKey();
-				}
-				else {
-					tmpWriter.setPrefix(entry.getValue(), entry.getKey());
-				}
-			}
-		}
+		//FIXME read the namespaces from the map containing namespaces
+//		if (getTargetSchema().getPrefixes() != null) {
+//			for (Entry<String, String> entry : getTargetSchema().getPrefixes().entrySet()) {
+//				if (entry.getValue().isEmpty()) {
+//					defNamespace = entry.getKey();
+//				}
+//				else {
+//					tmpWriter.setPrefix(entry.getValue(), entry.getKey());
+//				}
+//			}
+//		}
 		
 		GmlWriterUtil.addNamespace(tmpWriter, SCHEMA_INSTANCE_NS, "xsi"); //$NON-NLS-1$
 		
@@ -229,16 +213,16 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		
 		writer = new IndentingXMLStreamWriter(tmpWriter);
 		
-		// determine GML namespace from target schema
+		//FIXME determine GML namespace from target schema
 		String gml = null;
-		if (getTargetSchema().getPrefixes() != null) {
-			for (String ns : getTargetSchema().getPrefixes().keySet()) {
-				if (ns.startsWith("http://www.opengis.net/gml")) { //$NON-NLS-1$
-					gml = ns;
-					break;
-				}
-			}
-		}
+//		if (getTargetSchema().getPrefixes() != null) {
+//			for (String ns : getTargetSchema().getPrefixes().keySet()) {
+//				if (ns.startsWith("http://www.opengis.net/gml")) { //$NON-NLS-1$
+//					gml = ns;
+//					break;
+//				}
+//			}
+//		}
 		
 		if (gml == null) {
 			// default to GML 2/3 namespace
@@ -250,14 +234,14 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			log.debug("GML namespace is " + gmlNs); //$NON-NLS-1$
 		}
 		
-		// fill type index with root types
+		//FIXME fill type index with root types
 		types = new TypeIndex();
 //		for (SchemaElement element : getTargetSchema().getElements().values()) {
 //			types.addType(element.getType());
 //		}
-		for (Definition def : getTargetSchema().getTypes().keySet()) {
-			types.addType(DefinitionUtil.getType(def));
-		}
+//		for (Definition def : getTargetSchema().getTypes().keySet()) {
+//			types.addType(DefinitionUtil.getType(def));
+//		}
 	}
 
 	/**
@@ -269,7 +253,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
+	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */
 	@Override
 	protected String getDefaultTypeName() {
@@ -277,30 +261,29 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	}
 
 	/**
-	 * Write the given instances
-	 * 
-	 * @param features the feature collection
+	 * Write the given instances.
+	 * @param instances the instance collection
 	 * @param reporter the reporter
 	 * @param progress the progress
 	 * @throws XMLStreamException if writing the feature collection fails 
 	 */
-	public void write(FeatureCollection<FeatureType, Feature> features, 
+	public void write(InstanceCollection instances, 
 			ProgressIndicator progress, IOReporter reporter) throws XMLStreamException {
-		progress.begin("Generating " + getTypeName(), features.size());
+		progress.begin("Generating " + getTypeName(), instances.size());
 		
 		TypeDefinition containerDefinition = null;
 		Name containerName = null;
 		
 		if (useFeatureCollection) {
-			// try to find FeatureCollection element
-			Iterator<SchemaElement> it = getTargetSchema().getAllElements().values().iterator();
+			//FIXME try to find FeatureCollection element
+//			Iterator<SchemaElement> it = getTargetSchema().getAllElements().values().iterator();
 			Collection<SchemaElement> fcElements = new HashSet<SchemaElement>();
-			while (it.hasNext()) {
-				SchemaElement el = it.next();
-				if (isFeatureCollection(el)) {
-					fcElements.add(el);
-				}
-			}
+//			while (it.hasNext()) {
+//				SchemaElement el = it.next();
+//				if (isFeatureCollection(el)) {
+//					fcElements.add(el);
+//				}
+//			}
 			
 			if (fcElements.isEmpty() && gmlNs.equals("http://www.opengis.net/gml")) { //$NON-NLS-1$
 				// no FeatureCollection defined and "old" namespace -> GML 2
@@ -350,17 +333,18 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			}
 			String elementName = getParameter(PARAM_ROOT_ELEMENT_NAME);
 			
-			if (elementName != null) {
-				Iterator<SchemaElement> it = getTargetSchema().getAllElements().values().iterator();
-				while (it.hasNext() && containerDefinition == null) {
-					SchemaElement el = it.next();
-					if (el.getElementName().getNamespaceURI().equals(namespace) &&
-							el.getElementName().getLocalPart().equals(elementName)) {
-						containerDefinition = el.getType();
-						containerName = new NameImpl(namespace, elementName);
-					}
-				}
-			}
+			//FIXME find root element
+//			if (elementName != null) {
+//				Iterator<SchemaElement> it = getTargetSchema().getAllElements().values().iterator();
+//				while (it.hasNext() && containerDefinition == null) {
+//					SchemaElement el = it.next();
+//					if (el.getElementName().getNamespaceURI().equals(namespace) &&
+//							el.getElementName().getLocalPart().equals(elementName)) {
+//						containerDefinition = el.getType();
+//						containerName = new NameImpl(namespace, elementName);
+//					}
+//				}
+//			}
 		}
 
 		if (containerDefinition == null || containerName == null) {
@@ -397,49 +381,49 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			writer.writeEndElement();
 		}
 		
-		// write the instances
-		Iterator<Feature> itFeature = features.iterator();
-		try {
-			Map<TypeDefinition, DefinitionPath> paths = new HashMap<TypeDefinition, DefinitionPath>();
-			
-			Descent lastDescent = null;
-			while (itFeature.hasNext() && !progress.isCanceled()) {
-				Feature feature = itFeature.next();
-				
-				TypeDefinition type = types.getType(feature.getType());
-				
-				// get stored definition path for the type
-				DefinitionPath defPath;
-				if (paths.containsKey(type)) {
-					defPath = paths.get(type); // get the stored path, may be null
-				}
-				else {
-					// determine a valid definition path in the container
-					//TODO specify a maximum descent level? (else searching the container for matches might take _very_ long)
-					defPath = findMemberAttribute(
-							containerDefinition, containerName, type);
-					// store path (may be null)
-					paths.put(type, defPath);
-				}
-				if (defPath != null) {
-					// write the feature
-					lastDescent = Descent.descend(writer, defPath, lastDescent, false);
-		            writeMember(feature, type);
-				}
-				else {
-					reporter.warn(new IOMessageImpl(MessageFormat.format(
-							"No compatible member attribute for type {0} found in root element {1}, one instance was skipped", 
-							type.getDisplayName(), containerName.getLocalPart()), null));
-				}
-	            
-	            progress.advance(1);
-			}
-			if (lastDescent != null) {
-				lastDescent.close();
-			}
-		} finally {
-			features.close(itFeature);
-		}
+		//FIXME write the instances
+//		Iterator<Feature> itFeature = instances.iterator();
+//		try {
+//			Map<TypeDefinition, DefinitionPath> paths = new HashMap<TypeDefinition, DefinitionPath>();
+//			
+//			Descent lastDescent = null;
+//			while (itFeature.hasNext() && !progress.isCanceled()) {
+//				Feature feature = itFeature.next();
+//				
+//				TypeDefinition type = types.getType(feature.getType());
+//				
+//				// get stored definition path for the type
+//				DefinitionPath defPath;
+//				if (paths.containsKey(type)) {
+//					defPath = paths.get(type); // get the stored path, may be null
+//				}
+//				else {
+//					// determine a valid definition path in the container
+//					//TODO specify a maximum descent level? (else searching the container for matches might take _very_ long)
+//					defPath = findMemberAttribute(
+//							containerDefinition, containerName, type);
+//					// store path (may be null)
+//					paths.put(type, defPath);
+//				}
+//				if (defPath != null) {
+//					// write the feature
+//					lastDescent = Descent.descend(writer, defPath, lastDescent, false);
+//		            writeMember(feature, type);
+//				}
+//				else {
+//					reporter.warn(new IOMessageImpl(MessageFormat.format(
+//							"No compatible member attribute for type {0} found in root element {1}, one instance was skipped", 
+//							type.getDisplayName(), containerName.getLocalPart()), null));
+//				}
+//	            
+//	            progress.advance(1);
+//			}
+//			if (lastDescent != null) {
+//				lastDescent.close();
+//			}
+//		} finally {
+//			instances.close(itFeature);
+//		}
         
         writer.writeEndElement(); // FeatureCollection
         
@@ -639,7 +623,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			}
 			else if (value instanceof Geometry) {
 				// write geometry
-				writeGeometry(((Geometry) value), attDef, getCommonSRSName());
+				writeGeometry(((Geometry) value), attDef, null); //FIXME getCommonSRSName());
 			}
 			else {
 				// write any attributes

@@ -12,29 +12,33 @@
 
 package eu.esdihumboldt.hale.common.instance.io.impl;
 
-import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.Feature;
-import org.opengis.feature.type.FeatureType;
+import java.util.Collections;
+import java.util.List;
+
+import com.google.common.base.Preconditions;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 
 /**
  * Abstract {@link InstanceWriter} base implementation
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
+ * @since 2.5
  */
 public abstract class AbstractInstanceWriter extends AbstractExportProvider implements
 		InstanceWriter {
 	
-	private String commonSRSName;
+//	private String commonSRSName;
 	
-	private FeatureCollection<FeatureType, Feature> instances;
+	private InstanceCollection instances;
 	
-//	private Schema targetSchema;
+	private Schema targetSchema;
 
 	/**
 	 * @see AbstractExportProvider#validate()
@@ -50,61 +54,61 @@ public abstract class AbstractInstanceWriter extends AbstractExportProvider impl
 		}
 	}
 
+	/**
+	 * Returns the target schema; override to return another set of schemas
+	 * 
+	 * @see InstanceWriter#getValidationSchemas()
+	 */
+	@Override
+	public List<? extends Locatable> getValidationSchemas() {
+		Preconditions.checkState(targetSchema != null);
+		
+		return Collections.singletonList(targetSchema);
+	}
+
 //	/**
-//	 * Returns the target schema; override to return another set of schemas
-//	 * 
-//	 * @see InstanceWriter#getValidationSchemas()
+//	 * @see InstanceWriter#setCommonSRSName(String)
 //	 */
 //	@Override
-//	public List<Schema> getValidationSchemas() {
-//		Preconditions.checkState(targetSchema != null);
-//		
-//		return Collections.singletonList(targetSchema);
+//	public void setCommonSRSName(String commonSRSName) {
+//		this.commonSRSName = commonSRSName;
 //	}
 
 	/**
-	 * @see InstanceWriter#setCommonSRSName(String)
+	 * @see InstanceWriter#setInstances(InstanceCollection)
 	 */
 	@Override
-	public void setCommonSRSName(String commonSRSName) {
-		this.commonSRSName = commonSRSName;
-	}
-
-	/**
-	 * @see InstanceWriter#setInstances(FeatureCollection)
-	 */
-	@Override
-	public void setInstances(FeatureCollection<FeatureType, Feature> instances) {
+	public void setInstances(InstanceCollection instances) {
 		this.instances = instances;
 	}
 
-//	/**
-//	 * @see InstanceWriter#setTargetSchema(Schema)
-//	 */
-//	@Override
-//	public void setTargetSchema(Schema targetSchema) {
-//		this.targetSchema = targetSchema;
-//	}
-
 	/**
-	 * @return the commonSRSName
+	 * @see InstanceWriter#setTargetSchema(Schema)
 	 */
-	protected String getCommonSRSName() {
-		return commonSRSName;
+	@Override
+	public void setTargetSchema(Schema targetSchema) {
+		this.targetSchema = targetSchema;
 	}
+
+//	/**
+//	 * @return the commonSRSName
+//	 */
+//	protected String getCommonSRSName() {
+//		return commonSRSName;
+//	}
 
 	/**
 	 * @return the instances
 	 */
-	protected FeatureCollection<FeatureType, Feature> getInstances() {
+	protected InstanceCollection getInstances() {
 		return instances;
 	}
 
-//	/**
-//	 * @return the targetSchema
-//	 */
-//	protected Schema getTargetSchema() {
-//		return targetSchema;
-//	}
+	/**
+	 * @return the targetSchema
+	 */
+	protected Schema getTargetSchema() {
+		return targetSchema;
+	}
 
 }
