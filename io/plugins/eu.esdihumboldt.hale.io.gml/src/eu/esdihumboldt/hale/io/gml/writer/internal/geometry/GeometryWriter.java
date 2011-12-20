@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -21,7 +22,7 @@ import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Geometry writer interface. A geometry holds information about compatibility
@@ -29,7 +30,6 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  * @param <T> the geometry type
  */
 public interface GeometryWriter<T extends Geometry> {
@@ -78,6 +78,6 @@ public interface GeometryWriter<T extends Geometry> {
 	 * @throws XMLStreamException if an error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, T geometry, 
-			TypeDefinition elementType, Name elementName, String gmlNs) throws XMLStreamException;
+			TypeDefinition elementType, QName elementName, String gmlNs) throws XMLStreamException;
 	
 }
