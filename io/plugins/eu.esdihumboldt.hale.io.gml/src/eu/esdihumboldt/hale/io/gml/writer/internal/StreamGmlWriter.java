@@ -19,10 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -50,16 +53,22 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.AbstractTypeMatcher;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.StreamGeometryWriter;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.provider.ApacheSchemaProvider;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
+import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
+import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
+import eu.esdihumboldt.specification.modelrepository.abstractfc.SchemaElement;
 
 /**
  * Writes GML/XML using a {@link XMLStreamWriter}
@@ -96,10 +105,10 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	private String gmlNs;
 	
-	/**
-	 * The type index
-	 */
-	private TypeIndex types;
+//	/**
+//	 * The type index
+//	 */
+//	private TypeIndex types;
 	
 	/**
 	 * The geometry writer
@@ -115,6 +124,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 * States if a feature collection shall be used
 	 */
 	private final boolean useFeatureCollection;
+
+	private XmlIndex targetIndex;
 	
 	/**
 	 * Create a GML writer
@@ -154,7 +165,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		
 		return reporter;
 	}
-
+	
+	//FIXME
 //	/**
 //	 * @see AbstractInstanceWriter#getValidationSchemas()
 //	 */
@@ -166,14 +178,43 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 //	}
 	
 	/**
+	 * @see AbstractInstanceWriter#validate()
+	 */
+	@Override
+	public void validate() throws IOProviderConfigurationException {
+		if (getXMLIndex() == null) {
+			fail("No XML target schema");
+		}
+	}
+
+	/**
+	 * Get the XML type index.
+	 * @return the target type index
+	 */
+	protected XmlIndex getXMLIndex() {
+		if (targetIndex == null) {
+			for (Schema schema : getTargetSchema().getSchemas()) {
+				if (schema instanceof XmlIndex) {
+					//TODO respect root element for schema selection?
+					targetIndex = (XmlIndex) schema;
+					break;
+				}
+			}
+		}
+		return targetIndex;
+	}
+
+	/**
 	 * Create and setup the stream writer, the type index and the GML namespace
-	 * (Initializes {@link #writer}, {@link #gmlNs} and {@link #types},
+	 * (Initializes {@link #writer}, {@link #gmlNs} and {@link #targetIndex},
 	 * resets {@link #geometryWriter} and {@link #additionalSchemas}).
 	 * 
 	 * @throws XMLStreamException if creating the {@link XMLStreamWriter} fails
 	 * @throws IOException if creating the output stream fails
 	 */
 	private void init() throws XMLStreamException, IOException {
+		// reset target index
+		targetIndex = null;
 		// reset geometry writer
 		geometryWriter = null;
 		// reset additional schemas
@@ -189,41 +230,42 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 
 		String defNamespace = null;
 		
-		//FIXME read the namespaces from the map containing namespaces
-//		if (getTargetSchema().getPrefixes() != null) {
-//			for (Entry<String, String> entry : getTargetSchema().getPrefixes().entrySet()) {
-//				if (entry.getValue().isEmpty()) {
-//					defNamespace = entry.getKey();
-//				}
-//				else {
-//					tmpWriter.setPrefix(entry.getValue(), entry.getKey());
-//				}
-//			}
-//		}
+		XmlIndex index = getXMLIndex();
+		// read the namespaces from the map containing namespaces
+		if (index.getPrefixes() != null) {
+			for (Entry<String, String> entry : index.getPrefixes().entrySet()) {
+				if (entry.getValue().isEmpty()) {
+					defNamespace = entry.getKey();
+				}
+				else {
+					tmpWriter.setPrefix(entry.getValue(), entry.getKey());
+				}
+			}
+		}
 		
 		GmlWriterUtil.addNamespace(tmpWriter, SCHEMA_INSTANCE_NS, "xsi"); //$NON-NLS-1$
 		
-		//FIXME determine default namespace
-//		if (defNamespace == null) {
-//			defNamespace = getTargetSchema().getNamespace();
-//			
-//			//TODO remove prefix for target schema namespace?
-//		}
+		// determine default namespace
+		if (defNamespace == null) {
+			defNamespace = index.getNamespace();
+			
+			//TODO remove prefix for target schema namespace?
+		}
 		
 		tmpWriter.setDefaultNamespace(defNamespace);
 		
 		writer = new IndentingXMLStreamWriter(tmpWriter);
 		
-		//FIXME determine GML namespace from target schema
+		// determine GML namespace from target schema
 		String gml = null;
-//		if (getTargetSchema().getPrefixes() != null) {
-//			for (String ns : getTargetSchema().getPrefixes().keySet()) {
-//				if (ns.startsWith("http://www.opengis.net/gml")) { //$NON-NLS-1$
-//					gml = ns;
-//					break;
-//				}
-//			}
-//		}
+		if (index.getPrefixes() != null) {
+			for (String ns : index.getPrefixes().keySet()) {
+				if (ns.startsWith("http://www.opengis.net/gml")) { //$NON-NLS-1$
+					gml = ns;
+					break;
+				}
+			}
+		}
 		
 		if (gml == null) {
 			// default to GML 2/3 namespace
@@ -236,7 +278,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		}
 		
 		//FIXME fill type index with root types
-		types = new TypeIndex();
+//		types = new TypeIndex();
 //		for (SchemaElement element : getTargetSchema().getElements().values()) {
 //			types.addType(element.getType());
 //		}
@@ -273,37 +315,52 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		progress.begin("Generating " + getTypeName(), instances.size());
 		
 		TypeDefinition containerDefinition = null;
-		Name containerName = null;
+		QName containerName = null;
 		
 		if (useFeatureCollection) {
-			//FIXME try to find FeatureCollection element
-//			Iterator<SchemaElement> it = getTargetSchema().getAllElements().values().iterator();
-			Collection<SchemaElement> fcElements = new HashSet<SchemaElement>();
-//			while (it.hasNext()) {
-//				SchemaElement el = it.next();
-//				if (isFeatureCollection(el)) {
-//					fcElements.add(el);
-//				}
-//			}
+			// try to find FeatureCollection element
+			Iterator<XmlElement> it = targetIndex.getElements().values().iterator();
+			Collection<XmlElement> fcElements = new HashSet<XmlElement>();
+			while (it.hasNext()) {
+				XmlElement el = it.next();
+				if (isFeatureCollection(el)) {
+					fcElements.add(el);
+				}
+			}
+			
 			
 			if (fcElements.isEmpty() && gmlNs.equals("http://www.opengis.net/gml")) { //$NON-NLS-1$
 				// no FeatureCollection defined and "old" namespace -> GML 2
 				// include WFS 1.0.0 for the FeatureCollection element
 				try {
 					URI location = StreamGmlWriter.class.getResource("/schemas/wfs/1.0.0/WFS-basic.xsd").toURI(); //$NON-NLS-1$
-					Schema wfsSchema = new ApacheSchemaProvider().loadSchema(location, null);
-					// replace location for verification
-					wfsSchema = new Schema(wfsSchema.getElements(), wfsSchema.getNamespace(), 
-							new URL("http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"),  //$NON-NLS-1$
-							wfsSchema.getPrefixes());
-					// add as additional schema
-					additionalSchemas.add(wfsSchema);
-					// add namespace
-					GmlWriterUtil.addNamespace(writer, wfsSchema.getNamespace(), "wfs"); //$NON-NLS-1$
-					for (SchemaElement el : wfsSchema.getElements().values()) {
-						if (isFeatureCollection(el)) {
-							fcElements.add(el);
+					XmlSchemaReader schemaReader = new XmlSchemaReader();
+					schemaReader.setSource(new DefaultInputSupplier(location));
+					
+					IOReport report = schemaReader.execute(null);
+					
+					if (report.isSuccess()) {
+						Schema wfsSchema = schemaReader.getSchema();
+						
+						// look for FeatureCollection element
+						if (wfsSchema instanceof XmlIndex) {
+							for (XmlElement el : ((XmlIndex) wfsSchema).getElements().values()) {
+								if (isFeatureCollection(el)) {
+									fcElements.add(el);
+								}
+							}
 						}
+						
+						// add as additional schema, replace location for verification
+						additionalSchemas.add(new SchemaDecorator(wfsSchema) {
+							@Override
+							public URI getLocation() {
+								return new URI("http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd");
+							}
+						});
+						
+						// add namespace
+						GmlWriterUtil.addNamespace(writer, wfsSchema.getNamespace(), "wfs"); //$NON-NLS-1$
 					}
 				} catch (Exception e) {
 					log.warn("Using WFS schema for the FeatureCollection definition failed", e); //$NON-NLS-1$
@@ -316,37 +373,37 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			}
 			else {
 				// select fc element TODO priorized selection (root element parameters)
-				SchemaElement fcElement = fcElements.iterator().next();
+				XmlElement fcElement = fcElements.iterator().next();
 				containerDefinition = fcElement.getType();
-				containerName = fcElement.getElementName();
+				containerName = fcElement.getName();
 				
 				log.info("Found " + fcElements.size() + " possible FeatureCollection elements" + //$NON-NLS-1$ //$NON-NLS-2$
-						", using element " + fcElement.getElementName()); //$NON-NLS-1$
+						", using element " + fcElement.getName()); //$NON-NLS-1$
 			}
 		}
 		
 		if (containerDefinition == null) {
 			// no container defined, try to use a custom root element
 			String namespace = getParameter(PARAM_ROOT_ELEMENT_NAMESPACE);
-			//FIXME determine target namespace
-//			if (namespace == null) {
-//				// default to target namespace
-//				namespace = getTargetSchema().getNamespace();
-//			}
+			// determine target namespace
+			if (namespace == null) {
+				// default to target namespace
+				namespace = targetIndex.getNamespace();
+			}
 			String elementName = getParameter(PARAM_ROOT_ELEMENT_NAME);
 			
-			//FIXME find root element
-//			if (elementName != null) {
-//				Iterator<SchemaElement> it = getTargetSchema().getAllElements().values().iterator();
-//				while (it.hasNext() && containerDefinition == null) {
-//					SchemaElement el = it.next();
-//					if (el.getElementName().getNamespaceURI().equals(namespace) &&
-//							el.getElementName().getLocalPart().equals(elementName)) {
-//						containerDefinition = el.getType();
-//						containerName = new NameImpl(namespace, elementName);
-//					}
-//				}
-//			}
+			// find root element
+			if (elementName != null) {
+				Iterator<XmlElement> it = targetIndex.getElements().values().iterator();
+				while (it.hasNext() && containerDefinition == null) {
+					XmlElement el = it.next();
+					if (el.getName().getNamespaceURI().equals(namespace) &&
+							el.getName().getLocalPart().equals(elementName)) {
+						containerDefinition = el.getType();
+						containerName = el.getName();
+					}
+				}
+			}
 		}
 
 		if (containerDefinition == null || containerName == null) {
@@ -360,23 +417,27 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		// generate mandatory id attribute (for feature collection)
 		GmlWriterUtil.writeRequiredID(writer, containerDefinition, null, false);
 		
-		//FIXME write schema locations
-//		StringBuffer locations = new StringBuffer();
-//		locations.append(getTargetSchema().getNamespace());
-//		locations.append(" "); //$NON-NLS-1$
-//		locations.append(getTargetSchema().getLocation().toString());
-//		for (Schema schema : additionalSchemas) {
-//			locations.append(" "); //$NON-NLS-1$
-//			locations.append(schema.getNamespace());
-//			locations.append(" "); //$NON-NLS-1$
-//			locations.append(schema.getLocation().toString());
-//		}
-//		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
+		// write schema locations
+		StringBuffer locations = new StringBuffer();
+		locations.append(targetIndex.getNamespace());
+		locations.append(" "); //$NON-NLS-1$
+		locations.append(targetIndex.getLocation().toString());
+		for (Schema schema : additionalSchemas) {
+			locations.append(" "); //$NON-NLS-1$
+			locations.append(schema.getNamespace());
+			locations.append(" "); //$NON-NLS-1$
+			locations.append(schema.getLocation().toString());
+		}
+		writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
 		
 		// boundedBy is needed for GML 2 FeatureCollections
-		AttributeDefinition boundedBy = containerDefinition.getAttribute("boundedBy"); //$NON-NLS-1$
-		if (boundedBy != null && boundedBy.getMinOccurs() > 0) {
-			writer.writeStartElement(boundedBy.getNamespace(), boundedBy.getName());
+		//XXX working like this - getting the child with only a local name?
+		ChildDefinition<?> boundedBy = containerDefinition.getChild(new QName("boundedBy")); //$NON-NLS-1$
+		if (boundedBy != null && boundedBy.asProperty() != null 
+				&& boundedBy.asProperty().getConstraint(Cardinality.class).getMinOccurs() > 0) {
+			writer.writeStartElement(
+					boundedBy.getName().getNamespaceURI(), 
+					boundedBy.getName().getLocalPart());
 			writer.writeStartElement(gmlNs, "null"); //$NON-NLS-1$
 			writer.writeCharacters("missing"); //$NON-NLS-1$
 			writer.writeEndElement();
@@ -491,11 +552,12 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		return null;
 	}
 
-	private boolean isFeatureCollection(SchemaElement el) {
+	private boolean isFeatureCollection(XmlElement el) {
 		//TODO improve condition?
-		return el.getElementName().getLocalPart().contains("FeatureCollection") && //$NON-NLS-1$
-			!el.getType().isAbstract() &&
-			el.getType().getAttribute("featureMember") != null; //$NON-NLS-1$
+		//FIXME working like this?!
+		return el.getName().getLocalPart().contains("FeatureCollection") && //$NON-NLS-1$
+			!el.getType().getConstraint(AbstractFlag.class).isEnabled() &&
+			el.getType().getChild(new QName("featureMember")) != null; //$NON-NLS-1$
 	}
 
 	/**

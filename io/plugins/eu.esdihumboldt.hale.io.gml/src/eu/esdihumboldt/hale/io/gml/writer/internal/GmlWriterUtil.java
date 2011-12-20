@@ -27,10 +27,9 @@ import org.opengis.feature.type.Name;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.commons.tools.FeatureInspector;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.specification.modelrepository.abstractfc.SchemaElement;
 
 /**
  * Utility methods used for the GML writer
