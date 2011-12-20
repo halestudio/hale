@@ -41,6 +41,12 @@ public interface InstanceWriter extends ExportProvider {
 	 */
 	public void setTargetSchema(SchemaSpace targetSchema);
 	
+	/**
+	 * Get the target schema.
+	 * @return the target schema
+	 */
+	public SchemaSpace getTargetSchema();
+	
 //	/**
 //	 * Set the common SRS name
 //	 * FIXME can we do without?

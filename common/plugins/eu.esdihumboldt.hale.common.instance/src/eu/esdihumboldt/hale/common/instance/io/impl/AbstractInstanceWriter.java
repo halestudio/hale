@@ -108,9 +108,10 @@ public abstract class AbstractInstanceWriter extends AbstractExportProvider impl
 	}
 
 	/**
-	 * @return the targetSchema
+	 * @see InstanceWriter#getTargetSchema()
 	 */
-	protected SchemaSpace getTargetSchema() {
+	@Override
+	public SchemaSpace getTargetSchema() {
 		return targetSchema;
 	}
 

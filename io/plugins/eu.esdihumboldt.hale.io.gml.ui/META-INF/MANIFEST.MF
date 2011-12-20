@@ -17,8 +17,7 @@ Import-Package: com.google.common.io;version="1.6.0",
  com.vividsolutions.jts,
  com.vividsolutions.jts.geom,
  de.cs3d.util.logging,
- eu.esdihumboldt.hale.schemaprovider,
- eu.esdihumboldt.hale.schemaprovider.model,
+ eu.esdihumboldt.hale.common.schema.model,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.gml.ui.wfs
 Bundle-ActivationPolicy: lazy
