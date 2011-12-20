@@ -12,23 +12,26 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
-import java.util.List;
-
-import org.geotools.feature.NameImpl;
-import org.junit.Test;
-
-import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
-import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
-import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.Pattern;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.provider.internal.apache.CustomDefaultAttribute;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
+import org.junit.Test;
+
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
  * Tests for {@link Pattern}
@@ -45,7 +48,7 @@ public class PatternTest {
 	/**
 	 * The curve element name
 	 */
-	private static final NameImpl CURVE_ELEMENT = new NameImpl(GML_NS, "Curve"); //$NON-NLS-1$
+	private static final QName CURVE_ELEMENT = new QName(GML_NS, "Curve"); //$NON-NLS-1$
 	
 	/**
 	 * Test a direct match
@@ -92,25 +95,29 @@ public class PatternTest {
 	
 	private TypeDefinition createCurveType() {
 		// create the curve type
-		TypeDefinition curve = new TypeDefinition(new NameImpl(GML_NS, "CurveType"), null, null); //$NON-NLS-1$
-		curve.addDeclaringElement(new SchemaElement(CURVE_ELEMENT, curve.getName(), curve, null));
+		DefaultTypeDefinition curve = new DefaultTypeDefinition(new QName(GML_NS, "CurveType"));
+		XmlElement curveElement = new XmlElement(CURVE_ELEMENT, curve, null);
+		curve.getConstraint(XmlElements.class).addElement(curveElement);
 		
 		// create the segments property for curve
-		TypeDefinition segArray = new TypeDefinition(new NameImpl(GML_NS, "CurveSegmentArrayPropertyType"), null, null); //$NON-NLS-1$
-		curve.addDeclaredAttribute(new CustomDefaultAttribute("segments", segArray.getName(), segArray, GML_NS, null)); //$NON-NLS-1$
+		TypeDefinition segArray = new DefaultTypeDefinition(new QName(GML_NS, "CurveSegmentArrayPropertyType")); //$NON-NLS-1$
+		new DefaultPropertyDefinition(new QName("segments"), curve, segArray);
 		
 		// create the AbstractCurveSegement property for segArray
-		TypeDefinition absSeg = new TypeDefinition(new NameImpl(GML_NS, "AbstractCurveSegementType"), null, null); //$NON-NLS-1$
-		absSeg.setAbstract(true);
-		segArray.addDeclaredAttribute(new CustomDefaultAttribute("AbstractCurveSegment", absSeg.getName(), absSeg, GML_NS, null)); //$NON-NLS-1$
+		DefaultTypeDefinition absSeg = new DefaultTypeDefinition(new QName(GML_NS, "AbstractCurveSegementType")); //$NON-NLS-1$
+		absSeg.setConstraint(AbstractFlag.ENABLED);
+		new DefaultPropertyDefinition(new QName("AbstractCurveSegment"), segArray, absSeg);
 		
 		// add dummy sub-type
-		new TypeDefinition(new NameImpl("somespace", "SomeSegmentType"), null, absSeg); //$NON-NLS-1$ //$NON-NLS-2$
+		DefaultTypeDefinition subtype = new DefaultTypeDefinition(new QName("somespace", "SomeSegmentType")); //$NON-NLS-1$ //$NON-NLS-2$
+		subtype.setSuperType(absSeg);
 		
 		// create the LineStringSegmentType sub-type
-		TypeDefinition lineSeg = new TypeDefinition(new NameImpl(GML_NS, "LineStringSegmentType"), null, absSeg); //$NON-NLS-1$
-		lineSeg.addDeclaringElement(new SchemaElement(new NameImpl(GML_NS, "LineStringSegment"),  //$NON-NLS-1$
-				lineSeg.getName(), lineSeg, new NameImpl(GML_NS, "AbstractCurveSegment"))); //$NON-NLS-1$
+		DefaultTypeDefinition lineSeg = new DefaultTypeDefinition(new QName(GML_NS, "LineStringSegmentType")); //$NON-NLS-1$
+		lineSeg.setSuperType(absSeg);
+		XmlElement lineSegElement = new XmlElement(new QName(GML_NS, "LineStringSegment"), 
+				lineSeg, new QName(GML_NS, "AbstractCurveSegment"));
+		lineSeg.getConstraint(XmlElements.class).addElement(lineSegElement);
 		
 		return curve;
 	}

@@ -12,9 +12,9 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
-import org.opengis.feature.type.Name;
+import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Path element in a definition path
@@ -30,7 +30,7 @@ public interface PathElement {
 	 * 
 	 * @return the element name
 	 */
-	public abstract Name getName();
+	public abstract QName getName();
 	
 	/**
 	 * Get the path element type definition
