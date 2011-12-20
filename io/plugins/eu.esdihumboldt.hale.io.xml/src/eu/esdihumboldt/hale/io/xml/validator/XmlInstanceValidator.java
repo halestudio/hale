@@ -13,6 +13,10 @@
 package eu.esdihumboldt.hale.io.xml.validator;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -21,6 +25,8 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
 
 /**
@@ -37,18 +43,31 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-//		progress.begin("Validating XML", ProgressIndicator.UNKNOWN);
-//		Validator val = ValidatorFactory.getInstance().createValidator(getSchemas());
-//		InputStream in = getSource().getInput();
-//		try {
-//			Report report = val.validate(in);
-//			//TODO use the report information/replace old report definition
-//			reporter.setSuccess(report.isValid());
+		progress.begin("Validating XML", ProgressIndicator.UNKNOWN);
+		List<URI> schemaLocations = new ArrayList<URI>();
+		for (Locatable schema : getSchemas()) {
+			URI loc = schema.getLocation();
+			if (loc != null) {
+				schemaLocations.add(loc);
+			}
+			else {
+				reporter.warn(new IOMessageImpl(
+						"No location for schema, may cause validation to fail.", 
+						null));
+			}
+		}
+		Validator val = ValidatorFactory.getInstance().createValidator(
+				schemaLocations.toArray(new URI[schemaLocations.size()]));
+		InputStream in = getSource().getInput();
+		try {
+			Report report = val.validate(in);
+			//TODO use the report information/replace old report definition
+			reporter.setSuccess(report.isValid());
 			return reporter;
-//		} finally {
-//			in.close();
-//			progress.end();
-//		}
+		} finally {
+			in.close();
+			progress.end();
+		}
 	}
 
 	/**

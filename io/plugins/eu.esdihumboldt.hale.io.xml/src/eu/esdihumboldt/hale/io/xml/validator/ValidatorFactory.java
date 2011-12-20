@@ -12,16 +12,16 @@
 
 package eu.esdihumboldt.hale.io.xml.validator;
 
+import java.net.URI;
+
 import eu.esdihumboldt.hale.io.xml.validator.internal.XMLApiValidator;
 import eu.esdihumboldt.hale.io.xml.validator.internal.XercesValidator;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
 
 /**
  * Factory for {@link Validator}s
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class ValidatorFactory {
 	
@@ -49,7 +49,6 @@ public class ValidatorFactory {
 	/**
 	 * Create a validator that relies on the schema locations specified in the
 	 * file.
-	 * 
 	 * @return the validator
 	 */
 	public Validator createValidator() {
@@ -58,13 +57,11 @@ public class ValidatorFactory {
 	
 	/**
 	 * Create a validator that relies on the given schema for validation.
-	 * 
-	 * @param schemas the schemas 
-	 * 
+	 * @param schemaLocations the schemas 
 	 * @return the validator
 	 */
-	public Validator createValidator(Schema... schemas) {
-		return new XMLApiValidator(schemas);
+	public Validator createValidator(URI... schemaLocations) {
+		return new XMLApiValidator(schemaLocations);
 	}
 
 }
