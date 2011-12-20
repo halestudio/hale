@@ -53,6 +53,11 @@ public class XmlIndex extends DefaultSchema {
 	private final Map<QName, XmlElement> elements = new HashMap<QName, XmlElement>();
 	
 	/**
+	 * Namespaces mapped to prefixes
+	 */
+	private final Map<String, String> prefixes = new HashMap<String, String>();
+	
+	/**
 	 * @see DefaultSchema#DefaultSchema(String, URI)
 	 */
 	public XmlIndex(String namespace, URI location) {
@@ -114,6 +119,13 @@ public class XmlIndex extends DefaultSchema {
 	 */
 	public Map<QName, XmlGroup> getGroups() {
 		return groups;
+	}
+
+	/**
+	 * @return the prefixes, namespaces mapped to prefix
+	 */
+	public Map<String, String> getPrefixes() {
+		return prefixes;
 	}
 
 }
