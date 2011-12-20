@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.instance.io.impl;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 
 /**
@@ -21,26 +22,26 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.5
  */
 public abstract class AbstractInstanceValidator extends AbstractImportProvider implements InstanceValidator {
 	
-//	private Schema[] schemas;
-//
-//	/**
-//	 * @see InstanceValidator#setSchemas(Schema[])
-//	 */
-//	@Override
-//	public void setSchemas(Schema... schemas) {
-//		this.schemas = schemas;
-//	}
-//
-//	/**
-//	 * @return the schemas
-//	 */
-//	protected Schema[] getSchemas() {
-//		return schemas;
-//	}
+	private Locatable[] schemas;
+
+	/**
+	 * @see InstanceValidator#setSchemas(Locatable[])
+	 */
+	@Override
+	public void setSchemas(Locatable... schemas) {
+		this.schemas = schemas;
+	}
+
+	/**
+	 * @return the schemas
+	 */
+	protected Locatable[] getSchemas() {
+		return schemas;
+	}
 
 	/**
 	 * Additionally fails if there are no schemas set
@@ -51,9 +52,9 @@ public abstract class AbstractInstanceValidator extends AbstractImportProvider i
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
 		
-//		if (schemas == null || schemas.length == 0) {
-//			fail("No schemas provided for validation");
-//		}
+		if (schemas == null || schemas.length == 0) {
+			fail("No schemas provided for validation");
+		}
 	}
 
 }
