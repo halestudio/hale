@@ -15,8 +15,9 @@ package eu.esdihumboldt.hale.ui.common.graph.figures;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
-import org.eclipse.zest.core.widgets.custom.CustomShapeFigure.ShapePainter;
-import org.eclipse.zest.core.widgets.custom.shapes.AbstractPolygonPainter;
+
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure.ShapePainter;
+import eu.esdihumboldt.hale.ui.util.graph.shapes.AbstractPolygonPainter;
 
 /**
  * Transformation node shape

@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.common.graph.figures;
 
-import org.eclipse.zest.core.widgets.custom.CustomShapeLabel;
-import org.eclipse.zest.core.widgets.custom.shapes.StretchedHexagon;
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
+import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
 /**
  * Figure representing a cell.
