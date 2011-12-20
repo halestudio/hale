@@ -20,51 +20,48 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
+import eu.esdihumboldt.hale.common.cache.Request;
 import eu.esdihumboldt.hale.io.xml.validator.Report;
 import eu.esdihumboldt.hale.io.xml.validator.Validator;
-import eu.esdihumboldt.hale.common.cache.Request;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
 
 /**
  * Validate using the XML API.
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class XMLApiValidator implements Validator {
 
-	private final Schema[] schemas;
+	private final URI[] schemaLocations;
 	
 	/**
 	 * Constructor
-	 * 
-	 * @param schemas the schema
+	 * @param schemaLocations the schema locations
 	 */
-	public XMLApiValidator(Schema[] schemas) {
+	public XMLApiValidator(URI[] schemaLocations) {
 		super();
-		this.schemas = schemas;
+		this.schemaLocations = schemaLocations;
 	}
 
 	/**
-	 * @see Validator#validate(java.io.InputStream)
+	 * @see Validator#validate(InputStream)
 	 */
 	@Override
 	public Report validate(InputStream xml) {
 		javax.xml.validation.Schema validateSchema;
 		try {
 			URI mainUri = null;
-			Source[] sources = new Source[schemas.length];
-			for (int i = 0; i < this.schemas.length; i++) {
-				Schema schema = this.schemas[i];
+			Source[] sources = new Source[schemaLocations.length];
+			for (int i = 0; i < this.schemaLocations.length; i++) {
+				URI schemaLocation = this.schemaLocations[i];
 						    
 				if (mainUri == null) { // use first schema location for main URI
-					mainUri = schema.getLocation().toURI();
+					mainUri = schemaLocation;
 				}
 		
 			    // load a WXS schema, represented by a Schema instance
 //				sources[i] = new StreamSource(schema.getLocation().openStream());
-				sources[i] = new StreamSource(Request.getInstance().get(schema.getLocation().toURI()));
+				sources[i] = new StreamSource(Request.getInstance().get(schemaLocation));
 			}
 			// create a SchemaFactory capable of understanding WXS schemas
 		    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
