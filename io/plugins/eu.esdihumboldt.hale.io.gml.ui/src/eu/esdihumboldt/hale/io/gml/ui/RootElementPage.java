@@ -12,8 +12,6 @@
 
 package eu.esdihumboldt.hale.io.gml.ui;
 
-import java.util.Arrays;
-
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -31,14 +29,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
-import eu.esdihumboldt.hale.schemaprovider.Schema;
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
@@ -76,13 +72,14 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 		if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
 			Object selected = ((IStructuredSelection) sel).getFirstElement();
 			
-			if (selected instanceof SchemaElement) {
-				Name name = ((SchemaElement) selected).getElementName();
-				
-				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, name.getNamespaceURI());
-				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME, name.getLocalPart());
-				return true;
-			}
+			//FIXME
+//			if (selected instanceof SchemaElement) {
+//				Name name = ((SchemaElement) selected).getElementName();
+//				
+//				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, name.getNamespaceURI());
+//				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME, name.getLocalPart());
+//				return true;
+//			}
 		}
 		
 		provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, null);
@@ -110,14 +107,15 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 
 			@Override
 			public String getText(Object element) {
-				if (element instanceof SchemaElement) {
-					Name name = ((SchemaElement) element).getElementName();
-					
-					return name.getLocalPart() + " (" + name.getNamespaceURI() + ")";
-				}
-				if (element instanceof Definition) {
-					return ((Definition) element).getDisplayName();
-				}
+				//FIXME
+//				if (element instanceof SchemaElement) {
+//					Name name = ((SchemaElement) element).getElementName();
+//					
+//					return name.getLocalPart() + " (" + name.getNamespaceURI() + ")";
+//				}
+//				if (element instanceof Definition) {
+//					return ((Definition) element).getDisplayName();
+//				}
 				return super.getText(element);
 			}
 			
@@ -198,11 +196,13 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	}
 
 	private void updateList() {
-		Schema targetSchema = getWizard().getTargetSchema();
-		Object[] input = targetSchema.getAllElements().values().toArray();
-		Arrays.sort(input);
-		list.setInput(input);
-		setPageComplete(!list.getSelection().isEmpty());
+		SchemaSpace schemas = getWizard().getProvider().getTargetSchema();
+		//FIXME use filtered table for selection?
+//		Schema targetSchema = getWizard().getTargetSchema();
+//		Object[] input = targetSchema.getAllElements().values().toArray();
+//		Arrays.sort(input);
+//		list.setInput(input);
+//		setPageComplete(!list.getSelection().isEmpty());
 	}
 	
 }
