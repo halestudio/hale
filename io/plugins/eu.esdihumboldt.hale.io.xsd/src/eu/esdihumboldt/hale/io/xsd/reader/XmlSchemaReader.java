@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -214,14 +213,17 @@ public class XmlSchemaReader
 		}
 		
 		xmlSchema.setSourceURI(location.toString());
+		
+		// create index
+		index = new XmlIndex(namespace, location);
+		
+		// add namespace prefixes
 		NamespacePrefixList namespaces = xmlSchema.getNamespaceContext();
-		Map<String, String> prefixes = new HashMap<String, String>();
+		Map<String, String> prefixes = index.getPrefixes();
 		for (String prefix : namespaces.getDeclaredPrefixes()) {
 			prefixes.put(namespaces.getNamespaceURI(prefix), prefix);
 		}
 		
-		// create index
-		index = new XmlIndex(namespace, location);
 		// create group counter
 		groupCounter = new TObjectIntHashMap<String>();
 		
