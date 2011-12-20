@@ -19,10 +19,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
-import org.eclipse.zest.core.widgets.custom.shapes.FingerPost;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 import eu.esdihumboldt.util.Pair;
 
 /**

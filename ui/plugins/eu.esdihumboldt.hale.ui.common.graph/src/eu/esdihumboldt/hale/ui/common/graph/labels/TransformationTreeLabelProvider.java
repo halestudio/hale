@@ -23,9 +23,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
-import org.eclipse.zest.core.widgets.custom.CustomShapeFigure.ShapePainter;
-import org.eclipse.zest.core.widgets.custom.CustomShapeLabel;
-import org.eclipse.zest.core.widgets.custom.shapes.FingerPost;
 
 import com.google.common.base.Joiner;
 
@@ -39,6 +36,9 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure.ShapePainter;
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
+import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 
 /**
  * Label provider for transformation trees

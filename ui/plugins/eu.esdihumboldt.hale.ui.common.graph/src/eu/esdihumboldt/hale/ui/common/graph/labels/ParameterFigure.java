@@ -20,7 +20,8 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.zest.core.widgets.custom.CustomShapeFigure;
+
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 
 /**
  * The shape figure for abstract parameters

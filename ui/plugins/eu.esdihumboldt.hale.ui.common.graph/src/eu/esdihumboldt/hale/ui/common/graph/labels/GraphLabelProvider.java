@@ -25,8 +25,6 @@ import org.eclipse.zest.core.viewers.IEntityConnectionStyleProvider;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
 import org.eclipse.zest.core.viewers.IFigureProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
-import org.eclipse.zest.core.widgets.custom.CustomShapeLabel;
-import org.eclipse.zest.core.widgets.custom.shapes.FingerPost;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
@@ -41,6 +39,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
+import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 
 /**
  * Label provider for mapping graphs.

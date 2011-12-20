@@ -16,4 +16,6 @@ Import-Package: de.cs3d.util.logging,
  org.eclipse.draw2d,
  org.eclipse.draw2d.geometry,
  org.slf4j;version="1.5.11"
-Export-Package: eu.esdihumboldt.hale.ui.util.graph
+Export-Package: eu.esdihumboldt.hale.ui.util.graph,
+ eu.esdihumboldt.hale.ui.util.graph.internal;x-internal:=true,
+ eu.esdihumboldt.hale.ui.util.graph.shapes
