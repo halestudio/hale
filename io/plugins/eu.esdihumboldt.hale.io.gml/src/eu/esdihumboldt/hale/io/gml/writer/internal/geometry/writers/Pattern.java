@@ -18,21 +18,20 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.geotools.feature.NameImpl;
-import org.opengis.feature.type.Name;
+import javax.xml.namespace.QName;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Represents a pattern for matching an abstract path
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class Pattern {
 
@@ -73,7 +72,7 @@ public class Pattern {
 
 		private final ElementType type;
 		
-		private final Name name;
+		private final QName name;
 
 		/**
 		 * Constructor
@@ -81,7 +80,7 @@ public class Pattern {
 		 * @param type the element type
 		 * @param name the element name
 		 */
-		public PatternElement(ElementType type, Name name) {
+		public PatternElement(ElementType type, QName name) {
 			super();
 			this.type = type;
 			this.name = name;
@@ -97,7 +96,7 @@ public class Pattern {
 		/**
 		 * @return the name
 		 */
-		public Name getName() {
+		public QName getName() {
 			return name;
 		}
 		
@@ -170,14 +169,14 @@ public class Pattern {
 							
 							elements.add(new PatternElement(
 									ElementType.NAMED_ELEMENT, 
-									new NameImpl(namespace, name)));
+									new QName(namespace, name)));
 						}
 					}
 					else {
 						// element name only
 						elements.add(new PatternElement(
 								ElementType.NAMED_ELEMENT, 
-								new NameImpl(part)));
+								new QName(part)));
 					}
 				}
 			}
@@ -350,12 +349,12 @@ public class Pattern {
 		
 		if (checkAgainst != null) {
 			// get the last path element
-			Name elementName = path.getLastName();
+			QName elementName = path.getLastName();
 			
-			Name name = checkAgainst.getName();
+			QName name = checkAgainst.getName();
 			// inject namespace if needed
 			if (name.getNamespaceURI() == null) {
-				name = new NameImpl(gmlNs, name.getLocalPart());
+				name = new QName(gmlNs, name.getLocalPart());
 			}
 			
 			// check direct match
@@ -385,10 +384,12 @@ public class Pattern {
 		
 		if (allowSubtypeDescent) {
 			// step down sub-types
-//			for (TypeDefinition subtype : type.getSubTypes()) {
+			//XXX now represented in choices
+			//XXX sub-type must work through parent choice
+//			for (SchemaElement element : type.getSubstitutions(path.getLastName())) {
 //				DefinitionPath candidate = match(
-//						subtype, 
-//						new DefinitionPath(path).addSubType(subtype), 
+//						element.getType(), 
+//						new DefinitionPath(path).addSubstitution(element), 
 //						gmlNs, 
 //						new HashSet<TypeDefinition>(checkedTypes), 
 //						new ArrayList<PatternElement>(remainingElements));
@@ -397,18 +398,6 @@ public class Pattern {
 //					return candidate;
 //				}
 //			}
-			for (SchemaElement element : type.getSubstitutions(path.getLastName())) {
-				DefinitionPath candidate = match(
-						element.getType(), 
-						new DefinitionPath(path).addSubstitution(element), 
-						gmlNs, 
-						new HashSet<TypeDefinition>(checkedTypes), 
-						new ArrayList<PatternElement>(remainingElements));
-				
-				if (candidate != null) {
-					return candidate;
-				}
-			}
 		}
 		
 		if (allowAttributeDescent) {
@@ -417,11 +406,13 @@ public class Pattern {
 			}
 			
 			// step down properties
-			Iterable<AttributeDefinition> properties = (path.isEmpty())?(type.getAttributes()):(type.getDeclaredAttributes());
-			for (AttributeDefinition att : properties) {
+			@java.lang.SuppressWarnings("unchecked")
+			Iterable<ChildDefinition<?>> children = (Iterable<ChildDefinition<?>>) ((path.isEmpty())?(type.getChildren()):(type.getDeclaredChildren()));
+			Iterable<PropertyDefinition> properties = GmlWriterUtil.collectProperties(children);
+			for (PropertyDefinition prop : properties) {
 				DefinitionPath candidate = match(
-						att.getAttributeType(),
-						new DefinitionPath(path).addProperty(att),
+						prop.getPropertyType(),
+						new DefinitionPath(path).addProperty(prop),
 						gmlNs,
 						new HashSet<TypeDefinition>(checkedTypes),
 						new ArrayList<PatternElement>(remainingElements));

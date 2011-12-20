@@ -17,10 +17,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -28,10 +28,9 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Abstract geometry writer implementation
@@ -113,12 +112,13 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	 */
 	@Override
 	protected boolean verifyEndPoint(TypeDefinition endPoint) {
-		for (AttributeDefinition attribute : endPoint.getAttributes()) {
-			if (SUPPORTED_COORDINATES_TYPES.contains(attribute.getTypeName().getLocalPart())) {
-				// a valid property was found
-				return true;
-			}
-		}
+		//FIXME
+//		for (AttributeDefinition attribute : endPoint.getAttributes()) {
+//			if (SUPPORTED_COORDINATES_TYPES.contains(attribute.getTypeName().getLocalPart())) {
+//				// a valid property was found
+//				return true;
+//			}
+//		}
 		
 		return false;
 	}
@@ -138,7 +138,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	 */
 	protected static void descendAndWriteCoordinates(XMLStreamWriter writer, 
 			Pattern descendPattern, Coordinate[] coordinates, 
-			TypeDefinition elementType, Name elementName, String gmlNs, boolean unique) throws XMLStreamException {
+			TypeDefinition elementType, QName elementName, String gmlNs, boolean unique) throws XMLStreamException {
 		Descent descent = descend(writer, descendPattern, elementType, 
 				elementName, gmlNs, unique);
 		
@@ -192,41 +192,42 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	 */
 	private static boolean writePos(XMLStreamWriter writer,
 			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
-		AttributeDefinition posAttribute = null;
-		
-		// check for DirectPositionType
-		for (AttributeDefinition att : elementType.getAttributes()) {
-			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionType"))) { //$NON-NLS-1$
-				posAttribute = att;
-				break;
-			}
-		}
-		
-		//TODO support for CoordType
-		
-		if (posAttribute != null) {
-			//TODO possibly write repeated positions
-			writer.writeStartElement(posAttribute.getNamespace(), posAttribute.getName());
-			
-			// write coordinates separated by spaces
-			if (coordinates.length > 0) {
-				Coordinate coordinate = coordinates[0];
-				
-				writer.writeCharacters(String.valueOf(coordinate.x));
-				writer.writeCharacters(" "); //$NON-NLS-1$
-				writer.writeCharacters(String.valueOf(coordinate.y));
-				if (!Double.isNaN(coordinate.z)) {
-					writer.writeCharacters(" "); //$NON-NLS-1$
-					writer.writeCharacters(String.valueOf(coordinate.z));
-				}
-			}
-			
-			writer.writeEndElement();
-			return true;
-		}
-		else {
+		//FIXME
+//		AttributeDefinition posAttribute = null;
+//		
+//		// check for DirectPositionType
+//		for (AttributeDefinition att : elementType.getAttributes()) {
+//			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionType"))) { //$NON-NLS-1$
+//				posAttribute = att;
+//				break;
+//			}
+//		}
+//		
+//		//TODO support for CoordType
+//		
+//		if (posAttribute != null) {
+//			//TODO possibly write repeated positions
+//			writer.writeStartElement(posAttribute.getNamespace(), posAttribute.getName());
+//			
+//			// write coordinates separated by spaces
+//			if (coordinates.length > 0) {
+//				Coordinate coordinate = coordinates[0];
+//				
+//				writer.writeCharacters(String.valueOf(coordinate.x));
+//				writer.writeCharacters(" "); //$NON-NLS-1$
+//				writer.writeCharacters(String.valueOf(coordinate.y));
+//				if (!Double.isNaN(coordinate.z)) {
+//					writer.writeCharacters(" "); //$NON-NLS-1$
+//					writer.writeCharacters(String.valueOf(coordinate.z));
+//				}
+//			}
+//			
+//			writer.writeEndElement();
+//			return true;
+//		}
+//		else {
 			return false;
-		}
+//		}
 	}
 
 	/**
@@ -241,58 +242,59 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	 */
 	private static boolean writeList(XMLStreamWriter writer,
 			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
-		AttributeDefinition listAttribute = null;
-		String delimiter = " "; //$NON-NLS-1$
-		String setDelimiter = " "; //$NON-NLS-1$
-		
-		// check for DirectPositionListType
-		for (AttributeDefinition att : elementType.getAttributes()) {
-			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionListType"))) { //$NON-NLS-1$
-				listAttribute = att;
-				break;
-			}
-		}
-		
-		if (listAttribute == null) {
-			// check for CoordinatesType
-			for (AttributeDefinition att : elementType.getAttributes()) {
-				if (att.getTypeName().equals(new NameImpl(gmlNs, "CoordinatesType"))) { //$NON-NLS-1$
-					listAttribute = att;
-					delimiter = ","; //$NON-NLS-1$
-					break;
-				}
-			}
-		}
-		
-		if (listAttribute != null) {
-			
-			writer.writeStartElement(listAttribute.getNamespace(), listAttribute.getName());
-			
-			boolean first = true;
-			// write coordinates separated by spaces
-			for (Coordinate coordinate : coordinates) {
-				if (first) {
-					first = false;
-				}
-				else {
-					writer.writeCharacters(setDelimiter);
-				}
-				
-				writer.writeCharacters(String.valueOf(coordinate.x));
-				writer.writeCharacters(delimiter);
-				writer.writeCharacters(String.valueOf(coordinate.y));
-				if (!Double.isNaN(coordinate.z)) {
-					writer.writeCharacters(delimiter);
-					writer.writeCharacters(String.valueOf(coordinate.z));
-				}
-			}
-			
-			writer.writeEndElement();
-			return true;
-		}
-		else {
+		//FIXME
+//		AttributeDefinition listAttribute = null;
+//		String delimiter = " "; //$NON-NLS-1$
+//		String setDelimiter = " "; //$NON-NLS-1$
+//		
+//		// check for DirectPositionListType
+//		for (AttributeDefinition att : elementType.getAttributes()) {
+//			if (att.getTypeName().equals(new NameImpl(gmlNs, "DirectPositionListType"))) { //$NON-NLS-1$
+//				listAttribute = att;
+//				break;
+//			}
+//		}
+//		
+//		if (listAttribute == null) {
+//			// check for CoordinatesType
+//			for (AttributeDefinition att : elementType.getAttributes()) {
+//				if (att.getTypeName().equals(new NameImpl(gmlNs, "CoordinatesType"))) { //$NON-NLS-1$
+//					listAttribute = att;
+//					delimiter = ","; //$NON-NLS-1$
+//					break;
+//				}
+//			}
+//		}
+//		
+//		if (listAttribute != null) {
+//			
+//			writer.writeStartElement(listAttribute.getNamespace(), listAttribute.getName());
+//			
+//			boolean first = true;
+//			// write coordinates separated by spaces
+//			for (Coordinate coordinate : coordinates) {
+//				if (first) {
+//					first = false;
+//				}
+//				else {
+//					writer.writeCharacters(setDelimiter);
+//				}
+//				
+//				writer.writeCharacters(String.valueOf(coordinate.x));
+//				writer.writeCharacters(delimiter);
+//				writer.writeCharacters(String.valueOf(coordinate.y));
+//				if (!Double.isNaN(coordinate.z)) {
+//					writer.writeCharacters(delimiter);
+//					writer.writeCharacters(String.valueOf(coordinate.z));
+//				}
+//			}
+//			
+//			writer.writeEndElement();
+//			return true;
+//		}
+//		else {
 			return false;
-		}
+//		}
 	}
 
 }

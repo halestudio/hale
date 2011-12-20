@@ -196,6 +196,7 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	}
 
 	private void updateList() {
+		//TODO instead of showing all elemets allow filtering for elements that can hold the type in some form?
 		SchemaSpace schemas = getWizard().getProvider().getTargetSchema();
 		//FIXME use filtered table for selection?
 //		Schema targetSchema = getWizard().getTargetSchema();

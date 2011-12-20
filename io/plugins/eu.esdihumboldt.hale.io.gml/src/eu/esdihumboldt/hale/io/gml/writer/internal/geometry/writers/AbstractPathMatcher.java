@@ -15,16 +15,15 @@ package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.opengis.feature.type.Name;
-
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Abstract pattern based path matcher
@@ -163,7 +162,7 @@ public abstract class AbstractPathMatcher {
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	public static Descent descend(XMLStreamWriter writer, 
-			Pattern descendPattern, TypeDefinition elementType, Name elementName, 
+			Pattern descendPattern, TypeDefinition elementType, QName elementName, 
 			String defaultNs, boolean unique) throws XMLStreamException {
 		DefinitionPath path = descendPattern.match(elementType, 
 				new DefinitionPath(elementType, elementName, unique), defaultNs);

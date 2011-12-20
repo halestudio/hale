@@ -12,24 +12,23 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.geotools.feature.NameImpl;
-import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * {@link Point} writer
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class PointWriter extends AbstractGeometryWriter<Point> {
 
@@ -47,11 +46,11 @@ public class PointWriter extends AbstractGeometryWriter<Point> {
 	}
 
 	/**
-	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition, Name, String)
+	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition, QName, String)
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, Point geometry,
-			TypeDefinition elementType, Name elementName, String gmlNs)
+			TypeDefinition elementType, QName elementName, String gmlNs)
 			throws XMLStreamException {
 		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs);
 	}
