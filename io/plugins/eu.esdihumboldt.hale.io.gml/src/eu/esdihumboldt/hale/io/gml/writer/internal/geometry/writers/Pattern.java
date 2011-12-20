@@ -22,10 +22,9 @@ import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.specification.modelrepository.abstractfc.SchemaElement;
 
 /**
  * Represents a pattern for matching an abstract path
@@ -385,10 +384,12 @@ public class Pattern {
 		
 		if (allowSubtypeDescent) {
 			// step down sub-types
-//			for (TypeDefinition subtype : type.getSubTypes()) {
+			//XXX now represented in choices
+			//XXX sub-type must work through parent choice
+//			for (SchemaElement element : type.getSubstitutions(path.getLastName())) {
 //				DefinitionPath candidate = match(
-//						subtype, 
-//						new DefinitionPath(path).addSubType(subtype), 
+//						element.getType(), 
+//						new DefinitionPath(path).addSubstitution(element), 
 //						gmlNs, 
 //						new HashSet<TypeDefinition>(checkedTypes), 
 //						new ArrayList<PatternElement>(remainingElements));
@@ -397,18 +398,6 @@ public class Pattern {
 //					return candidate;
 //				}
 //			}
-			for (SchemaElement element : type.getSubstitutions(path.getLastName())) {
-				DefinitionPath candidate = match(
-						element.getType(), 
-						new DefinitionPath(path).addSubstitution(element), 
-						gmlNs, 
-						new HashSet<TypeDefinition>(checkedTypes), 
-						new ArrayList<PatternElement>(remainingElements));
-				
-				if (candidate != null) {
-					return candidate;
-				}
-			}
 		}
 		
 		if (allowAttributeDescent) {
