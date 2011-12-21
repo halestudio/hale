@@ -35,6 +35,9 @@ public class ReportServiceImpl implements ReportService {
 	
 	private final TypeSafeListenerList<ReportListener<?, ?>> listeners = new TypeSafeListenerList<ReportListener<?,?>>();
 
+	/**
+	 * Map using the MessageType(Class) as index and a Map containing Report(Class) -> Report
+	 */
 	private final Map<Class<? extends Message>, Multimap<Class<? extends Report<?>>, Report<?>>> reports = new HashMap<Class<? extends Message>, Multimap<Class<? extends Report<?>>,Report<?>>>();
 	
 	/**
@@ -43,9 +46,16 @@ public class ReportServiceImpl implements ReportService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <M extends Message, R extends Report<M>> void addReport(R report) {
+		// get all reports for this messageType
 		Multimap<Class<? extends Report<?>>, Report<?>> reportMap = getReports(report.getMessageType());
+		
+		// add the report to temporary map
 		reportMap.put((Class<? extends Report<?>>) report.getClass(), report);
 		
+		// add them to internal storage
+		this.reports.put(report.getMessageType(), reportMap);
+		
+		// notify listeners
 		notifyReportAdded(report.getClass(), report.getMessageType(), report);
 	}
 
@@ -93,7 +103,14 @@ public class ReportServiceImpl implements ReportService {
 	 */
 	@Override
 	public Multimap<Class<? extends Report<?>>, Report<?>> getAllReports() {
-		return this.getReports(Message.class);
+//		return this.getReports(Message.class);
+		Multimap<Class<? extends Report<?>>, Report<?>> reportMap = HashMultimap.create();
+		
+		for (Multimap<Class<? extends Report<?>>, Report<?>> map : this.reports.values()) {
+			reportMap.putAll(map);
+		}
+		
+		return reportMap;
 	}
 
 	/**
