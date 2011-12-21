@@ -76,6 +76,7 @@ public class ReportServiceImpl implements ReportService {
 	 * @param messageType the message type
 	 * @return report types mapped to reports
 	 */
+	@Override
 	public Multimap<Class<? extends Report<?>>, Report<?>> getReports(
 			Class<? extends Message> messageType) {
 		Multimap<Class<? extends Report<?>>, Report<?>> map = reports.get(messageType);
@@ -90,6 +91,7 @@ public class ReportServiceImpl implements ReportService {
 	 * 
 	 * @return all reports
 	 */
+	@Override
 	public Multimap<Class<? extends Report<?>>, Report<?>> getAllReports() {
 		return this.getReports(Message.class);
 	}
