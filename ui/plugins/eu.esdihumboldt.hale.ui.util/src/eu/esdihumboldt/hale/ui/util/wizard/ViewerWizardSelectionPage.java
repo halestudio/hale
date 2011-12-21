@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardNode;
 import org.eclipse.jface.wizard.WizardSelectionPage;
 import org.eclipse.swt.SWT;
@@ -193,7 +194,10 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
 				getContainer().showPage(getNextPage());
 				return;
 			}
-		}    	
+		} else if (event.getViewer() instanceof TreeViewer) {
+			TreeViewer viewer = (TreeViewer) event.getViewer();
+			viewer.setExpandedState(element, !viewer.getExpandedState(element));
+		}
         getContainer().showPage(getNextPage());   			
     }
 

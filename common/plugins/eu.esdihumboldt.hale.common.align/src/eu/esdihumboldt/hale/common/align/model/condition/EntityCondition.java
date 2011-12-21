@@ -26,9 +26,8 @@ public interface EntityCondition<T extends Entity> {
 	/**
 	 * Determines if the given entity matches the constraint
 	 * @param entity the entity
-	 * @param context the entity context
 	 * @return if the entity matches the constraint
 	 */
-	public boolean accept(T entity, EntityContext context);
+	public boolean accept(T entity);
 	
 }

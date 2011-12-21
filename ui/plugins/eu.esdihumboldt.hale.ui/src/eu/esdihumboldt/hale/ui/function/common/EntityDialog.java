@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -29,10 +30,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
+import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
 
 /**
  * Dialog for selecting an {@link EntityDefinition}
@@ -118,11 +123,14 @@ public abstract class EntityDialog extends Dialog {
 		page.setLayout(pageLayout);
 		
 		// create viewer
-		viewer = new TreeViewer(page);
+		PatternFilter patternFilter = new SchemaPatternFilter();
+		patternFilter.setIncludeLeadingWildcard(true);
+		FilteredTree tree = new TreePathFilteredTree(page, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		viewer = tree.getViewer();
 		viewer.setComparator(new DefinitionComparator());
 		setupViewer(viewer, initialSelection);
-		// set filters
-		viewer.setFilters((filters == null)?(new ViewerFilter[0]):(filters));
+		// set filters TODO
+		//viewer.setFilters((filters == null)?(new ViewerFilter[0]):(filters));
 		
 		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().
 				grab(true, true).create());
@@ -177,8 +185,17 @@ public abstract class EntityDialog extends Dialog {
 		Button ok = getButton(IDialogConstants.OK_ID);
 		
 		if (ok != null) {
-			boolean selected = !viewer.getSelection().isEmpty();
-			ok.setEnabled(selected);
+			ISelection selection = viewer.getSelection();
+			if (selection.isEmpty())
+				ok.setEnabled(false);
+			else {
+				boolean valid = true;
+				if (selection instanceof IStructuredSelection) {
+					if (!EntitySelector.acceptObject(viewer, filters, ((IStructuredSelection) selection).getFirstElement()))
+						valid = false;
+				}
+				ok.setEnabled(valid);
+			}
 		}
 	}
 	

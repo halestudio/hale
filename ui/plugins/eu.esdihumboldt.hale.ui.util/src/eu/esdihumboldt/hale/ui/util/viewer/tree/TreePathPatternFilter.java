@@ -29,6 +29,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 public class TreePathPatternFilter extends PatternFilter {
 	
 	private boolean hasMatcher = false;
+	private boolean useEarlyReturnIfMatcherIsNull = true;
     
     /**
      * Similar to {@link PatternFilter} but without caching. Needed by
@@ -38,7 +39,7 @@ public class TreePathPatternFilter extends PatternFilter {
      */
     @SuppressWarnings("javadoc")
 	private boolean isAnyVisible(Viewer viewer, @SuppressWarnings("unused") Object parent, Object[] elements) {
-    	if (!hasMatcher) {
+    	if (!hasMatcher && useEarlyReturnIfMatcherIsNull) {
     		return true;
     	}
     	
@@ -73,6 +74,19 @@ public class TreePathPatternFilter extends PatternFilter {
 		}
         
         super.setPattern(patternString);
+    }
+    
+    /**
+     * Sets whether checks should return true directly if the matcher text is empty.
+     * 
+     * @param value the value
+     */
+    public void setUseEarlyReturnIfMatcherIsNull(boolean value) {
+    	useEarlyReturnIfMatcherIsNull = value;
+    	if (value)
+    		setPattern("org.eclipse.ui.keys.optimization.true");
+    	else
+    		setPattern("org.eclipse.ui.keys.optimization.false");
     }
 
     /**

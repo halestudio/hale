@@ -12,19 +12,20 @@
 
 package eu.esdihumboldt.hale.common.align.model.condition.impl;
 
+import net.jcip.annotations.Immutable;
+
 import org.springframework.core.convert.ConversionService;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-import net.jcip.annotations.Immutable;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.condition.EntityCondition;
-import eu.esdihumboldt.hale.common.align.model.condition.EntityContext;
 import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
  * Type condition that checks its binding and element type 
@@ -55,12 +56,12 @@ public class BindingCondition implements TypeCondition {
 	}
 
 	/**
-	 * @see EntityCondition#accept(Entity, EntityContext)
+	 * @see EntityCondition#accept(Entity)
 	 */
 	@Override
-	public boolean accept(Type entity, EntityContext context) {
+	public boolean accept(Type entity) {
 		boolean to = true; // default
-		switch (context) {
+		switch (entity.getDefinition().getSchemaSpace()) {
 		case SOURCE:
 			to = false;
 			break;
@@ -70,6 +71,10 @@ public class BindingCondition implements TypeCondition {
 		}
 		
 		TypeDefinition type = entity.getDefinition().getDefinition();
+		if (!type.getConstraint(HasValueFlag.class).isEnabled()) {
+			// only check binding for types that actually may have a value
+			return false;
+		}
 		
 		// check binding
 		Binding binding = type.getConstraint(Binding.class);
