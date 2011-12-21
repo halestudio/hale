@@ -76,13 +76,22 @@ public class ReportServiceImpl implements ReportService {
 	 * @param messageType the message type
 	 * @return report types mapped to reports
 	 */
-	private Multimap<Class<? extends Report<?>>, Report<?>> getReports(
+	public Multimap<Class<? extends Report<?>>, Report<?>> getReports(
 			Class<? extends Message> messageType) {
 		Multimap<Class<? extends Report<?>>, Report<?>> map = reports.get(messageType);
 		if (map == null) {
 			map = HashMultimap.create();
 		}
 		return map;
+	}
+	
+	/**
+	 * Get all reports.
+	 * 
+	 * @return all reports
+	 */
+	public Multimap<Class<? extends Report<?>>, Report<?>> getAllReports() {
+		return this.getReports(Message.class);
 	}
 
 	/**
