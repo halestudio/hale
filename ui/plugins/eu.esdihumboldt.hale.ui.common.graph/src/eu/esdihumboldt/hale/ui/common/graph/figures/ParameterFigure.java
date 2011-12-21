@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.common.graph.labels;
+package eu.esdihumboldt.hale.ui.common.graph.figures;
 
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
@@ -46,9 +46,9 @@ public class ParameterFigure extends CustomShapeFigure {
 		setLayoutManager(gridLayout);
 
 		Label namelabel = new Label();
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true,
+		GridData namegrid = new GridData(GridData.FILL, GridData.FILL, true,
 				true);
-		add(namelabel, gridData);
+		add(namelabel, namegrid);
 		setTextLabel(namelabel);
 		setIconLabel(namelabel);
 		
@@ -59,16 +59,16 @@ public class ParameterFigure extends CustomShapeFigure {
 		Label descriptionlabel = new Label(image);
 		IFigure descriptionfigure = new Label(description);
 		descriptionlabel.setToolTip(descriptionfigure);
-		GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true,
+		GridData descriptiongrid = new GridData(GridData.FILL, GridData.FILL, true,
 				true);
-		add(descriptionlabel, gridData2);
+		add(descriptionlabel, descriptiongrid);
 		
 		Label textlabel = new Label(occurrence);
 		IFigure occfig = new Label("Occurrence");
 		textlabel.setToolTip(occfig);
-		GridData gridData3 = new GridData(GridData.FILL, GridData.FILL, true,
+		GridData textgrid = new GridData(GridData.FILL, GridData.FILL, true,
 				true);
-		add(textlabel, gridData3);
+		add(textlabel, textgrid);
 
 	}
 
