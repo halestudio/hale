@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;

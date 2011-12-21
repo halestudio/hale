@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.ui.function.common;
 
+import java.util.List;
+
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -21,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -81,8 +85,26 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 	 */
 	@Override
 	protected ViewerFilter[] createFilters(TypeParameter field) {
-		// TODO Auto-generated method stub
-		return super.createFilters(field);
+		List<TypeCondition> conditions = field.getConditions();
+		
+		if (conditions == null)
+			return new ViewerFilter[0];
+
+		ViewerFilter[] filters = new ViewerFilter[conditions.size()];
+		int i = 0;
+		for (final TypeCondition condition : conditions) {
+			filters[i] = new ViewerFilter() {				
+				@Override
+				public boolean select(Viewer viewer, Object parentElement, Object element) {
+					if (element instanceof TypeEntityDefinition) {
+						Type property = new DefaultType((TypeEntityDefinition) element);
+						return condition.accept(property);
+					} else
+						return false;
+				}
+			};
+		}
+		return filters;
 	}
 
 }

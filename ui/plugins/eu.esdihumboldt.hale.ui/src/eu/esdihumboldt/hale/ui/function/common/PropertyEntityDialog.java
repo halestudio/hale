@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypePropertyContentProvider;
+import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
 /**
  * Dialog for selecting a {@link PropertyEntityDefinition}
@@ -66,8 +67,8 @@ public class PropertyEntityDialog extends EntityDialog {
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
 		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-		viewer.setContentProvider(new EntityTypePropertyContentProvider(
-				viewer, entityDefinitionService, ssid));
+		viewer.setContentProvider(new TreePathProviderAdapter(new EntityTypePropertyContentProvider(
+				viewer, entityDefinitionService, ssid)));
 		
 		viewer.setInput(parentType);
 		

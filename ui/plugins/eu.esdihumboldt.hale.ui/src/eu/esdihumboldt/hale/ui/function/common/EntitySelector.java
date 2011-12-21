@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -94,9 +95,6 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 		});
 
 		filters = createFilters(field);
-		if (filters != null) {
-			viewer.setFilters(filters);
-		}
 		
 		// initial selection
 		Object select = NoObject.NONE;
@@ -113,7 +111,7 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 				EntityDialog dialog = createEntityDialog(
 						Display.getCurrent().getActiveShell(), ssid, 
 						EntitySelector.this.field);
-				dialog.setFilters(viewer.getFilters());
+				dialog.setFilters(filters);
 				if (dialog.open() == EntityDialog.OK) {
 					EntityDefinition entity = dialog.getEntity();
 					if ((entity == null && currentInput == null) || (entity != null && entity.equals(currentInput)))
@@ -145,10 +143,13 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 	
 	/**
 	 * Determines if the given object matches the selector's filters
+	 * 
+	 * @param viewer the viewer
+	 * @param filters the viewer filters
 	 * @param candidate the object to test
 	 * @return if the object is accepted by all filters
 	 */
-	public boolean acceptObject(Object candidate) {
+	public static boolean acceptObject(Viewer viewer, ViewerFilter[] filters, Object candidate) {
 		if (filters == null) {
 			return true;
 		}
@@ -218,7 +219,7 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 			Object selected = ((IStructuredSelection) selection).getFirstElement();
 			if (selected != null) {
 				// run against filters
-				if (acceptObject(selected)) {
+				if (acceptObject(viewer, filters, selected)) {
 					// valid selection
 					viewer.setInput(selected);
 					return;
