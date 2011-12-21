@@ -13,9 +13,10 @@
 <b>Function Name:</b> $function.displayName <br />
 <b>Function ID:</b> $function.id <br />
 <b>Description:</b> $function.description<br />
-<b>Category:</b> $function.categoryId<br />
+#if($function.categoryId)
+<b>Category:</b> $!function.categoryId<br />
+#end
 <br />
-<!-- TODO: import the images for the functions (@see OffscreenGraph) -->
 <img src="${function.id}.png" />
 <br />
 #if( $function.definedParameters.size() > 0 )

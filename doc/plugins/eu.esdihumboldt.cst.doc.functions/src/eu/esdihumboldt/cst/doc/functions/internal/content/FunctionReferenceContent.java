@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Locale;
@@ -25,7 +26,11 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.help.IHelpContentProducer;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.layouts.LayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.io.Files;
 
@@ -34,6 +39,8 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.ui.common.graph.content.SourceTargetContentProvider;
+import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
 import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 
 /**
@@ -71,11 +78,14 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 				func_id = func_id.substring(0, func_id.lastIndexOf('.'));
 			}
 			// .png ending
-			if(func_id.endsWith(".png")) {
+			if (func_id.endsWith(".png")) {
 				func_id = func_id.substring(0, func_id.lastIndexOf('.'));
-				//TODO return image content
-			}
-			else {
+				try {
+					return getImageContent(func_id);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
 				try {
 					return getFunctionContent(func_id);
 				} catch (Exception e) {
@@ -157,14 +167,10 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			if (help_url != null) {
 				String help_path = help_url.getPath();
 
-				// String help_id = function.getHelpFileID();
-
 				StringBuffer sb_include = new StringBuffer();
-				// sb_include.append("PLUGINS_ROOT/");
 				sb_include.append(bundle);
 				sb_include.append(help_path);
 				sb_include.append("/help");
-				// sb_include.append(help_id);
 
 				String final_help_url = sb_include.toString();
 
@@ -178,37 +184,66 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			template.merge(context, fw);
 
 			fw.close();
-			
+
 		}
 
 		return new FileInputStream(functionFile);
 	}
-	
-	private InputStream getImageContent(String func_id) {
-		// maps "function" to the real function ID (used by the template)
+
+	private InputStream getImageContent(String func_id) throws Exception {
+		
 		final AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
 
 		if (function == null) {
 			log.warn("Unknown function " + func_id);
 			return null;
 		}
-		
-		//TODO ensure initialization
-		
-		File functionFile = new File(tempDir, func_id + ".png");
-		if (!functionFile.exists()) {
-			OffscreenGraph graph = new OffscreenGraph(200, 100) {
 
+		synchronized (this) {
+
+			// create a temporary directory
+			tempDir = Files.createTempDir();
+
+		}
+
+		final File _functionFile = new File(tempDir, func_id + ".png");
+		if (!_functionFile.exists()) {
+			Display disp = PlatformUI.getWorkbench().getDisplay();
+			disp.syncExec(new Runnable() {
+				
 				@Override
-				protected void configureViewer(GraphViewer viewer) {
-					// TODO Auto-generated method stub
+				public void run() {
+					// TODO: compute the real size of the graph and create a new OffscreenGraph with it
+					OffscreenGraph graph = new OffscreenGraph(200, 100) {
+
+						@Override
+						protected void configureViewer(GraphViewer viewer) {
+							LayoutAlgorithm algo = new TreeLayoutAlgorithm(
+									TreeLayoutAlgorithm.LEFT_RIGHT);
+							
+							SourceTargetContentProvider stcp = new SourceTargetContentProvider();
+							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider();
+							viewer.setContentProvider(stcp);
+							viewer.setLabelProvider(fglp);
+							viewer.setInput(function);
+							viewer.setLayoutAlgorithm(algo);
+						}
+					};
 					
-					viewer.setInput(function);
+					try {
+						graph.saveImage(new FileOutputStream(_functionFile), null);
+					} catch (IOException e) {
+						log.warn("Conversion from Graph to Image failed!");
+					}
 				}
-			};
+			});
+			
+			if(_functionFile.exists()) {
+			return new FileInputStream(_functionFile);
+			}
 		}
 		
-		return null;//new FileInputStream(functionFile);
+		return null;
 	}
 
 }
