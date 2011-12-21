@@ -20,7 +20,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributo
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.common.help.HALEContextProvider;
+import eu.esdihumboldt.hale.ui.HALEContextProvider;
 
 /**
  * View part that provides support for association with the properties view
