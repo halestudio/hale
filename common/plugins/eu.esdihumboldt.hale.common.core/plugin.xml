@@ -4,6 +4,7 @@
    <extension-point id="eu.esdihumboldt.hale.io.provider" name="I/O providers" schema="schema/eu.esdihumboldt.hale.io.provider.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.io.action" name="I/O actions and advisors" schema="schema/eu.esdihumboldt.hale.io.action.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.io.project" name="Project extensions" schema="schema/eu.esdihumboldt.hale.io.project.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.report" name="Report" schema="schema/eu.esdihumboldt.hale.report.exsd"/>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
@@ -61,6 +62,17 @@
                ref="eu.esdihumboldt.hale.io.project.hale25.xml">
          </contentType>
       </provider>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.report">
+      <messageDefinition
+            class="eu.esdihumboldt.hale.common.core.report.impl.MessageImplDefinition"
+            id="eu.esdihumboldt.hale.common.core.message.default">
+      </messageDefinition>
+      <reportDefinition
+            class="eu.esdihumboldt.hale.common.core.report.impl.ReportImplDefintion"
+            id="eu.esdihumboldt.hale.common.core.report.default">
+      </reportDefinition>
    </extension>
 
 </plugin>
