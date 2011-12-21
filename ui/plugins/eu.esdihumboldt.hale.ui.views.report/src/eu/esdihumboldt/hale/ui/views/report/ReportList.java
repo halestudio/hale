@@ -34,6 +34,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.wb.swt.ResourceManager;
 
+import com.google.common.collect.Multimap;
+
 import swing2swt.layout.BorderLayout;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -71,13 +73,33 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportList.class);
 	
+	private ReportService repService;
+	
 	/**
 	 * Constructor.
 	 */
 	public ReportList() {
 		// get ReportService and add listener
-		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+		repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
 		repService.addReportListener(this);
+	}
+	
+	/**
+	 * Loads all added reports from ReportService and
+	 * displays them for the current session.
+	 */
+	@SuppressWarnings("unchecked")
+	private void loadReports() {
+		Multimap<Class<? extends Report<?>>, Report<?>> reports = this.repService.getAllReports();
+	
+		for (Report<?> r : reports.values()) {
+			if (r == null) { continue; }
+			try {
+				this.reportAdded((Report<Message>) r);
+			} catch (Exception e) {
+				_log.warn("Unsupported Report", e.getStackTrace());
+			}
+		}
 	}
 
 	/**
@@ -123,7 +145,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				_mntmCopy.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						String clipboard = new String();
+						String clipboard;
 						Object obj = ((IStructuredSelection) _treeViewer.getSelection()).getFirstElement();
 						if (obj instanceof Project) {
 							// use the name for a project
@@ -166,7 +188,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 							// clear the view
 							clearLogView();
 							
-							// remove all entries from ReportService
+							// TODO remove all entries from ReportService
 						}
 					}
 				});
@@ -197,7 +219,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 						String file = fd.open();
 						
 						if (file != null) {
-							// save the reports to given path
+							// TODO save the reports to given path
 							
 						}
 					}
@@ -244,7 +266,10 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 		getSite().setSelectionProvider(_treeViewer);
 		
 		// feed a dummy object so old reports are restored if this widget was disposed
-		_treeViewer.setInput(new Object());
+		// _treeViewer.setInput(new Object());
+		
+		// load all added reports
+		this.loadReports();
 	}
 
 	/**
@@ -301,12 +326,20 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	 */
 	@Override
 	public void reportAdded(final Report<Message> report) {
+		// check if a widget is disposed
+		if (this._menu == null || this._menu.isDisposed()) {
+			return;
+		}
+		
 		final ReportWriter reportWriter = new ReportWriter(); // remove this soon
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				try{
-					
+					/*
+					 * This is the part where new reports arrive and
+					 * will be added.
+					 */
 					ProjectService proService = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
 					ProjectInfo info = proService.getProjectInfo();
 					
