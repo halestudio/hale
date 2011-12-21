@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.common.help;
+package eu.esdihumboldt.hale.ui;
 
 import org.eclipse.jface.viewers.ISelectionProvider;
 
@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
+import eu.esdihumboldt.hale.ui.common.help.SelectionContextProvider;
 
 /**
  * Selection context provider for selection containing objects from the HALE 
