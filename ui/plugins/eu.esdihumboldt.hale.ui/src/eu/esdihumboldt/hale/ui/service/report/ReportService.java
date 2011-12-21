@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.service.report;
 
+import com.google.common.collect.Multimap;
+
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
 
@@ -47,4 +49,19 @@ public interface ReportService {
 	 */
 	public void removeReportListener(ReportListener<?, ?> listener);
 
+	/**
+	 * Get all reports matching the given message type
+	 * 
+	 * @param messageType the message type
+	 * @return report types mapped to reports
+	 */
+	public Multimap<Class<? extends Report<?>>, Report<?>> getReports(
+			Class<? extends Message> messageType);
+	
+	/**
+	 * Get all reports.
+	 * 
+	 * @return all reports
+	 */
+	public Multimap<Class<? extends Report<?>>, Report<?>> getAllReports();
 }
