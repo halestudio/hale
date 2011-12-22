@@ -51,6 +51,15 @@ import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 public abstract class OffscreenGraph {
 	
 	private final Graph graph;
+	private Shell shell;
+	private Composite composite;
+
+	/**
+	 * @return the graph
+	 */
+	public Graph getGraph() {
+		return graph;
+	}
 
 	/**
 	 * Create an off-screen graph.
@@ -58,11 +67,11 @@ public abstract class OffscreenGraph {
 	 * @param height the graph height
 	 */
 	public OffscreenGraph(int width, int height) {
-		Shell shell = new Shell();
+		shell = new Shell();
 		shell.setSize(width, height);
 		shell.setLayout(new FillLayout());
 		
-	    Composite composite = new Composite(shell, SWT.NONE);
+	    composite = new Composite(shell, SWT.NONE);
 	    composite.setLayout(new FillLayout());
 		composite.setVisible(true);
 		
@@ -71,6 +80,33 @@ public abstract class OffscreenGraph {
 		GraphViewer viewer = new GraphViewer(graph);
 		
 		configureViewer(viewer);
+		
+		if (graph.getLayoutAlgorithm() == null) {
+			graph.setLayoutAlgorithm(new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT), true);
+		}
+		graph.setBounds(0, 0, width, height);
+		graph.getViewport().setBounds(new Rectangle(0, 0, width, height));
+		shell.setVisible(false);
+		
+		graph.applyLayoutNow();
+		
+		IFigure root = graph.getRootLayer();
+		root.getUpdateManager().performUpdate();
+	}
+	
+	/**
+	 * Resize the off-screen graph.
+	 * 
+	 * @param width the graph width
+	 * @param height the graph height
+	 */
+	public void resize(int width, int height) {
+		shell.setSize(width, height);
+		shell.setLayout(new FillLayout());
+		
+	    composite = new Composite(shell, SWT.NONE);
+	    composite.setLayout(new FillLayout());
+		composite.setVisible(true);
 		
 		if (graph.getLayoutAlgorithm() == null) {
 			graph.setLayoutAlgorithm(new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT), true);

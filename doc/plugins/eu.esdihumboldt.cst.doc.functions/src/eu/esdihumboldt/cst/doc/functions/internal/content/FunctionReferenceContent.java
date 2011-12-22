@@ -19,16 +19,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.help.IHelpContentProducer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.core.widgets.Graph;
+import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
@@ -171,7 +175,9 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 
 	/**
 	 * Initialize temporary directory and template engine.
-	 * @throws Exception if an error occurs during the initialization
+	 * 
+	 * @throws Exception
+	 *             if an error occurs during the initialization
 	 */
 	private void init() throws Exception {
 		synchronized (this) {
@@ -200,7 +206,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 	}
 
 	private InputStream getImageContent(String func_id) throws Exception {
-		
+
 		final AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
 
 		if (function == null) {
@@ -216,28 +222,31 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			if (Display.getCurrent() != null) {
 				// use the current display if available
 				display = Display.getCurrent();
-			}
-			else {
+			} else {
 				try {
-					// use workbench display if available 
+					// use workbench display if available
 					display = PlatformUI.getWorkbench().getDisplay();
 				} catch (Throwable e) {
-					// use a dedicated display thread if no workbench is available
+					// use a dedicated display thread if no workbench is
+					// available
 					display = DisplayThread.getInstance().getDisplay();
 				}
 			}
 			display.syncExec(new Runnable() {
-				
+
 				@Override
 				public void run() {
-					// TODO: compute the real size of the graph and create a new OffscreenGraph with it
-					OffscreenGraph graph = new OffscreenGraph(200, 100) {
+
+					// create an initial off-screen graph with fixed values;
+					// resize the graph after computing the figures width and
+					// height
+					OffscreenGraph off_graph = new OffscreenGraph(200, 100) {
 
 						@Override
 						protected void configureViewer(GraphViewer viewer) {
 							LayoutAlgorithm algo = new TreeLayoutAlgorithm(
 									TreeLayoutAlgorithm.LEFT_RIGHT);
-							
+
 							SourceTargetContentProvider stcp = new SourceTargetContentProvider();
 							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider();
 							viewer.setContentProvider(stcp);
@@ -245,21 +254,56 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 							viewer.setInput(function);
 							viewer.setLayoutAlgorithm(algo);
 						}
+
 					};
-					
+
+					Graph graph = off_graph.getGraph();
+					List<GraphNode> list = graph.getNodes();
+					int height = 0;
+					int width = 0;
+					if (list.size() >= 3) {
+						for (GraphNode gn : list) {
+							Rectangle rec = gn.getFigure().getBounds();
+							height = height + rec.height + 5;
+						}
+						for (int i = 0; i < 3; i++) {
+							Rectangle rec = list.get(i).getFigure().getBounds();
+							width = width + rec.width + 5;
+						}
+					} else {
+						// used fix size for amount of figures <= 2
+						width = 230;
+						height = 100;
+					}
+
+					// else {
+					// // FIXME: doesn't work correctly; see function "assign".
+					// // maybe use fix size ?
+					// for (GraphNode gn : list) {
+					// Rectangle rec = gn.getFigure().getBounds();
+					// height = height + rec.height + 5;
+					// width = width + rec.width + 5;
+					// }
+					// }
+					// System.out.println("height = " + height);
+					// System.out.println("width = " + width);
+					// resizes the off-screen graph to the computed size
+					off_graph.resize(width, height);
+
 					try {
-						graph.saveImage(new FileOutputStream(_functionFile), null);
+						off_graph.saveImage(
+								new FileOutputStream(_functionFile), null);
 					} catch (IOException e) {
 						log.warn("Conversion from Graph to Image failed!");
 					}
 				}
 			});
 		}
-		
-		if(_functionFile.exists()) {
+
+		if (_functionFile.exists()) {
 			return new FileInputStream(_functionFile);
 		}
-		
+
 		return null;
 	}
 
