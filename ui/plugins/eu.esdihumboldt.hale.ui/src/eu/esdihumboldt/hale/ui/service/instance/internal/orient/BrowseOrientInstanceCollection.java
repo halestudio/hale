@@ -193,7 +193,11 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		try {
 			Collection<String> classes = getMainClassNames();
 			for (String clazz : classes) {
-				size += db.countClass(clazz);
+				try {
+					size += db.countClass(clazz);
+				} catch (IllegalArgumentException e) {
+					// class not contained in the database
+				}
 			}
 		} finally {
 			ref.dispose();
