@@ -128,7 +128,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 
 		return super.getBackgroundColour(entity);
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#dispose()
 	 */

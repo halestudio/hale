@@ -22,11 +22,11 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.ui.common.graph.content.SourceTargetContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
+import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionTreeLayoutAlgorithm;
 
 /**
  * Function section with source and target information modeled in a graph
@@ -48,7 +48,7 @@ public class FunctionSourceTargetSection<F extends Function> extends
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		
+
 		Composite compparent = getWidgetFactory().createComposite(parent);
 		compparent.setLayout(new FormLayout());
 
@@ -64,9 +64,8 @@ public class FunctionSourceTargetSection<F extends Function> extends
 		composite.setLayoutData(data);
 
 		viewer = new GraphViewer(composite, SWT.NONE);
-		LayoutAlgorithm algo = new TreeLayoutAlgorithm(
-				TreeLayoutAlgorithm.LEFT_RIGHT);
-		viewer.setLayoutAlgorithm(algo, true);
+		LayoutAlgorithm treeAlgorithm = new FunctionTreeLayoutAlgorithm();
+		viewer.setLayoutAlgorithm(treeAlgorithm, true);
 		viewer.setContentProvider(new SourceTargetContentProvider());
 		viewer.setLabelProvider(new FunctionGraphLabelProvider());
 
