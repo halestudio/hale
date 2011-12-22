@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.io.gml.ui;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -21,6 +23,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -34,7 +37,10 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
+import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
@@ -72,14 +78,13 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 		if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
 			Object selected = ((IStructuredSelection) sel).getFirstElement();
 			
-			//FIXME
-//			if (selected instanceof SchemaElement) {
-//				Name name = ((SchemaElement) selected).getElementName();
-//				
-//				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, name.getNamespaceURI());
-//				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME, name.getLocalPart());
-//				return true;
-//			}
+			if (selected instanceof XmlElement) {
+				QName name = ((XmlElement) selected).getName();
+				
+				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, name.getNamespaceURI());
+				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME, name.getLocalPart());
+				return true;
+			}
 		}
 		
 		provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, null);
@@ -107,15 +112,14 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 
 			@Override
 			public String getText(Object element) {
-				//FIXME
-//				if (element instanceof SchemaElement) {
-//					Name name = ((SchemaElement) element).getElementName();
-//					
-//					return name.getLocalPart() + " (" + name.getNamespaceURI() + ")";
-//				}
-//				if (element instanceof Definition) {
-//					return ((Definition) element).getDisplayName();
-//				}
+				if (element instanceof XmlElement) {
+					QName name = ((XmlElement) element).getName();
+					
+					return name.getLocalPart() + " (" + name.getNamespaceURI() + ")";
+				}
+				if (element instanceof Definition) {
+					return ((Definition<?>) element).getDisplayName();
+				}
 				return super.getText(element);
 			}
 			
@@ -148,7 +152,7 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 				}
 				
 				if (element instanceof Definition) {
-					Definition def = (Definition) element;
+					Definition<?> def = (Definition<?>) element;
 					filter = filter.toLowerCase();
 					
 					if (def.getDisplayName().toLowerCase().contains(filter)) {
@@ -159,6 +163,7 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 				return false;
 			}
 		});
+		list.setComparator(new ViewerComparator());
 		filterText.addModifyListener(new ModifyListener() {
 			
 			@Override
@@ -198,12 +203,10 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	private void updateList() {
 		//TODO instead of showing all elemets allow filtering for elements that can hold the type in some form?
 		SchemaSpace schemas = getWizard().getProvider().getTargetSchema();
+		XmlIndex index = StreamGmlWriter.getXMLIndex(schemas);
 		//FIXME use filtered table for selection?
-//		Schema targetSchema = getWizard().getTargetSchema();
-//		Object[] input = targetSchema.getAllElements().values().toArray();
-//		Arrays.sort(input);
-//		list.setInput(input);
-//		setPageComplete(!list.getSelection().isEmpty());
+		list.setInput(index.getElements().values());
+		setPageComplete(!list.getSelection().isEmpty());
 	}
 	
 }
