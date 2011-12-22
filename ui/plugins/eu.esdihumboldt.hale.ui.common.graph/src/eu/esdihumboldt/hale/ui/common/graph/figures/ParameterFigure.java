@@ -25,18 +25,23 @@ import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 
 /**
  * The shape figure for abstract parameters
+ * 
  * @author Patrick Lieb
  */
 public class ParameterFigure extends CustomShapeFigure {
 
 	/**
-	 * @param painter the painter drawing the figure shape
-	 * @param occurrence the occurrence of the figure
-	 * @param description the description of the figure
+	 * @param painter
+	 *            the painter drawing the figure shape
+	 * @param occurrence
+	 *            the occurrence of the figure
+	 * @param description
+	 *            the description of the figure
 	 */
-	public ParameterFigure(ShapePainter painter, String occurrence, String description) {
+	public ParameterFigure(ShapePainter painter, String occurrence,
+			String description) {
 		super(painter);
-		
+
 		setAntialias(SWT.ON);
 
 		GridLayout gridLayout = new GridLayout();
@@ -51,18 +56,18 @@ public class ParameterFigure extends CustomShapeFigure {
 		add(namelabel, namegrid);
 		setTextLabel(namelabel);
 		setIconLabel(namelabel);
-		
+
 		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
-				 .getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+				.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 		Image image = fieldDecoration.getImage();
-		
+
 		Label descriptionlabel = new Label(image);
 		IFigure descriptionfigure = new Label(description);
 		descriptionlabel.setToolTip(descriptionfigure);
-		GridData descriptiongrid = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
+		GridData descriptiongrid = new GridData(GridData.FILL, GridData.FILL,
+				true, true);
 		add(descriptionlabel, descriptiongrid);
-		
+
 		Label textlabel = new Label(occurrence);
 		IFigure occfig = new Label("Occurrence");
 		textlabel.setToolTip(occfig);
