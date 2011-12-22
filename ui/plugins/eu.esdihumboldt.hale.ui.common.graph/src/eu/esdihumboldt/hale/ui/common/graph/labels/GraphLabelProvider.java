@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IDisposable;
 import org.eclipse.zest.core.viewers.IEntityConnectionStyleProvider;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
@@ -77,7 +78,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		
 		definitionLabels = createDefinitionLabels();
 		
-		final Display display = Display.getCurrent();
+		final Display display = PlatformUI.getWorkbench().getDisplay();
 		
 		//XXX keep entity colors in a central place?
 		//XXX colors dependent of mapping context?
