@@ -257,8 +257,6 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 
 					};
 
-					// TODO: get the full width and height of all figures in the
-					// graph to resize the OffscreenGraph
 					Graph graph = off_graph.getGraph();
 					List<GraphNode> list = graph.getNodes();
 					int height = 0;
@@ -272,21 +270,23 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 							Rectangle rec = list.get(i).getFigure().getBounds();
 							width = width + rec.width + 5;
 						}
-					} /*
-					 * else if (list.size() <= 2) { width = 230; height = 100; }
-					 */
-
-					else {
-						// FIXME: doesn't work correctly; see function "assign".
-						// maybe use fix size ?
-						for (GraphNode gn : list) {
-							Rectangle rec = gn.getFigure().getBounds();
-							height = height + rec.height + 5;
-							width = width + rec.width + 5;
-						}
+					} else {
+						// used fix size for amount of figures <= 2
+						width = 230;
+						height = 100;
 					}
-					System.out.println("height = " + height);
-					System.out.println("width = " + width);
+
+					// else {
+					// // FIXME: doesn't work correctly; see function "assign".
+					// // maybe use fix size ?
+					// for (GraphNode gn : list) {
+					// Rectangle rec = gn.getFigure().getBounds();
+					// height = height + rec.height + 5;
+					// width = width + rec.width + 5;
+					// }
+					// }
+					// System.out.println("height = " + height);
+					// System.out.println("width = " + width);
 					// resizes the off-screen graph to the computed size
 					off_graph.resize(width, height);
 

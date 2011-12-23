@@ -51,6 +51,8 @@ import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 public abstract class OffscreenGraph {
 	
 	private final Graph graph;
+	private Shell shell;
+	private Composite composite;
 
 	/**
 	 * @return the graph
@@ -65,11 +67,11 @@ public abstract class OffscreenGraph {
 	 * @param height the graph height
 	 */
 	public OffscreenGraph(int width, int height) {
-		Shell shell = new Shell();
+		shell = new Shell();
 		shell.setSize(width, height);
 		shell.setLayout(new FillLayout());
 		
-	    Composite composite = new Composite(shell, SWT.NONE);
+	    composite = new Composite(shell, SWT.NONE);
 	    composite.setLayout(new FillLayout());
 		composite.setVisible(true);
 		
@@ -99,12 +101,10 @@ public abstract class OffscreenGraph {
 	 * @param height the graph height
 	 */
 	public void resize(int width, int height) {
-		// TODO: implement me
-		Shell shell = new Shell();
 		shell.setSize(width, height);
 		shell.setLayout(new FillLayout());
 		
-	    Composite composite = new Composite(shell, SWT.NONE);
+	    composite = new Composite(shell, SWT.NONE);
 	    composite.setLayout(new FillLayout());
 		composite.setVisible(true);
 		
