@@ -102,18 +102,9 @@ public abstract class OffscreenGraph {
 	 */
 	public void resize(int width, int height) {
 		shell.setSize(width, height);
-		shell.setLayout(new FillLayout());
-		
-	    composite = new Composite(shell, SWT.NONE);
-	    composite.setLayout(new FillLayout());
-		composite.setVisible(true);
-		
-		if (graph.getLayoutAlgorithm() == null) {
-			graph.setLayoutAlgorithm(new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT), true);
-		}
+
 		graph.setBounds(0, 0, width, height);
 		graph.getViewport().setBounds(new Rectangle(0, 0, width, height));
-		shell.setVisible(false);
 		
 		graph.applyLayoutNow();
 		
