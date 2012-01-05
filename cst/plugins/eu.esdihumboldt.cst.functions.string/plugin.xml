@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.align.transformation">
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.string.DateExtraction"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.string.dateextraction"
+            id="eu.esdihumboldt.cst.functions.string.dateextraction">
+      </propertyTransformation>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.function">
+      <propertyFunction
+            category="eu.esdihumboldt.hale.align.general"
+            description="Extracts a date from a string type"
+            identifier="eu.esdihumboldt.cst.functions.string.dateextraction"
+            name="Date extraction">
+         <sourceProperties>
+            <property
+                  description="The source property of which to extract the date"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.lang.String">
+               </bindingCondition>
+            </property>
+         </sourceProperties>
+         <targetProperties>
+            <property
+                  description="The property that will have a date assigned"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.util.Date">
+               </bindingCondition>
+            </property>
+         </targetProperties>
+         <functionParameter
+               description="For example &quot;yyyy-MM-dd HH:mm:ss&quot;&#xA;(see http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html)"
+               label="Date format"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="dateFormat">
+            <validator
+                  class="eu.esdihumboldt.cst.functions.string.DateExtractionFormatValidator">
+            </validator>
+         </functionParameter>
+      </propertyFunction>
+   </extension>
+</plugin>
