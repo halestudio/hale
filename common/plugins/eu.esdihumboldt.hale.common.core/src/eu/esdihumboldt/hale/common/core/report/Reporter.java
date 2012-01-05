@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.common.core.report;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.5
  */
 public interface Reporter<T extends Message> extends Report<T>, ReportLog<T> {
 	
@@ -30,5 +30,12 @@ public interface Reporter<T extends Message> extends Report<T>, ReportLog<T> {
 	 * @param success if the task was successful
 	 */
 	public void setSuccess(boolean success);
+	
+	/**
+	 * Set the summary message of the report.
+	 * @param summary the summary to set, if <code>null</code> the report will
+	 * revert to the default summary.
+	 */
+	public void setSummary(String summary);
 
 }
