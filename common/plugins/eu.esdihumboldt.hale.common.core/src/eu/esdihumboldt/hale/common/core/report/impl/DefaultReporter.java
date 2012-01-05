@@ -30,9 +30,9 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2
+ * @since 2.5
  */
-public abstract class DefaultReporter<T extends Message> implements Reporter<T> {
+public class DefaultReporter<T extends Message> implements Reporter<T> {
 	
 	/**
 	 * The logger
@@ -56,6 +56,8 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	private final boolean doLog;
 	
 	private final String taskName;
+	
+	private String summary;
 
 	/**
 	 * Create an empty report. It is set to not successful by default. But you
@@ -106,7 +108,6 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	}
 	
 	/**
-	 * 
 	 * @see eu.esdihumboldt.hale.common.core.report.ReportLog#info(eu.esdihumboldt.hale.common.core.report.Message)
 	 */
 	@Override
@@ -118,6 +119,16 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 		}
 	}
 	
+	/**
+	 * Set the summary message of the report.
+	 * @param summary the summary to set, if <code>null</code> the report will
+	 * revert to the default summary.
+	 */
+	@Override
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
 	/**
 	 * @see Report#getTaskName()
 	 */
@@ -147,6 +158,10 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	 */
 	@Override
 	public String getSummary() {
+		if (summary != null) {
+			return summary;
+		}
+		
 		if (success) {
 			return getSuccessSummary();
 		}
@@ -156,18 +171,30 @@ public abstract class DefaultReporter<T extends Message> implements Reporter<T> 
 	}
 
 	/**
-	 * Get the report summary if it was not successful
-	 *  
+	 * Get the default report summary if it was not successful.
 	 * @return the report summary 
 	 */
-	protected abstract String getFailSummary();
+	protected String getFailSummary() {
+		return "Failed";
+	}
 
 	/**
-	 * Get the report summary if it was successful
-	 *  
+	 * Get the default report summary if it was successful.
 	 * @return the report summary 
 	 */
-	protected abstract String getSuccessSummary();
+	protected String getSuccessSummary() {
+		if (errors.isEmpty()) {
+			if (warnings.isEmpty()) {
+				return "Finished successfully";
+			}
+			else {
+				return "Finished successfully, but with warnings";
+			}
+		}
+		else {
+			return "Completed, but with errors";
+		}
+	}
 
 	/**
 	 * @see Report#getTimestamp()
