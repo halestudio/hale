@@ -13,11 +13,15 @@
 package eu.esdihumboldt.hale.common.align.extension.function;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.logging.ALogger;
@@ -26,6 +30,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyTypeCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.impl.BindingCondition;
+import eu.esdihumboldt.hale.common.align.model.condition.impl.GeometryCondition;
 
 /**
  * Represents a source or target property as parameter to a 
@@ -69,6 +74,12 @@ public final class PropertyParameter extends AbstractParameter {
 						result.add(new PropertyTypeCondition(bc));
 					}
 				}
+				else if (name.equals("geometryCondition")) {
+					GeometryCondition gc = createGeometryCondition(child);
+					if (gc != null) {
+						result.add(new PropertyTypeCondition(gc));
+					}
+				}
 				else {
 					// ignore
 //					log.error("Unrecognized property condition");
@@ -77,6 +88,33 @@ public final class PropertyParameter extends AbstractParameter {
 		}
 		
 		return result;
+	}
+
+	private static GeometryCondition createGeometryCondition(
+			IConfigurationElement child) {
+		Collection<Class<? extends Geometry>> bindings = null;
+		
+		IConfigurationElement[] types = child.getChildren("geometryType");
+		if (types != null) {
+			for (IConfigurationElement type : types) {
+				String className = type.getAttribute("type");
+				try {
+					@SuppressWarnings("unchecked")
+					Class<? extends Geometry> geometryType = (Class<? extends Geometry>) ExtensionUtil
+							.loadClass(child, className);
+					if (bindings == null) {
+						bindings = new HashSet<Class<? extends Geometry>>();
+					}
+					bindings.add(geometryType);
+				} catch (Throwable e) {
+					log.error("Could not load geometry class defined in extension", e);
+				}
+			}
+		}
+		
+		boolean allowCollection = true; //TODO configurable?
+		boolean allowConversion = true; //TODO configurable?
+		return new GeometryCondition(bindings, allowConversion, allowCollection);
 	}
 
 	private static BindingCondition createBindingCondition(

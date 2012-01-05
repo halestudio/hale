@@ -106,6 +106,21 @@ public class BindingCondition implements TypeCondition {
 	 * @return if the binding is compatible
 	 */
 	protected boolean isCompatibleClass(Class<?> binding, boolean to) {
+		return isCompatibleClass(binding, to, compatibleClass, allowConversion);
+	}
+	
+	/**
+	 * Check if the given binding is compatible to the given compatible 
+	 * class
+	 * @param binding the binding
+	 * @param to if a value of the compatible class shall be assigned to
+	 *   the binding or vice versa
+	 * @param compatibleClass the compatible class
+	 * @param allowConversion if conversion is allowed
+	 * @return if the binding is compatible
+	 */
+	public static boolean isCompatibleClass(Class<?> binding, boolean to,
+			Class<?> compatibleClass, boolean allowConversion) {
 		// check if the classes are compatible by assignment
 		if (to) {
 			if (binding.isAssignableFrom(compatibleClass)) {
