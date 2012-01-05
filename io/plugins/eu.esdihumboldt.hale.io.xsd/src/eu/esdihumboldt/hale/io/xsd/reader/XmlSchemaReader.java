@@ -79,7 +79,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
@@ -107,6 +106,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementName;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeAugmentedValue;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeHasValue;
 import gnu.trove.TObjectIntHashMap;
@@ -941,12 +941,9 @@ public class XmlSchemaReader
 		 * Inheriting constraints could be activated with a parameter to the 
 		 * constraint annotation 
 		 */
+		type.setConstraint(new SuperTypeAugmentedValue(type));
 		type.setConstraint(new SuperTypeHasValue(type));
-		Binding binding = XmlTypeUtil.determineSpecialBinding(type);
-		if (binding != null) {
-			type.setConstraint(binding);
-		}
-		else {
+		if (!XmlTypeUtil.setSpecialBinding(type)) {
 			type.setConstraint(new SuperTypeBinding(type));
 		}
 		
