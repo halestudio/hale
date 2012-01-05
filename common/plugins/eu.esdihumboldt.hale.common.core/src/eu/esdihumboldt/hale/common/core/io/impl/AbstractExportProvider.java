@@ -107,18 +107,7 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	@Override
 	public IOReporter createReporter() {
 		return new DefaultIOReporter(getTarget(), MessageFormat.format(
-				"{0} export", getTypeName()), true) {
-			
-			@Override
-			protected String getSuccessSummary() {
-				return MessageFormat.format("Generating the {0} output was successful", getTypeName());
-			}
-			
-			@Override
-			protected String getFailSummary() {
-				return MessageFormat.format("Generating the {0} output failed", getTypeName());
-			}
-		};
+				"{0} export", getTypeName()), true);
 	}
 	
 }

@@ -112,18 +112,7 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	@Override
 	public IOReporter createReporter() {
 		return new DefaultIOReporter(getSource(), MessageFormat.format(
-				"{0} import", getTypeName()), true) {
-			
-			@Override
-			protected String getSuccessSummary() {
-				return MessageFormat.format("Loading the {0} input was successful", getTypeName());
-			}
-			
-			@Override
-			protected String getFailSummary() {
-				return MessageFormat.format("Loading the {0} input failed", getTypeName());
-			}
-		};
+				"{0} import", getTypeName()), true);
 	}
 
 }

@@ -299,23 +299,11 @@ public class DefaultAlignmentProcessorTest {
 
 		// load alignment
 		IOReporter report = new DefaultIOReporter(new Locatable() {
-			
 			@Override
 			public URI getLocation() {
 				return alignmentLocation;
 			}
-		}, "Load alignment", true) {
-			
-			@Override
-			protected String getSuccessSummary() {
-				return "Alignment successfully loaded";
-			}
-			
-			@Override
-			protected String getFailSummary() {
-				return "Failed to load alignment";
-			}
-		};
+		}, "Load alignment", true);
 		Alignment result = DefaultAlignmentIO.load(alignmentLocation.toURL().openStream(), report , 
 				source, target);
 		
