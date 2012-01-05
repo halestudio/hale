@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -133,6 +134,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			if (fp.getDescription() != null) {
 				Label description = new Label(group, SWT.NONE);
 				description.setText(fp.getDescription());
+				description.setLayoutData(GridDataFactory.swtDefaults().span(2, 1).create());
 			}
 
 			// walk over data of initial cell while creating input fields
