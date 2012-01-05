@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
@@ -446,17 +447,22 @@ public abstract class XmlTypeUtil {
 	 * @param type the type definition
 	 * @return the special binding or <code>null</code>
 	 */
-	public static Binding determineSpecialBinding(XmlTypeDefinition type) {
+	public static boolean setSpecialBinding(XmlTypeDefinition type) {
 		// determine special bindings
 		
 		// geometry bindings
 		if (GML_GEOMETRY_TYPES.contains(type.getName())) {
 			//XXX just assign GeometryProperty binding for now
 			//FIXME concept of binding constraint and geometry property must be adapted to include built-in support for multiple geometries (with possible different CRS)
-			return Binding.get(GeometryProperty.class);
+			type.setConstraint(Binding.get(GeometryProperty.class));
+			//TODO set geometry type?
+//			type.setConstraint(...); 
+			// enable augmented value
+			type.setConstraint(AugmentedValueFlag.ENABLED); 
+			return true;
 		}
 		
-		return null;
+		return false;
 	}
 	
 }
