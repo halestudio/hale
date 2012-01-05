@@ -225,6 +225,7 @@ For references, e.g. to images, use absolute references to plugin and path, led 
          <choice minOccurs="0" maxOccurs="unbounded">
             <element ref="bindingCondition"/>
             <element ref="propertyCondition"/>
+            <element ref="geometryCondition"/>
          </choice>
          <attribute name="name" type="string">
             <annotation>
@@ -320,6 +321,11 @@ For references, e.g. to images, use absolute references to plugin and path, led 
    </element>
 
    <element name="bindingCondition">
+      <annotation>
+         <documentation>
+            Condition that matches the property binding against a given class.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="compatibleClass" type="string" use="required">
             <annotation>
@@ -490,6 +496,34 @@ For references, e.g. to images, use absolute references to plugin and path, led 
                <documentation>
                   
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="geometryCondition">
+      <annotation>
+         <documentation>
+            Condition that matches geometry properties. Add subconditions to only match specific types of geometries.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="geometryType"/>
+         </choice>
+      </complexType>
+   </element>
+
+   <element name="geometryType">
+      <complexType>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Matches a certain geometry type.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="com.vividsolutions.jts.geom.Geometry:"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
