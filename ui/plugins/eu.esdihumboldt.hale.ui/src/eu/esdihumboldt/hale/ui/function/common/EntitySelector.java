@@ -142,7 +142,7 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 	}
 	
 	/**
-	 * Determines if the given object matches the selector's filters
+	 * Determines if the given object matches the given filters.
 	 * 
 	 * @param viewer the viewer
 	 * @param filters the viewer filters
@@ -150,21 +150,29 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 	 * @return if the object is accepted by all filters
 	 */
 	public static boolean acceptObject(Viewer viewer, ViewerFilter[] filters, Object candidate) {
-		if (filters == null) {
+		if (filters == null)
 			return true;
-		}
 		
-		for (ViewerFilter filter : filters) {
-			if (!filter.select(viewer, null, candidate)) {
+		for (ViewerFilter filter : filters)
+			if (!filter.select(viewer, null, candidate))
 				return false;
-			}
-		}
 		return true;
+	}
+	
+	/**
+	 * Determines if the given object matches the selector's filters.
+	 *
+	 * @param candidate the object to test
+	 * @return if the object is accepted by all filters
+	 */
+	public boolean accepts(Object candidate) {
+		return acceptObject(viewer, filters, candidate);
 	}
 
 	/**
 	 * Create filters for the combo viewer and the dialog. The default 
 	 * implementation creates no filters.
+	 * 
 	 * @param field the field definition, may be <code>null</code>
 	 * @return the array of filters or <code>null</code>
 	 */
@@ -221,6 +229,7 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 				// run against filters
 				if (acceptObject(viewer, filters, selected)) {
 					// valid selection
+					currentInput = selected;
 					viewer.setInput(selected);
 					return;
 				}

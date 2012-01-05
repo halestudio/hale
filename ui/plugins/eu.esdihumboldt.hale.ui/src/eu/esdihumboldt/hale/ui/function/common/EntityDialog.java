@@ -20,7 +20,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -31,7 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredTree;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -123,14 +124,24 @@ public abstract class EntityDialog extends Dialog {
 		page.setLayout(pageLayout);
 		
 		// create viewer
-		PatternFilter patternFilter = new SchemaPatternFilter();
+		SchemaPatternFilter patternFilter = new SchemaPatternFilter() {
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter#matches(org.eclipse.jface.viewers.Viewer, java.lang.Object)
+			 */
+			@Override
+			protected boolean matches(Viewer viewer, Object element) {
+				boolean superMatches = super.matches(viewer, element);
+				if (!superMatches)
+					return false;
+				return EntitySelector.acceptObject(viewer, filters, ((TreePath)element).getLastSegment());
+			}
+		};
+		patternFilter.setUseEarlyReturnIfMatcherIsNull(false);
 		patternFilter.setIncludeLeadingWildcard(true);
 		FilteredTree tree = new TreePathFilteredTree(page, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 		viewer = tree.getViewer();
 		viewer.setComparator(new DefinitionComparator());
 		setupViewer(viewer, initialSelection);
-		// set filters TODO
-		//viewer.setFilters((filters == null)?(new ViewerFilter[0]):(filters));
 		
 		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().
 				grab(true, true).create());
@@ -145,7 +156,8 @@ public abstract class EntityDialog extends Dialog {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
-				okPressed();
+				if (getButton(IDialogConstants.OK_ID).isEnabled())
+					okPressed();
 			}
 		});
 		
