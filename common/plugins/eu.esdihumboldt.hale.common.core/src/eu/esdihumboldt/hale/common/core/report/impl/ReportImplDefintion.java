@@ -55,19 +55,8 @@ public class ReportImplDefintion extends AbstractReportDefinition<Report<?>> {
 	protected Report<Message> createReport(final Properties props) {
 		// TODO find a way for proper re-creation of reports
 		DefaultReporter<Message> report = new DefaultReporter<Message>(props.getProperty(KEY_REPORT_TASKNAME), 
-				null, false) {
-			
-			@Override
-			protected String getSuccessSummary() {
-				return props.getProperty(KEY_REPORT_SUMMARY);
-			}
-			
-			@Override
-			protected String getFailSummary() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
+				null, false);
+		report.setSummary(props.getProperty(KEY_REPORT_SUMMARY));
 		
 		// add infos, warnings and errors
 //		report.getWarnings().addAll(Arrays.asList(StringUtils.split(props.getProperty(KEY_REPORT_WARNINGS), ";"))); // TODO add a proper way of adding old warnings and stuff

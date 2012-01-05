@@ -24,9 +24,9 @@ import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.5
  */
-public abstract class DefaultIOReporter extends DefaultReporter<IOMessage> implements
+public class DefaultIOReporter extends DefaultReporter<IOMessage> implements
 		IOReporter {
 	
 	private final Locatable target;

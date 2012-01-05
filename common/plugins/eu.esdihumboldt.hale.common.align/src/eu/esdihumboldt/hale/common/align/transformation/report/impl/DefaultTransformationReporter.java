@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
  * Reporter for transformation messages
  * @author Simon Templer
  */
-public abstract class DefaultTransformationReporter extends
+public class DefaultTransformationReporter extends
 		DefaultReporter<TransformationMessage> implements TransformationReport,
 		TransformationReporter {
 

@@ -64,19 +64,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	public TransformationReport transform(Alignment alignment, InstanceCollection source,
 			InstanceSink target) {
 		TransformationReporter reporter = new DefaultTransformationReporter(
-				"Instance transformation", true) {
-
-					@Override
-					protected String getFailSummary() {
-						return "Transformation failed";
-					}
-
-					@Override
-					protected String getSuccessSummary() {
-						return "Transformation completed";
-					}
-			
-		};
+				"Instance transformation", true);
 		
 		//TODO
 		
