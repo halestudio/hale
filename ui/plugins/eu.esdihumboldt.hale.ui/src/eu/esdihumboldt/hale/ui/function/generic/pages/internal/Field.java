@@ -153,7 +153,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 						}
 					}
 				}
-				
+
 				// update state
 				updateState();
 			}
@@ -190,27 +190,25 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 					minCount = Math.min(fieldValues.size(), definition.getMaxOccurrence());
 				}
 			}
-		}
-		else {
+		} else if (candidates != null && !candidates.isEmpty()) {
 			// populate from candidates
-			if (candidates != null && !candidates.isEmpty()) {
-				LinkedHashSet<EntityDefinition> rotatingCandidates = new LinkedHashSet<EntityDefinition>(candidates);
+			LinkedHashSet<EntityDefinition> rotatingCandidates = new LinkedHashSet<EntityDefinition>(candidates);
 
-				// try to add candidates for each required entity
-				for (int i = 0; i < minCount; i++) {
-					boolean found = false;
-					for (EntityDefinition candidate : candidates) {
-						if (true) { //TODO check against filters
-							fieldValues.add(candidate);
-							rotatingCandidates.remove(candidate);
-							rotatingCandidates.add(candidate);
-							found = true;
-							break;
-						}
-					}
-					if (!found) {
-						fieldValues.add(null);
-					}
+			// try to add candidates for each required entity
+			for (int i = 0; i < minCount; i++) {
+				boolean found = false;
+				for (EntityDefinition candidate : candidates) {
+					//XXX checked against filters later, because here filters aren't present yet.
+					//if (true) {
+					fieldValues.add(candidate);
+					rotatingCandidates.remove(candidate);
+					rotatingCandidates.add(candidate);
+					found = true;
+					break;
+					//}
+				}
+				if (!found) {
+					fieldValues.add(null);
 				}
 			}
 		}
@@ -242,11 +240,10 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 
 			// do initial selection
 			EntityDefinition value = (num < fieldValues.size()) ? (fieldValues.get(num)) : (null);
-			if (value == null) {
+			if (value == null || !selector.accepts(value))
 				selector.setSelection(new StructuredSelection());
-			} else {
+			else
 				selector.setSelection(new StructuredSelection(value));
-			}
 
 			if (descriptionDecoration == null && definition.getDescription() != null) {
 				descriptionDecoration = new ControlDecoration(selector.getControl(), SWT.RIGHT | SWT.TOP, parent);
@@ -320,9 +317,10 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 	 */
 	private int countValidEntities() {
 		int validCount = 0;
-		for (EntitySelector<F> selector : selectors)
+		for (EntitySelector<F> selector : selectors) {
 			if (!selector.getSelection().isEmpty()) //TODO improve condition
 				validCount++;
+		}
 		return validCount;
 	}
 	
@@ -333,7 +331,6 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		boolean newValid = countValidEntities() >= definition.getMinOccurrence();		
 		boolean change = newValid != valid;
 		valid = newValid;
-		
 		if (change) {
 			setChanged();
 			notifyObservers();
