@@ -14,9 +14,6 @@ package eu.esdihumboldt.hale.common.schema;
 
 import java.util.Date;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -24,6 +21,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
@@ -75,8 +73,8 @@ public enum Classification {
 			Class<?> binding = property.getPropertyType().getConstraint(Binding.class).getBinding();
 			
 			// geometry binding allowed also for types where HasValue is not enabled (e.g. XML types where geometries are aggregated)
-			if (Geometry.class.isAssignableFrom(binding) ||
-					GeometryProperty.class.isAssignableFrom(binding)) { // additional checks?
+			GeometryType geometryType = property.getPropertyType().getConstraint(GeometryType.class);
+			if (geometryType.isGeometry()) {
 				return GEOMETRIC_PROPERTY;
 			}
 			
