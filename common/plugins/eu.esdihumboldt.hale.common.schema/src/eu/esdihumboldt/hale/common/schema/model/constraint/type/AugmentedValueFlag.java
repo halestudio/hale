@@ -15,70 +15,59 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.type;
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
 
 /**
- * Flags if a type has a direct value, apart from eventual properties, defined
- * by the schema. By default enabled for {@link TypeDefinition}s that have no 
- * properties, otherwise disabled by default.<br>
+ * Flags if an augmented value is present for a type, meaning a value that
+ * is not defined through the schema, but associated additionally to an
+ * instance. Disabled by default. Should never be enabled when 
+ * {@link HasValueFlag} is enabled, meaning there is a value defined through
+ * the schema.<br>
  * <br>
  * The {@link Binding} constraint defines the Java binding for the value.
  * 
  * @see Binding
- * @see AugmentedValueFlag
+ * @see HasValueFlag
  * 
  * @author Simon Templer
  */
 @Immutable
 @Constraint(mutable = false)
-public class HasValueFlag extends AbstractFlagConstraint implements TypeConstraint {
+public class AugmentedValueFlag extends AbstractFlagConstraint implements TypeConstraint {
 
 	/**
-	 * Enabled has value flag
+	 * Enabled augmented value flag
 	 */
-	public static final HasValueFlag ENABLED = new HasValueFlag(true);
+	public static final AugmentedValueFlag ENABLED = new AugmentedValueFlag(true);
 	
 	/**
-	 * Disabled has value flag
+	 * Disabled augmented value flag
 	 */
-	public static final HasValueFlag DISABLED = new HasValueFlag(false);
+	public static final AugmentedValueFlag DISABLED = new AugmentedValueFlag(false);
 	
 	/**
-	 * Get the simple type flag
+	 * Get the augmented value flag
 	 * 
-	 * @param hasValue if the flag shall be enabled
+	 * @param augmentedValue if the flag shall be enabled
 	 * @return the flag
 	 */
-	public static HasValueFlag get(boolean hasValue) {
-		return (hasValue)?(ENABLED):(DISABLED);
+	public static AugmentedValueFlag get(boolean augmentedValue) {
+		return (augmentedValue)?(ENABLED):(DISABLED);
 	}
 	
 	/**
-	 * Creates a default simple type flag, which is disabled. If possible, 
+	 * Creates a default augmented value flag, which is disabled. If possible, 
 	 * instead of creating an instance, use {@link #ENABLED} or {@link #DISABLED}.
-	 * 
 	 * @see Constraint
 	 */
-	public HasValueFlag() {
+	public AugmentedValueFlag() {
 		this(false);
-	}
-	
-	/**
-	 * Creates a default simple type flag from a type definition. The flag is
-	 * enabled if the type has no properties.
-	 * @param typeDef the type definition
-	 * 
-	 * @see Constraint
-	 */
-	public HasValueFlag(TypeDefinition typeDef) {
-		this(typeDef.getChildren().isEmpty());
 	}
 	
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */
-	private HasValueFlag(boolean enabled) {
+	private AugmentedValueFlag(boolean enabled) {
 		super(enabled);
 	}
 
