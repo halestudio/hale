@@ -21,11 +21,11 @@
                   description="The property that shall hold the created point"
                   maxOccurrence="1"
                   minOccurrence="1">
-               <bindingCondition
-                     allowCollection="false"
-                     allowConversion="true"
-                     compatibleClass="com.vividsolutions.jts.geom.Point">
-               </bindingCondition>
+               <geometryCondition>
+                  <geometryType
+                        type="com.vividsolutions.jts.geom.Point">
+                  </geometryType>
+               </geometryCondition>
             </property>
          </targetProperties>
          <sourceProperties>
