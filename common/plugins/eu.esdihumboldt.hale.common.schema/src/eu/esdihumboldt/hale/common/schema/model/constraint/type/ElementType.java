@@ -29,6 +29,15 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public class ElementType implements TypeConstraint {
 	
 	/**
+	 * Create an element type constraint with the given element type. 
+	 * @param elementType the element type definition
+	 * @return the element type constraint
+	 */
+	public static ElementType createFromType(TypeDefinition elementType) {
+		return new ElementType(elementType);
+	}
+	
+	/**
 	 * The element type definition
 	 */
 	private final TypeDefinition definition;
@@ -46,7 +55,7 @@ public class ElementType implements TypeConstraint {
 	 * Creates a constraint with the given type definition
 	 * @param elementType the element type
 	 */
-	public ElementType(TypeDefinition elementType) {
+	private ElementType(TypeDefinition elementType) {
 		super();
 		
 		this.definition = elementType;
