@@ -364,7 +364,7 @@ public abstract class XmlTypeUtil {
 			// set constraints on type
 			
 			// element type
-			type.setConstraint(new ElementType(elementType));
+			type.setConstraint(ElementType.createFromType(elementType));
 			// list binding
 			type.setConstraint(Binding.get(List.class));
 		}
