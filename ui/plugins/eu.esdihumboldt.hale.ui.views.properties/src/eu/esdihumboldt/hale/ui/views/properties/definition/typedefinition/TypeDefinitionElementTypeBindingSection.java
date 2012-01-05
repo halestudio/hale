@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition;
 
+import java.util.Collection;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
@@ -48,8 +50,15 @@ public class TypeDefinitionElementTypeBindingSection extends DefaultDefinitionSe
 	 */
 	@Override
 	public void refresh() {
-		elementType.setText(getDefinition().getConstraint(ElementType.class).getDefinition().getIdentifier());
-		binding.setText(getDefinition().getConstraint(Binding.class).getBinding().getName());
+		Binding bind = getDefinition().getConstraint(Binding.class);
+		if (Collection.class.isAssignableFrom(bind.getBinding())) {
+			ElementType element = getDefinition().getConstraint(ElementType.class);
+			elementType.setText(element.getBinding().getName());
+		}
+		else {
+			elementType.setText(""); //XXX should not be displayed
+		}
+		binding.setText(bind.getBinding().getName());
 	}
 
 }
