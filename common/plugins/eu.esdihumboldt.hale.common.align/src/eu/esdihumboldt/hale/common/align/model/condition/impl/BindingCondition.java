@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.condition.EntityCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
@@ -71,8 +72,10 @@ public class BindingCondition implements TypeCondition {
 		}
 		
 		TypeDefinition type = entity.getDefinition().getDefinition();
-		if (!type.getConstraint(HasValueFlag.class).isEnabled()) {
-			// only check binding for types that actually may have a value
+		if (!type.getConstraint(HasValueFlag.class).isEnabled()
+				&& !type.getConstraint(AugmentedValueFlag.class).isEnabled()) {
+			// only check binding for types that actually may have a value,
+			// whether defined in the schema or augmented
 			return false;
 		}
 		
