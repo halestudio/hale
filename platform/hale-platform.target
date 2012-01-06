@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="eu.esdihumboldt.hale.platform" sequenceNumber="13">
+<target name="eu.esdihumboldt.hale.platform" sequenceNumber="16">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.apache.xml.serializer" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.el" type="Directory"/>
@@ -67,5 +67,8 @@
 </location>
 <location path="${project_loc:hale-platform}/target/org.codehaus.groovy" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.antlr" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jdesktop.swingx" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.jscience" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.javolution" type="Directory"/>
 </locations>
 </target>
