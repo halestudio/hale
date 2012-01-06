@@ -116,11 +116,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			element = ((Entity) element).getDefinition();
 		}
 		
-		if (element instanceof EntityDefinition) {
-			element = ((EntityDefinition) element).getDefinition();
-		}
-		
-		if (element instanceof Definition<?>) {
+		if (element instanceof EntityDefinition
+				|| element instanceof Definition<?>) {
 			// use definition image
 			return definitionLabels.getImage(element);
 		}

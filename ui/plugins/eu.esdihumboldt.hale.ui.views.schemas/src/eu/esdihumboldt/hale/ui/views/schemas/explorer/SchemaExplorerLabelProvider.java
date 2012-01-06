@@ -73,6 +73,8 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 		
 		StyledString text = new StyledString(defaultLabels.getText(element));
 		
+		cell.setImage(defaultLabels.getImage(element));
+		
 //		boolean defContext = true;
 		if (element instanceof EntityDefinition) {
 			EntityDefinition entityDef = (EntityDefinition) element;
@@ -109,8 +111,6 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 		
 		cell.setText(text.toString());
 		cell.setStyleRanges(text.getStyleRanges());
-		
-		cell.setImage(defaultLabels.getImage(element));
 		
 		Color foreground = getForeground(cell.getElement());
 		cell.setForeground(foreground);

@@ -118,7 +118,7 @@ public class DefinitionLabelProvider extends LabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		if (element instanceof EntityDefinition) {
-			element = ((EntityDefinition) element).getDefinition();
+			return images.getImage((EntityDefinition) element);
 		}
 		
 		if (element instanceof Definition<?>) {
