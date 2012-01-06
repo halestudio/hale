@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Styled Map View
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.styledmap;singleton:=true
+Bundle-Version: 2.5.0.qualifier
+Bundle-Activator: eu.esdihumboldt.hale.ui.views.styledmap.internal.StyledMapBundle
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: de.fhg.igd.mapviewer.view;version="1.0.0",
+ eu.esdihumboldt.hale.ui.views.data

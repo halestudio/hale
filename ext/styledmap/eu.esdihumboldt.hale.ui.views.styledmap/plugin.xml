@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.fhg.igd.mapviewer.view.MapViewExtension">
+      <extra
+            class="eu.esdihumboldt.hale.ui.views.styledmap.StyledMapExtra"
+            name="HALE Styled Map">
+      </extra>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="eu.esdihumboldt.hale.ui.views.styledmap.StyledMapPerspective"
+            icon="icons/world.gif"
+            id="eu.esdihumboldt.hale.ui.views.styledmap"
+            name="Map">
+      </perspective>
+   </extension>
+
+</plugin>
