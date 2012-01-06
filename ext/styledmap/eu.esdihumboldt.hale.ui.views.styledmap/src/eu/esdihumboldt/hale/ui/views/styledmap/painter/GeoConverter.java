@@ -1,0 +1,160 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ */
+
+package eu.esdihumboldt.hale.ui.views.styledmap.painter;
+
+import org.geotools.geometry.DirectPosition2D;
+import org.geotools.referencing.CRS;
+import org.opengis.geometry.DirectPosition;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
+
+import de.cs3d.common.metamodel.Point3D;
+import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
+
+/**
+ * Geotools based CRS converter.
+ * @author Simon Templer
+ */
+public class GeoConverter {
+	
+	private final CoordinateReferenceSystem source;
+	
+	private final CoordinateReferenceSystem target;
+	
+	private final boolean initialFlip;
+
+	private final boolean finalFlip;
+
+	private final MathTransform math;
+	
+	/*
+	 * temporary positions to lower the impact on GC
+	 */
+	private final DirectPosition _tempPos2A = new DirectPosition2D();
+	private final DirectPosition _tempPos2B = new DirectPosition2D();
+
+	/**
+	 * Create a CRS converter between the given coordinate reference systems.
+	 * @param source the source CRS
+	 * @param target the target CRS
+	 * @throws FactoryException if creating the transformer fails
+	 */
+	public GeoConverter(CoordinateReferenceSystem source, CoordinateReferenceSystem target) throws FactoryException {
+		this.source = source;
+		this.target = target;
+		
+//		this.math = CRS.findMathTransform(source, target);
+		//XXX lenient mode to find transformation also if Bursa Wolf parameters are not present (ok for display according to Geotools)
+		// http://docs.geotools.org/latest/userguide/faq.html#q-bursa-wolf-parameters-required
+		this.math = CRS.findMathTransform(source, target, true); 
+		
+		this.initialFlip = flipCRS(source);
+		this.finalFlip = flipCRS(target);
+	}
+	
+	/**
+	 * Convert a bounding box.
+	 * @param bb the bounding box in the source CRS
+	 * @return the bounding box in the target CRS
+	 * @throws TransformException if the conversion fails
+	 */
+	public BoundingBox convert(BoundingBox bb) throws TransformException {
+		Point3D targetCorners[] = { null, null };
+		targetCorners[0] = convert(bb.getMinX(), bb.getMinY(), bb
+				.getMinZ());
+		targetCorners[1] = convert(bb.getMaxX(), bb.getMaxY(), bb
+				.getMaxZ());
+		return new BoundingBox(//
+				targetCorners[0].getX(),//
+				targetCorners[0].getY(),//
+				targetCorners[0].getZ(),//
+				targetCorners[1].getX(),// 
+				targetCorners[1].getY(),//
+				targetCorners[1].getZ());
+	}
+	
+	/**
+	 * This method checks if the the CoordinateSystem is in the way we expected,
+	 * or if we have to flip the coordinates.
+	 * @param crs The CRS to be checked.
+	 * @return True, if we have to flip the coordinates
+	 */
+	private boolean flipCRS(CoordinateReferenceSystem crs) {
+		if (crs.getCoordinateSystem().getDimension() == 2) {
+			AxisDirection direction = crs.getCoordinateSystem().getAxis(0).getDirection();
+			if (direction.equals(AxisDirection.NORTH) ||
+				direction.equals(AxisDirection.UP)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * This method converts the given coordinates and returns them as a Point3D.
+	 * @param x the x ordinate
+	 * @param y the y ordinate
+	 * @param z the z ordinate
+	 * @return The converted coordinates as a Point3D.
+	 * @throws TransformException if the coordinate transformation fails
+	 */
+	public Point3D convert(double x, double y, double z) throws TransformException {
+		DirectPosition position = _tempPos2A;
+		if (this.initialFlip) {
+			position.setOrdinate(0, y);
+			position.setOrdinate(1, x);
+		} else {
+			position.setOrdinate(0, x);
+			position.setOrdinate(1, y);
+		}
+
+		math.transform(position, _tempPos2B);
+
+		return createPoint3D(_tempPos2B.getOrdinate(0), _tempPos2B.getOrdinate(1), z);
+	}
+	
+	/**
+	 * This method creates a Point3D from the given coordinates.
+	 * @param x
+	 *            The X axis value of the coordinate.
+	 * @param y
+	 *            The Y axis value of the coordinate.
+	 * @param z
+	 *            The Z axis value of the coordinate.
+	 * @return A Point3D from the given coordinates.
+	 */
+	private Point3D createPoint3D(double x, double y, double z) {
+		if (finalFlip) {
+			return new Point3D(y, x, z);
+		}
+		return new Point3D(x, y, z);
+	}
+
+	/**
+	 * @return the source coordinate reference system
+	 */
+	public CoordinateReferenceSystem getSource() {
+		return source;
+	}
+
+	/**
+	 * @return the target coordinate reference system
+	 */
+	public CoordinateReferenceSystem getTarget() {
+		return target;
+	}
+
+}
