@@ -17,5 +17,15 @@
             name="Map">
       </perspective>
    </extension>
+   <extension
+         point="de.fhg.igd.mapviewer.TileOverlayPainter">
+      <painter
+            class="eu.esdihumboldt.hale.ui.views.styledmap.painter.SourceInstancePainter"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.source"
+            name="Source data"
+            priority="5"
+            showInMiniMap="false">
+      </painter>
+   </extension>
 
 </plugin>
