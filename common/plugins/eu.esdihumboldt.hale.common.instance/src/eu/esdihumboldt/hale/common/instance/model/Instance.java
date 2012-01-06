@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.instance.model;
 
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
@@ -37,8 +38,8 @@ public interface Instance extends Group {
 	 * Get the instance value.<br>
 	 * <br>
 	 * The value is only present for certain types where the {@link HasValueFlag}
-	 * constraint is enabled. The {@link Binding} constraint on the type 
-	 * definition defines the binding of the value.<br>
+	 * or {@link AugmentedValueFlag} constraint is enabled. The {@link Binding} 
+	 * constraint on the type definition defines the binding of the value.<br>
 	 * <br>
 	 * <b>NOTE:</b> This is needed for instance for XML elements with text content
 	 * and attributes. It may only be a simple value (i.e. no {@link Group}
