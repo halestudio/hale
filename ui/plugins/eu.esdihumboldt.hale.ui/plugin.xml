@@ -185,6 +185,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService">
+         </service>
       </serviceFactory>
       <sourceProvider
             provider="eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceSource">
