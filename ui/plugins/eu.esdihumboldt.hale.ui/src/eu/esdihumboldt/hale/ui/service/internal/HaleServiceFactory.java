@@ -15,11 +15,13 @@ package eu.esdihumboldt.hale.ui.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceImpl;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceUndoSupport;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceImpl;
+import eu.esdihumboldt.hale.ui.service.geometry.ProjectGeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
@@ -84,6 +86,11 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		
 		if (serviceInterface.equals(InstanceSampleService.class)) {
 			return new InstanceSampleServiceImpl();
+		}
+		
+		if (GeometrySchemaService.class.equals(serviceInterface)) {
+			return new ProjectGeometrySchemaService(
+					(ProjectService) locator.getService(ProjectService.class));
 		}
 		
 		return null;
