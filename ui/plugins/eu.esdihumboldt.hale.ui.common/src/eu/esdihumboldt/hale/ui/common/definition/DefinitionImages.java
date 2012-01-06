@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
@@ -30,6 +31,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants;
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
+import eu.esdihumboldt.hale.ui.geometry.GeometryUtil;
 
 /**
  * Manages images for definitions. Should be {@link #dispose()}d when the images
@@ -114,8 +116,8 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 	private final Image attribOverlay = CommonUIPlugin.getImageDescriptor(
 		"/icons/attrib_overlay2.gif").createImage(); //$NON-NLS-1$
 
-//	private final Image defOverlay = HALEUIPlugin.getImageDescriptor(
-//		"/icons/def_overlay.gif").createImage(); //$NON-NLS-1$
+	private final Image defOverlay = CommonUIPlugin.getImageDescriptor(
+		"/icons/def_overlay.gif").createImage(); //$NON-NLS-1$
 	
 	private final Image mandatoryOverlay = CommonUIPlugin.getImageDescriptor(
 		"/icons/mandatory_ov2.gif").createImage(); //$NON-NLS-1$
@@ -142,7 +144,7 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 //		styleImages.clear();
 		
 		attribOverlay.dispose();
-//		defOverlay.dispose();
+		defOverlay.dispose();
 		mandatoryOverlay.dispose();
 	}
 	
@@ -152,6 +154,25 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 	 * @return the image, may be <code>null</code>
 	 */
 	public Image getImage(Definition<?> def) {
+		return getImage(null, def); 
+	}
+	
+	/**
+	 * Get the image for the given entity definition
+	 * @param entityDef the entity definition
+	 * @return the image, may be <code>null</code>
+	 */
+	public Image getImage(EntityDefinition entityDef) {
+		return getImage(entityDef, entityDef.getDefinition());
+	}
+		
+	/**
+	 * Get the image for the given definition
+	 * @param entityDef the entity definition, may be <code>null</code>
+	 * @param def the definition
+	 * @return the image, may be <code>null</code>
+	 */
+	protected Image getImage(EntityDefinition entityDef, Definition<?> def) {
 		Classification clazz = Classification.getClassification(def); 
 		
 		String imageName = getImageForClassification(clazz);
@@ -207,7 +228,11 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 				}
 			}
 			
-			boolean deflt = false; //to.isAttribute() && to.getType() == TreeObjectType.GEOMETRIC_ATTRIBUTE && to.getParent().isType() && isDefaultGeometry((FeatureType) to.getParent().getPropertyType(), to.getName().getLocalPart());
+			boolean deflt = false;
+			if (entityDef != null) {
+				// entity definition needed to determine if item is a default geometry
+				deflt = GeometryUtil.isDefaultGeometry(entityDef);
+			}
 			
 			if (deflt || mandatory || attribute) {
 				// overlayed image
@@ -225,9 +250,9 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 						if (attribute) {
 							gc.drawImage(attribOverlay, 0, 0);
 						}
-//						if (deflt) {
-//							gc.drawImage(defOverlay, 0, 0);
-//						}
+						if (deflt) {
+							gc.drawImage(defOverlay, 0, 0);
+						}
 						if (mandatory) {
 							gc.drawImage(mandatoryOverlay, 0, 0);
 						}
