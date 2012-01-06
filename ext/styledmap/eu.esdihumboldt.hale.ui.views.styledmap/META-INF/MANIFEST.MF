@@ -8,5 +8,16 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: de.fhg.igd.mapviewer.view;version="1.0.0",
- eu.esdihumboldt.hale.ui.views.data
+Import-Package: com.vividsolutions.jts.geom,
+ de.cs3d.common.metamodel.helperGeometry,
+ de.fhg.igd.mapviewer;version="1.0.0",
+ de.fhg.igd.mapviewer.view;version="1.0.0",
+ de.fhg.igd.mapviewer.waypoints;version="1.0.0",
+ eu.esdihumboldt.hale.common.instance.model,
+ eu.esdihumboldt.hale.common.schema.geometry,
+ eu.esdihumboldt.hale.ui.geometry,
+ eu.esdihumboldt.hale.ui.service.instance,
+ eu.esdihumboldt.hale.ui.views.data,
+ org.apache.commons.logging,
+ org.jdesktop.beans,
+ org.jdesktop.swingx.mapviewer;version="1.0.0"
