@@ -85,6 +85,10 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 	 */
 	@Override
 	protected ViewerFilter[] createFilters(TypeParameter field) {
+		if (field == null) {
+			return null;
+		}
+		
 		List<TypeCondition> conditions = field.getConditions();
 		
 		if (conditions == null)
