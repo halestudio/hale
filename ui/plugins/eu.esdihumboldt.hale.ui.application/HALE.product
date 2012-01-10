@@ -150,7 +150,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.functions"/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.map"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.mapping"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.properties"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
