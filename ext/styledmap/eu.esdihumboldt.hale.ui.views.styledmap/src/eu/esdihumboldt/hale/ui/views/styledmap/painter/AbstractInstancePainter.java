@@ -235,6 +235,8 @@ public abstract class AbstractInstancePainter extends
 		GeoPosition pos = new GeoPosition(center.getX(), center.getY(), 
 				GenericWaypoint.COMMON_EPSG);
 		
+		//TODO buffer bounding box if any dimension empty?
+		
 		// create the way-point
 		//XXX in abstract method?
 		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries);
