@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -39,7 +38,6 @@ import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
-import de.fhg.igd.mapviewer.waypoints.CustomWaypointPainter;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypointPainter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -91,10 +89,7 @@ public abstract class AbstractInstancePainter extends
 		this.instanceService = instanceService;
 		this.dataSet = dataSet;
 		
-		instanceService.addListener(this); //XXX instead only install when visible and active?!
-		
-		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		ss.addListener(styleListener = new StyleServiceListener() {
+		styleListener = new StyleServiceListener() {
 			
 			@Override
 			public void stylesRemoved(StyleService styleService) {
@@ -115,10 +110,7 @@ public abstract class AbstractInstancePainter extends
 			public void backgroundChanged(StyleService styleService, RGB background) {
 				// ignore, background not supported
 			}
-		});
-		
-		// initial way-point creation XXX instead on showing?
-		update(null);
+		};
 	}
 
 	/**
@@ -365,19 +357,6 @@ public abstract class AbstractInstancePainter extends
 	}
 
 	/**
-	 * @see CustomWaypointPainter#dispose()
-	 */
-	@Override
-	public void dispose() {
-		instanceService.removeListener(this); //XXX instead only install when visible and active?!
-		
-		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		ss.removeListener(styleListener);
-		
-		super.dispose();
-	}
-
-	/**
 	 * Try to combine two selections.
 	 * @param oldSelection the first selection
 	 * @param newSelection the second selection
@@ -531,6 +510,13 @@ public abstract class AbstractInstancePainter extends
 		super.clearWaypoints();
 		
 		lastSelected.clear();
+	}
+
+	/**
+	 * @return the styleListener
+	 */
+	public StyleServiceListener getStyleListener() {
+		return styleListener;
 	}
 	
 }

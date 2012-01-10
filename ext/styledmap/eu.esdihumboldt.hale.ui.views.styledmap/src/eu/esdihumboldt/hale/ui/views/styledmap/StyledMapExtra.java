@@ -24,10 +24,12 @@ import de.fhg.igd.mapviewer.view.MapView;
 import de.fhg.igd.mapviewer.view.MapViewExtension;
 import de.fhg.igd.mapviewer.view.overlay.ITileOverlayService;
 import de.fhg.igd.mapviewer.view.overlay.TileOverlayFactory;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.views.styledmap.painter.AbstractInstancePainter;
 
 /**
- * Map view extension for the styled map.
+ * Map view extension for the styled instance map.
  * @author Simon Templer
  */
 public class StyledMapExtra implements MapViewExtension, IPartListener2 {
@@ -42,7 +44,7 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 		this.mapView = mapView;
 		
 		/*
-		 * Listen for activated/deactivated scene painters
+		 * Listen for activated/deactivated instance painters
 		 * 
 		 * - remove listeners for deactivated painters and clear the waypoints
 		 * - update activated listeners and add the corresponding listeners
@@ -58,10 +60,13 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 						
 					// get services
 					ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+					InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+					StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 					
 					// remove listeners
 					selection.removeSelectionListener(painter);
-					//TODO instance and style
+					instances.removeListener(painter);
+					styles.removeListener(painter.getStyleListener());
 					
 					// clear way-points
 					painter.clearWaypoints();
@@ -76,13 +81,16 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 					
 					// get services
 					ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+					InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+					StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 					
 					// update
 					painter.update(selection.getSelection());
 					
 					// add listeners
 					selection.addSelectionListener(painter);
-					//TODO instance and style
+					instances.addListener(painter);
+					styles.addListener(painter.getStyleListener());
 				}
 			}
 		});
@@ -99,9 +107,11 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 		if (partRef.getPart(false) == mapView) {
 			// get services
 			ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+			InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+			StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 			
 			// remove listeners
-	        disableScenePainterListeners(selection);
+	        disableScenePainterListeners(selection, instances, styles);
 		}
 	}
 
@@ -113,23 +123,29 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 		if (partRef.getPart(false) == mapView) {
 			// get services
 			ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+			InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+			StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 			
 			// update
 			updateScenePainters(selection);
 				
 			// add listeners
-			enableScenePainterListeners(selection);
+			enableScenePainterListeners(selection, instances, styles);
 		}
 	}
 	
 	/**
 	 * Add the instance painters as listeners.
 	 * @param selection the selection service
+	 * @param instances the instance service
+	 * @param styles the style service
 	 */
-	private void enableScenePainterListeners(ISelectionService selection) {
+	private void enableScenePainterListeners(ISelectionService selection, 
+			InstanceService instances, StyleService styles) {
 		for (AbstractInstancePainter painter : mapView.getMapKit().getTilePainters(AbstractInstancePainter.class)) {
 			selection.addSelectionListener(painter);
-			//TODO add instance and style service listener
+			instances.addListener(painter);
+			styles.addListener(painter.getStyleListener());
 		}
 	}
 
@@ -146,11 +162,17 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 	/**
 	 * Remove the instance painters as listeners.
 	 * @param selection the selection service
+	 * @param instances the instance service
+	 * @param styles the style service
 	 */
-	private void disableScenePainterListeners(ISelectionService selection) {
+	private void disableScenePainterListeners(ISelectionService selection,
+			InstanceService instances, StyleService styles) {
 		for (AbstractInstancePainter painter : mapView.getMapKit().getTilePainters(AbstractInstancePainter.class)) {
 			selection.removeSelectionListener(painter);
-			//TODO remove instance and style service listener
+			instances.removeListener(painter);
+			styles.removeListener(painter.getStyleListener());
+			
+			painter.clearWaypoints();
 		}
 	}
 
