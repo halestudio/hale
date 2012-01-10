@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -42,6 +44,8 @@ import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
+import eu.esdihumboldt.hale.ui.style.service.StyleService;
+import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
 import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSConverter;
 import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSDecode;
 
@@ -61,6 +65,8 @@ public abstract class AbstractInstancePainter extends
 	private CoordinateReferenceSystem waypointCRS;
 
 	private final Marker<? super InstanceWaypoint> marker;
+	
+	private final StyleServiceListener styleListener;
 
 	/**
 	 * Create an instance painter.
@@ -75,6 +81,30 @@ public abstract class AbstractInstancePainter extends
 		this.marker = new InstanceMarker();
 		
 		instanceService.addListener(this); //XXX instead only install when visible and active?!
+		
+		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		ss.addListener(styleListener = new StyleServiceListener() {
+			
+			@Override
+			public void stylesRemoved(StyleService styleService) {
+				refreshAll();
+			}
+			
+			@Override
+			public void stylesAdded(StyleService styleService) {
+				refreshAll();
+			}
+			
+			@Override
+			public void styleSettingsChanged(StyleService styleService) {
+				refreshAll();
+			}
+			
+			@Override
+			public void backgroundChanged(StyleService styleService, RGB background) {
+				// ignore, background not supported
+			}
+		});
 		
 		// initial way-point creation XXX instead on showing?
 		resetWaypoints();
@@ -305,6 +335,9 @@ public abstract class AbstractInstancePainter extends
 	@Override
 	public void dispose() {
 		instanceService.removeListener(this); //XXX instead only install when visible and active?!
+		
+		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		ss.removeListener(styleListener);
 		
 		super.dispose();
 	}
