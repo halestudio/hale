@@ -55,7 +55,9 @@ import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSDecode;
 public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceMarker.class);
-
+	
+	private final int defaultPointSize = 7;
+	
 	/**
 	 * @see BoundingBoxMarker#doPaintMarker(Graphics2D, SelectableWaypoint, PixelConverter, int, int, int, int, int)
 	 */
@@ -123,9 +125,8 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		}
 		
 		if (geometry instanceof Point) {
-			//FIXME for now returns fall-back marker
-			//FIXME but this is wrong! there could be multiple points for one way-point!
-			return paintFallback(g, context, converter, zoom);
+			return paintPoint((Point) geometry, g, crsDefinition, context, 
+					converter, zoom);
 		}
 		
 		if (geometry instanceof Polygon) {
@@ -147,6 +148,66 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	}
 
 	/**
+	 * Paint a point geometry.
+	 * @param geometry the point
+	 * @param g the graphics object to paint on
+	 * @param crsDefinition the CRS definition associated to the geometry
+	 * @param context the context
+	 * @param converter the pixel converter
+	 * @param zoom the zoom level
+	 * @return the point marker area or <code>null</code> if painting failed
+	 */
+	protected Area paintPoint(Point geometry, Graphics2D g,
+			CRSDefinition crsDefinition, InstanceWaypoint context,
+			PixelConverter converter, int zoom) {
+		try {
+			// map CRS
+			CoordinateReferenceSystem mapCRS = CRSDecode.getCRS(converter.getMapEpsg());
+			
+			// get CRS converter
+			CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
+			
+			// manually convert to map CRS
+			Point3D mapPoint = conv.convert(geometry.getX(), geometry.getY(), 0);
+			
+			GeoPosition pos = new GeoPosition(mapPoint.getX(), 
+					mapPoint.getY(), converter.getMapEpsg());
+			// determine pixel coordinates
+			Point2D point = converter.geoToPixel(pos , zoom);
+	
+			int x = (int) point.getX();
+			int y = (int) point.getY();
+			
+			//TODO support style
+			
+			// fall-back: circle
+			if (applyFill(g, context)) {
+				g.fillOval(
+						x - defaultPointSize / 2, 
+						y - defaultPointSize / 2, 
+						defaultPointSize, 
+						defaultPointSize);
+			}
+			
+			if (applyStroke(g, context)) {
+				//TODO respect stroke width?
+				g.drawOval(
+						x - defaultPointSize / 2 - 1, 
+						y - defaultPointSize / 2 - 1, 
+						defaultPointSize + 1, 
+						defaultPointSize + 1);
+			}
+			
+			return new PolygonArea(new java.awt.Polygon(
+					new int[]{x - defaultPointSize / 2 - 1, x + defaultPointSize / 2 + 1, x + defaultPointSize / 2 + 1, x - defaultPointSize / 2 - 1},
+					new int[]{y - defaultPointSize / 2 - 1, y - defaultPointSize / 2 - 1, y + defaultPointSize / 2 + 1, y + defaultPointSize / 2 + 1}, 4));
+		} catch (Exception e) {
+			log.error("Error painting instance point geometry", e);
+			return null;
+		}
+	}
+
+	/**
 	 * Paint a polygon geometry.
 	 * @param geometry the polygon
 	 * @param g the graphics object to paint on
@@ -154,7 +215,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	 * @param context the context
 	 * @param converter the pixel converter
 	 * @param zoom the zoom level
-	 * @return the polygon area
+	 * @return the polygon area or <code>null</code> if painting failed
 	 */
 	protected Area paintPolygon(Polygon geometry, Graphics2D g,
 			CRSDefinition crsDefinition, InstanceWaypoint context,
