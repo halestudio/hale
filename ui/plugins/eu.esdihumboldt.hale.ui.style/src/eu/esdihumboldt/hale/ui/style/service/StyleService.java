@@ -15,8 +15,8 @@ import java.net.URL;
 
 import org.eclipse.swt.graphics.RGB;
 import org.geotools.styling.Style;
-import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 
 /**
@@ -28,22 +28,20 @@ import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 public interface StyleService {
 	
 	/**
-	 * @param ft the {@link FeatureType} for which to return a {@link Style}.
-	 * @return a {@link Style} for the given {@link FeatureType}.
+	 * Get the style for a given type.
+	 * @param type the type definition
+	 * @return a {@link Style} for the given type.
 	 */
-	public Style getStyle(FeatureType ft);
+	public Style getStyle(TypeDefinition type);
 	
 	/**
-	 * Get a style combining all registered styles
-	 * for {@link FeatureType}s
-	 * 
+	 * Get a style combining all registered styles.
 	 * @return the style
 	 */
 	public Style getStyle();
 	
 	/**
-	 * Get a style combining all styles for the given data set
-	 * 
+	 * Get a style combining all styles for the given data set.
 	 * @param dataset the data set
 	 * @return the style
 	 */
@@ -59,6 +57,7 @@ public interface StyleService {
 	public Style getNamedStyle(String name);
 	
 	/**
+	 * Add styles from a given URL.
 	 * @param url the URL from which to load an SLD document.
 	 * @return true if loading the URL was successful.
 	 */
@@ -66,8 +65,7 @@ public interface StyleService {
 	
 	/**
 	 * Add styles to the style service. Will override any styles that
-	 * exist for the same feature types.
-	 * 
+	 * exist for the same types.
 	 * @param styles the styles to add
 	 */
 	public void addStyles(Style...styles);
@@ -78,46 +76,40 @@ public interface StyleService {
 	public void clearStyles();
 
 	/**
-	 * Get a style combining all selection styles for the given data set
-	 * 
+	 * Get a style combining all selection styles for the given data set.
 	 * @param type the data set
 	 * @return the style
 	 */
 	public Style getSelectionStyle(DataSet type);
 	
 	/**
-	 * Get the defined style for the given feature type. If none is defined,
+	 * Get the defined style for the given type. If none is defined,
 	 * <code>null</code> will be returned.
-	 * 
-	 * @param ft the feature type
-	 * @return the feature type style or <code>null</code>
+	 * @param type the type definition
+	 * @return the type style or <code>null</code>
 	 */
-	public Style getDefinedStyle(FeatureType ft);
+	public Style getDefinedStyle(TypeDefinition type);
 	
 	/**
-	 * Get the map background
-	 * 
+	 * Get the map background.
 	 * @return the map background color
 	 */
 	public RGB getBackground();
 	
 	/**
-	 * Set the map background
-	 * 
+	 * Set the map background.
 	 * @param color the map background color
 	 */
 	public void setBackground(RGB color);
 	
 	/**
-	 * Adds a style service listener
-	 * 
+	 * Adds a style service listener.
 	 * @param listener the listener to add
 	 */
 	public void addListener(StyleServiceListener listener);
 	
 	/**
-	 * Removes a style service listener
-	 * 
+	 * Removes a style service listener.
 	 * @param listener the listener to remove
 	 */
 	public void removeListener(StyleServiceListener listener);
