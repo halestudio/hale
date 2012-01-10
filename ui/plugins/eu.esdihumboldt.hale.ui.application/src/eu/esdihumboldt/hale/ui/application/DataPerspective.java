@@ -17,7 +17,6 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 import eu.esdihumboldt.hale.ui.views.data.SourceDataView;
 import eu.esdihumboldt.hale.ui.views.data.TransformedDataView;
-import eu.esdihumboldt.hale.ui.views.map.MapView;
 import eu.esdihumboldt.hale.ui.views.mapping.AlignmentView;
 import eu.esdihumboldt.hale.ui.views.schemas.SchemasView;
 
@@ -50,14 +49,13 @@ public class DataPerspective implements IPerspectiveFactory {
 		IFolderLayout topLeft = _layout.createFolder(
 				"topLeft", IPageLayout.TOP, 0.5f, editorArea); //$NON-NLS-1$
 		topLeft.addView(AlignmentView.ID);
-		topLeft.addView(MapView.ID);
+//		topLeft.addView(MapView.ID);
 		
 		// top right
 		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.RIGHT, 0.5f, "topLeft"); //$NON-NLS-1$ //$NON-NLS-2$
 		topRight.addView(SourceDataView.ID);
 		
 		_layout.addShowViewShortcut(SchemasView.ID);
-		_layout.addShowViewShortcut(MapView.ID);
 		_layout.addShowViewShortcut(AlignmentView.ID);
 		_layout.addShowViewShortcut(SourceDataView.ID);
 		_layout.addShowViewShortcut(TransformedDataView.ID);
