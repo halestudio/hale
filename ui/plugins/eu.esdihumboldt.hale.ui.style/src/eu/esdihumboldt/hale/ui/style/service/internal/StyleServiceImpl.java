@@ -14,11 +14,11 @@ package eu.esdihumboldt.hale.ui.style.service.internal;
 import java.awt.Color;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Queue;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -36,15 +36,14 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
-import org.opengis.feature.type.FeatureType;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
-import eu.esdihumboldt.hale.schemaprovider.model.DefinitionUtil;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
@@ -65,7 +64,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 
 	private static StyleService instance;
 	
-	private final Map<FeatureType, FeatureTypeStyle> styles;
+	private final Map<TypeDefinition, FeatureTypeStyle> styles;
 	
 	private final SchemaService schemaService;
 
@@ -84,35 +83,29 @@ public class StyleServiceImpl extends AbstractStyleService {
 	// Constructor, instance accessor ..........................................
 	
 	private StyleServiceImpl (SchemaService schema) {
-		styles = new HashMap<FeatureType, FeatureTypeStyle>();
+		styles = new HashMap<TypeDefinition, FeatureTypeStyle>();
 		
 		schemaService = schema;
 		
 		// add listener to process queued styles
 		schema.addSchemaServiceListener(new SchemaServiceListener() {
 			
-			/**
-			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaAdded(eu.esdihumboldt.hale.common.schema.SchemaSpaceID, eu.esdihumboldt.hale.common.schema.model.Schema)
-			 */
 			@Override
 			public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {
 				update();
 			}
 
-			/**
-			 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemasCleared(eu.esdihumboldt.hale.common.schema.SchemaSpaceID)
-			 */
 			@Override
 			public void schemasCleared(SchemaSpaceID spaceID) {
 				update();
 			}
 
 			private void update() {
-				//FIXME deactivated
-//				Collection<FeatureTypeStyle> failures = new ArrayList<FeatureTypeStyle>();
-//				boolean updateNeeded = false;
-//				
-//				while (!queuedStyles.isEmpty()) {
+				Collection<FeatureTypeStyle> failures = new ArrayList<FeatureTypeStyle>();
+				boolean updateNeeded = false;
+				
+				while (!queuedStyles.isEmpty()) {
+					//FIXME deactivated!
 //					FeatureTypeStyle fts = queuedStyles.poll();
 //					Definition element = schemaService.getTypeByName(fts.getFeatureTypeName());
 //					if (element != null && DefinitionUtil.getFeatureType(element) != null) {
@@ -123,13 +116,13 @@ public class StyleServiceImpl extends AbstractStyleService {
 //					else {
 //						failures.add(fts);
 //					}
-//				}
-//				
-//				queuedStyles.addAll(failures);
-//				
-//				if (updateNeeded) {
-//					notifyStylesAdded();
-//				}
+				}
+				
+				queuedStyles.addAll(failures);
+				
+				if (updateNeeded) {
+					notifyStylesAdded();
+				}
 			}
 		});
 		
@@ -169,14 +162,13 @@ public class StyleServiceImpl extends AbstractStyleService {
 	 * @see StyleService#getNamedStyle(String)
 	 */
 	@Override
-	@SuppressWarnings("deprecation")
 	public Style getNamedStyle(String name) {
 		Style style = styleFactory.createStyle();
 		for (FeatureTypeStyle fts : this.styles.values()) {
 			//XXX checks for the FeatureTypeStyle name instead of the UserStyle name
 			if (fts.getName().equals(name)) {
 				style = styleFactory.createStyle();
-				style.addFeatureTypeStyle(fts);
+				style.featureTypeStyles().add(fts);
 				break;
 			}
 		}
@@ -186,32 +178,30 @@ public class StyleServiceImpl extends AbstractStyleService {
 	/** 
 	 * This implementation will build a simple style if none is defined
 	 * previously. 
-	 * @see StyleService#getStyle(FeatureType)
+	 * @see StyleService#getStyle(TypeDefinition)
 	 */
 	@Override
-	@SuppressWarnings("deprecation")
-	public Style getStyle(FeatureType ft) {
-		FeatureTypeStyle fts = styles.get(ft);
+	public Style getStyle(TypeDefinition type) {
+		FeatureTypeStyle fts = styles.get(type);
 		Style style = styleFactory.createStyle();
 		if (fts != null) {
-			style.addFeatureTypeStyle(fts);
+			style.featureTypeStyles().add(fts);
 		}
 		else {
-			style.addFeatureTypeStyle(StyleHelper.getDefaultStyle(ft));
+ 			style.featureTypeStyles().add(StyleHelper.getDefaultStyle(type));
 		}
 		return style;
 	}
 	
 	/**
-	 * @see StyleService#getDefinedStyle(FeatureType)
+	 * @see StyleService#getDefinedStyle(TypeDefinition)
 	 */
 	@Override
-	@SuppressWarnings("deprecation")
-	public Style getDefinedStyle(FeatureType ft) {
-		FeatureTypeStyle fts = styles.get(ft);
+	public Style getDefinedStyle(TypeDefinition type) {
+		FeatureTypeStyle fts = styles.get(type);
 		if (fts != null) {
 			Style style = styleFactory.createStyle();
-			style.addFeatureTypeStyle(fts);
+			style.featureTypeStyles().add(fts);
 			return style;
 		}
 		else {
@@ -222,13 +212,12 @@ public class StyleServiceImpl extends AbstractStyleService {
 	/**
 	 * @see StyleService#getStyle()
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public Style getStyle() {
 		Style style = styleFactory.createStyle();
 		
 		for (FeatureTypeStyle fts : styles.values()) {
-			style.addFeatureTypeStyle(fts);
+			style.featureTypeStyles().add(fts);
 		}
 		
 		return style;
@@ -250,34 +239,23 @@ public class StyleServiceImpl extends AbstractStyleService {
 		return getStyle(type, true);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private Style getStyle(final DataSet dataset, boolean selected) {
-		//FIXME
-		Map<Definition, FeatureType> elements = null;
-//		Map<Definition, FeatureType> elements = (dataset == DataSet.SOURCE)?(schemaService.getSourceSchema().getTypes()):(schemaService.getTargetSchema().getTypes());
-		
-		if (elements == null) {
-			elements = new HashMap<Definition, FeatureType>();
-		}
+		SchemaSpace schemas = schemaService.getSchemas((dataset == DataSet.SOURCE)?(SchemaSpaceID.SOURCE):(SchemaSpaceID.TARGET));
 		
 		Style style = styleFactory.createStyle();
 		
-		for (Entry<Definition, FeatureType> entry : elements.entrySet()) {
-			TypeDefinition typeDef = DefinitionUtil.getType(entry.getKey());
-			
-			if (!typeDef.isAbstract() && typeDef.hasGeometry()) {
+		for (TypeDefinition type : schemas.getMappableTypes()) {
+			if (!type.getConstraint(AbstractFlag.class).isEnabled()) {
 				// only add styles for non-abstract feature types
-				FeatureType ft = entry.getValue();
-				
-				FeatureTypeStyle fts = styles.get(ft);
+				FeatureTypeStyle fts = styles.get(type);
 				if (fts == null) {
-					fts = StyleHelper.getDefaultStyle(ft);
+					fts = StyleHelper.getDefaultStyle(type);
 				}
 				if (selected) {
 					fts = getSelectedStyle(fts);
 				}
 				
-				style.addFeatureTypeStyle(fts);
+				style.featureTypeStyles().add(fts);
 			}
 		}
 		
@@ -291,7 +269,6 @@ public class StyleServiceImpl extends AbstractStyleService {
 	 * 
 	 * @return the converted feature type style
 	 */
-	@SuppressWarnings("deprecation")
 	private FeatureTypeStyle getSelectedStyle(FeatureTypeStyle fts) {
 		List<Rule> rules = fts.rules();
 		
@@ -312,11 +289,12 @@ public class StyleServiceImpl extends AbstractStyleService {
 			// create new rule
 			Rule newRule = styleBuilder.createRule(newSymbolizers.toArray(new Symbolizer[newSymbolizers.size()]));
 			newRule.setFilter(rule.getFilter());
-			newRule.setIsElseFilter(rule.hasElseFilter());
+			newRule.setIsElseFilter(rule.isElseFilter());
 			newRule.setName(rule.getName());
 			newRules.add(newRule);
 		}
 		
+		//FIXME use featureTypeNames list
 		return  styleBuilder.createFeatureTypeStyle(fts.getFeatureTypeName(), 
 				newRules.toArray(new Rule[newRules.size()]));
 	}
@@ -355,16 +333,15 @@ public class StyleServiceImpl extends AbstractStyleService {
 	/**
 	 * @see StyleService#addStyles(Style[])
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public void addStyles(Style... styles) {
 		boolean somethingHappened = false;
 		
 		for (Style style : styles) {
-			for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
-				Definition element = null; //FIXME = schemaService.getTypeByName(fts.getFeatureTypeName());
-				if (element != null && DefinitionUtil.getFeatureType(element) != null) {
-					if (addStyle(DefinitionUtil.getFeatureType(element), fts)) {
+			for (FeatureTypeStyle fts : style.featureTypeStyles()) {
+				TypeDefinition element = null; //FIXME = schemaService.getTypeByName(fts.getFeatureTypeName());
+				if (element != null) {
+					if (addStyle(element, fts)) {
 						somethingHappened = true;
 					}
 				}
@@ -384,28 +361,26 @@ public class StyleServiceImpl extends AbstractStyleService {
 	}
 
 	/**
-	 * Add a feature type style
-	 * 
-	 * @param ft the feature type
-	 * @param fts the feature type style
-	 * 
+	 * Add a type style.
+	 * @param type the type definition
+	 * @param fts the type style
 	 * @return if the style definitions were changed
 	 */
-	private boolean addStyle(FeatureType ft, FeatureTypeStyle fts) {
+	private boolean addStyle(TypeDefinition type, FeatureTypeStyle fts) {
 		boolean somethingHappened = false;
-		FeatureTypeStyle old = this.styles.get(ft);
+		FeatureTypeStyle old = this.styles.get(type);
 		if (old != null) {
 			if (!old.equals(fts)) {
-				_log.info("Replacing style for feature type " + ft.getName()); //$NON-NLS-1$
+				_log.info("Replacing style for feature type " + type.getName()); //$NON-NLS-1$
 				somethingHappened = true;
 			}
 		}
 		else {
-			_log.info("Adding style for feature type " + ft.getName()); //$NON-NLS-1$
+			_log.info("Adding style for feature type " + type.getName()); //$NON-NLS-1$
 			somethingHappened = true;
 		}
 		
-		this.styles.put(ft, fts);
+		this.styles.put(type, fts);
 		return somethingHappened;
 	}
 

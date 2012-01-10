@@ -42,14 +42,10 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
-import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.style.editors.Editor;
-import eu.esdihumboldt.hale.ui.style.editors.EditorFactory;
-import eu.esdihumboldt.hale.ui.style.editors.LineSymbolizerEditor;
-import eu.esdihumboldt.hale.ui.style.editors.PointSymbolizerEditor;
-import eu.esdihumboldt.hale.ui.style.editors.PolygonSymbolizerEditor;
 import eu.esdihumboldt.hale.ui.style.editors.RuleEditor;
 import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
@@ -184,7 +180,6 @@ public class RuleStylePage extends FeatureStylePage {
 	/**
 	 * @see FeatureStylePage#getStyle(boolean)
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public Style getStyle(boolean force) throws Exception {
 		updateCurrentRule();
@@ -205,7 +200,7 @@ public class RuleStylePage extends FeatureStylePage {
 			// create style
 			FeatureTypeStyle fts = styleBuilder.createFeatureTypeStyle("Feature", ruleArray); //$NON-NLS-1$
 			Style style = styleBuilder.createStyle();
-			style.addFeatureTypeStyle(fts);
+			style.featureTypeStyles().add(fts);
 			return style;
 		}
 		else {
@@ -243,7 +238,7 @@ public class RuleStylePage extends FeatureStylePage {
 		// use list instead:
 		List<Rule> ruleList;
 		try {
-			ruleList = getParent().getStyle().getFeatureTypeStyles()[0].rules();
+			ruleList = getParent().getStyle().featureTypeStyles().get(0).rules();
 		} catch (Exception e) {
 			ruleList = new ArrayList<Rule>();
 		}
@@ -564,7 +559,7 @@ public class RuleStylePage extends FeatureStylePage {
 	 * @return the {@link Rule} editor
 	 */
 	private Editor<Rule> createEditor(Rule rule, Composite parent) {
-		FeatureType ft = getParent().getType();
+		TypeDefinition type = getParent().getType();
 		Filter filter = rule.getFilter();
 		
 		Symbolizer symbolizer = null;
@@ -576,66 +571,68 @@ public class RuleStylePage extends FeatureStylePage {
 		
 		if (symbolizer == null) {
 			// fallback if there is no symbolizer defined
-			FeatureTypeStyle fts = StyleHelper.getDefaultStyle(ft);
+			FeatureTypeStyle fts = StyleHelper.getDefaultStyle(type);
 			symbolizer = fts.rules().get(0).getSymbolizers()[0];
 		}
 		
 		Editor<Rule> editor;
 		
 		if (symbolizer instanceof PointSymbolizer) {
-			editor = createEditor(parent, ft, filter, PointSymbolizer.class,
+			editor = createEditor(parent, type, filter, PointSymbolizer.class,
 					(PointSymbolizer) symbolizer);
 		}
 		else if (symbolizer instanceof PolygonSymbolizer) {
-			editor = createEditor(parent, ft, filter, PolygonSymbolizer.class,
+			editor = createEditor(parent, type, filter, PolygonSymbolizer.class,
 					(PolygonSymbolizer) symbolizer);
 		}
 		else { //TODO support other symbolizers
 			// default: LineSymbolizer
-			editor = createEditor(parent, ft, filter, LineSymbolizer.class,
+			editor = createEditor(parent, type, filter, LineSymbolizer.class,
 					(LineSymbolizer) symbolizer);
 		}
 		
 		return editor;
 	}
 	
-	private static <T extends Symbolizer> RuleEditor<?> createEditor(Composite parent, FeatureType ft, Filter filter, Class<T> type, T symbolizer) {
-		if (PointSymbolizer.class.isAssignableFrom(type)) {
-			return new RuleEditor<PointSymbolizer>(parent, ft, filter,
-					PointSymbolizer.class, (PointSymbolizer) symbolizer,
-					new EditorFactory<PointSymbolizer>() {
-
-						@Override
-						public Editor<PointSymbolizer> createEditor(
-								Composite parent, PointSymbolizer value) {
-							return new PointSymbolizerEditor(parent, value);
-						}
-					});
-		}
-		else if (PolygonSymbolizer.class.isAssignableFrom(type)) {
-			return new RuleEditor<PolygonSymbolizer>(parent, ft, filter,
-					PolygonSymbolizer.class, (PolygonSymbolizer) symbolizer,
-					new EditorFactory<PolygonSymbolizer>() {
-
-						@Override
-						public Editor<PolygonSymbolizer> createEditor(
-								Composite parent, PolygonSymbolizer value) {
-							return new PolygonSymbolizerEditor(parent, value);
-						}
-					});
-		}
-		else {
-			return new RuleEditor<LineSymbolizer>(parent, ft, filter,
-					LineSymbolizer.class, (LineSymbolizer) symbolizer,
-					new EditorFactory<LineSymbolizer>() {
-
-						@Override
-						public Editor<LineSymbolizer> createEditor(
-								Composite parent, LineSymbolizer value) {
-							return new LineSymbolizerEditor(parent, value);
-						}
-					});
-		}
+	private static <T extends Symbolizer> RuleEditor<?> createEditor(Composite parent, TypeDefinition ft, Filter filter, Class<T> type, T symbolizer) {
+//		if (PointSymbolizer.class.isAssignableFrom(type)) {
+//			return new RuleEditor<PointSymbolizer>(parent, ft, filter,
+//					PointSymbolizer.class, (PointSymbolizer) symbolizer,
+//					new EditorFactory<PointSymbolizer>() {
+//
+//						@Override
+//						public Editor<PointSymbolizer> createEditor(
+//								Composite parent, PointSymbolizer value) {
+//							return new PointSymbolizerEditor(parent, value);
+//						}
+//					});
+//		}
+//		else if (PolygonSymbolizer.class.isAssignableFrom(type)) {
+//			return new RuleEditor<PolygonSymbolizer>(parent, ft, filter,
+//					PolygonSymbolizer.class, (PolygonSymbolizer) symbolizer,
+//					new EditorFactory<PolygonSymbolizer>() {
+//
+//						@Override
+//						public Editor<PolygonSymbolizer> createEditor(
+//								Composite parent, PolygonSymbolizer value) {
+//							return new PolygonSymbolizerEditor(parent, value);
+//						}
+//					});
+//		}
+//		else {
+//			return new RuleEditor<LineSymbolizer>(parent, ft, filter,
+//					LineSymbolizer.class, (LineSymbolizer) symbolizer,
+//					new EditorFactory<LineSymbolizer>() {
+//
+//						@Override
+//						public Editor<LineSymbolizer> createEditor(
+//								Composite parent, LineSymbolizer value) {
+//							return new LineSymbolizerEditor(parent, value);
+//						}
+//					});
+//		}
+		//FIXME not yet supported
+		throw new UnsupportedOperationException();
 	}
 
 }

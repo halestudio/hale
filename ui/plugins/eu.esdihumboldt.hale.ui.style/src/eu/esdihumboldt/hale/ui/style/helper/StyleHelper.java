@@ -13,13 +13,9 @@
 package eu.esdihumboldt.hale.ui.style.helper;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.PlatformUI;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.legend.Drawer;
+import org.geotools.feature.NameImpl;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Fill;
 import org.geotools.styling.LineSymbolizer;
@@ -32,17 +28,9 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.FilterFactory;
 
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
-
-import eu.esdihumboldt.hale.ui.style.service.StyleService;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
 
 /**
@@ -57,8 +45,10 @@ public abstract class StyleHelper {
 	
 	private static final int HEIGHT = 16;
 	
+	@SuppressWarnings("unused")
 	private static final int[] LINE_POINTS = new int[]{0, HEIGHT - 1, WIDTH - 1, 0};
 
+	@SuppressWarnings("unused")
 	private static final int[] POLY_POINTS = new int[]{0, 0, WIDTH - 1, 0, WIDTH - 1, HEIGHT - 1, 0, HEIGHT - 1};
 	
 	/**
@@ -74,122 +64,143 @@ public abstract class StyleHelper {
 	private static final FilterFactory filterFactory = 
 		CommonFactoryFinder.getFilterFactory(null);
 	
-	/**
-	 * Get a legend image for a given feature type
-	 * @param type the feature type
-	 * @param definedOnly if only for defined styles a image shall be created
-	 * @return the legend image or <code>null</code>
-	 */
-	public static BufferedImage getLegendImage(FeatureType type, boolean definedOnly) {
-		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		Style style = (definedOnly)?(ss.getDefinedStyle(type)):(ss.getStyle(type));
-		if (style == null) {
-			return null;
-		}
-		
-		// create a dummy feature based on the style
-		Drawer d = Drawer.create();
-		SimpleFeature feature = null;
-		Symbolizer[] symbolizers = SLD.symbolizers(style);
-		if (symbolizers.length > 0) {
-			Symbolizer symbolizer = symbolizers[0];
-			
-			if (symbolizer instanceof LineSymbolizer) {
-				feature = d.feature(d.line(LINE_POINTS));
-			}
-			else if (symbolizer instanceof PointSymbolizer) {
-				feature = d.feature(d.point(WIDTH / 2, HEIGHT / 2));
-			}
-			if (symbolizer instanceof PolygonSymbolizer) {
-				feature = d.feature(d.polygon(POLY_POINTS));
-			}
-		}
-		
-		if (feature != null) {
-			BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB); 
-//				GraphicsEnvironment.getLocalGraphicsEnvironment().
-//    				getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(WIDTH, HEIGHT,
-//    				Transparency.TRANSLUCENT);
-			
-			RGB rgb = ss.getBackground();
-			Color color = new Color(rgb.red, rgb.green, rgb.blue);
-			Graphics2D g = image.createGraphics();
-			try {
-				g.setColor(color);
-				g.fillRect(0, 0, WIDTH, HEIGHT);
-			} finally {
-				g.dispose();
-			}
-			
-			d.drawDirect(image, feature, style);
-			return image;
-		}
-		
-		return null;
-	}
+//	/**
+//	 * Get a legend image for a given feature type
+//	 * @param type the feature type
+//	 * @param definedOnly if only for defined styles a image shall be created
+//	 * @return the legend image or <code>null</code>
+//	 */
+//	public static BufferedImage getLegendImage(FeatureType type, boolean definedOnly) {
+//		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+//		Style style = (definedOnly)?(ss.getDefinedStyle(type)):(ss.getStyle(type));
+//		if (style == null) {
+//			return null;
+//		}
+//		
+//		// create a dummy feature based on the style
+//		Drawer d = Drawer.create();
+//		SimpleFeature feature = null;
+//		Symbolizer[] symbolizers = SLD.symbolizers(style);
+//		if (symbolizers.length > 0) {
+//			Symbolizer symbolizer = symbolizers[0];
+//			
+//			if (symbolizer instanceof LineSymbolizer) {
+//				feature = d.feature(d.line(LINE_POINTS));
+//			}
+//			else if (symbolizer instanceof PointSymbolizer) {
+//				feature = d.feature(d.point(WIDTH / 2, HEIGHT / 2));
+//			}
+//			if (symbolizer instanceof PolygonSymbolizer) {
+//				feature = d.feature(d.polygon(POLY_POINTS));
+//			}
+//		}
+//		
+//		if (feature != null) {
+//			BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB); 
+////				GraphicsEnvironment.getLocalGraphicsEnvironment().
+////    				getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(WIDTH, HEIGHT,
+////    				Transparency.TRANSLUCENT);
+//			
+//			RGB rgb = ss.getBackground();
+//			Color color = new Color(rgb.red, rgb.green, rgb.blue);
+//			Graphics2D g = image.createGraphics();
+//			try {
+//				g.setColor(color);
+//				g.fillRect(0, 0, WIDTH, HEIGHT);
+//			} finally {
+//				g.dispose();
+//			}
+//			
+//			d.drawDirect(image, feature, style);
+//			return image;
+//		}
+//		
+//		return null;
+//	}
 	
 	/**
-	 * Returns a default style for the given feature type
-	 * 
-	 * @param ft the feature type
+	 * Returns a default style for the given type.
+	 * @param typeDef the type definition
 	 * @return the style
 	 */
-	@SuppressWarnings("deprecation")
-	public static FeatureTypeStyle getDefaultStyle(FeatureType ft) {
-		FeatureType current = ft;
-		Class<?> type = null;
-		
-		// find geometry type
-		while (type == null && current != null) {
-			GeometryDescriptor gd = current.getGeometryDescriptor();
-			if (gd != null) {
-				type = gd.getType().getBinding();
-			}
-			
-			if (current.getSuper() instanceof FeatureType) {
-				current = (FeatureType) current.getSuper();
-			}
-			else {
-				current = null;
-			}
-		}
-		
-		FeatureTypeStyle result;
+	public static FeatureTypeStyle getDefaultStyle(TypeDefinition typeDef) {
+//		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
+//		List<QName> geomPath = gss.getDefaultGeometry(typeDef);
+		//TODO determine default style from default geometry?
 		
 		Color defColor = StylePreferences.getDefaultColor();
 		int defWidth = StylePreferences.getDefaultWidth();
 		
-		if (type != null) {
-			if (type.isAssignableFrom(Polygon.class)
-					|| type.isAssignableFrom(MultiPolygon.class)) {
-				result = createPolygonStyle(defColor, defWidth);
-			} else if (type.isAssignableFrom(LineString.class)
-					|| type.isAssignableFrom(MultiLineString.class)) {
-				result = createLineStyle(defColor, defWidth);
-			} else {
-				result = createPointStyle(defColor, defWidth);
-			}
-		}
-		else {
-			result = createPointStyle(defColor, defWidth);
-		}
+		FeatureTypeStyle result;
 		
-		result.setFeatureTypeName(ft.getName().getLocalPart());
+		//XXX for now create a polygon style in any case, as it contains fill and stroke
+		
+//		if (type != null) {
+//			if (type.isAssignableFrom(Polygon.class)
+//					|| type.isAssignableFrom(MultiPolygon.class)) {
+				result = createPolygonStyle(defColor, defWidth);
+//			} else if (type.isAssignableFrom(LineString.class)
+//					|| type.isAssignableFrom(MultiLineString.class)) {
+//				result = createLineStyle(defColor, defWidth);
+//			} else {
+//				result = createPointStyle(defColor, defWidth);
+//			}
+//		}
+//		else {
+//			result = createPointStyle(defColor, defWidth);
+//		}
+		
+		//XXX StyleBuilder does not support feature type names with namespace
+//		QName name = getFeatureTypeName(typeDef);
+//		result.featureTypeNames().add(new NameImpl(name.getNamespaceURI(), name.getLocalPart()));
+		result.featureTypeNames().add(new NameImpl(getFeatureTypeName(typeDef)));
 		
 		return result;
 	}
 	
-	public static Style getStyle(FeatureType ft) {
+	//XXX StyleBuilder does not support feature type names with namespace
+//	/**
+//	 * Get the name used in styles for the given type definition.
+//	 * @param typeDef the type definition
+//	 * @return the feature type name
+//	 */
+//	public static QName getFeatureTypeName(TypeDefinition typeDef) {
+//		// default to element name
+//		Collection<? extends XmlElement> elements = typeDef.getConstraint(XmlElements.class).getElements();
+//		if (elements.size() == 1) {
+//			// only use element name if it is unique
+//			return elements.iterator().next().getName();
+//		}
+//		
+//		// type
+//		return typeDef.getName();
+//	}
+	
+	/**
+	 * Get the name used in styles for the given type definition.
+	 * @param typeDef the type definition
+	 * @return the feature type name
+	 */
+	public static String getFeatureTypeName(TypeDefinition typeDef) {
+		// type or element name
+		return typeDef.getDisplayName();
+	}
+
+	/**
+	 * Get a style containing the default style for the given type.
+	 * @param type the type definition
+	 * @return the style with the default type style
+	 */
+	public static Style getStyle(TypeDefinition type) {
 		Style style = styleFactory.createStyle();
 		
-		style.addFeatureTypeStyle(getDefaultStyle(ft));
+		style.featureTypeStyles().add(getDefaultStyle(type));
 		
 		return style;
 	}
 	
 	/**
-	 * Create a new point symbolizer based on the given one
-	 * 
+	 * Create a new point symbolizer based on the given one.
 	 * @param symbolizer the point symbolizer
 	 * @param color the new color
 	 * @param width the new line width
@@ -214,26 +225,24 @@ public abstract class StyleHelper {
 	}
 	
 	/**
-	 * Manually create a Point Style for a FeatureType. Used methods are going
-	 * to be removed in GT 2.6, so has to be updated in case of migration.
+	 * Manually create a default point style.
 	 * @param color the point color
 	 * @param width the line width
 	 * @return a Style for Point objects.
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("unused")
 	private static FeatureTypeStyle createPointStyle(Color color, double width) {
 		PointSymbolizer symbolizer = createPointSymbolizer(color, width);
 		//symbolizer.getGraphic().setSize(filterFactory.literal(1));
 		Rule rule = styleFactory.createRule();
-		rule.setSymbolizers(new Symbolizer[] { symbolizer });
+		rule.symbolizers().add(symbolizer);
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
 		fts.rules().add(rule);
 		return fts;
 	}
 
 	/**
-	 * Create a default point symbolizer
-	 * 
+	 * Create a default point symbolizer.
 	 * @param color the color
 	 * @param width the line width
 	 * @return the point symbolizer
@@ -245,26 +254,24 @@ public abstract class StyleHelper {
 	}
 
 	/**
-	 * Manually create a Line Style for a FeatureType. Used methods are going
-	 * to be removed in GT 2.6, so has to be updated in case of migration.
+	 * Create a default line style.
 	 * @param color the line color
 	 * @param width the line width
 	 * @return a Style for Line/LineString objects.
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("unused")
 	private static FeatureTypeStyle createLineStyle(Color color, double width) {
 		LineSymbolizer symbolizer = createLineSymbolizer(color, width);
 		
 		Rule rule = styleFactory.createRule();
-		rule.setSymbolizers(new Symbolizer[] { symbolizer });
+		rule.symbolizers().add(symbolizer);
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
 		fts.rules().add(rule);
 		return fts;
 	}
 
 	/**
-	 * Create a default line symbolizer
-	 * 
+	 * Create a default line symbolizer.
 	 * @param color the color
 	 * @param width the line width
 	 * @return the line symbolizer
@@ -277,25 +284,22 @@ public abstract class StyleHelper {
 	}
 
 	/**
-	 * Manually create a Polygon Style for a FeatureType. Used methods are going
-	 * to be removed in GT 2.6, so has to be updated in case of migration.
+	 * Create a default polygon style.
 	 * @param color the polygon color
 	 * @param width the line width
-	 * @return a Style for Polygon objects.
+	 * @return a Style for Polygon objects
 	 */
-	@SuppressWarnings("deprecation")
 	private static FeatureTypeStyle createPolygonStyle(Color color, double width) {
 		PolygonSymbolizer symbolizer = createPolygonSymbolizer(color, width);
 		Rule rule = styleFactory.createRule();
-		rule.setSymbolizers(new Symbolizer[] { symbolizer });
+		rule.symbolizers().add(symbolizer);
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
 		fts.rules().add(rule);
 		return fts;
 	}
 
 	/**
-	 * Create a default polygon symbolizer
-	 * 
+	 * Create a default polygon symbolizer.
 	 * @param color the color
 	 * @param width the line width
 	 * @return the polygon symbolizer

@@ -20,18 +20,19 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
+import org.geotools.feature.NameImpl;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Style;
-import org.opengis.feature.type.FeatureType;
 
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.util.dialog.MultiPageDialog;
 
 /**
- * Dialog for editing feature type styles
- * 
+ * Dialog for editing feature type styles.
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -41,7 +42,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 
 	private static Image styleImage;
 	
-	private final FeatureType type;
+	private final TypeDefinition type;
 	
 	private final StyleService styles;
 	
@@ -52,7 +53,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 * 
 	 * @param type the feature type
 	 */
-	public FeatureStyleDialog(final FeatureType type) {
+	public FeatureStyleDialog(final TypeDefinition type) {
 		super();
 		
 		this.type = type;
@@ -203,11 +204,10 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 * 
 	 * @param style the style
 	 */
-	@SuppressWarnings("deprecation")
 	public void setStyle(Style style) {
 		// set the feature names
-		for (FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
-			fts.setFeatureTypeName(type.getName().getLocalPart());
+		for (FeatureTypeStyle fts : style.featureTypeStyles()) {
+			fts.featureTypeNames().add(new NameImpl(StyleHelper.getFeatureTypeName(type)));
 		}
 		
 		this.style = style;
@@ -218,7 +218,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 */
 	@Override
 	protected void createPages() {
-		addPage(new RuleStylePage(this));
+//		FIXME disabled: addPage(new RuleStylePage(this));
 		addPage(new SimpleLineStylePage(this));
 		addPage(new SimplePointStylePage(this));
 		addPage(new SimplePolygonStylePage(this));
@@ -228,7 +228,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	/**
 	 * @return the type
 	 */
-	public FeatureType getType() {
+	public TypeDefinition getType() {
 		return type;
 	}
 	
