@@ -12,11 +12,19 @@
 
 package eu.esdihumboldt.hale.ui.views.styledmap.painter;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -31,7 +39,6 @@ import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
-import de.fhg.igd.mapviewer.marker.Marker;
 import de.fhg.igd.mapviewer.waypoints.CustomWaypointPainter;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypointPainter;
@@ -40,6 +47,8 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.ui.geometry.GeometryUtil;
+import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
+import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
@@ -54,7 +63,8 @@ import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSDecode;
  * @author Simon Templer
  */
 public abstract class AbstractInstancePainter extends
-		GenericWaypointPainter<InstanceReference, InstanceWaypoint> implements InstanceServiceListener {
+		GenericWaypointPainter<InstanceReference, InstanceWaypoint> implements InstanceServiceListener,
+		ISelectionListener {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractInstancePainter.class);
 
@@ -64,9 +74,9 @@ public abstract class AbstractInstancePainter extends
 	
 	private CoordinateReferenceSystem waypointCRS;
 
-	private final Marker<? super InstanceWaypoint> marker;
-	
 	private final StyleServiceListener styleListener;
+
+	private Set<InstanceReference> lastSelected = new HashSet<InstanceReference>();
 
 	/**
 	 * Create an instance painter.
@@ -78,7 +88,6 @@ public abstract class AbstractInstancePainter extends
 		super();
 		this.instanceService = instanceService;
 		this.dataSet = dataSet;
-		this.marker = new InstanceMarker();
 		
 		instanceService.addListener(this); //XXX instead only install when visible and active?!
 		
@@ -107,7 +116,7 @@ public abstract class AbstractInstancePainter extends
 		});
 		
 		// initial way-point creation XXX instead on showing?
-		resetWaypoints();
+		update(null);
 	}
 
 	/**
@@ -116,7 +125,7 @@ public abstract class AbstractInstancePainter extends
 	@Override
 	public void datasetChanged(DataSet type) {
 		if (type == dataSet) {
-			resetWaypoints();
+			update(null);
 		}
 	}
 
@@ -137,13 +146,19 @@ public abstract class AbstractInstancePainter extends
 	}
 	
 	/**
-	 * Reset way-points to those currently in the instance service.
+	 * Do a complete update of the way-points.
+	 * Existing way-points are discarded.
+	 * @param selection the current selection
 	 */
-	private void resetWaypoints() {
+	public void update(ISelection selection) {
 		clearWaypoints();
+		
+		selectionChanged(null, selection);
 		
 		//XXX only mappable type instances for source?!
 		InstanceCollection instances = instanceService.getInstances(dataSet);
+		
+		Set<InstanceReference> selected = collectReferences(selection);
 		
 		// add way-points for instances 
 		ResourceIterator<Instance> it = instances.iterator();
@@ -155,6 +170,9 @@ public abstract class AbstractInstancePainter extends
 				InstanceWaypoint wp = createWaypoint(instance, instanceService);
 				
 				if (wp != null) {
+					if (selected.contains(wp.getValue())) {
+						wp.setSelected(true, null); // refresh can be ignored because it's done for addWaypoint
+					}
 					addWaypoint(wp, refresh);
 				}
 			}
@@ -241,7 +259,8 @@ public abstract class AbstractInstancePainter extends
 		//XXX in abstract method?
 		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries);
 		
-		wp.setMarker(marker);
+		//XXX in abstract method?
+		wp.setMarker(new InstanceMarker()); // each way-point must have its own marker, as the marker stores the marker areas
 		
 		return wp;
 	}
@@ -342,6 +361,162 @@ public abstract class AbstractInstancePainter extends
 		ss.removeListener(styleListener);
 		
 		super.dispose();
+	}
+
+	/**
+	 * Try to combine two selections.
+	 * @param oldSelection the first selection
+	 * @param newSelection the second selection
+	 * @return the combined selection
+	 */
+	@SuppressWarnings("unchecked")
+	public static ISelection combineSelection(ISelection oldSelection, ISelection newSelection) {
+		if (newSelection == null)
+			return oldSelection;
+		else if (oldSelection == null)
+			return newSelection;
+		
+		if (oldSelection instanceof InstanceSelection && newSelection instanceof InstanceSelection) {
+			// combine scene selections
+			Set<Object> values = new LinkedHashSet<Object>();
+			
+			values.addAll(((InstanceSelection) oldSelection).toList());
+			values.addAll(((InstanceSelection) newSelection).toList());
+			
+			return new DefaultInstanceSelection(new ArrayList<Object>(values));
+		}
+		else {
+			return newSelection;
+		}
+	}
+	
+	/**
+	 * Selects the preferred selection.
+	 * @param oldSelection the first selection
+	 * @param newSelection the second selection
+	 * @return the preferred selection
+	 */
+	public static ISelection preferSelection(ISelection oldSelection, ISelection newSelection) {
+		if (newSelection == null)
+			return oldSelection;
+		else if (oldSelection == null)
+			return newSelection;
+		
+		//FIXME decide on which basis?
+		
+		//XXX for now, always return the new selection
+		return newSelection;
+	}
+
+	/**
+	 * Get the selection for a given polygon on the screen.
+	 * @param poly the polygon
+	 * @return a selection or <code>null</code>
+	 */
+	public ISelection getSelection(java.awt.Polygon poly) {
+		Set<InstanceWaypoint> wps = findWaypoints(poly);
+		return createSelection(wps);
+	}
+
+	/**
+	 * Get the selection for a given rectangle on the screen.
+	 * @param rect the rectangle
+	 * @return a selection or <code>null</code>
+	 */
+	public ISelection getSelection(Rectangle rect) {
+		Set<InstanceWaypoint> wps = findWaypoints(rect);
+		return createSelection(wps);
+	}
+
+	private ISelection createSelection(Set<InstanceWaypoint> wps) {
+		if (wps != null && !wps.isEmpty()) {
+			List<InstanceReference> values = new ArrayList<InstanceReference>(wps.size());
+			for (InstanceWaypoint wp : wps) {
+				values.add(wp.getValue());
+			}
+			return new DefaultInstanceSelection(values);
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Get the selection for the given point.
+	 * @param point the point (viewport coordinates)
+	 * @return a selection or <code>null</code>
+	 */
+	public ISelection getSelection(java.awt.Point point) {
+		InstanceWaypoint wp = findWaypoint(point);
+		if (wp != null) {
+			return new DefaultInstanceSelection(wp.getValue());
+		}
+		return null;
+	}
+
+	/**
+	 * @see ISelectionListener#selectionChanged(IWorkbenchPart, ISelection)
+	 */
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		// called when the selection has changed, to update the state of the way-points
+		Refresher refresh = prepareRefresh(false);
+		
+		// collect instance references that are in the new selection
+		Set<InstanceReference> selected = collectReferences(selection);
+		
+		Set<InstanceReference> toSelect = new HashSet<InstanceReference>();
+		toSelect.addAll(selected);
+		toSelect.removeAll(lastSelected);
+		
+		// select all that previously have not been selected but are in the new selection
+		for (InstanceReference selRef : toSelect) {
+			InstanceWaypoint wp = findWaypoint(selRef);
+			if (wp != null) {
+				wp.setSelected(true, refresh);
+			}
+		}
+		
+		// unselect all that have previously been selected but are not in the new selection
+		lastSelected.removeAll(selected);
+		for (InstanceReference selRef : lastSelected) {
+			InstanceWaypoint wp =  findWaypoint(selRef);
+			if (wp != null) {
+				wp.setSelected(false, refresh);
+			}
+		}
+		
+		lastSelected = selected;
+		
+		refresh.execute();
+	}
+
+	private Set<InstanceReference> collectReferences(ISelection selection) {
+		Set<InstanceReference> selected = new HashSet<InstanceReference>();
+		if (selection instanceof IStructuredSelection) {
+			for (Object element : ((IStructuredSelection) selection).toList()) {
+				if (element instanceof InstanceReference) {
+					selected.add((InstanceReference) element);
+				}
+				else if (element instanceof Instance) {
+					Instance instance = (Instance) element;
+					InstanceReference ref = instanceService.getReference(instance, dataSet);
+					if (ref != null) {
+						selected.add(ref);
+					}
+				}
+			}
+		}
+		return selected;
+	}
+
+	/**
+	 * @see GenericWaypointPainter#clearWaypoints()
+	 */
+	@Override
+	public void clearWaypoints() {
+		super.clearWaypoints();
+		
+		lastSelected.clear();
 	}
 	
 }
