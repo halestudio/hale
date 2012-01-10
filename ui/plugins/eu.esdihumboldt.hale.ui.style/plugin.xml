@@ -15,5 +15,13 @@
             class="eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.ui.style.service.internal.StyleServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.style.service.StyleService"></service>
+      </serviceFactory>
+   </extension>
 
 </plugin>
