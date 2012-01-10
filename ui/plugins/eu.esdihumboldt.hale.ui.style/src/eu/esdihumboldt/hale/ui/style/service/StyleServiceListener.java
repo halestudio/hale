@@ -14,9 +14,8 @@ package eu.esdihumboldt.hale.ui.style.service;
 
 import org.eclipse.swt.graphics.RGB;
 
-
 /**
- * Style service listener
+ * Style service listener.
  * @author Simon Templer
  */
 public interface StyleServiceListener {

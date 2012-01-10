@@ -51,7 +51,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
-import eu.esdihumboldt.hale.ui.style.helper.StyleHelper;
+import eu.esdihumboldt.hale.ui.style.StyleHelper;
 
 /**
  * Utility methods for rendering the map
