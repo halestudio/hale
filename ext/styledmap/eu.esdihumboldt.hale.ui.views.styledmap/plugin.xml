@@ -34,7 +34,7 @@
             description="&lt;html&gt;&lt;body&gt;&lt;p&gt;&lt;font size=&quot;2&quot; face=&quot;Arial&quot;&gt;Instance selection&lt;br&gt;&lt;b&gt;Left click:&lt;/b&gt; Select an object or close a selection rectangle&lt;br&gt;&lt;b&gt;Ctrl+click:&lt;/b&gt; Select an object or close a selection rectangle and add it to the current selection&lt;br&gt;&lt;b&gt;Alt+click:&lt;/b&gt; Opens a selection rectangle (Cancel using right click)&lt;br&gt;&lt;b&gt;Double click:&lt;/b&gt; Center on this position and zoom in by one level&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;"
             icon="icons/pointer.png"
             name="Selection"
-            priority="-10">
+            priority="20">
       </tool>
    </extension>
 
