@@ -68,6 +68,8 @@ public abstract class AbstractInstancePainter extends
 	
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractInstancePainter.class);
 
+	private static final double BUFFER_VALUE = 0.0125;
+
 	private final InstanceService instanceService;
 	
 	private final DataSet dataSet;
@@ -253,7 +255,19 @@ public abstract class AbstractInstancePainter extends
 		GeoPosition pos = new GeoPosition(center.getX(), center.getY(), 
 				GenericWaypoint.COMMON_EPSG);
 		
-		//TODO buffer bounding box if any dimension empty?
+		// buffer bounding box if x or y dimension empty
+		if (bb.getMinX() == bb.getMaxX()) {
+			bb.setMinX(bb.getMinX() - BUFFER_VALUE);
+			bb.setMaxX(bb.getMaxX() + BUFFER_VALUE);
+		}
+		if (bb.getMinY() == bb.getMaxY()) {
+			bb.setMinY(bb.getMinY() - BUFFER_VALUE);
+			bb.setMaxY(bb.getMaxY() + BUFFER_VALUE);
+		}
+		
+		// set dummy z range (otherwise the RTree can't deal correctly with it)
+		bb.setMinZ(- BUFFER_VALUE);
+		bb.setMaxZ(BUFFER_VALUE);
 		
 		// create the way-point
 		//XXX in abstract method?
