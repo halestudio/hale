@@ -24,12 +24,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceSelector;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.WindowSelectionSelector;
 
 
 /**
@@ -45,13 +47,13 @@ public class SourceDataView extends AbstractDataView {
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.data.source"; //$NON-NLS-1$
 	
-//	private Image mapImage;
+	private Image mapImage;
 	
 	private Image instanceImage;
 	
 	private InstanceServiceSelector instanceSelector;
 	
-//	private MapFeatureSelector mapSelector;
+	private WindowSelectionSelector mapSelector;
 
 	/**
 	 * Default constructor
@@ -61,7 +63,7 @@ public class SourceDataView extends AbstractDataView {
 		
 		instanceSelector = (InstanceServiceSelector) getFeatureSelector();
 		// another selector based on the map selection
-//		mapSelector = new MapFeatureSelector(SchemaType.SOURCE);
+		mapSelector = new WindowSelectionSelector(DataSet.SOURCE);
 	}
 
 	/**
@@ -109,20 +111,20 @@ public class SourceDataView extends AbstractDataView {
 			
 		});
 		
-//		final Button mapButton = new Button(parent, SWT.RADIO);
-//		if (mapImage == null) {
-//			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
-//		}
-//		mapButton.setImage(mapImage);
-//		mapButton.setToolTipText(Messages.ReferenceTableView_1); //$NON-NLS-1$
-//		mapButton.addSelectionListener(new SelectionAdapter() {
-//
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				setInstanceSelector(mapSelector);
-//			}
-//			
-//		});
+		final Button mapButton = new Button(parent, SWT.RADIO);
+		if (mapImage == null) {
+			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
+		}
+		mapButton.setImage(mapImage);
+		mapButton.setToolTipText(Messages.ReferenceTableView_1); //$NON-NLS-1$
+		mapButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setInstanceSelector(mapSelector);
+			}
+			
+		});
 	}
 
 	/**
@@ -130,9 +132,9 @@ public class SourceDataView extends AbstractDataView {
 	 */
 	@Override
 	public void dispose() {
-//		if (mapImage != null) {
-//			mapImage.dispose();
-//		}
+		if (mapImage != null) {
+			mapImage.dispose();
+		}
 		if (instanceImage != null) {
 			instanceImage.dispose();
 		}

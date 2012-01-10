@@ -451,6 +451,11 @@ public abstract class AbstractInstancePainter extends
 	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		if (!(selection instanceof InstanceSelection)) {
+			// only accept instance selections
+			return;
+		}
+		
 		// called when the selection has changed, to update the state of the way-points
 		Refresher refresh = prepareRefresh(false);
 		
