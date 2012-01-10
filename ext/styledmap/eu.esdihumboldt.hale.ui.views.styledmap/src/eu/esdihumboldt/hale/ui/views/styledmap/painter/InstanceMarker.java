@@ -57,9 +57,20 @@ import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSDecode;
 @SuppressWarnings("restriction")
 public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	
+	/**
+	 * Get the geometry factory instance for internal useage.
+	 * @return the geometry factory
+	 */
+	private static GeometryFactory getGeometryFactory() {
+		if (geometryFactory == null) {
+			geometryFactory = new GeometryFactory();
+		}
+		return geometryFactory;
+	}
+	
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceMarker.class);
 	
-	private final GeometryFactory geometryFactory = new GeometryFactory();
+	private static GeometryFactory geometryFactory;
 	
 	private final int defaultPointSize = 7;
 	
@@ -281,7 +292,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		}
 		if (coordinates.length == 1) {
 			// fall back to point drawing
-			Point point = geometryFactory.createPoint(coordinates[0]);
+			Point point = getGeometryFactory().createPoint(coordinates[0]);
 			return paintPoint(point, g, crsDefinition, context, converter, zoom);
 		}
 		
