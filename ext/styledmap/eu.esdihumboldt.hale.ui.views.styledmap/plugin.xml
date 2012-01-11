@@ -37,5 +37,64 @@
             priority="20">
       </tool>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:de.fhg.igd.mapviewer.view.MapView">
+         <separator
+               name="eu.esdihumboldt.hale.ui.views.styledmap"
+               visible="true">
+         </separator>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?before=window">
+         <menu
+               label="Map">
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
+                  style="push">
+            </command>
+            <visibleWhen
+                  checkEnabled="false">
+               <or>
+                  <with
+                        variable="activePartId">
+                     <equals
+                           value="de.fhg.igd.mapviewer.view.MapView">
+                     </equals>
+                  </with>
+                  <with
+                        variable="activeWorkbenchWindow.activePerspective">
+                     <equals
+                           value="eu.esdihumboldt.hale.ui.views.styledmap">
+                     </equals>
+                  </with>
+               </or>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
+            icon="icons/navigation.png">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="eu.esdihumboldt.hale.ui.views.styledmap.handler.ZoomToAllHandler"
+            description="Zoom to the instances available in the map"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
+            name="Zoom to instances">
+      </command>
+   </extension>
 
 </plugin>
