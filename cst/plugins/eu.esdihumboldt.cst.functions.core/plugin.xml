@@ -21,6 +21,12 @@
             function="eu.esdihumboldt.hale.align.assign"
             id="eu.esdihumboldt.cst.functions.core.assign">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.core.ClassificationMapping"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.hale.align.classification"
+            id="eu.esdihumboldt.cst.functions.core.classification">
+      </propertyTransformation>
    </extension>
 
 </plugin>

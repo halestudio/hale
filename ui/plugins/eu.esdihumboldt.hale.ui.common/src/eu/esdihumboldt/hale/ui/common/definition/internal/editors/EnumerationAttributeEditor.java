@@ -45,7 +45,7 @@ public class EnumerationAttributeEditor implements AttributeEditor<String> {
 	 * @param allowedValues the collection of allowed values
 	 * @param otherValuesAllowed states if other values shall be allowed
 	 */
-	public EnumerationAttributeEditor(Composite parent, Collection<String> allowedValues, boolean otherValuesAllowed) {
+	public EnumerationAttributeEditor(Composite parent, Collection<?> allowedValues, boolean otherValuesAllowed) {
 		super();
 		
 		this.otherValuesAllowed = otherValuesAllowed;

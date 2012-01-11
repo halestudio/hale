@@ -23,7 +23,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+
 
 /**
  * Attribute input dialog
@@ -34,7 +35,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
  */
 public class AttributeInputDialog extends Dialog {
 	
-	private final AttributeDefinition definition;
+	private final PropertyDefinition definition;
 	
 	private final String message;
 	
@@ -54,7 +55,7 @@ public class AttributeInputDialog extends Dialog {
 	 * @param title the dialog title
 	 * @param message the dialog message
 	 */
-	public AttributeInputDialog(AttributeDefinition definition, Shell parentShell,
+	public AttributeInputDialog(PropertyDefinition definition, Shell parentShell,
 			String title, String message) {
 		super(parentShell);
 		
