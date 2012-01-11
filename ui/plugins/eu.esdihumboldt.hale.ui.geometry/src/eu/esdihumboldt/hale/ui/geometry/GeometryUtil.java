@@ -60,6 +60,9 @@ public abstract class GeometryUtil {
 		List<QName> path = gss.getDefaultGeometry(instance.getDefinition());
 		
 		Collection<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>();
+		if (path == null) {
+			return geometries;
+		}
 		
 		// descend path and return the geometries found
 		Queue<Group> parents = new LinkedList<Group>();
