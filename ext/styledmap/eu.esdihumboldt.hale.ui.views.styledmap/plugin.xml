@@ -60,6 +60,14 @@
                   commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
                   style="push">
             </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.views.styledmap.mapmenu.separator"
+                  visible="true">
+            </separator>
+            <dynamic
+                  class="de.fhg.igd.mapviewer.view.MapMenu"
+                  id="eu.esdihumboldt.hale.ui.views.styledmap.mapmenu">
+            </dynamic>
             <visibleWhen
                   checkEnabled="false">
                <or>
