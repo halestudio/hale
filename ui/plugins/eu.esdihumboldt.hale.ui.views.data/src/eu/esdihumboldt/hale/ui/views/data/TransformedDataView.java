@@ -62,7 +62,7 @@ public class TransformedDataView extends AbstractDataView {
 		
 		instanceSelector = new InstanceServiceSelector(SchemaSpaceID.TARGET);
 		// another selector based on the reference sample service
-		sampleSelector = (SampleTransformInstanceSelector) getFeatureSelector();
+		sampleSelector = (SampleTransformInstanceSelector) getDefaultInstanceSelector();
 		// selector base on the map selection
 		mapSelector = new WindowSelectionSelector(DataSet.TRANSFORMED);
 	}

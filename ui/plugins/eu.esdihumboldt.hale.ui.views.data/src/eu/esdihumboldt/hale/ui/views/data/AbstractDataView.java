@@ -11,10 +11,14 @@
  */
 package eu.esdihumboldt.hale.ui.views.data;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -28,12 +32,13 @@ import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension;
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
+import eu.esdihumboldt.hale.ui.util.selection.SelectionProviderFacade;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.extension.InstanceViewController;
 import eu.esdihumboldt.hale.ui.views.data.internal.extension.InstanceViewFactory;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelector;
+import eu.esdihumboldt.hale.ui.views.data.internal.filter.WindowSelectionSelector;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
@@ -44,6 +49,45 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class AbstractDataView extends PropertiesViewPart {
+
+	/**
+	 * Action for toggling if an instance selection is provided by the view.
+	 */
+	public class ToggleProvideSelectionAction extends Action {
+
+		/**
+		 * Default constructor
+		 */
+		public ToggleProvideSelectionAction() {
+			super("", AS_CHECK_BOX);
+			
+			updateText();
+			setImageDescriptor(DataViewPlugin.getImageDescriptor("icons/map.gif"));
+			setChecked(isProvideInstanceSelection());
+			
+			addPropertyChangeListener(new IPropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent event) {
+					if (event.getProperty().equals(CHECKED)) {
+						setProvideInstanceSelection(
+								(Boolean) event.getNewValue());
+						updateText();
+					}
+				}
+			});
+		}
+		
+		/**
+		 * Update the action text
+		 */
+		private void updateText() {
+			setToolTipText((isProvideInstanceSelection())
+					?("Disable providing an application instance selection (e.g. for the map)")
+					:("Enable providing an instance selection for the application, e.g. for display in the map"));
+		}
+
+	}
 
 	/**
 	 * The instance viewer
@@ -64,6 +108,12 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 
 	private Iterable<Instance> lastSelection;
 	
+	private final SelectionProviderFacade selectionFacade = new SelectionProviderFacade();
+	
+	private boolean provideInstanceSelection = false;
+
+	private final InstanceSelector defaultInstanceSelector;
+	
 	/**
 	 * Creates a table view
 	 * 
@@ -75,10 +125,18 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 			String controllerPreferenceKey) {
 		super();
 		
-		this.instanceSelector = instanceSelector;
+		this.defaultInstanceSelector = instanceSelector;
 		this.controller = new InstanceViewController(
 				DataViewPlugin.getDefault().getPreferenceStore(), 
 				controllerPreferenceKey);
+	}
+	
+	/**
+	 * Get the default instance selector.
+	 * @return the default instance selector
+	 */
+	public InstanceSelector getDefaultInstanceSelector() {
+		return defaultInstanceSelector;
 	}
 
 	/**
@@ -130,7 +188,7 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		fillActionBars();
 		
 		// selector
-		setInstanceSelector(instanceSelector);
+		setInstanceSelector(defaultInstanceSelector);
 		
 		// tree viewer
 		updateViewer(controller.getCurrent());
@@ -143,6 +201,8 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 				updateViewer(current);
 			}
 		});
+		
+		getSite().setSelectionProvider(selectionFacade);
 	}
 
 	/**
@@ -158,6 +218,8 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		
 		IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
 		toolbar.add(viewSelector);
+		toolbar.add(new Separator());
+		toolbar.add(new ToggleProvideSelectionAction());
 		
 		IMenuManager menu = getViewSite().getActionBars().getMenuManager();
 		menu.add(viewSelector);
@@ -169,8 +231,6 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	 */
 	private void updateViewer(InstanceViewer viewer) {
 		if (this.viewer != null) {
-			// clear selection provider
-			getSite().setSelectionProvider(null);
 			// dispose old viewer
 			this.viewer.getControl().dispose();
 		}
@@ -182,11 +242,27 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		
 		viewerComposite.layout(true, true);
 		
-		// setup selection provider and menu
-		getSite().setSelectionProvider(viewer.getViewer());
-		new ViewerMenu(getSite(), viewer.getViewer());
-		
 		this.viewer = viewer;
+		
+		// setup selection provider
+		updateSelectionProvider();
+//		new ViewerMenu(getSite(), viewer.getViewer());
+	}
+
+	/**
+	 * Update the selection provider when either the instance viewer or
+	 * instance selector have changed.
+	 */
+	protected void updateSelectionProvider() {
+		if (viewer == null 
+				|| !provideInstanceSelection
+				|| getInstanceSelector() instanceof WindowSelectionSelector) {
+			selectionFacade.setSelectionProvider(null);
+		}
+		else {
+			selectionFacade.setSelectionProvider(
+					viewer.getInstanceSelectionProvider());//.getViewer());
+		}
 	}
 
 	/**
@@ -218,9 +294,9 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	}
 
 	/**
-	 * @return the featureSelector
+	 * @return the instance selector
 	 */
-	public InstanceSelector getFeatureSelector() {
+	public InstanceSelector getInstanceSelector() {
 		return instanceSelector;
 	}
 
@@ -228,6 +304,10 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	 * @param instanceSelector the instance selector to set
 	 */
 	public void setInstanceSelector(InstanceSelector instanceSelector) {
+		if (this.instanceSelector == instanceSelector) return;
+		
+		selectionFacade.setSelectionProvider(null); // disable selection provider
+		
 		this.instanceSelector = instanceSelector;
 		
 		// remove old control
@@ -238,6 +318,8 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		// create new control
 		selectorControl = instanceSelector.createControl(selectorComposite);
 		selectorControl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		
+		updateSelectionProvider();
 		
 		// re-layout
 		selectorComposite.getParent().getParent().layout(true, true);
@@ -274,6 +356,22 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		if (selectorControl != null) {
 			selectorControl.dispose();
 		}
+	}
+
+	/**
+	 * @return the provideInstanceSelection
+	 */
+	private boolean isProvideInstanceSelection() {
+		return provideInstanceSelection;
+	}
+
+	/**
+	 * @param provideInstanceSelection the provideInstanceSelection to set
+	 */
+	private void setProvideInstanceSelection(boolean provideInstanceSelection) {
+		this.provideInstanceSelection = provideInstanceSelection;
+		
+		updateSelectionProvider();
 	}
 
 }

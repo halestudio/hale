@@ -51,6 +51,8 @@ public class SelectionProviderFacade
 	 * @param prov the selection provider
 	 */
 	public void setSelectionProvider(ISelectionProvider prov) {
+		if (prov == _decoratee) return;
+		
 		if (_decoratee != null) {
 			_decoratee.removeSelectionChangedListener(selectionListener);
 		}
@@ -59,6 +61,9 @@ public class SelectionProviderFacade
 		
 		if (_decoratee != null) {
 			_decoratee.addSelectionChangedListener(selectionListener);
+			
+			// force update after change
+			doSelectionChanged();
 		}
 	}
 	

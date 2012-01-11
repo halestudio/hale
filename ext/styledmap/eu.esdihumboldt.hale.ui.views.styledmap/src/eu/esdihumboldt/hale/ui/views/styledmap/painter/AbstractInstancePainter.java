@@ -147,12 +147,10 @@ public abstract class AbstractInstancePainter extends
 	public void update(ISelection selection) {
 		clearWaypoints();
 		
-		selectionChanged(null, selection);
-		
 		//XXX only mappable type instances for source?!
 		InstanceCollection instances = instanceService.getInstances(dataSet);
 		
-		Set<InstanceReference> selected = collectReferences(selection);
+		lastSelected = collectReferences(selection);
 		
 		// add way-points for instances 
 		ResourceIterator<Instance> it = instances.iterator();
@@ -164,7 +162,7 @@ public abstract class AbstractInstancePainter extends
 				InstanceWaypoint wp = createWaypoint(instance, instanceService);
 				
 				if (wp != null) {
-					if (selected.contains(wp.getValue())) {
+					if (lastSelected.contains(wp.getValue())) {
 						wp.setSelected(true, null); // refresh can be ignored because it's done for addWaypoint
 					}
 					addWaypoint(wp, refresh);
