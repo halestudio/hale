@@ -26,6 +26,13 @@
             priority="5"
             showInMiniMap="false">
       </painter>
+      <painter
+            class="eu.esdihumboldt.hale.ui.views.styledmap.painter.TransformedInstancePainter"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.transformed"
+            name="Transformed data"
+            priority="6"
+            showInMiniMap="false">
+      </painter>
    </extension>
    <extension
          point="de.fhg.igd.mapviewer.MapTool">
