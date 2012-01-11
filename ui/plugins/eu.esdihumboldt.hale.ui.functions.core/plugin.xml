@@ -15,6 +15,13 @@
             function="eu.esdihumboldt.hale.align.assign"
             id="eu.esdihumboldt.hale.align.assign.generic">
       </propertyWizard>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.ClassificationMappingParameterPage"
+            function="eu.esdihumboldt.hale.align.classification"
+            id="eu.esdihumboldt.hale.ui.functions.core.classification">
+         <parameter
+               name="classificationMapping">
+         </parameter>
+      </propertyParameterPage>
    </extension>
-
 </plugin>

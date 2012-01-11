@@ -14,14 +14,14 @@ package eu.esdihumboldt.hale.ui.common.definition;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
- * Factory for editors based on {@link AttributeDefinition}s
- *
+ * Factory for editors based on {@link PropertyDefinition}s
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface AttributeEditorFactory {
 
@@ -32,8 +32,8 @@ public interface AttributeEditorFactory {
 	 * @param attribute the attribute definition
 	 * 
 	 * @return the attribute editor or <code>null</code> if no editor could be
-	 *   created for the attribute
+	 *         created for the attribute
 	 */
-	public AttributeEditor<?> createEditor(Composite parent, AttributeDefinition attribute);
-	
+	public AttributeEditor<?> createEditor(Composite parent, PropertyDefinition attribute);
+
 }

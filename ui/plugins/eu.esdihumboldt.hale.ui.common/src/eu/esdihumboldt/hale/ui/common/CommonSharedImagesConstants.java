@@ -63,5 +63,15 @@ public interface CommonSharedImagesConstants {
 	 * Key for abstract type image
 	 */
 	public static final String IMG_DEFINITION_ABSTRACT_TYPE = "IMG_DEFINITION_ABSTRACT_TYPE";
+	
+	/**
+	 * Key for add image
+	 */
+	public static final String IMG_ADD = "IMG_ADD";
+	
+	/**
+	 * Key for remove image
+	 */
+	public static final String IMG_REMOVE = "IMG_REMOVE";
 
 }

@@ -73,6 +73,31 @@
                name="value">
          </functionParameter>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.hale.align.general"
+            description="Map classifications"
+            identifier="eu.esdihumboldt.hale.align.classification"
+            name="Classification">
+         <sourceProperties>
+            <property
+                  description="The source property to be mapped to a property in the target schema"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </sourceProperties>
+         <targetProperties>
+            <property
+                  description="The target property that corresponds to the source property"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+         <functionParameter
+               maxOccurrence="*"
+               minOccurrence="1"
+               name="classificationMapping">
+         </functionParameter>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">
