@@ -13,16 +13,15 @@
 package eu.esdihumboldt.hale.ui.common.definition.internal;
 
 import java.net.URI;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Collection;
 
 import org.eclipse.swt.widgets.Composite;
-import org.opengis.feature.type.AttributeType;
-import org.opengis.feature.type.Name;
 
-import eu.esdihumboldt.hale.schemaprovider.EnumAttributeType;
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.internal.editors.BooleanAttributeEditor;
@@ -43,12 +42,12 @@ import eu.esdihumboldt.hale.ui.common.definition.internal.editors.URIAttributeEd
 public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 
 	/**
-	 * @see AttributeEditorFactory#createEditor(Composite, AttributeDefinition)
+	 * @see AttributeEditorFactory#createEditor(Composite, PropertyDefinition)
 	 */
 	@Override
 	public AttributeEditor<?> createEditor(Composite parent,
-			AttributeDefinition attribute) {
-		TypeDefinition attributeType = attribute.getAttributeType();
+			PropertyDefinition attribute) {
+		TypeDefinition attributeType = attribute.getPropertyType();
 		
 		// Code type
 		//XXX would introduce cycle, should be solved through extension point
@@ -63,19 +62,19 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 //			return null;
 //		}
 		
-		AttributeType type = attributeType.getType(null);
-		Class<?> binding = type.getBinding();
+		//TODO honor collection binding / ElementType
+		Binding typeBinding = attributeType.getConstraint(Binding.class);
+		Class<?> binding = typeBinding.getBinding();
 		
 		if (binding.equals(URI.class)) {
 			// URI
 			return new URIAttributeEditor(parent);
 		}
-		else if (type instanceof EnumAttributeType) {
+		else if (attributeType.getConstraint(Enumeration.class).getValues() != null) {
 			// enumeration
-			EnumAttributeType enumType = (EnumAttributeType) type;
-			Set<String> values = enumType.getAllowedValues();
+			Collection<?> values = attributeType.getConstraint(Enumeration.class).getValues();
 			
-			return new EnumerationAttributeEditor(parent, new TreeSet<String>(values), enumType.otherValuesAllowed());
+			return new EnumerationAttributeEditor(parent, values, attributeType.getConstraint(Enumeration.class).isAllowOthers());
 		}
 		else if (Boolean.class.isAssignableFrom(binding)) {
 			// boolean
@@ -104,7 +103,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		}
 		//TODO other editors
 		
-		if (attributeType.isComplexType()) {
+		if (!attributeType.getConstraint(HasValueFlag.class).isEnabled()) {
 			return null;
 		}
 		else {
@@ -113,25 +112,25 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		}
 	}
 
-	/**
-	 * Determines if the given type definition represents a code type
-	 * 
-	 * @param type the type definition
-	 * 
-	 * @return if the type represents a code type
-	 */
-	public static boolean isCodeType(TypeDefinition type) {
-		while (type != null) {
-			Name typeName = type.getName();
-			//TODO improve check for code type
-			if (typeName.getLocalPart().equals("CodeType") && typeName.getNamespaceURI().toLowerCase().contains("gml")) { //$NON-NLS-1$ //$NON-NLS-2$
-				return true;
-			}
-			
-			type = type.getSuperType();
-		}
-		
-		return false;
-	}
+//	/**
+//	 * Determines if the given type definition represents a code type
+//	 * 
+//	 * @param type the type definition
+//	 * 
+//	 * @return if the type represents a code type
+//	 */
+//	public static boolean isCodeType(TypeDefinition type) {
+//		while (type != null) {
+//			Name typeName = type.getName();
+//			//TODO improve check for code type
+//			if (typeName.getLocalPart().equals("CodeType") && typeName.getNamespaceURI().toLowerCase().contains("gml")) { //$NON-NLS-1$ //$NON-NLS-2$
+//				return true;
+//			}
+//			
+//			type = type.getSuperType();
+//		}
+//		
+//		return false;
+//	}
 
 }

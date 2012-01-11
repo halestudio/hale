@@ -296,4 +296,13 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 
 		return pair;
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		removeImage.dispose();
+		super.dispose();
+	}
 }

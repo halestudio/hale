@@ -260,6 +260,8 @@ public class OGroup implements MutableGroup {
 	 * @return the converted object
 	 */
 	private Object convertInstance(Object value) {
+		if (value == null) 
+			return null;
 		if (value instanceof OGroup) {
 			// special case: if possible use the internal document for OGroup/OInstance
 			return ((OGroup) value).document;
