@@ -38,6 +38,7 @@ import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
+import de.fhg.igd.mapviewer.marker.Marker;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypointPainter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -263,10 +264,19 @@ public abstract class AbstractInstancePainter extends
 		//XXX in abstract method?
 		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries);
 		
-		//XXX in abstract method?
-		wp.setMarker(new InstanceMarker()); // each way-point must have its own marker, as the marker stores the marker areas
+		// each way-point must have its own marker, as the marker stores the marker areas
+		wp.setMarker(createMarker());
 		
 		return wp;
+	}
+
+	/**
+	 * Create a new marker for a way-point.
+	 * @return the marker
+	 */
+	private Marker<? super InstanceWaypoint> createMarker() {
+//		return new InstanceMarker();
+		return new StyledInstanceMarker();
 	}
 
 	/**
