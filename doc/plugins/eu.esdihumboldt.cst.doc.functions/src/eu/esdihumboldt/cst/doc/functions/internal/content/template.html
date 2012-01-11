@@ -6,15 +6,14 @@
 </head>
 <body>
 
-<h2>$function.displayName</h2>
+<h2><img src="${function.id}/icon" /> $function.displayName</h2>
 
 <p>
-<b>Icon:</b> <img alt="" src="PLUGINS_ROOT/$url"></img> <br />
-<b>Function Name:</b> $function.displayName <br />
+$function.description<br />
+<br />
 <b>Function ID:</b> $function.id <br />
-<b>Description:</b> $function.description<br />
 #if($function.categoryId)
-<b>Category:</b> $!function.categoryId<br />
+<b>Category:</b> $!category.Name <br />
 #end
 <br />
 <img src="${function.id}.png" />
@@ -22,17 +21,48 @@
 #if( $function.definedParameters.size() > 0 )
 <b>Parameter:</b> <br />
 <ul>#foreach ($param in $function.definedParameters.iterator())
-		<li>$param.getDisplayName()</li>
+		<li>$!param.getDisplayName()</li>
 		<ul>
 		#if($param.getDescription())
 			<li><u>Description:</u> $!param.getDescription()</li>
 		#end
-			<li><u>Occurrence:</u> $param.getMinOccurrence() ... $param.getMaxOccurrence()</li>
+			<li><u>Occurrence:</u> $param.getMinOccurrence()..$param.getMaxOccurrence()</li>
+		</ul>
+	#end
+</ul>
+#end
+#if( $function.Source.size() > 0 )
+<b>Source:</b> <br />
+<ul>#foreach ($param in $function.Source.iterator())
+		<li>$!param.getDisplayName()</li>
+		<ul>
+		#if($param.getDescription())
+			<li><u>Description:</u> $!param.getDescription()</li>
+		#end
+			<li><u>Occurrence:</u> $param.getMinOccurrence()..#if($param.getMaxOccurrence() != -1)$param.getMaxOccurrence()
+																#elseif($param.getMaxOccurrence() == -1)n
+																#end</li>
+		</ul>
+	#end
+</ul>
+#end
+#if( $function.Target.size() > 0 )
+<b>Target:</b> <br />
+<ul>#foreach ($param in $function.Target.iterator())
+		<li>$!param.getDisplayName()</li>
+		<ul>
+		#if($param.getDescription())
+			<li><u>Description:</u> $!param.getDescription()</li>
+		#end
+			<li><u>Occurrence:</u> $param.getMinOccurrence()..#if($param.getMaxOccurrence() != -1)$param.getMaxOccurrence()
+																#elseif($param.getMaxOccurrence() == -1)n
+																#end</li>
 		</ul>
 	#end
 </ul>
 #end
 </p>
+
 <include path="$include"/>
 </body>
 </html>

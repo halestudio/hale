@@ -41,6 +41,8 @@ import com.google.common.io.Files;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
+import eu.esdihumboldt.hale.common.align.extension.category.Category;
+import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.common.graph.content.SourceTargetContentProvider;
@@ -90,6 +92,15 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
+			// /icon ending
+			if (func_id.endsWith("/icon")) {
+				func_id = func_id.substring(0, func_id.lastIndexOf('/'));
+				try {
+					return getIconContent(func_id);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else {
 				try {
 					return getFunctionContent(func_id);
@@ -123,32 +134,24 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			VelocityContext context = new VelocityContext();
 
 			context.put("function", function);
-
-			// creating the full IconURL
-			// ------ STARTS HERE ------
-			URL url = function.getIconURL();
-
-			// "/icons/ICONNAME.png"
-			String path = url.getPath();
-
-			// "eu.esdihumboldt.cst.functions.TYPE"
-			String bundle = function.getDefiningBundle();
-
-			StringBuffer sb = new StringBuffer();
-			sb.append("PLUGINS_ROOT/");
-			sb.append(bundle);
-			sb.append(path);
-
-			// PLUGINS_ROOT/eu.esdihumboldt.cst.functions.TYPE/icons/ICONNAME.png
-			String final_url = sb.toString();
-
-			context.put("url", final_url);
-			// ------ ENDS HERE ------
+			
+			if (function.getCategoryId() != null) {
+				String categoryId = function.getCategoryId();
+				
+				Category category = (CategoryExtension.getInstance().get(categoryId));
+				
+//				String category = categoryId.substring(categoryId
+//						.lastIndexOf(".") + 1);
+//
+//				category = capitalize(category);
+				context.put("category", category);
+			}
 
 			// creating path for the file to be included
 			URL help_url = function.getHelpURL();
 			if (help_url != null) {
 				String help_path = help_url.getPath();
+				String bundle = function.getDefiningBundle();
 
 				StringBuffer sb_include = new StringBuffer();
 				sb_include.append(bundle);
@@ -258,6 +261,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 					};
 
 					Graph graph = off_graph.getGraph();
+					@SuppressWarnings("unchecked")
 					List<GraphNode> list = graph.getNodes();
 					int height = 0;
 					int width = 0;
@@ -304,6 +308,20 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			return new FileInputStream(_functionFile);
 		}
 
+		return null;
+	}
+	
+	private InputStream getIconContent(String func_id) {
+		AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
+
+		URL url = function.getIconURL();
+		
+		try {
+			return url.openStream();
+		} catch (IOException e) {
+			log.warn("Icon loading failed.");
+			e.printStackTrace();
+		}
 		return null;
 	}
 
