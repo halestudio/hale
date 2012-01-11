@@ -48,5 +48,11 @@ public interface Instance extends Group {
 	 * @return the instance value if it is defined, otherwise <code>null</code>
 	 */
 	public Object getValue();
+	
+	/**
+	 * Get the data set the instance is associated to.
+	 * @return the instance data set, <code>null</code> if not set
+	 */
+	public DataSet getDataSet();
 
 }

@@ -29,6 +29,12 @@ public interface MutableInstance extends Instance, MutableGroup {
 	 */
 	public void setValue(Object value);
 	
+	/**
+	 * Set the data set the instance is associated to.
+	 * @param dataSet the instance data set
+	 */
+	public void setDataSet(DataSet dataSet);
+	
 	//XXX more manipulation needed? e.g. for transformation?
 
 }

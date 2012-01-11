@@ -441,7 +441,9 @@ public class OGroup implements MutableGroup {
 		if (value instanceof ODocument) {
 			ChildDefinition<?> child = definition.getChild(propertyName);
 			if (child.asProperty() != null) {
-				return new OInstance((ODocument) value, child.asProperty().getPropertyType());
+				return new OInstance((ODocument) value, 
+						child.asProperty().getPropertyType(), 
+						null); // no data set necessary for nested instances
 			}
 			else if (child.asGroup() != null) {
 				return new OGroup((ODocument) value, child.asGroup());

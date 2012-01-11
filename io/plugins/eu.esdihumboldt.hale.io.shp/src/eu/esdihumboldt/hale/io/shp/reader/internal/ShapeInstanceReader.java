@@ -121,7 +121,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 	 * @return the instance or <code>null</code> if it couldn't be created
 	 */
 	private Instance createInstance(TypeDefinition type, SimpleFeature feature) {
-		MutableInstance instance = new OInstance(type);
+		MutableInstance instance = new OInstance(type, null);
 		
 		for (Property property : feature.getProperties()) {
 			Object value = property.getValue();

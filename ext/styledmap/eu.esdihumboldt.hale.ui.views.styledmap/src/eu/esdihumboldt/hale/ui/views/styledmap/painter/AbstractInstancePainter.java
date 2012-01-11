@@ -40,6 +40,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypointPainter;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -47,7 +48,6 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.ui.geometry.GeometryUtil;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
-import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
@@ -185,7 +185,7 @@ public abstract class AbstractInstancePainter extends
 	protected InstanceWaypoint createWaypoint(Instance instance,
 			InstanceService instanceService) {
 		// retrieve instance reference
-		InstanceReference ref = instanceService.getReference(instance, getDataSet());
+		InstanceReference ref = instanceService.getReference(instance);//, getDataSet());
 		
 		BoundingBox bb = null;
 		List<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>(GeometryUtil.getDefaultGeometries(instance));
@@ -492,7 +492,7 @@ public abstract class AbstractInstancePainter extends
 				}
 				else if (element instanceof Instance) {
 					Instance instance = (Instance) element;
-					InstanceReference ref = instanceService.getReference(instance, dataSet);
+					InstanceReference ref = instanceService.getReference(instance);//, dataSet);
 					if (ref != null) {
 						selected.add(ref);
 					}

@@ -16,8 +16,8 @@ import net.jcip.annotations.Immutable;
 
 import com.orientechnologies.orient.core.id.ORID;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 
 /**
@@ -50,9 +50,7 @@ public class OrientInstanceReference implements InstanceReference {
 		return id;
 	}
 
-	/**
-	 * @return the dataSet
-	 */
+	@Override
 	public DataSet getDataSet() {
 		return dataSet;
 	}

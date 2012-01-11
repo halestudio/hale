@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.service.instance;
 
 import java.util.Set;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -58,10 +59,9 @@ public interface InstanceService {
 	 * Get a reference to an instance that can be used to retrieve the
 	 * given instance using {@link #getInstance(InstanceReference)}.
 	 * @param instance the instance, must have originated from this service
-	 * @param dataSet the data set the instance originates from
 	 * @return the reference
 	 */
-	public InstanceReference getReference(Instance instance, DataSet dataSet);
+	public InstanceReference getReference(Instance instance);
 	
 	/**
 	 * Get the instance referenced by the given reference.

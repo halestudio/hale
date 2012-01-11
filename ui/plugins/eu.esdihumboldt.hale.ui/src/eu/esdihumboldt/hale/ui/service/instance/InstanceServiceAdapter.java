@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.service.instance;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
+
 
 /**
  * Instance service listener adapter

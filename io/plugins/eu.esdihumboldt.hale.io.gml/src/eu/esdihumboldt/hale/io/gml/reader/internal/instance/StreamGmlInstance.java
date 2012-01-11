@@ -63,7 +63,7 @@ public abstract class StreamGmlInstance {
 			TypeDefinition type) throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 		
-		MutableInstance instance = new OInstance(type);
+		MutableInstance instance = new OInstance(type, null); // not necessary to associate data set
 		
 		// instance properties
 		parseProperties(reader, instance);
