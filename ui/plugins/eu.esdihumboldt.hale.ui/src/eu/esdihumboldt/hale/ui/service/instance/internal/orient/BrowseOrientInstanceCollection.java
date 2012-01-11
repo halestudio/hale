@@ -24,6 +24,7 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.iterator.ORecordIteratorClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -114,7 +115,7 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		public Instance next() {
 			if (hasNext()) {
 				ODocument doc = currentIterator.next();
-				Instance instance = new OInstance(doc, getCurrentType());
+				Instance instance = new OInstance(doc, getCurrentType(), dataSet);
 				handle.addReference(instance);
 				return instance;
 			}
@@ -154,16 +155,20 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	
 	private final TypeIndex types;
 	
+	private final DataSet dataSet;
+	
 	/**
 	 * Create an instance collection based on the given database
 	 * @param database the database
 	 * @param types the type index
+	 * @param dataSet the data set the instances are associated to
 	 */
 	public BrowseOrientInstanceCollection(LocalOrientDB database,
-			TypeIndex types) {
+			TypeIndex types, DataSet dataSet) {
 		super();
 		this.database = database;
 		this.types = types;
+		this.dataSet = dataSet;
 	}
 
 	/**

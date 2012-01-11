@@ -92,7 +92,7 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 		}
 
 		while ((nextLine = reader.readNext()) != null) {
-			MutableInstance instance = new OInstance(type);
+			MutableInstance instance = new OInstance(type, null);
 			line++;
 			// nextLine[] is now an array of all values in the line (starting in
 			// second line if skipFirst == true)

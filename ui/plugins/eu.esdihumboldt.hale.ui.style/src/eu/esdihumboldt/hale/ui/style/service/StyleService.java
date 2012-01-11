@@ -16,8 +16,8 @@ import java.net.URL;
 import org.eclipse.swt.graphics.RGB;
 import org.geotools.styling.Style;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 
 /**
  * The {@link StyleService} provides access to the Styles currently loaded.

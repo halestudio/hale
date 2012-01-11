@@ -18,6 +18,7 @@ import java.util.Set;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -34,6 +35,11 @@ public class OInstance extends OGroup implements MutableInstance {
 	 * Name for the special field for an instance value
 	 */
 	public static final String FIELD_VALUE = "___value___";
+	
+	/**
+	 * The data set the instance is associated to. This value is not persisted.
+	 */
+	private DataSet dataSet;
 
 	/**
 	 * The set of special field names, e.g. for the instance value
@@ -45,21 +51,25 @@ public class OInstance extends OGroup implements MutableInstance {
 	
 	/**
 	 * Creates an empty instance associated with the given type.
-	 * 
 	 * @param typeDef the definition of the instance's type 
+	 * @param dataSet the data set the instance is associated to
 	 */
-	public OInstance(TypeDefinition typeDef) {
+	public OInstance(TypeDefinition typeDef, DataSet dataSet) {
 		super(typeDef);
+		
+		this.dataSet = dataSet;
 	}
 	
 	/**
-	 * Creates an instance based on the given document
-	 * 
+	 * Creates an instance based on the given document.
 	 * @param document the document
 	 * @param typeDef the definition of the instance's type
+	 * @param dataSet the data set the instance is associated to 
 	 */
-	public OInstance(ODocument document, TypeDefinition typeDef) {
+	public OInstance(ODocument document, TypeDefinition typeDef, DataSet dataSet) {
 		super(document, typeDef);
+		
+		this.dataSet = dataSet;
 	}
 	
 	/**
@@ -73,6 +83,7 @@ public class OInstance extends OGroup implements MutableInstance {
 		super(org);
 		
 		setValue(org.getValue());
+		setDataSet(org.getDataSet());
 	}
 
 	/**
@@ -113,6 +124,16 @@ public class OInstance extends OGroup implements MutableInstance {
 	@Override
 	public TypeDefinition getDefinition() {
 		return (TypeDefinition) super.getDefinition();
+	}
+
+	@Override
+	public DataSet getDataSet() {
+		return dataSet;
+	}
+
+	@Override
+	public void setDataSet(DataSet dataSet) {
+		this.dataSet = dataSet;
 	}
 
 }

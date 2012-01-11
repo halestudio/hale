@@ -12,24 +12,24 @@ f * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
 
 package eu.esdihumboldt.hale.common.filter;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.net.URI;
+
 import javax.xml.namespace.QName;
+
 import org.geotools.filter.text.cql2.CQLException;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.convert.ConversionService;
+
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.OsgiUtils.Condition;
-
-
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -115,9 +115,9 @@ public class FilterTest {
 		autoDef.addChild(new DefaultPropertyDefinition(new QName("Name"), autoDef, stringType));
 		autoDef.addChild(new DefaultPropertyDefinition(new QName("Besitzer"), autoDef, personDef));
 		
-		MutableInstance auto = new OInstance(autoDef);
+		MutableInstance auto = new OInstance(autoDef, null);
 		auto.addProperty(new QName("Name"), "Mein Porsche");
-		MutableInstance ich = new OInstance(personDef);
+		MutableInstance ich = new OInstance(personDef, null);
 		ich.addProperty(new QName("Name"), "Ich");
 		auto.addProperty(new QName("Besitzer"), ich);
 		
@@ -373,9 +373,9 @@ public class FilterTest {
 		autoDef.addChild(new DefaultPropertyDefinition(new QName("Name"), autoDef, stringType));
 		autoDef.addChild(new DefaultPropertyDefinition(new QName("Besitzer"), autoDef, personDef));
 		
-		MutableInstance auto = new OInstance(autoDef);
+		MutableInstance auto = new OInstance(autoDef, null);
 		auto.addProperty(new QName("Name"), "Mein Porsche");
-		MutableInstance ich = new OInstance(personDef);
+		MutableInstance ich = new OInstance(personDef, null);
 		ich.addProperty(new QName("Name"), "Ich");
 		auto.addProperty(new QName("Besitzer"), ich);
 		

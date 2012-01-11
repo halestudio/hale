@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.ui.views.styledmap.painter;
 
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.ui.service.instance.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**

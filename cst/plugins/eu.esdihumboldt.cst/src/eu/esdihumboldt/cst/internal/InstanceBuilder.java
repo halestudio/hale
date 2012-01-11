@@ -66,7 +66,7 @@ public class InstanceBuilder {
 			group = new OGroup(node.getDefinition().asGroup());
 		}
 		else if (node.getDefinition().asProperty() != null) {
-			group = new OInstance(node.getDefinition().asProperty().getPropertyType());
+			group = new OInstance(node.getDefinition().asProperty().getPropertyType(), null);
 		}
 		else {
 			throw new IllegalStateException("Illegal child definition");

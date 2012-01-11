@@ -38,6 +38,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
@@ -46,7 +47,6 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
-import eu.esdihumboldt.hale.ui.service.instance.DataSet;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
@@ -119,9 +119,11 @@ public class OrientInstanceService extends AbstractInstanceService {
 	public InstanceCollection getInstances(DataSet dataset) {
 		switch (dataset) {
 		case SOURCE:
-			return new BrowseOrientInstanceCollection(source, schemaService.getSchemas(SchemaSpaceID.SOURCE));
+			return new BrowseOrientInstanceCollection(source, 
+					schemaService.getSchemas(SchemaSpaceID.SOURCE), DataSet.SOURCE);
 		case TRANSFORMED:
-			return new BrowseOrientInstanceCollection(transformed, schemaService.getSchemas(SchemaSpaceID.TARGET));
+			return new BrowseOrientInstanceCollection(transformed, 
+					schemaService.getSchemas(SchemaSpaceID.TARGET), DataSet.TRANSFORMED);
 		}
 		
 		throw new IllegalArgumentException("Illegal data set requested: " + dataset);
@@ -225,14 +227,18 @@ public class OrientInstanceService extends AbstractInstanceService {
 	}
 
 	/**
-	 * @see InstanceService#getReference(Instance, DataSet)
+	 * @see InstanceService#getReference(Instance)
 	 */
 	@Override
-	public InstanceReference getReference(Instance instance, DataSet dataSet) {
+	public InstanceReference getReference(Instance instance) {
+		if (instance.getDataSet() == null) {
+			throw new IllegalArgumentException("Instance data set may not be null for retrieving reference");
+		}
+		
 		OInstance inst = (OInstance) instance;
 		ORID id = inst.getDocument().getIdentity();
 		
-		return new OrientInstanceReference(id, dataSet, inst.getDefinition());
+		return new OrientInstanceReference(id, instance.getDataSet(), inst.getDefinition());
 	}
 
 
@@ -251,7 +257,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 		try {
 			ODocument document = db.getDatabase().load(ref.getId());
 			if (document != null) {
-				OInstance instance = new OInstance(document, ref.getTypeDefinition());
+				OInstance instance = new OInstance(document, 
+						ref.getTypeDefinition(), ref.getDataSet());
 				handle.addReference(instance);
 				return instance;
 			}

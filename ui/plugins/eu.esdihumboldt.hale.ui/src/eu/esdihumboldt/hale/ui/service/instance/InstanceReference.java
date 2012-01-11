@@ -12,12 +12,20 @@
 
 package eu.esdihumboldt.hale.ui.service.instance;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
+
 /**
- * Represents a reference to an instance
+ * Represents a reference to an instance. Implementations must implement
+ * {@link #hashCode()} and {@link #equals(Object)} to uniquely identify
+ * an instance.
  * @author Simon Templer
  */
 public interface InstanceReference {
 	
-	// marker interface
+	/**
+	 * Get the data set the instance is associated to.
+	 * @return the instance data set, <code>null</code> if not set
+	 */
+	public DataSet getDataSet();
 	
 }

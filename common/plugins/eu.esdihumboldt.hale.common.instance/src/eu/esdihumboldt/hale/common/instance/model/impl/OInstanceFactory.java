@@ -27,7 +27,7 @@ public class OInstanceFactory implements InstanceFactory {
 	 */
 	@Override
 	public MutableInstance createInstance(TypeDefinition type) {
-		return new OInstance(type);
+		return new OInstance(type, null); // initially no data set associated
 	}
 
 }

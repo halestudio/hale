@@ -13,7 +13,7 @@ package eu.esdihumboldt.hale.ui.style;
 
 import org.eclipse.jface.action.ActionContributionItem;
 
-import eu.esdihumboldt.hale.ui.service.instance.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
 import eu.esdihumboldt.hale.ui.util.action.DropdownAction;
