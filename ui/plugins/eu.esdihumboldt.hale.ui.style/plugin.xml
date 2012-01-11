@@ -23,5 +23,57 @@
                serviceClass="eu.esdihumboldt.hale.ui.style.service.StyleService"></service>
       </serviceFactory>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="eu.esdihumboldt.hale.ui.style.typestyle"
+            name="Change style">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eu.esdihumboldt.hale.ui.style.TypeStyleHandler"
+            commandId="eu.esdihumboldt.hale.ui.style.typestyle">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <or>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+                     </instanceof>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
+                     </instanceof>
+                  </or>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.style.typestyle"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="eu.esdihumboldt.hale.ui.style.typestyle"
+            icon="icons/styles.gif">
+      </image>
+   </extension>
 
 </plugin>
