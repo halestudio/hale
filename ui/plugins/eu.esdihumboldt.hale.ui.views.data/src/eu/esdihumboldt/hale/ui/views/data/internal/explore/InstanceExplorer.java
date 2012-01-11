@@ -166,7 +166,9 @@ public class InstanceExplorer implements InstanceViewer {
 			}
 		}
 		
+		// both layout steps needed
 		selectorComposite.layout();
+		selectorComposite.getParent().layout();
 		
 		updateSelection();
 	}
