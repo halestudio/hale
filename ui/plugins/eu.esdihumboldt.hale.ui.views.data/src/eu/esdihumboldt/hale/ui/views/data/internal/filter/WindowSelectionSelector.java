@@ -50,6 +50,7 @@ import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
+import eu.esdihumboldt.hale.ui.views.data.AbstractDataView;
 
 /**
  * Instance selector retrieving values from the selection service.
@@ -110,6 +111,7 @@ public class WindowSelectionSelector implements InstanceSelector {
 			ss.addPostSelectionListener(this);
 			
 			lastSelection = ss.getSelection();
+			
 			if (!(lastSelection instanceof InstanceSelection)) {
 				// try to get instance selection from tracker
 				InstanceSelection selection = SelectionTrackerUtil.getTracker().getSelection(InstanceSelection.class);
@@ -145,7 +147,8 @@ public class WindowSelectionSelector implements InstanceSelector {
 				}
 			}
 			
-			Collection<TypeDefinition> selectableTypes = instanceMap.keySet();
+			Set<TypeDefinition> selectableTypes = instanceMap.keySet();
+			
 			instanceTypes.setInput(selectableTypes);
 			
 			if (!selectableTypes.isEmpty()) {
@@ -246,7 +249,8 @@ public class WindowSelectionSelector implements InstanceSelector {
 
 		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			if (selection instanceof InstanceSelection) {
+			if (!(part instanceof AbstractDataView) // don't react on data view changes (to prevent loops)
+					&& selection instanceof InstanceSelection) {
 				lastSelection = selection;
 				updateTypeSelection();
 			}

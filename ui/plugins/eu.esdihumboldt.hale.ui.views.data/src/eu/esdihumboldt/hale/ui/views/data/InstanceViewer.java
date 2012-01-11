@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.data;
 
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -44,6 +45,12 @@ public interface InstanceViewer {
 	 * @return the tree viewer
 	 */
 	public abstract Viewer getViewer();
+	
+	/**
+	 * Get the selection provider providing the instance selection.
+	 * @return the instance selection provider
+	 */
+	public ISelectionProvider getInstanceSelectionProvider();
 	
 	/**
 	 * Get the main control

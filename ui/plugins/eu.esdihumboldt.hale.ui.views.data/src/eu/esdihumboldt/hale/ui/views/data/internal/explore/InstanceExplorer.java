@@ -13,12 +13,14 @@
 package eu.esdihumboldt.hale.ui.views.data.internal.explore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -39,12 +41,16 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.PairLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
+import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvider;
 
 /**
  * Instance explorer
  * @author Simon Templer
  */
 public class InstanceExplorer implements InstanceViewer {
+	
+	private final SimpleInstanceSelectionProvider selectionProvider = 
+			new SimpleInstanceSelectionProvider();
 
 	private Composite selectorComposite;
 	
@@ -170,10 +176,13 @@ public class InstanceExplorer implements InstanceViewer {
 	 */
 	private void updateSelection() {
 		if (selectedIndex < instances.size()) {
-			viewer.setInput(instances.get(selectedIndex));
+			Instance instance = instances.get(selectedIndex);
+			viewer.setInput(instance);
+			selectionProvider.updateSelection(Collections.singleton(instance));
 		}
 		else {
 			viewer.setInput(null);
+			selectionProvider.updateSelection(null);
 		}
 	}
 
@@ -204,6 +213,14 @@ public class InstanceExplorer implements InstanceViewer {
 	@Override
 	public Control getControl() {
 		return main;
+	}
+
+	/**
+	 * @see InstanceViewer#getInstanceSelectionProvider()
+	 */
+	@Override
+	public ISelectionProvider getInstanceSelectionProvider() {
+		return selectionProvider;
 	}
 
 }

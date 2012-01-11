@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -28,6 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
+import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvider;
 
 /**
  * Tree viewer for {@link Instance}s of a common type, based on the corresponding
@@ -43,6 +45,8 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	private TreeViewer treeViewer;
 	
 	private Composite main;
+	
+	private final SimpleInstanceSelectionProvider selectionProvider = new SimpleInstanceSelectionProvider();
 	
 	/**
 	 * @see InstanceViewer#createControls(Composite)
@@ -186,6 +190,8 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 		treeViewer.refresh();
 		treeViewer.getTree().getParent().layout(true, true);
 		
+		selectionProvider.updateSelection(instances);
+		
 		// auto-expand attributes/metadata
 //		treeViewer.expandToLevel(2);
 	}
@@ -204,6 +210,14 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	@Override
 	public Control getControl() {
 		return main;
+	}
+
+	/**
+	 * @see InstanceViewer#getInstanceSelectionProvider()
+	 */
+	@Override
+	public ISelectionProvider getInstanceSelectionProvider() {
+		return selectionProvider;
 	}
 
 }
