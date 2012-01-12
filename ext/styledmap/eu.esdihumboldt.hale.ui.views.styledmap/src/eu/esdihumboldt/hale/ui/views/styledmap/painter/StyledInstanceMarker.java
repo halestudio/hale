@@ -41,8 +41,6 @@ import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
 @SuppressWarnings("restriction")
 public class StyledInstanceMarker extends InstanceMarker {
 	
-	private static final java.awt.Stroke DEFAULT_STROKE = new BasicStroke();
-	
 	private boolean styleInitialized = false;
 	private Color styleFillColor;
 	private Color styleStrokeColor;
@@ -190,14 +188,15 @@ public class StyledInstanceMarker extends InstanceMarker {
 	 * @param context the context
 	 * @return the stroke
 	 */
+	@Override
 	protected java.awt.Stroke getLineStroke(InstanceWaypoint context) {
 		initStyle(context);
 		
-		if (styleStroke != null) {
+		if (styleStroke != null && !context.isSelected()) {
 			return styleStroke;
 		}
 		else {
-			return DEFAULT_STROKE;
+			return super.getLineStroke(context);
 		}
 	}
 
@@ -223,10 +222,7 @@ public class StyledInstanceMarker extends InstanceMarker {
 	protected boolean applyStroke(Graphics2D g, InstanceWaypoint context) {
 		initStyle(context);
 		
-		g.setStroke(getLineStroke(context));
-		g.setColor(getBorderColor(context));
-		
-		return true;
+		return super.applyStroke(g, context);
 	}
 	
 	/**

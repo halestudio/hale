@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.styledmap.painter;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -393,6 +394,31 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		Color color = getBorderColor(context);
 		return new Color(color.getRed(), color.getGreen(), color.getRed(), 
 				(int) (255 * StyleHelper.DEFAULT_FILL_OPACITY));
+	}
+	
+	/**
+	 * Get the stroke for drawing lines.
+	 * @param context the context
+	 * @return the stroke
+	 */
+	protected java.awt.Stroke getLineStroke(InstanceWaypoint context) {
+		if (context.isSelected()) {
+			return new BasicStroke(StylePreferences.getSelectionWidth());
+		}
+		else {
+			return new BasicStroke(StylePreferences.getDefaultWidth());
+		}
+	}
+	
+	/**
+	 * @see BoundingBoxMarker#applyStroke(Graphics2D, SelectableWaypoint)
+	 */
+	@Override
+	protected boolean applyStroke(Graphics2D g, InstanceWaypoint context) {
+		g.setStroke(getLineStroke(context));
+		g.setColor(getBorderColor(context));
+		
+		return true;
 	}
 
 	/**
