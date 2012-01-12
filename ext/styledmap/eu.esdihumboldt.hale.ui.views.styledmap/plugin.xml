@@ -64,18 +64,17 @@
             locationURI="menu:org.eclipse.ui.main.menu?before=window">
          <menu
                label="Map">
+            <menu
+                  label="Layout">
+               <dynamic
+                     class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutContribution"
+                     id="eu.esdihumboldt.hale.ui.views.styledmap.layouts">
+               </dynamic>
+            </menu>
             <command
                   commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
                   style="push">
             </command>
-            <separator
-                  name="eu.esdihumboldt.hale.ui.views.styledmap.layouts.separator"
-                  visible="true">
-            </separator>
-            <dynamic
-                  class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutContribution"
-                  id="eu.esdihumboldt.hale.ui.views.styledmap.layouts">
-            </dynamic>
             <separator
                   name="eu.esdihumboldt.hale.ui.views.styledmap.mapmenu.separator"
                   visible="true">
@@ -125,7 +124,7 @@
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.NoLayout"
             id="eu.esdihumboldt.hale.ui.views.styledmap.default"
-            name="Overlay">
+            name="Overlay (Source and Transformed)">
          <tileoverlay
                ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
          </tileoverlay>
