@@ -193,6 +193,14 @@
                   visible="true">
             </separator>
             <command
+                  commandId="eu.esdihumboldt.hale.ui.style.typestyle"
+                  label="Change style..."
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <command
                   commandId="eu.esdihumboldt.hale.ui.edit.modify"
                   label="Edit..."
                   style="push">
@@ -392,6 +400,12 @@
             commandId="org.eclipse.ui.help.dynamicHelp"
             schemeId="eu.esdihumboldt.hale.ui.application.bindings"
             sequence="F1">
+      </key>
+      <key
+            commandId="eu.esdihumboldt.hale.ui.style.typestyle"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="eu.esdihumboldt.hale.ui.application.bindings"
+            sequence="ALT+S">
       </key>
    </extension>
 
