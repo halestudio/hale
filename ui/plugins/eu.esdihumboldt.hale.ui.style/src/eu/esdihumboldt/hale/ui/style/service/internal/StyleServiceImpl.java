@@ -16,10 +16,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -36,6 +40,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
+import org.opengis.feature.type.Name;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -44,6 +49,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
@@ -105,17 +111,18 @@ public class StyleServiceImpl extends AbstractStyleService {
 				boolean updateNeeded = false;
 				
 				while (!queuedStyles.isEmpty()) {
-					//FIXME deactivated!
-//					FeatureTypeStyle fts = queuedStyles.poll();
-//					Definition element = schemaService.getTypeByName(fts.getFeatureTypeName());
-//					if (element != null && DefinitionUtil.getFeatureType(element) != null) {
-//						if (addStyle(DefinitionUtil.getFeatureType(element), fts)) {
-//							updateNeeded = true;
-//						}
-//					}
-//					else {
-//						failures.add(fts);
-//					}
+					FeatureTypeStyle fts = queuedStyles.poll();
+					Collection<TypeDefinition> types = findTypes(fts.featureTypeNames());
+					if (types != null && !types.isEmpty()) {
+						for (TypeDefinition type : types) {
+							if (addStyle(type, fts)) {
+								updateNeeded = true;
+							}
+						}
+					}
+					else {
+						failures.add(fts);
+					}
 				}
 				
 				queuedStyles.addAll(failures);
@@ -339,10 +346,12 @@ public class StyleServiceImpl extends AbstractStyleService {
 		
 		for (Style style : styles) {
 			for (FeatureTypeStyle fts : style.featureTypeStyles()) {
-				TypeDefinition element = null; //FIXME = schemaService.getTypeByName(fts.getFeatureTypeName());
-				if (element != null) {
-					if (addStyle(element, fts)) {
-						somethingHappened = true;
+				Collection<TypeDefinition> types = findTypes(fts.featureTypeNames());
+				if (types != null && !types.isEmpty()) {
+					for (TypeDefinition type : types) {
+						if (addStyle(type, fts)) {
+							somethingHappened = true;
+						}
 					}
 				}
 				else {
@@ -358,6 +367,62 @@ public class StyleServiceImpl extends AbstractStyleService {
 		if (somethingHappened) {
 			notifyStylesAdded();
 		}
+	}
+
+	/**
+	 * Search the available types for matching names.
+	 * @param featureTypeNames the feature type names
+	 * @return the types or <code>null</code>
+	 */
+	private Collection<TypeDefinition> findTypes(Set<Name> featureTypeNames) {
+		if (featureTypeNames == null) {
+			return null;
+		}
+		
+		// prepare names
+		Set<QName> qnames = new HashSet<QName>();
+		Set<String> localnames = new HashSet<String>();
+		for (Name name : featureTypeNames) {
+			String ns = name.getNamespaceURI();
+			if (ns == null || ns.isEmpty()) {
+				localnames.add(name.getLocalPart());
+			}
+			else {
+				qnames.add(new QName(ns, name.getLocalPart()));
+			}
+		}
+		
+		Collection<TypeDefinition> result = new ArrayList<TypeDefinition>();
+		
+		// search source... 
+		result.addAll(findTypes(schemaService.getSchemas(
+				SchemaSpaceID.SOURCE), qnames, localnames));
+		// and target types
+		result.addAll(findTypes(schemaService.getSchemas(
+				SchemaSpaceID.TARGET), qnames, localnames));
+		
+		return result;
+	}
+	
+	/**
+	 * Search the given type index for matching names.
+	 * @param typeIndex the type index
+	 * @param qnames the qualified names
+	 * @param localnames the local names
+	 * @return the types or an empty collection
+	 */
+	private Collection<TypeDefinition> findTypes(TypeIndex typeIndex, 
+			Set<QName> qnames, Set<String> localnames) {
+		Collection<TypeDefinition> result = new ArrayList<TypeDefinition>();
+		// check all mappable types
+		for (TypeDefinition type : typeIndex.getMappableTypes()) {
+			String name = StyleHelper.getFeatureTypeName(type);
+			if (localnames.contains(name)) {
+				result.add(type);
+			}
+			//TODO support for qnames (another method in StyleHelper?)
+		}
+		return result;
 	}
 
 	/**
