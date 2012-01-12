@@ -39,7 +39,7 @@ public abstract class CRSDecode {
 	 *   was supplied
 	 * @throws FactoryException if creation of the CRS failed
 	 */
-	public static CoordinateReferenceSystem getCRS(String code) throws NoSuchAuthorityCodeException, FactoryException {
+	public synchronized static CoordinateReferenceSystem getCRS(String code) throws NoSuchAuthorityCodeException, FactoryException {
 		CoordinateReferenceSystem crs = crsMap.get(code);
 		
 		if (crs == null) {

@@ -40,7 +40,7 @@ public class CRSConverter {
 	 * @return the CRS converter
 	 * @throws FactoryException if creating the transformer fails
 	 */
-	public static CRSConverter getConverter(CoordinateReferenceSystem source, CoordinateReferenceSystem target) throws FactoryException {
+	public synchronized static CRSConverter getConverter(CoordinateReferenceSystem source, CoordinateReferenceSystem target) throws FactoryException {
 		CRSConverter converter = null;
 		
 		// try retrieving converter from map
@@ -81,9 +81,10 @@ public class CRSConverter {
 	
 	/*
 	 * temporary positions to lower the impact on GC
+	 * XXX using these is not thread safe!
 	 */
-	private final DirectPosition _tempPos2A = new DirectPosition2D();
-	private final DirectPosition _tempPos2B = new DirectPosition2D();
+//	private final DirectPosition _tempPos2A = new DirectPosition2D();
+//	private final DirectPosition _tempPos2B = new DirectPosition2D();
 
 	/**
 	 * Create a CRS converter between the given coordinate reference systems.
@@ -153,7 +154,7 @@ public class CRSConverter {
 	 * @throws TransformException if the coordinate transformation fails
 	 */
 	public Point3D convert(double x, double y, double z) throws TransformException {
-		DirectPosition position = _tempPos2A;
+		DirectPosition position = new DirectPosition2D();
 		if (this.initialFlip) {
 			position.setOrdinate(0, y);
 			position.setOrdinate(1, x);
@@ -162,9 +163,12 @@ public class CRSConverter {
 			position.setOrdinate(1, y);
 		}
 
-		math.transform(position, _tempPos2B);
+		DirectPosition targetPosition = new DirectPosition2D();
+		math.transform(position, targetPosition);
 
-		return createPoint3D(_tempPos2B.getOrdinate(0), _tempPos2B.getOrdinate(1), z);
+		return createPoint3D(
+				targetPosition.getOrdinate(0), 
+				targetPosition.getOrdinate(1), z);
 	}
 	
 	/**
