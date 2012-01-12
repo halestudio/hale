@@ -23,8 +23,11 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.style.dialog.FeatureStyleDialog;
 import eu.esdihumboldt.util.Pair;
@@ -42,6 +45,8 @@ public class TypeStyleHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		
+		//TODO instead of grabbing the first type found use a selection dialog to allow chosing?
 		
 		Pair<TypeDefinition, DataSet> typeInfo = null;
 		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
@@ -61,6 +66,17 @@ public class TypeStyleHandler extends AbstractHandler {
 								entityDef.getType(), dataSet );
 						break;
 					}
+				}
+				if (object instanceof InstanceReference) {
+					InstanceService is = (InstanceService) HandlerUtil.getActiveWorkbenchWindow(event).getWorkbench().getService(InstanceService.class);
+					object = is.getInstance((InstanceReference) object);
+				}
+				if (object instanceof Instance) {
+					Instance instance = (Instance) object;
+					typeInfo = new Pair<TypeDefinition, DataSet>(
+							instance.getDefinition(), 
+							instance.getDataSet());
+					break;
 				}
 			}
 		}
