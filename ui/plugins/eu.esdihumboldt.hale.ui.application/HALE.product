@@ -81,16 +81,23 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.org.picocontainer"/>
       <plugin id="com.sun.xsom"/>
       <plugin id="com.vividsolutions.jts"/>
+      <plugin id="de.cs3d.common.metamodel"/>
+      <plugin id="de.cs3d.ui.bookmarks"/>
       <plugin id="de.cs3d.ui.util.eclipse"/>
       <plugin id="de.cs3d.ui.util.logging.errorlog"/>
       <plugin id="de.cs3d.ui.util.logging.userstatus"/>
       <plugin id="de.cs3d.util.eclipse"/>
+      <plugin id="de.cs3d.util.helper"/>
       <plugin id="de.cs3d.util.logging"/>
       <plugin id="de.cs3d.util.logging.logback"/>
       <plugin id="de.cs3d.util.logging.logback.appender" fragment="true"/>
       <plugin id="de.cs3d.util.logging.logback.observer"/>
       <plugin id="de.fhg.igd.concurrency"/>
+      <plugin id="de.fhg.igd.mapviewer"/>
+      <plugin id="de.fhg.igd.mapviewer.server.openstreetmap"/>
+      <plugin id="de.fhg.igd.mapviewer.tools.boxzoom"/>
       <plugin id="de.fhg.igd.osgi.util"/>
+      <plugin id="de.fhg.igd.swingrcp"/>
       <plugin id="edu.umd.cs.findbugs.annotations"/>
       <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst"/>
@@ -154,6 +161,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.views.properties"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.styledmap"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.transformation"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.typehierarchy"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
@@ -182,6 +190,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
       <plugin id="org.apache.batik.xml"/>
+      <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.convert"/>
       <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.httpclient"/>
@@ -272,11 +281,17 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.eclipse.zest.core"/>
       <plugin id="org.eclipse.zest.jface"/>
       <plugin id="org.eclipse.zest.layouts"/>
+      <plugin id="org.geotiff"/>
       <plugin id="org.geotools"/>
       <plugin id="org.hamcrest.core"/>
+      <plugin id="org.javolution"/>
+      <plugin id="org.jdesktop.swingx"/>
+      <plugin id="org.jdesktop.swingx.mapviewer"/>
       <plugin id="org.jdom"/>
+      <plugin id="org.jscience"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
+      <plugin id="org.libtiff.jai"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.objectweb.asm"/>
