@@ -12,7 +12,10 @@
 
 package eu.esdihumboldt.hale.ui.views.styledmap.painter;
 
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -26,6 +29,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jdesktop.swingx.mapviewer.PixelConverter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -54,6 +58,8 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
+import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
+import eu.esdihumboldt.hale.ui.views.styledmap.clip.ClipPainter;
 import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSConverter;
 import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSDecode;
 
@@ -63,7 +69,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSDecode;
  */
 public abstract class AbstractInstancePainter extends
 		GenericWaypointPainter<InstanceReference, InstanceWaypoint> implements InstanceServiceListener,
-		ISelectionListener {
+		ISelectionListener, ClipPainter {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractInstancePainter.class);
 
@@ -74,6 +80,8 @@ public abstract class AbstractInstancePainter extends
 	private final DataSet dataSet;
 	
 	private CoordinateReferenceSystem waypointCRS;
+	
+	private Clip clip;
 
 	private final StyleServiceListener styleListener;
 
@@ -543,5 +551,36 @@ public abstract class AbstractInstancePainter extends
 	public StyleServiceListener getStyleListener() {
 		return styleListener;
 	}
-	
+
+	/**
+	 * @see ClipPainter#setClip(Clip)
+	 */
+	@Override
+	public void setClip(Clip clip) {
+		this.clip = clip;
+	}
+
+	/**
+	 * @see AbstractTileOverlayPainter#drawOverlay(Graphics2D, BufferedImage, int, int, int, int, int, Rectangle, PixelConverter)
+	 */
+	@Override
+	protected void drawOverlay(Graphics2D gfx, BufferedImage img, int zoom,
+			int tilePosX, int tilePosY, int tileWidth, int tileHeight,
+			Rectangle viewportBounds, PixelConverter converter) {
+		if (clip == null) {
+			super.drawOverlay(gfx, img, zoom, tilePosX, tilePosY, tileWidth, tileHeight,
+					viewportBounds, converter);
+		}
+		else {
+			Shape clipShape = clip.getClip(viewportBounds, tilePosX, tilePosY, tileWidth, tileHeight);
+			if (clipShape != null) { // drawing allowed
+				Shape orgClip = gfx.getClip();
+				gfx.clip(clipShape);
+				super.drawOverlay(gfx, img, zoom, tilePosX, tilePosY, tileWidth, tileHeight,
+						viewportBounds, converter);
+				gfx.setClip(orgClip);
+			}
+		}
+	}
+
 }
