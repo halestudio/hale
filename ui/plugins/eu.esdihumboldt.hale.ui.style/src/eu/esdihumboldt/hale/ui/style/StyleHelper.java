@@ -30,6 +30,7 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
 import org.opengis.filter.FilterFactory;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
 
@@ -121,14 +122,15 @@ public abstract class StyleHelper {
 	/**
 	 * Returns a default style for the given type.
 	 * @param typeDef the type definition
+	 * @param dataSet the data set
 	 * @return the style
 	 */
-	public static FeatureTypeStyle getDefaultStyle(TypeDefinition typeDef) {
+	public static FeatureTypeStyle getDefaultStyle(TypeDefinition typeDef, DataSet dataSet) {
 //		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
 //		List<QName> geomPath = gss.getDefaultGeometry(typeDef);
 		//TODO determine default style from default geometry?
 		
-		Color defColor = StylePreferences.getDefaultColor();
+		Color defColor = StylePreferences.getDefaultColor(dataSet);
 		int defWidth = StylePreferences.getDefaultWidth();
 		
 		FeatureTypeStyle result;
@@ -189,12 +191,13 @@ public abstract class StyleHelper {
 	/**
 	 * Get a style containing the default style for the given type.
 	 * @param type the type definition
+	 * @param dataSet the data set
 	 * @return the style with the default type style
 	 */
-	public static Style getStyle(TypeDefinition type) {
+	public static Style getStyle(TypeDefinition type, DataSet dataSet) {
 		Style style = styleFactory.createStyle();
 		
-		style.featureTypeStyles().add(getDefaultStyle(type));
+		style.featureTypeStyles().add(getDefaultStyle(type, dataSet));
 		
 		return style;
 	}

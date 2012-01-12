@@ -47,7 +47,9 @@ public class StylePreferencePage extends FieldEditorPreferencePage
 	protected void createFieldEditors() {
 		addField(new ColorFieldEditor(KEY_DEFAULT_BACKGROUND, Messages.StylePreferencePage_1, getFieldEditorParent())); //$NON-NLS-1$
 		
-		addField(new ColorFieldEditor(KEY_DEFAULT_COLOR, Messages.StylePreferencePage_2, getFieldEditorParent())); //$NON-NLS-1$
+		addField(new ColorFieldEditor(KEY_SOURCE_DEFAULT_COLOR, "Default color for source data", getFieldEditorParent()));
+		addField(new ColorFieldEditor(KEY_TRANSFORMED_DEFAULT_COLOR, "Default color for transformed data", getFieldEditorParent()));
+		
 		addField(new IntegerFieldEditor(KEY_DEFAULT_WIDTH, Messages.StylePreferencePage_3, getFieldEditorParent())); //$NON-NLS-1$
 		
 		addField(new ColorFieldEditor(KEY_SELECTION_COLOR, Messages.StylePreferencePage_4, getFieldEditorParent())); //$NON-NLS-1$
@@ -63,19 +65,6 @@ public class StylePreferencePage extends FieldEditorPreferencePage
 		if (!result) {
 			return false;
 		}
-		
-		//XXX this should now be handled through listener on preference store in style service
-		// views must be listeners to style service
-		// map update (e.g for selection style change)
-//		MapView map = (MapView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(MapView.ID);
-//		if (map != null) {
-//			map.getPainter().updateMap(); //updateSelection();
-//		}
-		// refresh schema explorer (for legend images change)
-//		ModelNavigationView model = (ModelNavigationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ModelNavigationView.ID);
-//		if (model != null) {
-//			model.refresh();
-//		}
 		
 		return true;
 	}

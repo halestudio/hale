@@ -23,7 +23,12 @@ public interface StylePreferenceConstants {
 	/**
 	 * The name of the default style color key
 	 */
-	public final String KEY_DEFAULT_COLOR = "styles.default.color"; //$NON-NLS-1$
+	public final String KEY_SOURCE_DEFAULT_COLOR = "styles.source.default.color"; //$NON-NLS-1$
+	
+	/**
+	 * The name of the default style color key
+	 */
+	public final String KEY_TRANSFORMED_DEFAULT_COLOR = "styles.transformed.default.color"; //$NON-NLS-1$
 	
 	/**
 	 * The name of the default style width key

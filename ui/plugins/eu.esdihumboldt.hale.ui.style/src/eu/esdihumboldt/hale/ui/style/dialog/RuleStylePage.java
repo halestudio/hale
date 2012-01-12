@@ -571,7 +571,8 @@ public class RuleStylePage extends FeatureStylePage {
 		
 		if (symbolizer == null) {
 			// fallback if there is no symbolizer defined
-			FeatureTypeStyle fts = StyleHelper.getDefaultStyle(type);
+			FeatureTypeStyle fts = StyleHelper.getDefaultStyle(type, 
+					getParent().getDataSet());
 			symbolizer = fts.rules().get(0).getSymbolizers()[0];
 		}
 		
