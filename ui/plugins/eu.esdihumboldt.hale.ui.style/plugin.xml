@@ -48,6 +48,12 @@
                      <instanceof
                            value="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
                      </instanceof>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.ui.service.instance.InstanceReference">
+                     </instanceof>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.instance.model.Instance">
+                     </instanceof>
                   </or>
                </iterate>
             </with>
