@@ -94,17 +94,17 @@ public abstract class AbstractInstancePainter extends
 			
 			@Override
 			public void stylesRemoved(StyleService styleService) {
-				refreshAll();
+				styleRefresh();
 			}
 			
 			@Override
 			public void stylesAdded(StyleService styleService) {
-				refreshAll();
+				styleRefresh();
 			}
 			
 			@Override
 			public void styleSettingsChanged(StyleService styleService) {
-				refreshAll();
+				styleRefresh();
 			}
 			
 			@Override
@@ -112,6 +112,19 @@ public abstract class AbstractInstancePainter extends
 				// ignore, background not supported
 			}
 		};
+	}
+
+	/**
+	 * Refresh with style update.
+	 */
+	protected void styleRefresh() {
+		for (InstanceWaypoint wp : iterateWaypoints()) {
+			Marker<? super InstanceWaypoint> marker = wp.getMarker();
+			if (marker instanceof StyledInstanceMarker) {
+				((StyledInstanceMarker) marker).resetStyle();
+			}
+		}
+		refreshAll();
 	}
 
 	/**

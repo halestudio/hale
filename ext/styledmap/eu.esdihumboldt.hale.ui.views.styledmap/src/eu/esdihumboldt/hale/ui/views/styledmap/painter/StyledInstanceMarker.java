@@ -40,21 +40,30 @@ import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
  */
 @SuppressWarnings("restriction")
 public class StyledInstanceMarker extends InstanceMarker {
-
+	
+	private static final java.awt.Stroke DEFAULT_STROKE = new BasicStroke();
+	
+	private boolean styleInitialized = false;
+	private Color styleFillColor;
+	private Color styleStrokeColor;
+	private java.awt.Stroke styleStroke;
+	private boolean hasFill = true;
+	
 	/**
-	 * @see BoundingBoxMarker#applyFill(Graphics2D, SelectableWaypoint)
+	 * Initialize the style information.
+	 * @param context the context
 	 */
-	@Override
-	protected boolean applyFill(Graphics2D g, InstanceWaypoint context) {
-		if (context.isSelected()) {
-			// for selection use default
-			return super.applyFill(g, context);
+	private synchronized void initStyle(InstanceWaypoint context) {
+		if (styleInitialized) {
+			return;
+		}
+		else {
+			styleInitialized = true;
 		}
 		
 		Style style = getStyle(context);
 		
 		//TODO honor rules!
-		//TODO do all this only once (reset information on style change)
 		
 		// retrieve fill
 		Fill fill = null;
@@ -74,36 +83,19 @@ public class StyledInstanceMarker extends InstanceMarker {
 		if (fill != null) {
 			Color sldColor = SLD.color(fill);
 			double opacity = SLD.opacity(fill);
-			Color fillColor;
 			if (sldColor != null) {
-				fillColor = new Color(sldColor.getRed(), sldColor.getGreen(), 
+				styleFillColor = new Color(sldColor.getRed(), sldColor.getGreen(), 
 						sldColor.getBlue(), (int) (opacity * 255));
 			}
 			else {
-				fillColor = super.getPaintColor(context);
+				styleFillColor = super.getPaintColor(context);
 			}
-			g.setPaint(fillColor);
-			return true;
+			hasFill = true;
 		}
-		
-		// no fill specified
-		return false;
-	}
-
-	/**
-	 * @see BoundingBoxMarker#applyStroke(Graphics2D, SelectableWaypoint)
-	 */
-	@Override
-	protected boolean applyStroke(Graphics2D g, InstanceWaypoint context) {
-		if (context.isSelected()) {
-			// for selection use default
-			return super.applyStroke(g, context);
+		else {
+			styleFillColor = null;
+			hasFill = false;
 		}
-		
-		Style style = getStyle(context);
-		
-		//TODO honor rules!
-		//TODO do all this only once (reset information on style change)
 		
 		// retrieve stroke
 		Stroke stroke = null;
@@ -113,11 +105,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 			stroke = SLD.stroke(lineSymbolizer);
 		}
 		// try polygon
-		if (stroke == null) {
-			PolygonSymbolizer polygonSymbolizer = SLD.polySymbolizer(style);
-			if (polygonSymbolizer != null) {
-				stroke = SLD.stroke(polygonSymbolizer);
-			}
+		if (stroke == null && polygonSymbolizer != null) {
+			stroke = SLD.stroke(polygonSymbolizer);
 		}
 		// try point
 		if (stroke == null) {
@@ -129,7 +118,7 @@ public class StyledInstanceMarker extends InstanceMarker {
 		
 		if (stroke != null) {
 			//XXX is there any Geotools stroke to AWT stroke lib/code somewhere?!
-			//XXX have a look at the renderer code
+			//XXX have a look at the renderer code (StreamingRenderer)
 			
 			// stroke color
 			Color sldColor = SLD.color(stroke);
@@ -138,15 +127,13 @@ public class StyledInstanceMarker extends InstanceMarker {
 				// fall back to default opacity
 				opacity = StyleHelper.DEFAULT_FILL_OPACITY;
 			}
-			Color strokeColor;
 			if (sldColor != null) {
-				strokeColor = new Color(sldColor.getRed(), sldColor.getGreen(), 
+				styleStrokeColor = new Color(sldColor.getRed(), sldColor.getGreen(), 
 						sldColor.getBlue(), (int) (opacity * 255));
 			}
 			else {
-				strokeColor = super.getBorderColor(context);
+				styleStrokeColor = super.getBorderColor(context);
 			}
-			g.setColor(strokeColor);
 			
 			// stroke width
 			int strokeWidth = SLD.width(stroke);
@@ -154,13 +141,92 @@ public class StyledInstanceMarker extends InstanceMarker {
 				// fall back to default width
 				strokeWidth = StylePreferences.getDefaultWidth(); 
 			}
-			g.setStroke(new BasicStroke(strokeWidth));
-			
+			styleStroke = new BasicStroke(strokeWidth);
+		}
+		else {
+			styleStroke = null;
+			styleStrokeColor = null;
+		}
+	}
+	
+	/**
+	 * Reset the marker style
+	 */
+	public synchronized void resetStyle() {
+		styleInitialized = false;
+	}
+
+	/**
+	 * @see InstanceMarker#getPaintColor(InstanceWaypoint)
+	 */
+	@Override
+	protected Color getPaintColor(InstanceWaypoint context) {
+		initStyle(context);
+		
+		if (styleFillColor == null || context.isSelected()) {
+			// for selection don't use style
+			return super.getPaintColor(context);
+		}
+		
+		return styleFillColor;
+	}
+
+	/**
+	 * @see InstanceMarker#getBorderColor(InstanceWaypoint)
+	 */
+	@Override
+	protected Color getBorderColor(InstanceWaypoint context) {
+		initStyle(context);
+		
+		if (styleStrokeColor == null || context.isSelected()) {
+			return super.getBorderColor(context);
+		}
+		
+		return styleStrokeColor;
+	}
+	
+	/**
+	 * Get the stroke for drawing lines.
+	 * @param context the context
+	 * @return the stroke
+	 */
+	protected java.awt.Stroke getLineStroke(InstanceWaypoint context) {
+		initStyle(context);
+		
+		if (styleStroke != null) {
+			return styleStroke;
+		}
+		else {
+			return DEFAULT_STROKE;
+		}
+	}
+
+	/**
+	 * @see BoundingBoxMarker#applyFill(Graphics2D, SelectableWaypoint)
+	 */
+	@Override
+	protected boolean applyFill(Graphics2D g, InstanceWaypoint context) {
+		initStyle(context);
+		
+		if (hasFill) {
+			g.setPaint(getPaintColor(context));
 			return true;
 		}
 		
-		// fall-back to default
-		return super.applyStroke(g, context);
+		return false;
+	}
+
+	/**
+	 * @see BoundingBoxMarker#applyStroke(Graphics2D, SelectableWaypoint)
+	 */
+	@Override
+	protected boolean applyStroke(Graphics2D g, InstanceWaypoint context) {
+		initStyle(context);
+		
+		g.setStroke(getLineStroke(context));
+		g.setColor(getBorderColor(context));
+		
+		return true;
 	}
 	
 	/**
