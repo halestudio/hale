@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.hale.ui.views.styledmap.layout" name="Map layouts" schema="schema/eu.esdihumboldt.hale.ui.views.styledmap.layout.exsd"/>
    <extension
          point="de.fhg.igd.mapviewer.view.MapViewExtension">
       <extra
@@ -110,6 +111,34 @@
             id="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
             name="Zoom to instances">
       </command>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.views.styledmap.layout">
+      <layout
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.NoLayout"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.default"
+            name="Overlay">
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
+         </tileoverlay>
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
+         </tileoverlay>
+      </layout>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.internal.PainterLayoutServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutService"></service>
+      </serviceFactory>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="eu.esdihumboldt.hale.ui.views.styledmap.preferences.StyledMapPreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>
