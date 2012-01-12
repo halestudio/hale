@@ -168,7 +168,6 @@ public abstract class AbstractInstancePainter extends
 		
 		// add way-points for instances 
 		ResourceIterator<Instance> it = instances.iterator();
-		Refresher refresh = prepareRefresh();
 		try {
 			while (it.hasNext()) {
 				Instance instance = it.next();
@@ -179,12 +178,12 @@ public abstract class AbstractInstancePainter extends
 					if (lastSelected.contains(wp.getValue())) {
 						wp.setSelected(true, null); // refresh can be ignored because it's done for addWaypoint
 					}
-					addWaypoint(wp, refresh);
+					addWaypoint(wp, null); // no refresher, as refreshAll is executed
 				}
 			}
 		} finally {
 			it.close();
-			refresh.execute();
+			refreshAll();
 		}
 	}
 
