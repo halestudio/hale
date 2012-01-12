@@ -26,6 +26,7 @@ import de.fhg.igd.mapviewer.view.overlay.ITileOverlayService;
 import de.fhg.igd.mapviewer.view.overlay.TileOverlayFactory;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
+import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutController;
 import eu.esdihumboldt.hale.ui.views.styledmap.painter.AbstractInstancePainter;
 
 /**
@@ -35,6 +36,8 @@ import eu.esdihumboldt.hale.ui.views.styledmap.painter.AbstractInstancePainter;
 public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 
 	private MapView mapView;
+	
+	private PainterLayoutController layoutController;
 
 	/**
 	 * @see MapViewExtension#setMapView(MapView)
@@ -42,6 +45,8 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 	@Override
 	public void setMapView(MapView mapView) {
 		this.mapView = mapView;
+		
+		layoutController = new PainterLayoutController(mapView.getMapKit());
 		
 		/*
 		 * Listen for activated/deactivated instance painters
@@ -105,6 +110,8 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 	@Override
 	public void partClosed(IWorkbenchPartReference partRef) {
 		if (partRef.getPart(false) == mapView) {
+			layoutController.disable();
+			
 			// get services
 			ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 			InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
@@ -131,6 +138,8 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 				
 			// add listeners
 			enableScenePainterListeners(selection, instances, styles);
+			
+			layoutController.enable();
 		}
 	}
 	
