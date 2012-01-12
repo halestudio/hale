@@ -18,11 +18,16 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.style.dialog.FeatureStyleDialog;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Shows a {@link FeatureStyleDialog} for a selected {@link TypeDefinition} or
@@ -38,26 +43,32 @@ public class TypeStyleHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		
-		TypeDefinition type = null;
+		Pair<TypeDefinition, DataSet> typeInfo = null;
 		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
 			for (Object object : ((IStructuredSelection) selection).toArray()) {
 				if (object instanceof TypeDefinition) {
-					type = (TypeDefinition) object;
+					TypeDefinition type = (TypeDefinition) object;
+					DataSet dataSet = findDataSet(type);
+					typeInfo = new Pair<TypeDefinition, DataSet>(type, dataSet);
 					break;
 				}
 				if (object instanceof EntityDefinition) {
 					EntityDefinition entityDef = (EntityDefinition) object;
 					if (entityDef.getPropertyPath().isEmpty()) {
-						type = entityDef.getType();
+						DataSet dataSet = (entityDef.getSchemaSpace() == SchemaSpaceID.SOURCE) ? (DataSet.SOURCE)
+								: (DataSet.TRANSFORMED);
+						typeInfo = new Pair<TypeDefinition, DataSet>(
+								entityDef.getType(), dataSet );
 						break;
 					}
 				}
 			}
 		}
 		
-		if (type != null) {
+		if (typeInfo != null) {
 			try {
-				FeatureStyleDialog dialog = new FeatureStyleDialog(type);
+				FeatureStyleDialog dialog = new FeatureStyleDialog(
+						typeInfo.getFirst(), typeInfo.getSecond());
 				dialog.setBlockOnOpen(false);
 				dialog.open();
 			} catch (Exception e) {
@@ -65,6 +76,24 @@ public class TypeStyleHandler extends AbstractHandler {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Determine which data set a type represents.
+	 * @param type the type definition
+	 * @return the data set
+	 */
+	private static DataSet findDataSet(TypeDefinition type) {
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		if (ss.getSchemas(SchemaSpaceID.SOURCE).getMappableTypes().contains(type)) {
+			return DataSet.SOURCE;
+		}
+		if (ss.getSchemas(SchemaSpaceID.TARGET).getMappableTypes().contains(type)) {
+			return DataSet.TRANSFORMED;
+		}
+		
+		// default to source
+		return DataSet.SOURCE;
 	}
 
 }

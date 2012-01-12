@@ -24,6 +24,7 @@ import org.geotools.feature.NameImpl;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Style;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
@@ -46,17 +47,20 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	
 	private final StyleService styles;
 	
+	private final DataSet dataSet;
+	
 	private Style style;
 	
 	/**
 	 * Creates a dialog for editing a feature type style
-	 * 
-	 * @param type the feature type
+	 * @param type the type definition
+	 * @param dataSet the type data set
 	 */
-	public FeatureStyleDialog(final TypeDefinition type) {
+	public FeatureStyleDialog(final TypeDefinition type, DataSet dataSet) {
 		super();
 		
 		this.type = type;
+		this.dataSet = dataSet;
 		
 		if (styleImage == null) {
 			styleImage = InstanceStylePlugin.getImageDescriptor(
@@ -69,6 +73,14 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 	}
 	
+	/**
+	 * Get the type data set.
+	 * @return the data set
+	 */
+	public DataSet getDataSet() {
+		return dataSet;
+	}
+
 	/**
 	 * @see MultiPageDialog#allowPageChange(IDialogPage, IDialogPage)
 	 */
@@ -193,7 +205,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 */
 	public Style getStyle() {
 		if (style == null) {
-			setStyle(styles.getStyle(type));
+			setStyle(styles.getStyle(type, dataSet));
 		}
 		
 		return style;

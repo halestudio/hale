@@ -185,17 +185,17 @@ public class StyleServiceImpl extends AbstractStyleService {
 	/** 
 	 * This implementation will build a simple style if none is defined
 	 * previously. 
-	 * @see StyleService#getStyle(TypeDefinition)
+	 * @see StyleService#getStyle(TypeDefinition, DataSet)
 	 */
 	@Override
-	public Style getStyle(TypeDefinition type) {
+	public Style getStyle(TypeDefinition type, DataSet dataSet) {
 		FeatureTypeStyle fts = styles.get(type);
 		Style style = styleFactory.createStyle();
 		if (fts != null) {
 			style.featureTypeStyles().add(fts);
 		}
 		else {
- 			style.featureTypeStyles().add(StyleHelper.getDefaultStyle(type));
+ 			style.featureTypeStyles().add(StyleHelper.getDefaultStyle(type, dataSet));
 		}
 		return style;
 	}
@@ -256,7 +256,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 				// only add styles for non-abstract feature types
 				FeatureTypeStyle fts = styles.get(type);
 				if (fts == null) {
-					fts = StyleHelper.getDefaultStyle(type);
+					fts = StyleHelper.getDefaultStyle(type, dataset);
 				}
 				if (selected) {
 					fts = getSelectedStyle(fts);

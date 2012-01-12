@@ -16,6 +16,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 import eu.esdihumboldt.hale.ui.style.dialog.FeatureStyleDialog;
@@ -33,15 +34,18 @@ public class FeatureTypeStyleAction extends Action {
 	
 	private final TypeDefinition type;
 	
+	private final DataSet dataSet;
+	
 	/**
-	 * Creates an action for editing a feature type style
-	 * 
-	 * @param type the feature type
+	 * Creates an action for editing a feature type style.
+	 * @param type the type definition
+	 * @param dataSet the type data set
 	 */
-	public FeatureTypeStyleAction(final TypeDefinition type) {
+	public FeatureTypeStyleAction(final TypeDefinition type, DataSet dataSet) {
 		super(type.getName().getLocalPart());
 		
 		this.type = type;
+		this.dataSet = dataSet;
 		
 		init();
 		
@@ -63,7 +67,7 @@ public class FeatureTypeStyleAction extends Action {
 	@Override
 	public void run() {
 		try {
-			FeatureStyleDialog dialog = new FeatureStyleDialog(type);
+			FeatureStyleDialog dialog = new FeatureStyleDialog(type, dataSet);
 			dialog.setBlockOnOpen(false);
 			dialog.open();
 		} catch (Exception e) {

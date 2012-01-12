@@ -237,7 +237,7 @@ public class StyledInstanceMarker extends InstanceMarker {
 		InstanceReference ref = context.getValue();
 		Instance instance = is.getInstance(ref);
 		
-		return ss.getStyle(instance.getDefinition());
+		return ss.getStyle(instance.getDefinition(), ref.getDataSet());
 	}
 
 }

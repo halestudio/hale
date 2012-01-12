@@ -21,6 +21,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 
@@ -33,7 +34,9 @@ import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 public class StylePreferences extends
 		AbstractPreferenceInitializer implements StylePreferenceConstants {
 
-	private static final RGB DEFAULT_COLOR = new RGB(57, 75, 95);
+	private static final RGB SOURCE_DEFAULT_COLOR = new RGB(57, 75, 95);
+	
+	private static final RGB TRANSFORMED_DEFAULT_COLOR = new RGB(90, 25, 90);
 	
 	private static final RGB DEFAULT_BACKGROUND = new RGB(126, 166, 210);
 	
@@ -42,7 +45,8 @@ public class StylePreferences extends
 	static final Set<String> ALL_KEYS = new HashSet<String>();
 	static {
 		ALL_KEYS.add(KEY_DEFAULT_BACKGROUND);
-		ALL_KEYS.add(KEY_DEFAULT_COLOR);
+		ALL_KEYS.add(KEY_SOURCE_DEFAULT_COLOR);
+		ALL_KEYS.add(KEY_TRANSFORMED_DEFAULT_COLOR);
 		ALL_KEYS.add(KEY_DEFAULT_WIDTH);
 		ALL_KEYS.add(KEY_SELECTION_COLOR);
 		ALL_KEYS.add(KEY_SELECTION_WIDTH);
@@ -55,7 +59,8 @@ public class StylePreferences extends
 	public void initializeDefaultPreferences() {
 		IPreferenceStore preferences = InstanceStylePlugin.getDefault().getPreferenceStore();
 		
-		preferences.setDefault(KEY_DEFAULT_COLOR, StringConverter.asString(DEFAULT_COLOR));
+		preferences.setDefault(KEY_SOURCE_DEFAULT_COLOR, StringConverter.asString(SOURCE_DEFAULT_COLOR));
+		preferences.setDefault(KEY_TRANSFORMED_DEFAULT_COLOR, StringConverter.asString(TRANSFORMED_DEFAULT_COLOR));
 		preferences.setDefault(KEY_DEFAULT_WIDTH, StringConverter.asString(1));
 		preferences.setDefault(KEY_DEFAULT_BACKGROUND, StringConverter.asString(DEFAULT_BACKGROUND));
 		
@@ -64,12 +69,18 @@ public class StylePreferences extends
 	}
 	
 	/**
-	 * Get the default color
-	 * 
+	 * Get the default color for the given data set.
+	 * @param dataSet the data set 
 	 * @return the default color
 	 */
-	public static Color getDefaultColor() {
-		return getColor(KEY_DEFAULT_COLOR);
+	public static Color getDefaultColor(DataSet dataSet) {
+		switch (dataSet) {
+		case TRANSFORMED:
+			return getColor(KEY_TRANSFORMED_DEFAULT_COLOR);
+		case SOURCE:
+		default:
+			return getColor(KEY_SOURCE_DEFAULT_COLOR);
+		}
 	}
 	
 	/**

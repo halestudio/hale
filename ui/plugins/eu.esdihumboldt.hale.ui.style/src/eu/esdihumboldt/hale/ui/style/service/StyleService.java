@@ -30,9 +30,10 @@ public interface StyleService {
 	/**
 	 * Get the style for a given type.
 	 * @param type the type definition
+	 * @param dataSet the type data set
 	 * @return a {@link Style} for the given type.
 	 */
-	public Style getStyle(TypeDefinition type);
+	public Style getStyle(TypeDefinition type, DataSet dataSet);
 	
 	/**
 	 * Get a style combining all registered styles.

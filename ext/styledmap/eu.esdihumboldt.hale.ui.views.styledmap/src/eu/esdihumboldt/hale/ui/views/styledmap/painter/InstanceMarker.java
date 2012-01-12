@@ -431,7 +431,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 			return StylePreferences.getSelectionColor();
 		}
 		// get default color
-		return StylePreferences.getDefaultColor();
+		return StylePreferences.getDefaultColor(context.getValue().getDataSet());
 	}
 
 }
