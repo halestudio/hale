@@ -124,7 +124,7 @@
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.NoLayout"
             id="eu.esdihumboldt.hale.ui.views.styledmap.default"
-            name="Overlay (Source and Transformed)">
+            name="Overlay">
          <tileoverlay
                ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
          </tileoverlay>
@@ -169,6 +169,72 @@
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.ColumnLayout"
             id="eu.esdihumboldt.hale.ui.views.styledmap.column.transformedfirst"
             name="Columns (Transformed, Source)">
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
+         </tileoverlay>
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
+         </tileoverlay>
+      </layout>
+      <layout
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.OnlyFirstLayout"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.only.source"
+            name="Source data only">
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
+         </tileoverlay>
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
+         </tileoverlay>
+      </layout>
+      <layout
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.OnlyFirstLayout"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.only.transformed"
+            name="Transformed data only">
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
+         </tileoverlay>
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
+         </tileoverlay>
+      </layout>
+      <layout
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.DiagonalUpLayout"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.dup.sourcefirst"
+            name="Diagonal up (Source, Transformed)">
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
+         </tileoverlay>
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
+         </tileoverlay>
+      </layout>
+      <layout
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.DiagonalUpLayout"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.dup.transformedfirst"
+            name="Diagonal up (Transformed, Source)">
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
+         </tileoverlay>
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
+         </tileoverlay>
+      </layout>
+      <layout
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.DiagonalDownLayout"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.ddown.sourcefirst"
+            name="Diagonal down (Source, Transformed)">
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
+         </tileoverlay>
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
+         </tileoverlay>
+      </layout>
+      <layout
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.DiagonalDownLayout"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.ddown.transformedfirst"
+            name="Diagonal down (Transformed, Source)">
          <tileoverlay
                ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
          </tileoverlay>
