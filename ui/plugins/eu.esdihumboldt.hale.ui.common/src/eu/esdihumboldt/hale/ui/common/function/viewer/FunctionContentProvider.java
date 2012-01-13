@@ -35,8 +35,8 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtensio
  */
 public class FunctionContentProvider implements ITreeContentProvider {
 	
-	private static final Category CAT_OTHER = new Category(null, "Others", 
-			"Any functions not associated to a category");
+	private static final Category CAT_OTHER = new Category(null, Messages.FunctionContentProvider_others, 
+			Messages.FunctionContentProvider_description);
 	
 	/**
 	 * @see IContentProvider#dispose()
