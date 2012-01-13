@@ -154,6 +154,28 @@
                ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
          </tileoverlay>
       </layout>
+      <layout
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.ColumnLayout"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.column.sourcefirst"
+            name="Columns (Source, Transformed)">
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
+         </tileoverlay>
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
+         </tileoverlay>
+      </layout>
+      <layout
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.ColumnLayout"
+            id="eu.esdihumboldt.hale.ui.views.styledmap.column.transformedfirst"
+            name="Columns (Transformed, Source)">
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
+         </tileoverlay>
+         <tileoverlay
+               ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
+         </tileoverlay>
+      </layout>
    </extension>
    <extension
          point="org.eclipse.ui.services">
