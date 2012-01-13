@@ -51,11 +51,14 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
+import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
 
 /**
  * A default {@link StyleService} implementation that will provide simple styles
@@ -68,12 +71,10 @@ public class StyleServiceImpl extends AbstractStyleService {
 
 	private static final ALogger _log = ALoggerFactory.getLogger(StyleServiceImpl.class);
 
-	private static StyleService instance;
-	
 	private final Map<TypeDefinition, FeatureTypeStyle> styles;
 	
 	private final SchemaService schemaService;
-
+	
 	/**
 	 * Queued styles
 	 */
@@ -88,13 +89,19 @@ public class StyleServiceImpl extends AbstractStyleService {
 	
 	// Constructor, instance accessor ..........................................
 	
-	private StyleServiceImpl (SchemaService schema) {
+	/**
+	 * Create a style service.
+	 * @param projectService the project service
+	 * @param schemaService the schema service
+	 */
+	public StyleServiceImpl (final ProjectService projectService, 
+			SchemaService schemaService) {
 		styles = new HashMap<TypeDefinition, FeatureTypeStyle>();
 		
-		schemaService = schema;
+		this.schemaService = schemaService;
 		
 		// add listener to process queued styles
-		schema.addSchemaServiceListener(new SchemaServiceListener() {
+		schemaService.addSchemaServiceListener(new SchemaServiceListener() {
 			
 			@Override
 			public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {
@@ -146,21 +153,41 @@ public class StyleServiceImpl extends AbstractStyleService {
 				}
 			}
 		});
-	}
-	
-	/**
-	 * Get the style service instance
-	 * 
-	 * @param schema the schema service 
-	 * 
-	 * @return the style service instance
-	 */
-	public static StyleService getInstance(SchemaService schema) {
-		if (instance == null) {
-			instance = new StyleServiceImpl(schema);
-		}
 		
-		return instance;
+		// clear styles on project clean
+		projectService.addListener(new ProjectServiceAdapter() {
+			
+			@Override
+			public void onClean() {
+				clearStyles();
+			}
+			
+		});
+		
+		// notify project service of style changes
+		//XXX not sure how this is done elsewhere, e.g. on alignment changes TODO revise?
+		addListener(new StyleServiceListener() {
+			
+			@Override
+			public void stylesRemoved(StyleService styleService) {
+				projectService.setChanged();
+			}
+			
+			@Override
+			public void stylesAdded(StyleService styleService) {
+				projectService.setChanged();
+			}
+			
+			@Override
+			public void styleSettingsChanged(StyleService styleService) {
+				// this is an application wide setting
+			}
+			
+			@Override
+			public void backgroundChanged(StyleService styleService, RGB background) {
+				// this is an application wide setting
+			}
+		});
 	}
 	
 	// StyleService methods ....................................................
