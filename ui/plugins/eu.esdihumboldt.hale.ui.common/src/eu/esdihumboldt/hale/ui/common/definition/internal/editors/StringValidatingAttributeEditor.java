@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
@@ -38,16 +39,16 @@ import eu.esdihumboldt.hale.ui.common.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @param <T> the attribute type/binding
  */
-public abstract class StringValidatingAttributeEditor<T> implements
-		AttributeEditor<T> {
-	
+public abstract class StringValidatingAttributeEditor<T> extends
+		AbstractAttributeEditor<T> {
+
 	private final Composite container;
-	
 	private final Label errorLabel;
-	
 	private final Text editor;
-	
 	private final Image okImage;
+
+	private boolean isValid;
+	private String value;
 
 	/**
 	 * Constructor
@@ -79,21 +80,19 @@ public abstract class StringValidatingAttributeEditor<T> implements
 		updateValidation();
 		
 		editor.addModifyListener(new ModifyListener() {
-			
 			@Override
 			public void modifyText(ModifyEvent e) {
 				updateValidation();
+				fireValueChanged(VALUE, value, editor.getText());
+				value = editor.getText();
 			}
-			
 		});
 		
 		container.addDisposeListener(new DisposeListener() {
-			
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				okImage.dispose();
 			}
-			
 		});
 	}
 	
@@ -108,6 +107,11 @@ public abstract class StringValidatingAttributeEditor<T> implements
 	
 	private void updateValidation() {
 		String valid = validate(getAsText());
+		
+		boolean oldValid = isValid;
+		isValid = valid == null;
+		if (oldValid != isValid)
+			fireStateChanged(IS_VALID, oldValid, isValid);
 		
 		if (valid == null) {
 			errorLabel.setImage(okImage);
@@ -221,7 +225,7 @@ public abstract class StringValidatingAttributeEditor<T> implements
 	 */
 	@Override
 	public boolean isValid() {
-		return validate(getAsText()) != null;
+		return isValid;
 	}
 
 }

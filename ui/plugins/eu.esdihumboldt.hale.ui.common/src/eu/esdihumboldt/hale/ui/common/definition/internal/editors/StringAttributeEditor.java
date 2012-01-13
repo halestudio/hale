@@ -13,10 +13,13 @@
 package eu.esdihumboldt.hale.ui.common.definition.internal.editors;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 
 /**
@@ -25,8 +28,8 @@ import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class StringAttributeEditor implements AttributeEditor<String> {
-	
+public class StringAttributeEditor extends AbstractAttributeEditor<String> {
+	private String value;
 	private final Text text;
 
 	/**
@@ -36,6 +39,15 @@ public class StringAttributeEditor implements AttributeEditor<String> {
 	 */
 	public StringAttributeEditor(Composite parent) {
 		text = new Text(parent, SWT.BORDER | SWT.SINGLE);
+		value = "";
+		text.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				String newValue = text.getText();
+				fireValueChanged(VALUE, value, newValue);
+				value = newValue;
+			}
+		});
 	}
 	
 	/**
