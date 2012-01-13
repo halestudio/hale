@@ -16,7 +16,6 @@ import java.util.Iterator;
 import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.commons.goml.omwg.Property;
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**
@@ -67,15 +66,15 @@ public abstract class EntityHelper {
 		return "unnamed"; //$NON-NLS-1$
 	}
 	
-	/**
-	 * Get the identifier for the given entity, as in {@link Definition#getIdentifier()}
-	 * 
-	 * @param entity the entity
-	 * 
-	 * @return the entity's identifier
-	 */
-	public static String getIdentifier(IEntity entity) {
-		return entity.getAbout().getAbout();
-	}
+//	/**
+//	 * Get the identifier for the given entity, as in {@link Definition#getIdentifier()}
+//	 * 
+//	 * @param entity the entity
+//	 * 
+//	 * @return the entity's identifier
+//	 */
+//	public static String getIdentifier(IEntity entity) {
+//		return entity.getAbout().getAbout();
+//	}
 
 }
