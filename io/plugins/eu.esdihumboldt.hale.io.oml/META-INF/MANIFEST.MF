@@ -9,7 +9,6 @@ Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.commons.goml.oml.io,
  eu.esdihumboldt.commons.goml.omwg,
  eu.esdihumboldt.hale.prefixmapper,
- eu.esdihumboldt.hale.schemaprovider.model,
  eu.esdihumboldt.specification.cst.align,
  eu.esdihumboldt.specification.cst.rdf,
  org.slf4j;version="1.5.11"
