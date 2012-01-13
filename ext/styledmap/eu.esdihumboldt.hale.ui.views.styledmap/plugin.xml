@@ -123,6 +123,7 @@
          point="eu.esdihumboldt.hale.ui.views.styledmap.layout">
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.NoLayout"
+            icon="icons/overlay.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.default"
             name="Overlay">
          <tileoverlay
@@ -134,6 +135,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.RowLayout"
+            icon="icons/top_to_bottom.gif"
             id="eu.esdihumboldt.hale.ui.views.styledmap.row.sourcefirst"
             name="Rows (Source, Transformed)">
          <tileoverlay
@@ -145,6 +147,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.RowLayout"
+            icon="icons/bottom_to_top.gif"
             id="eu.esdihumboldt.hale.ui.views.styledmap.row.transformedfirst"
             name="Rows (Transformed, Source)">
          <tileoverlay
@@ -156,6 +159,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.ColumnLayout"
+            icon="icons/left-to-right.gif"
             id="eu.esdihumboldt.hale.ui.views.styledmap.column.sourcefirst"
             name="Columns (Source, Transformed)">
          <tileoverlay
@@ -167,6 +171,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.ColumnLayout"
+            icon="icons/right-to-left.gif"
             id="eu.esdihumboldt.hale.ui.views.styledmap.column.transformedfirst"
             name="Columns (Transformed, Source)">
          <tileoverlay
@@ -178,6 +183,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.OnlyFirstLayout"
+            icon="icons/source.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.only.source"
             name="Source data only">
          <tileoverlay
@@ -189,6 +195,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.OnlyFirstLayout"
+            icon="icons/target.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.only.transformed"
             name="Transformed data only">
          <tileoverlay
@@ -200,6 +207,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.DiagonalUpLayout"
+            icon="icons/tl_to_br.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.dup.sourcefirst"
             name="Diagonal up (Source, Transformed)">
          <tileoverlay
@@ -211,6 +219,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.DiagonalUpLayout"
+            icon="icons/br_to_tl.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.dup.transformedfirst"
             name="Diagonal up (Transformed, Source)">
          <tileoverlay
@@ -222,6 +231,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.DiagonalDownLayout"
+            icon="icons/bl_to_tr.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.ddown.sourcefirst"
             name="Diagonal down (Source, Transformed)">
          <tileoverlay
@@ -233,6 +243,7 @@
       </layout>
       <layout
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.DiagonalDownLayout"
+            icon="icons/tr_to_bl.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.ddown.transformedfirst"
             name="Diagonal down (Transformed, Source)">
          <tileoverlay
