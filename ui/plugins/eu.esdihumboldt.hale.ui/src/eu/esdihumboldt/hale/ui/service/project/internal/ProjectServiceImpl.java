@@ -204,6 +204,12 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					//XXX do this in a Job or something?
 					file.apply();
 				}
+				// reset changed to false if it was altered through the project files being applied
+				//FIXME this is ugly XXX what if there actually is a real resulting change?
+				synchronized (ProjectServiceImpl.this) {
+					changed = false;
+				}
+				updateWindowTitle();
 			}
 
 			// uses paths based on "/" in FilePathUpdate
