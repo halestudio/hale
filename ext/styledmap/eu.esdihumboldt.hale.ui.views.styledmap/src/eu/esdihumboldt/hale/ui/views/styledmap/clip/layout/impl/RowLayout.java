@@ -12,9 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +33,7 @@ public class RowLayout implements PainterLayout {
 	/**
 	 * Row layout augmentation
 	 */
-	public class RowAugmentation implements LayoutAugmentation {
+	public class RowAugmentation extends AbstractDefaultAugmentation {
 		
 		private final int count;
 
@@ -49,11 +46,8 @@ public class RowLayout implements PainterLayout {
 		}
 
 		@Override
-		public void paint(Graphics2D g, JXMapViewer map,
+		public void doPaint(Graphics2D g, JXMapViewer map,
 				List<PainterProxy> painters, int width, int height) {
-			Font orgFont = g.getFont();
-			g.setFont(orgFont.deriveFont(Font.BOLD));
-			
 			// between each pair of rows...
 			for (int i = 1; i < count; i++) {
 				int y = (int) (i * height / (float) count);
@@ -61,38 +55,21 @@ public class RowLayout implements PainterLayout {
 				// ..draw the name of the top painter
 				if (i - 1 < painters.size()) {
 					String name = painters.get(i - 1).getName();
-					drawString(g, name, 
+					drawText(g, name, 
 							5, //width - 5 - g.getFontMetrics().stringWidth(name), 
 							y - 5);
 				}
 				
-				g.setColor(Color.WHITE);
-				g.setStroke(new BasicStroke(3));
 				// ...draw a line
-				g.drawLine(0, y, width, y);
+				drawSplitLine(g, 0, y, width, y);
 				
 				// ..draw the name of the bottom painter
 				if (i < painters.size()) {
 					String name = painters.get(i).getName();
-					drawString(g, name, 
+					drawText(g, name, 
 								width - 5 - g.getFontMetrics().stringWidth(name), 
 								y + 5 + g.getFontMetrics().getAscent());
 				}
-			}
-			
-			g.setFont(orgFont);
-		}
-
-		private void drawString(Graphics2D g, String str, int x, int y) {
-			if (str != null && !str.isEmpty()) {
-				g.setColor(Color.WHITE);
-				g.drawString(str, x - 1, y - 1);
-				g.drawString(str, x - 1, y + 1);
-				g.drawString(str, x + 1, y - 1);
-				g.drawString(str, x + 1, y + 1);
-				
-				g.setColor(Color.BLACK);
-				g.drawString(str, x, y);
 			}
 		}
 
