@@ -169,5 +169,12 @@
             class="eu.esdihumboldt.hale.ui.views.styledmap.preferences.StyledMapPreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="de.fhg.igd.mapviewer.MapPainter">
+      <painter
+            class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.LayoutAugmentationPainter"
+            name="Layout augmentation">
+      </painter>
+   </extension>
 
 </plugin>

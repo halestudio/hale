@@ -32,6 +32,12 @@ public interface PainterLayout {
 	 */
 	public List<Clip> createClips(int count);
 	
-	//TODO border/separators?!
+	/**
+	 * Get the layout augmentation painter for a given number of painters.
+	 * @param count the number of painters to layout
+	 * @return the augmentation painter or <code>null</code> if there is
+	 *   none available
+	 */
+	public LayoutAugmentation getAugmentation(int count);
 
 }

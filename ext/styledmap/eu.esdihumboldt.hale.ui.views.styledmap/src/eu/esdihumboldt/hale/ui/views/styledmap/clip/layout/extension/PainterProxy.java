@@ -30,4 +30,10 @@ public interface PainterProxy extends ClipPainter {
 	 */
 	public void disable();
 	
+	/**
+	 * Get the painter name.
+	 * @return the painter name, <code>null</code> if not known
+	 */
+	public String getName();
+	
 }

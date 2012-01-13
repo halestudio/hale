@@ -83,4 +83,17 @@ public class TileOverlayProxy implements PainterProxy {
 		}
 	}
 
+	/**
+	 * @see PainterProxy#getName()
+	 */
+	@Override
+	public String getName() {
+		ITileOverlayService tos = (ITileOverlayService) PlatformUI.getWorkbench().getService(ITileOverlayService.class);
+		TileOverlayFactory def = tos.getFactory(id);
+		if (def != null) {
+			return def.getDisplayName();
+		}
+		return null;
+	}
+
 }
