@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.style.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 
@@ -31,7 +32,8 @@ public class StyleServiceFactory extends AbstractServiceFactory {
 	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
 		if (serviceInterface.equals(StyleService.class)) {
-			return StyleServiceImpl.getInstance(
+			return new StyleServiceImpl(
+					(ProjectService) locator.getService(ProjectService.class),
 					(SchemaService) locator.getService(SchemaService.class));
 		}
 		
