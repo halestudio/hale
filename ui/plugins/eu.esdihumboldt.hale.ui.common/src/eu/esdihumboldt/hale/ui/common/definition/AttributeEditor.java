@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.common.definition;
 
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -24,6 +25,17 @@ import org.eclipse.swt.widgets.Control;
  * @version $Id$ 
  */
 public interface AttributeEditor<T> {
+	/**
+     * Property name constant (value <code>"editor_is_valid"</code>)
+     * to signal a change in the validity of the value of this field editor.
+     */
+    public static final String IS_VALID = "editor_is_valid"; //$NON-NLS-1$
+
+    /**
+     * Property name constant (value <code>"editor_value"</code>)
+     * to signal a change in the value of this field editor.
+     */
+    public static final String VALUE = "editor_value"; //$NON-NLS-1$
 	
 	/**
 	 * Get the editor control
@@ -67,4 +79,14 @@ public interface AttributeEditor<T> {
 	 */
 	public boolean isValid();
 
+	/**
+     * Sets or removes the property change listener for this editor.
+     * <p>
+     * Note that editors can support only a single listener.
+     * </p>
+     *
+     * @param listener a property change listener, or <code>null</code>
+     *  to remove
+     */
+	public void setPropertyChangeListener(IPropertyChangeListener listener);
 }

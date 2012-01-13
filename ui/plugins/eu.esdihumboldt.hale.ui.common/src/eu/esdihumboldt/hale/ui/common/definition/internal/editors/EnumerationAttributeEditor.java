@@ -17,13 +17,16 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 
 /**
@@ -32,12 +35,13 @@ import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class EnumerationAttributeEditor implements AttributeEditor<String> {
-	
+public class EnumerationAttributeEditor extends AbstractAttributeEditor<String> {
+
 	private final ComboViewer viewer;
-	
+
 	private boolean otherValuesAllowed;
-	
+	private Object value;
+
 	/**
 	 * Create an enumeration attribute editor
 	 * 
@@ -55,6 +59,16 @@ public class EnumerationAttributeEditor implements AttributeEditor<String> {
 		viewer.setLabelProvider(new LabelProvider());
 		
 		viewer.setInput(allowedValues);
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				Object newValue = getValue();
+				if ((value == null && newValue != null) || (value != null && !value.equals(newValue))) {
+					fireValueChanged(VALUE, value, newValue);
+					value = newValue;
+				}
+			}
+		});
 	}
 
 	/**

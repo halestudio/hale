@@ -16,6 +16,14 @@
             id="eu.esdihumboldt.hale.align.assign.generic">
       </propertyWizard>
       <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.AssignParameterPage"
+            function="eu.esdihumboldt.hale.align.assign"
+            id="eu.esdihumboldt.hale.ui.functions.core.assign">
+         <parameter
+               name="value">
+         </parameter>
+      </propertyParameterPage>
+      <propertyParameterPage
             class="eu.esdihumboldt.hale.ui.functions.core.ClassificationMappingParameterPage"
             function="eu.esdihumboldt.hale.align.classification"
             id="eu.esdihumboldt.hale.ui.functions.core.classification">
