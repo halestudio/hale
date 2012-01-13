@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
@@ -41,7 +42,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	 * Default constructor
 	 * @param projectService the project service 
 	 */
-	public AlignmentServiceImpl(ProjectService projectService) {
+	public AlignmentServiceImpl(final ProjectService projectService) {
 		super();
 		
 		alignment = new DefaultAlignment();
@@ -53,6 +54,30 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 				clean();
 			}
 			
+		});
+		
+		// inform project service on alignment changes
+		addListener(new AlignmentServiceAdapter() {
+
+			@Override
+			public void alignmentCleared() {
+				projectService.setChanged();
+			}
+
+			@Override
+			public void cellRemoved(Cell cell) {
+				projectService.setChanged();
+			}
+
+			@Override
+			public void cellsUpdated(Iterable<Cell> cells) {
+				projectService.setChanged();
+			}
+
+			@Override
+			public void cellsAdded(Iterable<Cell> cells) {
+				projectService.setChanged();
+			}
 		});
 	}
 
