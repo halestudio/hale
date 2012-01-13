@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.ui.util.action.DropdownAction;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
+@Deprecated
 public class StyleDropdown extends DropdownAction {
 	
 	/**

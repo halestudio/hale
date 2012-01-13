@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
+@Deprecated
 public class DatasetStyleDropdown extends Action implements IMenuCreator, SchemaServiceListener {
 	
 	private final DataSet dataset;
