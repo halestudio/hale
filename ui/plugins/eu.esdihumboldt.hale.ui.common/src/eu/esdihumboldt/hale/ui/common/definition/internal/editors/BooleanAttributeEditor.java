@@ -14,13 +14,16 @@ package eu.esdihumboldt.hale.ui.common.definition.internal.editors;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 
 /**
@@ -29,8 +32,8 @@ import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class BooleanAttributeEditor implements AttributeEditor<Boolean> {
-
+public class BooleanAttributeEditor extends AbstractAttributeEditor<Boolean> {
+	private Boolean value;
 	private final ComboViewer combo;
 	
 	/**
@@ -48,6 +51,15 @@ public class BooleanAttributeEditor implements AttributeEditor<Boolean> {
 		
 		// default selection
 		combo.setSelection(new StructuredSelection(Boolean.FALSE));
+		value = Boolean.FALSE;
+		combo.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				Boolean newValue = (Boolean) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				fireValueChanged(VALUE, value, newValue);
+				value = newValue;
+			}
+		});
 	}
 
 	/**

@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.codelist.CodeList.CodeEntry;
 import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
 import eu.esdihumboldt.hale.ui.codelist.internal.CodeListUIPlugin;
 import eu.esdihumboldt.hale.ui.codelist.internal.Messages;
+import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 
 /**
@@ -44,7 +45,7 @@ import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public class CodeListAttributeEditor implements AttributeEditor<CodeEntry> {
+public class CodeListAttributeEditor extends AbstractAttributeEditor<CodeEntry> {
 	
 	private ComboViewer codeEditor;
 	
