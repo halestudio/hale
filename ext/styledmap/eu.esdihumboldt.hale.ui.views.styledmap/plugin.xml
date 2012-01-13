@@ -102,6 +102,35 @@
             </visibleWhen>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="eu.esdihumboldt.hale.ui.views.styledmap.toolbar"
+               label="Map">
+            <dynamic
+                  class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.IconPainterLayoutContribution"
+                  id="eu.esdihumboldt.hale.ui.views.styledmap.layouts">
+               <visibleWhen
+                     checkEnabled="false">
+                  <or>
+                     <with
+                           variable="activePartId">
+                        <equals
+                              value="de.fhg.igd.mapviewer.view.MapView">
+                        </equals>
+                     </with>
+                     <with
+                           variable="activeWorkbenchWindow.activePerspective">
+                        <equals
+                              value="eu.esdihumboldt.hale.ui.views.styledmap">
+                        </equals>
+                     </with>
+                  </or>
+               </visibleWhen>
+            </dynamic>
+         </toolbar>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commandImages">
