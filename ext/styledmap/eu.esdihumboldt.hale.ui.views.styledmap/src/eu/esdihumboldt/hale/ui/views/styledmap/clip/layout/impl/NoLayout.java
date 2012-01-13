@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
+import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.LayoutAugmentation;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 
 /**
@@ -34,6 +35,14 @@ public class NoLayout implements PainterLayout {
 			clips.add(null); // null is cleaner than NoClip
 		}
 		return clips;
+	}
+
+	/**
+	 * @see PainterLayout#getAugmentation(int)
+	 */
+	@Override
+	public LayoutAugmentation getAugmentation(int count) {
+		return null;
 	}
 
 }
