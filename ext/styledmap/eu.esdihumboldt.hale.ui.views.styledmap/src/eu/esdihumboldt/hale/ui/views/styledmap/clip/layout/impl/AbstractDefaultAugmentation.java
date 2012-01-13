@@ -28,7 +28,15 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterProx
  * @author Simon Templer
  */
 public abstract class AbstractDefaultAugmentation implements LayoutAugmentation {
-
+	
+	/**
+	 * Default margin in pixels
+	 */
+	public static final int DEFAULT_MARGIN = 5;
+	
+	/**
+	 * @see LayoutAugmentation#paint(Graphics2D, JXMapViewer, List, int, int)
+	 */
 	@Override
 	public final void paint(Graphics2D g, JXMapViewer map,
 			List<PainterProxy> painters, int width, int height) {
