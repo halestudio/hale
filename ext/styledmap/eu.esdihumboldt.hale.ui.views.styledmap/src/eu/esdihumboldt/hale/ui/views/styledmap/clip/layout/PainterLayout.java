@@ -28,7 +28,8 @@ public interface PainterLayout {
 	 * @param count the number of painters to layout
 	 * @return a clip for each painter to layout, it is also possible for an
 	 *   element to be <code>null</code>, which means no clipping should be
-	 *   applied to the corresponding painter
+	 *   applied to the corresponding painter. If the size of the list is 
+	 *   smaller than count, the remaining painters should be disabled
 	 */
 	public List<Clip> createClips(int count);
 	
