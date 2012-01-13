@@ -84,6 +84,10 @@ public class Messages extends NLS {
 	public static String ListFunctionsDialog_4;
 	public static String ListFunctionsDialog_5;
 
+	public static String FunctionContentProvider_description;
+
+	public static String FunctionContentProvider_others;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
