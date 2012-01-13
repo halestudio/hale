@@ -99,7 +99,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
       <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
-      <plugin id="eu.esdihumboldt.cst.functions.string" fragment=""/>
+      <plugin id="eu.esdihumboldt.cst.functions.string"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
@@ -115,6 +115,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.doc.dev"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
+      <plugin id="eu.esdihumboldt.hale.doc.user.nl_de" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
@@ -154,7 +155,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.views.properties"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.report"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.schemas"/>
-      <plugin id="eu.esdihumboldt.hale.ui.views.transformation"/>
+      <plugin id="eu.esdihumboldt.hale.ui.views.transformation" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.views.typehierarchy"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.specification"/>
