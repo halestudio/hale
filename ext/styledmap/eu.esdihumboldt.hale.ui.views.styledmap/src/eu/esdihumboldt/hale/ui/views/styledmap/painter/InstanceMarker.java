@@ -267,7 +267,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 				g.draw(drawArea);
 			}
 			
-			return new PolygonArea(outerPolygon);
+			return new AdvancedPolygonArea(drawArea, outerPolygon);
 		} catch (Exception e) {
 			log.error("Error painting instance polygon geometry", e);
 			return null;
