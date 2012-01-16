@@ -471,6 +471,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					monitor.done();
 					trans.end();
 				}
+				// suppress the status being set to changed by the clean
+				synchronized (ProjectServiceImpl.this) {
+					changed = false;
+				}
+				updateWindowTitle();
 			}
 		};
 
