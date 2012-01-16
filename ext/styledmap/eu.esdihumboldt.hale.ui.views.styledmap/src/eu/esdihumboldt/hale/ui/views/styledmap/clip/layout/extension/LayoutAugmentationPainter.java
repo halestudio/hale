@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.JXMapViewer;
-import org.jdesktop.swingx.painter.Painter;
+import org.jdesktop.swingx.painter.AbstractPainter;
 
 import de.cs3d.util.eclipse.extension.exclusive.ExclusiveExtension.ExclusiveExtensionListener;
 import de.fhg.igd.mapviewer.BasicMapKit;
@@ -27,10 +27,10 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.LayoutAugmentation;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 
 /**
- * TODO Type description
+ * Layout augmentation painer.
  * @author Simon Templer
  */
-public class LayoutAugmentationPainter implements MapPainter {
+public class LayoutAugmentationPainter extends AbstractPainter<JXMapViewer> implements MapPainter {
 	
 	/**
 	 * The current layout augmentation
@@ -46,11 +46,22 @@ public class LayoutAugmentationPainter implements MapPainter {
 
 	private ExclusiveExtensionListener<PainterLayout, PainterLayoutFactory> layoutListener;
 
+	private BasicMapKit mapKit;
+
 	/**
-	 * @see Painter#paint(Graphics2D, Object, int, int)
+	 * Default constructor.
+	 */
+	public LayoutAugmentationPainter() {
+		super();
+		
+		setCacheable(true);
+	}
+
+	/**
+	 * @see AbstractPainter#doPaint(Graphics2D, Object, int, int)
 	 */
 	@Override
-	public void paint(Graphics2D g, JXMapViewer map, int width, int height) {
+	public void doPaint(Graphics2D g, JXMapViewer map, int width, int height) {
 		init();
 
 		if (augmentation != null) {
@@ -91,10 +102,16 @@ public class LayoutAugmentationPainter implements MapPainter {
 					painters = null;
 					augmentation = null;
 				}
+				clearCache();
+				if (mapKit != null) {
+					mapKit.refresh();
+				}
+				
 			}
 		});
 		
 		initialized = true;
+		clearCache();
 	}
 
 	/**
@@ -102,7 +119,7 @@ public class LayoutAugmentationPainter implements MapPainter {
 	 */
 	@Override
 	public void setMapKit(BasicMapKit mapKit) {
-		// ignore
+		this.mapKit = mapKit;
 	}
 
 	/**
