@@ -89,6 +89,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="order" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Integer value for ordering
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

@@ -154,7 +154,8 @@
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.NoLayout"
             icon="icons/overlay.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.default"
-            name="Overlay">
+            name="Overlay"
+            order="-10">
          <tileoverlay
                ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
          </tileoverlay>
@@ -214,7 +215,8 @@
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.OnlyFirstLayout"
             icon="icons/source.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.only.source"
-            name="Source data only">
+            name="Source data only"
+            order="-9">
          <tileoverlay
                ref="eu.esdihumboldt.hale.ui.views.styledmap.source">
          </tileoverlay>
@@ -226,7 +228,8 @@
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.OnlyFirstLayout"
             icon="icons/target.png"
             id="eu.esdihumboldt.hale.ui.views.styledmap.only.transformed"
-            name="Transformed data only">
+            name="Transformed data only"
+            order="-8">
          <tileoverlay
                ref="eu.esdihumboldt.hale.ui.views.styledmap.transformed">
          </tileoverlay>
