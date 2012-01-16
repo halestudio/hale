@@ -21,8 +21,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jdesktop.swingx.mapviewer.IllegalGeoPositionException;
 import org.jdesktop.swingx.mapviewer.PixelConverter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -237,9 +239,6 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	protected Area paintPolygon(Polygon geometry, Graphics2D g,
 			CRSDefinition crsDefinition, InstanceWaypoint context,
 			PixelConverter converter, int zoom) {
-		// create polygon for drawing
-		java.awt.Polygon drawPolygon = new java.awt.Polygon();
-		
 		try {
 			// map CRS
 			CoordinateReferenceSystem mapCRS = CRSDecode.getCRS(converter.getMapEpsg());
@@ -247,33 +246,50 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 			// get CRS converter
 			CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
 			
-			Coordinate[] coordinates = geometry.getCoordinates();
-			for (Coordinate coord : coordinates) {
-				// manually convert to map CRS
-				Point3D mapPoint = conv.convert(coord.x, coord.y, 0);
-				
-				GeoPosition pos = new GeoPosition(mapPoint.getX(), 
-						mapPoint.getY(), converter.getMapEpsg());
-				Point2D point = converter.geoToPixel(pos , zoom);
-				
-				drawPolygon.addPoint((int) point.getX(), (int) point.getY());
+			// exterior
+			Coordinate[] coordinates = geometry.getExteriorRing().getCoordinates();
+			java.awt.Polygon outerPolygon = createPolygon(coordinates, conv, converter, zoom);
+			java.awt.geom.Area drawArea = new java.awt.geom.Area(outerPolygon);
+			
+			// interior
+			for (int i = 0; i < geometry.getNumInteriorRing(); i++) {
+				LineString interior = geometry.getInteriorRingN(i);
+				java.awt.Polygon innerPolygon = createPolygon(
+						interior.getCoordinates(), conv, converter, zoom);
+				drawArea.subtract(new java.awt.geom.Area(innerPolygon));
 			}
 			
 			if (applyFill(g, context)) {
-				g.fillPolygon(drawPolygon);
+				g.fill(drawArea);
 			}
 
 			if (applyStroke(g, context)) {
-				g.drawPolygon(drawPolygon);
+				g.draw(drawArea);
 			}
 			
-			return new PolygonArea(drawPolygon);
+			return new PolygonArea(outerPolygon);
 		} catch (Exception e) {
 			log.error("Error painting instance polygon geometry", e);
 			return null;
 		}
 	}
 	
+	private java.awt.Polygon createPolygon(Coordinate[] coordinates, 
+			CRSConverter geoConverter, PixelConverter pixelConverter, int zoom) throws TransformException, IllegalGeoPositionException {
+		java.awt.Polygon result = new java.awt.Polygon();
+		for (Coordinate coord : coordinates) {
+			// manually convert to map CRS
+			Point3D mapPoint = geoConverter.convert(coord.x, coord.y, 0);
+			
+			GeoPosition pos = new GeoPosition(mapPoint.getX(), 
+					mapPoint.getY(), pixelConverter.getMapEpsg());
+			Point2D point = pixelConverter.geoToPixel(pos, zoom);
+			
+			result.addPoint((int) point.getX(), (int) point.getY());
+		}
+		return result;
+	}
+
 	/**
 	 * Paint a line string geometry.
 	 * @param geometry the line string
