@@ -583,4 +583,12 @@ public abstract class AbstractInstancePainter extends
 		}
 	}
 
+	/**
+	 * @see GenericWaypointPainter#findWaypoint(Object)
+	 */
+	@Override
+	public InstanceWaypoint findWaypoint(InstanceReference object) {
+		return super.findWaypoint(object);
+	}
+
 }

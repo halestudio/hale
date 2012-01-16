@@ -58,6 +58,10 @@
                commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
                style="push">
          </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToSelection"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -73,6 +77,10 @@
             </menu>
             <command
                   commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToSelection"
                   style="push">
             </command>
             <separator
@@ -136,6 +144,10 @@
          point="org.eclipse.ui.commandImages">
       <image
             commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
+            icon="icons/nav_bounds.png">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToSelection"
             icon="icons/navigation.png">
       </image>
    </extension>
@@ -143,9 +155,13 @@
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="eu.esdihumboldt.hale.ui.views.styledmap.handler.ZoomToAllHandler"
-            description="Zoom to the instances available in the map"
+            description="Zoom to all instances available in the map"
             id="eu.esdihumboldt.hale.ui.views.styledmap.zoomToAll"
             name="Zoom to instances">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.views.styledmap.zoomToSelection"
+            name="Zoom to selection">
       </command>
    </extension>
    <extension
@@ -306,6 +322,30 @@
             class="eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.LayoutAugmentationPainter"
             name="Layout augmentation">
       </painter>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eu.esdihumboldt.hale.ui.views.styledmap.handler.ZoomToSelectionHandler"
+            commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToSelection">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <or>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.ui.service.instance.InstanceReference">
+                     </instanceof>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.instance.model.Instance">
+                     </instanceof>
+                  </or>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
    </extension>
 
 </plugin>
