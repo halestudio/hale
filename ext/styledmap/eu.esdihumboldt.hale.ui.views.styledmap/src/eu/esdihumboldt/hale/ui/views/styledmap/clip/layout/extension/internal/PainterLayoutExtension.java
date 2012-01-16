@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.AbstractExtension;
+import de.cs3d.util.eclipse.extension.AbstractObjectDefinition;
 import de.cs3d.util.eclipse.extension.AbstractObjectFactory;
 import de.cs3d.util.eclipse.extension.ExtensionObjectDefinition;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
@@ -95,6 +96,24 @@ public class PainterLayoutExtension extends AbstractExtension<PainterLayout, Pai
 				}
 			}
 			return proxies;
+		}
+
+		/**
+		 * @see AbstractObjectDefinition#getPriority()
+		 */
+		@Override
+		public int getPriority() {
+			String order = conf.getAttribute("order");
+			
+			if (order != null) {
+				try {
+					return Integer.parseInt(order);
+				} catch (NumberFormatException e) {
+					// ignore, use default
+				}
+			}
+			
+			return super.getPriority();
 		}
 
 	}
