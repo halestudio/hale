@@ -405,7 +405,13 @@
             commandId="eu.esdihumboldt.hale.ui.style.typestyle"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="eu.esdihumboldt.hale.ui.application.bindings"
-            sequence="ALT+S">
+            sequence="M1+M2+S">
+      </key>
+      <key
+            commandId="eu.esdihumboldt.hale.ui.views.styledmap.zoomToSelection"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="eu.esdihumboldt.hale.ui.application.bindings"
+            sequence="M1+M2+Z">
       </key>
    </extension>
 
