@@ -61,7 +61,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 	/**
 	 * Name of the parameter specifying the property type
 	 */
-	public static final String PARAM_PROPERTYTYPE = "comboviewer";
+	public static final String PARAM_PROPERTYTYPE = "types";
 
 	/**
 	 * @see IOProvider#isCancelable()
