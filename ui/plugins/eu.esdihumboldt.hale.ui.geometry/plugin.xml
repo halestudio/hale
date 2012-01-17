@@ -31,9 +31,9 @@
                   <iterate
                         ifEmpty="false"
                         operator="or">
-                     <instanceof
-                           value="eu.esdihumboldt.hale.common.align.model.EntityDefinition">
-                     </instanceof>
+                     <test
+                           property="eu.esdihumboldt.hale.ui.geometry.allow_set_default">
+                     </test>
                   </iterate>
                </and>
             </with>
@@ -53,6 +53,16 @@
             </visibleWhen>
          </command>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="eu.esdihumboldt.hale.ui.geometry.tester.GeometryTester"
+            id="eu.esdihumboldt.hale.ui.geometry"
+            namespace="eu.esdihumboldt.hale.ui.geometry"
+            properties="allow_set_default"
+            type="eu.esdihumboldt.hale.common.align.model.EntityDefinition">
+      </propertyTester>
    </extension>
 
 </plugin>
