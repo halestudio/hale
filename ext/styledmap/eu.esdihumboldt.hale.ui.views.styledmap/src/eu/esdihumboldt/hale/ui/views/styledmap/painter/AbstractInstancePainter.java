@@ -45,6 +45,7 @@ import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
 import de.fhg.igd.mapviewer.marker.Marker;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypointPainter;
+import de.fhg.igd.mapviewer.waypoints.MarkerWaypointRenderer;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -94,7 +95,8 @@ public abstract class AbstractInstancePainter extends
 	 */
 	public AbstractInstancePainter(InstanceService instanceService,
 			DataSet dataSet) {
-		super();
+		super(new MarkerWaypointRenderer<InstanceWaypoint>(), 
+				4); // four worker threads
 		this.instanceService = instanceService;
 		this.dataSet = dataSet;
 		
