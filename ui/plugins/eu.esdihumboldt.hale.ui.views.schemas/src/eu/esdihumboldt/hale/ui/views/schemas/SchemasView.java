@@ -57,6 +57,8 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionContribution;
+import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
+import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaServiceListener;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultSchemaSelection.SchemaStructuredMode;
@@ -333,6 +335,8 @@ public class SchemasView extends PropertiesViewPart {
 	private EntityDefinitionServiceListener entityListener;
 
 	private AlignmentServiceListener alignmentListener;
+
+	private GeometrySchemaServiceListener geometryListener;
 //
 //	private StyleServiceListener styleListener;
 	
@@ -485,6 +489,17 @@ public class SchemasView extends PropertiesViewPart {
 //			}
 //		});
 		
+		// listen on default geometry changes
+		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
+		gss.addListener(geometryListener = new GeometrySchemaServiceListener() {
+			
+			@Override
+			public void defaultGeometryChanged(TypeDefinition type) {
+				refreshInDisplayThread();
+			}
+		});
+		
+		// listen on entity context changes
 		EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
 		eds.addListener(entityListener = new EntityDefinitionServiceListener() {
 			
@@ -634,6 +649,11 @@ public class SchemasView extends PropertiesViewPart {
 		if (entityListener != null) {
 			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
 			eds.removeListener(entityListener);
+		}
+		
+		if (geometryListener != null) {
+			GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
+			gss.removeListener(geometryListener);
 		}
 		
 		if (functionImage != null) {
