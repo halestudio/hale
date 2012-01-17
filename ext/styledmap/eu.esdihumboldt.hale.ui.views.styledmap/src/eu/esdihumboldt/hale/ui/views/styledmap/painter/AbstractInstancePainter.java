@@ -51,7 +51,9 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.geometry.GeometryUtil;
+import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaServiceListener;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
@@ -85,6 +87,8 @@ public abstract class AbstractInstancePainter extends
 	private Clip clip;
 
 	private final StyleServiceListener styleListener;
+	
+	private final GeometrySchemaServiceListener geometryListener;
 
 	private Set<InstanceReference> lastSelected = new HashSet<InstanceReference>();
 
@@ -120,6 +124,17 @@ public abstract class AbstractInstancePainter extends
 			@Override
 			public void backgroundChanged(StyleService styleService, RGB background) {
 				// ignore, background not supported
+			}
+		};
+		
+		geometryListener = new GeometrySchemaServiceListener() {
+			
+			@Override
+			public void defaultGeometryChanged(TypeDefinition type) {
+				//TODO only update way-points that are affected XXX save type def in way-point?
+				//XXX for now: recreate all
+				update(null);
+				//TODO do it in a job or something like that to prevent the UI being blocked?
 			}
 		};
 	}
@@ -174,7 +189,9 @@ public abstract class AbstractInstancePainter extends
 		//XXX only mappable type instances for source?!
 		InstanceCollection instances = instanceService.getInstances(dataSet);
 		
-		lastSelected = collectReferences(selection);
+		if (selection != null) {
+			lastSelected = collectReferences(selection);
+		}
 		
 		// add way-points for instances 
 		ResourceIterator<Instance> it = instances.iterator();
@@ -552,6 +569,13 @@ public abstract class AbstractInstancePainter extends
 	 */
 	public StyleServiceListener getStyleListener() {
 		return styleListener;
+	}
+
+	/**
+	 * @return the geometryListener
+	 */
+	public GeometrySchemaServiceListener getGeometryListener() {
+		return geometryListener;
 	}
 
 	/**
