@@ -20,9 +20,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
@@ -147,7 +147,7 @@ public class Project implements ProjectInfo {
 	/**
 	 * Project properties
 	 */
-	private final Map<String, String> properties = new HashMap<String, String>();
+	private final Map<String, String> properties = new TreeMap<String, String>();
 
 	/**
 	 * Project file locations
