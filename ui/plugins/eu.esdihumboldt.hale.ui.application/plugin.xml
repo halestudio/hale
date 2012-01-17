@@ -193,14 +193,6 @@
                   visible="true">
             </separator>
             <command
-                  commandId="eu.esdihumboldt.hale.ui.style.typestyle"
-                  label="Change style..."
-                  style="push">
-               <visibleWhen
-                     checkEnabled="true">
-               </visibleWhen>
-            </command>
-            <command
                   commandId="eu.esdihumboldt.hale.ui.edit.modify"
                   label="Edit..."
                   style="push">
@@ -215,6 +207,25 @@
                   commandId="org.eclipse.ui.edit.selectAll"
                   label="Select all"
                   style="push">
+            </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.edit.misc"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.style.typestyle"
+                  label="Change style..."
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.geometry.setAsDefault"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
             </command>
             <separator
                   name="eu.esdihumboldt.hale.ui.edit.add"
