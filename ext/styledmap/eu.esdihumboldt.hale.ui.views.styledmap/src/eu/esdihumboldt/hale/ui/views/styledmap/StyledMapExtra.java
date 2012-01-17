@@ -24,6 +24,7 @@ import de.fhg.igd.mapviewer.view.MapView;
 import de.fhg.igd.mapviewer.view.MapViewExtension;
 import de.fhg.igd.mapviewer.view.overlay.ITileOverlayService;
 import de.fhg.igd.mapviewer.view.overlay.TileOverlayFactory;
+import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayoutController;
@@ -67,11 +68,13 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 					ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 					InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 					StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+					GeometrySchemaService geometries = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
 					
 					// remove listeners
 					selection.removeSelectionListener(painter);
 					instances.removeListener(painter);
 					styles.removeListener(painter.getStyleListener());
+					geometries.removeListener(painter.getGeometryListener());
 					
 					// clear way-points
 					painter.clearWaypoints();
@@ -88,6 +91,7 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 					ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 					InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 					StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+					GeometrySchemaService geometries = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
 					
 					// update
 					painter.update(selection.getSelection());
@@ -96,6 +100,7 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 					selection.addSelectionListener(painter);
 					instances.addListener(painter);
 					styles.addListener(painter.getStyleListener());
+					geometries.addListener(painter.getGeometryListener());
 				}
 			}
 		});
@@ -116,9 +121,10 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 			ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 			InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 			StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+			GeometrySchemaService geometries = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
 			
 			// remove listeners
-	        disableScenePainterListeners(selection, instances, styles);
+	        disableScenePainterListeners(selection, instances, styles, geometries);
 		}
 	}
 
@@ -132,12 +138,13 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 			ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 			InstanceService instances = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 			StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+			GeometrySchemaService geometries = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
 			
 			// update
 			updateScenePainters(selection);
 				
 			// add listeners
-			enableScenePainterListeners(selection, instances, styles);
+			enableScenePainterListeners(selection, instances, styles, geometries);
 			
 			layoutController.enable();
 		}
@@ -148,13 +155,15 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 	 * @param selection the selection service
 	 * @param instances the instance service
 	 * @param styles the style service
+	 * @param geometries the geometry schema service
 	 */
 	private void enableScenePainterListeners(ISelectionService selection, 
-			InstanceService instances, StyleService styles) {
+			InstanceService instances, StyleService styles, GeometrySchemaService geometries) {
 		for (AbstractInstancePainter painter : mapView.getMapKit().getTilePainters(AbstractInstancePainter.class)) {
 			selection.addSelectionListener(painter);
 			instances.addListener(painter);
 			styles.addListener(painter.getStyleListener());
+			geometries.addListener(painter.getGeometryListener());
 		}
 	}
 
@@ -173,13 +182,15 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 	 * @param selection the selection service
 	 * @param instances the instance service
 	 * @param styles the style service
+	 * @param geometries the geometry schema service
 	 */
 	private void disableScenePainterListeners(ISelectionService selection,
-			InstanceService instances, StyleService styles) {
+			InstanceService instances, StyleService styles, GeometrySchemaService geometries) {
 		for (AbstractInstancePainter painter : mapView.getMapKit().getTilePainters(AbstractInstancePainter.class)) {
 			selection.removeSelectionListener(painter);
 			instances.removeListener(painter);
 			styles.removeListener(painter.getStyleListener());
+			geometries.removeListener(painter.getGeometryListener());
 			
 			painter.clearWaypoints();
 		}
