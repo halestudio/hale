@@ -60,6 +60,7 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.schema.SchemaReaderConfigurationPage;
+import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
 
 /**
  * Creates the Page used for the Schema Type
@@ -88,11 +89,10 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	private Boolean valid = true;
 	private Boolean isValid = true;
 	private ScrolledComposite sc;
-	private int dynY = 0;
-	private int predynY = 0;
 	private static final ALogger log = ALoggerFactory
 			.getLogger(PropertyTypeExtension.class);
 
+	// TODO: fix the geometry group
 	// manual activator for adding geometries or not
 	private boolean activateGeometries = false;
 
@@ -377,17 +377,10 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 										// systems
 									}
 
-									geom.setLayout(new GridLayout(3, false));
-									geom.layout();
-									dynY = geom.getSize().y;
-									sc.setMinHeight(sc.getSize().y + dynY);
-									dynY = 0;
-
-									geom.getParent().layout(true, true);
+									//geom.setLayout(new GridLayout(3, false));
 								} else if (map.get(i) != null
 										&& map.get(i) == true) {
 									index = geoNameFields.indexOf(geomap.get(i));
-									predynY = geom.getSize().y;
 
 									geoNameFields.get(index).dispose();
 									geoNameFields.get(index)
@@ -398,23 +391,12 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 									geoComboFields.get(index).getCombo()
 											.dispose();
 
-									geom.layout();
-
-									geom.getParent().layout(true, true);
-
-									// adjust the size of the scroll bar
-									dynY = geom.getSize().y;
-									int temp = predynY - dynY;
-									int tempY = sc.getMinHeight();
-									sc.setMinHeight(tempY - temp);
-									dynY = 0;
-									predynY = 0;
-
 									geoNameFields.set(index, null);
 									geoComboFields.set(index, null);
 									map.put(i, false);
 								}
 								geom.layout();
+								sc.layout();
 							}
 						}
 					});
@@ -452,7 +434,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		}
 
 		group.layout();
-		group.getParent().layout(true, true);
+		sc.layout();
 
 		super.onShowPage(firstShow);
 	}
@@ -462,17 +444,18 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	 */
 	@Override
 	protected void createContent(Composite parent) {
+		
+		Composite holder = new Composite(parent, SWT.NONE);
+		holder.setLayout(GridLayoutFactory.fillDefaults().create());
 
-		sc = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL);
-
-		sc.setExpandVertical(true);
+		sc = new DynamicScrolledComposite(holder, SWT.V_SCROLL);
 		sc.setExpandHorizontal(true);
-		sc.setMinWidth(parent.getSize().x);
-		sc.setMinHeight(parent.getSize().y);
-
+		
+		sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200).create());
+		
 		Composite page = new Composite(sc, SWT.NONE);
 		page.setLayout(new GridLayout(2, false));
-
+		
 		sfe = new TypeNameField("typename", "Typename", page);
 		sfe.setEmptyStringAllowed(false);
 		sfe.setErrorMessage("Please enter a valid Type Name");
@@ -504,6 +487,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				.equalWidth(false).margins(5, 5).create());
 
 		sc.setContent(page);
+		sc.layout();
 
 		setPageComplete(sfe.isValid());
 	}
