@@ -28,6 +28,9 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathPatternFilter;
  * @author Simon Templer
  */
 public class SchemaPatternFilter extends TreePathPatternFilter {
+	
+	private static final int MAX_LEVELS = 8;
+	
 	private Set<Object> memory = new HashSet<Object>();
 	
 	/**
@@ -45,6 +48,17 @@ public class SchemaPatternFilter extends TreePathPatternFilter {
 	@Override
 	protected boolean allowDescend(TreePath elementPath) {
 		if (elementPath != null) {
+			// don't descend below a max depth
+			/*
+			 * XXX Reintroduced this as we get into trouble with large schemas, 
+			 * searching the whole tree (even though cycles are skipped) just
+			 * takes to long.
+			 * FIXME any ideas on a better solution? 
+			 */
+			if (elementPath.getSegmentCount() > MAX_LEVELS) {
+		      return false;
+		    }
+			
 			Set<Object> segments = new HashSet<Object>();
 			for (int i = 0; i < elementPath.getSegmentCount(); i++) {
 				Object segment = elementPath.getSegment(i);
@@ -86,7 +100,7 @@ public class SchemaPatternFilter extends TreePathPatternFilter {
 			return true;
 		}
 		
-		// return true, if this 
+		// return true, if this element' definition was classified as visible
 		TreePath elementPath = (TreePath) element;
 		Object segment = elementPath.getLastSegment();
 		if (segment instanceof EntityDefinition) {
