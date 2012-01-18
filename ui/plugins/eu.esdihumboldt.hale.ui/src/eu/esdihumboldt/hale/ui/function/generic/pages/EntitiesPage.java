@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.internal.Field;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
+import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
 
 /**
  * Page that allows assigning cell entities
