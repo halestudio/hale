@@ -46,8 +46,7 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class ReadConfigurationPage
-		extends
+public class ReadConfigurationPage extends
 		AbstractConfigurationPage<ImportProvider, ImportWizard<ImportProvider>>
 		implements ModifyListener {
 
@@ -86,6 +85,7 @@ public class ReadConfigurationPage
 		String esc = escape.getText();
 
 		if (sep.isEmpty() || sep.contains("/") || sep.contains(":")
+				|| sep.contains(";")
 				|| (bmap.get(sep) == null && sep.length() > 1) || qu.isEmpty()
 				|| qu.contains("/") || qu.contains(":") || qu.contains(".")
 				|| (bmap.get(qu) == null && qu.length() > 1) || esc.isEmpty()
@@ -158,7 +158,7 @@ public class ReadConfigurationPage
 		GridData layoutData = new GridData();
 		layoutData.widthHint = 30;
 
-		String[] separatorSelection = new String[] { "TAB", ",", "|", "." };
+		String[] separatorSelection = new String[] { "TAB", ",", "|", ".", ";" };
 
 		// column 1, row 1
 		Label separatorLabel = new Label(page, SWT.NONE);
@@ -200,8 +200,10 @@ public class ReadConfigurationPage
 	/**
 	 * Counts the number of a Character in a String
 	 * 
-	 * @param input the String
-	 * @param toCount the Character to be count
+	 * @param input
+	 *            the String
+	 * @param toCount
+	 *            the Character to be count
 	 * @return the number of the Character in the String
 	 */
 	private static int countChar(String input, char toCount) {
@@ -221,7 +223,7 @@ public class ReadConfigurationPage
 		super.onShowPage(firstShow);
 
 		IOProvider p = getWizard().getProvider();
-		String[] separatorSelection = new String[] { "TAB", ",", "|", "." };
+		String[] separatorSelection = new String[] { "TAB", ",", "|", ".", ";" };
 
 		try {
 			BufferedReader streamReader = new BufferedReader(
@@ -230,13 +232,20 @@ public class ReadConfigurationPage
 			String line = streamReader.readLine();
 			int tab = countChar(line, '\t');
 			int comma = countChar(line, ',');
-			int bla = countChar(line, '|'); // TODO: rename/refactor
+			int pipe = countChar(line, '|');
+			int semicolon = countChar(line, ';');
 
-			if (Math.max(tab, comma) == tab && Math.max(tab, bla) == tab) {
+			if (Math.max(tab, comma) == tab && Math.max(tab, pipe) == tab
+					&& Math.max(tab, semicolon) == tab) {
 				p.setParameter(CSVConstants.PARAM_SEPARATOR, "TAB");
 			} else if (Math.max(comma, tab) == comma
-					&& Math.max(comma, bla) == comma) {
+					&& Math.max(comma, pipe) == comma
+					&& Math.max(comma, semicolon) == comma) {
 				p.setParameter(CSVConstants.PARAM_SEPARATOR, ",");
+			} else if (Math.max(semicolon, tab) == semicolon
+					&& Math.max(semicolon, comma) == semicolon
+					&& Math.max(semicolon, pipe) == semicolon) {
+				p.setParameter(CSVConstants.PARAM_SEPARATOR, ";");
 			} else {
 				p.setParameter(CSVConstants.PARAM_SEPARATOR, "|");
 			}
@@ -244,7 +253,7 @@ public class ReadConfigurationPage
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		String selection = getWizard().getProvider().getParameter(
 				CSVConstants.PARAM_SEPARATOR);
 		for (int i = 0; i < separatorSelection.length; i++) {
