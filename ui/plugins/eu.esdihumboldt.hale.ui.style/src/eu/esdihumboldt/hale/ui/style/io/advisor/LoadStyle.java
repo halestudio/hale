@@ -16,6 +16,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.style.io.StyleReader;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 
@@ -23,7 +24,7 @@ import eu.esdihumboldt.hale.ui.style.service.StyleService;
  * Stores loaded styles in the {@link StyleService}.
  * @author Simon Templer
  */
-public class LoadStyle extends AbstractIOAdvisor<StyleReader> {
+public class LoadStyle extends DefaultIOAdvisor<StyleReader> {
 
 	/**
 	 * @see AbstractIOAdvisor#handleResults(IOProvider)
@@ -33,6 +34,8 @@ public class LoadStyle extends AbstractIOAdvisor<StyleReader> {
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
 		ss.addStyles(provider.getStyles());
+		
+		super.handleResults(provider);
 	}
 
 }

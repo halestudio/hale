@@ -16,6 +16,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.style.io.StyleWriter;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 
@@ -23,13 +24,15 @@ import eu.esdihumboldt.hale.ui.style.service.StyleService;
  * Save the styles present in the {@link StyleService}.
  * @author Simon Templer
  */
-public class SaveStyle extends AbstractIOAdvisor<StyleWriter> {
+public class SaveStyle extends DefaultIOAdvisor<StyleWriter> {
 
 	/**
 	 * @see AbstractIOAdvisor#prepareProvider(IOProvider)
 	 */
 	@Override
 	public void prepareProvider(StyleWriter provider) {
+		super.prepareProvider(provider);
+		
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 		
 		provider.setStyle(ss.getStyle());

@@ -16,10 +16,10 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
@@ -27,13 +27,15 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * Advisor for exporting source instances.
  * @author Simon Templer
  */
-public class InstanceExportAdvisor extends AbstractIOAdvisor<InstanceWriter> {
+public class InstanceExportAdvisor extends DefaultIOAdvisor<InstanceWriter> {
 
 	/**
 	 * @see IOAdvisor#prepareProvider(IOProvider)
 	 */
 	@Override
 	public void prepareProvider(InstanceWriter provider) {
+		super.prepareProvider(provider);
+		
 		// set target schema
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		provider.setTargetSchema(ss.getSchemas(SchemaSpaceID.TARGET));

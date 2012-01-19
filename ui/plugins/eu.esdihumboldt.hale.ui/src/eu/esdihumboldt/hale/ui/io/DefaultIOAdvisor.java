@@ -10,31 +10,36 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.io.align;
+package eu.esdihumboldt.hale.ui.io;
 
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.align.io.AlignmentWriter;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
-import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
-import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoAware;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
- * Advisor for writing the alignment service alignment
+ * Base class for UI related {@link IOAdvisor}s.
  * @author Simon Templer
+ * @param <T> the I/O provider type
  */
-public class AlignmentExportAdvisor extends DefaultIOAdvisor<AlignmentWriter> {
+public abstract class DefaultIOAdvisor<T extends IOProvider> extends AbstractIOAdvisor<T> {
 
 	/**
 	 * @see AbstractIOAdvisor#prepareProvider(IOProvider)
 	 */
 	@Override
-	public void prepareProvider(AlignmentWriter provider) {
+	public void prepareProvider(T provider) {
 		super.prepareProvider(provider);
 		
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		provider.setAlignment(as.getAlignment());
+		if (provider instanceof ProjectInfoAware) {
+			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+			if (ps != null) {
+				((ProjectInfoAware) provider).setProjectInfo(ps.getProjectInfo());
+			}
+		}
 	}
 
 }
