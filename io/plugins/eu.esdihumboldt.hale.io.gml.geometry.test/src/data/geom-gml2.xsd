@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:hale="eu:esdihumboldt:hale:test" xmlns:gml="http://www.opengis.net/gml" elementFormDefault="qualified" targetNamespace="eu:esdihumboldt:hale:test">
+
+  <import namespace="http://www.opengis.net/gml" schemaLocation="schemas/gml/2.1.2.1/feature.xsd"/>
+  
+  <element name="Test" substitutionGroup="gml:_Feature" type="hale:TestType" />
+    
+  <complexType name="TestType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometry" type="gml:GeometryPropertyType" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+  <element name="MultiTest" substitutionGroup="gml:_Feature" type="hale:MultiTestType" />
+  
+  <complexType name="MultiTestType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometry" type="gml:MultiGeometryPropertyType" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+  <element name="GeometryProperty" substitutionGroup="gml:_Feature" type="hale:GeometryPropertyType"/>
+
+  <complexType name="GeometryPropertyType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element ref="gml:_Geometry" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+  <element name="PointProperty" substitutionGroup="gml:_Feature" type="hale:PointPropertyType"/>
+
+  <complexType name="PointPropertyType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometry" type="gml:PointType"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+</schema>
