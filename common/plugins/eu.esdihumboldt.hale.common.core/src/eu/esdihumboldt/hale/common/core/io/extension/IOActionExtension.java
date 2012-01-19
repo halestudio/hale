@@ -48,7 +48,7 @@ public class IOActionExtension extends IdentifiableExtension<IOAction> {
 		}
 
 		/**
-		 * @see Identifiable#getId()
+		 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable#getId()
 		 */
 		@Override
 		public String getId() {
