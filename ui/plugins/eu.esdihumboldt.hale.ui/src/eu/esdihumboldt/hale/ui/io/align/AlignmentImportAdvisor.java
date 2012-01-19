@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
@@ -25,7 +26,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * Advisor for storing an alignment in the alignment service
  * @author Simon Templer
  */
-public class AlignmentImportAdvisor extends AbstractIOAdvisor<AlignmentReader> {
+public class AlignmentImportAdvisor extends DefaultIOAdvisor<AlignmentReader> {
 
 	/**
 	 * @see AbstractIOAdvisor#prepareProvider(IOProvider)
