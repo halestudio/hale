@@ -36,7 +36,9 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
@@ -80,7 +82,15 @@ public abstract class StreamGmlInstance {
 			}
 		}
 		
-		//TODO add geometry as a GeometryProperty value where applicable
+		// augmented value XXX should this be an else if?
+		if (type.getConstraint(AugmentedValueFlag.class).isEnabled()) {
+			// add geometry as a GeometryProperty value where applicable
+			GeometryFactory geomFactory = type.getConstraint(GeometryFactory.class);
+			Object geomValue = geomFactory.createGeometry(instance);
+			if (geomValue != null) {
+				instance.setValue(geomValue);
+			}
+		}
 		
 		return instance;
 	}

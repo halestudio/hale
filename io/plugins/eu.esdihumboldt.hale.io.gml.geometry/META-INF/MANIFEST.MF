@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GML schema geometry support
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.geometry
+Bundle-Version: 2.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.google.common.base;version="9.0.0",
+ com.google.common.collect;version="9.0.0",
+ com.vividsolutions.jts.geom,
+ de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.convert,
+ eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.instance.geometry,
+ eu.esdihumboldt.hale.common.instance.helper,
+ eu.esdihumboldt.hale.common.instance.model,
+ eu.esdihumboldt.hale.common.schema.geometry,
+ eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.hale.common.schema.model.constraint,
+ eu.esdihumboldt.hale.common.schema.model.constraint.type,
+ eu.esdihumboldt.util.reflection,
+ org.slf4j;version="1.5.11",
+ org.springframework.core.convert;version="3.0.0.RELEASE"
+Export-Package: eu.esdihumboldt.hale.io.gml.geometry,
+ eu.esdihumboldt.hale.io.gml.geometry.constraint,
+ eu.esdihumboldt.hale.io.gml.geometry.handler
