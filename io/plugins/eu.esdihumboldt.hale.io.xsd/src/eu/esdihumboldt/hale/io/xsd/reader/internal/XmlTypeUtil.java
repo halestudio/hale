@@ -40,7 +40,7 @@ import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
@@ -49,6 +49,8 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.io.gml.geometry.Geometries;
+import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
@@ -449,17 +451,38 @@ public abstract class XmlTypeUtil {
 		// determine special bindings
 		
 		// geometry bindings
-		if (GML_GEOMETRY_TYPES.contains(type.getName())) {
-			//XXX just assign GeometryProperty binding for now
-			//FIXME concept of binding constraint and geometry property must be adapted to include built-in support for multiple geometries (with possible different CRS)
-			type.setConstraint(Binding.get(GeometryProperty.class));
-			//TODO set geometry type?
-//			type.setConstraint(...); 
-			// enable augmented value
+		Geometries geoms = Geometries.getInstance();
+		
+		try {
+			Iterable<TypeConstraint> constraints = geoms.getTypeConstraints(type);
+			if (constraints != null) {
+				// set the geometry related constraints (Binding, ElementType, GeometryType)
+				for (TypeConstraint constraint : constraints) {
+					type.setConstraint(constraint);
+				}
+			}
+			
+			// enable augmented value, as the derived geometry will be stored as the value
+			//XXX should this be done in handler?!
 			type.setConstraint(AugmentedValueFlag.ENABLED); 
-			return true;
+		} catch (GeometryNotSupportedException e) {
+			// ignore - is no geometry or is not recognized
 		}
 		
+		//XXX the old way
+//		if (GML_GEOMETRY_TYPES.contains(type.getName())) {
+//			//XXX just assign GeometryProperty binding for now
+//			//FIXME concept of binding constraint and geometry property must be adapted to include built-in support for multiple geometries (with possible different CRS)
+//			type.setConstraint(Binding.get(GeometryProperty.class));
+//			//TODO set geometry type?
+////			type.setConstraint(...); 
+//			
+//			// enable augmented value, as the derived geometry will be stored as the value
+//			type.setConstraint(AugmentedValueFlag.ENABLED); 
+//			return true;
+//		}
+		
+		// otherwise the super type binding will be used
 		return false;
 	}
 	
