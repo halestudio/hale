@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.type;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
@@ -29,6 +32,27 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public class ElementType implements TypeConstraint {
 	
 	/**
+	 * ElementType singletons, element binding class mapped to the corresponding
+	 * ElementType constraint.
+	 */
+	private static final Map<Class<?>, ElementType> singletons = new HashMap<Class<?>, ElementType>();
+	
+	/**
+	 * Get the element type constraint with the given Java binding
+	 * 
+	 * @param binding the type's Java binding
+	 * @return the element type constraint (which is a singleton)
+	 */
+	public static ElementType get(Class<?> binding) {
+		ElementType et = singletons.get(binding);
+		if (et == null) {
+			et = new ElementType(binding);
+			singletons.put(binding, et);
+		}
+		return et;
+	}
+	
+	/**
 	 * Create an element type constraint with the given element type. 
 	 * @param elementType the element type definition
 	 * @return the element type constraint
@@ -41,6 +65,11 @@ public class ElementType implements TypeConstraint {
 	 * The element type definition
 	 */
 	private final TypeDefinition definition;
+	
+	/**
+	 * The element type binding. May be <code>null</code>.
+	 */
+	private final Class<?> binding;
 
 	/**
 	 * Creates a default element binding constraint with {@link Object} binding
@@ -48,7 +77,7 @@ public class ElementType implements TypeConstraint {
 	 * @see Constraint 
 	 */
 	public ElementType() {
-		this(null);
+		this(Object.class);
 	}
 
 	/**
@@ -59,6 +88,18 @@ public class ElementType implements TypeConstraint {
 		super();
 		
 		this.definition = elementType;
+		this.binding = null;
+	}
+	
+	/**
+	 * Creates an element type with the given binding.
+	 * @param binding the element type binding
+	 */
+	private ElementType(Class<?> binding) {
+		super();
+		
+		this.binding = binding;
+		this.definition = null;
 	}
 	
 	/**
@@ -67,7 +108,7 @@ public class ElementType implements TypeConstraint {
 	 */
 	public Class<?> getBinding() {
 		if (definition == null) {
-			return Object.class;
+			return binding;
 		}
 		return definition.getConstraint(Binding.class).getBinding();
 	}
