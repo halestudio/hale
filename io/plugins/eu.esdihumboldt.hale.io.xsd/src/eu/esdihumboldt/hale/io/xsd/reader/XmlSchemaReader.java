@@ -941,11 +941,12 @@ public class XmlSchemaReader
 		 * Inheriting constraints could be activated with a parameter to the 
 		 * constraint annotation 
 		 */
-		type.setConstraint(new SuperTypeAugmentedValue(type));
+		type.setConstraint(new SuperTypeAugmentedValue(type)); //FIXME may be set in setSpecialBinding!
 		type.setConstraint(new SuperTypeHasValue(type));
 		if (!XmlTypeUtil.setSpecialBinding(type)) {
 			type.setConstraint(new SuperTypeBinding(type));
 		}
+//		FIXME what about ElementTypes, GeometryTypes etc.?!
 		
 		// set metadata
 		setMetadata(type, complexType, schemaLocation);
