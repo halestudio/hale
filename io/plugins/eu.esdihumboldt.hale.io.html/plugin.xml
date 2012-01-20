@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.html.HtmlMappingExporter"
+            id="eu.esdihumboldt.hale.io.htmlexporter"
+            name="HTML file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.html">
+         </contentType>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="html"
+            id="eu.esdihumboldt.hale.io.html"
+            name="HTML file"
+            priority="normal">
+      </content-type>
+   </extension>
+
+</plugin>
