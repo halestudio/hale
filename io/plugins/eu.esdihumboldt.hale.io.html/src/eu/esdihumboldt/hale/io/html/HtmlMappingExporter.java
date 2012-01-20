@@ -3,6 +3,7 @@ package eu.esdihumboldt.hale.io.html;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -14,8 +15,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.osgi.framework.Version;
 
 import com.google.common.io.Files;
@@ -35,12 +39,14 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  * 
  * @author Kevin Mais
  */
-@SuppressWarnings("unused") // TODO: remove
+@SuppressWarnings("unused")
+// TODO: remove
 public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		ProjectInfoAware {
 
 	private VelocityContext context;
 	private VelocityEngine ve;
+	private ProjectInfo pi;
 	private File file_template;
 	private File tempDir;
 	private Alignment alignment = null;
@@ -63,12 +69,63 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+
+		Template template = null;
+		
+		System.out.println("Path to save the file to: " + getTarget().getLocation().getPath());
+
 		try {
 			init();
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		File htmlExportFile = null;
+		if (pi != null) {
+			Date date = new Date();
+			SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"); //$NON-NLS-1$
+			htmlExportFile = new File(getTarget().getLocation().getPath());
+
+			String projectName = "Project Name: " + pi.getName();
+			String author = "Project Author: " + pi.getAuthor();
+			Version haleVers = pi.getHaleVersion();
+			String exportDate = "Export Date: " + dfm.format(date);
+			String description = "Description: " + pi.getDescription();
+			String created = "Created Date: " + dfm.format(pi.getCreated());
+
+			context = new VelocityContext();
+			
+			// associate variables with information datas
+			context.put("author", author);
+			context.put("project", projectName);
+			context.put("haleVers", haleVers);
+			context.put("exportDate", exportDate);
+			context.put("createdDate", created);
+			context.put("description", description);
+		} else {
+			// do nothing
+		}
+
+		try {
+			template = ve.getTemplate(file_template.getName(), "UTF-8");
+		} catch (ResourceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		if (template != null && htmlExportFile != null) {
+			FileWriter fw = new FileWriter(htmlExportFile);
+			template.merge(context, fw);
+			fw.close();
+		}
+
 		return null;
 	}
 
@@ -104,7 +161,6 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		}
 	}
 
-	
 	private void sortAlignment() {
 		for (Iterator<ICell> iterator = this.alignment.getMap().iterator(); iterator
 				.hasNext();) {
@@ -162,31 +218,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	 */
 	@Override
 	public void setProjectInfo(ProjectInfo projectInfo) {
-
-		if (projectInfo != null) {
-			Date date = new Date();
-			SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"); //$NON-NLS-1$
-
-			String projectName = "Project Name: " + projectInfo.getName();
-			String author = "Project Author: " + projectInfo.getAuthor();
-			Version haleVers = projectInfo.getHaleVersion();
-			String exportDate = "Export Date: " + dfm.format(date);
-			String description = "Description: " + projectInfo.getDescription();
-			String created = "Created Date: "
-					+ dfm.format(projectInfo.getCreated());
-
-			// associate variables with information datas
-			context.put("author", author);
-			context.put("project", projectName);
-			context.put("haleVers", haleVers);
-			context.put("exportDate", exportDate);
-			context.put("createdDate", created);
-			context.put("description", description);
-		}
-		else {
-			// do nothing
-		}
-
+		pi = projectInfo;
 	}
 
 }
