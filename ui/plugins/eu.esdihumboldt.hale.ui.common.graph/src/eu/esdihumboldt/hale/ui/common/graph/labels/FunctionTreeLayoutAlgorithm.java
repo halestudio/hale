@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutObserver;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutObserver.TreeNode;
+import org.eclipse.zest.layouts.dataStructures.DisplayIndependentRectangle;
 import org.eclipse.zest.layouts.interfaces.LayoutContext;
 
 /**
@@ -31,13 +32,13 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 
 	private TreeLayoutObserver treeObserver;
 
-	private final double startX = 120;
-
-	private final double startY = 25;
+	private final double startY = 40;
 
 	private double firstY = 0;
 
 	private double lastY = 0;
+	
+	private DisplayIndependentRectangle bounds;
 
 	/**
 	 * @see org.eclipse.zest.layouts.LayoutAlgorithm#setLayoutContext(org.eclipse.zest.layouts.interfaces.LayoutContext)
@@ -47,7 +48,6 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		if (treeObserver != null) {
 			treeObserver.stop();
 		}
-
 		if (context != null) {
 			treeObserver = new TreeLayoutObserver(context, null);
 		}
@@ -62,6 +62,20 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 			return;
 
 		internalApplyLayout();
+	}
+
+	/**
+	 * @return the bounds
+	 */
+	public DisplayIndependentRectangle getBounds() {
+		return bounds;
+	}
+
+	/**
+	 * @param bounds the bounds to set
+	 */
+	public void setBounds(DisplayIndependentRectangle bounds) {
+		this.bounds = bounds;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -83,19 +97,21 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		if (!children.isEmpty()) {
 			Object child = children.get(0);
 			TreeNode newrootInfo = ((TreeNode) child);
-			computeMiddlePosition(newrootInfo, 1);
+			computeMiddlePosition(newrootInfo, 4);
 			List thirdchildren = newrootInfo.getChildren();
 			if (!thirdchildren.isEmpty()) {
 				Object currentchild = thirdchildren.get(0);
 				TreeNode newsuperrootInfo = ((TreeNode) currentchild);
-				computeMiddlePosition(newsuperrootInfo, 2);
+				computeMiddlePosition(newsuperrootInfo, 7);
 			}
 		}
 	}
 
-	private void computePosition(TreeNode entityInfo, int line, int column) {
-		double x = column * 280 + startX;
-		double y = line * 60 + startY;
+	private void computePosition(TreeNode entityInfo, double currentLine, double currentColumn) {
+		
+		double x = ((currentColumn + 1) / 8) * bounds.width;
+
+		double y = currentLine * 60 + startY;
 
 		if (firstY == 0)
 			firstY = y;
@@ -105,8 +121,9 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		entityInfo.getNode().setLocation(x, y);
 	}
 
-	private void computeMiddlePosition(TreeNode entityInfo, int column) {
-		double x = column * 330 + startX;
+	private void computeMiddlePosition(TreeNode entityInfo, double currentColumn) {
+		
+		double x = (currentColumn / 8) * bounds.width;
 		double middleY = (firstY + lastY) / 2;
 
 		entityInfo.getNode().setLocation(x, middleY);
