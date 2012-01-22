@@ -251,7 +251,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 									TreeLayoutAlgorithm.LEFT_RIGHT);
 
 							SourceTargetContentProvider stcp = new SourceTargetContentProvider();
-							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider();
+							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(false);
 							viewer.setContentProvider(stcp);
 							viewer.setLabelProvider(fglp);
 							viewer.setInput(function);

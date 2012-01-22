@@ -37,6 +37,7 @@ Import-Package: de.cs3d.util.eclipse.extension.simple,
  org.eclipse.zest.core.widgets,
  org.eclipse.zest.layouts,
  org.eclipse.zest.layouts.algorithms,
+ org.eclipse.zest.layouts.dataStructures,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.ui.views.properties,
  eu.esdihumboldt.hale.ui.views.properties.definition,
