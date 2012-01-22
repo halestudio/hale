@@ -13,13 +13,13 @@
 package eu.esdihumboldt.hale.ui.views.properties.function.typefunction;
 
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.ui.views.properties.function.FunctionSourceTargetSection;
+import eu.esdihumboldt.hale.ui.views.properties.function.FunctionGraphSection;
 
 /**
  * Type function section with source information
  * @author Patrick Lieb
  */
-public class TypeFunctionSourceTargetSection extends  FunctionSourceTargetSection<TypeFunction>{
+public class TypeFunctionGraphSection extends  FunctionGraphSection<TypeFunction>{
 	
 	// specifies only the function type
 }

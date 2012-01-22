@@ -21,6 +21,9 @@ import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.ui.common.graph.figures.FunctionFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.ParameterFigure;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 import eu.esdihumboldt.util.Pair;
@@ -36,11 +39,18 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 
 	private final Color sourcebackgroundcolor;
 
+	private boolean showAll;
+
 	/**
 	 * Default constructor
+	 * 
+	 * @param showAll
+	 *            true if additional information (tooltips, etc.) should be shown
 	 */
-	public FunctionGraphLabelProvider() {
+	public FunctionGraphLabelProvider(boolean showAll) {
 		final Display display = Display.getCurrent();
+
+		this.showAll = showAll;
 
 		targetbackgroundcolor = new Color(display, 255, 160, 122);
 		sourcebackgroundcolor = new Color(display, 255, 236, 139);
@@ -92,17 +102,26 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 		if (element instanceof AbstractParameter) {
 			return new ParameterFigure(new FingerPost(10, SWT.LEFT),
 					getOccurenceString((AbstractParameter) element),
-					((AbstractParameter) element).getDescription());
+					((AbstractParameter) element).getDescription(), showAll);
 		}
 
 		if (element instanceof Pair<?, ?>) {
 			element = ((Pair<?, ?>) element).getFirst();
+
 		}
+
+		if (element instanceof PropertyFunction)
+			return new FunctionFigure(
+					((PropertyFunction) element).getDefinedParameters());
+
+		if (element instanceof TypeFunction)
+			return new FunctionFigure(
+					((TypeFunction) element).getDefinedParameters());
 
 		if (element instanceof AbstractParameter) {
 			return new ParameterFigure(new FingerPost(10, SWT.RIGHT),
 					getOccurenceString((AbstractParameter) element),
-					((AbstractParameter) element).getDescription());
+					((AbstractParameter) element).getDescription(), showAll);
 		}
 
 		return super.getFigure(element);
@@ -156,7 +175,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 			max = String.valueOf(parameter.getMaxOccurrence());
 		}
 
-		String text = min + "..." + max;
+		String text = min + ".." + max;
 
 		return text;
 	}

@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
  * empty pass.
  * @author Patrick Lieb
  */
-public class TypeFunctionSourceTargetFilter implements IFilter{
+public class TypeFunctionGraphFilter implements IFilter{
 
 	/**
 	 * @see org.eclipse.jface.viewers.IFilter#select(java.lang.Object)
