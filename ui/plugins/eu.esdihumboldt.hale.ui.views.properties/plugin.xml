@@ -265,6 +265,7 @@
             </input>
          </propertySection>
          <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.function.typefunctionsource"
                class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionParameterSection"
                filter="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionParameterFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.function.parameters.abstractfunction"
@@ -274,19 +275,21 @@
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionSourceTargetSection"
-               filter="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionSourceTargetFilter"
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.function.description"
+               class="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionGraphSection"
+               filter="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionGraphFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.function.typefunctionsource"
-               tab="eu.esdihumboldt.hale.ui.views.properties.definition.sourcetarget">
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.graph">
             <input
                   type="eu.esdihumboldt.hale.common.align.extension.function.TypeFunction">
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionSourceTargetSection"
-               filter="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionSourceTargetFilter"
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.function.description"
+               class="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionGraphSection"
+               filter="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionGraphFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunctionsource"
-               tab="eu.esdihumboldt.hale.ui.views.properties.definition.sourcetarget">
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.graph">
             <input
                   type="eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction">
             </input>
@@ -322,16 +325,16 @@
                label="PropertyType">
          </propertyTab>
          <propertyTab
-               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.general"
+               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.graph"
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.parameters"
                label="Parameters">
          </propertyTab>
          <propertyTab
-               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.parameters"
+               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.general"
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
-               id="eu.esdihumboldt.hale.ui.views.properties.definition.sourcetarget"
-               label="SourceTarget">
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.graph"
+               label="Graph">
          </propertyTab>
       </propertyTabs>
    </extension>

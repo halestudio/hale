@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
  * empty pass.
  * @author Patrick Lieb
  */
-public class PropertyFunctionSourceTargetFilter implements IFilter{
+public class PropertyFunctionGraphFilter implements IFilter{
 
 	/**
 	 * @see org.eclipse.jface.viewers.IFilter#select(java.lang.Object)
