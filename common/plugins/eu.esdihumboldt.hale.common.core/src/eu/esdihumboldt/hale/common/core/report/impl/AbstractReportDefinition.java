@@ -95,6 +95,7 @@ public abstract class AbstractReportDefinition<T extends Report<?>> implements R
 	 */
 	@Override
 	public String asString(T report) {
+		String nl = System.getProperty("line.separator");
 		Properties props = asProperties(report);
 		
 		StringWriter writer = new StringWriter();
@@ -110,7 +111,7 @@ public abstract class AbstractReportDefinition<T extends Report<?>> implements R
 			}
 		}
 		
-		return "\n" + writer.toString() + "\n\n";
+		return nl + writer.toString() + nl+nl;
 	}
 
 	/**

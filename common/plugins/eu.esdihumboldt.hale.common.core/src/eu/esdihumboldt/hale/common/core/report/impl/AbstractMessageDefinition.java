@@ -95,6 +95,7 @@ public abstract class AbstractMessageDefinition<T extends Message> implements Me
 	 */
 	@Override
 	public String asString(T message) {
+		String nl = System.getProperty("line.separator");
 		Properties props = asProperties(message);
 		
 		StringWriter writer = new StringWriter();
@@ -110,7 +111,7 @@ public abstract class AbstractMessageDefinition<T extends Message> implements Me
 			}
 		}
 		
-		return "\n" + writer.toString() + "\n\n";
+		return nl + writer.toString() + nl+nl;
 	}
 
 	/**
