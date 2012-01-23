@@ -20,7 +20,7 @@ import eu.esdihumboldt.hale.common.core.report.Message;
  * Object definition for {@link MessageImpl}
  * @author Simon Templer
  */
-public class MessageImplDefinition extends AbstractMessageDefinition<MessageImpl> {
+public class MessageImplDefinition extends AbstractMessageDefinition<Message> {
 	
 	/**
 	 * Key for the message string
@@ -36,7 +36,7 @@ public class MessageImplDefinition extends AbstractMessageDefinition<MessageImpl
 	 * Default constructor
 	 */
 	public MessageImplDefinition() {
-		super(MessageImpl.class, "default");
+		super(Message.class, "default");
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class MessageImplDefinition extends AbstractMessageDefinition<MessageImpl
 	 * @see AbstractMessageDefinition#asProperties(Message)
 	 */
 	@Override
-	protected Properties asProperties(MessageImpl message) {
+	protected Properties asProperties(Message message) {
 		Properties props = new Properties();
 		
 		props.setProperty(KEY_MESSAGE, message.getMessage());
