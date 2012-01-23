@@ -22,7 +22,8 @@ import eu.esdihumboldt.hale.common.core.report.Report;
 * @author Andreas Burchert
 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
 */
-public class ReportImplDefintion extends AbstractReportDefinition<Report<?>> {
+@SuppressWarnings("rawtypes")
+public class ReportImplDefintion extends AbstractReportDefinition<Report> {
 	
 	public static final String KEY_REPORT_TASKNAME = "taskname";
 	
@@ -44,8 +45,7 @@ public class ReportImplDefintion extends AbstractReportDefinition<Report<?>> {
 	 * Default constructor.
 	 */
 	public ReportImplDefintion() {
-//		super(DefaultReporter.class, "default");
-		super(null, "default"); // FIXME why does this not work?
+		super(Report.class, "default");
 	}
 
 	/**
