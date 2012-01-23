@@ -26,15 +26,56 @@ import eu.esdihumboldt.hale.common.core.report.ReportDefinition;
  * Abstract report definition.
  * @author Andreas Burchert
  * @param <T> the report type
+ * @param <R> 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractReportDefinition<T extends Report<?>> implements ReportDefinition<T> {
+public abstract class AbstractReportDefinition<T extends Report<?>, R extends T> implements ReportDefinition<T> {
 
 	private static final ALogger _log = ALoggerFactory.getLogger(AbstractReportDefinition.class);
 	
 	private final Class<T> reportClass;
 	
 	private final String identifier;
+	
+	/**
+	 * Key for taskname
+	 */
+	public static final String KEY_REPORT_TASKNAME = "taskname";
+	
+	/**
+	 * Key for success
+	 */
+	public static final String KEY_REPORT_SUCCESS = "success";
+	
+	/**
+	 * Key for summary
+	 */
+	public static final String KEY_REPORT_SUMMARY = "summary";
+	
+	/**
+	 * Key for timestamp
+	 */
+	public static final String KEY_REPORT_TIME = "timestamp";
+	
+	/**
+	 * Key for messagetype
+	 */
+	public static final String KEY_REPORT_MESSAGE_TYPE = "messagetype";
+	
+	/**
+	 * Key for info messages
+	 */
+	public static final String KEY_REPORT_INFOS = "info";
+	
+	/**
+	 * Key for error messages
+	 */
+	public static final String KEY_REPORT_ERRORS = "error";
+	
+	/**
+	 * Key for warning messages
+	 */
+	public static final String KEY_REPORT_WARNINGS = "warning";
 	
 	/**
 	 * Create report definition.
@@ -80,7 +121,9 @@ public abstract class AbstractReportDefinition<T extends Report<?>> implements R
 			reader.close();
 		}
 		
-		return createReport(props);
+		R reporter = createReport(props);
+		configureReport(reporter, props);
+		return reporter;
 	}
 	
 	/**
@@ -88,7 +131,15 @@ public abstract class AbstractReportDefinition<T extends Report<?>> implements R
 	 * @param props the properties
 	 * @return the report
 	 */
-	protected abstract T createReport(Properties props);
+	protected abstract R createReport(Properties props);
+		
+	/**
+	 * Configure the report.
+	 * @param reporter report to configure
+	 * @param props properties to set
+	 * @return the report
+	 */
+	protected abstract T configureReport(R reporter, Properties props);
 
 	/**
 	 * @see eu.esdihumboldt.util.definition.ObjectDefinition#asString(java.lang.Object)
@@ -121,6 +172,20 @@ public abstract class AbstractReportDefinition<T extends Report<?>> implements R
 	 * @param report the message
 	 * @return the properties representing the report
 	 */
-	protected abstract Properties asProperties(Report<?> report);
+	protected Properties asProperties(T report) {
+		Properties props = new Properties();
+		
+		props.setProperty(KEY_REPORT_TASKNAME, report.getTaskName());
+		props.setProperty(KEY_REPORT_SUCCESS, ""+report.isSuccess());
+		props.setProperty(KEY_REPORT_SUMMARY, report.getSummary());
+		props.setProperty(KEY_REPORT_TIME, ""+report.getTimestamp());
+		props.setProperty(KEY_REPORT_MESSAGE_TYPE, report.getMessageType().toString());
+		
+//		props.setProperty(KEY_REPORT_INFOS, StringUtils.join(report.getInfos(), ";"));
+//		props.setProperty(KEY_REPORT_ERRORS, StringUtils.join(report.getErrors(), ";"));
+//		props.setProperty(KEY_REPORT_WARNINGS, StringUtils.join(report.getWarnings(), ";"));
+		
+		return props ;
+	}
 
 }
