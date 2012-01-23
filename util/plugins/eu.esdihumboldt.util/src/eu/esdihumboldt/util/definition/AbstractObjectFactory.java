@@ -9,7 +9,6 @@
 
 package eu.esdihumboldt.util.definition;
 
-
 /**
  * Provides support for converting certain objects to a definition string and 
  * vice versa based on the {@link ObjectDefinition}ies available for the supported
@@ -40,13 +39,45 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 	 */
 	@SuppressWarnings("unchecked")
 	public <X extends T> String asString(X object) {
+		// check if the given object is null
+		if (object == null) {
+			return null;
+		}
+		
 		for (D definition : getDefinitions()) {
-			if (definition.getObjectClass().equals(object.getClass())) {
+			if (definition.getObjectClass() == null) {
+				continue;
+			}
+			
+			// comparison based on classes
+			if (definition.getObjectClass() != null 
+					&& definition.getObjectClass().equals(object.getClass())) {
+				return definition.getIdentifier() + ":" + ((ObjectDefinition<T>) definition).asString(object); //$NON-NLS-1$
+			}
+			
+			// compare based on interfaces
+			else if (definition.getObjectClass().isInterface() 
+					&& compare(object, definition)) {
 				return definition.getIdentifier() + ":" + ((ObjectDefinition<T>) definition).asString(object); //$NON-NLS-1$
 			}
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Compares two objects based on there implemented interfaces.
+	 * 
+	 * @param object object to check
+	 * @param definition definition to check on
+	 * @return true if they implemented the same interfaces
+	 */
+	private boolean compare(T object, D definition) {
+		if (definition.getObjectClass().isAssignableFrom(object.getClass())) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**
