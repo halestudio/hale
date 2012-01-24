@@ -12,10 +12,14 @@
 
 package eu.esdihumboldt.hale.common.core.io.report.impl;
 
+import java.net.URI;
 import java.util.Properties;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.report.impl.AbstractReportDefinition;
 
 
@@ -26,6 +30,13 @@ import eu.esdihumboldt.hale.common.core.report.impl.AbstractReportDefinition;
 */
 public class IOReportImplDefinition extends AbstractReportDefinition<IOReport, IOReporter> {
 
+	private static final ALogger _log = ALoggerFactory.getLogger(IOReportImplDefinition.class);
+	
+	/**
+	 * Key for target
+	 */
+	public static final String KEY_IOREPORT_TARGET = "target";
+	
 	/**
 	 * Constructor
 	 */
@@ -38,8 +49,7 @@ public class IOReportImplDefinition extends AbstractReportDefinition<IOReport, I
 	 */
 	@Override
 	protected IOReporter createReport(Properties props) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DefaultIOReporter(null, props.getProperty(KEY_REPORT_TASKNAME), false);
 	}
 
 	/**
@@ -47,8 +57,24 @@ public class IOReportImplDefinition extends AbstractReportDefinition<IOReport, I
 	 */
 	@Override
 	protected IOReport configureReport(IOReporter reporter, Properties props) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			AbstractReportDefinition.configureBasicReporter(reporter, props);
+			
+			// restore location
+			reporter.setTarget(new DefaultInputSupplier(URI.create(props.getProperty(KEY_IOREPORT_TARGET))));
+		} catch (Exception e) {
+			_log.error("Error while parsing a report", e.getStackTrace());
+		}
+		
+		return reporter;
 	}
 
+	@Override
+	protected Properties asProperties(IOReport report) {
+		Properties props = super.asProperties(report);
+		
+		props.setProperty(KEY_IOREPORT_TARGET, report.getTarget().getLocation().toString());
+		
+		return props;
+	}
 }
