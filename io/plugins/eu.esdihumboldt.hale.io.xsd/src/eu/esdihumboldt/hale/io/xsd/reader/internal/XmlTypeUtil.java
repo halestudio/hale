@@ -52,7 +52,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumeration;
 
@@ -295,8 +294,7 @@ public abstract class XmlTypeUtil {
 		// mark as restriction
 		type.setConstraint(RestrictionFlag.ENABLED);
 		
-		// assign super type binding
-		type.setConstraint(new SuperTypeBinding(type));
+		// assign no binding, inherit from super type
 		
 		//TODO improve support for enumeration and facets in general 
 		List<String> values = new ArrayList<String>();

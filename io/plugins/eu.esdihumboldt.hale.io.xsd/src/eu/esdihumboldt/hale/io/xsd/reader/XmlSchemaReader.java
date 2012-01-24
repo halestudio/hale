@@ -106,9 +106,6 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementName;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeAugmentedValue;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeBinding;
-import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SuperTypeHasValue;
 import gnu.trove.TObjectIntHashMap;
 
 /**
@@ -801,9 +798,8 @@ public class XmlSchemaReader
 							// set metadata and constraints
 							setMetadata(anonymousType, complexType, schemaLocation);
 							anonymousType.setConstraint(HasValueFlag.ENABLED);
-							// set super type binding
+							// set no binding, inherit it from the super type
 							//XXX is this ok? 
-							anonymousType.setConstraint(new SuperTypeBinding(anonymousType));
 							
 							// add properties to the anonymous type
 							createProperties(anonymousType, complexType,
@@ -933,19 +929,9 @@ public class XmlSchemaReader
 		//TODO type constraints!
 		type.setConstraint(AbstractFlag.get(complexType.isAbstract()));
 		
-		// hasValue and binding from super type
-		/*
-		 * XXX instead of assigning this manually could we adapt the type definition 
-		 * to retrieve that information automatically from the super type if not 
-		 * present for the type? This would prevent creation of many objects
-		 * Inheriting constraints could be activated with a parameter to the 
-		 * constraint annotation 
-		 */
-		type.setConstraint(new SuperTypeAugmentedValue(type));
-		type.setConstraint(new SuperTypeHasValue(type));
-		if (!XmlTypeUtil.setSpecialBinding(type)) {
-			type.setConstraint(new SuperTypeBinding(type));
-		}
+		// hasValue and binding and all other inheritable constrains from super type
+		// override constraints for special types
+		XmlTypeUtil.setSpecialBinding(type);
 		
 		// set metadata
 		setMetadata(type, complexType, schemaLocation);
