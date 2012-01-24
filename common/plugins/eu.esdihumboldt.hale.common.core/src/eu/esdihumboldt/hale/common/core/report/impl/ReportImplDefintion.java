@@ -14,6 +14,9 @@ package eu.esdihumboldt.hale.common.core.report.impl;
 
 import java.util.Properties;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.Reporter;
@@ -25,6 +28,8 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
 */
 @SuppressWarnings("rawtypes")
 public class ReportImplDefintion extends AbstractReportDefinition<Report, Reporter<?>> {
+	
+	private static final ALogger _log = ALoggerFactory.getLogger(ReportImplDefintion.class);
 	
 	/**
 	 * Default constructor.
@@ -38,7 +43,6 @@ public class ReportImplDefintion extends AbstractReportDefinition<Report, Report
 	 */
 	@Override
 	protected DefaultReporter<?> createReport(Properties props) {
-		// TODO Auto-generated method stub
 		return new DefaultReporter<Message>(props.getProperty(KEY_REPORT_TASKNAME), 
 				null, false);
 	}
@@ -49,11 +53,11 @@ public class ReportImplDefintion extends AbstractReportDefinition<Report, Report
 	@Override
 	protected Report configureReport(Reporter<?> reporter,
 			Properties props) {
-		reporter.setSummary(props.getProperty(KEY_REPORT_SUMMARY));
-		// TODO extract this function to create a static version in superclass
-		// add infos, warnings and errors
-//				report.getWarnings().addAll(Arrays.asList(StringUtils.split(props.getProperty(KEY_REPORT_WARNINGS), ";"))); // TODO add a proper way of adding old warnings and stuff
-		
+		try {
+			AbstractReportDefinition.configureBasicReporter(reporter, props);
+		} catch (Exception e) {
+			_log.error("Error while parsing a report", e.getStackTrace());
+		} 
 		
 		return reporter;
 	}
