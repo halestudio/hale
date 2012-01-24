@@ -62,5 +62,14 @@ public class AbstractFlag extends AbstractFlagConstraint implements TypeConstrai
 	private AbstractFlag(boolean enabled) {
 		super(enabled);
 	}
+	
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// must be set explicitly on abstract types
+		return false;
+	}
 
 }

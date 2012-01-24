@@ -80,4 +80,13 @@ public class ElementType implements TypeConstraint {
 		return definition;
 	}
 	
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// inherit unless overridden
+		return true;
+	}
+	
 }

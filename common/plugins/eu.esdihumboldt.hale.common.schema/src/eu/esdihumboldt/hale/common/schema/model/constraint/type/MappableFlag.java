@@ -65,4 +65,13 @@ public class MappableFlag extends AbstractFlagConstraint implements TypeConstrai
 		super(enabled);
 	}
 
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// must be set explicitly
+		return false;
+	}
+
 }

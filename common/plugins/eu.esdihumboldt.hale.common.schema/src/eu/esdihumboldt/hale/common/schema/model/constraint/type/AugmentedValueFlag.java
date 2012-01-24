@@ -70,5 +70,14 @@ public class AugmentedValueFlag extends AbstractFlagConstraint implements TypeCo
 	private AugmentedValueFlag(boolean enabled) {
 		super(enabled);
 	}
+	
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// inherit unless overridden
+		return true;
+	}
 
 }

@@ -75,11 +75,31 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 				return (T) constraint;
 			}
 			
+			// support for inherited constraints
+			T inheritedConstraint = getInheritedConstraint(constraintType);
+			if (inheritedConstraint != null) {
+				constraints.put(constraintType, inheritedConstraint);
+				return inheritedConstraint;
+			}
+			
 			// get default constraint and remember it
 			T defConstraint = ConstraintUtil.getDefaultConstraint(constraintType, this);
 			constraints.put(constraintType, defConstraint);
 			return defConstraint;
 		}
+	}
+	
+	/**
+	 * Get the inherited constraint of the given constraint type.<br>
+	 * <br>
+	 * This implementation returns <code>null</code>, as inheritance is not
+	 * supported generally for definitions. 
+	 * @param constraintType the constraint type
+	 * @return the inherited constraint or <code>null</code> if there is none
+	 *   or inheritance is not allowed
+	 */
+	protected <T extends C> T getInheritedConstraint(Class<T> constraintType) {
+		return null;
 	}
 	
 	/**

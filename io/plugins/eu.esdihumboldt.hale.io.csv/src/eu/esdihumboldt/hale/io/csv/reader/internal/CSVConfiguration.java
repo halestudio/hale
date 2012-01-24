@@ -83,5 +83,14 @@ public class CSVConfiguration implements TypeConstraint, CSVConstants {
 	public boolean skipFirst() {
 		return skip_first_line;
 	}
+
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// must be set explicitly
+		return false;
+	}
 	
 }

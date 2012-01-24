@@ -143,6 +143,27 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	}
 
 	/**
+	 * @see AbstractDefinition#getInheritedConstraint(Class)
+	 */
+	@Override
+	protected <T extends TypeConstraint> T getInheritedConstraint(
+			Class<T> constraintType) {
+		TypeDefinition superType = getSuperType();
+		
+		if (superType != null) {
+			// get the super type constraint (this also may be an inherited constraint from its super types)
+			T superConstraint = superType.getConstraint(constraintType);
+			
+			if (superConstraint.isInheritable()) {
+				// if inheritance is allowed for the constraint, return it
+				return superConstraint;
+			}
+		}
+		
+		return null;
+	}
+
+	/**
 	 * @see TypeDefinition#getSuperType()
 	 */
 	@Override

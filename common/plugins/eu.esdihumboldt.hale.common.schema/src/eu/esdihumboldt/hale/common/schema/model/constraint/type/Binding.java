@@ -88,4 +88,13 @@ public class Binding implements TypeConstraint {
 		return binding;
 	}
 	
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// inherit unless overridden
+		return true;
+	}
+	
 }
