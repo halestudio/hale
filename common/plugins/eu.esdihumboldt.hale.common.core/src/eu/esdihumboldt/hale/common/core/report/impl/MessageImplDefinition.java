@@ -23,16 +23,6 @@ import eu.esdihumboldt.hale.common.core.report.Message;
 public class MessageImplDefinition extends AbstractMessageDefinition<Message> {
 	
 	/**
-	 * Key for the message string
-	 */
-	public static final String KEY_MESSAGE = "message";
-	
-	/**
-	 * Key for the stack trace
-	 */
-	public static final String KEY_STACK_TRACE = "stack";
-
-	/**
 	 * Default constructor
 	 */
 	public MessageImplDefinition() {
@@ -49,18 +39,4 @@ public class MessageImplDefinition extends AbstractMessageDefinition<Message> {
 				null, 
 				props.getProperty(KEY_STACK_TRACE));
 	}
-
-	/**
-	 * @see AbstractMessageDefinition#asProperties(Message)
-	 */
-	@Override
-	protected Properties asProperties(Message message) {
-		Properties props = new Properties();
-		
-		props.setProperty(KEY_MESSAGE, message.getMessage());
-		props.setProperty(KEY_STACK_TRACE, message.getStackTrace());
-		
-		return props ;
-	}
-
 }
