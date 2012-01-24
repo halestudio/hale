@@ -199,7 +199,8 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				_mntmRestoreLog.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						// TODO restore the reports from ReportService
+						// restore the reports from ReportService
+						loadReports();
 					}
 				});
 				_mntmRestoreLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/restore_log.gif"));
