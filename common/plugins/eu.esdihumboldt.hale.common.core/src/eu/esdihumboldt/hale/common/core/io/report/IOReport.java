@@ -30,5 +30,4 @@ public interface IOReport extends Report<IOMessage> {
 	 * @return the locatable target
 	 */
 	public Locatable getTarget();
-
 }

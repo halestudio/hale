@@ -221,9 +221,7 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	}
 
 	/**
-	 * Set if the task was successful. Also updates the report timestamp.
-	 * 
-	 * @param success if the task was successful
+	 * @see eu.esdihumboldt.hale.common.core.report.Reporter#setSuccess(boolean)
 	 */
 	@Override
 	public void setSuccess(boolean success) {
@@ -261,5 +259,21 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 		result.append("summary = "+this.getSummary()+NL);
 		
 		return result.toString();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.Reporter#setTimestamp(java.util.Date)
+	 */
+	@Override
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.Reporter#setStartTime(java.util.Date)
+	 */
+	@Override
+	public void setStartTime(Date starttime) {
+		this.startTime = starttime;
 	}
 }
