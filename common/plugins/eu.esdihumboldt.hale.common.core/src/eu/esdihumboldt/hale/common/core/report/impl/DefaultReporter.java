@@ -41,7 +41,7 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	
 	private boolean success = false;
 	
-	private final Class<T> messageType;
+	private Class<T> messageType;
 	
 	private final List<T> errors = new ArrayList<T>();
 	
@@ -55,7 +55,7 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	
 	private final boolean doLog;
 	
-	private final String taskName;
+	private String taskName;
 	
 	private String summary;
 
@@ -221,9 +221,7 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	}
 
 	/**
-	 * Set if the task was successful. Also updates the report timestamp.
-	 * 
-	 * @param success if the task was successful
+	 * @see Report#setSuccess(boolean)
 	 */
 	@Override
 	public void setSuccess(boolean success) {
@@ -261,5 +259,37 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 		result.append("summary = "+this.getSummary()+NL);
 		
 		return result.toString();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.Report#setTaskName(java.lang.String)
+	 */
+	@Override
+	public void setTaskName(String taskname) {
+		this.taskName = taskname;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.Report#setTimestamp(java.util.Date)
+	 */
+	@Override
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.Report#setStartTime(java.util.Date)
+	 */
+	@Override
+	public void setStartTime(Date starttime) {
+		this.startTime = starttime;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.Report#setMessageType(java.lang.Class)
+	 */
+	@Override
+	public void setMessageType(Class<T> messageType) {
+		this.messageType = messageType;
 	}
 }
