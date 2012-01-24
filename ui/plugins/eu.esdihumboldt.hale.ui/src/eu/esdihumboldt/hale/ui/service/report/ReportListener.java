@@ -47,4 +47,8 @@ public interface ReportListener<R extends Report<M>, M extends Message> {
 	 */
 	public void reportAdded(R report);
 
+	/**
+	 * Called when all reports have been deleted
+	 */
+	public void reportsDeleted();
 }
