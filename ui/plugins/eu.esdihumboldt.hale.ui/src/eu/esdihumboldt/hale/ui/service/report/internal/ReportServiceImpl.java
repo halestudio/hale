@@ -129,4 +129,12 @@ public class ReportServiceImpl implements ReportService {
 		listeners.remove(listener);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#deleteAllReports()
+	 */
+	@Override
+	public void deleteAllReports() {
+		this.reports.clear();
+	}
+
 }

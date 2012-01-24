@@ -179,7 +179,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				_mntmDeleteLog.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						// TODO delete all logs
+						// display a yes|no box
 						MessageBox messageBox = new MessageBox(tree.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 						messageBox.setText("Confirm Delete");
 						messageBox.setMessage("Are you sure you want to permanently delete all logged events?");
@@ -188,7 +188,10 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 							// clear the view
 							clearLogView();
 							
-							// TODO remove all entries from ReportService
+							// remove all entries from ReportService
+							repService.deleteAllReports();
+							
+							// TODO delete saved reports
 						}
 					}
 				});
