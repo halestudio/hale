@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.common.core.io.report.impl;
 
 import java.util.Properties;
 
-import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.impl.AbstractMessageDefinition;
 
 /**
@@ -23,16 +22,6 @@ import eu.esdihumboldt.hale.common.core.report.impl.AbstractMessageDefinition;
  */
 public class IOMessageImplDefinition extends AbstractMessageDefinition<IOMessageImpl> {
 	
-	/**
-	 * Key for the message string
-	 */
-	public static final String KEY_MESSAGE = "message";
-	
-	/**
-	 * Key for the stack trace
-	 */
-	public static final String KEY_STACK_TRACE = "stack";
-
 	/**
 	 * Default constructor
 	 */
@@ -49,18 +38,5 @@ public class IOMessageImplDefinition extends AbstractMessageDefinition<IOMessage
 				props.getProperty(KEY_MESSAGE), 
 				null, 
 				props.getProperty(KEY_STACK_TRACE));
-	}
-
-	/**
-	 * @see AbstractMessageDefinition#asProperties(Message)
-	 */
-	@Override
-	protected Properties asProperties(IOMessageImpl message) {
-		Properties props = new Properties();
-		
-		props.setProperty(KEY_MESSAGE, message.getMessage());
-		props.setProperty(KEY_STACK_TRACE, message.getStackTrace());
-		
-		return props ;
 	}
 }
