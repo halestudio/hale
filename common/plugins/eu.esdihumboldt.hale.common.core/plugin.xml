@@ -73,6 +73,14 @@
             class="eu.esdihumboldt.hale.common.core.report.impl.ReportImplDefintion"
             id="eu.esdihumboldt.hale.common.core.report.default">
       </reportDefinition>
+      <messageDefinition
+            class="eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImplDefinition"
+            id="eu.esdihumboldt.hale.common.core.io">
+      </messageDefinition>
+      <reportDefinition
+            class="eu.esdihumboldt.hale.common.core.io.report.impl.IOReportImplDefinition"
+            id="eu.esdihumboldt.hale.common.core.io">
+      </reportDefinition>
    </extension>
 
 </plugin>
