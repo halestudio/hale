@@ -23,19 +23,8 @@ package eu.esdihumboldt.hale.common.core.report;
  */
 public interface Reporter<T extends Message> extends Report<T>, ReportLog<T> {
 	
-	/**
-	 * Set if the task was successful. Also updates the report timestamp.
-	 * Should be called when the task is finished.
-	 * 
-	 * @param success if the task was successful
+	/*
+	 * Nothing to do here.
 	 */
-	public void setSuccess(boolean success);
-	
-	/**
-	 * Set the summary message of the report.
-	 * @param summary the summary to set, if <code>null</code> the report will
-	 * revert to the default summary.
-	 */
-	public void setSummary(String summary);
 
 }

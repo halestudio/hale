@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 public class DefaultIOReporter extends DefaultReporter<IOMessage> implements
 		IOReporter {
 	
-	private final Locatable target;
+	private Locatable target;
 
 	/**
 	 * Create an empty I/O report. It is set to not successful by default. But
@@ -54,6 +54,14 @@ public class DefaultIOReporter extends DefaultReporter<IOMessage> implements
 	@Override
 	public Locatable getTarget() {
 		return target;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.report.IOReport#setTarget(eu.esdihumboldt.hale.common.core.io.supplier.Locatable)
+	 */
+	@Override
+	public void setTarget(Locatable locateable) {
+		this.target = locateable;
 	}
 
 }

@@ -33,11 +33,27 @@ public interface Report<T extends Message> {
 	public String getTaskName();
 	
 	/**
+	 * Get the name of the task the report relates to
+	 * 
+	 * @param taskname the taskname
+	 */
+	public void setTaskName(String taskname);
+	
+	/**
 	 * States if the report represents a successful task
 	 * 
 	 * @return if the task was successful
 	 */
 	public boolean isSuccess();
+	
+	/**
+	 * Set if the task was successful. Should set the timestamps
+	 * if none are provided so far.
+	 * Should be called when the task is finished.
+	 * 
+	 * @param success if the task was successful
+	 */
+	public void setSuccess(boolean success);
 	
 	/**
 	 * Get a short message stating a summary of the report
@@ -47,11 +63,26 @@ public interface Report<T extends Message> {
 	public String getSummary();
 	
 	/**
+	 * Set the summary message of the report.
+	 * 
+	 * @param summary the summary to set, if <code>null</code> the report will
+	 * revert to the default summary.
+	 */
+	public void setSummary(String summary);
+	
+	/**
 	 * Get the report time
 	 * 
 	 * @return the report time
 	 */
 	public Date getTimestamp();
+	
+	/**
+	 * Set the report time
+	 * 
+	 * @param timestamp the timestamp
+	 */
+	public void setTimestamp(Date timestamp);
 	
 	/**
 	 * Get the start time of the report.
@@ -61,6 +92,15 @@ public interface Report<T extends Message> {
 	 * @return the start time or <code>null</code>
 	 */
 	public Date getStartTime();
+	
+	/**
+	 * Set the start time of the report.
+	 * This is optional. If a start time is present the {@link #getTimestamp()}
+	 * can be seen as an end time and used to compute a duration.
+	 * 
+	 * @param starttime the starttime
+	 */
+	public void setStartTime(Date starttime);
 	
 	/**
 	 * Get the warning messages
@@ -91,4 +131,10 @@ public interface Report<T extends Message> {
 	 */
 	public Class<T> getMessageType();
 
+	/**
+	 * Set the message type (for determining the message type at runtime).
+	 * 
+	 * @param messageType the messagetype
+	 */
+	public void setMessageType(Class<T> messageType);
 }
