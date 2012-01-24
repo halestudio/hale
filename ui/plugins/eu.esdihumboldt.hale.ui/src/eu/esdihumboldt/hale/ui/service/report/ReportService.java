@@ -64,4 +64,9 @@ public interface ReportService {
 	 * @return all reports
 	 */
 	public Multimap<Class<? extends Report<?>>, Report<?>> getAllReports();
+	
+	/**
+	 * Deletes all reports.
+	 */
+	public void deleteAllReports();
 }
