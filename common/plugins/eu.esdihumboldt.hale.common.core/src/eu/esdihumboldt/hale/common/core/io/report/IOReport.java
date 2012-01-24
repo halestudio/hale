@@ -30,5 +30,12 @@ public interface IOReport extends Report<IOMessage> {
 	 * @return the locatable target
 	 */
 	public Locatable getTarget();
+	
+	/**
+	 * Set the locatable I/O task target
+	 * 
+	 * @param locateable the task target
+	 */
+	public void setTarget(Locatable locateable);
 
 }
