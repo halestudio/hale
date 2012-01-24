@@ -15,18 +15,20 @@ package eu.esdihumboldt.hale.common.core.report.impl;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportDefinition;
+import eu.esdihumboldt.hale.common.core.report.Reporter;
 
 /**
  * Abstract report definition.
  * @author Andreas Burchert
  * @param <T> the report type
- * @param <R> 
+ * @param <R> the reporter
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class AbstractReportDefinition<T extends Report<?>, R extends T> implements ReportDefinition<T> {
@@ -51,6 +53,11 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 	 * Key for summary
 	 */
 	public static final String KEY_REPORT_SUMMARY = "summary";
+	
+	/**
+	 * Key for starttime
+	 */
+	public static final String KEY_REPORT_STARTTIME = "starttime";
 	
 	/**
 	 * Key for timestamp
@@ -140,6 +147,26 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 	 * @return the report
 	 */
 	protected abstract T configureReport(R reporter, Properties props);
+	
+	/**
+	 * Basic configuration that should be called from every
+	 * child class!
+	 * @param reporter reporter
+	 * @param props properties
+	 * @throws Exception if parsing fails 
+	 */
+	public static void configureBasicReporter(Reporter<?> reporter, Properties props) throws Exception {
+		// set summary
+		reporter.setSummary(props.getProperty(KEY_REPORT_SUMMARY));
+		
+		// set success
+		reporter.setSuccess(Boolean.parseBoolean(props.getProperty(KEY_REPORT_SUCCESS)));
+		
+		// parse times and set them
+		SimpleDateFormat df = new SimpleDateFormat();
+		reporter.setStartTime(df.parse(props.getProperty(KEY_REPORT_STARTTIME)));
+		reporter.setTimestamp(df.parse(props.getProperty(KEY_REPORT_TIME)));
+	}
 
 	/**
 	 * @see eu.esdihumboldt.util.definition.ObjectDefinition#asString(java.lang.Object)
@@ -179,7 +206,8 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		props.setProperty(KEY_REPORT_SUCCESS, ""+report.isSuccess());
 		props.setProperty(KEY_REPORT_SUMMARY, report.getSummary());
 		props.setProperty(KEY_REPORT_TIME, ""+report.getTimestamp());
-		props.setProperty(KEY_REPORT_MESSAGE_TYPE, report.getMessageType().toString());
+		props.setProperty(KEY_REPORT_STARTTIME, ""+report.getStartTime());
+		props.setProperty(KEY_REPORT_MESSAGE_TYPE, report.getMessageType().getCanonicalName());
 		
 //		props.setProperty(KEY_REPORT_INFOS, StringUtils.join(report.getInfos(), ";"));
 //		props.setProperty(KEY_REPORT_ERRORS, StringUtils.join(report.getErrors(), ";"));
