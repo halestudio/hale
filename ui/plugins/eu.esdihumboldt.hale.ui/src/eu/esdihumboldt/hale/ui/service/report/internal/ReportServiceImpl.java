@@ -79,6 +79,15 @@ public class ReportServiceImpl implements ReportService {
 			}
 		}
 	}
+	
+	/**
+	 * Notify listeners that all reports have been deleted
+	 */
+	protected void notifyReportsDeleted() {
+		for (ReportListener<?, ?> listener : listeners) {
+			listener.reportsDeleted();
+		}
+	}
 
 	/**
 	 * Get all reports matching the given message type
@@ -127,6 +136,18 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public void removeReportListener(ReportListener<?, ?> listener) {
 		listeners.remove(listener);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#deleteAllReports()
+	 */
+	@Override
+	public void deleteAllReports() {
+		// clear the list
+		this.reports.clear();
+		
+		// notify listeners
+		this.notifyReportsDeleted();
 	}
 
 }

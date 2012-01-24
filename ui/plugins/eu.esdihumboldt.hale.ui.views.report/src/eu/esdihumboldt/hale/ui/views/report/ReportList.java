@@ -179,16 +179,16 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				_mntmDeleteLog.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						// TODO delete all logs
+						// display a yes|no box
 						MessageBox messageBox = new MessageBox(tree.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 						messageBox.setText("Confirm Delete");
 						messageBox.setMessage("Are you sure you want to permanently delete all logged events?");
 						
 						if (messageBox.open() == SWT.YES) {
-							// clear the view
-							clearLogView();
+							// remove all entries from ReportService
+							repService.deleteAllReports();
 							
-							// TODO remove all entries from ReportService
+							// TODO delete saved reports
 						}
 					}
 				});
@@ -362,6 +362,15 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				}
 			}
 		});
+	}
+	
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportListener#reportsDeleted()
+	 */
+	@Override
+	public void reportsDeleted() {
+		// clear the view
+		clearLogView();
 	}
 	
 	/**
