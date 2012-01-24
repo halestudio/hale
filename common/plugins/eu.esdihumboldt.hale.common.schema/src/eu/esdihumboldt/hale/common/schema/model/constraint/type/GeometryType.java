@@ -160,4 +160,13 @@ public class GeometryType implements TypeConstraint {
 		return binding != null;
 	}
 
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// inherit unless overridden
+		return true;
+	}
+
 }

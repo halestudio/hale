@@ -82,4 +82,13 @@ public class HasValueFlag extends AbstractFlagConstraint implements TypeConstrai
 		super(enabled);
 	}
 
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// if a type has a value, its sub-type has a value too
+		return true;
+	}
+
 }

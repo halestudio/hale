@@ -61,5 +61,14 @@ public class XmlElements implements TypeConstraint {
 		}
 		elements.add(element);
 	}
+
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// not inheritable, substitutions instead pose a kind of inheritance
+		return false;
+	}
 	
 }

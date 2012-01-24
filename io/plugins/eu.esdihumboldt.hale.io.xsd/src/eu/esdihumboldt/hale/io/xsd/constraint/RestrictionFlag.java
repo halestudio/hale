@@ -51,4 +51,13 @@ public final class RestrictionFlag extends AbstractFlagConstraint implements Typ
 		super(enabled);
 	}
 
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// must be set explicitly
+		return false;
+	}
+
 }

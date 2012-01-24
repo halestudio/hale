@@ -55,5 +55,14 @@ public class DisplayName implements GroupPropertyConstraint,
 	public String getCustomName() {
 		return customName;
 	}
+
+	/**
+	 * @see TypeConstraint#isInheritable()
+	 */
+	@Override
+	public boolean isInheritable() {
+		// no inheritance for display names
+		return false;
+	}
 	
 }
