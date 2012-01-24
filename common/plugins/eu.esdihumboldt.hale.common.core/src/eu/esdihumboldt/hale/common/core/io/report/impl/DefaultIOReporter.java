@@ -55,5 +55,4 @@ public class DefaultIOReporter extends DefaultReporter<IOMessage> implements
 	public Locatable getTarget() {
 		return target;
 	}
-
 }

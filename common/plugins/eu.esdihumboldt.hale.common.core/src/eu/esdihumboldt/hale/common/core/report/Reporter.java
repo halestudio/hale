@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.common.core.report;
 
+import java.util.Date;
+
 
 /**
  * Reporter interface
@@ -24,7 +26,8 @@ package eu.esdihumboldt.hale.common.core.report;
 public interface Reporter<T extends Message> extends Report<T>, ReportLog<T> {
 	
 	/**
-	 * Set if the task was successful. Also updates the report timestamp.
+	 * Set if the task was successful. Should set the timestamps
+	 * if none are provided so far.
 	 * Should be called when the task is finished.
 	 * 
 	 * @param success if the task was successful
@@ -33,9 +36,25 @@ public interface Reporter<T extends Message> extends Report<T>, ReportLog<T> {
 	
 	/**
 	 * Set the summary message of the report.
+	 * 
 	 * @param summary the summary to set, if <code>null</code> the report will
 	 * revert to the default summary.
 	 */
 	public void setSummary(String summary);
-
+	
+	/**
+	 * Set the report time
+	 * 
+	 * @param timestamp the timestamp
+	 */
+	public void setTimestamp(Date timestamp);
+	
+	/**
+	 * Set the start time of the report.
+	 * This is optional. If a start time is present the {@link #getTimestamp()}
+	 * can be seen as an end time and used to compute a duration.
+	 * 
+	 * @param starttime the starttime
+	 */
+	public void setStartTime(Date starttime);
 }
