@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.common.align.transformation.report.impl;
 
 import java.util.Properties;
 
-import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.impl.AbstractMessageDefinition;
 
 /**
@@ -22,16 +21,6 @@ import eu.esdihumboldt.hale.common.core.report.impl.AbstractMessageDefinition;
  * @author Simon Templer
  */
 public class TransformationMessageImplDefinition extends AbstractMessageDefinition<TransformationMessageImpl> {
-	
-	/**
-	 * Key for the message string
-	 */
-	public static final String KEY_MESSAGE = "message";
-	
-	/**
-	 * Key for the stack trace
-	 */
-	public static final String KEY_STACK_TRACE = "stack";
 
 	/**
 	 * Default constructor
@@ -51,18 +40,5 @@ public class TransformationMessageImplDefinition extends AbstractMessageDefiniti
 //				props.getProperty(KEY_STACK_TRACE));
 		
 		return null; // TODO implement me! TransformationMessageImplDefinition.createMessage()
-	}
-
-	/**
-	 * @see AbstractMessageDefinition#asProperties(Message)
-	 */
-	@Override
-	protected Properties asProperties(TransformationMessageImpl message) {
-		Properties props = new Properties();
-		
-		props.setProperty(KEY_MESSAGE, message.getMessage());
-		props.setProperty(KEY_STACK_TRACE, message.getStackTrace());
-		
-		return props ;
 	}
 }
