@@ -43,16 +43,35 @@ public class PropertyResolver {
 	private static QueryDefinitionIndex lastQDI;
 
 	/**
-	 * method for retrieving values from instances using a certain pathquery for searching trough the instance definitions
-	 * calls methods for traversing over the definitiontree
-	 * 
-	 * @param instance
-	 * @param propertyPath
-	 * @return
+	 * Method for retrieving values from instances using a certain path query 
+	 * for searching through the instance definitions. Calls methods for 
+	 * traversing the definition tree.<br>
+	 * <br>
+	 * If at the end of the path there is an instance, its value will be 
+	 * returned.
+	 * @param instance the instance
+	 * @param propertyPath the property path
+	 * @return the values contained in the instance matching the path
 	 */
 	public static Collection<Object> getValues(Instance instance,
 			String propertyPath) {
+		return getValues(instance, propertyPath, true);
+	}
 
+		
+	/**
+	 * Method for retrieving values from instances using a certain path query 
+	 * for searching through the instance definitions. Calls methods for 
+	 * traversing the definition tree.
+	 * @param instance the instance
+	 * @param propertyPath the property path
+	 * @param forceValue if this is <code>true</code>, when the object at the
+	 *   end of a path is an instance, its value will be returned
+	 * @return the values or instances contained in the instance matching the
+	 *   given path
+	 */
+	public static Collection<Object> getValues(Instance instance,
+			String propertyPath, boolean forceValue) {
 		if(hasProperty(instance, propertyPath)){
 			
 			
@@ -122,9 +141,12 @@ public class PropertyResolver {
 					Object finalProp = currentQueue.poll();
 					
 					if (finalProp instanceof Instance){
-						
-						result.add(((Instance) finalProp).getValue());
-						
+						if (forceValue) {
+							result.add(((Instance) finalProp).getValue());
+						}
+						else {
+							result.add(finalProp);
+						}
 					}
 					
 					else if (finalProp instanceof Group){
