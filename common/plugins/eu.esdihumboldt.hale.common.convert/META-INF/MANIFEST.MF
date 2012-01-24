@@ -8,6 +8,7 @@ Require-Bundle: org.springframework.context;bundle-version="3.0.0",
  org.springframework.core;bundle-version="3.0.0";visibility:=reexport,
  org.springframework.osgi.core;bundle-version="2.0.0"
 Import-Package: de.cs3d.util.logging,
+ de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.util.reflection,
  org.slf4j;version="1.5.11",
  org.springframework.beans.factory;version="3.0.0.RELEASE",
