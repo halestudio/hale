@@ -37,6 +37,16 @@ public abstract class AbstractMessageDefinition<T extends Message> implements Me
 	private final String identifier;
 	
 	/**
+	 * Key for the message string
+	 */
+	public static final String KEY_MESSAGE = "message";
+	
+	/**
+	 * Key for the stack trace
+	 */
+	public static final String KEY_STACK_TRACE = "stack";
+	
+	/**
 	 * Create message definition
 	 * @param messageClass the message class
 	 * @param id the identifier for the definition (without prefix)
@@ -121,6 +131,13 @@ public abstract class AbstractMessageDefinition<T extends Message> implements Me
 	 * @param message the message
 	 * @return the properties representing the message
 	 */
-	protected abstract Properties asProperties(T message);
+	protected Properties asProperties(T message) {
+		Properties props = new Properties();
+		
+		props.setProperty(KEY_MESSAGE, message.getMessage());
+		props.setProperty(KEY_STACK_TRACE, message.getStackTrace());
+		
+		return props ;
+	}
 
 }
