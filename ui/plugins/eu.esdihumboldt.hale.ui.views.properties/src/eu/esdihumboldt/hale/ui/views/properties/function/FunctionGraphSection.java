@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.ui.views.properties.function;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -22,12 +21,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.zest.core.viewers.GraphViewer;
-import org.eclipse.zest.layouts.dataStructures.DisplayIndependentRectangle;
-
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
-import eu.esdihumboldt.hale.ui.common.graph.content.SourceTargetContentProvider;
+import eu.esdihumboldt.hale.ui.common.graph.content.FunctionGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
-import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionTreeLayoutAlgorithm;
+import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
 
 /**
  * Function section with source and target information modeled in a graph
@@ -42,8 +39,6 @@ public class FunctionGraphSection<F extends Function> extends
 	private GraphViewer viewer;
 	
 	private FunctionTreeLayoutAlgorithm treeAlgorithm;
-	
-	private Composite parent;
 
 	/**
 	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite,
@@ -52,7 +47,6 @@ public class FunctionGraphSection<F extends Function> extends
 	@Override
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		this.parent = parent;
 		super.createControls(parent, aTabbedPropertySheetPage);
 
 		Composite compparent = getWidgetFactory().createComposite(parent);
@@ -71,10 +65,8 @@ public class FunctionGraphSection<F extends Function> extends
 		viewer = new GraphViewer(composite, SWT.NONE);
 		treeAlgorithm = new FunctionTreeLayoutAlgorithm();
 		composite.setLayoutData(data);
-		Rectangle pp = parent.getParent().getParent().getParent().getBounds();
-		treeAlgorithm.setBounds(new DisplayIndependentRectangle(pp.x, pp.y, pp.width, pp.height));
 		viewer.setLayoutAlgorithm(treeAlgorithm, true);
-		viewer.setContentProvider(new SourceTargetContentProvider());
+		viewer.setContentProvider(new FunctionGraphContentProvider());
 		viewer.setLabelProvider(new FunctionGraphLabelProvider(true));
 
 	}
@@ -84,8 +76,6 @@ public class FunctionGraphSection<F extends Function> extends
 	 */
 	@Override
 	public void refresh() {
-		Rectangle pp = parent.getParent().getParent().getParent().getBounds();
-		treeAlgorithm.setBounds(new DisplayIndependentRectangle(pp.x, pp.y, pp.width, pp.height));
 		viewer.setInput(getFunction());
 		viewer.refresh();
 	}

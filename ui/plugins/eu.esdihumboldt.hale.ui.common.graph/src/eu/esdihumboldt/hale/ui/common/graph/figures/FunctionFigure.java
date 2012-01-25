@@ -17,70 +17,107 @@ import java.util.Set;
 
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
 /**
- * The shape figure for functions
+ * The shape figure for {@link Function}(s)
+ * 
  * @author Patrick Lieb
  */
 public class FunctionFigure extends CustomShapeFigure {
 
 	/**
-	 * @param parameters the Parameters of the Function
+	 * @param parameters
+	 *            the Parameters of the Function
+	 * @param showToolTip
+	 *            if the ToolTip should be shown
 	 */
-	public FunctionFigure (Set<FunctionParameter> parameters) {
+	public FunctionFigure(Set<FunctionParameter> parameters, boolean showToolTip) {
 		super(new StretchedHexagon(10));
 
 		setAntialias(SWT.ON);
 
 		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
+		gridLayout.numColumns = 3;
 		gridLayout.marginHeight = 3;
 		gridLayout.marginWidth = 3;
 		setLayoutManager(gridLayout);
-		
+
 		Label label = new Label();
-		GridData gridData = new GridData(GridData.FILL, GridData.BEGINNING, true,
-				false, 2, 1);
+		GridData gridData = new GridData(GridData.FILL, GridData.BEGINNING,
+				true, false, 3, 1);
 		add(label, gridData);
 		setTextLabel(label);
 		setIconLabel(label);
-		
-		if(!parameters.isEmpty()){
+
+		if (!parameters.isEmpty()) {
 			
+			Font font = new Font(Display.getCurrent(), "Arial", 10, SWT.ITALIC);
+
 			Label name = new Label();
-			GridData nameGrid = new GridData(GridData.FILL, GridData.FILL, true,
-					true);
+			GridData nameGrid = new GridData(GridData.FILL, GridData.FILL,
+					true, true);
 			name.setText("Name");
+			name.setFont(font);
 			add(name, nameGrid);
-			
+
+			Label whitespace = new Label();
+			GridData whitespaceGrid = new GridData(GridData.FILL,
+					GridData.FILL, true, true);
+			add(whitespace, whitespaceGrid);
+
 			Label occurence = new Label();
-			GridData occurenceGrid = new GridData(GridData.FILL, GridData.FILL, true,
-					true);
+			GridData occurenceGrid = new GridData(GridData.FILL, GridData.FILL,
+					true, true);
 			occurence.setText("Occurence");
+			occurence.setFont(font);
 			add(occurence, occurenceGrid);
-		
+
 			Iterator<FunctionParameter> iter = parameters.iterator();
-			while(iter.hasNext()){
+			while (iter.hasNext()) {
 				FunctionParameter para = iter.next();
 				name = new Label();
 				nameGrid = new GridData(GridData.FILL, GridData.FILL, true,
 						true);
 				name.setText(para.getDisplayName());
 				add(name, nameGrid);
-				
+
+				Label descriptionlabel = new Label();
+
+				if (showToolTip) {
+					FieldDecoration fieldDecoration = FieldDecorationRegistry
+							.getDefault().getFieldDecoration(
+									FieldDecorationRegistry.DEC_INFORMATION);
+					Image image = fieldDecoration.getImage();
+
+					IFigure descriptionfigure = new Label(para.getDescription());
+					descriptionlabel.setIcon(image);
+					descriptionlabel.setToolTip(descriptionfigure);
+				}
+
+				GridData descriptiongrid = new GridData(GridData.FILL,
+						GridData.FILL, true, true);
+				add(descriptionlabel, descriptiongrid);
+
 				occurence = new Label();
-				occurenceGrid = new GridData(GridData.FILL, GridData.FILL, true,
-						true);
+				occurenceGrid = new GridData(GridData.FILL, GridData.FILL,
+						true, true);
 				occurence.setText(String.valueOf(para.getMinOccurrence())
-						+ ".."
-						+ (String.valueOf(para.getMaxOccurrence())));
+						+ ".." + (String.valueOf(para.getMaxOccurrence())));
 				add(occurence, occurenceGrid);
+
 			}
 		}
 	}

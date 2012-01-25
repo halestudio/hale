@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
-import eu.esdihumboldt.hale.ui.common.graph.content.SourceTargetContentProvider;
+import eu.esdihumboldt.hale.ui.common.graph.content.FunctionGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
 import eu.esdihumboldt.hale.ui.util.DisplayThread;
 import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
@@ -250,7 +250,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 							LayoutAlgorithm algo = new TreeLayoutAlgorithm(
 									TreeLayoutAlgorithm.LEFT_RIGHT);
 
-							SourceTargetContentProvider stcp = new SourceTargetContentProvider();
+							FunctionGraphContentProvider stcp = new FunctionGraphContentProvider();
 							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(false);
 							viewer.setContentProvider(stcp);
 							viewer.setLabelProvider(fglp);

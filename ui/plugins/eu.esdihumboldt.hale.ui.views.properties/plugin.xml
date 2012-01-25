@@ -278,7 +278,7 @@
                afterSection="eu.esdihumboldt.hale.ui.views.properties.function.description"
                class="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionGraphSection"
                filter="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionGraphFilter"
-               id="eu.esdihumboldt.hale.ui.views.properties.function.typefunctionsource"
+               id="eu.esdihumboldt.hale.ui.views.properties.function.typefunctiongraph"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.graph">
             <input
                   type="eu.esdihumboldt.hale.common.align.extension.function.TypeFunction">
@@ -288,7 +288,7 @@
                afterSection="eu.esdihumboldt.hale.ui.views.properties.function.description"
                class="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionGraphSection"
                filter="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionGraphFilter"
-               id="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunctionsource"
+               id="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunctiongraph"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.graph">
             <input
                   type="eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction">

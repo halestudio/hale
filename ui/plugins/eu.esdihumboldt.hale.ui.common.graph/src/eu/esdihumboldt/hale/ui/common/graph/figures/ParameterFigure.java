@@ -23,10 +23,11 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 
 /**
- * The shape figure for abstract parameters
+ * The shape figure for the defined parameters in {@link Function}(s)
  * 
  * @author Patrick Lieb
  */
@@ -39,7 +40,8 @@ public class ParameterFigure extends CustomShapeFigure {
 	 *            the occurrence of the figure
 	 * @param description
 	 *            the description of the figure
-	 * @param showToolTip if the ToolTip should be shown
+	 * @param showToolTip
+	 *            if the ToolTip should be shown
 	 */
 	public ParameterFigure(ShapePainter painter, String occurrence,
 			String description, boolean showToolTip) {
@@ -55,21 +57,19 @@ public class ParameterFigure extends CustomShapeFigure {
 		gridLayout.marginWidth = 3;
 		setLayoutManager(gridLayout);
 		
-		Label textlabel = new Label(occurrence);
-		IFigure occfig = new Label("Occurrence");
-		textlabel.setToolTip(occfig);
-		GridData textgrid = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
-		Font font = new Font(display, "Arial", 8, SWT.ITALIC);
-		textlabel.setFont(font);
-		add(textlabel, textgrid);
-
 		Label namelabel = new Label();
 		GridData namegrid = new GridData(GridData.FILL, GridData.FILL, true,
 				true);
 		add(namelabel, namegrid);
 		setTextLabel(namelabel);
 		setIconLabel(namelabel);
+		
+		Label textlabel = new Label(occurrence);
+		GridData textgrid = new GridData(GridData.FILL, GridData.FILL, true,
+				true);
+		Font font = new Font(display, "Arial", 8, SWT.ITALIC);
+		textlabel.setFont(font);
+		add(textlabel, textgrid);
 
 		if(showToolTip){
 			FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
