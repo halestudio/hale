@@ -19,11 +19,14 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
- * The default functions section
+ * The default function section
+ * 
  * @author Patrick Lieb
- * @param <F> the Function
+ * @param <F>
+ *            the Function
  */
-public class DefaultFunctionSection<F extends Function> extends AbstractFunctionSection<F>{
+public class DefaultFunctionSection<F extends Function> extends
+		AbstractFunctionSection<F> {
 
 	/**
 	 * @see AbstractSection#setInput(Object)
@@ -32,12 +35,12 @@ public class DefaultFunctionSection<F extends Function> extends AbstractFunction
 	@Override
 	protected void setInput(Object input) {
 		input = TransformationTreeUtil.extractObject(input);
-		
+
 		if (input instanceof Cell) {
 			String id = ((Cell) input).getTransformationIdentifier();
 			input = FunctionUtil.getFunction(id);
 		}
-		
+
 		if (input instanceof Function) {
 			setFunction((F) input);
 		}

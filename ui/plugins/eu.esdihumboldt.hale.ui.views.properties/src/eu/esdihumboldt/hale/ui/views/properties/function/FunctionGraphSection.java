@@ -38,7 +38,7 @@ public class FunctionGraphSection<F extends Function> extends
 
 	private GraphViewer viewer;
 
-	private FunctionTreeLayoutAlgorithm treeAlgorithm;
+	private FunctionTreeLayoutAlgorithm treeAlgorithm = new FunctionTreeLayoutAlgorithm();
 
 	/**
 	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#createControls(org.eclipse.swt.widgets.Composite,
@@ -55,20 +55,16 @@ public class FunctionGraphSection<F extends Function> extends
 		Composite composite = getWidgetFactory().createComposite(compparent);
 		composite.setLayout(new FillLayout());
 		FormData data = new FormData();
-		data.width = 100;
-		data.height = 150;
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(100, -0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
+		composite.setLayoutData(data);
 
 		viewer = new GraphViewer(composite, SWT.NONE);
-		treeAlgorithm = new FunctionTreeLayoutAlgorithm();
-		composite.setLayoutData(data);
 		viewer.setLayoutAlgorithm(treeAlgorithm, true);
 		viewer.setContentProvider(new FunctionGraphContentProvider());
 		viewer.setLabelProvider(new FunctionGraphLabelProvider(true));
-
 	}
 
 	/**

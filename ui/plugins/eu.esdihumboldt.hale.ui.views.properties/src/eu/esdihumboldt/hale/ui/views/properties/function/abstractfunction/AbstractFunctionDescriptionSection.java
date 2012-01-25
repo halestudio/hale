@@ -27,16 +27,19 @@ import eu.esdihumboldt.hale.ui.views.properties.function.DefaultFunctionSection;
 
 /**
  * Abstract function section with description information
+ * 
  * @author Patrick Lieb
  */
-public class AbstractFunctionDescriptionSection extends DefaultFunctionSection<AbstractFunction<?>> {
+public class AbstractFunctionDescriptionSection extends
+		DefaultFunctionSection<AbstractFunction<?>> {
 
-private Text description;
-	
+	private Text description;
+
 	private CLabel label;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent,
@@ -45,11 +48,11 @@ private Text description;
 		Composite composite = getWidgetFactory()
 				.createFlatFormComposite(parent);
 		FormData data;
-		
+
 		description = getWidgetFactory().createText(composite, "",
 				SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 		description.setEditable(false);
-		
+
 		data = new FormData();
 		data.width = 100;
 		data.height = 100;
@@ -59,8 +62,7 @@ private Text description;
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		description.setLayoutData(data);
 
-		label = getWidgetFactory()
-				.createCLabel(composite, "Description:");
+		label = getWidgetFactory().createCLabel(composite, "Description:");
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(description,

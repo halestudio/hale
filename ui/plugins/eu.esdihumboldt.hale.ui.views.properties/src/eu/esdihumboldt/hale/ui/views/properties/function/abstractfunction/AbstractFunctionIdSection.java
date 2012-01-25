@@ -24,14 +24,17 @@ import eu.esdihumboldt.hale.ui.views.properties.function.DefaultFunctionSection;
 
 /**
  * Abstract function section with id information
+ * 
  * @author Patrick Lieb
  */
-public class AbstractFunctionIdSection extends DefaultFunctionSection<AbstractFunction<?>>{
+public class AbstractFunctionIdSection extends
+		DefaultFunctionSection<AbstractFunction<?>> {
 
 	private Text id;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent,
@@ -39,18 +42,18 @@ public class AbstractFunctionIdSection extends DefaultFunctionSection<AbstractFu
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "ID:", null);
 		id = getText();
 	}
-	
+
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
 		String categoryId = getFunction().getCategoryId();
-		Category cat = (categoryId == null)?(null):(CategoryExtension.getInstance().get(categoryId));
+		Category cat = (categoryId == null) ? (null) : (CategoryExtension
+				.getInstance().get(categoryId));
 		if (cat == null) {
-			id.setText(""); //TODO
-		}
-		else {
+			id.setText("");
+		} else {
 			id.setText(cat.getName());
 		}
 	}

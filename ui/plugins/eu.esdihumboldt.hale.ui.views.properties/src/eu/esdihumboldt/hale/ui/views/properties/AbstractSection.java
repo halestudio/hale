@@ -28,12 +28,13 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * Abstract section for properties views
+ * 
  * @author Patrick Lieb
  */
-public abstract class AbstractSection extends AbstractPropertySection{
-	
+public abstract class AbstractSection extends AbstractPropertySection {
+
 	private Text text;
-	
+
 	private Text text2;
 
 	/**
@@ -48,24 +49,33 @@ public abstract class AbstractSection extends AbstractPropertySection{
 	}
 
 	/**
-	 * @param input the definition as object
+	 * @param input
+	 *            the definition as object
 	 */
 	protected abstract void setInput(Object input);
 
 	/**
-	 * Creates the controls for two lines @seeAbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
-	 * @param parent the parent composite for the section
-	 * @param aTabbedPropertySheetPage the tabbed property sheet page
-	 * @param title the title for the property
-	 * @param title2 the title for the second property (could be null)
+	 * Creates the controls for two lines
+	 * 
+	 * @see AbstractPropertySection#createControls(Composite,TabbedPropertySheetPage)
+	 * 
+	 * @param parent
+	 *            the parent composite for the section
+	 * @param aTabbedPropertySheetPage
+	 *            the tabbed property sheet page
+	 * @param title
+	 *            the title for the property
+	 * @param title2
+	 *            the title for the second property (could be null)
 	 */
 	protected void abstractCreateControls(Composite parent,
-		TabbedPropertySheetPage aTabbedPropertySheetPage, String title, String title2){
+			TabbedPropertySheetPage aTabbedPropertySheetPage, String title,
+			String title2) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 		Composite composite = getWidgetFactory()
-		.createFlatFormComposite(parent);
+				.createFlatFormComposite(parent);
 		FormData data;
-		
+
 		text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
 		text.setEditable(false);
 		data = new FormData();
@@ -73,17 +83,16 @@ public abstract class AbstractSection extends AbstractPropertySection{
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		text.setLayoutData(data);
-	
-		CLabel namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, title); //$NON-NLS-1$
+
+		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite,
+				title); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(text,
-				10);
+		data.right = new FormAttachment(text, 10);
 		data.top = new FormAttachment(text, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
-		
-		if(title2 != null){
+
+		if (title2 != null) {
 			text2 = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
 			text2.setEditable(false);
 			data = new FormData();
@@ -91,9 +100,8 @@ public abstract class AbstractSection extends AbstractPropertySection{
 			data.right = new FormAttachment(100, 0);
 			data.top = new FormAttachment(text, ITabbedPropertyConstants.VSPACE);
 			text2.setLayoutData(data);
-		
-			CLabel label2 = getWidgetFactory()
-					.createCLabel(composite, title2); //$NON-NLS-1$
+
+			CLabel label2 = getWidgetFactory().createCLabel(composite, title2); //$NON-NLS-1$
 			data = new FormData();
 			data.left = new FormAttachment(0, 0);
 			data.right = new FormAttachment(text2, 55);
@@ -101,17 +109,18 @@ public abstract class AbstractSection extends AbstractPropertySection{
 			label2.setLayoutData(data);
 		}
 	}
+
 	/**
 	 * @return the configured text
 	 */
-	public Text getText(){
+	public Text getText() {
 		return text;
 	}
-	
+
 	/**
 	 * @return the configured second text
 	 */
-	public Text getText2(){
+	public Text getText2() {
 		return text2;
 	}
 }

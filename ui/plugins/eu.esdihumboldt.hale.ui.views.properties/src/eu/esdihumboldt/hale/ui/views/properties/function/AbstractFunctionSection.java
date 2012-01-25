@@ -17,20 +17,24 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
  * Abstract section for function properties
+ * 
  * @author Patrick Lieb
- * @param <F> the function
+ * @param <F>
+ *            the function
  */
-public abstract class AbstractFunctionSection<F extends Function> extends AbstractSection{
+public abstract class AbstractFunctionSection<F extends Function> extends
+		AbstractSection {
 
 	/**
-	 * the general Function for this package
+	 * the Function for this section
 	 */
 	private F function;
-	
+
 	/**
-	 * @param fun the Function
+	 * @param fun
+	 *            the Function
 	 */
-	protected void setFunction(F fun){
+	protected void setFunction(F fun) {
 		function = fun;
 	}
 

@@ -17,19 +17,20 @@ import org.eclipse.jface.viewers.IFilter;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 
 /**
- * Filter that lets only {@link Function}s with defined parameters that are not 
+ * Filter that lets only {@link Function}s with defined parameters that are not
  * empty pass.
+ * 
  * @author Patrick Lieb
  */
-public class AbstractFunctionParameterFilter implements IFilter{
+public class AbstractFunctionParameterFilter implements IFilter {
 
 	/**
 	 * @see org.eclipse.jface.viewers.IFilter#select(java.lang.Object)
 	 */
 	@Override
 	public boolean select(Object toTest) {
-		if(toTest instanceof Function){
-			return !((Function)toTest).getDefinedParameters().isEmpty();
+		if (toTest instanceof Function) {
+			return !((Function) toTest).getDefinedParameters().isEmpty();
 		}
 		return false;
 	}
