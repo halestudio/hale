@@ -12,7 +12,9 @@
 
 package eu.esdihumboldt.hale.io.gml.internal.simpletype;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
@@ -27,6 +29,7 @@ import org.springframework.core.convert.ConversionService;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 
 /**
  * Utility methods used for simple type conversion
@@ -108,9 +111,39 @@ public class SimpleTypeUtil {
 			return null;
 		}
 		
-		ConversionService conversionService = OsgiUtils.getService(ConversionService.class);
 		Class<? extends XmlAnySimpleType> simpleType = getSimpleType(type);
 		Class<?> binding = type.getConstraint(Binding.class).getBinding();
+		
+		if (List.class.isAssignableFrom(binding)) { //XXX also for collection binding?
+			// we are dealing with a simple type list
+			// items separated by whitespace
+			String[] elements = value.split("\\s+");
+			ElementType elementType = type.getConstraint(ElementType.class);
+			
+			Class<? extends XmlAnySimpleType> elementSimpleType = null;
+			if (elementType.getDefinition() != null) {
+				elementSimpleType = getSimpleType(elementType.getDefinition());
+			}
+			Class<?> elementBinding = elementType.getBinding();
+			
+			List<Object> result = new ArrayList<Object>();
+			
+			for (String element : elements) {
+				Object convElement = convertFromXml(element, elementSimpleType, 
+						elementBinding);
+				result.add(convElement);
+			}
+			
+			return result;
+		}
+		
+		// convert ordinary value
+		return convertFromXml(value, simpleType, binding);
+	}
+
+	private static Object convertFromXml(String value,
+			Class<? extends XmlAnySimpleType> simpleType, Class<?> binding) {
+		ConversionService conversionService = OsgiUtils.getService(ConversionService.class);
 		
 		// try using simple type for conversion
 		if (simpleType != null && conversionService.canConvert(String.class, simpleType)) {
