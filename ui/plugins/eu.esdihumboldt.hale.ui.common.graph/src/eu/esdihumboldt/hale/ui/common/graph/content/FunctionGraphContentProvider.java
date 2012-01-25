@@ -28,11 +28,11 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Graph content provider to model the source and target of a function
+ * Graph content provider to model the source and target of a {@link Function}
  * 
  * @author Patrick Lieb
  */
-public class SourceTargetContentProvider extends ArrayContentProvider implements
+public class FunctionGraphContentProvider extends ArrayContentProvider implements
 		IGraphEntityContentProvider {
 
 	/**
@@ -59,7 +59,6 @@ public class SourceTargetContentProvider extends ArrayContentProvider implements
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-//		init();
 		Collection<Object> collection = new ArrayList<Object>();
 		if (inputElement instanceof AbstractFunction<?>) {
 			AbstractFunction<?> function = (AbstractFunction<?>) inputElement;

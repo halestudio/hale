@@ -23,10 +23,11 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 
 /**
- * The shape figure for abstract parameters
+ * The shape figure for the defined parameters in {@link Function}(s)
  * 
  * @author Patrick Lieb
  */
@@ -39,12 +40,13 @@ public class ParameterFigure extends CustomShapeFigure {
 	 *            the occurrence of the figure
 	 * @param description
 	 *            the description of the figure
-	 * @param showToolTip if the ToolTip should be shown
+	 * @param showToolTip
+	 *            if the ToolTip should be shown
 	 */
 	public ParameterFigure(ShapePainter painter, String occurrence,
 			String description, boolean showToolTip) {
 		super(painter);
-		
+
 		final Display display = Display.getCurrent();
 
 		setAntialias(SWT.ON);
@@ -54,15 +56,6 @@ public class ParameterFigure extends CustomShapeFigure {
 		gridLayout.marginHeight = 3;
 		gridLayout.marginWidth = 3;
 		setLayoutManager(gridLayout);
-		
-		Label textlabel = new Label(occurrence);
-		IFigure occfig = new Label("Occurrence");
-		textlabel.setToolTip(occfig);
-		GridData textgrid = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
-		Font font = new Font(display, "Arial", 8, SWT.ITALIC);
-		textlabel.setFont(font);
-		add(textlabel, textgrid);
 
 		Label namelabel = new Label();
 		GridData namegrid = new GridData(GridData.FILL, GridData.FILL, true,
@@ -71,16 +64,24 @@ public class ParameterFigure extends CustomShapeFigure {
 		setTextLabel(namelabel);
 		setIconLabel(namelabel);
 
-		if(showToolTip){
-			FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
-					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+		Label textlabel = new Label(occurrence);
+		GridData textgrid = new GridData(GridData.FILL, GridData.FILL, true,
+				true);
+		Font font = new Font(display, "Arial", 8, SWT.ITALIC);
+		textlabel.setFont(font);
+		add(textlabel, textgrid);
+
+		if (showToolTip) {
+			FieldDecoration fieldDecoration = FieldDecorationRegistry
+					.getDefault().getFieldDecoration(
+							FieldDecorationRegistry.DEC_INFORMATION);
 			Image image = fieldDecoration.getImage();
 
 			Label descriptionlabel = new Label(image);
 			IFigure descriptionfigure = new Label(description);
 			descriptionlabel.setToolTip(descriptionfigure);
-			GridData descriptiongrid = new GridData(GridData.FILL, GridData.FILL,
-					true, true);
+			GridData descriptiongrid = new GridData(GridData.FILL,
+					GridData.FILL, true, true);
 			add(descriptionlabel, descriptiongrid);
 		}
 	}
