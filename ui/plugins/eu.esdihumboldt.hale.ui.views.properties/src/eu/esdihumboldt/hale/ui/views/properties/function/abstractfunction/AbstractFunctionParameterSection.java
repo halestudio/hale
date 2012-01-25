@@ -40,7 +40,8 @@ import eu.esdihumboldt.hale.ui.views.properties.function.AbstractFunctionSection
  * 
  * @author Patrick Lieb
  */
-public class AbstractFunctionParameterSection extends AbstractFunctionSection<AbstractFunction<?>> {
+public class AbstractFunctionParameterSection extends
+		AbstractFunctionSection<AbstractFunction<?>> {
 
 	private TableViewer tableViewer;
 

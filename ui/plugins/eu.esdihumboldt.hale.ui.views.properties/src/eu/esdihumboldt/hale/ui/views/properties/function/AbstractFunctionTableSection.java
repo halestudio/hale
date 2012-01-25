@@ -33,11 +33,15 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 
 /**
- * Abstract function section with general information on functions displayed in a table
+ * Abstract function section with general information on functions displayed in
+ * a table
+ * 
  * @author Patrick
- * @param <P> the Function parameter
+ * @param <P>
+ *            the Function parameter
  */
-public abstract class AbstractFunctionTableSection<P extends AbstractParameter> extends AbstractSection{
+public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
+		extends AbstractSection {
 
 	private TableViewer tableViewer;
 
@@ -53,6 +57,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter> 
 	 *      org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public void createControls(Composite parent,
 			TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
@@ -84,7 +89,6 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter> 
 		namecol.setText("Name");
 		nameviewercol.setLabelProvider(new CellLabelProvider() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void update(ViewerCell cell) {
 				cell.setText(((P) cell.getElement()).getName());
@@ -99,11 +103,9 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter> 
 		lablecol.setText("Lable");
 		lableviewercol.setLabelProvider(new CellLabelProvider() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(((P) cell.getElement())
-						.getDisplayName());
+				cell.setText(((P) cell.getElement()).getDisplayName());
 			}
 
 		});
@@ -117,9 +119,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter> 
 
 			@Override
 			public void update(ViewerCell cell) {
-				@SuppressWarnings("unchecked")
-				P cellparameter = ((P) cell
-						.getElement());
+				P cellparameter = ((P) cell.getElement());
 				cell.setText(String.valueOf(cellparameter.getMinOccurrence())
 						+ ".."
 						+ (String.valueOf(cellparameter.getMaxOccurrence())));
@@ -134,11 +134,10 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter> 
 		descriptioncol.setText("Description");
 		descriptionviewercol.setLabelProvider(new CellLabelProvider() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(String.valueOf(((P) cell
-						.getElement()).getDescription()));
+				cell.setText(String.valueOf(((P) cell.getElement())
+						.getDescription()));
 			}
 
 		});

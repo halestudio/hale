@@ -17,19 +17,21 @@ import org.eclipse.jface.viewers.IFilter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 
 /**
- * Filter that lets only {@link PropertyFunction}s with a source or a target that is not 
- * empty pass.
+ * Filter that lets only {@link PropertyFunction}s with a source or a target
+ * that is not empty pass.
+ * 
  * @author Patrick Lieb
  */
-public class PropertyFunctionGraphFilter implements IFilter{
+public class PropertyFunctionGraphFilter implements IFilter {
 
 	/**
 	 * @see org.eclipse.jface.viewers.IFilter#select(java.lang.Object)
 	 */
 	@Override
 	public boolean select(Object toTest) {
-		if(toTest instanceof PropertyFunction){
-			return !(((PropertyFunction)toTest).getSource().isEmpty() && ((PropertyFunction)toTest).getTarget().isEmpty());
+		if (toTest instanceof PropertyFunction) {
+			return !(((PropertyFunction) toTest).getSource().isEmpty() && ((PropertyFunction) toTest)
+					.getTarget().isEmpty());
 		}
 		return false;
 	}
