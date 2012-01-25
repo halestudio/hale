@@ -40,6 +40,10 @@ public class PropertyResolver {
 	
 	//the cache for storing found paths in instance definitions for certain querys
 	private static Map<QueryDefinitionIndex, LinkedList<String>> definitioncache = new HashMap<QueryDefinitionIndex, LinkedList<String>>();
+	
+	/*
+	 * FIXME this is extremely dubious - what is it used for?
+	 */
 	private static QueryDefinitionIndex lastQDI;
 
 	/**
@@ -675,6 +679,17 @@ public class PropertyResolver {
 		
 	}
 
+	/**
+	 * Clear the definition cache, e.g. when the type definitions may no longer
+	 * be valid.
+	 * 
+	 * FIXME cache in service instead?
+	 * FIXME thread safety!
+	 */
+	public static void clearCache() {
+		definitioncache.clear();
+	}
+	
 }
 
 
