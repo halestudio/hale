@@ -31,12 +31,6 @@ import org.eclipse.zest.layouts.interfaces.LayoutContext;
 public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 
 	private TreeLayoutObserver treeObserver;
-
-	private final double startY = 40;
-
-	private double firstY = 0;
-
-	private double lastY = 0;
 	
 	private DisplayIndependentRectangle bounds;
 
@@ -81,13 +75,14 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 	@SuppressWarnings("rawtypes")
 	private void internalApplyLayout() {
 		TreeNode superRoot = treeObserver.getSuperRoot();
-		int line = 0;
+		int line = 1;
 		List children = new ArrayList();
+		int count = superRoot.getChildren().size();
 		for (Iterator iterator = superRoot.getChildren().iterator(); iterator
 				.hasNext();) {
 
 			TreeNode rootInfo = (TreeNode) iterator.next();
-			computePosition(rootInfo, line, 0);
+			computePosition(rootInfo, count, line, 0);
 			if (children.isEmpty())
 				children = rootInfo.getChildren();
 
@@ -107,24 +102,19 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		}
 	}
 
-	private void computePosition(TreeNode entityInfo, double currentLine, double currentColumn) {
+	private void computePosition(TreeNode entityInfo, double numberOfNodes, double currentNode, double currentColumn) {
 		
 		double x = ((currentColumn + 1) / 8) * bounds.width;
-
-		double y = currentLine * 60 + startY;
-
-		if (firstY == 0)
-			firstY = y;
-
-		lastY = y;
-
+		
+		double y = currentNode/(numberOfNodes + 1) * bounds.height;
+		
 		entityInfo.getNode().setLocation(x, y);
 	}
 
 	private void computeMiddlePosition(TreeNode entityInfo, double currentColumn) {
 		
 		double x = (currentColumn / 8) * bounds.width;
-		double middleY = (firstY + lastY) / 2;
+		double middleY = bounds.height / 2;
 
 		entityInfo.getNode().setLocation(x, middleY);
 	}
