@@ -112,11 +112,11 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 
 		if (element instanceof PropertyFunction)
 			return new FunctionFigure(
-					((PropertyFunction) element).getDefinedParameters());
+					((PropertyFunction) element).getDefinedParameters(), showAll);
 
 		if (element instanceof TypeFunction)
 			return new FunctionFigure(
-					((TypeFunction) element).getDefinedParameters());
+					((TypeFunction) element).getDefinedParameters(), showAll);
 
 		if (element instanceof AbstractParameter) {
 			return new ParameterFigure(new FingerPost(10, SWT.RIGHT),

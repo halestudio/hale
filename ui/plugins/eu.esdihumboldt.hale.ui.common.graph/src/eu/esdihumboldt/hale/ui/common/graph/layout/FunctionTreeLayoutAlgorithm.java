@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.common.graph.labels;
+package eu.esdihumboldt.hale.ui.common.graph.layout;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,26 +22,34 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutObserver.TreeNode;
 import org.eclipse.zest.layouts.dataStructures.DisplayIndependentRectangle;
 import org.eclipse.zest.layouts.interfaces.LayoutContext;
 
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
+
 /**
- * Tree layout algorithm to show functions layered in a tree-like layout and
- * placed the root in the middle of the tree
+ * Tree layout algorithm to show {@link Function}(s) layered in a tree-like
+ * layout and placed the root in the middle of the tree
  * 
  * @author Patrick Lieb
  */
 public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 
 	private TreeLayoutObserver treeObserver;
-	
+
 	private DisplayIndependentRectangle bounds;
+
+	private LayoutContext context;
 
 	/**
 	 * @see org.eclipse.zest.layouts.LayoutAlgorithm#setLayoutContext(org.eclipse.zest.layouts.interfaces.LayoutContext)
 	 */
 	@Override
 	public void setLayoutContext(LayoutContext context) {
+
+		this.context = context;
+
 		if (treeObserver != null) {
 			treeObserver.stop();
 		}
+		
 		if (context != null) {
 			treeObserver = new TreeLayoutObserver(context, null);
 		}
@@ -58,30 +66,17 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		internalApplyLayout();
 	}
 
-	/**
-	 * @return the bounds
-	 */
-	public DisplayIndependentRectangle getBounds() {
-		return bounds;
-	}
-
-	/**
-	 * @param bounds the bounds to set
-	 */
-	public void setBounds(DisplayIndependentRectangle bounds) {
-		this.bounds = bounds;
-	}
-
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	private void internalApplyLayout() {
 		TreeNode superRoot = treeObserver.getSuperRoot();
+		bounds = context.getBounds();
 		int line = 1;
-		List children = new ArrayList();
+		List<TreeNode> children = new ArrayList<TreeNode>();
 		int count = superRoot.getChildren().size();
-		for (Iterator iterator = superRoot.getChildren().iterator(); iterator
+		for (Iterator<TreeNode> iterator = superRoot.getChildren().iterator(); iterator
 				.hasNext();) {
 
-			TreeNode rootInfo = (TreeNode) iterator.next();
+			TreeNode rootInfo = iterator.next();
 			computePosition(rootInfo, count, line, 0);
 			if (children.isEmpty())
 				children = rootInfo.getChildren();
@@ -93,7 +88,7 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 			Object child = children.get(0);
 			TreeNode newrootInfo = ((TreeNode) child);
 			computeMiddlePosition(newrootInfo, 4);
-			List thirdchildren = newrootInfo.getChildren();
+			List<TreeNode> thirdchildren = newrootInfo.getChildren();
 			if (!thirdchildren.isEmpty()) {
 				Object currentchild = thirdchildren.get(0);
 				TreeNode newsuperrootInfo = ((TreeNode) currentchild);
@@ -102,17 +97,17 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		}
 	}
 
-	private void computePosition(TreeNode entityInfo, double numberOfNodes, double currentNode, double currentColumn) {
-		
+	private void computePosition(TreeNode entityInfo, double numberOfNodes,
+			double currentNode, double currentColumn) {
+
 		double x = ((currentColumn + 1) / 8) * bounds.width;
-		
-		double y = currentNode/(numberOfNodes + 1) * bounds.height;
-		
+		double y = currentNode / (numberOfNodes + 1) * bounds.height;
+
 		entityInfo.getNode().setLocation(x, y);
 	}
 
 	private void computeMiddlePosition(TreeNode entityInfo, double currentColumn) {
-		
+
 		double x = (currentColumn / 8) * bounds.width;
 		double middleY = bounds.height / 2;
 
