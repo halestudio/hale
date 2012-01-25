@@ -14,7 +14,7 @@
     </gml:featureMember>
     <gml:featureMember>
         <hale:PointProperty>
-            <hale:geometry srsName="urn:ogc:def:crs:EPSG::28992">
+            <hale:geometry srsName="urn:ogc:def:crs:EPSG:28992">
                 <gml:coord>
                     <gml:X>127906.229</gml:X>
                     <gml:Y>489141.472</gml:Y>

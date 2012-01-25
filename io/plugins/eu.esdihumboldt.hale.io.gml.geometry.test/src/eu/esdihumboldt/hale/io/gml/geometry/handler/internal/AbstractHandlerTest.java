@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 
@@ -33,6 +32,7 @@ import de.fhg.igd.osgi.util.OsgiUtilsActivator;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
@@ -97,6 +97,8 @@ public abstract class AbstractHandlerTest {
 	@Before
 	public void init() {
 		geomFactory = new GeometryFactory();
+		
+		PropertyResolver.clearCache();
 	}
 	
 	/**
