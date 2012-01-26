@@ -26,4 +26,5 @@ Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  org.eclipse.zest.jface;bundle-version="2.0.0",
  org.eclipse.zest.layouts;bundle-version="2.0.0",
  org.eclipse.ui;bundle-version="3.7.0",
- org.eclipse.draw2d;bundle-version="3.7.1"
+ org.eclipse.draw2d;bundle-version="3.7.1",
+ eu.esdihumboldt.util;bundle-version="2.5.0"
