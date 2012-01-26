@@ -80,7 +80,7 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	public Image getImage(Object element) {
 //		System.err.println("LabelProvider.getImage(): "+element.getClass());
 		
-		if (element instanceof Project) {
+		if (element instanceof String) {
 			// TODO maybe add a project icon here?
 			String img = "icons/compressed_folder_obj.gif";
 			ImageDescriptor descriptor = null;

@@ -20,7 +20,6 @@ import java.util.Map;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
@@ -35,7 +34,7 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	 * Contains all projects with related data.
 	 */
 	@SuppressWarnings("rawtypes")
-	public static Map<ProjectInfo, List<Report>> data = new LinkedHashMap<ProjectInfo, List<Report>>();
+	public static Map<String, List<Report>> data = new LinkedHashMap<String, List<Report>>();
 	
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
@@ -53,7 +52,7 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (newInput instanceof ReportItem) {
 			ReportItem item = (ReportItem) newInput;
-			ProjectInfo project = item.getProject();
+			String project = item.getProject();
 			ArrayList<Report> reports;
 			
 			// check if there's already a list
