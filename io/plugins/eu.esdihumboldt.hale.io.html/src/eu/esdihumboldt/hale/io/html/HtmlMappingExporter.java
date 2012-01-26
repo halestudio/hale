@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.ui.common.graph.content.CellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.util.DisplayThread;
 import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
+import eu.esdihumboldt.util.Identifiers;
 
 /**
  * Export a Mapping to HTML for documentation purposes.
@@ -57,6 +58,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	private File file_template;
 	private File tempDir;
 	private Alignment alignment = null;
+	private Identifiers<Cell> cellIds;
 
 	@Override
 	public boolean isCancelable() {
@@ -79,6 +81,8 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+
+		cellIds = new Identifiers<Cell>(Cell.class, true);
 
 		alignment = getAlignment();
 
@@ -337,42 +341,63 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		final File filesDir = new File(FilenameUtils.getFullPath(getTarget()
 				.getLocation().getPath()), filesSubDir);
 
-		Collection<? extends Cell> cells = alignment.getTypeCells();
+		// FIXME: getCells() -> getTypeCells()
+		Collection<? extends Cell> cells = alignment.getCells();
 		Iterator<? extends Cell> it = cells.iterator();
-		for (int i = 0; i < cells.size(); i++) {
+		while (it.hasNext()) {
 			final Cell cell = it.next();
-			display.syncExec(new Runnable() {
-				
-				@Override
-				public void run() {
-					OffscreenGraph off_graph = new OffscreenGraph(300, 100) {
+			// creates a unique id for each cell
+			String cellId = cellIds.getId(cell);
+			final File imageFile = new File(filesDir, "img_" + cellId + ".png");
+			// prevents the files to be replaced if they already exist; better
+			// performance
+			if (!imageFile.exists()) {
+				display.syncExec(new Runnable() {
 
-						@Override
-						protected void configureViewer(GraphViewer viewer) {
-							LayoutAlgorithm algo = new TreeLayoutAlgorithm(
-									TreeLayoutAlgorithm.LEFT_RIGHT);
+					@Override
+					public void run() {
+						// TODO: replace fix size by dynamic (computed) size
+						OffscreenGraph off_graph = new OffscreenGraph(400, 30) {
 
-							CellGraphContentProvider cgcp = new CellGraphContentProvider();
-							GraphLabelProvider glp = new GraphLabelProvider();
-							viewer.setContentProvider(cgcp);
-							viewer.setLabelProvider(glp);
-							viewer.setInput(cell);
-							viewer.setLayoutAlgorithm(algo);
+							@Override
+							protected void configureViewer(GraphViewer viewer) {
+								LayoutAlgorithm algo = new TreeLayoutAlgorithm(
+										TreeLayoutAlgorithm.LEFT_RIGHT);
+
+								CellGraphContentProvider cgcp = new CellGraphContentProvider();
+								GraphLabelProvider glp = new GraphLabelProvider();
+								viewer.setContentProvider(cgcp);
+								viewer.setLabelProvider(glp);
+								viewer.setInput(cell);
+								viewer.setLayoutAlgorithm(algo);
+							}
+						};
+
+						try {
+							off_graph.saveImage(
+									new FileOutputStream(imageFile), null);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
-					};
 
-					try {// TODO: 
-						off_graph.saveImage(new FileOutputStream(new File(
-								filesDir, "img_" + "IDENTIFIER")), null);
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
-
-				}
-			});
-			i++;
+				});
+			}
 		}
+//		// Link-generator
+//		Vector<String> linkListVector = new Vector<String>();
+//		// link counter
+//		int j = 1;
+//		for (Iterator<? extends Cell> iterator = it; iterator.hasNext();) {
+//			Cell cell = iterator.next();
+//			String[] temp = new String[] { "muh" };
+//			linkListVector
+//					.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link" + j + "'>" + temp[0] + "</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+//			j++;
+//		}
+//		context.put("linklist", linkListVector); //$NON-NLS-1$
 	}
+
 }
