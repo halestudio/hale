@@ -12,15 +12,20 @@
 
 package eu.esdihumboldt.hale.ui.service.report.internal;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.writer.ReportWriter;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
@@ -36,9 +41,28 @@ public class ReportServiceImpl implements ReportService {
 	private final TypeSafeListenerList<ReportListener<?, ?>> listeners = new TypeSafeListenerList<ReportListener<?,?>>();
 
 	/**
-	 * Map using the MessageType(Class) as index and a Map containing Report(Class) -> Report
+	 * Map containing {@link ReportSession}s.
 	 */
-	private final Map<Class<? extends Message>, Multimap<Class<? extends Report<?>>, Report<?>>> reports = new HashMap<Class<? extends Message>, Multimap<Class<? extends Report<?>>,Report<?>>>();
+	private final Map<Long, ReportSession> reps = new HashMap<Long, ReportSession>();
+	
+	private ReportSession getCurrentSession() {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String yyyymmdd = df.format(new Date(System.currentTimeMillis()));
+		long time;
+		try {
+			time = df.parse(yyyymmdd).getTime();
+		} catch (ParseException e) {
+			return null;
+		}
+		
+		ReportSession session = reps.get(time);
+		if (session == null) {
+			session = new ReportSession(time);
+			reps.put(time, session);
+		}
+		
+		return session;
+	}
 	
 	/**
 	 * @see ReportService#addReport(Report)
@@ -46,15 +70,9 @@ public class ReportServiceImpl implements ReportService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <M extends Message, R extends Report<M>> void addReport(R report) {
-		// get all reports for this messageType
-		Multimap<Class<? extends Report<?>>, Report<?>> reportMap = getReports(report.getMessageType());
-		
-		// add the report to temporary map
-		reportMap.put((Class<? extends Report<?>>) report.getClass(), report);
-		
-		// add them to internal storage
-		this.reports.put(report.getMessageType(), reportMap);
-		
+		ReportSession session = this.getCurrentSession();
+		session.addReport(report);
+
 		// notify listeners
 		notifyReportAdded(report.getClass(), report.getMessageType(), report);
 	}
@@ -98,11 +116,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public Multimap<Class<? extends Report<?>>, Report<?>> getReports(
 			Class<? extends Message> messageType) {
-		Multimap<Class<? extends Report<?>>, Report<?>> map = reports.get(messageType);
-		if (map == null) {
-			map = HashMultimap.create();
-		}
-		return map;
+		return this.getCurrentSession().getReports(messageType);
 	}
 	
 	/**
@@ -111,15 +125,8 @@ public class ReportServiceImpl implements ReportService {
 	 * @return all reports
 	 */
 	@Override
-	public Multimap<Class<? extends Report<?>>, Report<?>> getAllReports() {
-//		return this.getReports(Message.class);
-		Multimap<Class<? extends Report<?>>, Report<?>> reportMap = HashMultimap.create();
-		
-		for (Multimap<Class<? extends Report<?>>, Report<?>> map : this.reports.values()) {
-			reportMap.putAll(map);
-		}
-		
-		return reportMap;
+	public Multimap<Class<? extends Report<?>>, Report<?>> getCurrentReports() {
+		return this.getCurrentSession().getAllReports();
 	}
 
 	/**
@@ -144,10 +151,19 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public void deleteAllReports() {
 		// clear the list
-		this.reports.clear();
+		this.reps.clear();
 		
 		// notify listeners
 		this.notifyReportsDeleted();
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#saveCurrentReports(java.io.File)
+	 */
+	@Override
+	public boolean saveCurrentReports(File file) throws IOException {
+		ReportWriter rw = new ReportWriter();
+		
+		return rw.writeAll(file, this.getCurrentReports());
+	}
 }
