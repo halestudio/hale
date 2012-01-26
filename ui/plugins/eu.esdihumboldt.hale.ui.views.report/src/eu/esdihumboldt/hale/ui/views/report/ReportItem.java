@@ -24,7 +24,7 @@ public class ReportItem {
 	/**
 	 * Contains the {@link ProjectInfo}.
 	 */
-	private ProjectInfo project;
+	private String project;
 	
 	/**
 	 * Contains the related {@link Report}.
@@ -38,7 +38,7 @@ public class ReportItem {
 	 * @param project the project
 	 * @param report the realted Report
 	 */
-	public ReportItem(ProjectInfo project, Report<?> report) {
+	public ReportItem(String project, Report<?> report) {
 		this.setProject(project);
 		this.setReport(report);
 	}
@@ -46,14 +46,14 @@ public class ReportItem {
 	/**
 	 * @return the project
 	 */
-	public ProjectInfo getProject() {
+	public String getProject() {
 		return project;
 	}
 
 	/**
 	 * @param project the project to set
 	 */
-	public void setProject(ProjectInfo project) {
+	public void setProject(String project) {
 		this.project = project;
 	}
 

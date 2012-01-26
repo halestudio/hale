@@ -16,6 +16,8 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -322,14 +324,8 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					 * This is the part where new reports arrive and
 					 * will be added.
 					 */
-					ProjectService proService = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-					ProjectInfo info = proService.getProjectInfo();
-					
-					if (info == null) {
-						Project temp = new Project();
-						temp.setName("Unknown");
-						info = temp;
-					}
+					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+					String info = df.format(new Date(System.currentTimeMillis()));
 					
 					_treeViewer.setInput(new ReportItem(info, report));
 				} catch (NullPointerException e) {
