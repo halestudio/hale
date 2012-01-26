@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.ui.service.report;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
@@ -69,4 +72,16 @@ public interface ReportService {
 	 * Deletes all reports.
 	 */
 	public void deleteAllReports();
+	
+	/**
+	 * Saves all reports from {@link ReportService} to a
+	 * specific file.
+	 * 
+	 * @param file the file to save
+	 * 
+	 * @return true on success
+	 * 
+	 * @throws IOException an exception if IO fails
+	 */
+	public boolean saveAllReports(File file) throws IOException;
 }

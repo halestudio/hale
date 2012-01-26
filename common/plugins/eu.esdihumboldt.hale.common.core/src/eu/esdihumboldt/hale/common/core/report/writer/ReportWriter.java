@@ -12,11 +12,20 @@
 
 package eu.esdihumboldt.hale.common.core.report.writer;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.MessageFactory;
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.ReportFactory;
 
 
 /**
@@ -30,79 +39,83 @@ public class ReportWriter {
 	/**
 	 * Contains all {@link Report}s.
 	 */
-	private ArrayList<Report<Message>> reports = new ArrayList<Report<Message>>();
-
-	public ReportWriter() {
-		
-	}
+	private Multimap<Class<? extends Report<?>>, Report<?>> reports = HashMultimap.create();
 	
+	private static final ALogger _log = ALoggerFactory.getLogger(ReportWriter.class);
+
 	/**
-	 * Adds a {@link Report}.
-	 * 
-	 * @param report the report to add
+	 * Constructor.
 	 */
-	public void addReport(Report<Message> report) {
-		this.reports.add(report);
+	public ReportWriter() {
+		/* nothing */
 	}
 	
 	/**
 	 * Adds all {@link Report}s.
 	 * 
-	 * @param reports {@link List} of {@link Report}s
+	 * @param multimap {@link List} of {@link Report}s
 	 */
-	public void addAllReports(List<Report<Message>> reports) {
-		this.reports.addAll(reports);
+	public void addAllReports(Multimap<Class<? extends Report<?>>, Report<?>> multimap) {
+		this.reports.putAll(multimap);
 	}
 	
 	/**
-	 * Dummy function for tests.
+	 * Writes all {@link Report}s to a {@link File}.
+	 * 
+	 * @param file target file
+	 * 
+	 * @return true on success
+	 * 
+	 * @throws IOException if IO fails
 	 */
-	public void write() {
-	    StringBuilder result = new StringBuilder();
-	    String nl = System.getProperty("line.separator");
-	    
-	    for (Report<?> r : this.reports) {
-	    	// check for specific type
-	    	result.append("!REPORT_DEFAULT:"+nl);
-	    	
-	    	// print default data
-	    	result.append(r.toString()+nl);
-	    	
-	    	// iterate through all messages
-	    	for (Object m : r.getWarnings()) {
-	    		String type = m.getClass().getSimpleName().toUpperCase().replace("IMPL", ""); // use this until there's a better idea
-	    		result.append("!WARN"+nl);
-	    		result.append("!MSG_"+type+":"+nl);
-	    		result.append("message = "+((Message)m).getMessage()+nl);
-	    		result.append("stack = "+((Message)m).getStackTrace()+nl);
-	    		
-	    		result.append(nl);
-	    	}
-	    	
-	    	for (Object m : r.getErrors()) {
-	    		String type = m.getClass().getSimpleName().toUpperCase().replace("IMPL", ""); // use this until there's a better idea
-	    		result.append("!ERROR"+nl);
-	    		result.append("!MSG_"+type+":"+nl);
-	    		result.append("message = "+((Message)m).getMessage()+nl);
-	    		result.append("stack = "+((Message)m).getStackTrace()+nl);
-	    		
-	    		result.append(nl);
-	    	}
-	    	
-	    	for (Object m : r.getInfos()) {
-	    		String type = m.getClass().getSimpleName().toUpperCase().replace("IMPL", ""); // use this until there's a better idea
-	    		result.append("!INFO"+nl);
-	    		result.append("!MSG_"+type+":"+nl);
-	    		result.append("message = "+((Message)m).getMessage()+nl);
-	    		result.append("stack = "+((Message)m).getStackTrace()+nl);
-	    		
-	    		result.append(nl);
-	    	}
-	    	
-	    	// spacer
-	    	result.append(nl+nl);
-	    }
-	    
-	    System.out.print(result);
+	public boolean writeAll(File file) throws IOException {
+		// check if the file exists
+		if (!file.exists()) {
+			// and create the file
+			if (!file.createNewFile()) {
+				_log.error("Logfile could not be created!");
+				return false;
+			}
+			
+			// make it writable
+			file.setWritable(true);
+		}
+		
+		// check if it's writable
+		if (!file.canWrite()) {
+			_log.error("Report could not be saved. No write permission!");
+			return false;
+		}
+		
+		// create PrintStream
+		PrintStream p = new PrintStream(file);
+		
+		// get an instance of ReportFactory
+		ReportFactory rf = ReportFactory.getInstance();
+		MessageFactory mf = MessageFactory.getInstance();
+		
+		// iterate through all reports
+		for (Report<?> r : this.reports.values()) {
+			// write them to the file
+			p.print(rf.asString(r));
+			
+			for (Message m : r.getErrors()) {
+				p.print(mf.asString(m));
+			}
+			
+			for (Message m : r.getWarnings()) {
+				p.print(mf.asString(m));
+			}
+			
+			for (Message m : r.getInfos()) {
+				p.print(mf.asString(m));
+			}
+		}
+		
+		// close stream
+		p.flush();
+		p.close();
+		
+		return true;
 	}
 }

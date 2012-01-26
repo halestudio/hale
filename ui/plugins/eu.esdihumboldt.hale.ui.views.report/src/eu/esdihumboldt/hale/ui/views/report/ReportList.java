@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.ui.views.report;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -34,16 +36,16 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.wb.swt.ResourceManager;
 
+import swing2swt.layout.BorderLayout;
+
 import com.google.common.collect.Multimap;
 
-import swing2swt.layout.BorderLayout;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
-import eu.esdihumboldt.hale.common.core.report.writer.ReportWriter;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
@@ -69,7 +71,6 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	private MenuItem _mntmDeleteLog;
 	private MenuItem _mntmRestoreLog;
 	private MenuItem _mntmExportLog;
-	private MenuItem _mntmExportEntry;
 
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportList.class);
 	
@@ -124,14 +125,6 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					public void widgetSelected(SelectionEvent e) {
 						// enable some functions in the popupmenu
 						_mntmCopy.setEnabled(true);
-						_mntmExportEntry.setEnabled(true);
-						
-						Object obj = ((IStructuredSelection) _treeViewer.getSelection()).getFirstElement();
-						if (obj instanceof Project) {
-							_mntmExportEntry.setText("Export All Entries");
-						} else {
-							_mntmExportEntry.setText("Export Entry");
-						}
 					}
 				});
 				tree.setHeaderVisible(true);
@@ -217,39 +210,31 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 						String[] filterExt = { "*.log", "*.txt", "*.*" };
 						fd.setFilterExtensions(filterExt);
 						
-						String file = fd.open();
+						String filePath = fd.open();
 						
-						if (file != null) {
-							// TODO save the reports to given path
+						if (filePath != null) {
+							// check file existence
+							File file = new File(filePath);
+							if (file.exists()) {
+								MessageBox overwrite = new MessageBox(tree.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+								overwrite.setMessage(String.format("File \"%s\" already exists.\nWould you like to overwrite it?", filePath));
+								int cont = overwrite.open();
+								
+								if (cont == SWT.NO) {
+									return;
+								}
+							}
 							
+							// try to save it
+							try {
+								repService.saveAllReports(file);
+							} catch (IOException exception) {
+								_log.error("Could not save the report log.", exception.getStackTrace());
+							}
 						}
 					}
 				});
 				_mntmExportLog.setText("Export Log");
-				
-				_mntmExportEntry = new MenuItem(_menu, SWT.NONE);
-				_mntmExportEntry.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						/*
-						 * If a project is selected: export the whole project
-						 * else just the single entry.
-						 */
-						FileDialog fd = new FileDialog(tree.getShell(), SWT.SAVE);
-						fd.setText("Export Report Log Entry");
-						String[] filterExt = { "*.log", "*.txt", "*.*" };
-						fd.setFilterExtensions(filterExt);
-						
-						String file = fd.open();
-						
-						if (file != null) {
-							// save the reports to given path
-							
-						}
-					}
-				});
-				_mntmExportEntry.setEnabled(false);
-				_mntmExportEntry.setText("Export Entry");
 			}
 		}
 
@@ -265,9 +250,6 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 		
 		// set selection provider
 		getSite().setSelectionProvider(_treeViewer);
-		
-		// feed a dummy object so old reports are restored if this widget was disposed
-		// _treeViewer.setInput(new Object());
 		
 		// load all added reports
 		this.loadReports();
@@ -332,7 +314,6 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 			return;
 		}
 		
-		final ReportWriter reportWriter = new ReportWriter(); // remove this soon
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -351,11 +332,6 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					}
 					
 					_treeViewer.setInput(new ReportItem(info, report));
-					
-					// remove this (test purpose)
-					reportWriter.addReport(report);
-					reportWriter.write();
-					// until here
 				} catch (NullPointerException e) {
 					_log.warn("NullpointerException while adding a Report.");
 					_log.trace(e.getMessage());
@@ -385,6 +361,5 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 		
 		// make some functions unavailable
 		_mntmCopy.setEnabled(false);
-		_mntmExportEntry.setEnabled(false);
 	}
 }
