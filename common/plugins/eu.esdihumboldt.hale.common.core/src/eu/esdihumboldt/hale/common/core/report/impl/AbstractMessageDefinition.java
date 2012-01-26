@@ -135,9 +135,13 @@ public abstract class AbstractMessageDefinition<T extends Message> implements Me
 		Properties props = new Properties();
 		
 		props.setProperty(KEY_MESSAGE, message.getMessage());
-		props.setProperty(KEY_STACK_TRACE, message.getStackTrace());
+		
+		if (message.getStackTrace() != null) {
+			props.setProperty(KEY_STACK_TRACE, message.getStackTrace());
+		} else {
+			props.setProperty(KEY_STACK_TRACE, "");
+		}
 		
 		return props ;
 	}
-
 }

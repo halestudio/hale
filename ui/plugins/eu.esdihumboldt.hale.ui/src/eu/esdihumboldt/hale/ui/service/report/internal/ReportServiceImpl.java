@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.service.report.internal;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ import com.google.common.collect.Multimap;
 import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.writer.ReportWriter;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
@@ -111,7 +114,7 @@ public class ReportServiceImpl implements ReportService {
 	 * @return all reports
 	 */
 	@Override
-	public Multimap<Class<? extends Report<?>>, Report<?>> getAllReports() {
+	public Multimap<Class<? extends Report<?>>, Report<?>> getCurrentReports() {
 //		return this.getReports(Message.class);
 		Multimap<Class<? extends Report<?>>, Report<?>> reportMap = HashMultimap.create();
 		
@@ -148,6 +151,17 @@ public class ReportServiceImpl implements ReportService {
 		
 		// notify listeners
 		this.notifyReportsDeleted();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#saveCurrentReports(java.io.File)
+	 */
+	@Override
+	public boolean saveCurrentReports(File file) throws IOException {
+		ReportWriter rw = new ReportWriter();
+		rw.addAllReports(getCurrentReports());
+		
+		return rw.writeAll(file, this.getCurrentReports());
 	}
 
 }
