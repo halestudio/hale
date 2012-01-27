@@ -58,6 +58,22 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 	}
 	
 	/**
+	 * Create a new message
+	 * 
+	 * @param message the message string
+	 * @param throwable the associated throwable, may be <code>null</code>
+	 * @param stackTrace the associated stack trace, or <code>null</code>
+	 * @param lineNumber the line number in the file, <code>-1</code> for none
+	 * @param column the column in the line, <code>-1</code> for none
+	 */
+	protected IOMessageImpl(String message, Throwable throwable, String stackTrace, int lineNumber,
+			int column) {
+		super(message, throwable, stackTrace);
+		this.column = column;
+		this.lineNumber = lineNumber;
+	}
+	
+	/**
 	 * Create a new message and format it using {@link MessageFormat}
 	 * 
 	 * @param pattern the message format pattern
