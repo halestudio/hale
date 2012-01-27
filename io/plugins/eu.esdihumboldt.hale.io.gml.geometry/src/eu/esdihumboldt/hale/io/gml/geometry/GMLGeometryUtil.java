@@ -32,6 +32,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
+import eu.esdihumboldt.hale.common.instance.helper.BreadthFirstInstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -251,8 +252,12 @@ public abstract class GMLGeometryUtil {
 	 * identified
 	 */
 	public static CRSDefinition findCRS(Instance instance) {
-		//TODO
-		return null;
+		BreadthFirstInstanceTraverser traverser = new BreadthFirstInstanceTraverser();
+		
+		CRSFinder finder = new CRSFinder();
+		traverser.traverse(instance, finder);
+		
+		return finder.getDefinition();
 	}
 
 }
