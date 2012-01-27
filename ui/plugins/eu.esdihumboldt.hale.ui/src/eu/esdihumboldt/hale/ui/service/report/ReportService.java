@@ -14,11 +14,13 @@ package eu.esdihumboldt.hale.ui.service.report;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.ReportSession;
 
 /**
  * Report service interface
@@ -84,6 +86,13 @@ public interface ReportService {
 	 * @throws IOException an exception if IO fails
 	 */
 	public boolean saveCurrentReports(File file) throws IOException;
+	
+	/**
+	 * Get all saved sessions.
+	 * 
+	 * @return all sessions
+	 */
+	public Collection<ReportSession> getAllSessions();
 	
 	/**
 	 * Try to reload previous saved reports and their

@@ -12,15 +12,14 @@
 
 package eu.esdihumboldt.hale.ui.service.report.internal;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
@@ -32,7 +31,8 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
-import eu.esdihumboldt.hale.common.core.report.ReportFactory;
+import eu.esdihumboldt.hale.common.core.report.ReportSession;
+import eu.esdihumboldt.hale.common.core.report.writer.ReportReader;
 import eu.esdihumboldt.hale.common.core.report.writer.ReportWriter;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
@@ -182,7 +182,19 @@ public class ReportServiceImpl implements ReportService {
 	 */
 	@Override
 	public void loadReportsOnStartup() {
-		// TODO will follow
+		// folder where the reports shall be stored
+		File folder = new File(Platform.getLocation().toString()+"/reports/");
+		
+		// create a ReportReader
+		ReportReader rr = new ReportReader();
+		
+		// read all sessions from log folder
+		List<ReportSession> list = rr.read(folder);
+		
+		// add them to internal storage
+		for (ReportSession s : list) {
+			this.reps.put(s.getId(), s);
+		}
 	}
 
 	/**
@@ -212,5 +224,13 @@ public class ReportServiceImpl implements ReportService {
 				_log.error("Cannot save report session.", e.getStackTrace());
 			}
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#getAllSessions()
+	 */
+	@Override
+	public Collection<ReportSession> getAllSessions() {
+		return this.reps.values();
 	}
 }
