@@ -84,4 +84,16 @@ public interface ReportService {
 	 * @throws IOException an exception if IO fails
 	 */
 	public boolean saveCurrentReports(File file) throws IOException;
+	
+	/**
+	 * Try to reload previous saved reports and their
+	 * session at program startup.
+	 */
+	public void loadReportsOnStartup();
+	
+	/**
+	 * Saves all reports with there corresponding session
+	 * on program shutdown.
+	 */
+	public void saveReportsOnShutdown();
 }

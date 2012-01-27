@@ -12,19 +12,27 @@
 
 package eu.esdihumboldt.hale.ui.service.report.internal;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Platform;
+
 import com.google.common.collect.Multimap;
 
 import de.cs3d.util.eclipse.TypeSafeListenerList;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.ReportFactory;
 import eu.esdihumboldt.hale.common.core.report.writer.ReportWriter;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
@@ -44,6 +52,8 @@ public class ReportServiceImpl implements ReportService {
 	 * Map containing {@link ReportSession}s.
 	 */
 	private final Map<Long, ReportSession> reps = new HashMap<Long, ReportSession>();
+	
+	private static final ALogger _log = ALoggerFactory.getLogger(ReportService.class);
 	
 	private ReportSession getCurrentSession() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -165,5 +175,42 @@ public class ReportServiceImpl implements ReportService {
 		ReportWriter rw = new ReportWriter();
 		
 		return rw.writeAll(file, this.getCurrentReports());
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#loadReportsOnStartup()
+	 */
+	@Override
+	public void loadReportsOnStartup() {
+		// TODO will follow
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#saveReportsOnShutdown()
+	 */
+	@Override
+	public void saveReportsOnShutdown() {
+		// folder where the reports shall be stored
+		File folder = new File(Platform.getLocation().toString()+"/reports/");
+		
+		if (!folder.exists() && folder.mkdirs()) {
+			// folder does not exist and we cannot create it...
+			_log.error("Folder for reports does not exist and cannot be created!");
+			return;
+		}
+		
+		// create a ReportWriter
+		ReportWriter rw = new ReportWriter();
+
+		// iterate through all sessions
+		for (ReportSession s : this.reps.values()) {
+			File file = new File(folder.getPath()+"/"+s.getId()+".log");
+			try {
+				rw.writeAll(file, s.getAllReports());
+			} catch (IOException e) {
+				// error during saving
+				_log.error("Cannot save report session.", e.getStackTrace());
+			}
+		}
 	}
 }

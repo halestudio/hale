@@ -13,10 +13,12 @@ package eu.esdihumboldt.hale.ui.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import eu.esdihumboldt.hale.ui.HaleSharedImages;
+import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -31,6 +33,8 @@ public class HALEUIPlugin extends AbstractUIPlugin implements HaleSharedImages {
 	// The shared instance
 	private static HALEUIPlugin plugin;
 	
+	private ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+	
 	/**
 	 * Default constructor
 	 */
@@ -43,8 +47,12 @@ public class HALEUIPlugin extends AbstractUIPlugin implements HaleSharedImages {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
+		// start plugin
 		super.start(context);
 		plugin = this;
+		
+		// reload reports
+		this.repService.loadReportsOnStartup();
 	}
 
 	/**
@@ -52,6 +60,10 @@ public class HALEUIPlugin extends AbstractUIPlugin implements HaleSharedImages {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		// save reports
+		this.repService.saveReportsOnShutdown();
+		
+		// shutdown plugin
 		plugin = null;
 		super.stop(context);
 	}
