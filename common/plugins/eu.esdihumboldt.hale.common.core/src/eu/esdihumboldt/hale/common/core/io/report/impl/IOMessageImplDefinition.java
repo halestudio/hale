@@ -23,10 +23,20 @@ import eu.esdihumboldt.hale.common.core.report.impl.AbstractMessageDefinition;
 public class IOMessageImplDefinition extends AbstractMessageDefinition<IOMessageImpl> {
 	
 	/**
+	 * Key for the line string
+	 */
+	public static final String KEY_IO_LINE = "line";
+	
+	/**
+	 * Key for the column string
+	 */
+	public static final String KEY_IO_COLUMN = "column";
+	
+	/**
 	 * Default constructor
 	 */
 	public IOMessageImplDefinition() {
-		super(IOMessageImpl.class, "default");
+		super(IOMessageImpl.class, "io");
 	}
 
 	/**
@@ -35,8 +45,23 @@ public class IOMessageImplDefinition extends AbstractMessageDefinition<IOMessage
 	@Override
 	protected IOMessageImpl createMessage(Properties props) {
 		return new IOMessageImpl(
-				props.getProperty(KEY_MESSAGE), 
-				null, 
-				props.getProperty(KEY_STACK_TRACE));
+				props.getProperty(KEY_MESSAGE),
+				null,
+				props.getProperty(KEY_STACK_TRACE),
+				Integer.parseInt(props.getProperty(KEY_IO_LINE)),
+				Integer.parseInt(props.getProperty(KEY_IO_COLUMN)));
+	}
+	
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.impl.AbstractMessageDefinition#asProperties(eu.esdihumboldt.hale.common.core.report.Message)
+	 */
+	@Override
+	protected Properties asProperties(IOMessageImpl message) {
+		Properties props = super.asProperties(message);
+		
+		props.setProperty(KEY_IO_LINE, ""+message.getLineNumber());
+		props.setProperty(KEY_IO_COLUMN, ""+message.getColumn());
+		
+		return props;
 	}
 }

@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.common.core.report.impl;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 import de.cs3d.util.logging.ALogger;
@@ -163,9 +163,8 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		reporter.setSuccess(Boolean.parseBoolean(props.getProperty(KEY_REPORT_SUCCESS)));
 		
 		// parse times and set them
-		SimpleDateFormat df = new SimpleDateFormat();
-		reporter.setStartTime(df.parse(props.getProperty(KEY_REPORT_STARTTIME)));
-		reporter.setTimestamp(df.parse(props.getProperty(KEY_REPORT_TIME)));
+		reporter.setStartTime(new Date(Long.parseLong(props.getProperty(KEY_REPORT_STARTTIME))));
+		reporter.setTimestamp(new Date(Long.parseLong(props.getProperty(KEY_REPORT_TIME))));
 	}
 
 	/**
@@ -205,8 +204,8 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		props.setProperty(KEY_REPORT_TASKNAME, report.getTaskName());
 		props.setProperty(KEY_REPORT_SUCCESS, ""+report.isSuccess());
 		props.setProperty(KEY_REPORT_SUMMARY, report.getSummary());
-		props.setProperty(KEY_REPORT_TIME, ""+report.getTimestamp());
-		props.setProperty(KEY_REPORT_STARTTIME, ""+report.getStartTime());
+		props.setProperty(KEY_REPORT_TIME, ""+report.getTimestamp().getTime());
+		props.setProperty(KEY_REPORT_STARTTIME, ""+report.getStartTime().getTime());
 		props.setProperty(KEY_REPORT_MESSAGE_TYPE, report.getMessageType().getCanonicalName());
 		
 //		props.setProperty(KEY_REPORT_INFOS, StringUtils.join(report.getInfos(), ";"));
