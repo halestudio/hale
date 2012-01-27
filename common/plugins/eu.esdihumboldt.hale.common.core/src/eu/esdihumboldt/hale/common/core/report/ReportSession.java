@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.service.report.internal;
+package eu.esdihumboldt.hale.common.core.report;
 
 import java.util.HashMap;
 import java.util.Map;

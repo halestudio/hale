@@ -26,7 +26,7 @@ public class IOMessageImplDefinition extends AbstractMessageDefinition<IOMessage
 	 * Default constructor
 	 */
 	public IOMessageImplDefinition() {
-		super(IOMessageImpl.class, "default");
+		super(IOMessageImpl.class, "io");
 	}
 
 	/**

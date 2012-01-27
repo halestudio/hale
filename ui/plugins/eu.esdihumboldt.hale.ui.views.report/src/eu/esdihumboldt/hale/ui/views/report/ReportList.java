@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import eu.esdihumboldt.hale.common.core.report.ReportSession;
+
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.TreeColumnLayout;
@@ -91,16 +93,30 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	 */
 	@SuppressWarnings("unchecked")
 	private void loadReports() {
-		Multimap<Class<? extends Report<?>>, Report<?>> reports = this.repService.getCurrentReports();
-	
-		for (Report<?> r : reports.values()) {
-			if (r == null) { continue; }
-			try {
-				this.reportAdded((Report<Message>) r);
-			} catch (Exception e) {
-				_log.warn("Unsupported Report", e.getStackTrace());
+		for (ReportSession s : this.repService.getAllSessions()) {
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String info = df.format(new Date(s.getId()));
+			
+			for (Report r : s.getAllReports().values()) {
+				_treeViewer.setInput(new ReportItem(info, r));
 			}
 		}
+		
+//		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//		String info = df.format(new Date(System.currentTimeMillis()));
+//		
+//		_treeViewer.setInput(new ReportItem(info, report));
+		
+//		Multimap<Class<? extends Report<?>>, Report<?>> reports = this.repService.getCurrentReports();
+//	
+//		for (Report<?> r : reports.values()) {
+//			if (r == null) { continue; }
+//			try {
+//				this.reportAdded((Report<Message>) r);
+//			} catch (Exception e) {
+//				_log.warn("Unsupported Report", e.getStackTrace());
+//			}
+//		}
 	}
 
 	/**
