@@ -102,17 +102,23 @@ public class ReportWriter {
 			p.print(rf.asString(r));
 			
 			for (Message m : r.getErrors()) {
+				p.println("!ERROR");
 				p.print(mf.asString(m));
 			}
 			
 			for (Message m : r.getWarnings()) {
+				p.println("!WARN");
 				p.print(mf.asString(m));
 			}
 			
 			for (Message m : r.getInfos()) {
+				p.println("!INFO");
 				p.print(mf.asString(m));
 			}
 		}
+		
+		// set an end marker
+		p.print("!END");
 		
 		// close stream
 		p.flush();
