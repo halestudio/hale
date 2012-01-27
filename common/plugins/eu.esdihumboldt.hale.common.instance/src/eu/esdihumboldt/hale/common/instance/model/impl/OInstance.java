@@ -91,7 +91,7 @@ public class OInstance extends OGroup implements MutableInstance {
 	 */
 	@Override
 	public void setValue(Object value) {
-		document.field(FIELD_VALUE, value);
+		document.field(FIELD_VALUE, convertInstance(value));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class OInstance extends OGroup implements MutableInstance {
 	 */
 	@Override
 	public Object getValue() {
-		return document.field(FIELD_VALUE);
+		return convertDocument(document.field(FIELD_VALUE), null);
 	}
 
 	/**

@@ -259,7 +259,7 @@ public class OGroup implements MutableGroup {
 	 * @param value the object to convert
 	 * @return the converted object
 	 */
-	private Object convertInstance(Object value) {
+	protected Object convertInstance(Object value) {
 		if (value == null) 
 			return null;
 		if (value instanceof OGroup) {
@@ -439,7 +439,7 @@ public class OGroup implements MutableGroup {
 	 * @param propertyName the name of the property the value is associated with
 	 * @return the converted object
 	 */
-	private Object convertDocument(Object value, QName propertyName) {
+	protected Object convertDocument(Object value, QName propertyName) {
 		if (value instanceof ODocument) {
 			ChildDefinition<?> child = definition.getChild(propertyName);
 			if (child.asProperty() != null) {
