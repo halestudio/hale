@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ import de.cs3d.util.eclipse.TypeSafeListenerList;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.MessageFactory;
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportFactory;
 import eu.esdihumboldt.hale.common.core.report.writer.ReportWriter;
@@ -85,6 +87,21 @@ public class ReportServiceImpl implements ReportService {
 
 		// notify listeners
 		notifyReportAdded(report.getClass(), report.getMessageType(), report);
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @param report
+	 */
+	private <M extends Message, R extends Report<M>> void addReport(long id, R report) {
+		ReportSession session = reps.get(id);
+		if (session == null) {
+			session = new ReportSession(id);
+			reps.put(id, session);
+		}
+		
+		session.addReport(report);
 	}
 
 	/**
@@ -182,7 +199,64 @@ public class ReportServiceImpl implements ReportService {
 	 */
 	@Override
 	public void loadReportsOnStartup() {
-		// TODO will follow
+		// folder where the reports shall be stored
+		File folder = new File(Platform.getLocation().toString()+"/reports/");
+		
+		if (!folder.exists() && folder.mkdirs()) {
+			// folder does not exist so there are no reports
+			return;
+		}
+		
+		ReportFactory rf = ReportFactory.getInstance();
+		MessageFactory mf = MessageFactory.getInstance();
+		for (File f : folder.listFiles()) {
+			// extract session id
+			String[] name = f.getName().split("[.]");
+			long id = Long.parseLong(name[0]);
+			
+			// get content
+			StringWriter sw = new StringWriter();
+			BufferedReader  reader = null;
+			try {
+				// try to get a InputStreamReader from InputStream with encoding
+				reader = new BufferedReader(new FileReader(f));
+				String temp;
+				
+				// read all data
+				while (reader.ready()) {
+					temp = reader.readLine();
+					sw.append(temp+"\n");
+				}
+				
+				// close reader
+				reader.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			String[] reports = sw.toString().split("\n\n\n");
+			
+			Report<Message> lastReport = null;
+			
+			for (String s : reports) {
+				if (s.startsWith("!MESSAGE") && lastReport != null) {
+					Message m = mf.parse(s);
+					
+				} else {
+					Report r = rf.parse(s);
+					if (r == null) {
+						continue;
+					}
+					lastReport = r;
+					this.addReport(id, r);
+				}
+			}
+			
+			//
+//					rf.parse(sw.toString());
+			
+		}
 	}
 
 	/**
@@ -212,5 +286,13 @@ public class ReportServiceImpl implements ReportService {
 				_log.error("Cannot save report session.", e.getStackTrace());
 			}
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#getAllSessions()
+	 */
+	@Override
+	public Collection<ReportSession> getAllSessions() {
+		return this.reps.values();
 	}
 }
