@@ -79,7 +79,13 @@ public abstract class GeometryUtil {
 						if (value instanceof Group) {
 							children.add((Group) value);
 						}
-						else if (i == path.size() - 1) {
+						
+						if (value instanceof Instance) {
+							value = ((Instance) value).getValue();
+						}
+						
+						if (value != null && !(value instanceof Group) 
+								&& i == path.size() - 1) {
 							// detect geometry values at end of path
 							// as they are not searched later on
 							Collection<GeometryProperty<?>> geoms = getGeometryProperties(value);
