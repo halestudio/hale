@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.cst.functions.numeric;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,15 +60,8 @@ public class MathematicalExpression extends AbstractSingleTargetPropertyTransfor
 			PropertyEntityDefinition resultProperty,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
-		if (getParameters() == null
-				|| getParameters().get(PARAMETER_EXPRESSION) == null
-				|| getParameters().get(PARAMETER_EXPRESSION).isEmpty()) {
-			throw new TransformationException(MessageFormat.format(
-					"Mandatory parameter {0} not defined", PARAMETER_EXPRESSION));
-		}
-		
 		// get the mathematical expression
-		String expression = getParameters().get(PARAMETER_EXPRESSION).get(0);
+		String expression = getParameterChecked(PARAMETER_EXPRESSION);
 		
 		Environment env = new Environment();
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);

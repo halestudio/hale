@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.cst.functions.groovy;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,15 +48,8 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 			PropertyEntityDefinition resultProperty,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
-		if (getParameters() == null
-				|| getParameters().get(PARAMETER_SCRIPT) == null
-				|| getParameters().get(PARAMETER_SCRIPT).isEmpty()) {
-			throw new TransformationException(MessageFormat.format(
-					"Mandatory parameter {0} not defined", PARAMETER_SCRIPT));
-		}
-		
 		// get the mathematical expression
-		String script = getParameters().get(PARAMETER_SCRIPT).get(0);
+		String script = getParameterChecked(PARAMETER_SCRIPT);
 		
 		Binding binding = new Binding();
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);

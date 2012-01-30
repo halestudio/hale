@@ -15,7 +15,6 @@ package eu.esdihumboldt.cst.functions.core;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -35,22 +34,19 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
  * @author Kai Schwierczek
  */
 public class ClassificationMapping extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
+	
+	/**
+	 * Name of the parameter specifying the classifications.
+	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
+	 */
 	private static final String PARAMETER_CLASSIFICATIONS = "classificationMapping";
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation#evaluate(java.lang.String, eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine, com.google.common.collect.ListMultimap, java.lang.String, eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition, java.util.Map, eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
-	 */
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName, PropertyEntityDefinition resultProperty,
 			Map<String, String> executionParameters, TransformationLog log) throws TransformationException {
-		if (getParameters() == null
-				|| getParameters().get(PARAMETER_CLASSIFICATIONS) == null
-				|| getParameters().get(PARAMETER_CLASSIFICATIONS).isEmpty()) {
-			throw new TransformationException(MessageFormat.format(
-					"Mandatory parameter {0} not defined", PARAMETER_CLASSIFICATIONS));
-		}
-
+		checkParameter(PARAMETER_CLASSIFICATIONS, 1);
+		
 		List<String> mappings = getParameters().get(PARAMETER_CLASSIFICATIONS);
 		String source = variables.values().iterator().next().getValueAs(String.class);
 		try {
