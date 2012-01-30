@@ -331,6 +331,16 @@
                   tooltip="Add a new relation">
             </command>
          </toolbar>
+         <toolbar
+               id="eu.esdihumboldt.hale.ui.application.help"
+               label="Help">
+            <command
+                  commandId="org.eclipse.ui.help.displayHelp"
+                  icon="icons/help.gif"
+                  label="Open help browser"
+                  style="push">
+            </command>
+         </toolbar>
       </menuContribution>
       <menuContribution
             allPopups="false"
