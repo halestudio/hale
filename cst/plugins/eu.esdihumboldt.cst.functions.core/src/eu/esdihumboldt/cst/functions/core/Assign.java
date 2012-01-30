@@ -45,12 +45,7 @@ public class Assign extends AbstractSingleTargetPropertyTransformation<Transform
 			String resultName, PropertyEntityDefinition resultProperty,
 			Map<String, String> executionParameters, TransformationLog log) 
 			throws TransformationException {
-		ListMultimap<String, String> parameters = getParameters();
-		if (parameters == null) {
-			throw new TransformationException("No parameters defined.");
-		}
-		// get the value parameter
-		return parameters.get(PARAMETER_VALUE); // rely on automatic conversion
+		return getParameterChecked(PARAMETER_VALUE); 
 	}
 
 }
