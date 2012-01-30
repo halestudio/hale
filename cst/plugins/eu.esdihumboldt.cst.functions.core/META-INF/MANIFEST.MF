@@ -5,7 +5,8 @@ Bundle-SymbolicName: eu.esdihumboldt.cst.functions.core;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.2.0"
-Import-Package: com.google.common.collect,
+Import-Package: com.google.common.base;version="9.0.0",
+ com.google.common.collect,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model,

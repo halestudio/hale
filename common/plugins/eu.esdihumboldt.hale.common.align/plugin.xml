@@ -98,6 +98,34 @@
                name="classificationMapping">
          </functionParameter>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.hale.align.general"
+            description="Creates a formatted string based on a pattern and the input variables"
+            identifier="eu.esdihumboldt.hale.align.formattedstring"
+            name="Formatted string">
+         <sourceProperties>
+            <property
+                  description="Input variables for the format pattern"
+                  label="Variable"
+                  maxOccurrence="n"
+                  minOccurrence="0"
+                  name="var">
+            </property>
+         </sourceProperties>
+         <targetProperties>
+            <property
+                  description="The property is populated with the formatted string"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+         <functionParameter
+               label="Format pattern"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="pattern">
+         </functionParameter>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">
