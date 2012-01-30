@@ -15,7 +15,7 @@
             category="eu.esdihumboldt.cst.functions.numeric"
             description="Define a value using a mathematical expression with support for variables"
             help="help/mathematicalExpression/help.xhtml"
-            icon="icons/number.png"
+            icon="icons/exp.gif"
             identifier="eu.esdihumboldt.cst.functions.numeric.mathexpression"
             name="Mathematical Expression">
          <targetProperties>
