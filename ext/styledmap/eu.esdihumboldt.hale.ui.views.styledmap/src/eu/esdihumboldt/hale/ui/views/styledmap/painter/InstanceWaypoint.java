@@ -19,8 +19,8 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 
 /**
  * Map way-point representing an {@link Instance}. 

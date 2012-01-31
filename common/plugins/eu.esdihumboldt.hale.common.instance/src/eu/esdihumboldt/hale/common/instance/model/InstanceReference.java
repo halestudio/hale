@@ -10,9 +10,8 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.service.instance;
+package eu.esdihumboldt.hale.common.instance.model;
 
-import eu.esdihumboldt.hale.common.instance.model.DataSet;
 
 /**
  * Represents a reference to an instance. Implementations must implement
@@ -21,6 +20,8 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
  * @author Simon Templer
  */
 public interface InstanceReference {
+	
+	//XXX move getDataSet to InstanceReference interface applicable for InstanceService? 
 	
 	/**
 	 * Get the data set the instance is associated to.
