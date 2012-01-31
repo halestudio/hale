@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.filter;
+package eu.esdihumboldt.hale.common.instance.model;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 

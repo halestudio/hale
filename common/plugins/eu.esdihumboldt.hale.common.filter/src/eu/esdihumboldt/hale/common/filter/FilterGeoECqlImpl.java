@@ -12,53 +12,40 @@
 
 package eu.esdihumboldt.hale.common.filter;
 
-
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.filter.Filter;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
-
 /**
  * TODO Type description
- * @author Basti
+ * @author Sebastian Reinhardt
  */
-public class FilterGeoECqlImpl implements eu.esdihumboldt.hale.common.filter.Filter  {
+public class FilterGeoECqlImpl implements
+		eu.esdihumboldt.hale.common.instance.model.Filter {
 
-	
 	private String filterTerm;
 	private Filter internFilter;
-	
+
 	/**
 	 * @param filterTerm
-	 * @throws CQLException 
+	 * @throws CQLException
 	 */
-	public FilterGeoECqlImpl (String filterTerm) throws CQLException {
+	public FilterGeoECqlImpl(String filterTerm) throws CQLException {
 		this.filterTerm = filterTerm;
-		
-			internFilter = ECQL.toFilter(this.filterTerm);
-			if (internFilter == Filter.EXCLUDE){
-				//TODO Fehler
-				System.out.println("Error");
-			}
-			
-			
-			
-			
+
+		internFilter = ECQL.toFilter(this.filterTerm);
+		if (internFilter == Filter.EXCLUDE) {
+			// TODO Fehler
+			System.out.println("Error");
+		}
+
 	}
 
-
-/**
- * @see eu.esdihumboldt.hale.common.filter.Filter#match(eu.esdihumboldt.hale.instance.model.TypeDefinition)
- */
-@Override
-public boolean match(Instance instance) {
-
-	return internFilter.evaluate(instance);
-	
-}
-
-
+	@Override
+	public boolean match(Instance instance) {
+		return internFilter.evaluate(instance);
+	}
 
 }
