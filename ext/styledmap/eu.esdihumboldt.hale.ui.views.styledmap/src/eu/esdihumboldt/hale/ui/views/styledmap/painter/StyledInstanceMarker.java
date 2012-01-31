@@ -28,7 +28,7 @@ import org.geotools.styling.Style;
 import de.fhg.igd.mapviewer.marker.BoundingBoxMarker;
 import de.fhg.igd.mapviewer.waypoints.SelectableWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;

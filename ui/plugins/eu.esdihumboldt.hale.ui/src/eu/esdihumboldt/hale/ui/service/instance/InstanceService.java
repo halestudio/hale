@@ -17,6 +17,7 @@ import java.util.Set;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceResolver;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -28,7 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public interface InstanceService {
+public interface InstanceService extends InstanceResolver {
 	
 	/**
 	 * Get the instances from the given data set
@@ -54,22 +55,6 @@ public interface InstanceService {
 	 * This will remove all instances from the service.
 	 */
 	public void clearInstances();
-	
-	/**
-	 * Get a reference to an instance that can be used to retrieve the
-	 * given instance using {@link #getInstance(InstanceReference)}.
-	 * @param instance the instance, must have originated from this service
-	 * @return the reference
-	 */
-	public InstanceReference getReference(Instance instance);
-	
-	/**
-	 * Get the instance referenced by the given reference.
-	 * @param reference the instance reference
-	 * @return the referenced instance or <code>null</code> if it does not exist
-	 *   or the reference is invalid
-	 */
-	public Instance getInstance(InstanceReference reference);
 	
 	/**
 	 * Adds an instance service listener

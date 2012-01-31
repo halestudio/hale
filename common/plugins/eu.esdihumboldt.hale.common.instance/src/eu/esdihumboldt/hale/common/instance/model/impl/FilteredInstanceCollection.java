@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
 /**
@@ -159,6 +160,16 @@ public class FilteredInstanceCollection implements InstanceCollection {
 	@Override
 	public InstanceCollection select(Filter filter) {
 		return new FilteredInstanceCollection(this, filter);
+	}
+
+	@Override
+	public InstanceReference getReference(Instance instance) {
+		return decoratee.getReference(instance);
+	}
+
+	@Override
+	public Instance getInstance(InstanceReference reference) {
+		return decoratee.getInstance(reference);
 	}
 
 }

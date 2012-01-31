@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.instance.model;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface InstanceCollection {
+public interface InstanceCollection extends InstanceResolver {
 	
 	/**
 	 * Get an iterator over all instances contained in the collection. The
