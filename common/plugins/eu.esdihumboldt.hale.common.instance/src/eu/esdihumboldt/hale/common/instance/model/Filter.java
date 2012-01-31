@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.common.instance.model;
 
-import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Filter for {@link Instance}s.
@@ -28,5 +27,12 @@ public interface Filter {
 	 *   <code>false</code> otherwise
 	 */
 	public boolean match(Instance instance);
+	
+	/*
+	 * XXX it might be a good option to include the information about valid
+	 * instance types in the filter interface, as this would allow an easier
+	 * optimization for filtering instance collections based on types!
+	 */
+//	public Set<TypeDefinition> getAllowedTypes();
 	
 }
