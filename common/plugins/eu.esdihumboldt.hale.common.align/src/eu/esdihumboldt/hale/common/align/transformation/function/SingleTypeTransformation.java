@@ -30,5 +30,11 @@ public interface SingleTypeTransformation<E extends TransformationEngine> extend
 	 * @param sourceInstance the source instance that is to be transformed
 	 */
 	public void setSource(Type sourceType, Instance sourceInstance);
+	
+	/**
+	 * Get the handler for merging source instances.
+	 * @return the merge handler or <code>null</code> if no merge is required
+	 */
+	public MergeHandler<? super E> getMergeHandler();
 
 }

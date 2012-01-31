@@ -22,6 +22,7 @@ import net.jcip.annotations.Immutable;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.cst.internal.EngineManager;
 import eu.esdihumboldt.cst.internal.TreePropertyTransformer;
@@ -32,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.MergeHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.MultiTypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.SingleTypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -175,19 +177,35 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			targetTypes.put(entry.getKey(), (Type) entry.getValue());
 		}
 		ListMultimap<String, String> parameters = typeCell.getTransformationParameters();
+		if (parameters != null) {
+			parameters = Multimaps.unmodifiableListMultimap(parameters);
+		}
 		Map<String, String> executionParameters = transformation.getExecutionParameters(); 
 		
-		// step 1: selection
-		// select only instances that are relevant for the transformation
+		// Step 1: selection
+		// Select only instances that are relevant for the transformation.
 		//TODO filters defined on entity! additional to type filter
 		source = source.select(new TypeFilter(
 				sourceType.getDefinition().getDefinition()));
 		
-		// step 2: partition
-		// partition instances into sets to be transformed together
-		// in case of a SingleTypeTransformation each instances may be
-		// transformed separately
-		//FIXME this does not hold true for merge transformations
+		// Step 2: partition
+		// Partition instances into sets to be transformed together.
+		// In case of a SingleTypeTransformation each (merged) instance may be
+		// transformed separately.
+		// If a merge handler is present, the partitioning and merging is
+		// performed by the merge handler, otherwise the instance collection
+		// is used as is.
+		MergeHandler mergeHandler = function.getMergeHandler();
+		if (mergeHandler != null) {
+			try {
+				source = mergeHandler.mergeInstances(source, 
+						transformation.getFunctionId(), engine, parameters,
+						executionParameters, cellLog);
+			} catch (TransformationException e) {
+				cellLog.error(cellLog.createMessage("Merge operation failed, type transformation.", e));
+				return;
+			}
+		}
 		
 		ResourceIterator<Instance> it = source.iterator();
 		try {

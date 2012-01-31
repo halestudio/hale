@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.align.transformation.function.impl;
 
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.MergeHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.SingleTypeTransformation;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
@@ -52,6 +53,16 @@ public abstract class AbstractSingleTypeTransformation<E extends TransformationE
 	 */
 	public Instance getSourceInstance() {
 		return sourceInstance;
+	}
+
+	/**
+	 * Default implementation without a merge handler.
+	 * @return <code>null</code>
+	 * @see SingleTypeTransformation#getMergeHandler()
+	 */
+	@Override
+	public MergeHandler<? super E> getMergeHandler() {
+		return null;
 	}
 
 }
