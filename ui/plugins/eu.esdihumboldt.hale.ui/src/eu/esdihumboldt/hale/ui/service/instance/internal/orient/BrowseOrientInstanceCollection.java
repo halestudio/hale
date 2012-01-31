@@ -28,6 +28,8 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.InstanceResolver;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
@@ -262,6 +264,24 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		 * be browsed/created
 		 */
 		return new FilteredInstanceCollection(this, filter);
+	}
+
+	/**
+	 * @see InstanceResolver#getReference(Instance)
+	 */
+	@Override
+	public InstanceReference getReference(Instance instance) {
+		return OrientInstanceReference.createReference(instance);
+	}
+
+	/**
+	 * @see InstanceResolver#getInstance(InstanceReference)
+	 */
+	@Override
+	public Instance getInstance(InstanceReference reference) {
+		OrientInstanceReference ref = (OrientInstanceReference) reference;
+		
+		return ref.load(database);
 	}
 
 }

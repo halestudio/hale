@@ -450,7 +450,7 @@ public class GroupUtil {
 					continue;
 				}
 				// ignore groups that contain no elements
-				if (childDef.asGroup() != null && !StreamGmlInstance.hasElements(childDef.asGroup())) {
+				if (childDef.asGroup() != null && !StreamGmlHelper.hasElements(childDef.asGroup())) {
 					continue;
 				}
 				

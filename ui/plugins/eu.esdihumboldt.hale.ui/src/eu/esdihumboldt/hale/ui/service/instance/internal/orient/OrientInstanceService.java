@@ -28,26 +28,22 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.PlatformUI;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
-import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -231,17 +227,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	@Override
 	public InstanceReference getReference(Instance instance) {
-		if (instance.getDataSet() == null) {
-			throw new IllegalArgumentException("Instance data set may not be null for retrieving reference");
-		}
-		
-		OInstance inst = (OInstance) instance;
-		ORID id = inst.getDocument().getIdentity();
-		
-		return new OrientInstanceReference(id, instance.getDataSet(), inst.getDefinition());
+		return OrientInstanceReference.createReference(instance);
 	}
-
-
 
 	/**
 	 * @see InstanceService#getInstance(InstanceReference)
@@ -249,26 +236,9 @@ public class OrientInstanceService extends AbstractInstanceService {
 	@Override
 	public Instance getInstance(InstanceReference reference) {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
-		
 		LocalOrientDB lodb = (ref.getDataSet().equals(DataSet.SOURCE))?(source):(transformed);
 		
-		DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead();
-		DatabaseHandle handle = new DatabaseHandle(db.getDatabase());
-		try {
-			ODocument document = db.getDatabase().load(ref.getId());
-			if (document != null) {
-				OInstance instance = new OInstance(document, 
-						ref.getTypeDefinition(), ref.getDataSet());
-				handle.addReference(instance);
-				return instance;
-			}
-		}
-		finally {
-			db.dispose(false);
-			handle.tryClose();
-		}
-		
-		return null;
+		return ref.load(lodb);
 	}
 
 	/**

@@ -12,11 +12,15 @@
 
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.InstanceResolver;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
 /**
@@ -25,15 +29,15 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
  */
 public class DefaultInstanceCollection implements InstanceCollection {
 
-	private final Collection<Instance> collection;
+	private final List<Instance> collection;
 	
 	/**
 	 * Create an instance collection backed 
 	 * @param collection the instance collection
 	 */
-	public DefaultInstanceCollection(Collection<Instance> collection) {
+	public DefaultInstanceCollection(Collection<? extends Instance> collection) {
 		super();
-		this.collection = collection;
+		this.collection = new ArrayList<Instance>(collection);
 	}
 	
 	/**
@@ -82,6 +86,26 @@ public class DefaultInstanceCollection implements InstanceCollection {
 	@Override
 	public InstanceCollection select(Filter filter) {
 		return new FilteredInstanceCollection(this, filter);
+	}
+
+	/**
+	 * @see InstanceResolver#getReference(Instance)
+	 */
+	@Override
+	public InstanceReference getReference(Instance instance) {
+		return new PseudoInstanceReference(instance);
+	}
+
+	/**
+	 * @see InstanceResolver#getInstance(InstanceReference)
+	 */
+	@Override
+	public Instance getInstance(InstanceReference reference) {
+		if (reference instanceof PseudoInstanceReference) {
+			return ((PseudoInstanceReference) reference).getInstance();
+		}
+		
+		return null;
 	}
 
 }
