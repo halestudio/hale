@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.common.filter;
 
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 

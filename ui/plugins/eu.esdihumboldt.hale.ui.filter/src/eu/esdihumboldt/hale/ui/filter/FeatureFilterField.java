@@ -14,13 +14,9 @@ package eu.esdihumboldt.hale.ui.filter;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -35,17 +31,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ListDialog;
 import org.geotools.filter.text.cql2.CQLException;
-import org.opengis.feature.type.PropertyDescriptor;
 
-import eu.esdihumboldt.hale.common.filter.Filter;
 import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
 import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
-import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 import eu.esdihumboldt.hale.ui.function.common.PropertyEntityDialog;
