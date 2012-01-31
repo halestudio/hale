@@ -101,6 +101,7 @@
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
             description="Creates a formatted string based on a pattern and the input variables"
+            icon="icons/text.png"
             identifier="eu.esdihumboldt.hale.align.formattedstring"
             name="Formatted string">
          <sourceProperties>
