@@ -35,5 +35,15 @@ public interface InstanceResolver {
 	 *   or the reference is invalid
 	 */
 	public Instance getInstance(InstanceReference reference);
+	
+	/*
+	 * TODO add method to get instances for multiple references?
+	 * would allow to optimize retrieval e.g. for GmlInstanceCollection
+	 * 
+	 * best would be a list with preserved order, as this would allow determining
+	 * which instance belongs to which reference, as such allowing dereferencing
+	 * instances for a larger number of references, e.g. for several instance
+	 * sets/partitions 
+	 */
 
 }
