@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.impl.Transformati
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.filter.TypeFilter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -178,12 +179,16 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		
 		// step 1: selection
 		// select only instances that are relevant for the transformation
-		//FIXME source = source.select(Filter);
+		//TODO filters defined on entity! additional to type filter
+		source = source.select(new TypeFilter(
+				sourceType.getDefinition().getDefinition()));
 		
 		// step 2: partition
 		// partition instances into sets to be transformed together
 		// in case of a SingleTypeTransformation each instances may be
 		// transformed separately
+		//FIXME this does not hold true for merge transformations
+		
 		ResourceIterator<Instance> it = source.iterator();
 		try {
 			while (it.hasNext()) {
