@@ -23,7 +23,7 @@ import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.fhg.igd.mapviewer.BasicMapKit;
 import de.fhg.igd.mapviewer.waypoints.SelectableWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.views.styledmap.painter.AbstractInstancePainter;
 import eu.esdihumboldt.hale.ui.views.styledmap.painter.InstanceWaypoint;

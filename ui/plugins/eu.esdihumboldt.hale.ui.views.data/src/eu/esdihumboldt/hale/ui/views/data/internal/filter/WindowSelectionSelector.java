@@ -44,10 +44,10 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
 import eu.esdihumboldt.hale.ui.views.data.AbstractDataView;

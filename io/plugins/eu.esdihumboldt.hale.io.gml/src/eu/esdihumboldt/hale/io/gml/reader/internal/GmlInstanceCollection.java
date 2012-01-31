@@ -31,11 +31,15 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.InstanceResolver;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.IndexInstanceReference;
 import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlHelper;
 import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
@@ -63,6 +67,11 @@ public class GmlInstanceCollection implements InstanceCollection {
 		private Map<QName, TypeDefinition> allowedTypes;
 		
 		private TypeDefinition nextType;
+
+		/**
+		 * The index in the stream for the element returned next with {@link #next()}
+		 */
+		private int elementIndex = 0;
 		
 		/**
 		 * Default constructor
@@ -200,7 +209,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 			
 			try {
-				return StreamGmlInstance.parseInstance(reader, nextType);
+				return StreamGmlHelper.parseInstance(reader, nextType, elementIndex++);
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException(e);
 			} finally {
@@ -327,7 +336,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 * @see Iterable#iterator()
 	 */
 	@Override
-	public ResourceIterator<Instance> iterator() {
+	public InstanceIterator iterator() {
 		return new InstanceIterator();
 	}
 
@@ -361,6 +370,38 @@ public class GmlInstanceCollection implements InstanceCollection {
 		 * be created (if they don't include children of that type?!)
 		 */
 		return new FilteredInstanceCollection(this, filter);
+	}
+
+	/**
+	 * @see InstanceResolver#getReference(Instance)
+	 */
+	@Override
+	public InstanceReference getReference(Instance instance) {
+		if (instance instanceof StreamGmlInstance) {
+			return new IndexInstanceReference(instance.getDataSet(), 
+					((StreamGmlInstance) instance).getIndexInStream());
+		}
+		
+		throw new IllegalArgumentException("Reference can only be determined based on a StreamGmlInstance");
+	}
+
+	/**
+	 * @see InstanceResolver#getInstance(InstanceReference)
+	 */
+	@Override
+	public Instance getInstance(InstanceReference reference) {
+		IndexInstanceReference ref = (IndexInstanceReference) reference;
+		
+		InstanceIterator it = iterator();
+		try {
+			for (int i = 0; i < ref.getIndex(); i++) {
+				// skip all instances before the referenced instance
+				it.skip();
+			}
+			return it.next(); // return the referenced instance
+		} finally {
+			it.close();
+		}
 	}
 
 }

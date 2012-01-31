@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.ui.selection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.ui.service.instance.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 
 /**
  * Instance selection, containing {@link Instance}s and/or 
