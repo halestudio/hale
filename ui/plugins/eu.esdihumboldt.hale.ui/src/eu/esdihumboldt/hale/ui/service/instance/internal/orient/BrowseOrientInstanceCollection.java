@@ -25,9 +25,11 @@ import com.orientechnologies.orient.core.iterator.ORecordIteratorClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -247,6 +249,19 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		} finally {
 			ref.dispose();
 		}
+	}
+
+	/**
+	 * @see InstanceCollection#select(Filter)
+	 */
+	@Override
+	public InstanceCollection select(Filter filter) {
+		/*
+		 * FIXME optimize for cases where there is filtering based on a type?
+		 * Those instances where another type is concerned would not have to 
+		 * be browsed/created
+		 */
+		return new FilteredInstanceCollection(this, filter);
 	}
 
 }

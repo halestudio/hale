@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.instance.model.impl;
 
 import java.util.Collection;
 
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -73,6 +74,14 @@ public class DefaultInstanceCollection implements InstanceCollection {
 	@Override
 	public boolean isEmpty() {
 		return collection.isEmpty();
+	}
+
+	/**
+	 * @see InstanceCollection#select(Filter)
+	 */
+	@Override
+	public InstanceCollection select(Filter filter) {
+		return new FilteredInstanceCollection(this, filter);
 	}
 
 }
