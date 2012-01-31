@@ -12,19 +12,21 @@
 
 package eu.esdihumboldt.hale.common.filter;
 
-import org.opengis.filter.FilterVisitor;
-
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
-
-
 /**
- * TODO Type description
- * @author Basti
+ * Filter for {@link Instance}s.
+ * @author Sebastian Reinhardt
+ * @author Simon Templer
  */
 public interface Filter {
 	
-	//filter erfüllt?
+	/**
+	 * Determines if an instance matches the filter.
+	 * @param instance the instance to check the filter against
+	 * @return <code>true</code> if the given instance matches the filter,
+	 *   <code>false</code> otherwise
+	 */
 	public boolean match(Instance instance);
 	
 }
