@@ -127,6 +127,32 @@
                name="pattern">
          </functionParameter>
       </propertyFunction>
+      <typeFunction
+            category="eu.esdihumboldt.hale.align.general"
+            description="Merges multiple instances of the source type into one instance of the target type, based on one or more matching properties."
+            icon="icons/merge.gif"
+            identifier="eu.esdihumboldt.hale.common.align.merge"
+            name="Merge">
+         <sourceTypes>
+            <type
+                  description="The source typed that is to be merged based on its properties."
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </sourceTypes>
+         <targetTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+         <functionParameter
+               label="Merge property"
+               maxOccurrence="n"
+               minOccurrence="1"
+               name="property">
+         </functionParameter>
+      </typeFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">
