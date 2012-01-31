@@ -54,8 +54,14 @@ public interface InstanceCollection {
 	 */
 	public boolean isEmpty();
 	
+	/**
+	 * Select the instances in the collection, matching the given filter.
+	 * @param filter the instance filter
+	 * @return the instance collection representing the selection
+	 */
+	public InstanceCollection select(Filter filter);
+	
 	//TODO what else is needed?
-	// public InstanceCollection filter(Filter filter);
 	// public InstanceCollection[] partition(...);
 	
 }
