@@ -28,9 +28,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
@@ -346,6 +348,19 @@ public class GmlInstanceCollection implements InstanceCollection {
 		}
 		
 		return empty;
+	}
+
+	/**
+	 * @see InstanceCollection#select(Filter)
+	 */
+	@Override
+	public InstanceCollection select(Filter filter) {
+		/*
+		 * FIXME optimize for cases where there is filtering based on a type?
+		 * Those instances where another type is concerned would not have to 
+		 * be created (if they don't include children of that type?!)
+		 */
+		return new FilteredInstanceCollection(this, filter);
 	}
 
 }
