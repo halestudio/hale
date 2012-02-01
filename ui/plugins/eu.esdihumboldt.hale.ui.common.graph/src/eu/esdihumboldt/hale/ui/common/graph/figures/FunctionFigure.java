@@ -67,23 +67,11 @@ public class FunctionFigure extends CustomShapeFigure {
 			Font font = new Font(Display.getCurrent(), "Arial", 10, SWT.ITALIC);
 
 			Label name = new Label();
-			GridData nameGrid = new GridData(GridData.FILL, GridData.FILL,
-					true, true);
-			name.setText("Name");
+			GridData nameGrid = new GridData(GridData.BEGINNING, GridData.BEGINNING,
+					true, false, 3, 1);
+			name.setText("Defined Parameters");
 			name.setFont(font);
 			add(name, nameGrid);
-
-			Label whitespace = new Label();
-			GridData whitespaceGrid = new GridData(GridData.FILL,
-					GridData.FILL, true, true);
-			add(whitespace, whitespaceGrid);
-
-			Label occurence = new Label();
-			GridData occurenceGrid = new GridData(GridData.FILL, GridData.FILL,
-					true, true);
-			occurence.setText("Occurence");
-			occurence.setFont(font);
-			add(occurence, occurenceGrid);
 
 			Iterator<FunctionParameter> iter = parameters.iterator();
 			while (iter.hasNext()) {
@@ -96,7 +84,7 @@ public class FunctionFigure extends CustomShapeFigure {
 
 				Label descriptionlabel = new Label();
 
-				if (showToolTip) {
+				if (showToolTip && para.getDescription() != null) {
 					FieldDecoration fieldDecoration = FieldDecorationRegistry
 							.getDefault().getFieldDecoration(
 									FieldDecorationRegistry.DEC_INFORMATION);
@@ -111,15 +99,30 @@ public class FunctionFigure extends CustomShapeFigure {
 						GridData.FILL, true, true);
 				add(descriptionlabel, descriptiongrid);
 
-				occurence = new Label();
-				occurenceGrid = new GridData(GridData.FILL, GridData.FILL,
+				Label occurence = new Label();
+				GridData occurenceGrid = new GridData(GridData.FILL, GridData.FILL,
 						true, true);
-				occurence.setText(String.valueOf(para.getMinOccurrence())
-						+ ".." + (String.valueOf(para.getMaxOccurrence())));
+				occurence.setText(getOccurence(para));
 				add(occurence, occurenceGrid);
 
 			}
 		}
+	}
+	
+	private String getOccurence(FunctionParameter parameter){
+		String result = "";
+		if(parameter.getMinOccurrence() == -1){
+			result += "n";
+		} else {
+			result += parameter.getMinOccurrence();
+		}
+		result += "..";
+		if(parameter.getMaxOccurrence() == -1){
+			result += "n";
+		} else {
+			result += parameter.getMaxOccurrence();
+		}
+		return result;
 	}
 
 }
