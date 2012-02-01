@@ -4,7 +4,9 @@ Bundle-Name: Utilities Bundle
 Bundle-SymbolicName: eu.esdihumboldt.util
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: net.jcip.annotations,
+Import-Package: com.google.common.base;version="9.0.0",
+ com.google.common.collect;version="9.0.0",
+ net.jcip.annotations,
  org.eclipse.core.runtime,
  org.osgi.framework;version="1.5.0",
  org.springframework.util;version="3.0.0.RELEASE"
