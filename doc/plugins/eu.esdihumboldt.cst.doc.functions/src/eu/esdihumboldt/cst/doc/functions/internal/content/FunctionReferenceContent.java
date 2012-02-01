@@ -34,7 +34,6 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.io.Files;
 
@@ -47,6 +46,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.common.graph.content.FunctionGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
+import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
 import eu.esdihumboldt.hale.ui.util.DisplayThread;
 import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 
@@ -240,15 +240,15 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 				@Override
 				public void run() {
 
+					// TODO: edit the size to get a correct graph
 					// create an initial off-screen graph with fixed values;
 					// resize the graph after computing the figures width and
 					// height
-					OffscreenGraph off_graph = new OffscreenGraph(200, 100) {
+					OffscreenGraph off_graph = new OffscreenGraph(300, 200) {
 
 						@Override
 						protected void configureViewer(GraphViewer viewer) {
-							LayoutAlgorithm algo = new TreeLayoutAlgorithm(
-									TreeLayoutAlgorithm.LEFT_RIGHT);
+							LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
 
 							FunctionGraphContentProvider stcp = new FunctionGraphContentProvider();
 							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(false);
@@ -276,8 +276,8 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 						}
 					} else {
 						// used fix size for amount of figures <= 2
-						width = 230;
-						height = 100;
+						width = 300;
+						height = 200;
 					}
 
 					// else {
