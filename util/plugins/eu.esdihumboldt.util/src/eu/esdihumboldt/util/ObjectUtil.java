@@ -12,7 +12,10 @@
 
 package eu.esdihumboldt.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -32,6 +35,7 @@ public class ObjectUtil {
 	 * @param o1 the first object
 	 * @param o2 the second object
 	 * @return if both objects are equal
+	 * @see #deepIterableHashCode(Object)
 	 */
 	public static boolean deepIterableEquals(Object o1, Object o2) {
 		if (o1 == o2) {
@@ -61,6 +65,37 @@ public class ObjectUtil {
 		}
 		else {
 			return Objects.equal(o1, o2);
+		}
+	}
+	
+	/**
+	 * Get the hash code for all contained objects, descending into
+	 * {@link Iterable}s and arrays.
+	 * @param object the object to determine the hash code from
+	 * @return the hash code
+	 * @see #deepIterableEquals(Object, Object)
+	 */
+	public static int deepIterableHashCode(Object object) {
+		return Arrays.hashCode(collectObjects(object).toArray());
+	}
+	
+	/**
+	 * Collect all objects contained in an {@link Iterable} or array and in
+	 * their elements.
+	 * @param object the object to collect objects on
+	 * @return the collected objects
+	 */
+	public static Collection<?> collectObjects(Object object) {
+		Iterable<?> iterable = asIterable(object);
+		if (iterable == null) {
+			return Collections.singleton(object);
+		}
+		else {
+			Collection<Object> result = new ArrayList<Object>();
+			for (Object child : iterable) {
+				result.addAll(collectObjects(child));
+			}
+			return result;
 		}
 	}
 
