@@ -21,51 +21,22 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
  * @param <T> the object type
  * @author Simon Templer
  */
-public class ResourceIteratorAdapter<T> implements ResourceIterator<T> {
+public class ResourceIteratorAdapter<T> extends GenericResourceIteratorAdapter<T, T> {
 	
-	private Iterator<T> iterator;
-
 	/**
 	 * Create a {@link ResourceIterator} adapter for the given iterator.
 	 * @param iterator the iterator to adapt 
 	 */
 	public ResourceIteratorAdapter(Iterator<T> iterator) {
-		super();
-		this.iterator = iterator;
+		super(iterator);
 	}
 
 	/**
-	 * @see Iterator#hasNext()
+	 * @see GenericResourceIteratorAdapter#convert(Object)
 	 */
 	@Override
-	public boolean hasNext() {
-		return iterator.hasNext();
-	}
-
-	/**
-	 * @see Iterator#next()
-	 */
-	@Override
-	public T next() {
-		return iterator.next();
-	}
-
-	/**
-	 * @see Iterator#remove()
-	 */
-	@Override
-	public void remove() {
-		iterator.remove();
-	}
-
-	/**
-	 * @see ResourceIterator#close()
-	 */
-	@Override
-	public void close() {
-		if (iterator instanceof ResourceIterator<?>) {
-			((ResourceIterator<?>) iterator).close();
-		}
+	protected T convert(T next) {
+		return next;
 	}
 
 }
