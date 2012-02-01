@@ -12,11 +12,12 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,15 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
+import org.apache.ws.commons.schema.XmlSchemaFacet;
+import org.apache.ws.commons.schema.XmlSchemaFractionDigitsFacet;
+import org.apache.ws.commons.schema.XmlSchemaLengthFacet;
+import org.apache.ws.commons.schema.XmlSchemaMaxExclusiveFacet;
+import org.apache.ws.commons.schema.XmlSchemaMaxInclusiveFacet;
+import org.apache.ws.commons.schema.XmlSchemaMaxLengthFacet;
+import org.apache.ws.commons.schema.XmlSchemaMinExclusiveFacet;
+import org.apache.ws.commons.schema.XmlSchemaMinInclusiveFacet;
+import org.apache.ws.commons.schema.XmlSchemaMinLengthFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.apache.ws.commons.schema.XmlSchemaPatternFacet;
@@ -32,6 +42,8 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeList;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeUnion;
+import org.apache.ws.commons.schema.XmlSchemaTotalDigitsFacet;
+import org.apache.ws.commons.schema.XmlSchemaWhiteSpaceFacet;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.xs.XSSchema;
@@ -49,6 +61,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstraint;
 import eu.esdihumboldt.hale.io.gml.geometry.Geometries;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
@@ -56,6 +69,15 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumeration;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionValidationConstraint;
+import eu.esdihumboldt.util.validator.AndValidator;
+import eu.esdihumboldt.util.validator.DigitCountValidator;
+import eu.esdihumboldt.util.validator.EnumerationValidator;
+import eu.esdihumboldt.util.validator.LengthValidator;
+import eu.esdihumboldt.util.validator.NumberValidator;
+import eu.esdihumboldt.util.validator.OrValidator;
+import eu.esdihumboldt.util.validator.PatternValidator;
+import eu.esdihumboldt.util.validator.Validator;
 
 /**
  * Utility methods regarding type resolving
@@ -182,7 +204,7 @@ public abstract class XmlTypeUtil {
 		// special case: ID etc. - assure String binding
 		if (ty != null && XS_STRING_TYPES.contains(typeName.getLocalPart())) {
 			ty = new AttributeTypeImpl(typeName, java.lang.String.class, false, false,
-	                Collections.EMPTY_LIST, XSSchema.NCNAME_TYPE, null);
+	                Collections.EMPTY_LIST, ty.getSuper(), null);
 		}
 		
 		// only enable hasValue if the type is not anyType
@@ -290,41 +312,120 @@ public abstract class XmlTypeUtil {
 					null, restriction.getLineNumber(), restriction.getLinePosition()));
 			return;
 		}
-		
+
 		// set super type
 		type.setSuperType(baseTypeDef);
 		// mark as restriction
 		type.setConstraint(RestrictionFlag.ENABLED);
-		
 		// assign no binding, inherit from super type
-		
-		//TODO improve support for enumeration and facets in general 
-		List<String> values = new ArrayList<String>();
+
+		// The following code expects schema to be valid.
+
+		List<Validator> validators = new LinkedList<Validator>();
+
+		// patterns and enumerations in one step are ORed together!
+		List<String> values = new LinkedList<String>();
+		List<Validator> patternValidators = new LinkedList<Validator>();
+
+        // TODO different handling for date/time/g.../duration in (min|max)(In|Ex)clusive
+		// XXX only for date, time, duration, dateTime, gMonthDay, gYearMonth?
+		// no also for some cases of gYear, gMonth, gDay (they can have a timezone!)
+		// but only need to handle cases where isDecimal() is false...
+
 		XmlSchemaObjectCollection facets = restriction.getFacets();
 		for (int i = 0; i < facets.getCount(); i++) {
-			XmlSchemaObject facet = facets.getItem(i);
+			XmlSchemaFacet facet = (XmlSchemaFacet) facets.getItem(i);
 			if (facet instanceof XmlSchemaEnumerationFacet) {
-				String value = ((XmlSchemaEnumerationFacet) facet).getValue().toString();
-				values.add(value);
-			}
-			else if (facet instanceof XmlSchemaPatternFacet) {
-				//TODO support for patterns
-				reporter.warn(new IOMessageImpl(
-						"Facet not supported: " + facet.getClass().getSimpleName(), 
+				values.add(facet.getValue().toString());
+	        } else if (facet instanceof XmlSchemaFractionDigitsFacet) {
+	            validators.add(new DigitCountValidator(DigitCountValidator.Type.FRACTIONDIGITS, 
+	            		Integer.parseInt(facet.getValue().toString())));
+	        } else if (facet instanceof XmlSchemaLengthFacet) {
+	            validators.add(new LengthValidator(LengthValidator.Type.EXACT, 
+	            		Integer.parseInt(facet.getValue().toString())));
+	        } else if (facet instanceof XmlSchemaMaxExclusiveFacet) {
+	        	if (isDecimal(facet.getValue().toString())) // number or date?
+	        		validators.add(new NumberValidator(NumberValidator.Type.MAXEXCLUSIVE, 
+	        				new BigDecimal(facet.getValue().toString())));
+	        	else 
+	        		reporter.warn(new IOMessageImpl(
+	        			"(min|max)(In|Ex)clusive not supported for non-number types", 
+	        			null, facet.getLineNumber(), facet.getLinePosition()));
+	        } else if (facet instanceof XmlSchemaMaxInclusiveFacet) {
+	        	if (isDecimal(facet.getValue().toString())) // number or date?
+	        		validators.add(new NumberValidator(NumberValidator.Type.MAXINCLUSIVE, 
+	        				new BigDecimal(facet.getValue().toString())));
+	        	else 
+	        		reporter.warn(new IOMessageImpl(
+	        			"(min|max)(In|Ex)clusive not supported for non-number types", 
+	        			null, facet.getLineNumber(), facet.getLinePosition()));
+	        } else if (facet instanceof XmlSchemaMaxLengthFacet) {
+	        	validators.add(new LengthValidator(LengthValidator.Type.MAXIMUM, 
+	        			Integer.parseInt(facet.getValue().toString())));
+		    } else if (facet instanceof XmlSchemaMinLengthFacet) {
+		    	validators.add(new LengthValidator(LengthValidator.Type.MINIMUM, 
+		    			Integer.parseInt(facet.getValue().toString())));
+	        } else if (facet instanceof XmlSchemaMinExclusiveFacet) {
+	        	if (isDecimal(facet.getValue().toString())) // number or date?
+	        		validators.add(new NumberValidator(NumberValidator.Type.MINEXCLUSIVE, 
+	        				new BigDecimal(facet.getValue().toString())));
+	        	else 
+	        		reporter.warn(new IOMessageImpl(
+	        			"(min|max)(In|Ex)clusive not supported for non-number types", 
+	        			null, facet.getLineNumber(), facet.getLinePosition()));
+	        } else if (facet instanceof XmlSchemaMinInclusiveFacet) {
+	        	if (isDecimal(facet.getValue().toString())) // number or date?
+	        		validators.add(new NumberValidator(NumberValidator.Type.MININCLUSIVE, 
+	        				new BigDecimal(facet.getValue().toString())));
+	        	else 
+	        		reporter.warn(new IOMessageImpl(
+	        			"(min|max)(In|Ex)clusive not supported for non-number types", 
+	        			null, facet.getLineNumber(), facet.getLinePosition()));
+	        } else if (facet instanceof XmlSchemaPatternFacet) {
+	        	patternValidators.add(new PatternValidator(facet.getValue().toString()));
+	        } else if (facet instanceof XmlSchemaTotalDigitsFacet) {
+	            validators.add(new DigitCountValidator(DigitCountValidator.Type.TOTALDIGITS, 
+	            		Integer.parseInt(facet.getValue().toString())));
+	        } else if (facet instanceof XmlSchemaWhiteSpaceFacet) {
+	            reporter.warn(new IOMessageImpl(
+						"White space facet not supported", 
 						null, facet.getLineNumber(), facet.getLinePosition()));
-			}
-			else {
-				//TODO support for other facets?
-				reporter.error(new IOMessageImpl(
+	        	// Nothing to validate according to w3. 
+	            // Values should be processed according to rule?
+	        } else {
+	        	reporter.error(new IOMessageImpl(
 						"Unrecognized facet: " + facet.getClass().getSimpleName(), 
 						null, facet.getLineNumber(), facet.getLinePosition()));
-			}
+	        }
 		}
-		
+
+		if (!patternValidators.isEmpty())
+			validators.add(new OrValidator(patternValidators));
+
 		if (!values.isEmpty()) {
 			// set enumeration constraint
+			// no check of which values are okay, they must be validated somewhere else.
 			//XXX conversion to be done?
-			type.setConstraint(new Enumeration<String>(values, false)); 
+			type.setConstraint(new Enumeration<String>(values, false));
+			validators.add(new EnumerationValidator(values));
+		}
+
+		if (!validators.isEmpty())
+			type.setConstraint(new ValidationConstraint(new AndValidator(validators), type));
+	}
+
+	/**
+	 * Checks whether the given string can be converted to a decimal.
+	 * 
+	 * @param s the string to check
+	 * @return true, iff the sting can be converted to a decimal
+	 */
+	private static boolean isDecimal(String s) {
+		try {
+			new BigDecimal(s);
+			return true;
+		} catch (NumberFormatException nfe) {
+			return false;
 		}
 	}
 
@@ -389,6 +490,12 @@ public abstract class XmlTypeUtil {
 			XmlSchemaSimpleTypeUnion union, XmlIndex index,
 			IOReporter reporter) {
 		XmlSchemaObjectCollection baseTypes = union.getBaseTypes();
+
+		// TODO memberType attribute
+		if (union.getMemberTypesQNames() != null)
+			reporter.warn(new IOMessageImpl(
+							"Union memberType attribute not supported", 
+							null, union.getLineNumber(), union.getLinePosition()));
 		
 		// collect type definitions
 		Set<TypeDefinition> unionTypes = new HashSet<TypeDefinition>();
@@ -433,12 +540,13 @@ public abstract class XmlTypeUtil {
 				}
 			}
 		}
-		
-		//TODO set constraints
+
 		// binding constraint
 		type.setConstraint(new UnionBinding(unionTypes));
 		// enumeration constraint
 		type.setConstraint(new UnionEnumeration(unionTypes));
+		// validation constraint
+		type.setConstraint(new UnionValidationConstraint(unionTypes));
 	}
 
 	/**

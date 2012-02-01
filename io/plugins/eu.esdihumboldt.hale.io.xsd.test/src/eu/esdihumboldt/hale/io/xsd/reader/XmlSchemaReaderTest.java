@@ -29,6 +29,10 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -64,15 +68,16 @@ public class XmlSchemaReaderTest {
 	@Test
 	public void testRead_shiporder_one() throws Exception {
 		URI location = getClass().getResource("/testdata/shiporder/shiporder-one.xsd").toURI();
-		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location );
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location);
 		XmlIndex schema = (XmlIndex) readSchema(input);
 		
 		String ns = "http://www.example.com";
 		assertEquals(ns , schema.getNamespace());
 		
 		// shiporder element
-		assertEquals(1, schema.getElements().size());
-		XmlElement shiporder = schema.getElements().values().iterator().next();
+		Collection<XmlElement> elements = getElementsWithNS(ns, schema.getElements().values());
+		assertEquals(1, elements.size());
+		XmlElement shiporder = elements.iterator().next();
 		
 		testShiporderStructure(shiporder, ns);
 	}
@@ -95,8 +100,9 @@ public class XmlSchemaReaderTest {
 		assertEquals(ns , schema.getNamespace());
 		
 		// shiporder element
-		assertEquals(1, schema.getElements().size());
-		XmlElement shiporder = schema.getElements().values().iterator().next();
+		Collection<XmlElement> elements = getElementsWithNS(ns, schema.getElements().values());
+		assertEquals(1, elements.size());
+		XmlElement shiporder = elements.iterator().next();
 		
 		//XXX use null namespace XXX not sure how to work with unqualified form
 		//FIXME target namespace no effect?! should the target namespace always be injected?
@@ -117,7 +123,8 @@ public class XmlSchemaReaderTest {
 		assertEquals(ns , schema.getNamespace());
 		
 		// element count
-		assertEquals(12, schema.getElements().size());
+		Collection<XmlElement> elements = getElementsWithNS(ns, schema.getElements().values());
+		assertEquals(12, elements.size());
 		// shiporder element
 		XmlElement shiporder = schema.getElements().get(new QName(ns, "shiporder"));
 		
@@ -138,8 +145,9 @@ public class XmlSchemaReaderTest {
 		assertEquals(ns , schema.getNamespace());
 		
 		// shiporder element
-		assertEquals(1, schema.getElements().size());
-		XmlElement shiporder = schema.getElements().values().iterator().next();
+		Collection<XmlElement> elements = getElementsWithNS(ns, schema.getElements().values());
+		assertEquals(1, elements.size());
+		XmlElement shiporder = elements.iterator().next();
 		
 		testShiporderStructure(shiporder, ns);
 	}
@@ -159,8 +167,9 @@ public class XmlSchemaReaderTest {
 		assertEquals(ns , schema.getNamespace());
 		
 		// shiporder element
-		assertEquals(1, schema.getElements().size());
-		XmlElement shiporder = schema.getElements().values().iterator().next();
+		Collection<XmlElement> elements = getElementsWithNS(ns, schema.getElements().values());
+		assertEquals(1, elements.size());
+		XmlElement shiporder = elements.iterator().next();
 		assertNotNull(shiporder);
 		
 		TypeDefinition type = shiporder.getType();
@@ -187,8 +196,9 @@ public class XmlSchemaReaderTest {
 		assertEquals(ns , schema.getNamespace());
 		
 		// shiporder element
-		assertEquals(1, schema.getElements().size());
-		XmlElement shiporder = schema.getElements().values().iterator().next();
+		Collection<XmlElement> elements = getElementsWithNS(ns, schema.getElements().values());
+		assertEquals(1, elements.size());
+		XmlElement shiporder = elements.iterator().next();
 		
 		testShiporderStructure(shiporder, ns);
 	}
@@ -534,6 +544,18 @@ public class XmlSchemaReaderTest {
 //		
 //		//TODO create tests
 //	 }
+	
+	private Collection<XmlElement> getElementsWithNS(final String ns,
+			Collection<XmlElement> values) {
+		return Collections2.filter(values, new Predicate<XmlElement>() {
+
+			@Override
+			public boolean apply(XmlElement input) {
+				return Objects.equal(ns, input.getName().getNamespaceURI());
+			}
+			
+		});
+	}
 	
 	/**
 	 * Reads a schema
