@@ -30,12 +30,9 @@ public class ChildDefinitionLocationFilter extends DefaultDefinitionFilter{
 	@Override
 	public boolean isFiltered(Definition<?> input) {
 		if(input instanceof PropertyDefinition){
-			try{
-				return ((PropertyDefinition)input).getParentType().getLocation() == null;
-			} catch (IllegalStateException e){
+			if (((PropertyDefinition)input).getParentType() == null)
 				return true;
-			}
-			
+			return ((PropertyDefinition)input).getParentType().getLocation() == null;
 		}
 		return true;
 	}

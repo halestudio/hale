@@ -69,7 +69,8 @@ public abstract class AbstractChildDefinition<C> extends AbstractDefinition<C> i
 			return ((ChildDefinition<?>) parent).getParentType();
 		}
 		
-		throw new IllegalStateException("No parent type defined.");
+//		throw new IllegalStateException("No parent type defined.");
+		return null;
 	}
 	
 	/**

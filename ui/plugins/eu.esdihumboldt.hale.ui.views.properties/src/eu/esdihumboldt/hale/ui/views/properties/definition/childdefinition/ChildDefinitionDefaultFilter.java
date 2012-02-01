@@ -30,11 +30,8 @@ public class ChildDefinitionDefaultFilter extends DefaultDefinitionFilter{
 	@Override
 	public boolean isFiltered(Definition<?> input) {
 		if (input instanceof PropertyDefinition) {
-			try {
-				((PropertyDefinition) input).getParentType();
-			} catch(IllegalStateException e){
+			if (((PropertyDefinition) input).getParentType() == null)
 				return true;
-			}
 			return false;
 		}
 		return true;
