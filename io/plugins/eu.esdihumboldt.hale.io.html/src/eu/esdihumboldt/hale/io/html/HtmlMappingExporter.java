@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Vector;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -25,12 +26,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.io.Files;
 
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -40,6 +41,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.ui.common.graph.content.CellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
+import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
 import eu.esdihumboldt.hale.ui.util.DisplayThread;
 import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 import eu.esdihumboldt.util.Identifiers;
@@ -82,7 +84,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		cellIds = new Identifiers<Cell>(Cell.class, true);
+		cellIds = new Identifiers<Cell>(Cell.class, false);
 
 		alignment = getAlignment();
 
@@ -97,6 +99,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 				.getLocation().getPath()), filesSubDir); //$NON-NLS-1$
 		filesDir.mkdirs();
 
+		// TODO: remove me
 		System.out.println("Path to save the file to: "
 				+ getTarget().getLocation().getPath());
 
@@ -174,10 +177,6 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			e.printStackTrace();
 		}
 
-		if (alignment != null) {
-			createImages();
-		}
-
 		File htmlExportFile = null;
 		if (pi != null) {
 			Date date = new Date();
@@ -208,6 +207,10 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			context.put("filesDir", filesSubDir);
 		} else {
 			// do nothing
+		}
+
+		if (alignment != null) {
+			createImages();
 		}
 
 		try {
@@ -321,6 +324,9 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 
 	private void createImages() {
 
+		Vector<String> images = new Vector<String>();
+		Vector<String> propImages = new Vector<String>();
+
 		Display display;
 		if (Display.getCurrent() != null) {
 			// use the current display if available
@@ -341,14 +347,26 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		final File filesDir = new File(FilenameUtils.getFullPath(getTarget()
 				.getLocation().getPath()), filesSubDir);
 
-		// FIXME: getCells() -> getTypeCells()
-		Collection<? extends Cell> cells = alignment.getCells();
+		Collection<? extends Cell> cells = alignment.getTypeCells();
 		Iterator<? extends Cell> it = cells.iterator();
 		while (it.hasNext()) {
 			final Cell cell = it.next();
+			Collection<? extends Cell> propertyCells = AlignmentUtil
+					.getPropertyCellsFromTypeCell(alignment, cell);
+			final Cell propCell = propertyCells.iterator().next();
+
 			// creates a unique id for each cell
 			String cellId = cellIds.getId(cell);
+			String propCellId = cellIds.getId(propCell);
+
 			final File imageFile = new File(filesDir, "img_" + cellId + ".png");
+			final File propImageFile = new File(filesDir, "prop_img_"
+					+ propCellId + ".png");
+
+			images.addElement(filesSubDir + "/" + "img_" + cellId + ".png");
+			propImages.addElement(filesSubDir + "/" + "prop_img_" + propCellId
+					+ ".png");
+
 			// prevents the files to be replaced if they already exist; better
 			// performance
 			if (!imageFile.exists()) {
@@ -361,8 +379,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 
 							@Override
 							protected void configureViewer(GraphViewer viewer) {
-								LayoutAlgorithm algo = new TreeLayoutAlgorithm(
-										TreeLayoutAlgorithm.LEFT_RIGHT);
+								LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
 
 								CellGraphContentProvider cgcp = new CellGraphContentProvider();
 								GraphLabelProvider glp = new GraphLabelProvider();
@@ -385,19 +402,64 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 					}
 				});
 			}
-		}
-//		// Link-generator
-//		Vector<String> linkListVector = new Vector<String>();
-//		// link counter
-//		int j = 1;
-//		for (Iterator<? extends Cell> iterator = it; iterator.hasNext();) {
-//			Cell cell = iterator.next();
-//			String[] temp = new String[] { "muh" };
-//			linkListVector
-//					.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link" + j + "'>" + temp[0] + "</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//			j++;
-//		}
-//		context.put("linklist", linkListVector); //$NON-NLS-1$
-	}
+			if (!propImageFile.exists()) {
+				display.syncExec(new Runnable() {
 
+					@Override
+					public void run() {
+						// TODO: replace fix size by dynamic (computed) size
+						OffscreenGraph off_graph = new OffscreenGraph(400, 30) {
+
+							@Override
+							protected void configureViewer(GraphViewer viewer) {
+								LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
+
+								CellGraphContentProvider cgcp = new CellGraphContentProvider();
+								GraphLabelProvider glp = new GraphLabelProvider();
+								viewer.setContentProvider(cgcp);
+								viewer.setLabelProvider(glp);
+								viewer.setInput(propCell);
+								viewer.setLayoutAlgorithm(algo);
+							}
+						};
+
+						try {
+							off_graph.saveImage(new FileOutputStream(
+									propImageFile), null);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+					}
+				});
+			}
+		}
+		for (String path : images) {
+			System.out.println("ImagesPath: " + path);
+		}
+		for (String path : propImages) {
+			System.out.println("PropImagesPath: " + path);
+		}
+
+		context.put("images", images);
+		context.put("propImages", propImages);
+
+		// Link-generator
+		Vector<String> linkListVector = new Vector<String>();
+		// link counter
+		int j = 0;
+		for (Iterator<? extends Cell> iterator = alignment.getTypeCells()
+				.iterator(); iterator.hasNext();) {
+			Cell cell = iterator.next();
+			System.out.println("Transformation Identifier: " + cell.getTransformationIdentifier()); // "eu.esdihumboldt.hale.align.retype"
+			linkListVector.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link" + j + "'>" + cellIds.getId(cell) + "</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+			j++;
+		}
+		
+		context.put("linklist", linkListVector);
+
+	}
 }

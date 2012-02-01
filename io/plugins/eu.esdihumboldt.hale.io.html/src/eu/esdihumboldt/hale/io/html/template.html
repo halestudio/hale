@@ -22,6 +22,24 @@ $haleVers<br/>
 #if($pi.getDescription())
 	$description
 #end
+<br />
+Target Feature Types this Mapping covers:
+<ul>
+ #foreach ($linkname in $linklist)
+   $linkname
+ #end
+</ul>
+<br />
+Feature Types:<br />
+#foreach ($image in $images)
+  <img alt="" src="$image"><br />
+#end
+
+<br />
+Property Types:<br />
+#foreach ($propImage in $propImages)
+  <img alt="" src="$propImage"><br />
+#end
 </p>
 
 </body>
