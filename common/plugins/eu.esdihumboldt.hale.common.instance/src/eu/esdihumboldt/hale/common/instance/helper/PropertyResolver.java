@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -77,17 +78,11 @@ public class PropertyResolver {
 	public static Collection<Object> getValues(Instance instance,
 			String propertyPath, boolean forceValue) {
 		if(hasProperty(instance, propertyPath)){
-			
-			
 			LinkedList<String> paths = getKnownQueryPath(instance, propertyPath);
 			Collection<Object> result = new ArrayList<Object>();
 			
 			for(String path : paths){
-				
-				
-				ArrayList<QName> qnames = getQNamesFromPath(path);
-				
-				
+				List<QName> qnames = getQNamesFromPath(path);
 					
 				Object[] props = instance.getProperty(qnames.get(0));
 				
@@ -215,14 +210,17 @@ public class PropertyResolver {
 
 	}
 
-	private static ArrayList<QName> getQNamesFromPath(String propertyPath) {
-
+	/**
+	 * Split a property path into a list of {@link QName}s.
+	 * @param propertyPath the property path
+	 * @return the list of represented qualified names
+	 */
+	public static List<QName> getQNamesFromPath(String propertyPath) {
 		ArrayList<String> pathParts = splitPath(propertyPath);
 
 		ArrayList<QName> qnames = new ArrayList<QName>();
 
 		for (int i = 0; i < pathParts.size(); i++) {
-
 			String current = pathParts.get(i);
 
 			if (current.startsWith("{")) {
@@ -236,7 +234,6 @@ public class PropertyResolver {
 		}
 
 		return qnames;
-
 	}
 
 	
@@ -247,14 +244,11 @@ public class PropertyResolver {
 	 * @return true, if the cache is not empty for the given cache index object after the analysis
 	 */
 	private static boolean analyzeDefinition(Instance instance, QueryDefinitionIndex qdi) {
+		List<QName> qnames = getQNamesFromPath(qdi.getQuery());
 
-		ArrayList<QName> qnames = getQNamesFromPath(qdi.getQuery());
-
-		
-
-			definitioncache.put(qdi, new LinkedList<String>());
+		definitioncache.put(qdi, new LinkedList<String>());
 			
-			//this can be used to search a single index over the whole Instance-Definition-Tree
+		//this can be used to search a single index over the whole Instance-Definition-Tree
 			
 		/*	if (qnames.size() == 1) {
 
@@ -510,7 +504,7 @@ public class PropertyResolver {
 	 */
 	private static void analyzeSpecialQueryChildDefinition(
 			Collection<? extends ChildDefinition<?>> children,
-			ArrayList<QName> path, QueryDefinitionIndex qdi) {
+			List<QName> path, QueryDefinitionIndex qdi) {
 
 		QName current = path.get(0);
 
