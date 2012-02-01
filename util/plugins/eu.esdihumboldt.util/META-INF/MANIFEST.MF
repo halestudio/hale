@@ -4,14 +4,17 @@ Bundle-Name: Utilities Bundle
 Bundle-SymbolicName: eu.esdihumboldt.util
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: net.jcip.annotations,
+Import-Package: de.fhg.igd.osgi.util,
+ net.jcip.annotations,
  org.eclipse.core.runtime,
  org.osgi.framework;version="1.5.0",
- org.springframework.util;version="3.0.0.RELEASE"
+ org.springframework.util;version="3.0.0.RELEASE",
+ org.springframework.core.convert
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.util.internal.Activator
 Export-Package: eu.esdihumboldt.util,
  eu.esdihumboldt.util.definition,
  eu.esdihumboldt.util.internal;x-internal:=true,
  eu.esdihumboldt.util.io,
- eu.esdihumboldt.util.reflection
+ eu.esdihumboldt.util.reflection,
+ eu.esdihumboldt.util.validator
