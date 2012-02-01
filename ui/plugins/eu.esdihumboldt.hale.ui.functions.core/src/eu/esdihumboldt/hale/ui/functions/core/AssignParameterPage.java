@@ -63,8 +63,6 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 			editor.getControl().dispose();
 		createContent(page);
 		page.layout();
-		if (firstShow)
-			setPageComplete(true);
 	}
 
 	/**
@@ -88,7 +86,8 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
 		ListMultimap<String, String> configuration = ArrayListMultimap.create(1, 1);
-		configuration.put("value", editor.getAsText());
+		if (!editor.getControl().isDisposed())
+			configuration.put("value", editor.getAsText());
 		return configuration;
 	}
 
@@ -114,5 +113,8 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 		}
 		if (editor != null && initialValue != null)
 			editor.setAsText(initialValue);
+
+		if (editor != null)
+			setPageComplete(editor.isValid());
 	}
 }
