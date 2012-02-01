@@ -83,6 +83,10 @@ public abstract class AbstractGeometrySchemaService implements GeometrySchemaSer
 			Pair<List<QName>, DefinitionGroup> group = groups.poll();
 			DefinitionGroup parent = group.getSecond();
 			List<QName> parentPath = group.getFirst();
+
+			// max depth for default geometries
+			if (parentPath.size() > 5)
+				continue;
 			
 			// check properties if they are geometry properties, add groups to queue
 			for (ChildDefinition<?> child : DefinitionUtil.getAllChildren(parent)) {
