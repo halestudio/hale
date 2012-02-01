@@ -228,6 +228,24 @@ public class XmlSchemaReader
 		Set<String> imports = new HashSet<String>();
 		imports.add(location.toString());
 
+		// load XML Schema schema (for base type definitions)
+		try {
+			is = XmlSchemaReader.class.getResourceAsStream("/schemas/XMLSchema.xsd");
+			ss = new StreamSource(is);
+			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
+			schemaCol.setBaseUri(findBaseUri(XmlSchemaReader.class.getResource("/schemas/XMLSchema.xsd").toURI()) + "/");
+			XmlSchema xsSchema = schemaCol.read(ss, null);
+			is.close();
+			xsSchema.setSourceURI("http://www.w3.org/2001/XMLSchema.xsd");
+			XmlSchemaImport xmlSchemaImport = new XmlSchemaImport();
+			xmlSchemaImport.setSchema(xsSchema);
+	
+			// add it to includes as XmlSchemaImport (not XmlSchemaInclude!)
+			xmlSchema.getIncludes().add(xmlSchemaImport);
+		} catch (Exception e) {
+			_log.error("Exception while loading XML Schema schema", e);
+		}
+		
 		loadSchema(location.toString(), xmlSchema, imports, progress, true);
 		
 		groupCounter.clear();
