@@ -26,6 +26,10 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardExtension;
@@ -77,7 +81,22 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 	 * @return the function wizard descriptors
 	 */
 	protected Collection<FunctionWizardDescriptor<?>> getFunctionWizardDescriptors() {
-		return FunctionWizardExtension.getInstance().getFactories();
+		FunctionWizardExtension fwe = FunctionWizardExtension.getInstance();
+		Collection<FunctionWizardDescriptor<?>> result = new ArrayList<FunctionWizardDescriptor<?>>();
+		
+		// add wizards for type functions
+		for (TypeFunction function : TypeFunctionExtension.getInstance().getElements()) {
+			result.add(fwe.getWizardDescriptor(function.getId()));
+		}
+		
+		// add wizards for property functions
+		for (PropertyFunction function : PropertyFunctionExtension.getInstance().getElements()) {
+			result.add(fwe.getWizardDescriptor(function.getId()));
+		}
+		
+		return result;
+		
+//		return FunctionWizardExtension.getInstance().getFactories();
 	}
 
 	/**
