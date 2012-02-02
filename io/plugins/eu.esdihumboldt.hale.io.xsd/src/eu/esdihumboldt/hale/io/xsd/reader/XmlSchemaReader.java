@@ -46,6 +46,7 @@ import org.apache.ws.commons.schema.XmlSchemaGroup;
 import org.apache.ws.commons.schema.XmlSchemaGroupRef;
 import org.apache.ws.commons.schema.XmlSchemaImport;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
+import org.apache.ws.commons.schema.XmlSchemaNotation;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
@@ -377,6 +378,9 @@ public class XmlSchemaReader
 			}
 			else if (item instanceof XmlSchemaImport || item instanceof XmlSchemaInclude) {
 				// ignore, is treated separately
+			}
+			else if (item instanceof XmlSchemaNotation) {
+				// notations are ignored
 			}
 			else {
 				reporter.error(new IOMessageImpl(
