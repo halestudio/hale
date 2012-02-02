@@ -41,7 +41,7 @@ public abstract class StoreInstancesJob extends Job {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(StoreInstancesJob.class);
 
-	private final InstanceCollection instances;
+	private InstanceCollection instances;
 	private final LocalOrientDB database;
 
 	/**
@@ -109,6 +109,17 @@ public abstract class StoreInstancesJob extends Job {
 		} finally {
 			ref.dispose();
 			trans.end();
+			
+			/*
+			 * Reset instances to prevent memory leak.
+			 * It seems Eclipse internally holds a reference to the job
+			 * (in JobInfo and/or ProgressMonitorFocusJobDialog) and this 
+			 * results in the instance collection not being garbage collected.
+			 * This is especially bad, if an in-memory instance collection is
+			 * used, e.g. a DefaultInstanceCollection that is used when loading
+			 * a Shapefile.
+			 */
+			instances = null;
 		}
 		
 		onComplete();
