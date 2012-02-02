@@ -86,7 +86,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
 		ListMultimap<String, String> configuration = ArrayListMultimap.create(1, 1);
-		if (!editor.getControl().isDisposed())
+		if (editor != null && !editor.getControl().isDisposed())
 			configuration.put("value", editor.getAsText());
 		return configuration;
 	}
