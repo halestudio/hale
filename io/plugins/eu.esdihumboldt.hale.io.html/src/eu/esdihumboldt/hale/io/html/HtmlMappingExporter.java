@@ -1,5 +1,6 @@
 package eu.esdihumboldt.hale.io.html;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,9 +11,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.io.FilenameUtils;
@@ -22,9 +25,12 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.core.widgets.Graph;
+import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 
 import com.google.common.io.Files;
@@ -98,10 +104,6 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		final File filesDir = new File(FilenameUtils.getFullPath(getTarget()
 				.getLocation().getPath()), filesSubDir); //$NON-NLS-1$
 		filesDir.mkdirs();
-
-		// TODO: remove me
-		System.out.println("Path to save the file to: "
-				+ getTarget().getLocation().getPath());
 
 		try {
 			init();
@@ -327,6 +329,59 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		Vector<String> images = new Vector<String>();
 		Vector<String> propImages = new Vector<String>();
 
+		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils
+				.getName(getTarget().getLocation().getPath())) + "_files"; //$NON-NLS-1$
+
+		Collection<? extends Cell> cells = alignment.getTypeCells();
+		Iterator<? extends Cell> it = cells.iterator();
+		while (it.hasNext()) {
+			final Cell cell = it.next();
+			Collection<? extends Cell> propertyCells = AlignmentUtil
+					.getPropertyCellsFromTypeCell(alignment, cell);
+
+			saveImageToFile(cell, images);
+
+			for (Cell propCell : propertyCells) {
+				saveImageToFile(propCell, propImages);
+			}
+
+			for (String path : images) {
+				System.out.println("ImagesPath: " + path);
+			}
+			for (String path : propImages) {
+				System.out.println("PropImagesPath: " + path);
+			}
+
+			context.put("images", images);
+			context.put("propImages", propImages);
+			
+			//// TODO: create links (image as link)
+			// Link-generator
+			Vector<String> linkListVector = new Vector<String>();
+			// link counter
+			int j = 0;
+			for(String path : images) {
+				linkListVector.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link" + j + "'>" + "<img src='"+ path + "'>" + "</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				j++;
+			}
+//			for (Iterator<? extends Cell> iterator = alignment.getTypeCells()
+//					.iterator(); iterator.hasNext();) {
+//				Cell linkCell = iterator.next();
+//				System.out.println("Transformation Identifier: "
+//						+ cell.getTransformationIdentifier()); // "eu.esdihumboldt.hale.align.retype"
+//				linkListVector
+//						.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link" + j + "'>" + cellIds.getId(linkCell) + "</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+//
+//				j++;
+//			}
+
+			context.put("linklist", linkListVector);
+		}
+
+	}
+
+	private void saveImageToFile(final Cell cell, Vector<String> links) {
+
 		Display display;
 		if (Display.getCurrent() != null) {
 			// use the current display if available
@@ -347,119 +402,125 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		final File filesDir = new File(FilenameUtils.getFullPath(getTarget()
 				.getLocation().getPath()), filesSubDir);
 
-		Collection<? extends Cell> cells = alignment.getTypeCells();
-		Iterator<? extends Cell> it = cells.iterator();
-		while (it.hasNext()) {
-			final Cell cell = it.next();
-			Collection<? extends Cell> propertyCells = AlignmentUtil
-					.getPropertyCellsFromTypeCell(alignment, cell);
-			final Cell propCell = propertyCells.iterator().next();
+		// creates a unique id for each cell
+		String cellId = cellIds.getId(cell);
 
-			// creates a unique id for each cell
-			String cellId = cellIds.getId(cell);
-			String propCellId = cellIds.getId(propCell);
+		final File file = new File(filesDir, "img_" + cellId + ".png");
 
-			final File imageFile = new File(filesDir, "img_" + cellId + ".png");
-			final File propImageFile = new File(filesDir, "prop_img_"
-					+ propCellId + ".png");
+		links.addElement(filesSubDir + "/" + "img_" + cellId + ".png");
 
-			images.addElement(filesSubDir + "/" + "img_" + cellId + ".png");
-			propImages.addElement(filesSubDir + "/" + "prop_img_" + propCellId
-					+ ".png");
+		if (!file.exists()) {
+			display.syncExec(new Runnable() {
 
-			// prevents the files to be replaced if they already exist; better
-			// performance
-			if (!imageFile.exists()) {
-				display.syncExec(new Runnable() {
+				@Override
+				public void run() {
+					OffscreenGraph off_graph = new OffscreenGraph(400, 50) {
 
-					@Override
-					public void run() {
-						// TODO: replace fix size by dynamic (computed) size
-						OffscreenGraph off_graph = new OffscreenGraph(400, 30) {
+						@Override
+						protected void configureViewer(GraphViewer viewer) {
+							LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
+							algo.setLayoutContext(this.getGraph()
+									.getLayoutContext());
 
-							@Override
-							protected void configureViewer(GraphViewer viewer) {
-								LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
+							CellGraphContentProvider cgcp = new CellGraphContentProvider();
+							GraphLabelProvider glp = new GraphLabelProvider();
+							viewer.setContentProvider(cgcp);
+							viewer.setLabelProvider(glp);
+							viewer.setInput(cell);
+							viewer.setLayoutAlgorithm(algo);
 
-								CellGraphContentProvider cgcp = new CellGraphContentProvider();
-								GraphLabelProvider glp = new GraphLabelProvider();
-								viewer.setContentProvider(cgcp);
-								viewer.setLabelProvider(glp);
-								viewer.setInput(cell);
-								viewer.setLayoutAlgorithm(algo);
-							}
-						};
-
-						try {
-							off_graph.saveImage(
-									new FileOutputStream(imageFile), null);
-						} catch (FileNotFoundException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
 						}
+					};
 
+					Graph graph = off_graph.getGraph();
+					Dimension dim = computeSize(graph);
+					int width;
+					if(dim.width > 600) {
+						width = dim.width;
 					}
-				});
-			}
-			if (!propImageFile.exists()) {
-				display.syncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO: replace fix size by dynamic (computed) size
-						OffscreenGraph off_graph = new OffscreenGraph(400, 30) {
-
-							@Override
-							protected void configureViewer(GraphViewer viewer) {
-								LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
-
-								CellGraphContentProvider cgcp = new CellGraphContentProvider();
-								GraphLabelProvider glp = new GraphLabelProvider();
-								viewer.setContentProvider(cgcp);
-								viewer.setLabelProvider(glp);
-								viewer.setInput(propCell);
-								viewer.setLayoutAlgorithm(algo);
-							}
-						};
-
-						try {
-							off_graph.saveImage(new FileOutputStream(
-									propImageFile), null);
-						} catch (FileNotFoundException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-
+					else {
+						// minimum width = 600
+						width = 600;
 					}
-				});
+					
+					int height = dim.height;
+					
+					off_graph.resize(width, height);
+
+					try {
+						off_graph.saveImage(new FileOutputStream(file), null);
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+			});
+		}
+
+	}
+
+	private Dimension computeSize(Graph graph) {
+		@SuppressWarnings("unchecked")
+		List<GraphNode> list = graph.getNodes();
+		int height = 0;
+		int width = 0;
+		List<GraphNode> tempSourceList = new ArrayList<GraphNode>();
+		List<GraphNode> tempTargetList = new ArrayList<GraphNode>();
+		for (GraphNode gn : list) {
+			int sourceCons = gn.getSourceConnections().size();
+			int targetCons = gn.getTargetConnections().size();
+			if (sourceCons == 0 && targetCons == 1) {
+				tempSourceList.add(gn);
+			} else if (sourceCons >= 1 && targetCons >= 1) {
+				width = width + gn.getFigure().getBounds().width + 10;
+				height = height + gn.getFigure().getBounds().height;
+			} else {
+				tempTargetList.add(gn);
 			}
 		}
-		for (String path : images) {
-			System.out.println("ImagesPath: " + path);
+		int accuSourceWidth = 0;
+		int accuSourceHeight = 0;
+		int accuHeight = 0;
+		for (GraphNode node : tempSourceList) {
+			Rectangle rec = node.getFigure().getBounds();
+			int sourceWidth = rec.width;
+			int sourceHeight = rec.height;
+
+			accuSourceHeight = accuSourceHeight + sourceHeight;
+
+			if (accuSourceWidth < sourceWidth) {
+				accuSourceWidth = sourceWidth;
+			}
+			if (accuHeight < accuSourceHeight) {
+				accuHeight = accuSourceHeight;
+			}
+
 		}
-		for (String path : propImages) {
-			System.out.println("PropImagesPath: " + path);
+
+		int accuTargetWidth = 0;
+		int accuTargetHeight = 0;
+		for (GraphNode node : tempTargetList) {
+			Rectangle rec = node.getFigure().getBounds();
+			int targetWidth = rec.width;
+			int targetHeight = rec.height;
+
+			accuTargetHeight = accuTargetHeight + targetHeight;
+
+			if (accuTargetWidth < targetWidth) {
+				accuTargetWidth = targetWidth;
+			}
+			if (accuHeight < accuTargetHeight) {
+				accuHeight = accuTargetHeight;
+			}
 		}
+		width = width + accuSourceWidth + accuTargetWidth + 30;
+		height = accuHeight + 20;
 
-		context.put("images", images);
-		context.put("propImages", propImages);
+		Dimension d = new Dimension();
+		d.setSize(width, height);
 
-		// Link-generator
-		Vector<String> linkListVector = new Vector<String>();
-		// link counter
-		int j = 0;
-		for (Iterator<? extends Cell> iterator = alignment.getTypeCells()
-				.iterator(); iterator.hasNext();) {
-			Cell cell = iterator.next();
-			System.out.println("Transformation Identifier: " + cell.getTransformationIdentifier()); // "eu.esdihumboldt.hale.align.retype"
-			linkListVector.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link" + j + "'>" + cellIds.getId(cell) + "</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
-			j++;
-		}
-		
-		context.put("linklist", linkListVector);
-
+		return d;
 	}
 }
