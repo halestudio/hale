@@ -21,6 +21,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -125,19 +126,20 @@ public class OrientInstanceReference implements InstanceReference {
 	 */
 	public Instance load(LocalOrientDB lodb) {
 		DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead();
-		DatabaseHandle handle = new DatabaseHandle(db.getDatabase());
+//		DatabaseHandle handle = new DatabaseHandle(db.getDatabase());
 		try {
 			ODocument document = db.getDatabase().load(getId());
 			if (document != null) {
 				OInstance instance = new OInstance(document, 
 						getTypeDefinition(), getDataSet());
-				handle.addReference(instance);
-				return instance;
+//				handle.addReference(instance);
+				return new DefaultInstance(instance);
 			}
 		}
 		finally {
-			db.dispose(false);
-			handle.tryClose();
+			db.dispose();
+//			db.dispose(false);
+//			handle.tryClose();
 		}
 		
 		return null;
