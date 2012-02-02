@@ -75,7 +75,7 @@ public class MappingView extends AbstractMappingView {
 		
 		// find cells associated with the selection
 		for (Cell cell : alignment.getCells()) {
-			if (associatedWith(cell.getSource(), selection.getSourceItems())
+			if ((cell.getSource() != null && associatedWith(cell.getSource(), selection.getSourceItems()))
 					|| associatedWith(cell.getTarget(), selection.getTargetItems())) {
 				cells.add(cell);
 			}
