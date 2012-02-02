@@ -21,6 +21,8 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
+
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.MergeHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -28,10 +30,12 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceFactory;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Abstract merge handler implementation based on a merge index of instance
@@ -89,6 +93,7 @@ public abstract class AbstractMergeHandler<T, K> implements MergeHandler<Transfo
 					Collection<InstanceReference> references = index.get(next);
 					//TODO get all instances in one call from instance collection? see InstanceResolver
 					Collection<Instance> instances = new ArrayList<Instance>(references.size());
+					TypeDefinition type = null;
 					for (InstanceReference ref : references) {
 						Instance instance = originalInstances.getInstance(ref);
 						if (instance == null) {
@@ -97,10 +102,13 @@ public abstract class AbstractMergeHandler<T, K> implements MergeHandler<Transfo
 						}
 						else {
 							instances.add(instance);
+							if (type == null) {
+								type = instance.getDefinition();
+							}
 						}
 					}
 					
-					return merge(instances, next, mergeConfig);
+					return merge(instances, type, next, mergeConfig);
 				}
 
 				@Override
@@ -162,20 +170,29 @@ public abstract class AbstractMergeHandler<T, K> implements MergeHandler<Transfo
 		
 		return new MergedInstances(index, instances, mergeConfig);
 	}
+	
+	/**
+	 * Get the instance factory
+	 * @return the instance factory
+	 */
+	protected InstanceFactory getInstanceFactory() {
+		return OsgiUtils.getService(InstanceFactory.class);
+	}
 
 	/**
 	 * Create the merge configuration from the transformation configuration.
 	 * The merge configuration may be then used in {@link #getMergeKey(Instance, Object)}
-	 * and {@link #merge(Collection, Object, Object)}
+	 * and {@link #merge(Collection, TypeDefinition, Object, Object)}
 	 * @param transformationIdentifier the transformation identifier
 	 * @param transformationParameters the transformation parameters
 	 * @param executionParameters the execution parameters
 	 * @param log the transformation log
 	 * @return the merge configuration
+	 * @throws TransformationException if the merge configuration cannot be created
 	 */
 	protected abstract T createMergeConfiguration(String transformationIdentifier,
 			ListMultimap<String, String> transformationParameters,
-			Map<String, String> executionParameters, TransformationLog log);
+			Map<String, String> executionParameters, TransformationLog log) throws TransformationException;
 
 	/**
 	 * Get the merge key for a given instance. Instances with an equal merge
@@ -183,6 +200,7 @@ public abstract class AbstractMergeHandler<T, K> implements MergeHandler<Transfo
 	 * @param instance the instance
 	 * @param mergeConfig the merge configuration
 	 * @return the instance merge key
+	 * @see #merge(Collection, TypeDefinition, Object, Object)
 	 */
 	protected abstract K getMergeKey(Instance instance,
 			T mergeConfig);
@@ -190,11 +208,12 @@ public abstract class AbstractMergeHandler<T, K> implements MergeHandler<Transfo
 	/**
 	 * Merge multiple instance into one.
 	 * @param instances the instances to merge
+	 * @param type the type definition of the instances to merge
 	 * @param mergeKey the merge key associated to the instances
 	 * @param mergeConfig the merge configuration
 	 * @return the merged instance
 	 */
 	protected abstract Instance merge(Collection<Instance> instances, 
-			K mergeKey, T mergeConfig);
+			TypeDefinition type, K mergeKey, T mergeConfig);
 
 }

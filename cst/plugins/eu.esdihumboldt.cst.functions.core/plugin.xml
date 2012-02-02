@@ -33,6 +33,12 @@
             function="eu.esdihumboldt.hale.align.formattedstring"
             id="eu.esdihumboldt.cst.functions.core.formattedstring">
       </propertyTransformation>
+      <typeTransformation
+            class="eu.esdihumboldt.cst.functions.core.Merge"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.hale.align.merge"
+            id="eu.esdihumboldt.cst.functions.core.merge">
+      </typeTransformation>
    </extension>
 
 </plugin>
