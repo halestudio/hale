@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.doc.functions.internal.content;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -240,7 +242,6 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 				@Override
 				public void run() {
 
-					// TODO: edit the size to get a correct graph
 					// create an initial off-screen graph with fixed values;
 					// resize the graph after computing the figures width and
 					// height
@@ -261,37 +262,9 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 					};
 
 					Graph graph = off_graph.getGraph();
-					@SuppressWarnings("unchecked")
-					List<GraphNode> list = graph.getNodes();
-					int height = 0;
-					int width = 0;
-					if (list.size() >= 3) {
-						for (GraphNode gn : list) {
-							Rectangle rec = gn.getFigure().getBounds();
-							height = height + rec.height + 5;
-						}
-						for (int i = 0; i < 3; i++) {
-							Rectangle rec = list.get(i).getFigure().getBounds();
-							width = width + rec.width + 5;
-						}
-					} else {
-						// used fix size for amount of figures <= 2
-						width = 300;
-						height = 200;
-					}
-
-					// else {
-					// // FIXME: doesn't work correctly; see function "assign".
-					// // maybe use fix size ?
-					// for (GraphNode gn : list) {
-					// Rectangle rec = gn.getFigure().getBounds();
-					// height = height + rec.height + 5;
-					// width = width + rec.width + 5;
-					// }
-					// }
-					// System.out.println("height = " + height);
-					// System.out.println("width = " + width);
-					// resizes the off-screen graph to the computed size
+					Dimension dim = computeSize(graph);
+					int width = dim.width;
+					int height = dim.height;
 					off_graph.resize(width, height);
 
 					try {
@@ -323,6 +296,69 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private Dimension computeSize(Graph graph) {
+		@SuppressWarnings("unchecked")
+		List<GraphNode> list = graph.getNodes();
+		int height = 0;
+		int width = 0;
+		List<GraphNode> tempSourceList = new ArrayList<GraphNode>();
+		List<GraphNode> tempTargetList = new ArrayList<GraphNode>();
+		for (GraphNode gn : list) {
+			int sourceCons = gn.getSourceConnections().size();
+			int targetCons = gn.getTargetConnections().size();
+			if (sourceCons == 0 && targetCons == 1) {
+				tempSourceList.add(gn);
+			} else if (sourceCons >= 1 && targetCons >= 1) {
+				width = width + gn.getFigure().getBounds().width + 10;
+				height = height + gn.getFigure().getBounds().height;
+			} else {
+				tempTargetList.add(gn);
+			}
+		}
+		int accuSourceWidth = 0;
+		int accuSourceHeight = 0;
+		int accuHeight = 0;
+		for (GraphNode node : tempSourceList) {
+			Rectangle rec = node.getFigure().getBounds();
+			int sourceWidth = rec.width;
+			int sourceHeight = rec.height;
+
+			accuSourceHeight = accuSourceHeight + sourceHeight;
+
+			if (accuSourceWidth < sourceWidth) {
+				accuSourceWidth = sourceWidth;
+			}
+			if (accuHeight < accuSourceHeight) {
+				accuHeight = accuSourceHeight;
+			}
+
+		}
+
+		int accuTargetWidth = 0;
+		int accuTargetHeight = 0;
+		for (GraphNode node : tempTargetList) {
+			Rectangle rec = node.getFigure().getBounds();
+			int targetWidth = rec.width;
+			int targetHeight = rec.height;
+
+			accuTargetHeight = accuTargetHeight + targetHeight;
+
+			if (accuTargetWidth < targetWidth) {
+				accuTargetWidth = targetWidth;
+			}
+			if (accuHeight < accuTargetHeight) {
+				accuHeight = accuTargetHeight;
+			}
+		}
+		width = width + accuSourceWidth + accuTargetWidth + 30;
+		height = accuHeight + 20;
+
+		Dimension d = new Dimension();
+		d.setSize(width, height);
+
+		return d;
 	}
 
 }
