@@ -334,11 +334,10 @@ public class InstanceServiceSelector implements InstanceSelector {
 					Filter filter = filterField.getCQLFilter();
 					
 					InstanceCollection instances = is.getInstances(dataset);
+					
 					ResourceIterator<Instance> it = instances.iterator();
-					
-					
-					if (filter == null) {					
-						try {
+					try {
+						if (filter == null) {
 							int num = 0;
 							while (it.hasNext() && num < max) {
 								Instance instance = it.next();
@@ -347,26 +346,28 @@ public class InstanceServiceSelector implements InstanceSelector {
 									num++;
 								}
 							}
-						} finally {
-							it.close();
+						} else {
+							int num = 0;
+							while (it.hasNext() && num < max) {
+								Instance instance = it.next();
+								if (filter.match(instance)) {
+
+									if (!PropertyResolver
+											.isLastQueryPathUnique()) {
+										filterField
+												.setDecoration(
+														"WARNING",
+														"More then one possible match in the instance was found. \n Please specify you Query with namespaces,\n for example: \"{http://example.com}foo.{http://example2.com}.bar\" = 'nill'");
+									}
+									instanceList.add(instance);
+									num++;
+								}
+							}
+							filterField.setDecoration("DEFAULT", null);
 						}
+					} finally {
+						it.close();
 					}
-					else {
-						
-						int num = 0;
-						while (it.hasNext() && num < max) {
-							Instance instance = it.next();
-						if (filter.match(instance)) {
-							
-							if(!PropertyResolver.isLastQueryPathUnique()){
-								filterField.setDecoration("WARNING", "More then one possible match in the instance was found. \n Please specify you Query with namespaces,\n for example: \"{http://example.com}foo.{http://example2.com}.bar\" = 'nill'");
-							}
-								instanceList.add(instance);
-								num++;
-							}
-						}		
-						filterField.setDecoration("DEFAULT", null);
-				}
 				} catch (Exception e) {
 					//log.warn("Error creating filter"); //$NON-NLS-1$
 					filterField.setDecoration("ERROR", e.getMessage());
