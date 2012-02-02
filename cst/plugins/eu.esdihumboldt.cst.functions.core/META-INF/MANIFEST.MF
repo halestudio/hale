@@ -11,5 +11,6 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instance.model.impl,
  eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.util,
  net.jcip.annotations,
  org.springframework.core.convert
