@@ -38,6 +38,19 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 		super(definition);
 		this.dataSet = dataSet;
 	}
+	
+	/**
+	 * Copy constructor.
+	 * Creates an instance based on the properties and values of the given 
+	 * instance.
+	 * @param org the instance to copy
+	 */
+	public DefaultInstance(Instance org) {
+		super(org);
+		
+		setValue(org.getValue());
+		setDataSet(org.getDataSet());
+	}
 
 	/**
 	 * @see Instance#getValue()
