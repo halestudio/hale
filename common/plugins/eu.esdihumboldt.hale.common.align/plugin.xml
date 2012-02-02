@@ -131,7 +131,7 @@
             category="eu.esdihumboldt.hale.align.general"
             description="Merges multiple instances of the source type into one instance of the target type, based on one or more matching properties."
             icon="icons/merge.gif"
-            identifier="eu.esdihumboldt.hale.common.align.merge"
+            identifier="eu.esdihumboldt.hale.align.merge"
             name="Merge">
          <sourceTypes>
             <type
@@ -147,6 +147,7 @@
             </type>
          </targetTypes>
          <functionParameter
+               description="Each property is defined by a property path"
                label="Merge property"
                maxOccurrence="n"
                minOccurrence="1"
