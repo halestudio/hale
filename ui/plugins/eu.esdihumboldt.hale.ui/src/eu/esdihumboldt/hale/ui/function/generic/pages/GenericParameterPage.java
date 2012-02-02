@@ -156,7 +156,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 
 			// create control buttons if max occurrence != min occurrence
 			if (fp.getMaxOccurrence() != fp.getMinOccurrence())
-				createAddButton(group, fp, i < fp.getMaxOccurrence());
+				createAddButton(group, fp, 
+						fp.getMaxOccurrence() == AbstractParameter.UNBOUNDED || i < fp.getMaxOccurrence());
 
 			// enable remove buttons if initial cell added more fields than required
 			if (i > fp.getMinOccurrence())
