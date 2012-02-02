@@ -81,6 +81,11 @@ public class InstanceServiceSelector implements InstanceSelector {
 		
 		private Iterable<Instance> selection;
 		
+		/*
+		 * XXX There seems to be a minor (memory leak) with selectedType not 
+		 * being reset when the project is cleared, though this should be OK,
+		 * as it will be replaced, when a schema is loaded.
+		 */
 		private TypeDefinition selectedType;
 		
 		private final Image refreshImage;
