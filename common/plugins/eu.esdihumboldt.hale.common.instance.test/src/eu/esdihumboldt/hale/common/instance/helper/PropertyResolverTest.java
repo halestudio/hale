@@ -76,28 +76,28 @@ public class PropertyResolverTest {
 				getClass().getResource("/data/shiporder/shiporder.xml").toURI());
 		
 		ResourceIterator<Instance> it = instances.iterator();
-		assertTrue(it.hasNext());
-		
-		Instance instance = it.next();
-		assertNotNull(instance);
-		
-		TypeDefinition test = instance.getDefinition().getChildren().iterator().next().asProperty().getParentType();
-		
-		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}orderperson"));
-		
-		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}shipto.{http://www.example.com}city"));
-		assertTrue(PropertyResolver.getKnownQueryPath(instance, "{http://www.example.com}shipto.{http://www.example.com}city")
-				.contains("{http://www.example.com}shipto.{http://www.example.com}city"));
-		
-		assertTrue(PropertyResolver.hasProperty(instance, "orderperson"));
-		assertTrue(PropertyResolver.hasProperty(instance, "shipto.city"));
-		assertTrue(PropertyResolver.hasProperty(instance, "shipto.{http://www.example.com}city"));
-		
-		assertEquals(PropertyResolver.getValues(instance, "shipto.city").iterator().next(), "4000 Stavanger");
-
-		
-		
-		it.close();
+		try {
+			assertTrue(it.hasNext());
+			
+			Instance instance = it.next();
+			assertNotNull(instance);
+			
+			TypeDefinition test = instance.getDefinition().getChildren().iterator().next().asProperty().getParentType();
+			
+			assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}orderperson"));
+			
+			assertTrue(PropertyResolver.hasProperty(instance, "{http://www.example.com}shipto.{http://www.example.com}city"));
+			assertTrue(PropertyResolver.getKnownQueryPath(instance, "{http://www.example.com}shipto.{http://www.example.com}city")
+					.contains("{http://www.example.com}shipto.{http://www.example.com}city"));
+			
+			assertTrue(PropertyResolver.hasProperty(instance, "orderperson"));
+			assertTrue(PropertyResolver.hasProperty(instance, "shipto.city"));
+			assertTrue(PropertyResolver.hasProperty(instance, "shipto.{http://www.example.com}city"));
+			
+			assertEquals(PropertyResolver.getValues(instance, "shipto.city").iterator().next(), "4000 Stavanger");
+		} finally {
+			it.close();
+		}
 	}
 	
 	@Ignore
@@ -125,26 +125,27 @@ public class PropertyResolverTest {
 		
 		
 		ResourceIterator<Instance> ri = instances.iterator();
-		Instance instance = ri.next();
-	
-		
-	    assertTrue(PropertyResolver.hasProperty(instance, "description"));
-	    assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}description"));
-        assertTrue(PropertyResolver.hasProperty(instance, "boundedBy.Envelope.coordinates"));
-        assertTrue(PropertyResolver.hasProperty(instance, "boundedBy.Envelope.{http://www.opengis.net/gml/3.2}coordinates"));
-        assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}boundedBy.{http://www.opengis.net/gml/3.2}Envelope.{http://www.opengis.net/gml/3.2}coordinates"));
-        assertFalse(PropertyResolver.hasProperty(instance, "boundedBy.Envelope.{http://www.opengis.net/gml/3.2}coordinates.description"));
-		assertTrue(PropertyResolver.hasProperty(instance, "location.AbstractSolid.id"));
-		
-		assertTrue(PropertyResolver.hasProperty(instance, "location.CompositeCurve.curveMember.CompositeCurve.curveMember.type"));
-		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}location.{http://www.opengis.net/gml/3.2}CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.{http://www.opengis.net/gml/3.2}CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.type"));
-		assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}location.CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.{http://www.opengis.net/gml/3.2}CompositeCurve.curveMember.type"));
-        
-		assertEquals("EPSG:4326", PropertyResolver.getValues(instance,"geometry.Polygon.srsName").iterator().next().toString());
-		
-		
-		//TODO
-		ri.close();
+		try {
+			Instance instance = ri.next();
+			
+		    assertTrue(PropertyResolver.hasProperty(instance, "description"));
+		    assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}description"));
+	        assertTrue(PropertyResolver.hasProperty(instance, "boundedBy.Envelope.coordinates"));
+	        assertTrue(PropertyResolver.hasProperty(instance, "boundedBy.Envelope.{http://www.opengis.net/gml/3.2}coordinates"));
+	        assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}boundedBy.{http://www.opengis.net/gml/3.2}Envelope.{http://www.opengis.net/gml/3.2}coordinates"));
+	        assertFalse(PropertyResolver.hasProperty(instance, "boundedBy.Envelope.{http://www.opengis.net/gml/3.2}coordinates.description"));
+			assertTrue(PropertyResolver.hasProperty(instance, "location.AbstractSolid.id"));
+			
+			assertTrue(PropertyResolver.hasProperty(instance, "location.CompositeCurve.curveMember.CompositeCurve.curveMember.type"));
+			assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}location.{http://www.opengis.net/gml/3.2}CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.{http://www.opengis.net/gml/3.2}CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.type"));
+			assertTrue(PropertyResolver.hasProperty(instance, "{http://www.opengis.net/gml/3.2}location.CompositeCurve.{http://www.opengis.net/gml/3.2}curveMember.{http://www.opengis.net/gml/3.2}CompositeCurve.curveMember.type"));
+	        
+			assertEquals("EPSG:4326", PropertyResolver.getValues(instance,"geometry.Polygon.srsName").iterator().next().toString());
+			
+			//TODO
+		} finally {
+			ri.close();
+		}
 	}	
 	
 	private InstanceCollection loadXMLInstances(URI schemaLocation, URI xmlLocation) throws IOException, IOProviderConfigurationException {
