@@ -240,6 +240,7 @@
          </propertySection>
          <propertySection
                class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionNameSection"
+               enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.function.name"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
             <input
@@ -249,6 +250,7 @@
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.function.name"
                class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionIdSection"
+               enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.function.id"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
             <input
@@ -258,6 +260,7 @@
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.function.id"
                class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionDescriptionSection"
+               enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.function.description"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
             <input
@@ -267,6 +270,7 @@
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.function.typefunctionsource"
                class="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionParameterSection"
+               enablesFor="1"
                filter="eu.esdihumboldt.hale.ui.views.properties.function.abstractfunction.AbstractFunctionParameterFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.function.parameters.abstractfunction"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parameters">
@@ -277,6 +281,7 @@
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.function.description"
                class="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionGraphSection"
+               enablesFor="1"
                filter="eu.esdihumboldt.hale.ui.views.properties.function.typefunction.TypeFunctionGraphFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.function.typefunctiongraph"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.graph">
@@ -287,6 +292,7 @@
          <propertySection
                afterSection="eu.esdihumboldt.hale.ui.views.properties.function.description"
                class="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionGraphSection"
+               enablesFor="1"
                filter="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunction.PropertyFunctionGraphFilter"
                id="eu.esdihumboldt.hale.ui.views.properties.function.propertyfunctiongraph"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.graph">
