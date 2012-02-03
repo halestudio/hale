@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -109,7 +110,11 @@ public class OGroup implements MutableGroup {
 	private void configureDocument(ORecordAbstract<?> document, ODatabaseRecord db,
 			DefinitionGroup definition) {
 		// configure document
-		document.setDatabase(db);
+		
+		// as of OrientDB 1.0rc8 the database may no longer be set on the document
+		// instead the current database can be set using
+		// ODatabaseRecordThreadLocal.INSTANCE.set(db);
+//		document.setDatabase(db);
 		if (document instanceof ODocument) {
 			// reset class name
 			ODocument doc = (ODocument) document;
@@ -518,7 +523,8 @@ public class OGroup implements MutableGroup {
 	 */
 	@Override
 	public Iterable<QName> getPropertyNames() {
-		Set<String> fields = new HashSet<String>(document.fieldNames());
+		Set<String> fields = new HashSet<String>(
+				Arrays.asList(document.fieldNames()));
 		
 		// remove value field
 		fields.removeAll(getSpecialFieldNames());

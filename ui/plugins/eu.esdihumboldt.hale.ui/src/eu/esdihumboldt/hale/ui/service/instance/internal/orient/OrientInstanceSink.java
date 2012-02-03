@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
 import java.io.Closeable;
 import java.io.IOException;
 
+import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
@@ -55,6 +56,7 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 		OInstance conv = ((instance instanceof OInstance)?
 				((OInstance) instance):(new OInstance(instance)));
 		
+		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		// configure the document
 		ODocument doc = conv.configureDocument(db);
 		// and save it
