@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -119,14 +120,18 @@ public class OGroup implements MutableGroup {
 	private void configureDocument(ORecordAbstract<?> document, ODatabaseRecord db,
 			DefinitionGroup definition) {
 		// configure document
-		document.setDatabase(db);
+		
+		// as of OrientDB 1.0rc8 the database may no longer be set on the document
+		// instead the current database can be set using
+		// ODatabaseRecordThreadLocal.INSTANCE.set(db);
+//		document.setDatabase(db);
 		if (document instanceof ODocument) {
 			// reset class name
 			ODocument doc = (ODocument) document;
 			if (definition != null) {
 				doc.setClassName(ONameUtil.encodeName(definition.getIdentifier()));
 			}
-			else if (doc.fieldNames().contains(BINARY_WRAPPER_FIELD)) {
+			else if (doc.containsField(BINARY_WRAPPER_FIELD)) {
 				doc.setClassName(BINARY_WRAPPER_CLASSNAME);
 			}
 			
@@ -490,7 +495,7 @@ public class OGroup implements MutableGroup {
 	protected Object convertDocument(Object value, QName propertyName) {
 		if (value instanceof ODocument) {
 			ODocument doc = (ODocument) value;
-			if (doc.fieldNames().contains(BINARY_WRAPPER_FIELD)) {
+			if (doc.containsField(BINARY_WRAPPER_FIELD)) {
 				// extract wrapped ORecordBytes
 				value = doc.field(BINARY_WRAPPER_FIELD);
 			}
@@ -552,7 +557,8 @@ public class OGroup implements MutableGroup {
 	 */
 	@Override
 	public Iterable<QName> getPropertyNames() {
-		Set<String> fields = new HashSet<String>(document.fieldNames());
+		Set<String> fields = new HashSet<String>(
+				Arrays.asList(document.fieldNames()));
 		
 		// remove value field
 		fields.removeAll(getSpecialFieldNames());
