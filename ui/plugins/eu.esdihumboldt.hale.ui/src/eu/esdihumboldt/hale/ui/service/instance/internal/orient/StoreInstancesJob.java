@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -74,6 +75,7 @@ public abstract class StoreInstancesJob extends Job {
 		// get database connection
 		DatabaseReference<ODatabaseDocumentTx> ref = database.openWrite();
 		ODatabaseDocumentTx db = ref.getDatabase();
+		
 		ATransaction trans = log.begin("Store instances in database");
 		try {
 			// use intent
@@ -90,6 +92,7 @@ public abstract class StoreInstancesJob extends Job {
 					OInstance conv = ((instance instanceof OInstance)?
 							((OInstance) instance):(new OInstance(instance)));
 					
+					ODatabaseRecordThreadLocal.INSTANCE.set(db);
 					// configure the document
 					ODocument doc = conv.configureDocument(db);
 					// and save it

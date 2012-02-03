@@ -57,6 +57,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		
 		private DatabaseHandle handle;
 		
+		private boolean allowUpdate = true;
+		
 		/**
 		 * @see Iterator#hasNext()
 		 */
@@ -64,11 +66,12 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		public boolean hasNext() {
 			update();
 			
-			if (currentClass == null) {
+			if (currentClass == null || currentIterator == null) {
 				return false;
 			}
 			
-			return currentIterator.hasNext();
+			return true;
+//			return currentIterator.hasNext(); XXX Bug in OrientDB 1.0rc8: hasNext will move to the next element
 		}
 
 		private void update() {
@@ -97,6 +100,13 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 				}
 			}
 			
+			if (!allowUpdate) {
+				return;
+			}
+			else {
+				allowUpdate = false; // ensure that hasNext is only called once per next on the current iterator (due to the OrientDB bug)
+			}
+			
 			// update class if needed
 			while (currentClass != null && (currentIterator == null || !currentIterator.hasNext())) {
 				currentClass = classQueue.poll();
@@ -119,6 +129,7 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		public Instance next() {
 			if (hasNext()) {
 				ODocument doc = currentIterator.next();
+				allowUpdate = true; // allow updating in hasNext
 				Instance instance = new OInstance(doc, getCurrentType(), dataSet);
 				handle.addReference(instance);
 				return instance;

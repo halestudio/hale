@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.query.nativ.ONativeSynchQuery;
-import com.orientechnologies.orient.core.query.nativ.OQueryContextNativeSchema;
+import com.orientechnologies.orient.core.query.nativ.OQueryContextNative;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
@@ -74,10 +74,10 @@ public abstract class AbstractDocumentTest {
 	 * @param db the database
 	 */
 	protected static void createLuke(ODatabaseDocumentTx db) {
-		ODocument doc = new ODocument(db, "Person");
+		ODocument doc = new ODocument("Person");
 		doc.field("name", "Luke");
 		doc.field("surname", "Skywalker");
-		doc.field("city", new ODocument(db, "City").field("name","Rome").field("country", "Italy") );
+		doc.field("city", new ODocument("City").field("name","Rome").field("country", "Italy") );
 		
 		// save the document
 		doc.save();
@@ -123,13 +123,13 @@ public abstract class AbstractDocumentTest {
 	 * @param db the database
 	 */
 	protected static void createPeter(ODatabaseDocumentTx db) {
-		ODocument doc = new ODocument(db, "Person");
+		ODocument doc = new ODocument("Person");
 		doc.field("name", "Peter");
 		doc.field("surname", "Pan");
 		
 		List<ODocument> cities = new ArrayList<ODocument>();
-		cities.add(new ODocument(db, "City").field("name","Somewhere").field("country", "Neverland"));
-		cities.add(new ODocument(db, "City").field("name","Dunno").field("country", "England"));
+		cities.add(new ODocument("City").field("name","Somewhere").field("country", "Neverland"));
+		cities.add(new ODocument("City").field("name","Dunno").field("country", "England"));
 		
 //		doc.field("city", cities, OType.EMBEDDEDLIST);
 		doc.field("city", cities);
@@ -149,14 +149,13 @@ public abstract class AbstractDocumentTest {
 		
 		// query
 		List<ODocument> result = getDb()
-				.query(new ONativeSynchQuery<ODocument, OQueryContextNativeSchema<ODocument>>(
+				.query(new ONativeSynchQuery<OQueryContextNative>(
 						getDb(), "Person",
-						new OQueryContextNativeSchema<ODocument>()) {
+						new OQueryContextNative()) {
 					private static final long serialVersionUID = 2603436417957747935L;
 
 					@Override
-					public boolean filter(
-							OQueryContextNativeSchema<ODocument> iRecord) {
+					public boolean filter(OQueryContextNative iRecord) {
 						return iRecord.field("city").field("name").eq("Tokio").go();
 					}
 				});
@@ -189,7 +188,7 @@ public abstract class AbstractDocumentTest {
 		// not supported: '.' '/' '@' '%' '-'
 		// supported: digits, A-Za-z, '_'
 		
-		ODocument doc = new ODocument(getDb(), "Person");
+		ODocument doc = new ODocument("Person");
 		doc.field("personalname", "Barack");
 		doc.field("___surname___", "Obama");
 		doc.validate();
@@ -211,16 +210,16 @@ public abstract class AbstractDocumentTest {
 	 * Create persons Mia and Tim and store them in the database
 	 */
 	protected void createMiaAndTim() {
-			ODocument docMia = new ODocument(getDb(), "Person");
+			ODocument docMia = new ODocument("Person");
 			docMia.field("name", "Mia");
 			docMia.field("surname", "Serenade");
-			docMia.field("city", new ODocument(getDb(), "City").field("name","Tokio").field("country", "Japan") );
+			docMia.field("city", new ODocument("City").field("name","Tokio").field("country", "Japan") );
 			docMia.save();
 			
-			ODocument docTim = new ODocument(getDb(), "Person");
+			ODocument docTim = new ODocument("Person");
 			docTim.field("name", "Tim");
 			docTim.field("surname", "Takati");
-			docTim.field("city", new ODocument(getDb(), "City").field("name","Los Angeles").field("country", "USA") );
+			docTim.field("city", new ODocument("City").field("name","Los Angeles").field("country", "USA") );
 			docTim.save();
 			
 			//XXX what is the difference between class and cluster?

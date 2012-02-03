@@ -38,6 +38,7 @@ public class LocalOrientDB {
 		@Override
 		public ODatabaseDocumentTx getDatabase() {
 			if (database == null)  {
+//				database = pool.acquire(dbURI, "reader", "reader");
 				database = new ODatabaseDocumentTx(dbURI).open("reader", "reader");
 				dbLock.readLock().lock();
 			}
@@ -51,6 +52,7 @@ public class LocalOrientDB {
 		public void dispose(boolean closeConnection) {
 			if (database != null) {
 				if (closeConnection) {
+//					pool.release(database)
 					database.close();
 				}
 				dbLock.readLock().unlock();
@@ -81,7 +83,10 @@ public class LocalOrientDB {
 		@Override
 		public ODatabaseDocumentTx getDatabase() {
 			if (database == null)  {
-				database = new ODatabaseDocumentTx(dbURI).open("writer", "writer");
+//				database = new ODatabaseDocumentTx(dbURI).open("writer", "writer");
+				// writer use doesn't seem to be supported any more (as of 1.0rc8)
+//				database = pool.acquire(dbURI, "admin", "admin");
+				database = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
 				//XXX could eventually use read lock
 				dbLock.writeLock().lock();
 			}
@@ -95,6 +100,7 @@ public class LocalOrientDB {
 		public void dispose(boolean closeConnection) {
 			if (database != null) {
 				if (closeConnection) {
+//					pool.release(database)
 					database.close(); 
 				}
 				//XXX could eventually use read lock
@@ -116,6 +122,8 @@ public class LocalOrientDB {
 	
 	private final String dbURI;
 	
+//	private final ODatabaseDocumentPool pool;
+	
 	/**
 	 * Create a local Orient database. It will delete database that exists
 	 * previously at the same location.
@@ -127,6 +135,10 @@ public class LocalOrientDB {
 		
 		dbURI = "local:" + location.getAbsolutePath();
 		
+//		pool = new ODatabaseDocumentPool();
+//		pool.setup(1,10);
+		//XXX close pool? when?
+		
 		ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI);
 		try {
 			// delete the database if it already exists
@@ -136,6 +148,7 @@ public class LocalOrientDB {
 		}
 		// create the database
 		db.create();
+		db.close();
 	}
 	
 	/**
@@ -175,6 +188,7 @@ public class LocalOrientDB {
 			db.delete();
 			// create the database
 			db.create();
+			db.close();
 		} finally {
 			dbLock.writeLock().unlock();
 		}
