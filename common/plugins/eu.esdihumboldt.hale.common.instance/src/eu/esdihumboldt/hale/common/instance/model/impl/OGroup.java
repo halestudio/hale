@@ -20,7 +20,6 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,7 +59,25 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
  */
 public class OGroup implements MutableGroup {
 
+	/**
+	 * 
+	 */
+	private static final String BINARY_WRAPPER_FIELD = "___bin___";
+
+	/**
+	 * 
+	 */
+	private static final String BINARY_WRAPPER_CLASSNAME = "___BinaryWrapper___";
+
 	private static final ALogger log = ALoggerFactory.getLogger(OGroup.class);
+	
+	/**
+	 * The set of special field names, e.g. for the binary wrapper field
+	 */
+	private static final Set<String> SPECIAL_FIELDS = new HashSet<String>();
+	static {
+		SPECIAL_FIELDS.add(BINARY_WRAPPER_FIELD);
+	}
 	
 	/**
 	 * Cache for resolved classes for deserialization
@@ -113,7 +130,12 @@ public class OGroup implements MutableGroup {
 		if (document instanceof ODocument) {
 			// reset class name
 			ODocument doc = (ODocument) document;
-			doc.setClassName(ONameUtil.encodeName(definition.getIdentifier()));
+			if (definition != null) {
+				doc.setClassName(ONameUtil.encodeName(definition.getIdentifier()));
+			}
+			else if (doc.fieldNames().contains(BINARY_WRAPPER_FIELD)) {
+				doc.setClassName(BINARY_WRAPPER_CLASSNAME);
+			}
 			
 			// configure children
 			for (Entry<String, Object> field : doc) {
@@ -129,26 +151,29 @@ public class OGroup implements MutableGroup {
 						}
 					}
 				}
-				else if (field.getValue() instanceof ODocument) {
+				else if (field.getValue() instanceof ODocument 
+						&& !getSpecialFieldNames().contains(field.getKey())) {
 					docs.add((ODocument) field.getValue());
 				}
 				else if (field.getValue() instanceof ORecordAbstract<?>) {
 					recs.add((ORecordAbstract<?>) field.getValue());
 				}
 				
-				for (ODocument valueDoc : docs) {
-					ChildDefinition<?> child = definition.getChild(decodeProperty(field.getKey()));
-					DefinitionGroup childGroup;
-					if (child.asProperty() != null) {
-						childGroup = child.asProperty().getPropertyType();
+				if (definition != null) {
+					for (ODocument valueDoc : docs) {
+						ChildDefinition<?> child = definition.getChild(decodeProperty(field.getKey()));
+						DefinitionGroup childGroup;
+						if (child.asProperty() != null) {
+							childGroup = child.asProperty().getPropertyType();
+						}
+						else if (child.asGroup() != null) {
+							childGroup = child.asGroup();
+						}
+						else {
+							throw new IllegalStateException("Document is associated neither with a property nor a property group.");
+						}
+						configureDocument(valueDoc, db, childGroup);
 					}
-					else if (child.asGroup() != null) {
-						childGroup = child.asGroup();
-					}
-					else {
-						throw new IllegalStateException("Document is associated neither with a property nor a property group.");
-					}
-					configureDocument(valueDoc, db, childGroup);
 				}
 				
 				for (ORecordAbstract<?> fieldRec : recs) {
@@ -294,7 +319,22 @@ public class OGroup implements MutableGroup {
 				throw new IllegalStateException("Could not serialize field value.");
 			}
 			record.fromStream(bytes.toByteArray());
-			return record;
+
+			/*
+			 * As collections of ORecordBytes are not supported (or rather 
+			 * of records that are no documents, see embeddedCollectionToStream
+			 * in ORecordSerializerCSVAbstract ~578) they are wrapped in a
+			 * document.
+			 */
+//			return record;			
+			ODocument doc = new ODocument();
+			/*
+			 * XXX Class name is set in configureDocument, as the class name
+			 * may only bet set after the database was set.
+			 */
+//			doc.setClassName(BINARY_WRAPPER_CLASSNAME);
+			doc.field(BINARY_WRAPPER_FIELD, record);
+			return doc;
 		}
 		
 		return value;
@@ -449,24 +489,31 @@ public class OGroup implements MutableGroup {
 	 */
 	protected Object convertDocument(Object value, QName propertyName) {
 		if (value instanceof ODocument) {
-			ChildDefinition<?> child = definition.getChild(propertyName);
-			if (child.asProperty() != null) {
-				return new OInstance((ODocument) value, 
-						child.asProperty().getPropertyType(), 
-						null); // no data set necessary for nested instances
-			}
-			else if (child.asGroup() != null) {
-				return new OGroup((ODocument) value, child.asGroup());
+			ODocument doc = (ODocument) value;
+			if (doc.fieldNames().contains(BINARY_WRAPPER_FIELD)) {
+				// extract wrapped ORecordBytes
+				value = doc.field(BINARY_WRAPPER_FIELD);
 			}
 			else {
-				throw new IllegalStateException("Field " + propertyName + 
-						" is associated neither with a property nor a group.");
+				ChildDefinition<?> child = definition.getChild(propertyName);
+				if (child.asProperty() != null) {
+					return new OInstance((ODocument) value, 
+							child.asProperty().getPropertyType(), 
+							null); // no data set necessary for nested instances
+				}
+				else if (child.asGroup() != null) {
+					return new OGroup((ODocument) value, child.asGroup());
+				}
+				else {
+					throw new IllegalStateException("Field " + propertyName + 
+							" is associated neither with a property nor a group.");
+				}
 			}
 		}
 		//TODO also treat collections etc?
 		
 		//TODO objects that are not supported inside document
-		else if (value instanceof ORecordBytes) {
+		if (value instanceof ORecordBytes) {
 			//TODO try conversion first?!
 			
 			// check for cached object
@@ -536,7 +583,7 @@ public class OGroup implements MutableGroup {
 	 * @return the collection of special field names. 
 	 */
 	protected Collection<String> getSpecialFieldNames() {
-		return Collections.emptyList();
+		return SPECIAL_FIELDS;
 	}
 
 	/**
