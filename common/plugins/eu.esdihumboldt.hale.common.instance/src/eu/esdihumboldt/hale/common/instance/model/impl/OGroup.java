@@ -275,7 +275,11 @@ public class OGroup implements MutableGroup {
 			return tmp.document;
 		}
 		//TODO also treat collections etc?
-		
+		/*
+		 * XXX OrientDB can't deal with nested collections/lists!(?)
+		 * as a work-around we also serialize collections
+		 * see isSupportedFieldType 
+		 */
 		//TODO objects that are not supported inside document
 		else if (!isSupportedFieldType(value.getClass())) {
 			//TODO try conversion first?!
@@ -322,7 +326,11 @@ public class OGroup implements MutableGroup {
 		}
 		// collections
 		else if (Collection.class.isAssignableFrom(type)) {
-			return true;
+			/*
+			 * XXX OrientDB can't deal with nested collections/lists!(?)
+			 * as a work-around we also serialize collections
+			 */
+//			return true;
 		}
 		
 		return false;
