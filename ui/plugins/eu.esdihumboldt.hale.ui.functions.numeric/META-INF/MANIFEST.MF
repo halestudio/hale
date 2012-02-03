@@ -11,3 +11,4 @@ Require-Bundle: eu.esdihumboldt.hale.ui,
  eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.hale.common.schema,
  com.iabcinc.jmep;bundle-version="0.1.0"
+Import-Package: eu.esdihumboldt.hale.ui.functions.core

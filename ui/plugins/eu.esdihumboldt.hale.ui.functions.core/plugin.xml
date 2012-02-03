@@ -31,5 +31,13 @@
                name="classificationMapping">
          </parameter>
       </propertyParameterPage>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.FormattedStringParameterPage"
+            function="eu.esdihumboldt.hale.align.formattedstring"
+            id="eu.esdihumboldt.hale.ui.functions.core.formattedstring">
+         <parameter
+               name="pattern">
+         </parameter>
+      </propertyParameterPage>
    </extension>
 </plugin>
