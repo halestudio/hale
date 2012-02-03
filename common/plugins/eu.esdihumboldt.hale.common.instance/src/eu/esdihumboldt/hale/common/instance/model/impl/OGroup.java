@@ -45,10 +45,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
@@ -383,20 +380,22 @@ public class OGroup implements MutableGroup {
 	 * @return if the property can have multiple values
 	 */
 	private boolean isCollectionProperty(QName propertyName) {
-		ChildDefinition<?> child = definition.getChild(propertyName);
-		long max;
-		if (child instanceof PropertyDefinition) {
-			max = ((PropertyDefinition) child).getConstraint(Cardinality.class).getMaxOccurs();
-		}
-		else if (child instanceof GroupPropertyDefinition) {
-			max = ((GroupPropertyDefinition) child).getConstraint(Cardinality.class).getMaxOccurs();
-		}
-		else {
-			// default to true
-			return true;
-		}
-		
-		return max == Cardinality.UNBOUNDED || max > 1;
+//		ChildDefinition<?> child = definition.getChild(propertyName);
+//		long max;
+//		if (child instanceof PropertyDefinition) {
+//			max = ((PropertyDefinition) child).getConstraint(Cardinality.class).getMaxOccurs();
+//		}
+//		else if (child instanceof GroupPropertyDefinition) {
+//			max = ((GroupPropertyDefinition) child).getConstraint(Cardinality.class).getMaxOccurs();
+//		}
+//		else {
+//			// default to true
+//			return true;
+//		}
+//		
+//		return max == Cardinality.UNBOUNDED || max > 1;
+		//XXX treat everything as a collection property, as we may deal with merged instances
+		return true;
 	}
 
 	/**
