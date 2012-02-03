@@ -491,38 +491,29 @@ public abstract class XmlTypeUtil {
 			IOReporter reporter) {
 		XmlSchemaObjectCollection baseTypes = union.getBaseTypes();
 
-		// TODO memberType attribute
-		if (union.getMemberTypesQNames() != null)
-			reporter.warn(new IOMessageImpl(
-							"Union memberType attribute not supported", 
-							null, union.getLineNumber(), union.getLinePosition()));
-		
 		// collect type definitions
 		Set<TypeDefinition> unionTypes = new HashSet<TypeDefinition>();
-		
+
+		if (union.getMemberTypesQNames() != null) {
+			for (QName unionMember : union.getMemberTypesQNames())
+				unionTypes.add(index.getOrCreateType(unionMember));
+		}
+
 		// base type definitions
 		if (baseTypes != null && baseTypes.getCount() > 0) {
 			for (int i = 0; i < baseTypes.getCount(); i++) {
 				XmlSchemaObject baseType = baseTypes.getItem(i);
 				if (baseType instanceof XmlSchemaSimpleType) {
 					XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType) baseType;
-					XmlTypeDefinition baseDef;
-					if (simpleType.getQName() != null) {
-						// named type
-						baseDef = index.getOrCreateType(simpleType.getQName());
-					}
-					else {
-						// anonymous type
-						QName baseName = new QName(type.getName().getNamespaceURI() + 
-								"/" + type.getName().getLocalPart(), "AnonymousType" + i); //$NON-NLS-1$ //$NON-NLS-2$
-						
-						baseDef = new AnonymousXmlType(baseName);
-					}
-					
+
+					// anonymous type - nested simpleTypes may not contain name-attribute
+					QName baseName = new QName(type.getName().getNamespaceURI() + 
+							"/" + type.getName().getLocalPart(), "AnonymousType" + i); //$NON-NLS-1$ //$NON-NLS-2$
+					XmlTypeDefinition baseDef = new AnonymousXmlType(baseName);
+
 					configureSimpleType(baseDef, simpleType, index, reporter);
 					unionTypes.add(baseDef);
-				}
-				else {
+				} else {
 					reporter.error(new IOMessageImpl(
 							"Unrecognized base type for simple type union", 
 							null, union.getLineNumber(), union.getLinePosition()));
