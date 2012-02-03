@@ -43,7 +43,11 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationRep
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
+import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.util.Pair;
@@ -203,6 +207,20 @@ public class FunctionExecutor extends CellNodeValidator {
 							cellLog.error(cellLog.createMessage(
 									"Conversion according to target property failed, using value as is.", e));
 						}
+					}
+					
+					/*
+					 * If the value is no group, but it should be one, create
+					 * an instance wrapping the value 
+					 */
+					TypeDefinition propertyType = toPropertyEntityDefinition(
+							node.getEntityDefinition()).getDefinition()
+							.getPropertyType();
+					if (!(value instanceof Group)
+							&& !propertyType .getChildren().isEmpty()) {
+						MutableInstance instance = new OInstance(propertyType, null);
+						instance.setValue(value);
+						value = instance;
 					}
 					
 					// set node value
