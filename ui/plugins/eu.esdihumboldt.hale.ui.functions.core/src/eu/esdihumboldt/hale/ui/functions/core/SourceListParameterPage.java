@@ -86,6 +86,16 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	protected abstract String getSourcePropertyName() ;
 
 	/**
+	 * Subclasses can override this method to specify, that the text field should have 
+	 * multiple lines. By default it is not.
+	 * 
+	 * @return true iff the text field should have multiple lines.
+	 */
+	protected boolean useMultilineInput() {
+		return false;
+	}
+
+	/**
 	 * Subclasses can configure the text field to for example add some validation mechanism.
 	 * 
 	 * @param textField the text field to configure
@@ -167,8 +177,9 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 		page.setLayout(GridLayoutFactory.swtDefaults().create());
 
 		// input field
-		textField = new Text(page, SWT.SINGLE | SWT.BORDER);
-		textField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		int lineStyle = useMultilineInput() ? SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL : SWT.SINGLE;
+		textField = new Text(page, lineStyle | SWT.BORDER);
+		textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, useMultilineInput()));
 
 		// let subclasses for example add validation
 		configure(textField);
