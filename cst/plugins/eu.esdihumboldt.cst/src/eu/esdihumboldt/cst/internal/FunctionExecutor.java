@@ -14,16 +14,14 @@ package eu.esdihumboldt.cst.internal;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.springframework.core.convert.ConversionException;
-import org.springframework.core.convert.ConversionService;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-
-import de.fhg.igd.osgi.util.OsgiUtils;
 
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationFactory;
@@ -44,9 +42,10 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
-import eu.esdihumboldt.hale.common.convert.ConversionServiceNotAvailableException;
+import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -227,7 +226,6 @@ public class FunctionExecutor extends CellNodeValidator {
 		}
 		
 		PropertyDefinition def = propertyEntityDefinition.getDefinition();
-		//XXX what about lists?!
 		Binding binding = def.getPropertyType().getConstraint(Binding.class);
 		Class<?> target = binding.getBinding();
 		
@@ -235,12 +233,15 @@ public class FunctionExecutor extends CellNodeValidator {
 			return value;
 		}
 		
-		ConversionService cs = OsgiUtils.getService(ConversionService.class);
-		if (cs == null) {
-			throw new ConversionServiceNotAvailableException();
+		if (Collection.class.isAssignableFrom(target) && target.isAssignableFrom(List.class)) {
+			// collection / list
+			ElementType elementType = def.getPropertyType().getConstraint(ElementType.class);
+			return ConversionUtil.getAsList(value, elementType.getBinding(), true);
 		}
 		
-		return cs.convert(value, target);
+		//XXX what about a value that is a collection but the target is no collection?
+		
+		return ConversionUtil.getAs(value, target);
 	}
 
 	/**
