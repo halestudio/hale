@@ -44,7 +44,7 @@ public class ReportImplDefintion extends AbstractReportDefinition<Report, Report
 	@Override
 	protected DefaultReporter<?> createReport(Properties props) {
 		return new DefaultReporter<Message>(props.getProperty(KEY_REPORT_TASKNAME), 
-				null, false);
+				Message.class, false);
 	}
 
 	/**
