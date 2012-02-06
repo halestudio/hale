@@ -230,7 +230,8 @@ public class ReportServiceImpl implements ReportService {
 
 		// iterate through all sessions
 		for (ReportSession s : this.reps.values()) {
-			File file = new File(folder.getPath()+"/"+s.getId()+".log");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd");
+			File file = new File(folder.getPath()+"/"+df.format(new Date(s.getId()))+"-"+s.getId()+".log");
 			try {
 				rw.writeAll(file, s.getAllReports());
 			} catch (IOException e) {
