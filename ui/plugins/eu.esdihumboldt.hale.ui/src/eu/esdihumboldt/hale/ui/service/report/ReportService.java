@@ -105,4 +105,13 @@ public interface ReportService {
 	 * on program shutdown.
 	 */
 	public void saveReportsOnShutdown();
+	
+	/**
+	 * Load a specific report log file.
+	 * 
+	 * @param file report log file
+	 * 
+	 * @throws org.eclipse.jface.bindings.keys.ParseException if a parse error occurred
+	 */
+	public void loadReport(File file) throws org.eclipse.jface.bindings.keys.ParseException;
 }
