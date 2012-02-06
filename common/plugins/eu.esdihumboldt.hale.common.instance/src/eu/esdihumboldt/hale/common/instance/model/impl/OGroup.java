@@ -21,11 +21,9 @@ import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -90,8 +88,6 @@ public class OGroup implements MutableGroup {
 	 * The definition group
 	 */
 	private final DefinitionGroup definition;
-	
-	private Map<ORecordBytes, Object> cachedObjects;
 	
 	/**
 	 * Creates an empty group with an associated definition group.
@@ -352,7 +348,12 @@ public class OGroup implements MutableGroup {
 			return true;
 		}
 		// wrapper types
-		else if (Number.class.isAssignableFrom(type) ||
+		else if (Double.class.isAssignableFrom(type) ||
+				Float.class.isAssignableFrom(type) ||
+				Integer.class.isAssignableFrom(type) ||
+				Long.class.isAssignableFrom(type) ||
+				Short.class.isAssignableFrom(type) ||
+				Byte.class.isAssignableFrom(type) ||
 				String.class.isAssignableFrom(type) ||
 				Boolean.class.isAssignableFrom(type)) {
 			return true;
@@ -515,14 +516,6 @@ public class OGroup implements MutableGroup {
 		if (value instanceof ORecordBytes) {
 			//TODO try conversion first?!
 			
-			// check for cached object
-			if (cachedObjects != null) {
-				Object cached = cachedObjects.get(value);
-				if (cached != null) {
-					return cached;
-				}
-			}
-			
 			// object deserialization
 			ORecordBytes record = (ORecordBytes) value;
 			ByteArrayInputStream bytes = new ByteArrayInputStream(record.toStream());
@@ -545,12 +538,7 @@ public class OGroup implements MutableGroup {
 						return result;
 					}
 				};
-				Object object = in.readObject();
-				if (cachedObjects == null) {
-					cachedObjects = new HashMap<ORecordBytes, Object>();
-				}
-				cachedObjects.put(record, object);
-				return object;
+				return in.readObject();
 			} catch (Exception e) {
 				throw new IllegalStateException("Could not deserialize field value.", e);
 			}
