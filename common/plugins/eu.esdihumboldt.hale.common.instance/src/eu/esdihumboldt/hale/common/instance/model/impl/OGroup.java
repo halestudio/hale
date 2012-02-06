@@ -352,7 +352,12 @@ public class OGroup implements MutableGroup {
 			return true;
 		}
 		// wrapper types
-		else if (Number.class.isAssignableFrom(type) ||
+		else if (Double.class.isAssignableFrom(type) ||
+				Float.class.isAssignableFrom(type) ||
+				Integer.class.isAssignableFrom(type) ||
+				Long.class.isAssignableFrom(type) ||
+				Short.class.isAssignableFrom(type) ||
+				Byte.class.isAssignableFrom(type) ||
 				String.class.isAssignableFrom(type) ||
 				Boolean.class.isAssignableFrom(type)) {
 			return true;
