@@ -48,7 +48,7 @@ public class ReportReader {
 	 * 
 	 * @return array of old {@link ReportSession}s
 	 */
-	public List<ReportSession> read(File dir) {
+	public List<ReportSession> readDirectory(File dir) {
 		if (!dir.exists() && dir.mkdirs()) {
 			// folder does not exist so there are no reports
 			return new ArrayList<ReportSession>();
@@ -70,6 +70,27 @@ public class ReportReader {
 		}
 		
 		return list;
+	}
+	
+	/**
+	 * Creates a {@link ReportSession} from a report log file.
+	 * 
+	 * @param file the file to parse
+	 * 
+	 * @return {@link ReportSession} from the file
+	 */
+	public ReportSession readFile(File file) {
+		if (file.exists()) {
+			// extract the id from filename
+			long id = this.getIdentifier(file);
+			
+			// parse the session
+			ReportSession session = this.parse(file, id);
+			
+			return session;
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -180,6 +201,13 @@ public class ReportReader {
 			result = name[0];
 		}
 		
-		return Long.parseLong(result);
+		long id = 0;
+		try {
+			id = Long.parseLong(result);
+		} catch(NumberFormatException e) {
+			_log.error("Could not determine ReportSession ID.");
+		}
+		
+		return id;
 	}
 }
