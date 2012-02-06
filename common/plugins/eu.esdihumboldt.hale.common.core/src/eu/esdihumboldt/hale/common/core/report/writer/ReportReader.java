@@ -171,6 +171,15 @@ public class ReportReader {
 	 */
 	private long getIdentifier(File file) {
 		String[] name = file.getName().split("[.]");
-		return Long.parseLong(name[0]);
+		String result = "";
+		
+		if (name[0].contains("-")) {
+			name = name[0].split("[-]");
+			result = name[1];
+		} else {
+			result = name[0];
+		}
+		
+		return Long.parseLong(result);
 	}
 }
