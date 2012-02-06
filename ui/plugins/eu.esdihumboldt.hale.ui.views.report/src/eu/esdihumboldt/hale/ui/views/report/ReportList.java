@@ -17,14 +17,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -32,8 +31,10 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.wb.swt.ResourceManager;
 
 import swing2swt.layout.BorderLayout;
@@ -44,7 +45,8 @@ import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportSession;
 import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
-import eu.esdihumboldt.hale.ui.views.report.properties.ReportPropertiesViewPart;
+import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
  * This is the Report view.
@@ -52,7 +54,7 @@ import eu.esdihumboldt.hale.ui.views.report.properties.ReportPropertiesViewPart;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportList extends ReportPropertiesViewPart implements ReportListener<Report<Message>, Message> {
+public class ReportList extends PropertiesViewPart implements ReportListener<Report<Message>, Message> {
 
 	/**
 	 * The ID for this plugin.
@@ -96,6 +98,14 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 			}
 		}
 	}
+	
+	/**
+	* @see ITabbedPropertySheetPageContributor#getContributorId()
+	*/
+	@Override
+	public String getContributorId() {
+		return "eu.esdihumboldt.hale.ui.views.report.properties";
+	}
 
 	/**
 	 * Create contents of the view part.
@@ -118,116 +128,7 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 				tree.setLinesVisible(true);
 				formToolkit.paintBordersFor(tree);
 				
-				_menu = new Menu(tree);
-				tree.setMenu(_menu);
-				
-				_mntmClearReportList = new MenuItem(_menu, SWT.NONE);
-				_mntmClearReportList.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						clearLogView();
-					}
-				});
-				_mntmClearReportList.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/clear_co.gif"));
-				_mntmClearReportList.setText("Clear Report List");
-				
-				_mntmDeleteLog = new MenuItem(_menu, SWT.NONE);
-				_mntmDeleteLog.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						// display a yes|no box
-						MessageBox messageBox = new MessageBox(tree.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-						messageBox.setText("Confirm Delete");
-						messageBox.setMessage("Are you sure you want to permanently delete all logged events?");
-						
-						if (messageBox.open() == SWT.YES) {
-							// remove all entries from ReportService
-							repService.deleteAllReports();
-						}
-					}
-				});
-				_mntmDeleteLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/delete_obj.gif"));
-				_mntmDeleteLog.setText("Delete Log");
-				
-				_mntmRestoreLog = new MenuItem(_menu, SWT.NONE);
-				_mntmRestoreLog.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						// restore the reports from ReportService
-						loadReports();
-					}
-				});
-				_mntmRestoreLog.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/restore_log.gif"));
-				_mntmRestoreLog.setText("Restore Log");
-				
-				new MenuItem(_menu, SWT.SEPARATOR);
-				
-				_mntmExportLog = new MenuItem(_menu, SWT.NONE);
-				_mntmExportLog.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						FileDialog fd = new FileDialog(tree.getShell(), SWT.SAVE);
-						fd.setText("Export Report Log");
-						String[] filterExt = { "*.log", "*.txt", "*.*" };
-						fd.setFilterExtensions(filterExt);
-						
-						SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd");
-						String info = df.format(new Date(System.currentTimeMillis()));
-						fd.setFileName(info+"-"+System.currentTimeMillis());
-						
-						String filePath = fd.open();
-						
-						if (filePath != null) {
-							// check file existence
-							File file = new File(filePath);
-							if (file.exists()) {
-								MessageBox overwrite = new MessageBox(tree.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-								overwrite.setMessage(String.format("File \"%s\" already exists.\nWould you like to overwrite it?", filePath));
-								int cont = overwrite.open();
-								
-								if (cont == SWT.NO) {
-									return;
-								}
-							}
-							
-							// try to save it
-							try {
-								repService.saveCurrentReports(file);
-							} catch (IOException exception) {
-								_log.error("Could not save the report log.", exception.getStackTrace());
-							}
-						}
-					}
-				});
-				_mntmExportLog.setText("Export Log");
-				
-				_mntmImportLog = new MenuItem(_menu, SWT.NONE);
-				_mntmImportLog.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						FileDialog fd = new FileDialog(tree.getShell(), SWT.OPEN);
-						fd.setText("Export Report Log");
-						String[] filterExt = { "*.log", "*.txt", "*.*" };
-						fd.setFilterExtensions(filterExt);
-						
-						String filePath = fd.open();
-						
-						if (filePath != null) {
-							// check file existence
-							File file = new File(filePath);
-							if (file.exists()) {
-								try {
-									repService.loadReport(file);
-									clearLogView();
-									loadReports();
-								} catch (ParseException e1) {
-									_log.error(e1.getMessage());
-								}
-							}
-						}
-					}
-				});
-				_mntmImportLog.setText("Import Log");
+				new ReportListMenu(getSite(), _treeViewer);
 			}
 		}
 
@@ -260,8 +161,8 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	 */
 	@SuppressWarnings("unused")
 	private void initializeToolBar() {
-		IToolBarManager toolbarManager = getViewSite().getActionBars()
-				.getToolBarManager();
+//		IToolBarManager toolbarManager = getViewSite().getActionBars()
+//				.getToolBarManager();
 	}
 
 	/**
@@ -269,8 +170,8 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	 */
 	@SuppressWarnings("unused")
 	private void initializeMenu() {
-		IMenuManager menuManager = getViewSite().getActionBars()
-				.getMenuManager();
+//		IMenuManager menuManager = getViewSite().getActionBars()
+//				.getMenuManager();
 	}
 
 	@Override
@@ -345,5 +246,142 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 		
 		// clear saved data
 		ReportListContentProvider.data.clear();
+	}
+	
+	private class ReportListMenu extends ViewerMenu {
+
+		/**
+		 * Create a viewer context menu.
+		 * @param site the (view) site containing the viewer
+		 * @param viewer the viewer
+		 */
+		public ReportListMenu(IWorkbenchPartSite site, Viewer viewer) {
+			super(site, viewer);
+
+		}
+		
+		@Override
+		public void menuAboutToShow(IMenuManager manager) {
+			manager.add(new Action("Clear Report List", ResourceManager.getPluginImageDescriptor("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/clear_co.gif")) {
+
+				/**
+				 * @see org.eclipse.jface.action.Action#run()
+				 */
+				@Override
+				public void run() {
+					clearLogView();
+					super.run();
+				}
+			});
+			
+			manager.add(new Action("Delete Log", ResourceManager.getPluginImageDescriptor("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/delete_obj.gif")) {
+
+				/**
+				 * @see org.eclipse.jface.action.Action#run()
+				 */
+				@Override
+				public void run() {
+					// display a yes|no box
+					MessageBox messageBox = new MessageBox(_treeViewer.getTree().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+					messageBox.setText("Confirm Delete");
+					messageBox.setMessage("Are you sure you want to permanently delete all logged events?");
+					
+					if (messageBox.open() == SWT.YES) {
+						// remove all entries from ReportService
+						repService.deleteAllReports();
+					}
+					super.run();
+				}
+			});
+			
+			manager.add(new Action("Restore Log", ResourceManager.getPluginImageDescriptor("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/restore_log.gif")) {
+
+				/**
+				 * @see org.eclipse.jface.action.Action#run()
+				 */
+				@Override
+				public void run() {
+					// restore the reports from ReportService
+					loadReports();
+					super.run();
+				}
+			});
+			
+			manager.add(new Action("Export Log", null) {
+
+				/**
+				 * @see org.eclipse.jface.action.Action#run()
+				 */
+				@Override
+				public void run() {
+					FileDialog fd = new FileDialog(_treeViewer.getTree().getShell(), SWT.SAVE);
+					fd.setText("Export Report Log");
+					String[] filterExt = { "*.log", "*.txt", "*.*" };
+					fd.setFilterExtensions(filterExt);
+					
+					SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd");
+					String info = df.format(new Date(System.currentTimeMillis()));
+					fd.setFileName(info+"-"+System.currentTimeMillis());
+					
+					String filePath = fd.open();
+					
+					if (filePath != null) {
+						// check file existence
+						File file = new File(filePath);
+						if (file.exists()) {
+							MessageBox overwrite = new MessageBox(_treeViewer.getTree().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+							overwrite.setMessage(String.format("File \"%s\" already exists.\nWould you like to overwrite it?", filePath));
+							int cont = overwrite.open();
+							
+							if (cont == SWT.NO) {
+								return;
+							}
+						}
+						
+						// try to save it
+						try {
+							repService.saveCurrentReports(file);
+						} catch (IOException exception) {
+							_log.error("Could not save the report log.", exception.getStackTrace());
+						}
+					}
+					super.run();
+				}
+			});
+			
+			manager.add(new Action("Import Log", null) {
+
+				/**
+				 * @see org.eclipse.jface.action.Action#run()
+				 */
+				@Override
+				public void run() {
+					FileDialog fd = new FileDialog(_treeViewer.getTree().getShell(), SWT.OPEN);
+					fd.setText("Export Report Log");
+					String[] filterExt = { "*.log", "*.txt", "*.*" };
+					fd.setFilterExtensions(filterExt);
+					
+					String filePath = fd.open();
+					
+					if (filePath != null) {
+						// check file existence
+						File file = new File(filePath);
+						if (file.exists()) {
+							try {
+								repService.loadReport(file);
+								clearLogView();
+								loadReports();
+							} catch (ParseException e1) {
+								_log.error(e1.getMessage());
+							}
+						}
+					}
+					super.run();
+				}
+			});
+			
+			//call super method
+			super.menuAboutToShow(manager);
+		}
 	}
 }
