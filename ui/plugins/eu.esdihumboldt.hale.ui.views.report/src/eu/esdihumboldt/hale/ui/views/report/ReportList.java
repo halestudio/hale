@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.core.report.ReportSession;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -68,11 +69,12 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private TreeViewer _treeViewer;
 	private Menu _menu;
-	private MenuItem _mntmCopy;
+
 	private MenuItem _mntmClearReportList;
 	private MenuItem _mntmDeleteLog;
 	private MenuItem _mntmRestoreLog;
 	private MenuItem _mntmExportLog;
+	private MenuItem _mntmImportLog;
 
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportList.class);
 	
@@ -120,43 +122,12 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 			{
 				_treeViewer = new TreeViewer(composite, SWT.BORDER);
 				final Tree tree = _treeViewer.getTree();
-				tree.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						// enable some functions in the popupmenu
-						_mntmCopy.setEnabled(true);
-					}
-				});
 				tree.setHeaderVisible(true);
 				tree.setLinesVisible(true);
 				formToolkit.paintBordersFor(tree);
 				
 				_menu = new Menu(tree);
 				tree.setMenu(_menu);
-				
-				_mntmCopy = new MenuItem(_menu, SWT.NONE);
-				_mntmCopy.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						String clipboard;
-						Object obj = ((IStructuredSelection) _treeViewer.getSelection()).getFirstElement();
-						if (obj instanceof Project) {
-							// use the name for a project
-							clipboard = ((Project) obj).getName();
-						} else {
-							// else copy the stuff from toString()
-							clipboard = _treeViewer.getSelection().toString();
-						}
-						
-						// write text to clipboard
-						Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(clipboard), null);
-					}
-				});
-				_mntmCopy.setEnabled(false);
-				_mntmCopy.setImage(ResourceManager.getPluginImage("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/copy_edit.gif"));
-				_mntmCopy.setText("Copy");
-				
-				new MenuItem(_menu, SWT.SEPARATOR);
 				
 				_mntmClearReportList = new MenuItem(_menu, SWT.NONE);
 				_mntmClearReportList.addSelectionListener(new SelectionAdapter() {
@@ -180,8 +151,6 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 						if (messageBox.open() == SWT.YES) {
 							// remove all entries from ReportService
 							repService.deleteAllReports();
-							
-							// TODO delete saved reports
 						}
 					}
 				});
@@ -210,6 +179,11 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 						String[] filterExt = { "*.log", "*.txt", "*.*" };
 						fd.setFilterExtensions(filterExt);
 						
+						String initialName = "";
+						SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd");
+						String info = df.format(new Date(System.currentTimeMillis()));
+						fd.setFileName(info+"-"+System.currentTimeMillis());
+						
 						String filePath = fd.open();
 						
 						if (filePath != null) {
@@ -235,6 +209,34 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 					}
 				});
 				_mntmExportLog.setText("Export Log");
+				
+				_mntmImportLog = new MenuItem(_menu, SWT.NONE);
+				_mntmImportLog.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						FileDialog fd = new FileDialog(tree.getShell(), SWT.OPEN);
+						fd.setText("Export Report Log");
+						String[] filterExt = { "*.log", "*.txt", "*.*" };
+						fd.setFilterExtensions(filterExt);
+						
+						String filePath = fd.open();
+						
+						if (filePath != null) {
+							// check file existence
+							File file = new File(filePath);
+							if (file.exists()) {
+								try {
+									repService.loadReport(file);
+									clearLogView();
+									loadReports();
+								} catch (ParseException e1) {
+									_log.error(e1.getMessage());
+								}
+							}
+						}
+					}
+				});
+				_mntmImportLog.setText("Import Log");
 			}
 		}
 
@@ -352,8 +354,5 @@ public class ReportList extends ReportPropertiesViewPart implements ReportListen
 		
 		// clear saved data
 		ReportListContentProvider.data.clear();
-		
-		// make some functions unavailable
-		_mntmCopy.setEnabled(false);
 	}
 }
