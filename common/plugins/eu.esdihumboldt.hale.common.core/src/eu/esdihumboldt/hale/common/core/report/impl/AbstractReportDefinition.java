@@ -204,14 +204,19 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		props.setProperty(KEY_REPORT_TASKNAME, report.getTaskName());
 		props.setProperty(KEY_REPORT_SUCCESS, ""+report.isSuccess());
 		props.setProperty(KEY_REPORT_SUMMARY, report.getSummary());
-		props.setProperty(KEY_REPORT_TIME, ""+report.getTimestamp().getTime());
-		props.setProperty(KEY_REPORT_STARTTIME, ""+report.getStartTime().getTime());
-		props.setProperty(KEY_REPORT_MESSAGE_TYPE, report.getMessageType().getCanonicalName());
 		
-//		props.setProperty(KEY_REPORT_INFOS, StringUtils.join(report.getInfos(), ";"));
-//		props.setProperty(KEY_REPORT_ERRORS, StringUtils.join(report.getErrors(), ";"));
-//		props.setProperty(KEY_REPORT_WARNINGS, StringUtils.join(report.getWarnings(), ";"));
+		if (report.getTimestamp() != null) {
+			props.setProperty(KEY_REPORT_TIME, ""+report.getTimestamp().getTime());
+		}
 		
+		if (report.getStartTime() != null) {
+			props.setProperty(KEY_REPORT_STARTTIME, ""+report.getStartTime().getTime());
+		}
+		
+		if (report.getMessageType() != null) {
+			props.setProperty(KEY_REPORT_MESSAGE_TYPE, ""+report.getMessageType().getCanonicalName());
+		}
+				
 		return props ;
 	}
 

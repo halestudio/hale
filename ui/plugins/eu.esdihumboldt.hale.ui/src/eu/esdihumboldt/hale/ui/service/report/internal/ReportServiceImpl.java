@@ -203,7 +203,7 @@ public class ReportServiceImpl implements ReportService {
 		ReportReader rr = new ReportReader();
 		
 		// read all sessions from log folder
-		List<ReportSession> list = rr.read(folder);
+		List<ReportSession> list = rr.readDirectory(folder);
 		
 		// add them to internal storage
 		for (ReportSession s : list) {
@@ -247,5 +247,24 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public Collection<ReportSession> getAllSessions() {
 		return this.reps.values();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#loadReport(java.io.File)
+	 */
+	@Override
+	public void loadReport(File file) throws org.eclipse.jface.bindings.keys.ParseException {
+		// create a ReportReader
+		ReportReader rr = new ReportReader();
+		
+		// read all sessions from log folder
+		ReportSession s = rr.readFile(file);
+		
+		if (s == null) {
+			throw new org.eclipse.jface.bindings.keys.ParseException("Log could not be read.");
+		}
+		
+		// add them to internal storage
+		this.reps.put(s.getId(), s);
 	}
 }
