@@ -78,10 +78,7 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Image getImage(Object element) {
-//		System.err.println("LabelProvider.getImage(): "+element.getClass());
-		
 		if (element instanceof String) {
-			// TODO maybe add a project icon here?
 			String img = "icons/compressed_folder_obj.gif";
 			ImageDescriptor descriptor = null;
 			descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
@@ -95,26 +92,23 @@ public class ReportListLabelProvider implements ILabelProvider  {
 				imageCache.put(descriptor, image);
 			}
 			return image;
-//			return null;
 		}
 		else if (element instanceof Report) {
 			// get the right image
 			Report report = (Report) element;
 			
 			String img = "icons/signed_yes.gif";
-			if (report.getWarnings().size() > 0 && report.getErrors().size() > 0) {
+			if (!report.isSuccess()) {
+				img = "icons/error.gif";
+			} else if (report.getWarnings().size() > 0 && report.getErrors().size() > 0) {
 				img = "icons/errorwarning_tab.gif";
 			} else if (report.getErrors().size() > 0) {
-				img = "icons/error.gif";
+				img = "icons/error_log.gif";
 			} else if (report.getWarnings().size() > 0) {
 				img = "icons/warning.gif";
 			}
 			
 			ImageDescriptor descriptor = null;
-			
-//			descriptor = ImageDescriptor.createFromURL(
-//					FileLocator.find(Platform.getBundle(ReportList.ID), new Path("icons/ft_stylelist.gif"), null)
-//			);
 			
 			// TODO Platform.getBundle(ReportList.ID) does not work so here is a static plugin path!
 			descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
@@ -138,21 +132,12 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public String getText(Object element) {
-		//System.err.println("LabelProvider.getText(): "+element.getClass());
 		if (element instanceof String) {
 			return (String)element;
 		}
 		else if (element instanceof Report) {
 			return ((Report) element).getTaskName();
 		}
-		else if (element instanceof Project) {
-			String title = ((ProjectInfo) element).getName();
-			if (title == null) {
-				title = "undefined";
-			}
-			return title;
-		}
-		
 		
 		return "Unhandled type";
 	}
