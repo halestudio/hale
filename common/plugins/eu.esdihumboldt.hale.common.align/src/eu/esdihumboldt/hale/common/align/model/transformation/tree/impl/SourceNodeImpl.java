@@ -19,6 +19,7 @@ import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
@@ -34,6 +35,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	private final SourceNode parent;
 	private final Set<SourceNode> children = new HashSet<SourceNode>();
 	private final SourceNodeFactory sourceNodeFactory;
+	private final Set<CellNode> relations = new HashSet<CellNode>();
 
 	/**
 	 * Constructor
@@ -93,6 +95,22 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	@Override
 	public Collection<SourceNode> getChildren() {
 		return Collections.unmodifiableCollection(children);
+	}
+
+	/**
+	 * @see SourceNode#addRelation(CellNode)
+	 */
+	@Override
+	public void addRelation(CellNode cellNode) {
+		relations.add(cellNode);
+	}
+
+	/**
+	 * @see SourceNode#getRelations()
+	 */
+	@Override
+	public Collection<CellNode> getRelations() {
+		return Collections.unmodifiableCollection(relations);
 	}
 
 	/**

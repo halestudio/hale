@@ -99,16 +99,16 @@ public interface SourceNode extends TransformationNode {
 	 */
 	public void setValue(Object value);
 
-//	/**
-//	 * Add a relation.
-//	 * @param cellNode the cell node representing the relation
-//	 */
-//	public void addRelation(CellNode cellNode);
-//	
-//	/**
-//	 * Get the relations associated to the source node.
-//	 * @return the associated relations
-//	 */
-//	public Collection<CellNode> getRelations();
+	/**
+	 * Add a relation.
+	 * @param cellNode the cell node representing the relation
+	 */
+	public void addRelation(CellNode cellNode);
+	
+	/**
+	 * Get the relations associated to the source node.
+	 * @return the associated relations
+	 */
+	public Collection<CellNode> getRelations();
 
 }
