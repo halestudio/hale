@@ -23,24 +23,26 @@ $haleVers<br/>
 	$description
 #end
 <br />
-Target Feature Types this Mapping covers:
+<h4>Type relation overview:</h4>
 <ul>
- #foreach ($linkname in $linklist)
-   $linkname
- #end
-</ul>
-<br />
-Feature Types:<br />
-#foreach ($image in $images)
-  <img alt="" src="$image"><br />
+#foreach ($typeCell in $typeCellInfos)
+  <li><img src='$filesDir/int_link.png' alt='linkpicture'><a href='#link_$typeCell.getId()'><img src='$typeCell.getImageLocation()'></a></li>
 #end
+</ul>
 
 <br />
-Property Types:<br />
-#foreach ($propImage in $propImages)
-  <img alt="" src="$propImage"><br />
+#foreach ($typeCell in $typeCellInfos)
+  <a name='link_$typeCell.getId()'></a>Cell name for $typeCell.getId()
+  <li><img src='$typeCell.getImageLocation()'>
+  		#foreach($propCell in $typeCell.getPropertyCellInfos)
+    		<li><img src='$propCell.getImageLocation()'></li>
+		#end
+  </li>
 #end
+
 </p>
+
+## create macro for the cell image creation
 
 </body>
 </html>

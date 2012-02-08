@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -37,7 +36,6 @@ import com.google.common.io.Files;
 
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -67,6 +65,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	private File tempDir;
 	private Alignment alignment = null;
 	private Identifiers<Cell> cellIds;
+	
 
 	@Override
 	public boolean isCancelable() {
@@ -98,11 +97,11 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		URL headlinePath = this.getClass().getResource("bg-headline.png"); //$NON-NLS-1$
 		URL cssPath = this.getClass().getResource("style.css"); //$NON-NLS-1$
 		URL linkPath = this.getClass().getResource("int_link.png"); //$NON-NLS-1$
-
 		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils
 				.getName(getTarget().getLocation().getPath())) + "_files"; //$NON-NLS-1$
-		final File filesDir = new File(FilenameUtils.getFullPath(getTarget()
-				.getLocation().getPath()), filesSubDir); //$NON-NLS-1$
+		final  File filesDir = new File(FilenameUtils.getFullPath(getTarget()
+				.getLocation().getPath()), filesSubDir);
+		
 		filesDir.mkdirs();
 
 		try {
@@ -212,7 +211,18 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		}
 
 		if (alignment != null) {
-			createImages();
+			Collection<TypeCellInfo> typeCellInfos = new ArrayList<TypeCellInfo>();
+			Collection<? extends Cell> cells = alignment.getTypeCells();
+			Iterator<? extends Cell> it = cells.iterator();
+			while (it.hasNext()) {
+				final Cell cell = it.next();
+				String cellId = cellIds.getId(cell);
+				// this is the collection of type cell info
+				typeCellInfos.add(new TypeCellInfo(cell, alignment, cellId, filesSubDir));
+			}
+			// the full collection of type cell info put to the context (for the template)
+			context.put("typeCellInfos", typeCellInfos);
+			createImages(filesDir);
 		}
 
 		try {
@@ -269,41 +279,6 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		}
 	}
 
-	// private void sortAlignment() {
-	// for (Iterator<? extends Cell> iterator =
-	// alignment.getTypeCells().iterator(); iterator
-	// .hasNext();) {
-	// Cell cell = iterator.next();
-	//
-	// // Retype
-	// String cellName;
-	// if (cell.getEntity1().getTransformation() == null) {
-	// cellName = cell.getEntity2().getTransformation().getService()
-	// .getLocation();
-	// } else {
-	// cellName = cell.getEntity1().getTransformation().getService()
-	// .getLocation();
-	// }
-	//			String[] tempSplit = cellName.split("\\."); //$NON-NLS-1$
-	// String graphConnectionNodeName = tempSplit[tempSplit.length - 1];
-	//			if (graphConnectionNodeName.equals("RenameFeatureFunction")) { //$NON-NLS-1$
-	// this.retypes.add(cell);
-	// }
-	//
-	// // Augmentation
-	// if (cell.getEntity1().getTransformation() == null
-	// || cell.getEntity1().getAbout().getAbout()
-	//							.equals("entity/null")) { //$NON-NLS-1$
-	// this.augmentations.add(cell);
-	// }
-	//
-	// // Transformation
-	// if (cell.getEntity1().getTransformation() != null) {
-	// this.transformations.add(cell);
-	// }
-	// }
-	// }
-
 	private void byteArrayToFile(File file, byte[] byteArray)
 			throws FileNotFoundException, IOException {
 		if (byteArray != null) {
@@ -324,63 +299,32 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		return data;
 	}
 
-	private void createImages() {
+	private void createImages(File filesDir) {
+		
+		Collection<? extends Cell> _cells = alignment.getCells();
+		Iterator<? extends Cell> ite = _cells.iterator();
+		while (ite.hasNext()) {
+			Cell _cell = ite.next();
+			saveImageToFile(_cell, filesDir);
+		}
+		System.out.println("<li><img src='" + "filesSubDir" + "/int_link.png' alt='linkpicture'><a href='#link" + "1" + "'>" + "<img src='"+ "path" + "'>" + "</a></li>");
 
-		Vector<String> images = new Vector<String>();
-		Vector<String> propImages = new Vector<String>();
-
-		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils
-				.getName(getTarget().getLocation().getPath())) + "_files"; //$NON-NLS-1$
-
-		Collection<? extends Cell> cells = alignment.getTypeCells();
-		Iterator<? extends Cell> it = cells.iterator();
-		while (it.hasNext()) {
-			final Cell cell = it.next();
-			Collection<? extends Cell> propertyCells = AlignmentUtil
-					.getPropertyCellsFromTypeCell(alignment, cell);
-
-			saveImageToFile(cell, images);
-
-			for (Cell propCell : propertyCells) {
-				saveImageToFile(propCell, propImages);
-			}
-
-			for (String path : images) {
-				System.out.println("ImagesPath: " + path);
-			}
-			for (String path : propImages) {
-				System.out.println("PropImagesPath: " + path);
-			}
-
-			context.put("images", images);
-			context.put("propImages", propImages);
-			
 			//// TODO: create links (image as link)
 			// Link-generator
-			Vector<String> linkListVector = new Vector<String>();
+//			Vector<String> linkListVector = new Vector<String>();
 			// link counter
-			int j = 0;
-			for(String path : images) {
-				linkListVector.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link" + j + "'>" + "<img src='"+ path + "'>" + "</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				j++;
-			}
-//			for (Iterator<? extends Cell> iterator = alignment.getTypeCells()
-//					.iterator(); iterator.hasNext();) {
-//				Cell linkCell = iterator.next();
-//				System.out.println("Transformation Identifier: "
-//						+ cell.getTransformationIdentifier()); // "eu.esdihumboldt.hale.align.retype"
-//				linkListVector
-//						.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link" + j + "'>" + cellIds.getId(linkCell) + "</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//
+//			int j = 0;
+//			for(String path : images) {
+//				linkListVector.addElement("<li><img src='" + filesSubDir + "/int_link.png' alt='linkpicture'><a href='#link" + j + "'>" + "<img src='"+ path + "'>" + "</a></li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 //				j++;
 //			}
-
-			context.put("linklist", linkListVector);
-		}
+//
+//			context.put("linklist", linkListVector);
+//		}
 
 	}
 
-	private void saveImageToFile(final Cell cell, Vector<String> links) {
+	private void saveImageToFile(final Cell cell, File filesDir) {
 
 		Display display;
 		if (Display.getCurrent() != null) {
@@ -397,17 +341,10 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			}
 		}
 
-		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils
-				.getName(getTarget().getLocation().getPath())) + "_files"; //$NON-NLS-1$
-		final File filesDir = new File(FilenameUtils.getFullPath(getTarget()
-				.getLocation().getPath()), filesSubDir);
-
 		// creates a unique id for each cell
 		String cellId = cellIds.getId(cell);
 
 		final File file = new File(filesDir, "img_" + cellId + ".png");
-
-		links.addElement(filesSubDir + "/" + "img_" + cellId + ".png");
 
 		if (!file.exists()) {
 			display.syncExec(new Runnable() {
