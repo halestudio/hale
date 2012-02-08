@@ -52,5 +52,12 @@ public interface TransformationNodeVisitor {
 	 * to sources, <code>false</code> if the other way round
 	 */
 	public boolean isFromTargetToSource();
+	
+	/**
+	 * Specifies if annotated nodes should be included in the traversal.
+	 * @return if nodes that are only present as annotations should be
+	 *   visited
+	 */
+	public boolean includeAnnotatedNodes();
 
 }
