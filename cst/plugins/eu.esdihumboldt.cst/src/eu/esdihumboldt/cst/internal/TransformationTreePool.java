@@ -19,6 +19,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.ResetVisitor;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -35,12 +36,16 @@ public class TransformationTreePool {
 	
 	private final ResetVisitor resetVisitor = new ResetVisitor();
 
+	private final ContextMatcher matcher;
+
 	/**
 	 * Create a transformation tree pool.
 	 * @param alignment the associated alignment
+	 * @param matcher the context matcher to apply to a created tree
 	 */
-	public TransformationTreePool(Alignment alignment) {
+	public TransformationTreePool(Alignment alignment, ContextMatcher matcher) {
 		this.alignment = alignment;
+		this.matcher = matcher;
 		
 		trees = ArrayListMultimap.create();
 	}
@@ -56,6 +61,9 @@ public class TransformationTreePool {
 			if (treeList.isEmpty()) {
 				TransformationTree tree = new TransformationTreeImpl(
 						targetType, alignment);
+				if (matcher != null) {
+					matcher.findMatches(tree);
+				}
 				return tree;
 			}
 			else {

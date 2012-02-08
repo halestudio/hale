@@ -12,8 +12,12 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -25,13 +29,15 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
  */
 public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 	
-	private final Instance instance;
+	private static final ALogger log = ALoggerFactory.getLogger(InstanceVisitor.class);
+	
+	private final Group instance;
 	
 	/**
 	 * 
 	 * @param instance the instance
 	 */
-	public InstanceVisitor(Instance instance) {
+	public InstanceVisitor(Group instance) {
 		super();
 		this.instance = instance;
 		
@@ -53,7 +59,8 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 	public boolean visit(SourceNode source) {
 		if (source.getParent() == null) {
 			// source root
-			if (source.getDefinition().equals(instance.getDefinition())) {
+			if (instance instanceof Instance
+					&& source.getDefinition().equals(((Instance) instance).getDefinition())) {
 				source.setValue(instance); // also sets the node to defined
 				return true;
 			}
@@ -87,15 +94,38 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					}
 					
 					if (values.length > 1) {
-						//FIXME what to do with the additional values
-						//XXX identify context match (if possible)
-						//XXX duplicate subgraph
+						// handle additional values
+						
+						// identify context match (if possible)
+						TransformationContext context = source.getContext();
+						
+						if (context == null) {
+							// no transformation context match defined
+							//XXX warn instead? XXX transformation log instead?
+							log.error("Multiple values for source node w/o transformation context match");
+						}
+						else {
+							for (int i  = 1; i < values.length; i++) {
+								Object value = values[i];
+								// duplicate subgraph
+								context.duplicateContext(source, value);
+							}
+						}
 					}
 				}
 			}
 			
 			return true;
 		}
+	}
+
+	/**
+	 * @see TransformationNodeVisitor#includeAnnotatedNodes()
+	 */
+	@Override
+	public boolean includeAnnotatedNodes() {
+		// annotated nodes are ignored, as these are handled when created
+		return false;
 	}
 
 }

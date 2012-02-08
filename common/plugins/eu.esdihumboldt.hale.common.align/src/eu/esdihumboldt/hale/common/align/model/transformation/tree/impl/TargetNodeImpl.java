@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -44,22 +45,25 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 @Immutable
-public class TargetNodeImpl extends AbstractTransformationNode implements TargetNode {
+public class TargetNodeImpl extends AbstractGroupNode implements TargetNode {
 
-	private final EntityDefinition child;
+	private final EntityDefinition entity;
 	private final SetMultimap<CellNode, String> assignments;
 	private final List<TargetNode> children;
 
 	/**
-	 * Constructor
-	 * @param child the associated definition
+	 * Create a target node that is populated with assignments and children
+	 * according to the given parameters.
+	 * @param entity the associated definition
 	 * @param cells the cells associated with this node or its children
 	 * @param parentType the type representing the root
 	 * @param depth the depth down from the root node
+	 * @param parent the parent node
 	 */
-	public TargetNodeImpl(EntityDefinition child, Collection<CellNode> cells,
-			TypeDefinition parentType, int depth) {
-		this.child = child;
+	public TargetNodeImpl(EntityDefinition entity, Collection<CellNode> cells,
+			TypeDefinition parentType, int depth, GroupNode parent) {
+		super(parent);
+		this.entity = entity;
 		
 		// partition cells by child
 		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
@@ -74,7 +78,7 @@ public class TargetNodeImpl extends AbstractTransformationNode implements Target
 				for (Entity target : entities) {
 					if (target.getDefinition().getType().equals(parentType)) {
 						List<ChildContext> path = target.getDefinition().getPropertyPath();
-						if (path.get(depth - 1).getChild().equals(child.getDefinition())) {
+						if (path.get(depth - 1).getChild().equals(entity.getDefinition())) {
 							if (path.size() <= depth) {
 								// this cell belongs to this node
 								assignSet.put(cell, name);
@@ -97,12 +101,54 @@ public class TargetNodeImpl extends AbstractTransformationNode implements Target
 		List<TargetNode> childList = new ArrayList<TargetNode>();
 		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap().entrySet()) {
 			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), 
-					childEntry.getValue(), parentType, depth + 1);
+					childEntry.getValue(), parentType, depth + 1, this);
 			childList.add(childNode);
 		}
 		
 		children = Collections.unmodifiableList(childList);
 	}
+	
+	/**
+	 * Create a target node associated with the given entity definition but
+	 * unpopulated.
+	 * @param entity the entity definition
+	 * @param parent the parent node
+	 */
+	public TargetNodeImpl(EntityDefinition entity, GroupNode parent) {
+		super(parent);
+		this.entity = entity;
+		this.assignments = HashMultimap.create();
+		this.children = new ArrayList<TargetNode>();
+	}
+	
+	/**
+	 * Add an assignment to the target node. May only be called if the target
+	 * node was created using the {@link #TargetNodeImpl(EntityDefinition, GroupNode)}
+	 * constructor.
+	 * @param names the entity names associated to the assignment
+	 * @param cell the cell node representing the assignment
+	 */
+	public void addAssignment(Set<String> names, CellNode cell) {
+		assignments.putAll(cell, names);
+	}
+	
+	/**
+	 * Add a child to the target node. May only be called if the target node
+	 * was created using the {@link #TargetNodeImpl(EntityDefinition, GroupNode)}
+	 * constructor.
+	 * @param node the node to add as child, this node will be set as its parent
+	 */
+	public void addChild(TargetNode node) {
+		children.add(node);
+	}
+	
+//	/**
+//	 * Set the parent node.
+//	 * @param parent the parent node
+//	 */
+//	public void setParent(GroupNode parent) {
+//		this.parent = parent;
+//	}
 
 	/**
 	 * @see TransformationNode#accept(TransformationNodeVisitor)
@@ -112,7 +158,7 @@ public class TargetNodeImpl extends AbstractTransformationNode implements Target
 		if (visitor.visit(this)) {
 			if (visitor.isFromTargetToSource()) {
 				// visit children
-				for (TargetNode child : children) {
+				for (TargetNode child : getChildren(visitor.includeAnnotatedNodes())) {
 					child.accept(visitor);
 				}
 				// visit cells
@@ -121,16 +167,25 @@ public class TargetNodeImpl extends AbstractTransformationNode implements Target
 				}
 			}
 			else {
-				//XXX not supported yet
+				// visit parent
+				if (getParent() != null) {
+					GroupNode parent = getParent();
+					if (parent instanceof TargetNode) {
+						((TargetNode) parent).accept(visitor);
+					}
+					else if (parent instanceof TransformationTree) {
+						((TransformationTree) parent).accept(visitor);
+					}
+				}
 			}
 		}
 	}
 
 	/**
-	 * @see GroupNode#getChildren()
+	 * @see AbstractGroupNode#getFixedChildren()
 	 */
 	@Override
-	public List<TargetNode> getChildren() {
+	public List<TargetNode> getFixedChildren() {
 		return children;
 	}
 
@@ -155,7 +210,7 @@ public class TargetNodeImpl extends AbstractTransformationNode implements Target
 	 */
 	@Override
 	public ChildDefinition<?> getDefinition() {
-		return (ChildDefinition<?>) child.getDefinition();
+		return (ChildDefinition<?>) entity.getDefinition();
 	}
 
 	/**
@@ -163,7 +218,7 @@ public class TargetNodeImpl extends AbstractTransformationNode implements Target
 	 */
 	@Override
 	public EntityDefinition getEntityDefinition() {
-		return child;
+		return entity;
 	}
 	
 	/**
@@ -201,6 +256,37 @@ public class TargetNodeImpl extends AbstractTransformationNode implements Target
 	public void setResult(Object value) {
 		setAnnotation(ANNOTATION_RESULT, value);
 		setDefined(true);
+	}
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((entity == null) ? 0 : entity.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TargetNodeImpl other = (TargetNodeImpl) obj;
+		if (entity == null) {
+			if (other.entity != null)
+				return false;
+		} else if (!entity.equals(other.entity))
+			return false;
+		return true;
 	}
 
 }
