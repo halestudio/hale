@@ -12,49 +12,13 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
 
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 
 /**
  * Transformation tree visitor for target to source traversal.
  * @author Simon Templer
  */
-public abstract class AbstractTargetToSourceVisitor implements TransformationNodeVisitor {
-
-	/**
-	 * @see TransformationNodeVisitor#visit(TransformationTree)
-	 */
-	@Override
-	public boolean visit(TransformationTree root) {
-		return true;
-	}
-
-	/**
-	 * @see TransformationNodeVisitor#visit(TargetNode)
-	 */
-	@Override
-	public boolean visit(TargetNode target) {
-		return true;
-	}
-
-	/**
-	 * @see TransformationNodeVisitor#visit(CellNode)
-	 */
-	@Override
-	public boolean visit(CellNode cell) {
-		return true;
-	}
-
-	/**
-	 * @see TransformationNodeVisitor#visit(SourceNode)
-	 */
-	@Override
-	public boolean visit(SourceNode source) {
-		return true;
-	}
+public abstract class AbstractTargetToSourceVisitor extends AbstractTransformationNodeVisitor {
 
 	/**
 	 * @see TransformationNodeVisitor#isFromTargetToSource()

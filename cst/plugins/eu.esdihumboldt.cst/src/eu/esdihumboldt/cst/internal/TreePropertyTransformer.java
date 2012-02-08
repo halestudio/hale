@@ -17,6 +17,8 @@ import java.util.Collection;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
@@ -54,7 +56,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 //		this.reporter = reporter;
 		this.sink = sink;
 		
-		treePool = new TransformationTreePool(alignment);
+		ContextMatcher matcher = new AsDeepAsPossible(); //XXX how to determine matcher?
+		treePool = new TransformationTreePool(alignment, matcher );
 		executor = new FunctionExecutor(reporter, engines);
 		builder = new InstanceBuilder();
 	}
