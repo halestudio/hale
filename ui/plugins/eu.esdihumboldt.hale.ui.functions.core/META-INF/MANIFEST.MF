@@ -6,15 +6,20 @@ Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
-Import-Package: com.google.common.collect,
+Import-Package: com.google.common.base;version="9.0.0",
+ com.google.common.collect,
  eu.esdihumboldt.hale.common.align.extension.function,
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.instance.helper,
+ eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.ui,
  eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.hale.ui.common.definition,
  eu.esdihumboldt.hale.ui.common.definition.viewer,
  eu.esdihumboldt.hale.ui.function.generic,
- eu.esdihumboldt.hale.ui.function.generic.pages
+ eu.esdihumboldt.hale.ui.function.generic.pages,
+ eu.esdihumboldt.hale.ui.service.entity,
+ eu.esdihumboldt.hale.ui.service.entity.util
 Export-Package: eu.esdihumboldt.hale.ui.functions.core
