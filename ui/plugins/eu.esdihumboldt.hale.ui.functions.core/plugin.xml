@@ -39,5 +39,13 @@
                name="pattern">
          </parameter>
       </propertyParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.MergeParameterPage"
+            function="eu.esdihumboldt.hale.align.merge"
+            id="eu.esdihumboldt.hale.ui.functions.core.merge">
+         <parameter
+               name="property">
+         </parameter>
+      </typeParameterPage>
    </extension>
 </plugin>

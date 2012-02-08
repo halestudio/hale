@@ -14,6 +14,8 @@ package eu.esdihumboldt.hale.common.schema.model;
 
 import java.util.Collection;
 
+import javax.xml.namespace.QName;
+
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.impl.internal.RedeclareGroupProperty;
 import eu.esdihumboldt.hale.common.schema.model.impl.internal.RedeclareProperty;
@@ -100,4 +102,19 @@ public abstract class DefinitionUtil {
 		throw new IllegalStateException("Illegal child type.");
 	}
 
+	/**
+	 * Returns the child definition of definition with the given name.
+	 * 
+	 * @param definition the definition 
+	 * @param name the name of the child
+	 * @return the child with the given name of the given definition
+	 */
+	public static ChildDefinition<?> getChild(ChildDefinition<?> definition, QName name) {
+		if (definition.asGroup() != null)
+			return definition.asGroup().getChild(name);
+		if (definition.asProperty() != null)
+			return definition.asProperty().getPropertyType().getChild(name);
+
+		throw new IllegalStateException("Illegal child definition.");
+	}
 }
