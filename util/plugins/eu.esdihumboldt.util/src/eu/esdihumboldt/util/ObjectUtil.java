@@ -100,6 +100,8 @@ public class ObjectUtil {
 	}
 
 	private static Iterable<?> asIterable(Object object) {
+		if (object == null)
+			return null;
 		if (object instanceof Iterable<?>) {
 			return (Iterable<?>) object;
 		}
