@@ -45,7 +45,7 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 	private final List<TargetNode> targets = new ArrayList<TargetNode>();
 
 	/**
-	 * Constructor
+	 * Creates a cell node where the sources are populated from the given cell.
 	 * @param cell the cell
 	 * @param sourceNodes the factory for creating source nodes
 	 */
@@ -67,6 +67,26 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 		
 		sources = Multimaps.unmodifiableListMultimap(sourceList);
 	}
+	
+	/**
+	 * Create a cell node w/o associated sources. Sources can be added later on
+	 * through {@link #addSource(Set, SourceNode)}
+	 * @param cell the associated cell
+	 */
+	public CellNodeImpl(Cell cell) {
+		this.cell = cell;
+		sources = ArrayListMultimap.create(); 
+	}
+	
+	/**
+	 * Add a source to the cell node. May only be called if the cell node was
+	 * created using the {@link #CellNodeImpl(Cell)} constructor.
+	 * @param names the entity names associated to the source
+	 * @param source the source node
+	 */
+	public void addSource(Set<String> names, SourceNode source) {
+		sources.putAll(source, names);
+	}
 
 	/**
 	 * @see TransformationNode#accept(TransformationNodeVisitor)
@@ -81,7 +101,10 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 				}
 			}
 			else {
-				//XXX not supported yet
+				// visit targets
+				for (TargetNode target : targets) {
+					target.accept(visitor);
+				}
 			}
 		}
 	}
@@ -144,6 +167,37 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 			return (Boolean) value;
 		}
 		return false;
+	}
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cell == null) ? 0 : cell.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CellNodeImpl other = (CellNodeImpl) obj;
+		if (cell == null) {
+			if (other.cell != null)
+				return false;
+		} else if (!cell.equals(other.cell))
+			return false;
+		return true;
 	}
 
 }

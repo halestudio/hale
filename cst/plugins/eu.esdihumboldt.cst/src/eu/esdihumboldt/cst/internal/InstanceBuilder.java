@@ -48,7 +48,7 @@ public class InstanceBuilder {
 	 * @return the value or {@link NoObject#NONE} representing no value
 	 */
 	private Object getValue(TargetNode node) {
-		if (node.getChildren().isEmpty()) {
+		if (node.getChildren(true).isEmpty()) {
 			// simple leaf
 			if (node.isDefined()) {
 				//XXX case where an Instance should be returned? XXX according to the definition?!
@@ -100,7 +100,7 @@ public class InstanceBuilder {
 	 */
 	private boolean populateGroup(MutableGroup group, GroupNode node) {
 		boolean anyValue = false;
-		for (TargetNode child : node.getChildren()) {
+		for (TargetNode child : node.getChildren(true)) {
 			Object value = getValue(child);
 			if (value != NoObject.NONE) {
 				// add value to group

@@ -31,7 +31,6 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
@@ -45,11 +44,11 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 @Immutable
-public class TransformationTreeImpl extends AbstractTransformationNode implements TransformationTree {
+public class TransformationTreeImpl extends AbstractGroupNode implements TransformationTree {
 	
 	private final TypeDefinition type;
-	private final List<TargetNode> children;
 	private final SourceNodeFactory sourceNodes;
+	private final List<TargetNode> children;
 
 	/**
 	 * Create a transformation tree
@@ -57,6 +56,7 @@ public class TransformationTreeImpl extends AbstractTransformationNode implement
 	 * @param alignment the alignment holding the cells
 	 */
 	public TransformationTreeImpl(TypeDefinition type, Alignment alignment) {
+		super(null);
 		this.type = type;
 		
 		sourceNodes = new SourceNodeFactory();
@@ -89,7 +89,7 @@ public class TransformationTreeImpl extends AbstractTransformationNode implement
 		List<TargetNode> childList = new ArrayList<TargetNode>();
 		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap().entrySet()) {
 			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), 
-					childEntry.getValue(), type, 1);
+					childEntry.getValue(), type, 1, this);
 			childList.add(childNode);
 		}
 		
@@ -104,7 +104,8 @@ public class TransformationTreeImpl extends AbstractTransformationNode implement
 		if (visitor.isFromTargetToSource()) {
 			if (visitor.visit(this)) {
 				// visit children
-				for (TargetNode child : children) {
+				for (TargetNode child : getChildren(
+						visitor.includeAnnotatedNodes())) {
 					child.accept(visitor);
 				}
 			}
@@ -128,10 +129,10 @@ public class TransformationTreeImpl extends AbstractTransformationNode implement
 	}
 
 	/**
-	 * @see GroupNode#getChildren()
+	 * @see AbstractGroupNode#getFixedChildren()
 	 */
 	@Override
-	public List<TargetNode> getChildren() {
+	public List<TargetNode> getFixedChildren() {
 		return children;
 	}
 
