@@ -36,7 +36,6 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.CellN
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
-import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
@@ -166,8 +165,8 @@ public class FunctionExecutor extends CellNodeValidator {
 					engine, 
 					transformation.getExecutionParameters(), 
 					cellLog);
-		} catch (TransformationException e) {
-			//TODO instead try another transformation
+		} catch (Throwable e) {
+			//TODO instead try another transformation?
 			cellLog.error(cellLog.createMessage(
 					"Skipping property transformation: Executing property transformation failed.", e));
 			return;
