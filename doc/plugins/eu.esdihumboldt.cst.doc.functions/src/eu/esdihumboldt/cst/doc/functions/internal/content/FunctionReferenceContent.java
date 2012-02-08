@@ -263,7 +263,14 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 
 					Graph graph = off_graph.getGraph();
 					Dimension dim = computeSize(graph);
-					int width = dim.width;
+					int width;
+					if(dim.width > 300) {
+						width = dim.width;
+					}
+					else {
+						// minimum width = 600
+						width = 300;
+					}
 					int height = dim.height;
 					off_graph.resize(width, height);
 
