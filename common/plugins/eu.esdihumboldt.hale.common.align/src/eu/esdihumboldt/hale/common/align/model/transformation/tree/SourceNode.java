@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 import java.util.Collection;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
@@ -34,6 +35,12 @@ public interface SourceNode extends TransformationNode {
 	 * from an instance.
 	 */
 	public static final String ANNOTATION_VALUE = "value";
+	
+	/**
+	 * Name of the children annotation. It represents a list of additional
+	 * children.
+	 */
+	public static final String ANNOTATION_CHILDREN = "children";
 	
 	/**
 	 * Get the associated definition
@@ -60,10 +67,30 @@ public interface SourceNode extends TransformationNode {
 	public void addChild(SourceNode child);
 	
 	/**
+	 * Add a child node as annotation. This means resetting the node will remove
+	 * the child.
+	 * @param child the child node to add
+	 */
+	public void addAnnotatedChild(SourceNode child);
+	
+	/**
 	 * Get the node's children.
+	 * @param includeAnnotated if annotated children should be included
 	 * @return the collection of child nodes
 	 */
-	public Collection<SourceNode> getChildren();
+	public Collection<SourceNode> getChildren(boolean includeAnnotated);
+	
+	/**
+	 * Set the transformation context.
+	 * @param context the transformation context
+	 */
+	public void setContext(TransformationContext context);
+	
+	/**
+	 * Get the associated transformation context.
+	 * @return the transformation context, may be <code>null</code>
+	 */
+	public TransformationContext getContext();
 	
 	/**
 	 * Get if the source node value is defined.

@@ -21,9 +21,29 @@ import java.util.List;
 public interface GroupNode extends TransformationNode {
 	
 	/**
+	 * Name of the children annotation. It represents a list of additional
+	 * children.
+	 */
+	public static final String ANNOTATION_CHILDREN = "children";
+	
+	/**
 	 * Get the type/group/property's children
+	 * @param includeAnnotations if annotated children should be included
 	 * @return the node children
 	 */
-	public List<TargetNode> getChildren();
+	public List<TargetNode> getChildren(boolean includeAnnotations);
+	
+	/**
+	 * Add a node as annotated child.
+	 * This means the child is removed on {@link #reset()}.
+	 * @param node the target node to add as annotated child
+	 */
+	public void addAnnotatedChild(TargetNode node);
+	
+	/**
+	 * Get the parent group node
+	 * @return the parent group node, may be <code>null</code>
+	 */
+	public GroupNode getParent();
 
 }
