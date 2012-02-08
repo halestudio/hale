@@ -11,6 +11,10 @@
 </head>
 
 <body>
+## macro definitions:
+#macro(images $cell)
+	<img src='$cell.getImageLocation()'>
+#end
 <p>
 <h1>Mapping Documentation</h1>
 
@@ -23,24 +27,31 @@ $haleVers<br/>
 	$description
 #end
 <br />
-Target Feature Types this Mapping covers:
+<h4>Type relation overview:</h4>
 <ul>
- #foreach ($linkname in $linklist)
-   $linkname
- #end
-</ul>
-<br />
-Feature Types:<br />
-#foreach ($image in $images)
-  <img alt="" src="$image"><br />
+#foreach ($typeCell in $typeCellInfos)
+  <li><img src='$filesDir/int_link.png' alt='linkpicture'><a href='#link_$typeCell.getId()'><img src='$typeCell.getImageLocation()'></a></li>
 #end
+</ul>
 
 <br />
-Property Types:<br />
-#foreach ($propImage in $propImages)
-  <img alt="" src="$propImage"><br />
+<ul>
+#foreach ($typeCell in $typeCellInfos)
+#set($propCells = $typeCell.getPropertyCellsInfo())
+  <a name='link_$typeCell.getId()'></a><h5>$typeCell.getSourceName() to $typeCell.getTargetName()</h5>
+  <li>#images($typeCell)
+  		<ul>
+  		#foreach($propCell in $propCells)
+    		<li>#images($propCell)</li>
+		#end
+		</ul>
+  </li>
 #end
+</ul>
+
 </p>
+
+## create macro for the cell image creation
 
 </body>
 </html>
