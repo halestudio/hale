@@ -173,11 +173,11 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 	 */
 	private Collection<? extends Object> getChilddren(Object node) {
 		if (node instanceof TransformationTree) {
-			return ((TransformationTree) node).getChildren();
+			return ((TransformationTree) node).getChildren(true);
 		}
 		if (node instanceof TargetNode) {
 			Collection<Object> children = new ArrayList<Object>();
-			children.addAll(((TargetNode) node).getChildren());
+			children.addAll(((TargetNode) node).getChildren(true));
 			children.addAll(((TargetNode) node).getAssignments());
 			return children;
 		}

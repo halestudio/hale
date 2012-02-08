@@ -68,4 +68,13 @@ public class ResetVisitor implements TransformationNodeVisitor {
 		return true;
 	}
 
+	/**
+	 * @see TransformationNodeVisitor#includeAnnotatedNodes()
+	 */
+	@Override
+	public boolean includeAnnotatedNodes() {
+		// annotated nodes are removed on reset and thus don't have to be reset themselves
+		return false;
+	}
+
 }

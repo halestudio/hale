@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
 
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -25,13 +26,13 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
  */
 public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 	
-	private final Instance instance;
+	private final Group instance;
 	
 	/**
 	 * 
 	 * @param instance the instance
 	 */
-	public InstanceVisitor(Instance instance) {
+	public InstanceVisitor(Group instance) {
 		super();
 		this.instance = instance;
 		
@@ -53,7 +54,8 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 	public boolean visit(SourceNode source) {
 		if (source.getParent() == null) {
 			// source root
-			if (source.getDefinition().equals(instance.getDefinition())) {
+			if (instance instanceof Instance
+					&& source.getDefinition().equals(((Instance) instance).getDefinition())) {
 				source.setValue(instance); // also sets the node to defined
 				return true;
 			}
@@ -96,6 +98,15 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 			
 			return true;
 		}
+	}
+
+	/**
+	 * @see TransformationNodeVisitor#includeAnnotatedNodes()
+	 */
+	@Override
+	public boolean includeAnnotatedNodes() {
+		// annotated nodes are ignored, as these are handled when created
+		return false;
 	}
 
 }
