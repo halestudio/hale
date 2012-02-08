@@ -22,7 +22,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.codec.DecoderException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.PlatformUI;
@@ -39,6 +38,7 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
 import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -167,6 +167,10 @@ public class OrientInstanceService extends AbstractInstanceService {
 			
 			for (OClass clazz : classes) {
 				try {
+					if (clazz.getName().equals(OGroup.BINARY_WRAPPER_CLASSNAME)) {
+						// ignore binary wrapper class
+						continue;
+					}
 					String identifier = ONameUtil.decodeName(clazz.getName());
 					if (allowedIdentifiers.contains(identifier) && 
 							db.countClass(clazz.getName()) > 0) {
@@ -185,7 +189,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 							}
 						}
 					}
-				} catch (DecoderException e) {
+				} catch (Throwable e) {
 					log.error("Could not decode class name to type identifier", e);
 				}
 			}

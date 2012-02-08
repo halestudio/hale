@@ -55,14 +55,14 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 public class OGroup implements MutableGroup {
 
 	/**
-	 * 
+	 * Binary wrapper class field name
 	 */
 	private static final String BINARY_WRAPPER_FIELD = "___bin___";
 
 	/**
-	 * 
+	 * Binary wrapper class name
 	 */
-	private static final String BINARY_WRAPPER_CLASSNAME = "___BinaryWrapper___";
+	public static final String BINARY_WRAPPER_CLASSNAME = "___BinaryWrapper___";
 
 	private static final ALogger log = ALoggerFactory.getLogger(OGroup.class);
 	
