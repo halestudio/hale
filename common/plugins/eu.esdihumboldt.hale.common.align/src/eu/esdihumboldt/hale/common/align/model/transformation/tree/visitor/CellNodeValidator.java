@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -163,6 +164,15 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @see TransformationNodeVisitor#includeAnnotatedNodes()
+	 */
+	@Override
+	public boolean includeAnnotatedNodes() {
+		// include all nodes
+		return true;
 	}
 
 }
