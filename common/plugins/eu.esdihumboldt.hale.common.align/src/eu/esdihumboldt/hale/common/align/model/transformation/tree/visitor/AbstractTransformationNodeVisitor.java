@@ -19,17 +19,17 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 
 /**
- * Resets a nodes in a transformation tree.
+ * TODO Type description
  * @author Simon Templer
  */
-public class ResetVisitor extends AbstractTargetToSourceVisitor {
+public abstract class AbstractTransformationNodeVisitor implements
+		TransformationNodeVisitor {
 
 	/**
 	 * @see TransformationNodeVisitor#visit(TransformationTree)
 	 */
 	@Override
 	public boolean visit(TransformationTree root) {
-		root.reset();
 		return true;
 	}
 
@@ -38,7 +38,6 @@ public class ResetVisitor extends AbstractTargetToSourceVisitor {
 	 */
 	@Override
 	public boolean visit(TargetNode target) {
-		target.reset();
 		return true;
 	}
 
@@ -47,7 +46,6 @@ public class ResetVisitor extends AbstractTargetToSourceVisitor {
 	 */
 	@Override
 	public boolean visit(CellNode cell) {
-		cell.reset();
 		return true;
 	}
 
@@ -56,17 +54,39 @@ public class ResetVisitor extends AbstractTargetToSourceVisitor {
 	 */
 	@Override
 	public boolean visit(SourceNode source) {
-		source.reset();
 		return true;
 	}
 
 	/**
-	 * @see TransformationNodeVisitor#includeAnnotatedNodes()
+	 * @see TransformationNodeVisitor#leave(TransformationTree)
 	 */
 	@Override
-	public boolean includeAnnotatedNodes() {
-		// annotated nodes are removed on reset and thus don't have to be reset themselves
-		return false;
+	public void leave(TransformationTree root) {
+		// override me
+	}
+
+	/**
+	 * @see TransformationNodeVisitor#leave(TargetNode)
+	 */
+	@Override
+	public void leave(TargetNode target) {
+		// override me
+	}
+
+	/**
+	 * @see TransformationNodeVisitor#leave(CellNode)
+	 */
+	@Override
+	public void leave(CellNode cell) {
+		// override me
+	}
+
+	/**
+	 * @see TransformationNodeVisitor#leave(SourceNode)
+	 */
+	@Override
+	public void leave(SourceNode source) {
+		// override me
 	}
 
 }
