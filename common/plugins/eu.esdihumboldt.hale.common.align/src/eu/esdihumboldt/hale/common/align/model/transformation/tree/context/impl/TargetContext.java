@@ -13,23 +13,28 @@
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.Leftovers;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.CellNodeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TargetNodeImpl;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
-import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Transformation context that duplicates subgraphs leading to certain target
@@ -46,8 +51,26 @@ public class TargetContext implements TransformationContext {
 		
 		private final Map<Cell, CellNodeImpl> cellNodes = new HashMap<Cell, CellNodeImpl>();
 		
+		private final List<Pair<CellNodeImpl, CellNode>> cellNodePairs = new ArrayList<Pair<CellNodeImpl,CellNode>>();
+		
 		private final Map<EntityDefinition, TargetNodeImpl> targetNodes = new HashMap<EntityDefinition, TargetNodeImpl>();
 		
+		private final Set<Cell> ignoreCells;
+		
+		/**
+		 * Create a duplication context
+		 * @param ignoreCells the cells to be ignored
+		 */
+		public DuplicationContext(Set<Cell> ignoreCells) {
+			super();
+			if (ignoreCells != null) {
+				this.ignoreCells = Collections.unmodifiableSet(ignoreCells);
+			}
+			else {
+				this.ignoreCells = Collections.emptySet();
+			}
+		}
+
 		/**
 		 * Get the cell node associated to the given cell.
 		 * @param cell the cell
@@ -61,9 +84,12 @@ public class TargetContext implements TransformationContext {
 		/**
 		 * Add a node to the duplication context.
 		 * @param cellNode the cell node to add to the duplication context
+		 * @param originalCell the original cell node where the cell node was 
+		 *   duplicated from
 		 */
-		public void addNode(CellNodeImpl cellNode) {
+		public void addNode(CellNodeImpl cellNode, CellNode originalCell) {
 			cellNodes.put(cellNode.getCell(), cellNode);
+			cellNodePairs.add(new Pair<CellNodeImpl, CellNode>(cellNode, originalCell));
 		}
 		
 		/**
@@ -84,6 +110,31 @@ public class TargetContext implements TransformationContext {
 			targetNodes.put(targetNode.getEntityDefinition(), targetNode);
 		}
 
+		/**
+		 * Get the cells to be ignored during duplication. 
+		 * @return the cells to be ignored
+		 */
+		public Set<Cell> getIgnoreCells() {
+			return ignoreCells;
+		}
+
+		/**
+		 * Get cell nodes that have incomplete sources compared to the original.
+		 * @return the incomplete cell node paired with the original cell node
+		 *   is was duplicated from
+		 */
+		public Collection<Pair<CellNodeImpl, CellNode>> getIncompleteCellNodes() {
+			return Collections2.filter(cellNodePairs, new Predicate<Pair<CellNodeImpl, CellNode>>() {
+				@Override
+				public boolean apply(Pair<CellNodeImpl, CellNode> input) {
+					CellNodeImpl duplicate = input.getFirst();
+					CellNode original = input.getSecond();
+					
+					return original.getSources().size() > duplicate.getSources().size();
+				}
+			});
+		}
+		
 	}
 
 	private final Set<TargetNode> contextTargets;
@@ -98,31 +149,107 @@ public class TargetContext implements TransformationContext {
 		this.contextTargets = contextTargets;
 	}
 
+//	/**
+//	 * @see TransformationContext#duplicateContext(SourceNode, Object)
+//	 */
+//	@Override
+//	public void duplicateContext(SourceNode contextSource, Object value) {
+//		// create a new duplication context
+//		DuplicationContext duplicationContext = new DuplicationContext();
+//		
+//		// duplicate context source
+//		SourceNode source = duplicateSource(contextSource, 
+//				contextSource.getParent(), false, duplicationContext);
+//		
+//		if (source != null) {
+//			// add duplicated source as annotation to context source parent
+//			contextSource.getParent().addAnnotatedChild(source);
+//			
+//			// apply value to source
+//			if (value instanceof Group) {
+//				// value is a group, duplication may again be necessary for its properties
+//				InstanceVisitor visitor = new InstanceVisitor((Group) value);
+//				source.accept(visitor);
+//			}
+//			else {
+//				// value is a simple value
+//				source.setValue(value);
+//			}
+//		}
+//	}
+
 	/**
-	 * @see TransformationContext#duplicateContext(SourceNode, Object)
+	 * @see TransformationContext#duplicateContext(SourceNode, SourceNode, Set)
 	 */
 	@Override
-	public void duplicateContext(SourceNode contextSource, Object value) {
+	public void duplicateContext(SourceNode originalSource,
+			SourceNode duplicate, Set<Cell> ignoreCells) {
 		// create a new duplication context
-		DuplicationContext duplicationContext = new DuplicationContext();
+		DuplicationContext duplicationContext = new DuplicationContext(ignoreCells);
 		
-		// duplicate context source
-		SourceNode source = duplicateSource(contextSource, 
-				contextSource.getParent(), false, duplicationContext);
+		// configure duplicate, but don't add to parent (as it is already added as annotated child)
+		configureSourceDuplicate(originalSource, duplicate, 
+				originalSource.getParent(), duplicationContext, false);
 		
-		if (source != null) {
-			// add duplicated source as annotation to context source parent
-			contextSource.getParent().addAnnotatedChild(source);
+		// trackback to sources from cells where sources are missing
+		for (Pair<CellNodeImpl, CellNode> cellPair : duplicationContext.getIncompleteCellNodes()) {
+			CellNodeImpl cellNode = cellPair.getFirst();
+			CellNode originalCell = cellPair.getSecond();
 			
-			// apply value to source
-			if (value instanceof Group) {
-				// value is a group, duplication may again be necessary for its properties
-				InstanceVisitor visitor = new InstanceVisitor((Group) value);
-				source.accept(visitor);
-			}
-			else {
-				// value is a simple value
-				source.setValue(value);
+			cellTrackback(cellNode, originalCell);
+		}
+		
+		//TODO trackback from targets where assignments are missing? e.g. augmentations
+	}
+
+	/**
+	 * Track the graph back to sources that are missing in a cell node compared
+	 * to the original cell node.
+	 * @param cellNode the cell node
+	 * @param originalCell the original cell node the node was duplicated from
+	 */
+	private void cellTrackback(CellNodeImpl cellNode, CellNode originalCell) {
+		for (SourceNode originalSource : originalCell.getSources()) {
+			if (!cellNode.getSources().contains(originalSource)) {
+				/*
+				 * Duplicated cell does not contain a source representing the
+				 * same entity as originalSource.
+				 */
+				SourceNode newSource = null;
+				
+				// now there are several possible cases
+				// a) the original source has leftovers and we grab one
+				Leftovers leftovers = originalSource.getLeftovers();
+				if (leftovers != null) {
+					newSource = leftovers.consumeValue(originalCell.getCell());
+					
+					if (newSource != null) {
+						// interconnect both
+						newSource.addRelation(cellNode);
+						cellNode.addSource(originalCell.getSourceNames(originalSource), 
+								newSource);
+						//XXX hard connections are OK here, as a leftover source is a duplicate
+					}
+					else {
+						//TODO add an undefined source node in this case?
+					}
+				}
+				
+				// b) the original source has a parent (ot it has a parent etc.)
+				//    that has leftovers
+				if (newSource == null) {
+					//TODO
+				}
+				
+				// c) we use the original source node
+				if (newSource == null) {
+					newSource = originalSource;
+					
+					// interconnect both
+					newSource.addAnnotatedRelation(cellNode); //FIXME should be an augmentated relation!!!!
+					cellNode.addSource(originalCell.getSourceNames(originalSource), 
+							newSource);
+				}
 			}
 		}
 	}
@@ -145,10 +272,29 @@ public class TargetContext implements TransformationContext {
 				parent, addToParent);
 		duplicate.setContext(source.getContext());
 		
+		return configureSourceDuplicate(source, duplicate, parent, 
+				duplicationContext, addToParent);
+	}
+
+	/**
+	 * Configure a duplicated source node.
+	 * @param originalSource the original source node
+	 * @param duplicate the duplicated source node
+	 * @param parent the parent for the duplicated source node
+	 * @param duplicationContext the duplication context
+	 * @param addToParent if the duplicated source node should be added as child
+	 *   to its parent
+	 * @return the duplicated source node or <code>null</code> if it has no
+	 *   further connections
+	 */
+	private SourceNode configureSourceDuplicate(SourceNode originalSource,
+			SourceNode duplicate, SourceNode parent, 
+			DuplicationContext duplicationContext,
+			boolean addToParent) {
 		// duplicate relations
-		List<CellNode> relations = new ArrayList<CellNode>(source.getRelations().size());
+		List<CellNode> relations = new ArrayList<CellNode>(originalSource.getRelations(false).size());
 		// though each cell node is only duplicated once per duplication context
-		for (CellNode relation : source.getRelations()) {
+		for (CellNode relation : originalSource.getRelations(false)) { //XXX should the annotated relations be included?
 			CellNode duplicatedRelation = duplicateCell(relation, duplicate,
 					duplicationContext);
 			if (duplicatedRelation != null) {
@@ -157,8 +303,8 @@ public class TargetContext implements TransformationContext {
 		}
 		
 		// duplicate children
-		List<SourceNode> children = new ArrayList<SourceNode>(source.getChildren(false).size());
-		for (SourceNode child : source.getChildren(false)) { //XXX should the annotated children be included?
+		List<SourceNode> children = new ArrayList<SourceNode>(originalSource.getChildren(false).size());
+		for (SourceNode child : originalSource.getChildren(false)) { //XXX should the annotated children be included?
 			SourceNode duplicatedChild = duplicateSource(child, duplicate, 
 					true, duplicationContext);
 			if (duplicatedChild != null) {
@@ -181,6 +327,10 @@ public class TargetContext implements TransformationContext {
 			duplicate.addChild(child);
 		}
 		
+		if (addToParent) {
+			parent.addChild(duplicate);
+		}
+		
 		return duplicate;
 	}
 
@@ -195,6 +345,11 @@ public class TargetContext implements TransformationContext {
 	 */
 	private CellNode duplicateCell(CellNode relation, SourceNode duplicateSource,
 			DuplicationContext duplicationContext) {
+		if (duplicationContext.getIgnoreCells().contains(relation.getCell())) {
+			// cancel if the cell has to be ignored (which usually means it was already handled)
+			return null;
+		}
+		
 		// try to retrieve cell node from context
 		CellNodeImpl duplicate = duplicationContext.getNode(relation.getCell());
 		
@@ -224,7 +379,7 @@ public class TargetContext implements TransformationContext {
 			}
 			
 			// store duplicate in duplication context
-			duplicationContext.addNode(duplicate);
+			duplicationContext.addNode(duplicate, relation);
 		}
 		
 		// add the duplicated source
