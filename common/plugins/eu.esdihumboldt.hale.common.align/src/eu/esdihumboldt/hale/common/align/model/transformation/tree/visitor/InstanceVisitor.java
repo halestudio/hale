@@ -12,12 +12,10 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.LeftoversImpl;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -29,7 +27,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
  */
 public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(InstanceVisitor.class);
+//	private static final ALogger log = ALoggerFactory.getLogger(InstanceVisitor.class);
 	
 	private final Group instance;
 	
@@ -95,22 +93,26 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					
 					if (values.length > 1) {
 						// handle additional values
+						Object[] leftovers = new Object[values.length - 1];
+						System.arraycopy(values, 1, leftovers, 0, leftovers.length);
+						source.setLeftovers(new LeftoversImpl(leftovers, source));
 						
-						// identify context match (if possible)
-						TransformationContext context = source.getContext();
-						
-						if (context == null) {
-							// no transformation context match defined
-							//XXX warn instead? XXX transformation log instead?
-							log.error("Multiple values for source node w/o transformation context match");
-						}
-						else {
-							for (int i  = 1; i < values.length; i++) {
-								Object value = values[i];
-								// duplicate subgraph
-								context.duplicateContext(source, value);
-							}
-						}
+						//XXX legacy
+//						// identify context match (if possible)
+//						TransformationContext context = source.getContext();
+//						
+//						if (context == null) {
+//							// no transformation context match defined
+//							//XXX warn instead? XXX transformation log instead?
+//							log.error("Multiple values for source node w/o transformation context match");
+//						}
+//						else {
+//							for (int i  = 1; i < values.length; i++) {
+//								Object value = values[i];
+//								// duplicate subgraph
+//								context.duplicateContext(source, value);
+//							}
+//						}
 					}
 				}
 			}

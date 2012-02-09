@@ -22,6 +22,7 @@ import java.util.Set;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.Leftovers;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
@@ -64,7 +65,6 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	
 	/**
 	 * Constructor for nodes not associated to a source node factory.
-	 * XXX does equals/hashCode have to be revised for this?
 	 * @param definition the associated entity definition
 	 * @param parent the parent source node
 	 * @param addToParent if the created node should be added as a child to the 
@@ -138,11 +138,19 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	}
 
 	/**
-	 * @see SourceNode#getRelations()
+	 * @see SourceNode#getRelations(boolean)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<CellNode> getRelations() {
-		return Collections.unmodifiableCollection(relations);
+	public Collection<CellNode> getRelations(boolean includeAnnotated) {
+		if (!includeAnnotated || getAnnotation(ANNOTATION_RELATIONS) == null) {
+			return Collections.unmodifiableCollection(relations);
+		}
+		else {
+			Collection<CellNode> result = new ArrayList<CellNode>(relations);
+			result.addAll((Collection<CellNode>) getAnnotation(ANNOTATION_RELATIONS));
+			return result;
+		}
 	}
 
 	/**
@@ -168,6 +176,10 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 					for (SourceNode child : (Iterable<SourceNode>) getAnnotation(ANNOTATION_CHILDREN)) {
 						child.accept(visitor);
 					}
+				}
+				// visit relations
+				for (CellNode relation : getRelations(visitor.includeAnnotatedNodes())) {
+					relation.accept(visitor);
 				}
 			}
 		}
@@ -211,6 +223,22 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	}
 
 	/**
+	 * @see SourceNode#setLeftovers(Leftovers)
+	 */
+	@Override
+	public void setLeftovers(Leftovers leftovers) {
+		setAnnotation(ANNOTATION_LEFTOVERS, leftovers);
+	}
+
+	/**
+	 * @see SourceNode#getLeftovers()
+	 */
+	@Override
+	public Leftovers getLeftovers() {
+		return (Leftovers) getAnnotation(ANNOTATION_LEFTOVERS);
+	}
+
+	/**
 	 * @see SourceNode#addAnnotatedChild(SourceNode)
 	 */
 	@Override
@@ -222,6 +250,20 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 			setAnnotation(ANNOTATION_CHILDREN, ac);
 		}
 		ac.add(child);
+	}
+
+	/**
+	 * @see SourceNode#addAnnotatedRelation(CellNode)
+	 */
+	@Override
+	public void addAnnotatedRelation(CellNode relation) {
+		@SuppressWarnings("unchecked")
+		List<CellNode> ar = (List<CellNode>) getAnnotation(ANNOTATION_RELATIONS);
+		if (ar == null) {
+			ar = new ArrayList<CellNode>();
+			setAnnotation(ANNOTATION_RELATIONS, ar);
+		}
+		ar.add(relation);
 	}
 
 	/**
