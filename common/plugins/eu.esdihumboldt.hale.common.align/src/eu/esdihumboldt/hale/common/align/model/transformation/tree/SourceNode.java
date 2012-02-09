@@ -43,6 +43,18 @@ public interface SourceNode extends TransformationNode {
 	public static final String ANNOTATION_CHILDREN = "children";
 	
 	/**
+	 * Name of the leftovers annotation. It represents values that are not
+	 * (yet) represented in their own source node. 
+	 */
+	public static final String ANNOTATION_LEFTOVERS = "leftovers";
+	
+	/**
+	 * Name of the relations annotation. It represents a list of additional
+	 * relations.
+	 */
+	public static final String ANNOTATION_RELATIONS = "relations";
+	
+	/**
 	 * Get the associated definition
 	 * @return the type, group or property definition
 	 */
@@ -93,6 +105,20 @@ public interface SourceNode extends TransformationNode {
 	public TransformationContext getContext();
 	
 	/**
+	 * Set the left over values associated to the node's entity, but not
+	 * represented by the node.
+	 * @param leftovers the leftovers
+	 */
+	public void setLeftovers(Leftovers leftovers);
+	
+	/**
+	 * Get the left over values associated to the node's entity, but not
+	 * represented by the node.
+	 * @return the leftovers, may be <code>null</code>
+	 */
+	public Leftovers getLeftovers();
+	
+	/**
 	 * Get if the source node value is defined.
 	 * @see #ANNOTATION_VALUE_DEFINED
 	 * @return the value of the defined annotation, or <code>false</code> if it
@@ -133,9 +159,17 @@ public interface SourceNode extends TransformationNode {
 	public void addRelation(CellNode cellNode);
 	
 	/**
+	 * Add a cell node as annotated relation. This means resetting the node 
+	 * will remove the relation.
+	 * @param relation the cell node representing the relation
+	 */
+	public void addAnnotatedRelation(CellNode relation);
+	
+	/**
 	 * Get the relations associated to the source node.
+	 * @param includeAnnotated if annotated relations should be included
 	 * @return the associated relations
 	 */
-	public Collection<CellNode> getRelations();
+	public Collection<CellNode> getRelations(boolean includeAnnotated);
 
 }
