@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.DuplicationVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
@@ -77,6 +78,10 @@ public class TreePropertyTransformer implements PropertyTransformer {
 		// apply instance values to transformation tree
 		InstanceVisitor instanceVisitor = new InstanceVisitor(source);
 		tree.accept(instanceVisitor);
+		
+		// duplicate subtree as necessary
+		DuplicationVisitor duplicationVisitor = new DuplicationVisitor();
+		tree.accept(duplicationVisitor);
 		
 		// apply functions
 		tree.accept(executor);
