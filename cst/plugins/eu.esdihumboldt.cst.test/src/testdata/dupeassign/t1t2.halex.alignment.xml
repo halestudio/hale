@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-alignment>
+    <cell transformation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}T1</type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type>{http://www.example.org/t2/}T2</type>
+            </class>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child>element</child>
+                <child>type</child>
+            </property>
+        </target>
+        <parameter name="value" value="simple"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}T1</type>
+                <child>c</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}T2</type>
+                <child>element</child>
+                <child>name</child>
+            </property>
+        </target>
+    </cell>
+</hale-alignment>
