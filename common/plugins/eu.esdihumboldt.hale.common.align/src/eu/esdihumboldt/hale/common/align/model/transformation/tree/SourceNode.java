@@ -43,6 +43,12 @@ public interface SourceNode extends TransformationNode {
 	public static final String ANNOTATION_CHILDREN = "children";
 	
 	/**
+	 * Name of the leftovers annotation. It represents values that are not
+	 * (yet) represented in their own source node. 
+	 */
+	public static final String ANNOTATION_LEFTOVERS = "leftovers";
+	
+	/**
 	 * Get the associated definition
 	 * @return the type, group or property definition
 	 */
@@ -91,6 +97,20 @@ public interface SourceNode extends TransformationNode {
 	 * @return the transformation context, may be <code>null</code>
 	 */
 	public TransformationContext getContext();
+	
+	/**
+	 * Set the left over values associated to the node's entity, but not
+	 * represented by the node.
+	 * @param leftovers the leftovers
+	 */
+	public void setLeftovers(Leftovers leftovers);
+	
+	/**
+	 * Get the left over values associated to the node's entity, but not
+	 * represented by the node.
+	 * @return the leftovers, may be <code>null</code>
+	 */
+	public Leftovers getLeftovers();
 	
 	/**
 	 * Get if the source node value is defined.

@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.context;
 
+import java.util.Set;
+
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 
 /**
@@ -22,9 +25,11 @@ public interface TransformationContext {
 	
 	/**
 	 * Duplicate the context sub-tree of the given context source.
-	 * @param contextSource the context source
-	 * @param value the value to be associated to the new context
+	 * @param originalSource the original context source
+	 * @param duplicate the duplicate source node
+	 * @param ignoreCells the cells to be ignored for the duplication
 	 */
-	public void duplicateContext(SourceNode contextSource, Object value);
+	public void duplicateContext(SourceNode originalSource, 
+			SourceNode duplicate, Set<Cell> ignoreCells);
 
 }

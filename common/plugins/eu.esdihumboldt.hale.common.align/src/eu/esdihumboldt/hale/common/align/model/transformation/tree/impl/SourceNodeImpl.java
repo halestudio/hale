@@ -22,6 +22,7 @@ import java.util.Set;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.Leftovers;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
@@ -64,7 +65,6 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	
 	/**
 	 * Constructor for nodes not associated to a source node factory.
-	 * XXX does equals/hashCode have to be revised for this?
 	 * @param definition the associated entity definition
 	 * @param parent the parent source node
 	 * @param addToParent if the created node should be added as a child to the 
@@ -208,6 +208,22 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	public void setValue(Object value) {
 		setAnnotation(ANNOTATION_VALUE, value);
 		setDefined(true);
+	}
+
+	/**
+	 * @see SourceNode#setLeftovers(Leftovers)
+	 */
+	@Override
+	public void setLeftovers(Leftovers leftovers) {
+		setAnnotation(ANNOTATION_LEFTOVERS, leftovers);
+	}
+
+	/**
+	 * @see SourceNode#getLeftovers()
+	 */
+	@Override
+	public Leftovers getLeftovers() {
+		return (Leftovers) getAnnotation(ANNOTATION_LEFTOVERS);
 	}
 
 	/**
