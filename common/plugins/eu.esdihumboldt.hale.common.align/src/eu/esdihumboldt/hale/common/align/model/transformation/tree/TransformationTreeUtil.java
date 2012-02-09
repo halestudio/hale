@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 
+import eu.esdihumboldt.util.IdentityWrapper;
+
 /**
  * Transformation tree utilities.
  * @author Simon Templer
@@ -24,6 +26,10 @@ public abstract class TransformationTreeUtil {
 	 * @return the contained definition, cell or the node/object itself
 	 */
 	public static Object extractObject(Object node) {
+		if (node instanceof IdentityWrapper<?>) {
+			node = ((IdentityWrapper<?>) node).getValue();
+		}
+		
 		if (node instanceof TransformationTree) {
 			return ((TransformationTree) node).getType();
 		}

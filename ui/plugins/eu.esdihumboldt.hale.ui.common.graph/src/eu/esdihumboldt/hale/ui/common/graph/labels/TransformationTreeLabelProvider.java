@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure.ShapePainter;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
+import eu.esdihumboldt.util.IdentityWrapper;
 
 /**
  * Label provider for transformation trees
@@ -83,20 +84,35 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public String getText(Object element) {
+		if (element instanceof IdentityWrapper<?>) {
+			element = ((IdentityWrapper<?>) element).getValue();
+		}
+		
 		if (element instanceof EntityConnectionData) {
 			// text for connections
 			EntityConnectionData connection = (EntityConnectionData) element;
 			
 			Set<String> names = null;
-			if (connection.source instanceof TargetNode
-					&& connection.dest instanceof CellNode) {
-				names = ((TargetNode) connection.source)
-						.getAssignmentNames((CellNode) connection.dest);
+			
+			Object source = connection.source;
+			if (source instanceof IdentityWrapper<?>) {
+				source = ((IdentityWrapper<?>) source).getValue();
 			}
-			if (connection.source instanceof CellNode
-					&& connection.dest instanceof SourceNode) {
-				names = ((CellNode) connection.source)
-						.getSourceNames((SourceNode) connection.dest);
+			
+			Object dest = connection.dest;
+			if (dest instanceof IdentityWrapper<?>) {
+				dest = ((IdentityWrapper<?>) dest).getValue();
+			}
+			
+			if (source instanceof TargetNode
+					&& dest instanceof CellNode) {
+				names = ((TargetNode) source)
+						.getAssignmentNames((CellNode) dest);
+			}
+			if (source instanceof CellNode
+					&& dest instanceof SourceNode) {
+				names = ((CellNode) source)
+						.getSourceNames((SourceNode) dest);
 			}
 			
 			if (names != null && !names.isEmpty()) {
@@ -199,6 +215,10 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 * @return if the node has a value
 	 */
 	private boolean hasValue(Object entity) {
+		if (entity instanceof IdentityWrapper<?>) {
+			entity = ((IdentityWrapper<?>) entity).getValue();
+		}
+		
 		if (entity instanceof SourceNode) {
 			return ((SourceNode) entity).isDefined();
 		}
@@ -213,6 +233,10 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 * @return if there a transformation annotations present
 	 */
 	private boolean hasTransformationAnnotations(Object entity) {
+		if (entity instanceof IdentityWrapper<?>) {
+			entity = ((IdentityWrapper<?>) entity).getValue();
+		}
+		
 		return entity instanceof TransformationNode && 
 				((TransformationNode) entity).hasAnnotations();
 	}
@@ -223,6 +247,10 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 * @return if the node is disabled
 	 */
 	private boolean isDisabled(Object entity) {
+		if (entity instanceof IdentityWrapper<?>) {
+			entity = ((IdentityWrapper<?>) entity).getValue();
+		}
+		
 		if (entity instanceof SourceNode) {
 			return !((SourceNode) entity).isDefined();
 		}
@@ -248,6 +276,10 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public IFigure getFigure(Object element) {
+		if (element instanceof IdentityWrapper<?>) {
+			element = ((IdentityWrapper<?>) element).getValue();
+		}
+		
 		ShapePainter shape = null;
 		
 		if (element instanceof TransformationTree) {
