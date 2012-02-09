@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -33,11 +34,14 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.util.IdentityWrapper;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -130,6 +134,10 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 		TransformationTree tree = new TransformationTreeImpl(
 				targetType, alignment);
 		
+		// context matching
+		ContextMatcher matcher = new AsDeepAsPossible(); //XXX instead through service/extension point?
+		matcher.findMatches(tree);
+		
 		// process and annotate the tree
 		InstanceVisitor visitor = new InstanceVisitor(instance);
 		tree.accept(visitor);
@@ -142,23 +150,27 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 	 * @param typeNode the type node
 	 * @return the nodes
 	 */
-	private Collection<Object> collectNodes(TransformationTree typeNode) {
-		Queue<Object> toTest = new LinkedList<Object>();
-		Set<Object> nodes = new LinkedHashSet<Object>();
+	private Collection<? extends Object> collectNodes(TransformationTree typeNode) {
+		Queue<IdentityWrapper<?>> toTest = new LinkedList<IdentityWrapper<?>>();
+		Set<IdentityWrapper<?>> nodes = new LinkedHashSet<IdentityWrapper<?>>();
 		
-		toTest.offer(typeNode);
+		IdentityWrapper<?> wrapper = new IdentityWrapper<Object>(typeNode);
+		toTest.offer(wrapper);
 		
 		while (!toTest.isEmpty()) {
-			Object node = toTest.poll();
+			IdentityWrapper<?> node = toTest.poll();
 			
 			// add node
 			nodes.add(node);
 			
 			// test children
-			Iterable<? extends Object> children = getChilddren(node);
+			Iterable<? extends Object> children = getChilddren(node.getValue());
 			for (Object child : children) {
+				if (!(child instanceof IdentityWrapper<?>)) {
+					child = new IdentityWrapper<Object>(child);
+				}
 				if (!nodes.contains(child)) {
-					toTest.offer(child);
+					toTest.offer((IdentityWrapper<?>) child);
 				}
 			}
 		}
@@ -172,26 +184,38 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 	 * @return the node's children
 	 */
 	private Collection<? extends Object> getChilddren(Object node) {
+		if (node instanceof IdentityWrapper<?>) {
+			node = ((IdentityWrapper<?>) node).getValue();
+		}
+		
 		if (node instanceof TransformationTree) {
-			return ((TransformationTree) node).getChildren(true);
+			return wrapNodes(((TransformationTree) node).getChildren(true));
 		}
 		if (node instanceof TargetNode) {
-			Collection<Object> children = new ArrayList<Object>();
+			List<Object> children = new ArrayList<Object>();
 			children.addAll(((TargetNode) node).getChildren(true));
 			children.addAll(((TargetNode) node).getAssignments());
-			return children;
+			return wrapNodes(children);
 		}
 		if (node instanceof CellNode) {
-			return ((CellNode) node).getSources();
+			return wrapNodes(((CellNode) node).getSources());
 		}
 		if (node instanceof SourceNode) {
 			SourceNode parent = ((SourceNode) node).getParent();
 			if (parent != null) {
-				return Collections.singleton(parent);
+				return Collections.singleton(new IdentityWrapper<Object>(parent));
 			}
 		}
 		
 		return Collections.emptyList();
+	}
+
+	private Collection<? extends Object> wrapNodes(Collection<? extends Object> nodes) {
+		Collection<IdentityWrapper<?>> wrappers = new ArrayList<IdentityWrapper<?>>(nodes.size());
+		for (Object node : nodes) {
+			wrappers.add(new IdentityWrapper<Object>(node));
+		}
+		return wrappers;
 	}
 
 	/**
