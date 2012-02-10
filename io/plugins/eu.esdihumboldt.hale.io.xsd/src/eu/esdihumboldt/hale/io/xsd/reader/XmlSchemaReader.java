@@ -156,7 +156,7 @@ public class XmlSchemaReader
 	 * @see SchemaReader#getSchema()
 	 */
 	@Override
-	public Schema getSchema() {
+	public XmlIndex getSchema() {
 		return index;
 	}
 
