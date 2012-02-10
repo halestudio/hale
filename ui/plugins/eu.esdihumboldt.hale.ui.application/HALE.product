@@ -173,6 +173,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
+      <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="gnu.trove"/>
       <plugin id="javax.measure"/>
