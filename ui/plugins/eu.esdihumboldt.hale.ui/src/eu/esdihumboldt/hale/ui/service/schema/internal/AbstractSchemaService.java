@@ -12,9 +12,12 @@
 
 package eu.esdihumboldt.hale.ui.service.schema.internal;
 
+import java.util.Collection;
+
 import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -30,6 +33,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 public abstract class AbstractSchemaService implements SchemaService {
 
 	private final TypeSafeListenerList<SchemaServiceListener> listeners = new TypeSafeListenerList<SchemaServiceListener>();
+	private final ProjectService projectService;
 	
 	/**
 	 * Create a schema service.
@@ -39,6 +43,7 @@ public abstract class AbstractSchemaService implements SchemaService {
 	public AbstractSchemaService(ProjectService projectService) {
 		super();
 		
+		this.projectService = projectService;
 		projectService.addListener(new ProjectServiceAdapter() {
 
 			@Override
@@ -91,4 +96,23 @@ public abstract class AbstractSchemaService implements SchemaService {
 		}
 	}
 
+	/**
+	 * Called when the mappable flag of some types changed.
+	 * 
+	 * @param spaceID the schema space of the changed types
+	 * @param types the changed types
+	 */
+	protected void notifyMappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+		for (SchemaServiceListener listener : listeners)
+			listener.mappableTypesChanged(spaceID, types);
+	}
+
+	/**
+	 * Returns the project service.
+	 * 
+	 * @return the project service
+	 */
+	protected ProjectService getProjectService() {
+		return projectService;
+	}
 }

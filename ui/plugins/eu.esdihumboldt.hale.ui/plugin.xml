@@ -45,6 +45,18 @@
             name="Add relation">
       </command>
       <command
+            id="eu.esdihumboldt.hale.ui.schema.mappable_source"
+            name="Edit mappable source types">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.schema.mappable_target"
+            name="Edit mappable target types">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.schema.make_unmappable"
+            name="Mark type as not mappable">
+      </command>
+      <command
             id="eu.esdihumboldt.hale.ui.edit.modify"
             name="Edit">
       </command>
@@ -114,18 +126,63 @@
          <activeWhen>
             <and>
                <with
-                     variable="hale.schemas.has_source">
+                     variable="hale.schemas.has_mappable_source">
                   <equals
                         value="true">
                   </equals>
                </with>
                <with
-                     variable="hale.schemas.has_target">
+                     variable="hale.schemas.has_mappable_target">
                   <equals
                         value="true">
                   </equals>
                </with>
             </and>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.schema.handler.EditMappableSourceTypesHandler"
+            commandId="eu.esdihumboldt.hale.ui.schema.mappable_source">
+         <activeWhen>
+            <with
+                  variable="hale.schemas.has_source">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.schema.handler.EditMappableTargetTypesHandler"
+            commandId="eu.esdihumboldt.hale.ui.schema.mappable_target">
+         <activeWhen>
+            <with
+                  variable="hale.schemas.has_target">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.schema.handler.MarkTypeUnmappableHandler"
+            commandId="eu.esdihumboldt.hale.ui.schema.make_unmappable">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <and>
+                  <iterate
+                        ifEmpty="false"
+                        operator="or">
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
+                     </instanceof>
+                  </iterate>
+                  <count
+                        value="1">
+                  </count>
+               </and>
+            </with>
          </activeWhen>
       </handler>
       <handler
@@ -199,6 +256,14 @@
                name="hale.schemas.has_target"
                priorityLevel="workbench">
          </variable>
+         <variable
+               name="hale.schemas.has_mappable_source"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="hale.schemas.has_mappable_target"
+               priorityLevel="workbench">
+         </variable>
       </sourceProvider>
       <sourceProvider
             provider="eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceSource">
@@ -236,7 +301,7 @@
          <enabledWhen
                disabledReason="Load a source schema first">
             <with
-                  variable="hale.schemas.has_source">
+                  variable="hale.schemas.has_mappable_source">
                <equals
                      value="true">
                </equals>
@@ -254,13 +319,13 @@
                disabledReason="Load source and target schemas first">
             <and>
                <with
-                     variable="hale.schemas.has_source">
+                     variable="hale.schemas.has_mappable_source">
                   <equals
                         value="true">
                   </equals>
                </with>
                <with
-                     variable="hale.schemas.has_target">
+                     variable="hale.schemas.has_mappable_target">
                   <equals
                         value="true">
                   </equals>

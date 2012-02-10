@@ -228,6 +228,18 @@
                </visibleWhen>
             </command>
             <separator
+                  name="eu.esdihumboldt.hale.ui.edit.mappable_menu"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.schema.mappable_source"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.schema.mappable_target"
+                  style="push">
+            </command>
+            <separator
                   name="eu.esdihumboldt.hale.ui.edit.add"
                   visible="true">
             </separator>
@@ -324,6 +336,18 @@
                   visible="true">
             </separator>
             <command
+                  commandId="eu.esdihumboldt.hale.ui.schema.mappable_source"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.schema.mappable_target"
+                  style="push">
+            </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.edit.mappable_toolbar"
+                  visible="true">
+            </separator>
+            <command
                   commandId="eu.esdihumboldt.hale.ui.align.add_relation"
                   id="eu.esdihumboldt.hale.ui.edit.add_relation"
                   label="Add relation..."
@@ -397,6 +421,17 @@
                class="eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionContribution"
                id="eu.esdihumboldt.hale.ui.edit.add_relation.list">
          </dynamic>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.schema.make_unmappable"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
       </menuContribution>
    </extension>
    <extension

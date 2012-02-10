@@ -382,6 +382,23 @@ public class SchemasView extends PropertiesViewPart {
 					}
 				});
 			}
+
+			@Override
+			public void mappableTypesChanged(final SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+					@Override
+					public void run() {
+						switch (spaceID) {
+						case SOURCE:
+							sourceExplorer.setSchema(schemaService.getSchemas(spaceID));
+							break;
+						case TARGET:
+							targetExplorer.setSchema(schemaService.getSchemas(spaceID));
+						}
+					}
+				});
+			}
 		});
 		
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
