@@ -16,8 +16,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.geotools.feature.NameImpl;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -42,7 +40,7 @@ public class MultiLineStringWriter extends
 		super(MultiLineString.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("http://www.opengis.net/gml", "MultiLineStringType")); // restrict to "old" gml namespace (is depreceated since 3.0) -> use Curve instead in GML 3.2 //$NON-NLS-1$ //$NON-NLS-2$
+		addCompatibleType(new QName("http://www.opengis.net/gml", "MultiLineStringType")); // restrict to "old" gml namespace (is depreceated since 3.0) -> use Curve instead in GML 3.2 //$NON-NLS-1$ //$NON-NLS-2$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("*/lineStringMember"); //$NON-NLS-1$

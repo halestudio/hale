@@ -16,8 +16,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.geotools.feature.NameImpl;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Polygon;
@@ -41,7 +39,7 @@ public class LegacyPolygonWriter extends AbstractGeometryWriter<Polygon> {
 		super(Polygon.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("http://www.opengis.net/gml", "PolygonType")); //$NON-NLS-1$ //$NON-NLS-2$
+		addCompatibleType(new QName("http://www.opengis.net/gml", "PolygonType")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("*"); // matches any compatible type element //$NON-NLS-1$

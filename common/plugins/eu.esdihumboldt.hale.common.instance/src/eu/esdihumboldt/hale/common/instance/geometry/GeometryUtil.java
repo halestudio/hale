@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.geometry;
+package eu.esdihumboldt.hale.common.instance.geometry;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,44 +21,36 @@ import java.util.Queue;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.ui.PlatformUI;
-
-import com.google.common.base.Objects;
 import com.vividsolutions.jts.geom.Geometry;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
-
-import eu.esdihumboldt.hale.common.align.model.ChildContext;
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
-import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 
 /**
- * Definition/Instance related geometry utilities.
+ * TODO Type description
  * @author Simon Templer
  */
-public abstract class GeometryUtil {
+public class GeometryUtil {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(GeometryUtil.class);
+	/**
+	 * Get all geometries of an instance.
+	 * @param instance the instance
+	 * @return the geometries or an empty collection if there are none
+	 */
+	public static Collection<GeometryProperty<?>> getAllGeometries(Instance instance) {
+		return getGeometries(instance, new ArrayList<QName>());
+	}
 	
 	/**
 	 * Get the default geometry of an instance.
 	 * @param instance the instance
+	 * @param path the property path to start the search at, a <code>null</code>
+	 *   will yield no geometries
 	 * @return the default geometries or an empty collection if there is none
 	 */
-	public static Collection<GeometryProperty<?>> getDefaultGeometries(Instance instance) {
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
-		
-		if (gss == null) {
-			throw new IllegalStateException("No geometry schema service available");
-		}
-		
-		List<QName> path = gss.getDefaultGeometry(instance.getDefinition());
-		
+	public static Collection<GeometryProperty<?>> getGeometries(Instance instance, 
+			List<QName> path) {
 		Collection<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>();
 		if (path == null) {
 			return geometries;
@@ -178,41 +170,6 @@ public abstract class GeometryUtil {
 		}
 		
 		return Collections.emptyList();
-	}
-
-	/**
-	 * Determines if the given entity definition is a default geometry property.
-	 * @param entityDef the entity definition
-	 * @return if the entity definition represents a default geometry property
-	 */
-	public static boolean isDefaultGeometry(EntityDefinition entityDef) {
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
-		
-		if (gss == null) {
-			log.error("No geometry schema service available");
-			return false;
-		}
-		
-		List<QName> defPath = gss.getDefaultGeometry(entityDef.getType());
-		if (defPath != null) {
-			// match path against entity definition path
-			List<ChildContext> entPath = entityDef.getPropertyPath();
-			if (defPath.size() == entPath.size()) {
-				// match only possible if path length is equal
-				
-				// compare path elements
-				for (int i = 0; i < defPath.size(); i++) {
-					if (!Objects.equal(defPath.get(i), entPath.get(i).getChild().getName())) {
-						// each path entry must be equal
-						return false;
-					}
-				}
-				
-				return true;
-			}
-		}
-		
-		return false;
 	}
 
 }

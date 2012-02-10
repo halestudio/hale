@@ -24,13 +24,12 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.geotools.feature.NameImpl;
-import org.opengis.feature.type.Name;
-
 import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
@@ -139,63 +138,62 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry,
 			PropertyDefinition property, String srsName) throws XMLStreamException {
-		//FIXME
-//		// write any srsName attribute on the parent element
-//		writeSrsName(writer, property.getAttributeType(), geometry, srsName);
-//		
-//		Class<? extends Geometry> geomType = geometry.getClass();
-//		
-//		// remember if we already found a solution to this problem
-//		DefinitionPath path = restoreCandidate(property.getAttributeType(), geomType);
-//		
-//		if (path == null) {
-//			// find candidates
-//			List<DefinitionPath> candidates = findCandidates(property, geomType);
-//			
-//			// if no candidate found, try with compatible geometries
-//			Class<? extends Geometry> originalType = geomType;
-//			Geometry originalGeometry = geometry;
-//			ConversionLadder ladder = GeometryConverterRegistry.getInstance().createLadder(geometry);
-//			while (candidates.isEmpty() && ladder.hasNext()) {
-//				geometry = ladder.next();
-//				geomType = geometry.getClass();
-//				
-//				log.info("Possible structure for writing " + originalType.getSimpleName() +  //$NON-NLS-1$
-//						" not found, trying " + geomType.getSimpleName() + " instead"); //$NON-NLS-1$ //$NON-NLS-2$
-//				
-//				DefinitionPath candPath = restoreCandidate(property.getAttributeType(), geomType);
-//				if (candPath != null) {
-//					// use stored candidate
-//					candidates = Collections.singletonList(candPath);
-//				}
-//				else {
-//					candidates = findCandidates(property, geomType);
-//				}
-//			}
-//			
-//			for (DefinitionPath candidate : candidates) {
-//				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate); //$NON-NLS-1$ //$NON-NLS-2$
-//			}
-//			
-//			if (candidates.isEmpty()) {
-//				log.error("No geometry structure match for " +  //$NON-NLS-1$
-//						originalType.getSimpleName() + " found, writing WKT " + //$NON-NLS-1$
-//						"representation instead"); //$NON-NLS-1$
-//				
-//				writer.writeCharacters(originalGeometry.toText());
-//				return;
-//			}
-//			
-//			// determine preferred candidate
-//			//XXX for now: first one
-//			path = candidates.get(0);
-//			
-//			// remember for later
-//			storeCandidate(property.getAttributeType(), geomType, path);
-//		}
-//		
-//		// write geometry
-//		writeGeometry(writer, geometry, path, srsName);
+		// write any srsName attribute on the parent element
+		writeSrsName(writer, property.getPropertyType(), geometry, srsName);
+		
+		Class<? extends Geometry> geomType = geometry.getClass();
+		
+		// remember if we already found a solution to this problem
+		DefinitionPath path = restoreCandidate(property.getPropertyType(), geomType);
+		
+		if (path == null) {
+			// find candidates
+			List<DefinitionPath> candidates = findCandidates(property, geomType);
+			
+			// if no candidate found, try with compatible geometries
+			Class<? extends Geometry> originalType = geomType;
+			Geometry originalGeometry = geometry;
+			ConversionLadder ladder = GeometryConverterRegistry.getInstance().createLadder(geometry);
+			while (candidates.isEmpty() && ladder.hasNext()) {
+				geometry = ladder.next();
+				geomType = geometry.getClass();
+				
+				log.info("Possible structure for writing " + originalType.getSimpleName() +  //$NON-NLS-1$
+						" not found, trying " + geomType.getSimpleName() + " instead"); //$NON-NLS-1$ //$NON-NLS-2$
+				
+				DefinitionPath candPath = restoreCandidate(property.getPropertyType(), geomType);
+				if (candPath != null) {
+					// use stored candidate
+					candidates = Collections.singletonList(candPath);
+				}
+				else {
+					candidates = findCandidates(property, geomType);
+				}
+			}
+			
+			for (DefinitionPath candidate : candidates) {
+				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+			
+			if (candidates.isEmpty()) {
+				log.error("No geometry structure match for " +  //$NON-NLS-1$
+						originalType.getSimpleName() + " found, writing WKT " + //$NON-NLS-1$
+						"representation instead"); //$NON-NLS-1$
+				
+				writer.writeCharacters(originalGeometry.toText());
+				return;
+			}
+			
+			// determine preferred candidate
+			//XXX for now: first one
+			path = candidates.get(0);
+			
+			// remember for later
+			storeCandidate(property.getPropertyType(), geomType, path);
+		}
+		
+		// write geometry
+		writeGeometry(writer, geometry, path, srsName);
 	}
 
 	/**
@@ -276,23 +274,23 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			Geometry geometry, String srsName) throws XMLStreamException {
 		//TODO can SRS be extracted from geometry?
 		
-		//FIXME
-//		if (srsName != null) {
-//			AttributeDefinition srsAtt = null;
-//			for (AttributeDefinition att : type.getAttributes()) {
-//				if (att.getName().equals("srsName") //TODO improve condition? //$NON-NLS-1$
-//						&& (att.getNamespace() == null || 
-//								att.getNamespace().equals(gmlNs) || 
-//								att.getNamespace().isEmpty())) {
-//					srsAtt = att;
-//					break;
-//				}
-//			}
-//			
-//			if (srsAtt != null) {
-//				GmlWriterUtil.writeAttribute(writer, srsName, srsAtt);
-//			}
-//		}
+		if (srsName != null) {
+			PropertyDefinition srsAtt = null;
+			for (ChildDefinition<?> att : DefinitionUtil.getAllProperties(type)) { //XXX is this enough? or should groups be handled explicitly?
+				if (att.asProperty() != null
+						&& att.getName().getLocalPart().equals("srsName") //TODO improve condition? //$NON-NLS-1$
+						&& (att.getName().getNamespaceURI() == null || 
+								att.getName().getNamespaceURI().equals(gmlNs) || 
+								att.getName().getNamespaceURI().isEmpty())) {
+					srsAtt = att.asProperty();
+					break;
+				}
+			}
+			
+			if (srsAtt != null) {
+				GmlWriterUtil.writeAttribute(writer, srsName, srsAtt);
+			}
+		}
 	}
 
 	/**
@@ -348,7 +346,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		if (writers != null) {
 			for (GeometryWriter<?> writer : writers) {
 				boolean compatible = false;
-				Set<Name> names = writer.getCompatibleTypes();
+				Set<QName> names = writer.getCompatibleTypes();
 				if (names != null) {
 					if (names.contains(type.getName())) {
 						// check type name
@@ -357,7 +355,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 					
 					if (!compatible && type.getName().getNamespaceURI().equals(gmlNs)) {
 						// check GML type name
-						compatible = names.contains(new NameImpl(null, type.getName().getLocalPart()));
+						compatible = names.contains(new QName(null, type.getName().getLocalPart()));
+						// the null namespace references the GML namespace
 					}
 					
 					if (compatible) {

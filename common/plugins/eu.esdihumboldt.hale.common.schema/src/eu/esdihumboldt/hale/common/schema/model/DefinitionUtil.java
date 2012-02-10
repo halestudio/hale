@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.common.schema.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
@@ -84,6 +85,27 @@ public abstract class DefinitionUtil {
 		else {
 			return group.getDeclaredChildren();
 		}
+	}
+	
+	/**
+	 * Get all properties of a definition group. For {@link TypeDefinition}
+	 * also the inherited children will be returned. If there are children 
+	 * that are groups, their properties are also added. 
+	 * @param group the definition group
+	 * @return the children
+	 */
+	public static Collection<? extends PropertyDefinition> getAllProperties(
+			DefinitionGroup group) {
+		Collection<PropertyDefinition> result = new ArrayList<PropertyDefinition>();
+		for (ChildDefinition<?> child : getAllChildren(group)) {
+			if (child.asProperty() != null) {
+				result.add(child.asProperty());
+			}
+			else {
+				result.addAll(getAllProperties(child.asGroup()));
+			}
+		}
+		return result;
 	}
 
 	/**
