@@ -113,7 +113,7 @@ public class DefaultGroup implements MutableGroup {
 							return new DefaultInstance((Instance) input);
 						}
 						if (input instanceof Group) {
-							return new DefaultGroup((DefinitionGroup) input);
+							return new DefaultGroup((Group) input);
 						}
 						
 						return input;
