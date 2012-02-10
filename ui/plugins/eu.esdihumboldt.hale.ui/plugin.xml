@@ -54,7 +54,7 @@
       </command>
       <command
             id="eu.esdihumboldt.hale.ui.schema.make_unmappable"
-            name="Mark type as not mappable">
+            name="Exclude type from mapping">
       </command>
       <command
             id="eu.esdihumboldt.hale.ui.edit.modify"
@@ -545,6 +545,20 @@
       <image
             commandId="eu.esdihumboldt.hale.ui.align.add_relation"
             icon="icons/add_relation.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.schema.mappable_source"
+            disabledIcon="icons/source_types2_d.png"
+            icon="icons/source_types2.png">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.schema.mappable_target"
+            disabledIcon="icons/target_types2_d.png"
+            icon="icons/target_types2.png">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.schema.make_unmappable"
+            icon="icons/rm_type.png">
       </image>
    </extension>
 
