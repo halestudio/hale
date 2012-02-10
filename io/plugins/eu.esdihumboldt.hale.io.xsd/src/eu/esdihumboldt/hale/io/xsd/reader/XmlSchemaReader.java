@@ -42,6 +42,7 @@ import org.apache.ws.commons.schema.XmlSchemaContent;
 import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
+import org.apache.ws.commons.schema.XmlSchemaForm;
 import org.apache.ws.commons.schema.XmlSchemaGroup;
 import org.apache.ws.commons.schema.XmlSchemaGroupRef;
 import org.apache.ws.commons.schema.XmlSchemaImport;
@@ -1155,7 +1156,8 @@ public class XmlSchemaReader
 				// <attribute ... />
 				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
 				
-				createAttribute(attribute, declaringType, schemaLocation);
+				createAttribute(attribute, declaringType, schemaLocation,
+						schemaNamespace);
 			}
 			else if (object instanceof XmlSchemaAttributeGroup) {
 				XmlSchemaAttributeGroup group = (XmlSchemaAttributeGroup) object;
@@ -1193,7 +1195,8 @@ public class XmlSchemaReader
 	}
 
 	private void createAttribute(XmlSchemaAttribute attribute, 
-			DefinitionGroup declaringGroup, String schemaLocation) {
+			DefinitionGroup declaringGroup, String schemaLocation,
+			String schemaNamespace) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
@@ -1202,7 +1205,8 @@ public class XmlSchemaReader
 			
 			// create property
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					attribute.getQName(), declaringGroup, type);
+					determineAttributeName(attribute, schemaNamespace), 
+					declaringGroup, type);
 			
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);
@@ -1221,7 +1225,8 @@ public class XmlSchemaReader
 			
 			// create property
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					attribute.getQName(), declaringGroup, anonymousType);
+					determineAttributeName(attribute, schemaNamespace), 
+					declaringGroup, anonymousType);
 			
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);
@@ -1241,6 +1246,28 @@ public class XmlSchemaReader
 		
 	}
 	
+	/**
+	 * Determine the qualified attribute name for a XML Schema attribute.
+	 * @param attribute the XML Schema attribute
+	 * @param schemaNamespace the schema namespace
+	 * @return the qualified name of the attribute
+	 */
+	private QName determineAttributeName(XmlSchemaAttribute attribute,
+			String schemaNamespace) {
+		if (attribute.getForm().getValue().equals(XmlSchemaForm.QUALIFIED) &&
+				(attribute.getQName().getNamespaceURI() == null
+				|| attribute.getQName().getNamespaceURI().equals(XMLConstants.NULL_NS_URI))) {
+			/*
+			 * It seems in this case the namespace is not included in
+			 * attribute.getQName(). Is this a bug in the schema parser?
+			 * As a workaround we provide the namespace.
+			 */
+			return new QName(schemaNamespace, attribute.getQName().getLocalPart());
+		}
+			
+		return attribute.getQName();
+	}
+
 	/**
 	 * Create the type definition for an attribute, if possible
 	 * 
