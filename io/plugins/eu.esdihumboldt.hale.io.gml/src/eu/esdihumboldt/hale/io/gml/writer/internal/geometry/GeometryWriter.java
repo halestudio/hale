@@ -18,8 +18,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.opengis.feature.type.Name;
-
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -49,7 +47,7 @@ public interface GeometryWriter<T extends Geometry> {
 	 * @return the type names, a <code>null</code> namespace in a name
 	 * references the GML namespace
 	 */
-	public Set<Name> getCompatibleTypes();
+	public Set<QName> getCompatibleTypes();
 	
 	/**
 	 * Matches the type against the encoding patterns.

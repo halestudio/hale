@@ -16,8 +16,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.geotools.feature.NameImpl;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
@@ -43,8 +41,8 @@ public class MultiPolygonWriter extends AbstractGeometryWriter<MultiPolygon> {
 		super(MultiPolygon.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("MultiPolygonType")); //$NON-NLS-1$
-		addCompatibleType(new NameImpl("CompositeSurfaceType")); //$NON-NLS-1$
+		addCompatibleType(new QName(null, "MultiPolygonType")); //$NON-NLS-1$
+		addCompatibleType(new QName(null, "CompositeSurfaceType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("**/polygonMember"); //$NON-NLS-1$

@@ -53,7 +53,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.geometry.GeometryUtil;
+import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaServiceListener;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
@@ -226,7 +226,7 @@ public abstract class AbstractInstancePainter extends
 		InstanceReference ref = instanceService.getReference(instance);//, getDataSet());
 		
 		BoundingBox bb = null;
-		List<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>(GeometryUtil.getDefaultGeometries(instance));
+		List<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>(DefaultGeometryUtil.getDefaultGeometries(instance));
 		ListIterator<GeometryProperty<?>> it = geometries.listIterator();
 		while (it.hasNext()) {
 			GeometryProperty<?> prop = it.next();

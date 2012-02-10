@@ -16,8 +16,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.geotools.feature.NameImpl;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
@@ -43,7 +41,7 @@ public class MultiPointWriter extends AbstractGeometryWriter<MultiPoint> {
 		super(MultiPoint.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("MultiPointType")); //$NON-NLS-1$
+		addCompatibleType(new QName(null, "MultiPointType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("*/pointMember"); //$NON-NLS-1$

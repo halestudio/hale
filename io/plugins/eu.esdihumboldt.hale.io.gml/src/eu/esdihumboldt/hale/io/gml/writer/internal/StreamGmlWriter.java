@@ -49,6 +49,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -715,12 +716,31 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				// otherwise just skip it
 			}
 			else {
-				// simple element with value 
-				
 				GmlWriterUtil.writeStartElement(writer, propDef.getName());
 				
-				// write value as content
-				writeElementValue(value, propDef);
+				if (value instanceof GeometryProperty<?> || value instanceof Geometry) {
+					//XXX other check, e.g. for constraints?
+					//FIXME currently duplicate of code some lines below!!!!
+					
+					String srsName;
+					Geometry geom;
+					if (value instanceof Geometry) {
+						geom = (Geometry) value;
+						srsName = null;
+					}
+					else {
+						geom = ((GeometryProperty<?>) value).getGeometry();
+						srsName = null; //TODO
+					}
+					
+					// write geometry
+					writeGeometry(geom, propDef, srsName); //FIXME getCommonSRSName());
+				}
+				else {
+					// simple element with value
+					// write value as content
+					writeElementValue(value, propDef);
+				}
 				
 				writer.writeEndElement();
 			}
@@ -733,12 +753,26 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			boolean hasValue = propDef.getPropertyType().getConstraint(
 					HasValueFlag.class).isEnabled();
 			
-			//FIXME what about annotated geometries
-//			if (!hasValue && value instanceof Geometry) { //XXX what about collections of geometries?
-//				// write geometry
-//				writeGeometry(((Geometry) value), propDef, null); //FIXME getCommonSRSName());
-//			}
-//			else
+			// handle about annotated geometries
+			if (!hasValue && (value instanceof Geometry || value instanceof GeometryProperty<?>)) {
+				//XXX what about collections of geometries?
+				//XXX other check, e.g. for constraints?
+				
+				String srsName;
+				Geometry geom;
+				if (value instanceof Geometry) {
+					geom = (Geometry) value;
+					srsName = null;
+				}
+				else {
+					geom = ((GeometryProperty<?>) value).getGeometry();
+					srsName = null; //TODO
+				}
+				
+				// write geometry
+				writeGeometry(geom, propDef, srsName); //FIXME getCommonSRSName());
+			}
+			else
 			
 			// write all children (no elements if there is a value)
 			writeProperties(group, group.getDefinition(), !hasValue);
@@ -806,8 +840,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	private void writeGeometry(Geometry geometry, PropertyDefinition property, 
 			String srsName) throws XMLStreamException {
-		//TODO XXX write geometries
-//		getGeometryWriter().write(writer, geometry, property, srsName);
+		// write geometries
+		getGeometryWriter().write(writer, geometry, property, srsName);
 	}
 
 	/**
