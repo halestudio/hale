@@ -19,7 +19,10 @@ import java.net.URISyntaxException;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
+import com.google.common.io.InputSupplier;
+
 import eu.esdihumboldt.hale.common.cache.Request;
+import eu.esdihumboldt.util.resource.Resources;
 
 /**
  * Resolve imported/included schemas
@@ -67,13 +70,36 @@ public class SchemaResolver implements LSResourceResolver {
 		} catch (URISyntaxException e1) {
 			return null;
 		}
-
-		InputStream inputStream;
+		
+		InputStream inputStream = null;
+		
+		// try resolving using (local) Resources
 		try {
-//			inputStream = uri.toURL().openStream();
-			inputStream = Request.getInstance().get(uri);
-		} catch (Exception e) {
-			return null;
+			InputSupplier<? extends InputStream> input = Resources.tryResolve(
+					uri, Resources.RESOURCE_TYPE_XML_SCHEMA);
+			if (input != null) {
+				inputStream = input.getInput();
+			}
+		} catch (Throwable e) {
+			// ignore
+		}
+
+		// try resolving using cache
+		if (inputStream == null) {
+			try {
+				inputStream = Request.getInstance().get(uri);
+			} catch (Throwable e) {
+				// ignore
+			}
+		}
+		
+		// fall-back
+		if (inputStream == null) {
+			try {
+				inputStream = uri.toURL().openStream();
+			} catch (Throwable e) {
+				return null;
+			}
 		}
 
 		LSInput lsin = new LSInputImpl();
