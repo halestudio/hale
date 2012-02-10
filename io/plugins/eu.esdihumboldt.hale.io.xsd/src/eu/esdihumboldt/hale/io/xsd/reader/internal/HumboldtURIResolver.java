@@ -39,6 +39,7 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal;
  * under the License.
  */
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -46,7 +47,10 @@ import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
+import com.google.common.io.InputSupplier;
+
 import eu.esdihumboldt.hale.common.cache.Request;
+import eu.esdihumboldt.util.resource.Resources;
 
 
 /**
@@ -63,11 +67,9 @@ public class HumboldtURIResolver
     /**
      * @see URIResolver#resolveEntity(String, String, String)
      */
-    @Override
+	@Override
 	public InputSource resolveEntity(String namespace, String schemaLocation,
 			String baseUri) {
-//    	System.err.println(">>> "+namespace); // this part is called everytime a entity is resolved
-
 		if (baseUri != null) {
 			try {
 				if (baseUri.startsWith("file:/")) { //$NON-NLS-1$
@@ -84,36 +86,63 @@ public class HumboldtURIResolver
 					}
 				}
 
-				String ref = new URI(baseUri).resolve(new URI(schemaLocation)).toString();
-				
-				
-				
-				try {
-					InputSource iS = new InputSource(Request.getInstance().get(ref));
-					iS.setSystemId(ref);
-					return iS;
-				} catch (Exception e) {
-					return new InputSource(ref);
-				}
-				
+				URI ref = new URI(baseUri).resolve(new URI(schemaLocation));
 
-//				return new InputSource(ref);
+				// try resolving using (local) Resources
+				InputSupplier<? extends InputStream> input = Resources
+						.tryResolve(ref, Resources.RESOURCE_TYPE_XML_SCHEMA);
+				if (input != null) {
+					try {
+						InputSource is = new InputSource(input.getInput());
+						is.setSystemId(ref.toString());
+						return is;
+					} catch (Throwable e) {
+						// ignore
+					}
+				}
+
+				// try resolving through cache
+				try {
+					InputSource is = new InputSource(Request.getInstance().get(
+							ref));
+					is.setSystemId(ref.toString());
+					return is;
+				} catch (Throwable e) {
+					// ignore
+				}
+
+				// fall-back
+				return new InputSource(ref.toString());
 			} catch (URISyntaxException e1) {
 				throw new RuntimeException(e1);
 			}
 		}
 		
-		
+		// try resolving using (local) Resources
 		try {
-			return new InputSource(Request.getInstance().get(schemaLocation));
-		} catch (Exception e) {
-			return new InputSource(schemaLocation);
+			URI locationUri = new URI(schemaLocation);
+			InputSupplier<? extends InputStream> input = Resources.tryResolve(
+					locationUri, Resources.RESOURCE_TYPE_XML_SCHEMA);
+			if (input != null) {
+				InputSource is = new InputSource(input.getInput());
+				is.setSystemId(schemaLocation);
+				return is;
+			}
+		} catch (Throwable e) {
+			// ignore
 		}
-		
-//		return null;
-		
-		
-//		return new InputSource(schemaLocation);
+
+		// try resolving through cache
+		try {
+			InputSource is = new InputSource(Request.getInstance().get(schemaLocation));
+			is.setSystemId(schemaLocation);
+			return is;
+		} catch (Throwable e) {
+			// ignore
+		}
+
+		// fall-back
+		return new InputSource(schemaLocation);
 	}
 
     /**
