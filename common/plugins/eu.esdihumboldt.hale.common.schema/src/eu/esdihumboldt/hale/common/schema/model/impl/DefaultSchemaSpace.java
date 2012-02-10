@@ -19,10 +19,13 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 
 /**
  * Default {@link SchemaSpace} implementation
@@ -120,4 +123,24 @@ public class DefaultSchemaSpace implements SchemaSpace {
 		return new ArrayList<Schema>(schemas);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.schema.model.TypeIndex#toggleMappable(java.util.Collection)
+	 */
+	@Override
+	public void toggleMappable(Collection<? extends TypeDefinition> types) {
+		synchronized (this) {
+			for (TypeDefinition type : types) {
+				Definition<TypeConstraint> def = type;
+				if (type.getConstraint(MappableFlag.class).isEnabled()) {
+					if (mappableTypes != null && mappableTypes.contains(type))
+						mappableTypes.remove(type);
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappableFlag.DISABLED);
+				} else {
+					if (mappableTypes != null)
+						mappableTypes.add(type);
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappableFlag.ENABLED);
+				}
+			}
+		}
+	}
 }

@@ -62,4 +62,8 @@ public abstract class SchemaDecorator implements Schema {
 		return schema.getMappableTypes();
 	}
 
+	@Override
+	public void toggleMappable(Collection<? extends TypeDefinition> types) {
+		schema.toggleMappable(types);
+	}
 }

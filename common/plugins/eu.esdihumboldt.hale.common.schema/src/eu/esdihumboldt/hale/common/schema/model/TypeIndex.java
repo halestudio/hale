@@ -48,4 +48,10 @@ public interface TypeIndex {
 	 */
 	public Collection<? extends TypeDefinition> getMappableTypes();
 
+	/**
+	 * Toggles the mappable flag of the given types.
+	 * 
+	 * @param types the types to toggle
+	 */
+	public void toggleMappable(Collection<? extends TypeDefinition> types);
 }

@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -223,6 +224,17 @@ public class InstanceServiceSelector implements InstanceSelector {
 
 				@Override
 				public void schemasCleared(SchemaSpaceID spaceID) {
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+					display.syncExec(new Runnable() {
+						@Override
+						public void run() {
+							updateTypesSelection();
+						}
+					});
+				}
+
+				@Override
+				public void mappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
 					final Display display = PlatformUI.getWorkbench().getDisplay();
 					display.syncExec(new Runnable() {
 						@Override

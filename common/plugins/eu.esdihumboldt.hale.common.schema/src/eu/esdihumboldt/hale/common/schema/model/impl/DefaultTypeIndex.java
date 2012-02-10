@@ -21,6 +21,8 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
@@ -40,10 +42,11 @@ public class DefaultTypeIndex implements TypeIndex {
 	 * @param type the type to add
 	 */
 	public void addType(TypeDefinition type) {
-		synchronized (types) {
+		synchronized (this) {
 			types.put(type.getName(), type);
-			// reset mappable types
-			mappableTypes = null; 
+
+			if (mappableTypes != null && type.getConstraint(MappableFlag.class).isEnabled())
+				mappableTypes.add(type); 
 		}
 	}
 
@@ -60,7 +63,7 @@ public class DefaultTypeIndex implements TypeIndex {
 	 */
 	@Override
 	public TypeDefinition getType(QName name) {
-		synchronized (types) {
+		synchronized (this) {
 			return types.get(name);
 		}
 	}
@@ -73,7 +76,7 @@ public class DefaultTypeIndex implements TypeIndex {
 	 */
 	@Override
 	public Collection<? extends TypeDefinition> getMappableTypes() {
-		synchronized (types) {
+		synchronized (this) {
 			if (mappableTypes == null) {
 				mappableTypes = new HashSet<TypeDefinition>();
 				for (TypeDefinition type : types.values()) {
@@ -82,9 +85,28 @@ public class DefaultTypeIndex implements TypeIndex {
 					}
 				}
 			}
+			return Collections.unmodifiableCollection(mappableTypes);
 		}
-		
-		return Collections.unmodifiableCollection(mappableTypes);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.schema.model.TypeIndex#toggleMappable(java.util.Collection)
+	 */
+	@Override
+	public void toggleMappable(Collection<? extends TypeDefinition> types) {
+		synchronized (this) {
+			for (TypeDefinition type : types) {
+				Definition<TypeConstraint> def = type;
+				if (type.getConstraint(MappableFlag.class).isEnabled()) {
+					if (mappableTypes != null && mappableTypes.contains(type))
+						mappableTypes.remove(type);
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappableFlag.DISABLED);
+				} else {
+					if (mappableTypes != null)
+						mappableTypes.add(type);
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappableFlag.ENABLED);
+				}
+			}
+		}
+	}
 }

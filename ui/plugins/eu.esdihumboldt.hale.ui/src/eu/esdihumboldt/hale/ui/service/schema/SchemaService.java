@@ -11,9 +11,12 @@
  */
 package eu.esdihumboldt.hale.ui.service.schema;
 
+import java.util.Collection;
+
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * The schema service is used internally to provide access to the currently 
@@ -63,6 +66,21 @@ public interface SchemaService {
 	 * @param listener the listener to remove
 	 */
 	public void removeSchemaServiceListener(SchemaServiceListener listener);
+
+	/**
+	 * Toggles the mappable flag of all given types of the given schema space
+	 * 
+	 * @param spaceID the schema space the types are in
+	 * @param types he types
+	 */
+	public void toggleMappable(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types);
+
+	/**
+	 * Edit which types are mappable in the given schema space.
+	 * 
+	 * @param spaceID the schema space to edit
+	 */
+	public void editMappableTypes(SchemaSpaceID spaceID);
 	
 	//XXX something like this should be handled in the schema space / schema
 //	/**

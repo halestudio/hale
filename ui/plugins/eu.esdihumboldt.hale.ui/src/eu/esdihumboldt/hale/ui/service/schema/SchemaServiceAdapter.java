@@ -12,8 +12,11 @@
 
 package eu.esdihumboldt.hale.ui.service.schema;
 
+import java.util.Collection;
+
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 
 /**
@@ -40,4 +43,11 @@ public class SchemaServiceAdapter implements SchemaServiceListener {
 		// override me
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#mappableTypesChanged(eu.esdihumboldt.hale.common.schema.SchemaSpaceID, java.util.Collection)
+	 */
+	@Override
+	public void mappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+		// override me
+	}
 }

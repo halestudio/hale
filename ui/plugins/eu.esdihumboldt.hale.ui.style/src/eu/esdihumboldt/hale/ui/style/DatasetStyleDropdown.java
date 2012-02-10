@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.hale.ui.style;
 
+import java.util.Collection;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.swt.widgets.Control;
@@ -20,6 +22,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
@@ -157,6 +160,14 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, Schema
 	 */
 	@Override
 	public void schemasCleared(SchemaSpaceID spaceID) {
+		update();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#mappableTypesChanged(eu.esdihumboldt.hale.common.schema.SchemaSpaceID, java.util.Collection)
+	 */
+	@Override
+	public void mappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
 		update();
 	}
 

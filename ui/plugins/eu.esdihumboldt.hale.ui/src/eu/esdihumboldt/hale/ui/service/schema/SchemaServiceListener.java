@@ -12,8 +12,11 @@
 
 package eu.esdihumboldt.hale.ui.service.schema;
 
+import java.util.Collection;
+
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 
 /**
@@ -40,5 +43,12 @@ public interface SchemaServiceListener {
 	 *   or {@link SchemaSpaceID#TARGET}
 	 */
 	public void schemasCleared(SchemaSpaceID spaceID);
-	
+
+	/**
+	 * Called when the mappable flag of some types changed.
+	 * 
+	 * @param spaceID the schema space of the changed types
+	 * @param types the changed types
+	 */
+	public void mappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) ;
 }

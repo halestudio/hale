@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.service.schema.internal;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
@@ -35,6 +37,18 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
  * @since 2.5
  */
 public class SchemaServiceSource extends AbstractSourceProvider {
+
+	/**
+	 * The name of the variable which value is <code>true</code> if there is at least
+	 * one mappable type present in the {@link SchemaService}
+	 */
+	public static final String HAS_MAPPABLE_SOURCE_SCHEMA = "hale.schemas.has_mappable_source";
+	
+	/**
+	 * The name of the variable which value is <code>true</code> if there is at least
+	 * one mappable type present in the {@link SchemaService}
+	 */
+	public static final String HAS_MAPPABLE_TARGET_SCHEMA = "hale.schemas.has_mappable_target";
 
 	/**
 	 * The name of the variable which value is <code>true</code> if there is a
@@ -64,7 +78,7 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 			 */
 			@Override
 			public void schemaAdded(SchemaSpaceID spaceID, Schema schema) {
-				schemasCleared(spaceID);
+				update(spaceID);
 			}
 
 			/**
@@ -72,16 +86,26 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 			 */
 			@Override
 			public void schemasCleared(SchemaSpaceID spaceID) {
+				update(spaceID);
+			}
+
+			@Override
+			public void mappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+				update(spaceID);
+			}
+
+			private void update(SchemaSpaceID spaceID) {
 				switch (spaceID) {
 				case SOURCE:
 					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_SCHEMA, hasSchema(ss, spaceID));
+					fireSourceChanged(ISources.WORKBENCH, HAS_MAPPABLE_SOURCE_SCHEMA, hasMappableType(ss, spaceID));
 					break;
 				case TARGET:
 					fireSourceChanged(ISources.WORKBENCH, HAS_TARGET_SCHEMA, hasSchema(ss, spaceID));
+					fireSourceChanged(ISources.WORKBENCH, HAS_MAPPABLE_TARGET_SCHEMA, hasMappableType(ss, spaceID));
 					break;
 				}
 			}
-
 		});
 	}
 
@@ -102,6 +126,8 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
 		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(HAS_MAPPABLE_SOURCE_SCHEMA, hasMappableType(ss, SchemaSpaceID.SOURCE));
+		result.put(HAS_MAPPABLE_TARGET_SCHEMA, hasMappableType(ss, SchemaSpaceID.TARGET));
 		result.put(HAS_SOURCE_SCHEMA, hasSchema(ss, SchemaSpaceID.SOURCE));
 		result.put(HAS_TARGET_SCHEMA, hasSchema(ss, SchemaSpaceID.TARGET));
 		
@@ -109,6 +135,11 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 	}
 
 	private static boolean hasSchema(SchemaService ss, SchemaSpaceID spaceID) {
+		SchemaSpace schemas = ss.getSchemas(spaceID);
+		return schemas != null && !schemas.getTypes().isEmpty();
+	}
+	
+	private static boolean hasMappableType(SchemaService ss, SchemaSpaceID spaceID) {
 		SchemaSpace schemas = ss.getSchemas(spaceID);
 		return schemas != null && !schemas.getMappableTypes().isEmpty();
 	}
@@ -119,7 +150,9 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 	@Override
 	public String[] getProvidedSourceNames() {
 		return new String[]{
-				HAS_SOURCE_SCHEMA, 
+				HAS_MAPPABLE_SOURCE_SCHEMA, 
+				HAS_MAPPABLE_TARGET_SCHEMA,
+				HAS_SOURCE_SCHEMA,
 				HAS_TARGET_SCHEMA};
 	}
 

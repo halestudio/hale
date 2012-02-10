@@ -113,6 +113,11 @@ public class StyleServiceImpl extends AbstractStyleService {
 				update();
 			}
 
+			@Override
+			public void mappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+				update();
+			}
+
 			private void update() {
 				Collection<FeatureTypeStyle> failures = new ArrayList<FeatureTypeStyle>();
 				boolean updateNeeded = false;
