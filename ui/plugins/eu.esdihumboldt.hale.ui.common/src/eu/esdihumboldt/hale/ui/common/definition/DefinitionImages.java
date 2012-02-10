@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants;
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
-import eu.esdihumboldt.hale.ui.geometry.GeometryUtil;
+import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
 
 /**
  * Manages images for definitions. Should be {@link #dispose()}d when the images
@@ -231,7 +231,7 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 			boolean deflt = false;
 			if (entityDef != null) {
 				// entity definition needed to determine if item is a default geometry
-				deflt = GeometryUtil.isDefaultGeometry(entityDef);
+				deflt = DefaultGeometryUtil.isDefaultGeometry(entityDef);
 			}
 			
 			if (deflt || mandatory || attribute) {

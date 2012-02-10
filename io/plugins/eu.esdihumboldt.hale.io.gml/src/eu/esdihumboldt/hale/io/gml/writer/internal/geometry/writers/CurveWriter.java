@@ -16,8 +16,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.geotools.feature.NameImpl;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -41,7 +39,7 @@ public class CurveWriter extends
 		super(MultiLineString.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new NameImpl("CurveType")); //$NON-NLS-1$
+		addCompatibleType(new QName(null, "CurveType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("**/LineStringSegment"); //$NON-NLS-1$
