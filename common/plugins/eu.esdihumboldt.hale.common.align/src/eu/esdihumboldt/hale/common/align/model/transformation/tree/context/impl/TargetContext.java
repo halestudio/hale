@@ -55,6 +55,8 @@ public class TargetContext implements TransformationContext {
 		
 		private final Map<EntityDefinition, TargetNodeImpl> targetNodes = new HashMap<EntityDefinition, TargetNodeImpl>();
 		
+		private final List<Pair<TargetNodeImpl, TargetNode>> targetNodePairs = new ArrayList<Pair<TargetNodeImpl,TargetNode>>();
+		
 		private final Set<Cell> ignoreCells;
 		
 		/**
@@ -105,9 +107,12 @@ public class TargetContext implements TransformationContext {
 		/**
 		 * Add a node to the duplication context.
 		 * @param targetNode the target node to add to the duplication context
+		 * @param originalTarget the original target node where the target node
+		 *   was duplicated from
 		 */
-		public void addNode(TargetNodeImpl targetNode) {
+		public void addNode(TargetNodeImpl targetNode, TargetNode originalTarget) {
 			targetNodes.put(targetNode.getEntityDefinition(), targetNode);
+			targetNodePairs.add(new Pair<TargetNodeImpl, TargetNode>(targetNode, originalTarget));
 		}
 
 		/**
@@ -121,7 +126,7 @@ public class TargetContext implements TransformationContext {
 		/**
 		 * Get cell nodes that have incomplete sources compared to the original.
 		 * @return the incomplete cell node paired with the original cell node
-		 *   is was duplicated from
+		 *   it was duplicated from
 		 */
 		public Collection<Pair<CellNodeImpl, CellNode>> getIncompleteCellNodes() {
 			return Collections2.filter(cellNodePairs, new Predicate<Pair<CellNodeImpl, CellNode>>() {
@@ -133,6 +138,26 @@ public class TargetContext implements TransformationContext {
 					return original.getSources().size() > duplicate.getSources().size();
 				}
 			});
+		}
+		
+		/**
+		 * Get target nodes that have incomplete children or assignments 
+		 * compared to the original.
+		 * @return the incomplete target node paired with the original target
+		 *   node it was duplicated from
+		 */
+		public Collection<Pair<TargetNodeImpl, TargetNode>> getIncompleteTargetNodes() {
+			return new ArrayList<Pair<TargetNodeImpl,TargetNode>>(Collections2.filter(
+					targetNodePairs, new Predicate<Pair<TargetNodeImpl, TargetNode>>() {
+				@Override
+				public boolean apply(Pair<TargetNodeImpl, TargetNode> input) {
+					TargetNodeImpl duplicate = input.getFirst();
+					TargetNode original = input.getSecond();
+					
+					return original.getChildren(true).size() > duplicate.getChildren(true).size()
+							|| original.getAssignments().size() > duplicate.getAssignments().size();
+				}
+			}));
 		}
 		
 	}
@@ -191,7 +216,7 @@ public class TargetContext implements TransformationContext {
 		configureSourceDuplicate(originalSource, duplicate, 
 				originalSource.getParent(), duplicationContext, false);
 		
-		// trackback to sources from cells where sources are missing
+		// track back to sources from cells where sources are missing
 		for (Pair<CellNodeImpl, CellNode> cellPair : duplicationContext.getIncompleteCellNodes()) {
 			CellNodeImpl cellNode = cellPair.getFirst();
 			CellNode originalCell = cellPair.getSecond();
@@ -199,7 +224,43 @@ public class TargetContext implements TransformationContext {
 			cellTrackback(cellNode, originalCell);
 		}
 		
-		//TODO trackback from targets where assignments are missing? e.g. augmentations
+		// track back from targets where augmentations are missing
+		for (Pair<TargetNodeImpl, TargetNode> targetPair : duplicationContext.getIncompleteTargetNodes()) {
+//			TargetNodeImpl targetNode = targetPair.getFirst();
+			TargetNode originalTarget = targetPair.getSecond();
+			
+			augmentationTrackback(originalTarget, duplicationContext);
+		}
+	}
+
+	/**
+	 * Track back target nodes and duplicate any augmentation cells.
+	 * @param originalTarget the original target node
+	 * @param duplicationContext the duplication context
+	 */
+	private void augmentationTrackback(TargetNode originalTarget, 
+			DuplicationContext duplicationContext) {
+		// track back child augmentations
+		for (TargetNode child : originalTarget.getChildren(false)) { //XXX should annotated children be included?
+			augmentationTrackback(child, duplicationContext);
+		}
+		
+		// track back augmentations
+		for (CellNode originalAssignment : originalTarget.getAssignments()) {
+			/*
+			 * Duplicated target does not contain an assignment representing
+			 * the same cell as originalAssignment. 
+			 */
+			if (originalAssignment.getSources().isEmpty()) {
+				// the cell is an augmentation, thus we duplicate it
+				duplicateCell(originalAssignment, null, duplicationContext);
+				/*
+				 * it is automatically added to the target nodes (which are 
+				 * retrieved from the duplication context or created as
+				 * necessary)
+				 */
+			}
+		}
 	}
 
 	/**
@@ -338,7 +399,8 @@ public class TargetContext implements TransformationContext {
 	 * Get the duplicated cell node.
 	 * @param relation the original cell node
 	 * @param duplicateSource the duplicated source node to be associated with
-	 *  the duplicated cell node
+	 *  the duplicated cell node, may be <code>null</code> if the cell is an
+	 *  augmentation
 	 * @param duplicationContext the context of the current duplication process
 	 * @return the duplicated cell node or <code>null</code> if duplication was
 	 *   prohibited
@@ -383,7 +445,9 @@ public class TargetContext implements TransformationContext {
 		}
 		
 		// add the duplicated source
-		duplicate.addSource(relation.getSourceNames(duplicateSource), duplicateSource);
+		if (duplicateSource != null) {
+			duplicate.addSource(relation.getSourceNames(duplicateSource), duplicateSource);
+		}
 		
 		return duplicate;
 	}
@@ -436,10 +500,8 @@ public class TargetContext implements TransformationContext {
 			// add as annotated child to parent
 			duplicatedParent.addAnnotatedChild(duplicatedTarget);
 			
-			//TODO create child duplicates? XXX for Augmentations!
-			
 			// add to duplication context
-			duplicationContext.addNode(duplicatedTarget);
+			duplicationContext.addNode(duplicatedTarget, target);
 		}
 		
 		if (relation != null) {
