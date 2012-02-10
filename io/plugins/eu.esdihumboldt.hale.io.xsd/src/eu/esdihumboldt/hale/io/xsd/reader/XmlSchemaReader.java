@@ -57,8 +57,6 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleContentRestriction;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.constants.Constants;
-import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
-import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.apache.ws.commons.schema.utils.NamespacePrefixList;
 
 import de.cs3d.util.logging.ALogger;
@@ -74,7 +72,6 @@ import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
-import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
@@ -112,7 +109,7 @@ import gnu.trove.TObjectIntHashMap;
 
 /**
  * The main functionality of this class is to load an XML schema file (XSD)
- * and create a {@link Schema} with {@link TypeDefinition}s. This implementation
+ * and create a schema with {@link TypeDefinition}s. This implementation
  * is based on the Apache XmlSchema library 
  * ({@link "http://ws.apache.org/commons/XmlSchema/"}).
  * 
@@ -196,8 +193,10 @@ public class XmlSchemaReader
 			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
 		else {
-			URIResolver resolver = schemaCol.getSchemaResolver();
-			schemaCol.setSchemaResolver(new ProgressURIResolver((resolver == null)?(new DefaultURIResolver()):(resolver), progress));
+//			URIResolver resolver = schemaCol.getSchemaResolver();
+//			schemaCol.setSchemaResolver(new ProgressURIResolver((resolver == null)?(new DefaultURIResolver()):(resolver), progress));
+			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress)); //XXX ok using this resolver?
+			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
 		
 		InputStream is = getSource().getInput();
