@@ -574,7 +574,16 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		//FIXME working like this?!
 		return el.getName().getLocalPart().contains("FeatureCollection") && //$NON-NLS-1$
 			!el.getType().getConstraint(AbstractFlag.class).isEnabled() &&
-			el.getType().getChild(new QName("featureMember")) != null; //$NON-NLS-1$
+			hasChild(el.getType(), "featureMember"); //$NON-NLS-1$
+	}
+
+	private boolean hasChild(TypeDefinition type, String localName) {
+		for (ChildDefinition<?> child : type.getChildren()) {
+			if (localName.equals(child.getName().getLocalPart())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
