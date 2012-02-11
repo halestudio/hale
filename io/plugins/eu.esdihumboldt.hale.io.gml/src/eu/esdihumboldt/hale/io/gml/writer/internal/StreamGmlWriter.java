@@ -351,6 +351,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 					URI location = StreamGmlWriter.class.getResource("/schemas/wfs/1.0.0/WFS-basic.xsd").toURI(); //$NON-NLS-1$
 					XmlSchemaReader schemaReader = new XmlSchemaReader();
 					schemaReader.setSource(new DefaultInputSupplier(location));
+					//FIXME to work with the extra schema it must be integrated with the main schema
+//					schemaReader.setSharedTypes(sharedTypes);
 					
 					IOReport report = schemaReader.execute(null);
 					
@@ -548,6 +550,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 					TypeDefinition parent = matchParam.getSuperType();
 					while (parent != null) {
 						if (parent.equals(type)) {
+							//FIXME will not work with separately loaded schemas because e.g. the choice allowing the specific type is missing
 							//FIXME add to path
 //							return new DefinitionPath(path).addSubstitution(elements.iterator().next());
 						}
