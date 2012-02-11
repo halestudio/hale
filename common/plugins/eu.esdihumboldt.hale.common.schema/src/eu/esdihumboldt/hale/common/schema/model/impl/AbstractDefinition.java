@@ -260,12 +260,11 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.schema.model.Definition#getIdentifier()
+	 * @see Definition#getIdentifier()
 	 */
 	@Override
 	public String getIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return getName().toString();
 	}
 
 	/**
