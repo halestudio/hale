@@ -146,4 +146,12 @@ public abstract class AbstractPropertyDecorator implements PropertyDefinition {
 		return property.asGroup();
 	}
 
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return property.toString();
+	}
+
 }

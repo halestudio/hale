@@ -170,4 +170,12 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 		return propertyGroup.allowFlatten();
 	}
 
+	/**
+	 * @see Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return propertyGroup.toString();
+	}
+
 }
