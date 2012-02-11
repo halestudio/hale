@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="eu.esdihumboldt.hale.platform" sequenceNumber="22">
+<target name="eu.esdihumboldt.hale.platform" sequenceNumber="23">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.jdesktop.swingx" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
@@ -72,5 +72,6 @@
 <location path="${project_loc:hale-platform}/target/net.java" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.springframework.osgi" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse.xsd" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/eu.esdihumboldt.util.resource" type="Directory"/>
 </locations>
 </target>
