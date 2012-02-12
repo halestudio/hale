@@ -41,7 +41,8 @@ public class MultiPointWriter extends AbstractGeometryWriter<MultiPoint> {
 		super(MultiPoint.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(null, "MultiPointType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
+				"MultiPointType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("*/pointMember"); //$NON-NLS-1$

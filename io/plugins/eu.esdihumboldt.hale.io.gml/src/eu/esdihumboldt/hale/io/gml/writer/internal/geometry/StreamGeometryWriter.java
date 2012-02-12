@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.CurveWriter;
@@ -43,15 +43,14 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LineStringWr
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.MultiLineStringWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.MultiPointWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.MultiPolygonWriter;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.Pattern;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.PointWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.PolygonWriter;
 
 /**
- * Write geometries for a GML document
- *
+ * Write geometries for a GML document.
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Geometry>> {
 	
@@ -355,8 +354,10 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 					
 					if (!compatible && type.getName().getNamespaceURI().equals(gmlNs)) {
 						// check GML type name
-						compatible = names.contains(new QName(null, type.getName().getLocalPart()));
-						// the null namespace references the GML namespace
+						compatible = names.contains(new QName(
+								Pattern.GML_NAMESPACE_PLACEHOLDER, 
+								type.getName().getLocalPart()));
+						// the GML_NAMESPACE_PLACEHOLDER namespace references the GML namespace
 					}
 					
 					if (compatible) {
@@ -374,7 +375,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		
 		// fall back to binding test
 		// check for equality because we don't want a match for the property types
-		boolean compatible = type.getConstraint(Binding.class).getBinding().equals(geomType);
+		Class<? extends Geometry> geomBinding = type.getConstraint(GeometryType.class).getBinding();
+		boolean compatible = geomType.equals(geomBinding);
 		
 		if (compatible) {
 			// check structure / match writers

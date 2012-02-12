@@ -21,6 +21,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,17 +32,24 @@ import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+
+import de.fhg.igd.osgi.util.OsgiUtilsActivator;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -75,11 +83,9 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 
 /**
- * Tests for {@link StreamGmlWriter}
- *
+ * Tests for {@link StreamGmlWriter}.
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 @SuppressWarnings("restriction")
 public class StreamGmlWriterTest {
@@ -189,34 +195,34 @@ public class StreamGmlWriterTest {
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
 	}
 	
-//	/**
-//	 * Test writing a {@link MultiPoint} to a GML 2 geometry type
-//	 * 
-//	 * @throws Exception if an error occurs
-//	 */
-//	@Test
-//	public void testGeometry_2_MultiPoint() throws Exception {
-//		// create the geometry
-//		MultiPoint mp = geomFactory.createMultiPoint(new Point[]{
-//				createPoint(0.0), createPoint(1.0), createPoint(2.0) 
-//		});
-//		
-//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-//		values.put(Arrays.asList("geometry"), mp); //$NON-NLS-1$
-//		
-//		Report report = fillFeatureTest("Test", //$NON-NLS-1$
-//				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
-//				values, "geometry_2_MultiPoint", DEF_SRS_NAME); //$NON-NLS-1$
-//		
-//		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
-//	}
+	/**
+	 * Test writing a {@link MultiPoint} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Ignore // GML 2 stuff currently not working (because of unrelated schemas)
+	@Test
+	public void testGeometry_2_MultiPoint() throws Exception {
+		// create the geometry
+		MultiPoint mp = geomFactory.createMultiPoint(new Point[]{
+				createPoint(0.0), createPoint(1.0), createPoint(2.0) 
+		});
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mp); //$NON-NLS-1$
+		
+		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_MultiPoint", DEF_SRS_NAME); //$NON-NLS-1$
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
 	
 	/**
 	 * Test writing a {@link MultiPoint} to a GML 3.2 geometry aggregate type
 	 * 
 	 * @throws Exception if an error occurs
 	 */
-	@Ignore // does not yield a MultiPoint for some reason
 	@Test
 	public void testGeometryAggregate_32_MultiPoint() throws Exception {
 		// create the geometry
@@ -229,10 +235,13 @@ public class StreamGmlWriterTest {
 		
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
-				values, "geometryAggregate_32_MultiPoint", DEF_SRS_NAME); //$NON-NLS-1$
+				values, "geometryAggregate_32_MultiPoint", DEF_SRS_NAME, //$NON-NLS-1$
+				true); //XXX skip the test because MultiPoint reading is not supported yet, instead three points are created 
 		
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
 	}
+	
+	//TODO test with a type that references a gmlAbstractGeometry element
 	
 	/**
 	 * Create a point
@@ -245,53 +254,54 @@ public class StreamGmlWriterTest {
 		return geomFactory.createPoint(new Coordinate(x, x + 1));
 	}
 	
-//	/**
-//	 * Test writing a {@link Polygon} to a GML 2 geometry type
-//	 * 
-//	 * @throws Exception if an error occurs
-//	 */
-//	@Test
-//	public void testGeometry_2_Polygon() throws Exception {
-//		// create the geometry
-//		Polygon polygon = createPolygon(0.0);
-//		
-//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-//		values.put(Arrays.asList("geometry"), polygon); //$NON-NLS-1$
-//		
-//		Report report = fillFeatureTest("Test", //$NON-NLS-1$
-//				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
-//				values, "geometry_2_Polygon", DEF_SRS_NAME); //$NON-NLS-1$
-//		
-//		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
-//	}
-//	
-//	// deactivated test because schema is invalid (according to xerces)
-////	/**
-////	 * Test writing a {@link Polygon} to a GML 3.0 geometry primitive type
-////	 * 
-////	 * @throws Exception if an error occurs
-////	 */
-////	@Test
-////	public void testGeometryPrimitive_3_Polygon() throws Exception {
-////		// create the geometry
-////		Polygon polygon = createPolygon(0.0);
-////		
-////		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-////		values.put(Arrays.asList("geometry"), polygon);
-////		
-////		Report report = fillFeatureTest("PrimitiveTest",
-////				getClass().getResource("/data/geom_schema/geom-gml3.xsd").toURI(), 
-////				values, "geometryPrimitive_3_Polygon", DEF_SRS_NAME);
-////		
-////		assertTrue("Expected GML output to be valid", report.isValid());
-////	}
-//
+	/**
+	 * Test writing a {@link Polygon} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Ignore // GML 2 stuff currently not working (because of unrelated schemas)
+	@Test
+	public void testGeometry_2_Polygon() throws Exception {
+		// create the geometry
+		Polygon polygon = createPolygon(0.0);
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, polygon); //$NON-NLS-1$
+		
+		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_Polygon", DEF_SRS_NAME); //$NON-NLS-1$
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Test writing a {@link Polygon} to a GML 3.0 geometry primitive type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Ignore // deactivated test because schema is invalid (according to xerces)
+	@Test
+	public void testGeometryPrimitive_3_Polygon() throws Exception {
+		// create the geometry
+		Polygon polygon = createPolygon(0.0);
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, polygon);
+		
+		IOReport report = fillFeatureTest("PrimitiveTest",
+				getClass().getResource("/data/geom_schema/geom-gml3.xsd").toURI(), 
+				values, "geometryPrimitive_3_Polygon", DEF_SRS_NAME);
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess());
+	}
+
 	/**
 	 * Test writing a {@link Polygon} to a GML 3.1 geometry primitive type
 	 * 
 	 * @throws Exception if an error occurs
 	 */
-	@Ignore // loading Polygons not yet supported
+//	@Ignore // loading Polygons not yet supported
 	@Test
 	public void testGeometryPrimitive_31_Polygon() throws Exception {
 		// create the geometry
@@ -302,7 +312,8 @@ public class StreamGmlWriterTest {
 		
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml31.xsd").toURI(),  //$NON-NLS-1$
-				values, "geometryPrimitive_31_Polygon", DEF_SRS_NAME); //$NON-NLS-1$
+				values, "geometryPrimitive_31_Polygon", DEF_SRS_NAME, //$NON-NLS-1$
+				true); //XXX skip the test because Polygon reading is not supported yet
 		
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
 	}
@@ -312,7 +323,7 @@ public class StreamGmlWriterTest {
 	 * 
 	 * @throws Exception if an error occurs
 	 */
-	@Ignore // loading Polygons not yet supported
+//	@Ignore // loading Polygons not yet supported
 	@Test
 	public void testGeometryPrimitive_32_Polygon() throws Exception {
 		// create the geometry
@@ -323,7 +334,8 @@ public class StreamGmlWriterTest {
 		
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
-				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME); //$NON-NLS-1$
+				values, "geometryPrimitive_32_Polygon", DEF_SRS_NAME, //$NON-NLS-1$
+				true); //XXX skip the test because Polygon reading is not supported yet
 		
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
 	}
@@ -343,32 +355,33 @@ public class StreamGmlWriterTest {
 		return geomFactory.createPolygon(shell, null);
 	}
 	
-//	/**
-//	 * Test writing a {@link LineString} to a GML 2 geometry type
-//	 * 
-//	 * @throws Exception if an error occurs
-//	 */
-//	@Test
-//	public void testGeometry_2_LineString() throws Exception {
-//		// create the geometry
-//		LineString lineString = createLineString(0.0);
-//		
-//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-//		values.put(Arrays.asList("geometry"), lineString); //$NON-NLS-1$
-//		
-//		Report report = fillFeatureTest("Test", //$NON-NLS-1$
-//				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
-//				values, "geometry_2_LineString", DEF_SRS_NAME); //$NON-NLS-1$
-//		
-//		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
-//	}
+	/**
+	 * Test writing a {@link LineString} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Ignore // GML 2 stuff currently not working (because of unrelated schemas)
+	@Test
+	public void testGeometry_2_LineString() throws Exception {
+		// create the geometry
+		LineString lineString = createLineString(0.0);
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, lineString); //$NON-NLS-1$
+		
+		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_LineString", DEF_SRS_NAME); //$NON-NLS-1$
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
 
 	/**
 	 * Test writing a {@link LineString} to a GML 3.2 geometry primitive type
 	 * 
 	 * @throws Exception if an error occurs
 	 */
-	@Ignore // loading LineStrings not yet supported
+//	@Ignore // loading LineStrings not yet supported
 	@Test
 	public void testGeometryPrimitive_32_LineString() throws Exception {
 		// create the geometry
@@ -379,7 +392,8 @@ public class StreamGmlWriterTest {
 		
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
-				values, "geometryPrimitive_32_LineString", DEF_SRS_NAME); //$NON-NLS-1$
+				values, "geometryPrimitive_32_LineString", DEF_SRS_NAME, //$NON-NLS-1$
+				true); //XXX skip the test because LineString reading is not supported yet
 		
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
 	}
@@ -389,7 +403,7 @@ public class StreamGmlWriterTest {
 	 * 
 	 * @throws Exception if an error occurs
 	 */
-	@Ignore // loading LineStrings not yet supported
+//	@Ignore // loading LineStrings not yet supported
 	@Test
 	public void testGeometryAggregate_32_LineString() throws Exception {
 		// create the geometry
@@ -400,7 +414,8 @@ public class StreamGmlWriterTest {
 		
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
-				values, "geometryAggregate_32_LineString", DEF_SRS_NAME); //$NON-NLS-1$
+				values, "geometryAggregate_32_LineString", DEF_SRS_NAME, //$NON-NLS-1$
+				true); //XXX skip the test because LineString reading is not supported yet
 		
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
 	}
@@ -419,139 +434,143 @@ public class StreamGmlWriterTest {
 				new Coordinate(4.0, offset)});
 	}
 	
-//	/**
-//	 * Test writing a {@link MultiLineString} to a GML 2 geometry type
-//	 * 
-//	 * @throws Exception if an error occurs
-//	 */
-//	@Test
-//	public void testGeometry_2_MultiLineString() throws Exception {
-//		// create the geometry
-//		MultiLineString mls = geomFactory.createMultiLineString(
-//				new LineString[]{createLineString(0.0), createLineString(1.0),
-//						createLineString(2.0)});
-//		
-//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-//		values.put(Arrays.asList("geometry"), mls); //$NON-NLS-1$
-//		
-//		Report report = fillFeatureTest("Test", //$NON-NLS-1$
-//				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
-//				values, "geometry_2_MultiLineString", DEF_SRS_NAME); //$NON-NLS-1$
-//		
-//		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
-//	}
-//	
-//	/**
-//	 * Test writing a {@link MultiLineString} to a GML 3.2 geometry primitive type
-//	 * 
-//	 * @throws Exception if an error occurs
-//	 */
-//	@Test
-//	public void testGeometryPrimitive_32_MultiLineString() throws Exception {
-//		// create the geometry
-//		MultiLineString mls = geomFactory.createMultiLineString(
-//				new LineString[]{createLineString(0.0), createLineString(1.0),
-//						createLineString(2.0)});
-//		
-//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-//		values.put(Arrays.asList("geometry"), mls); //$NON-NLS-1$
-//		
-//		Report report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
-//				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
-//				values, "geometryPrimitive_32_MultiLineString", DEF_SRS_NAME); //$NON-NLS-1$
-//		
-//		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
-//	}
-//	
-//	/**
-//	 * Test writing a {@link MultiLineString} to a GML 3.2 geometry aggregate type
-//	 * 
-//	 * @throws Exception if an error occurs
-//	 */
-//	@Test
-//	public void testGeometryAggregate_32_MultiLineString() throws Exception {
-//		// create the geometry
-//		MultiLineString mls = geomFactory.createMultiLineString(
-//				new LineString[]{createLineString(0.0), createLineString(1.0),
-//						createLineString(2.0)});
-//		
-//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-//		values.put(Arrays.asList("geometry"), mls); //$NON-NLS-1$
-//		
-//		Report report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
-//				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
-//				values, "geometryAggregate_32_MultiLineString", DEF_SRS_NAME, //$NON-NLS-1$
-//				true); //XXX in a MultiCurve Geotools only creates a LineString for each curve
-//		
-//		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
-//	}
-//	
-//	/**
-//	 * Test writing a {@link MultiPolygon} to a GML 2 geometry type
-//	 * 
-//	 * @throws Exception if an error occurs
-//	 */
-//	@Test
-//	public void testGeometry_2_MultiPolygon() throws Exception {
-//		// create the geometry
-//		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[]{
-//				createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) 
-//		});
-//		
-//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-//		values.put(Arrays.asList("geometry"), mp); //$NON-NLS-1$
-//		
-//		Report report = fillFeatureTest("Test", //$NON-NLS-1$
-//				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
-//				values, "geometry_2_MultiPolygon", DEF_SRS_NAME); //$NON-NLS-1$
-//		
-//		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
-//	}
-//	
-//	/**
-//	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry primitive type
-//	 * 
-//	 * @throws Exception if an error occurs
-//	 */
-//	@Test
-//	public void testGeometryPrimitive_32_MultiPolygon() throws Exception {
-//		// create the geometry
-//		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[]{
-//				createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) 
-//		});
-//		
-//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-//		values.put(Arrays.asList("geometry"), mp); //$NON-NLS-1$
-//		
-//		Report report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
-//				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
-//				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
-//				true); //XXX no value equality check because Geotools parser doesn't seem to support CompositeSurface and only creates a Polygon instead of a MultiPolygon
-//		
-//		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
-//	}
-//	
-//	/**
-//	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry aggregate type
-//	 * 
-//	 * @throws Exception if an error occurs
-//	 */
-//	@Test
-//	public void testGeometryAggregate_32_MultiPolygon() throws Exception {
-//		// create the geometry
-//		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[]{
-//				createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) 
-//		});
-//		
-//		Map<List<String>, Object> values = new HashMap<List<String>, Object>();
-//		values.put(Arrays.asList("geometry"), mp); //$NON-NLS-1$
-//		
-//		Report report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
-//				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
-//				values, "geometryAggregate_32_MultiPolygon", DEF_SRS_NAME); //$NON-NLS-1$
-//		
-//		assertTrue("Expected GML output to be valid", report.isValid()); //$NON-NLS-1$
-//	}
+	/**
+	 * Test writing a {@link MultiLineString} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Ignore // GML 2 stuff currently not working (because of unrelated schemas)
+	@Test
+	public void testGeometry_2_MultiLineString() throws Exception {
+		// create the geometry
+		MultiLineString mls = geomFactory.createMultiLineString(
+				new LineString[]{createLineString(0.0), createLineString(1.0),
+						createLineString(2.0)});
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mls); //$NON-NLS-1$
+		
+		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_MultiLineString", DEF_SRS_NAME); //$NON-NLS-1$
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Test writing a {@link MultiLineString} to a GML 3.2 geometry primitive type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_MultiLineString() throws Exception {
+		// create the geometry
+		MultiLineString mls = geomFactory.createMultiLineString(
+				new LineString[]{createLineString(0.0), createLineString(1.0),
+						createLineString(2.0)});
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mls); //$NON-NLS-1$
+		
+		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryPrimitive_32_MultiLineString", DEF_SRS_NAME, //$NON-NLS-1$
+				true); //XXX skip the test because MultiLineString reading is not supported yet
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Test writing a {@link MultiLineString} to a GML 3.2 geometry aggregate type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryAggregate_32_MultiLineString() throws Exception {
+		// create the geometry
+		MultiLineString mls = geomFactory.createMultiLineString(
+				new LineString[]{createLineString(0.0), createLineString(1.0),
+						createLineString(2.0)});
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mls); //$NON-NLS-1$
+		
+		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryAggregate_32_MultiLineString", DEF_SRS_NAME, //$NON-NLS-1$
+				true); //XXX in a MultiCurve Geotools only creates a LineString for each curve
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Test writing a {@link MultiPolygon} to a GML 2 geometry type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Ignore // GML 2 stuff currently not working (because of unrelated schemas)
+	@Test
+	public void testGeometry_2_MultiPolygon() throws Exception {
+		// create the geometry
+		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[]{
+				createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) 
+		});
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mp); //$NON-NLS-1$
+		
+		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometry_2_MultiPolygon", DEF_SRS_NAME); //$NON-NLS-1$
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry primitive type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_MultiPolygon() throws Exception {
+		// create the geometry
+		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[]{
+				createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) 
+		});
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mp); //$NON-NLS-1$
+		
+		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
+				true); //XXX no value equality check because Geotools parser doesn't seem to support CompositeSurface and only creates a Polygon instead of a MultiPolygon
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry aggregate type
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryAggregate_32_MultiPolygon() throws Exception {
+		// create the geometry
+		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[]{
+				createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) 
+		});
+		
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mp); //$NON-NLS-1$
+		
+		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(),  //$NON-NLS-1$
+				values, "geometryAggregate_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
+				true); //XXX skip the test because MultiPolygon reading is not supported yet
+		
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
 //	
 //	/**
 //	 * Test writing the result from a CST transformation
@@ -864,9 +883,10 @@ public class StreamGmlWriterTest {
 		ResourceIterator<Instance> it = loaded.iterator();
 		try {
 			assertTrue(it.hasNext());
-			Instance l = it.next();
-		
+			
 			if (!skipValueTest) {
+				Instance l = it.next();
+				
 				// test values
 				for (Entry<List<QName>, Object> entry : values.entrySet()) {
 					//XXX conversion?
@@ -898,9 +918,9 @@ public class StreamGmlWriterTest {
 								value.toString());
 					}
 				}
+				
+				assertFalse(it.hasNext());
 			}
-			
-			assertFalse(it.hasNext());
 		} finally {
 			it.close();
 		}
@@ -973,6 +993,40 @@ public class StreamGmlWriterTest {
 		validator.setSource(new DefaultInputSupplier(xmlLocation));
 		
 		return validator.execute(null);
+	}
+	
+	/**
+	 * Prepare the conversion service
+	 */
+	@BeforeClass
+	public static void initAll() {
+		List<String> bundlesToStart = new ArrayList<String>();
+		bundlesToStart.add("org.springframework.osgi.core"); // for osgi extensions in application context
+		bundlesToStart.add("org.springframework.osgi.extender"); // activate the extender
+		bundlesToStart.add("eu.esdihumboldt.hale.common.convert"); // activate the conversion service
+		
+		Map<String, Bundle> bundles = new HashMap<String, Bundle>();
+		BundleContext context = OsgiUtilsActivator.getInstance().getContext();
+		for (Bundle bundle : context.getBundles()) {
+			bundles.put(bundle.getSymbolicName(), bundle);
+		}
+		
+		for (String bundleName : bundlesToStart) {
+			Bundle bundle = bundles.get(bundleName);
+			if (bundle != null) {
+				try {
+					bundle.start();
+					System.out.println("Attempting to start bundle " + bundle.getSymbolicName());
+					Thread.sleep(2000); //XXX wait for start to have finished FIXME improve
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else {
+				System.err.println("Bundle to start not found: " + bundleName);
+			}
+		}
 	}
 	
 }

@@ -108,6 +108,11 @@ public class Pattern {
 	private static final String NS_MARKER = "\""; //$NON-NLS-1$
 	
 	/**
+	 * Placeholder for the GML namespace that may be used in patterns
+	 */
+	public static final String GML_NAMESPACE_PLACEHOLDER = "_____________gml_____________";
+	
+	/**
 	 * Parse a pattern from the given string. Pattern elements must be separated
 	 * by <code>/</code>. Valid elements are <code>*</code> (one XML element 
 	 * with any name), <code>**</code> (any number of XML elements with any 
@@ -173,10 +178,10 @@ public class Pattern {
 						}
 					}
 					else {
-						// element name only
+						// element name only, assuming GML namespace 
 						elements.add(new PatternElement(
 								ElementType.NAMED_ELEMENT, 
-								new QName(part)));
+								new QName(GML_NAMESPACE_PLACEHOLDER, part)));
 					}
 				}
 			}
@@ -353,7 +358,7 @@ public class Pattern {
 			
 			QName name = checkAgainst.getName();
 			// inject namespace if needed
-			if (name.getNamespaceURI() == null) {
+			if (name.getNamespaceURI() == GML_NAMESPACE_PLACEHOLDER) {
 				name = new QName(gmlNs, name.getLocalPart());
 			}
 			

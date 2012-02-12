@@ -41,8 +41,10 @@ public class LegacyMultiPolygonWriter extends AbstractGeometryWriter<MultiPolygo
 		super(MultiPolygon.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(null, "MultiPolygonType")); //$NON-NLS-1$
-		addCompatibleType(new QName(null, "CompositeSurfaceType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
+				"MultiPolygonType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
+				"CompositeSurfaceType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("**/polygonMember"); //$NON-NLS-1$
