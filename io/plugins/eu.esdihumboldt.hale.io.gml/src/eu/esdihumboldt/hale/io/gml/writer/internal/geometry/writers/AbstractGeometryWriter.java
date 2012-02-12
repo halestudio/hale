@@ -79,8 +79,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	}
 	
 	/**
-	 * Add a compatible type. A <code>null</code> namespace references the GML
-	 * namespace.
+	 * Add a compatible type. A {@link Pattern#GML_NAMESPACE_PLACEHOLDER} 
+	 * namespace references the GML namespace.
 	 * 
 	 * @param typeName the type name
 	 */

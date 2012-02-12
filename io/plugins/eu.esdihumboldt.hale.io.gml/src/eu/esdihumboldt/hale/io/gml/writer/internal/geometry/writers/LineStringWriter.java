@@ -37,7 +37,8 @@ public class LineStringWriter extends AbstractGeometryWriter<LineString> {
 		super(LineString.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(null, "LineStringType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
+				"LineStringType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("*"); //$NON-NLS-1$

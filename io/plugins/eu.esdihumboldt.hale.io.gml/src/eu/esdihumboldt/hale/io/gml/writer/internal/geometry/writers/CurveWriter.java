@@ -39,7 +39,8 @@ public class CurveWriter extends
 		super(MultiLineString.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(null, "CurveType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
+				"CurveType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("**/LineStringSegment"); //$NON-NLS-1$

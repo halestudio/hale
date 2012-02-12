@@ -38,7 +38,8 @@ public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 		super(Polygon.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(null, "PolygonType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
+				"PolygonType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("*"); // matches any compatible type element //$NON-NLS-1$

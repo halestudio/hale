@@ -37,7 +37,8 @@ public class PointWriter extends AbstractGeometryWriter<Point> {
 		super(Point.class);
 		
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(null, "PointType")); //$NON-NLS-1$
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
+				"PointType")); //$NON-NLS-1$
 		
 		// patterns for matching inside compatible types
 		addBasePattern("*"); // matches any compatible type element //$NON-NLS-1$
