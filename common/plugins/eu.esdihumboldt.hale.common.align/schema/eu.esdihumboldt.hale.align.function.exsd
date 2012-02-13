@@ -115,6 +115,16 @@ For references, e.g. to images, use absolute references to plugin and path, led 
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="cellExplanation" type="string">
+            <annotation>
+               <documentation>
+                  Class that can provide a human readable explanation for a cell associated with the function.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.model.CellExplanation"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -182,6 +192,16 @@ For references, e.g. to images, use absolute references to plugin and path, led 
                </documentation>
                <appinfo>
                   <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="cellExplanation" type="string">
+            <annotation>
+               <documentation>
+                  Class that can provide a human readable explanation for a cell associated with the function.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.model.CellExplanation"/>
                </appinfo>
             </annotation>
          </attribute>

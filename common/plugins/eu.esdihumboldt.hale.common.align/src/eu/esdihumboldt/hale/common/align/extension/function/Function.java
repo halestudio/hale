@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.Set;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 
 /**
  * Basic interface for function definitions
@@ -64,6 +65,13 @@ public interface Function extends Identifiable {
 	 * @return the help file URL, may be <code>null</code>
 	 */
 	public URL getHelpURL();
+	
+	/**
+	 * Get the associated cell explanation.
+	 * @return the cell explanation or <code>null</code> if none is available
+	 *   for this function
+	 */
+	public CellExplanation getExplanation();
 	
 	/**
 	 * Get the source entities
