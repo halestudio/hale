@@ -405,7 +405,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			int sourceWidth = rec.width;
 			int sourceHeight = rec.height;
 
-			accuSourceHeight = accuSourceHeight + sourceHeight;
+			accuSourceHeight = accuSourceHeight + sourceHeight + 10;
 
 			if (accuSourceWidth < sourceWidth) {
 				accuSourceWidth = sourceWidth;
@@ -423,7 +423,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			int targetWidth = rec.width;
 			int targetHeight = rec.height;
 
-			accuTargetHeight = accuTargetHeight + targetHeight;
+			accuTargetHeight = accuTargetHeight + targetHeight + 10;
 
 			if (accuTargetWidth < targetWidth) {
 				accuTargetWidth = targetWidth;
@@ -433,7 +433,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			}
 		}
 		width = width + accuSourceWidth + accuTargetWidth + 30;
-		height = accuHeight + 20;
+		height = accuHeight + 15;
 
 		Dimension d = new Dimension();
 		d.setSize(width, height);
