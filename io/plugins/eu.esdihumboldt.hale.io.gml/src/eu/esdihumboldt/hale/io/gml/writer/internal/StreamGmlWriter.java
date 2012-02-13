@@ -49,6 +49,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
@@ -734,6 +735,10 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 					else {
 						geom = ((GeometryProperty<?>) value).getGeometry();
 						srsName = null; //TODO
+//						CRSDefinition def = ((GeometryProperty<?>) value).getCRSDefinition();
+//						if (def != null) {
+//							srsName = def.getCRS().getName().toString();
+//						}
 					}
 					
 					// write geometry
@@ -770,19 +775,23 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				else {
 					geom = ((GeometryProperty<?>) value).getGeometry();
 					srsName = null; //TODO
+//					CRSDefinition def = ((GeometryProperty<?>) value).getCRSDefinition();
+//					if (def != null) {
+//						srsName = def.getCRS().getName().toString();
+//					}
 				}
 				
 				// write geometry
 				writeGeometry(geom, propDef, srsName); //FIXME getCommonSRSName());
 			}
-			else
-			
-			// write all children (no elements if there is a value)
-			writeProperties(group, group.getDefinition(), !hasValue);
-			
-			// write value
-			if (hasValue) {
-				writeElementValue(value, propDef);
+			else {
+				// write all children (no elements if there is a value)
+				writeProperties(group, group.getDefinition(), !hasValue);
+				
+				// write value
+				if (hasValue) {
+					writeElementValue(value, propDef);
+				}
 			}
 			
 			writer.writeEndElement();
