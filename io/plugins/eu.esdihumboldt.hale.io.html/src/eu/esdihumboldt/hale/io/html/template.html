@@ -15,9 +15,14 @@
 #macro(images $cell)
 <div class="cell">
 	<img src='$cell.getImageLocation()'>
+	#if ($cell.explanation) 
+	<br />
+	<p class="explanation">$cell.explanation</p>
+	#end
 </div>
 <br />
 #end
+
 <h1>Mapping Documentation</h1>
 <p>
 $author<br/>

@@ -18,6 +18,12 @@ body
 	border: 1px solid #eee;
 }
 
+.explanation {
+	white-space: pre-wrap;
+	margin-left: 0px;
+	max-width: 580px;
+}
+
 /** link defintions **/
 
 a:link, a:visited

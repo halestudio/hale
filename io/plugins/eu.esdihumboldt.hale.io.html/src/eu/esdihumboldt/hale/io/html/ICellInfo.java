@@ -25,5 +25,11 @@ public interface ICellInfo {
 	 * @return the image location
 	 */
 	public String getImageLocation();
+	
+	/**
+	 * Get an explanation for the cell.
+	 * @return the explanation or <code>null</code> if none is available
+	 */
+	public String getExplanation();
 
 }
