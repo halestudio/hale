@@ -19,11 +19,15 @@ import java.util.Set;
 
 import net.jcip.annotations.Immutable;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 
 /**
  * {@link IConfigurationElement} based function base class
@@ -32,6 +36,8 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
  */
 @Immutable
 public abstract class AbstractFunction<P extends AbstractParameter> implements Function {
+	
+	private final ALogger log = ALoggerFactory.getLogger(AbstractFunction.class);
 
 	/**
 	 * The configuration element
@@ -64,6 +70,19 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		return parameters;
 	}
 	
+	/**
+	 * @see Function#getExplanation()
+	 */
+	@Override
+	public CellExplanation getExplanation() {
+		try {
+			return (CellExplanation) conf.createExecutableExtension("cellExplanation");
+		} catch (CoreException e) {
+			log.error("Could not create cell explanation for function", e);
+			return null;
+		}
+	}
+
 	/**
 	 * Get the source entities
 	 * @return the source entities
