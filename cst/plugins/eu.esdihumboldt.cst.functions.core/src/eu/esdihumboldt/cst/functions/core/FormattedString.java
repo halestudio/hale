@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
@@ -58,7 +59,7 @@ public class FormattedString extends
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+			throws TransformationException, NoResultException {
 		String pattern = getParameterChecked(PARAMETER_PATTERN);
 		
 		// name/value mapping
@@ -103,7 +104,14 @@ public class FormattedString extends
 			i++;
 		}
 		
-		return MessageFormat.format(pattern, values.values().toArray());
+		try {
+			return MessageFormat.format(pattern, values.values().toArray());
+		} catch (IllegalArgumentException e) {
+			// missing inputs result in an invalid pattern
+			//TODO better way to handle missing inputs
+			//FIXME an error should still be reported for invalid patterns
+			throw new NoResultException(e);
+		}
 	}
 
 }

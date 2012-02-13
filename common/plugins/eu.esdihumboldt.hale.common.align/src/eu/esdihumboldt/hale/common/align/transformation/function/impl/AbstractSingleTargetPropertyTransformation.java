@@ -46,10 +46,15 @@ public abstract class AbstractSingleTargetPropertyTransformation<E extends Trans
 			throws TransformationException {
 		assert resultNames.size() == 1;
 		Entry<String, PropertyEntityDefinition> entry = resultNames.entries().iterator().next();
-		Object result = evaluate(transformationIdentifier, engine, variables,
-				entry.getKey(), entry.getValue(), executionParameters, log);
 		ListMultimap<String, Object> resultMap = ArrayListMultimap.create(1, 1);
-		resultMap.put(entry.getKey(), result);
+		try {
+			Object result = evaluate(transformationIdentifier, engine, variables,
+					entry.getKey(), entry.getValue(), executionParameters, log);
+			resultMap.put(entry.getKey(), result);
+		} catch (NoResultException e) {
+			// no result returned
+			///TODO warning? or ignore?
+		}
 		return resultMap;
 	}
 	
@@ -69,11 +74,12 @@ public abstract class AbstractSingleTargetPropertyTransformation<E extends Trans
 	 * @return the evaluation result
 	 * @throws TransformationException if an unrecoverable error occurs during
 	 *   transformation
+	 * @throws NoResultException if the function does not yield a result
 	 */
 	protected abstract Object evaluate(String transformationIdentifier,
 			E engine, ListMultimap<String, PropertyValue> variables,
 			String resultName, PropertyEntityDefinition resultProperty,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException;
+			throws TransformationException, NoResultException;
 
 }
