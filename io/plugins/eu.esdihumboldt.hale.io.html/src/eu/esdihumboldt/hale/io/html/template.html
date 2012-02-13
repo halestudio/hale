@@ -12,7 +12,7 @@
 
 <body>
 ## macro definitions:
-#macro(images $cell)
+#macro(cell_info $cell)
 <div class="cell">
 	<img src='$cell.getImageLocation()'>
 	#if ($cell.explanation) 
@@ -51,10 +51,10 @@ $haleVers<br/>
 #set($propCells = $typeCell.getPropertyCellsInfo())
   <a name='link_$typeCell.getId()'></a>
   <h2>$typeCell.getSourceName() to $typeCell.getTargetName()</h2>
-  #images($typeCell)
+  #cell_info($typeCell)
   <div style="margin-left: 20px;">
   #foreach($propCell in $propCells)
-    #images($propCell)
+    #cell_info($propCell)
   #end
   </div>
 #end
