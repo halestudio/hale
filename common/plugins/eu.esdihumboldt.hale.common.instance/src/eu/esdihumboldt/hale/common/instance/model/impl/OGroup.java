@@ -145,7 +145,7 @@ public class OGroup implements MutableGroup {
 					}
 				}
 				else if (field.getValue() instanceof ODocument 
-						&& !getSpecialFieldNames().contains(field.getKey())) {
+						&& !getSpecialFieldNames().contains(field.getKey())) { 
 					docs.add((ODocument) field.getValue());
 				}
 				else if (field.getValue() instanceof ORecordAbstract<?>) {
