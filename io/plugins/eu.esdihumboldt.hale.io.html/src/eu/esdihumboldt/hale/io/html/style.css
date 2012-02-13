@@ -8,6 +8,10 @@ body
 	margin: 12px;
 }
 
+.cell {
+	padding: 10px;
+}
+
 /** link defintions **/
 
 a:link, a:visited
@@ -43,9 +47,9 @@ h1
 
 h2
 {
-	background: url(int_link.png) no-repeat 1px 1px;
+	background: url(int_link.png) no-repeat left center;
 	text-indent:20px;
-	margin-left:20px;
+	margin-left:10px;
 	font-size: 1.7em;
 	border-bottom: 1px solid;
 }
