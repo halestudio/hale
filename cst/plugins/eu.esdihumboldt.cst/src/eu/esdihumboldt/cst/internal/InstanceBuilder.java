@@ -15,6 +15,7 @@ package eu.esdihumboldt.cst.internal;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
@@ -52,6 +53,7 @@ public class InstanceBuilder {
 			// simple leaf
 			if (node.isDefined()) {
 				//XXX case where an Instance should be returned? XXX according to the definition?!
+				//XXX this is done in FunctionExecutor
 				return node.getResult();
 			}
 			else {
@@ -78,8 +80,15 @@ public class InstanceBuilder {
 		// populate with instance value (if applicable)
 		if (group instanceof MutableInstance) {
 			if (node.isDefined()) {
+				Object nodeValue = node.getResult();
+				// FunctionExecutor may have wrapped the value in an instance
+				if (nodeValue instanceof Instance) {
+					// extract the value
+					nodeValue = ((Instance) nodeValue).getValue();
+				}
+				
 				MutableInstance instance = (MutableInstance) group;
-				instance.setValue(node.getResult());
+				instance.setValue(nodeValue);
 				empty = false;
 			}
 		}
