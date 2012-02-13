@@ -279,6 +279,8 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 								new FileOutputStream(_functionFile), null);
 					} catch (IOException e) {
 						log.warn("Conversion from Graph to Image failed!");
+					} finally {
+						off_graph.dispose();
 					}
 				}
 			});

@@ -115,6 +115,16 @@ public abstract class OffscreenGraph {
 		IFigure root = graph.getRootLayer();
 		root.getUpdateManager().performUpdate();
 	}
+	
+	/**
+	 * Dispose the off-screen graph shell.
+	 * @see Shell#dispose()
+	 */
+	public void dispose() {
+		if (shell != null) {
+			shell.dispose();
+		}
+	}
 
 	/**
 	 * Configure the viewer.
