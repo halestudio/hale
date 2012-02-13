@@ -164,7 +164,8 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 						propertyType.getTypeDefinition());
 
 				// set constraints on property
-				property.setConstraint(NillableFlag.DISABLED); // nillable
+//				property.setConstraint(NillableFlag.DISABLED); // nillable
+				property.setConstraint(NillableFlag.ENABLED); // nillable FIXME should be configurable per field (see also CSVInstanceReader)
 				property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
 
 				// set metadata for property
