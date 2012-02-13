@@ -25,13 +25,12 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphNode;
-import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.io.Files;
 
@@ -46,7 +45,6 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.ui.common.graph.content.CellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
-import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
 import eu.esdihumboldt.hale.ui.util.DisplayThread;
 import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 import eu.esdihumboldt.util.Identifiers;
@@ -338,19 +336,15 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 
 				@Override
 				public void run() {
-					OffscreenGraph off_graph = new OffscreenGraph(400, 50) {
+					OffscreenGraph off_graph = new OffscreenGraph(600, 200) {
 
 						@Override
 						protected void configureViewer(GraphViewer viewer) {
-							LayoutAlgorithm algo = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT);
-
-							CellGraphContentProvider cgcp = new CellGraphContentProvider();
+							IContentProvider cgcp = new CellGraphContentProvider();
 							GraphLabelProvider glp = new GraphLabelProvider();
 							viewer.setContentProvider(cgcp);
 							viewer.setLabelProvider(glp);
 							viewer.setInput(cell);
-							viewer.setLayoutAlgorithm(algo);
-
 						}
 					};
 
@@ -368,15 +362,16 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 					int height = dim.height;
 					
 					off_graph.resize(width, height);
-
+					
 					try {
 						off_graph.saveImage(new FileOutputStream(file), null);
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
+					} finally {
+						off_graph.dispose();
 					}
-
 				}
 			});
 		}
