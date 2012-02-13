@@ -12,7 +12,10 @@
 
 package eu.esdihumboldt.hale.io.html;
 
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.util.Identifiers;
 
 /**
@@ -23,14 +26,18 @@ import eu.esdihumboldt.util.Identifiers;
 public class CellInfo implements ICellInfo {
 
 	private final Cell cell;
+	
 	/**
 	 * the sub directory where the files will be created
 	 */
 	protected final String subDir;
+	
 	/**
 	 * the cell identifier
 	 */
 	protected final Identifiers<Cell> cellIds;
+	
+	private String explanation;
 
 	/**
 	 * Constructor for a cell info
@@ -49,7 +56,26 @@ public class CellInfo implements ICellInfo {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.html.ICellInfo#getImageLocation()
+	 * @see ICellInfo#getExplanation()
+	 */
+	@Override
+	public String getExplanation() {
+		if (explanation == null) {
+			// determine cell explanation
+			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+			if (function != null) {
+				CellExplanation cellExplanation = function.getExplanation();
+				if (cellExplanation != null) {
+					explanation = cellExplanation.getExplanation(cell);
+				}
+			}
+		}
+		
+		return explanation;
+	}
+
+	/**
+	 * @see ICellInfo#getImageLocation()
 	 */
 	@Override
 	public String getImageLocation() {
