@@ -99,24 +99,33 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 			int index = 0;
 			for (String part : nextLine) {
 				PropertyDefinition property = propAr[index];
+				
+				if (part != null && part.isEmpty()) {
+					//FIXME make this configurable
+					part = null;
+				}
+				
 				Object value = part;
-				Binding binding = property.getPropertyType().getConstraint(
-						Binding.class);
-				try {
-					if (!binding.getBinding().equals(String.class)) {
-						ConversionService conversionService = OsgiUtils
-								.getService(ConversionService.class);
-						if (conversionService.canConvert(String.class,
-								binding.getBinding())) {
-							value = conversionService.convert(part,
-									binding.getBinding());
+				
+				if (value != null) {
+					Binding binding = property.getPropertyType().getConstraint(
+							Binding.class);
+					try {
+						if (!binding.getBinding().equals(String.class)) {
+							ConversionService conversionService = OsgiUtils
+									.getService(ConversionService.class);
+							if (conversionService.canConvert(String.class,
+									binding.getBinding())) {
+								value = conversionService.convert(part,
+										binding.getBinding());
+							}
+							else {
+								throw new IllegalStateException("Conversion not possible!");
+							}
 						}
-						else {
-							throw new IllegalStateException("Conversion not possible!");
-						}
+					} catch (Exception e) {
+						reporter.error(new IOMessageImpl("Cannot convert property value to {0}", e, line , -1, binding.getBinding().getSimpleName()));
 					}
-				} catch (Exception e) {
-					reporter.error(new IOMessageImpl("Cannot convert property value to {0}", e, line , -1, binding.getBinding().getSimpleName()));
 				}
 
 				instance.addProperty(property.getName(), value);
