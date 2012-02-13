@@ -13,11 +13,12 @@
 <body>
 ## macro definitions:
 #macro(images $cell)
+<div class="cell">
 	<img src='$cell.getImageLocation()'>
+</div>
 #end
-<p>
 <h1>Mapping Documentation</h1>
-
+<p>
 $author<br/>
 $project<br/>
 $exportDate<br/>
@@ -26,32 +27,26 @@ $haleVers<br/>
 #if($pi.getDescription())
 	$description
 #end
+</p>
 <br />
 <h4>Type relation overview:</h4>
-<ul>
 #foreach ($typeCell in $typeCellInfos)
-  <li><img src='$filesDir/int_link.png' alt='linkpicture'><a href='#link_$typeCell.getId()'><img src='$typeCell.getImageLocation()'></a></li>
+  <div class="cell">
+    <a href='#link_$typeCell.getId()'>
+      <!-- img src='$filesDir/int_link.png' alt='linkpicture' -->
+      <img src='$typeCell.getImageLocation()'>
+    </a>
+  </div>
 #end
-</ul>
-
 <br />
-<ul>
 #foreach ($typeCell in $typeCellInfos)
 #set($propCells = $typeCell.getPropertyCellsInfo())
-  <a name='link_$typeCell.getId()'></a><h5>$typeCell.getSourceName() to $typeCell.getTargetName()</h5>
-  <li>#images($typeCell)
-  		<ul>
-  		#foreach($propCell in $propCells)
-    		<li>#images($propCell)</li>
-		#end
-		</ul>
-  </li>
+  <a name='link_$typeCell.getId()'></a>
+  <h2>$typeCell.getSourceName() to $typeCell.getTargetName()</h2>
+  #images($typeCell)
+  #foreach($propCell in $propCells)
+    #images($propCell)
+  #end
 #end
-</ul>
-
-</p>
-
-## create macro for the cell image creation
-
 </body>
 </html>
