@@ -88,6 +88,10 @@ public abstract class OffscreenGraph {
 		graph.getViewport().setBounds(new Rectangle(0, 0, width, height));
 		shell.setVisible(false);
 		
+		Object input = viewer.getInput();
+		// re-setting the input seems to be needed for the tree layout to place the nodes correctly
+		viewer.setInput(input); 
+		
 		graph.applyLayoutNow();
 		
 		IFigure root = graph.getRootLayer();
