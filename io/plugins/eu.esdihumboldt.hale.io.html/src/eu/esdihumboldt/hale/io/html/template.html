@@ -16,6 +16,7 @@
 <div class="cell">
 	<img src='$cell.getImageLocation()'>
 </div>
+<br />
 #end
 <h1>Mapping Documentation</h1>
 <p>
@@ -31,12 +32,14 @@ $haleVers<br/>
 <br />
 <h4>Type relation overview:</h4>
 #foreach ($typeCell in $typeCellInfos)
-  <div class="cell">
-    <a href='#link_$typeCell.getId()'>
-      <!-- img src='$filesDir/int_link.png' alt='linkpicture' -->
-      <img src='$typeCell.getImageLocation()'>
-    </a>
-  </div>
+<div>
+  <a href='#link_$typeCell.getId()'>
+	  <span class="cell">
+	      <!-- img src='$filesDir/int_link.png' alt='linkpicture' -->
+	      <img src='$typeCell.getImageLocation()'>
+	  </span>
+  </a>
+</div>
 #end
 <br />
 #foreach ($typeCell in $typeCellInfos)
@@ -44,9 +47,11 @@ $haleVers<br/>
   <a name='link_$typeCell.getId()'></a>
   <h2>$typeCell.getSourceName() to $typeCell.getTargetName()</h2>
   #images($typeCell)
+  <div style="margin-left: 20px;">
   #foreach($propCell in $propCells)
     #images($propCell)
   #end
+  </div>
 #end
 </body>
 </html>

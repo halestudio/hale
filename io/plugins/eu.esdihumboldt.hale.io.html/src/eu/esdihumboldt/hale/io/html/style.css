@@ -6,10 +6,16 @@ body
 	font-weight: 200;
 	line-height: 1.6em;
 	margin: 12px;
+	background-color: #f9f9f9;
 }
 
 .cell {
-	padding: 10px;
+	margin: 10px;
+	padding-top: 20px;
+	padding-left: 15px;
+	background-color: #fff;
+	display: inline-block;
+	border: 1px solid #eee;
 }
 
 /** link defintions **/
@@ -31,13 +37,13 @@ a:active, a:hover
 h1, h2, h3, h4, h5
 {
 	font-weight: 700;
-	margin-top: 0px;
 	margin-bottom: 1em;
 	color: #006699;
 }
 
 h1
 {
+	margin-top: 0px;
 	font-size: 2.0em;
 	background: url(bg-headline.png) no-repeat 1px 1px;
 	text-indent:20px;
@@ -47,6 +53,7 @@ h1
 
 h2
 {
+	margin-top: 1.5em;
 	background: url(int_link.png) no-repeat left center;
 	text-indent:20px;
 	margin-left:10px;
