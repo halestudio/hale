@@ -26,6 +26,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
@@ -37,12 +38,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * Merge based on equal properties.
  * @author Simon Templer
  */
-public class PropertiesMergeHandler extends AbstractMergeHandler<List<List<QName>>, DeepIterableKey> {
-	
-	/**
-	 * Name of the parameter specifying a property path 
-	 */
-	private static final String PARAMETER_PROPERTY = "property";
+public class PropertiesMergeHandler extends AbstractMergeHandler<List<List<QName>>, DeepIterableKey> implements MergeFunction {
 	
 	@Override
 	protected List<List<QName>> createMergeConfiguration(

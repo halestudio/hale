@@ -18,6 +18,7 @@ import net.jcip.annotations.Immutable;
 
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
@@ -30,14 +31,8 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
  * @author Simon Templer
  */
 @Immutable
-public class Assign extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
+public class Assign extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements AssignFunction {
 	
-	/**
-	 * Name of the parameter specifying the value to assign. See the function
-	 * definition on <code>eu.esdihumboldt.hale.common.align</code>.
-	 */
-	public static final String PARAMETER_VALUE = "value";
-
 	@Override
 	protected Object evaluate(
 			String transformationIdentifier, TransformationEngine engine,
