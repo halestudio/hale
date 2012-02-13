@@ -16,6 +16,7 @@
          point="eu.esdihumboldt.hale.align.function">
       <typeFunction
             category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.RetypeExplanation"
             description="Maps one source type to one target type"
             identifier="eu.esdihumboldt.hale.align.retype"
             name="Retype">
@@ -36,6 +37,7 @@
       </typeFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.RenameExplanation"
             description="Copy a source property to a target property"
             identifier="eu.esdihumboldt.hale.align.rename"
             name="Rename">
@@ -56,6 +58,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.AssignExplanation"
             description="Assigns a value to a target property"
             identifier="eu.esdihumboldt.hale.align.assign"
             name="Assign">
@@ -100,6 +103,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.FormattedStringExplanation"
             description="Creates a formatted string based on a pattern and the input variables"
             icon="icons/text.png"
             identifier="eu.esdihumboldt.hale.align.formattedstring"
@@ -129,6 +133,7 @@
       </propertyFunction>
       <typeFunction
             category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.MergeExplanation"
             description="Merges multiple instances of the source type into one instance of the target type, based on one or more matching properties."
             icon="icons/merge.gif"
             identifier="eu.esdihumboldt.hale.align.merge"

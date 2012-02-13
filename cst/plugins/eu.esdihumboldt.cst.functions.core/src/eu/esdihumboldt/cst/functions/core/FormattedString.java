@@ -26,6 +26,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
@@ -39,13 +40,8 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
  * @author Simon Templer
  */
 public class FormattedString extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> {
-	
-	/**
-	 * Name of the parameter specifying the pattern for the string format.
-	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
-	 */
-	public static final String PARAMETER_PATTERN = "pattern";
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> 
+		implements FormattedStringFunction {
 	
 	/**
 	 * Entity name for variables.
