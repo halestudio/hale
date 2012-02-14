@@ -123,13 +123,14 @@ li
 /** table defintions **/
 
 table { 
+	padding: 3px;
 	border-spacing: 0;
 	border-collapse: collapse;
 }
 
-td,th { vertical-align: top; }
+td,th { }
 
-th { font-weight: 200; text-align: left;}
+th { font-weight: bold; text-align: right;}
 td.leftcol,
 th.leftcol { padding-right: 10px; }
 td.rightcol,

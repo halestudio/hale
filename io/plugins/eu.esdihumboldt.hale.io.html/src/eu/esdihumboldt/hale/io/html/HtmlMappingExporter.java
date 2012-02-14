@@ -186,24 +186,15 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			}
 			htmlExportFile = new File(getTarget().getLocation().getPath());
 
-			String projectName = "Project Name : " + pi.getName();
-			String author = "Project Author : " + pi.getAuthor();
-			String haleVers = "Hale Version : "
-					+ pi.getHaleVersion().toString();
-			String exportDate = "Export Date : " + dfm.format(date);
-			String description = "Description : " + pi.getDescription();
-			String created = "Created Date : " + dfm.format(pi.getCreated());
+			String exportDate = dfm.format(date);
+			String created = dfm.format(pi.getCreated());
 
 			context = new VelocityContext();
 
 			// associate variables with information data
-			context.put("author", author);
-			context.put("project", projectName);
-			context.put("haleVers", haleVers);
 			context.put("exportDate", exportDate);
 			context.put("createdDate", created);
 			context.put("pi", pi);
-			context.put("description", description);
 			context.put("filesDir", filesSubDir);
 		} else {
 			// do nothing
