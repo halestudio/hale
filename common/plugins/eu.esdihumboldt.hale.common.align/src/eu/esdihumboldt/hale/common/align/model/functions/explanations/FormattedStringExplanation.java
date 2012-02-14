@@ -44,4 +44,21 @@ public class FormattedStringExplanation implements CellExplanation, FormattedStr
 		return null;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
+	 */
+	@Override
+	public String getExplanationAsHtml(Cell cell) {
+		Entity target = CellUtil.getFirstEntity(cell.getTarget());
+		String pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN);
+		
+		if (target != null && pattern != null) {
+			return MessageFormat.format("HIERFUER GIBT ES EIN HTML FORMAT!", 
+					target.getDefinition().getDefinition().getDisplayName(),
+					pattern);
+		}
+		
+		return null;
+	}
+
 }
