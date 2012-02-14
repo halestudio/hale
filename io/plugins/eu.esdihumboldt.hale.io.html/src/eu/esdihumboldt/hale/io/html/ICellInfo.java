@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.io.html;
 
+
 /**
  * The Interface for representing information about a Cell
  * 
@@ -31,5 +32,11 @@ public interface ICellInfo {
 	 * @return the explanation or <code>null</code> if none is available
 	 */
 	public String getExplanation();
+	
+	/**
+	 * Get the explanation in html format for the given cell
+	 * @return the cell explanation in html format
+	 */
+	public String getExplanationAsHtml();
 
 }

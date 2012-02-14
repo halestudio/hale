@@ -24,5 +24,12 @@ public interface CellExplanation {
 	 * @return the cell explanation
 	 */
 	public String getExplanation(Cell cell);
+	
+	/**
+	 * Get the explanation in html format for the given cell
+	 * @param cell the cell
+	 * @return the cell explanation in html format
+	 */
+	public String getExplanationAsHtml(Cell cell);
 
 }

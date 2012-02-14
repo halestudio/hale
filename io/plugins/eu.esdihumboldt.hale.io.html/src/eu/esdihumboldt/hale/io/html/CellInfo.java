@@ -37,7 +37,7 @@ public class CellInfo implements ICellInfo {
 	 */
 	protected final Identifiers<Cell> cellIds;
 	
-	private String explanation;
+	private CellExplanation cellExpl;
 
 	/**
 	 * Constructor for a cell info
@@ -60,20 +60,39 @@ public class CellInfo implements ICellInfo {
 	 */
 	@Override
 	public String getExplanation() {
-		if (explanation == null) {
+		if (cellExpl == null) {
 			// determine cell explanation
 			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
 			if (function != null) {
-				CellExplanation cellExplanation = function.getExplanation();
-				if (cellExplanation != null) {
-					explanation = cellExplanation.getExplanation(cell);
+				cellExpl = function.getExplanation();
+				if(cellExpl == null) {
+					return null;
 				}
 			}
 		}
 		
-		return explanation;
+		return cellExpl.getExplanation(cell);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.io.html.ICellInfo#getExplanationAsHtml
+	 */
+	@Override
+	public String getExplanationAsHtml() {
+		if (cellExpl == null) {
+			// determine cell explanation
+			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+			if (function != null) {
+				cellExpl = function.getExplanation();
+				if(cellExpl == null) {
+					return null;
+				}
+			}
+		}
+		
+		return cellExpl.getExplanationAsHtml(cell);
+	}
+	
 	/**
 	 * @see ICellInfo#getImageLocation()
 	 */

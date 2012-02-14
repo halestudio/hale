@@ -62,4 +62,13 @@ public class MergeExplanation implements CellExplanation, MergeFunction {
 		return null;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
+	 */
+	@Override
+	public String getExplanationAsHtml(Cell cell) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
