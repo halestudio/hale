@@ -25,6 +25,9 @@ import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction
  * @author Simon Templer
  */
 public class FormattedStringExplanation implements CellExplanation, FormattedStringFunction {
+	
+	private static final String EXPLANATION_PATTERN = "Populates the {0} property with a string formatted according to this pattern:\n"
+			+ "{1}\n\nSource property names in curly braces are replaced by the corresponding property value.";
 
 	/**
 	 * @see CellExplanation#getExplanation(Cell)
@@ -35,10 +38,26 @@ public class FormattedStringExplanation implements CellExplanation, FormattedStr
 		String pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN);
 		
 		if (target != null && pattern != null) {
-			return MessageFormat.format("Populates the ''{0}'' property with a string formatted according to this pattern:\n"
-					+ "{1}\n\nSource property names in curly braces are replaced by the corresponding property value.", 
-					target.getDefinition().getDefinition().getDisplayName(),
+			return MessageFormat.format(EXPLANATION_PATTERN, 
+					"'" + target.getDefinition().getDefinition().getDisplayName() + "'",
 					pattern);
+		}
+		
+		return null;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
+	 */
+	@Override
+	public String getExplanationAsHtml(Cell cell) {
+		Entity target = CellUtil.getFirstEntity(cell.getTarget());
+		String pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN);
+		
+		if (target != null && pattern != null) {
+			return MessageFormat.format(EXPLANATION_PATTERN, 
+					"<i>" + target.getDefinition().getDefinition().getDisplayName() + "</i>",
+					"<b>" + pattern + "</b>").replaceAll("\n", "<br />");
 		}
 		
 		return null;
