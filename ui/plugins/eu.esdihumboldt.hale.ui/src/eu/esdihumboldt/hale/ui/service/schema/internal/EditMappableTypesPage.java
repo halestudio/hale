@@ -17,11 +17,12 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -34,7 +35,6 @@ import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
@@ -48,6 +48,10 @@ import eu.esdihumboldt.hale.ui.service.schema.util.NSTypeTreeContentProvider;
 public class EditMappableTypesPage extends WizardPage {
 	private final TypeIndex typeIndex;
 	private final Set<TypeDefinition> changedTypes = new HashSet<TypeDefinition>();
+
+	private CheckboxTreeViewer viewer;
+	private NSTypeTreeContentProvider contentProvider;
+	private ICheckStateProvider checkStateProvider;
 
 	/**
 	 * Creates a new wizard page to edit which types in the given index are
@@ -81,10 +85,24 @@ public class EditMappableTypesPage extends WizardPage {
 		};
 
 		// configure viewer
-		final CheckboxTreeViewer viewer = (CheckboxTreeViewer) tree.getViewer();
-		final NSTypeTreeContentProvider contentProvider = new NSTypeTreeContentProvider();
+		viewer = (CheckboxTreeViewer) tree.getViewer();
+		contentProvider = new NSTypeTreeContentProvider();
 		viewer.setContentProvider(contentProvider);
 		viewer.setComparator(new DefinitionComparator());
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				Object doubleClicked = selection.getFirstElement();
+				if (doubleClicked instanceof String)
+					viewer.setExpandedState(doubleClicked, !viewer.getExpandedState(doubleClicked));
+				else {
+					boolean newState = !checkStateProvider.isChecked(doubleClicked);
+					viewer.setChecked(doubleClicked, newState);
+					checkStateOfTypeChanged((TypeDefinition) doubleClicked, newState);
+				}
+			}
+		});
 		viewer.setLabelProvider(new DefinitionLabelProvider() {
 			/**
 			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getImage(java.lang.Object)
@@ -97,7 +115,7 @@ public class EditMappableTypesPage extends WizardPage {
 			}
 		});
 		// because elements filtered by FilteredTree lose their checked state:
-		final ICheckStateProvider checkStateProvider = new ICheckStateProvider() {
+		checkStateProvider = new ICheckStateProvider() {
 			@Override
 			public boolean isGrayed(Object element) {
 				if (element instanceof String) {
@@ -138,38 +156,16 @@ public class EditMappableTypesPage extends WizardPage {
 					for (Object child : contentProvider.getChildren(event.getElement()))
 						if (checkStateProvider.isChecked(child) != event.getChecked()) {
 							viewer.setChecked(child, event.getChecked());
-							updateType((TypeDefinition) child, event.getChecked());
+							checkStateOfTypeChanged((TypeDefinition) child, event.getChecked());
 						}
 					// only two levels, no need to update any parents or children's children
-				} else {
-					updateType((TypeDefinition) event.getElement(), event.getChecked());
-					// update parent
-					Object parent = contentProvider.getParent(event.getElement());
-					viewer.setGrayed(parent, checkStateProvider.isGrayed(parent));
-					viewer.setChecked(parent, checkStateProvider.isChecked(parent));
-					// only two levels, no need to update any parent's parents or children
-				}
-			}
-
-			private void updateType(TypeDefinition type, boolean checked) {
-				if (checked == type.getConstraint(MappableFlag.class).isEnabled())
-					changedTypes.remove(type);
-				else
-					changedTypes.add(type);
+				} else
+					checkStateOfTypeChanged((TypeDefinition) event.getElement(), event.getChecked());
 			}
 		});
 
 		// set input to all types in the given index
 		viewer.setInput(typeIndex.getTypes());
-
-		// filter to exclude simple types
-		viewer.addFilter(new ViewerFilter() {
-			@Override
-			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				return element instanceof String
-						|| !((TypeDefinition) element).getConstraint(HasValueFlag.class).isEnabled();
-			}
-		});
 
 		// expand all except XMLSchema
 		viewer.expandAll();
@@ -177,6 +173,16 @@ public class EditMappableTypesPage extends WizardPage {
 
 		// set control
 		setControl(viewer.getControl());
+	}
+
+	private void checkStateOfTypeChanged(TypeDefinition type, boolean checked) {
+		if (checked == type.getConstraint(MappableFlag.class).isEnabled())
+			changedTypes.remove(type);
+		else
+			changedTypes.add(type);
+		Object parent = contentProvider.getParent(type);
+		viewer.setGrayed(parent, checkStateProvider.isGrayed(parent));
+		viewer.setChecked(parent, checkStateProvider.isChecked(parent));
 	}
 
 	/**
