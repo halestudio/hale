@@ -25,14 +25,28 @@
 
 <h1>Mapping Documentation</h1>
 <p>
-$author<br/>
-$project<br/>
-$exportDate<br/>
-$createdDate<br />
-$haleVers<br/>
+<table cellpadding="3">
+<tr>
+	<th>Project Author: </th>	<td>$pi.getAuthor()</td>
+</tr>
+<tr>
+	<th>Project Name: </th>	<td>$pi.getName()</td>
+</tr>
+<tr>
+	<th>Export Date: </th>	<td>$exportDate</td>
+</tr>
+<tr>
+	<th>Creation Date: </th>	<td>$createdDate</td>
+</tr>
+<tr>
+	<th>Hale Version: </th>	<td>$pi.getHaleVersion()</td>
+</tr>
 #if($pi.getDescription())
-	$description
+<tr>
+	<th>Description: </th> <td>$pi.getDescription()</td>
+</tr>
 #end
+</table>
 </p>
 <br />
 <h4>Type relation overview:</h4>
