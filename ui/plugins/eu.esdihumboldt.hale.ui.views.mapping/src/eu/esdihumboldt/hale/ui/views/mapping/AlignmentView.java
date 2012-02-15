@@ -15,6 +15,8 @@ package eu.esdihumboldt.hale.ui.views.mapping;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -31,19 +33,26 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
+import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
@@ -64,6 +73,8 @@ public class AlignmentView extends AbstractMappingView {
 	private ComboViewer typeRelations;
 	
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
+
+	private ISelectionListener selectionListener;
 
 	/**
 	 * @see AbstractMappingView#createPartControl(Composite)
@@ -170,6 +181,73 @@ public class AlignmentView extends AbstractMappingView {
 				update();
 			}
 		});
+		
+		// listen on SchemaSelections
+		getSite().getWorkbenchWindow().getSelectionService().addPostSelectionListener(selectionListener = new ISelectionListener() {
+			
+			@Override
+			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+				if (!(selection instanceof SchemaSelection)) {
+					// only react on schema selections
+					return;
+				}
+				
+				if (part != AlignmentView.this) {
+					updateRelation((SchemaSelection) selection);
+				}
+			}
+		});
+	}
+
+	/**
+	 * Update the selected type relation to a cell that is related to the given
+	 * schema selection. 
+	 * @param selection the schema selection
+	 */
+	private void updateRelation(SchemaSelection selection) {
+		ISelection typeSelection = typeRelations.getSelection();
+		
+		Cell typeCell = null;
+		if (!typeSelection.isEmpty() && typeSelection instanceof IStructuredSelection) {
+			typeCell = (Cell) ((IStructuredSelection) typeSelection).getFirstElement();
+		}
+		
+		if (typeCell != null && (associatedWithType(typeCell.getSource(), selection.getSourceItems())
+				|| associatedWithType(typeCell.getTarget(), selection.getTargetItems()))) {
+			// type cell is associated, don't change
+			return;
+		}
+		
+		// find associated type cell
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		Alignment alignment = as.getAlignment();
+		
+		// find type cell associated with the selection
+		for (Cell cell : alignment.getTypeCells()) {
+			if ((associatedWithType(cell.getSource(), selection.getSourceItems()))
+					|| associatedWithType(cell.getTarget(), selection.getTargetItems())) {
+				//FIXME prefer cells where both conditions are true? even before the current cell?
+				typeRelations.setSelection(new StructuredSelection(cell));
+				return;
+			}
+		}
+	}
+	
+	private boolean associatedWithType(
+			ListMultimap<String, ? extends Entity> entities,
+			Set<EntityDefinition> entityDefs) {
+		Set<TypeDefinition> types = new HashSet<TypeDefinition>(); //XXX must be TypeEntityDefintions when there are contexts for types
+		for (EntityDefinition entityDef : entityDefs) {
+			types.add(entityDef.getType());
+		}
+		
+		for (Entity entity : entities.values()) {
+			if (types.contains(entity.getDefinition().getType())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	/**
@@ -238,6 +316,10 @@ public class AlignmentView extends AbstractMappingView {
 		if (alignmentListener != null) {
 			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 			as.removeListener(alignmentListener);
+		}
+		
+		if (selectionListener != null) {
+			getSite().getWorkbenchWindow().getSelectionService().removePostSelectionListener(selectionListener);
 		}
 		
 		functionLabels.dispose();
