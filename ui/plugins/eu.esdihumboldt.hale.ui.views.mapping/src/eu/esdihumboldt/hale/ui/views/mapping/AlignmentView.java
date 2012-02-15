@@ -213,20 +213,33 @@ public class AlignmentView extends AbstractMappingView {
 		}
 		
 		if (typeCell != null && (associatedWithType(typeCell.getSource(), selection.getSourceItems())
-				|| associatedWithType(typeCell.getTarget(), selection.getTargetItems()))) {
-			// type cell is associated, don't change
+				&& associatedWithType(typeCell.getTarget(), selection.getTargetItems()))) {
+			// type cell is associated with source and target, don't change
 			return;
 		}
 		
-		// find associated type cell
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		Alignment alignment = as.getAlignment();
 		
-		// find type cell associated with the selection
+		// find type cell associated with both source and target
+		for (Cell cell : alignment.getTypeCells()) {
+			if ((associatedWithType(cell.getSource(), selection.getSourceItems()))
+					&& associatedWithType(cell.getTarget(), selection.getTargetItems())) {
+				typeRelations.setSelection(new StructuredSelection(cell));
+				return;
+			}
+		}
+		
+		if (typeCell != null && (associatedWithType(typeCell.getSource(), selection.getSourceItems())
+				|| associatedWithType(typeCell.getTarget(), selection.getTargetItems()))) {
+			// type cell is associated with source or target, don't change
+			return;
+		}
+		
+		// find type cell associated with source or target
 		for (Cell cell : alignment.getTypeCells()) {
 			if ((associatedWithType(cell.getSource(), selection.getSourceItems()))
 					|| associatedWithType(cell.getTarget(), selection.getTargetItems())) {
-				//FIXME prefer cells where both conditions are true? even before the current cell?
 				typeRelations.setSelection(new StructuredSelection(cell));
 				return;
 			}
