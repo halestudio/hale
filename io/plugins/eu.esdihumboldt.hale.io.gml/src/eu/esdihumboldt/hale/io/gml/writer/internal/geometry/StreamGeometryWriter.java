@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -139,6 +140,12 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			PropertyDefinition property, String srsName) throws XMLStreamException {
 		// write any srsName attribute on the parent element
 		writeSrsName(writer, property.getPropertyType(), geometry, srsName);
+		
+		//XXX HACK
+		if (geometry instanceof GeometryCollection && ((GeometryCollection) geometry).getNumGeometries() == 1) {
+			geometry = geometry.getGeometryN(0);
+		}
+		//XXX HACK END
 		
 		Class<? extends Geometry> geomType = geometry.getClass();
 		
