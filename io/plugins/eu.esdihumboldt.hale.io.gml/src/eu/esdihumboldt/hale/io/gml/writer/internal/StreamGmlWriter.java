@@ -49,7 +49,6 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
@@ -97,6 +96,12 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 * The parameter name for the XML root element namespace
 	 */
 	public static final String PARAM_ROOT_ELEMENT_NAMESPACE = "xml.rootElement.namespace";
+	
+	/**
+	 * The parameter name for the flag specifying if a geometry should be
+	 * simplified before writing it, if possible. Defaults to true.
+	 */
+	public static final String PARAM_SIMPLIFY_GEOMETRY = "gml.geometry.simplify";
 
 	/**
 	 * The XML stream writer
@@ -863,7 +868,16 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	protected StreamGeometryWriter getGeometryWriter() {
 		if (geometryWriter == null) {
-			geometryWriter = StreamGeometryWriter.getDefaultInstance(gmlNs);
+			boolean simplifyGeometry;
+			try {
+				simplifyGeometry = Boolean.parseBoolean(getParameter(PARAM_SIMPLIFY_GEOMETRY));
+			} catch (Throwable e) {
+				// default to true
+				simplifyGeometry = true;
+			}
+			
+			geometryWriter = StreamGeometryWriter.getDefaultInstance(gmlNs,
+					simplifyGeometry);
 		}
 		
 		return geometryWriter;

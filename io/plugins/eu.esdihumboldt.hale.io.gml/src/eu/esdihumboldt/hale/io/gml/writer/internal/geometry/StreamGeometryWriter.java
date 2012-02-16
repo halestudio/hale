@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -57,14 +58,16 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	private static final ALogger log = ALoggerFactory.getLogger(StreamGeometryWriter.class);
 	
 	/**
-	 * Get a geometry writer instance with a default configuration
-	 * 
+	 * Get a geometry writer instance with a default configuration.
 	 * @param gmlNs the GML namespace 
-	 * 
+	 * @param simplifyGeometry if geometries should be simplified before writing
+	 *   them if possible (e.g. a MultiGeometry with only one geometry is
+	 *   reduced to the contained geometry)
 	 * @return the geometry writer
 	 */
-	public static StreamGeometryWriter getDefaultInstance(String gmlNs) {
-		StreamGeometryWriter sgm = new StreamGeometryWriter(gmlNs);
+	public static StreamGeometryWriter getDefaultInstance(String gmlNs, 
+			boolean simplifyGeometry) {
+		StreamGeometryWriter sgm = new StreamGeometryWriter(gmlNs, simplifyGeometry);
 		
 		//TODO configure
 		sgm.registerGeometryWriter(new CurveWriter());
@@ -96,17 +99,23 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 */
 	//XXX stored paths instead per attribute definition?
 	private final Map<TypeDefinition, Map<Class<? extends Geometry>, DefinitionPath>> storedPaths = 
-		new HashMap<TypeDefinition, Map<Class<? extends Geometry>,DefinitionPath>>(); 
+		new HashMap<TypeDefinition, Map<Class<? extends Geometry>,DefinitionPath>>();
+
+	private final boolean simplifyGeometry; 
 
 	/**
 	 * Constructor
 	 * 
 	 * @param gmlNs the GML namespace
+	 * @param simplifyGeometry if geometries should be simplified before writing
+	 *   them if possible (e.g. a MultiGeometry with only one geometry is
+	 *   reduced to the contained geometry) 
 	 */
-	public StreamGeometryWriter(String gmlNs) {
+	public StreamGeometryWriter(String gmlNs, boolean simplifyGeometry) {
 		super();
 		
 		this.gmlNs = gmlNs;
+		this.simplifyGeometry = simplifyGeometry;
 	}
 	
 	/**
@@ -139,6 +148,14 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			PropertyDefinition property, String srsName) throws XMLStreamException {
 		// write any srsName attribute on the parent element
 		writeSrsName(writer, property.getPropertyType(), geometry, srsName);
+		
+		if (simplifyGeometry) {
+			// if geometry collection containing only one geometry,
+			// reduce to internal geometry 
+			if (geometry instanceof GeometryCollection && ((GeometryCollection) geometry).getNumGeometries() == 1) {
+				geometry = geometry.getGeometryN(0);
+			}
+		}
 		
 		Class<? extends Geometry> geomType = geometry.getClass();
 		
