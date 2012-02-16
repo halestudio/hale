@@ -56,7 +56,7 @@ public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 			if (context == null) {
 				// no transformation context match defined
 				//XXX warn instead? XXX transformation log instead?
-				log.error("Multiple values for source node w/o transformation context match");
+//				log.error("Multiple values for source node w/o transformation context match");
 			}
 			else {
 				Pair<SourceNode, Set<Cell>> leftover;
