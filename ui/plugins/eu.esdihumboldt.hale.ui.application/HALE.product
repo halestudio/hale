@@ -21,7 +21,7 @@ http://www.esdi-community.eu/projects/show/hale
 
    <launcherArgs>
       <programArgs>-nl en_GB -clean -name &quot;HUMBOLDT Alignment Editor&quot; --launcher.defaultAction openFile</programArgs>
-      <vmArgs>-Xmx800m</vmArgs>
+      <vmArgs>-Xmx800m -Dcache.level1.enabled=false -Dcache.level1.size=0 -Dcache.level2.enabled=false -Dcache.level2.size=0</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
