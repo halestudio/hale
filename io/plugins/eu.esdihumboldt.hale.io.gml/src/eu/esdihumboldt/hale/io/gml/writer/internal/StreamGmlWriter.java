@@ -363,14 +363,12 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 					IOReport report = schemaReader.execute(null);
 					
 					if (report.isSuccess()) {
-						Schema wfsSchema = schemaReader.getSchema();
+						XmlIndex wfsSchema = schemaReader.getSchema();
 						
 						// look for FeatureCollection element
-						if (wfsSchema instanceof XmlIndex) {
-							for (XmlElement el : ((XmlIndex) wfsSchema).getElements().values()) {
-								if (isFeatureCollection(el)) {
-									fcElements.add(el);
-								}
+						for (XmlElement el : wfsSchema.getElements().values()) {
+							if (isFeatureCollection(el)) {
+								fcElements.add(el);
 							}
 						}
 						
