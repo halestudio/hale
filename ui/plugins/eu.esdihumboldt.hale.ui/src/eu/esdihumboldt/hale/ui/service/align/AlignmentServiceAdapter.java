@@ -40,10 +40,10 @@ public abstract class AlignmentServiceAdapter implements
 	}
 
 	/**
-	 * @see AlignmentServiceListener#cellsUpdated(Iterable)
+	 * @see AlignmentServiceListener#cellReplaced(Cell, Cell)
 	 */
 	@Override
-	public void cellsUpdated(Iterable<Cell> cells) {
+	public void cellReplaced(Cell oldCell, Cell newCell) {
 		// override me
 	}
 

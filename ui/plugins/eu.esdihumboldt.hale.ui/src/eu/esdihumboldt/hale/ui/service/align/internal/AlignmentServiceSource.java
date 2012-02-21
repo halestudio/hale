@@ -61,8 +61,8 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 			}
 
 			@Override
-			public void cellsUpdated(Iterable<Cell> cells) {
-				cellsAdded(cells);
+			public void cellReplaced(Cell oldCell, Cell newCell) {
+				// no change to has_cells
 			}
 
 			@Override

@@ -42,17 +42,8 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 * @see MutableAlignment#addCell(MutableCell)
 	 */
 	@Override
-	public boolean addCell(MutableCell cell) {
-		//FIXME when are cells equal?! FIXME
-		if (cells.contains(cell)) {
-			cells.remove(cell);
-			internalAdd(cell);
-			return true;
-		}
-		else {
-			internalAdd(cell);
-			return false;
-		}
+	public void addCell(MutableCell cell) {
+		internalAdd(cell);
 	}
 	
 	private void internalAdd(MutableCell cell) {
