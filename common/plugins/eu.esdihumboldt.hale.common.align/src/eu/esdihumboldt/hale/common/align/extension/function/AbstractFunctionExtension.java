@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.common.align.extension.function;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,8 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> extends IdentifiableExtension<T> {
 
 	private SetMultimap<String, T> categoryFunctions;
+	
+	private boolean initialized = false;
 	
 	/**
 	 * @see IdentifiableExtension#IdentifiableExtension(String)
@@ -65,7 +68,7 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 	 * @return the list of functions or an empty list
 	 */
 	public List<T> getFunctions(String category) {
-		if (categoryFunctions == null) {
+		if (!initialized || categoryFunctions == null) {
 			// initialize
 			getElements();
 		}
@@ -76,6 +79,18 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 		}
 		
 		return Collections.emptyList();
+	}
+
+	/**
+	 * @see IdentifiableExtension#getElements()
+	 */
+	@Override
+	public Collection<T> getElements() {
+		try {
+			return super.getElements();
+		} finally {
+			initialized = true;
+		}
 	}
 
 	/**
