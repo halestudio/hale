@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -23,8 +24,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -44,6 +49,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
@@ -280,31 +286,65 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 * Perform the transformation
 	 */
 	protected void performTransformation() {
-		TransformationService ts = getTransformationService();
-		if (ts == null) {
-			log.userError("No transformation service available");
-			return;
-		}
-		
-		OrientInstanceSink sink = new OrientInstanceSink(transformed);
-		TransformationReport report;
-		try {
-			//TODO transformation should be done in a job!
-			report = ts.transform(
-					getAlignmentService().getAlignment(), 
-					getInstances(DataSet.SOURCE), 
-					sink);
+		final AtomicBoolean transformationFinished = new AtomicBoolean(false);
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		display.syncExec(new Runnable() {
 			
-			// publish report
-			ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
-			rs.addReport(report);
-		} finally {
-			try {
-				sink.close();
-			} catch (IOException e) {
-				// ignore
+			@Override
+			public void run() {
+				ProgressMonitorDialog pm = new ProgressMonitorDialog(display.getActiveShell());
+				try {
+					pm.run(true, false, new IRunnableWithProgress() {
+						
+						@Override
+						public void run(IProgressMonitor monitor) throws InvocationTargetException,
+								InterruptedException {
+							try {
+								monitor.beginTask("Transform source instances", IProgressMonitor.UNKNOWN);
+								
+								TransformationService ts = getTransformationService();
+								if (ts == null) {
+									log.userError("No transformation service available");
+									return;
+								}
+								
+								OrientInstanceSink sink = new OrientInstanceSink(transformed);
+								TransformationReport report;
+								try {
+									//TODO transformation should be done in a job!
+									report = ts.transform(
+											getAlignmentService().getAlignment(), 
+											getInstances(DataSet.SOURCE), 
+											sink);
+									
+									// publish report
+									ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+									rs.addReport(report);
+								} finally {
+									try {
+										sink.close();
+									} catch (IOException e) {
+										// ignore
+									}
+								}
+							} finally {
+								monitor.done();
+								transformationFinished.set(true);
+							}
+						}
+					});
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		}
+		});
+		
+		// wait for transformation to complete
+		HaleUI.waitFor(transformationFinished);
 	}
 
 	/**
