@@ -61,10 +61,10 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		alignmentService.addListener(new AlignmentServiceListener() {
 			
 			@Override
-			public void cellsUpdated(Iterable<Cell> cells) {
-				addMissingContexts(cells);
+			public void cellReplaced(Cell oldCell, Cell newCell) {
+				addMissingContexts(Collections.singleton(newCell));
 			}
-			
+
 			@Override
 			public void cellsAdded(Iterable<Cell> cells) {
 				addMissingContexts(cells);

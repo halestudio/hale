@@ -68,12 +68,13 @@ public abstract class AbstractAlignmentService implements
 	}
 	
 	/**
-	 * Call when existing cells have been updated
-	 * @param cells the cells that have been updated
+	 * Call when an existing cell has been replaced by another.
+	 * @param oldCell the old cell that has been replaced
+	 * @param newCell the new cell that has replaced the other
 	 */
-	protected void notifyCellsUpdated(Iterable<Cell> cells) {
+	protected void notifyCellReplaced(Cell oldCell, Cell newCell) {
 		for (AlignmentServiceListener listener : listeners) {
-			listener.cellsUpdated(cells);
+			listener.cellReplaced(oldCell, newCell);
 		}
 	}
 	

@@ -70,7 +70,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			}
 
 			@Override
-			public void cellsUpdated(Iterable<Cell> cells) {
+			public void cellReplaced(Cell oldCell, Cell newCell) {
 				projectService.setChanged();
 			}
 
@@ -86,16 +86,10 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	 */
 	@Override
 	public void addCell(MutableCell cell) {
-		boolean replaced;
 		synchronized (this) {
-			replaced = alignment.addCell(cell);
+			alignment.addCell(cell);
 		}
-		if (!replaced) {
-			notifyCellsAdded(Collections.singletonList((Cell) cell));
-		}
-		else {
-			notifyCellsUpdated(Collections.singletonList((Cell) cell));
-		}
+		notifyCellsAdded(Collections.singletonList((Cell) cell));
 	}
 
 	/**
@@ -103,8 +97,11 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	 */
 	@Override
 	public void replaceCell(Cell oldCell, MutableCell newCell) {
-		removeCell(oldCell);
-		addCell(newCell);
+		synchronized (this) {
+			alignment.removeCell(oldCell);
+			alignment.addCell(newCell);
+		}
+		notifyCellReplaced(oldCell, newCell);
 	}
 
 	/**
@@ -125,26 +122,17 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	@Override
 	public void addOrUpdateAlignment(MutableAlignment alignment) {
 		Collection<Cell> added = new ArrayList<Cell>();
-		Collection<Cell> updated = new ArrayList<Cell>();
 		
 		// add cells
 		synchronized (this) {
 			for (MutableCell cell : alignment.getCells()) {
-				boolean replaced = this.alignment.addCell(cell);
-				if (!replaced) {
-					added.add(cell);
-				}
-				else {
-					updated.add(cell);
-				}
+				this.alignment.addCell(cell);
+				added.add(cell);
 			}
 		}
 		
 		if (!added.isEmpty()) {
 			notifyCellsAdded(added);
-		}
-		if (!updated.isEmpty()) {
-			notifyCellsUpdated(updated);
 		}
 	}
 

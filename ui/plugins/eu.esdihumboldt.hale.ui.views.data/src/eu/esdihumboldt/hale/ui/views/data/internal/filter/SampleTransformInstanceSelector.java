@@ -122,7 +122,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 
 				@Override
-				public void cellsUpdated(Iterable<Cell> cells) {
+				public void cellReplaced(Cell oldCell, Cell newCell) {
 					updateInDisplayThread();
 				}
 

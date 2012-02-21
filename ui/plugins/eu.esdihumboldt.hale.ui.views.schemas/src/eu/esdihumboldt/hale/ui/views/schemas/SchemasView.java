@@ -457,7 +457,7 @@ public class SchemasView extends PropertiesViewPart {
 		as.addListener(alignmentListener = new AlignmentServiceListener() {
 			
 			@Override
-			public void cellsUpdated(Iterable<Cell> cells) {
+			public void cellReplaced(Cell oldCell, Cell newCell) {
 				refreshInDisplayThread();
 			}
 			

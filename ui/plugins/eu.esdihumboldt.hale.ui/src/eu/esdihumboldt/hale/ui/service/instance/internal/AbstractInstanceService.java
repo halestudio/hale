@@ -77,7 +77,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 			}
 
 			@Override
-			public void cellsUpdated(Iterable<Cell> cells) {
+			public void cellReplaced(Cell oldCell, Cell newCell) {
 				/*
 				 * TODO only retransform with relevant cells (i.e. create a 
 				 * view on the alignment) 
