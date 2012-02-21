@@ -12,7 +12,10 @@
 
 package eu.esdihumboldt.hale.ui;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
@@ -33,6 +36,34 @@ public abstract class HaleUI {
 				site, undoContext, true);
 		IActionBars actionBars = site.getActionBars();
 		undoRedoActionGroup.fillActionBars(actionBars);
+	}
+
+	/**
+	 * Wait for a finished flag being set to <code>true</code> by another
+	 * thread. If the current thread is the display thread, display events will
+	 * still be processed.
+	 * @param finishedFlag the finished flag
+	 */
+	public static void waitFor(AtomicBoolean finishedFlag) {
+		if (Display.getCurrent() != null) {
+			// current thread is a display thread
+			Display display = Display.getCurrent();
+			while (!finishedFlag.get()) {
+				if (!display.readAndDispatch()) { // handle events
+					display.sleep();
+				}
+			}
+		}
+		else {
+			// some other thread
+			while (!finishedFlag.get()) {
+				try {
+					Thread.sleep(100); // sleep for 100 milliseconds
+				} catch (InterruptedException e) {
+					// ignore
+				}
+			}
+		}
 	}
 	
 }
