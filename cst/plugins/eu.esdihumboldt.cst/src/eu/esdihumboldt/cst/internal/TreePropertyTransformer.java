@@ -13,6 +13,9 @@
 package eu.esdihumboldt.cst.internal;
 
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -42,6 +45,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	private final FunctionExecutor executor;
 	
 	private final InstanceBuilder builder;
+	
+	private final ExecutorService executorService;
 
 	/**
 	 * Create a simple property transformer
@@ -58,9 +63,11 @@ public class TreePropertyTransformer implements PropertyTransformer {
 		this.sink = sink;
 		
 		ContextMatcher matcher = new AsDeepAsPossible(); //XXX how to determine matcher?
-		treePool = new TransformationTreePool(alignment, matcher );
+		treePool = new TransformationTreePool(alignment, matcher);
 		executor = new FunctionExecutor(reporter, engines);
 		builder = new InstanceBuilder();
+		
+		executorService = Executors.newFixedThreadPool(4);
 	}
 
 	/**
@@ -68,31 +75,55 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	 */
 	@Override
 	public void publish(Collection<? extends Type> sourceTypes,
-			Instance source, MutableInstance target) {
-		//TODO do actual transformation in a job or worker thread
-		
-		// identify transformations to be executed on given instances
-		// create/get a transformation tree
-		TransformationTree tree = treePool.getTree(target.getDefinition());
-		
-		// apply instance values to transformation tree
-		InstanceVisitor instanceVisitor = new InstanceVisitor(source);
-		tree.accept(instanceVisitor);
-		
-		// duplicate subtree as necessary
-		DuplicationVisitor duplicationVisitor = new DuplicationVisitor();
-		tree.accept(duplicationVisitor);
-		
-		// apply functions
-		tree.accept(executor);
-		
-		// fill instance
-		builder.populate(target, tree);
-		
-		// after property transformations, publish target instance
-		sink.addInstance(target);
-		// and release the tree for further use
-		treePool.releaseTree(tree);
+			final Instance source, final MutableInstance target) {
+		executorService.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				// identify transformations to be executed on given instances
+				// create/get a transformation tree
+				TransformationTree tree = treePool.getTree(target.getDefinition());
+				
+				// apply instance values to transformation tree
+				InstanceVisitor instanceVisitor = new InstanceVisitor(source);
+				tree.accept(instanceVisitor);
+				
+				// duplicate subtree as necessary
+				DuplicationVisitor duplicationVisitor = new DuplicationVisitor();
+				tree.accept(duplicationVisitor);
+				
+				// apply functions
+				tree.accept(executor);
+				
+				// fill instance
+				builder.populate(target, tree);
+				
+				//XXX ok to add to sink in any thread?!
+				//XXX addInstance and close were made synchronized in OrientInstanceSink
+				//XXX instead collect instances and write them in only one thread?
+				// after property transformations, publish target instance
+				sink.addInstance(target);
+				
+				// and release the tree for further use
+				treePool.releaseTree(tree);
+			}
+		});
+	}
+	
+	@Override
+	public void join() {
+		executorService.shutdown();
+		if (executorService.isTerminated()) {
+			return;
+		}
+		try {
+			//TODO make configurable?
+			if (!executorService.awaitTermination(15, TimeUnit.MINUTES)) {
+				//TODO error message
+			}
+		} catch (InterruptedException e) {
+			// ignore
+		}
 	}
 
 }

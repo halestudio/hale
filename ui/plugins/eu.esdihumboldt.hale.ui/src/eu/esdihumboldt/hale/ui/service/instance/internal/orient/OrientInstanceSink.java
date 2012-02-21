@@ -35,17 +35,23 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 	/**
 	 * Create an instance sink based on a {@link LocalOrientDB}
 	 * @param database the sink database
+	 * @param lockNow if the database should be locked now
 	 */
-	public OrientInstanceSink(LocalOrientDB database) {
+	public OrientInstanceSink(LocalOrientDB database, boolean lockNow) {
 		super();
 		this.database = database;
+		if (lockNow) {
+			// ensure the lock is acquired now (in this thread)
+			ref = database.openWrite();
+			ref.getDatabase();
+		}
 	}
-
+	
 	/**
 	 * @see InstanceSink#addInstance(Instance)
 	 */
 	@Override
-	public void addInstance(Instance instance) {
+	public synchronized void addInstance(Instance instance) {
 		if (ref == null) {
 			ref = database.openWrite();
 		}
@@ -67,8 +73,9 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 	 * @see Closeable#close()
 	 */
 	@Override
-	public void close() throws IOException {
+	public synchronized void close() throws IOException {
 		if (ref != null) {
+			ODatabaseRecordThreadLocal.INSTANCE.set(ref.getDatabase());
 			ref.dispose();
 		}
 	}

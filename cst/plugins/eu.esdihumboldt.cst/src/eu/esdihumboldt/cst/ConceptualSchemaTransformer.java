@@ -97,7 +97,8 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			}
 		}
 		
-		//TODO join with PropertyTransformer?!
+		// wait for the property transformer to complete
+		transformer.join();
 
 		engines.dispose();
 		
