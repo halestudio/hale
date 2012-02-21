@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.iterator.ORecordIteratorClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -99,6 +100,9 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 					}
 				}
 			}
+			
+			// make sure the database is associated to the current thread
+			ODatabaseRecordThreadLocal.INSTANCE.set(ref.getDatabase());
 			
 			if (!allowUpdate) {
 				return;
