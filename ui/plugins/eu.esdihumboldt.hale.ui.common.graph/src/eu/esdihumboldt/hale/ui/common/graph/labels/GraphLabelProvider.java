@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.common.graph.labels;
 
 import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -29,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -308,6 +310,21 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public IFigure getTooltip(Object entity) {
+		if (entity instanceof Cell) {
+			Cell cell = (Cell) entity;
+			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+			if (function != null) {
+				CellExplanation explanation =  function.getExplanation();
+				if (explanation != null) {
+					String text = explanation.getExplanation(cell);
+					if (text != null) {
+						//TODO apply word-wrapping for tooltip?
+						return new Label(text);
+					}
+				}
+			}
+		}
+		
 		// default
 		return null;
 	}
