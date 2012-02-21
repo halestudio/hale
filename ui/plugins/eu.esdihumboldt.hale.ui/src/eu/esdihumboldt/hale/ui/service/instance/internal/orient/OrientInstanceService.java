@@ -210,6 +210,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 					@Override
 					protected void onComplete() {
 						notifyDatasetChanged(DataSet.SOURCE);
+						retransform();
 					}
 		};
 		storeInstances.schedule();
