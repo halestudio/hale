@@ -34,4 +34,10 @@ public interface PropertyTransformer {
 	public void publish(Collection<? extends Type> sourceTypes, 
 			Instance source, MutableInstance target);
 
+	/**
+	 * Join with the property transformer and wait for its completion, e.g. 
+	 * if the property transformer executes tasks in worker threads.
+	 */
+	void join();
+
 }

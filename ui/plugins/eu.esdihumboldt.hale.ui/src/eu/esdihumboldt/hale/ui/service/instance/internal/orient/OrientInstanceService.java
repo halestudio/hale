@@ -308,7 +308,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 									return;
 								}
 								
-								OrientInstanceSink sink = new OrientInstanceSink(transformed);
+								OrientInstanceSink sink = new OrientInstanceSink(transformed, true);
 								TransformationReport report;
 								try {
 									//TODO transformation should be done in a job!
