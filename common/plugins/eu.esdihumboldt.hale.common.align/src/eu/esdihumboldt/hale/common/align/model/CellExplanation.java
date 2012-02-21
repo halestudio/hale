@@ -21,14 +21,15 @@ public interface CellExplanation {
 	/**
 	 * Get the explanation for the given cell.
 	 * @param cell the cell
-	 * @return the cell explanation
+	 * @return the cell explanation, <code>null</code> if none is available
 	 */
 	public String getExplanation(Cell cell);
 	
 	/**
 	 * Get the explanation in html format for the given cell
 	 * @param cell the cell
-	 * @return the cell explanation in html format
+	 * @return the cell explanation in html format, <code>null</code> if none
+	 *   is available
 	 */
 	public String getExplanationAsHtml(Cell cell);
 
