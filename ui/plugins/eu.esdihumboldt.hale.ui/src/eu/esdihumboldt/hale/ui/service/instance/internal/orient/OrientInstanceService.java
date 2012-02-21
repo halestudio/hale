@@ -19,6 +19,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.namespace.QName;
 
@@ -82,6 +83,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 	
 	private final LocalOrientDB source;
 	private final LocalOrientDB transformed;
+	
+	private final AtomicBoolean outstandingTransform = new AtomicBoolean(true);
 
 	/**
 	 * Default constructor 
@@ -118,6 +121,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 			return new BrowseOrientInstanceCollection(source, 
 					schemaService.getSchemas(SchemaSpaceID.SOURCE), DataSet.SOURCE);
 		case TRANSFORMED:
+			updateTransformed();
 			return new BrowseOrientInstanceCollection(transformed, 
 					schemaService.getSchemas(SchemaSpaceID.TARGET), DataSet.TRANSFORMED);
 		}
@@ -134,6 +138,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 		case SOURCE:
 			return getInstanceTypes(source, schemaService.getSchemas(SchemaSpaceID.SOURCE));
 		case TRANSFORMED:
+			updateTransformed();
 			return getInstanceTypes(transformed, schemaService.getSchemas(SchemaSpaceID.TARGET));
 		}
 		
@@ -223,6 +228,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 	public void clearInstances() {
 		source.clear();
 		transformed.clear();
+		outstandingTransform.set(false);
 		
 		notifyDatasetChanged(null);
 	}
@@ -241,9 +247,21 @@ public class OrientInstanceService extends AbstractInstanceService {
 	@Override
 	public Instance getInstance(InstanceReference reference) {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
+		if (ref.getDataSet().equals(DataSet.TRANSFORMED)) {
+			updateTransformed();
+		}
 		LocalOrientDB lodb = (ref.getDataSet().equals(DataSet.SOURCE))?(source):(transformed);
 		
 		return ref.load(lodb);
+	}
+
+	/**
+	 * Update the transformed instances
+	 */
+	private synchronized void updateTransformed() {
+		if (outstandingTransform.compareAndSet(true, false)) {
+			performTransformation();
+		}
 	}
 
 	/**
@@ -251,13 +269,22 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	@Override
 	protected void retransform() {
+		transformed.clear();
+		
+		outstandingTransform.set(true);
+		
+		notifyDatasetChanged(DataSet.TRANSFORMED);
+	}
+	
+	/**
+	 * Perform the transformation
+	 */
+	protected void performTransformation() {
 		TransformationService ts = getTransformationService();
 		if (ts == null) {
 			log.userError("No transformation service available");
 			return;
 		}
-		
-		transformed.clear();
 		
 		OrientInstanceSink sink = new OrientInstanceSink(transformed);
 		TransformationReport report;
@@ -278,8 +305,6 @@ public class OrientInstanceService extends AbstractInstanceService {
 				// ignore
 			}
 		}
-		
-		notifyDatasetChanged(DataSet.TRANSFORMED);
 	}
 
 	/**
