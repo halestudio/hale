@@ -66,7 +66,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(OrientInstanceService.class);
 	
-	private static OrientInstanceService instance;
+	private static volatile OrientInstanceService instance;
 	
 	/**
 	 * Get the service instance
