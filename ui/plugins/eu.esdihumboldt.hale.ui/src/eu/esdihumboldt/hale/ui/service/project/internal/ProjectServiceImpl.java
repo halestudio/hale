@@ -412,7 +412,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				IOReporter reporter = provider.createReporter();
 				ATransaction trans = log.begin(reporter.getTaskName());
-				ThreadProgressMonitor.register(monitor);
 				try {
 					// use advisor to configure provider
 					advisor.prepareProvider(provider);
@@ -432,7 +431,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				} catch (Exception e) {
 					log.error("Error executing an I/O provider.", e);
 				} finally {
-					ThreadProgressMonitor.remove(monitor);
 					trans.end();
 				}
 			}

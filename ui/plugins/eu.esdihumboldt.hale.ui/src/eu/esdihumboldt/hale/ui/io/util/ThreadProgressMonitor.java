@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.io.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -21,6 +22,8 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+
+import eu.esdihumboldt.hale.ui.io.util.internal.StatesIfDoneProgressMonitor;
 
 /**
  * Stores current {@link IProgressMonitor}s used in a thread. Allows subtasking
@@ -90,14 +93,33 @@ public class ThreadProgressMonitor {
 			final boolean isCancelable) throws Exception {
 		IProgressMonitor pm = getCurrent();
 		if (pm == null) {
+			// no current progress monitor associated to thread, so
+			// in display thread, launch a new progress monitor dialog
 			final Display display = PlatformUI.getWorkbench().getDisplay();
 			final AtomicReference<Exception> error = new AtomicReference<Exception>();
+			final IRunnableWithProgress progressOp = new IRunnableWithProgress() {
+				
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					// create a custom progress monitor to be able to decide whether the progress is done
+					StatesIfDoneProgressMonitor cpm = new StatesIfDoneProgressMonitor(monitor);
+					// register the progress monitor
+					register(cpm);
+					try {
+						op.run(cpm);
+					} finally {
+						// deregister the progress monitor
+						remove(cpm);
+					}
+				}
+			};
 			display.syncExec(new Runnable() {
 				@Override
 				public void run() {
 					try {
 						new ProgressMonitorDialog(display.getActiveShell()).run(true, 
-					    		isCancelable, op);
+					    		isCancelable, progressOp);
 					} catch (Exception e) {
 						error.set(e);
 					}
@@ -108,8 +130,29 @@ public class ThreadProgressMonitor {
 			}
 		}
 		else {
-			op.run(new SubProgressMonitor(pm, 0, 
-					SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
+			// progress monitor associated to this thread, so
+			// run the operation in the same thread
+			boolean useOriginalMonitor = false;
+			if (pm instanceof StatesIfDoneProgressMonitor) {
+				useOriginalMonitor = ((StatesIfDoneProgressMonitor) pm).isDone();
+			}
+			
+			if (useOriginalMonitor) {
+				// use the original monitor
+				op.run(pm);
+			}
+			else {
+				// use a sub progress monitor
+				IProgressMonitor sm = new StatesIfDoneProgressMonitor(
+						new SubProgressMonitor(pm, 0, 
+								SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
+				register(sm);
+				try {
+					op.run(sm);
+				} finally {
+					remove(sm);
+				}
+			}
 		}
 	}
 
