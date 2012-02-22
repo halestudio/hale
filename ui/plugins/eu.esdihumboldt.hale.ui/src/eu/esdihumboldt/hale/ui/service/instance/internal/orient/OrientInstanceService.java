@@ -223,6 +223,13 @@ public class OrientInstanceService extends AbstractInstanceService {
 					}
 		};
 		storeInstances.schedule();
+		/*
+		 * XXX doing this in a job may lead to the transformation being run
+		 * multiple times on project load, because then it may be that source 
+		 * instances are added after the alignment was loaded, if multiple
+		 * source data sets are loaded then the transformation can be triggered
+		 * for each 
+		 */
 	}
 
 	/**
