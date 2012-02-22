@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
+import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
@@ -172,7 +173,8 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				TransformationReport report = cst.transform(
 						alService.getAlignment(), // Alignment
 						instances,
-						target);
+						target,
+						new NullProgressIndicator());
 				
 				if (!report.isSuccess()) {
 					//TODO log message
