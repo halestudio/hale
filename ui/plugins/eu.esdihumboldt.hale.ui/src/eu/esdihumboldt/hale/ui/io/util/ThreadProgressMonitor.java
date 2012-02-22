@@ -139,6 +139,7 @@ public class ThreadProgressMonitor {
 			
 			if (useOriginalMonitor) {
 				// use the original monitor
+				pm.subTask(""); // reset subtask name
 				op.run(pm);
 			}
 			else {
