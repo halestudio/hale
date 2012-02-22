@@ -53,14 +53,23 @@ public class ReportServiceImpl implements ReportService {
 	 */
 	private final Map<Long, ReportSession> reps = new HashMap<Long, ReportSession>();
 	
+	/**
+	 * Contains the current session description.
+	 */
+	private String description = "";
+	
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportService.class);
 	
 	private ReportSession getCurrentSession() {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String yyyymmdd = df.format(new Date(System.currentTimeMillis()));
+		// check if a current session exists
+		if (this.getCurrentSessionDescription().equals("")) {
+			this.updateCurrentSessionDescription();
+		}
+		
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
 		long time;
 		try {
-			time = df.parse(yyyymmdd).getTime();
+			time = df.parse(this.description).getTime();
 		} catch (ParseException e) {
 			return null;
 		}
@@ -230,7 +239,7 @@ public class ReportServiceImpl implements ReportService {
 
 		// iterate through all sessions
 		for (ReportSession s : this.reps.values()) {
-			SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_mm");
 			File file = new File(folder.getPath()+"/"+df.format(new Date(s.getId()))+"-"+s.getId()+".log");
 			try {
 				rw.writeAll(file, s.getAllReports());
@@ -266,5 +275,22 @@ public class ReportServiceImpl implements ReportService {
 		
 		// add them to internal storage
 		this.reps.put(s.getId(), s);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#getCurrentSessionDescription()
+	 */
+	@Override
+	public String getCurrentSessionDescription() {
+		return this.description;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#updateCurrentSessionDescription()
+	 */
+	@Override
+	public void updateCurrentSessionDescription() {
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
+		this.description = df.format(new Date(System.currentTimeMillis()));
 	}
 }

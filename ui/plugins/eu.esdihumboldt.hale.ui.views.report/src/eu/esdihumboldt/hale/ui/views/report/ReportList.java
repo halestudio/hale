@@ -27,8 +27,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -62,13 +60,6 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.report.ReportList"; //$NON-NLS-1$
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private TreeViewer _treeViewer;
-	private Menu _menu;
-
-	private MenuItem _mntmClearReportList;
-	private MenuItem _mntmDeleteLog;
-	private MenuItem _mntmRestoreLog;
-	private MenuItem _mntmExportLog;
-	private MenuItem _mntmImportLog;
 
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportList.class);
 	
@@ -89,8 +80,9 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	private void loadReports() {
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
+		
 		for (ReportSession s : this.repService.getAllSessions()) {
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			String info = df.format(new Date(s.getId()));
 			
 			for (Report r : s.getAllReports().values()) {
@@ -159,7 +151,6 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	/**
 	 * Initialize the toolbar.
 	 */
-	@SuppressWarnings("unused")
 	private void initializeToolBar() {
 //		IToolBarManager toolbarManager = getViewSite().getActionBars()
 //				.getToolBarManager();
@@ -168,7 +159,6 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	/**
 	 * Initialize the menu.
 	 */
-	@SuppressWarnings("unused")
 	private void initializeMenu() {
 //		IMenuManager menuManager = getViewSite().getActionBars()
 //				.getMenuManager();
@@ -204,7 +194,8 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	@Override
 	public void reportAdded(final Report<Message> report) {
 		// check if a widget is disposed
-		if (this._menu == null || this._menu.isDisposed()) {
+		if (this._treeViewer == null || this._treeViewer.getTree() == null 
+				|| this._treeViewer.getTree().isDisposed()) {
 			return;
 		}
 		
@@ -212,14 +203,8 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 			@Override
 			public void run() {
 				try{
-					/*
-					 * This is the part where new reports arrive and
-					 * will be added.
-					 */
-					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-					String info = df.format(new Date(System.currentTimeMillis()));
-					
-					_treeViewer.setInput(new ReportItem(info, report));
+					// add report to view
+					_treeViewer.setInput(new ReportItem(repService.getCurrentSessionDescription(), report));
 				} catch (NullPointerException e) {
 					_log.warn("NullpointerException while adding a Report.");
 					_log.trace(e.getMessage());
@@ -242,7 +227,9 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	 */
 	private void clearLogView() {
 		// clear the view
-		_treeViewer.getTree().removeAll();
+		if (!_treeViewer.getTree().isDisposed()) {
+			_treeViewer.getTree().removeAll();
+		}
 		
 		// clear saved data
 		ReportListContentProvider.data.clear();
@@ -319,7 +306,7 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 					String[] filterExt = { "*.log", "*.txt", "*.*" };
 					fd.setFilterExtensions(filterExt);
 					
-					SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd");
+					SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_mm");
 					String info = df.format(new Date(System.currentTimeMillis()));
 					fd.setFileName(info+"-"+System.currentTimeMillis());
 					

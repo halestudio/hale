@@ -114,4 +114,16 @@ public interface ReportService {
 	 * @throws org.eclipse.jface.bindings.keys.ParseException if a parse error occurred
 	 */
 	public void loadReport(File file) throws org.eclipse.jface.bindings.keys.ParseException;
+	
+	/**
+	 * Get the current session description.
+	 * 
+	 * @return session description
+	 */
+	public String getCurrentSessionDescription();
+	
+	/**
+	 * Update the session description.
+	 */
+	public void updateCurrentSessionDescription();
 }
