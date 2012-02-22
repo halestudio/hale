@@ -34,6 +34,19 @@ import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 public class CRSConverter {
 	
 	/**
+	 * Thread local direct position initialized with a {@link DirectPosition2D}.
+	 */
+	public class ThreadLocalDirectPosition2D extends
+			ThreadLocal<DirectPosition> {
+
+		@Override
+		protected DirectPosition initialValue() {
+			return new DirectPosition2D();
+		}
+
+	}
+
+	/**
 	 * Create a CRS converter between the given coordinate reference systems.
 	 * @param source the source CRS
 	 * @param target the target CRS
@@ -81,10 +94,9 @@ public class CRSConverter {
 	
 	/*
 	 * temporary positions to lower the impact on GC
-	 * XXX using these is not thread safe!
 	 */
-//	private final DirectPosition _tempPos2A = new DirectPosition2D();
-//	private final DirectPosition _tempPos2B = new DirectPosition2D();
+	private final ThreadLocal<DirectPosition> _tempPos2A = new ThreadLocalDirectPosition2D();
+	private final ThreadLocal<DirectPosition> _tempPos2B = new ThreadLocalDirectPosition2D();
 
 	/**
 	 * Create a CRS converter between the given coordinate reference systems.
@@ -154,7 +166,7 @@ public class CRSConverter {
 	 * @throws TransformException if the coordinate transformation fails
 	 */
 	public Point3D convert(double x, double y, double z) throws TransformException {
-		DirectPosition position = new DirectPosition2D();
+		DirectPosition position = _tempPos2A.get();
 		if (this.initialFlip) {
 			position.setOrdinate(0, y);
 			position.setOrdinate(1, x);
@@ -163,7 +175,7 @@ public class CRSConverter {
 			position.setOrdinate(1, y);
 		}
 
-		DirectPosition targetPosition = new DirectPosition2D();
+		DirectPosition targetPosition = _tempPos2B.get();
 		math.transform(position, targetPosition);
 
 		return createPoint3D(
