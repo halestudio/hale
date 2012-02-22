@@ -336,7 +336,7 @@
                      operator="or">
                   <or>
                      <instanceof
-                           value="eu.esdihumboldt.hale.ui.service.instance.InstanceReference">
+                           value="eu.esdihumboldt.hale.common.instance.model.InstanceReference">
                      </instanceof>
                      <instanceof
                            value="eu.esdihumboldt.hale.common.instance.model.Instance">
