@@ -38,9 +38,9 @@ public class LocalOrientDB {
 		@Override
 		public ODatabaseDocumentTx getDatabase() {
 			if (database == null)  {
+				dbLock.readLock().lock();
 //				database = pool.acquire(dbURI, "reader", "reader");
 				database = new ODatabaseDocumentTx(dbURI).open("reader", "reader");
-				dbLock.readLock().lock();
 			}
 			return database;
 		}
@@ -83,12 +83,12 @@ public class LocalOrientDB {
 		@Override
 		public ODatabaseDocumentTx getDatabase() {
 			if (database == null)  {
+				//XXX could eventually use read lock
+				dbLock.writeLock().lock();
 //				database = new ODatabaseDocumentTx(dbURI).open("writer", "writer");
 				// writer use doesn't seem to be supported any more (as of 1.0rc8)
 //				database = pool.acquire(dbURI, "admin", "admin");
 				database = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
-				//XXX could eventually use read lock
-				dbLock.writeLock().lock();
 			}
 			return database;
 		}
