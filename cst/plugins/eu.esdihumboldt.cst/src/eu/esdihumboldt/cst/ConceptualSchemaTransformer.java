@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.impl.Transformati
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.filter.TypeFilter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -61,49 +62,54 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 public class ConceptualSchemaTransformer implements TransformationService {
 
 	/**
-	 * @see TransformationService#transform(Alignment, InstanceCollection, InstanceSink)
+	 * @see TransformationService#transform(Alignment, InstanceCollection, InstanceSink, ProgressIndicator)
 	 */
 	@Override
 	public TransformationReport transform(Alignment alignment, InstanceCollection source,
-			InstanceSink target) {
+			InstanceSink target, ProgressIndicator progressIndicator) {
 		TransformationReporter reporter = new DefaultTransformationReporter(
 				"Instance transformation", true);
 		
-		//TODO
-		
-		EngineManager engines = new EngineManager();
-		
-		PropertyTransformer transformer = new TreePropertyTransformer(
-				alignment, reporter, target, engines);
-		
-		TypeTransformationExtension typesTransformations = 
-				TypeTransformationExtension.getInstance();
-		
-		Collection<? extends Cell> typeCells = alignment.getTypeCells();
-		for (Cell typeCell : typeCells) {
-			List<TypeTransformationFactory> transformations = typesTransformations.getTransformations(typeCell.getTransformationIdentifier());
+		progressIndicator.begin("Transformation", ProgressIndicator.UNKNOWN);
+		try {
+			EngineManager engines = new EngineManager();
 			
-			if (transformations == null || transformations.isEmpty()) {
-				reporter.error(new TransformationMessageImpl(typeCell, 
-						MessageFormat.format("No transformation for function {0} found. Skipped type transformation.",
-								typeCell.getTransformationIdentifier()), null));
-			}
-			else {
-				//TODO select based on e.g. preferred transformation engine?
-				TypeTransformationFactory transformation = transformations.iterator().next();
+			PropertyTransformer transformer = new TreePropertyTransformer(
+					alignment, reporter, target, engines);
+			
+			TypeTransformationExtension typesTransformations = 
+					TypeTransformationExtension.getInstance();
+			
+			Collection<? extends Cell> typeCells = alignment.getTypeCells();
+			for (Cell typeCell : typeCells) {
+				List<TypeTransformationFactory> transformations = typesTransformations.getTransformations(typeCell.getTransformationIdentifier());
 				
-				doTypeTransformation(transformation, typeCell, source, target, 
-						alignment, engines, transformer, reporter);
+				if (transformations == null || transformations.isEmpty()) {
+					reporter.error(new TransformationMessageImpl(typeCell, 
+							MessageFormat.format("No transformation for function {0} found. Skipped type transformation.",
+									typeCell.getTransformationIdentifier()), null));
+				}
+				else {
+					//TODO select based on e.g. preferred transformation engine?
+					TypeTransformationFactory transformation = transformations.iterator().next();
+					
+					doTypeTransformation(transformation, typeCell, source, target, 
+							alignment, engines, transformer, reporter, progressIndicator);
+				}
 			}
+			
+			progressIndicator.setCurrentTask("Wait for property transformer to complete");
+			
+			// wait for the property transformer to complete
+			transformer.join();
+	
+			engines.dispose();
+			
+			reporter.setSuccess(false);
+			return reporter;
+		} finally {
+			progressIndicator.end();
 		}
-		
-		// wait for the property transformer to complete
-		transformer.join();
-
-		engines.dispose();
-		
-		reporter.setSuccess(false);
-		return reporter;
 	}
 
 	/**
@@ -116,11 +122,13 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	 * @param engines the engine manager
 	 * @param transformer the property transformer
 	 * @param reporter the reporter
+	 * @param progressIndicator the progress indicator 
 	 */
 	protected void doTypeTransformation(TypeTransformationFactory transformation,
 			Cell typeCell, InstanceCollection source, InstanceSink target, 
 			Alignment alignment, EngineManager engines, 
-			PropertyTransformer transformer, TransformationReporter reporter) {
+			PropertyTransformer transformer, TransformationReporter reporter, 
+			ProgressIndicator progressIndicator) {
 		TransformationLog cellLog = new CellLog(reporter, typeCell); 
 		
 		// TODO Auto-generated method stub
@@ -145,7 +153,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		if (function instanceof SingleTypeTransformation<?>) {
 			doSingleTypeTransformation((SingleTypeTransformation<?>) function,
 					typeCell, source, target, transformer, cellLog, engine,
-					transformation);
+					transformation, progressIndicator);
 		}
 		
 		if (function instanceof MultiTypeTransformation<?>) {
@@ -163,13 +171,14 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	 * @param cellLog the transformation log
 	 * @param transformation the transformation function factory 
 	 * @param engine the transformation engine
+	 * @param progressIndicator the progress indicator
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void doSingleTypeTransformation(
 			SingleTypeTransformation<?> function, Cell typeCell, InstanceCollection source,
 			InstanceSink target, PropertyTransformer transformer,
 			TransformationLog cellLog, TransformationEngine engine, 
-			TypeTransformationFactory transformation) {
+			TypeTransformationFactory transformation, ProgressIndicator progressIndicator) {
 		
 		// prepare transformation configuration
 		Type sourceType = (Type) typeCell.getSource().values().iterator().next();
@@ -198,6 +207,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		// is used as is.
 		MergeHandler mergeHandler = function.getMergeHandler();
 		if (mergeHandler != null) {
+			progressIndicator.setCurrentTask("Perform instance merge");
 			try {
 				source = mergeHandler.mergeInstances(source, 
 						transformation.getFunctionId(), engine, parameters,
@@ -207,6 +217,8 @@ public class ConceptualSchemaTransformer implements TransformationService {
 				return;
 			}
 		}
+		
+		progressIndicator.setCurrentTask("Execute type transformations");
 		
 		ResourceIterator<Instance> it = source.iterator();
 		try {
