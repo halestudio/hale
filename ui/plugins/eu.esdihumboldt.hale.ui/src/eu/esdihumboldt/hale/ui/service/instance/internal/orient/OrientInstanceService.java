@@ -92,8 +92,6 @@ public class OrientInstanceService extends AbstractInstanceService {
 	private final LocalOrientDB source;
 	private final LocalOrientDB transformed;
 	
-	private final AtomicBoolean outstandingTransform = new AtomicBoolean(true);
-
 	/**
 	 * Default constructor 
 	 * @param schemaService the schema service
@@ -129,7 +127,6 @@ public class OrientInstanceService extends AbstractInstanceService {
 			return new BrowseOrientInstanceCollection(source, 
 					schemaService.getSchemas(SchemaSpaceID.SOURCE), DataSet.SOURCE);
 		case TRANSFORMED:
-			updateTransformed();
 			return new BrowseOrientInstanceCollection(transformed, 
 					schemaService.getSchemas(SchemaSpaceID.TARGET), DataSet.TRANSFORMED);
 		}
@@ -146,7 +143,6 @@ public class OrientInstanceService extends AbstractInstanceService {
 		case SOURCE:
 			return getInstanceTypes(source, schemaService.getSchemas(SchemaSpaceID.SOURCE));
 		case TRANSFORMED:
-			updateTransformed();
 			return getInstanceTypes(transformed, schemaService.getSchemas(SchemaSpaceID.TARGET));
 		}
 		
@@ -236,7 +232,6 @@ public class OrientInstanceService extends AbstractInstanceService {
 	public void clearInstances() {
 		source.clear();
 		transformed.clear();
-		outstandingTransform.set(false);
 		
 		notifyDatasetChanged(null);
 	}
@@ -255,21 +250,9 @@ public class OrientInstanceService extends AbstractInstanceService {
 	@Override
 	public Instance getInstance(InstanceReference reference) {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
-		if (ref.getDataSet().equals(DataSet.TRANSFORMED)) {
-			updateTransformed();
-		}
 		LocalOrientDB lodb = (ref.getDataSet().equals(DataSet.SOURCE))?(source):(transformed);
 		
 		return ref.load(lodb);
-	}
-
-	/**
-	 * Update the transformed instances
-	 */
-	private synchronized void updateTransformed() {
-		if (outstandingTransform.compareAndSet(true, false)) {
-			performTransformation();
-		}
 	}
 
 	/**
@@ -279,7 +262,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 	protected void retransform() {
 		transformed.clear();
 		
-		outstandingTransform.set(true);
+		performTransformation();
 		
 		notifyDatasetChanged(DataSet.TRANSFORMED);
 	}
