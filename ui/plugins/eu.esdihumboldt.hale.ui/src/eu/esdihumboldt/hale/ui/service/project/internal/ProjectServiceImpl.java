@@ -449,6 +449,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 */
 	@Override
 	public void clean() {
+		// reset current session descriptor
+		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+		repService.updateCurrentSessionDescription();
+		
+		// clean
 		final IRunnableWithProgress op = new IRunnableWithProgress() {
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -630,6 +635,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 */
 	@Override
 	public void open() {
+		// reset current session descriptor
+		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+		repService.updateCurrentSessionDescription();
+		
+		// open
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
