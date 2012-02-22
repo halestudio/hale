@@ -27,9 +27,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -52,6 +50,7 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
+import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
@@ -279,61 +278,56 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	protected void performTransformation() {
 		final AtomicBoolean transformationFinished = new AtomicBoolean(false);
-		final Display display = PlatformUI.getWorkbench().getDisplay();
-		display.syncExec(new Runnable() {
-			
+		IRunnableWithProgress op = new IRunnableWithProgress() {
+				
 			@Override
-			public void run() {
-				ProgressMonitorDialog pm = new ProgressMonitorDialog(display.getActiveShell());
+			public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
 				try {
-					pm.run(true, false, new IRunnableWithProgress() {
+					InstanceCollection sources = getInstances(DataSet.SOURCE);
+					if (sources.isEmpty()) {
+						return;
+					}
+					
+					TransformationService ts = getTransformationService();
+					if (ts == null) {
+						log.userError("No transformation service available");
+						return;
+					}
+					
+					OrientInstanceSink sink = new OrientInstanceSink(transformed, true);
+					TransformationReport report;
+					ATransaction trans = log.begin("Instance transformation");
+					try {
+						report = ts.transform(
+								getAlignmentService().getAlignment(), 
+								sources, 
+								sink, 
+								new ProgressMonitorIndicator(monitor));
 						
-						@Override
-						public void run(IProgressMonitor monitor) throws InvocationTargetException,
-								InterruptedException {
-							try {
-								InstanceCollection sources = getInstances(DataSet.SOURCE);
-								if (sources.isEmpty()) {
-									return;
-								}
-								
-								TransformationService ts = getTransformationService();
-								if (ts == null) {
-									log.userError("No transformation service available");
-									return;
-								}
-								
-								OrientInstanceSink sink = new OrientInstanceSink(transformed, true);
-								TransformationReport report;
-								ATransaction trans = log.begin("Instance transformation");
-								try {
-									report = ts.transform(
-											getAlignmentService().getAlignment(), 
-											sources, 
-											sink, 
-											new ProgressMonitorIndicator(monitor));
-									
-									// publish report
-									ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
-									rs.addReport(report);
-								} finally {
-									try {
-										sink.close();
-									} catch (IOException e) {
-										// ignore
-									}
-									trans.end();
-								}
-							} finally {
-								transformationFinished.set(true);
-							}
+						// publish report
+						ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+						rs.addReport(report);
+					} finally {
+						try {
+							sink.close();
+						} catch (IOException e) {
+							// ignore
 						}
-					});
-				} catch (Throwable e) {
-					log.error("Error starting transformation process", e);
+						trans.end();
+					}
+				} finally {
+					transformationFinished.set(true);
 				}
 			}
-		});
+				
+		};
+		
+		try {
+			ThreadProgressMonitor.runWithProgressDialog(op, false);
+		} catch (Throwable e) {
+			log.error("Error starting transformation process", e);
+		}
 		
 		// wait for transformation to complete
 		HaleUI.waitFor(transformationFinished);

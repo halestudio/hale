@@ -26,15 +26,12 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.PixelConverter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -63,6 +60,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaServiceListener;
+import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
@@ -206,58 +204,51 @@ public abstract class AbstractInstancePainter extends
 		}
 		
 		final AtomicBoolean updateFinished = new AtomicBoolean(false);
-		final Display display = PlatformUI.getWorkbench().getDisplay();
-		display.syncExec(new Runnable() {
-			
+		IRunnableWithProgress op = new IRunnableWithProgress() {
 			@Override
-			public void run() {
-				ProgressMonitorDialog pm = new ProgressMonitorDialog(display.getActiveShell());
+			public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
+				String taskName;
+				switch (getDataSet()) {
+				case SOURCE:
+					taskName = "Update source data in map";
+					break;
+				case TRANSFORMED:
+				default:
+					taskName = "Update transformed data in map";
+					break;
+				}
+				monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
+				
+				// add way-points for instances 
+				InstanceCollection instances = instanceService.getInstances(dataSet);
+				ResourceIterator<Instance> it = instances.iterator();
 				try {
-					pm.run(true, false, new IRunnableWithProgress() {
+					while (it.hasNext()) {
+						Instance instance = it.next();
 						
-						@Override
-						public void run(IProgressMonitor monitor) throws InvocationTargetException,
-								InterruptedException {
-							String taskName;
-							switch (getDataSet()) {
-							case SOURCE:
-								taskName = "Update source data in map";
-								break;
-							case TRANSFORMED:
-							default:
-								taskName = "Update transformed data in map";
-								break;
+						InstanceWaypoint wp = createWaypoint(instance, instanceService);
+						
+						if (wp != null) {
+							if (lastSelected.contains(wp.getValue())) {
+								wp.setSelected(true, null); // refresh can be ignored because it's done for addWaypoint
 							}
-							monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
-							
-							// add way-points for instances 
-							InstanceCollection instances = instanceService.getInstances(dataSet);
-							ResourceIterator<Instance> it = instances.iterator();
-							try {
-								while (it.hasNext()) {
-									Instance instance = it.next();
-									
-									InstanceWaypoint wp = createWaypoint(instance, instanceService);
-									
-									if (wp != null) {
-										if (lastSelected.contains(wp.getValue())) {
-											wp.setSelected(true, null); // refresh can be ignored because it's done for addWaypoint
-										}
-										addWaypoint(wp, null); // no refresher, as refreshAll is executed
-									}
-								}
-							} finally {
-								it.close();
-								monitor.done();
-								updateFinished.set(true);
-							}
+							addWaypoint(wp, null); // no refresher, as refreshAll is executed
 						}
-					});
-				} catch (Throwable e) {
-					log.error("Error running painter update", e);
+					}
+				} finally {
+					it.close();
+					monitor.done();
+					updateFinished.set(true);
 				}
 			}
-		});
+		};
+			
+		try {
+			ThreadProgressMonitor.runWithProgressDialog(op, false);
+		} catch (Throwable e) {
+			log.error("Error running painter update", e);
+		}
 		
 		HaleUI.waitFor(updateFinished);
 		refreshAll();
