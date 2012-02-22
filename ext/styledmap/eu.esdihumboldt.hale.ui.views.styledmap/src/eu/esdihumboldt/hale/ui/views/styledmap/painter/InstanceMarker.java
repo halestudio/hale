@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.views.styledmap.painter;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +36,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import de.cs3d.common.metamodel.Point3D;
+import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.cs3d.common.metamodel.shape.Line2D;
 import de.cs3d.common.metamodel.shape.Surface;
 import de.cs3d.util.logging.ALogger;
@@ -61,7 +63,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSDecode;
 public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	
 	/**
-	 * Get the geometry factory instance for internal useage.
+	 * Get the geometry factory instance for internal usage.
 	 * @return the geometry factory
 	 */
 	private static GeometryFactory getGeometryFactory() {
@@ -78,27 +80,40 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	private final int defaultPointSize = 7;
 	
 	/**
-	 * @see BoundingBoxMarker#doPaintMarker(Graphics2D, SelectableWaypoint, PixelConverter, int, int, int, int, int)
+	 * @see BoundingBoxMarker#doPaintMarker(Graphics2D, SelectableWaypoint, PixelConverter, int, int, int, int, int, Rectangle, boolean)
 	 */
 	@Override
 	protected Area doPaintMarker(Graphics2D g, InstanceWaypoint context,
 			PixelConverter converter, int zoom, int minX, int minY, int maxX,
-			int maxY) {
-		List<Area> areas = new ArrayList<Area>();
+			int maxY, Rectangle gBounds, boolean calulateArea) {
+		List<Area> areas = (!calulateArea)?(null):(new ArrayList<Area>());
 
 		List<GeometryProperty<?>> geometries = context.getGeometries();
+		
+		// map CRS
+		CoordinateReferenceSystem mapCRS;
+		try {
+			mapCRS = CRSDecode.getCRS(converter.getMapEpsg());
+		} catch (Throwable e) {
+			log.error("Could not decode map CRS", e);
+			return null;
+		}
 		
 		// paint each geometry
 		for (GeometryProperty<?> geometry : geometries) {
 			Area geometryArea = paintGeometry(g,
 					geometry.getCRSDefinition(), 
 					geometry.getGeometry(), 
-					context, converter, zoom);
-			if (geometryArea != null) {
+					context, converter, zoom, geometries.size() == 1,
+					gBounds, mapCRS, calulateArea);
+			if (areas != null && geometryArea != null) {
 				areas.add(geometryArea);
 			}
 		}
 		
+		if (areas == null) {
+			return null;
+		}
 		if (areas.size() == 1) {
 			return areas.get(0);
 		}
@@ -106,8 +121,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 			return new MultiArea(areas);
 		}
 		
-		//FIXME fall back to bounding box?
-		return super.doPaintMarker(g, context, converter, zoom, minX, minY, maxX, maxY);
+		return null;
 	}
 
 	/**
@@ -118,25 +132,34 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	 * @param context the context
 	 * @param converter the pixel converter
 	 * @param zoom the zoom level
+	 * @param singleGeometry if this is the only geometry associated to the marker
+	 * @param gBounds the graphics bounds 
+	 * @param mapCRS the map coordinate reference system
+	 * @param calculateArea if the area representing the marker
+	 *   should be calculated, if <code>false</code> is given here
+	 *   the return value is ignored and should be <code>null</code> 
 	 * @return the area the geometry occupies (in pixel coordinates), or 
 	 *   <code>null</code> if nothing has been painted
 	 */
 	protected Area paintGeometry(Graphics2D g, CRSDefinition crsDefinition, 
 			Geometry geometry, InstanceWaypoint context, 
-			PixelConverter converter, int zoom) {
+			PixelConverter converter, int zoom, boolean singleGeometry, 
+			Rectangle gBounds, CoordinateReferenceSystem mapCRS, boolean calculateArea) {
 		if (geometry instanceof GeometryCollection) {
 			// paint each geometry in a geometry collection
-			List<Area> areas = new ArrayList<Area>();
+			List<Area> areas = (calculateArea)?(new ArrayList<Area>()):(null);
 			GeometryCollection collection = (GeometryCollection) geometry;
 			for (int i = 0; i < collection.getNumGeometries(); i++) {
 				Geometry geom = collection.getGeometryN(i);
 				Area geomArea = paintGeometry(g, crsDefinition, geom, context, 
-						converter, zoom);
-				if (geomArea != null) {
+						converter, zoom,
+						singleGeometry && collection.getNumGeometries() == 1,
+						gBounds, mapCRS, calculateArea);
+				if (areas != null && geomArea != null) {
 					areas.add(geomArea);
 				}
 			}
-			if (areas.isEmpty()) {
+			if (areas == null || areas.isEmpty()) {
 				return null;
 			}
 			else {
@@ -144,14 +167,63 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 			}
 		}
 		
+		// check if geometry lies inside tile
+		// if the area must be calculated we must process all geometries
+		// if it is the only geometry the check that was already made is OK
+		if (!calculateArea && !singleGeometry) {  
+			// determine bounding box
+			BoundingBox geometryBB = AbstractInstancePainter.getBoundingBox(geometry);
+			
+			// we can safely return null inside this method, as no area has to be calculated
+			
+			if (geometryBB != null && geometryBB.checkIntegrity()) {
+				try {
+					// get CRS converter
+					CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
+					
+					// manually convert to map CRS
+					geometryBB = conv.convert(geometryBB);
+					
+					GeoPosition minCorner = new GeoPosition(geometryBB.getMinX(), 
+							geometryBB.getMinY(), converter.getMapEpsg());
+					GeoPosition maxCorner = new GeoPosition(geometryBB.getMaxX(), 
+							geometryBB.getMaxY(), converter.getMapEpsg());
+					
+					// determine pixel coordinates
+					Point2D minPixels = converter.geoToPixel(minCorner, zoom);
+					Point2D maxPixels = converter.geoToPixel(maxCorner, zoom);
+					
+					// geometry pixel bounding box
+					int minX = Math.min((int) minPixels.getX(), (int) maxPixels.getX()); 
+					int minY = Math.min((int) minPixels.getY(), (int) maxPixels.getY()); 
+					int maxX = Math.max((int) minPixels.getX(), (int) maxPixels.getX()); 
+					int maxY = Math.max((int) minPixels.getY(), (int) maxPixels.getY()); 
+					//TODO add overlap?
+					Rectangle geometryPixelBB = new Rectangle(
+							minX, minY, maxX - minX, maxY - minY);
+					
+					if (!gBounds.intersects(geometryPixelBB)
+							&& !gBounds.contains(geometryPixelBB)) {
+						return null;
+					}
+				} catch (Throwable e) {
+					log.error("Error checking geometry bounding box", e);
+					return null;
+				}
+			}
+			else {
+				return null; // empty or invalid bounding box
+			}
+		}
+		
 		if (geometry instanceof Point) {
 			return paintPoint((Point) geometry, g, crsDefinition, context, 
-					converter, zoom);
+					converter, zoom, mapCRS, calculateArea);
 		}
 		
 		if (geometry instanceof Polygon) {
 			return paintPolygon((Polygon) geometry, g, crsDefinition, context, 
-					converter, zoom);
+					converter, zoom, mapCRS, calculateArea);
 		}
 		
 //		if (geometry instanceof LinearRing) {
@@ -160,7 +232,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		
 		if (geometry instanceof LineString) {
 			return paintLine((LineString) geometry, g, crsDefinition, context, 
-					converter, zoom);
+					converter, zoom, mapCRS, calculateArea);
 		}
 		
 		return null;
@@ -174,15 +246,16 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	 * @param context the context
 	 * @param converter the pixel converter
 	 * @param zoom the zoom level
+	 * @param mapCRS the map coordinate reference system 
+	 * @param calculateArea if the area representing the marker
+	 *   should be calculated, if <code>false</code> is given here
+	 *   the return value is ignored and should be <code>null</code> 
 	 * @return the point marker area or <code>null</code> if painting failed
 	 */
 	protected Area paintPoint(Point geometry, Graphics2D g,
 			CRSDefinition crsDefinition, InstanceWaypoint context,
-			PixelConverter converter, int zoom) {
+			PixelConverter converter, int zoom, CoordinateReferenceSystem mapCRS, boolean calculateArea) {
 		try {
-			// map CRS
-			CoordinateReferenceSystem mapCRS = CRSDecode.getCRS(converter.getMapEpsg());
-			
 			// get CRS converter
 			CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
 			
@@ -192,7 +265,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 			GeoPosition pos = new GeoPosition(mapPoint.getX(), 
 					mapPoint.getY(), converter.getMapEpsg());
 			// determine pixel coordinates
-			Point2D point = converter.geoToPixel(pos , zoom);
+			Point2D point = converter.geoToPixel(pos, zoom);
 	
 			int x = (int) point.getX();
 			int y = (int) point.getY();
@@ -217,9 +290,14 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 						defaultPointSize + 1);
 			}
 			
-			return new PolygonArea(new java.awt.Polygon(
-					new int[]{x - defaultPointSize / 2 - 1, x + defaultPointSize / 2 + 1, x + defaultPointSize / 2 + 1, x - defaultPointSize / 2 - 1},
-					new int[]{y - defaultPointSize / 2 - 1, y - defaultPointSize / 2 - 1, y + defaultPointSize / 2 + 1, y + defaultPointSize / 2 + 1}, 4));
+			if (calculateArea) {
+				return new PolygonArea(new java.awt.Polygon(
+						new int[]{x - defaultPointSize / 2 - 1, x + defaultPointSize / 2 + 1, x + defaultPointSize / 2 + 1, x - defaultPointSize / 2 - 1},
+						new int[]{y - defaultPointSize / 2 - 1, y - defaultPointSize / 2 - 1, y + defaultPointSize / 2 + 1, y + defaultPointSize / 2 + 1}, 4));
+			}
+			else {
+				return null;
+			}
 		} catch (Exception e) {
 			log.error("Error painting instance point geometry", e);
 			return null;
@@ -234,15 +312,17 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	 * @param context the context
 	 * @param converter the pixel converter
 	 * @param zoom the zoom level
+	 * @param mapCRS the map coordinate reference system 
+	 * @param calculateArea if the area representing the marker
+	 *   should be calculated, if <code>false</code> is given here
+	 *   the return value is ignored and should be <code>null</code> 
 	 * @return the polygon area or <code>null</code> if painting failed
 	 */
 	protected Area paintPolygon(Polygon geometry, Graphics2D g,
 			CRSDefinition crsDefinition, InstanceWaypoint context,
-			PixelConverter converter, int zoom) {
+			PixelConverter converter, int zoom, CoordinateReferenceSystem mapCRS, 
+			boolean calculateArea) {
 		try {
-			// map CRS
-			CoordinateReferenceSystem mapCRS = CRSDecode.getCRS(converter.getMapEpsg());
-			
 			// get CRS converter
 			CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
 			
@@ -267,7 +347,12 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 				g.draw(drawArea);
 			}
 			
-			return new AdvancedPolygonArea(drawArea, outerPolygon);
+			if (calculateArea) {
+				return new AdvancedPolygonArea(drawArea, outerPolygon);
+			}
+			else {
+				return null;
+			}
 		} catch (Exception e) {
 			log.error("Error painting instance polygon geometry", e);
 			return null;
@@ -298,11 +383,16 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	 * @param context the context
 	 * @param converter the pixel converter
 	 * @param zoom the zoom level
+	 * @param mapCRS the map coordinate reference system 
+	 * @param calculateArea if the area representing the marker
+	 *   should be calculated, if <code>false</code> is given here
+	 *   the return value is ignored and should be <code>null</code> 
 	 * @return the polygon area or <code>null</code> if painting failed
 	 */
 	protected Area paintLine(LineString geometry, Graphics2D g,
 			CRSDefinition crsDefinition, InstanceWaypoint context,
-			PixelConverter converter, int zoom) {
+			PixelConverter converter, int zoom, CoordinateReferenceSystem mapCRS, 
+			boolean calculateArea) {
 		Coordinate[] coordinates = geometry.getCoordinates();
 		if (coordinates.length <= 0) {
 			return null;
@@ -310,13 +400,11 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		if (coordinates.length == 1) {
 			// fall back to point drawing
 			Point point = getGeometryFactory().createPoint(coordinates[0]);
-			return paintPoint(point, g, crsDefinition, context, converter, zoom);
+			return paintPoint(point, g, crsDefinition, context, converter, 
+					zoom, mapCRS, calculateArea);
 		}
 		
 		try {
-			// map CRS
-			CoordinateReferenceSystem mapCRS = CRSDecode.getCRS(converter.getMapEpsg());
-			
 			// get CRS converter
 			CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
 			
@@ -345,7 +433,11 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 				}
 			}
 			else {
-				log.warn("Stroke disabled in style, LineString is not rednered");
+				log.warn("Stroke disabled in style, LineString is not rendered");
+			}
+			
+			if (!calculateArea) {
+				return null;
 			}
 			
 			// use a buffer around the line as area

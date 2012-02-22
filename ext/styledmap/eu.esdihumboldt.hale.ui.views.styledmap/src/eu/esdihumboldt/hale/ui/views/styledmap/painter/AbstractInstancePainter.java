@@ -382,7 +382,7 @@ public abstract class AbstractInstancePainter extends
 	 * @return the bounding box or <code>null</code> if it is either an empty
 	 *   geometry or the bounding box cannot be determined
 	 */
-	private BoundingBox getBoundingBox(Geometry geometry) {
+	public static BoundingBox getBoundingBox(Geometry geometry) {
 		Geometry envelope = geometry.getEnvelope();
 		if (envelope instanceof Point) {
 			Point point = (Point) envelope;
