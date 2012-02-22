@@ -65,7 +65,7 @@ public abstract class StoreInstancesJob extends Job {
 	 * @see Job#run(IProgressMonitor)
 	 */
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+	public IStatus run(IProgressMonitor monitor) {
 		boolean exactProgress = instances.hasSize();
 		monitor.beginTask("Store instances in database", 
 				(exactProgress)?(instances.size()):(IProgressMonitor.UNKNOWN));

@@ -26,7 +26,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 
@@ -213,7 +212,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	@Override
 	public void addSourceInstances(InstanceCollection sourceInstances) {
-		Job storeInstances = new StoreInstancesJob(
+		final StoreInstancesJob storeInstances = new StoreInstancesJob(
 				"Load source instances into database", source, sourceInstances) {
 					@Override
 					protected void onComplete() {
@@ -221,14 +220,27 @@ public class OrientInstanceService extends AbstractInstanceService {
 						retransform();
 					}
 		};
-		storeInstances.schedule();
 		/*
-		 * XXX doing this in a job may lead to the transformation being run
+		 * Doing this in a job may lead to the transformation being run
 		 * multiple times on project load, because then it may be that source 
 		 * instances are added after the alignment was loaded, if multiple
 		 * source data sets are loaded then the transformation can be triggered
-		 * for each 
+		 * for each. 
 		 */
+//		storeInstances.schedule();
+		// so instead, now the data is loaded in a progress dialog
+		try {
+			ThreadProgressMonitor.runWithProgressDialog(new IRunnableWithProgress() {
+				
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					storeInstances.run(monitor);
+				}
+			}, false);
+		} catch (Exception e) {
+			log.error("Error starting process to load source data", e);
+		}
 	}
 
 	/**
