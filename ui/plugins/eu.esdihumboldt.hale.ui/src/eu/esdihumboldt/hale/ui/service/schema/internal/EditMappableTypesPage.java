@@ -52,6 +52,26 @@ public class EditMappableTypesPage extends WizardPage {
 	private CheckboxTreeViewer viewer;
 	private NSTypeTreeContentProvider contentProvider;
 	private ICheckStateProvider checkStateProvider;
+	
+	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider() {
+
+//		@Override
+//		public String getText(Object element) {
+//			if (element instanceof Definition<?>) {
+//				// force displaying the local part as types are shown according to namespace
+//				return ((Definition<?>) element).getName().getLocalPart();
+//			}
+//			return super.getText(element);
+//		}
+
+		@Override
+		public Image getImage(Object element) {
+			if (element instanceof String)
+				return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+			return super.getImage(element);
+		}
+		
+	};
 
 	/**
 	 * Creates a new wizard page to edit which types in the given index are
@@ -103,17 +123,7 @@ public class EditMappableTypesPage extends WizardPage {
 				}
 			}
 		});
-		viewer.setLabelProvider(new DefinitionLabelProvider() {
-			/**
-			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getImage(java.lang.Object)
-			 */
-			@Override
-			public Image getImage(Object element) {
-				if (element instanceof String)
-					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
-				return super.getImage(element);
-			}
-		});
+		viewer.setLabelProvider(definitionLabels);
 		// because elements filtered by FilteredTree lose their checked state:
 		checkStateProvider = new ICheckStateProvider() {
 			@Override
@@ -193,4 +203,12 @@ public class EditMappableTypesPage extends WizardPage {
 	public Set<TypeDefinition> getSelectedTypes() {
 		return changedTypes;
 	}
+
+	@Override
+	public void dispose() {
+		definitionLabels.dispose();
+		
+		super.dispose();
+	}
+	
 }
