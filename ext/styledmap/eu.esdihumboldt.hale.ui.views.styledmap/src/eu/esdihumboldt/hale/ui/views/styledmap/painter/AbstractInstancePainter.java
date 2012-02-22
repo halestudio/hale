@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.PixelConverter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -55,7 +56,9 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
@@ -65,6 +68,7 @@ import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
@@ -137,10 +141,24 @@ public abstract class AbstractInstancePainter extends
 			
 			@Override
 			public void defaultGeometryChanged(TypeDefinition type) {
-				//TODO only update way-points that are affected XXX save type def in way-point?
-				//XXX for now: recreate all
-				update(null);
-				//TODO do it in a job or something like that to prevent the UI being blocked?
+				SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+				SchemaSpaceID spaceID;
+				switch (getDataSet()) {
+				case TRANSFORMED:
+					spaceID = SchemaSpaceID.TARGET;
+					break;
+				case SOURCE:
+					spaceID = SchemaSpaceID.SOURCE;
+					break;
+				default:
+					throw new IllegalStateException("Illegal data set");
+				}
+				SchemaSpace schemas = ss.getSchemas(spaceID);
+				if (schemas.getType(type.getName()) != null) {
+					//TODO only update way-points that are affected XXX save type def in way-point?
+					//XXX for now: recreate all
+					update(null);
+				}
 			}
 		};
 	}
