@@ -251,6 +251,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	public boolean isEmpty() {
 		DatabaseReference<ODatabaseDocumentTx> ref = database.openRead();
 		ODatabaseDocumentTx db = ref.getDatabase();
+		// make sure the database is associated to the current thread XXX not sure if this is necessary
+		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		try {
 			Collection<String> classes = getMainClassNames();
 			for (String clazz : classes) {
