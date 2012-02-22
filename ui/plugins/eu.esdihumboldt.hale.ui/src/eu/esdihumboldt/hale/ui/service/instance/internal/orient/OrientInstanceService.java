@@ -38,6 +38,7 @@ import com.orientechnologies.orient.core.metadata.schema.OSchema;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -50,6 +51,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
@@ -300,7 +302,10 @@ public class OrientInstanceService extends AbstractInstanceService {
 						public void run(IProgressMonitor monitor) throws InvocationTargetException,
 								InterruptedException {
 							try {
-								monitor.beginTask("Transform source instances", IProgressMonitor.UNKNOWN);
+								InstanceCollection sources = getInstances(DataSet.SOURCE);
+								if (sources.isEmpty()) {
+									return;
+								}
 								
 								TransformationService ts = getTransformationService();
 								if (ts == null) {
@@ -310,12 +315,13 @@ public class OrientInstanceService extends AbstractInstanceService {
 								
 								OrientInstanceSink sink = new OrientInstanceSink(transformed, true);
 								TransformationReport report;
+								ATransaction trans = log.begin("Instance transformation");
 								try {
-									//TODO transformation should be done in a job!
 									report = ts.transform(
 											getAlignmentService().getAlignment(), 
-											getInstances(DataSet.SOURCE), 
-											sink);
+											sources, 
+											sink, 
+											new ProgressMonitorIndicator(monitor));
 									
 									// publish report
 									ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
@@ -326,19 +332,15 @@ public class OrientInstanceService extends AbstractInstanceService {
 									} catch (IOException e) {
 										// ignore
 									}
+									trans.end();
 								}
 							} finally {
-								monitor.done();
 								transformationFinished.set(true);
 							}
 						}
 					});
-				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (Throwable e) {
+					log.error("Error starting transformation process", e);
 				}
 			}
 		});
