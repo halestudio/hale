@@ -16,18 +16,25 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.PixelConverter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -53,6 +60,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaServiceListener;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
@@ -193,25 +201,66 @@ public abstract class AbstractInstancePainter extends
 			lastSelected = collectReferences(selection);
 		}
 		
-		// add way-points for instances 
-		ResourceIterator<Instance> it = instances.iterator();
-		try {
-			while (it.hasNext()) {
-				Instance instance = it.next();
-				
-				InstanceWaypoint wp = createWaypoint(instance, instanceService);
-				
-				if (wp != null) {
-					if (lastSelected.contains(wp.getValue())) {
-						wp.setSelected(true, null); // refresh can be ignored because it's done for addWaypoint
-					}
-					addWaypoint(wp, null); // no refresher, as refreshAll is executed
+		if (instances.isEmpty()) {
+			return;
+		}
+		
+		final AtomicBoolean updateFinished = new AtomicBoolean(false);
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		display.syncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				ProgressMonitorDialog pm = new ProgressMonitorDialog(display.getActiveShell());
+				try {
+					pm.run(true, false, new IRunnableWithProgress() {
+						
+						@Override
+						public void run(IProgressMonitor monitor) throws InvocationTargetException,
+								InterruptedException {
+							String taskName;
+							switch (getDataSet()) {
+							case SOURCE:
+								taskName = "Update source data in map";
+								break;
+							case TRANSFORMED:
+							default:
+								taskName = "Update transformed data in map";
+								break;
+							}
+							monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
+							
+							// add way-points for instances 
+							InstanceCollection instances = instanceService.getInstances(dataSet);
+							ResourceIterator<Instance> it = instances.iterator();
+							try {
+								while (it.hasNext()) {
+									Instance instance = it.next();
+									
+									InstanceWaypoint wp = createWaypoint(instance, instanceService);
+									
+									if (wp != null) {
+										if (lastSelected.contains(wp.getValue())) {
+											wp.setSelected(true, null); // refresh can be ignored because it's done for addWaypoint
+										}
+										addWaypoint(wp, null); // no refresher, as refreshAll is executed
+									}
+								}
+							} finally {
+								it.close();
+								monitor.done();
+								updateFinished.set(true);
+							}
+						}
+					});
+				} catch (Throwable e) {
+					log.error("Error running painter update", e);
 				}
 			}
-		} finally {
-			it.close();
-			refreshAll();
-		}
+		});
+		
+		HaleUI.waitFor(updateFinished);
+		refreshAll();
 	}
 
 	/**
