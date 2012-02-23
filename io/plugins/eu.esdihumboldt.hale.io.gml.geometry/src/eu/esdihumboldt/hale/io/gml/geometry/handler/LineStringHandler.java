@@ -1,0 +1,201 @@
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ */
+
+package eu.esdihumboldt.hale.io.gml.geometry.handler;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LineString;
+
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
+import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
+import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
+import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
+import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
+
+/**
+ * Handler for linestring geometries.
+ * 
+ * @author Patrick Lieb
+ */
+public class LineStringHandler extends FixedConstraintsGeometryHandler {
+
+	private static final String LINE_STRING_TYPE = "LineStringType";
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance)
+	 */
+	@Override
+	public Object createGeometry(Instance instance)
+			throws GeometryNotSupportedException {
+		LineString line = null;
+
+		// to parse coordinates of a line
+		// for use with GML 2, 3, 3.1, 3.2
+		Collection<Object> values = PropertyResolver.getValues(instance,
+				"coordinates", false);
+		if (values != null && !values.isEmpty()) {
+			Object value = values.iterator().next();
+			if (value instanceof Instance) {
+				try {
+					Coordinate[] cs = GMLGeometryUtil
+							.parseCoordinates((Instance) value);
+					if (cs != null && cs.length > 0) {
+						line = getGeometryFactory().createLineString(cs);
+					}
+				} catch (ParseException e) {
+					throw new GeometryNotSupportedException(
+							"Could not parse coordinates", e);
+				}
+			}
+		}
+
+		// to parse several pos of a line
+		// for use with GML 3, 3.2
+		if (line == null) {
+			values = PropertyResolver.getValues(instance, "pos", false);
+			if (values != null && !values.isEmpty()) {
+				Iterator<Object> iterator = values.iterator();
+				List<Coordinate> cs = new ArrayList<Coordinate>();
+				while (iterator.hasNext()) {
+					Object value = iterator.next();
+					if (value instanceof Instance) {
+						Coordinate c = GMLGeometryUtil
+								.parseDirectPosition((Instance) value);
+						if (c != null) {
+							cs.add(c);
+						}
+					}
+				}
+				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+				line = getGeometryFactory().createLineString(coords);
+			}
+		}
+
+		// to parse a posList of a line
+		// for use with GML 3.1, 3.2
+		if (line == null) {
+			values = PropertyResolver.getValues(instance, "posList", false);
+			if (values != null && !values.isEmpty()) {
+				Iterator<Object> iterator = values.iterator();
+					Object value = iterator.next();
+					if (value instanceof Instance) {
+						Coordinate[] cs = GMLGeometryUtil
+								.parsePosList((Instance) value);
+						if (cs != null) {
+							line = getGeometryFactory().createLineString(cs);
+					}
+				}
+			}
+		}
+
+		// to parse Points of a line
+		// FIXME: get correct point???
+		// for use with GML 3, 3.2
+		if (line == null) {
+			values = PropertyResolver.getValues(instance, "Point", false);
+			if (values != null && !values.isEmpty()) {
+
+				Iterator<Object> iterator = values.iterator();
+				List<Coordinate> cs = new ArrayList<Coordinate>();
+				while (iterator.hasNext()) {
+					Object value = iterator.next();
+					if (value instanceof Instance) {
+						Coordinate c = GMLGeometryUtil
+								.parseCoord((Instance) value);
+						if (c != null) {
+							cs.add(c);
+						}
+
+					}
+
+					Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+					line = getGeometryFactory().createLineString(coords);
+				}
+			}
+		}
+
+		// for use with GML2, 3, 3.2
+		if (line == null) {
+			values = PropertyResolver.getValues(instance, "coord", false);
+			if (values != null && !values.isEmpty()) {
+				Iterator<Object> iterator = values.iterator();
+				List<Coordinate> cs = new ArrayList<Coordinate>();
+				while (iterator.hasNext()) {
+					Object value = iterator.next();
+					if (value instanceof Instance) {
+						Coordinate c = GMLGeometryUtil
+								.parseCoord((Instance) value);
+						if (c != null) {
+							cs.add(c);
+						}
+					}
+				}
+				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+				line = getGeometryFactory().createLineString(coords);
+			}
+		}
+
+		if (line != null) {
+			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
+			return new DefaultGeometryProperty<LineString>(crsDef, line);
+		}
+
+		throw new GeometryNotSupportedException();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler#initConstraints()
+	 */
+	@Override
+	protected Collection<? extends TypeConstraint> initConstraints() {
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
+				2);
+
+		constraints.add(Binding.get(GeometryProperty.class));
+		constraints.add(GeometryType.get(LineString.class));
+
+		constraints.add(new GeometryFactory(this));
+
+		return constraints;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.AbstractGeometryHandler#initSupportedTypes()
+	 */
+	@Override
+	protected Set<? extends QName> initSupportedTypes() {
+		Set<QName> types = new HashSet<QName>();
+
+		types.add(new QName(NS_GML, LINE_STRING_TYPE));
+		types.add(new QName(NS_GML_32, LINE_STRING_TYPE));
+
+		return types;
+	}
+
+}

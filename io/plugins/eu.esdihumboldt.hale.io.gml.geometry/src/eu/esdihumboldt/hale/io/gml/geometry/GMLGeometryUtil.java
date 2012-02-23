@@ -214,6 +214,49 @@ public abstract class GMLGeometryUtil {
 	}
 	
 	/**
+	 * Parse a coordinate from a GML PosList instance.
+	 * @param posList the PosList instance
+	 * @return the array of the coordinates or <code>null</code> if the instance contains
+	 *   not a PosList
+	 * @throws GeometryNotSupportedException if no valid coordinate could be 
+	 *   created from the PosList
+	 */
+	public static Coordinate[] parsePosList(Instance posList) throws GeometryNotSupportedException {
+		
+		Object value = posList.getValue();
+		Coordinate[] coordinates = null;
+		
+		if (value != null){
+			try {
+				List<Double> values = ConversionUtil.getAsList(value, Double.class, true);
+				List<Coordinate> cs = new ArrayList<Coordinate>();
+				if(values.size() % 2 == 0){
+					for(int i = 0; i < values.size(); i++){
+						cs.add(new Coordinate(values.get(i), values.get(++i)));
+					}
+					coordinates = cs.toArray(new Coordinate[values.size()/2]);
+				}
+				else if(values.size() % 3 == 0){
+					for(int i = 0; i < values.size(); i++){
+						cs.add(new Coordinate(values.get(i), values.get(++i), values.get(++i)));
+					}
+					coordinates = cs.toArray(new Coordinate[values.size()/3]);
+				}
+				else {
+					throw new GeometryNotSupportedException(
+							"DirectPosition with invalid number of coordinates: "
+									+ values.size());
+				}
+				
+			} catch (ConversionException e) {
+				throw new GeometryNotSupportedException(e);
+			}
+		}
+		
+		return coordinates;
+	}
+	
+	/**
 	 * Parse a coordinate from a GML CoordType instance.
 	 * @param instance the coord instance
 	 * @return the coordinate
