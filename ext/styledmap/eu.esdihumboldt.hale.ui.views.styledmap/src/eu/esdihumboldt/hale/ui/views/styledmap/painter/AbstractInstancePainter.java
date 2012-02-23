@@ -33,6 +33,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.jdesktop.swingx.image.FastBlurFilter;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.PixelConverter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -563,6 +564,7 @@ public abstract class AbstractInstancePainter extends
 		
 		// called when the selection has changed, to update the state of the way-points
 		Refresher refresh = prepareRefresh(false);
+		refresh.setImageOp(new FastBlurFilter(2));
 		
 		// collect instance references that are in the new selection
 		Set<InstanceReference> selected = collectReferences(selection);
