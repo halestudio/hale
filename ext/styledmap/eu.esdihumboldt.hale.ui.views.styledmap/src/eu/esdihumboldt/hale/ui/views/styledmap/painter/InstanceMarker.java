@@ -80,6 +80,11 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	
 	private static GeometryFactory geometryFactory;
 	
+	/**
+	 * Overlap for geometry pixel bounding boxes when checking against graphics bounds.
+	 */
+	private static final int GEOMETRY_PIXEL_BB_OVERLAP = 5;
+	
 	private final int defaultPointSize = 7;
 	
 	/**
@@ -236,12 +241,18 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 					int minY = Math.min((int) minPixels.getY(), (int) maxPixels.getY()); 
 					int maxX = Math.max((int) minPixels.getX(), (int) maxPixels.getX()); 
 					int maxY = Math.max((int) minPixels.getY(), (int) maxPixels.getY()); 
-					//TODO add overlap?
+					// add overlap
+					minX -= GEOMETRY_PIXEL_BB_OVERLAP;
+					minY -= GEOMETRY_PIXEL_BB_OVERLAP;
+					maxX += GEOMETRY_PIXEL_BB_OVERLAP;
+					maxY += GEOMETRY_PIXEL_BB_OVERLAP;
+					// create bounding box
 					Rectangle geometryPixelBB = new Rectangle(
 							minX, minY, maxX - minX, maxY - minY);
 					
 					if (!gBounds.intersects(geometryPixelBB)
 							&& !gBounds.contains(geometryPixelBB)) {
+						// geometry does not lie in tile
 						return null;
 					}
 				} catch (Throwable e) {
