@@ -36,7 +36,7 @@ public class CRSConverter {
 	/**
 	 * Thread local direct position initialized with a {@link DirectPosition2D}.
 	 */
-	public class ThreadLocalDirectPosition2D extends
+	public static class ThreadLocalDirectPosition2D extends
 			ThreadLocal<DirectPosition> {
 
 		@Override
