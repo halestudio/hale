@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:hale="eu:esdihumboldt:hale:test" xmlns:gml="http://www.opengis.net/gml" elementFormDefault="qualified" targetNamespace="eu:esdihumboldt:hale:test">
+
+  <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
+  
+     <element name="LineStringProperty" substitutionGroup="gml:_Feature" type="hale:LineStringPropertyType"/>
+
+  <complexType name="LineStringPropertyType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometry" type="gml:LineStringType"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+</schema>

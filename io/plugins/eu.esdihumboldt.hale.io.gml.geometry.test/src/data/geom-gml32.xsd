@@ -59,4 +59,16 @@
     </complexContent>
   </complexType>
   
+    <element name="LineStringProperty" substitutionGroup="gml:AbstractFeature" type="hale:LineStringPropertyType"/>
+
+  <complexType name="LineStringPropertyType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometry" type="gml:LineStringType"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
 </schema>

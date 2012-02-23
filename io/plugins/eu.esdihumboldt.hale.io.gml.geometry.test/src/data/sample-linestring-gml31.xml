@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:hale="eu:esdihumboldt:hale:test"
+    xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml31.xsd">
+	<gml:boundedBy>
+		<gml:null>missing</gml:null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:LineStringProperty>
+			<hale:geometry srsName="EPSG:31251">
+				<gml:coordinates>-39799.68820381,273207.53980172 -39841.185,273182.863 -39882.89,273153.86</gml:coordinates>
+			</hale:geometry>
+		</hale:LineStringProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:LineStringProperty>
+			<hale:geometry srsName="urn:ogc:def:crs:EPSG:31251">
+				<gml:coord>
+					<gml:X>-39799.68820381</gml:X>
+					<gml:Y>273207.53980172</gml:Y>
+				</gml:coord>
+				<gml:coord>
+					<gml:X>-39841.185</gml:X>
+					<gml:Y>273182.863</gml:Y>
+				</gml:coord>
+				<gml:coord>
+					<gml:X>-39882.89</gml:X>
+					<gml:Y>273153.86</gml:Y>
+				</gml:coord>
+			</hale:geometry>
+		</hale:LineStringProperty>
+	</gml:featureMember>
+	    <gml:featureMember>
+        <hale:GeometryProperty>
+            <gml:LineString srsName="urn:ogc:def:crs:EPSG::31251">
+                <gml:coord>
+					<gml:X>-39799.68820381</gml:X>
+					<gml:Y>273207.53980172</gml:Y>
+				</gml:coord>
+				<gml:coord>
+					<gml:X>-39841.185</gml:X>
+					<gml:Y>273182.863</gml:Y>
+				</gml:coord>
+				<gml:coord>
+					<gml:X>-39882.89</gml:X>
+					<gml:Y>273153.86</gml:Y>
+				</gml:coord>
+            </gml:LineString>
+        </hale:GeometryProperty>
+    </gml:featureMember>
+    <gml:featureMember>
+		<hale:LineStringProperty>
+			<hale:geometry srsName="urn:ogc:def:crs:EPSG:31251">
+				<gml:pos>-39799.68820381 273207.53980172</gml:pos>
+				<gml:pos>-39841.185 273182.863</gml:pos>
+				<gml:pos>-39882.89 273153.86</gml:pos>
+			</hale:geometry>
+		</hale:LineStringProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:LineStringProperty>
+			<hale:geometry srsName="urn:ogc:def:crs:EPSG:31251">
+				<gml:posList>-39799.68820381 273207.53980172 -39841.185 273207.53980172 -39882.89 273153.86</gml:posList>
+			</hale:geometry>
+		</hale:LineStringProperty>
+	</gml:featureMember>
+
+	
+	<!-- bis hier funktioniert alles -->
+	
+	<gml:featureMember>
+		<hale:LineStringProperty>
+			<hale:geometry srsName="urn:ogc:def:crs:EPSG:31251">
+				<gml:pointRep><gml:Point>-39799.68820381</gml:Point></gml:pointRep>
+				<gml:pointRep><gml:Point>273207.53980172</gml:Point></gml:pointRep>
+				<gml:pointRep><gml:Point>-39841.185</gml:Point></gml:pointRep>
+				<gml:pointRep><gml:Point>273207.53980172</gml:Point></gml:pointRep>
+				<gml:pointRep><gml:Point>-39882.89</gml:Point></gml:pointRep>
+				<gml:pointRep><gml:Point>273153.86</gml:Point></gml:pointRep>
+			</hale:geometry>
+		</hale:LineStringProperty>
+	</gml:featureMember>
+	
+	<gml:featureMember>
+		<hale:LineStringProperty>
+			<hale:geometry srsName="urn:ogc:def:crs:EPSG:31251">
+				<gml:pointProperty><gml:Point>-39799.68820381</gml:Point></gml:pointProperty>
+				<gml:pointProperty><gml:Point>273207.53980172</gml:Point></gml:pointProperty>
+				<gml:pointProperty><gml:Point>-39841.185</gml:Point></gml:pointProperty>
+				<gml:pointProperty><gml:Point>273207.53980172</gml:Point></gml:pointProperty>
+				<gml:pointProperty><gml:Point>-39882.89</gml:Point></gml:pointProperty>
+				<gml:pointProperty><gml:Point>273153.86</gml:Point></gml:pointProperty>
+			</hale:geometry>
+		</hale:LineStringProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>	
