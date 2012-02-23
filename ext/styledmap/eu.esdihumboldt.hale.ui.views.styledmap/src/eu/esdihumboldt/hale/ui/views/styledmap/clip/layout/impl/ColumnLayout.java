@@ -33,7 +33,7 @@ public class ColumnLayout implements PainterLayout {
 	/**
 	 * Row layout augmentation
 	 */
-	public class ColumnAugmentation extends AbstractDefaultAugmentation {
+	public static class ColumnAugmentation extends AbstractDefaultAugmentation {
 		
 		private final int count;
 

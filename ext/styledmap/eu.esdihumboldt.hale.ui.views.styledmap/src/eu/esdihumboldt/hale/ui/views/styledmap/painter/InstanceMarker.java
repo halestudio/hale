@@ -78,7 +78,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceMarker.class);
 	
-	private static GeometryFactory geometryFactory;
+	private static volatile GeometryFactory geometryFactory;
 	
 	/**
 	 * Overlap for geometry pixel bounding boxes when checking against graphics bounds.

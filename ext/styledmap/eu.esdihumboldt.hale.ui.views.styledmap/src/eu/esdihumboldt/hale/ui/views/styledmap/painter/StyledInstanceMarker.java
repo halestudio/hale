@@ -42,9 +42,9 @@ import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
 public class StyledInstanceMarker extends InstanceMarker {
 	
 	private boolean styleInitialized = false;
-	private Color styleFillColor;
-	private Color styleStrokeColor;
-	private java.awt.Stroke styleStroke;
+	private volatile Color styleFillColor;
+	private volatile Color styleStrokeColor;
+	private volatile java.awt.Stroke styleStroke;
 	private boolean hasFill = true;
 	
 	/**
