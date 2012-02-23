@@ -19,7 +19,9 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.IllegalGeoPositionException;
@@ -41,6 +43,7 @@ import de.cs3d.common.metamodel.shape.Line2D;
 import de.cs3d.common.metamodel.shape.Surface;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import de.fhg.igd.mapviewer.marker.AbstractMarker;
 import de.fhg.igd.mapviewer.marker.BoundingBoxMarker;
 import de.fhg.igd.mapviewer.marker.Marker;
 import de.fhg.igd.mapviewer.marker.SimpleCircleMarker;
@@ -79,6 +82,24 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	
 	private final int defaultPointSize = 7;
 	
+	/**
+	 * Cache for geometry bounding boxes in the map CRS.
+	 * Will be cleared on map change.
+	 */
+	private final Map<Geometry, BoundingBox> geometryMapBBs = new IdentityHashMap<Geometry, BoundingBox>();
+	
+	/**
+	 * @see AbstractMarker#reset()
+	 */
+	@Override
+	public void reset() {
+		synchronized (geometryMapBBs) {
+			geometryMapBBs.clear();
+		}
+		
+		super.reset();
+	}
+
 	/**
 	 * @see BoundingBoxMarker#doPaintMarker(Graphics2D, SelectableWaypoint, PixelConverter, int, int, int, int, int, Rectangle, boolean)
 	 */
@@ -170,20 +191,37 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		// check if geometry lies inside tile
 		// if the area must be calculated we must process all geometries
 		// if it is the only geometry the check that was already made is OK
-		if (!calculateArea && !singleGeometry) {  
-			// determine bounding box
-			BoundingBox geometryBB = AbstractInstancePainter.getBoundingBox(geometry);
-			
+		if (!calculateArea && !singleGeometry) {
 			// we can safely return null inside this method, as no area has to be calculated
 			
-			if (geometryBB != null && geometryBB.checkIntegrity()) {
+			// determine bounding box
+			BoundingBox geometryBB;
+			synchronized (geometryMapBBs) {
+				// retrieve cached bounding box
+				geometryBB = geometryMapBBs.get(geometry);
+				if (geometryBB == null) {
+					// if none available, try to calculate BB
+					BoundingBox calcBB = AbstractInstancePainter.getBoundingBox(geometry);
+					if (calcBB != null && calcBB.checkIntegrity()) {
+						try {
+							// get CRS converter
+							CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
+							
+							// manually convert to map CRS
+							geometryBB = conv.convert(calcBB);
+							
+							// put BB in cache
+							geometryMapBBs.put(geometry, geometryBB);
+						} catch (Throwable e) {
+							log.error("Error checking geometry bounding box", e);
+							return null;
+						}
+					}
+				}
+			}
+			
+			if (geometryBB != null) {
 				try {
-					// get CRS converter
-					CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
-					
-					// manually convert to map CRS
-					geometryBB = conv.convert(geometryBB);
-					
 					GeoPosition minCorner = new GeoPosition(geometryBB.getMinX(), 
 							geometryBB.getMinY(), converter.getMapEpsg());
 					GeoPosition maxCorner = new GeoPosition(geometryBB.getMaxX(), 
