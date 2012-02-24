@@ -193,5 +193,20 @@ public class LocalOrientDB {
 			dbLock.writeLock().unlock();
 		}
 	}
+	
+	/**
+	 * Delete the database.
+	 */
+	public void delete() {
+		dbLock.writeLock().lock();
+		try {
+			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI);
+			// delete the database if it already exists
+			db.delete();
+			db.close();
+		} finally {
+			dbLock.writeLock().unlock();
+		}
+	}
 
 }

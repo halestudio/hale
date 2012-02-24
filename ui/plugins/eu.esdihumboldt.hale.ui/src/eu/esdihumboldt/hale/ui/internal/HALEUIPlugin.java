@@ -18,6 +18,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import eu.esdihumboldt.hale.ui.HaleSharedImages;
+import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
@@ -62,6 +63,12 @@ public class HALEUIPlugin extends AbstractUIPlugin implements HaleSharedImages {
 	public void stop(BundleContext context) throws Exception {
 		// save reports
 		this.repService.saveReportsOnShutdown();
+		
+		// remove temporary databases
+		OrientInstanceService ois = OrientInstanceService.getExistingInstance();
+		if (ois != null) {
+			ois.dispose();
+		}
 		
 		// shutdown plugin
 		plugin = null;
