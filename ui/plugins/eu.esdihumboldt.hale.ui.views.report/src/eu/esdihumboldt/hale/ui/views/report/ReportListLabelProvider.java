@@ -21,8 +21,6 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
-import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
