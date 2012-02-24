@@ -42,13 +42,15 @@ public class ReportPropertiesLabelProvider extends LabelProvider {
 		
 		if (element instanceof Report) {
 			// get the right image
-			Report report = (Report) element;
+			Report<?> report = (Report<?>) element;
 			
 			String img = "icons/signed_yes.gif";
-			if (report.getWarnings().size() > 0 && report.getErrors().size() > 0) {
+			if (!report.isSuccess()) {
+				img = "icons/error.gif";
+			} else if (report.getWarnings().size() > 0 && report.getErrors().size() > 0) {
 				img = "icons/errorwarning_tab.gif";
 			} else if (report.getErrors().size() > 0) {
-				img = "icons/error.gif";
+				img = "icons/error_log.gif";
 			} else if (report.getWarnings().size() > 0) {
 				img = "icons/warning.gif";
 			}
@@ -81,7 +83,7 @@ public class ReportPropertiesLabelProvider extends LabelProvider {
 			element = ((IStructuredSelection) element).getFirstElement();
 			
 			if (element instanceof Report) {
-				return ((Report) element).getTaskName();
+				return ((Report<?>) element).getTaskName();
 			}
 		}
 		
