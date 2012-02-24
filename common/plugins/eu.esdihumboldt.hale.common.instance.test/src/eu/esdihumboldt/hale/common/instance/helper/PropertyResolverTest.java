@@ -161,6 +161,7 @@ public class PropertyResolverTest {
 		
 		
 		InstanceReader instanceReader = new XmlInstanceReader();
+		instanceReader.setParameter(XmlInstanceReader.PARAM_IGNORE_ROOT, "false");
 		
 		instanceReader.setSource(new DefaultInputSupplier(xmlLocation));
 		instanceReader.setSourceSchema(sourceSchema);
