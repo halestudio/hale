@@ -74,6 +74,11 @@ public class GmlInstanceCollection implements InstanceCollection {
 		private int elementIndex = 0;
 		
 		/**
+		 * States if the root element has been encountered yet.
+		 */
+		private boolean rootEncountered = false;
+		
+		/**
 		 * Default constructor
 		 */
 		public InstanceIterator() {
@@ -115,6 +120,14 @@ public class GmlInstanceCollection implements InstanceCollection {
 			while (nextType == null && reader.hasNext()) {
 				int event = reader.next();
 				if (event == XMLStreamConstants.START_ELEMENT) {
+					if (!rootEncountered) {
+						rootEncountered = true;
+						if (ignoreRoot) {
+							// skip to next element, don't create a root instance
+							continue;
+						}
+					}
+					
 					// check element and try to determine associated type
 					QName elementName = new QName(reader.getNamespaceURI(), 
 							reader.getLocalName());
@@ -296,6 +309,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	private final TypeIndex sourceSchema;
 	private final LocatableInputSupplier<? extends InputStream> source;
 	private final boolean restrictToFeatures;
+	private final boolean ignoreRoot;
 	
 	private boolean emptyInitialized = false;
 	private boolean empty = false;
@@ -307,13 +321,16 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 * @param sourceSchema the source schema
 	 * @param restrictToFeatures if only instances that are GML features shall
 	 *   be loaded
+	 * @param ignoreRoot if the root element should be ignored for creating
+	 *   instances even if it is recognized as an allowed instance type
 	 */
 	public GmlInstanceCollection(
 			LocatableInputSupplier<? extends InputStream> source,
-			TypeIndex sourceSchema, boolean restrictToFeatures) {
+			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
+		this.ignoreRoot = ignoreRoot;
 	}
 
 	/**

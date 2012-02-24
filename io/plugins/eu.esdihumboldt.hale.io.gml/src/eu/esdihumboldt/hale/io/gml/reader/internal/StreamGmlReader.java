@@ -32,6 +32,13 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
  */
 public class StreamGmlReader extends AbstractInstanceReader {
 
+	/**
+	 * The name of the parameter specifying if the root element should be
+	 * ignored and thus not be loaded as an instance.
+	 * Parameter value defaults to <code>true</code>. 
+	 */
+	public static final String PARAM_NAME_IGNORE_ROOT = "ignoreRoot";
+
 	private InstanceCollection instances;
 	
 	private final boolean restrictToFeatures;
@@ -56,8 +63,11 @@ public class StreamGmlReader extends AbstractInstanceReader {
 		progress.begin("Prepare loading of " + getTypeName(), ProgressIndicator.UNKNOWN);
 		
 		try {
+			String pIgnoreRoot = getParameter(PARAM_NAME_IGNORE_ROOT);
+			boolean ignoreRoot = (pIgnoreRoot == null || pIgnoreRoot.isEmpty()) ? (true)
+					: (Boolean.parseBoolean(pIgnoreRoot));
 			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
-					restrictToFeatures);
+					restrictToFeatures, ignoreRoot);
 			//TODO any kind of analysis on file? e.g. types and size - would also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);
 		} catch (Throwable e) {
