@@ -58,11 +58,14 @@ public abstract class StreamGmlHelper {
 	 *   element of the instance
 	 * @param type the definition of the instance type
 	 * @param indexInStream the index of the instance in the stream or <code>null</code>
+	 * @param strict if associating elements with properties should be done
+	 *   strictly according to the schema, otherwise a fall-back is used
+	 *   trying to populate values also on invalid property paths
 	 * @return the parsed instance
 	 * @throws XMLStreamException if parsing the instance failed
 	 */
 	public static Instance parseInstance(XMLStreamReader reader,
-			TypeDefinition type, Integer indexInStream) throws XMLStreamException {
+			TypeDefinition type, Integer indexInStream, boolean strict) throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 		
 		MutableInstance instance;
@@ -74,7 +77,7 @@ public abstract class StreamGmlHelper {
 		}
 		
 		// instance properties
-		parseProperties(reader, instance);
+		parseProperties(reader, instance, strict);
 
 		// instance value
 		if (type.getConstraint(HasValueFlag.class).isEnabled()) {
@@ -106,10 +109,13 @@ public abstract class StreamGmlHelper {
 	 * XML stream reader.
 	 * @param reader the XML stream reader
 	 * @param group the group to populate with properties
+	 * @param strict if associating elements with properties should be done
+	 *   strictly according to the schema, otherwise a fall-back is used
+	 *   trying to populate values also on invalid property paths
 	 * @throws XMLStreamException if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader,
-			MutableGroup group) throws XMLStreamException {
+			MutableGroup group, boolean strict) throws XMLStreamException {
 		final MutableGroup topGroup = group;
 		
 		// attributes (usually only present in Instances)
@@ -139,10 +145,11 @@ public abstract class StreamGmlHelper {
 				int event = reader.next();
 				switch (event) {
 				case XMLStreamConstants.START_ELEMENT:
-					GroupProperty gp = GroupUtil.determineProperty(groups, reader.getName());
+					// determine property definition, allow fall-back to non-strict mode
+					GroupProperty gp = GroupUtil.determineProperty(groups, reader.getName(), !strict);
 					if (gp != null) {
 						// update the stack from the path
-						groups = gp.getPath().getAllGroups();
+						groups = gp.getPath().getAllGroups(strict);
 						// get group object from stack
 						group = groups.peek();
 						
@@ -151,14 +158,14 @@ public abstract class StreamGmlHelper {
 						if (hasElements(property.getPropertyType())) {
 							// use an instance as value
 							group.addProperty(property.getName(), 
-									parseInstance(reader, property.getPropertyType(), null));
+									parseInstance(reader, property.getPropertyType(), null, strict));
 						}
 						else {
 							if (hasAttributes(property.getPropertyType())) {
 								// no elements but attributes
 								// use an instance as value, it will be assigned an instance value if possible
 								group.addProperty(property.getName(), 
-										parseInstance(reader, property.getPropertyType(), null));
+										parseInstance(reader, property.getPropertyType(), null, strict));
 							}
 							else {
 								// no elements and no attributes

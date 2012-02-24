@@ -141,16 +141,18 @@ public class GroupPath {
 	 * Determines if the adding a property value for the given property to the
 	 * last element in the path is allowed.
 	 * @param propertyName the property name
+	 * @param strict states if additional checks are applied apart from whether
+	 *   the property exists
 	 * @return if adding the property value to the last element in the path is
 	 *   allowed
 	 */
-	public boolean allowAdd(QName propertyName) {
+	public boolean allowAdd(QName propertyName, boolean strict) {
 		if (children == null || children.isEmpty()) {
 			// check last parent
 			MutableGroup parent = parents.get(parents.size() - 1);
 			ChildDefinition<?> child = parent.getDefinition().getChild(propertyName);
 			if (child.asProperty() != null) {
-				return GroupUtil.allowAdd(parent, null, child.asProperty().getName());
+				return !strict || GroupUtil.allowAdd(parent, null, child.asProperty().getName());
 			}
 			else {
 				return false;
@@ -170,7 +172,7 @@ public class GroupPath {
 				return true;
 			}
 			
-			return GroupUtil.allowAdd(null, child, propertyName);
+			return !strict || GroupUtil.allowAdd(null, child, propertyName);
 		}
 	}
 	
@@ -192,12 +194,12 @@ public class GroupPath {
 	 * Will create the child groups for which
 	 * only definitions are present and update the path accordingly before
 	 * getting the last group object.
+	 * @param strict if the path should be checked for validity
 	 * @return the last group in the path
 	 * @throws IllegalStateException if the path is not valid
 	 */
-	public MutableGroup getLast() throws IllegalStateException {
-		//XXX possibly introduce a strict parameter (regarding validation)
-		return getAllGroups().peek();
+	public MutableGroup getLast(boolean strict) throws IllegalStateException {
+		return getAllGroups(strict).peek();
 	}
 
 	/**
@@ -206,13 +208,13 @@ public class GroupPath {
 	 * Will create the child groups for which
 	 * only definitions are present and update the path accordingly before
 	 * returning all group objects.
+	 * @param strict if the path should be checked for validity
 	 * @return the all groups in the path
 	 * @throws IllegalStateException if the path is not valid
 	 */
-	public Stack<MutableGroup> getAllGroups() throws IllegalStateException {
-		//XXX possibly introduce a strict parameter (regarding validation)
+	public Stack<MutableGroup> getAllGroups(boolean strict) throws IllegalStateException {
 		if (children != null && !children.isEmpty()) {
-			if (!isValid()) {
+			if (strict && !isValid()) {
 				throw new IllegalStateException("Attempt to create groups in an invalid path.");
 			}
 			createChildGroups();

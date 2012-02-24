@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,10 +51,31 @@ public class GroupUtil {
 	 * @param groups the stack of the current group objects. The topmost element
 	 *   is the current group object 
 	 * @param propertyName the property name
+	 * @param allowFallback states if falling back to non-strict mode is allowed
+	 *   for determining the property definition
 	 * @return the group property or <code>null</code> if none is found
 	 */
 	static GroupProperty determineProperty(
-			List<MutableGroup> groups, QName propertyName) {
+			List<MutableGroup> groups, QName propertyName,
+			boolean allowFallback) {
+		return determineProperty(groups, propertyName, true, allowFallback);
+	}
+	
+	/**
+	 * Determine the property definition for the given property name.
+	 * @param groups the stack of the current group objects. The topmost element
+	 *   is the current group object 
+	 * @param propertyName the property name
+	 * @param strict states if for assessing possible property definitions
+	 *   strict checks regarding the structure are applied
+	 * @param allowFallback states if with strict mode being enabled, falling
+	 *   back to non-strict mode is allowed (this will not be propagated to
+	 *   subsequent calls)
+	 * @return the group property or <code>null</code> if none is found
+	 */
+	private static GroupProperty determineProperty(
+			List<MutableGroup> groups, QName propertyName, boolean strict,
+			boolean allowFallback) {
 		if (groups.isEmpty()) {
 			return null;
 		}
@@ -109,14 +131,15 @@ public class GroupUtil {
 				
 				// check for a direct match in the group
 				PropertyDefinition property = determineDirectProperty(
-						parents.get(i), propertyName);
+						parents.get(i), propertyName, strict);
 				if (property != null) {
 					gp = new GroupProperty(property, path);
 				}
 				
 				if (gp == null && maxDescent >= 0) { // >= 0 because also for maxDescent 0 we get siblings
 					// check the sub-properties
-					gp = determineSubProperty(level, propertyName, nextLevel, 0);
+					gp = determineSubProperty(level, propertyName, nextLevel, 
+							0, strict);
 				}
 				
 				if (gp != null) {
@@ -145,7 +168,8 @@ public class GroupUtil {
 		}
 		
 		// preferred 2: property of the current group
-		PropertyDefinition property = determineDirectProperty(currentGroup, propertyName);
+		PropertyDefinition property = determineDirectProperty(currentGroup, 
+				propertyName, strict);
 		if (property != null) {
 			return new GroupProperty(property, new GroupPath(groups, null));
 		}
@@ -154,13 +178,20 @@ public class GroupUtil {
 		siblings.addFirst(new GroupPath(groups, null)); // add current group
 		// check the sub-properties
 		GroupProperty gp = determineSubProperty(siblings, propertyName, 
-				null, -1);
+				null, -1, strict);
 		
 		if (gp != null) {
 			return gp;
 		}
 		
-		//XXX fall-back: property in any group without validity checks?
+		if (strict && allowFallback) {
+			// fall-back: property in any group without validity checks
+			//XXX though allowClose will still be strict
+			log.warn(MessageFormat.format(
+					"Could not find valid property path for {0}, source data might be invalid regarding the source schema.",
+					propertyName));
+			return determineProperty(groups, propertyName, false, false);
+		}
 		
 		return null;
 	}
@@ -170,14 +201,16 @@ public class GroupUtil {
 	 * to the given group and returns the corresponding property definition.
 	 * @param group the group
 	 * @param propertyName the property name
+	 * @param strict states if additional checks are applied apart from whether
+	 *   the property exists
 	 * @return the property definition or <code>null</code> if none is found or
 	 *   no value may be added
 	 */
 	private static PropertyDefinition determineDirectProperty(
-			MutableGroup group, QName propertyName) {
+			MutableGroup group, QName propertyName, boolean strict) {
 		ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
 		if (child != null && child.asProperty() != null && 
-				allowAdd(group, null, child.asProperty().getName())) {
+				(!strict || allowAdd(group, null, child.asProperty().getName()))) {
 			return child.asProperty();
 		}
 		
@@ -193,11 +226,13 @@ public class GroupUtil {
 	 *   definition group tree that are not processed because of the max 
 	 *   descent, may be <code>null</code> if no population is needed
 	 * @param maxDescent the maximum descent, -1 for no maximum descent
+	 * @param strict states if additional checks are applied apart from whether
+	 *   the property exists
 	 * @return the property definition or <code>null</code> if none is found
 	 */
 	private static GroupProperty determineSubProperty(
 			Queue<GroupPath> paths, QName propertyName,
-			Queue<GroupPath> leafs, int maxDescent) {
+			Queue<GroupPath> leafs, int maxDescent, boolean strict) {
 		if (maxDescent != -1 && maxDescent < 0) {
 			return null;
 		}
@@ -208,7 +243,7 @@ public class GroupUtil {
 			DefinitionGroup lastDef = null;
 			if (path.getChildren() != null && !path.getChildren().isEmpty()) {
 				// check if path is a valid result
-				if (path.allowAdd(propertyName)) {
+				if (path.allowAdd(propertyName, strict)) {
 					ChildDefinition<?> property = path.getLastDefinition().getChild(propertyName);
 					
 					if (property != null && property.asProperty() != null) {
@@ -246,7 +281,7 @@ public class GroupUtil {
 						GroupPath newPath = new GroupPath(path.getParents(), childDefs);
 						
 						// check if path is valid
-						if (newPath.isValid()) {
+						if (!strict || newPath.isValid()) {
 							// check max descent
 							if (maxDescent >= 0 && newPath.getChildren().size() > maxDescent) {
 								if (leafs != null) {
@@ -292,7 +327,7 @@ public class GroupUtil {
 	
 		// check cardinality of children
 		for (ChildDefinition<?> childDef : children) {
-			if (isValidCardinality(currentGroup, childDef)) {
+			if (isValidCardinality(currentGroup, childDef)) { //XXX is this correct?! should it be !isValid... instead?
 				return false;
 			}
 		}
