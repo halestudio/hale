@@ -19,6 +19,8 @@ import javax.xml.namespace.QName;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
  * XML type definition
@@ -45,6 +47,24 @@ public class XmlTypeDefinition extends DefaultTypeDefinition {
 		}
 		
 		return super.getChildren();
+	}
+
+	@Override
+	public String getDescription() {
+		String desc = super.getDescription();
+		if (desc != null && !desc.isEmpty()) {
+			return desc;
+		}
+		
+		// if no description is present, try the description of the associated element
+		XmlElements elements = getConstraint(XmlElements.class);
+		if (elements.getElements().size() == 1) {
+			// only use element description if it's unique
+			XmlElement element = elements.getElements().iterator().next();
+			return element.getDescription();
+		}
+		
+		return desc;
 	}
 
 }
