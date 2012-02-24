@@ -133,6 +133,19 @@ public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 		Set<QName> substitute = new HashSet<QName>();
 		substitute.add(elementName);
 		Queue<TypeDefinition> subTypes = new LinkedList<TypeDefinition>();
+		
+		/*
+		 * Add type itself also to list of types to be checked for substitutions.
+		 * (this is needed e.g. in CityGML 0.4.0 schema cityObjectMember
+		 * substituting featureMember)
+		 * This essentially then is only a substitution in name and not in type.
+		 * XXX if other elements, that are in no relation to the type, should
+		 * also be possible for substitution, we would need some kond of
+		 * substitution index in XmlIndex
+		 */
+		subTypes.add(type);
+		
+		// add all sub-types to the queue
 		subTypes.addAll(type.getSubTypes());
 		
 		List<XmlElement> result = new ArrayList<XmlElement>();
