@@ -61,6 +61,14 @@ public class URILink{
 	}
 	
 	/**
+	 * @see Link#setLayoutData(Object)
+	 * @param layoutData the new layout data for the receiver
+	 */
+	public void setLayoutData(Object layoutData) {
+		link.setLayoutData(layoutData);
+	}
+	
+	/**
 	 * @return the instance of a link
 	 */
 	public Link getLink(){
