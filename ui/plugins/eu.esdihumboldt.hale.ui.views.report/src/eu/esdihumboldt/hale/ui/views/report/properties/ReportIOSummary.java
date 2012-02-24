@@ -12,9 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.views.report.properties;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -23,24 +20,30 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.ui.util.components.URILink;
 
 /**
+ * Extended summary for {@link IOReport}.
+ * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportIOSummary extends ReportSummary {
+public class ReportIOSummary extends AbstractReportSummary {
 	
-	private Text linkText;
+	/**
+	 * Link to the file from {@link IOReport}
+	 */
+	private URILink link;
 	
-	private Hyperlink link;
+	/**
+	 * Text for the link
+	 */
+	public Text linkText;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -48,37 +51,22 @@ public class ReportIOSummary extends ReportSummary {
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-//		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
-//		FormData data;
 		
-		
-//		link = new Link(composite, SWT.NONE);
-//		link.setText("<a href=\"\">File</a>");
-		link = getWidgetFactory().createHyperlink(composite, "File", SWT.None);
-		link.setVisible(false);
+		// urilink
+		link = new URILink(composite, SWT.None, null, "");
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(timeText, ITabbedPropertyConstants.VSPACE);
-//		linkText.setLayoutData(data);
+		data.top = new FormAttachment(composite, ITabbedPropertyConstants.VSPACE);
 		link.setLayoutData(data);
 		
-		link.addHyperlinkListener(new HyperlinkAdapter() {
-			public void linkActivated(HyperlinkEvent e){
-				// TODO add HyperlinkAdapter
-			}
-		  });
-		
-		CLabel linkLabel = getWidgetFactory()
-				.createCLabel(composite, "Link:"); //$NON-NLS-1$
+		// link label
+		CLabel linkLabel = getWidgetFactory().createCLabel(composite, "Link:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(link,
-				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(link, 0, SWT.CENTER);
+		data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
+		data.top = new FormAttachment(composite, 0, SWT.CENTER);
 		linkLabel.setLayoutData(data);
-		
-		
 	}
 	
 	/**
@@ -96,14 +84,7 @@ public class ReportIOSummary extends ReportSummary {
 	public void refresh() {
 		super.refresh();
 		
-//		link.setText("<a href=\""+((IOReport)report).getTarget().getLocation().toString()+"\">File</a>");
-		try {
-			link.setText(((IOReport)report).getTarget().getLocation().toString());
-			link.setHref(new URL(((IOReport)report).getTarget().getLocation().toString()));
-			link.setVisible(true);
-		} catch (MalformedURLException e) {
-			link.setVisible(false);
-		}
-		
+		this.link.refresh(((IOReport)report).getTarget().getLocation());
+		this.link.setText(((IOReport)report).getTarget().getLocation().toString());
 	}
 }

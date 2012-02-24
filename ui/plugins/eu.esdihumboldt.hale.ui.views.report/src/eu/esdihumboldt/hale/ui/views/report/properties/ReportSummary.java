@@ -12,15 +12,12 @@
 
 package eu.esdihumboldt.hale.ui.views.report.properties;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -28,18 +25,27 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
+ * Summary for {@link Report}.
+ * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportSummary extends AbstractPropertySection {
+public class ReportSummary extends AbstractReportSummary {
 	
-	public Text successText, summaryText, timeText, linkText;
+	/**
+	 * Text for success message
+	 */
+	public Text successText;
 	
-	public Report report;
+	/**
+	 * Text for summary
+	 */
+	public Text summaryText;
 	
-	public Composite composite;
-	
-	public FormData data;
+	/**
+	 * Text for timestamp
+	 */
+	public Text timeText;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -47,7 +53,6 @@ public class ReportSummary extends AbstractPropertySection {
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = getWidgetFactory().createFlatFormComposite(parent);
 		
 		// success
 		successText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
@@ -103,23 +108,6 @@ public class ReportSummary extends AbstractPropertySection {
 				-ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(timeText, 0, SWT.CENTER);
 		timeLabel.setLayoutData(data);	
-	}
-	
-	/**
-	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
-	 */
-	@Override
-	public void setInput(IWorkbenchPart part, ISelection selection) {
-		Object report = null;
-		if (selection instanceof IStructuredSelection) {
-			// overwrite element with first element from selection
-			report = ((IStructuredSelection) selection).getFirstElement();
-		}
-		
-		// set new report
-		if (report instanceof Report) {
-			this.report = (Report) report;
-		}
 	}
 	
 	/**
