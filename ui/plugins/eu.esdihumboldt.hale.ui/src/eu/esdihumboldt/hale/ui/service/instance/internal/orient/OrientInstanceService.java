@@ -20,10 +20,12 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -85,10 +87,21 @@ public class OrientInstanceService extends AbstractInstanceService {
 		return instance;
 	}
 	
+	/**
+	 * Get the existing service instance.
+	 * @return the existing service instance or <code>null</code> if none was
+	 *   created
+	 */
+	public static OrientInstanceService getExistingInstance() {
+		return instance;
+	}
+	
 	private final SchemaService schemaService;
 	
 	private final LocalOrientDB source;
 	private final LocalOrientDB transformed;
+	
+	private final File databasesFolder;
 	
 	/**
 	 * Default constructor 
@@ -111,8 +124,14 @@ public class OrientInstanceService extends AbstractInstanceService {
 		}
 		instanceLoc = new File(instanceLoc, "instances");
 		
-		source = new LocalOrientDB(new File(instanceLoc, "source"));
-		transformed = new LocalOrientDB(new File(instanceLoc, "transformed"));
+		File tmpInstanceLoc = null;
+		while (tmpInstanceLoc == null || tmpInstanceLoc.exists()) {
+			tmpInstanceLoc = new File(instanceLoc, UUID.randomUUID().toString());
+		}
+		databasesFolder = tmpInstanceLoc;
+		
+		source = new LocalOrientDB(new File(databasesFolder, "source"));
+		transformed = new LocalOrientDB(new File(databasesFolder, "transformed"));
 	}
 
 	/**
@@ -254,6 +273,20 @@ public class OrientInstanceService extends AbstractInstanceService {
 		notifyDatasetChanged(null);
 	}
 
+	/**
+	 * Delete the databases.
+	 */
+	public void dispose() {
+		source.delete();
+		transformed.delete();
+		
+		try {
+			FileUtils.deleteDirectory(databasesFolder);
+		} catch (IOException e) {
+			log.warn("Error deleting temporary databases", e);
+		}
+	}
+	
 	/**
 	 * @see InstanceService#getReference(Instance)
 	 */
