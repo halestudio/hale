@@ -371,7 +371,7 @@ public class GmlInstanceCollectionTest {
 		
 		return new GmlInstanceCollection(
 				new DefaultInputSupplier(xmlLocation), 
-				sourceSchema, restrictToFeatures, false);
+				sourceSchema, restrictToFeatures, false, true);
 	}
 
 }

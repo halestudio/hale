@@ -222,7 +222,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 			
 			try {
-				return StreamGmlHelper.parseInstance(reader, nextType, elementIndex++);
+				return StreamGmlHelper.parseInstance(reader, nextType, 
+						elementIndex++, strict);
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException(e);
 			} finally {
@@ -310,27 +311,32 @@ public class GmlInstanceCollection implements InstanceCollection {
 	private final LocatableInputSupplier<? extends InputStream> source;
 	private final boolean restrictToFeatures;
 	private final boolean ignoreRoot;
+	private final boolean strict;
 	
 	private boolean emptyInitialized = false;
 	private boolean empty = false;
 
 	/**
-	 * Create an XMl/GML instance collection based on the given source
-	 * 
+	 * Create an XMl/GML instance collection based on the given source.
 	 * @param source the source
 	 * @param sourceSchema the source schema
 	 * @param restrictToFeatures if only instances that are GML features shall
 	 *   be loaded
 	 * @param ignoreRoot if the root element should be ignored for creating
 	 *   instances even if it is recognized as an allowed instance type
+	 * @param strict if associating elements with properties should be done
+	 *   strictly according to the schema, otherwise a fall-back is used
+	 *   trying to populate values also on invalid property paths 
 	 */
 	public GmlInstanceCollection(
 			LocatableInputSupplier<? extends InputStream> source,
-			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot) {
+			TypeIndex sourceSchema, boolean restrictToFeatures, 
+			boolean ignoreRoot, boolean strict) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
 		this.ignoreRoot = ignoreRoot;
+		this.strict = strict;
 	}
 
 	/**
