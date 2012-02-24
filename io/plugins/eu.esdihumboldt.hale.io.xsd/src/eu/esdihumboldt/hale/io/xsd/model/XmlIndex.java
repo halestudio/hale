@@ -21,6 +21,7 @@ import javax.xml.namespace.QName;
 import com.google.common.base.Preconditions;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
@@ -76,6 +77,14 @@ public class XmlIndex extends DefaultSchema {
 			type = new XmlTypeDefinition(name);
 			
 			XmlTypeUtil.configureType(type);
+			
+			if (name.equals(XmlTypeUtil.NAME_ANY_TYPE)) {
+				type.setConstraint(AbstractFlag.ENABLED);
+			}
+			else {
+				// set anyType as default super type
+				type.setSuperType(getOrCreateType(XmlTypeUtil.NAME_ANY_TYPE));
+			}
 			
 			addType(type);
 		}
