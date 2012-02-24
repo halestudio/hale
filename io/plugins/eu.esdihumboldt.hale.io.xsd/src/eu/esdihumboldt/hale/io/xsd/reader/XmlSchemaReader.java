@@ -298,8 +298,8 @@ public class XmlSchemaReader
 							schemaLocation, namespace, mainSchema);
 				}
 				else if (element.getQName() != null) {
-					// reference to type
-					elementType = index.getOrCreateType(element.getQName()); //XXX this really a type???
+					// element with no type
+					elementType = index.getOrCreateType(XmlTypeUtil.NAME_ANY_TYPE);
 				}
 				//XXX what about element.getRefName()? 
 				
