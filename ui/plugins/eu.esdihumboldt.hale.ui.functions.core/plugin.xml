@@ -42,7 +42,8 @@
       <typeParameterPage
             class="eu.esdihumboldt.hale.ui.functions.core.MergeParameterPage"
             function="eu.esdihumboldt.hale.align.merge"
-            id="eu.esdihumboldt.hale.ui.functions.core.merge">
+            id="eu.esdihumboldt.hale.ui.functions.core.merge"
+            order="0">
          <parameter
                name="property">
          </parameter>
@@ -50,7 +51,8 @@
       <typeParameterPage
             class="eu.esdihumboldt.hale.ui.functions.core.MergeParameterPage"
             function="eu.esdihumboldt.hale.align.merge"
-            id="eu.esdihumboldt.hale.ui.functions.core.merge2">
+            id="eu.esdihumboldt.hale.ui.functions.core.merge2"
+            order="1">
          <parameter
                name="additional_property">
          </parameter>

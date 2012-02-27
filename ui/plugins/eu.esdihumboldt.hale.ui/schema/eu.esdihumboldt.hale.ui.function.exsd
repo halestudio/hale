@@ -146,6 +146,13 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="order" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Attribute to specify the order of parameter pages. The smaller the number, the earlier the page will be used.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -178,6 +185,13 @@
             <annotation>
                <documentation>
                   
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="order" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Attribute to specify the order of parameter pages. The smaller the number, the earlier the page will be used.
                </documentation>
             </annotation>
          </attribute>
