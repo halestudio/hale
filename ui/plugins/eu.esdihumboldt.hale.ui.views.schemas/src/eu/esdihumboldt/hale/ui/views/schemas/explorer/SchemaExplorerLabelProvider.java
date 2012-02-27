@@ -27,9 +27,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -50,6 +53,7 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 	private final Color typeCellColor;
 	private final Color propertyCellColor;
 	private final Color augmentedColor;
+	private final Color indirectMappingColor;
 
 	/**
 	 * Default constructor 
@@ -62,6 +66,7 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 		typeCellColor = new Color(display, 150, 190, 120);
 		propertyCellColor = new Color(display, 190, 220, 170);
 		augmentedColor = new Color(display, 184, 181, 220);
+		indirectMappingColor = new Color(display, 245, 245, 145);
 	}
 
 	/**
@@ -180,6 +185,7 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 		typeCellColor.dispose();
 		propertyCellColor.dispose();
 		augmentedColor.dispose();
+		indirectMappingColor.dispose();
 		
 		super.dispose();
 	}
@@ -203,30 +209,59 @@ public class SchemaExplorerLabelProvider extends StyledCellLabelProvider
 			Alignment alignment = as.getAlignment();
 			
 			EntityDefinition entityDef = (EntityDefinition) element;
-			return getEntityBackground(alignment.getCells(entityDef), 
+			return getEntityBackground(entityDef, alignment, 
 					entityDef.getPropertyPath().isEmpty());
 		}
 		
 		return null;
 	}
 
-	private Color getEntityBackground(Collection<? extends Cell> cells, 
-			boolean isType) {
-		if (cells.isEmpty()) {
-			return null; 
+	private Color getEntityBackground(EntityDefinition entityDef,
+			Alignment alignment, boolean isType) {
+		// check for directly associated cells
+		Collection<? extends Cell> cells = alignment.getCells(entityDef);
+		
+		if (!cells.isEmpty()) {
+			if (isType) {
+				return typeCellColor;
+			}
+			
+			for (Cell cell : cells) {
+				if (!AlignmentUtil.isAugmentation(cell)) {
+					return propertyCellColor;
+				}
+			}
+			
+			return augmentedColor; 
 		}
 		
-		if (isType) {
-			return typeCellColor;
-		}
+		// check for cells associated to children of the entity definition
+		cells = alignment.getCells(entityDef.getType(), entityDef.getSchemaSpace());
 		
 		for (Cell cell : cells) {
-			if (!AlignmentUtil.isAugmentation(cell)) {
-				return propertyCellColor;
+			ListMultimap<String, ? extends Entity> entities;
+			switch (entityDef.getSchemaSpace()) {
+			case SOURCE:
+				entities = cell.getSource();
+				break;
+			case TARGET:
+				entities = cell.getTarget();
+				break;
+			default:
+				throw new IllegalStateException("Entity definition with illegal schema space encountered");
+			}
+			
+			if (entities != null) {
+				for (Entity entity : entities.values()) {
+					if (AlignmentUtil.isParent(entityDef, entity.getDefinition())) {
+						return indirectMappingColor;
+					}
+				}
 			}
 		}
 		
-		return augmentedColor;
+		// default color
+		return null;
 	}
 
 }
