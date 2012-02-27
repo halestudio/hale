@@ -24,6 +24,10 @@ body
 	max-width: 580px;
 }
 
+img {
+	border-style: none;
+}
+
 /** link defintions **/
 
 a:link, a:visited
