@@ -16,7 +16,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
-import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
+import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
  * The default function section
@@ -29,7 +29,7 @@ public class DefaultFunctionSection<F extends Function> extends
 		AbstractFunctionSection<F> {
 
 	/**
-	 * @see AbstractSection#setInput(Object)
+	 * @see AbstractTextSection#setInput(Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override

@@ -154,7 +154,7 @@ public class AbstractFunctionParameterSection extends
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.AbstractSection#setInput(java.lang.Object)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection#setInput(java.lang.Object)
 	 */
 	@Override
 	protected void setInput(Object input) {

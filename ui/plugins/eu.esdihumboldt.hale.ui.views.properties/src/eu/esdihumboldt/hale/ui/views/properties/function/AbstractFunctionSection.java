@@ -13,7 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.properties.function;
 
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
-import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
+import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
  * Abstract section for function properties
@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
  *            the function
  */
 public abstract class AbstractFunctionSection<F extends Function> extends
-		AbstractSection {
+		AbstractTextSection {
 
 	/**
 	 * the Function for this section
