@@ -12,17 +12,54 @@
 
 package eu.esdihumboldt.cst.functions.core.merge;
 
-import eu.esdihumboldt.util.ObjectUtil;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import net.jcip.annotations.Immutable;
 
+import com.google.common.collect.Lists;
+
+import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.util.StructuredEquals;
+
 /**
- * Key that uses {@link ObjectUtil#deepIterableEquals(Object, Object)}
+ * Key that uses {@link StructuredEquals#deepIterableEquals(Object, Object)}
  * in {@link #equals(Object)} to compare the internal objects.
  * @author Simon Templer
  */
 @Immutable
 public class DeepIterableKey {
-	
+	private static final StructuredEquals se = new StructuredEquals() {
+		@Override
+		protected Iterable<?> asIterable(Object object) {
+			if (object instanceof Group) {
+				Group o = (Group) object;
+				List<Object> objects = new LinkedList<Object>();
+				objects.add(o.getDefinition());
+				if (o instanceof Instance)
+					objects.add(((Instance) o).getValue());
+				List<QName> propertyNames = Lists.newArrayList(o.getPropertyNames());
+				Collections.sort(propertyNames, new Comparator<QName>() {
+					@Override
+					public int compare(QName o1, QName o2) {
+						return o1.toString().compareTo(o2.toString());
+					}
+				});
+				for (QName propertyName : propertyNames) {
+					objects.add(propertyName);
+					objects.addAll(Arrays.asList(o.getProperty(propertyName)));
+				}
+				return objects;
+			}
+			return super.asIterable(object);
+		}
+	};
 	private final Object key;
 
 	/**
@@ -37,14 +74,14 @@ public class DeepIterableKey {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof DeepIterableKey) {
-			return ObjectUtil.deepIterableEquals(key, ((DeepIterableKey) obj).key);
+			return se.deepIterableEquals(key, ((DeepIterableKey) obj).key);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return ObjectUtil.deepIterableHashCode(key);
+		return se.deepIterableHashCode(key);
 	}
 
 }

@@ -131,9 +131,7 @@ public class PropertyResolver {
 					currentQueue.add(nextQueue.poll());
 					}
 				}
-				
-				
-				int i = 0;
+
 				while(!currentQueue.isEmpty()){
 					
 					
@@ -148,7 +146,7 @@ public class PropertyResolver {
 						}
 					}
 					
-					else if (finalProp instanceof Group){
+					else if (finalProp instanceof Group && forceValue){
 						//TODO error
 					}
 					

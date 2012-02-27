@@ -23,10 +23,12 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 
 /**
- * General utility methods.
+ * StructuredEquals provides methods for equals and hashCode implementations
+ * for complex structures.
+ * 
  * @author Simon Templer
  */
-public class ObjectUtil {
+public class StructuredEquals {
 
 	/**
 	 * Determines if the given objects are equal, in turn descending into
@@ -37,7 +39,7 @@ public class ObjectUtil {
 	 * @return if both objects are equal
 	 * @see #deepIterableHashCode(Object)
 	 */
-	public static boolean deepIterableEquals(Object o1, Object o2) {
+	public boolean deepIterableEquals(Object o1, Object o2) {
 		if (o1 == o2) {
 			return true;
 		}
@@ -75,7 +77,7 @@ public class ObjectUtil {
 	 * @return the hash code
 	 * @see #deepIterableEquals(Object, Object)
 	 */
-	public static int deepIterableHashCode(Object object) {
+	public int deepIterableHashCode(Object object) {
 		return Arrays.hashCode(collectObjects(object).toArray());
 	}
 	
@@ -85,7 +87,7 @@ public class ObjectUtil {
 	 * @param object the object to collect objects on
 	 * @return the collected objects
 	 */
-	public static Collection<?> collectObjects(Object object) {
+	public Collection<?> collectObjects(Object object) {
 		Iterable<?> iterable = asIterable(object);
 		if (iterable == null) {
 			return Collections.singleton(object);
@@ -99,7 +101,14 @@ public class ObjectUtil {
 		}
 	}
 
-	private static Iterable<?> asIterable(Object object) {
+	/**
+	 * Returns an iterable for the given objects contents, or null
+	 * if it does not contain anything that needs to be compared.
+	 * 
+	 * @param object the object in question
+	 * @return an iterable for the given object
+	 */
+	protected Iterable<?> asIterable(Object object) {
 		if (object == null)
 			return null;
 		if (object instanceof Iterable<?>) {
@@ -110,5 +119,4 @@ public class ObjectUtil {
 		}
 		return null;
 	}
-	
 }
