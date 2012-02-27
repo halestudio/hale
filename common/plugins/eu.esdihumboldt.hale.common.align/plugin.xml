@@ -153,10 +153,17 @@
          </targetTypes>
          <functionParameter
                description="Each property is defined by a property path"
-               label="Merge property"
+               label="Merge property (key)"
                maxOccurrence="n"
                minOccurrence="1"
                name="property">
+         </functionParameter>
+         <functionParameter
+               description="Each property is defined by a property path"
+               label="Merge property (no key)"
+               maxOccurrence="n"
+               minOccurrence="1"
+               name="additional_property">
          </functionParameter>
       </typeFunction>
    </extension>

@@ -19,8 +19,13 @@ package eu.esdihumboldt.hale.common.align.model.functions;
 public interface MergeFunction {
 	
 	/**
-	 * Name of the parameter specifying a property path 
+	 * Name of the parameter specifying a property path (key property)
 	 */
 	public static final String PARAMETER_PROPERTY = "property";
+
+	/**
+	 * Name of the parameter specifying a property path (no key property)
+	 */
+	public static final String PARAMETER_ADDITIONAL_PROPERTY = "additional_property";
 
 }
