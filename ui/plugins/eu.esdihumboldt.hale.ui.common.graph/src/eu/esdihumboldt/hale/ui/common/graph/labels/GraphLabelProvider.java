@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.ui.common.graph.labels;
 
 import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -41,6 +40,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
+import eu.esdihumboldt.hale.ui.util.graph.WrappedText;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 
 /**
@@ -318,8 +318,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 				if (explanation != null) {
 					String text = explanation.getExplanation(cell);
 					if (text != null) {
-						//TODO apply word-wrapping for tooltip?
-						return new Label(text);
+						return new WrappedText(text, 400);
 					}
 				}
 			}
