@@ -26,8 +26,11 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 public abstract class DefaultDefinitionFilter implements IFilter{
 	
 	/**
-	 * @param input the definition type
-	 * @return true if should be filtered, false otherwise
+	 * Determine if an input is invalid and thus should be rejected by the
+	 * filter.
+	 * @param input the definition
+	 * @return <code>true</code> if the definition should be rejected by the
+	 *   filter, <code>false</code> otherwise
 	 */
 	public abstract boolean isFiltered(Definition<?> input);
 
