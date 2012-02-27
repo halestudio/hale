@@ -300,6 +300,16 @@
                   type="eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction">
             </input>
          </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionStructure"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.TypeDefinitionStructureFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.structure.tree"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.structure">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -341,6 +351,12 @@
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.graph"
                label="Graph">
+         </propertyTab>
+         <propertyTab
+               afterTab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints"
+               category="eu.esdihumboldt.hale.ui.views.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.structure"
+               label="Structure">
          </propertyTab>
       </propertyTabs>
    </extension>
