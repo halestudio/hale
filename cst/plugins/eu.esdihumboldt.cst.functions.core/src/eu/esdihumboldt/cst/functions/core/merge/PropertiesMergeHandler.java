@@ -80,12 +80,8 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<Pair<List<List<
 					return input.toString();
 				}
 			}));
-			
-			/*
-			 * FIXME this will only work for non-instance values or instances 
-			 * with a value (though not the whole instance will be compared)
-			 */
-			valueList.add(PropertyResolver.getValues(instance, query, true));
+
+			valueList.add(PropertyResolver.getValues(instance, query, false));
 		}
 		
 		return new DeepIterableKey(valueList);
