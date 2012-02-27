@@ -18,8 +18,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentProvider;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 
@@ -31,7 +33,17 @@ public class TypeDefinitionStructure extends DefaultDefinitionSection<TypeDefini
 
 	private TreeViewer tree;
 	
-	private DefinitionLabelProvider definitionImages = new DefinitionLabelProvider();
+	private StyledDefinitionLabelProvider definitionImages = new StyledDefinitionLabelProvider(new DefinitionLabelProvider() {
+
+		@Override
+		public String getText(Object element) {
+			if (element instanceof PropertyDefinition) {
+				return super.getText(element) + " : " + ((PropertyDefinition) element).getPropertyType().getName().getLocalPart();
+			}
+			return super.getText(element);
+		}
+		
+	});
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
