@@ -19,6 +19,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.function.extension.ParameterPageFactory;
@@ -32,6 +34,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<ParameterPage> implements
 		ParameterPageFactory {
 	private Set<FunctionParameter> associatedFunctionParameters;
+	private static final ALogger _log = ALoggerFactory.getLogger(ParameterPageFactoryImpl.class);
 
 	/**
 	 * Create a parameter page factory based on the given configuration element.
@@ -40,6 +43,21 @@ public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<Param
 	 */
 	public ParameterPageFactoryImpl(IConfigurationElement conf) {
 		super(conf, "class");
+	}
+
+	/**
+	 * @see de.cs3d.util.eclipse.extension.AbstractObjectDefinition#getPriority()
+	 */
+	@Override
+	public int getPriority() {
+		if (conf.getAttribute("order") == null)
+			return 0;
+		try {
+			return Integer.parseInt(conf.getAttribute("order"));
+		} catch (NumberFormatException nfe) {
+			_log.warn("order not a valid integer", nfe);
+			return 0;
+		}
 	}
 
 	/**
