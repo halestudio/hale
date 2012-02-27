@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.common.align.model.functions;
  * @author Simon Templer
  */
 public interface MergeFunction {
-	
+
 	/**
 	 * Name of the parameter specifying a property path (key property)
 	 */
@@ -27,5 +27,10 @@ public interface MergeFunction {
 	 * Name of the parameter specifying a property path (no key property)
 	 */
 	public static final String PARAMETER_ADDITIONAL_PROPERTY = "additional_property";
+
+	/**
+	 * Name of the parameter specifying whether auto detection of other equal properties
+	 */
+	public static final String PARAMETER_AUTO_DETECT = "auto_detect";
 
 }
