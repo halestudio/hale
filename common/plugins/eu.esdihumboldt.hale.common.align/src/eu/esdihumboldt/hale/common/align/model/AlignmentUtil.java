@@ -263,4 +263,41 @@ public abstract class AlignmentUtil {
 		return align.getPropertyCells(typeEntityCollection, targetType);
 
 	}
+
+	/**
+	 * Determines if a given entity definition is a parent of another entity
+	 * definition. 
+	 * @param parent the parent
+	 * @param child the potential child
+	 * @return if the first entity definition is a parent of the second
+	 */
+	public static boolean isParent(EntityDefinition parent,
+			EntityDefinition child) {
+		if (!parent.getType().equals(child.getType())) {
+			// if the types do not match, there can't be a relation
+			return false;
+		}
+		
+		//TODO check type context?!
+		
+		// check the property paths
+		List<ChildContext> parentPath = parent.getPropertyPath();
+		List<ChildContext> childPath = child.getPropertyPath();
+		
+		if (parentPath.size() >= childPath.size()) {
+			// property path for parent is longer or equal, can't be parent of child
+			return false;
+		}
+		
+		// check parent path elements for equality with child path
+		for (int i = 0; i < parentPath.size(); i++) {
+			ChildContext parentContext = parentPath.get(i);
+			ChildContext childContext = childPath.get(i);
+			if (!parentContext.equals(childContext)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }
