@@ -12,9 +12,16 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
+import java.util.Collection;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
+
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 
 /**
  * Cell related utility methods.
@@ -51,6 +58,40 @@ public abstract class CellUtil {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Get a short description of a cell.
+	 * @param cell the cell
+	 * @return the cell description
+	 */
+	public static String getCellDescription(Cell cell) {
+		StringBuffer result = new StringBuffer();
+		
+		// include function name if possible
+		String functionId = cell.getTransformationIdentifier();
+		AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+		if (function != null) {
+			result.append(function.getDisplayName());
+			result.append(": ");
+		}
+		
+		if (cell.getSource() != null) {
+			result.append(entitiesText(cell.getSource().values()));
+			result.append(" to ");
+		}
+		result.append(entitiesText(cell.getTarget().values()));
+		
+		return result.toString();
+	}
+	
+	private static String entitiesText(Collection<? extends Entity> entities) {
+		return Joiner.on(", ").join(Collections2.transform(entities, new Function<Entity, String>() {
+			@Override
+			public String apply(Entity input) {
+				return input.getDefinition().getDefinition().getDisplayName();
+			}
+		}));
 	}
 
 }
