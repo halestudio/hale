@@ -38,9 +38,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
@@ -48,6 +45,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -110,33 +108,10 @@ public class AlignmentView extends AbstractMappingView {
 				if (element instanceof Cell) {
 					Cell cell = (Cell) element;
 					
-					StringBuffer result = new StringBuffer();
-					
-					// include function name if possible
-					String functionId = cell.getTransformationIdentifier();
-					AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
-					if (function != null) {
-						result.append(functionLabels.getText(function));
-						result.append(": ");
-					}
-					
-					result.append(entitiesText(cell.getSource().values()));
-					result.append(" to ");
-					result.append(entitiesText(cell.getTarget().values()));
-					
-					return result.toString();
+					return CellUtil.getCellDescription(cell);
 				}
 				
 				return super.getText(element);
-			}
-
-			private String entitiesText(Collection<? extends Entity> entities) {
-				return Joiner.on(", ").join(Collections2.transform(entities, new Function<Entity, String>() {
-					@Override
-					public String apply(Entity input) {
-						return input.getDefinition().getDefinition().getDisplayName();
-					}
-				}));
 			}
 			
 		});
