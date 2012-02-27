@@ -123,4 +123,14 @@ public class ChildEntityDefinition implements EntityDefinition {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer result = new StringBuffer(getType().toString());
+		for (ChildContext childContext : getPropertyPath()) {
+			result.append('/');
+			result.append(childContext.getChild().getName().getLocalPart());
+		}
+		return result.toString();
+	}
+
 }

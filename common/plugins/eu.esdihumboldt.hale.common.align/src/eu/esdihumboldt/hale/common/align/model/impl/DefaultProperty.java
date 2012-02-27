@@ -73,5 +73,10 @@ public class DefaultProperty implements Property {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return getDefinition().toString();
+	}
 	
 }

@@ -117,4 +117,9 @@ public class TypeEntityDefinition implements EntityDefinition {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return typeDefinition.toString();
+	}
+
 }
