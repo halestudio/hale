@@ -33,15 +33,16 @@ import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Merge based on equal properties.
  * @author Simon Templer
  */
-public class PropertiesMergeHandler extends AbstractMergeHandler<List<List<QName>>, DeepIterableKey> implements MergeFunction {
-	
+public class PropertiesMergeHandler extends AbstractMergeHandler<Pair<List<List<QName>>,List<List<QName>>>, DeepIterableKey> implements MergeFunction {
+	//Pair<List<List<QName>>,List<List<QName>>> - first list key properties, second list additional merge properties
 	@Override
-	protected List<List<QName>> createMergeConfiguration(
+	protected Pair<List<List<QName>>,List<List<QName>>> createMergeConfiguration(
 			String transformationIdentifier,
 			ListMultimap<String, String> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log) throws TransformationException {
@@ -54,16 +55,23 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<List<List<QName
 		for (String property : transformationParameters.get(PARAMETER_PROPERTY)) {
 			properties.add(PropertyResolver.getQNamesFromPath(property));
 		}
+
+		List<List<QName>> additionalProperties = new ArrayList<List<QName>>();
+		if (transformationParameters.containsKey(PARAMETER_ADDITIONAL_PROPERTY)) {
+			for (String property : transformationParameters.get(PARAMETER_ADDITIONAL_PROPERTY)) {
+				additionalProperties.add(PropertyResolver.getQNamesFromPath(property));
+			}
+		}
 		
-		return properties;
+		return new Pair<List<List<QName>>, List<List<QName>>>(properties, additionalProperties);
 	}
 
 	@Override
 	protected DeepIterableKey getMergeKey(Instance instance,
-			List<List<QName>> mergeConfig) {
-		List<Object> valueList = new ArrayList<Object>(mergeConfig.size());
+			Pair<List<List<QName>>,List<List<QName>>> mergeConfig) {
+		List<Object> valueList = new ArrayList<Object>(mergeConfig.getFirst().size());
 		
-		for (List<QName> propertyPath : mergeConfig) {
+		for (List<QName> propertyPath : mergeConfig.getFirst()) {
 			String query = Joiner.on('.').join(
 					Collections2.transform(propertyPath, new Function<QName, String>() {
 
@@ -86,7 +94,7 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<List<List<QName
 	@Override
 	protected Instance merge(Collection<Instance> instances,
 			TypeDefinition type, DeepIterableKey mergeKey, 
-			List<List<QName>> mergeConfig) {
+			Pair<List<List<QName>>,List<List<QName>>> mergeConfig) {
 		if (instances.size() == 1) {
 			// early exit if only one instance to merge
 			return instances.iterator().next();
@@ -103,9 +111,10 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<List<List<QName
 		 */
 		Set<QName> rootNames = new HashSet<QName>();
 		// collect path roots
-		for (List<QName> path : mergeConfig) {
+		for (List<QName> path : mergeConfig.getFirst())
 			rootNames.add(path.get(0));
-		}
+		for (List<QName> path : mergeConfig.getSecond())
+			rootNames.add(path.get(0));
 		
 		for (Instance instance : instances) {
 			for (QName name : instance.getPropertyNames()) {

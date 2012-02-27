@@ -47,5 +47,13 @@
                name="property">
          </parameter>
       </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.MergeParameterPage"
+            function="eu.esdihumboldt.hale.align.merge"
+            id="eu.esdihumboldt.hale.ui.functions.core.merge2">
+         <parameter
+               name="additional_property">
+         </parameter>
+      </typeParameterPage>
    </extension>
 </plugin>

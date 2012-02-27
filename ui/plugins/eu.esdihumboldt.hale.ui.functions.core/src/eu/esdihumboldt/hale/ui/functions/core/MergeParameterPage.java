@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Function;
@@ -56,21 +57,28 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypePropertyContentProvider;
 
 /**
- * Parameter page for merge function. Provides an UI for selecting the matching properties.
+ * Parameter page for merge function. Provides an UI for selecting the matching
+ * properties.
  * 
  * @author Kai Schwierczek
  */
 public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
+	private static final String PARAMETER_PROPERTY = "property";
+	private static final String PARAMETER_ADDITIONAL_PROPERTY = "additional_property";	
+
+	private FunctionParameter parameter;
 	private List<String> initialSelection;
 	private CheckboxTreeViewer viewer;
 	private TypeDefinition sourceType;
 	private Set<EntityDefinition> selection = new HashSet<EntityDefinition>();
+	private Set<EntityDefinition> filtered = new HashSet<EntityDefinition>();
+	private DefinitionLabelProvider labelProvider = new DefinitionLabelProvider();
 
 	/**
 	 * Constructor.
 	 */
 	public MergeParameterPage() {
-		super("property", "Please select the properties that have to match", null);
+		super("propertypage");
 		setPageComplete(false);
 	}
 
@@ -81,17 +89,36 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
 		setPageComplete(true);
+
+		Cell unfinishedCell = getWizard().getUnfinishedCell();
 		// selected target could've changed!
-		TypeDefinition newSourceType = (TypeDefinition) getWizard().getUnfinishedCell().getSource().values().iterator().next().getDefinition().getDefinition();
+		TypeDefinition newSourceType = (TypeDefinition) unfinishedCell.getSource().values().iterator().next()
+				.getDefinition().getDefinition();
 		if (!newSourceType.equals(sourceType)) {
 			selection = new HashSet<EntityDefinition>();
 			sourceType = newSourceType;
 			viewer.setInput(sourceType);
 		}
+		// for additional_property: selected properties can change!
+		if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY)) {
+			filtered = new HashSet<EntityDefinition>();
+			List<String> properties = unfinishedCell.getTransformationParameters().get(PARAMETER_PROPERTY);
+			boolean oldSelectionChanged = false;
+			for (String propertyPath : properties) {
+				EntityDefinition def = getEntityDefinition(propertyPath, sourceType);
+				filtered.add(def);
+				if (selection.remove(def))
+					oldSelectionChanged = true;
+			}
+			if (oldSelectionChanged)
+				viewer.setCheckedElements(selection.toArray());
+			viewer.refresh();
+		}
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#setParameter(java.util.Set, com.google.common.collect.ListMultimap)
+	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#setParameter(java.util.Set,
+	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params, ListMultimap<String, String> initialValues) {
@@ -99,8 +126,19 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		if (initialValues == null)
 			return;
 
+		if (params.size() > 1)
+			throw new IllegalArgumentException("MergeParameterPage is only for one parameter");
+		parameter = params.iterator().next();
+		if (parameter.getName().equals(PARAMETER_PROPERTY))
+			setTitle("Please select the properties that have to match");
+		else if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY))
+			setTitle("Please select other equal properties to merge");
+		else
+			throw new IllegalArgumentException(
+					"MergeParameterPage is only for property or additional_property parameters");
+
 		// cell gets edited
-		initialSelection = initialValues.get("property");
+		initialSelection = initialValues.get(parameter.getName());
 		setPageComplete(true);
 	}
 
@@ -121,7 +159,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 					}));
 
 			// add it to configuration
-			configuration.put("property", propertyPath);
+			configuration.put(parameter.getName(), propertyPath);
 		}
 
 		return configuration;
@@ -135,17 +173,21 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		// set layout of page
 		page.setLayout(new GridLayout());
 
+		Label name = new Label(page, SWT.NONE);
+		name.setText(parameter.getDisplayName());
+
 		// create checkbox tree viewer
 		viewer = new CheckboxTreeViewer(page, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().
-				grab(true, true).create());
+		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		// comparator
 		viewer.setComparator(new DefinitionComparator());
 		// label provider
-		viewer.setLabelProvider(new DefinitionLabelProvider());
+		viewer.setLabelProvider(labelProvider);
 		// content provider
-		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-		viewer.setContentProvider(new EntityTypePropertyContentProvider(viewer, entityDefinitionService, SchemaSpaceID.SOURCE));
+		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench()
+				.getService(EntityDefinitionService.class);
+		viewer.setContentProvider(new EntityTypePropertyContentProvider(viewer, entityDefinitionService,
+				SchemaSpaceID.SOURCE));
 		// check state listener
 		viewer.addCheckStateListener(new ICheckStateListener() {
 			@Override
@@ -166,10 +208,18 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 				return parentElement == sourceType;
 			}
 		});
+		if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY))
+			viewer.addFilter(new ViewerFilter() {
+				@Override
+				public boolean select(Viewer viewer, Object parentElement, Object element) {
+					return !filtered.contains(element);
+				}
+			});
 
 		Cell unfinishedCell = getWizard().getUnfinishedCell();
 		if (unfinishedCell.getSource() != null)
-			sourceType = (TypeDefinition) unfinishedCell.getSource().values().iterator().next().getDefinition().getDefinition();
+			sourceType = (TypeDefinition) unfinishedCell.getSource().values().iterator().next().getDefinition()
+					.getDefinition();
 
 		viewer.setInput(sourceType);
 
@@ -185,9 +235,31 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 					child = DefinitionUtil.getChild(child, iter.next());
 					contextPath.add(new ChildContext(child));
 				}
-				selection.add(AlignmentUtil.createEntity(sourceType, contextPath, SchemaSpaceID.SOURCE));
+				selection.add(getEntityDefinition(propertyPath, sourceType));
 			}
 			viewer.setCheckedElements(selection.toArray());
 		}
+	}
+
+	private EntityDefinition getEntityDefinition(String propertyPath, TypeDefinition sourceType) {
+		ArrayList<ChildContext> contextPath = new ArrayList<ChildContext>();
+		List<QName> path = PropertyResolver.getQNamesFromPath(propertyPath);
+		Iterator<QName> iter = path.iterator();
+		ChildDefinition<?> child = sourceType.getChild(iter.next());
+		contextPath.add(new ChildContext(child));
+		while (iter.hasNext()) {
+			child = DefinitionUtil.getChild(child, iter.next());
+			contextPath.add(new ChildContext(child));
+		}
+		return AlignmentUtil.createEntity(sourceType, contextPath, SchemaSpaceID.SOURCE);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		labelProvider.dispose();
+		super.dispose();
 	}
 }
