@@ -17,6 +17,7 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
@@ -40,8 +41,13 @@ public class XmlTypeDefinition extends DefaultTypeDefinition {
 	 */
 	@Override
 	public Collection<? extends ChildDefinition<?>> getChildren() {
-		if (getConstraint(RestrictionFlag.class).isEnabled()) {
-			//XXX for restrictions assume that all properties are redefined if needed
+		if (getConstraint(RestrictionFlag.class).isEnabled()
+				&& !getConstraint(HasValueFlag.class).isEnabled()) {
+			/*
+			 * XXX For restrictions (on complex types) assume that all
+			 * properties are redefined if needed.
+			 * FIXME is this correct?
+			 */
 			// only return declared properties
 			return getDeclaredChildren();
 		}
