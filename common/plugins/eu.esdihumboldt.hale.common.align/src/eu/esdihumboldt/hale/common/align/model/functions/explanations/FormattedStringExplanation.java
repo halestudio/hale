@@ -47,7 +47,7 @@ public class FormattedStringExplanation implements CellExplanation, FormattedStr
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
+	 * @see CellExplanation#getExplanationAsHtml(Cell)
 	 */
 	@Override
 	public String getExplanationAsHtml(Cell cell) {
@@ -56,8 +56,8 @@ public class FormattedStringExplanation implements CellExplanation, FormattedStr
 		
 		if (target != null && pattern != null) {
 			return MessageFormat.format(EXPLANATION_PATTERN, 
-					"<i>" + target.getDefinition().getDefinition().getDisplayName() + "</i>",
-					"<b>" + pattern + "</b>").replaceAll("\n", "<br />");
+					"<span style=\"font-style: italic;\">" + target.getDefinition().getDefinition().getDisplayName() + "</span>",
+					"<span style=\"font-weight: bold;\">" + pattern + "</span>").replaceAll("\n", "<br />");
 		}
 		
 		return null;
