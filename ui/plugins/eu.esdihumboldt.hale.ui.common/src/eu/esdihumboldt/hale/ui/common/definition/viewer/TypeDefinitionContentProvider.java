@@ -10,13 +10,12 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.data.internal.compare;
+package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 
 /**
  * Content provider for a tree representing the structure of a 
@@ -39,7 +38,6 @@ public class TypeDefinitionContentProvider extends TypeIndexContentProvider {
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof TypeDefinition) {
 			return ((TypeDefinition) inputElement).getChildren().toArray();
-			//TODO metadata?
 		}
 		else {
 			throw new IllegalArgumentException("Content provider only applicable for type definitions.");
