@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -26,17 +27,40 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Default alignment implementation
+ * Default alignment implementation.
  * @author Simon Templer
  */
 public class DefaultAlignment implements Alignment, MutableAlignment {
-	
-	//FIXME simple collection should be replaced later on
+
+	/**
+	 * List with all cells contained in the alignment.
+	 * XXX use a LinkedHashSet instead?
+	 */
 	private final Collection<MutableCell> cells = new ArrayList<MutableCell>();
+	
+	/**
+	 * List with all type cells contained in the alignment.
+	 */
 	private final Collection<MutableCell> typeCells = new ArrayList<MutableCell>();
+	
+	/**
+	 * Entity definitions mapped to alignment cells.
+	 */
+	private final ListMultimap<EntityDefinition, Cell> cellsPerEntity = ArrayListMultimap.create();
+	
+	/**
+	 * Source types mapped to alignment cells.
+	 */
+	private final ListMultimap<TypeDefinition, Cell> cellsPerSourceType = ArrayListMultimap.create();
+	
+	/**
+	 * Target types mapped to alignment cells.
+	 */
+	private final ListMultimap<TypeDefinition, Cell> cellsPerTargetType = ArrayListMultimap.create();
 
 	/**
 	 * @see MutableAlignment#addCell(MutableCell)
@@ -46,12 +70,49 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		internalAdd(cell);
 	}
 	
+	/**
+	 * Add a cell to the various internal containers.
+	 * @param cell the cell to add
+	 */
 	private void internalAdd(MutableCell cell) {
 		cells.add(cell);
 		
 		// check if cell is a type cell
 		if (AlignmentUtil.isTypeCell(cell)) {
 			typeCells.add(cell);
+		}
+		
+		// add to maps
+		internalAddToMaps(cell.getSource(), cell);
+		internalAddToMaps(cell.getTarget(), cell);
+	}
+
+	/**
+	 * Add a cell to the internal indexes, based on the given associated
+	 * entities.
+	 * @param entities the cell entities (usually either source or target)
+	 * @param cell the cell to add
+	 */
+	private void internalAddToMaps(ListMultimap<String, ? extends Entity> entities,
+			Cell cell) {
+		if (entities == null) {
+			return;
+		}
+		
+		for (Entity entity : entities.values()) {
+			EntityDefinition entityDef = entity.getDefinition();
+			cellsPerEntity.put(entityDef, cell);
+			
+			switch (entityDef.getSchemaSpace()) {
+			case TARGET:
+				cellsPerTargetType.put(entityDef.getType(), cell);
+				break;
+			case SOURCE:
+				cellsPerSourceType.put(entityDef.getType(), cell);
+				break;
+			default:
+				throw new IllegalStateException("Entity definition with illegal schema space encountered");
+			}
 		}
 	}
 
@@ -60,50 +121,23 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 */
 	@Override
 	public Collection<? extends Cell> getCells(EntityDefinition entityDefinition) {
-		List<Cell> cells = new ArrayList<Cell>(); 
-		
-		for (Cell cell : getCells()) {
-			// determine if the cell is associated to the entity definition
-			boolean isAssociated;
-			switch (entityDefinition.getSchemaSpace()) {
-			case SOURCE:
-				isAssociated = associatedWith(cell.getSource(), entityDefinition);
-				break;
-			case TARGET:
-				isAssociated = associatedWith(cell.getTarget(), entityDefinition);
-				break;
-			default:
-				isAssociated = associatedWith(cell.getSource(), entityDefinition)
-						|| associatedWith(cell.getTarget(), entityDefinition); 
-			}
-			
-			if (isAssociated) {
-				cells.add(cell);
-			}
-		}
-		
-		return cells;
+		return Collections.unmodifiableCollection(cellsPerEntity.get(entityDefinition));
 	}
 	
 	/**
-	 * Determines if the given entity definition is contained in the given
-	 * entity list.
-	 * @param entities the (named) entity list
-	 * @param entityDef the entity definition
-	 * @return if the entity definition is contained in the given entities
+	 * @see Alignment#getCells(TypeDefinition, SchemaSpaceID)
 	 */
-	private boolean associatedWith(
-			ListMultimap<String, ? extends Entity> entities,
-			EntityDefinition entityDef) {
-		if (entities != null) {
-			for (Entity entity : entities.values()) {
-				if (entityDef.equals(entity.getDefinition())) {
-					return true;
-				}
-			}
+	@Override
+	public Collection<? extends Cell> getCells(TypeDefinition type,
+			SchemaSpaceID schemaSpace) {
+		switch (schemaSpace) {
+		case SOURCE:
+			return Collections.unmodifiableCollection(cellsPerSourceType.get(type));
+		case TARGET:
+			return Collections.unmodifiableCollection(cellsPerTargetType.get(type));
+		default:
+			throw new IllegalArgumentException("Illegal schema space provided");
 		}
-		
-		return false;
 	}
 
 	/**
@@ -115,14 +149,16 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 			TypeEntityDefinition targetType) {
 		List<Cell> result = new ArrayList<Cell>();
 		
-		for (Cell cell : cells) {
+		for (Cell cell : cellsPerTargetType.get(targetType.getDefinition())) {
+			// check all cells associated to the target type
+			
 			if (!AlignmentUtil.isTypeCell(cell)) {
 				// cell is a property cell
 				if (sourceTypes == null || AlignmentUtil.isAugmentation(cell)) {
 					// cell is an augmentation or we accept any source type
 					if (associatedWithType(cell.getTarget(), 
 							Collections.singleton(targetType))) {
-						// cell is associated to the target type
+						// cell is associated to the target entity
 						result.add(cell);
 					}
 				}
@@ -153,6 +189,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	private boolean associatedWithType(
 			ListMultimap<String, ? extends Entity> entities,
 			Iterable<TypeEntityDefinition> types) {
+		//FIXME this will not work correctly when filters for types are implemented!
 		for (Entity entity : entities.values()) {
 			TypeDefinition entityType = entity.getDefinition().getType();
 			for (TypeEntityDefinition type : types) {
@@ -181,8 +218,42 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		boolean removed = cells.remove(cell);
 		if (removed) {
 			typeCells.remove(cell);
+			
+			// remove from maps
+			internalRemoveFromMaps(cell.getSource(), cell);
+			internalRemoveFromMaps(cell.getTarget(), cell);
 		}
+		
 		return removed;
+	}
+	
+	/**
+	 * Removes a cell from the internal indexes, based on the given associated
+	 * entities.
+	 * @param entities the cell entities (usually either source or target)
+	 * @param cell the cell to remove
+	 */
+	private void internalRemoveFromMaps(ListMultimap<String, ? extends Entity> entities,
+			Cell cell) {
+		if (entities == null) {
+			return;
+		}
+		
+		for (Entity entity : entities.values()) {
+			EntityDefinition entityDef = entity.getDefinition();
+			cellsPerEntity.remove(entityDef, cell);
+			
+			switch (entityDef.getSchemaSpace()) {
+			case TARGET:
+				cellsPerTargetType.remove(entityDef.getType(), cell);
+				break;
+			case SOURCE:
+				cellsPerSourceType.remove(entityDef.getType(), cell);
+				break;
+			default:
+				throw new IllegalStateException("Entity definition with illegal schema space encountered");
+			}
+		}
 	}
 
 	/**

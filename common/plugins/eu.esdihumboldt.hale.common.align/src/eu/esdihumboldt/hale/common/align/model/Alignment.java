@@ -15,6 +15,8 @@ package eu.esdihumboldt.hale.common.align.model;
 import java.util.Collection;
 
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * An alignment contains alignment cells 
@@ -28,8 +30,6 @@ public interface Alignment {
 	 */
 	public Collection<? extends Cell> getCells();
 	
-	//TODO get cells by involved types?!
-	
 	/**
 	 * Get the cells representing a mapping between types
 	 * @return the type cells
@@ -40,17 +40,19 @@ public interface Alignment {
 	 * Get the cells associated w/ the given entity definition.
 	 * @param entityDefinition the entity definition
 	 * @return the associated cells or an empty collection
-	 * FIXME what about identifying if it's related to source or target schema?!
+	 * FIXME what about cells defined on super types? 
 	 */
 	public Collection<? extends Cell> getCells(EntityDefinition entityDefinition);
 	
-	// getTypeCells(TypeEntityDefinition)
-	
-	// getTypeCells(TypeEntityDefinition, TypeEntityDefinition)
-	
-	// getPropertyCells(TypeEntityDefinition)
-	
-	// getPropertyCells(PropertyEntityDefinition)
+	/**
+	 * Get the cells associated with the given type. These may be cells
+	 * associated to the type or its properties.
+	 * @param type the type definition
+	 * @param schemaSpace the type schema space
+	 * @return the cells associated with the given type
+	 */
+	public Collection<? extends Cell> getCells(TypeDefinition type, 
+			SchemaSpaceID schemaSpace); 
 	
 	/**
 	 * Get the cells representing a mapping between properties that are
