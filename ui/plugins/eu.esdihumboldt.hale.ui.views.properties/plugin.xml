@@ -310,6 +310,16 @@
                   type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
             </input>
          </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.properties.cell.explanation.HtmlExplanationCellSection"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.views.properties.cell.explanation.HtmlExplanationCellFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.cell.explanation"
+               tab="eu.esdihumboldt.hale.ui.views.properties.explanation">
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Cell">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -357,6 +367,11 @@
                category="eu.esdihumboldt.hale.ui.views.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.structure"
                label="Structure">
+         </propertyTab>
+         <propertyTab
+               category="eu.esdihumboldt.hale.ui.views.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.properties.explanation"
+               label="Explanation">
          </propertyTab>
       </propertyTabs>
    </extension>

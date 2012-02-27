@@ -16,7 +16,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
@@ -53,6 +57,14 @@ public class PropertiesLabelProvider extends LabelProvider {
 		
 		if (element instanceof EntityDefinition || element instanceof Definition<?>) {
 			return definitionLabels.getImage(element);
+		}
+		
+		if (element instanceof Cell) {
+			Cell cell = (Cell) element;
+			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+			if (function != null) {
+				element = function;
+			}
 		}
 		
 		if (element instanceof Function){
@@ -97,6 +109,10 @@ public class PropertiesLabelProvider extends LabelProvider {
 			return functionLabels.getText(element);
 		}
 		
+		if (element instanceof Cell) {
+			return CellUtil.getCellDescription((Cell) element);
+		}
+		 
 		return super.getText(element);
 	}
 
