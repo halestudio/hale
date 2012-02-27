@@ -12,9 +12,11 @@
 
 package eu.esdihumboldt.cst.functions.core.merge;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +25,7 @@ import javax.xml.namespace.QName;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
@@ -33,22 +36,37 @@ import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.util.Pair;
 
 /**
  * Merge based on equal properties.
  * @author Simon Templer
  */
-public class PropertiesMergeHandler extends AbstractMergeHandler<Pair<List<List<QName>>,List<List<QName>>>, DeepIterableKey> implements MergeFunction {
-	//Pair<List<List<QName>>,List<List<QName>>> - first list key properties, second list additional merge properties
+public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMergeHandler.PropertiesMergeConfig, DeepIterableKey> implements MergeFunction {
+	class PropertiesMergeConfig {
+		private List<List<QName>> keyProperties;
+		private List<List<QName>> additionalProperties;
+		private boolean autoDetect;
+
+		private PropertiesMergeConfig(List<List<QName>> keyProperties, List<List<QName>> additionalProperties,
+				boolean autoDetect) {
+			super();
+			this.keyProperties = keyProperties;
+			this.additionalProperties = additionalProperties;
+			this.autoDetect = autoDetect;
+		}
+	}
+
 	@Override
-	protected Pair<List<List<QName>>,List<List<QName>>> createMergeConfiguration(
+	protected PropertiesMergeConfig createMergeConfiguration(
 			String transformationIdentifier,
 			ListMultimap<String, String> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log) throws TransformationException {
 		if (transformationParameters == null 
-				|| !transformationParameters.containsKey(PARAMETER_PROPERTY)) {
-			throw new TransformationException("No merge property parameter defined");
+				|| !transformationParameters.containsKey(PARAMETER_PROPERTY)
+				|| transformationParameters.get(PARAMETER_PROPERTY).isEmpty()
+				|| !transformationParameters.containsKey(PARAMETER_AUTO_DETECT)
+				|| transformationParameters.get(PARAMETER_AUTO_DETECT).size() != 1) {
+			throw new TransformationException("No merge property or auto detect parameter defined");
 		}
 		
 		List<List<QName>> properties = new ArrayList<List<QName>>();
@@ -62,16 +80,24 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<Pair<List<List<
 				additionalProperties.add(PropertyResolver.getQNamesFromPath(property));
 			}
 		}
-		
-		return new Pair<List<List<QName>>, List<List<QName>>>(properties, additionalProperties);
+
+		boolean autoDetect = true;
+		String autoDetectConfig = transformationParameters.get(PARAMETER_AUTO_DETECT).get(0);
+		if ("true".equalsIgnoreCase(autoDetectConfig))
+			autoDetect = true;
+		else if ("false".equalsIgnoreCase(autoDetectConfig))
+			autoDetect = false;
+		else
+			throw new TransformationException(MessageFormat.format("Unknown value for auto_detect: \"{0}\". Must be true or false", autoDetectConfig));
+
+		return new PropertiesMergeConfig(properties, additionalProperties, autoDetect);
 	}
 
 	@Override
-	protected DeepIterableKey getMergeKey(Instance instance,
-			Pair<List<List<QName>>,List<List<QName>>> mergeConfig) {
-		List<Object> valueList = new ArrayList<Object>(mergeConfig.getFirst().size());
+	protected DeepIterableKey getMergeKey(Instance instance, PropertiesMergeConfig mergeConfig) {
+		List<Object> valueList = new ArrayList<Object>(mergeConfig.keyProperties.size());
 		
-		for (List<QName> propertyPath : mergeConfig.getFirst()) {
+		for (List<QName> propertyPath : mergeConfig.keyProperties) {
 			String query = Joiner.on('.').join(
 					Collections2.transform(propertyPath, new Function<QName, String>() {
 
@@ -90,7 +116,7 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<Pair<List<List<
 	@Override
 	protected Instance merge(Collection<Instance> instances,
 			TypeDefinition type, DeepIterableKey mergeKey, 
-			Pair<List<List<QName>>,List<List<QName>>> mergeConfig) {
+			PropertiesMergeConfig mergeConfig) {
 		if (instances.size() == 1) {
 			// early exit if only one instance to merge
 			return instances.iterator().next();
@@ -107,25 +133,39 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<Pair<List<List<
 		 */
 		Set<QName> rootNames = new HashSet<QName>();
 		// collect path roots
-		for (List<QName> path : mergeConfig.getFirst())
+		for (List<QName> path : mergeConfig.keyProperties)
 			rootNames.add(path.get(0));
-		for (List<QName> path : mergeConfig.getSecond())
+		for (List<QName> path : mergeConfig.additionalProperties)
 			rootNames.add(path.get(0));
-		
-		for (Instance instance : instances) {
-			for (QName name : instance.getPropertyNames()) {
-				if (!rootNames.contains(name) || result.getProperty(name) == null) {
-					Object[] values = instance.getProperty(name);
-					if (values != null) {
-						for (Object value : values) {
-							result.addProperty(name, value);
-						}
-					}
-				}
+
+		ArrayListMultimap<QName, Object[]> properties = ArrayListMultimap.create();
+		for (Instance instance : instances)
+			for (QName name : instance.getPropertyNames())
+				properties.put(name, instance.getProperty(name));
+
+		for (QName name : properties.keySet()) {
+			if (rootNames.contains(name) || (mergeConfig.autoDetect && allEqual(properties.get(name)))) {
+				Object[] values = properties.get(name).get(0);
+				for (Object value : values)
+					result.addProperty(name, value);
+			} else {
+				for (Object[] values : properties.get(name))
+					for (Object value : values)
+						result.addProperty(name, value);
 			}
 		}
 		
 		return result;
 	}
 
+	private boolean allEqual(List<Object[]> list) {
+		Iterator<Object[]> iter = list.iterator();
+		// get first element
+		DeepIterableKey first = new DeepIterableKey(iter.next());
+		// compare rest to first
+		while (iter.hasNext())
+			if (!first.equals(new DeepIterableKey(iter.next())))
+				return false;
+		return true;
+	}
 }
