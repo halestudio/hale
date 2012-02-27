@@ -16,7 +16,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
+import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
  * The default definition section
@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
 public abstract class DefaultDefinitionSection<T extends Definition<?>> extends AbstractDefinitionSection<T> {
 	
 	/**
-	 * @see AbstractSection#setInput(Object)
+	 * @see AbstractTextSection#setInput(Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override

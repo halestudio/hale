@@ -13,14 +13,14 @@
 package eu.esdihumboldt.hale.ui.views.properties.definition;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
+import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
  * Abstract section for definition properties
  * @author Patrick Lieb
  * @param <T> the definition type
  */
-public abstract class AbstractDefinitionSection<T extends Definition<?>> extends AbstractSection{
+public abstract class AbstractDefinitionSection<T extends Definition<?>> extends AbstractTextSection{
 	
 	/**
 	 * the general Definition for this package

@@ -30,7 +30,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
+import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
  * Abstract function section with general information on functions displayed in
@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractSection;
  *            the Function parameter
  */
 public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
-		extends AbstractSection {
+		extends AbstractTextSection {
 
 	private TableViewer tableViewer;
 
