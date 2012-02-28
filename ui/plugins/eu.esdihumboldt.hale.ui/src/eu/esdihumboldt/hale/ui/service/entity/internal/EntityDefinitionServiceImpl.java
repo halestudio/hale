@@ -15,8 +15,10 @@ package eu.esdihumboldt.hale.ui.service.entity.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -26,8 +28,11 @@ import com.google.common.collect.SetMultimap;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
@@ -43,11 +48,31 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService {
 	
 	/**
-	 * Stores additional instance contexts. The key is the corresponding entity
-	 * definition w/ the default context.
+	 * Stores named instance contexts. The key is the corresponding entity
+	 * definition w/ the default context (in the last path element).
 	 * XXX use entity definitions as values instead?
+	 * XXX This storage is based on the assumption that a named context cannot
+	 * be combined with any other context.
 	 */
-	private final SetMultimap<EntityDefinition, Integer> additionalContexts = HashMultimap.create();
+	private final SetMultimap<EntityDefinition, Integer> namedContexts = HashMultimap.create();
+	
+	/**
+	 * Stores index contexts. The key is the corresponding entity
+	 * definition w/ the default context (in the last path element).
+	 * XXX use entity definitions as values instead?
+	 * XXX This storage is based on the assumption that an index context cannot
+	 * be combined with any other context.
+	 */
+	private final SetMultimap<EntityDefinition, Integer> indexContexts = HashMultimap.create();
+	
+	/**
+	 * Stores condition contexts. The key is the corresponding entity
+	 * definition w/ the default context (in the last path element).
+	 * XXX use entity definitions as values instead?
+	 * XXX This storage is based on the assumption that a condition context
+	 * cannot be combined with any other context.
+	 */
+	private final SetMultimap<EntityDefinition, Condition> conditionContexts = HashMultimap.create();
 	
 	/**
 	 * Create the entity definition service
@@ -98,18 +123,28 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 	 * Remove all defined contexts
 	 */
 	protected void clean() {
-		synchronized (additionalContexts) {
-			additionalContexts.clear();
+		//XXX nested synchronized?
+		synchronized (namedContexts) {
+			namedContexts.clear();
+		}
+		synchronized (indexContexts) {
+			indexContexts.clear();
+		}
+		synchronized (conditionContexts) {
+			conditionContexts.clear();
 		}
 	}
 
 	/**
-	 * @see EntityDefinitionService#addContext(EntityDefinition)
+	 * @see EntityDefinitionService#addNamedContext(EntityDefinition)
 	 */
 	@Override
-	public EntityDefinition addContext(EntityDefinition sibling) {
+	public EntityDefinition addNamedContext(EntityDefinition sibling) {
 		List<ChildContext> path = sibling.getPropertyPath();
-		if (path.isEmpty()) {
+		if (sibling.getSchemaSpace() == SchemaSpaceID.SOURCE || path.isEmpty()) {
+			// not supported for source entities
+			// and not for type entity definitions
+			//XXX throw exception instead?
 			return null;
 		}
 		
@@ -118,9 +153,9 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		EntityDefinition def = AlignmentUtil.getDefaultEntity(sibling);
 		Integer newName;
 		
-		synchronized (additionalContexts) {
+		synchronized (namedContexts) {
 			// get registered context names
-			Collection<Integer> names = additionalContexts.get(def);
+			Collection<Integer> names = namedContexts.get(def);
 			if (names == null || names.isEmpty()) {
 				newName = Integer.valueOf(0);
 			}
@@ -132,21 +167,151 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 				newName = Integer.valueOf(max + 1);
 			}
 			
-			additionalContexts.put(def, newName);
+			namedContexts.put(def, newName);
 		}
 		
 		List<ChildContext> newPath = new ArrayList<ChildContext>(path);
 		ChildDefinition<?> lastChild = newPath.get(newPath.size() - 1).getChild();
 		newPath.remove(path.size() - 1);
-		newPath.add(new ChildContext(newName, lastChild));
+		// new named context, w/o index or condition context
+		newPath.add(new ChildContext(newName, null, null, lastChild));
 		EntityDefinition result = createEntity(def.getType(), newPath,
-				sibling.getSchemaSpace());
+				sibling.getSchemaSpace(), sibling.getFilter());
 		
 		notifyContextAdded(result);
 		
-		return result ;
+		return result;
 	}
 	
+	/**
+	 * @see EntityDefinitionService#addIndexContext(EntityDefinition, Integer)
+	 */
+	@Override
+	public EntityDefinition addIndexContext(EntityDefinition sibling,
+			Integer index) {
+		List<ChildContext> path = sibling.getPropertyPath();
+		if (sibling.getSchemaSpace() == SchemaSpaceID.TARGET || path.isEmpty()) {
+			// not supported for target entities
+			// and not for type entity definitions
+			//XXX throw exception instead?
+			return null;
+		}
+		
+		//XXX any checks? see InstanceContextTester
+		
+		EntityDefinition def = AlignmentUtil.getDefaultEntity(sibling);
+		
+		boolean doAdd = true;
+		synchronized (indexContexts) {
+			// get registered context indexes
+			Set<Integer> existingIndexes = indexContexts.get(def);
+			if (index == null) {
+				// determine index automatically
+				if (existingIndexes == null || existingIndexes.isEmpty()) {
+					index = Integer.valueOf(0);
+				}
+				else {
+					// get the sorted existing indexes
+					SortedSet<Integer> sortedIndexes = new TreeSet<Integer>(existingIndexes);
+					// find the smallest value not present
+					int expected = 0;
+					Iterator<Integer> it = sortedIndexes.iterator();
+					while (index == null && it.hasNext()) {
+						int existingIndex = it.next();
+						if (existingIndex != expected) {
+							index = expected;
+						}
+						expected++;
+					}
+					if (index == null) {
+						index = expected;
+					}
+				}
+			}
+			else if (existingIndexes.contains(index)) {
+				// this index context is not new, but already there
+				doAdd = false;
+			}
+			
+			if (doAdd) {
+				indexContexts.put(def, index);
+			}
+		}
+		
+		List<ChildContext> newPath = new ArrayList<ChildContext>(path);
+		ChildDefinition<?> lastChild = newPath.get(newPath.size() - 1).getChild();
+		newPath.remove(path.size() - 1);
+		// new index context, w/o name or condition context
+		newPath.add(new ChildContext(null, index, null, lastChild));
+		EntityDefinition result = createEntity(def.getType(), newPath,
+				sibling.getSchemaSpace(), sibling.getFilter());
+		
+		if (doAdd) {
+			notifyContextAdded(result);
+		}
+		
+		return result;
+	}
+
+	/**
+	 * @see EntityDefinitionService#addConditionContext(EntityDefinition, Filter)
+	 */
+	@Override
+	public EntityDefinition addConditionContext(EntityDefinition sibling,
+			Filter filter) {
+		if (filter == null) {
+			throw new NullPointerException("Filter must not be null");
+		}
+		
+		List<ChildContext> path = sibling.getPropertyPath();
+		if (sibling.getSchemaSpace() == SchemaSpaceID.TARGET && path.isEmpty()) {
+			// not supported for target type entities
+			//XXX throw exception instead?
+			return null;
+		}
+		
+		Condition condition = new Condition(filter);
+		
+		EntityDefinition def = AlignmentUtil.getDefaultEntity(sibling);
+		
+		boolean doAdd = true;
+		synchronized (conditionContexts) {
+			// get registered context indexes
+			Set<Condition> existingConditions = conditionContexts.get(def);
+			if (existingConditions.contains(condition)) {
+				// this condition context is not new, but already there
+				doAdd = false;
+			}
+			
+			if (doAdd) {
+				conditionContexts.put(def, condition);
+			}
+		}
+		
+		EntityDefinition result;
+		
+		if (path.isEmpty()) {
+			// create type entity definition with filter
+			result = createEntity(def.getType(), def.getPropertyPath(), 
+					def.getSchemaSpace(), condition.getFilter());
+		}
+		else {
+			List<ChildContext> newPath = new ArrayList<ChildContext>(path);
+			ChildDefinition<?> lastChild = newPath.get(newPath.size() - 1).getChild();
+			newPath.remove(path.size() - 1);
+			// new condition context, w/o name or index context
+			newPath.add(new ChildContext(null, null, condition, lastChild));
+			result = createEntity(def.getType(), newPath,
+					sibling.getSchemaSpace(), sibling.getFilter());
+		}
+		
+		if (doAdd) {
+			notifyContextAdded(result);
+		}
+		
+		return result;
+	}
+
 	/**
 	 * Add missing contexts for the given cells 
 	 * @param cells the cells
@@ -154,11 +319,15 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 	protected void addMissingContexts(Iterable<Cell> cells) {
 		for (Cell cell : cells) {
 			Collection<EntityDefinition> addedContexts = new ArrayList<EntityDefinition>();
-			synchronized (additionalContexts) {
-				if (cell.getSource() != null) {
-					addedContexts.addAll(addMissingEntityContexts(cell.getSource().values()));
+			synchronized (namedContexts) {
+				synchronized (indexContexts) {
+					synchronized (conditionContexts) {
+						if (cell.getSource() != null) {
+							addedContexts.addAll(addMissingEntityContexts(cell.getSource().values()));
+						}
+						addedContexts.addAll(addMissingEntityContexts(cell.getTarget().values()));
+					}
 				}
-				addedContexts.addAll(addMissingEntityContexts(cell.getTarget().values()));
 			}
 			if (!addedContexts.isEmpty()) {
 				notifyContextsAdded(addedContexts);
@@ -187,13 +356,37 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			
 			// check if the entity definitions are known starting with the topmost parent
 			for (EntityDefinition candidate : hierarchy) {
-				Integer contextName = getContext(candidate);
-				if (contextName != null) {
-					// add context
-					boolean added = additionalContexts.put(
-							AlignmentUtil.getDefaultEntity(candidate), contextName);
-					if (added) {
-						addedContexts.add(candidate);
+				Integer contextName = getContextName(candidate);
+				Integer contextIndex = getContextIndex(candidate);
+				Condition contextCondition = getContextCondition(candidate);
+				
+				if (contextName != null || contextIndex != null || contextCondition != null) {
+					if (contextName != null && contextIndex == null && contextCondition == null) {
+						// add named context
+						boolean added = namedContexts.put(
+								AlignmentUtil.getDefaultEntity(candidate), contextName);
+						if (added) {
+							addedContexts.add(candidate);
+						}
+					}
+					else if (contextIndex != null && contextName == null && contextCondition == null) {
+						// add index context
+						boolean added = indexContexts.put(
+								AlignmentUtil.getDefaultEntity(candidate), contextIndex);
+						if (added) {
+							addedContexts.add(candidate);
+						}
+					}
+					else if (contextCondition != null && contextName == null && contextIndex == null) {
+						// add condition context
+						boolean added = conditionContexts.put(
+								AlignmentUtil.getDefaultEntity(candidate), contextCondition);
+						if (added) {
+							addedContexts.add(candidate);
+						}
+					}
+					else {
+						throw new IllegalArgumentException("Illegal combination of instance contexts");
 					}
 				}
 			}
@@ -207,7 +400,7 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 	 * @param candidate the entity definition
 	 * @return the context name, <code>null</code> for the default context
 	 */
-	private static Integer getContext(EntityDefinition candidate) {
+	private static Integer getContextName(EntityDefinition candidate) {
 		List<ChildContext> path = candidate.getPropertyPath();
 		
 		if (path == null || path.isEmpty()) {
@@ -218,30 +411,99 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			return path.get(path.size() - 1).getContextName();
 		}
 	}
+	
+	/**
+	 * Get the context index of the given entity definition.
+	 * @param candidate the entity definition
+	 * @return the context name, <code>null</code> for the default context
+	 */
+	private static Integer getContextIndex(EntityDefinition candidate) {
+		List<ChildContext> path = candidate.getPropertyPath();
+		
+		if (path == null || path.isEmpty()) {
+			// type currently always a default context
+			return null;
+		}
+		else {
+			return path.get(path.size() - 1).getIndex();
+		}
+	}
+	
+	/**
+	 * Get the context condition of the given entity definition.
+	 * @param candidate the entity definition
+	 * @return the context name, <code>null</code> for the default context
+	 */
+	private static Condition getContextCondition(EntityDefinition candidate) {
+		List<ChildContext> path = candidate.getPropertyPath();
+		
+		if (path == null || path.isEmpty()) {
+			// wrap the type filter in a condition
+			Filter filter = candidate.getFilter();
+			if (filter == null) {
+				return null;
+			}
+			else {
+				return new Condition(filter);
+			}
+		}
+		else {
+			return path.get(path.size() - 1).getCondition();
+		}
+	}
 
 	/**
 	 * @see EntityDefinitionService#removeContext(EntityDefinition)
 	 */
 	@Override
 	public void removeContext(EntityDefinition entity) {
-		List<ChildContext> path = entity.getPropertyPath();
-		if (path.isEmpty()) {
-			return;
-		}
-		
-		ChildContext lastContext = path.get(path.size() - 1);
-		if (lastContext.getContextName() == null) {
-			return;
-		}
+		EntityDefinition def = AlignmentUtil.getDefaultEntity(entity);
 		
 		//XXX any checks? Alignment must still be valid! see also InstanceContextTester
 		
-		EntityDefinition def = AlignmentUtil.getDefaultEntity(entity);
-		synchronized (additionalContexts) {
-			additionalContexts.remove(def, lastContext.getContextName());
+		List<ChildContext> path = entity.getPropertyPath();
+		if (path.isEmpty()) {
+			// type entity definition
+			Filter filter = entity.getFilter();
+			if (filter != null) {
+				synchronized (conditionContexts) {
+					conditionContexts.remove(def, filter);
+				}
+				//XXX what about the children of this context?
+			}
+			
+			notifyContextRemoved(entity);
+			
+			return;
 		}
 		
-		notifyContextRemoved(entity);
+		boolean removed = false;
+		ChildContext lastContext = path.get(path.size() - 1);
+		
+		if (lastContext.getContextName() != null) {
+			synchronized (namedContexts) {
+				namedContexts.remove(def, lastContext.getContextName());
+			}
+			removed = true;
+		}
+		
+		if (lastContext.getIndex() != null) {
+			synchronized (indexContexts) {
+				indexContexts.remove(def, lastContext.getIndex());
+			}
+			removed = true;
+		}
+		
+		if (lastContext.getCondition() != null) {
+			synchronized (conditionContexts) {
+				conditionContexts.remove(def, lastContext.getCondition());
+			}
+			removed = true;
+		}
+		
+		if (removed) {
+			notifyContextRemoved(entity);
+		}
 	}
 
 	/**
@@ -282,15 +544,15 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			ChildContext context = new ChildContext(child);
 			EntityDefinition defaultEntity = createEntity(entity.getType(), 
 					createPath(entity.getPropertyPath(), context), 
-					entity.getSchemaSpace());
+					entity.getSchemaSpace(), entity.getFilter());
 			result.add(defaultEntity);
 			// look up additional instance contexts and add them
-			synchronized (additionalContexts) {
-				for (Integer contextName : additionalContexts.get(defaultEntity)) {
-					ChildContext namedContext = new ChildContext(contextName, child);
+			synchronized (namedContexts) {
+				for (Integer contextName : namedContexts.get(defaultEntity)) {
+					ChildContext namedContext = new ChildContext(contextName, null, null, child);
 					EntityDefinition namedChild = createEntity(entity.getType(), 
 							createPath(entity.getPropertyPath(), namedContext),
-							entity.getSchemaSpace());
+							entity.getSchemaSpace(), entity.getFilter());
 					result.add(namedChild);
 				}
 			}

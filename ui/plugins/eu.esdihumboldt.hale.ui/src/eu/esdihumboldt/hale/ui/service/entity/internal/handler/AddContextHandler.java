@@ -42,7 +42,7 @@ public class AddContextHandler extends AbstractHandler {
 			
 			if (element instanceof EntityDefinition) {
 				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-				eds.addContext((EntityDefinition) element);
+				eds.addNamedContext((EntityDefinition) element);
 			}
 		}
 		

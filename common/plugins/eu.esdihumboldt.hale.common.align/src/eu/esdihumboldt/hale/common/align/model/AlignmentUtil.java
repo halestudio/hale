@@ -17,9 +17,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.base.Objects;
+
 import eu.esdihumboldt.hale.common.align.model.impl.ChildEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -127,12 +130,12 @@ public abstract class AlignmentUtil {
 			List<ChildContext> newPath = new ArrayList<ChildContext>(path);
 			newPath.remove(newPath.size() - 1);
 			return createEntity(entity.getType(), newPath,
-					entity.getSchemaSpace());
+					entity.getSchemaSpace(), entity.getFilter());
 		}
 	}
 
 	/**
-	 * Create an entity definition from a type and a child path
+	 * Create an entity definition from a type and a child path.
 	 * 
 	 * @param type
 	 *            the path parent
@@ -140,19 +143,21 @@ public abstract class AlignmentUtil {
 	 *            the child path
 	 * @param schemaSpace
 	 *            the associated schema space
+	 * @param filter
+	 *            the entity filter on the type, may be <code>null</code>
 	 * @return the created entity definition
 	 */
 	public static EntityDefinition createEntity(TypeDefinition type,
-			List<ChildContext> path, SchemaSpaceID schemaSpace) {
+			List<ChildContext> path, SchemaSpaceID schemaSpace, Filter filter) {
 		if (path == null || path.isEmpty()) {
 			// entity is a type
-			return new TypeEntityDefinition(type, schemaSpace);
+			return new TypeEntityDefinition(type, schemaSpace, filter);
 		} else if (path.get(path.size() - 1).getChild() instanceof PropertyDefinition) {
 			// last element in path is a property
-			return new PropertyEntityDefinition(type, path, schemaSpace);
+			return new PropertyEntityDefinition(type, path, schemaSpace, filter);
 		} else {
 			// last element is a child but no property
-			return new ChildEntityDefinition(type, path, schemaSpace);
+			return new ChildEntityDefinition(type, path, schemaSpace, filter);
 		}
 	}
 
@@ -168,8 +173,14 @@ public abstract class AlignmentUtil {
 	public static EntityDefinition getDefaultEntity(EntityDefinition entity) {
 		List<ChildContext> path = entity.getPropertyPath();
 
-		if (path == null || path.isEmpty()
-				|| path.get(path.size() - 1).getContextName() == null) {
+		if (path == null || path.isEmpty()) {
+			if (entity.getFilter() == null) {
+				return entity;
+			}
+			// sibling of type w/o filter
+			return createEntity(entity.getType(), path, entity.getSchemaSpace(), null);
+		}
+		else if (path.get(path.size() - 1).getContextName() == null) {
 			return entity;
 		}
 
@@ -178,7 +189,8 @@ public abstract class AlignmentUtil {
 				.getChild();
 		newPath.remove(newPath.size() - 1);
 		newPath.add(new ChildContext(lastChild));
-		return createEntity(entity.getType(), newPath, entity.getSchemaSpace());
+		return createEntity(entity.getType(), newPath, entity.getSchemaSpace(), 
+				entity.getFilter());
 	}
 
 	/**
@@ -203,7 +215,8 @@ public abstract class AlignmentUtil {
 			ChildContext newcontext = new ChildContext(context.getChild());
 			newPath.add(newcontext);
 		}
-		return createEntity(entity.getType(), newPath, entity.getSchemaSpace());
+		return createEntity(entity.getType(), newPath, 
+				entity.getSchemaSpace(), null);
 	}
 
 	/**
@@ -236,7 +249,8 @@ public abstract class AlignmentUtil {
 			newPath.add(path.get(i));
 		}
 
-		return createEntity(entity.getType(), newPath, entity.getSchemaSpace());
+		return createEntity(entity.getType(), newPath, 
+				entity.getSchemaSpace(), entity.getFilter());
 	}
 
 	/**
@@ -278,7 +292,11 @@ public abstract class AlignmentUtil {
 			return false;
 		}
 		
-		//TODO check type context?!
+		// check type context
+		if (!Objects.equal(parent.getFilter(), child.getFilter())) {
+			// if the filters do not match, there can't be a relation
+			return false;
+		}
 		
 		// check the property paths
 		List<ChildContext> parentPath = parent.getPropertyPath();
@@ -299,5 +317,21 @@ public abstract class AlignmentUtil {
 		}
 		
 		return true;
+	}
+
+	/**
+	 * Get the type entity definition of the given entity definition.
+	 * @param entityDef the entity definition
+	 * @return the entity definition if it is a {@link TypeEntityDefinition},
+	 *   otherwise a new type entity definition is created
+	 */
+	public static TypeEntityDefinition getTypeEntity(EntityDefinition entityDef) {
+		if (entityDef instanceof TypeEntityDefinition) {
+			return (TypeEntityDefinition) entityDef;
+		}
+		else {
+			return new TypeEntityDefinition(entityDef.getType(), 
+					entityDef.getSchemaSpace(), entityDef.getFilter());
+		}
 	}
 }

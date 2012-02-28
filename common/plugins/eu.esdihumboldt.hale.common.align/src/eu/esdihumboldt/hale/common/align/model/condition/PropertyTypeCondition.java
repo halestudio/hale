@@ -44,7 +44,7 @@ public class PropertyTypeCondition implements PropertyCondition {
 	public boolean accept(Property entity) {
 		TypeDefinition propertyType = entity.getDefinition().getDefinition().getPropertyType();
 		Type type = new DefaultType(new TypeEntityDefinition(propertyType, 
-				entity.getDefinition().getSchemaSpace()));
+				entity.getDefinition().getSchemaSpace(), null));
 		return typeCondition.accept(type);
 	}
 

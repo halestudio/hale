@@ -36,7 +36,6 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
-import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -52,17 +51,15 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 
 	/**
 	 * Create a transformation tree
-	 * @param type the type definition serving as root
+	 * @param targetType the type entity definition serving as root
 	 * @param alignment the alignment holding the cells
 	 */
-	public TransformationTreeImpl(TypeDefinition type, Alignment alignment) {
+	public TransformationTreeImpl(TypeEntityDefinition targetType, Alignment alignment) {
 		super(null);
-		this.type = type;
+		this.type = targetType.getType();
 		
 		sourceNodes = new SourceNodeFactory();
 		
-		TypeEntityDefinition targetType = new TypeEntityDefinition(type, 
-				SchemaSpaceID.TARGET);
 		Collection<? extends Cell> cells = alignment.getPropertyCells(null, targetType);
 		
 		// partition cells by child

@@ -227,7 +227,7 @@ public class SchemasView extends PropertiesViewPart {
 				else if (last instanceof TypeDefinition) {
 					// create entity definition for type
 					result.add(new TypeEntityDefinition((TypeDefinition) last,
-							schemaSpace));
+							schemaSpace, null));
 				}
 				else if (last instanceof PropertyDefinition) {
 					// create property entity definition w/ default instance contexts 
@@ -250,7 +250,7 @@ public class SchemasView extends PropertiesViewPart {
 						// remaining element is the type definition
 						result.add(new PropertyEntityDefinition(
 								(TypeDefinition) element, propertyPath,
-								schemaSpace));
+								schemaSpace, null));
 					}
 					else {
 						log.error("No parent type definition for property path found, skipping object for selection.");
