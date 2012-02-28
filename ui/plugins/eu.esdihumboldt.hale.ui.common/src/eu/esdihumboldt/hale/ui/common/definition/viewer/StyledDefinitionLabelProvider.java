@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -24,7 +25,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.extension.FilterDefinitionManager;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
@@ -68,18 +72,27 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 		
 		cell.setImage(defaultLabels.getImage(element));
 		
-//		boolean defContext = true;
+		String contextText = null;
 		if (element instanceof EntityDefinition) {
 			EntityDefinition entityDef = (EntityDefinition) element;
 			element = entityDef.getDefinition();
-//			
-//			List<ChildContext> path = entityDef.getPropertyPath();
-//			if (path != null && !path.isEmpty()) {
-//				ChildContext lastContext = path.get(path.size() - 1);
-//				defContext = lastContext.getContextName() == null;
-//			}
+			
+			List<ChildContext> path = entityDef.getPropertyPath();
+			if (path != null && !path.isEmpty()) {
+				ChildContext lastContext = path.get(path.size() - 1);
+				if (lastContext.getIndex() != null) {
+					contextText = "[" + lastContext.getIndex() + "]";
+				}
+				else if (lastContext.getCondition() != null) {
+					contextText = getFilterText(
+							lastContext.getCondition().getFilter());
+				}
+			}
+			else {
+				// type filter
+				contextText = getFilterText(entityDef.getFilter());
+			}
 		}
-		//TODO different styling for non-default context?
 		
 		// append cardinality
 		if (element instanceof ChildDefinition<?>) {
@@ -102,6 +115,11 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 			}
 		}
 		
+		if (contextText != null) {
+			contextText = " " + contextText;
+			text.append(contextText, StyledString.DECORATIONS_STYLER);
+		}
+		
 		cell.setText(text.toString());
 		cell.setStyleRanges(text.getStyleRanges());
 		
@@ -112,6 +130,22 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 		cell.setBackground(background);
 		
 		super.update(cell);
+	}
+
+	/**
+	 * Get the text to display for a filter.
+	 * @param filter the filter, may be <code>null</code>
+	 * @return the filter text or <code>null</code>
+	 */
+	private String getFilterText(Filter filter) {
+		String filterString = FilterDefinitionManager.getInstance().asString(filter);
+		if (filterString != null) {
+			int pos = filterString.indexOf(':');
+			if (pos >= 0 && pos + 1 < filterString.length()) {
+				filterString = filterString.substring(pos + 1);
+			}
+		}
+		return filterString;
 	}
 
 	/**

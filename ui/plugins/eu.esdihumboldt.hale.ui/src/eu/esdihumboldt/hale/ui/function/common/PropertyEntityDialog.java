@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -42,7 +43,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  */
 public class PropertyEntityDialog extends EntityDialog {
 	
-	private final TypeDefinition parentType;
+	private final TypeEntityDefinition parentType;
 
 	/**
 	 * Create a property entity dialog 
@@ -54,7 +55,7 @@ public class PropertyEntityDialog extends EntityDialog {
 	 *   possible), may be <code>null</code>
 	 */
 	public PropertyEntityDialog(Shell parentShell, SchemaSpaceID ssid,
-			TypeDefinition parentType, String title, EntityDefinition initialSelection) {
+			TypeEntityDefinition parentType, String title, EntityDefinition initialSelection) {
 		super(parentShell, ssid, title, initialSelection);
 		
 		this.parentType = parentType;
@@ -101,7 +102,7 @@ public class PropertyEntityDialog extends EntityDialog {
 				defPath.add(new ChildContext((ChildDefinition<?>) path.getSegment(i)));
 			}
 			//TODO check if property entity definition is applicable? 
-			return new PropertyEntityDefinition(type, defPath, ssid);
+			return new PropertyEntityDefinition(type, defPath, ssid, parentType.getFilter());
 		}
 		
 		return null;
