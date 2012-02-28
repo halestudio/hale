@@ -39,11 +39,9 @@ import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 
 /**
- * Editor for enumeration attributes
- *
+ * Editor for enumeration attributes.
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class CodeListAttributeEditor extends AbstractAttributeEditor<CodeEntry> {
 	

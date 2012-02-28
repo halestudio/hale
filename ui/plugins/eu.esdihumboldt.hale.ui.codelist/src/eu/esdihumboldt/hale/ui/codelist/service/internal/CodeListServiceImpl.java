@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
 
@@ -30,9 +28,9 @@ import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
  */
 public class CodeListServiceImpl implements CodeListService {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(CodeListServiceImpl.class);
+//	private static final ALogger log = ALoggerFactory.getLogger(CodeListServiceImpl.class);
 	
-	private boolean initialized = false;
+//	private boolean initialized = false;
 	
 	/**
 	 * Maps code list identifiers to code lists
@@ -184,7 +182,7 @@ public class CodeListServiceImpl implements CodeListService {
 //	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.codelist.ui.service.CodeListService#addCodeList(eu.esdihumboldt.hale.common.codelist.CodeList)
+	 * @see CodeListService#addCodeList(CodeList)
 	 */
 	@Override
 	public void addCodeList(CodeList code) {
