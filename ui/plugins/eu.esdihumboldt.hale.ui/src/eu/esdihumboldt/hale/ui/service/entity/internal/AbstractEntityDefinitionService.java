@@ -18,6 +18,7 @@ import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
@@ -94,11 +95,12 @@ public abstract class AbstractEntityDefinitionService implements
 	 * @param type the path parent
 	 * @param path the child path 
 	 * @param schemaSpace the associated schema space
+	 * @param filter the type entity filter
 	 * @return the created entity definition
 	 */
 	protected EntityDefinition createEntity(TypeDefinition type, 
-			List<ChildContext> path, SchemaSpaceID schemaSpace) {
-		return AlignmentUtil.createEntity(type, path, schemaSpace);
+			List<ChildContext> path, SchemaSpaceID schemaSpace, Filter filter) {
+		return AlignmentUtil.createEntity(type, path, schemaSpace, filter);
 	}
 
 }

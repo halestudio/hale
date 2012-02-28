@@ -24,6 +24,10 @@ public class ChildContext {
 	
 	private final Integer contextName;
 	
+	private final Integer index;
+	
+	private final Condition condition;
+	
 	private final ChildDefinition<?> child;
 	
 	/**
@@ -31,18 +35,23 @@ public class ChildContext {
 	 * @param child the child definition
 	 */
 	public ChildContext(ChildDefinition<?> child) {
-		this(null, child);
+		this(null, null, null, child);
 	}
 
 	/**
-	 * Create a child context
-	 * @param contextName the instance context name
-	 * @param child the child definition
+	 * Create a child context.
+	 * @param contextName the instance context name, may be <code>null</code>
+	 * @param index the context index, may be <code>null</code>
+	 * @param condition the context condition, may be <code>null</code>
+	 * @param child the child definition 
 	 */
-	public ChildContext(Integer contextName, ChildDefinition<?> child) {
+	public ChildContext(Integer contextName, Integer index, 
+			Condition condition, ChildDefinition<?> child) {
 		super();
 		this.contextName = contextName;
 		this.child = child;
+		this.index = index;
+		this.condition = condition;
 	}
 
 	/**
@@ -60,6 +69,20 @@ public class ChildContext {
 	}
 
 	/**
+	 * @return the index
+	 */
+	public Integer getIndex() {
+		return index;
+	}
+
+	/**
+	 * @return the condition
+	 */
+	public Condition getCondition() {
+		return condition;
+	}
+
+	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -68,7 +91,10 @@ public class ChildContext {
 		int result = 1;
 		result = prime * result + ((child == null) ? 0 : child.hashCode());
 		result = prime * result
+				+ ((condition == null) ? 0 : condition.hashCode());
+		result = prime * result
 				+ ((contextName == null) ? 0 : contextName.hashCode());
+		result = prime * result + ((index == null) ? 0 : index.hashCode());
 		return result;
 	}
 
@@ -89,10 +115,20 @@ public class ChildContext {
 				return false;
 		} else if (!child.equals(other.child))
 			return false;
+		if (condition == null) {
+			if (other.condition != null)
+				return false;
+		} else if (!condition.equals(other.condition))
+			return false;
 		if (contextName == null) {
 			if (other.contextName != null)
 				return false;
 		} else if (!contextName.equals(other.contextName))
+			return false;
+		if (index == null) {
+			if (other.index != null)
+				return false;
+		} else if (!index.equals(other.index))
 			return false;
 		return true;
 	}

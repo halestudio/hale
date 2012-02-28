@@ -49,6 +49,7 @@ import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransfor
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.filter.TypeFilter;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -198,6 +199,12 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		source = source.select(new TypeFilter(
 				sourceType.getDefinition().getDefinition()));
 		
+		// apply entity filter
+		Filter entityFilter = sourceType.getDefinition().getFilter();
+		if (entityFilter != null) {
+			source = source.select(entityFilter);
+		}
+		
 		// Step 2: partition
 		// Partition instances into sets to be transformed together.
 		// In case of a SingleTypeTransformation each (merged) instance may be
@@ -225,22 +232,16 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			while (it.hasNext()) {
 				Instance sourceInstance = it.next();
 				
-				//XXX sanity check on type as long as selection isn't implemented
-				if (sourceType.getDefinition().getDefinition().equals(sourceInstance.getDefinition())) { 
-					function.setSource(sourceType, sourceInstance);
-					function.setPropertyTransformer(transformer);
-					function.setParameters(parameters);
-					function.setTarget(targetTypes);
-					
-					try {
-						((SingleTypeTransformation) function).execute(transformation.getFunctionId(), engine, 
-								executionParameters, cellLog);
-					} catch (TransformationException e) {
-						cellLog.error(cellLog.createMessage("Type transformation failed, skipping instance.", e));
-					}
-				}
-				else {
-					cellLog.warn(cellLog.createMessage("Source type sanity check failed", null));
+				function.setSource(sourceType, sourceInstance);
+				function.setPropertyTransformer(transformer);
+				function.setParameters(parameters);
+				function.setTarget(targetTypes);
+				
+				try {
+					((SingleTypeTransformation) function).execute(transformation.getFunctionId(), engine, 
+							executionParameters, cellLog);
+				} catch (TransformationException e) {
+					cellLog.error(cellLog.createMessage("Type transformation failed, skipping instance.", e));
 				}
 			}
 		} finally {

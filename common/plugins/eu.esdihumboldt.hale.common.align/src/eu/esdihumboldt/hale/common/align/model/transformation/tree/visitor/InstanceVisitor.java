@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.LeftoversImpl;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -59,6 +60,20 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 			// source root
 			if (instance instanceof Instance
 					&& source.getDefinition().equals(((Instance) instance).getDefinition())) {
+				// check type filter (if any)
+				Filter filter = source.getEntityDefinition().getFilter();
+				if (filter != null) {
+					if (!filter.match((Instance) instance)) {
+						// instance does not match filter, don't descend further
+						return false;
+						/*
+						 * XXX What about merged instances? Will this be OK for those?
+						 * A type filter should only apply to the original instance if
+						 * it is merged - but most filters should evaluate the same
+						 */
+					}
+				}
+				
 				source.setValue(instance); // also sets the node to defined
 				return true;
 			}

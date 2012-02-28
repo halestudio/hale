@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-project version="2.5.0.alpha">
+    <name>Index context example</name>
+    <author>Simon Templer</author>
+    <description xml:space="preserve">Small example project demonstrating the use of an index context for source properties.&#xd;
+In the source type 'placeNames' the information on the name language is given only implicitly through the name order. The first name is in German, the second in English, the third in Italian.&#xd;
+In the target type 'explicitNames' there are explicit name properties for each language defined.</description>
+    <created>2012-03-01T09:47:27.512+01:00</created>
+    <modified>2012-03-01T09:52:02.517+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/indexcontext2/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/indexcontext2/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/indexcontext2/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/indexcontext2/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/indexcontext2/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/indexcontext2/t1t2.halex.alignment.xml"/>
+    <property name="mappableSourceType/1">{http://www.example.org/t1/}OrderedNamesType</property>
+    <property name="mappableSourceType/count">1</property>
+    <property name="mappableTargetType/1">{http://www.example.org/t2/}ExplicitNamesType</property>
+    <property name="mappableTargetType/count">1</property>
+</hale-project>

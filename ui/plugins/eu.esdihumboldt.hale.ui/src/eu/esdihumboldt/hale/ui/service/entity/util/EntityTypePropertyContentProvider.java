@@ -16,12 +16,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
- * Content provider that shows properties of an input type definition
+ * Content provider that shows properties of an input type entity definition.
  * @author Simon Templer
  */
 public class EntityTypePropertyContentProvider extends EntityTypeIndexContentProvider {
@@ -39,9 +38,8 @@ public class EntityTypePropertyContentProvider extends EntityTypeIndexContentPro
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof TypeDefinition) {
-			return getChildren(new TypeEntityDefinition(
-					(TypeDefinition) inputElement, schemaSpace));
+		if (inputElement instanceof TypeEntityDefinition) {
+			return getChildren(inputElement);
 		}
 		else {
 			throw new IllegalArgumentException("Content provider only applicable for type definitions.");
