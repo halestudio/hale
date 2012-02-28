@@ -18,11 +18,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
 import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
 
@@ -41,6 +43,7 @@ public class ShowHandbookHandler extends AbstractHandler implements IHandler {
 	/**
 	 * @see IHandler#execute(ExecutionEvent)
 	 */
+	@SuppressWarnings(value = "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE", justification = "mkdirs seems to often report a wrong result, e.g. on Windows")
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
@@ -56,7 +59,7 @@ public class ShowHandbookHandler extends AbstractHandler implements IHandler {
 
 		File pdfFile = new File(tempDirName + PDFFILE);
 		if (pdfFile.exists()) {
-			pdfFile.delete();
+			FileUtils.deleteQuietly(pdfFile);
 		}
 		
 		pdfFile.deleteOnExit();

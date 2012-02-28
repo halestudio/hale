@@ -59,14 +59,14 @@ public interface CodeListService {
 //	public void searchPathChanged();
 
 	/**
-	 * Get the code lists
-	 * 
+	 * Get the code lists.
 	 * @return the code lists
 	 */
 	public List<CodeList> getCodeLists();
 
 	/**
-	 * @param code
+	 * Add a code list to the service.
+	 * @param code the code list to add
 	 */
 	public void addCodeList(CodeList code);
 

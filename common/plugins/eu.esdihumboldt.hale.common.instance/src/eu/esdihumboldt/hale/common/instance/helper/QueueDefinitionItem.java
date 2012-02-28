@@ -48,7 +48,7 @@ public class QueueDefinitionItem {
 	 * @param propDef sets the instance definition in this item
 	 */
 	public void setDef(ChildDefinition<?> propDef) {
-		this.def = def;
+		this.def = propDef;
 	}
 
 	/**
