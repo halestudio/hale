@@ -16,35 +16,74 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.filter.Filter;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
- * TODO Type description
+ * CQL Filter. Two CQL filters are seen as equal if they are based on the same
+ * CQL expression.
  * @author Sebastian Reinhardt
+ * @author Simon Templer
  */
 public class FilterGeoCqlImpl implements
 		eu.esdihumboldt.hale.common.instance.model.Filter {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(FilterGeoCqlImpl.class);
 
-	private String filterTerm;
-	private Filter internFilter;
+	private final String filterTerm;
+	private final Filter internFilter;
 
 	/**
-	 * @param filterTerm
-	 * @throws CQLException
+	 * Create a CQL filter.
+	 * @param filterTerm the CQL expression
+	 * @throws CQLException if parsing the CQL fails
 	 */
 	public FilterGeoCqlImpl(String filterTerm) throws CQLException {
 		this.filterTerm = filterTerm;
 
 		internFilter = CQL.toFilter(this.filterTerm);
 		if (internFilter == Filter.EXCLUDE) {
-			// TODO Fehler
-			System.out.println("Error");
+			log.warn("Parsed filter will not match any instance");
 		}
 	}
 
 	@Override
 	public boolean match(Instance instance) {
 		return internFilter.evaluate(instance);
+	}
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((filterTerm == null) ? 0 : filterTerm.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FilterGeoCqlImpl other = (FilterGeoCqlImpl) obj;
+		if (filterTerm == null) {
+			if (other.filterTerm != null)
+				return false;
+		} else if (!filterTerm.equals(other.filterTerm))
+			return false;
+		return true;
 	}
 
 }

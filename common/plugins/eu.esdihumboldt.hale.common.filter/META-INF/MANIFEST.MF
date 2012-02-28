@@ -4,9 +4,11 @@ Bundle-Name: Hale Filter Api
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.filter
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: eu.esdihumboldt.hale.common.core.io.supplier,
+Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.instance.model,
- eu.esdihumboldt.hale.common.schema.model
+ eu.esdihumboldt.hale.common.schema.model,
+ org.slf4j;version="1.5.11"
 Bundle-ClassPath: .
 Export-Package: eu.esdihumboldt.hale.common.filter
 Require-Bundle: org.geotools,

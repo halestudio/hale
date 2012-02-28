@@ -15,6 +15,8 @@ package eu.esdihumboldt.hale.common.instance.model;
 
 /**
  * Filter for {@link Instance}s.
+ * Filter implementations should reimplement {@link #equals(Object)} and 
+ * {@link #hashCode()}.
  * @author Sebastian Reinhardt
  * @author Simon Templer
  */
