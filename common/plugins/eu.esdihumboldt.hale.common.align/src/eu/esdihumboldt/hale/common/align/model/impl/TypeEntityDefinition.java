@@ -20,6 +20,7 @@ import java.util.List;
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -33,20 +34,24 @@ public class TypeEntityDefinition implements EntityDefinition {
 	private final SchemaSpaceID schemaSpace;
 	
 	private final TypeDefinition typeDefinition;
+	
+	private final Filter filter;
 
 	/**
 	 * Create an entity definition for the given type
 	 * @param typeDefinition the type definition
 	 * @param schemaSpace the schema space identifier
+	 * @param filter the entity filter, may be <code>null</code>
 	 */
 	public TypeEntityDefinition(TypeDefinition typeDefinition, 
-			SchemaSpaceID schemaSpace) {
+			SchemaSpaceID schemaSpace, Filter filter) {
 		super();
 		
 		checkNotNull(typeDefinition, "Null type definition not allowed for type entity definition");
 		
 		this.typeDefinition = typeDefinition;
 		this.schemaSpace = schemaSpace;
+		this.filter = filter;
 	}
 
 	/**
@@ -79,6 +84,14 @@ public class TypeEntityDefinition implements EntityDefinition {
 	@Override
 	public List<ChildContext> getPropertyPath() {
 		return Collections.emptyList();
+	}
+
+	/**
+	 * @see EntityDefinition#getFilter()
+	 */
+	@Override
+	public Filter getFilter() {
+		return filter;
 	}
 
 	/**

@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import java.util.List;
 
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -39,6 +40,12 @@ public interface EntityDefinition {
 	 * @return the type definition
 	 */
 	public TypeDefinition getType();
+	
+	/**
+	 * Get the filter applied to the entity type.
+	 * @return the entity filter, may be <code>null</code>
+	 */
+	public Filter getFilter();
 	
 	/**
 	 * Get the property path. Each path item is an instance context name

@@ -251,7 +251,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 			child = DefinitionUtil.getChild(child, iter.next());
 			contextPath.add(new ChildContext(child));
 		}
-		return AlignmentUtil.createEntity(sourceType, contextPath, SchemaSpaceID.SOURCE);
+		return AlignmentUtil.createEntity(sourceType, contextPath, SchemaSpaceID.SOURCE, null);
 	}
 
 	/**

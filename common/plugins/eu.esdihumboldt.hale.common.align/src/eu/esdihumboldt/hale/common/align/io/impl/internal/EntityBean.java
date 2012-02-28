@@ -28,6 +28,8 @@ public abstract class EntityBean<T extends EntityDefinition> {
 	
 	private QName typeName;
 	
+	private String filter;
+	
 	/**
 	 * Default constructor 
 	 */
@@ -38,10 +40,12 @@ public abstract class EntityBean<T extends EntityDefinition> {
 	/**
 	 * Create an entity bean with the given type name
 	 * @param typeName the type name
+	 * @param filter the filter to the type entity
 	 */
-	public EntityBean(QName typeName) {
+	public EntityBean(QName typeName, String filter) {
 		super();
 		this.typeName = typeName;
+		this.filter = filter;
 	}
 
 	/**
@@ -61,6 +65,22 @@ public abstract class EntityBean<T extends EntityDefinition> {
 	 */
 	public abstract Entity createEntity(TypeIndex types, 
 			SchemaSpaceID schemaSpace);
+
+	/**
+	 * Get the type filter.
+	 * @return the type filter
+	 */
+	public String getFilter() {
+		return filter;
+	}
+
+	/**
+	 * Set the type filter.
+	 * @param filter the type filter to set
+	 */
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
 
 	/**
 	 * Get the type name
