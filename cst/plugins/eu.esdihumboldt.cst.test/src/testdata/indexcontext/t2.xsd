@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t2/" targetNamespace="http://www.example.org/t2/">
+    <complexType name="PlaceType">
+    	<sequence>
+    		<element name="name" type="tns:NameType" maxOccurs="unbounded" minOccurs="1"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+    
+    <complexType name="NameType">
+    	<simpleContent>
+    		<extension base="string">
+    			<attribute name="language" type="string" use="required"></attribute>
+    		</extension>
+    	</simpleContent>
+   	</complexType>
+    
+    <element name="place" type="tns:PlaceType"></element>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:place" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+</schema>

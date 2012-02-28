@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t1/" targetNamespace="http://www.example.org/t1/">
+    <complexType name="OrderedNamesType">
+    	<sequence>
+    		<element name="name" type="string" minOccurs="1" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <element name="placeNames" type="tns:OrderedNamesType"></element>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:placeNames" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+</schema>

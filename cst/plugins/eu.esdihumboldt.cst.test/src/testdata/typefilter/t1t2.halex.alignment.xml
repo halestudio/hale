@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-alignment>
+    <cell transformation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}ItemType</type>
+                <filter>CQL:type = 'shirt'</filter>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type>{http://www.example.org/t2/}ShirtType</type>
+            </class>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}ItemType</type>
+                <filter>CQL:type = 'hat'</filter>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type>{http://www.example.org/t2/}HatType</type>
+            </class>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}ItemType</type>
+                <filter>CQL:type = 'hat'</filter>
+                <child>name</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}HatType</type>
+                <child>name</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}ItemType</type>
+                <filter>CQL:type = 'hat'</filter>
+                <child>id</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}HatType</type>
+                <child>id</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}ItemType</type>
+                <filter>CQL:type = 'hat'</filter>
+                <child>price</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}HatType</type>
+                <child>price</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}ItemType</type>
+                <filter>CQL:type = 'shirt'</filter>
+                <child>id</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}ShirtType</type>
+                <child>id</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}ItemType</type>
+                <filter>CQL:type = 'shirt'</filter>
+                <child>name</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}ShirtType</type>
+                <child>name</child>
+            </property>
+        </target>
+    </cell>
+</hale-alignment>

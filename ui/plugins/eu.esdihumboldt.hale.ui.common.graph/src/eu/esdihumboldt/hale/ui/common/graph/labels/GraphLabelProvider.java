@@ -28,6 +28,7 @@ import org.eclipse.zest.core.widgets.ZestStyles;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -39,7 +40,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
-import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
+import eu.esdihumboldt.hale.ui.common.graph.figures.EntityFigure;
 import eu.esdihumboldt.hale.ui.util.graph.WrappedText;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 
@@ -404,11 +405,12 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		}
 		
 		if (element instanceof EntityDefinition) {
+			String contextText = AlignmentUtil.getContextText((EntityDefinition) element);
 			switch (((EntityDefinition) element).getSchemaSpace()) {
 			case SOURCE:
-				return new CustomShapeLabel(new FingerPost(10, SWT.RIGHT));
+				return new EntityFigure(new FingerPost(10, SWT.RIGHT), contextText);
 			case TARGET:
-				return new CustomShapeLabel(new FingerPost(10, SWT.LEFT));
+				return new EntityFigure(new FingerPost(10, SWT.LEFT), contextText);
 			}
 		}
 		

@@ -14,10 +14,13 @@ package eu.esdihumboldt.hale.ui.function.common;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+
+import com.google.common.base.Objects;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
@@ -27,8 +30,8 @@ import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Entity selector for {@link Property} entities
@@ -37,7 +40,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 
-	private TypeDefinition parentType;
+	private TypeEntityDefinition parentType;
 
 	/**
 	 * Create an entity selector for {@link Property} entities
@@ -48,7 +51,7 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	 * @param parentType the parent type
 	 */
 	public PropertyEntitySelector(SchemaSpaceID ssid, PropertyParameter field, Composite parent,
-			TypeDefinition parentType) {
+			TypeEntityDefinition parentType) {
 		super(ssid, field, parent);
 
 		this.parentType = parentType;
@@ -59,9 +62,16 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	 * 
 	 * @param parentType the parentType to set
 	 */
-	public void setParentType(TypeDefinition parentType) {
+	public void setParentType(TypeEntityDefinition parentType) {
+		boolean forceUpdate = this.parentType != null && 
+				!Objects.equal(this.parentType, parentType);
+		
 		this.parentType = parentType;
 		// reset candidates?? refresh viewer?
+		if (forceUpdate) {
+			// reset selection
+			setSelection(new StructuredSelection());
+		}
 	}
 
 	/**

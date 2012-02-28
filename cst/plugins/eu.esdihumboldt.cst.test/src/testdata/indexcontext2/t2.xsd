@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t2/" targetNamespace="http://www.example.org/t2/">
+    <complexType name="ExplicitNamesType">
+    	<sequence>
+    		<element name="name_de" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="name_en" type="string" maxOccurs="1" minOccurs="0"></element>
+    		<element name="name_it" type="string" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+    
+    <element name="explicitNames" type="tns:ExplicitNamesType"></element>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:explicitNames" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+</schema>

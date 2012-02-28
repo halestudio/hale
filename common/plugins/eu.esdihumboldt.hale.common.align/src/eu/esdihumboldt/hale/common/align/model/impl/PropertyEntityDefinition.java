@@ -19,6 +19,7 @@ import java.util.List;
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -36,10 +37,11 @@ public class PropertyEntityDefinition extends ChildEntityDefinition {
 	 * @param type the topmost parent of the property
 	 * @param path the property path down from the type
 	 * @param schemaSpace the schema space identifier
+	 * @param filter the entity filter on the type, may be <code>null</code>
 	 */
 	public PropertyEntityDefinition(TypeDefinition type,
-			List<ChildContext> path, SchemaSpaceID schemaSpace) {
-		super(type, path, schemaSpace);
+			List<ChildContext> path, SchemaSpaceID schemaSpace, Filter filter) {
+		super(type, path, schemaSpace, filter);
 		
 		checkArgument(path != null && !path.isEmpty() && path.size() >= 1 && 
 				path.get(path.size() - 1).getChild() instanceof PropertyDefinition);

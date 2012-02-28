@@ -89,7 +89,7 @@ public class DefaultAlignmentIOTest {
 		TypeDefinition sourceType1 = new DefaultTypeDefinition(
 				source1TypeName = new QName("source1Type"));
 		source1.put(source1EntityName = null, 
-				new DefaultType(new TypeEntityDefinition(sourceType1, SchemaSpaceID.SOURCE)));
+				new DefaultType(new TypeEntityDefinition(sourceType1, SchemaSpaceID.SOURCE, null)));
 		cell1.setSource(source1);
 		source.addType(sourceType1);
 		
@@ -99,7 +99,7 @@ public class DefaultAlignmentIOTest {
 		TypeDefinition targetType1 = new DefaultTypeDefinition(
 				target1TypeName = new QName("http://some.name.space/t1", "target1Type"));
 		target1.put(target1EntityName = "Some name", 
-				new DefaultType(new TypeEntityDefinition(targetType1, SchemaSpaceID.TARGET)));
+				new DefaultType(new TypeEntityDefinition(targetType1, SchemaSpaceID.TARGET, null)));
 		cell1.setTarget(target1);
 		target.addType(targetType1);
 		
@@ -121,7 +121,7 @@ public class DefaultAlignmentIOTest {
 		TypeDefinition targetType2 = new DefaultTypeDefinition(
 				new QName("target2Type"));
 		target2.put("Some other name", new DefaultType(new TypeEntityDefinition(
-				targetType2, SchemaSpaceID.TARGET)));
+				targetType2, SchemaSpaceID.TARGET, null)));
 		cell2.setTarget(target2);
 		target.addType(targetType2);
 		
