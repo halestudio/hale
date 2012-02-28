@@ -274,7 +274,7 @@ public class FunctionExecutor extends CellNodeValidator {
 		
 		return new PropertyEntityDefinition(def.getType(), 
 				new ArrayList<ChildContext>(def.getPropertyPath()), 
-				def.getSchemaSpace());
+				def.getSchemaSpace(), def.getFilter());
 	}
 	
 }

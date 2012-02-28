@@ -36,8 +36,8 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.function.generic.pages.internal.PropertyField;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -134,16 +134,16 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 	 * @param ssid the schema space identifier
 	 * @return the parent type
 	 */
-	private TypeDefinition getParentType(SchemaSpaceID ssid) {
+	private TypeEntityDefinition getParentType(SchemaSpaceID ssid) {
 		ISelection selection = typeRelation.getSelection();
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			@SuppressWarnings("unchecked")
 			Pair<Type, Type> relation = (Pair<Type, Type>) ((IStructuredSelection) selection).getFirstElement();
 			switch (ssid) {
 			case SOURCE:
-				return relation.getFirst().getDefinition().getDefinition();
+				return relation.getFirst().getDefinition();
 			case TARGET:
-				return relation.getSecond().getDefinition().getDefinition();
+				return relation.getSecond().getDefinition();
 			default:
 				throw new IllegalArgumentException("Illegal schema space");
 			}

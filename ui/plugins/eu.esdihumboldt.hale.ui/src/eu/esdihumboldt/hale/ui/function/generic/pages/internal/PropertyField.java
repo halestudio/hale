@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.function.common.PropertyEntitySelector;
@@ -30,7 +31,7 @@ import eu.esdihumboldt.hale.ui.function.common.PropertyEntitySelector;
  */
 public class PropertyField extends Field<PropertyParameter, PropertyEntitySelector> {
 	
-	private TypeDefinition parentType;
+	private TypeEntityDefinition parentType;
 
 	/**
 	 * Create a property field
@@ -43,7 +44,7 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	 */
 	public PropertyField(PropertyParameter definition, SchemaSpaceID ssid,
 			Composite parent, Set<EntityDefinition> candidates, Cell initialCell,
-			TypeDefinition parentType) {
+			TypeEntityDefinition parentType) {
 		super(definition, ssid, parent, candidates, initialCell);
 		
 		// set the parent type on all added selectors
@@ -54,7 +55,7 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	 * Set the parent type
 	 * @param parentType the parentType to set
 	 */
-	public void setParentType(TypeDefinition parentType) {
+	public void setParentType(TypeEntityDefinition parentType) {
 		this.parentType = parentType;
 		
 		// set the parent type on the selectors
@@ -76,7 +77,7 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	 * @return the parentType
 	 */
 	public TypeDefinition getParentType() {
-		return parentType;
+		return parentType.getType();
 	}
 
 }
