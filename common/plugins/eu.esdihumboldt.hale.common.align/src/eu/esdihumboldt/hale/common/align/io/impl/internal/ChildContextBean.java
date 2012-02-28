@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.instance.extension.FilterDefinitionManager;
 
 /**
  * Bean representing a {@link ChildContext}. Instead of the child definition it
@@ -24,6 +25,10 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext;
 public class ChildContextBean {
 	
 	private Integer contextName;
+	
+	private Integer contextIndex;
+	
+	private String conditionFilter;
 	
 	private QName childName;
 
@@ -39,18 +44,26 @@ public class ChildContextBean {
 	 * @param context the child context
 	 */
 	public ChildContextBean(ChildContext context) {
-		this(context.getContextName(), context.getChild().getName());
+		this(context.getContextName(), context.getIndex(), (context
+				.getCondition() == null) ? (null) : (FilterDefinitionManager
+				.getInstance().asString(context.getCondition().getFilter())),
+				context.getChild().getName());
 	}
 
 	/**
 	 * Create a child context bean with the given content
 	 * @param contextName the instance context name
+	 * @param contextIndex the context index
+	 * @param conditionFilter the condition filter
 	 * @param childName the child definition name
 	 */
-	public ChildContextBean(Integer contextName, QName childName) {
+	public ChildContextBean(Integer contextName, Integer contextIndex,
+			String conditionFilter, QName childName) {
 		super();
 		this.contextName = contextName;
 		this.childName = childName;
+		this.contextIndex = contextIndex;
+		this.conditionFilter = conditionFilter;
 	}
 
 	/**
@@ -79,6 +92,34 @@ public class ChildContextBean {
 	 */
 	public void setChildName(QName childName) {
 		this.childName = childName;
+	}
+
+	/**
+	 * @return the context index
+	 */
+	public Integer getContextIndex() {
+		return contextIndex;
+	}
+
+	/**
+	 * @param contextIndex the context index to set
+	 */
+	public void setContextIndex(Integer contextIndex) {
+		this.contextIndex = contextIndex;
+	}
+
+	/**
+	 * @return the condition filter
+	 */
+	public String getConditionFilter() {
+		return conditionFilter;
+	}
+
+	/**
+	 * @param conditionFilter the condition filter to set
+	 */
+	public void setConditionFilter(String conditionFilter) {
+		this.conditionFilter = conditionFilter;
 	}
 
 }

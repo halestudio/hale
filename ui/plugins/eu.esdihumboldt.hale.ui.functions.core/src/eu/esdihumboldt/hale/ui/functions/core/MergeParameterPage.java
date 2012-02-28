@@ -186,6 +186,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		// content provider
 		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench()
 				.getService(EntityDefinitionService.class);
+		//FIXME another content provider should be used here, w/o instance contexts
 		viewer.setContentProvider(new EntityTypePropertyContentProvider(viewer, entityDefinitionService,
 				SchemaSpaceID.SOURCE));
 		// check state listener
@@ -251,7 +252,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 			child = DefinitionUtil.getChild(child, iter.next());
 			contextPath.add(new ChildContext(child));
 		}
-		return AlignmentUtil.createEntity(sourceType, contextPath, SchemaSpaceID.SOURCE);
+		return AlignmentUtil.createEntity(sourceType, contextPath, SchemaSpaceID.SOURCE, null);
 	}
 
 	/**

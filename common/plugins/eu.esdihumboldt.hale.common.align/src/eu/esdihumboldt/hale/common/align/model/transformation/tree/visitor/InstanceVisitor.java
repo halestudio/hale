@@ -12,10 +12,14 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.Condition;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.LeftoversImpl;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -59,6 +63,20 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 			// source root
 			if (instance instanceof Instance
 					&& source.getDefinition().equals(((Instance) instance).getDefinition())) {
+				// check type filter (if any)
+				Filter filter = source.getEntityDefinition().getFilter();
+				if (filter != null) {
+					if (!filter.match((Instance) instance)) {
+						// instance does not match filter, don't descend further
+						return false;
+						/*
+						 * XXX What about merged instances? Will this be OK for those?
+						 * A type filter should only apply to the original instance if
+						 * it is merged - but most filters should evaluate the same
+						 */
+					}
+				}
+				
 				source.setValue(instance); // also sets the node to defined
 				return true;
 			}
@@ -81,11 +99,40 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					source.setDefined(false);
 				}
 				else {
+					// check for contexts
+					EntityDefinition entityDef = source.getEntityDefinition();
+					
+					// index context
+					Integer index = AlignmentUtil.getContextIndex(entityDef);
+					if (index != null) {
+						// only use the value at the given index, if present
+						if (index < values.length) {
+							// annotate with the value at the index
+							Object value = values[index];
+							source.setValue(value);
+						}
+						else {
+							source.setDefined(false);
+						}
+						// no leftovers
+						return true;
+					}
+					
+					// condition context
+					Condition condition = AlignmentUtil.getContextCondition(entityDef);
+					if (condition != null) {
+						//TODO
+						//XXX apply condition filter on main instance?!
+						//XXX apply condition as filter on values and treat normally? 
+					}
+					
+					// (named contexts not allowed)
+					
+					// default behavior (default context)
 					if (values.length >= 1) {
 						// annotate with the first value
 						Object value = values[0];
 						source.setValue(value);
-						//XXX using only this value is similar to the strategy used in HALE 2.1.x
 					}
 					else {
 						source.setDefined(false);
@@ -96,23 +143,6 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 						Object[] leftovers = new Object[values.length - 1];
 						System.arraycopy(values, 1, leftovers, 0, leftovers.length);
 						source.setLeftovers(new LeftoversImpl(leftovers, source));
-						
-						//XXX legacy
-//						// identify context match (if possible)
-//						TransformationContext context = source.getContext();
-//						
-//						if (context == null) {
-//							// no transformation context match defined
-//							//XXX warn instead? XXX transformation log instead?
-//							log.error("Multiple values for source node w/o transformation context match");
-//						}
-//						else {
-//							for (int i  = 1; i < values.length; i++) {
-//								Object value = values[i];
-//								// duplicate subgraph
-//								context.duplicateContext(source, value);
-//							}
-//						}
 					}
 				}
 			}

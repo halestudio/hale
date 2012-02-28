@@ -25,7 +25,7 @@
             name="Save project">
       </command>
       <command
-            id="eu.esdihumboldt.hale.ui.entity.addcontext"
+            id="eu.esdihumboldt.hale.ui.entity.addnamedcontext"
             name="Add instance context">
       </command>
       <command
@@ -60,6 +60,14 @@
             id="eu.esdihumboldt.hale.ui.edit.modify"
             name="Edit">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.entity.addindexcontext"
+            name="Add index context">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.entity.addconditioncontext"
+            name="Add condition context">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -80,11 +88,11 @@
             commandId="eu.esdihumboldt.hale.ui.project.open">
       </handler>
       <handler
-            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddContextHandler"
-            commandId="eu.esdihumboldt.hale.ui.entity.addcontext">
+            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddNamedContextHandler"
+            commandId="eu.esdihumboldt.hale.ui.entity.addnamedcontext">
          <activeWhen>
             <reference
-                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd">
+                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_named">
             </reference>
          </activeWhen>
       </handler>
@@ -204,6 +212,24 @@
                   </count>
                </and>
             </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddIndexContextHandler"
+            commandId="eu.esdihumboldt.hale.ui.entity.addindexcontext">
+         <activeWhen>
+            <reference
+                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_index">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.AddConditionContextHandler"
+            commandId="eu.esdihumboldt.hale.ui.entity.addconditioncontext">
+         <activeWhen>
+            <reference
+                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
+            </reference>
          </activeWhen>
       </handler>
    </extension>
@@ -433,8 +459,21 @@
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <command
-               commandId="eu.esdihumboldt.hale.ui.entity.addcontext"
-               label="Add instance context"
+               commandId="eu.esdihumboldt.hale.ui.entity.addnamedcontext"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.entity.addindexcontext"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.entity.addconditioncontext"
                style="push">
             <visibleWhen
                   checkEnabled="true">
@@ -442,7 +481,6 @@
          </command>
          <command
                commandId="eu.esdihumboldt.hale.ui.entity.removecontext"
-               label="Remove instance context"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -451,9 +489,17 @@
                   <iterate
                         ifEmpty="false"
                         operator="and">
-                     <test
-                           property="eu.esdihumboldt.hale.ui.service.entity.has_named_context">
-                     </test>
+                     <or>
+                        <test
+                              property="eu.esdihumboldt.hale.ui.service.entity.has_named_context">
+                        </test>
+                        <test
+                              property="eu.esdihumboldt.hale.ui.service.entity.has_index_context">
+                        </test>
+                        <test
+                              property="eu.esdihumboldt.hale.ui.service.entity.has_condition_context">
+                        </test>
+                     </or>
                   </iterate>
                </with>
             </visibleWhen>
@@ -486,14 +532,14 @@
             class="eu.esdihumboldt.hale.ui.service.entity.internal.tester.InstanceContextTester"
             id="eu.esdihumboldt.hale.ui.service.entity"
             namespace="eu.esdihumboldt.hale.ui.service.entity"
-            properties="allow_add,has_named_context,allow_remove"
+            properties="allow_add_named,allow_add_index,allow_add_condition,has_named_context,has_index_context,has_condition_context,allow_remove"
             type="eu.esdihumboldt.hale.common.align.model.EntityDefinition">
       </propertyTester>
    </extension>
    <extension
          point="org.eclipse.core.expressions.definitions">
       <definition
-            id="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd">
+            id="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_named">
          <with
                variable="selection">
             <and>
@@ -504,7 +550,7 @@
                      ifEmpty="false"
                      operator="and">
                   <test
-                        property="eu.esdihumboldt.hale.ui.service.entity.allow_add">
+                        property="eu.esdihumboldt.hale.ui.service.entity.allow_add_named">
                   </test>
                </iterate>
             </and>
@@ -520,6 +566,42 @@
                      operator="and">
                   <test
                         property="eu.esdihumboldt.hale.ui.service.entity.allow_remove">
+                  </test>
+               </iterate>
+            </and>
+         </with>
+      </definition>
+      <definition
+            id="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_index">
+         <with
+               variable="selection">
+            <and>
+               <count
+                     value="1">
+               </count>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <test
+                        property="eu.esdihumboldt.hale.ui.service.entity.allow_add_index">
+                  </test>
+               </iterate>
+            </and>
+         </with>
+      </definition>
+      <definition
+            id="eu.esdihumboldt.hale.ui.selection.entity.allow_contextadd_condition">
+         <with
+               variable="selection">
+            <and>
+               <count
+                     value="1">
+               </count>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <test
+                        property="eu.esdihumboldt.hale.ui.service.entity.allow_add_condition">
                   </test>
                </iterate>
             </and>
@@ -559,6 +641,22 @@
       <image
             commandId="eu.esdihumboldt.hale.ui.schema.make_unmappable"
             icon="icons/rm_type.png">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.entity.addindexcontext"
+            icon="icons/add.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.entity.addnamedcontext"
+            icon="icons/add.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.entity.addconditioncontext"
+            icon="icons/filter.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.entity.removecontext"
+            icon="icons/remove.gif">
       </image>
    </extension>
 

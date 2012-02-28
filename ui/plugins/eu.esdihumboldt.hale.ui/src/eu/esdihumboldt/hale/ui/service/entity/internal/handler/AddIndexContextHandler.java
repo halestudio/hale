@@ -25,10 +25,10 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
- * Adds a new instance context for a selected {@link EntityDefinition}.
+ * Adds a new index context for a selected {@link EntityDefinition}.
  * @author Simon Templer
  */
-public class AddContextHandler extends AbstractHandler {
+public class AddIndexContextHandler extends AbstractHandler {
 
 	/**
 	 * @see IHandler#execute(ExecutionEvent)
@@ -42,7 +42,8 @@ public class AddContextHandler extends AbstractHandler {
 			
 			if (element instanceof EntityDefinition) {
 				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-				eds.addContext((EntityDefinition) element);
+				//TODO configure index
+				eds.addIndexContext((EntityDefinition) element, null);
 			}
 		}
 		

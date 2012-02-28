@@ -231,6 +231,9 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 					// valid selection
 					currentInput = selected;
 					viewer.setInput(selected);
+					
+					fireSelectionChange();
+					
 					return;
 				}
 				else {
@@ -239,7 +242,11 @@ public abstract class EntitySelector<F extends AbstractParameter> implements ISe
 			}
 		}
 		
+		currentInput = NoObject.NONE;
 		viewer.setInput(NoObject.NONE);
+		viewer.setSelection(new StructuredSelection());
+		
+		fireSelectionChange();
 	}
 	
 	/**

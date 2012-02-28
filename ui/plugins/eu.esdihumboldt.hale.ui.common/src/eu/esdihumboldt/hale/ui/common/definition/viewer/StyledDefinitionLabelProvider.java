@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -68,18 +69,11 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 		
 		cell.setImage(defaultLabels.getImage(element));
 		
-//		boolean defContext = true;
+		String contextText = null;
 		if (element instanceof EntityDefinition) {
-			EntityDefinition entityDef = (EntityDefinition) element;
-			element = entityDef.getDefinition();
-//			
-//			List<ChildContext> path = entityDef.getPropertyPath();
-//			if (path != null && !path.isEmpty()) {
-//				ChildContext lastContext = path.get(path.size() - 1);
-//				defContext = lastContext.getContextName() == null;
-//			}
+			contextText = AlignmentUtil.getContextText((EntityDefinition) element);
+			element = ((EntityDefinition) element).getDefinition();
 		}
-		//TODO different styling for non-default context?
 		
 		// append cardinality
 		if (element instanceof ChildDefinition<?>) {
@@ -100,6 +94,11 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 					text.append(card, StyledString.COUNTER_STYLER);
 				}
 			}
+		}
+		
+		if (contextText != null) {
+			contextText = " " + contextText;
+			text.append(contextText, StyledString.DECORATIONS_STYLER);
 		}
 		
 		cell.setText(text.toString());

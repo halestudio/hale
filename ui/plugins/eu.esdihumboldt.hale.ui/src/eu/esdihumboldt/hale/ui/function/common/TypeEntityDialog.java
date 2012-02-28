@@ -47,7 +47,7 @@ public class TypeEntityDialog extends EntityDialog {
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
-		viewer.setContentProvider(new TypesContentProvider(viewer));
+		viewer.setContentProvider(new TypesContentProvider(viewer)); //FIXME content provider providing EntityDefinitions!
 		
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
@@ -66,8 +66,11 @@ public class TypeEntityDialog extends EntityDialog {
 	protected EntityDefinition getEntityFromSelection(ISelection selection) {
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
+			if (element instanceof TypeEntityDefinition) {
+				return (EntityDefinition) element;
+			}
 			if (element instanceof TypeDefinition) {
-				return new TypeEntityDefinition((TypeDefinition) element, ssid);
+				return new TypeEntityDefinition((TypeDefinition) element, ssid, null);
 			}
 		}
 		

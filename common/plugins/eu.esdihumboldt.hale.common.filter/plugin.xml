@@ -3,6 +3,14 @@
 <plugin>
    <extension
          point="eu.esdihumboldt.hale.instance.filter">
+      <filterDefinition
+            class="eu.esdihumboldt.hale.common.filter.definition.CQLFilterDefinition"
+            id="eu.esdihumboldt.hale.common.filter.cql">
+      </filterDefinition>
+      <filterDefinition
+            class="eu.esdihumboldt.hale.common.filter.definition.ECQLFilterDefinition"
+            id="eu.esdihumboldt.hale.common.filter.ecql">
+      </filterDefinition>
    </extension>
 
 </plugin>

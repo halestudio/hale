@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-project version="2.5.0.alpha">
+    <name>Type filter example</name>
+    <author>Simon Templer</author>
+    <description xml:space="preserve">Simple example project demonstrating the use of filters on source types.&#xd;
+The source type 'item' is mapped to two different target types 'shirt' and 'hat', according to the value of the property 'type'.</description>
+    <created>2012-03-01T10:54:53.357+01:00</created>
+    <modified>2012-03-01T15:59:09.291+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.gml.reader">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t1t2.halex.alignment.xml"/>
+    <property name="eu.esdihumboldt.hale.ui.function.new_relation.last_function">eu.esdihumboldt.hale.align.rename</property>
+    <property name="mappableSourceType/1">{http://www.example.org/t1/}ItemType</property>
+    <property name="mappableSourceType/count">1</property>
+    <property name="mappableTargetType/1">{http://www.example.org/t2/}ItemType</property>
+    <property name="mappableTargetType/2">{http://www.example.org/t2/}ShirtType</property>
+    <property name="mappableTargetType/3">{http://www.example.org/t2/}HatType</property>
+    <property name="mappableTargetType/count">3</property>
+</hale-project>

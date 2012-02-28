@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -77,16 +78,15 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 				// create transformation trees for each instance
 				for (Instance instance : instances) {
 					Collection<? extends Cell> associatedCells = alignment
-							.getCells(new TypeEntityDefinition(instance
-									.getDefinition(), SchemaSpaceID.SOURCE));
+							.getCells(instance.getDefinition(), SchemaSpaceID.SOURCE);
+					//FIXME check source entities if filter matches instance!
 					
 					for (Cell cell : associatedCells) {
 						for (Entity target : cell.getTarget().values()) {
 							EntityDefinition def = target.getDefinition();
 							if (def.getDefinition() instanceof TypeDefinition) {
 								//XXX ensure that each type definition is only used once?!
-								TypeDefinition targetType = (TypeDefinition) def
-										.getDefinition();
+								TypeEntityDefinition targetType = AlignmentUtil.getTypeEntity(def);
 								
 								TransformationTree tree = createInstanceTree(
 										instance, targetType, alignment);
@@ -103,18 +103,18 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 			Collection<? extends Cell> cells = alignment.getTypeCells();
 			if (!cells.isEmpty()) {
 				// collect target types
-				Set<TypeDefinition> types = new HashSet<TypeDefinition>();
+				Set<TypeEntityDefinition> types = new HashSet<TypeEntityDefinition>();
 				for (Cell cell : cells) {
-					TypeDefinition type = cell.getTarget().values().iterator()
-							.next().getDefinition().getType();
+					EntityDefinition entityDef = cell.getTarget().values().iterator().next().getDefinition();
+					TypeEntityDefinition type = AlignmentUtil.getTypeEntity(entityDef);
 					types.add(type);
 				}
 				
 				Collection<Object> result = new ArrayList<Object>();
-				for (TypeDefinition type : types) {
+				for (TypeEntityDefinition type : types) {
 					// create tree and add nodes for each type
 					result.addAll(collectNodes(new TransformationTreeImpl(
-							type, alignment)));
+							type.getDefinition(), alignment)));
 				}
 				return result.toArray();
 			}
@@ -131,9 +131,9 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 	 * @return the transformation tree or <code>null</code>
 	 */
 	private TransformationTree createInstanceTree(Instance instance,
-			TypeDefinition targetType, Alignment alignment) {
+			TypeEntityDefinition targetType, Alignment alignment) {
 		TransformationTree tree = new TransformationTreeImpl(
-				targetType, alignment);
+				targetType.getDefinition(), alignment);
 		
 		// context matching
 		ContextMatcher matcher = new AsDeepAsPossible(); //XXX instead through service/extension point?
