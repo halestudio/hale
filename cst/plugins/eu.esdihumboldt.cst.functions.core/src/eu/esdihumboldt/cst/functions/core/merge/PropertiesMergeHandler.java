@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.cst.functions.core.merge;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -63,10 +62,8 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMerge
 			Map<String, String> executionParameters, TransformationLog log) throws TransformationException {
 		if (transformationParameters == null 
 				|| !transformationParameters.containsKey(PARAMETER_PROPERTY)
-				|| transformationParameters.get(PARAMETER_PROPERTY).isEmpty()
-				|| !transformationParameters.containsKey(PARAMETER_AUTO_DETECT)
-				|| transformationParameters.get(PARAMETER_AUTO_DETECT).size() != 1) {
-			throw new TransformationException("No merge property or auto detect parameter defined");
+				|| transformationParameters.get(PARAMETER_PROPERTY).isEmpty()) {
+			throw new TransformationException("No merge property defined");
 		}
 		
 		List<List<QName>> properties = new ArrayList<List<QName>>();
@@ -81,14 +78,15 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMerge
 			}
 		}
 
-		boolean autoDetect = true;
-		String autoDetectConfig = transformationParameters.get(PARAMETER_AUTO_DETECT).get(0);
-		if ("true".equalsIgnoreCase(autoDetectConfig))
-			autoDetect = true;
-		else if ("false".equalsIgnoreCase(autoDetectConfig))
+		boolean autoDetect;
+		if (transformationParameters.get(PARAMETER_AUTO_DETECT).isEmpty()) {
+			// default to false (original behavior)
 			autoDetect = false;
-		else
-			throw new TransformationException(MessageFormat.format("Unknown value for auto_detect: \"{0}\". Must be true or false", autoDetectConfig));
+		}
+		else {
+			autoDetect = Boolean.parseBoolean(
+					transformationParameters.get(PARAMETER_AUTO_DETECT).get(0));
+		}
 
 		return new PropertiesMergeConfig(properties, additionalProperties, autoDetect);
 	}
