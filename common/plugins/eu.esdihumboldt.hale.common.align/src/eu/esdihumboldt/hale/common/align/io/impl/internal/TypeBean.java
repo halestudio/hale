@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.instance.extension.FilterDefinitionManager;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
@@ -38,7 +39,8 @@ public class TypeBean extends EntityBean<TypeEntityDefinition> {
 	 * @param type the type entity
 	 */
 	public TypeBean(Type type) {
-		super(type.getDefinition().getDefinition().getName());
+		super(type.getDefinition().getDefinition().getName(), 
+				FilterDefinitionManager.getInstance().asString(type.getDefinition().getFilter()));
 	}
 
 	/**
@@ -56,7 +58,8 @@ public class TypeBean extends EntityBean<TypeEntityDefinition> {
 	protected TypeEntityDefinition createEntityDefinition(TypeIndex index,
 			SchemaSpaceID schemaSpace) {
 		TypeDefinition typeDef = index.getType(getTypeName());
-		return new TypeEntityDefinition(typeDef, schemaSpace);
+		return new TypeEntityDefinition(typeDef, schemaSpace, 
+				FilterDefinitionManager.getInstance().parse(getFilter()));
 	}
 
 }

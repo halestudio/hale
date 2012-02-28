@@ -18,6 +18,7 @@ import java.util.List;
 import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -31,6 +32,8 @@ public class ChildEntityDefinition implements EntityDefinition {
 
 	private final TypeDefinition type;
 	
+	private final Filter filter;
+	
 	private final List<ChildContext> path;
 	
 	private final SchemaSpaceID schemaSpace;
@@ -40,14 +43,17 @@ public class ChildEntityDefinition implements EntityDefinition {
 	 * @param type the topmost parent of the property
 	 * @param path the child path down from the type
 	 * @param schemaSpace the schema space identifier
+	 * @param filter the entity filter on the type, may be <code>null</code>
 	 */
 	public ChildEntityDefinition(TypeDefinition type,
-			List<ChildContext> path, SchemaSpaceID schemaSpace) {
+			List<ChildContext> path, SchemaSpaceID schemaSpace,
+			Filter filter) {
 		super();
 		
 		this.type = type;
 		this.path = Collections.unmodifiableList(path);
 		this.schemaSpace = schemaSpace;
+		this.filter = filter;
 	}
 
 	/**
@@ -83,12 +89,21 @@ public class ChildEntityDefinition implements EntityDefinition {
 	}
 
 	/**
+	 * @see EntityDefinition#getFilter()
+	 */
+	@Override
+	public Filter getFilter() {
+		return filter;
+	}
+
+	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
 		result = prime * result + ((path == null) ? 0 : path.hashCode());
 		result = prime * result
 				+ ((schemaSpace == null) ? 0 : schemaSpace.hashCode());
@@ -108,6 +123,11 @@ public class ChildEntityDefinition implements EntityDefinition {
 		if (getClass() != obj.getClass())
 			return false;
 		ChildEntityDefinition other = (ChildEntityDefinition) obj;
+		if (filter == null) {
+			if (other.filter != null)
+				return false;
+		} else if (!filter.equals(other.filter))
+			return false;
 		if (path == null) {
 			if (other.path != null)
 				return false;

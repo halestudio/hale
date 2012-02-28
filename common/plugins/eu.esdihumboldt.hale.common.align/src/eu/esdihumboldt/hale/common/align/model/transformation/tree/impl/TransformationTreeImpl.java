@@ -61,8 +61,10 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 		
 		sourceNodes = new SourceNodeFactory();
 		
+		// dummy target type entity (there may not be any contexts associated to target types)
 		TypeEntityDefinition targetType = new TypeEntityDefinition(type, 
-				SchemaSpaceID.TARGET);
+				SchemaSpaceID.TARGET, null);
+		
 		Collection<? extends Cell> cells = alignment.getPropertyCells(null, targetType);
 		
 		// partition cells by child

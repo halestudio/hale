@@ -17,10 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.instance.extension.FilterDefinitionManager;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
@@ -28,7 +31,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
- * Represents a {@link Property}
+ * Represents a {@link Property}.
  * @author Simon Templer
  */
 public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
@@ -50,6 +53,8 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 		super();
 
 		setTypeName(property.getDefinition().getType().getName());
+		setFilter(FilterDefinitionManager.getInstance().asString(
+				property.getDefinition().getFilter()));
 		
 		for (ChildContext child : property.getDefinition().getPropertyPath()) {
 			properties.add(new ChildContextBean(child));
@@ -89,7 +94,11 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 				throw new IllegalStateException("Could not resolve property entity definition: child not found");
 			}
 			
-			path.add(new ChildContext(childContext.getContextName(), child));
+			path.add(new ChildContext(
+					childContext.getContextName(), 
+					childContext.getContextIndex(), 
+					createCondition(childContext.getConditionFilter()), 
+					child));
 			
 			if (child instanceof DefinitionGroup) {
 				parent = (DefinitionGroup) child;
@@ -102,7 +111,21 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 			}
 		}
 		
-		return new PropertyEntityDefinition(typeDef, path, schemaSpace);
+		return new PropertyEntityDefinition(typeDef, path, schemaSpace, 
+				FilterDefinitionManager.getInstance().parse(getFilter()));
+	}
+
+	/**
+	 * Create a condition.
+	 * @param conditionFilter the condition filter
+	 * @return the condition or <code>null</code>
+	 */
+	private Condition createCondition(String conditionFilter) {
+		Filter filter = FilterDefinitionManager.getInstance().parse(conditionFilter);
+		if (filter != null) {
+			return new Condition(filter);
+		}
+		return null;
 	}
 
 	/**
