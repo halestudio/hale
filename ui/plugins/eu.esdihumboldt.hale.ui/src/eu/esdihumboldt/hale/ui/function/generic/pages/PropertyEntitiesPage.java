@@ -32,12 +32,14 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.function.generic.pages.internal.PropertyField;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -104,8 +106,8 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 		typeRelation.setInput(relations);
 		
 		// set initial selection for relation
-		//TODO based on initial cell/selection?
-		typeRelation.setSelection(new StructuredSelection(relations.iterator().next()));
+		Pair<Type, Type> selection = determineDefaultRelation(relations);
+		typeRelation.setSelection(new StructuredSelection(selection));
 		
 		typeRelation.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
@@ -117,6 +119,78 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 		});
 		
 		return typeRelation.getControl();
+	}
+
+	/**
+	 * Determine the relation to be selected by default.
+	 * @param relations the available relations
+	 * @return the relation to be selected
+	 */
+	private Pair<Type, Type> determineDefaultRelation(
+			Set<Pair<Type, Type>> relations) {
+		Pair<Type, Type> relation = null;
+		// based on initial cell/selection if possible
+		if (getInitialCell() != null) {
+			Type target = new DefaultType(
+					AlignmentUtil.getTypeEntity(getInitialCell().getTarget()
+							.values().iterator().next().getDefinition()));
+			
+			if (getInitialCell().getSource() != null) {
+				Type source = new DefaultType(
+						AlignmentUtil.getTypeEntity(getInitialCell().getSource()
+								.values().iterator().next().getDefinition()));
+				relation = new Pair<Type, Type>(source, target);
+			}
+			else {
+				// augmentation, find any relation to target type
+				relation = findFirstRelation(relations, null, target);
+			}
+		}
+		else if (getInitialSelection() != null) {
+			SchemaSelection sel = getInitialSelection();
+			if (sel.getFirstSourceItem() != null
+					&& sel.getFirstTargetItem() != null) {
+				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel
+						.getFirstSourceItem()));
+				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel
+						.getFirstTargetItem()));
+				relation = new Pair<Type, Type>(source, target);
+			} else if (sel.getFirstSourceItem() != null) {
+				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel
+						.getFirstSourceItem()));
+				relation = findFirstRelation(relations, source, null);
+			} else if (sel.getFirstTargetItem() != null) {
+				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel
+						.getFirstTargetItem()));
+				relation = findFirstRelation(relations, null, target);
+			}
+		}
+		
+		if (relation == null) {
+			return relations.iterator().next();
+		}
+		else {
+			return relation;
+		}
+	}
+
+	/**
+	 * Find the first relation matching the given source and target type.
+	 * @param relations the relations to test
+	 * @param source the source type, <code>null</code> for matching any type 
+	 * @param target the target type, <code>null</code> for matching any type
+	 * @return the relation found or <code>null</code> if there is none
+	 */
+	private Pair<Type, Type> findFirstRelation(Set<Pair<Type, Type>> relations,
+			Type source, Type target) {
+		for (Pair<Type, Type> relation : relations) {
+			if ((source == null || source.equals(relation.getFirst())) 
+					&& (target == null || target.equals(relation.getSecond()))) {
+				return relation;
+			}
+		}
+		
+		return null;
 	}
 
 	/**
@@ -134,16 +208,16 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 	 * @param ssid the schema space identifier
 	 * @return the parent type
 	 */
-	private TypeDefinition getParentType(SchemaSpaceID ssid) {
+	private TypeEntityDefinition getParentType(SchemaSpaceID ssid) {
 		ISelection selection = typeRelation.getSelection();
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			@SuppressWarnings("unchecked")
 			Pair<Type, Type> relation = (Pair<Type, Type>) ((IStructuredSelection) selection).getFirstElement();
 			switch (ssid) {
 			case SOURCE:
-				return relation.getFirst().getDefinition().getDefinition();
+				return relation.getFirst().getDefinition();
 			case TARGET:
-				return relation.getSecond().getDefinition().getDefinition();
+				return relation.getSecond().getDefinition();
 			default:
 				throw new IllegalArgumentException("Illegal schema space");
 			}

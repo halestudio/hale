@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.filter.text.cql2.CQLException;
 
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
 import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
@@ -158,9 +159,13 @@ public class FeatureFilterField extends Composite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				PropertyEntityDialog dialog = new PropertyEntityDialog(Display.getCurrent().getActiveShell()
-						, FeatureFilterField.this.ssid, FeatureFilterField.this.type
-						, Messages.FeatureFilterField_7, null);
+				//FIXME a dialog w/o instance contexts should be used!
+				PropertyEntityDialog dialog = new PropertyEntityDialog(Display
+						.getCurrent().getActiveShell(),
+						FeatureFilterField.this.ssid, new TypeEntityDefinition(
+								FeatureFilterField.this.type,
+								FeatureFilterField.this.ssid, null),
+						Messages.FeatureFilterField_7, null);
 				
 				if (dialog.open() == PropertyEntityDialog.OK && dialog.getEntity() != null
 						&& dialog.getEntity().getType().getName().toString().length() >= 1) {

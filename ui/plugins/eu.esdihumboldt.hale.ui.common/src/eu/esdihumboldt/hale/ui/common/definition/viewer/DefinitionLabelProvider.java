@@ -91,7 +91,9 @@ public class DefinitionLabelProvider extends LabelProvider {
 					else {
 						name.append('.');
 					}
-					boolean defContext = context.getContextName() == null;
+					boolean defContext = context.getContextName() == null
+							&& context.getIndex() == null
+							&& context.getCondition() == null;
 					if (!defContext) {
 						name.append('(');
 					}
@@ -101,6 +103,11 @@ public class DefinitionLabelProvider extends LabelProvider {
 					}
 				}
 				return name.toString();
+			}
+			else {
+				if (entityDef.getFilter() != null) {
+					return "(" + getText(element) + ")";
+				}
 			}
 		}
 		
