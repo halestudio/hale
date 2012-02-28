@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-alignment>
+    <cell transformation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}OrderedNamesType</type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type>{http://www.example.org/t2/}PlaceType</type>
+            </class>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}OrderedNamesType</type>
+                <child index="0">name</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PlaceType</type>
+                <child>name</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}OrderedNamesType</type>
+                <child index="1">name</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PlaceType</type>
+                <child context="0">name</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}OrderedNamesType</type>
+                <child index="2">name</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PlaceType</type>
+                <child context="1">name</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PlaceType</type>
+                <child>name</child>
+                <child>language</child>
+            </property>
+        </target>
+        <parameter name="value" value="de"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PlaceType</type>
+                <child context="0">name</child>
+                <child>language</child>
+            </property>
+        </target>
+        <parameter name="value" value="en"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PlaceType</type>
+                <child context="1">name</child>
+                <child>language</child>
+            </property>
+        </target>
+        <parameter name="value" value="it"/>
+    </cell>
+</hale-alignment>

@@ -46,6 +46,9 @@
 		<field name="typeName" type="string" handler="eu.esdihumboldt.hale.common.align.io.impl.internal.QNameFieldHandler">
 			<bind-xml name="type" node="element" />
 		</field>
+		<field name="filter" type="string" required="false">
+			<bind-xml name="filter" node="element" />
+		</field>
 	</class>
 	<class name="eu.esdihumboldt.hale.common.align.io.impl.internal.TypeBean" auto-complete="true"
 			extends="eu.esdihumboldt.hale.common.align.io.impl.internal.EntityBean">
@@ -62,6 +65,12 @@
 	<class name="eu.esdihumboldt.hale.common.align.io.impl.internal.ChildContextBean" auto-complete="true">
 		<field name="contextName" type="integer">
 			<bind-xml name="context" node="attribute" />
+		</field>
+		<field name="contextIndex" type="integer">
+			<bind-xml name="index" node="attribute" />
+		</field>
+		<field name="conditionFilter" type="string">
+			<bind-xml name="condition" node="attribute" />
 		</field>
 	
 		<field name="childName" type="string" handler="eu.esdihumboldt.hale.common.align.io.impl.internal.QNameFieldHandler">

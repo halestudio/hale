@@ -259,9 +259,6 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 			descriptionDecoration.setMarginWidth(2);
 		}
 
-		//TODO conditions/filters etc. ?!
-		//XXX -> create a wrapper to EntitySelector for this?
-
 		updateState();
 	}
 

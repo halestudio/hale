@@ -26,6 +26,7 @@ import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 import com.google.common.base.Joiner;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
@@ -35,6 +36,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.graph.figures.EntityFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure.ShapePainter;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
@@ -281,12 +283,15 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		}
 		
 		ShapePainter shape = null;
+		String contextText = null;
 		
 		if (element instanceof TransformationTree) {
 			shape = new TransformationNodeShape(10, SWT.NONE);
 		}
 		else if (element instanceof TargetNode) {
 			TargetNode node = (TargetNode) element;
+			
+			contextText = AlignmentUtil.getContextText(node.getEntityDefinition());
 			
 			if (node.getAssignments().isEmpty()) {
 				shape = new TransformationNodeShape(10, SWT.NONE);
@@ -299,6 +304,8 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		else if (element instanceof SourceNode) {
 			SourceNode node = (SourceNode) element;
 			
+			contextText = AlignmentUtil.getContextText(node.getEntityDefinition());
+			
 			if (node.getParent() == null) {
 				shape = new TransformationNodeShape(10, SWT.NONE);
 			}
@@ -308,6 +315,9 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		}
 		
 		if (shape != null) {
+			if (contextText != null) {
+				return new EntityFigure(shape, contextText);
+			}
 			return new CustomShapeLabel(shape);
 		}
 		

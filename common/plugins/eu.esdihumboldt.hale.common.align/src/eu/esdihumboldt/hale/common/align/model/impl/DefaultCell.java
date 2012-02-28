@@ -16,6 +16,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 
@@ -101,6 +102,18 @@ public class DefaultCell implements Cell, MutableCell {
 	@Override
 	public String getTransformationIdentifier() {
 		return transformation;
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		try {
+			return CellUtil.getCellDescription(this);
+		} catch (Throwable e) {
+			return super.toString();
+		}
 	}
 	
 }
