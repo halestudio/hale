@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.hale.instance.filter" name="Filter definitions" schema="schema/eu.esdihumboldt.hale.instance.filter.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <action
