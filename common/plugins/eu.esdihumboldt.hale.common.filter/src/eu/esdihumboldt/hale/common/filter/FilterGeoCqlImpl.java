@@ -55,6 +55,14 @@ public class FilterGeoCqlImpl implements
 	}
 
 	/**
+	 * Get the CQL expression the filter is based on.
+	 * @return the CQL expression
+	 */
+	public String getFilterTerm() {
+		return filterTerm;
+	}
+
+	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

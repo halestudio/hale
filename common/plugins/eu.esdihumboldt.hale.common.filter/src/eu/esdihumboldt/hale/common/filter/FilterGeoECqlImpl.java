@@ -53,6 +53,14 @@ public class FilterGeoECqlImpl implements
 	public boolean match(Instance instance) {
 		return internFilter.evaluate(instance);
 	}
+	
+	/**
+	 * Get the ECQL expression the filter is based on.
+	 * @return the ECQL expression
+	 */
+	public String getFilterTerm() {
+		return filterTerm;
+	}
 
 	/**
 	 * @see java.lang.Object#hashCode()
