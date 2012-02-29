@@ -322,7 +322,6 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 
 		final File file = new File(filesDir, "img_" + cellId + ".png");
 
-		if (!file.exists()) {
 			display.syncExec(new Runnable() {
 
 				@Override
@@ -367,7 +366,6 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			});
 		}
 
-	}
 
 	private Dimension computeSize(Graph graph) {
 		@SuppressWarnings("unchecked")
