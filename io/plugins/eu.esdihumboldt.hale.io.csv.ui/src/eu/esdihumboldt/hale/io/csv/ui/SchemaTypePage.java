@@ -17,10 +17,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -39,23 +37,17 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.springframework.core.convert.ConversionService;
 
 import au.com.bytecode.opencsv.CSVReader;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
+import eu.esdihumboldt.hale.io.csv.PropertyTypeFactory;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVUtil;
-import eu.esdihumboldt.hale.io.csv.reader.internal.PropertyType;
-import eu.esdihumboldt.hale.io.csv.reader.internal.PropertyTypeExtension;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
@@ -72,29 +64,16 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 	private String defaultString = "";
 	private StringFieldEditor sfe;
-	private TypeNameField geoField;
 	private Group group;
-	private Group geom;
-	private ComboViewer cvgeo;
 	private String[] last_firstLine = null;
 	private List<TypeNameField> fields = new ArrayList<TypeNameField>();
 	private List<ComboViewer> comboFields = new ArrayList<ComboViewer>();
-	private List<TypeNameField> geoNameFields = new ArrayList<TypeNameField>();
-	private Map<Integer, TypeNameField> geomap = new HashMap<Integer, TypeNameField>();
-	private Map<Integer, ComboViewer> combomap = new HashMap<Integer, ComboViewer>();
-	private List<ComboViewer> geoComboFields = new ArrayList<ComboViewer>();
 	private List<Boolean> validSel = new ArrayList<Boolean>();
-	private Map<Integer, Boolean> map = new HashMap<Integer, Boolean>();
-	private Integer index;
 	private Boolean valid = true;
 	private Boolean isValid = true;
 	private ScrolledComposite sc;
 	private static final ALogger log = ALoggerFactory
-			.getLogger(PropertyTypeExtension.class);
-
-	// TODO: fix the geometry group
-	// manual activator for adding geometries or not
-	private boolean activateGeometries = false;
+			.getLogger(SchemaTypePage.class);
 
 	/**
 	 * default constructor
@@ -162,8 +141,8 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 		for (ComboViewer combo : comboFields) {
 			comboViewerBuffer
-					.append(((PropertyType) ((IStructuredSelection) combo
-							.getSelection()).getFirstElement()).getId());
+					.append(((PropertyTypeFactory) ((IStructuredSelection) combo
+							.getSelection()).getFirstElement()).getIdentifier());
 			comboViewerBuffer.append(",");
 		}
 		comboViewerBuffer.deleteCharAt(comboViewerBuffer.lastIndexOf(","));
@@ -245,7 +224,6 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 										PropertyChangeEvent event) {
 
 									HashSet<String> hs = new HashSet<String>();
-									int j = fields.indexOf(event.getSource());
 
 									if (event.getProperty().equals(
 											StringFieldEditor.VALUE)) {
@@ -267,21 +245,6 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 									}
 									setPageComplete(isValid && valid);
 
-									if (event.getProperty().equals(
-											TypeNameField.TXT_CHNGD)) {
-
-										if (!geoNameFields.isEmpty()
-												&& geoNameFields.get(geoNameFields
-														.indexOf(geomap.get(j))) != null) {
-											geoNameFields
-													.get(geoNameFields
-															.indexOf(geomap
-																	.get(j)))
-													.setStringValue(
-															(String) event
-																	.getNewValue());
-										}
-									}
 								}
 							});
 					propField.setStringValue(firstLine[i]);
@@ -291,22 +254,17 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 						@Override
 						public void selectionChanged(SelectionChangedEvent event) {
-							ConversionService conversionService = OsgiUtils
-									.getService(ConversionService.class);
 
 							int i = comboFields.indexOf(event.getSource());
-							PropertyType actualSelection = ((PropertyType) ((IStructuredSelection) cv
+							PropertyTypeFactory actualSelection = ((PropertyTypeFactory) ((IStructuredSelection) cv
 									.getSelection()).getFirstElement());
 
 							try {
-								conversionService.convert(nextLine[i],
-										actualSelection.getTypeDefinition()
-												.getConstraint(Binding.class)
-												.getBinding());
+								actualSelection.createExtensionObject().convertFromField(nextLine[i]);
 								validSel.set(i, true);
 
 							} catch (Exception e) {
-								log.warn("Selection invalid!");
+								log.warn("Selection invalid!", e);
 								validSel.set(i, false);
 							}
 							if (validSel.contains(false)) {
@@ -317,87 +275,6 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 								setMessage(null);
 							}
 
-							if (activateGeometries) {
-								// if actualSelection is from Type Geometry
-								// (geometry,point, ...)
-								if (Geometry.class
-										.isAssignableFrom(actualSelection
-												.getTypeDefinition()
-												.getConstraint(Binding.class)
-												.getBinding())) {
-									// if map is empty ( = default/first call)
-									// or
-									// map
-									// has an element at index i and this
-									// element is
-									// assigned to "false" ( = this field was no
-									// geometry before SelectionChanged) or the
-									// object in the map assigned to number i is
-									// null, a new geoField will be created
-									if (map.isEmpty()
-											|| (map.get(i) != null && map
-													.get(i) == false)
-											|| map.get(i) == null) {
-										map.put(i, true);
-
-										geoField = new TypeNameField(
-												"geometries", Integer
-														.toString(i + 1), geom);
-										geoNameFields.add(geoField);
-										geomap.put(i, geoField);
-
-										geoField.setStringValue(propField
-												.getStringValue());
-										geoField.getTextControl(geom)
-												.setEnabled(false);
-
-										cvgeo = new ComboViewer(geom);
-										geoComboFields.add(cvgeo);
-										combomap.put(i, cvgeo);
-										cvgeo.setContentProvider(ArrayContentProvider
-												.getInstance());
-										cvgeo.setLabelProvider(new LabelProvider());
-										cvgeo.addSelectionChangedListener(new ISelectionChangedListener() {
-
-											@Override
-											public void selectionChanged(
-													SelectionChangedEvent event) {
-												String coordsys = cvgeo
-														.getCombo().getText();
-
-												if (coordsys.isEmpty()) {
-													setErrorMessage("You have not selected a valid coordinate system!");
-												} else {
-													setErrorMessage(null);
-												}
-
-											}
-										});
-										// cvgeo.setInput(); TODO coordinate
-										// systems
-									}
-
-									//geom.setLayout(new GridLayout(3, false));
-								} else if (map.get(i) != null
-										&& map.get(i) == true) {
-									index = geoNameFields.indexOf(geomap.get(i));
-
-									geoNameFields.get(index).dispose();
-									geoNameFields.get(index)
-											.getTextControl(geom).dispose();
-									geoNameFields.get(index)
-											.getLabelControl(geom).dispose();
-
-									geoComboFields.get(index).getCombo()
-											.dispose();
-
-									geoNameFields.set(index, null);
-									geoComboFields.set(index, null);
-									map.put(i, false);
-								}
-								geom.layout();
-								sc.layout();
-							}
 						}
 					});
 					cv.setContentProvider(ArrayContentProvider.getInstance());
@@ -407,16 +284,20 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 						 */
 						@Override
 						public String getText(Object element) {
-							if (element instanceof PropertyType) {
-								return ((PropertyType) element).getName();
+							if (element instanceof PropertyTypeFactory) {
+								return ((PropertyTypeFactory) element).getDisplayName();
 							}
 							return super.getText(element);
 						}
 					});
-					Collection<PropertyType> elements = PropertyTypeExtension
-							.getInstance().getElements();
+					Collection<PropertyTypeFactory> elements = PropertyTypeExtension
+							.getInstance().getFactories();
 					cv.setInput(elements);
-					if (!elements.isEmpty()) {
+					
+					PropertyTypeFactory defaultSelection = PropertyTypeExtension.getInstance().getFactory("java.lang.String");
+					if(defaultSelection != null) {
+						cv.setSelection(new StructuredSelection(defaultSelection));
+					} else if (!elements.isEmpty()) {
 						cv.setSelection(new StructuredSelection(elements
 								.iterator().next()));
 					}
@@ -477,13 +358,6 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		group.setLayoutData(GridDataFactory.fillDefaults().grab(true, false)
 				.span(2, 1).create());
 		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(3)
-				.equalWidth(false).margins(5, 5).create());
-
-		geom = new Group(page, SWT.NONE);
-		geom.setText("Geometry Settings");
-		geom.setLayoutData(GridDataFactory.fillDefaults().grab(true, false)
-				.span(2, 1).create());
-		geom.setLayout(GridLayoutFactory.swtDefaults().numColumns(3)
 				.equalWidth(false).margins(5, 5).create());
 
 		sc.setContent(page);
