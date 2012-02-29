@@ -36,6 +36,8 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.csv.CSVFileIO;
+import eu.esdihumboldt.hale.io.csv.PropertyType;
+import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
 
 /**
  * Reads a schema from a CSV file.
@@ -156,8 +158,8 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 			}
 			for (int i = 0; i < comboSelections.length; i++) {
 				PropertyType propertyType;
-				propertyType = PropertyTypeExtension.getInstance().get(
-						comboSelections[i]);
+				propertyType = PropertyTypeExtension.getInstance().getFactory(
+						comboSelections[i]).createExtensionObject();
 
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
 						new QName(properties[i]), type,
