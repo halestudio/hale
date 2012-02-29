@@ -5,32 +5,19 @@
    <extension
          point="eu.esdihumboldt.hale.io.csv.propertyType">
       <propertyType
-            binding="java.lang.String"
+            class="eu.esdihumboldt.hale.io.csv.propertytype.PropertyString"
+            id="java.lang.String"
             name="String">
       </propertyType>
       <propertyType
-            binding="java.lang.Integer"
+            class="eu.esdihumboldt.hale.io.csv.propertytype.PropertyInteger"
+            id="java.lang.Integer"
             name="Integer">
       </propertyType>
       <propertyType
-            binding="java.lang.Float"
+            class="eu.esdihumboldt.hale.io.csv.propertytype.PropertyFloat"
+            id="java.lang.Float"
             name="Float">
-      </propertyType>
-      <propertyType
-            binding="com.vividsolutions.jts.geom.Geometry"
-            name="Geometry">
-      </propertyType>
-      <propertyType
-            binding="com.vividsolutions.jts.geom.Point"
-            name="Point">
-      </propertyType>
-      <propertyType
-            binding="com.vividsolutions.jts.geom.Polygon"
-            name="Polygon">
-      </propertyType>
-      <propertyType
-            binding="com.vividsolutions.jts.geom.MultiPolygon"
-            name="Multipolygon">
       </propertyType>
    </extension>
    <extension
