@@ -38,14 +38,15 @@ import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
-import eu.esdihumboldt.hale.ui.common.internal.Messages;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
+import eu.esdihumboldt.hale.ui.filter.internal.FilterUIPlugin;
+import eu.esdihumboldt.hale.ui.filter.internal.Messages;
 import eu.esdihumboldt.hale.ui.function.common.PropertyEntityDialog;
 
 /**
- * Field for editing a filter
- *
+ * Field for editing a filter.
  * @author Simon Templer
+ * @author Sebastian Reinhardt
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class FeatureFilterField extends Composite {
@@ -66,7 +67,7 @@ public class FeatureFilterField extends Composite {
 	//private final Button openForm;
 	private final Button insertVar;
 	private final Button clearFilter;
-	ControlDecoration decoration;
+	private ControlDecoration decoration;
 	
 	private TypeDefinition type;
 	private SchemaSpaceID ssid;
@@ -78,13 +79,15 @@ public class FeatureFilterField extends Composite {
 	private final Set<FilterListener> listeners = new HashSet<FilterListener>();
 
 	/**
-	 * Create a new filter field
+	 * Create a new filter field for a given type.
 	 * 
-	 * @param type the feature type
+	 * @param type the type definition
 	 * @param parent the parent composite
 	 * @param style the composite style
+	 * @param ssid the schema space
 	 */
-	public FeatureFilterField(TypeDefinition type, Composite parent, int style, SchemaSpaceID ssid) {
+	public FeatureFilterField(TypeDefinition type, Composite parent, int style, 
+			SchemaSpaceID ssid) {
 		super(parent, style);
 		
 		this.type = type;
@@ -98,9 +101,10 @@ public class FeatureFilterField extends Composite {
 		setLayout(layout);
 		
 		// images
-		insertVarImage = CommonUIPlugin.getImageDescriptor("icons/insert.gif").createImage(); //$NON-NLS-1$
-		openFormImage = CommonUIPlugin.getImageDescriptor("icons/form.gif").createImage(); //$NON-NLS-1$
-		clearFilterImage = CommonUIPlugin.getImageDescriptor("icons/remove.gif").createImage(); //$NON-NLS-1$
+		insertVarImage = FilterUIPlugin.getImageDescriptor("icons/insert.gif").createImage(); //$NON-NLS-1$
+		openFormImage = FilterUIPlugin.getImageDescriptor("icons/form.gif").createImage(); //$NON-NLS-1$
+		
+		clearFilterImage = CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_REMOVE);
 		
 		// create components
 		
@@ -122,15 +126,12 @@ public class FeatureFilterField extends Composite {
 			}
 			
 		});
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(filterText, 
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(filterText,
 				"eu.esdihumboldt.hale.doc.user.filter_field");
-		
-		 decoration = new ControlDecoration(filterText, SWT.RIGHT | SWT.TOP);
-		 setDecorationDefault();
 
-		 
-		 
-		
+		decoration = new ControlDecoration(filterText, SWT.RIGHT | SWT.TOP);
+		setDecorationDefault();
+
 		// clear filter
 		clearFilter = new Button(this, SWT.PUSH);
 		clearFilter.setEnabled(false);
@@ -175,38 +176,27 @@ public class FeatureFilterField extends Composite {
 			
 		});
 		
-		
-		
-		
-		
-		
-		
-		
 		// open form
-		/*openForm = new Button(this, SWT.PUSH);
-		
-		openForm.setImage(openFormImage);
-		openForm.setToolTipText(Messages.FeatureFilterField_9); //$NON-NLS-1$
-		openForm.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
-		openForm.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				FeatureFilterFormDialog dialog = new FeatureFilterFormDialog(
-						Display.getCurrent().getActiveShell(), FeatureFilterField.this.type.getFeatureType());
-				if (dialog.open() == FeatureFilterFormDialog.OK) {
-					String filter = dialog.getFilterExpression();
-					setFilterExpression(filter);
-				}
-			}
-			
-		});
-		
-		setType(type);
-		*/
-		
-		
-		
+//		openForm = new Button(this, SWT.PUSH);
+//		
+//		openForm.setImage(openFormImage);
+//		openForm.setToolTipText(Messages.FeatureFilterField_9); //$NON-NLS-1$
+//		openForm.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+//		openForm.addSelectionListener(new SelectionAdapter() {
+//
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				FeatureFilterFormDialog dialog = new FeatureFilterFormDialog(
+//						Display.getCurrent().getActiveShell(), FeatureFilterField.this.type.getFeatureType());
+//				if (dialog.open() == FeatureFilterFormDialog.OK) {
+//					String filter = dialog.getFilterExpression();
+//					setFilterExpression(filter);
+//				}
+//			}
+//			
+//		});
+//		
+//		setType(type);
 	}
 	
 	/**
@@ -283,7 +273,6 @@ public class FeatureFilterField extends Composite {
 	public void dispose() {
 		openFormImage.dispose();
 		insertVarImage.dispose();
-		clearFilterImage.dispose();
 		
 		super.dispose();
 	}
@@ -316,28 +305,30 @@ public class FeatureFilterField extends Composite {
 	}
 
 	/**
-	 * @param type
-	 * @param message
+	 * Set the field decoration.
+	 * FIXME not very nice, why exposed at all? 
+	 * @param type the message type, either WARNING, ERROR or DEFAULT
+	 * @param message the decoration message
 	 */
 	public void setDecoration(String type, String message) {
-		
-		if(type.equals("ERROR")){
-		decoration.setImage(FieldDecorationRegistry.getDefault()
-                .getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage());
-		decoration.setDescriptionText(message);
-		decoration.show();
-		}
-		
-		if(type.equals("DEFAULT")){
-			setDecorationDefault();
-		}
-		if(type.equals("WARNING")){
+		if (type.equals("ERROR")) {
 			decoration.setImage(FieldDecorationRegistry.getDefault()
-	                .getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage());
+					.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
+					.getImage());
 			decoration.setDescriptionText(message);
 			decoration.show();
 		}
-		
+
+		if (type.equals("DEFAULT")) {
+			setDecorationDefault();
+		}
+		if (type.equals("WARNING")) {
+			decoration.setImage(FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
+					.getImage());
+			decoration.setDescriptionText(message);
+			decoration.show();
+		}
 	}
 	
 	private void setDecorationDefault(){
@@ -345,8 +336,6 @@ public class FeatureFilterField extends Composite {
 	                .getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
 		 decoration.setDescriptionText("for Example: \"HERP.DERP\" = 'DURR'");
 		 decoration.show();
-
 	}
-	
 	
 }
