@@ -78,7 +78,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 		
 		private final ComboViewer count;
 		
-		 final FeatureFilterField filterField;
+		final FeatureFilterField filterField;
 		
 		private Iterable<Instance> selection;
 		

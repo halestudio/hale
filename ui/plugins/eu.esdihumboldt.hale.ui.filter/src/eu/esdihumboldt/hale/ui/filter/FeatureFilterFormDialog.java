@@ -22,14 +22,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.opengis.feature.type.FeatureType;
 
-import eu.esdihumboldt.hale.ui.common.internal.Messages;
+import eu.esdihumboldt.hale.ui.filter.internal.Messages;
 
 /**
  * Dialog showing the filter form
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public class FeatureFilterFormDialog extends TitleAreaDialog {
 	
