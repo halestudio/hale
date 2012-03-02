@@ -221,6 +221,11 @@ public class InstanceContextTester extends PropertyTester {
 			return false;
 		}
 		
+		//FIXME for now adding conditions for properties disabled
+		if (!entityDef.getPropertyPath().isEmpty()) {
+			return false;
+		}
+		
 		//FIXME do a test through the entity definition service instead
 		
 		return true;
