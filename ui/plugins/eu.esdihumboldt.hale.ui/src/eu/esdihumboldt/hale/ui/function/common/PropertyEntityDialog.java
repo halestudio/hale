@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypePropertyContentProv
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
 /**
- * Dialog for selecting a {@link PropertyEntityDefinition}
+ * Dialog for selecting a {@link PropertyEntityDefinition}.
  * @author Simon Templer
  */
 public class PropertyEntityDialog extends EntityDialog {
@@ -79,10 +79,10 @@ public class PropertyEntityDialog extends EntityDialog {
 	}
 
 	/**
-	 * @see EntityDialog#getEntityFromSelection(ISelection)
+	 * @see EntityDialog#getObjectFromSelection(ISelection)
 	 */
 	@Override
-	protected EntityDefinition getEntityFromSelection(ISelection selection) {
+	protected EntityDefinition getObjectFromSelection(ISelection selection) {
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
 			if (element instanceof EntityDefinition) {

@@ -43,7 +43,7 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 	 */
 	public TypeEntitySelector(SchemaSpaceID ssid, TypeParameter field,
 			Composite parent) {
-		super(ssid, field, parent);
+		super(ssid, field, parent, createFilters(field));
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 			break;
 		}
 		return new TypeEntityDialog(parentShell, ssid, title,
-				getEntityDefinition());
+				getSelectedObject());
 	}
 
 	/**
@@ -80,11 +80,7 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 		throw new IllegalArgumentException("Entity must be a type");
 	}
 
-	/**
-	 * @see EntitySelector#createFilters(AbstractParameter)
-	 */
-	@Override
-	protected ViewerFilter[] createFilters(TypeParameter field) {
+	private static ViewerFilter[] createFilters(TypeParameter field) {
 		if (field == null) {
 			return null;
 		}

@@ -98,9 +98,9 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
 						setPageComplete(!(event.getSelection().isEmpty()));
-						if (sel.getEntityDefinition() != null) {
+						if (sel.getSelectedObject() != null) {
 							TypeEntityDefinition entityDef = (TypeEntityDefinition) sel
-									.getEntityDefinition();
+									.getSelectedObject();
 							CSVConfiguration conf = entityDef.getDefinition()
 									.getConstraint(CSVConfiguration.class);
 							Boolean skip = conf.skipFirst();
@@ -126,8 +126,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 
 		provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE,
 				String.valueOf(button.getSelection()));
-		if (sel.getEntityDefinition() instanceof TypeEntityDefinition) {
-			QName name = ((TypeEntityDefinition) sel.getEntityDefinition())
+		if (sel.getSelectedObject() instanceof TypeEntityDefinition) {
+			QName name = ((TypeEntityDefinition) sel.getSelectedObject())
 					.getDefinition().getName();
 			String param_name = name.toString();
 			provider.setParameter(CSVConstants.PARAM_TYPENAME, param_name);
