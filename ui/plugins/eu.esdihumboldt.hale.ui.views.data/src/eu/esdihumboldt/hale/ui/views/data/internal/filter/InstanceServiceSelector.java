@@ -284,7 +284,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 			if (filteredTypes.isEmpty()) {
 				// if there are no instances present, show all types
 				SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-				filteredTypes = new ArrayList<TypeDefinition>(ss.getSchemas(space).getMappableTypes());
+				filteredTypes = new ArrayList<TypeDefinition>(ss.getSchemas(space).getMappingRelevantTypes());
 			}
 			
 			typeDefinitions.setInput(filteredTypes);

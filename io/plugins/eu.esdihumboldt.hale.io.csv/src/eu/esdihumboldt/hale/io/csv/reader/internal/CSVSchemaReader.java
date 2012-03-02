@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
@@ -121,7 +121,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 					typename));
 
 			// constraints on main type
-			type.setConstraint(MappableFlag.ENABLED);
+			type.setConstraint(MappingRelevantFlag.ENABLED);
 			type.setConstraint(HasValueFlag.DISABLED);
 			type.setConstraint(AbstractFlag.DISABLED);
 

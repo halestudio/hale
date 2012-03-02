@@ -169,7 +169,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 		private void initAllowedTypes() {
 			allowedTypes = new HashMap<QName, TypeDefinition>();
 			
-			for (TypeDefinition def : sourceSchema.getMappableTypes()) {
+			for (TypeDefinition def : sourceSchema.getMappingRelevantTypes()) {
 				boolean accept;
 				if (restrictToFeatures) {
 					// accept only feature types

@@ -101,10 +101,10 @@ public class TypeStyleHandler extends AbstractHandler {
 	 */
 	private static DataSet findDataSet(TypeDefinition type) {
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		if (ss.getSchemas(SchemaSpaceID.SOURCE).getMappableTypes().contains(type)) {
+		if (ss.getSchemas(SchemaSpaceID.SOURCE).getMappingRelevantTypes().contains(type)) {
 			return DataSet.SOURCE;
 		}
-		if (ss.getSchemas(SchemaSpaceID.TARGET).getMappableTypes().contains(type)) {
+		if (ss.getSchemas(SchemaSpaceID.TARGET).getMappingRelevantTypes().contains(type)) {
 			return DataSet.TRANSFORMED;
 		}
 		

@@ -31,7 +31,7 @@ public class MarkTypeUnmappableHandler extends AbstractHandler {
 		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
 			SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 			TypeDefinition type = ((TypeEntityDefinition) ((IStructuredSelection) selection).getFirstElement()).getDefinition();
-			if (schemaService.getSchemas(SchemaSpaceID.SOURCE).getMappableTypes().contains(type))
+			if (schemaService.getSchemas(SchemaSpaceID.SOURCE).getMappingRelevantTypes().contains(type))
 				schemaService.toggleMappable(SchemaSpaceID.SOURCE, Collections.singleton(type));
 			else
 				schemaService.toggleMappable(SchemaSpaceID.TARGET, Collections.singleton(type));

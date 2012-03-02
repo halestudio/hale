@@ -35,7 +35,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.schema.util.NSTypeTreeContentProvider;
@@ -152,7 +152,7 @@ public class EditMappableTypesPage extends WizardPage {
 							return true;
 					return false;
 				}				
-				return ((TypeDefinition) element).getConstraint(MappableFlag.class).isEnabled() != changedTypes
+				return ((TypeDefinition) element).getConstraint(MappingRelevantFlag.class).isEnabled() != changedTypes
 								.contains(element);
 			}
 		};
@@ -186,7 +186,7 @@ public class EditMappableTypesPage extends WizardPage {
 	}
 
 	private void checkStateOfTypeChanged(TypeDefinition type, boolean checked) {
-		if (checked == type.getConstraint(MappableFlag.class).isEnabled())
+		if (checked == type.getConstraint(MappingRelevantFlag.class).isEnabled())
 			changedTypes.remove(type);
 		else
 			changedTypes.add(type);

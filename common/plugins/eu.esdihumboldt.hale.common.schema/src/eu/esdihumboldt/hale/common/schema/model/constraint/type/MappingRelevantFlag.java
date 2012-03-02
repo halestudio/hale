@@ -24,17 +24,17 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
  */
 @Immutable
 @Constraint(mutable = false)
-public class MappableFlag extends AbstractFlagConstraint implements TypeConstraint {
+public class MappingRelevantFlag extends AbstractFlagConstraint implements TypeConstraint {
 
 	/**
 	 * Enabled mappable flag
 	 */
-	public static final MappableFlag ENABLED = new MappableFlag(true);
+	public static final MappingRelevantFlag ENABLED = new MappingRelevantFlag(true);
 	
 	/**
 	 * Disabled mappable flag
 	 */
-	public static final MappableFlag DISABLED = new MappableFlag(false);
+	public static final MappingRelevantFlag DISABLED = new MappingRelevantFlag(false);
 	
 	/**
 	 * Get the mappable flag
@@ -42,7 +42,7 @@ public class MappableFlag extends AbstractFlagConstraint implements TypeConstrai
 	 * @param isMappable if the flag shall be enabled
 	 * @return the flag
 	 */
-	public static MappableFlag get(boolean isMappable) {
+	public static MappingRelevantFlag get(boolean isMappable) {
 		return (isMappable)?(ENABLED):(DISABLED);
 	}
 	
@@ -53,7 +53,7 @@ public class MappableFlag extends AbstractFlagConstraint implements TypeConstrai
 	 * 
 	 * @see Constraint
 	 */
-	public MappableFlag() {
+	public MappingRelevantFlag() {
 		// disabled by default because of simple types etc.
 		this(false);
 	}
@@ -61,7 +61,7 @@ public class MappableFlag extends AbstractFlagConstraint implements TypeConstrai
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */
-	private MappableFlag(boolean enabled) {
+	private MappingRelevantFlag(boolean enabled) {
 		super(enabled);
 	}
 

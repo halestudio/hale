@@ -283,7 +283,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 		
 		Style style = styleFactory.createStyle();
 		
-		for (TypeDefinition type : schemas.getMappableTypes()) {
+		for (TypeDefinition type : schemas.getMappingRelevantTypes()) {
 			if (!type.getConstraint(AbstractFlag.class).isEnabled()) {
 				// only add styles for non-abstract feature types
 				FeatureTypeStyle fts = styles.get(type);
@@ -447,7 +447,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 			Set<QName> qnames, Set<String> localnames) {
 		Collection<TypeDefinition> result = new ArrayList<TypeDefinition>();
 		// check all mappable types
-		for (TypeDefinition type : typeIndex.getMappableTypes()) {
+		for (TypeDefinition type : typeIndex.getMappingRelevantTypes()) {
 			String name = StyleHelper.getFeatureTypeName(type);
 			if (localnames.contains(name)) {
 				result.add(type);

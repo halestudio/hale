@@ -80,7 +80,7 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 				// initialize the connection and the state
 				classQueue = new LinkedList<String>();
 				classTypes = new HashMap<String, TypeDefinition>();
-				for (TypeDefinition type : types.getMappableTypes()) {
+				for (TypeDefinition type : types.getMappingRelevantTypes()) {
 					String className = ONameUtil.encodeName(type.getIdentifier());
 					classTypes.put(className, type);
 					classQueue.add(className);
@@ -237,7 +237,7 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	private Collection<String> getMainClassNames() {
 		Collection<String> classes = new ArrayList<String>();
 		
-		for (TypeDefinition type : types.getMappableTypes()) {
+		for (TypeDefinition type : types.getMappingRelevantTypes()) {
 			classes.add(ONameUtil.encodeName(type.getIdentifier()));
 		}
 		

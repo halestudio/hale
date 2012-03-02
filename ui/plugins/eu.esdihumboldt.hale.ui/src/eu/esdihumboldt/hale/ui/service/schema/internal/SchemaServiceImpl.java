@@ -40,7 +40,7 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -98,9 +98,9 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 				// AbstractDefinition<TypeConstraint> gives warning...
 				Definition<TypeConstraint> def = type;
 				if (mappableConfig.contains(type.getName().toString()))
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappableFlag.ENABLED);
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.ENABLED);
 				else
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappableFlag.DISABLED);
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.DISABLED);
 			}
 		}
 
@@ -169,20 +169,20 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 			if (!types.isEmpty()) {
 				// update schema space
 				SchemaSpace schemaSpace = getSchemas(spaceID);
-				schemaSpace.toggleMappable(types);
+				schemaSpace.toggleMappingRelevant(types);
 
 				// update config
 				String paramName = "mappable" + (spaceID == SchemaSpaceID.SOURCE ? "Source" : "Target") + "Type";
 				List<String> mappableConfig = getProjectService().getConfigurationService().getList(paramName);
 				if (mappableConfig == null) {
-					Collection<? extends TypeDefinition> mappableTypes = schemaSpace.getMappableTypes();
+					Collection<? extends TypeDefinition> mappableTypes = schemaSpace.getMappingRelevantTypes();
 					mappableConfig = new ArrayList<String>(mappableTypes.size());
 					for (TypeDefinition type : mappableTypes)
 						mappableConfig.add(type.getName().toString());
 					getProjectService().getConfigurationService().setList(paramName, mappableConfig);
 				} else {
 					for (TypeDefinition type : types)
-						if (type.getConstraint(MappableFlag.class).isEnabled())
+						if (type.getConstraint(MappingRelevantFlag.class).isEnabled())
 							mappableConfig.add(type.getName().toString());
 						else
 							mappableConfig.remove(type.getName().toString());
