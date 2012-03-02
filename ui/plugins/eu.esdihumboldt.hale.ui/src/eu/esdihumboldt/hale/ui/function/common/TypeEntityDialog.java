@@ -23,8 +23,9 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.TypesContentProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypesContentProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
@@ -46,8 +47,10 @@ public class TypeEntityDialog extends EntityDialog {
 	 */
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
-		viewer.setLabelProvider(new DefinitionLabelProvider());
-		viewer.setContentProvider(new TypesContentProvider(viewer)); //FIXME content provider providing EntityDefinitions!
+		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
+		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+		viewer.setContentProvider(new EntityTypesContentProvider(
+				viewer, entityDefinitionService, ssid));
 		
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		

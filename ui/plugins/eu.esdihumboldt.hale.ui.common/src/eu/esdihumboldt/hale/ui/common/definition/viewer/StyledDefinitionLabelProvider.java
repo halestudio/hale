@@ -38,6 +38,7 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 		implements ILabelProvider, IColorProvider {
 	
 	private final ILabelProvider defaultLabels;
+	private final boolean suppressCardinality;
 	
 	/**
 	 * Default constructor 
@@ -53,8 +54,21 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 	 */
 	public StyledDefinitionLabelProvider(
 			ILabelProvider definitionLabelProvider) {
+		this(definitionLabelProvider, false);
+	}
+	
+	/**
+	 * Create a styled label provider based on the given plain label provider
+	 * for definitions.
+	 * @param definitionLabelProvider the definition label provider
+	 * @param suppressCardinality if displaying the cardinality should be
+	 *   suppressed
+	 */
+	public StyledDefinitionLabelProvider(
+			ILabelProvider definitionLabelProvider, boolean suppressCardinality) {
 		super();
 		
+		this.suppressCardinality = suppressCardinality;
 		this.defaultLabels = definitionLabelProvider;
 	}
 
@@ -76,7 +90,7 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 		}
 		
 		// append cardinality
-		if (element instanceof ChildDefinition<?>) {
+		if (!suppressCardinality && element instanceof ChildDefinition<?>) {
 			Cardinality cardinality = null;
 			if (((ChildDefinition<?>) element).asGroup() != null) {
 				cardinality = ((ChildDefinition<?>) element).asGroup().getConstraint(Cardinality.class);
