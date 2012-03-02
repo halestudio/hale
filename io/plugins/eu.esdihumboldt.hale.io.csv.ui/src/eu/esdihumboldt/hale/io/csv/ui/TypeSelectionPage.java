@@ -23,15 +23,17 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
-import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
+import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Advanced configuration for the instance reader
@@ -42,7 +44,7 @@ import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
 public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		implements CSVConstants {
 
-	TypeEntitySelector sel;
+	private TypeDefinitionSelector sel;
 	private Button button;
 	private Label label;
 
@@ -87,8 +89,10 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type:");
 
-		// TODO Change SSID
-		sel = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, page);
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		sel = new TypeDefinitionSelector(page, 
+				"Select the corresponding schema type", 
+				ss.getSchemas(SchemaSpaceID.SOURCE), null);
 		sel.getControl().setLayoutData(
 				GridDataFactory.fillDefaults().grab(true, false).span(1, 1)
 						.create());
@@ -99,10 +103,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 					public void selectionChanged(SelectionChangedEvent event) {
 						setPageComplete(!(event.getSelection().isEmpty()));
 						if (sel.getSelectedObject() != null) {
-							TypeEntityDefinition entityDef = (TypeEntityDefinition) sel
-									.getSelectedObject();
-							CSVConfiguration conf = entityDef.getDefinition()
-									.getConstraint(CSVConfiguration.class);
+							TypeDefinition type = sel.getSelectedObject();
+							CSVConfiguration conf = type.getConstraint(CSVConfiguration.class);
 							Boolean skip = conf.skipFirst();
 							button.setSelection(skip);
 						}
@@ -126,9 +128,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 
 		provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE,
 				String.valueOf(button.getSelection()));
-		if (sel.getSelectedObject() instanceof TypeEntityDefinition) {
-			QName name = ((TypeEntityDefinition) sel.getSelectedObject())
-					.getDefinition().getName();
+		if (sel.getSelectedObject() != null) {
+			QName name = sel.getSelectedObject().getName();
 			String param_name = name.toString();
 			provider.setParameter(CSVConstants.PARAM_TYPENAME, param_name);
 		} else {

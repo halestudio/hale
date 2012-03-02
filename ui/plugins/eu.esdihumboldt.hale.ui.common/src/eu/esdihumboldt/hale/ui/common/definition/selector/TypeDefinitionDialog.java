@@ -15,22 +15,19 @@ package eu.esdihumboldt.hale.ui.common.definition.selector;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.TypePropertyContentProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.TypesContentProvider;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractTreeSelectionDialog;
-import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
 
 /**
  * Selection dialog for {@link TypeDefinition}s.
@@ -57,18 +54,10 @@ public class TypeDefinitionDialog extends AbstractTreeSelectionDialog<TypeDefini
 	@Override
 	protected TreeViewer createViewer(Composite parent) {
 		// create viewer
-		SchemaPatternFilter patternFilter = new SchemaPatternFilter() {
-			@Override
-			protected boolean matches(Viewer viewer, Object element) {
-				boolean superMatches = super.matches(viewer, element);
-				if (!superMatches)
-					return false;
-				return acceptObject(viewer, getFilters(), ((TreePath)element).getLastSegment());
-			}
-		};
-		patternFilter.setUseEarlyReturnIfMatcherIsNull(false);
+		PatternFilter patternFilter = new PatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new TreePathFilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		FilteredTree tree = new FilteredTree(parent, 
+				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new DefinitionComparator());
 		return tree.getViewer();
 	}
@@ -77,7 +66,7 @@ public class TypeDefinitionDialog extends AbstractTreeSelectionDialog<TypeDefini
 	protected void setupViewer(TreeViewer viewer,
 			TypeDefinition initialSelection) {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
-		viewer.setContentProvider(new TypePropertyContentProvider(viewer));
+		viewer.setContentProvider(new TypesContentProvider(viewer));
 		
 		viewer.setInput(types);
 		
