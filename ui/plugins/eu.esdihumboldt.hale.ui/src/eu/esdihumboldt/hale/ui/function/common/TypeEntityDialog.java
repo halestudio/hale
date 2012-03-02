@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.TypesContentProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
- * Dialog for selecting a {@link TypeEntityDefinition}
+ * Dialog for selecting a {@link TypeEntityDefinition}.
  * @author Simon Templer
  */
 public class TypeEntityDialog extends EntityDialog {
@@ -60,10 +60,10 @@ public class TypeEntityDialog extends EntityDialog {
 	}
 
 	/**
-	 * @see EntityDialog#getEntityFromSelection(ISelection)
+	 * @see EntityDialog#getObjectFromSelection(ISelection)
 	 */
 	@Override
-	protected EntityDefinition getEntityFromSelection(ISelection selection) {
+	protected EntityDefinition getObjectFromSelection(ISelection selection) {
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
 			if (element instanceof TypeEntityDefinition) {
@@ -78,11 +78,11 @@ public class TypeEntityDialog extends EntityDialog {
 	}
 	
 	/**
-	 * @see EntityDialog#getEntity()
+	 * @see EntityDialog#getObject()
 	 */
 	@Override
-	public TypeEntityDefinition getEntity() {
-		return (TypeEntityDefinition) super.getEntity();
+	public TypeEntityDefinition getObject() {
+		return (TypeEntityDefinition) super.getObject();
 	}
 
 }

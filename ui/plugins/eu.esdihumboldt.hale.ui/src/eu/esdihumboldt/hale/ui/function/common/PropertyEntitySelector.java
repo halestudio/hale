@@ -52,7 +52,7 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	 */
 	public PropertyEntitySelector(SchemaSpaceID ssid, PropertyParameter field, Composite parent,
 			TypeEntityDefinition parentType) {
-		super(ssid, field, parent);
+		super(ssid, field, parent, createFilters(field));
 
 		this.parentType = parentType;
 	}
@@ -90,7 +90,7 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 			title = "Select target property";
 			break;
 		}
-		return new PropertyEntityDialog(parentShell, ssid, parentType, title, getEntityDefinition());
+		return new PropertyEntityDialog(parentShell, ssid, parentType, title, getSelectedObject());
 	}
 
 	/**
@@ -107,11 +107,7 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 		throw new IllegalArgumentException("Entity must be a property");
 	}
 
-	/**
-	 * @see EntitySelector#createFilters(AbstractParameter)
-	 */
-	@Override
-	protected ViewerFilter[] createFilters(PropertyParameter field) {
+	private static ViewerFilter[] createFilters(PropertyParameter field) {
 		List<PropertyCondition> conditions = field.getConditions();
 				
 		if (conditions == null)
@@ -133,4 +129,5 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 		}
 		return filters;
 	}
+	
 }

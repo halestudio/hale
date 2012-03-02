@@ -167,12 +167,12 @@ public class FeatureFilterField extends Composite {
 								FeatureFilterField.this.ssid, null),
 						Messages.FeatureFilterField_7, null);
 				
-				if (dialog.open() == PropertyEntityDialog.OK && dialog.getEntity() != null
-						&& dialog.getEntity().getType().getName().toString().length() >= 1) {
+				if (dialog.open() == PropertyEntityDialog.OK && dialog.getObject() != null
+						&& dialog.getObject().getType().getName().toString().length() >= 1) {
 					String var = "";
-					for(int i = 0; i< dialog.getEntity().getPropertyPath().size(); i++) {
-					if(i == 0) var = var.concat(dialog.getEntity().getPropertyPath().get(i).getChild().getName().getLocalPart().toString());
-					else var = var.concat("." + dialog.getEntity().getPropertyPath().get(i).getChild().getName().getLocalPart().toString());
+					for(int i = 0; i< dialog.getObject().getPropertyPath().size(); i++) {
+					if(i == 0) var = var.concat(dialog.getObject().getPropertyPath().get(i).getChild().getName().getLocalPart().toString());
+					else var = var.concat("." + dialog.getObject().getPropertyPath().get(i).getChild().getName().getLocalPart().toString());
 					}
 					filterText.insert(var);
 					filterText.setFocus();
