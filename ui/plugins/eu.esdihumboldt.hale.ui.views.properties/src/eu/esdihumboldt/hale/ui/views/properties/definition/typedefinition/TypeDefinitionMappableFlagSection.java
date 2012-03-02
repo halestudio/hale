@@ -18,7 +18,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection;
 
 /**
@@ -44,7 +44,7 @@ public class TypeDefinitionMappableFlagSection extends DefaultDefinitionSection<
 	 */
 	@Override
 	public void refresh() {
-		if (getDefinition().getConstraint(MappableFlag.class).isEnabled()){
+		if (getDefinition().getConstraint(MappingRelevantFlag.class).isEnabled()){
 			mappableFlag.setText("true");
 		} else {
 			mappableFlag.setText("false");

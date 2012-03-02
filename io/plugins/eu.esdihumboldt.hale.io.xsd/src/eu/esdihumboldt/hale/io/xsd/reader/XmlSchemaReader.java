@@ -79,7 +79,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
@@ -325,7 +325,7 @@ public class XmlSchemaReader
 					
 					// set Mappable constraint (e.g. Mappable)
 					// for types with an associated element it can be determined on the spot if it is mappable
-					elementType.setConstraint(MappableFlag.get(mainSchema));
+					elementType.setConstraint(MappingRelevantFlag.get(mainSchema));
 					//XXX needed? may result in conflicts when defining mappable types manually XXX the element is also marked with the Mappable constraint, to help with cases where multiple elements are defined for one
 //					schemaElement.setConstraint(MappableFlag.get(mainSchema));
 					

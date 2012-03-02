@@ -185,7 +185,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 			OSchema schema = db.getMetadata().getSchema();
 			Collection<OClass> classes = schema.getClasses();
 			
-			Collection<? extends TypeDefinition> mappableTypes = schemas.getMappableTypes();
+			Collection<? extends TypeDefinition> mappableTypes = schemas.getMappingRelevantTypes();
 			Set<String> allowedIdentifiers = new HashSet<String>();
 			for (TypeDefinition type : mappableTypes) {
 				allowedIdentifiers.add(type.getIdentifier());

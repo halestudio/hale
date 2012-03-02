@@ -16,7 +16,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 
 /**
  * A type index holds a set of type definitions and a corresponding name index.
@@ -42,16 +42,16 @@ public interface TypeIndex {
 	
 	/**
 	 * Get all mappable types, i.e. types that are flagged with an enabled
-	 * {@link MappableFlag}
+	 * {@link MappingRelevantFlag}
 	 *  
 	 * @return the mappable types
 	 */
-	public Collection<? extends TypeDefinition> getMappableTypes();
+	public Collection<? extends TypeDefinition> getMappingRelevantTypes();
 
 	/**
 	 * Toggles the mappable flag of the given types.
 	 * 
 	 * @param types the types to toggle
 	 */
-	public void toggleMappable(Collection<? extends TypeDefinition> types);
+	public void toggleMappingRelevant(Collection<? extends TypeDefinition> types);
 }
