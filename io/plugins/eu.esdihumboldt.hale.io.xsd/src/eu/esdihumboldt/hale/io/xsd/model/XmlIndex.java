@@ -22,6 +22,7 @@ import com.google.common.base.Preconditions;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
@@ -80,6 +81,7 @@ public class XmlIndex extends DefaultSchema {
 			
 			if (name.equals(XmlTypeUtil.NAME_ANY_TYPE)) {
 				type.setConstraint(AbstractFlag.ENABLED);
+				type.setConstraint(MappableFlag.DISABLED);
 			}
 			else {
 				// set anyType as default super type

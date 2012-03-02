@@ -18,23 +18,23 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
 
 /**
- * Flags if a type is mapping relevant, i.e. that it is a valid source or target for a
+ * Flags if a type is mappable, i.e. that it is a valid source or target for a
  * retype. Disabled by default.
  * @author Simon Templer
  */
 @Immutable
 @Constraint(mutable = false)
-public class MappingRelevantFlag extends AbstractFlagConstraint implements TypeConstraint {
+public class MappableFlag extends AbstractFlagConstraint implements TypeConstraint {
 
 	/**
 	 * Enabled mappable flag
 	 */
-	public static final MappingRelevantFlag ENABLED = new MappingRelevantFlag(true);
+	public static final MappableFlag ENABLED = new MappableFlag(true);
 	
 	/**
 	 * Disabled mappable flag
 	 */
-	public static final MappingRelevantFlag DISABLED = new MappingRelevantFlag(false);
+	public static final MappableFlag DISABLED = new MappableFlag(false);
 	
 	/**
 	 * Get the mappable flag
@@ -42,18 +42,18 @@ public class MappingRelevantFlag extends AbstractFlagConstraint implements TypeC
 	 * @param isMappable if the flag shall be enabled
 	 * @return the flag
 	 */
-	public static MappingRelevantFlag get(boolean isMappable) {
+	public static MappableFlag get(boolean isMappable) {
 		return (isMappable)?(ENABLED):(DISABLED);
 	}
 	
 	/**
-	 * Creates a default mapping relevant flag, which is disabled. If possible, instead
+	 * Creates a default mappable flag, which is disabled. If possible, instead
 	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
 	 * {@link #DISABLED}.
 	 * 
 	 * @see Constraint
 	 */
-	public MappingRelevantFlag() {
+	public MappableFlag() {
 		// disabled by default because of simple types etc.
 		this(false);
 	}
@@ -61,7 +61,7 @@ public class MappingRelevantFlag extends AbstractFlagConstraint implements TypeC
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */
-	private MappingRelevantFlag(boolean enabled) {
+	private MappableFlag(boolean enabled) {
 		super(enabled);
 	}
 
@@ -71,7 +71,7 @@ public class MappingRelevantFlag extends AbstractFlagConstraint implements TypeC
 	@Override
 	public boolean isInheritable() {
 		// must be set explicitly
-		return false;
+		return true;
 	}
 
 }
