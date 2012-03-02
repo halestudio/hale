@@ -78,7 +78,7 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 		if (inputElement instanceof TypeIndex) {
 			List<TypeEntityDefinition> types = new ArrayList<TypeEntityDefinition>();
 			for (TypeDefinition type : ((TypeIndex) inputElement).getMappingRelevantTypes()) {
-				types.add(entityDefinitionService.getTypeEntities(type, schemaSpace));
+				types.addAll(entityDefinitionService.getTypeEntities(type, schemaSpace));
 			}
 			return types.toArray();
 		}

@@ -58,7 +58,7 @@ public class PropertyPathContentProvider implements ITreeContentProvider {
 			return getChildren(inputElement);
 		}
 		else if (inputElement instanceof TypeIndex) {
-			return ((TypeIndex) inputElement).getMappableTypes().toArray();
+			return ((TypeIndex) inputElement).getMappingRelevantTypes().toArray();
 		}
 		else {
 			throw new IllegalArgumentException("Content provider only applicable for type definitions.");
