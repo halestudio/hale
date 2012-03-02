@@ -488,11 +488,8 @@ public class XmlSchemaReader
 			}
 			
 			// set mappable constraint
-			if (mainSchema) {
-				// only set constraint if not already set by element
-				// if the type is mappable is determined lazily
-				type.setConstraintIfNotSet(new MappableUsingXsiType(type));
-			}
+			// don't override mappable explicitly set to false
+			type.setConstraintIfNotSet(new MappableUsingXsiType(type));
 			
 			// set type metadata and constraints
 			setMetadataAndConstraints(type, complexType, schemaLocation);

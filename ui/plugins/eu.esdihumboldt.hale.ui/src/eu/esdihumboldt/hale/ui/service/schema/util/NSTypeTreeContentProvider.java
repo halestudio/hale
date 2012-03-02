@@ -23,7 +23,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 
 /**
  * This tree content provider showing a Collection of TypeDefinitions grouped by
@@ -70,7 +70,8 @@ public class NSTypeTreeContentProvider implements ITreeContentProvider {
 		Collection<? extends TypeDefinition> types = (Collection<? extends TypeDefinition>) inputElement;
 		nameSpaces = ArrayListMultimap.create();
 		for (TypeDefinition type : types) {
-			if (type.getConstraint(HasValueFlag.class).isEnabled())
+			// only show types with mappable flag
+			if (!type.getConstraint(MappableFlag.class).isEnabled())
 				continue;
 			String ns = type.getName().getNamespaceURI();
 			if (XMLConstants.NULL_NS_URI.equals(ns))

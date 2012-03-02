@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 
 /**
@@ -45,7 +46,9 @@ public class DefaultTypeIndex implements TypeIndex {
 		synchronized (this) {
 			types.put(type.getName(), type);
 
-			if (mappingRelevantTypes != null && type.getConstraint(MappingRelevantFlag.class).isEnabled())
+			// check mappable flag, too for consistency
+			if (mappingRelevantTypes != null && type.getConstraint(MappingRelevantFlag.class).isEnabled()
+					&& type.getConstraint(MappableFlag.class).isEnabled())
 				mappingRelevantTypes.add(type); 
 		}
 	}
@@ -80,7 +83,8 @@ public class DefaultTypeIndex implements TypeIndex {
 			if (mappingRelevantTypes == null) {
 				mappingRelevantTypes = new HashSet<TypeDefinition>();
 				for (TypeDefinition type : types.values()) {
-					if (type.getConstraint(MappingRelevantFlag.class).isEnabled()) {
+					if (type.getConstraint(MappingRelevantFlag.class).isEnabled()
+							&& type.getConstraint(MappableFlag.class).isEnabled()) {
 						mappingRelevantTypes.add(type);
 					}
 				}
@@ -98,7 +102,7 @@ public class DefaultTypeIndex implements TypeIndex {
 			for (TypeDefinition type : types) {
 				Definition<TypeConstraint> def = type;
 				if (type.getConstraint(MappingRelevantFlag.class).isEnabled()) {
-					if (mappingRelevantTypes != null && mappingRelevantTypes.contains(type))
+					if (mappingRelevantTypes != null)
 						mappingRelevantTypes.remove(type);
 					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.DISABLED);
 				} else {
