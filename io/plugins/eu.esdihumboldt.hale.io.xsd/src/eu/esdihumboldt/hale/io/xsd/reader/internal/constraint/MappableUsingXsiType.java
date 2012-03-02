@@ -14,7 +14,8 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 
@@ -22,7 +23,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
  * Mappable constraint that determines if a type is mappable using xsi:type.
  * @author Simon Templer
  */
-public class MappableUsingXsiType extends MappingRelevantFlag {
+public class MappableUsingXsiType extends MappableFlag {
 
 	private XmlTypeDefinition type;
 
@@ -43,14 +44,18 @@ public class MappableUsingXsiType extends MappingRelevantFlag {
 	 */
 	@Override
 	public boolean isEnabled() {
+		if (type.getConstraint(HasValueFlag.class).isEnabled())
+			return false;
+		if (!type.getConstraint(XmlElements.class).getElements().isEmpty())
+			return true;
+
 		// the type is mappable if one of the super types is mappable and has
 		// an associated element
-		
 		TypeDefinition superType = type.getSuperType();
 		while (superType != null) {
 			// check elements first to prevent the mappable constraint to be determined unncessarily
 			if (!superType.getConstraint(XmlElements.class).getElements().isEmpty() && 
-					superType.getConstraint(MappingRelevantFlag.class).isEnabled()) {
+					superType.getConstraint(MappableFlag.class).isEnabled()) {
 				return true;
 			}
 			

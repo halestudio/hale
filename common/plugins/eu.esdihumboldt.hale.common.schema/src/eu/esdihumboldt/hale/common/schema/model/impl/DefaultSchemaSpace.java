@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.schema.model.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -130,16 +131,26 @@ public class DefaultSchemaSpace implements SchemaSpace {
 	public void toggleMappingRelevant(Collection<? extends TypeDefinition> types) {
 		synchronized (this) {
 			for (TypeDefinition type : types) {
-				Definition<TypeConstraint> def = type;
-				if (type.getConstraint(MappingRelevantFlag.class).isEnabled()) {
-					if (mappingRelevantTypes != null && mappingRelevantTypes.contains(type))
-						mappingRelevantTypes.remove(type);
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.DISABLED);
-				} else {
-					if (mappingRelevantTypes != null)
-						mappingRelevantTypes.add(type);
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.ENABLED);
+				Schema container = null;
+				for (Schema schema : schemas)
+					if (schema.getTypes().contains(type)) {
+						container = schema;
+						break;
+					}
+				// toggle type in its schema
+				if (container != null)
+					container.toggleMappingRelevant(Collections.singletonList(type));
+				else {
+					// shouldn't happen, but to be safe toggle it in this case too
+					Definition<TypeConstraint> def = type;
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.get(!type.getConstraint(MappingRelevantFlag.class).isEnabled()));
 				}
+				// was toggled, update own list
+				if (mappingRelevantTypes != null)
+					if (type.getConstraint(MappingRelevantFlag.class).isEnabled())
+						mappingRelevantTypes.add(type);
+					else
+						mappingRelevantTypes.remove(type);
 			}
 		}
 	}
