@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelPro
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypesContentProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
 /**
  * Dialog for selecting a {@link TypeEntityDefinition}.
@@ -49,8 +50,8 @@ public class TypeEntityDialog extends EntityDialog {
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
 		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-		viewer.setContentProvider(new EntityTypesContentProvider(
-				viewer, entityDefinitionService, ssid));
+		viewer.setContentProvider(new TreePathProviderAdapter(new EntityTypesContentProvider(
+				viewer, entityDefinitionService, ssid)));
 		
 		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		
