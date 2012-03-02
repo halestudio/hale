@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.ui.util.selector;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -26,7 +25,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -42,62 +40,14 @@ import eu.esdihumboldt.hale.ui.util.viewer.ObjectContentProvider;
  */
 public abstract class AbstractSelector<T> implements ISelectionProvider {
 	
-	/**
-	 * Wraps a label provider and provides additionally a text for
-	 * {@link NoObject#NONE}.
-	 */
-	public class SelectorLabelProvider implements ILabelProvider {
-
-		private final ILabelProvider labelProvider;
-
-		/**
-		 * Create a selector label provider.
-		 * @param labelProvider the label provider that it is based on
-		 */
-		public SelectorLabelProvider(ILabelProvider labelProvider) {
-			this.labelProvider = labelProvider;
-		}
-
-		@Override
-		public Image getImage(Object element) {
-			if (element == NoObject.NONE) {
-				return null;
-			}
-			return labelProvider.getImage(element);
-		}
-
-		@Override
-		public String getText(Object element) {
-			if (element == NoObject.NONE) {
-				return "<Click to select>";
-			}
-			return labelProvider.getText(element);
-		}
-
-		@Override
-		public void addListener(ILabelProviderListener listener) {
-			labelProvider.addListener(listener);
-		}
-
-		@Override
-		public void dispose() {
-			labelProvider.dispose();
-		}
-
-		@Override
-		public boolean isLabelProperty(Object element, String property) {
-			return labelProvider.isLabelProperty(element, property);
-		}
-
-		@Override
-		public void removeListener(ILabelProviderListener listener) {
-			labelProvider.removeListener(listener);
-		}
-
-	}
-
 	private static enum NoObject {
-		NONE
+		NONE;
+
+		@Override
+		public String toString() {
+			return "<Click to select>";
+		}
+		
 	}
 	
 	private final TypeSafeListenerList<ISelectionChangedListener> listeners = new TypeSafeListenerList<ISelectionChangedListener>();
@@ -105,8 +55,6 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 	private final TableViewer viewer;
 	
 	private final Composite main;
-	
-//	private final F field;
 	
 	private final ViewerFilter[] filters;
 	
@@ -123,8 +71,6 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 	 */
 	public AbstractSelector(Composite parent, ILabelProvider labelProvider,
 			ViewerFilter[] filters) {
-//		this.field = field;
-		
 		main = new Composite(parent, SWT.NONE);
 		TableColumnLayout columnLayout = new TableColumnLayout();
 		main.setLayout(columnLayout);
@@ -136,16 +82,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
 
 		viewer.setContentProvider(ObjectContentProvider.getInstance());
-		viewer.setLabelProvider(new SelectorLabelProvider(labelProvider));
-//		viewer.setLabelProvider(new DefinitionLabelProvider(true, true) {
-//			@Override
-//			public String getText(Object element) {
-//				if (element == NoObject.NONE) {
-//					return "<Click to select>";
-//				}
-//				return super.getText(element);
-//			}
-//		});
+		viewer.setLabelProvider(labelProvider);
 
 		this.filters = filters;
 		
@@ -222,14 +159,6 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 		}
 		return new StructuredSelection(input);
 	}
-
-//	/**
-//	 * Get the field definition associated with the selector.
-//	 * @return the field definition
-//	 */
-//	public F getField() {
-//		return field;
-//	}
 
 	/**
 	 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
@@ -316,26 +245,5 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 		
 		return null;
 	}
-	
-//	/**
-//	 * Get the selected entity
-//	 * @return the selected entity or <code>null</code>
-//	 */
-//	public Entity getEntity() {
-//		EntityDefinition def = getSelectedObject();
-//		
-//		if (def != null) {
-//			return createEntity(def);
-//		}
-//		
-//		return null;
-//	}
-//
-//	/**
-//	 * Create an entity for the given entity definition
-//	 * @param element the entity definition
-//	 * @return the entity
-//	 */
-//	protected abstract Entity createEntity(EntityDefinition element);
 
 }

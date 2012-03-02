@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypePropertyContentProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
@@ -66,7 +66,7 @@ public class PropertyEntityDialog extends EntityDialog {
 	 */
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
-		viewer.setLabelProvider(new DefinitionLabelProvider());
+		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
 		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
 		viewer.setContentProvider(new TreePathProviderAdapter(new EntityTypePropertyContentProvider(
 				viewer, entityDefinitionService, ssid)));

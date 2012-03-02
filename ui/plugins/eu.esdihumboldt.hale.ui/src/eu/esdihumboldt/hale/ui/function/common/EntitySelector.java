@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractTreeSelectionDialog;
 
@@ -44,7 +45,8 @@ public abstract class EntitySelector<F extends AbstractParameter> extends Abstra
 	 */
 	public EntitySelector(final SchemaSpaceID ssid,	F field, Composite parent, 
 			ViewerFilter[] filters) {
-		super(parent, new DefinitionLabelProvider(true, true), filters);
+		super(parent, new StyledDefinitionLabelProvider(
+				new DefinitionLabelProvider(true, true), true), filters);
 		this.field = field;
 		this.ssid = ssid;
 	}
