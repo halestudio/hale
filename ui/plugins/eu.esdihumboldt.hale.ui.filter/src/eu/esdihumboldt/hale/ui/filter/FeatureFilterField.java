@@ -33,16 +33,15 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
 import org.geotools.filter.text.cql2.CQLException;
 
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
 import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
+import eu.esdihumboldt.hale.ui.common.definition.selector.PropertyDefinitionDialog;
 import eu.esdihumboldt.hale.ui.filter.internal.FilterUIPlugin;
 import eu.esdihumboldt.hale.ui.filter.internal.Messages;
-import eu.esdihumboldt.hale.ui.function.common.PropertyEntityDialog;
 
 /**
  * Field for editing a filter.
@@ -159,15 +158,13 @@ public class FeatureFilterField extends Composite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//FIXME a dialog w/o instance contexts should be used!
-				PropertyEntityDialog dialog = new PropertyEntityDialog(Display
-						.getCurrent().getActiveShell(),
-						FeatureFilterField.this.ssid, new TypeEntityDefinition(
-								FeatureFilterField.this.type,
-								FeatureFilterField.this.ssid, null),
+				PropertyDefinitionDialog dialog = new PropertyDefinitionDialog(
+						Display.getCurrent().getActiveShell(),
+						FeatureFilterField.this.ssid, 
+						FeatureFilterField.this.type,
 						Messages.FeatureFilterField_7, null);
 				
-				if (dialog.open() == PropertyEntityDialog.OK && dialog.getObject() != null
+				if (dialog.open() == PropertyDefinitionDialog.OK && dialog.getObject() != null
 						&& dialog.getObject().getType().getName().toString().length() >= 1) {
 					String var = "";
 					for(int i = 0; i< dialog.getObject().getPropertyPath().size(); i++) {
