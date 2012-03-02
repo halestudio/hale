@@ -30,7 +30,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -51,10 +50,9 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.PropertyPathContentProvider;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
-import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
-import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypePropertyContentProvider;
 
 /**
  * Parameter page for merge function. Provides an UI for selecting the matching
@@ -184,11 +182,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		// label provider
 		viewer.setLabelProvider(labelProvider);
 		// content provider
-		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench()
-				.getService(EntityDefinitionService.class);
-		//FIXME another content provider should be used here, w/o instance contexts
-		viewer.setContentProvider(new EntityTypePropertyContentProvider(viewer, entityDefinitionService,
-				SchemaSpaceID.SOURCE));
+		viewer.setContentProvider(new PropertyPathContentProvider(SchemaSpaceID.SOURCE));
 		// check state listener
 		viewer.addCheckStateListener(new ICheckStateListener() {
 			@Override
