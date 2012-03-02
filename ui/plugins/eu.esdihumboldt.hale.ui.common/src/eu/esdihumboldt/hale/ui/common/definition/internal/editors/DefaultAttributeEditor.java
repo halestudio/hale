@@ -60,6 +60,7 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 	private ControlDecoration decoration;
 	private String stringValue;
 	private Object objectValue;
+	private boolean validated = false;
 	private String validationResult;
 
 	/**
@@ -162,6 +163,7 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 	 */
 	private void validate() {
 		validationResult = null;
+		validated = true;
 
 		// check binding first
 		try {
@@ -245,6 +247,8 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 	 */
 	@Override
 	public boolean isValid() {
+		if (!validated)
+			validate();
 		return validationResult == null;
 	}
 }

@@ -50,6 +50,7 @@
       <plugin id="com.springsource.org.apache.xerces" fragment="true"/>
       <plugin id="com.springsource.org.apache.xml.resolver"/>
       <plugin id="com.springsource.org.apache.xml.serializer"/>
+      <plugin id="com.springsource.org.apache.xmlbeans"/>
       <plugin id="com.springsource.org.apache.xmlcommons"/>
       <plugin id="com.springsource.org.castor"/>
       <plugin id="com.springsource.org.custommonkey.xmlunit"/>
