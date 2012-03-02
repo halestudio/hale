@@ -12,13 +12,17 @@
 
 package eu.esdihumboldt.util.validator;
 
+import org.apache.xmlbeans.impl.regex.RegularExpression;
+
+
 /**
- * Validator using pattern matching.
+ * Validator using pattern matching. Should be conform to http://www.w3.org/TR/xmlschema-2/#dt-regex.
  *
  * @author Kai Schwierczek
  */
 public class PatternValidator extends AbstractValidator {
 	private String pattern;
+	private RegularExpression regEx;
 
 	/**
 	 * Construct a PatternValidator with the given pattern.
@@ -35,7 +39,9 @@ public class PatternValidator extends AbstractValidator {
 	@Override
 	public String validate(Object value) {
 		String s = getObjectAs(value, String.class);
-		if (s.matches(pattern))
+		if (regEx == null)
+			regEx = new RegularExpression(pattern, "X");
+		if (regEx.matches(s))
 			return null;
 		else
 			return "Input doesn't match " + pattern + ".";
