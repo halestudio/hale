@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
@@ -313,13 +314,13 @@ public class XmlSchemaReaderTest {
 		// number of children
 		assertEquals(3, specialOrderType.getChildren().size());
 		// mappable
-		assertTrue(specialOrderType.getConstraint(MappingRelevantFlag.class).isEnabled());
+		assertTrue(specialOrderType.getConstraint(MappableFlag.class).isEnabled());
 		// no elements
 		assertTrue(specialOrderType.getConstraint(XmlElements.class).getElements().isEmpty());
 		
 		// overall mappable types
 		Collection<? extends TypeDefinition> mt = schema.getMappingRelevantTypes();
-		assertEquals(3, mt.size()); // envelope, order, special order
+		assertEquals(2, mt.size()); // envelope, order, special order
 	}
 	
 	/**
