@@ -141,7 +141,7 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 	
 	private static boolean hasMappableType(SchemaService ss, SchemaSpaceID spaceID) {
 		SchemaSpace schemas = ss.getSchemas(spaceID);
-		return schemas != null && !schemas.getMappableTypes().isEmpty();
+		return schemas != null && !schemas.getMappingRelevantTypes().isEmpty();
 	}
 
 	/**

@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 
 /**
  * Default {@link TypeIndex} implementation
@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 public class DefaultTypeIndex implements TypeIndex {
 
 	private final Map<QName, TypeDefinition> types = new HashMap<QName, TypeDefinition>();
-	private Set<TypeDefinition> mappableTypes;
+	private Set<TypeDefinition> mappingRelevantTypes;
 
 	/**
 	 * Add a type to the type index.
@@ -45,8 +45,8 @@ public class DefaultTypeIndex implements TypeIndex {
 		synchronized (this) {
 			types.put(type.getName(), type);
 
-			if (mappableTypes != null && type.getConstraint(MappableFlag.class).isEnabled())
-				mappableTypes.add(type); 
+			if (mappingRelevantTypes != null && type.getConstraint(MappingRelevantFlag.class).isEnabled())
+				mappingRelevantTypes.add(type); 
 		}
 	}
 
@@ -72,39 +72,39 @@ public class DefaultTypeIndex implements TypeIndex {
 	 * {@inheritDoc}<br>
 	 * This method may not be called during model creation.
 	 * 
-	 * @see TypeIndex#getMappableTypes()
+	 * @see TypeIndex#getMappingRelevantTypes()
 	 */
 	@Override
-	public Collection<? extends TypeDefinition> getMappableTypes() {
+	public Collection<? extends TypeDefinition> getMappingRelevantTypes() {
 		synchronized (this) {
-			if (mappableTypes == null) {
-				mappableTypes = new HashSet<TypeDefinition>();
+			if (mappingRelevantTypes == null) {
+				mappingRelevantTypes = new HashSet<TypeDefinition>();
 				for (TypeDefinition type : types.values()) {
-					if (type.getConstraint(MappableFlag.class).isEnabled()) {
-						mappableTypes.add(type);
+					if (type.getConstraint(MappingRelevantFlag.class).isEnabled()) {
+						mappingRelevantTypes.add(type);
 					}
 				}
 			}
-			return Collections.unmodifiableCollection(mappableTypes);
+			return Collections.unmodifiableCollection(mappingRelevantTypes);
 		}
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.schema.model.TypeIndex#toggleMappable(java.util.Collection)
+	 * @see eu.esdihumboldt.hale.common.schema.model.TypeIndex#toggleMappingRelevant(java.util.Collection)
 	 */
 	@Override
-	public void toggleMappable(Collection<? extends TypeDefinition> types) {
+	public void toggleMappingRelevant(Collection<? extends TypeDefinition> types) {
 		synchronized (this) {
 			for (TypeDefinition type : types) {
 				Definition<TypeConstraint> def = type;
-				if (type.getConstraint(MappableFlag.class).isEnabled()) {
-					if (mappableTypes != null && mappableTypes.contains(type))
-						mappableTypes.remove(type);
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappableFlag.DISABLED);
+				if (type.getConstraint(MappingRelevantFlag.class).isEnabled()) {
+					if (mappingRelevantTypes != null && mappingRelevantTypes.contains(type))
+						mappingRelevantTypes.remove(type);
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.DISABLED);
 				} else {
-					if (mappableTypes != null)
-						mappableTypes.add(type);
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappableFlag.ENABLED);
+					if (mappingRelevantTypes != null)
+						mappingRelevantTypes.add(type);
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.ENABLED);
 				}
 			}
 		}

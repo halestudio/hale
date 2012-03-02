@@ -79,8 +79,8 @@ public class CSVSchemaReaderTest {
 		assertTrue(report.isSuccess());
 
 		Schema schema = schemaReader.getSchema();
-		assertEquals(1, schema.getMappableTypes().size());
-		TypeDefinition type = schema.getMappableTypes().iterator().next();
+		assertEquals(1, schema.getMappingRelevantTypes().size());
+		TypeDefinition type = schema.getMappingRelevantTypes().iterator().next();
 		assertTrue(type.getName().getLocalPart().equals("TestTyp"));
 		Iterator<? extends ChildDefinition<?>> it = type.getChildren()
 				.iterator();
@@ -116,8 +116,8 @@ public class CSVSchemaReaderTest {
 		assertTrue(report.isSuccess());
 
 		Schema schema = schemaReader.getSchema();
-		assertEquals(1, schema.getMappableTypes().size());
-		TypeDefinition type = schema.getMappableTypes().iterator().next();
+		assertEquals(1, schema.getMappingRelevantTypes().size());
+		TypeDefinition type = schema.getMappingRelevantTypes().iterator().next();
 		assertTrue(type.getName().getLocalPart().equals("TestTyp"));
 		Iterator<? extends ChildDefinition<?>> it = type.getChildren()
 				.iterator();

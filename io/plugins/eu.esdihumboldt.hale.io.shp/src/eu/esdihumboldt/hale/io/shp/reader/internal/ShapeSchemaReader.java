@@ -42,7 +42,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
@@ -101,7 +101,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 						new QName(namespace, sft.getName().getLocalPart()));
 				
 				// constraints on main type
-				type.setConstraint(MappableFlag.ENABLED);
+				type.setConstraint(MappingRelevantFlag.ENABLED);
 				type.setConstraint(HasValueFlag.DISABLED);
 				type.setConstraint(AbstractFlag.DISABLED);
 				type.setConstraint(Binding.get(Instance.class));
@@ -161,7 +161,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 			DefaultTypeDefinition typeDef = new DefaultTypeDefinition(typeName);
 			
 			// set constraints
-			typeDef.setConstraint(MappableFlag.DISABLED); // not mappable
+			typeDef.setConstraint(MappingRelevantFlag.DISABLED); // not mappable
 			// binding
 			if (Geometry.class.isAssignableFrom(type.getBinding())) {
 				// create geometry binding

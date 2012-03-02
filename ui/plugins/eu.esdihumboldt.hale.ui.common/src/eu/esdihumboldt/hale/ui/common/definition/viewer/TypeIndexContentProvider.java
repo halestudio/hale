@@ -55,7 +55,7 @@ public class TypeIndexContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof TypeIndex) {
-			return ((TypeIndex) inputElement).getMappableTypes().toArray();
+			return ((TypeIndex) inputElement).getMappingRelevantTypes().toArray();
 		}
 		else {
 			throw new IllegalArgumentException("Content provider only applicable for type indexes.");

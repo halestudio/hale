@@ -60,7 +60,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstraint;
 import eu.esdihumboldt.hale.io.gml.geometry.Geometries;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
@@ -220,7 +220,7 @@ public abstract class XmlTypeUtil {
 			// not abstract
 			type.setConstraint(AbstractFlag.DISABLED);
 			// not mappable
-			type.setConstraint(MappableFlag.DISABLED);
+			type.setConstraint(MappingRelevantFlag.DISABLED);
 			
 			type.setLocation(URI.create(XMLConstants.W3C_XML_SCHEMA_NS_URI));
 			if (ty.getDescription() != null) {

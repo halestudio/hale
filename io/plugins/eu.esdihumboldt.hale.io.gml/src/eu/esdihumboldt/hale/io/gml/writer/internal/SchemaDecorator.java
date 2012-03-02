@@ -58,12 +58,12 @@ public abstract class SchemaDecorator implements Schema {
 	}
 
 	@Override
-	public Collection<? extends TypeDefinition> getMappableTypes() {
-		return schema.getMappableTypes();
+	public Collection<? extends TypeDefinition> getMappingRelevantTypes() {
+		return schema.getMappingRelevantTypes();
 	}
 
 	@Override
-	public void toggleMappable(Collection<? extends TypeDefinition> types) {
-		schema.toggleMappable(types);
+	public void toggleMappingRelevant(Collection<? extends TypeDefinition> types) {
+		schema.toggleMappingRelevant(types);
 	}
 }

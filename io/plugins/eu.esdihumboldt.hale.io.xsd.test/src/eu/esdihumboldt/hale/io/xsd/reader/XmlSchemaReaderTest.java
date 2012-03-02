@@ -47,7 +47,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
@@ -256,7 +256,7 @@ public class XmlSchemaReaderTest {
 	
 	/**
 	 * Test reading a simple XML schema that is split into several files.
-	 * Tests also the {@link XmlElements} and {@link MappableFlag} constraints
+	 * Tests also the {@link XmlElements} and {@link MappingRelevantFlag} constraints
 	 * @throws Exception if reading the schema fails
 	 */
 	@Test
@@ -271,7 +271,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(envelope);
 		TypeDefinition envType = envelope.getType();
 		// mappable
-		assertTrue(envType.getConstraint(MappableFlag.class).isEnabled());
+		assertTrue(envType.getConstraint(MappingRelevantFlag.class).isEnabled());
 		
 		// XmlElements
 		Collection<? extends XmlElement> elements = envType.getConstraint(XmlElements.class).getElements();
@@ -284,7 +284,7 @@ public class XmlSchemaReaderTest {
 		assertNotNull(order);
 		TypeDefinition orderType = order.getPropertyType();
 		// mappable
-		assertTrue(orderType.getConstraint(MappableFlag.class).isEnabled());
+		assertTrue(orderType.getConstraint(MappingRelevantFlag.class).isEnabled());
 		
 		// number
 		PropertyDefinition number = orderType.getChild(new QName(
@@ -299,7 +299,7 @@ public class XmlSchemaReaderTest {
 				"http://example.org/ord", "items")).asProperty();
 		assertNotNull(items);
 		// not mappable
-		assertFalse(items.getPropertyType().getConstraint(MappableFlag.class).isEnabled());
+		assertFalse(items.getPropertyType().getConstraint(MappingRelevantFlag.class).isEnabled());
 		// no elements
 		assertTrue(items.getPropertyType().getConstraint(XmlElements.class).getElements().isEmpty());
 		
@@ -313,12 +313,12 @@ public class XmlSchemaReaderTest {
 		// number of children
 		assertEquals(3, specialOrderType.getChildren().size());
 		// mappable
-		assertTrue(specialOrderType.getConstraint(MappableFlag.class).isEnabled());
+		assertTrue(specialOrderType.getConstraint(MappingRelevantFlag.class).isEnabled());
 		// no elements
 		assertTrue(specialOrderType.getConstraint(XmlElements.class).getElements().isEmpty());
 		
 		// overall mappable types
-		Collection<? extends TypeDefinition> mt = schema.getMappableTypes();
+		Collection<? extends TypeDefinition> mt = schema.getMappingRelevantTypes();
 		assertEquals(3, mt.size()); // envelope, order, special order
 	}
 	
