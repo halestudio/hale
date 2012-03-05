@@ -12,11 +12,15 @@
 
 package eu.esdihumboldt.hale.ui.filter;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -31,7 +35,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
-import org.geotools.filter.text.cql2.CQLException;
 
 import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
 import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
@@ -44,7 +47,7 @@ import eu.esdihumboldt.hale.ui.filter.internal.FilterUIPlugin;
 import eu.esdihumboldt.hale.ui.filter.internal.Messages;
 
 /**
- * Field for editing a filter.
+ * Field for editing a type filter.
  * @author Simon Templer
  * @author Sebastian Reinhardt
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -52,31 +55,44 @@ import eu.esdihumboldt.hale.ui.filter.internal.Messages;
 public class TypeFilterField extends Composite {
 	
 	/**
-	 * Filter listener interface
+	 * Property name of the filter property (as used in {@link PropertyChangeEvent}s)
 	 */
-	public interface FilterListener {
-		
-		/**
-		 * Notifies that the filter has changed
-		 */
-		public void filterChanged();
-		
+	public static final String PROPERTY_FILTER = "filter";
+	
+	/**
+	 * Property name of the valid property (as used in {@link PropertyChangeEvent}s)
+	 */
+	public static final String PROPERTY_VALID = "valid";
+	
+	/**
+	 * The supported filter types.
+	 */
+	public static enum FilterType {
+		/** CQL filter */
+		CQL,
+		/** Extended CQL filter */
+		ECQL
 	}
 	
 	private final Text filterText;
 	//private final Button openForm;
 	private final Button insertVar;
 	private final Button clearFilter;
-	private ControlDecoration decoration;
+	private final ControlDecoration decoration;
 	
 	private TypeDefinition type;
-	private SchemaSpaceID ssid;
+	private final SchemaSpaceID ssid;
+	
+	private final FilterType filterType;
+	
+	private boolean valid = false;
+	private Filter filter;
 	
 	private final Image insertVarImage;
 	private final Image openFormImage;
 	private final Image clearFilterImage;
 	
-	private final Set<FilterListener> listeners = new HashSet<FilterListener>();
+	private final Set<PropertyChangeListener> listeners = new HashSet<PropertyChangeListener>();
 
 	/**
 	 * Create a new filter field for a given type.
@@ -85,15 +101,18 @@ public class TypeFilterField extends Composite {
 	 * @param parent the parent composite
 	 * @param style the composite style
 	 * @param ssid the schema space, may be <code>null</code>
+	 * @param filterType the filter type
 	 */
 	public TypeFilterField(TypeDefinition type, Composite parent, int style, 
-			SchemaSpaceID ssid) {
+			SchemaSpaceID ssid, FilterType filterType) {
 		super(parent, style);
 		
 		this.type = type;
 		this.ssid = ssid;
+		this.filterType = filterType;
+		
 		GridLayout layout = new GridLayout(4, false);
-		layout.horizontalSpacing = 8;
+		layout.horizontalSpacing = 2;
 		layout.verticalSpacing = 0;
 		
 		layout.marginWidth = 0;
@@ -108,21 +127,20 @@ public class TypeFilterField extends Composite {
 		
 		// create components
 		
+		Composite filterComp = new Composite(this, SWT.NONE);
+		filterComp.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
+		filterComp.setLayout(GridLayoutFactory.fillDefaults().extendedMargins(0, 6, 0, 0).create());
+		
 		// text field
-		filterText = new Text(this, SWT.SINGLE | SWT.BORDER);
-		filterText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		filterText = new Text(filterComp, SWT.SINGLE | SWT.BORDER);
+		filterText.setLayoutData(GridDataFactory.fillDefaults()
+				.grab(true, true).create());
 		filterText.setToolTipText(Messages.FeatureFilterField_3); //$NON-NLS-1$
 		filterText.addModifyListener(new ModifyListener() {
 			
 			@Override
 			public void modifyText(ModifyEvent e) {
-				if(filterText.getText() != null && !filterText.getText().isEmpty()){
-					clearFilter.setEnabled(true);
-				}
-				else{
-					setDecorationDefault();
-				}
-				notifyListeners();
+				updateFilter();
 			}
 			
 		});
@@ -130,7 +148,7 @@ public class TypeFilterField extends Composite {
 				"eu.esdihumboldt.hale.doc.user.filter_field");
 
 		decoration = new ControlDecoration(filterText, SWT.RIGHT | SWT.TOP);
-		setDecorationDefault();
+		showDefaultDecoration();
 
 		// clear filter
 		clearFilter = new Button(this, SWT.PUSH);
@@ -144,7 +162,7 @@ public class TypeFilterField extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				filterText.setText(""); //$NON-NLS-1$
 				clearFilter.setEnabled(false);
-				notifyListeners();
+				updateFilter();
 			}
 			
 		});
@@ -199,8 +217,59 @@ public class TypeFilterField extends Composite {
 //		});
 //		
 //		setType(type);
+		
+		updateFilter();
 	}
 	
+	/**
+	 * Update the filter and valid properties.
+	 */
+	protected void updateFilter() {
+		Filter lastFilter = filter;
+		boolean lastValid = valid;
+		String filterString = filterText.getText();
+		
+		boolean filterPresent = filterString != null && !filterString.isEmpty(); 
+		if (filterPresent){
+			clearFilter.setEnabled(true);
+			try {
+				switch (filterType) {
+				case CQL:
+					filter = new FilterGeoCqlImpl(filterString);
+					break;
+				case ECQL:
+					filter = new FilterGeoECqlImpl(filterString);
+					break;
+				default:
+					filter = null;
+				}
+				valid = filter != null;
+				showDefaultDecoration();
+			} catch (Throwable e) {
+				// show error decoration
+				decoration.setImage(FieldDecorationRegistry.getDefault()
+						.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
+						.getImage());
+				decoration.setDescriptionText(e.getMessage());
+				decoration.show();
+				// mark as invalid
+				valid = false;
+			}
+		}
+		else{
+			clearFilter.setEnabled(false);
+			filter = null;
+			valid = false;
+			showDefaultDecoration();
+		}
+		
+		// fire events
+		if (lastValid != valid) {
+			notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALID, lastValid, valid));
+		}
+		notifyListeners(new PropertyChangeEvent(this, PROPERTY_FILTER, lastFilter, filter));
+	}
+
 	/**
 	 * Set the feature type
 	 *  
@@ -214,8 +283,7 @@ public class TypeFilterField extends Composite {
 	}
 	
 	/**
-	 * Get the filter expression
-	 * 
+	 * Get the filter expression.
 	 * @return the filter expression
 	 */
 	public String getFilterExpression() {
@@ -223,49 +291,29 @@ public class TypeFilterField extends Composite {
 	}
 	
 	/**
-	 * Get the filter
-	 * 
-	 * @return the cql filter
-	 * @throws CQLException if the filter cannot be created
+	 * Get the filter.
+	 * @return the filter or <code>null</code>
 	 */
-	public Filter getCQLFilter() throws CQLException  {
-		String expr = getFilterExpression();
-		if (expr == null || expr.isEmpty()) {
-			return null;
-		}
-		else {
-			
-			
-			return new FilterGeoCqlImpl(expr);
-		}
+	public Filter getFilter() {
+		return filter;
 	}
 	
 	/**
-	 * Get the filter
-	 * 
-	 * @return the ecql filter
-	 * @throws CQLException if the filter cannot be created
+	 * States if the current filter expression is valid and 
+	 * @return the valid
 	 */
-	public Filter getECQLFilter() throws CQLException  {
-		String expr = getFilterExpression();
-		if (expr == null || expr.isEmpty()) {
-			return null;
-		}
-		else {
-			return new FilterGeoECqlImpl(expr);
-		}
+	public boolean isValid() {
+		return valid;
 	}
-	
-	
+
 	/**
-	 * Set the filter expression
-	 * 
+	 * Set the filter expression.
 	 * @param filterExpression the filter expression
 	 */
 	public void setFilterExpression(String filterExpression) {
 		filterText.setText(filterExpression);
 		
-		notifyListeners();
+		updateFilter();
 	}
 
 	/**
@@ -284,7 +332,7 @@ public class TypeFilterField extends Composite {
 	 * 
 	 * @param listener the filter listener 
 	 */
-	public void addListener(FilterListener listener) {
+	public void addListener(PropertyChangeListener listener) {
 		listeners.add(listener);
 	}
 
@@ -293,47 +341,48 @@ public class TypeFilterField extends Composite {
 	 * 
 	 * @param listener the filter listener 
 	 */
-	public void removeListener(FilterListener listener) {
+	public void removeListener(PropertyChangeListener listener) {
 		listeners.remove(listener);
 	}
 	
 	/**
-	 * Notify the listeners of a filter change
+	 * Notify the listeners of a property change.
+	 * @param evt the property change event
 	 */
-	protected void notifyListeners() {
-		for (FilterListener listener : listeners) {
-			listener.filterChanged();
+	protected void notifyListeners(PropertyChangeEvent evt) {
+		for (PropertyChangeListener listener : listeners) {
+			listener.propertyChange(evt);
 		}
 	}
 
-	/**
-	 * Set the field decoration.
-	 * FIXME not very nice, why exposed at all? 
-	 * @param type the message type, either WARNING, ERROR or DEFAULT
-	 * @param message the decoration message
-	 */
-	public void setDecoration(String type, String message) {
-		if (type.equals("ERROR")) {
-			decoration.setImage(FieldDecorationRegistry.getDefault()
-					.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
-					.getImage());
-			decoration.setDescriptionText(message);
-			decoration.show();
-		}
-
-		if (type.equals("DEFAULT")) {
-			setDecorationDefault();
-		}
-		if (type.equals("WARNING")) {
-			decoration.setImage(FieldDecorationRegistry.getDefault()
-					.getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
-					.getImage());
-			decoration.setDescriptionText(message);
-			decoration.show();
-		}
-	}
+//	/**
+//	 * Set the field decoration.
+//	 * FIXME not very nice, why exposed at all? 
+//	 * @param type the message type, either WARNING, ERROR or DEFAULT
+//	 * @param message the decoration message
+//	 */
+//	public void setDecoration(String type, String message) {
+//		if (type.equals("ERROR")) {
+//			decoration.setImage(FieldDecorationRegistry.getDefault()
+//					.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
+//					.getImage());
+//			decoration.setDescriptionText(message);
+//			decoration.show();
+//		}
+//
+//		if (type.equals("DEFAULT")) {
+//			showDefaultDecoration();
+//		}
+//		if (type.equals("WARNING")) {
+//			decoration.setImage(FieldDecorationRegistry.getDefault()
+//					.getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
+//					.getImage());
+//			decoration.setDescriptionText(message);
+//			decoration.show();
+//		}
+//	}
 	
-	private void setDecorationDefault(){
+	private void showDefaultDecoration(){
 		 decoration.setImage(FieldDecorationRegistry.getDefault()
 	                .getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
 		 decoration.setDescriptionText("for Example: \"id\" = '1'");

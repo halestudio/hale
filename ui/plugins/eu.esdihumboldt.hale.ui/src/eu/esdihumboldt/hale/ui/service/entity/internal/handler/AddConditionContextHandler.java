@@ -20,11 +20,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.geotools.filter.text.cql2.CQLException;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterDialog;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
@@ -45,16 +44,25 @@ public class AddConditionContextHandler extends AbstractHandler {
 			
 			if (element instanceof EntityDefinition) {
 				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-				//TODO different kinds of filters?
-				//TODO filter configuration dialog
-				//FIXME this is a dummy filter!
-				Filter filter;
-				try {
-					filter = new FilterGeoCqlImpl("id = '0'");
-				} catch (CQLException e) {
-					throw new ExecutionException("Could not create filter", e);
+				EntityDefinition entityDef = (EntityDefinition) element;
+				Filter filter = null;
+				if (entityDef.getPropertyPath().isEmpty()) {
+					// type filter
+					TypeFilterDialog tfd = new TypeFilterDialog(
+							HandlerUtil.getActiveShell(event), 
+							entityDef.getType(),
+							"Type condition",
+							"Define the filter for the new context");
+					if (tfd.open() == TypeFilterDialog.OK) {
+						filter = tfd.getFilter();
+					}
 				}
-				eds.addConditionContext((EntityDefinition) element, filter);
+				else {
+					//TODO value filter
+				}
+				if (filter != null) {
+					eds.addConditionContext((EntityDefinition) element, filter);
+				}
 			}
 		}
 		

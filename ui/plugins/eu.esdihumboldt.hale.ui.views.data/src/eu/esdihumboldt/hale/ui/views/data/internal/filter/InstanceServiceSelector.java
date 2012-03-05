@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,7 +38,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -48,7 +49,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.filter.TypeFilterField;
-import eu.esdihumboldt.hale.ui.filter.TypeFilterField.FilterListener;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterField.FilterType;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
@@ -154,15 +155,17 @@ public class InstanceServiceSelector implements InstanceSelector {
 			
 			
 			// filter field
-			filterField = new TypeFilterField((selectedType == null)?(null):(selectedType), this,  SWT.NONE, spaceID);
+			filterField = new TypeFilterField((selectedType == null)?(null):(selectedType), 
+					this, SWT.NONE, spaceID, FilterType.CQL);
 			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-			filterField.addListener(new FilterListener() {
+			filterField.addListener(new PropertyChangeListener() {
 				
 				@Override
-				public void filterChanged() {
-					updateSelection();
+				public void propertyChange(PropertyChangeEvent evt) {
+					if (evt.getPropertyName().equals(TypeFilterField.PROPERTY_FILTER)) {
+						updateSelection();
+					}
 				}
-				
 			});
 			
 			// refresh button
@@ -341,48 +344,26 @@ public class InstanceServiceSelector implements InstanceSelector {
 				
 				List<Instance> instanceList = new ArrayList<Instance>();
 				DataSet dataset = (space == SchemaSpaceID.SOURCE)?(DataSet.SOURCE):(DataSet.TRANSFORMED);
+				
+				Filter filter = filterField.getFilter();
+				
+				InstanceCollection instances = is.getInstances(dataset);
+				if (filter != null) {
+					instances = instances.select(filter);
+				}
+				
+				ResourceIterator<Instance> it = instances.iterator();
 				try {
-					//Filter Fun
-					Filter filter = filterField.getCQLFilter();
-					
-					InstanceCollection instances = is.getInstances(dataset);
-					
-					ResourceIterator<Instance> it = instances.iterator();
-					try {
-						if (filter == null) {
-							int num = 0;
-							while (it.hasNext() && num < max) {
-								Instance instance = it.next();
-								if (instance.getDefinition().equals(type)) {
-									instanceList.add(instance);
-									num++;
-								}
-							}
-						} else {
-							int num = 0;
-							while (it.hasNext() && num < max) {
-								Instance instance = it.next();
-								if (filter.match(instance)) {
-
-									if (!PropertyResolver
-											.isLastQueryPathUnique()) {
-										filterField
-												.setDecoration(
-														"WARNING",
-														"More than one possible match in the instance was found.\n Please specify your Query with namespaces,\n for example: \"{http://example.com}foo.{http://example2.com}.bar\" = 'nill'");
-									}
-									instanceList.add(instance);
-									num++;
-								}
-							}
-							filterField.setDecoration("DEFAULT", null);
+					int num = 0;
+					while (it.hasNext() && num < max) {
+						Instance instance = it.next();
+						if (instance.getDefinition().equals(type)) {
+							instanceList.add(instance);
+							num++;
 						}
-					} finally {
-						it.close();
 					}
-				} catch (Exception e) {
-					//log.warn("Error creating filter"); //$NON-NLS-1$
-					filterField.setDecoration("ERROR", e.getMessage());
+				} finally {
+					it.close();
 				}
 				
 				selection = instanceList;
