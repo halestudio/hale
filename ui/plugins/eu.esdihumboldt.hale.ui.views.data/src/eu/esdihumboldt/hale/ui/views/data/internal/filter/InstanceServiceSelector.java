@@ -47,8 +47,8 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.filter.FeatureFilterField;
-import eu.esdihumboldt.hale.ui.filter.FeatureFilterField.FilterListener;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterField;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterField.FilterListener;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
@@ -78,7 +78,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 		
 		private final ComboViewer count;
 		
-		final FeatureFilterField filterField;
+		final TypeFilterField filterField;
 		
 		private Iterable<Instance> selection;
 		
@@ -154,7 +154,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 			
 			
 			// filter field
-			filterField = new FeatureFilterField((selectedType == null)?(null):(selectedType), this,  SWT.NONE, spaceID);
+			filterField = new TypeFilterField((selectedType == null)?(null):(selectedType), this,  SWT.NONE, spaceID);
 			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			filterField.addListener(new FilterListener() {
 				

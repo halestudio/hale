@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public class FeatureFilterForm extends Composite {
 	
 	private static ALogger _log = ALoggerFactory.getLogger(FeatureFilterForm.class);
