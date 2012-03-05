@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.ui.filter.internal.Messages;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
+@Deprecated
 public class FeatureFilterFormDialog extends TitleAreaDialog {
 	
 	private final FeatureType featureType;

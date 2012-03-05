@@ -49,7 +49,7 @@ import eu.esdihumboldt.hale.ui.filter.internal.Messages;
  * @author Sebastian Reinhardt
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class FeatureFilterField extends Composite {
+public class TypeFilterField extends Composite {
 	
 	/**
 	 * Filter listener interface
@@ -86,7 +86,7 @@ public class FeatureFilterField extends Composite {
 	 * @param style the composite style
 	 * @param ssid the schema space
 	 */
-	public FeatureFilterField(TypeDefinition type, Composite parent, int style, 
+	public TypeFilterField(TypeDefinition type, Composite parent, int style, 
 			SchemaSpaceID ssid) {
 		super(parent, style);
 		
@@ -160,8 +160,8 @@ public class FeatureFilterField extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				PropertyDefinitionDialog dialog = new PropertyDefinitionDialog(
 						Display.getCurrent().getActiveShell(),
-						FeatureFilterField.this.ssid, 
-						FeatureFilterField.this.type,
+						TypeFilterField.this.ssid, 
+						TypeFilterField.this.type,
 						Messages.FeatureFilterField_7, null);
 				
 				if (dialog.open() == PropertyDefinitionDialog.OK && dialog.getObject() != null
@@ -336,7 +336,7 @@ public class FeatureFilterField extends Composite {
 	private void setDecorationDefault(){
 		 decoration.setImage(FieldDecorationRegistry.getDefault()
 	                .getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
-		 decoration.setDescriptionText("for Example: \"HERP.DERP\" = 'DURR'");
+		 decoration.setDescriptionText("for Example: \"id\" = '1'");
 		 decoration.show();
 	}
 	
