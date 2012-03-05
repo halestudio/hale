@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t1/" targetNamespace="http://www.example.org/t1/">
+    <complexType name="SoilProfileType">
+    	<sequence>
+    		<element name="bulkDensityOrSolidVolume" type="string" minOccurs="0" maxOccurs="1">
+    			<annotation>
+    				<documentation>Bulk density or solid volume class</documentation>
+    			</annotation>
+    			<simpleType>
+    				<restriction>
+    					<enumeration value="Bd0"></enumeration>
+    					<enumeration value="Bd1"></enumeration>
+    					<enumeration value="Bd2"></enumeration>
+    					<enumeration value="Bd3"></enumeration>
+    					<enumeration value="Bd4"></enumeration>
+    					<enumeration value="Bd5"></enumeration>
+    					<enumeration value="SV0"></enumeration>
+    					<enumeration value="SV1"></enumeration>
+    					<enumeration value="SV2"></enumeration>
+    					<enumeration value="SV3"></enumeration>
+    				</restriction>
+    			</simpleType>
+    		</element>
+    		<element name="carbon" type="float" minOccurs="0" maxOccurs="1">
+    			<annotation>
+    				<documentation>Carbonate content in relation to mass</documentation>
+    			</annotation>
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <element name="profile" type="tns:SoilProfileType"></element>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:profile" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+</schema>

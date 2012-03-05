@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t2/" targetNamespace="http://www.example.org/t2/">
+    <complexType name="SoilObjectType">
+    	<sequence>
+    		<element name="type" minOccurs="1" maxOccurs="1">
+    			<complexType>
+    				<simpleContent>
+    					<restriction base="string">
+    						<enumeration value="profile"></enumeration>
+    						<enumeration value="mapUnit"></enumeration>
+    						<enumeration value="typologicalUnit"></enumeration>
+    					</restriction>
+    				</simpleContent>
+    			</complexType>
+    		</element>
+    		<element name="attribute" type="tns:AttributeType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+    
+    <element name="soilObject" type="tns:SoilObjectType"></element>
+    
+    <complexType name="AttributeType">
+    	<sequence>
+    		<element name="name" minOccurs="1" maxOccurs="1" type="string"></element>
+    		<element name="value" minOccurs="0" maxOccurs="1" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:soilObject" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+</schema>
