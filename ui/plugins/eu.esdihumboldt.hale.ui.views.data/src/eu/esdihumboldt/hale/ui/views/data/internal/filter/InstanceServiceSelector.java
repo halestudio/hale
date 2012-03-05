@@ -369,7 +369,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 										filterField
 												.setDecoration(
 														"WARNING",
-														"More then one possible match in the instance was found. \n Please specify you Query with namespaces,\n for example: \"{http://example.com}foo.{http://example2.com}.bar\" = 'nill'");
+														"More than one possible match in the instance was found.\n Please specify your Query with namespaces,\n for example: \"{http://example.com}foo.{http://example2.com}.bar\" = 'nill'");
 									}
 									instanceList.add(instance);
 									num++;
