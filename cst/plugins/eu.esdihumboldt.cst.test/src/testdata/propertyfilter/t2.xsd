@@ -23,7 +23,7 @@
     <complexType name="AttributeType">
     	<sequence>
     		<element name="name" minOccurs="1" maxOccurs="1" type="string"></element>
-    		<element name="value" minOccurs="0" maxOccurs="1" type="string"></element>
+    		<element name="value" minOccurs="1" maxOccurs="1" type="string" nillable="true"></element>
     	</sequence>
     </complexType>
     
