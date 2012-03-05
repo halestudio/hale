@@ -11,6 +11,9 @@
  */
 package eu.esdihumboldt.hale.ui.filter;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -20,11 +23,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.geotools.filter.text.cql2.CQLException;
 
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterField.FilterType;
 
 /**
  * Dialog for configuring a CQL type filter. 
@@ -39,15 +43,24 @@ public class TypeFilterDialog extends TitleAreaDialog {
 
 	private Filter filter;
 	
+	private String title;
+	
+	private String message;
+	
 	/**
 	 * Constructor.
 	 * @param parentShell the parent shell
 	 * @param type the type definition
+	 * @param title the dialog title, <code>null</code> for a default title
+	 * @param message the dialog message, <code>null</code> for a default message
 	 */
-	public TypeFilterDialog(Shell parentShell, TypeDefinition type) {
+	public TypeFilterDialog(Shell parentShell, TypeDefinition type, 
+			String title, String message) {
 		super(parentShell);
 		
 		this.type = type;
+		this.title = (title == null)?("Type filter"):(title);
+		this.message = (message == null)?("Define the filter to apply"):(message);
 	}
 	
 	/**
@@ -57,8 +70,8 @@ public class TypeFilterDialog extends TitleAreaDialog {
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
 		
-		setTitle("Type filter"); //$NON-NLS-1$
-		setMessage("Define the filter to apply");
+		setTitle(title); //$NON-NLS-1$
+		setMessage(message);
 		
 		return control;
 	}
@@ -70,7 +83,7 @@ public class TypeFilterDialog extends TitleAreaDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		
-		newShell.setText("Type filter"); //$NON-NLS-1$
+		newShell.setText(title); //$NON-NLS-1$
 	}
 
 	/**
@@ -84,13 +97,37 @@ public class TypeFilterDialog extends TitleAreaDialog {
 		
 		page.setLayout(new GridLayout(1, false));
 		
-		filterField = new TypeFilterField(type, page, SWT.NONE, null);
+		Label filterLabel = new Label(page, SWT.NONE);
+		filterLabel.setText("Filter");
+		
+		filterField = new TypeFilterField(type, page, SWT.NONE, null, 
+				FilterType.CQL); //TODO configurable?
 		filterField.setLayoutData(GridDataFactory.swtDefaults()
 				.align(SWT.FILL, SWT.BEGINNING).grab(true, false).create());
+		
+		filterField.addListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals(TypeFilterField.PROPERTY_VALID)) {
+					getButton(OK).setEnabled((Boolean) evt.getNewValue());
+				}
+			}
+		});
 		
 		return page;
 	}
 	
+	/**
+	 * @see Dialog#createButtonsForButtonBar(Composite)
+	 */
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		super.createButtonsForButtonBar(parent);
+		
+		getButton(OK).setEnabled(filterField.isValid());
+	}
+
 	/**
 	 * Get the filter expression
 	 * 
@@ -105,13 +142,10 @@ public class TypeFilterDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected void okPressed() {
-		try {
-			filter = filterField.getCQLFilter(); //XXX what is the preferred way?
+		filter = filterField.getFilter();
+		if (filter != null) {
 			super.okPressed();
-		} catch (CQLException e) {
-			// ignore, don't close dialog
-			//TODO the OK button should be disabled!
-		} 
+		}
 	}
 
 	/**
