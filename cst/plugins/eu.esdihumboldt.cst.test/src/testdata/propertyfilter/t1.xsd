@@ -2,12 +2,12 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t1/" targetNamespace="http://www.example.org/t1/">
     <complexType name="SoilProfileType">
     	<sequence>
-    		<element name="bulkDensityOrSolidVolume" type="string" minOccurs="0" maxOccurs="1">
+    		<element name="bulkDensityOrSolidVolume" minOccurs="0" maxOccurs="1">
     			<annotation>
     				<documentation>Bulk density or solid volume class</documentation>
     			</annotation>
     			<simpleType>
-    				<restriction>
+    				<restriction base="string">
     					<enumeration value="Bd0"></enumeration>
     					<enumeration value="Bd1"></enumeration>
     					<enumeration value="Bd2"></enumeration>
