@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.io.gml.writer.internal;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -155,8 +156,9 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+		OutputStream out;
 		try {
-			init();
+			out = init();
 		} catch (XMLStreamException e) {
 			throw new IOException("Creating the XML stream writer failed", e);
 		}
@@ -169,6 +171,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			reporter.setSuccess(false);
 		} finally {
 			progress.end();
+			out.close();
 		}
 		
 		return reporter;
@@ -227,11 +230,12 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 * Create and setup the stream writer, the type index and the GML namespace
 	 * (Initializes {@link #writer}, {@link #gmlNs} and {@link #targetIndex},
 	 * resets {@link #geometryWriter} and {@link #additionalSchemas}).
+	 * @return the opened output stream
 	 * 
 	 * @throws XMLStreamException if creating the {@link XMLStreamWriter} fails
 	 * @throws IOException if creating the output stream fails
 	 */
-	private void init() throws XMLStreamException, IOException {
+	private OutputStream init() throws XMLStreamException, IOException {
 		// reset target index
 		targetIndex = null;
 		// reset geometry writer
@@ -245,7 +249,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", //$NON-NLS-1$
 				Boolean.valueOf(true));
 		// create XML stream writer with UTF-8 encoding
-		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(getTarget().getOutput(), "UTF-8"); //$NON-NLS-1$
+		OutputStream outStream = getTarget().getOutput();
+		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(outStream , "UTF-8"); //$NON-NLS-1$
 
 		String defNamespace = null;
 		
@@ -306,6 +311,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 //		for (Definition def : getTargetSchema().getTypes().keySet()) {
 //			types.addType(DefinitionUtil.getType(def));
 //		}
+		
+		return outStream;
 	}
 
 	/**
@@ -511,6 +518,8 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
         writer.writeEndElement(); // FeatureCollection
         
         writer.writeEndDocument();
+        
+        writer.close();
 	}
 
 	/**
