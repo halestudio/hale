@@ -20,6 +20,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,7 +35,9 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -95,6 +99,33 @@ public class PropertyResolverTest {
 			assertTrue(PropertyResolver.hasProperty(instance, "shipto.{http://www.example.com}city"));
 			
 			assertEquals(PropertyResolver.getValues(instance, "shipto.city").iterator().next(), "4000 Stavanger");
+		} finally {
+			it.close();
+		}
+	}
+	
+	/**
+	 * Test with a wrapper instance that has no definition itself.
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadShiporderWrapped() throws Exception {
+		InstanceCollection instances = loadXMLInstances(
+				getClass().getResource("/data/shiporder/shiporder.xsd").toURI(),
+				getClass().getResource("/data/shiporder/shiporder.xml").toURI());
+		
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			assertTrue(it.hasNext());
+			
+			Instance instance = it.next();
+			assertNotNull(instance);
+			
+			// create dummy instance
+			MutableInstance wrapperInstance = new DefaultInstance(null, null);
+			wrapperInstance.addProperty(new QName("value"), instance);
+			
+			assertEquals(PropertyResolver.getValues(wrapperInstance, "value.shipto.city").iterator().next(), "4000 Stavanger");
 		} finally {
 			it.close();
 		}
