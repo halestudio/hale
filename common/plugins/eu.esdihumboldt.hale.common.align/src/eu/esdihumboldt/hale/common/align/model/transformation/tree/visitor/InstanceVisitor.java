@@ -12,6 +12,11 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.xml.namespace.QName;
+
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -22,6 +27,8 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.Leftover
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
@@ -121,9 +128,31 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					// condition context
 					Condition condition = AlignmentUtil.getContextCondition(entityDef);
 					if (condition != null) {
-						//TODO
-						//XXX apply condition filter on main instance?!
-						//XXX apply condition as filter on values and treat normally? 
+						if (condition.getFilter() == null) {
+							// assume exclusion
+							source.setDefined(false);
+							return false;
+						}
+						
+						// apply condition as filter on values and continue with those values
+						Collection<Object> matchedValues = new ArrayList<Object>();
+						for (Object value : values) {
+							// create dummy instance
+							MutableInstance dummy = new DefaultInstance(null, null);
+							// add value as property
+							dummy.addProperty(new QName("value"), value);
+							// add parent value as property
+							SourceNode parentNode = source.getParent();
+							if (parentNode != null && parentNode.isDefined()) {
+								dummy.addProperty(new QName("parent"), parentNode.getValue());
+							}
+							
+							if (condition.getFilter().match(dummy)) {
+								matchedValues.add(value);
+							}
+						}
+						
+						values = matchedValues.toArray();
 					}
 					
 					// (named contexts not allowed)
