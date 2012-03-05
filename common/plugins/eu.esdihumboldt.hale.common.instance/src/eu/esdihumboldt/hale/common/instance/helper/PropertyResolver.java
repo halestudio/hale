@@ -23,6 +23,10 @@ import java.util.Queue;
 
 import javax.xml.namespace.QName;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Collections2;
+
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
@@ -73,11 +77,70 @@ public class PropertyResolver {
 	 * @param forceValue if this is <code>true</code>, when the object at the
 	 *   end of a path is an instance, its value will be returned
 	 * @return the values or instances contained in the instance matching the
-	 *   given path
+	 *   given path, may be <code>null</code>
 	 */
 	public static Collection<Object> getValues(Instance instance,
 			String propertyPath, boolean forceValue) {
-		if(hasProperty(instance, propertyPath)){
+		if (instance.getDefinition() == null) {
+			// instance w/o a definition -> search only in instance structure
+			//XXX group hiding and incomplete names not supported!
+			Collection<Object> result = new ArrayList<Object>();
+			
+			Collection<Object> parents = new ArrayList<Object>();
+			parents.add(instance);
+			
+			Queue<QName> names = new LinkedList<QName>(getQNamesFromPath(propertyPath));
+			while (!names.isEmpty() && !parents.isEmpty()) {
+				QName property = names.poll();
+				
+				Collection<Object> values = new ArrayList<Object>();
+				
+				for (Object parent : parents) {
+					if (parent instanceof Group) {
+						Object[] propertyValues = ((Group) parent).getProperty(property);
+						if (propertyValues != null) {
+							for (Object propertyValue : propertyValues) {
+								if (propertyValue instanceof Instance 
+										&& ((Instance) propertyValue).getDefinition() != null) {
+									Instance pi = (Instance) propertyValue;
+									// call getValues again an perform the search based on definitions
+									// with a reduced path
+									String path = pathString(names);
+									Collection<Object> deepValues = getValues(pi, path, forceValue);
+									if (deepValues != null) {
+										result.addAll(deepValues);
+									}
+								}
+								else {
+									values.add(propertyValue);
+								}
+							}
+						}
+					}
+				}
+				
+				parents = values;
+			}
+			if (names.isEmpty()) {
+				// return all values found
+				for (Object value : parents) {
+					if (!forceValue) {
+						result.add(value);
+					}
+					else {
+						if (value instanceof Instance) {
+							result.add(((Instance) value).getValue());
+						}
+						else if (!(value instanceof Group)) {
+							result.add(value);
+						}
+					}
+				}
+			}
+			return result;
+		}
+		// definition based check and retrieval
+		if (hasProperty(instance, propertyPath)) {
 			LinkedList<String> paths = getKnownQueryPath(instance, propertyPath);
 			Collection<Object> result = new ArrayList<Object>();
 			
@@ -94,19 +157,14 @@ public class PropertyResolver {
 				Queue<Object> nextQueue = new LinkedList<Object>();
 				
 				for (Object prop : props){
-				
 					currentQueue.add(prop);
-					
 				}
 				
 				for(int i = 1; i < qnames.size(); i++){
-				
 					while (!currentQueue.isEmpty()){
-						
 						Object prop = currentQueue.poll();
 						
 						if(prop instanceof Group){
-							
 							Object[] nextPropertys = ((Group) prop).getProperty(qnames.get(i));
 							
 							if(nextPropertys == null){
@@ -114,27 +172,20 @@ public class PropertyResolver {
 							}
 							
 							for (Object np : nextPropertys){
-								
 								nextQueue.add(np);
-								
 							}
-		
 						}
-						
-						else{
+						else {
 							//TODO ERROR wrong path given from the cache
 						}
-
 					}
 					
 					while(!nextQueue.isEmpty()){
-					currentQueue.add(nextQueue.poll());
+						currentQueue.add(nextQueue.poll());
 					}
 				}
 
 				while(!currentQueue.isEmpty()){
-					
-					
 					Object finalProp = currentQueue.poll();
 					
 					if (finalProp instanceof Instance){
@@ -145,31 +196,30 @@ public class PropertyResolver {
 							result.add(finalProp);
 						}
 					}
-					
 					else if (finalProp instanceof Group && forceValue){
 						//TODO error
 					}
-					
 					else result.add(finalProp);
-					
-					
 				}
-				
-				
-				
-				
 			}
-			if(!result.isEmpty()) return result;
-			else return null;
+			if(!result.isEmpty()) {
+				return result;
+			}
+			else {
+				return null;
+			}
 		}
-		
 		else return null;
-
-		
 	}
-	
-	
-	
+
+	private static String pathString(Collection<QName> names) {
+		return Joiner.on('.').join(Collections2.transform(names, new Function<QName, String>() {
+			@Override
+			public String apply(QName input) {
+				return input.toString();
+			}
+		}));
+	}
 
 	/**
 	 * Method for spliting up the path in the given query. The Method splits the String when a dot occurs.
@@ -275,7 +325,6 @@ public class PropertyResolver {
 	 * @return true if the path was found, else false
 	 */
 	public static boolean hasProperty(Instance instance, String query) {
-
 		QueryDefinitionIndex qdi = new QueryDefinitionIndex(
 				instance.getDefinition(), query);
 		
