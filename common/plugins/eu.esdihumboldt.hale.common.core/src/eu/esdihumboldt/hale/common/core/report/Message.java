@@ -29,6 +29,12 @@ public interface Message {
 	public String getMessage();
 	
 	/**
+	 * Get the formatted message string with additional informations.
+	 * @return the formatted message
+	 */
+	public String getFormattedMessage();
+	
+	/**
 	 * Get the associated stack trace if any
 	 * @return the associated stack trace or <code>null</code>
 	 */

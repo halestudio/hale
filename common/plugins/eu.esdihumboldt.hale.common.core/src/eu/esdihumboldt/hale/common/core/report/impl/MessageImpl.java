@@ -103,4 +103,12 @@ public class MessageImpl implements Message {
 		return throwable;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.report.Message#getFormattedMessage()
+	 */
+	@Override
+	public String getFormattedMessage() {
+		return this.getMessage();
+	}
+
 }

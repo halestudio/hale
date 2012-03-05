@@ -35,7 +35,7 @@ public class ReportTreeLabelProvider extends LabelProvider {
 		} else if (obj instanceof ReportGroupError) {
 			return String.format("Error (%d)", ((ReportGroupError) obj).size());
 		} else if (obj instanceof Message) {
-			return ((Message) obj).getMessage();
+			return ((Message) obj).getFormattedMessage();
 		}
 		
 		return obj.toString();
