@@ -75,6 +75,10 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	 */
 	@Override
 	public CellExplanation getExplanation() {
+		if (conf.getAttribute("cellExplanation") == null
+				|| conf.getAttribute("cellExplanation").isEmpty()) {
+			return null;
+		}
 		try {
 			return (CellExplanation) conf.createExecutableExtension("cellExplanation");
 		} catch (CoreException e) {
