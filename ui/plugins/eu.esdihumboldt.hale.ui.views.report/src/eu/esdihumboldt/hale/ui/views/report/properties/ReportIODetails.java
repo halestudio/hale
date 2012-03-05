@@ -12,41 +12,28 @@
 
 package eu.esdihumboldt.hale.ui.views.report.properties;
 
-import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.common.core.io.report.IOMessage;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 
 /**
+ * Special detail page for {@link IOReport}s.
+ * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportIODetails extends ReportDetails {
 
-	/**
-	 * @see AbstractPropertySection#refresh()
-	 */
 	@Override
-	public void refresh() {
-		int warnCount = this.report.getWarnings().size();
-		int errorCount = this.report.getErrors().size();
-		warnings.setText(""+warnCount);
-		errors.setText(""+errorCount);
-		
-		if (warnCount > 0) {
-			for (Object o : this.report.getWarnings()) {
-				IOMessage message = (IOMessage) o;
-				
-				this.warningList.add("["+message.getLineNumber()+"] "+message.getMessage());
-			}
-		}
-		
-		if (errorCount > 0) {
-			for (Object o : this.report.getErrors()) {
-				IOMessage message = (IOMessage) o;
-				
-				this.errorList.add("["+message.getLineNumber()+"] "+message.getMessage());
-
-			}
-		}
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
+//		super.createControls(parent, aTabbedPropertySheetPage);
+	}
+	
+	@Override
+	public void setInput(IWorkbenchPart part, ISelection selection) {
+		// do nothing
 	}
 }

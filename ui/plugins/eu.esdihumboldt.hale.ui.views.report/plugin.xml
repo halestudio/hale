@@ -53,12 +53,12 @@
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.report.properties.ReportDetails"
+               class="eu.esdihumboldt.hale.ui.views.report.properties.ReportIODetails"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.report.properties.details.name"
                tab="eu.esdihumboldt.hale.ui.views.report.properties.details">
             <input
-                  type="eu.esdihumboldt.hale.common.core.report.Report">
+                  type="eu.esdihumboldt.hale.common.core.io.report.IOReport">
             </input>
          </propertySection>
       </propertySections>

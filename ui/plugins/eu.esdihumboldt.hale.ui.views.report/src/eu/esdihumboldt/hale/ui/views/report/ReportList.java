@@ -134,6 +134,10 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 		// set content provider
 		_treeViewer.setContentProvider(new ReportListContentProvider());
 		
+		// disable this if it uses too much memory
+		// but should maintain the list much faster
+		_treeViewer.setUseHashlookup(true);
+		
 		// set selection provider
 		getSite().setSelectionProvider(_treeViewer);
 		
@@ -152,8 +156,9 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	 * Initialize the toolbar.
 	 */
 	private void initializeToolBar() {
-//		IToolBarManager toolbarManager = getViewSite().getActionBars()
-//				.getToolBarManager();
+//		IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+//		toolbarManager.add(new Action(SWT.DROP_DOWN) {
+//		});
 	}
 
 	/**
@@ -205,6 +210,16 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 				try{
 					// add report to view
 					_treeViewer.setInput(new ReportItem(repService.getCurrentSessionDescription(), report));
+					/*
+					 * TODO expand all previous expanded items
+					 * To expand all previous expanded entries:
+					 * see: http://stackoverflow.com/questions/1576563/saving-treeviewer-state-before-setinput
+					 * You need to make sure that your TreeViewer's content provider provides objects that have their 
+					 * hashset and equals methods properly defined. AbstractTreeViewer needs to be able to compare 
+					 * the old and new objects to determine their expansion state. If hashset and equals aren't provided,
+					 *  it's a simple reference check, which won't work if you've recreated your contents.
+					 */
+					_treeViewer.setExpandedElements(new Object[] {repService.getCurrentSessionDescription()});
 				} catch (NullPointerException e) {
 					_log.warn("NullpointerException while adding a Report.");
 					_log.trace(e.getMessage());
