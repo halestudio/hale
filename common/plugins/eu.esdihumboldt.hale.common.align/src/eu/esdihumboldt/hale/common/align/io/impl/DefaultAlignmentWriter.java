@@ -43,7 +43,7 @@ public class DefaultAlignmentWriter extends AbstractAlignmentWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Load HALE alignment", ProgressIndicator.UNKNOWN);
+		progress.begin("Save HALE alignment", ProgressIndicator.UNKNOWN);
 
 		OutputStream out = getTarget().getOutput();
 		try {
