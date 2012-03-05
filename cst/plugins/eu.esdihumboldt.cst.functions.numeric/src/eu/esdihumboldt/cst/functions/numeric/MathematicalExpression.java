@@ -79,6 +79,11 @@ public class MathematicalExpression extends AbstractSingleTargetPropertyTransfor
 				number = var.getValueAs(Double.class);
 			}
 			
+			// the JMEP library only supports Integer and Doubles, but e.g. no Floats
+			if (!(number instanceof Integer) && !(number instanceof Double)) {
+				number = number.doubleValue();
+			}
+			
 			// determine the variable name
 			String name = var.getProperty().getDefinition().getName().getLocalPart();
 			Constant varValue = new Constant(number);
