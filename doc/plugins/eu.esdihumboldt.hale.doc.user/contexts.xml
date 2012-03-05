@@ -4,8 +4,8 @@
       <description>bla description</description>
       <topic href="html/concepts/what_is_schema.html" label="What is a Schema ?"/>
    </context>
-   <context id="filter_field">
-      <description>Use a CQL filter for selecting instance samples.</description>
-      <topic href="html/tasks/datas/cql_filter.html" label="CQL Filter"/>
+   <context id="filter_field" title="Filter field">
+      <description>Enter a CQL filter to be applied on instances</description>
+      <topic href="html/concepts/cql_filter.html" label="CQL Filter"/>
    </context>
 </contexts>

@@ -61,8 +61,19 @@ public class TypeFilterDialog extends TitleAreaDialog {
 		this.type = type;
 		this.title = (title == null)?("Type filter"):(title);
 		this.message = (message == null)?("Define the filter to apply"):(message);
+		
+		setHelpAvailable(true);
 	}
 	
+	/**
+	 * @see Dialog#isResizable()
+	 */
+	@Override
+	protected boolean isResizable() {
+		// resizable to allow the HelpTray to appear
+		return true;
+	}
+
 	/**
 	 * @see TitleAreaDialog#createContents(Composite)
 	 */
