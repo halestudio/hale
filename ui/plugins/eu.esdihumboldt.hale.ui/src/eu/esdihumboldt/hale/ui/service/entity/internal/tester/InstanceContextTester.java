@@ -221,8 +221,9 @@ public class InstanceContextTester extends PropertyTester {
 			return false;
 		}
 		
-		//FIXME for now adding conditions for properties disabled
-		if (!entityDef.getPropertyPath().isEmpty()) {
+		//FIXME for now adding conditions for target properties disabled
+		if (entityDef.getSchemaSpace().equals(SchemaSpaceID.TARGET)
+				&& !entityDef.getPropertyPath().isEmpty()) {
 			return false;
 		}
 		
