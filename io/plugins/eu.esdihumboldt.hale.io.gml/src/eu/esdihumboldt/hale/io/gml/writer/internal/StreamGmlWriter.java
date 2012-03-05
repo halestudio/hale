@@ -653,39 +653,59 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		
 		for (ChildDefinition<?> child : children) {
 			Object[] values = parent.getProperty(child.getName());
-			if (values == null || values.length <= 0) {
-				continue;
-			}
 			
 			if (child.asProperty() != null) {
 				PropertyDefinition propDef = child.asProperty();
 				boolean isAttribute = propDef.getConstraint(XmlAttributeFlag.class).isEnabled();
 				
 				if (attributes && isAttribute) {
-					// write attribute
-					writeAttribute(values[0], propDef);
-					
-					if (values.length > 1) {
-						//TODO warning?!
+					if (values != null && values.length > 0) {
+						// write attribute
+						writeAttribute(values[0], propDef);
+						
+						if (values.length > 1) {
+							//TODO warning?!
+						}
 					}
 				}
 				else if (!attributes && !isAttribute) {
-					// write element
-					for (Object value : values) {
-						writeElement(value, propDef);
+					int numValues = 0;
+					if (values != null) {
+						// write element
+						for (Object value : values) {
+							writeElement(value, propDef);
+						}
+						numValues = values.length;
+					}
+					
+					// write additional elements to
+					// satisfy minOccurrs (for nillable elements)
+					Cardinality cardinality = propDef.getConstraint(Cardinality.class);
+					if (cardinality.getMinOccurs() > numValues) {
+						if (propDef.getConstraint(NillableFlag.class).isEnabled()) {
+							for (int i = numValues; i < cardinality.getMinOccurs(); i++) {
+								writeElement(null, propDef); // write nil element
+							}
+						}
+						else {
+							// no value for non-nillable element
+							//TODO add warning to report
+						}
 					}
 				}
 			}
 			else if (child.asGroup() != null) {
 				// handle to child groups
-				for (Object value : values) {
-					if (value instanceof Group) {
-						writeProperties((Group) value, 
-								DefinitionUtil.getAllChildren(child.asGroup()), 
-								attributes);
-					}
-					else {
-						//TODO warning/error?
+				if (values != null) {
+					for (Object value : values) {
+						if (value instanceof Group) {
+							writeProperties((Group) value, 
+									DefinitionUtil.getAllChildren(child.asGroup()), 
+									attributes);
+						}
+						else {
+							//TODO warning/error?
+						}
 					}
 				}
 			}
