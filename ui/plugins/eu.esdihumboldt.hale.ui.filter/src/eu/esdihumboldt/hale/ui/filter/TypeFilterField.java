@@ -84,7 +84,7 @@ public class TypeFilterField extends Composite {
 	 * @param type the type definition
 	 * @param parent the parent composite
 	 * @param style the composite style
-	 * @param ssid the schema space
+	 * @param ssid the schema space, may be <code>null</code>
 	 */
 	public TypeFilterField(TypeDefinition type, Composite parent, int style, 
 			SchemaSpaceID ssid) {

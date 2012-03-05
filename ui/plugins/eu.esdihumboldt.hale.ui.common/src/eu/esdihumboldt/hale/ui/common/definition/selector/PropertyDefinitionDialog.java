@@ -56,7 +56,8 @@ public class PropertyDefinitionDialog extends AbstractTreeSelectionDialog<Entity
 	/**
 	 * Create a property entity dialog 
 	 * @param parentShell the parent shall
-	 * @param ssid the schema space
+	 * @param ssid the schema space used for creating {@link PropertyEntityDefinition},
+	 *   may be <code>null</code> if not needed
 	 * @param parentType the parent type for the property to be selected
 	 * @param title the dialog title
 	 * @param initialSelection the entity definition to select initially (if
