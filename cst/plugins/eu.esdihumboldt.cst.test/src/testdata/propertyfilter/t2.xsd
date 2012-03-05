@@ -3,15 +3,13 @@
     <complexType name="SoilObjectType">
     	<sequence>
     		<element name="type" minOccurs="1" maxOccurs="1">
-    			<complexType>
-    				<simpleContent>
-    					<restriction base="string">
-    						<enumeration value="profile"></enumeration>
-    						<enumeration value="mapUnit"></enumeration>
-    						<enumeration value="typologicalUnit"></enumeration>
-    					</restriction>
-    				</simpleContent>
-    			</complexType>
+    			<simpleType>
+   					<restriction base="string">
+   						<enumeration value="profile"></enumeration>
+   						<enumeration value="mapUnit"></enumeration>
+   						<enumeration value="typologicalUnit"></enumeration>
+   					</restriction>
+    			</simpleType>
     		</element>
     		<element name="attribute" type="tns:AttributeType" minOccurs="0" maxOccurs="unbounded"></element>
     	</sequence>
