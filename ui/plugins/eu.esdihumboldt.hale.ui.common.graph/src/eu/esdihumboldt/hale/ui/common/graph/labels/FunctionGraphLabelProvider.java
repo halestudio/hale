@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.ui.common.graph.figures.FunctionFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.ParameterFigure;
 import eu.esdihumboldt.hale.ui.util.ResourceManager;
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 import eu.esdihumboldt.util.Pair;
 
@@ -101,30 +102,36 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public IFigure getFigure(Object element) {
-
+		CustomShapeFigure figure = null;
+		
 		if (element instanceof AbstractParameter) {
-			return new ParameterFigure(new FingerPost(10, SWT.LEFT),
+			figure = new ParameterFigure(new FingerPost(10, SWT.LEFT),
 					getOccurenceString((AbstractParameter) element),
 					((AbstractParameter) element).getDescription(), showAll);
 		}
-
-		if (element instanceof Pair<?, ?>) {
-			element = ((Pair<?, ?>) element).getFirst();
-
+		else {
+			if (element instanceof Pair<?, ?>) {
+				element = ((Pair<?, ?>) element).getFirst();
+			}
+	
+			if (element instanceof PropertyFunction) {
+				figure = new FunctionFigure(resourceManager,
+						((PropertyFunction) element).getDefinedParameters(), showAll);
+			}
+			else if (element instanceof TypeFunction) {
+				figure = new FunctionFigure(resourceManager,
+						((TypeFunction) element).getDefinedParameters(), showAll);
+			}
+			else if (element instanceof AbstractParameter) {
+				figure = new ParameterFigure(new FingerPost(10, SWT.RIGHT),
+						getOccurenceString((AbstractParameter) element),
+						((AbstractParameter) element).getDescription(), showAll);
+			}
 		}
-
-		if (element instanceof PropertyFunction)
-			return new FunctionFigure(resourceManager,
-					((PropertyFunction) element).getDefinedParameters(), showAll);
-
-		if (element instanceof TypeFunction)
-			return new FunctionFigure(resourceManager,
-					((TypeFunction) element).getDefinedParameters(), showAll);
-
-		if (element instanceof AbstractParameter) {
-			return new ParameterFigure(new FingerPost(10, SWT.RIGHT),
-					getOccurenceString((AbstractParameter) element),
-					((AbstractParameter) element).getDescription(), showAll);
+		
+		if (figure != null) {
+			figure.setMaximumWidth(MAX_FIGURE_WIDTH);
+			return figure;
 		}
 
 		return super.getFigure(element);

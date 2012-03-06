@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.EntityFigure;
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.WrappedText;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 
@@ -50,6 +51,11 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
  */
 public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider,
 		IEntityConnectionStyleProvider, IFigureProvider {
+	
+	/**
+	 * The maximum figure width
+	 */
+	public static final int MAX_FIGURE_WIDTH = 150;
 	
 	private final int entityBorderWidth = 1;
 	private final Color entityBorderColor;
@@ -396,8 +402,9 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public IFigure getFigure(Object element) {
+		CustomShapeFigure figure = null;
 		if (element instanceof Cell || element instanceof Function) {
-			return new CellFigure();
+			figure = new CellFigure();
 		}
 		
 		if (element instanceof Entity) {
@@ -408,14 +415,19 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			String contextText = AlignmentUtil.getContextText((EntityDefinition) element);
 			switch (((EntityDefinition) element).getSchemaSpace()) {
 			case SOURCE:
-				return new EntityFigure(new FingerPost(10, SWT.RIGHT), contextText);
+				figure = new EntityFigure(new FingerPost(10, SWT.RIGHT), contextText);
+				break;
 			case TARGET:
-				return new EntityFigure(new FingerPost(10, SWT.LEFT), contextText);
+				figure = new EntityFigure(new FingerPost(10, SWT.LEFT), contextText);
+				break;
 			}
 		}
+
+		if (figure != null) {
+			figure.setMaximumWidth(MAX_FIGURE_WIDTH);
+		}
 		
-		// default
-		return null;
+		return figure;
 	}
 
 }
