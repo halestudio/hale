@@ -17,8 +17,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.common.align.extension.category.Category;
-import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.ui.views.properties.function.DefaultFunctionSection;
 
@@ -48,13 +46,6 @@ public class AbstractFunctionIdSection extends
 	 */
 	@Override
 	public void refresh() {
-		String categoryId = getFunction().getCategoryId();
-		Category cat = (categoryId == null) ? (null) : (CategoryExtension
-				.getInstance().get(categoryId));
-		if (cat == null) {
-			id.setText("");
-		} else {
-			id.setText(cat.getName());
-		}
+		id.setText(getFunction().getId());
 	}
 }
