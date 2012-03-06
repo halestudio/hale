@@ -112,10 +112,16 @@
             <with
                   variable="selection">
                <iterate
-                     operator="or">
-                  <instanceof
-                        value="eu.esdihumboldt.hale.common.align.model.Cell">
-                  </instanceof>
+                     ifEmpty="false"
+                     operator="and">
+                  <and>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.Cell">
+                     </instanceof>
+                     <test
+                           property="eu.esdihumboldt.hale.ui.service.align.cell.allow_remove">
+                     </test>
+                  </and>
                </iterate>
             </with>
          </activeWhen>
@@ -534,6 +540,13 @@
             namespace="eu.esdihumboldt.hale.ui.service.entity"
             properties="allow_add_named,allow_add_index,allow_add_condition,has_named_context,has_index_context,has_condition_context,allow_remove"
             type="eu.esdihumboldt.hale.common.align.model.EntityDefinition">
+      </propertyTester>
+      <propertyTester
+            class="eu.esdihumboldt.hale.ui.service.align.internal.tester.CellTester"
+            id="eu.esdihumboldt.hale.ui.service.align.cell"
+            namespace="eu.esdihumboldt.hale.ui.service.align.cell"
+            properties="allow_remove"
+            type="eu.esdihumboldt.hale.common.align.model.Cell">
       </propertyTester>
    </extension>
    <extension
