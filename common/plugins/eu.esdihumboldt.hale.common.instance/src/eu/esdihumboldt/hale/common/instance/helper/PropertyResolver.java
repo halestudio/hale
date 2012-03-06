@@ -46,10 +46,11 @@ public class PropertyResolver {
 	//the cache for storing found paths in instance definitions for certain querys
 	private static Map<QueryDefinitionIndex, LinkedList<String>> definitioncache = new HashMap<QueryDefinitionIndex, LinkedList<String>>();
 	
-	/*
-	 * FIXME this is extremely dubious - what is it used for?
+	/**
+	 * This variable holds state about the last {@link #hasProperty(Instance, String)}
+	 * call.
 	 */
-	private static QueryDefinitionIndex lastQDI;
+	private static ThreadLocal<QueryDefinitionIndex> lastQDI = new ThreadLocal<QueryDefinitionIndex>();
 
 	/**
 	 * Method for retrieving values from instances using a certain path query 
@@ -328,7 +329,7 @@ public class PropertyResolver {
 		QueryDefinitionIndex qdi = new QueryDefinitionIndex(
 				instance.getDefinition(), query);
 		
-		lastQDI = qdi;
+		lastQDI.set(qdi);
 		
 		if(definitioncache.containsKey(qdi)){
 			
@@ -710,14 +711,23 @@ public class PropertyResolver {
 		
 	}
 	
+	/**
+	 * Determines if the last query path was unique. This will only yield a
+	 * reliable result if the last call to {@link #hasProperty(Instance, String)}
+	 * was done from the current thread. The information on the last
+	 * {@link #hasProperty(Instance, String)} call will be reset on calling this
+	 * method. 
+	 * @return <code>true</code> if the last query path was unique or if there
+	 *   is no information on the last query path, <code>false</code> otherwise
+	 */
 	public static boolean isLastQueryPathUnique(){
+		QueryDefinitionIndex qdi = lastQDI.get();
+		lastQDI.remove();
 		
-		if(definitioncache.get(lastQDI).size() > 1) {
+		if(qdi != null && definitioncache.get(qdi).size() > 1) {
 			return false;
 		}
-		
 		else return true;
-		
 	}
 
 	/**
