@@ -89,7 +89,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	 * Subclasses can override this method to specify, that the text field should have 
 	 * multiple lines. By default it is not.
 	 * 
-	 * @return true iff the text field should have multiple lines.
+	 * @return true if the text field should have multiple lines.
 	 */
 	protected boolean useMultilineInput() {
 		return false;
