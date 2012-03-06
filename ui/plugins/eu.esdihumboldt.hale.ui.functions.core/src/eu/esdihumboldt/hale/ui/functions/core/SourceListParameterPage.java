@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  */
 public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
 		ParameterPage {
+	
 	private String initialValue = "";
 	private Text textField;
 	private TableViewer varTable;
@@ -130,6 +131,20 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params, ListMultimap<String, String> initialValues) {
+		for (FunctionParameter param : params) {
+			if (param.getName().equals(getParameterName())) {
+				String description = param.getDescription();
+				if (description != null) {
+					setMessage(description);
+				}
+				String displayName = param.getDisplayName();
+				if (displayName != null) {
+					setTitle(displayName);
+				}
+				break;
+			}
+		}
+		
 		if (initialValues != null) {
 			List<String> initialData = initialValues.get(getParameterName());
 			if (initialData.size() > 0)
@@ -175,7 +190,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(GridLayoutFactory.swtDefaults().create());
-
+		
 		// input field
 		int lineStyle = useMultilineInput() ? SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL : SWT.SINGLE;
 		textField = new Text(page, lineStyle | SWT.BORDER);
