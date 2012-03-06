@@ -48,6 +48,28 @@ public class ResourceManager {
 	}
 
 	/**
+	 * Abstract resource type for use in anonymous classes. Is equal to another
+	 * resource if they are of the same class.
+	 * @param <T> the resource type
+	 */
+	public abstract static class AnonymousClassResource<T> implements Resource<T> {
+
+		@Override
+		public int hashCode() {
+			return getClass().hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null) {
+				return false;
+			}
+			return getClass().equals(obj.getClass());
+		}
+		
+	}
+	
+	/**
 	 * Get a resource instance. The same instance is returned for equal
 	 * resource definitions.
 	 * @param resource the resource definition
