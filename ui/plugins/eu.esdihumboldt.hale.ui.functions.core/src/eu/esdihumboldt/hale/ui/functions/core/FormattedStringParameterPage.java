@@ -62,4 +62,13 @@ public class FormattedStringParameterPage extends SourceListParameterPage {
 	protected String insert(String value) {
 		return String.format("{%s}", super.insert(value));
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#useMultilineInput()
+	 */
+	@Override
+	protected boolean useMultilineInput() {
+		return true;
+	}
+	
 }
