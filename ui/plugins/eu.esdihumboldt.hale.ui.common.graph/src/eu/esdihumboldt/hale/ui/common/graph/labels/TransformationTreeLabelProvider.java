@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.EntityFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.TransformationNodeShape;
+import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure.ShapePainter;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeLabel;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
@@ -315,10 +316,15 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		}
 		
 		if (shape != null) {
+			CustomShapeFigure figure;
 			if (contextText != null) {
-				return new EntityFigure(shape, contextText);
+				figure = new EntityFigure(shape, contextText);
 			}
-			return new CustomShapeLabel(shape);
+			else {
+				figure = new CustomShapeLabel(shape);
+			}
+			figure.setMaximumWidth(MAX_FIGURE_WIDTH);
+			return figure;
 		}
 		
 		element = TransformationTreeUtil.extractObject(element);
