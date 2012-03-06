@@ -84,10 +84,15 @@ public class SchemaSelectionFunctionContribution extends
 			SchemaSelection selection) {
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		
+		if (!AlignmentUtil.hasTypeRelation(as.getAlignment())) {
+			// don't allow creating property relations if there are no type relations present
+			return false;
+		}
+		
 		if (selection == null || selection.isEmpty()) {
 			// for no selection always allow creating a new cell if there are
 			// type relations present
-			return AlignmentUtil.hasTypeRelation(as.getAlignment());
+			return true;
 		}
 		
 		// check types
