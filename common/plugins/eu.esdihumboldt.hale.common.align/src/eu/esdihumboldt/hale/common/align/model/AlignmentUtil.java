@@ -289,7 +289,8 @@ public abstract class AlignmentUtil {
 	 * definition. 
 	 * @param parent the parent
 	 * @param child the potential child
-	 * @return if the first entity definition is a parent of the second
+	 * @return if the first entity definition is a parent of the second or if
+	 *   both are equal
 	 */
 	public static boolean isParent(EntityDefinition parent,
 			EntityDefinition child) {
@@ -323,6 +324,59 @@ public abstract class AlignmentUtil {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * States if the given entity definition or one of its children is mapped
+	 * in the given alignment.
+	 * @param entity the entity definition
+	 * @param alignment the alignment
+	 * @return if the alignment contains a relation where the given entity or
+	 *   one of its children (including grand-children etc.) is involved
+	 */
+	public static boolean entityOrChildMapped(EntityDefinition entity, 
+			Alignment alignment) {
+		// check for a direct mapping
+		if (!alignment.getCells(entity).isEmpty()) {
+			return true;
+		}
+		
+		// check for child mappings
+		Collection<? extends Cell> typeCells = alignment.getCells(entity.getType(), entity.getSchemaSpace());
+		for (Cell cell : typeCells) {
+			if (entity.getSchemaSpace() == SchemaSpaceID.SOURCE
+					&& cell.getSource() != null
+					&& entityOrChildContained(entity, cell.getSource().values())) {
+				return true;
+			}
+			if (entity.getSchemaSpace() == SchemaSpaceID.TARGET
+					&& cell.getTarget() != null
+					&& entityOrChildContained(entity, cell.getTarget().values())) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Determines if the given entity definition or one of its children is
+	 * contained in the given entity candidates.
+	 * @param entity the entity definition
+	 * @param candidates the entity candidates to test
+	 * @return if at least one of the entity candidates is the given entity
+	 *   or a child (or grand-child etc.) 
+	 */
+	public static boolean entityOrChildContained(EntityDefinition entity,
+			Iterable<? extends Entity> candidates) {
+		for (Entity candidate : candidates) {
+			EntityDefinition def = candidate.getDefinition();
+			if (isParent(entity, def)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	/**

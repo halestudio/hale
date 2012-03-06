@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.expressions.IPropertyTester;
 import org.eclipse.core.expressions.PropertyTester;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
@@ -24,6 +25,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
  * Tester for properties related to instance contexts 
@@ -130,7 +132,12 @@ public class InstanceContextTester extends PropertyTester {
 			return false;
 		}
 		
-		//FIXME it must be checked if there are any alignment cells related to that context
+		// check if there are any alignment cells related to that context
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		if (AlignmentUtil.entityOrChildMapped(entityDef, as.getAlignment())) {
+			return false;
+		}
+		
 		return true;
 	}
 
