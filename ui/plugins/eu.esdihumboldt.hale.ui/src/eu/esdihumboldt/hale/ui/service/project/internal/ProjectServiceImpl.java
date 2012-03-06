@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -30,6 +31,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
@@ -169,6 +171,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 			@Override
 			public void handleResults(ProjectReader provider) {
+				// no change check as this is performed by clean
 				clean();
 
 				synchronized (ProjectServiceImpl.this) {
@@ -447,6 +450,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 */
 	@Override
 	public void clean() {
+		if (!changeCheck()) {
+			return;
+		}
+		
 		// reset current session descriptor
 		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
 		repService.updateCurrentSessionDescription();
@@ -494,6 +501,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 */
 	@Override
 	public void load(URI uri) {
+		// no change check as this is done by clean before a new project is loaded
+		
 		// use I/O provider and content type mechanisms to enable loading of a project file
 		ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class, new DefaultInputSupplier(uri), uri.getPath());
 		if (reader != null) {
@@ -633,9 +642,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 */
 	@Override
 	public void open() {
-		// reset current session descriptor
-		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
-		repService.updateCurrentSessionDescription();
+		// no change check as this is done by clean before a new project is loaded
 		
 		// open
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
@@ -649,6 +656,47 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				dialog.open();
 			}
 		});
+	}
+
+	/**
+	 * Check if there are changes and offer the user to save the project.
+	 * @return if the caller should continue
+	 */
+	private boolean changeCheck() {
+		if (!isChanged()) {
+			return true;
+		}
+		
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		final AtomicBoolean returnValue = new AtomicBoolean();
+		display.syncExec(new Runnable() {
+			@Override
+			public void run() {
+				MessageBox mb = new MessageBox(display.getActiveShell(), 
+						SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+				mb.setMessage("Save changes to the current project?"); //$NON-NLS-1$
+				mb.setText("Unsaved changes"); //$NON-NLS-1$
+				int result = mb.open();
+				if (result == SWT.CANCEL) {
+					returnValue.set(false);
+				}
+				else if (result == SWT.YES) {
+					// try saving project
+					save();
+					
+					if (isChanged()) {
+						returnValue.set(false);
+					}
+					else {
+						returnValue.set(true);
+					}
+				}
+				else {
+					returnValue.set(true);
+				}
+			}
+		});
+		return returnValue.get();
 	}
 
 	/**
