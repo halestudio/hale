@@ -103,10 +103,10 @@ public class SchemaSelectionFunctionContribution extends
 		//TODO check if properties have the same parent type? what about joins?
 		
 		// check counts
-		if (!checkCount(sourceItems.size(), function.getSource())) {
+		if (!checkCount(sourceItems.size(), function.getSource(), false)) {
 			return false;
 		}
-		if (!checkCount(targetItems.size(), function.getTarget())) {
+		if (!checkCount(targetItems.size(), function.getTarget(), true)) {
 			return false;
 		}
 		
@@ -134,10 +134,10 @@ public class SchemaSelectionFunctionContribution extends
 		}
 		
 		// check counts
-		if (!checkCount(sourceItems.size(), function.getSource())) {
+		if (!checkCount(sourceItems.size(), function.getSource(), true)) {
 			return false;
 		}
-		if (!checkCount(targetItems.size(), function.getTarget())) {
+		if (!checkCount(targetItems.size(), function.getTarget(), false)) {
 			return false;
 		}
 		
@@ -168,10 +168,12 @@ public class SchemaSelectionFunctionContribution extends
 	 * entity definitions
 	 * @param count the entity count
 	 * @param entities the entity definitions
+	 * @param isTarget if the entities are target entities
 	 * @return if then entity count is compatible with the definitions
 	 */
 	private static boolean checkCount(int count,
-			Set<? extends AbstractParameter> entities) {
+			Set<? extends AbstractParameter> entities,
+			boolean isTarget) {
 		int min = 0;
 		int max = 0;
 		
@@ -191,6 +193,11 @@ public class SchemaSelectionFunctionContribution extends
 		// check minimum
 		if (count < min) {
 			return false;
+		}
+		
+		if (max == 0 && !isTarget) {
+			// allow augmentations
+			return true;
 		}
 		
 		// check maximum
