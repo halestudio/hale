@@ -11,9 +11,11 @@
  */
 package eu.esdihumboldt.hale.ui.util.graph;
 
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Shape;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
@@ -72,6 +74,11 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 	private Image icon;
 
 	private Color borderColor;
+	
+	/**
+	 * No maximum width by default
+	 */
+	private int maximumWidth = -1;
 
 	/**
 	 * The shape painter used for the figure
@@ -92,6 +99,37 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 		}
 
 		this.painter = painter;
+	}
+	
+	/**
+	 * @see Figure#getPreferredSize(int, int)
+	 */
+	@Override
+	public Dimension getPreferredSize(int wHint, int hHint) {
+		Dimension size = super.getPreferredSize(wHint, hHint);
+		if (maximumWidth >= 0 && size.width > maximumWidth) {
+			return new Dimension(maximumWidth, size.height); 
+		}
+		return size;
+	}
+
+	/**
+	 * Get the maximum width (which is applied in
+	 * {@link #getPreferredSize(int, int)}). 
+	 * @return the maximum width, a negative value for no maximum width
+	 */
+	public int getMaximumWidth() {
+		return maximumWidth;
+	}
+
+	/**
+	 * Set the maximum width (which is applied in 
+	 * {@link #getPreferredSize(int, int)}).
+	 * @param maximumWidth the maximum width to set, a negative value for no
+	 *   maximum width
+	 */
+	public void setMaximumWidth(int maximumWidth) {
+		this.maximumWidth = maximumWidth;
 	}
 
 	/**
