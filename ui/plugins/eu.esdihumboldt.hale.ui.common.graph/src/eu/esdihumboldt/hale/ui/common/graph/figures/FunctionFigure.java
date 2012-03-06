@@ -64,7 +64,8 @@ public class FunctionFigure extends CustomShapeFigure {
 
 		if (!parameters.isEmpty()) {
 
-			Font font = new Font(Display.getCurrent(), "Arial", 10, SWT.ITALIC);
+			Font font = new Font(Display.getCurrent(), "Arial", 8, SWT.ITALIC);
+			//FIXME dispose font! (but there is no support for freeing resources on draw2d)
 
 			Label name = new Label();
 			GridData nameGrid = new GridData(GridData.BEGINNING, GridData.BEGINNING,
@@ -76,12 +77,8 @@ public class FunctionFigure extends CustomShapeFigure {
 			Iterator<FunctionParameter> iter = parameters.iterator();
 			while (iter.hasNext()) {
 				FunctionParameter para = iter.next();
-				name = new Label();
-				nameGrid = new GridData(GridData.FILL, GridData.FILL, true,
-						true);
-				name.setText(para.getDisplayName());
-				add(name, nameGrid);
-
+				
+				// tip
 				Label descriptionlabel = new Label();
 
 				if (showToolTip && para.getDescription() != null) {
@@ -95,16 +92,24 @@ public class FunctionFigure extends CustomShapeFigure {
 					descriptionlabel.setToolTip(descriptionfigure);
 				}
 
-				GridData descriptiongrid = new GridData(GridData.FILL,
-						GridData.FILL, true, true);
+				GridData descriptiongrid = new GridData(GridData.CENTER,
+						GridData.CENTER, false, false);
 				add(descriptionlabel, descriptiongrid);
+				
+				// parameter name
+				name = new Label();
+				nameGrid = new GridData(GridData.BEGINNING, GridData.CENTER, true,
+						false);
+				name.setText(para.getDisplayName());
+				add(name, nameGrid);
 
+				// parameter occurrence
 				Label occurence = new Label();
-				GridData occurenceGrid = new GridData(GridData.FILL, GridData.FILL,
-						true, true);
+				GridData occurenceGrid = new GridData(GridData.END, GridData.CENTER,
+						false, false);
 				occurence.setText(getOccurence(para));
+				occurence.setFont(font);
 				add(occurence, occurenceGrid);
-
 			}
 		}
 	}
