@@ -28,6 +28,8 @@ import org.eclipse.swt.widgets.Display;
 
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.ui.util.ResourceManager;
+import eu.esdihumboldt.hale.ui.util.ResourceManager.Resource;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
@@ -37,14 +39,31 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
  * @author Patrick Lieb
  */
 public class FunctionFigure extends CustomShapeFigure {
+	
+	private static final Resource<Font> SMALL_ITALIC_FONT_RESOURCE = new Resource<Font>() {
+
+		@Override
+		public Font initializeResource() throws Exception {
+			return new Font(Display.getCurrent(), "Arial", 8, SWT.ITALIC);
+		}
+
+		@Override
+		public void dispose(Font resource) {
+			resource.dispose();
+		}
+	};
 
 	/**
+	 * Create a new function figure.
+	 * @param resourceManager
+	 *            the resource manager
 	 * @param parameters
 	 *            the Parameters of the Function
 	 * @param showToolTip
 	 *            if the ToolTip should be shown
 	 */
-	public FunctionFigure(Set<FunctionParameter> parameters, boolean showToolTip) {
+	public FunctionFigure(ResourceManager resourceManager, 
+			Set<FunctionParameter> parameters, boolean showToolTip) {
 		super(new StretchedHexagon(10));
 
 		setAntialias(SWT.ON);
@@ -64,14 +83,20 @@ public class FunctionFigure extends CustomShapeFigure {
 
 		if (!parameters.isEmpty()) {
 
-			Font font = new Font(Display.getCurrent(), "Arial", 8, SWT.ITALIC);
-			//FIXME dispose font! (but there is no support for freeing resources on draw2d)
+			Font font;
+			try {
+				font = resourceManager.getInstance(SMALL_ITALIC_FONT_RESOURCE);
+			} catch (Exception e) {
+				font = null;
+			}
 
 			Label name = new Label();
 			GridData nameGrid = new GridData(GridData.BEGINNING, GridData.BEGINNING,
 					true, false, 3, 1);
 			name.setText("Defined Parameters");
-			name.setFont(font);
+			if (font != null) {
+				name.setFont(font);
+			}
 			add(name, nameGrid);
 
 			Iterator<FunctionParameter> iter = parameters.iterator();
@@ -108,7 +133,9 @@ public class FunctionFigure extends CustomShapeFigure {
 				GridData occurenceGrid = new GridData(GridData.END, GridData.CENTER,
 						false, false);
 				occurence.setText(getOccurence(para));
-				occurence.setFont(font);
+				if (font != null) {
+					occurence.setFont(font);
+				}
 				add(occurence, occurenceGrid);
 			}
 		}
