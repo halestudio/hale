@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.ui.common.graph.figures.FunctionFigure;
 import eu.esdihumboldt.hale.ui.common.graph.figures.ParameterFigure;
+import eu.esdihumboldt.hale.ui.util.ResourceManager;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 import eu.esdihumboldt.util.Pair;
 
@@ -38,6 +39,8 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	private final Color targetbackgroundcolor;
 
 	private final Color sourcebackgroundcolor;
+	
+	private final ResourceManager resourceManager = new ResourceManager();
 
 	private boolean showAll;
 
@@ -111,11 +114,11 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 		}
 
 		if (element instanceof PropertyFunction)
-			return new FunctionFigure(
+			return new FunctionFigure(resourceManager,
 					((PropertyFunction) element).getDefinedParameters(), showAll);
 
 		if (element instanceof TypeFunction)
-			return new FunctionFigure(
+			return new FunctionFigure(resourceManager,
 					((TypeFunction) element).getDefinedParameters(), showAll);
 
 		if (element instanceof AbstractParameter) {
@@ -153,6 +156,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	 */
 	@Override
 	public void dispose() {
+		resourceManager.dispose();
 		targetbackgroundcolor.dispose();
 		sourcebackgroundcolor.dispose();
 		super.dispose();
