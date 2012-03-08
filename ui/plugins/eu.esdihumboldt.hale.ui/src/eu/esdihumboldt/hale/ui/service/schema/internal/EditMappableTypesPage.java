@@ -23,6 +23,8 @@ import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -33,11 +35,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.schema.util.NSTypeTreeContentProvider;
 
 /**
@@ -47,6 +51,7 @@ import eu.esdihumboldt.hale.ui.service.schema.util.NSTypeTreeContentProvider;
  */
 public class EditMappableTypesPage extends WizardPage {
 	private final TypeIndex typeIndex;
+	private final SchemaSpaceID spaceID;
 	private final Set<TypeDefinition> changedTypes = new HashSet<TypeDefinition>();
 
 	private CheckboxTreeViewer viewer;
@@ -77,12 +82,14 @@ public class EditMappableTypesPage extends WizardPage {
 	 * Creates a new wizard page to edit which types in the given index are
 	 * mappable.
 	 * 
+	 * @param spaceID the schema space of which the types are
 	 * @param typeIndex the type index to edit
 	 */
-	public EditMappableTypesPage(TypeIndex typeIndex) {
+	public EditMappableTypesPage(SchemaSpaceID spaceID, TypeIndex typeIndex) {
 		super("editMappableTypes", "Edit mappable types", null);
 		setDescription("Check which types should be mappable");
 		this.typeIndex = typeIndex;
+		this.spaceID = spaceID;
 		setPageComplete(true);
 	}
 
@@ -171,6 +178,20 @@ public class EditMappableTypesPage extends WizardPage {
 					// only two levels, no need to update any parents or children's children
 				} else
 					checkStateOfTypeChanged((TypeDefinition) event.getElement(), event.getChecked());
+			}
+		});
+
+		// filter types which are used in the current alignment
+		viewer.addFilter(new ViewerFilter() {
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				if (element instanceof String)
+					return true;
+				TypeDefinition type = (TypeDefinition) element;
+				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+				if (as.getAlignment().getCells(type, spaceID).size() > 0)
+					return false;
+				return true;
 			}
 		});
 
