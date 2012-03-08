@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -43,6 +44,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -64,6 +66,20 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
 		ParameterPage {
 	private final Map<String, Set<String>> classifications = new TreeMap<String, Set<String>>();
+
+	private Composite notClassifiedActionComposite;
+	private ComboViewer notClassifiedActionViewer;
+	private String notClassifiedAction;
+	private Text fixedValueText;
+	private Button fixedValueInputButton;
+
+	private static final List<String> notClassifiedActionOptions = new ArrayList<String>(3);
+	static {
+		notClassifiedActionOptions.add("assign null");
+		notClassifiedActionOptions.add("assign the source value");
+		notClassifiedActionOptions.add("assign a fixed value");
+	}
+
 	private ComboViewer classes;
 	private ListViewer values;
 	private PropertyDefinition sourceProperty;
@@ -71,9 +87,9 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 
 	// TODO allowedValues bei enum source
 	// TODO fixedClassifications bei enum target
-	// TODO verschiedene input dialogs je nach Typ
 
 	private static final String PARAMETER_CLASSIFICATIONS = "classificationMapping";
+	private static final String PARAMETER_NOT_CLASSIFIED_ACTION = "notClassifiedAction";
 
 	/**
 	 * Default constructor.
@@ -92,7 +108,7 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 		Cell unfinishedCell = getWizard().getUnfinishedCell();
 		sourceProperty = (PropertyDefinition) unfinishedCell.getSource().values().iterator().next().getDefinition().getDefinition();
 		targetProperty = (PropertyDefinition) unfinishedCell.getTarget().values().iterator().next().getDefinition().getDefinition();
-		if (firstShow)
+		if (fixedValueText == null || fixedValueText.getText() != null)
 			setPageComplete(true);
 	}
 
@@ -120,6 +136,10 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 			for (int i = 1; i < splitted.length; i++)
 				classifications.get(splitted[0]).add(splitted[i]);
 		}
+
+		List<String> notClassifiedActionParams = initialValues.get(PARAMETER_NOT_CLASSIFIED_ACTION);
+		if (!notClassifiedActionParams.isEmpty())
+			notClassifiedAction = notClassifiedActionParams.get(0);
 	}
 
 	/**
@@ -139,6 +159,20 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 			}
 			configuration.put(PARAMETER_CLASSIFICATIONS, buffer.toString());
 		}
+
+		switch (notClassifiedActionOptions.indexOf(notClassifiedActionViewer.getSelection())) {
+		case 1:
+			notClassifiedAction = "source";
+			break;
+		case 2:
+			notClassifiedAction = "fixed:" + fixedValueText.getText();
+			break;
+		case 0:
+		case -1:
+		default:
+			notClassifiedAction = "null";
+		}
+		configuration.put(PARAMETER_NOT_CLASSIFIED_ACTION, notClassifiedAction);
 		return configuration;
 	}
 
@@ -148,6 +182,40 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(GridLayoutFactory.swtDefaults().numColumns(4).create());
+
+		// not classified action
+		notClassifiedActionComposite = new Composite(page, SWT.NONE);
+		notClassifiedActionComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 4, 1));
+		notClassifiedActionComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(4).margins(0, 0).create());
+
+		Label notClassifiedActionLabel = new Label(notClassifiedActionComposite, SWT.NONE);
+		notClassifiedActionLabel.setText("For unmapped source values");
+		notClassifiedActionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+
+		notClassifiedActionViewer = new ComboViewer(notClassifiedActionComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
+		notClassifiedActionViewer.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		notClassifiedActionViewer.setContentProvider(ArrayContentProvider.getInstance());
+		
+		notClassifiedActionViewer.setInput(notClassifiedActionOptions);
+		notClassifiedActionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				if (notClassifiedActionOptions.indexOf(((IStructuredSelection) event.getSelection()).getFirstElement()) == 2)
+					createFixedValueInputButton(null);
+				else
+					removeFixedValueInputButton();
+			}
+		});
+
+		notClassifiedActionViewer.setSelection(new StructuredSelection(notClassifiedActionOptions.get(0)));
+		if (notClassifiedAction != null) {
+			if (notClassifiedAction.equals("source"))
+				notClassifiedActionViewer.setSelection(new StructuredSelection(notClassifiedActionOptions.get(1)));
+			else if (notClassifiedAction.startsWith("fixed:")) {
+				notClassifiedActionViewer.setSelection(new StructuredSelection(notClassifiedActionOptions.get(2)));
+				createFixedValueInputButton(notClassifiedAction.substring(6));
+			}
+		}
 
 		// target label
 		Label targetLabel = new Label(page, SWT.NONE);
@@ -273,6 +341,60 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 				valueRemove.setEnabled(!empty);
 			}
 		});
+	}
+
+	/**
+	 * Creates an button to open an editor for setting the fixed value.
+	 * 
+	 * @param initialValue the initial value or null
+	 */
+	private void createFixedValueInputButton(final String initialValue) {
+		if (fixedValueInputButton != null) {
+			fixedValueInputButton.dispose();
+			fixedValueText.dispose();
+			fixedValueText = null;
+		}
+
+		setPageComplete(false);
+		fixedValueInputButton = new Button(notClassifiedActionComposite, SWT.PUSH);
+		fixedValueInputButton.setText("Select");
+		fixedValueInputButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		fixedValueInputButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, 
+						Display.getCurrent().getActiveShell(), "Set default value", "This value will be assigned to targets when the source value is not mapped");
+				if (initialValue != null)
+					dialog.getEditor().setAsText(initialValue);
+
+				if (dialog.open() == Dialog.OK) {
+					if (fixedValueText == null) {
+						fixedValueText = new Text(notClassifiedActionComposite, SWT.READ_ONLY | SWT.BORDER);
+						fixedValueText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+						notClassifiedActionComposite.layout();
+					}
+					fixedValueText.setText(dialog.getValueAsText());
+					setPageComplete(true);
+				}
+			}
+		});
+
+		notClassifiedActionComposite.layout();
+		notClassifiedActionComposite.getParent().layout();
+	}
+
+	/**
+	 * Removes the button for opening the fixed value editor in case it is present.
+	 */
+	private void removeFixedValueInputButton() {
+		if (fixedValueInputButton != null) {
+			fixedValueInputButton.dispose();
+			fixedValueInputButton = null;
+			fixedValueText.dispose();
+			fixedValueText = null;
+			notClassifiedActionComposite.layout();
+			setPageComplete(true);
+		}
 	}
 
 	/**

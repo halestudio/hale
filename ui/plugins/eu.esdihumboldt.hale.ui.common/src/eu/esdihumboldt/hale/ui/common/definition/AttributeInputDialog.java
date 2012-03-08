@@ -14,9 +14,12 @@ package eu.esdihumboldt.hale.ui.common.definition;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -69,10 +72,12 @@ public class AttributeInputDialog extends Dialog {
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID,
-                IDialogConstants.OK_LABEL, true);
-        createButton(parent, IDialogConstants.CANCEL_ID,
-                IDialogConstants.CANCEL_LABEL, false);
+		Button okButton = createButton(parent, IDialogConstants.OK_ID,
+				IDialogConstants.OK_LABEL, true);
+		createButton(parent, IDialogConstants.CANCEL_ID,
+				IDialogConstants.CANCEL_LABEL, false);
+
+        okButton.setEnabled(editor.isValid());
 	}
 
 	/**
@@ -100,7 +105,14 @@ public class AttributeInputDialog extends Dialog {
         editor = aef.createEditor(composite, definition);
         editor.getControl().setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-        
+        editor.setPropertyChangeListener(new IPropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getProperty().equals(AttributeEditor.IS_VALID))
+					getButton(IDialogConstants.OK_ID).setEnabled((Boolean) event.getNewValue());
+			}
+		});
+
         applyDialogFont(composite);
         return composite;
 	}
