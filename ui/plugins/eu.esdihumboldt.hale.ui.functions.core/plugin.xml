@@ -30,6 +30,9 @@
          <parameter
                name="classificationMapping">
          </parameter>
+         <parameter
+               name="notClassifiedAction">
+         </parameter>
       </propertyParameterPage>
       <propertyParameterPage
             class="eu.esdihumboldt.hale.ui.functions.core.FormattedStringParameterPage"
