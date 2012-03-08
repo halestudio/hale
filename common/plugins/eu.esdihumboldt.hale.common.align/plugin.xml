@@ -100,6 +100,11 @@
                minOccurrence="1"
                name="classificationMapping">
          </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="notClassifiedAction">
+         </functionParameter>
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"

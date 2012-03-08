@@ -112,6 +112,10 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().indent(5, 0).grab(true, false).create());
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewer.setInput(values);
+		if (otherValuesAllowed) {
+			viewer.getCombo().setText("");
+			stringValue = "";
+		}
 
 		// create decoration
 		decoration = new ControlDecoration(viewer.getControl(), SWT.LEFT | SWT.TOP, composite);
