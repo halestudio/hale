@@ -25,7 +25,9 @@ $function.description<br />
 		#if($param.getDescription())
 			<li><u>Description:</u> $!param.getDescription()</li>
 		#end
-			<li><u>Occurrence:</u> $param.getMinOccurrence()..$param.getMaxOccurrence()</li>
+			<li><u>Occurrence:</u> $param.getMinOccurrence()..#if($param.getMaxOccurrence() != -1)$param.getMaxOccurrence()
+																#elseif($param.getMaxOccurrence() == -1)n
+																#end</li>
 		</ul>
 	#end
 </ul>
