@@ -188,9 +188,14 @@
                   <iterate
                         ifEmpty="false"
                         operator="or">
-                     <instanceof
-                           value="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
-                     </instanceof>
+                     <and>
+	                     <instanceof
+	                           value="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
+	                     </instanceof>
+	                     <test
+	                           property="eu.esdihumboldt.hale.ui.service.schema.type.allow_mark_unmappable">
+	                     </test>
+                     </and>
                   </iterate>
                   <count
                         value="1">
@@ -547,6 +552,13 @@
             namespace="eu.esdihumboldt.hale.ui.service.align.cell"
             properties="allow_remove"
             type="eu.esdihumboldt.hale.common.align.model.Cell">
+      </propertyTester>
+      <propertyTester
+            class="eu.esdihumboldt.hale.ui.service.schema.tester.TypeEntityDefinitionTester"
+            id="eu.esdihumboldt.hale.ui.service.schema.type"
+            namespace="eu.esdihumboldt.hale.ui.service.schema.type"
+            properties="allow_mark_unmappable"
+            type="eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition">
       </propertyTester>
    </extension>
    <extension

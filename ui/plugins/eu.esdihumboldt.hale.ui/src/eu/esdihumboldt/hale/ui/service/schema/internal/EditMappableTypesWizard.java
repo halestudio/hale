@@ -35,7 +35,7 @@ public class EditMappableTypesWizard extends Wizard {
 	 * @param typeIndex the type index to change
 	 */
 	public EditMappableTypesWizard(SchemaSpaceID spaceID, TypeIndex typeIndex) {
-		page = new EditMappableTypesPage(typeIndex);
+		page = new EditMappableTypesPage(spaceID, typeIndex);
 		this.spaceID = spaceID;
 	}
 
