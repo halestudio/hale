@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
  */
 public class MathExpressionParameterPage extends SourceListParameterPage {
 	private Environment environment = new Environment();
+	private Text textField;
 
 	/**
 	 * Default constructor.
@@ -54,6 +55,7 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 	@Override
 	protected void configure(final Text textField) {
 		super.configure(textField);
+		this.textField = textField;
 		textField.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
@@ -86,5 +88,8 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 		DefinitionLabelProvider dlp = new DefinitionLabelProvider(true, true);
 		for (EntityDefinition variable : variables)
 			environment.addVariable(dlp.getText(variable), new Constant(new Double(1)));
+
+		// re set text to get modify event
+		textField.setText(textField.getText());
 	}
 }

@@ -120,10 +120,6 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params, ListMultimap<String, String> initialValues) {
-		// this page is only for parameter property, ignore params
-		if (initialValues == null)
-			return;
-
 		if (params.size() > 1)
 			throw new IllegalArgumentException("MergeParameterPage is only for one parameter");
 		parameter = params.iterator().next();
@@ -135,9 +131,11 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 			throw new IllegalArgumentException(
 					"MergeParameterPage is only for property or additional_property parameters");
 
-		// cell gets edited
-		initialSelection = initialValues.get(parameter.getName());
-		setPageComplete(true);
+		if (initialValues != null) {
+			// cell gets edited
+			initialSelection = initialValues.get(parameter.getName());
+			setPageComplete(true);
+		}
 	}
 
 	/**
