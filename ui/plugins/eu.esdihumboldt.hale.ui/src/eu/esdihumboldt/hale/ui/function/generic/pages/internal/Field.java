@@ -160,7 +160,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		};
 
 		// determine number of contained fields and the corresponding values
-		int minCount = definition.getMinOccurrence();
+		int initialFieldCount = definition.getMinOccurrence();
 		
 		//TODO determine filters from definition
 		
@@ -181,23 +181,15 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 			for (Entity entity : entities) {
 				fieldValues.add(entity.getDefinition()); //FIXME what about the information in the entity?!
 			}
-			// adapt minCount if needed (and possible)
-			if (fieldValues.size() > minCount) {
-				if (definition.getMaxOccurrence() == F.UNBOUNDED) {
-					minCount = fieldValues.size();
-				}
-				else {
-					minCount = Math.min(fieldValues.size(), definition.getMaxOccurrence());
-				}
-			}
 		} else if (candidates != null && !candidates.isEmpty()) {
 			// populate from candidates
 			LinkedHashSet<EntityDefinition> rotatingCandidates = new LinkedHashSet<EntityDefinition>(candidates);
 
 			// try to add candidates for each required entity
-			for (int i = 0; i < minCount; i++) {
+			int limit = Math.max(initialFieldCount, candidates.size());
+			for (int i = 0; i < limit; i++) {
 				boolean found = false;
-				for (EntityDefinition candidate : candidates) {
+				for (EntityDefinition candidate : rotatingCandidates) {
 					//XXX checked against filters later, because here filters aren't present yet.
 					//if (true) {
 					fieldValues.add(candidate);
@@ -213,21 +205,33 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 			}
 		}
 
-		// add a field w/o value if additional values are supported and all minCount fields are filled
-		if ((minCount == 0 || minCount <= fieldValues.size())
-				&& (definition.getMaxOccurrence() == F.UNBOUNDED || definition.getMaxOccurrence() > minCount)) {
-			minCount++;
+
+		// adapt initialFieldCount if needed (and possible)
+		if (fieldValues.size() >= initialFieldCount) {
+			initialFieldCount = fieldValues.size() + 1;
+			if (definition.getMaxOccurrence() != F.UNBOUNDED) {
+				initialFieldCount = Math.min(initialFieldCount, definition.getMaxOccurrence());
+			}
 		}
 
 		// add fields
-		for (int num = 0; num < minCount; num++) {
+		for (int num = 0; num < initialFieldCount; num++) {
 			// create entity selector
 			S selector = createEntitySelector(ssid, definition, selectorContainer);
 			selector.getControl().setLayoutData(GridDataFactory.swtDefaults().
 					align(SWT.FILL, SWT.CENTER).grab(true, false).create());
+
+			// do initial selection (before adding it to not trigger selection event)
+			EntityDefinition value = (num < fieldValues.size()) ? (fieldValues.get(num)) : (null);
+			if (value == null || !selector.accepts(value))
+				selector.setSelection(new StructuredSelection());
+			else
+				selector.setSelection(new StructuredSelection(value));
+
+			// add the selector now
 			addSelector(selector);
 
-			// add mandatory decoration
+			// add decorations
 			if (num < definition.getMinOccurrence()) {
 				ControlDecoration mandatory = new ControlDecoration(
 						selector.getControl(), SWT.LEFT | SWT.TOP, parent);
@@ -238,16 +242,8 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 				mandatory.setDescriptionText(fieldDecoration.getDescription());
 			}
 
-			// do initial selection
-			EntityDefinition value = (num < fieldValues.size()) ? (fieldValues.get(num)) : (null);
-			if (value == null || !selector.accepts(value))
-				selector.setSelection(new StructuredSelection());
-			else
-				selector.setSelection(new StructuredSelection(value));
-
-			if (descriptionDecoration == null && definition.getDescription() != null) {
+			if (descriptionDecoration == null && definition.getDescription() != null)
 				descriptionDecoration = new ControlDecoration(selector.getControl(), SWT.RIGHT | SWT.TOP, parent);
-			}
 		}
 
 		// setup description decoration
