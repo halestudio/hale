@@ -40,6 +40,11 @@ public class ClassificationMapping extends AbstractSingleTargetPropertyTransform
 	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
 	 */
 	private static final String PARAMETER_CLASSIFICATIONS = "classificationMapping";
+	/**
+	 * Name of the parameter specifying what happens to unclassified values.
+	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
+	 */
+	private static final String PARAMETER_NOT_CLASSIFIED_ACTION = "notClassifiedAction";
 
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
@@ -58,8 +63,17 @@ public class ClassificationMapping extends AbstractSingleTargetPropertyTransform
 			// UTF-8 should be everywhere
 		}
 
-		log.warn(log.createMessage("Source value " + source + " not mapped.", null));
+		String notClassifiedAction = "null";
+		if (getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION) != null &&
+				!getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).isEmpty()) {
+			notClassifiedAction = getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).get(0);
+		}
 
-		return null;
+		if ("source".equals(notClassifiedAction))
+			return source;
+		else if (notClassifiedAction.startsWith("fixed:"))
+			return notClassifiedAction.substring(6);
+		else // "null" or null or something unknown
+			return null;
 	}
 }
