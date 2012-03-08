@@ -136,16 +136,17 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			VelocityContext context = new VelocityContext();
 
 			context.put("function", function);
-			
+
 			if (function.getCategoryId() != null) {
 				String categoryId = function.getCategoryId();
-				
-				Category category = (CategoryExtension.getInstance().get(categoryId));
-				
-//				String category = categoryId.substring(categoryId
-//						.lastIndexOf(".") + 1);
-//
-//				category = capitalize(category);
+
+				Category category = (CategoryExtension.getInstance()
+						.get(categoryId));
+
+				// String category = categoryId.substring(categoryId
+				// .lastIndexOf(".") + 1);
+				//
+				// category = capitalize(category);
 				context.put("category", category);
 			}
 
@@ -252,7 +253,8 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 							LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
 
 							FunctionGraphContentProvider stcp = new FunctionGraphContentProvider();
-							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(false);
+							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(
+									false);
 							viewer.setContentProvider(stcp);
 							viewer.setLabelProvider(fglp);
 							viewer.setInput(function);
@@ -264,12 +266,11 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 					Graph graph = off_graph.getGraph();
 					Dimension dim = computeSize(graph);
 					int width;
-					if(dim.width > 300) {
+					if (dim.width > 450) {
 						width = dim.width;
-					}
-					else {
-						// minimum width = 600
-						width = 300;
+					} else {
+						// minimum width = 450
+						width = 450;
 					}
 					int height = dim.height;
 					off_graph.resize(width, height);
@@ -292,12 +293,12 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 
 		return null;
 	}
-	
+
 	private InputStream getIconContent(String func_id) {
 		AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
 
 		URL url = function.getIconURL();
-		
+
 		try {
 			return url.openStream();
 		} catch (IOException e) {
@@ -306,7 +307,7 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		}
 		return null;
 	}
-	
+
 	private Dimension computeSize(Graph graph) {
 		@SuppressWarnings("unchecked")
 		List<GraphNode> list = graph.getNodes();
@@ -362,7 +363,11 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			}
 		}
 		width = width + accuSourceWidth + accuTargetWidth + 30;
-		height = accuHeight + 20;
+
+		if (height < accuHeight) {
+			height = accuHeight + 35;
+		}
+		height += 20;
 
 		Dimension d = new Dimension();
 		d.setSize(width, height);
