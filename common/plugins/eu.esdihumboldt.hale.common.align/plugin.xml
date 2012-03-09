@@ -78,6 +78,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
+            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.ClassificationMappingExplanation"
             description="Map classifications"
             identifier="eu.esdihumboldt.hale.align.classification"
             name="Classification">

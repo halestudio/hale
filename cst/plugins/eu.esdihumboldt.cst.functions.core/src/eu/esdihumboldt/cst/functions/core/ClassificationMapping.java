@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
@@ -33,19 +34,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
  * 
  * @author Kai Schwierczek
  */
-public class ClassificationMapping extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
-	
-	/**
-	 * Name of the parameter specifying the classifications.
-	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
-	 */
-	private static final String PARAMETER_CLASSIFICATIONS = "classificationMapping";
-	/**
-	 * Name of the parameter specifying what happens to unclassified values.
-	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
-	 */
-	private static final String PARAMETER_NOT_CLASSIFIED_ACTION = "notClassifiedAction";
-
+public class ClassificationMapping extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements ClassificationMappingFunction {
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName, PropertyEntityDefinition resultProperty,
@@ -63,17 +52,17 @@ public class ClassificationMapping extends AbstractSingleTargetPropertyTransform
 			// UTF-8 should be everywhere
 		}
 
-		String notClassifiedAction = "null";
+		String notClassifiedAction = USE_NULL_ACTION;
 		if (getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION) != null &&
 				!getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).isEmpty()) {
 			notClassifiedAction = getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).get(0);
 		}
 
-		if ("source".equals(notClassifiedAction))
+		if (USE_SOURCE_ACTION.equals(notClassifiedAction))
 			return source;
-		else if (notClassifiedAction.startsWith("fixed:"))
-			return notClassifiedAction.substring(6);
-		else // "null" or null or something unknown
+		else if (notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX))
+			return notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1);
+		else // USE_NULL_ACTION or null or something unknown
 			return null;
 	}
 }
