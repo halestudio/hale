@@ -35,7 +35,10 @@ import groovy.lang.GroovyShell;
  */
 public class GroovyTransformation extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
 
-	private static final String PARAMETER_SCRIPT = "script";
+	/**
+	 * Name for the parameter containing the groovy script.
+	 */
+	public static final String PARAMETER_SCRIPT = "script";
 	private static final String ENTITY_VARIABLE = "var";
 
 	/**

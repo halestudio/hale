@@ -15,6 +15,7 @@
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
             description="Extracts a date from a string type"
+            cellExplanation="eu.esdihumboldt.cst.functions.string.DateExtractionExplanation"
             identifier="eu.esdihumboldt.cst.functions.string.dateextraction"
             name="Date extraction">
          <sourceProperties>
