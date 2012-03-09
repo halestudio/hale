@@ -478,5 +478,20 @@
             sequence="M1+M2+Z">
       </key>
    </extension>
+   <extension
+         point="org.eclipse.ui.activities">
+      <activity
+            id="eu.esdihumboldt.hale.ui.application.activities.hideViews"
+            name="Hide unnecessary views">
+      </activity>
+      <activityPatternBinding
+            activityId="eu.esdihumboldt.hale.ui.application.activities.hideViews"
+            pattern="org.eclipse.ui.views/org.eclipse.ui.views.ContentOutline">
+      </activityPatternBinding>
+      <activityPatternBinding
+            activityId="eu.esdihumboldt.hale.ui.application.activities.hideViews"
+            pattern="org.eclipse.ui.console/org.eclipse.ui.console.ConsoleView">
+      </activityPatternBinding>
+   </extension>
 
 </plugin>
