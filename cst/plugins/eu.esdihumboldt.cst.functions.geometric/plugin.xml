@@ -13,6 +13,7 @@
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
             description="Creates a point from a X, Y and optionally a Z ordinate"
+            cellExplanation="eu.esdihumboldt.cst.functions.geometric.OrdinatesToPointExplanation"
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.ordinates_to_point"
             name="Ordinates to Point">
