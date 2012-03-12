@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -173,9 +174,8 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	 * Initialize the toolbar.
 	 */
 	private void initializeToolBar() {
-//		IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
-//		toolbarManager.add(new Action(SWT.DROP_DOWN) {
-//		});
+		IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+		toolbarManager.add(new ActionShowCurrentSession(_treeViewer));
 	}
 
 	/**
