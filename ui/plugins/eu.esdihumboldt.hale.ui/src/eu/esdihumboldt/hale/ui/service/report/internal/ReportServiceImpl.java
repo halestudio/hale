@@ -283,6 +283,9 @@ public class ReportServiceImpl implements ReportService {
 	 */
 	@Override
 	public void updateCurrentSessionDescription() {
-		this.description = System.currentTimeMillis();
+		// only update if the time differs for 5000ms
+		if (this.description+5000 < System.currentTimeMillis()) {
+			this.description = System.currentTimeMillis();
+		}
 	}
 }
