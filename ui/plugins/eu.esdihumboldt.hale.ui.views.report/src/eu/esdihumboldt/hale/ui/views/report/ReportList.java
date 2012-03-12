@@ -23,6 +23,7 @@ import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -80,13 +81,9 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	private void loadReports() {
-		SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
-		
 		for (ReportSession s : this.repService.getAllSessions()) {
-			String info = df.format(new Date(s.getId()));
-			
 			for (Report r : s.getAllReports().values()) {
-				_treeViewer.setInput(new ReportItem(info, r));
+				_treeViewer.setInput(new ReportItem(s.getId(), r));
 			}
 		}
 	}
@@ -137,6 +134,26 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 		// disable this if it uses too much memory
 		// but should maintain the list much faster
 		_treeViewer.setUseHashlookup(true);
+		
+		// order the sessions from latest to oldest
+		_treeViewer.setComparator(new ViewerComparator() {
+			@Override
+		    public int compare(Viewer viewer, Object e1, Object e2) {
+				if (e1 instanceof Long && e2 instanceof Long) {
+					long first = (Long) e1;
+					long second = (Long) e2;
+					if (first > second) {
+						return -1;
+					} else if (first < second) {
+						return 1;
+					} else {
+						return 0;
+					}
+				}
+				
+				return 0;
+			}
+		});
 		
 		// set selection provider
 		getSite().setSelectionProvider(_treeViewer);

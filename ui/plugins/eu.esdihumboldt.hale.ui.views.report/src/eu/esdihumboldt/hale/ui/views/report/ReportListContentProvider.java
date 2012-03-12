@@ -34,7 +34,7 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	 * Contains all projects with related data.
 	 */
 	@SuppressWarnings("rawtypes")
-	public static Map<String, List<Report>> data = new LinkedHashMap<String, List<Report>>();
+	public static Map<Long, List<Report>> data = new LinkedHashMap<Long, List<Report>>();
 	
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
@@ -52,7 +52,7 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (newInput instanceof ReportItem) {
 			ReportItem item = (ReportItem) newInput;
-			String project = item.getProject();
+			long project = item.getIdentifier();
 			ArrayList<Report> reports;
 			
 			// check if there's already a list
@@ -108,7 +108,7 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof Report) {
-			// assume that Reports do not have any childs!
+			// assume that Reports do not have any children!
 			return false;
 		}
 			

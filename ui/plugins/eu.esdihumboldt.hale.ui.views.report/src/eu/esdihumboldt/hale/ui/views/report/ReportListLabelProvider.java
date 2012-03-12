@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.report;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,8 @@ import eu.esdihumboldt.hale.common.core.report.Report;
 public class ReportListLabelProvider implements ILabelProvider  {
 
 	private Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
+	
+	private SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
 	
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
@@ -76,7 +80,7 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Image getImage(Object element) {
-		if (element instanceof String) {
+		if (element instanceof String || element instanceof Long) {
 			String img = "icons/compressed_folder_obj.gif";
 			ImageDescriptor descriptor = null;
 			descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
@@ -132,6 +136,9 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	public String getText(Object element) {
 		if (element instanceof String) {
 			return (String)element;
+		}
+		else if (element instanceof Long) {
+			return df.format(new Date((Long) element));
 		}
 		else if (element instanceof Report) {
 			return ((Report) element).getTaskName();
