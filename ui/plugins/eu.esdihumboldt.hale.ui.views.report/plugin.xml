@@ -4,6 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            category="eu.esdihumboldt.hale.ui"
             class="eu.esdihumboldt.hale.ui.views.report.ReportList"
             icon="icons/ft_stylelist.gif"
             id="eu.esdihumboldt.hale.ui.views.report.ReportList"
