@@ -14,7 +14,6 @@ package eu.esdihumboldt.hale.ui.service.report.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -56,23 +55,17 @@ public class ReportServiceImpl implements ReportService {
 	/**
 	 * Contains the current session description.
 	 */
-	private String description = "";
+	private long description = 0;
 	
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportService.class);
 	
 	private ReportSession getCurrentSession() {
 		// check if a current session exists
-		if (this.getCurrentSessionDescription().equals("")) {
+		if (this.getCurrentSessionDescription() == 0) {
 			this.updateCurrentSessionDescription();
 		}
 		
-		SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
-		long time;
-		try {
-			time = df.parse(this.description).getTime();
-		} catch (ParseException e) {
-			return null;
-		}
+		long time = this.description;
 		
 		ReportSession session = reps.get(time);
 		if (session == null) {
@@ -281,7 +274,7 @@ public class ReportServiceImpl implements ReportService {
 	 * @see eu.esdihumboldt.hale.ui.service.report.ReportService#getCurrentSessionDescription()
 	 */
 	@Override
-	public String getCurrentSessionDescription() {
+	public long getCurrentSessionDescription() {
 		return this.description;
 	}
 
@@ -290,7 +283,6 @@ public class ReportServiceImpl implements ReportService {
 	 */
 	@Override
 	public void updateCurrentSessionDescription() {
-		SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
-		this.description = df.format(new Date(System.currentTimeMillis()));
+		this.description = System.currentTimeMillis();
 	}
 }

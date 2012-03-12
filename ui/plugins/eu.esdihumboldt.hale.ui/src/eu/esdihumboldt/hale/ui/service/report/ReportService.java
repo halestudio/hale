@@ -120,7 +120,7 @@ public interface ReportService {
 	 * 
 	 * @return session description
 	 */
-	public String getCurrentSessionDescription();
+	public long getCurrentSessionDescription();
 	
 	/**
 	 * Update the session description.

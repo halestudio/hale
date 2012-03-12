@@ -12,49 +12,48 @@
 
 package eu.esdihumboldt.hale.ui.views.report;
 
-import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
+ * Contains a report and the related session.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportItem {
 	/**
-	 * Contains the {@link ProjectInfo}.
+	 * Contains the identifier.
 	 */
-	private String project;
+	private long id;
 	
 	/**
 	 * Contains the related {@link Report}.
 	 */
-	@SuppressWarnings("rawtypes")
-	private Report report;
+	private Report<?> report;
 	
 	/**
 	 * Constructor.
 	 * 
-	 * @param project the project
-	 * @param report the realted Report
+	 * @param id the project
+	 * @param report the related Report
 	 */
-	public ReportItem(String project, Report<?> report) {
-		this.setProject(project);
+	public ReportItem(long id, Report<?> report) {
+		this.setIdentifier(id);
 		this.setReport(report);
 	}
 
 	/**
-	 * @return the project
+	 * @return the identifier
 	 */
-	public String getProject() {
-		return project;
+	public long getIdentifier() {
+		return id;
 	}
 
 	/**
-	 * @param project the project to set
+	 * @param id the identifier to set
 	 */
-	public void setProject(String project) {
-		this.project = project;
+	public void setIdentifier(long id) {
+		this.id = id;
 	}
 
 	/**
