@@ -511,8 +511,9 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 				return false;
 			}
 		} catch (IOProviderConfigurationException e) {
-			//TODO user feedback? details of configuration error as wizard message? how?
-			log.error("Validation of the provider configuration failed", e);
+			// user feedback
+			log.userError("Validation of the provider configuration failed:\n"
+					+ e.getLocalizedMessage(), e);
 			return false;
 		}
 	}
