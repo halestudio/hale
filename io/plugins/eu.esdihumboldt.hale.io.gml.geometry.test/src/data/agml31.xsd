@@ -3,13 +3,13 @@
 
   <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
   
-     <element name="LineStringProperty" substitutionGroup="gml:_Feature" type="hale:LineStringPropertyType"/>
+  <element name="MultiLineStringProperty" substitutionGroup="gml:_Feature" type="hale:MultiLineStringPropertyType"/>
 
-  <complexType name="LineStringPropertyType">
+  <complexType name="MultiLineStringPropertyType">
     <complexContent>
       <extension base="gml:AbstractFeatureType">
         <sequence>
-          <element name="geometry" type="gml:LineStringType"/>
+          <element name="geometry" type="gml:MultiLineStringType"/>
         </sequence>
       </extension>
     </complexContent>
