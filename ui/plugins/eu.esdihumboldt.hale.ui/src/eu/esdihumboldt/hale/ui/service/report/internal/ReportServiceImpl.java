@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.Multimap;
 
@@ -85,6 +89,9 @@ public class ReportServiceImpl implements ReportService {
 		ReportSession session = this.getCurrentSession();
 		session.addReport(report);
 
+		// open ReportList
+		openView();
+		
 		// notify listeners
 		notifyReportAdded(report.getClass(), report.getMessageType(), report);
 	}
@@ -117,6 +124,38 @@ public class ReportServiceImpl implements ReportService {
 		for (ReportListener<?, ?> listener : listeners) {
 			listener.reportsDeleted();
 		}
+	}
+	
+	/**
+	 * Open the ReportList view.
+	 */
+	private void openView() {
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					IWorkbench workbench = PlatformUI.getWorkbench();
+					IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+					IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+					if (window == null) {
+						if (windows.length > 0) {
+							window = windows[0];
+						} else {
+							/* we have no active window and no other window...
+							 * so we better exit here
+							 */
+							_log.error("Could not open report view! No window available.");
+							return;
+						}
+					}
+					
+					IWorkbenchPage page = window.getActivePage();
+					page.showView("eu.esdihumboldt.hale.ui.views.report.ReportList");
+				} catch (Exception e) {
+					_log.error("Could not open report view!", e.getStackTrace());
+				}
+			}
+		});
 	}
 
 	/**

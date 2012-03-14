@@ -22,7 +22,11 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
@@ -110,12 +114,32 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 			composite.setLayoutData(BorderLayout.CENTER);
 			formToolkit.adapt(composite);
 			formToolkit.paintBordersFor(composite);
-			composite.setLayout(new TreeColumnLayout());
+			TreeColumnLayout layout = new TreeColumnLayout();
+			composite.setLayout(layout);
 			{
 				_treeViewer = new TreeViewer(composite, SWT.BORDER);
 				final Tree tree = _treeViewer.getTree();
 				tree.setHeaderVisible(true);
-				tree.setLinesVisible(true);
+				tree.setLinesVisible(false);
+				
+				// create column for reports
+				TreeViewerColumn col1 = new TreeViewerColumn(_treeViewer, SWT.NONE);
+				
+				// add the label provider
+				col1.setLabelProvider(new TreeColumnViewerLabelProvider(new ReportListLabelProvider()));
+				
+				// and layout
+				layout.setColumnData(col1.getColumn(), new ColumnWeightData(3));
+				
+				// create column for reports
+				TreeViewerColumn col2 = new TreeViewerColumn(_treeViewer, SWT.NONE);
+				
+				// add the label provider
+				col2.setLabelProvider(new TreeColumnViewerLabelProvider(new ReportListLabelDateProvider()));
+				
+				// create column for reports
+				layout.setColumnData(col2.getColumn(), new ColumnWeightData(1));
+				
 				formToolkit.paintBordersFor(tree);
 				
 				new ReportListMenu(getSite(), _treeViewer);
@@ -127,7 +151,7 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 		initializeMenu();
 		
 		// set label provider
-		_treeViewer.setLabelProvider(new ReportListLabelProvider());
+		// _treeViewer.setLabelProvider(new ReportListLabelProvider());
 		
 		// set content provider
 		_treeViewer.setContentProvider(new ReportListContentProvider());
@@ -146,6 +170,16 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 					if (first > second) {
 						return -1;
 					} else if (first < second) {
+						return 1;
+					} else {
+						return 0;
+					}
+				} else if (e1 instanceof Report<?> && e2 instanceof Report<?>) {
+					Report<?> first = (Report<?>) e1;
+					Report<?> second = (Report<?>) e2;
+					if (first.getStartTime().getTime() > second.getStartTime().getTime()) {
+						return -1;
+					} else if (first.getStartTime().getTime() < second.getStartTime().getTime()) {
 						return 1;
 					} else {
 						return 0;
@@ -226,7 +260,9 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 			public void run() {
 				try{
 					// add report to view
-					_treeViewer.setInput(new ReportItem(repService.getCurrentSessionDescription(), report));
+					ReportItem item = new ReportItem(repService.getCurrentSessionDescription(), report);
+					_treeViewer.setInput(item);
+					
 					/*
 					 * TODO expand all previous expanded items
 					 * To expand all previous expanded entries:
@@ -237,6 +273,9 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 					 *  it's a simple reference check, which won't work if you've recreated your contents.
 					 */
 					_treeViewer.setExpandedElements(new Object[] {repService.getCurrentSessionDescription()});
+					
+					// select new item
+					_treeViewer.setSelection(new StructuredSelection(item.getReport()), true);
 				} catch (NullPointerException e) {
 					_log.warn("NullpointerException while adding a Report.");
 					_log.trace(e.getMessage());
