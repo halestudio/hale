@@ -1,11 +1,56 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>The HUMBOLDT project</title>
 </head>
 <body>
-<h2>Introduction to the Project</h2>
-
+	<h1>The HUMBOLDT project</h1>
+	<p>HUMBOLDT, a European project within the 6th Framework Programme,
+		focuses on the facilitation and support of cross-national
+		harmonisation of spatial data.</p>
+	<p>Within the HUMBOLDT project, the following goals were used to
+		guide the scientific and implementation work:</p>
+	<ol>
+		<li>Capturing domain knowledge / application-specific knowledge
+			required for data harmonisation, including an enhanced formalization
+			of the transformation between two conceptual schemas</li>
+		<li>Supporting the definition of the information product (target
+			schema, SRS, spatial extent, ...) to which the processed data needs
+			to be transformed</li>
+		<li>Handling of transformation needs as part of the overall
+			processing of an information request</li>
+		<li><b>Enhancement of the automation of the data
+				harmonisation processes</b> (depending on the possibility of capturing
+			the required knowledge and the availability of this knowledge)</li>
+	</ol>
+	<div>
+		<img src="../images/humboldt_goals.jpg" style="max-width: 100%"
+			title="Schematic overview on the goals of HUMBOLDT concerning data harmonisation">
+	</div>
+	<p>As already indicated in the list of goals, a main aspect is the
+		involvement and formalisation of human knowledge for the geodata
+		harmonisation process. Mainly the knowledge of GI data integrators as
+		well as GIS developers has to be captured. The creation of a target
+		data model (e.g. from an INSPIRE data theme specification) and the
+		analysis of available data sources have to involve application
+		experts’ knowledge about data interpretation and GIS developers’
+		know-how about data processing. The expertise of GI data integrators
+		is required again when the mapping between source and target is
+		specified.</p>
+	<p>For this purpose, three main components were designed and
+		implemented in HUMBOLDT to support the acquisition of users’ knowledge
+		for data modelling and harmonisation as well as the subsequent
+		execution of conceptual schema transformation:</p>
+	<ul>
+		<li>HUMBOLDT GeoModel Editor</li>
+		<li>HUMBOLDT Alignment Editor</li>
+		<li>HUMBOLDT Conceptual Schema Transformer</li>
+	</ul>
+	<p>While the HUMBOLDT GeoModel Editor supports the specification of
+		source and target models, the HUMBOLDT Alignment Editor facilitates
+		the specification of the mapping between source and target, the
+		HUMBOLDT service called Conceptual Schema Transformer is responsible
+		for the execution of the transformation.</p>
 </body>
 </html>
