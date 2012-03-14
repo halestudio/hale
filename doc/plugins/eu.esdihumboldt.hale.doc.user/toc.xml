@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <toc label="HALE User Guide">
    <topic label="Introduction">
-      <topic href="html/introduction_project.html" label="Introduction to the Project">
+      <topic href="html/introduction_project.html" label="The HUMBOLDT project">
       </topic>
-      <topic href="html/introduction_HALE.html" label="Introduction to HALE">
-         <topic href="html/introduction_HALE/data_harmonisation.html" label="Supporting Data harmonisation">
-         </topic>
-         <topic href="html/introduction_HALE/terminology.html" label="Terminology">
-         </topic>
+      <topic href="html/introduction_HALE.html" label="The HUMBOLDT Alignment Editor">
       </topic>
    </topic>
    <topic label="Getting Started with HALE">
