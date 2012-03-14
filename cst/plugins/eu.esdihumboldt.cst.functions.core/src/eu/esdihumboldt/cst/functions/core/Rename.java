@@ -24,6 +24,8 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Property rename function.
@@ -41,9 +43,15 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 			throws TransformationException {
 		// get the source value
 		Object sourceValue = variables.values().iterator().next().getValue();
-		//TODO improve
-		//FIXME what about Instances or Groups as values? (Instance values, structural rename?)
-		return sourceValue; // rely on automatic conversion
+
+		// non-structural rename
+		if (sourceValue instanceof Group) {
+			if (sourceValue instanceof Instance)
+				sourceValue = ((Instance) sourceValue).getValue();
+			else
+				sourceValue = null;
+		}
+		return sourceValue;
 	}
 
 }

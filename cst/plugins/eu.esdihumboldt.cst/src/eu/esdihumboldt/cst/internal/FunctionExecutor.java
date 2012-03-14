@@ -197,14 +197,18 @@ public class FunctionExecutor extends CellNodeValidator {
 					TargetNode node = nodes.get(i).getFirst();
 					
 					if (function.allowAutomatedResultConversion()) {
-						// convert value for target
-						try {
-							value = convert(value, toPropertyEntityDefinition(
-									node.getEntityDefinition()));
-						} catch (Throwable e) {
-							// ignore, but create error
-							cellLog.error(cellLog.createMessage(
-									"Conversion according to target property failed, using value as is.", e));
+						if (!(value instanceof Group)) {
+							// convert value for target
+							try {
+								value = convert(value, toPropertyEntityDefinition(
+										node.getEntityDefinition()));
+							} catch (Throwable e) {
+								// ignore, but create error
+								cellLog.error(cellLog.createMessage(
+										"Conversion according to target property failed, using value as is.", e));
+							}
+						} else {
+							// TODO any conversion necessary/possible
 						}
 					}
 					
