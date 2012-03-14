@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
 
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
@@ -54,6 +55,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 	public Object createGeometry(Instance instance)
 			throws GeometryNotSupportedException {
 		LineString line = null;
+		PointHandler handler = new PointHandler();
 
 		// to parse coordinates of a line
 		// for use with GML 2, 3, 3.1, 3.2
@@ -103,44 +105,71 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 			values = PropertyResolver.getValues(instance, "posList", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
-					Object value = iterator.next();
-					if (value instanceof Instance) {
-						Coordinate[] cs = GMLGeometryUtil
-								.parsePosList((Instance) value);
-						if (cs != null) {
-							line = getGeometryFactory().createLineString(cs);
+				Object value = iterator.next();
+				if (value instanceof Instance) {
+					Coordinate[] cs = GMLGeometryUtil
+							.parsePosList((Instance) value);
+					if (cs != null) {
+						line = getGeometryFactory().createLineString(cs);
 					}
 				}
 			}
 		}
 
-		// to parse Points of a line
-		// FIXME: get correct point???
-		// for use with GML 3, 3.2
+		// to parse Point Representations of a line
+		// for use with GML 3, 3.1, 3.2
+		
 		if (line == null) {
-			values = PropertyResolver.getValues(instance, "Point", false);
+			values = PropertyResolver.getValues(instance, "pointRep.Point",
+					false);
 			if (values != null && !values.isEmpty()) {
-
 				Iterator<Object> iterator = values.iterator();
 				List<Coordinate> cs = new ArrayList<Coordinate>();
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
-						Coordinate c = GMLGeometryUtil
-								.parseCoord((Instance) value);
-						if (c != null) {
-							cs.add(c);
+						System.out.println(((Instance)value).getValue());
+						try {
+							@SuppressWarnings("unchecked")
+							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler.createGeometry((Instance) value);
+							cs.add(point.getGeometry().getCoordinate());
+						} catch (GeometryNotSupportedException e){
+							throw new GeometryNotSupportedException("Could not parse Point Representation", e);
 						}
-
 					}
-
-					Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
-					line = getGeometryFactory().createLineString(coords);
 				}
+				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+				line = getGeometryFactory().createLineString(coords);
+			}
+		}
+		
+		// to parse Point Properties of a line
+		// for use with GML 3.1
+		if (line == null) {
+			values = PropertyResolver.getValues(instance, "pointProperty.Point",
+					false);
+			if (values != null && !values.isEmpty()) {
+				Iterator<Object> iterator = values.iterator();
+				List<Coordinate> cs = new ArrayList<Coordinate>();
+				while (iterator.hasNext()) {
+					Object value = iterator.next();
+					if (value instanceof Instance) {
+						System.out.println(((Instance)value).getValue());
+						try {
+							@SuppressWarnings("unchecked")
+							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler.createGeometry((Instance) value);
+							cs.add(point.getGeometry().getCoordinate());
+						} catch (GeometryNotSupportedException e){
+							throw new GeometryNotSupportedException("Could not parse Point Property", e);
+						}
+					}
+				}
+				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+				line = getGeometryFactory().createLineString(coords);
 			}
 		}
 
-		// for use with GML2, 3, 3.2
+		// for use with GML2, 3, 3.1, 3.2
 		if (line == null) {
 			values = PropertyResolver.getValues(instance, "coord", false);
 			if (values != null && !values.isEmpty()) {

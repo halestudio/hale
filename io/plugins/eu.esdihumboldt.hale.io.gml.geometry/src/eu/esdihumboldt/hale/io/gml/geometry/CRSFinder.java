@@ -53,7 +53,7 @@ public class CRSFinder implements InstanceTraversalCallback {
 	 */
 	@Override
 	public boolean visit(Object value, QName name) {
-		if (value != null && name.getLocalPart().equals("srsName")) {
+		if (value != null && name != null && name.getLocalPart().equals("srsName")) {
 			String candidate = value.toString();
 			
 			// EPSG:(:)xxx style codes
