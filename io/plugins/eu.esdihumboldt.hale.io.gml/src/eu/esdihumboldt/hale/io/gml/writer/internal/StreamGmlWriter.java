@@ -45,11 +45,13 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
@@ -72,6 +74,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Writes GML/XML using a {@link XMLStreamWriter}
@@ -755,26 +758,9 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				GmlWriterUtil.writeStartElement(writer, propDef.getName());
 				
 				if (value instanceof GeometryProperty<?> || value instanceof Geometry) {
-					//XXX other check, e.g. for constraints?
-					//FIXME currently duplicate of code some lines below!!!!
-					
-					String srsName;
-					Geometry geom;
-					if (value instanceof Geometry) {
-						geom = (Geometry) value;
-						srsName = null;
-					}
-					else {
-						geom = ((GeometryProperty<?>) value).getGeometry();
-						srsName = null; //TODO
-//						CRSDefinition def = ((GeometryProperty<?>) value).getCRSDefinition();
-//						if (def != null) {
-//							srsName = def.getCRS().getName().toString();
-//						}
-					}
-					
+					Pair<Geometry, String> pair = getGeometryAndSRSName(value);
 					// write geometry
-					writeGeometry(geom, propDef, srsName); //FIXME getCommonSRSName());
+					writeGeometry(pair.getFirst(), propDef, pair.getSecond());
 				}
 				else {
 					// simple element with value
@@ -796,25 +782,9 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			// handle about annotated geometries
 			if (!hasValue && (value instanceof Geometry || value instanceof GeometryProperty<?>)) {
 				//XXX what about collections of geometries?
-				//XXX other check, e.g. for constraints?
-				
-				String srsName;
-				Geometry geom;
-				if (value instanceof Geometry) {
-					geom = (Geometry) value;
-					srsName = null;
-				}
-				else {
-					geom = ((GeometryProperty<?>) value).getGeometry();
-					srsName = null; //TODO
-//					CRSDefinition def = ((GeometryProperty<?>) value).getCRSDefinition();
-//					if (def != null) {
-//						srsName = def.getCRS().getName().toString();
-//					}
-				}
-				
+				Pair<Geometry, String> pair = getGeometryAndSRSName(value);
 				// write geometry
-				writeGeometry(geom, propDef, srsName); //FIXME getCommonSRSName());
+				writeGeometry(pair.getFirst(), propDef, pair.getSecond());
 			}
 			else {
 				// write all children (no elements if there is a value)
@@ -828,6 +798,32 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			
 			writer.writeEndElement();
 		}
+	}
+
+	/**
+	 * Returns a pair of geometry and srsname for the given value.
+	 * Value has to be a Geometry or a GeometryProperty, otherwise null is returned.
+	 * The returned srsname may be null.
+	 * 
+	 * @param value the value to extract the information from (a Geometry or a GeometryProperty)
+	 * @return a pair of geometry and srsname (latter may be null), or null if the argument isn't valid
+	 */
+	private Pair<Geometry, String> getGeometryAndSRSName(Object value) {
+		if (value instanceof Geometry)
+			return new Pair<Geometry, String>((Geometry) value, null);
+		else if (value instanceof GeometryProperty<?>) {
+			String srsName = null;
+			CRSDefinition def = ((GeometryProperty<?>) value).getCRSDefinition();
+			if (def != null) {
+				if (def instanceof CodeDefinition)
+					srsName = ((CodeDefinition) def).getCode();
+				else if (def.getCRS() != null) // TODO getName().toString() is not correct
+					srsName = null;
+			}
+
+			return new Pair<Geometry, String>(((GeometryProperty<?>) value).getGeometry(), srsName);
+		} else
+			return null;
 	}
 
 	/**
