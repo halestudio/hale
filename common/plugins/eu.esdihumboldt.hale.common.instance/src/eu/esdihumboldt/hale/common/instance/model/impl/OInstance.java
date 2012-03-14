@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -64,10 +65,12 @@ public class OInstance extends OGroup implements MutableInstance {
 	 * Creates an instance based on the given document.
 	 * @param document the document
 	 * @param typeDef the definition of the instance's type
+	 * @param db the database
 	 * @param dataSet the data set the instance is associated to 
 	 */
-	public OInstance(ODocument document, TypeDefinition typeDef, DataSet dataSet) {
-		super(document, typeDef);
+	public OInstance(ODocument document, TypeDefinition typeDef, 
+			ODatabaseRecord db, DataSet dataSet) {
+		super(document, typeDef, db);
 		
 		this.dataSet = dataSet;
 	}
@@ -99,6 +102,8 @@ public class OInstance extends OGroup implements MutableInstance {
 	 */
 	@Override
 	public Object getValue() {
+		associatedDbWithThread();
+		
 		return convertDocument(document.field(FIELD_VALUE), null);
 	}
 
