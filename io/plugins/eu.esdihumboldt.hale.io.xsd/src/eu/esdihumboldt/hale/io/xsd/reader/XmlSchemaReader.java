@@ -65,6 +65,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -163,6 +164,22 @@ public class XmlSchemaReader
 	@Override
 	public boolean isCancelable() {
 		return false;
+	}
+
+	/**
+	 * @see AbstractImportProvider#validate()
+	 */
+	@Override
+	public void validate() throws IOProviderConfigurationException {
+		super.validate();
+		
+		if (getSharedTypes() != null) {
+			for (TypeDefinition type : getSharedTypes().getTypes()) {
+				if (type instanceof XmlTypeDefinition) {
+					fail("Loading multiple XML schemas not supported, please create a combined XML schema instead.");
+				}
+			}
+		}
 	}
 
 	/**
