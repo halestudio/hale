@@ -16,6 +16,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.cs3d.util.logging.ALogger;
@@ -54,13 +56,40 @@ public class ReportReader {
 			return new ArrayList<ReportSession>();
 		}
 		
-		// create a list containg the result
+		// create a list containing the result
 		List<ReportSession> list = new ArrayList<ReportSession>();
+		
+		List<Long> ids = new ArrayList<Long>();
 		
 		// iterate through all files from the directory
 		for (File f : dir.listFiles()) {
 			// extract the id from filename
 			long id = this.getIdentifier(f);
+			
+			// add the id
+			ids.add(id);
+		}
+		
+		// sort the ids
+		Collections.sort(ids);
+		Collections.reverse(ids);
+		
+		// and load the latest 3		
+		for (File f : dir.listFiles()) {
+			// extract the id from filename
+			long id = this.getIdentifier(f);
+			boolean skip = true;
+			
+			for (int i = 0; i < 3; i++) {
+				if (ids.get(i) == id) {
+					skip = false;
+					break;
+				}
+			}
+			
+			if (skip) {
+				continue;
+			}
 			
 			// parse the session
 			ReportSession session = this.parse(f, id);
