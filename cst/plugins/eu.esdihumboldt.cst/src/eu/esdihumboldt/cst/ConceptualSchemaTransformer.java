@@ -106,7 +106,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	
 			engines.dispose();
 			
-			reporter.setSuccess(false);
+			reporter.setSuccess(true);
 			return reporter;
 		} finally {
 			progressIndicator.end();
