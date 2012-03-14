@@ -131,7 +131,7 @@ public class OrientInstanceReference implements InstanceReference {
 			ODocument document = db.getDatabase().load(getId());
 			if (document != null) {
 				OInstance instance = new OInstance(document, 
-						getTypeDefinition(), getDataSet());
+						getTypeDefinition(), db.getDatabase(), getDataSet());
 //				handle.addReference(instance);
 				return new DefaultInstance(instance);
 			}

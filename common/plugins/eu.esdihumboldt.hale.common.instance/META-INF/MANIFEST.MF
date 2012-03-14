@@ -8,6 +8,7 @@ Service-Component: OSGI-INF/CodeDefinitionFactory.xml, OSGI-INF/WKTDefinitionFac
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect;version="9.0.0",
  com.google.common.io;version="1.6.0",
+ com.orientechnologies.orient.core.db;version="1.0.0.RC8",
  com.orientechnologies.orient.core.db.record;version="1.0.0.RC1",
  com.orientechnologies.orient.core.metadata.schema,
  com.orientechnologies.orient.core.record;version="1.0.0.RC1",
