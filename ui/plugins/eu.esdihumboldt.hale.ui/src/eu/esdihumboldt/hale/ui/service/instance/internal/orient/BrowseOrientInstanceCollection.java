@@ -134,7 +134,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 			if (hasNext()) {
 				ODocument doc = currentIterator.next();
 				allowUpdate = true; // allow updating in hasNext
-				Instance instance = new OInstance(doc, getCurrentType(), dataSet);
+				Instance instance = new OInstance(doc, getCurrentType(), 
+						ref.getDatabase(), dataSet);
 				handle.addReference(instance);
 				return instance;
 			}

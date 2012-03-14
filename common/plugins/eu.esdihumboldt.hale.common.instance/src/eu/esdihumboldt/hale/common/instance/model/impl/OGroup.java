@@ -30,6 +30,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.ORecordAbstract;
@@ -86,6 +87,11 @@ public class OGroup implements MutableGroup {
 	protected final ODocument document;
 	
 	/**
+	 * The associated database record.
+	 */
+	protected ODatabaseRecord db;
+	
+	/**
 	 * The definition group
 	 */
 	private final DefinitionGroup definition;
@@ -105,6 +111,7 @@ public class OGroup implements MutableGroup {
 	 * @return the internal document configured with the database
 	 */
 	public ODocument configureDocument(ODatabaseRecord db) {
+		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		configureDocument(document, db, definition);
 		return document;
 	}
@@ -186,10 +193,13 @@ public class OGroup implements MutableGroup {
 	 * 
 	 * @param document the document
 	 * @param definition the definition of the associated group
+	 * @param db the database 
 	 */
-	public OGroup(ODocument document, DefinitionGroup definition) {
+	public OGroup(ODocument document, DefinitionGroup definition,
+			ODatabaseRecord db) {
 		this.document = document;
 		this.definition = definition;
+		this.db = db;
 	}
 	
 	/**
@@ -465,6 +475,8 @@ public class OGroup implements MutableGroup {
 	 */
 	@Override
 	public Object[] getProperty(QName propertyName) {
+		associatedDbWithThread();
+		
 		String pName = encodeProperty(propertyName);
 		Object value = document.field(pName);
 		
@@ -481,6 +493,15 @@ public class OGroup implements MutableGroup {
 		}
 		else {
 			return new Object[]{convertDocument(value, propertyName)};
+		}
+	}
+
+	/**
+	 * Associate the database with the current thread (if set on the group)
+	 */
+	protected void associatedDbWithThread() {
+		if (db != null) {
+			ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		}
 	}
 
@@ -503,11 +524,11 @@ public class OGroup implements MutableGroup {
 				ChildDefinition<?> child = definition.getChild(propertyName);
 				if (child.asProperty() != null) {
 					return new OInstance((ODocument) value, 
-							child.asProperty().getPropertyType(), 
+							child.asProperty().getPropertyType(), db,
 							null); // no data set necessary for nested instances
 				}
 				else if (child.asGroup() != null) {
-					return new OGroup((ODocument) value, child.asGroup());
+					return new OGroup((ODocument) value, child.asGroup(), db);
 				}
 				else {
 					throw new IllegalStateException("Field " + propertyName + 
@@ -557,6 +578,8 @@ public class OGroup implements MutableGroup {
 	 */
 	@Override
 	public Iterable<QName> getPropertyNames() {
+		associatedDbWithThread();
+		
 		Set<String> fields = new HashSet<String>(
 				Arrays.asList(document.fieldNames()));
 		
