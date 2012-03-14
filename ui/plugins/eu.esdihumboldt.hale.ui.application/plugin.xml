@@ -397,17 +397,6 @@
                label="%menu.help.label"
                mnemonic="%menu.help.mnemonic">
             <command
-                  commandId="eu.esdihumboldt.hale.ui.applications.commands.manual"
-                  id="ShowManual"
-                  label="%command.showManual.label"
-                  mnemonic="s"
-                  style="push">
-            </command>
-            <separator
-                  name="eu.esdihumboldt.hale.ui.help.1"
-                  visible="true">
-            </separator>
-            <command
                   commandId="org.eclipse.ui.help.aboutAction"
                   style="push">
             </command>
