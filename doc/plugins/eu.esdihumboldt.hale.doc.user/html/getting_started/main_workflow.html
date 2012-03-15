@@ -2,40 +2,74 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js">
+<script type="text/javascript"
+	src="PLUGINS_ROOT/org.eclipse.help/livehelp.js">
 </script>
-<title>Main Workflow</title>
+<title>First steps in HALE</title>
 </head>
 <body>
+	<h1>First steps in HALE</h1>
+	<p>
+		<i>HALE</i> is an application that strives to assist you in creating
+		schema mappings, allowing the transformation of data that conforms to
+		the source schema to data that is compliant to the target schema. <i>HALE</i>
+		combines both the mapping creation and the transformation,
+		facilitating an interactive mapping by giving feedback on each change
+		to the mapping by transforming a given sample data set.
+	</p>
+	<p>
+		A schema in <i>HALE</i> is a collection of classes/types with
+		well-defined properties/attributes. Schemas may be complex, i.e. the
+		properties may again have properties themselves. Before starting with
+		the mapping creation you should familiarize yourself with the source
+		and target schemas.
+	</p>
+	<p>
+		For the definition of the schema mapping a declarative approach is
+		used. The mapping (or alignment) consists of a set of relations,
+		represented by mapping <i>cells</i>. First, you have to identify the
+		relations between the source and target types, then, for each type
+		relation, identify the relations between the corresponding properties.
+	</p>
+	<p class="Note">
+		For a quick start please follow the instructions in the
+		<a class="command-link"
+			href='javascript:executeCommand("org.eclipse.ui.cheatsheets.openCheatSheet(cheatSheetId=eu.esdihumboldt.hale.ui.firststeps.firststepsCS)")'>
+			<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png" alt="command link">Getting started</a> guide.
+			It will show you a simple example project and get you going on starting
+			your own alignment project.
+	</p>
+	<h2>Main workflow</h2>
+	<p>
+		When creating an alignment project you typically follow these main steps:
+	</p>
+	<ol>
+		<li>Import the schema of the source data you want to map</li>
+		<li>Import the target schema</li>
+		<li>Import a source data set (optional)</li>
+		<!--li>Set up initial analysis and quality definition</li-->
+		<li>Identify the relevant target types</li>
+		<li>Identify and add the relations between source an target types</li>
+		<li>For each type relation analyze
+			<ul>
+				<li>What information is present in the source classe(s)?</li>
+				<li>What information is needed in the target class?</li>
+				<li>How can the target properties be populated from the source?</li>
+			</ul> to identify the relations between the source and target properties,
+			then add them to the mapping.
+		</li>
+		<li>For each change to the mapping, verify if the transformation
+			result meets your expectations (optional, needs source data)</li>
+		<!--li>Go through the created task list until the mapping is of
+			sufficient quality for your application</li>
+		<li>Start final mapping analysis (optional)</li>
+		<li>If no problems pop up, save/publish created mapping.</li-->
+		<li>Save the transformed data to a file (optional, needs source data)</li>
+	</ol>
+	
+	<!-- TODO: related tasks (or links in workflow definition?) -->
 
-<h2>Main Workflow</h2>
-
-When working with HALE, you typically follow these
-main steps. Each of these steps is explained in
-greater detail in the remainder of this handbook.<br>
-You can also have a look at the 
-<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.cheatsheets.openCheatSheet(cheatSheetId=eu.esdihumboldt.hale.ui.firststeps.firststepsCS)")'>
-<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png" alt="command link">first steps cheat sheet</a>
-or <a class="" href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
-	"false||/exampleschema/t1t2.halex||bundle||eu.esdihumboldt.hale.ui.firststeps")'>load an example project</a>.<br>
-<ol>
-	<li>Open the schema of the source data you
-		want to map</li>
-	<li>Open the target schema</li>
-	<li>Open a source data set (optional)</li>
-	<li>Configure the source and target Styled Layer
-		Descriptors (optional) to get interactive
-		feedback on the progress of your mapping
-		project in the map viewer</li>
-	<li>Set up initial analysis and quality definition</li>
-	<li>Go through the created task list until the
-		mapping is of sufficient quality for your application</li>
-	<li>Start final mapping analysis (optional)</li>
-	<li>If no problems pop up, save/publish created
-		mapping.</li>
-	<li>If you loaded source data you can save the
-		transformed data to a GML file (optional)</li>
-</ol>
-
+	<!-- <a class="" href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
+	"false||/exampleschema/t1t2.halex||bundle||eu.esdihumboldt.hale.ui.firststeps")'>load an example project</a> -->
 </body>
 </html>
