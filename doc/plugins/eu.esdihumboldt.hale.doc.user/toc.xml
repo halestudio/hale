@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <toc label="HALE User Guide">
    <topic label="Introduction">
-      <topic href="html/introduction_project.html" label="The HUMBOLDT project">
+      <topic href="html/introduction/introduction_project.html" label="The HUMBOLDT project">
       </topic>
-      <topic href="html/introduction_HALE.html" label="The HUMBOLDT Alignment Editor">
+      <topic href="html/introduction/introduction_HALE.html" label="The HUMBOLDT Alignment Editor">
       </topic>
       <anchor id="introduction"/>
    </topic>
