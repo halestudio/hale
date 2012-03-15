@@ -25,6 +25,8 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
  */
 public class RetypeExplanation implements CellExplanation {
 
+	private static final String EXPLANATION_PATTERN = "Creates a {1} instance for each {0} instance in the source data set.";
+
 	/**
 	 * @see CellExplanation#getExplanation(Cell)
 	 */
@@ -34,7 +36,7 @@ public class RetypeExplanation implements CellExplanation {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		
 		if (source != null && target != null) {
-			return MessageFormat.format("Creates a {1} instance for each {0} instance in the source data set.", 
+			return MessageFormat.format(EXPLANATION_PATTERN, 
 					source.getDefinition().getDefinition().getDisplayName(),
 					target.getDefinition().getDefinition().getDisplayName());
 		}
@@ -43,11 +45,19 @@ public class RetypeExplanation implements CellExplanation {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
+	 * @see CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
 	@Override
 	public String getExplanationAsHtml(Cell cell) {
-		// TODO Auto-generated method stub
+		Entity source = CellUtil.getFirstEntity(cell.getSource());
+		Entity target = CellUtil.getFirstEntity(cell.getTarget());
+		
+		if (source != null && target != null) {
+			return MessageFormat.format(EXPLANATION_PATTERN, 
+					"<span style=\"font-style: italic;\">" + source.getDefinition().getDefinition().getDisplayName() + "</span>",
+					"<span style=\"font-style: italic;\">" + target.getDefinition().getDefinition().getDisplayName() + "</span>");
+		}
+		
 		return null;
 	}
 
