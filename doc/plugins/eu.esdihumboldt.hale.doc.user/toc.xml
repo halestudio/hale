@@ -5,19 +5,25 @@
       </topic>
       <topic href="html/introduction_HALE.html" label="The HUMBOLDT Alignment Editor">
       </topic>
+      <anchor id="introduction"/>
    </topic>
-   <topic label="Getting Started with HALE">
-      <topic href="html/getting_started/confWorkbench.html" label="Configuring your Workbench">
+   <topic label="Getting Started">
+      <topic href="html/getting_started/main_workflow.html" label="First steps in HALE">
       </topic>
-      <topic href="html/getting_started/main_workflow.html" label="Main Workflow">
+      <topic href="html/getting_started/confWorkbench.html" label="Configuring your workbench">
       </topic>
+      <topic label="The default perspective">
+      </topic>
+      <topic label="The data perspective">
+      </topic>
+      <anchor id="gettingstarted"/>
    </topic>
    <topic label="Concepts">
       <topic href="html/concepts/what_is_schema.html" label="What is a Schema?">
       </topic>
       <topic href="html/dummy.html" label="What is an Instance?">
       </topic>
-      <topic href="html/dummy.html" label="What is a Cell?">
+      <topic href="html/dummy.html" label="What is an Alignment?">
       </topic>
    </topic>
    <topic label="Views">
@@ -28,26 +34,27 @@
       <anchor id="views"/>
    </topic>
    <topic label="Tasks">
-      <topic href="html/dummy.html" label="How to ... ?">
-      </topic>
-      <topic label="Schemas">
-         <topic href="html/tasks/schemas/load_browse_schema.html" label="Loading and browsing schemas">
+      <topic label="Schema">
+         <topic href="html/tasks/schema/load_browse_schema.html" label="Loading and browsing schemas">
          </topic>
-         <topic href="html/tasks/schemas/multiple_source_schemas.html" label="Using multiple source schemas">
+         <topic href="html/tasks/schema/multiple_source_schemas.html" label="Using multiple source schemas">
          </topic>
-         <topic href="html/tasks/schemas/troubleshooting_schema.html" label="Troubleshooting Schema Loading">
+         <topic href="html/tasks/schema/troubleshooting_schema.html" label="Troubleshooting Schema Loading">
          </topic>
-         <topic href="html/tasks/schemas/exploring_schema.html" label="Exploring a loaded Schema">
-         </topic>
-         <topic href="html/tasks/schemas/mapping_schema_elem.html" label="Mapping schema elements">
+         <topic href="html/tasks/schema/exploring_schema.html" label="Exploring a loaded Schema">
          </topic>
       </topic>
-      <topic label="Datas">
-         <topic href="html/tasks/datas/working_source_data.html" label="Working with a source data set">
+      <topic label="Data">
+         <topic href="html/tasks/data/working_source_data.html" label="Working with a source data set">
          </topic>
-         <topic href="html/tasks/datas/troubleshooting_source_data.html" label="Troubleshooting source data loading">
+         <topic href="html/tasks/data/troubleshooting_source_data.html" label="Troubleshooting source data loading">
          </topic>
       </topic>
+      <topic label="Alignment/Mapping">
+         <topic href="html/tasks/alignment/mapping_schema_elem.html" label="Mapping schema elements">
+         </topic>
+      </topic>
+      <anchor id="tasks"/>
    </topic>
    <topic label="Reference">
       <anchor id="reference"/>
@@ -55,6 +62,7 @@
    <topic label="Tips and Tricks">
       <anchor id="tips"/>
    </topic>
+   <anchor id="userguide"/>
    <topic href="html/pointofcontact.html" label="Point of Contact">
    </topic>
 </toc>
