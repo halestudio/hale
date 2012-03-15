@@ -42,7 +42,6 @@ http://www.esdi-community.eu/projects/show/hale
    <vm>
    </vm>
 
-
    <plugins>
       <plugin id="au.com.bytecode.opencsv"/>
       <plugin id="cal10n.api"/>
@@ -123,7 +122,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
-      <plugin id="eu.esdihumboldt.hale.doc.dev"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
