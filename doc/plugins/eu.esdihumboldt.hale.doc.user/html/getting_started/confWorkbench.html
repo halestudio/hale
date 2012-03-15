@@ -2,62 +2,54 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Configuring your workbench</title>
 </head>
 <body>
-<h2>Configuring your workbench</h2>
-
-When you start HALE the first time, it will present you
-with a user interface that contains several different
-parts. These parts, called views, each have a specific
-purpose. In the current release, the following views
-are included:
-<!-- actual screenshot of HALE workbench (figure3)-->
-
-<ul>
-	<li><i>Schema Explorer:</i> The Schema Explorer allows
-		you to view the structure of the source
-		(left) and the target (right) schema in various
-		ways and enables the definition of mappings
-		between the elements of the schemas.</li>
-	<li><i>Mapping View:</i> The mapping view provides
-		information on the schema mappings you
-		have defined on the elements currently selected
-		in the Schema Explorer.</li>
-	<li><i>Map View:</i> This view provides you with a
-		cartographic representation of the reference
-		data for the source schema and the transformed
-		data alongside each other, when
-		you have loaded such data. It can be styled
-		and navigated interactively.</li>
-	<li><i>Reference Data:</i> This view provides a tabular
-		representation of the reference data for
-		the source schema when you have loaded
-		any.</li>
-	<li><i>Transformed Data:</i> Like the Reference Data
-		view, this view provides you with the possibility 
-		to inspect transformed data.</li>
-	<li><i>Tasks:</i> The Task View provides you with information
-		on tasks that have to be completed
-		to create a complete and correct
-		mapping.</li>
-	<li><i>Mapping Graph View:</i> This view gives you a
-		graphical overview of the mapping created
-		so far.</li>
-	<li><i>Error Log:</i> Gives you insight into the program's
-		log messages. They can be exported
-		as log files to submit with a bug report.</li>
-</ul>
-Each of these views can be resized by grabbing its
-border and then dragging the mouse cursor. Furthermore,
-every view can be maximized by double clicking
-on the "Folder" part of the view on top or by clicking
-the bigger window icon on the right side of the
-view's top. To set a view back to normal, you can
-again double-click on its tab or click on the small window
-icon.
-It is also possible to rearrange views. Just click on
-the tab and drag the mouse cursor to the place
-
+	<h1>Configuring your workbench</h1>
+	<p>
+		When you start <i>HALE</i> the first time, it will present you with
+		the <i>First steps</i> welcome page. It offers you to load an existing
+		project or to continue with the <a class="command-link"
+			href='javascript:executeCommand("org.eclipse.ui.cheatsheets.openCheatSheet(cheatSheetId=eu.esdihumboldt.hale.ui.firststeps.firststepsCS)")'>
+			<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">Get started with HALE</a>
+		guide. After choosing either of those options the welcome page is
+		replaced with the <i>HALE</i> workbench. You can also close the
+		welcome page manually.
+	</p>
+	<p>The workbench consists of</p>
+	<ul>
+		<li>perspectives and</li>
+		<li>views</li>
+	</ul>
+	<p>A perspective is a group of views in the workbench window. One
+		or more perspectives can exist in a single workbench window. Each
+		perspective contains one or more views.</p>
+	<p>A view is a visual component within the workbench. It is
+		typically used to represent a certain aspect of the current project,
+		displaying information and possibly also allowing to manipulate it.</p>
+	<p>
+		In the image below, the <i>Default</i> perspective is the current
+		perspective, and the <i>Schema Explorer</i> view is active.
+	</p>
+	<div>
+		<img src="workbench.png" title="HALE workbench"
+			style="max-width: 100%">
+	</div>
+	<p>
+		The active view may provide a selection for the application, which is
+		used as the context for commands (e.g. the <i>Delete</i> command if
+		supported for the selected objects) or for displaying further
+		information on the selected objects in another view (e.g. the <i>Properties</i>
+		view).
+	</p>
+	<p>Each of the views can be resized by grabbing its border and then
+		dragging the mouse cursor. Furthermore, every view can be maximized by
+		double clicking on the view title or by clicking the window icon in
+		the right upper corner of the view. To set a view back to normal, you
+		can again double-click on its tab or click on the icon displaying
+		multiple windows. It is also possible to rearrange views. Just click
+		on the view title and drag the mouse cursor to the desired position in
+		the workbench.</p>
 </body>
 </html>
