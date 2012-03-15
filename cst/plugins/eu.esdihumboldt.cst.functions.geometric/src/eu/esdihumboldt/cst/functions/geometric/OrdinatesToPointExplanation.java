@@ -25,7 +25,6 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
  * @author Kai Schwierczek
  */
 public class OrdinatesToPointExplanation implements CellExplanation {
-	// TODO Display CRS, if specified, too.
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
@@ -35,17 +34,22 @@ public class OrdinatesToPointExplanation implements CellExplanation {
 		Entity sourceX = cell.getSource().get("x").get(0);
 		Entity sourceY = cell.getSource().get("y").get(0);
 		Entity sourceZ = null;
+		String srsName = CellUtil.getFirstParameter(cell, OrdinatesToPoint.PARAMETER_REFERENCE_SYSTEM);
+
 		if (!cell.getSource().get("z").isEmpty())
 			sourceZ = cell.getSource().get("z").get(0);
 
 		if (target != null && sourceX != null && sourceY != null) {
+			String message = "Fills the \"{0}\" property with geometry points with the coordinates ({1} {2}";
+			message += (sourceZ == null ? "" : " {3}") + ").";
+			if (srsName != null)
+				message += " The reference system \"{4}\" is used.";
 			return MessageFormat.format(
-					"Fills the \"{0}\" property with geometry points with the coordinates ({1}, {2}"
-							+ (sourceZ == null ? "" : ", {3}") + ").", 
-							target.getDefinition().getDefinition().getDisplayName(),
-							sourceX.getDefinition().getDefinition().getDisplayName(),
-							sourceY.getDefinition().getDefinition().getDisplayName(),
-							sourceZ == null ? null : sourceZ.getDefinition().getDefinition().getDisplayName());
+					message, target.getDefinition().getDefinition().getDisplayName(),
+					sourceX.getDefinition().getDefinition().getDisplayName(),
+					sourceY.getDefinition().getDefinition().getDisplayName(),
+					sourceZ == null ? null : sourceZ.getDefinition().getDefinition().getDisplayName(),
+					srsName);
 		}
 
 		return null;
