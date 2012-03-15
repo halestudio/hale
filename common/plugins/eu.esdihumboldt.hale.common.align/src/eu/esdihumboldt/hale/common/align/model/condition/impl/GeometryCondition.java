@@ -24,7 +24,6 @@ import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
@@ -105,21 +104,14 @@ public class GeometryCondition implements TypeCondition {
 		}
 		
 		for (Class<? extends Geometry> compatibleClass : tmpBindings) {
-			// check binding
 			Binding binding = type.getConstraint(Binding.class);
-			if (BindingCondition.isCompatibleClass(binding.getBinding(), to, 
-					compatibleClass, allowConversion)) {
-				return true;
-			}
+			boolean isCollection = Collection.class.isAssignableFrom(binding.getBinding());
 			
-			// check element type
-			if (allowCollection) {
-				ElementType elementType = type.getConstraint(ElementType.class);
-				if (BindingCondition.isCompatibleClass(
-						elementType.getBinding(), to, compatibleClass, 
-						allowConversion)) {
-					return true;
-				}
+			// check binding
+			if (BindingCondition.isCompatibleClass(geometryType.getBinding(), to, 
+					compatibleClass, allowConversion)
+					&& (!isCollection || allowCollection)) {
+				return true;
 			}
 		}
 		
