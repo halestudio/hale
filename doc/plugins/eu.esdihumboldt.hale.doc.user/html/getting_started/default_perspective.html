@@ -2,61 +2,61 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Configuring your workbench</title>
+<title>Default perspective</title>
 </head>
 <body>
-<h2>Configuring your workbench</h2>
-When you start HALE the first time, it will present you
-with a user interface that contains several different
-parts. These parts, called views, each have a specific
-purpose. In the current release, the following views
-are included:
-<!-- actual screenshot of HALE workbench (figure3)-->
-
-<ul>
-	<li><i>Schema Explorer:</i> The Schema Explorer allows
-		you to view the structure of the source
-		(left) and the target (right) schema in various
-		ways and enables the definition of mappings
-		between the elements of the schemas.</li>
-	<li><i>Mapping View:</i> The mapping view provides
-		information on the schema mappings you
-		have defined on the elements currently selected
-		in the Schema Explorer.</li>
-	<li><i>Map View:</i> This view provides you with a
-		cartographic representation of the reference
-		data for the source schema and the transformed
-		data alongside each other, when
-		you have loaded such data. It can be styled
-		and navigated interactively.</li>
-	<li><i>Reference Data:</i> This view provides a tabular
-		representation of the reference data for
-		the source schema when you have loaded
-		any.</li>
-	<li><i>Transformed Data:</i> Like the Reference Data
-		view, this view provides you with the possibility 
-		to inspect transformed data.</li>
-	<li><i>Tasks:</i> The Task View provides you with information
-		on tasks that have to be completed
-		to create a complete and correct
-		mapping.</li>
-	<li><i>Mapping Graph View:</i> This view gives you a
-		graphical overview of the mapping created
-		so far.</li>
-	<li><i>Error Log:</i> Gives you insight into the program's
-		log messages. They can be exported
-		as log files to submit with a bug report.</li>
-</ul>
-Each of these views can be resized by grabbing its
-border and then dragging the mouse cursor. Furthermore,
-every view can be maximized by double clicking
-on the "Folder" part of the view on top or by clicking
-the bigger window icon on the right side of the
-view's top. To set a view back to normal, you can
-again double-click on its tab or click on the small window
-icon.
-It is also possible to rearrange views. Just click on
-the tab and drag the mouse cursor to the place
-
+	<h1>Default perspective</h1>
+	<p>The default perspective serves to explore the source and target
+		schemas, to define relations between the schema elements and to view
+		and manage the overall alignment.</p>
+	<div>
+		<img src="default_perspective.png" title="Default perspective" style="max-width: 100%">
+	</div>
+	<p>Following is a short description of the perspective's views:</p>
+	<ul>
+		<li>The <i>Schema Explorer</i> allows you to view the structure
+			of the source (left) and the target (right) schema in various ways
+			and enables the definition of mappings between the elements of the
+			schemas.
+		</li>
+		<li>The <i>Alignment</i> view displays the current alignment per
+			type relation and allows editing or removing mapping cells.
+		</li>
+		<li>The <i>Properties</i> view displays information on the
+			current selection, in the above image this is the explanation of the
+			mapping cell selected in the active <i>Alignment</i> view.
+		</li>
+		<li>The <i>Functions</i> view shows the available transformation
+			functions, which can be used to define relations. Further information
+			on a selected function will be displayed in the <i>Properties</i>
+			view.
+		</li>
+		<li>The <i>Type hierarchy</i> view allows to explore the
+			hierarchy of a schema type, associated with the current selection in
+			the <i>Schema Explorer</i>.
+		</li>
+		<li>The <i>Report List</i> provides an overview of the last
+			completed processes, e.g. loading a schema or performing a
+			transformation, and their status.
+		</li>
+		<li>The <i>Error Log</i> gives you insight into the application's
+			log messages. They can be exported as log files to submit with a bug
+			report.
+		</li>
+		<!--li><i>Map View:</i> This view provides you with a cartographic
+			representation of the reference data for the source schema and the
+			transformed data alongside each other, when you have loaded such
+			data. It can be styled and navigated interactively.</li>
+		<li><i>Reference Data:</i> This view provides a tabular
+			representation of the reference data for the source schema when you
+			have loaded any.</li>
+		<li><i>Transformed Data:</i> Like the Reference Data view, this
+			view provides you with the possibility to inspect transformed data.</li>
+		<li><i>Tasks:</i> The Task View provides you with information on
+			tasks that have to be completed to create a complete and correct
+			mapping.</li>
+		<li><i>Mapping Graph View:</i> This view gives you a graphical
+			overview of the mapping created so far.</li-->
+	</ul>
 </body>
 </html>

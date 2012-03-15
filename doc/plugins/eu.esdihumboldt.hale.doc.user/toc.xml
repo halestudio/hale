@@ -12,9 +12,9 @@
       </topic>
       <topic href="html/getting_started/confWorkbench.html" label="Configuring your workbench">
       </topic>
-      <topic label="The default perspective">
+      <topic href="html/getting_started/default_perspective.html" label="The default perspective">
       </topic>
-      <topic label="The data perspective">
+      <topic href="html/getting_started/data_perspective.html" label="The data perspective">
       </topic>
       <anchor id="gettingstarted"/>
    </topic>
