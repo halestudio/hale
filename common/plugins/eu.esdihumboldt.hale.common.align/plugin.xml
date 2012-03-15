@@ -55,6 +55,24 @@
                   minOccurrence="1">
             </property>
          </targetProperties>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="structuralRename"
+               label="Structural rename"
+               description="If set to true, the rename transformation will try to copy child properties of equal names, too.">
+            <validator
+                  class="eu.esdihumboldt.hale.common.align.extension.function.validator.EnumerationValidator">
+               <parameter
+                     name="value"
+                     value="true">
+               </parameter>
+               <parameter
+                     name="value"
+                     value="false">
+               </parameter>
+            </validator>
+         </functionParameter>
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"

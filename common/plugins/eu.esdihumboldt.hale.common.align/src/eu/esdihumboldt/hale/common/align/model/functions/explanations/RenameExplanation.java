@@ -18,12 +18,13 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 
 /**
  * Explanation for the rename function.
  * @author Simon Templer
  */
-public class RenameExplanation implements CellExplanation {
+public class RenameExplanation implements CellExplanation, RenameFunction {
 
 	/**
 	 * @see CellExplanation#getExplanation(Cell)
@@ -34,7 +35,11 @@ public class RenameExplanation implements CellExplanation {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		
 		if (source != null && target != null) {
-			return MessageFormat.format("For each value in ''{0}'' adds the same value to the ''{1}'' property. If necessary a conversion is applied.", 
+			String text = "For each value in ''{0}'' adds the same value to the ''{1}'' property. If necessary a conversion is applied.";
+			String structuralRename = CellUtil.getFirstParameter(cell, PARAMETER_STRUCTURAL_RENAME);
+			if (Boolean.parseBoolean(structuralRename))
+				text += " Furthermore child properties get added, too, if the property names match.";
+			return MessageFormat.format(text, 
 					source.getDefinition().getDefinition().getDisplayName(),
 					target.getDefinition().getDefinition().getDisplayName());
 		}
