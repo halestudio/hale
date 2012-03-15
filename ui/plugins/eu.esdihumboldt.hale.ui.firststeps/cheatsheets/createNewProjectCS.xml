@@ -21,7 +21,7 @@ Now please click the "Click to Perform" button to have the new project created a
          title="Load a source schema">
       <action
             pluginId="eu.esdihumboldt.hale.ui.firststeps"
-            class="eu.esdihumboldt.hale.ui.firststeps.ImportCheatSheetAction"
+            class="eu.esdihumboldt.hale.ui.firststeps.ImportAction"
             param1="eu.esdihumboldt.hale.io.schema.read.source"
             required="false" /> 
       <description>
@@ -33,7 +33,7 @@ Select <b>File->Import->Source schema...</b> to load a source schema.
          skip="true">
       <action
             pluginId="eu.esdihumboldt.hale.ui.firststeps"
-            class="eu.esdihumboldt.hale.ui.firststeps.ImportCheatSheetAction"
+            class="eu.esdihumboldt.hale.ui.firststeps.ImportAction"
             param1="eu.esdihumboldt.hale.io.instance.read.source"
             required="false" /> 
       <description>
@@ -45,7 +45,7 @@ This step is optional and needs a loaded source schema.
          title="Load a target schema">
       <action
             pluginId="eu.esdihumboldt.hale.ui.firststeps"
-            class="eu.esdihumboldt.hale.ui.firststeps.ImportCheatSheetAction"
+            class="eu.esdihumboldt.hale.ui.firststeps.ImportAction"
             param1="eu.esdihumboldt.hale.io.schema.read.target"
             required="false" /> 
       <description>
