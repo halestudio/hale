@@ -7,7 +7,7 @@
       <text>
          HUMBOLDT Alignment Editor (HALE)
 
-Version 2.5.0.alpha
+Version 2.5.0.M1
 
 Build ___build___
 Revision ___revision___
@@ -38,8 +38,10 @@ http://www.esdi-community.eu/projects/show/hale
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="au.com.bytecode.opencsv"/>
