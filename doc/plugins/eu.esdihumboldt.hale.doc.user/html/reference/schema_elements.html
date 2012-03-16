@@ -2,9 +2,146 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Schema elements</title>
 </head>
 <body>
-	<h1>This is a dummy to get a table of contents</h1>
+	<h1>Schema elements</h1>
+	<p>Schema elements are displayed in a uniform way throughout the
+		application. Following is a detailed explanation what the concrete
+		representation of a schema element stands for.</p>
+	<h2>Classifications</h2>
+	<p>Schema elements are classified according to their nature, the
+		icon displayed for a schema element represents that classification.</p>
+	<h3>Types</h3>
+	<table>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="PLUGINS_ROOT/eu.esdihumboldt.hale.ui.common/icons/concrete_type.png"></td>
+			<td>A type defined in the schema.</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="PLUGINS_ROOT/eu.esdihumboldt.hale.ui.common/icons/abstract_type.png"></td>
+			<td>An abstract type definition, for which there may not be any
+				data instances.</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="PLUGINS_ROOT/eu.esdihumboldt.hale.ui.common/icons/concrete_ft.png"></td>
+			<td>Certain types are classified as <i>Feature Types</i>, these
+				are the main type imported from a <i>Shapefile</i> and types from
+				GML application schemas that extend the GML <i>AbstractFeatureType</i>.
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="PLUGINS_ROOT/eu.esdihumboldt.hale.ui.common/icons/abstract_ft.png"></td>
+			<td><i>Feature Types</i> that are abstract.</td>
+		</tr>
+	</table>
+	<h3>Groups</h3>
+	<table>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="PLUGINS_ROOT/eu.esdihumboldt.hale.ui.common/icons/package.gif"></td>
+			<td>Normal group containing a set of properties.</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="PLUGINS_ROOT/eu.esdihumboldt.hale.ui.common/icons/choice.gif"></td>
+			<td>Choice group, where only one of the specified properties is
+				allowed as a child.</td>
+		</tr>
+	</table>
+	<h3>Properties</h3>
+	<table>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="PLUGINS_ROOT/eu.esdihumboldt.hale.ui.common/icons/string_attribute.png"></td>
+			<td>String property</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="PLUGINS_ROOT/eu.esdihumboldt.hale.ui.common/icons/number_attribute.png"></td>
+			<td>Numeric property</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="PLUGINS_ROOT/eu.esdihumboldt.hale.ui.common/icons/geometry_attribute.png"></td>
+			<td>Geometry property</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="images/other_property.png"></td>
+			<td>Other (complex) property</td>
+		</tr>
+	</table>
+	<h2>Icon augmentations</h2>
+	<p>On top of the classification icon, additional information may be
+		provided through a small overlay image augmenting the icon.</p>
+	<table>
+		<tr>
+			<td style="vertical-align: top;"><img src="images/mandatory.png"></td>
+			<td>A red asterisk marks properties that are mandatory, i.e.
+				they occur exactly once and must have a value (and the value may not
+				be <i>null</i>).
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;"><img src="images/attribute.png"></td>
+			<td>A small brown error in the top left corner marks a property
+				from a XML schema as being defined as a XML attribute.</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;"><img
+				src="images/default_geom.png"></td>
+			<td>A property that is deemed to hold the main geometry of a
+				type is marked with a small green triangle. Per type, you can set
+				one property as the default geometry property. This property is then
+				used when retrieving geometries for display in the map.</td>
+		</tr>
+	</table>
+	<h2>Contexts</h2>
+	<p>If the name of a schema element is displayed in brackets, this
+		indicates that the element represents a context defined on the
+		original schema element. Depending on the nature of the context, a
+		description may be displayed (brown colored text).</p>
+	<h3>Source schema contexts</h3>
+	<table>
+		<tr>
+			<td><strong>Condition context on a type</strong>, limiting
+				associated mappings to source instances matching the condition.</td>
+		</tr><tr>
+			<td style="vertical-align: top; padding-left: 16px; padding-bottom: 16px;"><img
+				src="images/context_condition.png"></td>
+		</tr>
+		<tr>
+			<td><strong>Condition context on a property</strong>, limiting
+				associated mappings to property values matching the condition.</td>
+		</tr><tr>
+			<td style="vertical-align: top; padding-left: 16px; padding-bottom: 16px;"><img
+				src="images/context_property_condition.png"></td>
+		</tr>
+		<tr>
+			<td><strong>Index context</strong> - only the property value at
+				the given zero-based index is used. In this example the element
+				represents the first <i>name</i> value.</td>
+		</tr><tr>
+			<td style="vertical-align: top; padding-left: 16px; padding-bottom: 16px;"><img
+				src="images/context_index.png"></td>
+		</tr>
+	</table>
+	<h3>Target schema contexts</h3>
+	<table>
+		<tr>
+			<td><strong>Instance context</strong> - represents an additional
+				instance of a property.</td>
+		</tr><tr>
+			<td style="vertical-align: top; padding-left: 16px; padding-bottom: 16px;"><img
+				src="images/context_instance.png"></td>
+		</tr>
+	</table>
+
+	<!-- related concepts: schema stuff, default geometry, contexts -->
 </body>
 </html>
