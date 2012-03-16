@@ -25,11 +25,26 @@
       </topic>
       <topic href="html/dummy.html" label="What is an Alignment?">
       </topic>
+      <anchor id="concepts"/>
    </topic>
    <topic label="Views">
-      <topic href="html/views/map_viewer.html" label="Map Viewer">
+      <topic href="html/views/schema_explorer.html" label="Schema Explorer">
       </topic>
-      <topic href="html/views/styling_data.html" label="Styling of your Data">
+      <topic label="Alignment view">
+      </topic>
+      <topic label="Properties view">
+      </topic>
+      <topic label="Functions view">
+      </topic>
+      <topic label="Type hierarchy view">
+      </topic>
+      <topic label="Report List">
+      </topic>
+      <topic label="Source Data view">
+      </topic>
+      <topic label="Transformed Data view">
+      </topic>
+      <topic label="Error Log">
       </topic>
       <anchor id="views"/>
    </topic>
@@ -57,6 +72,34 @@
       <anchor id="tasks"/>
    </topic>
    <topic label="Reference">
+      <topic label="Schema elements">
+      </topic>
+      <topic label="Supported formats">
+         <topic label="Import">
+            <topic label="Shapefile">
+            </topic>
+            <topic label="XML Schema">
+            </topic>
+            <topic label="GML Application Schema">
+            </topic>
+            <topic label="CSV">
+            </topic>
+            <topic label="XML">
+            </topic>
+            <topic label="GML">
+            </topic>
+            <anchor id="import"/>
+         </topic>
+         <topic label="Export">
+            <topic label="XML">
+            </topic>
+            <topic label="GML">
+            </topic>
+            <topic label="HTML mapping documentation">
+            </topic>
+            <anchor id="export"/>
+         </topic>
+      </topic>
       <anchor id="reference"/>
    </topic>
    <topic label="Tips and Tricks">

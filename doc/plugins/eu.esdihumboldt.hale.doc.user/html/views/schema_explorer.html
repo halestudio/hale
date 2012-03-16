@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Schema Explorer</title>
+</head>
+<body>
+	<h1>Schema Explorer</h1>
+	<p>
+		The <i>Schema Explorer</i> allows you to view the structure of the
+		source (left) and the target (right) schema in various ways and
+		enables the definition of mappings between the elements of the
+		schemas.
+	</p>
+	<div>
+		<img src="images/schema_explorer.png" title="Schema Explorer"
+			style="max-width: 100%">
+	</div>
+	<p>
+		The top level elements in the schema explorer are the classes/types
+		defined in the schema, which may be used in the mapping. When loading
+		a schema <i>HALE</i> tries to determine this automatically, but you
+		can also define manually, which types are relevant for your mapping.
+	</p>
+	<p>
+		Each type has a set of properties. A property either has an associated
+		property type or is a group of properties. Properties with a property
+		type have a structure according to that type's definition, they may
+		have a value and properties of themselves. Select a schema element and
+		open the <i>Properties</i> view to display detailed information about
+		it.
+	</p>
+	<p>
+		In the <i>Schema Explorer</i>, additionally to the element name, the
+		occurrence of a property element is displayed - provided that it
+		doesn't occur exactly once. The blue text after the element name
+		states the minimum and maximum occurrence of a property.
+	</p>
+	<p>If the name of a schema element is displayed in brackets, this
+		indicates that the element represents a context defined on the
+		original schema element. Depending on the nature of the context, a
+		description may be displayed (brown colored text). The image below
+		contains a small example, where two condition contexts are defined on
+		a property.</p>
+	<div>
+		<img src="images/condition_context.png"
+			title="Condition contexts defined on a property"
+			style="max-width: 100%"> <br>
+	</div>
+	<p>
+		The icon displayed for a schema element represents its classification
+		and may be augmented with additional information, e.g. pointing out
+		that a property is mandatory. For a detailed listing please have a
+		look at the <a href="../reference/schema_elements.html">Schema
+			elements</a> reference.
+	</p>
+	<p>In addition, the background color of a schema element indicates
+		its mapping status:</p>
+	<table>
+		<tr>
+			<td><img src="images/not_mapped.png"></td>
+			<td>Not mapped</td>
+		</tr>
+		<tr>
+			<td><img src="images/mapped_explicitly.png"></td>
+			<td>Mapped explicitly with a relation</td>
+		</tr>
+		<tr>
+			<td><img src="images/mapped_implicitly.png"></td>
+			<td>Mapped implicitly due to the mapping of a sub-property</td>
+		</tr>
+		<tr>
+			<td><img src="images/augmented.png"></td>
+			<td>Value assignment independent of the source schema</td>
+		</tr>
+	</table>
+	<p>The tool bar atop each schema viewer allows to filter the schema
+		elements according to their classification. You can also enter a
+		filter string, to search for types or properties with certain names.</p>
+	<p class="Note">Please note that in complex schemas searching
+		schema elements using a filter string is restricted to eight levels
+		deep, to maintain an acceptable feedback time. If the schema contains
+		cycles, the search result may still go deeper than eight levels.</p>
+
+	<!-- related concepts: schema stuff, contexts! -->
+	<!-- related tasks: create relation, edit mappable types -->
+</body>
+</html>
