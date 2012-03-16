@@ -14,12 +14,12 @@ package eu.esdihumboldt.hale.common.instance.helper;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
 
@@ -44,7 +44,7 @@ public class PropertyResolver {
 
 	
 	//the cache for storing found paths in instance definitions for certain querys
-	private static Map<QueryDefinitionIndex, LinkedList<String>> definitioncache = new HashMap<QueryDefinitionIndex, LinkedList<String>>();
+	private static Map<QueryDefinitionIndex, LinkedList<String>> definitioncache = new ConcurrentHashMap<QueryDefinitionIndex, LinkedList<String>>();
 	
 	/**
 	 * This variable holds state about the last {@link #hasProperty(Instance, String)}
@@ -327,7 +327,7 @@ public class PropertyResolver {
 	 */
 	public static boolean hasProperty(Instance instance, String query) {
 		QueryDefinitionIndex qdi = new QueryDefinitionIndex(
-				instance.getDefinition(), query);
+				instance.getDefinition(), instance.getDataSet(), query);
 		
 		lastQDI.set(qdi);
 		
@@ -345,10 +345,10 @@ public class PropertyResolver {
 	/**
 	 * this method can be used to search a single index over the whole instance-definition-tree (for example "*"querys)
 	 * the method writes the found paths into the cache
+	 * 
 	 * @param children a list of Childdefinitions from the rootdefinition of the instance-definition-tree
 	 * @param path the list of QNames split up from the original querypath
-	 * @param qdi 
-	 * @param qci the cacheindex produced from the instance root definition and the querypath
+	 * @param qdi the cacheindex produced from the instance root definition and the querypath
 	 */
 	@SuppressWarnings("unused")
 	private static void analyzeSimpleQueryChildDefinition(
@@ -545,10 +545,10 @@ public class PropertyResolver {
 	 * this method searches for the indices given from the querypath inside the instance-definition-tree
 	 * the indices must be children in order to their appearance in the path. only groups may be between them.
 	 * the method writes the found paths into the cache
+	 * 
 	 * @param children a list of Childdefinitions from the rootdefinition of the instance-definition-tree
 	 * @param path the list of QNames split up from the original querypath
-	 * @param qdi 
-	 * @param qci the cacheindex produced from the instance root definition and the querypath
+	 * @param qdi the cacheindex produced from the instance root definition and the querypath
 	 */
 	private static void analyzeSpecialQueryChildDefinition(
 			Collection<? extends ChildDefinition<?>> children,
@@ -704,7 +704,8 @@ public class PropertyResolver {
 	 */
 	public static LinkedList<String> getKnownQueryPath(Instance instance, String query){
 		
-		QueryDefinitionIndex qdi = new QueryDefinitionIndex(instance.getDefinition(), query);
+		QueryDefinitionIndex qdi = new QueryDefinitionIndex(instance.getDefinition(),
+				instance.getDataSet(), query);
 		
 		
 		return definitioncache.get(qdi);
@@ -735,14 +736,9 @@ public class PropertyResolver {
 	 * be valid.
 	 * 
 	 * FIXME cache in service instead?
-	 * FIXME thread safety!
 	 */
 	public static void clearCache() {
 		definitioncache.clear();
 	}
 	
 }
-
-
-
-

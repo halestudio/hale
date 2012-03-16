@@ -12,46 +12,44 @@
 
 package eu.esdihumboldt.hale.common.instance.helper;
 
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * TODO Type description
+ * Index for hash map used in property resolver.
+ * 
  * @author Sebastian Reinhardt
  */
 public class QueryDefinitionIndex {
-
-	
 	private TypeDefinition def;
+	private DataSet dataSet;
 	private String query;
-	
+
 	/**
-	 * @param def
-	 * @param query
+	 * Constructor.
+	 * 
+	 * @param def the definition
+	 * @param dataSet the data set
+	 * @param query the query
 	 */
-	public QueryDefinitionIndex (TypeDefinition def, String query){
+	public QueryDefinitionIndex(TypeDefinition def, DataSet dataSet, String query) {
 		this.def = def;
+		this.dataSet = dataSet;
 		this.query = query;
 	}
-	
-
-	
-	
 
 	/**
-	 * @return the def
+	 * Returns the definition
+	 * 
+	 * @return the definition
 	 */
 	public TypeDefinition getDef() {
 		return def;
 	}
 
 	/**
-	 * @param def the def to set
-	 */
-	public void setDef(TypeDefinition def) {
-		this.def = def;
-	}
-
-	/**
+	 * Returns the query
+	 * 
 	 * @return the query
 	 */
 	public String getQuery() {
@@ -59,15 +57,13 @@ public class QueryDefinitionIndex {
 	}
 
 	/**
-	 * @param query the query to set
+	 * Returns the associated data set which may be null.
+	 * 
+	 * @return the data set
 	 */
-	public void setQuery(String query) {
-		this.query = query;
+	public DataSet getDataSet() {
+		return dataSet;
 	}
-
-
-
-
 
 	/**
 	 * @see java.lang.Object#hashCode()
@@ -77,13 +73,10 @@ public class QueryDefinitionIndex {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((def == null) ? 0 : def.hashCode());
+		result = prime * result + ((dataSet == null) ? 0 : dataSet.hashCode());
 		result = prime * result + ((query == null) ? 0 : query.hashCode());
 		return result;
 	}
-
-
-
-
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -97,11 +90,19 @@ public class QueryDefinitionIndex {
 		if (getClass() != obj.getClass())
 			return false;
 		QueryDefinitionIndex other = (QueryDefinitionIndex) obj;
+
 		if (def == null) {
 			if (other.def != null)
 				return false;
 		} else if (!def.equals(other.def))
 			return false;
+
+		if (dataSet == null) {
+			if (other.dataSet != null)
+				return false;
+		} else if (!dataSet.equals(other.dataSet))
+			return false;
+
 		if (query == null) {
 			if (other.query != null)
 				return false;
@@ -109,7 +110,4 @@ public class QueryDefinitionIndex {
 			return false;
 		return true;
 	}
-	
-	
-	
 }
