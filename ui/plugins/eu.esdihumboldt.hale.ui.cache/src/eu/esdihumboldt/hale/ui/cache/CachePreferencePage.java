@@ -88,8 +88,9 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements IW
 		
 		// add fields
 		addField(new BooleanFieldEditor("cache.enabled", Messages.CachePreferencePage_10, getFieldEditorParent())); //$NON-NLS-1$
-		addField(new DirectoryFieldEditor("cache.path", Messages.CachePreferencePage_12, getFieldEditorParent())); //$NON-NLS-1$
-		addField(new StringFieldEditor("cache.name", Messages.CachePreferencePage_14, 20, getFieldEditorParent())); //$NON-NLS-1$
+		// don't show these fields for now
+		//addField(new DirectoryFieldEditor("cache.path", Messages.CachePreferencePage_12, getFieldEditorParent())); //$NON-NLS-1$
+		//addField(new StringFieldEditor("cache.name", Messages.CachePreferencePage_14, 20, getFieldEditorParent())); //$NON-NLS-1$
 		
 		// placeholder
 //		Composite ph = new Composite(getFieldEditorParent(), SWT.NONE);
