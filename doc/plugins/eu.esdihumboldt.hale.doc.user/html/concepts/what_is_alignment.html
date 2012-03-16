@@ -2,9 +2,31 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>What is an Alignment?</title>
 </head>
 <body>
-
+	<h1>What is an Alignment?</h1>
+	<p>The alignment is the mapping between source and target schemas.
+		It defines relations between source and target entities (types or
+		properties). Based on the defined relations a transformation is
+		derived.</p>
+	<p>
+		Each relation is represented in the <i>Alignment</i> by a mapping <i>cell</i>.
+		A <i>cell</i> specifies source and target entities, a relation
+		function and possibly parameters for the function. In the image below
+		a mapping cell is represented as it would be displayed in the <a
+			href="../views/alignment.html">Alignment view</a>. In the example the
+		type <i>t1</i> from the source schema is mapped to the type <i>person</i>
+		in the target schema, the relation is represented by the <i>Retype</i>
+		function.
+	</p>
+	<div style="text-align: center;">
+		<img src="images/type_cell.png" style="max-width: 100%">
+		<p style="font-size: 0.8em;">
+			<i>Creates a person instance for each t1 instance in the source
+				data set.</i>
+		</p>
+	</div>
+	<!-- TODO -->
 </body>
 </html>

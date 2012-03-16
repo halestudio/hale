@@ -19,7 +19,11 @@
       <anchor id="gettingstarted"/>
    </topic>
    <topic label="Concepts">
-      <topic href="html/concepts/what_is_schema.html" label="What is a Schema?">
+      <topic label="Schema">
+         <topic href="html/concepts/what_is_schema.html" label="What is a Schema?">
+         </topic>
+         <topic label="Contexts">
+         </topic>
       </topic>
       <topic href="html/concepts/what_is_instance.html" label="What is an Instance?">
       </topic>
@@ -68,6 +72,8 @@
       <topic label="Alignment/Mapping">
          <topic href="html/tasks/alignment/mapping_schema_elem.html" label="Mapping schema elements">
          </topic>
+      </topic>
+      <topic label="Saving your work">
       </topic>
       <anchor id="tasks"/>
    </topic>
