@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Data Views Help
-Bundle-SymbolicName: eu.esdihumboldt.hale.doc.user.ui.views.data;singleton:=true
-Bundle-Version: 2.5.0.qualifier
-Require-Bundle: org.eclipse.help;bundle-version="3.5.100"
