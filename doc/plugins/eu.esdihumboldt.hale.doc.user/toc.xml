@@ -72,7 +72,7 @@
       <anchor id="tasks"/>
    </topic>
    <topic label="Reference">
-      <topic label="Schema elements">
+      <topic href="html/reference/schema_elements.html" label="Schema elements">
       </topic>
       <topic label="Supported formats">
          <topic label="Import">
