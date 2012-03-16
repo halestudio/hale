@@ -2,9 +2,35 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>What is an Instance?</title>
 </head>
 <body>
+	<h1>What is an Instance?</h1>
+	<p>The term instance is used in the context of data according to a
+		schema. As a schema defines a set of data types, an instance is a data
+		object of a certain type.</p>
+	<p>
+		As an example, given a type <i>person</i> defined in a schema,...
+	</p>
+	<div>
+		<img src="images/instance_type.png">
+	</div>
+	<p>...an instance of the type has data structured according to the
+		type definition, for instance as in the example below:</p>
+	<div>
+		<img src="images/instance.png">
+	</div>
+	<p>
+		When loading a source data set in <i>HALE</i>, the data is partitioned
+		into instances. Those instances can be inspected in the <a
+			href="../views/source_data.html">Source Data</a> view. When a
+		mapping/alignment is defined, the transformation is executed on the
+		source instances, creating a data set of transformed instances
+		according to the mapped target types. These instances in turn can be
+		inspected in the <a href="../views/transformed_data.html">Transformed
+			Data</a> view.
+	</p>
 
+	<!-- related tasks: load instances, save transformed data -->
 </body>
 </html>
