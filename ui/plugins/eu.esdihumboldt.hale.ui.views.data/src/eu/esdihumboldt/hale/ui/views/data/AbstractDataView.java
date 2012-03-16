@@ -266,14 +266,6 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	}
 
 	/**
-	 * @see PropertiesViewPart#getViewContext()
-	 */
-	@Override
-	protected String getViewContext() {
-		return "eu.esdihumboldt.hale.doc.user.ui.views.data.dataViews";
-	}
-
-	/**
 	 * Add custom controls. Override this method to add custom controls
 	 * 
 	 * @param parent the parent composite

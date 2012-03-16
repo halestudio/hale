@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <contexts>
-   <context id="schemas">
-      <description>bla description</description>
-      <topic href="html/concepts/what_is_schema.html" label="What is a Schema ?"/>
+   <context id="schema_elements">
+      <description>Schema elements are types or properties defined in a schema.</description>
+      <topic href="html/reference/schema_elements.html" label="Schema elements reference"/>
    </context>
    <context id="filter_field" title="Filter field">
-      <description>Enter a CQL filter to be applied on instances</description>
-      <topic href="html/concepts/cql_filter.html" label="CQL Filter"/>
+      <description>Enter a CQL filter to be applied on instances.</description>
+      <topic href="html/concepts/cql_filter.html" label="Define a CQL Filter"/>
+   </context>
+   <context id="source_data">
+      <description>The Source Data view allows inspecting the loaded source instances.</description>
+      <topic href="html/concepts/what_is_instance.html" label="What is an Instance?"/>
+      <topic href="html/views/source_data.html" label="Source Data view"/>
+      <topic href="html/concepts/cql_filter.html" label="Define a CQL Filter"/>
+   </context>
+   <context id="transformed_data">
+      <description>The Transformed Data view allows inspecting the transformed instances.</description>
+      <topic href="html/concepts/what_is_instance.html" label="What is an Instance?"/>
+      <topic href="html/views/transformed_data.html" label="Transformed Data view"/>
+      <topic href="html/concepts/cql_filter.html" label="Define a CQL Filter"/>
    </context>
 </contexts>

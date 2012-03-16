@@ -40,9 +40,9 @@
       </topic>
       <topic label="Report List">
       </topic>
-      <topic label="Source Data view">
+      <topic href="html/views/source_data.html" label="Source Data view">
       </topic>
-      <topic label="Transformed Data view">
+      <topic href="html/views/transformed_data.html" label="Transformed Data view">
       </topic>
       <topic label="Error Log">
       </topic>
