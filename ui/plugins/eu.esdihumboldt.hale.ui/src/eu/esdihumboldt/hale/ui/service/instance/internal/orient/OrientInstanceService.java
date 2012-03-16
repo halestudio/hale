@@ -269,7 +269,10 @@ public class OrientInstanceService extends AbstractInstanceService {
 	public void clearInstances() {
 		source.clear();
 		transformed.clear();
-		
+
+		// remove information from project
+		getProjectService().removeResources(ACTION_READ_SOURCEDATA);
+
 		notifyDatasetChanged(null);
 	}
 

@@ -26,6 +26,14 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 public interface SchemaService {
+	/**
+	 * The action id used for reading source schemas.
+	 */
+	public static final String ACTION_READ_SOURCE = "eu.esdihumboldt.hale.io.schema.read.source";
+	/**
+	 * The action id used for reading target schemas.
+	 */
+	public static final String ACTION_READ_TARGET = "eu.esdihumboldt.hale.io.schema.read.target";
 	
 	/**
 	 * Get the source or target schema space.

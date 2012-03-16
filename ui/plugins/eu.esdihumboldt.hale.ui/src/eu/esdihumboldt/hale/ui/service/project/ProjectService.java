@@ -49,6 +49,14 @@ public interface ProjectService {
 	 */
 	public void rememberIO(String actionId, String providerId, 
 			IOProvider provider);
+
+	/**
+	 * Remove all resources of the specified actionId from the project.
+	 * 
+	 * @see #rememberIO(String, String, IOProvider)
+	 * @param actionId the I/O action identifier
+	 */
+	public void removeResources(String actionId);
 	
 	/**
 	 * Get a project scoped configuration service

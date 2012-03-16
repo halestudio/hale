@@ -36,6 +36,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 	private TypeSafeListenerList<InstanceServiceListener> listeners = new TypeSafeListenerList<InstanceServiceListener>();
 	
 	private final AlignmentService alignmentService;
+	private final ProjectService projectService;
 	
 	/**
 	 * Create an instance service.
@@ -48,6 +49,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 		super();
 		
 		this.alignmentService = alignmentService;
+		this.projectService = projectService;
 		
 		projectService.addListener(new ProjectServiceAdapter() {
 			
@@ -118,6 +120,13 @@ public abstract class AbstractInstanceService implements InstanceService {
 	 */
 	protected AlignmentService getAlignmentService() {
 		return alignmentService;
+	}
+
+	/**
+	 * @return the projectService
+	 */
+	protected ProjectService getProjectService() {
+		return projectService;
 	}
 
 	/**

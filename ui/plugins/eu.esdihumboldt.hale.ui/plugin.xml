@@ -61,6 +61,22 @@
             name="Edit">
       </command>
       <command
+            id="eu.esdihumboldt.hale.ui.align.clean"
+            name="Clean alignment">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.instance.clear"
+            name="Clean source data">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.schema.clear_source"
+            name="Clear source schemas">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.schema.clear_target"
+            name="Clear target schemas">
+      </command>
+      <command
             id="eu.esdihumboldt.hale.ui.entity.addindexcontext"
             name="Add index context">
       </command>
@@ -125,6 +141,76 @@
                </iterate>
             </with>
          </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.align.internal.handler.CleanAlignmentHandler"
+            commandId="eu.esdihumboldt.hale.ui.align.clean">
+         <enabledWhen>
+            <with
+                  variable="hale.alignment.has_cells">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.instance.internal.handler.ClearInstancesHandler"
+            commandId="eu.esdihumboldt.hale.ui.instance.clear">
+         <enabledWhen>
+            <with
+                  variable="hale.instances.has_source">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.schema.handler.ClearSourceSchemasHandler"
+            commandId="eu.esdihumboldt.hale.ui.schema.clear_source">
+         <enabledWhen>
+            <and>
+               <with
+                     variable="hale.instances.has_source">
+                  <equals
+                        value="false">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.alignment.has_cells">
+                  <equals
+                        value="false">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.schemas.has_source">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </and>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.schema.handler.ClearTargetSchemasHandler"
+            commandId="eu.esdihumboldt.hale.ui.schema.clear_target">
+         <enabledWhen>
+            <and>
+               <with
+                     variable="hale.alignment.has_cells">
+                  <equals
+                        value="false">
+                  </equals>
+               </with>
+               <with
+                     variable="hale.schemas.has_target">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </and>
+         </enabledWhen>
       </handler>
       <handler
             class="eu.esdihumboldt.hale.ui.io.action.wizard.SelectImportHandler"
@@ -250,6 +336,10 @@
             provider="eu.esdihumboldt.hale.ui.service.instance.internal.InstanceServiceSource">
          <variable
                name="hale.instances.has_transformed"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="hale.instances.has_source"
                priorityLevel="workbench">
          </variable>
       </sourceProvider>
