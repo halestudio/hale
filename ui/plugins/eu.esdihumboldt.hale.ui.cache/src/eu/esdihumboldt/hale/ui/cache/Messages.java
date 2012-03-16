@@ -23,7 +23,7 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings("all")
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.common.cache.ui.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.ui.cache.messages"; //$NON-NLS-1$
 	public static String CachePreferencePage_10;
 	public static String CachePreferencePage_12;
 	public static String CachePreferencePage_14;
