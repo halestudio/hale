@@ -30,6 +30,10 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 public interface InstanceService extends InstanceResolver {
+	/**
+	 * The action id used for reading source data.
+	 */
+	public static final String ACTION_READ_SOURCEDATA = "eu.esdihumboldt.hale.io.instance.read.source";
 	
 	/**
 	 * Get the instances from the given data set
