@@ -3,31 +3,31 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
     <tns:t1 id="id0">
-        <personName>personName0</personName>
-        <personAge>personAge0</personAge>
-        <personIncome>personIncome0</personIncome>
-        <personStreet>personStreet0</personStreet>
-        <personCity>personCity0</personCity>
+        <personName>Tom Builder</personName>
+        <personAge>30</personAge>
+        <personIncome>6000</personIncome>
+        <personStreet>Main Street</personStreet>
+        <personCity>Kingsbridge</personCity>
     </tns:t1>
     <tns:t1 id="id1">
-        <personName>personName1</personName>
-        <personAge>personAge1</personAge>
-        <personIncome>personIncome1</personIncome>
-        <personStreet>personStreet1</personStreet>
-        <personCity>personCity1</personCity>
+        <personName>Jon Snow</personName>
+        <personAge>19</personAge>
+        <personIncome>0</personIncome>
+        <personStreet>The Wall</personStreet>
+        <personCity>Castle Black</personCity>
     </tns:t1>
     <tns:t1 id="id2">
-        <personName>personName2</personName>
-        <personAge>personAge2</personAge>
-        <personIncome>personIncome2</personIncome>
-        <personStreet>personStreet2</personStreet>
-        <personCity>personCity2</personCity>
+        <personName>Bart Simpson</personName>
+        <personAge>14</personAge>
+        <personIncome>120</personIncome>
+        <personStreet>Some street</personStreet>
+        <personCity>Springfield</personCity>
     </tns:t1>
     <tns:t1 id="id3">
-        <personName>personName3</personName>
-        <personAge>personAge3</personAge>
-        <personIncome>personIncome3</personIncome>
-        <personStreet>personStreet3</personStreet>
-        <personCity>personCity3</personCity>
+        <personName>Yoda</personName>
+        <personAge>1000</personAge>
+        <personIncome>500</personIncome>
+        <personStreet>Jedi Temple</personStreet>
+        <personCity>Coruscant</personCity>
     </tns:t1>
 </tns:collection>
