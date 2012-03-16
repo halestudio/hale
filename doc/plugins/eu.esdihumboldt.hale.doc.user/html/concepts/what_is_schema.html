@@ -5,10 +5,64 @@
 <title>What is a Schema?</title>
 </head>
 <body>
+	<h1>What is a Schema?</h1>
+	<p>Schemas can be defined on different levels of abstraction:</p>
+	<ul>
+		<li><strong>Logical schema</strong> - describes the concrete data
+			format (syntax)
+			<ul>
+				<li>e.g. XML schema, database schema</li>
+			</ul></li>
+		<li><strong>Conceptual schema</strong> - describes the concepts
+			<ul>
+				<li>e.g. UML, Ontologies</li>
+				<li>defines classes/types and their properties and relations</li>
+				<li>can be abstracted from a logical schema in most cases</li>
+			</ul></li>
+	</ul>
+	<p>
+		In <i>HALE</i> we define the schema mapping on the conceptual level,
+		between classes/types and properties. For the complete transformation
+		process however, information about the data format is needed. The
+		approach used in <i>HALE</i> can deal with both kinds of schemas,
+		abstracting a conceptual view for logical schemas, while using the
+		information from the logical schema for the transformation process.
+		For conceptual schemas, no transformation can be applied, but the
+		mapping can be exported or reused for logical schemas that were
+		derived from the conceptual schema.
+	</p>
+	<p>Logical schemas are usually more readily available compared to
+		conceptual schemas, as they describe how the actual data is stored,
+		and are either defined explicitly or can even be derived from the
+		existing data structure.</p>
+	<!-- TODO reference supported schema formats -->
+	<div>
+		<div style="float: left; width: 60%;">
+			<p>A schema defines a set of types or classes. Each type has a
+				set of properties. A property either has an associated property type
+				or is a group of properties. Properties with a property type have a
+				structure according to that type's definition, they may have a value
+				and properties of themselves.</p>
+			<p>
+				The image on the right displays a schema as represented in the <a
+					href="../views/schema_explorer.html">Schema Explorer</a> view. It
+				allows exploring a schema and inspecting the schema elements. The
+				top level elements in the tree are types defined in the schema,
+				their children are the type's properties, their children being the
+				properties of the properties etc.
+			</p>
+			<p>
+				See the <a href="../reference/schema_elements.html">Schema
+					elements</a> reference for a detailed explanation on how schema
+				elements are represented.
+			</p>
+		</div>
+		<div style="float: left; width: 40%;">
+			<img src="images/schema.png"
+				style="max-width: 100%; margin-left: 16px; margin-top: 8px">
+		</div>
+	</div>
 
-<h2>What is a Schema?</h2>
-
-concepts test!
-
+	<!-- related tasks: Load a schema -->
 </body>
 </html>
