@@ -38,7 +38,6 @@ http://www.esdi-community.eu/projects/show/hale
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -123,7 +122,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
-      <plugin id="eu.esdihumboldt.hale.doc.user.ui.views.data"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>

@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceSelector;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.SampleTransformInstanceSelector;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.WindowSelectionSelector;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
  * Table for viewing transformed data
@@ -65,6 +66,14 @@ public class TransformedDataView extends AbstractDataView {
 		sampleSelector = (SampleTransformInstanceSelector) getDefaultInstanceSelector();
 		// selector base on the map selection
 		mapSelector = new WindowSelectionSelector(DataSet.TRANSFORMED);
+	}
+	
+	/**
+	 * @see PropertiesViewPart#getViewContext()
+	 */
+	@Override
+	protected String getViewContext() {
+		return "eu.esdihumboldt.hale.doc.user.transformed_data";
 	}
 
 	/**

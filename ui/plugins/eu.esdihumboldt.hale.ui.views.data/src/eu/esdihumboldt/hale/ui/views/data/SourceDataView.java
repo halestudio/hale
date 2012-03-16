@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceSelector;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.WindowSelectionSelector;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 
 /**
@@ -64,6 +65,14 @@ public class SourceDataView extends AbstractDataView {
 		instanceSelector = (InstanceServiceSelector) getDefaultInstanceSelector();
 		// another selector based on the map selection
 		mapSelector = new WindowSelectionSelector(DataSet.SOURCE);
+	}
+	
+	/**
+	 * @see PropertiesViewPart#getViewContext()
+	 */
+	@Override
+	protected String getViewContext() {
+		return "eu.esdihumboldt.hale.doc.user.source_data";
 	}
 
 	/**
