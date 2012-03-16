@@ -166,6 +166,30 @@
                   name="HALE.separator2"
                   visible="true">
             </separator>
+            <menu
+                  label="Clear">
+               <command
+                     commandId="eu.esdihumboldt.hale.ui.schema.clear_source"
+                     style="push">
+               </command>
+               <command
+                     commandId="eu.esdihumboldt.hale.ui.schema.clear_target"
+                     style="push">
+               </command>
+               <command
+                     commandId="eu.esdihumboldt.hale.ui.instance.clear"
+                     style="push">
+               </command>
+               <command
+                     commandId="eu.esdihumboldt.hale.ui.align.clean"
+                     style="push">
+               </command>
+               
+            </menu>
+            <separator
+                  name="HALE.separator3"
+                  visible="true">
+            </separator>
             <dynamic
                   class="eu.esdihumboldt.hale.ui.service.project.RecentFilesMenu"
                   id="HALE.recentfiles">
