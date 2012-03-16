@@ -19,6 +19,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -744,6 +745,19 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	public ProjectInfo getProjectInfo() {
 		synchronized (this) {
 			return main;
+		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeResources(java.lang.String)
+	 */
+	@Override
+	public void removeResources(String actionId) {
+		synchronized (this) {
+			Iterator<IOConfiguration> iter = main.getResources().iterator();
+			while(iter.hasNext())
+				if (iter.next().getActionId().equals(actionId))
+					iter.remove();
 		}
 	}
 }

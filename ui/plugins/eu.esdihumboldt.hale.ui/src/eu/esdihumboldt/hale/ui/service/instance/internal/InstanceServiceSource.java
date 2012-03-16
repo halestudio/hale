@@ -37,9 +37,14 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 
 	/**
 	 * The name of the variable which value is <code>true</code> if there are
-	 * transformed instances present in the {@link InstanceService} 
+	 * transformed instances present in the {@link InstanceService}.
 	 */
 	public static final String HAS_TRANSFORMED_INSTANCES = "hale.instances.has_transformed";
+	/**
+	 * The name of the variable which value is <code>true</code> if there are
+	 * instances present in the {@link InstanceService}.
+	 */
+	public static final String HAS_SOURCE_INSTANCES = "hale.instances.has_source";
 	
 	private InstanceServiceListener instanceListener;
 	
@@ -59,7 +64,7 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 					fireSourceChanged(ISources.WORKBENCH, HAS_TRANSFORMED_INSTANCES, hasTransformedInstances(is));
 					break;
 				case SOURCE:
-					// do nothing (yet)
+					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_INSTANCES, hasSourceInstances(is));
 					break;
 				}
 			}
@@ -94,13 +99,18 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 		return instances != null && !instances.isEmpty();
 	}
 
+	private static boolean hasSourceInstances(InstanceService is) {
+		InstanceCollection instances = is.getInstances(DataSet.SOURCE);
+		return instances != null && !instances.isEmpty();
+	}
+
 	/**
 	 * @see ISourceProvider#getProvidedSourceNames()
 	 */
 	@Override
 	public String[] getProvidedSourceNames() {
 		return new String[]{
-				HAS_TRANSFORMED_INSTANCES};
+				HAS_TRANSFORMED_INSTANCES, HAS_SOURCE_INSTANCES};
 	}
 
 }
