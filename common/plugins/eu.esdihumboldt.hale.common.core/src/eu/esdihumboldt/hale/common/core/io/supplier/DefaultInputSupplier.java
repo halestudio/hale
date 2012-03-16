@@ -18,6 +18,8 @@ import java.net.URI;
 
 import com.google.common.io.InputSupplier;
 
+import eu.esdihumboldt.hale.common.cache.Request;
+
 /**
  * Default I/O supplier based on an URI
  *
@@ -44,8 +46,11 @@ public class DefaultInputSupplier implements LocatableInputSupplier<InputStream>
 	 */
 	@Override
 	public InputStream getInput() throws IOException {
-		//TODO based on cache, differentiate between files and other URIs
-		return location.toURL().openStream();
+		try {
+			return Request.getInstance().get(location);
+		} catch (Exception e) {
+			return location.toURL().openStream();
+		}
 	}
 
 	/**
