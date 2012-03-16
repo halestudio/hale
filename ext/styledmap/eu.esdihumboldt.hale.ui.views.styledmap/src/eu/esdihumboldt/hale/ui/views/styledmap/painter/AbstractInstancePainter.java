@@ -57,6 +57,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -604,7 +605,13 @@ public abstract class AbstractInstancePainter extends
 				}
 				else if (element instanceof Instance) {
 					Instance instance = (Instance) element;
-					InstanceReference ref = instanceService.getReference(instance);//, dataSet);
+					InstanceReference ref;
+					try {
+						ref = instanceService.getReference(instance);//, dataSet);
+					} catch (IllegalArgumentException iae) {
+						// instance has no dataset set
+						ref = new PseudoInstanceReference(instance);
+					}
 					if (ref != null) {
 						selected.add(ref);
 					}
