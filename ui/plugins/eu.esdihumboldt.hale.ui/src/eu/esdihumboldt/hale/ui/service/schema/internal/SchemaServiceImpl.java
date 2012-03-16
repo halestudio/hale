@@ -121,6 +121,9 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 			spaces.remove(spaceID);
 		}
 
+		// remove information from project
+		getProjectService().removeResources(spaceID == SchemaSpaceID.SOURCE ? ACTION_READ_SOURCE : ACTION_READ_TARGET);
+
 		notifySchemasCleared(spaceID);
 	}
 
