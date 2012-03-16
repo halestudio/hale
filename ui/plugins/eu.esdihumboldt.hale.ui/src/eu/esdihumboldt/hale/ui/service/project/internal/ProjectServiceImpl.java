@@ -66,6 +66,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
@@ -477,6 +478,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					}
 					updateWindowTitle();
 					notifyClean();
+
+					// schemas aren't valid anymore, clear property resolver cache
+					PropertyResolver.clearCache();
 				} finally {
 					monitor.done();
 					trans.end();
