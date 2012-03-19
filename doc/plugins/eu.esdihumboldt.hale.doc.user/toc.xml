@@ -48,9 +48,9 @@
       </topic>
       <topic href="html/views/report_list.html" label="Report List">
       </topic>
-      <topic href="html/views/source_data.html" label="Source Data view">
+      <topic href="html/views/source_data.xhtml" label="Source Data view">
       </topic>
-      <topic href="html/views/transformed_data.html" label="Transformed Data view">
+      <topic href="html/views/transformed_data.xhtml" label="Transformed Data view">
       </topic>
       <topic href="html/views/error_log.html" label="Error Log">
       </topic>
@@ -83,6 +83,8 @@
    </topic>
    <topic label="Reference">
       <topic href="html/reference/schema_elements.html" label="Schema elements">
+      </topic>
+      <topic href="html/reference/cql_filter.html" label="CQL filter">
       </topic>
       <topic label="Supported formats">
          <topic label="Import">
