@@ -6,18 +6,18 @@
    </context>
    <context id="filter_field" title="Filter field">
       <description>Enter a CQL filter to be applied on instances.</description>
-      <topic href="html/concepts/cql_filter.html" label="Define a CQL Filter"/>
+      <topic href="html/reference/cql_filter.html" label="Define a CQL Filter"/>
    </context>
    <context id="source_data">
       <description>The Source Data view allows inspecting the loaded source instances.</description>
       <topic href="html/concepts/what_is_instance.html" label="What is an Instance?"/>
-      <topic href="html/views/source_data.html" label="Source Data view"/>
-      <topic href="html/concepts/cql_filter.html" label="Define a CQL Filter"/>
+      <topic href="html/views/source_data.xhtml" label="Source Data view"/>
+      <topic href="html/reference/cql_filter.html" label="Define a CQL Filter"/>
    </context>
    <context id="transformed_data">
       <description>The Transformed Data view allows inspecting the transformed instances.</description>
       <topic href="html/concepts/what_is_instance.html" label="What is an Instance?"/>
-      <topic href="html/views/transformed_data.html" label="Transformed Data view"/>
-      <topic href="html/concepts/cql_filter.html" label="Define a CQL Filter"/>
+      <topic href="html/views/transformed_data.xhtml" label="Transformed Data view"/>
+      <topic href="html/reference/cql_filter.html" label="Define a CQL Filter"/>
    </context>
 </contexts>
