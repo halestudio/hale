@@ -21,6 +21,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.ReportSession;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
@@ -92,18 +93,12 @@ public class ActionShowCurrentSession extends Action {
 				return true;
 			}
 			
-			if (parentElement instanceof ReportItem) {
-				if (((ReportItem) parentElement).getIdentifier() == current) {
-					if (element instanceof Long) {
-						if ((Long) element == current) {
-							return true;
-						}
-					}
+			if (element instanceof ReportSession) {
+				if (((ReportSession) element).getId() == current) {
+					return true;
 				}
-			}
-			
-			if (parentElement instanceof Long) {
-				if ((Long) parentElement == current) {
+			} else if (parentElement instanceof ReportSession) {
+				if (((ReportSession) parentElement).getId() == current) {
 					return true;
 				}
 			}

@@ -13,14 +13,13 @@
 package eu.esdihumboldt.hale.ui.views.report;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.ReportSession;
 
 /**
  * ContentProvider for {@link ReportList}.
@@ -32,9 +31,8 @@ public class ReportListContentProvider implements ITreeContentProvider {
 
 	/**
 	 * Contains all projects with related data.
-	 */
-	@SuppressWarnings("rawtypes")
-	public static Map<Long, List<Report>> data = new LinkedHashMap<Long, List<Report>>();
+	 */	
+	private Collection<ReportSession> reportSessions = new ArrayList<ReportSession>();
 	
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
@@ -47,50 +45,37 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (newInput instanceof ReportItem) {
-			ReportItem item = (ReportItem) newInput;
-			long project = item.getIdentifier();
-			ArrayList<Report> reports;
-			
-			// check if there's already a list
-			if (data.get(project) == null) {
-				reports = new ArrayList<Report>();
-			} else {
-				reports = (ArrayList<Report>) data.get(project);
-			}
-			
-			// add the new report
-			reports.add(item.getReport());
-			data.put(project, reports);
+		if (newInput instanceof Collection<?>) {
+			reportSessions = (Collection<ReportSession>) newInput;
 		}
 	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getElements(java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(Object inputElement) {
 		// display the listing of projects
-		return data.keySet().toArray();
+		if (inputElement instanceof Collection<?>) {
+			return ((Collection<ReportSession>)inputElement).toArray();
+		}
+		return new Object[0];
 	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		List<Report> reports = data.get(parentElement);
-		
-		// no reports?
-		if (reports.size() == 0) {
-			return null;
+		if (parentElement instanceof ReportSession) {
+			return ((ReportSession) parentElement).getAllReports().values().toArray();
 		}
-		
-		return reports.toArray();
+
+		return new Object[0];
 	}
 
 	/**
@@ -98,13 +83,20 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object getParent(Object element) {
+		if (element instanceof Report<?>) {
+			for (ReportSession r : reportSessions) {
+				if (r.getAllReports().containsValue(element)) {
+					return r;
+				}
+			}
+		}
+		
 		return null;
 	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof Report) {
@@ -112,9 +104,13 @@ public class ReportListContentProvider implements ITreeContentProvider {
 			return false;
 		}
 			
-		List<Report> list = data.get(element);
-		if (list != null && list.size() > 0) {
-			return true;
+		
+		if (element instanceof ReportSession) {
+			if (((ReportSession) element).getAllReports().size() > 0) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		return false;
