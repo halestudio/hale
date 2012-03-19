@@ -119,3 +119,5 @@ pre code {
 	padding: 1em;
 	background-color: #F3F3F3;
 }
+/* prevent image forcing scrollbars */
+img { max-width: 100% }
