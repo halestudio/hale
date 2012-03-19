@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection xmlns:gml="http://www.opengis.net/gml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml31.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:PolygonProperty>
+			<hale:geometry srsName="EPSG:4326">
+				<gml:exterior>
+					<gml:LinearRing>
+						<gml:coordinates>0,3 3,3 0,-3 -3,-3 0,3</gml:coordinates>
+					</gml:LinearRing>
+				</gml:exterior>
+				<gml:interior>
+					<gml:LinearRing>
+						<gml:coordinates>0,1 1,1 0,-1 -1,-1 0,1</gml:coordinates>
+					</gml:LinearRing>
+				</gml:interior>
+				<gml:interior>
+					<gml:LinearRing>
+						<gml:coordinates>0,2 2,2 0,-2 -2,-2 0,2</gml:coordinates>
+					</gml:LinearRing>
+				</gml:interior>
+			</hale:geometry>
+		</hale:PolygonProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>

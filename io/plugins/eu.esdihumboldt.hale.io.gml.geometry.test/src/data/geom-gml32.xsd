@@ -1,74 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:hale="eu:esdihumboldt:hale:test" xmlns:gml="http://www.opengis.net/gml/3.2" elementFormDefault="qualified" targetNamespace="eu:esdihumboldt:hale:test">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:hale="eu:esdihumboldt:hale:test"
+	xmlns:gml="http://www.opengis.net/gml/3.2" elementFormDefault="qualified"
+	targetNamespace="eu:esdihumboldt:hale:test">
 
-  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
-  
-  <element name="PrimitiveTest" substitutionGroup="gml:AbstractFeature" type="hale:PrimitiveTestType" />
-    
-  <complexType name="PrimitiveTestType">
-    <complexContent>
-      <extension base="gml:AbstractFeatureType">
-        <sequence>
-          <element name="geometry" type="gml:GeometricPrimitivePropertyType" />
-        </sequence>
-      </extension>
-    </complexContent>
-  </complexType>
-  
-  <element name="AggregateTest" substitutionGroup="gml:AbstractFeature" type="hale:AggregateTestType" />
-    
-  <complexType name="AggregateTestType">
-    <complexContent>
-      <extension base="gml:AbstractFeatureType">
-        <sequence>
-          <element name="geometry" type="hale:GeometricAggregatePropertyType" />
-        </sequence>
-      </extension>
-    </complexContent>
-  </complexType>
-  
-  <complexType name="GeometricAggregatePropertyType">
-		<sequence minOccurs="0">
-			<element ref="gml:AbstractGeometricAggregate"/>
-		</sequence>
-		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
-		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	<import namespace="http://www.opengis.net/gml/3.2"
+		schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd" />
+
+	<element name="PrimitiveTest" substitutionGroup="gml:AbstractFeature"
+		type="hale:PrimitiveTestType" />
+
+	<complexType name="PrimitiveTestType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:GeometricPrimitivePropertyType" />
+				</sequence>
+			</extension>
+		</complexContent>
 	</complexType>
-	
-  <element name="GeometryProperty" substitutionGroup="gml:AbstractFeature" type="hale:GeometryPropertyType"/>
 
-  <complexType name="GeometryPropertyType">
-    <complexContent>
-      <extension base="gml:AbstractFeatureType">
-        <sequence>
-          <element ref="gml:AbstractGeometry" />
-        </sequence>
-      </extension>
-    </complexContent>
-  </complexType>
-  
-  <element name="PointProperty" substitutionGroup="gml:AbstractFeature" type="hale:PointPropertyType"/>
+	<element name="AggregateTest" substitutionGroup="gml:AbstractFeature"
+		type="hale:AggregateTestType" />
 
-  <complexType name="PointPropertyType">
-    <complexContent>
-      <extension base="gml:AbstractFeatureType">
-        <sequence>
-          <element name="geometry" type="gml:PointType"/>
-        </sequence>
-      </extension>
-    </complexContent>
-  </complexType>
-  
-    <element name="LineStringProperty" substitutionGroup="gml:AbstractFeature" type="hale:LineStringPropertyType"/>
+	<complexType name="AggregateTestType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="hale:GeometricAggregatePropertyType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
 
-  <complexType name="LineStringPropertyType">
-    <complexContent>
-      <extension base="gml:AbstractFeatureType">
-        <sequence>
-          <element name="geometry" type="gml:LineStringType"/>
-        </sequence>
-      </extension>
-    </complexContent>
-  </complexType>
-  
+	<complexType name="GeometricAggregatePropertyType">
+		<sequence minOccurs="0">
+			<element ref="gml:AbstractGeometricAggregate" />
+		</sequence>
+		<attributeGroup ref="gml:OwnershipAttributeGroup" />
+		<attributeGroup ref="gml:AssociationAttributeGroup" />
+	</complexType>
+
+	<element name="GeometryProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:GeometryPropertyType" />
+
+	<complexType name="GeometryPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element ref="gml:AbstractGeometry" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="PointProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:PointPropertyType" />
+
+	<complexType name="PointPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:PointType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="LineStringProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:LineStringPropertyType" />
+
+	<complexType name="LineStringPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:LineStringType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="LinearRingProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:LinearRingPropertyType" />
+
+	<complexType name="LinearRingPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:LinearRingType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="PolygonProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:PolygonPropertyType" />
+
+	<complexType name="PolygonPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:PolygonType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
 </schema>

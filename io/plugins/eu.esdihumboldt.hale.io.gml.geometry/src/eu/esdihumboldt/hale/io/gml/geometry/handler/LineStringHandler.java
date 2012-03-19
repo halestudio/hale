@@ -40,7 +40,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
- * Handler for linestring geometries.
+ * Handler for linestring geometries
  * 
  * @author Patrick Lieb
  */
@@ -57,7 +57,10 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 		LineString line = null;
 		PointHandler handler = new PointHandler();
 
-		// to parse coordinates of a line
+		// XXX support for different types of line strings in one instance (we
+		// support only one type per instance!)
+
+		// to parse coordinates of a line string
 		// for use with GML 2, 3, 3.1, 3.2
 		Collection<Object> values = PropertyResolver.getValues(instance,
 				"coordinates", false);
@@ -77,7 +80,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 			}
 		}
 
-		// to parse several pos of a line
+		// to parse several pos of a line string
 		// for use with GML 3, 3.2
 		if (line == null) {
 			values = PropertyResolver.getValues(instance, "pos", false);
@@ -99,7 +102,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 			}
 		}
 
-		// to parse a posList of a line
+		// to parse a posList of a line string
 		// for use with GML 3.1, 3.2
 		if (line == null) {
 			values = PropertyResolver.getValues(instance, "posList", false);
@@ -116,9 +119,9 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 			}
 		}
 
-		// to parse Point Representations of a line
+		// to parse Point Representations of a line string
 		// for use with GML 3, 3.1, 3.2
-		
+
 		if (line == null) {
 			values = PropertyResolver.getValues(instance, "pointRep.Point",
 					false);
@@ -128,39 +131,14 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
-						System.out.println(((Instance)value).getValue());
 						try {
 							@SuppressWarnings("unchecked")
-							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler.createGeometry((Instance) value);
+							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler
+									.createGeometry((Instance) value);
 							cs.add(point.getGeometry().getCoordinate());
-						} catch (GeometryNotSupportedException e){
-							throw new GeometryNotSupportedException("Could not parse Point Representation", e);
-						}
-					}
-				}
-				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
-				line = getGeometryFactory().createLineString(coords);
-			}
-		}
-		
-		// to parse Point Properties of a line
-		// for use with GML 3.1
-		if (line == null) {
-			values = PropertyResolver.getValues(instance, "pointProperty.Point",
-					false);
-			if (values != null && !values.isEmpty()) {
-				Iterator<Object> iterator = values.iterator();
-				List<Coordinate> cs = new ArrayList<Coordinate>();
-				while (iterator.hasNext()) {
-					Object value = iterator.next();
-					if (value instanceof Instance) {
-						System.out.println(((Instance)value).getValue());
-						try {
-							@SuppressWarnings("unchecked")
-							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler.createGeometry((Instance) value);
-							cs.add(point.getGeometry().getCoordinate());
-						} catch (GeometryNotSupportedException e){
-							throw new GeometryNotSupportedException("Could not parse Point Property", e);
+						} catch (GeometryNotSupportedException e) {
+							throw new GeometryNotSupportedException(
+									"Could not parse Point Representation", e);
 						}
 					}
 				}
@@ -169,6 +147,34 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 			}
 		}
 
+		// to parse Point Properties of a line string
+		// for use with GML 3.1
+		if (line == null) {
+			values = PropertyResolver.getValues(instance,
+					"pointProperty.Point", false);
+			if (values != null && !values.isEmpty()) {
+				Iterator<Object> iterator = values.iterator();
+				List<Coordinate> cs = new ArrayList<Coordinate>();
+				while (iterator.hasNext()) {
+					Object value = iterator.next();
+					if (value instanceof Instance) {
+						try {
+							@SuppressWarnings("unchecked")
+							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler
+									.createGeometry((Instance) value);
+							cs.add(point.getGeometry().getCoordinate());
+						} catch (GeometryNotSupportedException e) {
+							throw new GeometryNotSupportedException(
+									"Could not parse Point Property", e);
+						}
+					}
+				}
+				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+				line = getGeometryFactory().createLineString(coords);
+			}
+		}
+
+		// to parse coord of a line string
 		// for use with GML2, 3, 3.1, 3.2
 		if (line == null) {
 			values = PropertyResolver.getValues(instance, "coord", false);

@@ -5,7 +5,7 @@
     <gml:boundedBy>
     	<gml:Null></gml:Null>
     </gml:boundedBy>
-	<gml:featureMember>
+    <gml:featureMember>
 		<hale:LineStringProperty>
 			<hale:geometry srsName="urn:ogc:def:crs:EPSG:31251">
 				<gml:pointRep><gml:Point><gml:coordinates>-39799.68820381,273207.53980172</gml:coordinates></gml:Point></gml:pointRep>
