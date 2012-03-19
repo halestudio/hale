@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection gml:id="fcollection"
+	xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:LinearRingProperty gml:id="linearring1">
+			<hale:geometry>
+				<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2 -3.33,-3.2 0.01,3.2</gml:coordinates>
+			</hale:geometry>
+		</hale:LinearRingProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:LinearRingProperty gml:id="linearring2">
+			<hale:geometry>
+				<gml:pointRep>
+					<gml:Point gml:id="point1">
+						<gml:coordinates>0.01,3.2</gml:coordinates>
+					</gml:Point>
+				</gml:pointRep>
+				<gml:pointRep>
+					<gml:Point gml:id="point2">
+						<gml:coordinates>3.33,3.33</gml:coordinates>
+					</gml:Point>
+				</gml:pointRep>
+				<gml:pointRep>
+					<gml:Point gml:id="point3">
+						<gml:coordinates>0.01,-3.2</gml:coordinates>
+					</gml:Point>
+				</gml:pointRep>
+				<gml:pointRep>
+					<gml:Point gml:id="point4">
+						<gml:coordinates>-3.33,-3.2</gml:coordinates>
+					</gml:Point>
+				</gml:pointRep>
+				<gml:pointRep>
+					<gml:Point gml:id="point5">
+						<gml:coordinates>0.01,3.2</gml:coordinates>
+					</gml:Point>
+				</gml:pointRep>
+			</hale:geometry>
+		</hale:LinearRingProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:LinearRingProperty gml:id="linearring3">
+			<hale:geometry>
+				<gml:pos>0.01 3.2</gml:pos>
+				<gml:pos>3.33 3.33</gml:pos>
+				<gml:pos>0.01 -3.2</gml:pos>
+				<gml:pos>-3.33 -3.2</gml:pos>
+				<gml:pos>0.01 3.2</gml:pos>
+			</hale:geometry>
+		</hale:LinearRingProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:LinearRingProperty gml:id="linearring4">
+			<hale:geometry>
+				<gml:pointProperty>
+					<gml:Point gml:id="point6">
+						<gml:coordinates>0.01,3.2</gml:coordinates>
+					</gml:Point>
+				</gml:pointProperty>
+				<gml:pointProperty>
+					<gml:Point gml:id="point7">
+						<gml:coordinates>3.33,3.33</gml:coordinates>
+					</gml:Point>
+				</gml:pointProperty>
+				<gml:pointProperty>
+					<gml:Point gml:id="point8">
+						<gml:coordinates>0.01,-3.2</gml:coordinates>
+					</gml:Point>
+				</gml:pointProperty>
+				<gml:pointProperty>
+					<gml:Point gml:id="point9">
+						<gml:coordinates>-3.33,-3.2</gml:coordinates>
+					</gml:Point>
+				</gml:pointProperty>
+				<gml:pointProperty>
+					<gml:Point gml:id="point10">
+						<gml:coordinates>0.01,3.2</gml:coordinates>
+					</gml:Point>
+				</gml:pointProperty>
+			</hale:geometry>
+		</hale:LinearRingProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:LinearRingProperty gml:id="linearring5">
+			<hale:geometry>
+				<gml:posList srsDimension="2">0.01 3.2 3.33 3.33 0.01 -3.2 -3.33 -3.2 0.01 3.2</gml:posList>
+			</hale:geometry>
+		</hale:LinearRingProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>

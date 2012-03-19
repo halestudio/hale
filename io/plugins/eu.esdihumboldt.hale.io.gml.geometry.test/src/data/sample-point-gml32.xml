@@ -1,33 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<gml:FeatureCollection gml:id="collection1" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:hale="eu:esdihumboldt:hale:test"
-    xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd">
-    <gml:featureMember>
-        <hale:PointProperty gml:id="feature1">
-            <hale:geometry srsName="EPSG:28992" gml:id="feature1geom">
-                <gml:coordinates>127906.229,489141.472</gml:coordinates>
-            </hale:geometry>
-        </hale:PointProperty>
-    </gml:featureMember>
-    <gml:featureMember>
-        <hale:GeometryProperty gml:id="feature2">
-            <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="feature2geom">
-                <gml:coordinates decimal="," cs=" " ts=";">127906,229 489141,472</gml:coordinates>
-            </gml:Point>
-        </hale:GeometryProperty>
-    </gml:featureMember>
-    <gml:featureMember>
-        <hale:PointProperty gml:id="feature3">
-            <hale:geometry srsName="urn:ogc:def:crs:EPSG::28992" gml:id="feature3geom">
-                <gml:pos>127906.229 489141.472</gml:pos>
-            </hale:geometry>
-        </hale:PointProperty>
-    </gml:featureMember>
-    <gml:featureMember>
-        <hale:GeometryProperty gml:id="feature4">
-            <gml:Point gml:id="feature4geom">
-                <gml:pos srsName="urn:ogc:def:crs:EPSG::28992">127906.229 489141.472</gml:pos>
-            </gml:Point>
-        </hale:GeometryProperty>
-    </gml:featureMember>
+<gml:FeatureCollection gml:id="FC1" xmlns:gml="http://www.opengis.net/gml/3.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:PointProperty gml:id="feature1">
+			<hale:geometry srsName="EPSG:28992" gml:id="feature1geom">
+				<gml:coordinates>127906.229,489141.472</gml:coordinates>
+			</hale:geometry>
+		</hale:PointProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:GeometryProperty gml:id="feature2">
+			<gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="feature2geom">
+				<gml:coordinates>127906.229,489141.472</gml:coordinates>
+			</gml:Point>
+		</hale:GeometryProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:PointProperty gml:id="feature3">
+			<hale:geometry srsName="urn:ogc:def:crs:EPSG::28992"
+				gml:id="feature3geom">
+				<gml:pos>127906.229 489141.472</gml:pos>
+			</hale:geometry>
+		</hale:PointProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:GeometryProperty gml:id="feature4">
+			<gml:Point gml:id="feature4geom">
+				<gml:pos srsName="urn:ogc:def:crs:EPSG::28992">127906.229 489141.472</gml:pos>
+			</gml:Point>
+		</hale:GeometryProperty>
+	</gml:featureMember>
 </gml:FeatureCollection>
