@@ -15,44 +15,35 @@ package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 import java.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for the rename function.
  * @author Simon Templer
  */
-public class RenameExplanation implements CellExplanation, RenameFunction {
+public class RenameExplanation extends AbstractCellExplanation implements RenameFunction {
 
 	/**
-	 * @see CellExplanation#getExplanation(Cell)
+	 * @see AbstractCellExplanation#getExplanation(Cell, boolean)
 	 */
 	@Override
-	public String getExplanation(Cell cell) {
+	protected String getExplanation(Cell cell, boolean html) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		
 		if (source != null && target != null) {
-			String text = "For each value in ''{0}'' adds the same value to the ''{1}'' property. If necessary a conversion is applied.";
+			String text = "For each value in {0} adds the same value to the {1} property. If necessary a conversion is applied.";
 			String structuralRename = CellUtil.getFirstParameter(cell, PARAMETER_STRUCTURAL_RENAME);
 			if (Boolean.parseBoolean(structuralRename))
 				text += " Furthermore child properties get added, too, if the property names match.";
 			return MessageFormat.format(text, 
-					source.getDefinition().getDefinition().getDisplayName(),
-					target.getDefinition().getDefinition().getDisplayName());
+					formatEntity(source, html),
+					formatEntity(target, html));
 		}
 		
-		return null;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
-	@Override
-	public String getExplanationAsHtml(Cell cell) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
