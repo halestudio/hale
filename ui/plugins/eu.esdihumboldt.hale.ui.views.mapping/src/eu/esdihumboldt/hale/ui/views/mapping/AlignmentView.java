@@ -75,10 +75,10 @@ public class AlignmentView extends AbstractMappingView {
 	private ISelectionListener selectionListener;
 
 	/**
-	 * @see AbstractMappingView#createPartControl(Composite)
+	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createViewControl(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(GridLayoutFactory.fillDefaults().create());
 		
@@ -128,7 +128,7 @@ public class AlignmentView extends AbstractMappingView {
 		Composite viewerContainer = new Composite(page, SWT.NONE);
 		viewerContainer.setLayout(new FillLayout());
 		viewerContainer.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
-		super.createPartControl(viewerContainer);
+		super.createViewControl(viewerContainer);
 		
 		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
 		

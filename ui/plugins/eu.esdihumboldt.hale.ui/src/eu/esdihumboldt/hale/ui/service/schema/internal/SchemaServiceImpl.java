@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
+import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -44,6 +45,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
@@ -114,17 +116,33 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	 * @see SchemaService#clearSchemas(SchemaSpaceID)
 	 */
 	@Override
-	public void clearSchemas(SchemaSpaceID spaceID) {
+	public void clearSchemas(final SchemaSpaceID spaceID) {
 		Preconditions.checkNotNull(spaceID);
 
-		synchronized (spaces) {
-			spaces.remove(spaceID);
+		IUndoableOperation operation = new AbstractRemoveResourcesOperation("Clear "
+				+ (spaceID == SchemaSpaceID.SOURCE ? "source" : "target") + " schema",
+				spaceID == SchemaSpaceID.SOURCE ? ACTION_READ_SOURCE : ACTION_READ_TARGET) {
+			/**
+			 * @see eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
+			 *      org.eclipse.core.runtime.IAdaptable)
+			 */
+			@Override
+			public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+				synchronized (spaces) {
+					spaces.remove(spaceID);
+				}
+				notifySchemasCleared(spaceID);
+
+				return super.execute(monitor, info);
+			}
+		};
+		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench().getOperationSupport();
+		operation.addContext(operationSupport.getUndoContext());
+		try {
+			operationSupport.getOperationHistory().execute(operation, null, null);
+		} catch (ExecutionException e) {
+			log.error("Error executing operation on schema service", e);
 		}
-
-		// remove information from project
-		getProjectService().removeResources(spaceID == SchemaSpaceID.SOURCE ? ACTION_READ_SOURCE : ACTION_READ_TARGET);
-
-		notifySchemasCleared(spaceID);
 	}
 
 	/**
@@ -134,7 +152,7 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	@Override
 	public void toggleMappable(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
 		ToggleMappableOperation operation = new ToggleMappableOperation(spaceID, types);
-		
+
 		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench().getOperationSupport();
 		operation.addContext(operationSupport.getUndoContext());
 		try {
@@ -165,7 +183,8 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -199,7 +218,8 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#redo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#redo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -207,7 +227,8 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {

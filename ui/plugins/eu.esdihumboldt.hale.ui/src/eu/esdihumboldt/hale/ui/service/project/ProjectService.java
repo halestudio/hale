@@ -13,10 +13,12 @@
 package eu.esdihumboldt.hale.ui.service.project;
 
 import java.net.URI;
+import java.util.List;
 
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 
 /**
  * The {@link ProjectService} manages information on a HALE project,
@@ -51,12 +53,20 @@ public interface ProjectService {
 			IOProvider provider);
 
 	/**
+	 * Execute and remember the given I/O configuration.
+	 * 
+	 * @param conf the I/O configuration
+	 */
+	public void executeAndRemember(IOConfiguration conf);
+
+	/**
 	 * Remove all resources of the specified actionId from the project.
 	 * 
 	 * @see #rememberIO(String, String, IOProvider)
 	 * @param actionId the I/O action identifier
+	 * @return a list of removed io configurations
 	 */
-	public void removeResources(String actionId);
+	public List<IOConfiguration> removeResources(String actionId);
 	
 	/**
 	 * Get a project scoped configuration service

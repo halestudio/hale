@@ -35,10 +35,10 @@ public class FunctionsView extends PropertiesViewPart {
 	private TreeViewer viewer;
 	
 	/**
-	 * @see WorkbenchPart#createPartControl(Composite)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createViewControl(Composite parent) {
 		viewer = new TreeViewer(parent);
 		viewer.setLabelProvider(new FunctionLabelProvider());
 		viewer.setContentProvider(new FunctionContentProvider());

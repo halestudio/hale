@@ -55,7 +55,6 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionContribution;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaServiceListener;
@@ -341,10 +340,10 @@ public class SchemasView extends PropertiesViewPart {
 //	private StyleServiceListener styleListener;
 	
 	/**
-	 * @see WorkbenchPart#createPartControl(Composite)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void createPartControl(Composite _parent) {
+	public void createViewControl(Composite _parent) {
 		// get schema service
 		schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		schemaService.addSchemaServiceListener(schemaListener = new SchemaServiceListener() {
@@ -572,9 +571,6 @@ public class SchemasView extends PropertiesViewPart {
 			}
 			
 		});
-		
-		// register for workbench undo/redo
-		HaleUI.registerWorkbenchUndoRedo(getViewSite());
 	}
 
 	/**

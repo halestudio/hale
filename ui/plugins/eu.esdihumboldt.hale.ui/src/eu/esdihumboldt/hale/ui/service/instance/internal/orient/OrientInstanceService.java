@@ -26,10 +26,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -56,6 +61,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
@@ -267,13 +273,26 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	@Override
 	public void clearInstances() {
-		source.clear();
-		transformed.clear();
+		IUndoableOperation operation = new AbstractRemoveResourcesOperation("Clear source data", InstanceService.ACTION_READ_SOURCEDATA) {
+			/**
+			 * @see eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation#execute(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+			 */
+			@Override
+			public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+				source.clear();
+				transformed.clear();
+				notifyDatasetChanged(null);
 
-		// remove information from project
-		getProjectService().removeResources(ACTION_READ_SOURCEDATA);
-
-		notifyDatasetChanged(null);
+				return super.execute(monitor, info);
+			}
+		};
+		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench().getOperationSupport();
+		operation.addContext(operationSupport.getUndoContext());
+		try {
+			operationSupport.getOperationHistory().execute(operation, null, null);
+		} catch (ExecutionException e) {
+			log.error("Error executing operation on instance service", e);
+		}
 	}
 
 	/**

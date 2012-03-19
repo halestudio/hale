@@ -106,7 +106,7 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	 * @param parent parent element
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createViewControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new BorderLayout(0, 0));
 		{

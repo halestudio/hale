@@ -55,10 +55,10 @@ public class TypeHierarchyView extends PropertiesViewPart {
 	private SelectionFilter selectionProvider;
 
 	/**
-	 * @see WorkbenchPart#createPartControl(Composite)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createViewControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new TypeHierarchyContentProvider());
 		viewer.setLabelProvider(new TypeHierarchyLabelProvider());

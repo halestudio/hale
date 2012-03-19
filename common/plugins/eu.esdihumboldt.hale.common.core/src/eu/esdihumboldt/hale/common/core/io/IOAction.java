@@ -37,7 +37,7 @@ public interface IOAction extends Identifiable {
 	
 	/**
 	 * Get the action name
-	 * @return the name
+	 * @return the name, may be <code>null</code>
 	 */
 	public String getName();
 

@@ -33,7 +33,8 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
- * TODO Type description
+ * Mapping view.
+ * 
  * @author Simon Templer
  */
 public class MappingView extends AbstractMappingView {
@@ -41,11 +42,11 @@ public class MappingView extends AbstractMappingView {
 	private ISelectionListener selectionListener;
 
 	/**
-	 * @see AbstractMappingView#createPartControl(Composite)
+	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent);
+	public void createViewControl(Composite parent) {
+		super.createViewControl(parent);
 		
 		getSite().getWorkbenchWindow().getSelectionService().addPostSelectionListener(selectionListener = new ISelectionListener() {
 			

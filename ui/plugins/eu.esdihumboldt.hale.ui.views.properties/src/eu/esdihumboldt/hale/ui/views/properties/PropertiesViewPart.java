@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.properties;
 
 import org.eclipse.help.IContextProvider;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
@@ -21,6 +22,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.HALEContextProvider;
+import eu.esdihumboldt.hale.ui.HaleUI;
 
 /**
  * View part that provides support for association with the properties view
@@ -29,6 +31,21 @@ import eu.esdihumboldt.hale.ui.HALEContextProvider;
  */
 public abstract class PropertiesViewPart extends ViewPart
 		implements ITabbedPropertySheetPageContributor {
+	/**
+	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	public final void createPartControl(Composite parent) {
+		HaleUI.registerWorkbenchUndoRedo(getViewSite());
+		createViewControl(parent);
+	}
+
+	/**
+	 * Since createPartControl does an important job this is used for subclasses.
+	 * 
+	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+	 */
+	protected abstract void createViewControl(Composite parent);
 
 	/**
 	 * @see ITabbedPropertySheetPageContributor#getContributorId()
