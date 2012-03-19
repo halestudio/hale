@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Functions</title>
+</head>
+<body>
+	<h1>Functions</h1>
+	<p>
+		A function describes a relation between well-defined inputs and
+		outputs. The mapping <i>cells</i> contained in an <i>Alignment</i>
+		each reference a function, the assignment of schema elements as inputs
+		and outputs and eventual additional configuration of functions via
+		function parameters.
+	</p>
+	<p>
+		The <a href="../views/functions.html">Functions view</a> lists all
+		available functions. Also, the functions reference in this help holds
+		a detailed description of each function, listing inputs, outputs and
+		parameters.
+	</p>
+	<p class="Note">
+		<strong>Note:</strong> The functions available in HALE represent only
+		a small subset of possible relations - if you find that you are not
+		able to express a relation through the given functions, HALE offers an
+		extension point to integrate additional functions.
+	</p>
+	<p>There are two basic types of functions, functions that represent
+		class/type relations and functions that represent property relations.</p>
+
+	<h3>Type relations</h3>
+	<p>A type relation describes how types from the source schema are
+		to be translated to a type in the target schema.</p>
+	<p>
+		The most simple type relation in <i>HALE</i> is represented by the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.retype.html">Retype</a>
+		function, which expresses that a source and target type are
+		semantically equal. For the transformation this means that for each
+		instance of the source type, an instance of the target type is
+		created. Then, the transformation functions of the associated property
+		relations are applied to populate the target instance.
+	</p>
+
+	<h3>Property relations</h3>
+	<p>Property relations describe how properties in a target schema
+		type can be derived from properties from the source schema types. They
+		only take effect in the context of a type relation.</p>
+	<p>
+		Similar to the <i>Retype</i> function there is a property function
+		that expresses a source and target property being semantically equal.
+		This function is called <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.rename.html">Rename</a>.
+	</p>
+	<p>
+		Other examples of property functions are the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.cst.functions.numeric.mathexpression.html">Mathematical
+			Expression</a> function, which can take multiple variables and evaluate
+		them in a mathematical expression, or the <a
+			hreF="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.classification.html">Classification</a>
+		function, which maps values from one classification system to another
+		one.
+	</p>
+
+	<!-- related concepts: instance, alignment, contexts -->
+	<!-- related tasks: create relation -->
+</body>
+</html>
