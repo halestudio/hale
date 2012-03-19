@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <hale-project version="2.5.0.alpha">
     <name>Simple properties to complex structure</name>
-    <author>sitemple</author>
+    <author>Simon Templer</author>
     <created>2011-11-03T11:18:53.610+01:00</created>
     <modified>2011-11-03T11:20:32.236+01:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
@@ -16,6 +16,10 @@
     <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
         <setting name="source">file:/exampleschema/t2.xsd</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="source">file:/exampleschema/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
     </resource>
     <file name="alignment.xml" location="file:/exampleschema/t1t2.halex.alignment.xml"/>
 </hale-project>
