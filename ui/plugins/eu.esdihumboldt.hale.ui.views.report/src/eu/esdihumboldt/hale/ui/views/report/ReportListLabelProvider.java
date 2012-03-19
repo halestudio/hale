@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.ReportSession;
 
 /**
  * LabelProvider for {@link ReportList}.
@@ -60,8 +61,6 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	 */
 	@Override
 	public boolean isLabelProperty(Object element, String property) {
-		//System.err.println("LabelProvider.isLabelProperty(): ");
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -77,27 +76,16 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Image getImage(Object element) {
-		if (element instanceof String || element instanceof Long) {
+		if (element instanceof ReportSession) {
 			String img = "icons/compressed_folder_obj.gif";
-			ImageDescriptor descriptor = null;
-			descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
-			if (descriptor == null) {
-				return null;
-			}
 			
-			Image image = imageCache.get(descriptor);
-			if (image == null) {
-				image = descriptor.createImage();
-				imageCache.put(descriptor, image);
-			}
-			return image;
+			return getImage(img);
 		}
-		else if (element instanceof Report) {
+		else if (element instanceof Report<?>) {
 			// get the right image
-			Report report = (Report) element;
+			Report<?> report = (Report<?>) element;
 			
 			String img = "icons/signed_yes.gif";
 			if (!report.isSuccess()) {
@@ -109,21 +97,8 @@ public class ReportListLabelProvider implements ILabelProvider  {
 			} else if (report.getWarnings().size() > 0) {
 				img = "icons/warning.gif";
 			}
-			
-			ImageDescriptor descriptor = null;
-			
-			// TODO Platform.getBundle(ReportList.ID) does not work so here is a static plugin path!
-			descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
-			if (descriptor == null) {
-				return null;
-			}
-			
-			Image image = imageCache.get(descriptor);
-			if (image == null) {
-				image = descriptor.createImage();
-				imageCache.put(descriptor, image);
-			}
-			return image;
+
+			return getImage(img);
 		}
 		return null;
 	}
@@ -131,19 +106,39 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
 	public String getText(Object element) {
-		if (element instanceof String) {
-			return (String)element;
+		if (element instanceof Report<?>) {
+			return ((Report<?>) element).getTaskName();
 		}
-		else if (element instanceof Long) {
-			return df.format(new Date((Long) element));
-		}
-		else if (element instanceof Report) {
-			return ((Report) element).getTaskName();
+		else if(element instanceof ReportSession) {
+			return  df.format(new Date(((ReportSession) element).getId()));
 		}
 		
 		return "Unhandled type";
+	}
+	
+	/**
+	 * Get an Image from cache or resource.
+	 * 
+	 * @param img name of file
+	 * 
+	 * @return the Image
+	 */
+	private Image getImage(String img) {
+		ImageDescriptor descriptor = null;
+		
+		// TODO Platform.getBundle(ReportList.ID) does not work so here is a static plugin path!
+		descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
+		if (descriptor == null) {
+			return null;
+		}
+		
+		Image image = imageCache.get(descriptor);
+		if (image == null) {
+			image = descriptor.createImage();
+			imageCache.put(descriptor, image);
+		}
+		return image;
 	}
 }

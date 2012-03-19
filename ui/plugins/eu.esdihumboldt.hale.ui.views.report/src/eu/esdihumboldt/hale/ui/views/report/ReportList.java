@@ -84,13 +84,8 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	 * Loads all added reports from ReportService and
 	 * displays them for the current session.
 	 */
-	@SuppressWarnings({ "rawtypes" })
 	private void loadReports() {
-		for (ReportSession s : this.repService.getAllSessions()) {
-			for (Report r : s.getAllReports().values()) {
-				_treeViewer.setInput(new ReportItem(s.getId(), r));
-			}
-		}
+		_treeViewer.setInput(this.repService.getAllSessions());
 	}
 	
 	/**
@@ -164,9 +159,9 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 		_treeViewer.setComparator(new ViewerComparator() {
 			@Override
 		    public int compare(Viewer viewer, Object e1, Object e2) {
-				if (e1 instanceof Long && e2 instanceof Long) {
-					long first = (Long) e1;
-					long second = (Long) e2;
+				if (e1 instanceof ReportSession && e2 instanceof ReportSession) {
+					long first = ((ReportSession) e1).getId();
+					long second = ((ReportSession) e2).getId();
 					if (first > second) {
 						return -1;
 					} else if (first < second) {
@@ -260,8 +255,7 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 			public void run() {
 				try{
 					// add report to view
-					ReportItem item = new ReportItem(repService.getCurrentSessionDescription(), report);
-					_treeViewer.setInput(item);
+					_treeViewer.setInput(repService.getAllSessions());
 					
 					/*
 					 * TODO expand all previous expanded items
@@ -272,10 +266,10 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 					 * the old and new objects to determine their expansion state. If hashset and equals aren't provided,
 					 *  it's a simple reference check, which won't work if you've recreated your contents.
 					 */
-					_treeViewer.setExpandedElements(new Object[] {repService.getCurrentSessionDescription()});
+					_treeViewer.setExpandedElements(new Object[] {_treeViewer.getExpandedElements()});
 					
 					// select new item
-					_treeViewer.setSelection(new StructuredSelection(item.getReport()), true);
+					_treeViewer.setSelection(new StructuredSelection(report), true);
 				} catch (NullPointerException e) {
 					_log.warn("NullpointerException while adding a Report.");
 					_log.trace(e.getMessage());
@@ -303,7 +297,7 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 		}
 		
 		// clear saved data
-		ReportListContentProvider.data.clear();
+		_treeViewer.setInput(null);
 	}
 	
 	private class ReportListMenu extends ViewerMenu {
