@@ -27,7 +27,11 @@
       </topic>
       <topic href="html/concepts/what_is_instance.html" label="What is an Instance?">
       </topic>
-      <topic href="html/concepts/what_is_alignment.html" label="What is an Alignment?">
+      <topic label="Alignment">
+         <topic href="html/concepts/what_is_alignment.html" label="What is an Alignment?">
+         </topic>
+         <topic href="html/concepts/functions.html" label="Functions">
+         </topic>
       </topic>
       <anchor id="concepts"/>
    </topic>
