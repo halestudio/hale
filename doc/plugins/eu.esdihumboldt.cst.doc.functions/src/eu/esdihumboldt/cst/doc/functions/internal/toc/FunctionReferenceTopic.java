@@ -37,11 +37,11 @@ public class FunctionReferenceTopic implements ITopic {
 		typeFunctions = new FunctionsTopic(
 				TypeFunctionExtension.getInstance(),
 				"Type relations", 
-				"html/type-functions.html");
+				null); //"html/type-functions.html");
 		propertyFunctions = new FunctionsTopic(
 				PropertyFunctionExtension.getInstance(),
 				"Property relations", 
-				"html/property-functions.html");
+				null); //"html/property-functions.html");
 	}
 
 	/**
@@ -66,8 +66,8 @@ public class FunctionReferenceTopic implements ITopic {
 	@Override
 	public String getHref() {
 		//TODO return HREF to main function reference description?
-		// TODO Auto-generated method stub
-		return "html/functions.html";
+		//return "html/functions.html";
+		return null;
 	}
 
 	/**
