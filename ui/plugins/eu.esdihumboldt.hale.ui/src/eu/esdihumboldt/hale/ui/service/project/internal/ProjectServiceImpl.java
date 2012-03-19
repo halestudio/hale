@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -316,45 +317,22 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	}
 
 	/**
-	 * Execute a set of I/O configurations
+	 * Execute a set of I/O configurations.
 	 * 
 	 * @param configurations the I/O configurations
 	 */
-	protected void executeConfigurations(final List<IOConfiguration> configurations) {
+	private void executeConfigurations(final List<IOConfiguration> configurations) {
 		//TODO sort by dependencies
-
-		// combine inside job (or with progress monitor?) if no monitor is running
-		//XXX doing this in a job breaks project loading through the OpenProjectWizard when an alignment is loaded (as internal project file)
-		//TODO rework progress sharing?!
-		//		if (ThreadProgressMonitor.getCurrent() == null) {
-		//			Job job = new Job("Load I/O configurations") {
-		//				
-		//				@Override
-		//				protected IStatus run(IProgressMonitor monitor) {
-		//					ThreadProgressMonitor.register(monitor);
-		//					try {
-		//						monitor.beginTask("Load I/O configurations", configurations.size());
-		//						for (IOConfiguration conf : configurations) {
-		//							executeConfiguration(conf);
-		//							monitor.worked(1);
-		//						}
-		//						return new Status(IStatus.OK, HALEUIPlugin.PLUGIN_ID, "Loaded I/O configurations");
-		//					} finally {
-		//						monitor.done();
-		//						ThreadProgressMonitor.remove(monitor);
-		//					}
-		//				}
-		//			};
-		//			job.setUser(true);
-		//			job.schedule();
-		//		}
-		//		else {
 		for (IOConfiguration conf : configurations) {
 			executeConfiguration(conf);
 		}
-		//		}
 	}
 
+	/**
+	 * Execute a single I/O configuration.
+	 * 
+	 * @param conf the I/O configuration
+	 */
 	private void executeConfiguration(IOConfiguration conf) {
 		// get provider ...
 		IOProvider provider = null;
@@ -409,6 +387,12 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 	}
 
+	/**
+	 * Execute the given I/O provider with the given I/O advisor.
+	 * 
+	 * @param provider the I/O provider
+	 * @param advisor the I/O advisor
+	 */
 	private void executeProvider(final IOProvider provider, @SuppressWarnings("rawtypes") final IOAdvisor advisor) {
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 
@@ -465,11 +449,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				ATransaction trans = log.begin("Clean project");
-				
-				// clean workbench history
-				IWorkbenchOperationSupport os = PlatformUI.getWorkbench().getOperationSupport();
-				os.getOperationHistory().dispose(os.getUndoContext(), true, true, false);
-				
+
 				monitor.beginTask("Clean project", IProgressMonitor.UNKNOWN);
 				try {
 					synchronized (this) {
@@ -486,6 +466,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					monitor.done();
 					trans.end();
 				}
+
+				// clean workbench history AFTER other cleans since they can create operations
+				IWorkbenchOperationSupport os = PlatformUI.getWorkbench().getOperationSupport();
+				os.getOperationHistory().dispose(os.getUndoContext(), true, true, false);
+
 				// suppress the status being set to changed by the clean
 				synchronized (ProjectServiceImpl.this) {
 					changed = false;
@@ -721,6 +706,16 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	}
 
 	/**
+	 * @see ProjectService#getProjectInfo()
+	 */
+	@Override
+	public ProjectInfo getProjectInfo() {
+		synchronized (this) {
+			return main;
+		}
+	}
+
+	/**
 	 * @see ProjectService#rememberIO(String, String, IOProvider)
 	 */
 	@Override
@@ -739,25 +734,35 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	}
 
 	/**
-	 * @see ProjectService#getProjectInfo()
-	 */
-	@Override
-	public ProjectInfo getProjectInfo() {
-		synchronized (this) {
-			return main;
-		}
-	}
-
-	/**
 	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#removeResources(java.lang.String)
 	 */
 	@Override
-	public void removeResources(String actionId) {
+	public List<IOConfiguration> removeResources(String actionId) {
+		List<IOConfiguration> removedResources = new LinkedList<IOConfiguration>();
 		synchronized (this) {
 			Iterator<IOConfiguration> iter = main.getResources().iterator();
-			while(iter.hasNext())
-				if (iter.next().getActionId().equals(actionId))
+			while(iter.hasNext()) {
+				IOConfiguration conf = iter.next();
+				if (conf.getActionId().equals(actionId)) {
 					iter.remove();
+					removedResources.add(conf);
+				}
+			}
 		}
+		setChanged();
+
+		return removedResources;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.project.ProjectService#executeAndRemember(eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration)
+	 */
+	@Override
+	public void executeAndRemember(IOConfiguration conf) {
+		executeConfiguration(conf);
+		synchronized (this) {
+			main.getResources().add(conf);
+		}
+		setChanged();
 	}
 }

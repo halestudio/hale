@@ -85,12 +85,11 @@ public class TransformationView extends AbstractMappingView {
 	}
 	
 	/**
-	 * @see AbstractMappingView#createPartControl(Composite)
+	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent);
-		
+	public void createViewControl(Composite parent) {
+		super.createViewControl(parent);
 		IActionBars bars = getViewSite().getActionBars();
 		bars.getToolBarManager().add(instanceAction = new Action(
 				"Apply sample instances", IAction.AS_CHECK_BOX) {

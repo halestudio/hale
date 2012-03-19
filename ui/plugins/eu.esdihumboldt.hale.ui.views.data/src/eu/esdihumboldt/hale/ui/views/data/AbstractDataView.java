@@ -140,10 +140,10 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	}
 
 	/**
-	 * @see WorkbenchPart#createPartControl(Composite)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createViewControl(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.heightHint = 300;

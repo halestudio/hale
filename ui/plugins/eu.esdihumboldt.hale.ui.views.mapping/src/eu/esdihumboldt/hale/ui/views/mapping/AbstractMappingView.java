@@ -25,7 +25,6 @@ import org.eclipse.zest.core.viewers.ZoomContributionViewItem;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
-import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.CellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
@@ -44,10 +43,10 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 	private GraphViewer viewer;
 
 	/**
-	 * @see WorkbenchPart#createPartControl(Composite)
+	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createViewControl(Composite parent) {
 		viewer = new GraphViewer(parent, SWT.BORDER);
 		viewer.setContentProvider(createContentProvider());
 //		viewer.setContentProvider(new CellRelationshipContentProvider());
@@ -64,9 +63,6 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 		
 		// create context menu
 		new ViewerMenu(getSite(), getViewer());
-		
-		// register for workbench undo/redo
-		HaleUI.registerWorkbenchUndoRedo(getViewSite());
 	}
 	
 	/**
