@@ -108,6 +108,10 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	}
 
 	private static ViewerFilter[] createFilters(PropertyParameter field) {
+		if(field == null){
+			return new ViewerFilter[0];
+		}
+
 		List<PropertyCondition> conditions = field.getConditions();
 				
 		if (conditions == null)
