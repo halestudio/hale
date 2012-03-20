@@ -108,6 +108,8 @@
             <topic href="html/reference/export/gml_data.html" label="GML">
             </topic>
             <topic href="html/reference/export/html_mapping.html" label="HTML mapping documentation">
+               <topic href="html/reference/export/sample_documentation.html" label="Example">
+               </topic>
             </topic>
             <anchor id="export"/>
          </topic>
