@@ -46,11 +46,11 @@
       </command>
       <command
             id="eu.esdihumboldt.hale.ui.schema.mappable_source"
-            name="Edit mappable source types">
+            name="Edit mapping relevant source types">
       </command>
       <command
             id="eu.esdihumboldt.hale.ui.schema.mappable_target"
-            name="Edit mappable target types">
+            name="Edit mapping relevant target types">
       </command>
       <command
             id="eu.esdihumboldt.hale.ui.schema.make_unmappable"
