@@ -5,7 +5,7 @@
     		<element name="personName" type="string" maxOccurs="1"
     			minOccurs="1">
     		</element>
-    		<element name="personAge" type="string" maxOccurs="1"
+    		<element name="personAge" type="int" maxOccurs="1"
     			minOccurs="0">
     		</element>
     		<element name="personIncome" type="string" maxOccurs="1"

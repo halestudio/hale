@@ -5,8 +5,8 @@
     <tns:person id="id0">
         <name>name0</name>
         <details>
-            <age>age0</age>
-            <income>income0</income>
+            <age>0</age>
+            <income>0</income>
             <address>
                 <street>street0</street>
                 <city>city0</city>
@@ -20,8 +20,8 @@
     <tns:person id="id1">
         <name>name1</name>
         <details>
-            <age>age1</age>
-            <income>income1</income>
+            <age>1</age>
+            <income>1</income>
             <address>
                 <street>street8</street>
                 <city>city8</city>
@@ -39,8 +39,8 @@
     <tns:person id="id2">
         <name>name2</name>
         <details>
-            <age>age2</age>
-            <income>income2</income>
+            <age>2</age>
+            <income>2</income>
             <address>
                 <street>street16</street>
                 <city>city16</city>
@@ -78,8 +78,8 @@
     <tns:person id="id3">
         <name>name3</name>
         <details>
-            <age>age3</age>
-            <income>income3</income>
+            <age>3</age>
+            <income>3</income>
             <address>
                 <street>street24</street>
                 <city>city24</city>
@@ -117,8 +117,8 @@
     <tns:person id="id4">
         <name>name4</name>
         <details>
-            <age>age4</age>
-            <income>income4</income>
+            <age>4</age>
+            <income>4</income>
             <address>
                 <street>street32</street>
                 <city>city32</city>
@@ -156,8 +156,8 @@
     <tns:person id="id5">
         <name>name5</name>
         <details>
-            <age>age5</age>
-            <income>income5</income>
+            <age>5</age>
+            <income>5</income>
             <address>
                 <street>street40</street>
                 <city>city40</city>
@@ -195,8 +195,8 @@
     <tns:person id="id6">
         <name>name6</name>
         <details>
-            <age>age6</age>
-            <income>income6</income>
+            <age>6</age>
+            <income>6</income>
             <address>
                 <street>street48</street>
                 <city>city48</city>
@@ -234,8 +234,8 @@
     <tns:person id="id7">
         <name>name7</name>
         <details>
-            <age>age7</age>
-            <income>income7</income>
+            <age>7</age>
+            <income>7</income>
             <address>
                 <street>street56</street>
                 <city>city56</city>
