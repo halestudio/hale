@@ -6,10 +6,54 @@
 </head>
 <body>
 	<h1>Contexts</h1>
+	<p>A context can be defined on a schema element to restrict its
+		domain of validity to certain instances or property values. This means
+		mapping cells defined on contexts are not generally in effect, but
+		only on certain conditions, in a certain context.</p>
+	<p>As an example, you can use contexts to express a relation like
+		this:</p>
+	<p class="Note">
+		The type <strong>Product</strong> in the source schema is the same as
+		the type <strong>Shirt</strong> in the target schema if its property <strong>type</strong>
+		has the value 'shirt'.
+	</p>
 	<p>
-		TODO
+		This example can be realised, if a <i>condition context</i> is created
+		for the type <i>Product</i>, with the condition
+		<code>type = 'shirt'</code>
+		, and a <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.retype.html">Retype</a>
+		relation is created between the defined <i>Product</i> context and the
+		<i>Shirt</i> type.
 	</p>
 
+	<h2>Source schema contexts</h2>
+	<p>Types of contexts that can be defined on the source schema.</p>
+	<h3>Condition context</h3>
+	<p>A condition context defines a condition on a type or property,
+		that is evaluated on the instance or property value respectively. Only
+		if the condition is fulfilled, an associated mapping takes effect.</p>
+	<h3>Index context</h3>
+	<p>An index context can only be defined on properties that may
+		occur multiple times. It specifies an index, which references a
+		certain property value, e.g. the index zero referencing the first
+		property value, the index one the second, etc.</p>
+	<p>A mapping associated to an index context only takes effect if an
+		instance has a property value with the specified index.</p>
+
+	<h2>Target schema contexts</h2>
+	<p>Types of contexts that can be defined on the target schema.</p>
+	<h3>Instance context</h3>
+	<p>An instance context can similar to an index context only be
+		defined on properties that may occur multiple times. It represents an
+		additional property instance that a mapping can use as a target, e.g.
+		if the same target property is to be populated from the source in
+		different ways.</p>
+
+	<!-- TODO example projects for contexts -->
+
+	<!-- related concepts: instance, alignment, schema -->
 	<!-- related tasks: define a context -->
+	<!-- related reference: schema elements -->
 </body>
 </html>

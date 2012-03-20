@@ -62,6 +62,8 @@
          </topic>
          <topic href="html/tasks/schema/define_context.html" label="Defining contexts on schema elements">
          </topic>
+         <topic href="html/tasks/schema/mapping_relevant.html" label="Customize the mapping relevant types">
+         </topic>
       </topic>
       <topic label="Data">
          <topic href="html/tasks/data/working_source_data.html" label="Working with a source data set">
