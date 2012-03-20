@@ -6,5 +6,41 @@
 </head>
 <body>
 	<h1>Save the transformation result</h1>
+	<p>
+		If you have defined a mapping and loaded source data in the
+		application, <i>HALE</i> performs the transformation derived from the
+		mapping on the source data. This happens on every change to the
+		mapping, to instantly show the user what consequences his changes
+		have.
+	</p>
+	<p>
+		The transformed data can be inspected in the <a
+			href="../../views/transformed_data.xhtml">Transformed Data view</a>.
+		Also, it can be exported to a file, according to the target schema.
+	</p>
+	<p>
+		To <a class="command-link"
+			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.ImportAction",
+	"eu.esdihumboldt.hale.io.instance.write.transformed")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">save the transformed data</a>, either use <i>File</i>&#8594;<i>Export</i>&#8594;<i>Transformed
+			data...</i> or the <i>Export</i> button on the application tool bar, then
+		select <i>Transformed data</i>. Next you will be prompted to specify
+		the export format and the target file. Note that not every export
+		format will work with every target schema, e.g. XML export will only
+		work based on a XML target schema.
+	</p>
+	<p>
+		Supported data export formats in <i>HALE</i> are:
+	</p>
+	<ul>
+		<li><a href="../../reference/export/xml_data.html">XML</a></li>
+		<li><a href="../../reference/export/gml_data.html">GML</a></li>
+	</ul>
+	<p>When specifying the target file you also have the possibility to
+		select a validator that is executed after the file is written, to
+		verify that the file matches the constraints of the target schema.</p>
+
+	<!-- related tasks: load target schema, load source data -->
 </body>
 </html>
