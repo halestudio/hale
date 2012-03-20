@@ -15,12 +15,14 @@ package eu.esdihumboldt.hale.ui.views.styledmap.painter;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 import org.eclipse.ui.PlatformUI;
 import org.geotools.styling.Fill;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
+import org.geotools.styling.Rule;
 import org.geotools.styling.SLD;
 import org.geotools.styling.Stroke;
 import org.geotools.styling.Style;
@@ -59,25 +61,115 @@ public class StyledInstanceMarker extends InstanceMarker {
 			styleInitialized = true;
 		}
 		
+		//check if there is a Rule from the Rulestyle-Page and apply to the instancemarker on the map
+		Rule honoredRule = honorRules(context);
+		fillStyle(honoredRule, context);
+		strokeStyle(honoredRule, context);	
+
+	}
+	
+	/**
+	 * Checks if there is a rule for the certain Instance
+	 * @param context the context
+	 * @return a certain style rule for the intance, else-rule if nothing found or null
+	 * 	       if there is no else-rule
+	 */
+	private Rule honorRules(InstanceWaypoint context){
+		
 		Style style = getStyle(context);
+		Rule[] rules = SLD.rules(style);
 		
-		//TODO honor rules!
+		//do rules exist?
 		
-		// retrieve fill
-		Fill fill = null;
-		// try polygon
-		PolygonSymbolizer polygonSymbolizer = SLD.polySymbolizer(style);
-		if (polygonSymbolizer != null) {
-			fill = SLD.fill(polygonSymbolizer);
+		if(rules == null || rules.length == 0){
+			return null;
 		}
-		// try point
-		if (fill == null) {
-			PointSymbolizer pointSymbolizer = SLD.pointSymbolizer(style);
-			if (pointSymbolizer != null) {
-				fill = SLD.fill(pointSymbolizer);
+		
+		
+		//sort the elserules at the end
+		if(rules.length > 1){
+			rules = sortRules(rules);
+		}
+		
+		//if rule exists
+		InstanceReference ir = context.getValue();
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		Instance inst = is.getInstance(ir);
+			
+		for (int i = 0; i < rules.length; i++){
+			
+			if(rules[i].getFilter() != null){						
+				
+				if(rules[i].getFilter().evaluate(inst)){
+					return rules[i];
+				}
 			}
 		}
 		
+		//if there is no appropriate rule, check if there is an else-rule
+		for (int i = 0; i < rules.length; i++){
+			if(rules[i].isElseFilter()){
+				return rules[i];
+			}
+		}
+		//return null if no rule was found
+		return null;
+	
+	}
+	
+	
+	/**
+	 * Sorts an array of rules, so the else-filter-rules are at the end
+	 * @param rules an array of Rules
+	 * @return a new array of Rules with sorted elements
+	 */
+	private Rule[] sortRules(Rule[] rules){
+		
+		ArrayList<Rule> temp = new ArrayList<Rule>();
+		
+		for(int i = 0; i < rules.length; i++){
+			
+			if(!rules[i].isElseFilter()){
+				temp.add(rules[i]);
+			}
+		}
+		
+		for(int i = 0; i < rules.length; i++){
+			
+			if(rules[i].isElseFilter()){
+				temp.add(rules[i]);
+			}
+			
+		}
+		
+		Rule[] newRules = new Rule[temp.size()];		
+		return temp.toArray(newRules);
+	}
+	
+	/**
+	 * retrieves the fill for the map marker
+	 * @param rule a certain rule to apply, maybe null
+	 * @param context the InstanceWayPoint, wich gets marked
+	 */
+	private synchronized void fillStyle(Rule rule, InstanceWaypoint context){
+				
+		// retrieve fill
+		Fill fill = null;
+		
+		//try the Symbolizers from the Rule
+		int i = -1;
+		while(rule != null && fill == null && i < rule.getSymbolizers().length){
+			i++;
+			if (rule.getSymbolizers()[i] instanceof PolygonSymbolizer){
+				fill = SLD.fill((PolygonSymbolizer)rule.getSymbolizers()[i]);				
+				}
+			else if (rule.getSymbolizers()[i] instanceof PointSymbolizer){
+				fill = SLD.fill((PointSymbolizer)rule.getSymbolizers()[i]);				
+				}
+			}
+	
+		
+		//if we have a fill now
 		if (fill != null) {
 			Color sldColor = SLD.color(fill);
 			double opacity = SLD.opacity(fill);
@@ -90,30 +182,42 @@ public class StyledInstanceMarker extends InstanceMarker {
 			}
 			hasFill = true;
 		}
+		//if we still don't have a fill
 		else {
 			styleFillColor = null;
 			hasFill = false;
 		}
 		
+		
+	}		
+		
+	/**
+	 * retrieves the stroke for the map marker
+	 * @param rule a certain rule to apply, maybe null
+	 * @param context the InstanceWayPoint, wich gets marked
+	 */
+	private synchronized void strokeStyle(Rule rule, InstanceWaypoint context){	
+		
 		// retrieve stroke
 		Stroke stroke = null;
-		// try line
-		LineSymbolizer lineSymbolizer = SLD.lineSymbolizer(style);
-		if (lineSymbolizer != null) {
-			stroke = SLD.stroke(lineSymbolizer);
-		}
-		// try polygon
-		if (stroke == null && polygonSymbolizer != null) {
-			stroke = SLD.stroke(polygonSymbolizer);
-		}
-		// try point
-		if (stroke == null) {
-			PointSymbolizer pointSymbolizer = SLD.pointSymbolizer(style);
-			if (pointSymbolizer != null) {
-				stroke = SLD.stroke(pointSymbolizer);
-			}
-		}
 		
+		//try the Symbolizers from the Rule
+		int i = -1;
+		while(rule != null && stroke == null && i < rule.getSymbolizers().length){
+			i++;
+			if (rule.getSymbolizers()[i] instanceof LineSymbolizer){
+				stroke = SLD.stroke((LineSymbolizer)rule.getSymbolizers()[i]);				
+				}
+			else if (rule.getSymbolizers()[i] instanceof PolygonSymbolizer){
+				stroke = SLD.stroke((PolygonSymbolizer)rule.getSymbolizers()[i]);				
+				}
+			else if (rule.getSymbolizers()[i] instanceof PointSymbolizer){
+				stroke = SLD.stroke((PointSymbolizer)rule.getSymbolizers()[i]);				
+				}
+			}
+		
+	
+		//if we have a stroke now
 		if (stroke != null) {
 			//XXX is there any Geotools stroke to AWT stroke lib/code somewhere?!
 			//XXX have a look at the renderer code (StreamingRenderer)
@@ -147,6 +251,7 @@ public class StyledInstanceMarker extends InstanceMarker {
 		}
 	}
 	
+
 	/**
 	 * Reset the marker style
 	 */
