@@ -41,7 +41,7 @@ public class PropertyDefinitionSelector extends AbstractSelector<EntityDefinitio
 	/**
 	 * Create an entity selector for {@link Property} entities
 	 * 
-	 * @param ssid the schema space
+	 * @param ssid the schema space, may be null
 	 * @param parent the parent composite
 	 * @param parentType the parent type
 	 */
@@ -77,14 +77,20 @@ public class PropertyDefinitionSelector extends AbstractSelector<EntityDefinitio
 	protected AbstractTreeSelectionDialog<EntityDefinition> createSelectionDialog(
 			Shell parentShell) {
 		String title;
-		switch (ssid) {
-		case SOURCE:
-			title = "Select source property";
-			break;
-		case TARGET:
-		default:
-			title = "Select target property";
-			break;
+		if(ssid == null){
+			title = "Select property";
+		}
+		else {
+			switch (ssid) {
+			case SOURCE:
+				title = "Select source property";
+				break;
+			case TARGET:
+				title = "Select target property";
+				break;
+			default:
+				title = "Select property";
+			}
 		}
 		return new PropertyDefinitionDialog(parentShell, ssid, parentType, title, getSelectedObject());
 	}
