@@ -16,7 +16,9 @@
 	<div>
 		<img src="images/gml_data.png"></img>
 	</div>
-	<include path="eu.esdihumboldt.hale.doc.user/html/reference/import/xml_data_common.xhtml/geometries"></include>
+	<include
+		path="eu.esdihumboldt.hale.doc.user/html/reference/import/xml_data_common.xhtml/geometries"></include>
+
 	<h2>Load data from a WFS</h2>
 	<p>
 		<i>HALE</i> offers the possibility to load data based on a WFS <i>GetFeature</i>
@@ -26,7 +28,27 @@
 	<div>
 		<img src="images/wfs_data.png"></img>
 	</div>
-	
+
+	<h2>Troubleshooting loading GML data</h2>
+	<p>
+		If you get an error message that complains about a Spatial Reference
+		System that is not known to the application, use the <i>Additional
+			CRS</i> preference page (available through <i>Window</i>&#8594;<i>Settings</i>)
+		to register the Well Known Text of the missing reference system. If
+		you have issues with loading a GML file, please provide us with
+		feedback on the issue. Also please note that many existing WFS
+		implementations have a few peculiarities. HALE has been tested with
+		the following products:
+	</p>
+	<ul>
+		<li>GeoServer - OK</li>
+		<li>MapServer - OK</li>
+		<li>CubeWerx WFS - OK</li>
+		<li>ESRI - OK when Schema References are repaired (by default
+			they are often broken</li>
+		<li>GeoMedia - Fails because of coordinate formatting issues</li>
+	</ul>
+
 	<!-- related tasks: configure mapping relevant types, load source data -->
 </body>
 </html>
