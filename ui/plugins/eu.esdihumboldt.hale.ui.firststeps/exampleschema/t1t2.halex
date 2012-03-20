@@ -22,4 +22,8 @@
         <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
     </resource>
     <file name="alignment.xml" location="file:/exampleschema/t1t2.halex.alignment.xml"/>
+    <property name="mappableSourceType/1">{http://www.example.org/t1/}T1</property>
+    <property name="mappableSourceType/count">1</property>
+    <property name="mappableTargetType/1">{http://www.example.org/t2/}PersonType</property>
+    <property name="mappableTargetType/count">1</property>
 </hale-project>

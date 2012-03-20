@@ -5,7 +5,7 @@
     		<element name="personName" type="string" maxOccurs="1"
     			minOccurs="1">
     		</element>
-    		<element name="personAge" type="string" maxOccurs="1"
+    		<element name="personAge" type="int" maxOccurs="1"
     			minOccurs="0">
     		</element>
     		<element name="personIncome" type="string" maxOccurs="1"
@@ -23,4 +23,12 @@
     </complexType>
 
     <element name="t1" type="tns:T1"></element>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:t1" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
 </schema>

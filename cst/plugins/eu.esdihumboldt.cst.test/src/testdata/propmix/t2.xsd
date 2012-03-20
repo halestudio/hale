@@ -6,8 +6,8 @@
     		<element name="details" maxOccurs="1" minOccurs="0">
     			<complexType>
     				<sequence>
-    					<element name="age" type="string" maxOccurs="1" minOccurs="0"></element>
-    					<element name="income" type="string" maxOccurs="1" minOccurs="0"></element>
+    					<element name="age" type="int" maxOccurs="1" minOccurs="0"></element>
+    					<element name="income" type="double" maxOccurs="1" minOccurs="0"></element>
     					<element name="address"
     						type="tns:AddressType" maxOccurs="unbounded" minOccurs="0">
     					</element>

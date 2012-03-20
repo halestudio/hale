@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<hale-project version="2.5.0.alpha">
+<hale-project version="2.5.0.M1">
     <name>Simple properties to complex structure</name>
     <author>sitemple</author>
     <created>2011-11-03T11:18:53.610+01:00</created>
-    <modified>2011-11-03T11:20:32.236+01:00</modified>
+    <modified>2012-03-20T08:45:24.131+01:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="projectFiles.separate">false</setting>
         <setting name="target">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmix/t1t2.halex</setting>
@@ -21,5 +21,10 @@
         <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmix/instance1.xml</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
     </resource>
+    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmix/t1t2.halex.styles.sld"/>
     <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmix/t1t2.halex.alignment.xml"/>
+    <property name="mappableSourceType/1">{http://www.example.org/t1/}T1</property>
+    <property name="mappableSourceType/count">1</property>
+    <property name="mappableTargetType/1">{http://www.example.org/t2/}PersonType</property>
+    <property name="mappableTargetType/count">1</property>
 </hale-project>
