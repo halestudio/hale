@@ -60,7 +60,7 @@
       <topic label="Schema">
          <topic href="html/tasks/schema/load_browse_schema.html" label="Loading and browsing schemas">
          </topic>
-         <topic href="html/tasks/schema/define_context.html" label="Define a context">
+         <topic href="html/tasks/schema/define_context.html" label="Defining contexts on schema elements">
          </topic>
       </topic>
       <topic label="Data">
