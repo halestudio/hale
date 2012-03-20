@@ -47,6 +47,10 @@ import org.opengis.filter.Filter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.editors.Editor;
+import eu.esdihumboldt.hale.ui.style.editors.EditorFactory;
+import eu.esdihumboldt.hale.ui.style.editors.LineSymbolizerEditor;
+import eu.esdihumboldt.hale.ui.style.editors.PointSymbolizerEditor;
+import eu.esdihumboldt.hale.ui.style.editors.PolygonSymbolizerEditor;
 import eu.esdihumboldt.hale.ui.style.editors.RuleEditor;
 import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
@@ -595,45 +599,47 @@ public class RuleStylePage extends FeatureStylePage {
 		return editor;
 	}
 	
+	
 	private static <T extends Symbolizer> RuleEditor<?> createEditor(Composite parent, TypeDefinition ft, Filter filter, Class<T> type, T symbolizer) {
-//		if (PointSymbolizer.class.isAssignableFrom(type)) {
-//			return new RuleEditor<PointSymbolizer>(parent, ft, filter,
-//					PointSymbolizer.class, (PointSymbolizer) symbolizer,
-//					new EditorFactory<PointSymbolizer>() {
-//
-//						@Override
-//						public Editor<PointSymbolizer> createEditor(
-//								Composite parent, PointSymbolizer value) {
-//							return new PointSymbolizerEditor(parent, value);
-//						}
-//					});
-//		}
-//		else if (PolygonSymbolizer.class.isAssignableFrom(type)) {
-//			return new RuleEditor<PolygonSymbolizer>(parent, ft, filter,
-//					PolygonSymbolizer.class, (PolygonSymbolizer) symbolizer,
-//					new EditorFactory<PolygonSymbolizer>() {
-//
-//						@Override
-//						public Editor<PolygonSymbolizer> createEditor(
-//								Composite parent, PolygonSymbolizer value) {
-//							return new PolygonSymbolizerEditor(parent, value);
-//						}
-//					});
-//		}
-//		else {
-//			return new RuleEditor<LineSymbolizer>(parent, ft, filter,
-//					LineSymbolizer.class, (LineSymbolizer) symbolizer,
-//					new EditorFactory<LineSymbolizer>() {
-//
-//						@Override
-//						public Editor<LineSymbolizer> createEditor(
-//								Composite parent, LineSymbolizer value) {
-//							return new LineSymbolizerEditor(parent, value);
-//						}
-//					});
-//		}
-		//FIXME not yet supported
-		throw new UnsupportedOperationException();
+		
+		
+		if (PointSymbolizer.class.isAssignableFrom(type)) {
+			return new RuleEditor<PointSymbolizer>(parent, ft, filter,
+					PointSymbolizer.class, (PointSymbolizer) symbolizer,
+					new EditorFactory<PointSymbolizer>() {
+
+						@Override
+						public Editor<PointSymbolizer> createEditor(
+								Composite parent, PointSymbolizer value) {
+							return new PointSymbolizerEditor(parent, value);
+						}
+					});
+		}
+		else if (PolygonSymbolizer.class.isAssignableFrom(type)) {
+			return new RuleEditor<PolygonSymbolizer>(parent, ft, filter,
+					PolygonSymbolizer.class, (PolygonSymbolizer) symbolizer,
+					new EditorFactory<PolygonSymbolizer>() {
+
+						@Override
+						public Editor<PolygonSymbolizer> createEditor(
+								Composite parent, PolygonSymbolizer value) {
+						return new PolygonSymbolizerEditor(parent, value);
+					}
+					});
+		}
+		else {
+		return new RuleEditor<LineSymbolizer>(parent, ft, filter,
+					LineSymbolizer.class, (LineSymbolizer) symbolizer,
+					new EditorFactory<LineSymbolizer>() {
+
+						@Override
+						public Editor<LineSymbolizer> createEditor(
+								Composite parent, LineSymbolizer value) {
+							return new LineSymbolizerEditor(parent, value);
+					}
+					});
+		}
+		//FIXME Does not work properly
 	}
 
 }
