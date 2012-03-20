@@ -5,6 +5,23 @@
 <title>XML Schema Import</title>
 </head>
 <body>
-	<h1>This is a dummy to get a table of contents</h1>
+	<h1>XML Schema Import</h1>
+	<p>
+		<i>HALE</i> supports loading schemas from XML Schema Definition (XSD)
+		files. XML elements and types will be analyzed in a given schema file,
+		as well as in the included and imported additional schemas. Complex
+		properties are supported, as well as cycles, substitutions, groups and
+		choices.
+	</p>
+	<p>A restriction on the XML schema import is that only one XML
+		schema can be loaded as source or target schema. If you want to load
+		multiple XML schemas, please create a schema including or importing
+		the XML schemas you want to combine. However, combining importing an
+		XML schema with other types of schemas is possible.</p>
+	<p>Initially, only types from the main schema will be classified as
+		mapping relevant types, if you find any types missing, you can
+		customize the list of mapping relevant types.</p>
+
+	<!-- related tasks: configure mapping relevant types, load source schema, load target schema -->
 </body>
 </html>

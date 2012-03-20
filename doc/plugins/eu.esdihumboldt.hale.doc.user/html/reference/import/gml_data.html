@@ -1,10 +1,32 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>GML Data Import</title>
 </head>
 <body>
 	<h1>GML Data Import</h1>
+	<p>
+		When selecting a GML file for data import, choose <i>Import as GML
+			(Features)</i>. The import will load all instances of mapping relevant
+		types found in the file, given they are derived from the GML <i>AbstractFeatureType</i>.
+		The root element by default is ignored as it is assumed that it is a
+		container element, e.g. a GML <i>FeatureCollection</i>.
+	</p>
+	<div>
+		<img src="images/gml_data.png"></img>
+	</div>
+	<include path="eu.esdihumboldt.hale.doc.user/html/reference/import/xml_data_common.xhtml/geometries"></include>
+	<h2>Load data from a WFS</h2>
+	<p>
+		<i>HALE</i> offers the possibility to load data based on a WFS <i>GetFeature</i>
+		request. You can specify the request URL manually or use the <i>Change...</i>
+		button to launch a wizard assisting you in building the URL.
+	</p>
+	<div>
+		<img src="images/wfs_data.png"></img>
+	</div>
+	
+	<!-- related tasks: configure mapping relevant types, load source data -->
 </body>
 </html>
