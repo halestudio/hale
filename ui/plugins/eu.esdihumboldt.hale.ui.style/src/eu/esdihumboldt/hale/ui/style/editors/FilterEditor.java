@@ -11,10 +11,10 @@
  */
 package eu.esdihumboldt.hale.ui.style.editors;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.xml.namespace.QName;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocumentListener;
@@ -34,8 +34,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.visitor.DefaultFilterVisitor;
-import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.PropertyIsEqualTo;
@@ -47,9 +45,16 @@ import org.opengis.filter.PropertyIsLike;
 import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.expression.PropertyName;
-
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.definition.selector.PropertyDefinitionSelector;
 
 /**
  * Editor for {@link Filter}s
@@ -206,9 +211,7 @@ public class FilterEditor implements Editor<Filter> {
 	
 	private final Composite page;
 	
-	private final Map<String, PropertyDescriptor> properties = new HashMap<String, PropertyDescriptor>();
-	
-	private final ComboViewer propertySelect;
+	private final PropertyDefinitionSelector propertySelect;
 	
 	private final ComboViewer filterSelect;
 	
@@ -216,18 +219,21 @@ public class FilterEditor implements Editor<Filter> {
 	
 	private final Button filterEnabled;
 	
+	private final TypeDefinition typeDefinition;
+	
 	private boolean changed = false;
 	
 	/**
 	 * Creates a {@link Filter} editor
 	 * 
 	 * @param parent the parent composite
-	 * @param featureType the feature type
+	 * @param typeDefinition the type definition
 	 * @param filter the initial filter
 	 */
-	public FilterEditor(Composite parent, FeatureType featureType, Filter filter) {
+	public FilterEditor(Composite parent, TypeDefinition typeDefinition, Filter filter) {
 		super();
 		
+		this.typeDefinition = typeDefinition; 
 		page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(4, false));
 		
@@ -252,17 +258,12 @@ public class FilterEditor implements Editor<Filter> {
 		});
 		
 		// property select
-		propertySelect = new ComboViewer(page);
-		propertySelect.getControl().setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
-		
-		Collection<PropertyDescriptor> featureProperties = featureType.getDescriptors();
-		for (PropertyDescriptor property : featureProperties) {
-			//TODO filter properties?
-			String name = property.getName().getLocalPart();
-			properties.put(name, property);
-			propertySelect.add(name);
-		}
-		
+		propertySelect = new PropertyDefinitionSelector(page, typeDefinition, null);
+		propertySelect.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+
+					
+			//filter here
+
 		// filter select
 		filterSelect = new ComboViewer(page);
 		filterSelect.getControl().setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
@@ -332,7 +333,30 @@ public class FilterEditor implements Editor<Filter> {
 			try {
 				FilterIdentifier id = (FilterIdentifier) ((IStructuredSelection) filterSelect.getSelection()).getFirstElement();
 				
-				String propertyName = ((IStructuredSelection) propertySelect.getSelection()).getFirstElement().toString();
+				String propertyName = "";
+				
+				
+				//get the selected entity from the property selector (filter fields)
+				//and pass it to the filter
+				EntityDefinition entity = propertySelect.getSelectedObject();
+				
+				if(entity != null){
+				Iterator<ChildContext> childIt = entity.getPropertyPath().iterator();
+				
+					if(childIt.hasNext()){
+					propertyName = propertyName.concat(childIt.next().getChild().getName().toString());
+					}
+				
+					while(childIt.hasNext()){
+					propertyName = propertyName.concat("." + childIt.next().getChild().getName().toString());
+					}
+					
+				}
+				
+				else { 
+					propertyName = "<select>"; 
+					}
+				
 				String valueText = literal.getDocument().get();
 				
 				Expression property = filterFactory.property(propertyName);
@@ -387,9 +411,41 @@ public class FilterEditor implements Editor<Filter> {
 				@Override
 				protected void visitFilter(FilterIdentifier id, String propertyName,
 						String value) {
-					// set property name
-					propertySelect.setSelection(new StructuredSelection(propertyName));
 					
+
+					Boolean invalidProperty = false;
+					List<ChildContext> path = new ArrayList<ChildContext>();
+					
+					
+					//set the correct selected name for the property selector
+					List<QName> qNames = PropertyResolver.getQNamesFromPath(propertyName);
+					
+					ChildDefinition<?> child = typeDefinition.getChild(qNames.get(0)); 
+					if(child != null){
+					path.add(new ChildContext(child));
+					
+					for(int i = 1; i < qNames.size(); i++){
+						child = DefinitionUtil.getChild(child, qNames.get(i));
+						if(child != null){
+						path.add(new ChildContext(child));
+						}
+						else{							
+							invalidProperty = true;
+							break;
+						}
+					}
+					} else {
+						invalidProperty = true;
+					}
+					
+					if(!invalidProperty && !path.isEmpty()){
+					PropertyEntityDefinition entity = new PropertyEntityDefinition(
+													typeDefinition, path, null, null);
+					propertySelect.setSelection(new StructuredSelection(entity));
+					}
+					else {
+						propertySelect.setSelection(new StructuredSelection());
+					}
 					// set filter
 					filterSelect.setSelection(new StructuredSelection(id));
 					
