@@ -19,6 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.cheatsheets.ICheatSheetAction;
 import org.eclipse.ui.cheatsheets.ICheatSheetManager;
 
@@ -46,6 +47,12 @@ public class ImportAction extends Action implements ICheatSheetAction, ILiveHelp
 	 */
 	@Override
 	public void run() {
+		if (Display.getCurrent() == null) {
+			// execute in display thread
+			PlatformUI.getWorkbench().getDisplay().asyncExec(this);
+			return;
+		}
+		
 		if (actionId == null)
 			return;
 
