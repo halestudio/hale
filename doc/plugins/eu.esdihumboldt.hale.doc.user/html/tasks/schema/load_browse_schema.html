@@ -5,74 +5,66 @@
 <title>Loading and browsing schemas</title>
 </head>
 <body>
+	<h1>Loading and browsing schemas</h1>
+	<p>A first step to map schemas is to load them. In the current
+		version of HALE, you can load any XML Schema, including metadata
+		schemas, GML Application Schemas and others. However, the schema
+		import is optimized for GML Application Schemas and supports the
+		following versions:</p>
+	<ul>
+		<li>GML 2.1</li>
+		<li>GML 3.1</li>
+		<li>GML 3.2</li>
+	</ul>
+	<p>
+		You can also load a schema from a shapefile (*.shp) or csv-file
+		(*.csv). Schemas can either be loaded from a file or from a Web
+		Feature Service's GetCapabilities and DescribeFeatureType operations.
+		Please note that using GML Application Schemas with types extending <i>AbstractFeatureType</i>
+		is the recommended method for HALE in the current version. Only when
+		doing so, all transformation functions can be used. Such schemas can
+		be created in multiple ways, e.g. from UML models by using Shapechange<sup>1</sup>
+		or from databases and shape files using Geoserver<sup>2</sup>. It is
+		also possible to use Safe's FME for this purpose. To load a schema, go
+		to the "File" menu and click "Open Schema". In the dialogue that
+		appears now, choose whether you want to import a schema to use as a
+		source or as a target schema. Then, choose from which source to import
+		by clicking the radio buttons in front of the "... file" and "...WFS"
+		options. When you chose to import from a file, click the Button
+		labelled "Browse..." and select the file you would like to import.
+		Please note that only files with an extension that is either *.xsd,
+		*.xml or *.gml will be shown. After doing so, press "Open" and then
+		"Finish".
+	</p>
+	<p>Importing from a WFS works in a similar way. Press the
+		"Change..." button and enter your server's Get- Capabilities request
+		URL into the text field at the top of the appearing window. The
+		correctness of the URL is automatically validated. If the validation
+		is successful, you can contrinue by pressing the "Finish" button. All
+		types will now be loaded and shown in a new wizard page. If your WFS
+		offers Feature- Types from more than one namespace, you are now also
+		required to pick one of the namespaces - HALE can always just work
+		with one "main" namespace for the schema. Press "Use this WFS" and
+		then again "Finish".</p>
+	<p>When everything worked as it should have, you will now see the
+		namespace of your schema in the left part of the Schema Explorer if
+		you loaded a source schema, or in the right part if you selected to
+		load a target schema.</p>
+		
+	<hr>
+	<sup>1</sup> Please refer to
+	<a href="http://www.interactive-instruments.de/index.php?id=28&L=1"
+		target="_blank">www.interactive-instruments.de</a>
+	<br>
+	<sup>2</sup> GeoServer can be used to create GML and Schemas from
+	Shapefiles and Oracle databases, among other sources. Please refer to
+	<a href="http://geoserver.org/" target="_blank">http://geoserver.org/</a>.
 
-<h2>Loading and browsing schemas</h2>
-
-A first step to map schemas is to load them. In the
-current version of HALE, you can load any XML
-Schema, including metadata schemas, GML Application
-Schemas and others. However, the schema import
-is optimized for GML Application Schemas and
-supports the following versions:
-<ul>
-	<li>GML 2.1</li>
-	<li>GML 3.1</li>
-	<li>GML 3.2</li>
-</ul>
-You can also load a schema from a shapefile (*.shp)
-or csv-file (*.csv). Schemas can either be loaded
-from a file or from a Web Feature Service's 
-GetCapabilities and DescribeFeatureType
-operations. Please note that using
-GML Application Schemas with types extending <i>AbstractFeatureType</i>
-is the recommended method for
-HALE in the current version. Only when doing so, all
-transformation functions can be used.
-Such schemas can be created in multiple ways, e.g.
-from UML models by using Shapechange<sup>1</sup> or from
-databases and shape files using Geoserver<sup>2</sup>. It is
-also possible to use Safe's FME for this purpose.
-To load a schema, go to the "File" menu and click
-"Open Schema". In the dialogue that appears now,
-choose whether you want to import a schema to use
-as a source or as a target schema. Then, choose
-from which source to import by clicking the radio buttons
-in front of the "... file" and "...WFS" options.
-When you chose to import from a file, click the Button
-labelled "Browse..." and select the file you would
-like to import. Please note that only files with an extension
-that is either *.xsd, *.xml or *.gml will be
-shown. After doing so, press "Open" and then "Finish".
-
-Importing from a WFS works in a similar way. Press
-the "Change..." button and enter your server's Get-
-Capabilities request URL into the text field at the top
-of the appearing window. The correctness of the
-URL is automatically validated. If the validation is
-successful, you can contrinue by pressing the "Finish"
-button. All types will now be loaded and shown
-in a new wizard page. If your WFS offers Feature-
-Types from more than one namespace, you are now
-also required to pick one of the namespaces - HALE
-can always just work with one "main" namespace for
-the schema. Press "Use this WFS" and then again
-"Finish".
-
-When everything worked as it should have, you will
-now see the namespace of your schema in the left
-part of the Schema Explorer if you loaded a source
-schema, or in the right part if you selected to load a
-target schema.
-
-<hr>
-<sup>1</sup> Please refer to <a href="http://www.interactive-instruments.de/index.php?id=28&L=1" target="_blank">www.interactive-instruments.de</a> <br>
-<sup>2</sup> GeoServer can be used to create GML and Schemas from
-Shapefiles and Oracle databases, among other sources.
-Please refer to <a href="http://geoserver.org/" target="_blank">http://geoserver.org/</a>.
-
-<p><img border="0" src="../../../images/ngrelc.png" alt="Related concepts"><br>
-<a href="../../concepts/what_is_schema.html">What is a Schema?</a><br>
-</p>
+	<p>
+		<img border="0" src="../../../images/ngrelc.png"
+			alt="Related concepts"><br> <a
+			href="../../concepts/what_is_schema.html">What is a Schema?</a><br>
+	</p>
 
 </body>
 </html>

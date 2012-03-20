@@ -13,14 +13,50 @@
 		properties are supported, as well as cycles, substitutions, groups and
 		choices.
 	</p>
+	<p>Initially, only types from the main schema will be classified as
+		mapping relevant types, if you find any types missing, you can
+		customize the list of mapping relevant types.</p>
+	<h2>Deal with multiple XML schemas</h2>
 	<p>A restriction on the XML schema import is that only one XML
 		schema can be loaded as source or target schema. If you want to load
 		multiple XML schemas, please create a schema including or importing
 		the XML schemas you want to combine. However, combining importing an
 		XML schema with other types of schemas is possible.</p>
-	<p>Initially, only types from the main schema will be classified as
-		mapping relevant types, if you find any types missing, you can
-		customize the list of mapping relevant types.</p>
+	<p>Combining two XML schemas through imports is done following this pattern:</p>
+	<p class="Code" style="white-space: pre;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;schema xmlns="http://www.w3.org/2001/XMLSchema"
+		xmlns:import1="http://yournamespace.com/import1"
+		xmlns:import2="http://yournamespace.com/import2"
+		elementFormDefault="qualified"
+		targetNamespace="http://yournamespace.com/combined"&gt;
+	&lt;import
+		namespace="http://yournamespace.com/import1"
+		schemaLocation="http://schemas.yourserver.com/YourSchemaImport1.xsd" /&gt;
+	&lt;import
+		namespace="http://yournamespace.com/import2"
+		schemaLocation="http://schemas.yourserver.com/YourSchemaImport2.xsd" /&gt;
+&lt;/schema&gt;</p>
+
+	<h2>Troubleshooting XML Schema Loading</h2>
+	<p>
+		In case an error message pops up during schema loading or is contained
+		in the <a href="../../views/error_log.html">Error Log</a> or the
+		schema loading report, some problem occurred while parsing it. Most of
+		the time, these issues are due to referenced schemas not being
+		accessible. This may be the case when your schema references online
+		resources, but you currently don't have a connection. Also, you might
+		have relative or absolute paths in the schema locations used, that are
+		not valid on your machine.
+	</p>
+	<p>
+		Another issue that frequently prevents loading of schemas is the
+		presence of a <i>proxy server</i>. If your network requires the usage
+		of one, please configure the proxy server setting by going to the <i>Window</i>
+		menu and choose <i>Settings</i>. Then select the <i>Proxy Settings</i>
+		page. Enter your HTTP proxy host and port and acknowledge with <i>OK</i>.
+		If needed you can also define credentials for the authentication to
+		the proxy.
+	</p>
 
 	<!-- related tasks: configure mapping relevant types, load source schema, load target schema -->
 </body>
