@@ -134,7 +134,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.html"/>
-      <plugin id="eu.esdihumboldt.hale.io.project.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
@@ -334,7 +333,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.csv" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
-      <plugin id="eu.esdihumboldt.hale.io.project.jaxb" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />
