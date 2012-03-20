@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-project version="2.5.0.M1">
+    <name>CSV to XML example</name>
+    <author>Simon Templer</author>
+    <created>2012-03-20T09:50:03.186+01:00</created>
+    <modified>2012-03-20T10:18:21.704+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmixcsv/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.csv.reader.schema">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmixcsv/source.csv</setting>
+        <setting name="quote">"</setting>
+        <setting name="typename">PersonTable</setting>
+        <setting name="properties">Name,Age,Income,Street,City</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.csv</setting>
+        <setting name="skip">True</setting>
+        <setting name="types">java.lang.String,java.lang.Integer,java.lang.Float,java.lang.String,java.lang.String</setting>
+        <setting name="separator">;</setting>
+        <setting name="escape">\</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.csv.reader.instance">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmixcsv/source.csv</setting>
+        <setting name="quote">"</setting>
+        <setting name="typename">PersonTable</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.csv</setting>
+        <setting name="skip">true</setting>
+        <setting name="separator">;</setting>
+        <setting name="escape">\</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmixcsv/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmixcsv/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmixcsv/t1t2.halex.alignment.xml"/>
+</hale-project>
