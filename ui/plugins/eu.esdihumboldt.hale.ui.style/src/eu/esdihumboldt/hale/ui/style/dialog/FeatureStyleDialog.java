@@ -230,7 +230,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 */
 	@Override
 	protected void createPages() {
-//		FIXME disabled: addPage(new RuleStylePage(this));
+        addPage(new RuleStylePage(this));
 		addPage(new SimpleLineStylePage(this));
 		addPage(new SimplePointStylePage(this));
 		addPage(new SimplePolygonStylePage(this));

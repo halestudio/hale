@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Label;
 import org.geotools.styling.Rule;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
-import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
 
 /**
@@ -47,13 +47,13 @@ public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
 	 * Creates a {@link Rule} editor
 	 * 
 	 * @param parent the parent composite
-	 * @param featureType the feature type
+	 * @param typeDefinition the type Definition
 	 * @param filter the initial {@link Filter}
 	 * @param symbolizerType the {@link Symbolizer} type
 	 * @param symbolizer the initial {@link Symbolizer}
 	 * @param symbolizerFactory a {@link Symbolizer} editor factory
 	 */
-	public RuleEditor(Composite parent, FeatureType featureType, Filter filter,
+	public RuleEditor(Composite parent, TypeDefinition typeDefinition, Filter filter,
 			Class<T> symbolizerType, T symbolizer, EditorFactory<T> symbolizerFactory) {
 		super();
 	
@@ -66,7 +66,7 @@ public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
 		filterLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		filterLabel.setText(Messages.RuleEditor_FilterLabel);
 		
-		filterEditor = new FilterEditor(page, featureType, filter);
+		filterEditor = new FilterEditor(page, typeDefinition, filter);
 		filterEditor.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, true, false));
 		
 		// symbolizer
