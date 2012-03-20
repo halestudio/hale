@@ -9,16 +9,76 @@
 	<p>The Common Query Language (CQL) is used to define expressions
 		and filters in several parts of HALE. It can be used to define
 		conditions on schema elements or to filter instances.</p>
+
+	<h2>Property references</h2>
 	<p>In a filter, you can refer to a property value by the property
 		name. If you want to refer to a nested property, use a dot to separate
-		the property names on the property's path.</p>
-	<div></div>
+		the property names on the property's path. Encapsulating a property
+		path in double quotes ensures that it is correctly recognized, even if
+		a property name happens to be equal to a reserved expression in CQL.</p>
+	<p>For this example schema...</p>
+	<div>
+		<img src="images/sample_schema.png">
+	</div>
+	<p>...the following are valid references to a property:</p>
+	<p class="Code">name</p>
+	<p class="Code">"id"</p>
+	<p class="Code">details.address.city</p>
+	<p class="Code">"details.age"</p>
+	<h3>Groups</h3>
+	<p>If a schema contains groups, you can ignore them in your filter.
+		Just treat the group's properties as if they were directly associated
+		to the group's parent.</p>
+
+	<h2>Namespaces</h2>
 	<p>Stating the namespace associated to a property name is optional,
 		though it may be useful to differentiate between properties with the
-		same local name. A namespace is specified by encapsulating it in XXX
-		brackets and using it as a prefix for the corresponding property name.</p>
-	<div>
-	</div>
+		same local name. A namespace is specified by encapsulating it in curly
+		brackets and using it as a prefix for the corresponding property name.
+		When specifying a namespace it is mandatory to use double quotes for
+		the property reference. Following is an example:</p>
+	<p class="Code">"geometry.{http://www.opengis.net/gml}Point"</p>
+
+	<h2>Literals</h2>
+	<table>
+		<tr>
+			<th style="text-align: left;">Type</th>
+			<th style="text-align: left;">Example</th>
+		</tr>
+		<tr>
+			<td>String</td>
+			<td>'Yoda'</td>
+		</tr>
+		<tr>
+			<td>Integer</td>
+			<td>12</td>
+		</tr>
+		<tr>
+			<td>Floating-point number</td>
+			<td>1.234</td>
+		</tr>
+	</table>
+
+	<h2>Example filters</h2>
+	<p>
+		Following are some example filters. You can test them with the example
+		project provided in the <a class="command-link"
+			href='javascript:executeCommand("org.eclipse.ui.cheatsheets.openCheatSheet(cheatSheetId=eu.esdihumboldt.hale.ui.firststeps.firststepsCS)")'>
+			<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">Get started with HALE</a> guide, using the
+		<a href="../views/transformed_data.html">Transformed Data view</a>.
+	</p>
+	<h3>Comparisons</h3>
+	<p class="Code">name = 'Yoda'</p>
+	<p class="Code">details.age > (10 + (4 / 2) * 3)</p>
+	<p class="Code">details.age >= 16 AND details.age <= 50</p>
+	<p class="Code">details.age BETWEEN 16 AND 50</p>
+	<h3>Text</h3>
+	<p class="Code">name LIKE 'Tom%'</p>
+	<p class="Code">name NOT LIKE '%Snow'</p>
+	<h3>Null</h3>
+	<p class="Code">details.address.city IS NULL</p>
+	<p class="Code">details.address.city IS NOT NULL</p>
 
 	<!-- related concepts: instance, contexts -->
 	<!-- related reference: schema elements -->
