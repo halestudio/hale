@@ -6,5 +6,32 @@
 </head>
 <body>
 	<h1>XML Data Export</h1>
+	<p>If you have an XML schema as target schema, you can export the
+		transformed instances associated with the schema's types to a XML
+		file.</p>
+	<p>
+		When exporting the transformed data, choose <i>XML (Custom root
+			element)</i> as export format:
+	</p>
+	<div>
+		<img src="images/xml_export_selection.png"
+			title="Choose export format">
+	</div>
+	<p>As the XML schema doesn't specify what root element a
+		corresponding XML data file should have, you have to select an element
+		manually. Usually this should be a container element, designed to hold
+		a collection of instances of certain types.</p>
+	<div>
+		<img src="images/xml_export_root.png" title="Specify root element">
+	</div>
+	<p>
+		When writing the transformed data, <i>HALE</i> will try to find a
+		valid XML path to write each of the transformed instances. If there
+		are geometry objects contained in an instance, they are written as a
+		GML geometry if possible.
+	</p>
+	<p>For the export as XML there is also the possibility to validate
+		the written result, if it completely matches the specification of the
+		associated XML schemas.</p>
 </body>
 </html>
