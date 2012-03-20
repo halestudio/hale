@@ -6,31 +6,44 @@
 </head>
 <body>
 	<h1>Working with a source data set</h1>
-	<p>The term "source data" or "instance data" always refers to an
-		actual geographic data set whose entries represent objects and are
-		modelled using one of the loaded schemas, be it target or source. To
-		load an source data set , go to "File" -> "Open Source Data". In the
-		wizard which opens, you can again choose whether to import data from a
-		WFS or from a local GML file (*.shp support will be added soon). If
-		you would like to load from a local GML file, click on "... file" and
-		press the "Browse..." button. Select the file you want to use, press
-		"Open" and then "Finish". Loading the file usually takes several
-		seconds (typically around 3-6 per Megabyte). There are different
-		parser configurations available for loading GML data. Select the
-		appropriate configuration (GML 2, GML 3 or GML 3.2) for your data set.
-		To import source data from a WFS, pick the option "WFS GetFeature".
-		Enter the GetCapabilities URL of your WFS in the entry field at the
-		top of the form that appears. When HALE succeeds in parsing the
-		capabilities, the "Next" button is enabled. Press the "Next" button
-		and pick a namespace as well as the FeatureType of the Features that
-		you would like to import. Note that the namespace of the loaded source
-		schema must match the namespace of the loaded source data, otherwise
-		you will not be able to continue. Finally, you can also define filters
-		on the source data, such as spatial filters or filters on
-		alphanumerical properties. The exact filters you can define depend on
-		the capabilities of the WFS you are working with. If the system cannot
-		clearly identify the used SRS from the data, it will request the user
-		to provide either the EPSG code or the Well-Known Text for the used
-		SRS.</p>
+	<p>
+		The term <i>source data</i> refers to data according to the <i>source
+			schema</i> loaded in <i>HALE</i>. Loading source data therefore always
+		requires that the corresponding source schema has already been
+		imported.
+	</p>
+	<p>
+		Loading source data in <i>HALE</i> serves to provide feedback on the
+		current mapping by transforming this data in the application. The <a
+			href="../../views/source_data.xhtml">Source Data view</a> can be used
+		to inspect the source data, while the <a
+			href="../../views/transformed_data.xhtml">Transformed Data view</a>
+		allows inspecting the transformed data. Also, if the data contains
+		geometries, they can be displayed in the map view. Once the mapping is
+		finished, the transformed data can be exported.
+	</p>
+	<p>
+		To <a class="command-link"
+			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.ImportAction",
+	"eu.esdihumboldt.hale.io.schema.read.source")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">import source data</a>, either use <i>File</i>&#8594;<i>Import</i>&#8594;<i>Source
+			data...</i> or the <i>Import</i> button on the application tool bar, then
+		select <i>Source data</i>. Next you will be prompted to specify where
+		to load the data from, e.g. from a file or an online resource. If
+		there are multiple possible import formats for your selection, please
+		choose the one that applies.
+	</p>
+	<p>
+		Supported data import formats in <i>HALE</i> are:
+	</p>
+	<ul>
+		<li><a href="../../reference/import/xml_data.html">XML</a></li>
+		<li><a href="../../reference/import/gml_data.html">GML</a></li>
+		<li><a href="../../reference/import/csv.html">CSV</a></li>
+		<li><a href="../../reference/import/shapefile.html">Shapefile</a></li>
+	</ul>
+
+	<!-- related tasks: load source schema, save transformed data -->
 </body>
 </html>
