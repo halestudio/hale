@@ -167,16 +167,13 @@ public class StyledInstanceMarker extends InstanceMarker {
 		Fill fill = null;
 		
 		//try the Symbolizers from the Rule
-		int i = -1;
-		while(rule != null && fill == null && i < rule.getSymbolizers().length){
-			i++;
-			if (rule.getSymbolizers()[i] instanceof PolygonSymbolizer){
-				fill = SLD.fill((PolygonSymbolizer)rule.getSymbolizers()[i]);				
-				}
-			else if (rule.getSymbolizers()[i] instanceof PointSymbolizer){
-				fill = SLD.fill((PointSymbolizer)rule.getSymbolizers()[i]);				
-				}
+		for (int i = 0; rule != null && fill == null && i < rule.getSymbolizers().length; i++) {
+			if (rule.getSymbolizers()[i] instanceof PolygonSymbolizer) {
+				fill = SLD.fill((PolygonSymbolizer) rule.getSymbolizers()[i]);
+			} else if (rule.getSymbolizers()[i] instanceof PointSymbolizer) {
+				fill = SLD.fill((PointSymbolizer) rule.getSymbolizers()[i]);
 			}
+		}
 	
 		
 		//if we have a fill now
