@@ -29,11 +29,13 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -212,7 +214,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 				// run validator to update ControlDecoration and updateState
 				added.getFirst().setText("");
 				// pack to make wizard larger if necessary
-				getWizard().getShell().pack();
+				pack();
 			}
 		});
 	}
@@ -288,7 +290,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 				// do layout
 				((Composite) getControl()).layout();
 				// pack to make wizard smaller if possible
-				getWizard().getShell().pack();
+				pack();
 			}
 		});
 
@@ -296,5 +298,14 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		inputFields.put(fp, pair);
 
 		return pair;
+	}
+
+	/**
+	 * Packs the wizards shell, only updating the height, not the width.
+	 */
+	private void pack() {
+		Shell shell = getWizard().getShell();
+		Point preferredSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+		shell.setSize(shell.getSize().x, preferredSize.y);
 	}
 }
