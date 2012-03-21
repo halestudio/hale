@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:profile>
+    	<bulkDensityOrSolidVolume>Bd0</bulkDensityOrSolidVolume>
+    	<carbon>0.37</carbon>
+    </tns:profile>
+    <tns:profile>
+    	<bulkDensityOrSolidVolume>SV1</bulkDensityOrSolidVolume>
+    	<carbon>0.51</carbon>
+    </tns:profile>
+    <tns:profile>
+    	<bulkDensityOrSolidVolume>SV0</bulkDensityOrSolidVolume>
+    	<carbon>0.1</carbon>
+    </tns:profile>
+    <tns:profile>
+    	<bulkDensityOrSolidVolume>Bd4</bulkDensityOrSolidVolume>
+    	<carbon>0.91</carbon>
+    </tns:profile>
+</tns:collection>

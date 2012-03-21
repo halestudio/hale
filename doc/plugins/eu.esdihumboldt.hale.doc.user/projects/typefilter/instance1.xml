@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:item id="1">
+        <name>Polo shirt green</name>
+        <price>9.99</price>
+        <type>shirt</type>
+    </tns:item>
+    <tns:item id="2">
+        <name>Top hat</name>
+        <price>29.99</price>
+        <type>hat</type>
+    </tns:item>
+</tns:collection>
