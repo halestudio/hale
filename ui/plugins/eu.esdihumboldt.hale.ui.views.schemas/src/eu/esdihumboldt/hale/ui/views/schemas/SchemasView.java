@@ -591,6 +591,14 @@ public class SchemasView extends PropertiesViewPart {
 			});
 		}
 	}
+	
+	/**
+	 * @see PropertiesViewPart#getViewContext()
+	 */
+	@Override
+	protected String getViewContext() {
+		return "eu.esdihumboldt.hale.doc.user.schema_explorer";
+	}
 
 	/**
 	 * @see WorkbenchPart#setFocus()
