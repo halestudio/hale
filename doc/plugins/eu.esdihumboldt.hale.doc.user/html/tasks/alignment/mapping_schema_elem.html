@@ -6,27 +6,56 @@
 </head>
 <body>
 	<h1>Mapping schema elements</h1>
-	<p>The main purpose of HALE is of course not to just inspect
+	<p>
+		The main purpose of <i>HALE</i> is of course not to just inspect
 		schemas, but to map the elements of these schemas with the goal of
-		transforming corresponding geodata sets.</p>
-	<p>To map types or attributes from the source schema to type or
-		attributes, you first have to select them in the Schema Explorer. You
-		can do any complex selection in the Schema Explorer, such as selecting
-		three elements on the source side and one element on the target schema
-		side. To select multiple elements, press the CTRL button while
-		clicking on the items. Using the CTRL button will also allow you to
-		deselect a schema item.</p>
-	<p>After selecting the source and target schema elements, you can
-		press the Arrow button in between Source and Target Schema and then
-		select an appropriate function.</p>
-	<p>If you want to connect one feature type to another, use "Retype
-		Feature", which effectively allows to assign instances of one type of
-		the source schema to one in the target schema. In addition, you can
-		define so-called instance splits and merges in this function. After
-		defining a Retype Feature mapping, you can also apply a filter to it.
-		Without changing the selection to which you applied a transformation,
-		click on the "Mapping" button again and choose the CQL Filter Wizard.
-		Configure the expression as you would like to have it, click "Finish",
-		and you will now see a Filter added in the Mapping View.</p>
+		transforming corresponding (geo)data sets.
+	</p>
+	<p>This is done by creating mapping cells, each representing a
+		relation between the source and target schema. To create a new
+		relation, there are two options:</p>
+	<ol>
+		<li>Select the <i>Add a new relation</i> command from the <i>Edit</i>
+			menu or the application tool bar. You will then be prompted to select
+			the function that is applicable for the relation you want to create.<br>
+			<div>
+				<img src="images/function_select.png">
+			</div>
+		</li>
+		<li><p>
+				Select the schema elements you want to map in the <a
+					href="../../views/schema_explorer.html">Schema Explorer</a>, then
+				click on the button <i>Select a mapping function</i> in the center
+				of the view, between source and target schemas. A menu will appear,
+				listing the relation types applicable for the selection. Choose the
+				relation type you want to create.
+			</p>
+			<div>
+				<img src="images/function_create.png">
+			</div>
+			<p>
+				You can do any complex selection in the Schema Explorer, such as
+				selecting three elements on the source side and one element on the
+				target schema side. To select multiple elements, press the <i>CTRL</i>
+				button while clicking on the items. Using the <i>CTRL</i> button
+				will also allow you to deselect a schema element.
+			</p></li>
+	</ol>
+	<p>After selecting the relation type, you have to specify which
+		schema entities should be used for the source inputs and target
+		outputs defined in the relation function.</p>
+	<div>
+		<img src="images/entity_selection.png"
+			title="Assign function inputs and outputs">
+	</div>
+	<p>
+		Then, depending on the relation, you may have to specify parameters
+		for the function, e.g. a format pattern for the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.hale.align.formattedstring.html">Formatted
+			string</a> function.
+	</p>
+	
+	<!-- related concepts: alignment, functions, contexts -->
+	<!-- related tasks: edit cell, remove cell -->
 </body>
 </html>
