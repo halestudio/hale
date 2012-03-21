@@ -9,22 +9,33 @@
 
 package eu.esdihumboldt.util.definition;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Provides support for converting certain objects to a definition string and 
  * vice versa based on the {@link ObjectDefinition}ies available for the supported
  * object type and its sub-types.
  * @param <T> the supported object type
- * @param <D> the supported definition type 
+ * @param <D> the supported definition type
  *    
  * @author Simon Templer
  */
 public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? extends T>> {
 	
 	/**
+	 * Default constructor.
+	 */
+	public AbstractObjectFactory() {
+		super();
+	}
+
+	/**
 	 * Get all available definitions compatible with the supported type. 
 	 * @return the definitions
 	 */
-	protected abstract Iterable<D> getDefinitions();
+	protected abstract List<D> getDefinitions();
 	
 	/**
 	 * Represent the given object as a definition string, so that it can be 
@@ -44,7 +55,7 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 			return null;
 		}
 		
-		for (D definition : getDefinitions()) {
+		for (D definition : getSortedDefinitions()) {
 			if (definition.getObjectClass() == null) {
 				continue;
 			}
@@ -54,7 +65,6 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 					&& definition.getObjectClass().equals(object.getClass())) {
 				return definition.getIdentifier() + ":" + ((ObjectDefinition<T>) definition).asString(object); //$NON-NLS-1$
 			}
-			
 			// compare based on interfaces
 			else if (definition.getObjectClass().isInterface() 
 					&& compare(object, definition)) {
@@ -78,6 +88,47 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Provides the definitions in a topological order.
+	 * 
+	 * @return sorted definitions
+	 */
+	private Iterable<D> getSortedDefinitions() {
+		List<D> list = getDefinitions();
+		ArrayList<D> result = new ArrayList<D>(list.size());
+		
+		while (!list.isEmpty()) {
+			Iterator<D> iter = list.iterator();
+			while (iter.hasNext()) {
+				D def = iter.next();
+				boolean isSuper = false;
+	
+				for (D d : list) {
+					// skip if it's the same object
+					if (def.equals(d)) continue;
+					
+					// check if it's super class
+					if (def.getObjectClass().isAssignableFrom(d.getObjectClass())) {
+						isSuper = true;
+						break;
+					}
+				}
+				
+				/*
+				 * if it's not a super class/interface add it to result
+				 * and remove it from list
+				 */
+				if (!isSuper) {
+					result.add(def);
+					iter.remove();
+				}
+			}
+		}
+		
+		// return the sorted list
+		return result;
 	}
 	
 	/**

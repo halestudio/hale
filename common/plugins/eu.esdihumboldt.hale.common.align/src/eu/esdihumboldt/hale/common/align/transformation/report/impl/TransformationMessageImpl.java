@@ -39,6 +39,18 @@ public class TransformationMessageImpl extends MessageImpl implements
 		
 		this.cell = cell;
 	}
+	
+	/**
+	 * @param cell the cell the message is associated to
+	 * @param message the message
+	 * @param throwable the throwable associated to the message, may be <code>null</code>
+	 * @param stackTrace the associated stack trace, or <code>null</code>
+	 */
+	public TransformationMessageImpl(Cell cell, String message, Throwable throwable, String stackTrace) {
+		super(message, throwable, stackTrace);
+		
+		this.cell = cell;
+	}
 
 	/**
 	 * @see TransformationMessage#getCell()
