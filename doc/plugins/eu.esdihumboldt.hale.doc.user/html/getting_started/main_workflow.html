@@ -39,14 +39,29 @@
 			It will show you a simple example project and get you going on starting
 			your own alignment project.
 	</p>
+	<p class="Note">A link like the above, with the <img src="PLUGINS_ROOT/org.eclipse.help/command_link.png" title="command link" alt="command link"> icon,
+		means clicking on the link will trigger an action in the application, in this case, launching the guide.</p>
+		
 	<h2>Main workflow</h2>
 	<p>
 		When creating an alignment project you typically follow these main steps:
 	</p>
 	<ol>
-		<li>Import the schema of the source data you want to map</li>
-		<li>Import the target schema</li>
-		<li>Import a source data set (optional)</li>
+		<li><a class="command-link"
+			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.ImportAction",
+	"eu.esdihumboldt.hale.io.schema.read.source")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">Import the schema of the source data</a> you want to map</li>
+		<li><a class="command-link"
+			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.ImportAction",
+	"eu.esdihumboldt.hale.io.schema.read.target")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">Import the target schema</a></li>
+		<li><a class="command-link"
+			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.ImportAction",
+	"eu.esdihumboldt.hale.io.instance.read.source")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">Import a source data set</a> (optional)</li>
 		<!--li>Set up initial analysis and quality definition</li-->
 		<li>Identify the relevant target types</li>
 		<li>Identify and add the relations between source an target types</li>
@@ -64,7 +79,11 @@
 			sufficient quality for your application</li>
 		<li>Start final mapping analysis (optional)</li>
 		<li>If no problems pop up, save/publish created mapping.</li-->
-		<li>Save the transformed data to a file (optional, needs source data)</li>
+		<li><a class="command-link"
+			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.ImportAction",
+	"eu.esdihumboldt.hale.io.instance.write.transformed")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">Save the transformed data</a> to a file (optional, needs source data)</li>
 	</ol>
 	
 	<br>
