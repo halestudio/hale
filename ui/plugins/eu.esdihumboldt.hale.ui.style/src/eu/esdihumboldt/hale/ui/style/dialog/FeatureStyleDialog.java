@@ -219,6 +219,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	public void setStyle(Style style) {
 		// set the feature names
 		for (FeatureTypeStyle fts : style.featureTypeStyles()) {
+			fts.featureTypeNames().clear();
 			fts.featureTypeNames().add(new NameImpl(StyleHelper.getFeatureTypeName(type)));
 		}
 		
