@@ -2,9 +2,55 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Customize the mapping relevant types</title>
+<title>How to customize the mapping relevant types</title>
 </head>
 <body>
-	<h1>Customize the mapping relevant types</h1>
+	<h1>How to customize the mapping relevant types</h1>
+	<p>When dealing with complex schemas with various defined types, it
+		can be very helpful for the mapping process, to just focus on the
+		schema information that is relevant for the alignment. On the other
+		hand, by default a type that is relevant for you might not have been
+		classified as mapping relevant - in this case you would like to change
+		the classification.</p>
+	<p>
+		Which types in a schema are classified as mapping relevant has various
+		effects. For one, only the mapping relevant types are displayed in the
+		<a href="../../views/schema_explorer.html">Schema Explorer</a> or can
+		be used for creating a relation. Also, when loading source data,
+		usually only instances of mapping relevant types are loaded.
+	</p>
+	<h2>Selecting mapping relevant types</h2>
+	<p>You can customize the mapping relevant types for the source and
+		target schema separately, the only precondition is that you have
+		loaded the respective schema.</p>
+	<p>
+		The commands for configuring the mapping relevant types are available
+		in the <i>Edit</i> menu and in the application tool bar. Choose <i>Edit
+			mapping relevant source types</i> or <i>Edit mapping relevant target
+			types</i> depending on which configuration you want to change.
+	</p>
+	<!-- TODO add command links? -->
+	<p>A dialog will open that shows the complex types defined in the
+		schema, grouped by namespace. Types that are already used in the
+		alignment will not be shown, as these are mapping relevant per
+		definition. For each type a checkbox is provided, that allows you to
+		enable or disable its status as mapping relevant.</p>
+	<div>
+		<img src="images/edit_mapping_relevant.png"
+			title="Edit mapping relevant types">
+	</div>
+	<h2>Removing a mapping relevant type</h2>
+	<p>
+		Classifying a type as not mapping relevant can also be done through
+		the context menu of a selected type, e.g. in the <a
+			href="../../views/schema_explorer.html">Schema Explorer</a>. In the
+		context menu select the <i>Exclude type from mapping</i> command.
+	</p>
+	<div>
+		<img src="images/exclude_type.png" title="Exclude type from mapping">
+	</div>
+
+	<!-- related concepts: schema -->
+	<!-- related tasks: load schema -->
 </body>
 </html>
