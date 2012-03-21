@@ -55,6 +55,14 @@ public class TypeHierarchyView extends PropertiesViewPart {
 	private SelectionFilter selectionProvider;
 
 	/**
+	 * @see PropertiesViewPart#getViewContext()
+	 */
+	@Override
+	protected String getViewContext() {
+		return "eu.esdihumboldt.hale.doc.user.type_hierarchy";
+	}
+	
+	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override

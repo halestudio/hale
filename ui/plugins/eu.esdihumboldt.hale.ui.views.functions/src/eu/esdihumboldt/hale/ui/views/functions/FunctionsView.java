@@ -50,6 +50,14 @@ public class FunctionsView extends PropertiesViewPart {
 
 		getSite().setSelectionProvider(viewer);
 	}
+	
+	/**
+	 * @see PropertiesViewPart#getViewContext()
+	 */
+	@Override
+	protected String getViewContext() {
+		return "eu.esdihumboldt.hale.doc.user.functions";
+	}
 
 	/**
 	 * @see WorkbenchPart#setFocus()
