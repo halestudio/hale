@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.common.core.report.Report;
  */
 public class ReportListLabelDateProvider implements ILabelProvider {
 	
-	private SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+	private SimpleDateFormat df = new SimpleDateFormat("HH:mm.ss");
 
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
