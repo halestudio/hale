@@ -104,6 +104,14 @@ public class StyledInstanceMarker extends InstanceMarker {
 					return rules[i];
 				}
 			}
+			
+			//if a rule exist without a filter and without being an else-filter,
+			//the found rule applies to all types
+			else{
+				if(!rules[i].isElseFilter()){
+					return rules[i];
+				}
+			}
 		}
 		
 		//if there is no appropriate rule, check if there is an else-rule
@@ -112,6 +120,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 				return rules[i];
 			}
 		}
+		
+	    
 		//return null if no rule was found
 		return null;
 	
