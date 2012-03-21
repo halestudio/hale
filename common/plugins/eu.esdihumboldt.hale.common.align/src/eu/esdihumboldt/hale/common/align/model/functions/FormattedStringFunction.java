@@ -17,11 +17,15 @@ package eu.esdihumboldt.hale.common.align.model.functions;
  * @author Simon Templer
  */
 public interface FormattedStringFunction {
-	
 	/**
 	 * Name of the parameter specifying the pattern for the string format.
 	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
 	 */
 	public static final String PARAMETER_PATTERN = "pattern";
 
+	/**
+	 * Entity name for variables.
+	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
+	 */
+	public static final String ENTITY_VARIABLE = "var";
 }

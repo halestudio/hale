@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.functions.core;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+
 /**
  * Parameter page for formatted string function.
  *
@@ -56,11 +58,11 @@ public class FormattedStringParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#insert(java.lang.String)
+	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getVariableName(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
 	 */
 	@Override
-	protected String insert(String value) {
-		return String.format("{%s}", super.insert(value));
+	protected String getVariableName(EntityDefinition variable) {
+		return '{' + super.getVariableName(variable) + '}';
 	}
 
 	/**

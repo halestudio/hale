@@ -1,5 +1,6 @@
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 
 /**
@@ -54,10 +55,11 @@ public class GroovyParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#insert(String)
+	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getVariableName(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
 	 */
 	@Override
-	protected String insert(String value) {
-		return super.insert(value).replace('.', '_');
+	protected String getVariableName(EntityDefinition variable) {
+		// TODO Auto-generated method stub
+		return super.getVariableName(variable).replace('.', '_');
 	}
 }
