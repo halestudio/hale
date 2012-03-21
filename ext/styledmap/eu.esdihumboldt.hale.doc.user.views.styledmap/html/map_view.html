@@ -8,8 +8,85 @@
 	<h1>Map view</h1>
 	<p>
 		The <i>Map</i> view provides you with a cartographic representation of
-		the data. Source and transformed data are displayed alongside each
+		the data. Source and transformed data can be displayed alongside each
 		other, with different layouts to choose from.
 	</p>
+	<p>
+		For an instance to be displayed in the map, it has to include geometry
+		objects, together with a definition of the associated coordinate
+		reference system. For source data, this depends on the support
+		provided for geometries for the respective import format. The map will
+		display the geometries contained in the <i>default geometry
+			property</i>. <i>HALE</i> will try to determine the property
+		automatically based on the schema, but you can also assign it manually
+		for each schema type using the context menu in the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/schema_explorer.html">Schema
+			Explorer</a>. The schema element that is the current default geometry
+		property of a type is marked with a small green triangle in its icon
+		(see the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/schema_elements.html">Schema
+			elements reference</a>).
+	</p>
+	<div>
+		<img src="../images/def_geom.png"
+			title="Setting the default geometry property of a type">
+	</div>
+	<p>
+		The source and transformed data can be displayed together in the map,
+		you can choose from several layouts to split the map between the two,
+		display both data sets at once or only one of them. These layouts are
+		available in the application tool bar or in the <i>Map</i>&#8594;<i>Layout</i>
+		menu.
+	</p>
+	<div>
+		<img src="../images/split_data.png">
+	</div>
+	<p>
+		Selecting instances is possible by clicking on them. In the above
+		image the selected instances are highlighted in red. To select
+		multiple instances, use <i>CTRL</i>&nbsp;+&nbsp;click. You can inspect
+		selected instances in the data views - the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/source_data.xhtml">Source
+			Data view</a> for source instances or the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/transformed_data.xhtml">Transformed
+			Data view</a> for transformed instances - provided you activate the
+		option <i>Use instances selected in the application</i> in the upper
+		left corner of the data view.
+	</p>
+	<p class="Note">Please note that if the geometries representing an
+		instance would be very small in the map, so that they could not easily
+		be selected, instead a small circle is painted to indicate the
+		geometry's position.</p>
+	<p>
+		It is also possible to synchronize map and data views the other way
+		round. The image below shows how a sample selection made in the source
+		data view through a filter is displayed in the map view, the selection
+		again highlighted in red. To use the data view like this, you have to
+		activate the button <i>Enable providing an instance selection for
+			the application</i> in the data view's tool bar.
+	</p>
+	<div>
+		<img src="../images/data_synch.png"
+			title="Map selection based on data view">
+	</div>
+	
+	<br>
+	<!-- related concepts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What is an Instance?</a>
+		</p>
+	</div>
+	
+	<!-- related tasks: load instances -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/working_source_data.html">Working with a source data set</a>
+		</p>
+	</div>
 </body>
 </html>
