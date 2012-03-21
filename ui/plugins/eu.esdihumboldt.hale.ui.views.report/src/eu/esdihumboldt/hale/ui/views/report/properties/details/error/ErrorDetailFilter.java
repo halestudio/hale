@@ -10,21 +10,31 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.report.properties.tree;
+package eu.esdihumboldt.hale.ui.views.report.properties.details.error;
+
+import org.eclipse.jface.viewers.IFilter;
+
+import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
+ * Filter for {@link Report}s.
+ * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportGroupInfo extends AbstractList {
-	
+public class ErrorDetailFilter implements IFilter {
+
 	/**
-	 * Version
+	 * @see org.eclipse.jface.viewers.IFilter#select(java.lang.Object)
 	 */
-	private static final long serialVersionUID = 6107922259340435511L;
-	
 	@Override
-	public String toString() {
-		return "Info";
+	public boolean select(Object toTest) {
+		if (toTest instanceof Report<?>) {
+			if (((Report<?>) toTest).getErrors().size() > 0) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

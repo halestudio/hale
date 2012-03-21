@@ -27,7 +27,7 @@
       <propertySections
             contributorId="eu.esdihumboldt.hale.ui.views.report.properties">
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.report.properties.ReportIOSummary"
+               class="eu.esdihumboldt.hale.ui.views.report.properties.summary.ReportIOSummary"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.report.properties.summary.name"
                tab="eu.esdihumboldt.hale.ui.views.report.properties.summary">
@@ -36,16 +36,7 @@
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.report.properties.ReportDetails"
-               enablesFor="1"
-               id="eu.esdihumboldt.hale.ui.views.report.properties.details.name"
-               tab="eu.esdihumboldt.hale.ui.views.report.properties.details">
-            <input
-                  type="eu.esdihumboldt.hale.common.core.io.report.IOReport">
-            </input>
-         </propertySection>
-         <propertySection
-               class="eu.esdihumboldt.hale.ui.views.report.properties.ReportSummary"
+               class="eu.esdihumboldt.hale.ui.views.report.properties.summary.ReportSummary"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.report.properties.summary.name"
                tab="eu.esdihumboldt.hale.ui.views.report.properties.summary">
@@ -54,12 +45,30 @@
             </input>
          </propertySection>
          <propertySection
-               class="eu.esdihumboldt.hale.ui.views.report.properties.ReportIODetails"
-               enablesFor="1"
-               id="eu.esdihumboldt.hale.ui.views.report.properties.details.name"
-               tab="eu.esdihumboldt.hale.ui.views.report.properties.details">
+               class="eu.esdihumboldt.hale.ui.views.report.properties.details.info.InfoDetailPage"
+               filter="eu.esdihumboldt.hale.ui.views.report.properties.details.info.InfoDetailFilter"
+               id="eu.esdihumboldt.hale.ui.views.report.properties.details.info.name"
+               tab="eu.esdihumboldt.hale.ui.views.report.properties.details.info">
             <input
-                  type="eu.esdihumboldt.hale.common.core.io.report.IOReport">
+                  type="eu.esdihumboldt.hale.common.core.report.Report">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.report.properties.details.warning.WarningDetailPage"
+               filter="eu.esdihumboldt.hale.ui.views.report.properties.details.warning.WarningDetailFilter"
+               id="eu.esdihumboldt.hale.ui.views.report.properties.details.warning.name"
+               tab="eu.esdihumboldt.hale.ui.views.report.properties.details.warning">
+            <input
+                  type="eu.esdihumboldt.hale.common.core.report.Report">
+            </input>
+         </propertySection>
+         <propertySection
+               class="eu.esdihumboldt.hale.ui.views.report.properties.details.error.ErrorDetailPage"
+               filter="eu.esdihumboldt.hale.ui.views.report.properties.details.error.ErrorDetailFilter"
+               id="eu.esdihumboldt.hale.ui.views.report.properties.details.error.name"
+               tab="eu.esdihumboldt.hale.ui.views.report.properties.details.error">
+            <input
+                  type="eu.esdihumboldt.hale.common.core.report.Report">
             </input>
          </propertySection>
       </propertySections>
@@ -71,13 +80,31 @@
          <propertyTab
                category="eu.esdihumboldt.hale.ui.views.report.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.report.properties.summary"
-               label="Summary">
+               label="Report">
          </propertyTab>
          <propertyTab
                afterTab="eu.esdihumboldt.hale.ui.views.report.properties.summary"
                category="eu.esdihumboldt.hale.ui.views.report.properties.definition"
-               id="eu.esdihumboldt.hale.ui.views.report.properties.details"
-               label="Details">
+               id="eu.esdihumboldt.hale.ui.views.report.properties.details.info"
+               image="icons/info.gif"
+               indented="true"
+               label="Info">
+         </propertyTab>
+         <propertyTab
+               afterTab="eu.esdihumboldt.hale.ui.views.report.properties.details"
+               category="eu.esdihumboldt.hale.ui.views.report.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.report.properties.details.warning"
+               image="icons/warning.gif"
+               indented="true"
+               label="Warning">
+         </propertyTab>
+         <propertyTab
+               afterTab="eu.esdihumboldt.hale.ui.views.report.properties.details"
+               category="eu.esdihumboldt.hale.ui.views.report.properties.definition"
+               id="eu.esdihumboldt.hale.ui.views.report.properties.details.error"
+               image="icons/error_log.gif"
+               indented="true"
+               label="Error">
          </propertyTab>
       </propertyTabs>
    </extension>

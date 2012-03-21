@@ -10,28 +10,24 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.report.properties.tree;
+package eu.esdihumboldt.hale.ui.views.report.properties.details.tree;
+
+import java.util.Collection;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.dialogs.FilteredTree;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
-import eu.esdihumboldt.hale.ui.views.report.properties.ReportDetails;
+import eu.esdihumboldt.hale.ui.views.report.properties.details.ReportDetailsPage;
 
 /**
- * ContentProvider for {@link FilteredTree} in {@link ReportDetails}.
+ * ContentProvider for {@link FilteredTree} in {@link ReportDetailsPage}.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportTreeContentProvider implements ITreeContentProvider {
-
-	private Report<?> report;
-	
-	private ReportGroupInfo info;
-	private ReportGroupWarning warning;
-	private ReportGroupError error;
 	
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
@@ -44,21 +40,9 @@ public class ReportTreeContentProvider implements ITreeContentProvider {
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (newInput instanceof Report<?>) {
-			report = (Report<?>) newInput;
-			
-			info = new ReportGroupInfo();
-			info.addAll(report.getInfos());
-			
-			warning = new ReportGroupWarning();
-			warning.addAll(report.getWarnings());
-			
-			error = new ReportGroupError();
-			error.addAll(report.getErrors());
-		}
+		/* do nothing */
 	}
 
 	/**
@@ -66,8 +50,11 @@ public class ReportTreeContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		Object[] array = { info, warning, error};
-		return array;
+		if (inputElement instanceof Collection<?>) {
+			return ((Collection<?>) inputElement).toArray();
+		}
+		
+		return new Object[0];
 	}
 
 	/**
@@ -75,8 +62,8 @@ public class ReportTreeContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof AbstractList) {
-			return ((AbstractList)parentElement).toArray();
+		if (parentElement instanceof Collection<?>) {
+			return ((Collection<?>)parentElement).toArray();
 		}
 		
 		return new Object[0];
@@ -99,7 +86,7 @@ public class ReportTreeContentProvider implements ITreeContentProvider {
 			return true;
 		}
 		
-		if (element instanceof AbstractList && ((AbstractList)element).size() > 0) {
+		if (element instanceof Collection<?> && ((Collection<?>)element).size() > 0) {
 			return true;
 		} 
 		
