@@ -394,8 +394,9 @@ public class StyleServiceImpl extends AbstractStyleService {
 		
 		for (Style style : styles) {
 			for (FeatureTypeStyle fts : style.featureTypeStyles()) {
-				if (fts.featureTypeNames().iterator().next().getLocalPart()
-						.equals("Feature")) {
+				if (!fts.featureTypeNames().isEmpty()
+						&& fts.featureTypeNames().iterator().next()
+								.getLocalPart().equals("Feature")) {
 					this.fbStyle = fts;
 					somethingHappened = true;
 				}
