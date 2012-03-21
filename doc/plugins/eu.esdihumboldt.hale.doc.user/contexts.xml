@@ -11,13 +11,46 @@
    <context id="source_data">
       <description>The Source Data view allows inspecting the loaded source instances.</description>
       <topic href="html/concepts/what_is_instance.html" label="What is an Instance?"/>
-      <topic href="html/views/source_data.xhtml" label="Source Data view"/>
+      <topic href="html/tasks/data/working_source_data.html" label="Working with a source data set"/>
       <topic href="html/reference/cql_filter.html" label="Define a CQL Filter"/>
+      <topic href="html/views/source_data.xhtml" label="Source Data view"/>
    </context>
    <context id="transformed_data">
       <description>The Transformed Data view allows inspecting the transformed instances.</description>
       <topic href="html/concepts/what_is_instance.html" label="What is an Instance?"/>
-      <topic href="html/views/transformed_data.xhtml" label="Transformed Data view"/>
+      <topic href="html/tasks/data/save_transformation.html" label="Save the transformation result"/>
       <topic href="html/reference/cql_filter.html" label="Define a CQL Filter"/>
+      <topic href="html/views/transformed_data.xhtml" label="Transformed Data view"/>
+   </context>
+   <context id="schema_explorer">
+      <description>The Schema Explorer allows you to view the structure of the source (left) and the target (right) schema and to define mappings between the elements of the schemas.</description>
+      <topic href="html/concepts/what_is_schema.html" label="What is a Schema?"/>
+      <topic href="html/tasks/schema/load_browse_schema.html" label="Loading and browsing schemas"/>
+      <topic href="html/reference/schema_elements.html" label="Schema elements reference"/>
+      <topic href="html/tasks/schema/mapping_relevant.html" label="How to customize the mapping relevant types"/>
+      <topic href="html/tasks/schema/define_context.html" label="Defining contexts on schema elements"/>
+      <topic href="html/views/schema_explorer.html" label="Schema Explorer view"/>
+   </context>
+   <context id="functions">
+      <description>The Functions view shows the available transformation functions, which can be used to define relations.</description>
+      <topic href="html/concepts/functions.html" label="Functions concept"/>
+      <topic href="html/tasks/alignment/mapping_schema_elem.html" label="Mapping schema elements"/>
+      <topic href="html/views/functions.html" label="Functions view"/>
+   </context>
+   <context id="report_list">
+      <description>The Report List provides an overview of the last completed processes, e.g. loading a schema or performing a transformation, and their status.</description>
+      <topic href="html/views/report_list.html" label="Report List"/>
+   </context>
+   <context id="alignment">
+      <description>The Alignment view displays the current alignment per type relation and allows editing or removing mapping cells.</description>
+      <topic href="html/concepts/what_is_alignment.html" label="What is an Alignment?"/>
+      <topic href="html/tasks/alignment/mapping_schema_elem.html" label="Mapping schema elements"/>
+      <topic href="html/tasks/alignment/edit_cell.html" label="Editing a Mapping Cell"/>
+      <topic href="html/tasks/alignment/remove_cell.html" label="Deleting a relation"/>
+      <topic href="html/views/alignment.html" label="Alignment view"/>
+   </context>
+   <context id="type_hierarchy">
+      <description>The Type hierarchy view allows to explore the hierarchy of a schema type, associated with the current selection in the Schema Explorer.</description>
+      <topic href="html/views/type_hierarchy.html" label="Type hierachy view"/>
    </context>
 </contexts>

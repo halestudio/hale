@@ -54,6 +54,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
  * View displaying the current alignment
@@ -73,6 +74,14 @@ public class AlignmentView extends AbstractMappingView {
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
 	private ISelectionListener selectionListener;
+	
+	/**
+	 * @see PropertiesViewPart#getViewContext()
+	 */
+	@Override
+	protected String getViewContext() {
+		return "eu.esdihumboldt.hale.doc.user.alignment";
+	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)

@@ -81,6 +81,14 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	}
 	
 	/**
+	 * @see PropertiesViewPart#getViewContext()
+	 */
+	@Override
+	protected String getViewContext() {
+		return "eu.esdihumboldt.hale.doc.user.report_list";
+	}
+	
+	/**
 	 * Loads all added reports from ReportService and
 	 * displays them for the current session.
 	 */
