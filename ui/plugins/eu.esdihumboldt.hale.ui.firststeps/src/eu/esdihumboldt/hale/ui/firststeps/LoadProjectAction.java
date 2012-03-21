@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.ILiveHelpAction;
 import org.eclipse.jface.action.Action;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.cheatsheets.ICheatSheetAction;
 import org.eclipse.ui.cheatsheets.ICheatSheetManager;
@@ -27,7 +28,6 @@ import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
 
-import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
@@ -37,8 +37,8 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  * <code>bundle</code> (param4). All are optional. <br>
  * Parameters for live help are to be separated by "||".<br>
  * <br>
- * If <code>closeIntro</code> is set to "true" an opened intro is closed after a
- * project was successfully opened. <br>
+ * If <code>closeIntro</code> is set to "true" an opened intro is closed when the action
+ * is run.<br>
  * <br>
  * If <code>path</code> is specified the given path gets opened instead of
  * showing a dialog to choose the project. <br>
@@ -76,9 +76,21 @@ public class LoadProjectAction extends Action implements IIntroAction, ICheatShe
 	 */
 	@Override
 	public void run() {
+		if (Display.getCurrent() == null) {
+			// execute in display thread
+			PlatformUI.getWorkbench().getDisplay().asyncExec(this);
+			return;
+		}
+
+		// close intro if specified and visible
+		if (closeIntro) {
+			IIntroPart introPart = PlatformUI.getWorkbench().getIntroManager().getIntro();
+			if (introPart != null)
+				PlatformUI.getWorkbench().getIntroManager().closeIntro(introPart);
+		}
+
 		// executes event with last configuration
 		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-		ProjectInfo before = ps.getProjectInfo();
 		// load a given file or show open project dialog
 		if (path != null) {
 			if (TYPE_FILE.equalsIgnoreCase(type) || type == null)
@@ -93,13 +105,6 @@ public class LoadProjectAction extends Action implements IIntroAction, ICheatShe
 				}
 		} else
 			ps.open();
-
-		// closeIntro if a project was loaded
-		if (before != ps.getProjectInfo() && closeIntro) {
-			IIntroPart introPart = PlatformUI.getWorkbench().getIntroManager().getIntro();
-			if (introPart != null)
-				PlatformUI.getWorkbench().getIntroManager().closeIntro(introPart);
-		}
 	}
 
 	/**
