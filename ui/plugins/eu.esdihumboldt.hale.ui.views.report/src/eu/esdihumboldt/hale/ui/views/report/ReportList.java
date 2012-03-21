@@ -122,7 +122,7 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 			{
 				_treeViewer = new TreeViewer(composite, SWT.BORDER);
 				final Tree tree = _treeViewer.getTree();
-				tree.setHeaderVisible(true);
+				tree.setHeaderVisible(false);
 				tree.setLinesVisible(false);
 				
 				// create column for reports
