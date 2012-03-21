@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.common.help;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -85,7 +86,14 @@ public abstract class SelectionContextProvider implements IContextProvider {
 		}
 		
 		if (contexts.size() == 1) {
-			return contexts.get(0);
+			if (defaultContext == null) {
+				return contexts.get(0);
+			}
+			else {
+				// create context enhanced with default topics
+				return new ContextWrapper(contexts.get(0),
+						Arrays.asList(defaultContext.getRelatedTopics()));
+			}
 		}
 		else if (!contexts.isEmpty()) {
 			LinkedHashSet<IHelpResource> topics = new LinkedHashSet<IHelpResource>();
