@@ -18,6 +18,7 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
@@ -39,6 +40,8 @@ public class ReportIOSummary extends AbstractReportSummary {
 	 * Link to the file from {@link IOReport}
 	 */
 	private URILink link;
+	private Link displayLink;
+	private Text linktext;
 	
 	/**
 	 * Text for the link
@@ -53,12 +56,16 @@ public class ReportIOSummary extends AbstractReportSummary {
 		super.createControls(parent, aTabbedPropertySheetPage);
 		
 		// urilink
-		link = new URILink(composite, SWT.None, null, "");
+		link = new URILink(composite, SWT.None, null, "<A>Open Location</A>");
+		
+		displayLink = link.getLink();
+		
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(composite, ITabbedPropertyConstants.VSPACE);
-		link.setLayoutData(data);
+		displayLink.setLayoutData(data);
+		displayLink.setBackground(getWidgetFactory().getColors().getBackground());
 		
 		// link label
 		CLabel linkLabel = getWidgetFactory().createCLabel(composite, "Link:"); //$NON-NLS-1$
@@ -67,6 +74,34 @@ public class ReportIOSummary extends AbstractReportSummary {
 		data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(composite, 0, SWT.CENTER);
 		linkLabel.setLayoutData(data);
+		
+		CLabel namespaceLabel = getWidgetFactory()
+		.createCLabel(composite, "Location:"); //$NON-NLS-1$
+		data = new FormData();
+		data.left = new FormAttachment(0, 0);
+		data.right = new FormAttachment(displayLink,15);
+		data.top = new FormAttachment(displayLink, 0, SWT.CENTER);
+		namespaceLabel.setLayoutData(data);
+		
+		linktext = getWidgetFactory().createText(composite, "");
+		linktext.setEditable(false);
+
+		data = new FormData();
+		data.width = 100;
+		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
+		data.right = new FormAttachment(100, 0);
+		data.top = new FormAttachment(displayLink, ITabbedPropertyConstants.VSPACE);
+		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
+		linktext.setLayoutData(data);
+
+		namespaceLabel = getWidgetFactory()
+				.createCLabel(composite, ""); //$NON-NLS-1$
+		data = new FormData();
+		data.left = new FormAttachment(0, 0);
+		data.right = new FormAttachment(linktext,
+				-ITabbedPropertyConstants.HSPACE);
+		data.top = new FormAttachment(linktext, 0, SWT.TOP);
+		namespaceLabel.setLayoutData(data);
 	}
 	
 	/**
@@ -85,6 +120,8 @@ public class ReportIOSummary extends AbstractReportSummary {
 		super.refresh();
 		
 		this.link.refresh(((IOReport)report).getTarget().getLocation());
-		this.link.setText(((IOReport)report).getTarget().getLocation().toString());
+		// this.link.setText(((IOReport)report).getTarget().getLocation().toString());
+		this.displayLink = link.getLink();
+		this.linktext.setText(((IOReport)report).getTarget().getLocation().toASCIIString());
 	}
 }
