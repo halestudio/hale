@@ -6,5 +6,65 @@
 </head>
 <body>
 	<h1>Defining contexts on schema elements</h1>
+	<p>
+		To define a context on a schema element, use the context menu in the <a
+			href="../../views/schema_explorer.html">Schema Explorer</a>. If the
+		definition of a context is possible on a schema element, the menu will
+		offer you a respective command. Also, on already defined contexts, you
+		will be offered the possibility to remove it, though if there is an
+		associated mapping the command will be grayed out.
+	</p>
+	<p>
+		See the <a href="../../reference/schema_elements.html">Schema
+			elements reference</a> on how each context type is displayed in the <a
+			href="../../views/schema_explorer.html">Schema Explorer</a>.
+	</p>
+	<h2>Source schema contexts</h2>
+	<p>Types of contexts that can be defined on the source schema.</p>
+	<h3>Adding a condition context to a type</h3>
+	<p>
+		Select the type, right click and choose <i>Add condition context</i>
+		from the context menu.
+	</p>
+	<div>
+		<img src="images/context_type_condition.png">
+	</div>
+	<p>Then you have to define the condition for the context. It is
+		applied to instances of the selected type.</p>
+	<div>
+		<img src="images/type_filter.png">
+	</div>
+
+	<h3>Adding a condition context to a property</h3>
+	<p>
+		Adding a condition context to a property works similar to adding a
+		condition context to a type, but the condition is applied not on
+		instances but on property values. The value of the property can be
+		referenced in the condition by
+		<code>value</code>
+		, properties of the value may also be referenced. You can
+		reference the parent of the value through the term
+		<code>parent</code>
+		.
+	</p>
+	<div>
+		<img src="images/property_filter.png">
+	</div>
+
+	<h3>Adding an index context to a property</h3>
+	<p>Select the property you want to add an index context to, right click and choose <i>Add index context</i>
+		from the context menu. A new index context will be created, with the first index not yet present.</p>
+	<div>
+		<img src="images/context_index.png">
+	</div>
+		
+	<h2>Target schema contexts</h2>
+	<p>Types of contexts that can be defined on the target schema.</p>
+	<h3>Adding an instance context</h3>
+	<p>Select the property of which you need an additional instance for your mapping, right click and choose <i>Add instance context</i>
+		from the context menu to create a new instance of the property.</p>
+	<div>
+		<img src="images/context_instance.png">
+	</div>
 </body>
 </html>
