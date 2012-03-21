@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.report.properties;
+package eu.esdihumboldt.hale.ui.views.report.properties.summary;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;

@@ -10,51 +10,25 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.report.properties;
+package eu.esdihumboldt.hale.ui.views.report.properties.details.info;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.ui.views.report.properties.details.ReportDetailsPage;
 
 /**
- * This class is the base for report summary pages.
+ * Default details page for {@link Report}s.
+ * Does only show informations.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class AbstractReportSummary extends AbstractPropertySection {
-	
-	/**
-	 * Contains the report to display.
-	 */
-	public Report<?> report;
-	
-	/**
-	 * Composite for the tabbed property page
-	 */
-	public Composite composite;
-	
-	/**
-	 * Contains the formdata.
-	 */
-	public FormData data;
-	
-	/**
-	 * 
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
-	 */
-	@Override
-	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = getWidgetFactory().createFlatFormComposite(parent);
-	}
-	
+public class InfoDetailPage extends ReportDetailsPage {
+
 	/**
 	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
 	 */
@@ -70,5 +44,8 @@ public class AbstractReportSummary extends AbstractPropertySection {
 		if (report instanceof Report) {
 			this.report = (Report<?>) report;
 		}
+		
+		// provide input for tree
+		tree.getViewer().setInput(this.report.getInfos());
 	}
 }

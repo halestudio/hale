@@ -10,59 +10,49 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.report.properties;
+package eu.esdihumboldt.hale.ui.views.report.properties.summary;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.dialogs.FilteredTree;
-import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
-import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
-import eu.esdihumboldt.hale.ui.views.report.properties.tree.ReportTreeContentProvider;
-import eu.esdihumboldt.hale.ui.views.report.properties.tree.ReportTreeLabelProvider;
 
 /**
- * Default details page for {@link Report}s.
+ * This class is the base for report summary pages.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportDetails extends AbstractReportDetails {
+public class AbstractReportSummary extends AbstractPropertySection {
 	
 	/**
-	 * The FilteredTree
+	 * Contains the report to display.
 	 */
-	public FilteredTree tree;
+	public Report<?> report;
 	
 	/**
+	 * Composite for the tabbed property page
+	 */
+	public Composite composite;
+	
+	/**
+	 * Contains the formdata.
+	 */
+	public FormData data;
+	
+	/**
+	 * 
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		
-		PatternFilter filter = new PatternFilter();
-		tree = new FilteredTree(composite, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL, filter, true);
-		
-		data = new FormData();
-		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		tree.setLayoutData(data);
-
-		TreeViewer viewer = tree.getViewer();
-		viewer.setContentProvider(new ReportTreeContentProvider());
-		viewer.setLabelProvider(new ReportTreeLabelProvider());
+		composite = getWidgetFactory().createFlatFormComposite(parent);
 	}
 	
 	/**
@@ -80,8 +70,5 @@ public class ReportDetails extends AbstractReportDetails {
 		if (report instanceof Report) {
 			this.report = (Report<?>) report;
 		}
-		
-		// provide input for tree
-		tree.getViewer().setInput(report);
 	}
 }

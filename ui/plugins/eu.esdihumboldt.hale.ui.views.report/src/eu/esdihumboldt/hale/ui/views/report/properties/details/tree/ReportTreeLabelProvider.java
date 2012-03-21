@@ -10,16 +10,16 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.views.report.properties.tree;
+package eu.esdihumboldt.hale.ui.views.report.properties.details.tree;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.dialogs.FilteredTree;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
-import eu.esdihumboldt.hale.ui.views.report.properties.ReportDetails;
+import eu.esdihumboldt.hale.ui.views.report.properties.details.ReportDetailsPage;
 
 /**
- * LabelProvider for {@link FilteredTree} in {@link ReportDetails}.
+ * LabelProvider for {@link FilteredTree} in {@link ReportDetailsPage}.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -28,13 +28,7 @@ public class ReportTreeLabelProvider extends LabelProvider {
 
 	@Override
 	public String getText(Object obj) {
-		if (obj instanceof ReportGroupInfo) {
-			return String.format("Info (%d)", ((ReportGroupInfo) obj).size());
-		} else if (obj instanceof ReportGroupWarning) {
-			return String.format("Warning (%d)", ((ReportGroupWarning) obj).size());
-		} else if (obj instanceof ReportGroupError) {
-			return String.format("Error (%d)", ((ReportGroupError) obj).size());
-		} else if (obj instanceof Message) {
+		if (obj instanceof Message) {
 			return ((Message) obj).getFormattedMessage();
 		}
 		
