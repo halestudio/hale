@@ -29,11 +29,11 @@
 
 	<h2>Source schema contexts</h2>
 	<p>Types of contexts that can be defined on the source schema.</p>
-	<h3>Condition context</h3>
+	<h4>Condition context</h4>
 	<p>A condition context defines a condition on a type or property,
 		that is evaluated on the instance or property value respectively. Only
 		if the condition is fulfilled, an associated mapping takes effect.</p>
-	<h3>Index context</h3>
+	<h4>Index context</h4>
 	<p>An index context can only be defined on properties that may
 		occur multiple times. It specifies an index, which references a
 		certain property value, e.g. the index zero referencing the first
@@ -43,14 +43,54 @@
 
 	<h2>Target schema contexts</h2>
 	<p>Types of contexts that can be defined on the target schema.</p>
-	<h3>Instance context</h3>
+	<h4>Instance context</h4>
 	<p>An instance context can similar to an index context only be
 		defined on properties that may occur multiple times. It represents an
 		additional property instance that a mapping can use as a target, e.g.
 		if the same target property is to be populated from the source in
 		different ways.</p>
 
-	<!-- TODO example projects for contexts -->
+	<h2>Example projects featuring contexts</h2>
+	<ul>
+		<li><p>
+				<a class="command-link"
+					href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
+	"false||/projects/typefilter/t1t2.halex||bundle||eu.esdihumboldt.hale.doc.user")'><img
+					src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+					alt="command link">Type condition context example</a>
+			</p>
+			<p>
+				Simple example project demonstrating the use of filters on source
+				types.<br>The source type <i>item</i> is mapped to two
+				different target types <i>shirt</i> and <i>hat</i>, according to the
+				value of the property <i>type</i>.
+			</p><br></li>
+		<li><p>
+				<a class="command-link"
+					href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
+	"false||/projects/propertyfilter/t1t2.halex||bundle||eu.esdihumboldt.hale.doc.user")'><img
+					src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+					alt="command link">Property condition context example</a>
+			</p>
+			<p>Simple example project that demonstrates how a condition on a
+				source property can be used to map a source property to different
+				target properties depending on its value.</p><br></li>
+		<li><p>
+				<a class="command-link"
+					href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
+	"false||/projects/indexcontext2/t1t2.halex||bundle||eu.esdihumboldt.hale.doc.user")'><img
+					src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+					alt="command link">Index context example</a>
+			</p>
+			<p>
+				Small example project demonstrating the use of an index context for
+				source properties.<br>In the source type <i>placeNames</i> the
+				information on the name language is given only implicitly through
+				the name order. The first name is in German, the second in English,
+				the third in Italian.In the target type <i>explicitNames</i> there
+				are explicit name properties for each language defined.
+			</p></li>
+	</ul>
 
 	<br>
 	<!-- related concepts: instance, alignment, schema -->
@@ -58,31 +98,41 @@
 		<br> <img
 			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
 		<p>
-			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_schema.html">What is a Schema?</a>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_schema.html">What
+				is a Schema?</a>
 		</p>
 		<p>
-			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What is an Instance?</a>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What
+				is an Instance?</a>
 		</p>
 		<p>
-			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_alignment.html">What is an Alignment?</a>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_alignment.html">What
+				is an Alignment?</a>
 		</p>
 	</div>
-	
+
 	<!-- related tasks: define a context -->
 	<div>
 		<br> <img
 			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
 		<p>
-			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/define_context.html">Defining contexts on schema elements</a>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/define_context.html">Defining
+				contexts on schema elements</a>
 		</p>
 	</div>
-	
+
 	<!-- related reference: schema elements -->
 	<div>
 		<br> <img
 			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelr.png">
 		<p>
-			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/schema_elements.html">Schema elements</a>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/schema_elements.html">Schema
+				elements</a>
 		</p>
 	</div>
 </body>

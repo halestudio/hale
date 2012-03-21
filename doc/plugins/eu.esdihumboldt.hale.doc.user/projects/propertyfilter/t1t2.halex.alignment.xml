@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-alignment>
+    <cell transformation="eu.esdihumboldt.hale.align.retype">
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}SoilProfileType</type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+            </class>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}SoilProfileType</type>
+                <child>id</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child>id</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child>attribute</child>
+                <child>name</child>
+            </property>
+        </target>
+        <parameter name="value" value="carbonateContent"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.cst.functions.numeric.mathexpression">
+        <source name="var">
+            <property>
+                <type>{http://www.example.org/t1/}SoilProfileType</type>
+                <child>carbon</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child>attribute</child>
+                <child>value</child>
+            </property>
+        </target>
+        <parameter name="expression" value="carbon * 100"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}SoilProfileType</type>
+                <child condition="CQL:value like 'Bd%'">bulkDensityOrSolidVolume</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child context="0">attribute</child>
+                <child>value</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child context="0">attribute</child>
+                <child>name</child>
+            </property>
+        </target>
+        <parameter name="value" value="bulkDensity"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}SoilProfileType</type>
+                <child condition="CQL:value like 'SV%'">bulkDensityOrSolidVolume</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child context="1">attribute</child>
+                <child>value</child>
+            </property>
+        </target>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child context="1">attribute</child>
+                <child>name</child>
+            </property>
+        </target>
+        <parameter name="value" value="solidVolume"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child>type</child>
+            </property>
+        </target>
+        <parameter name="value" value="profile"/>
+    </cell>
+</hale-alignment>
