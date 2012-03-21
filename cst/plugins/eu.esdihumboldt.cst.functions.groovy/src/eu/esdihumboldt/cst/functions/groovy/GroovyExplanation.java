@@ -15,50 +15,37 @@ package eu.esdihumboldt.cst.functions.groovy;
 import java.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for groovy cells.
  * 
  * @author Kai Schwierczek
  */
-public class GroovyExplanation implements CellExplanation {
+public class GroovyExplanation extends AbstractCellExplanation {
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n"
 			+ "{1}\nSource property names are bind to their value.";
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
 	 */
 	@Override
-	public String getExplanation(Cell cell) {
+	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String script = CellUtil.getFirstParameter(cell, GroovyTransformation.PARAMETER_SCRIPT);
-		
-		if (target != null && script != null) {
-			return MessageFormat.format(EXPLANATION_PATTERN, 
-					"\"" + target.getDefinition().getDefinition().getDisplayName() + "\"",
-					script);
-		}
-		
-		return null;
-	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
-	@Override
-	public String getExplanationAsHtml(Cell cell) {
-		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String script = CellUtil.getFirstParameter(cell, GroovyTransformation.PARAMETER_SCRIPT);
-		
 		if (target != null && script != null) {
-			return MessageFormat.format(EXPLANATION_PATTERN, 
-					"<span style=\"font-style: italic;\">" + target.getDefinition().getDefinition().getDisplayName() + "</span>",
-					"<pre>" + script + "</pre>").replaceAll("\n", "<br />");
+			if (html)
+				script = "<pre>" + script + "</pre>";
+			String explanation = MessageFormat.format(EXPLANATION_PATTERN, formatEntity(target, html),
+					script);
+			if (html)
+				explanation = explanation.replaceAll("\n", "<br />");
+			return explanation;
 		}
-		
+
 		return null;
 	}
 }

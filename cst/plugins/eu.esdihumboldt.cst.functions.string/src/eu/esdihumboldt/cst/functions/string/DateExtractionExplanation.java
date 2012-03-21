@@ -15,39 +15,31 @@ package eu.esdihumboldt.cst.functions.string;
 import java.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for date extraction cells.
  * 
  * @author Kai Schwierczek
  */
-public class DateExtractionExplanation implements CellExplanation {
+public class DateExtractionExplanation extends AbstractCellExplanation {
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
 	 */
 	@Override
-	public String getExplanation(Cell cell) {
+	protected String getExplanation(Cell cell, boolean html) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String format = CellUtil.getFirstParameter(cell, DateExtraction.PARAMETER_DATE_FORMAT);
 		
 		if (target != null && format != null) {
-			return MessageFormat.format("Populates the \"{1}\" property with a date created by parsing the \"{0}\" property using the format \"{2}\".", 
-					source.getDefinition().getDefinition().getDisplayName(), 
-					target.getDefinition().getDefinition().getDisplayName(), format);
+			return MessageFormat.format("Populates the {1} property with a date created by parsing the {0} property using the format {2}.", 
+					formatEntity(source, html), 
+					formatEntity(target, html), quoteText(format, html));
 		}
 		
-		return null;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
-	@Override
-	public String getExplanationAsHtml(Cell cell) {
 		return null;
 	}
 }

@@ -15,21 +15,21 @@ package eu.esdihumboldt.cst.functions.geometric;
 import java.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for OrdinatesToPoint cells.
  * 
  * @author Kai Schwierczek
  */
-public class OrdinatesToPointExplanation implements CellExplanation {
+public class OrdinatesToPointExplanation extends AbstractCellExplanation {
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
 	 */
 	@Override
-	public String getExplanation(Cell cell) {
+	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity sourceX = cell.getSource().get("x").get(0);
 		Entity sourceY = cell.getSource().get("y").get(0);
@@ -40,26 +40,21 @@ public class OrdinatesToPointExplanation implements CellExplanation {
 			sourceZ = cell.getSource().get("z").get(0);
 
 		if (target != null && sourceX != null && sourceY != null) {
-			String message = "Fills the \"{0}\" property with geometry points with the coordinates ({1} {2}";
-			message += (sourceZ == null ? "" : " {3}") + ").";
+			String message = "Fills the {0} property with ";
+			if (hasIndexCondition(target))
+				message += "a geometry point";
+			else
+				message += "geometry points";
+			message += " where the {1} property is x, the {2} property is y";
+			if (sourceZ != null)
+				message += ", the {3} property is z";
+			message += ".";
 			if (srsName != null)
-				message += " The reference system \"{4}\" is used.";
-			return MessageFormat.format(
-					message, target.getDefinition().getDefinition().getDisplayName(),
-					sourceX.getDefinition().getDefinition().getDisplayName(),
-					sourceY.getDefinition().getDefinition().getDisplayName(),
-					sourceZ == null ? null : sourceZ.getDefinition().getDefinition().getDisplayName(),
-					srsName);
+				message += " The reference system {4} is used.";
+			return MessageFormat.format(message, formatEntity(target, html), formatEntity(sourceX, html),
+					formatEntity(sourceY, html), formatEntity(sourceZ, html), quoteText(srsName, html));
 		}
 
-		return null;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
-	@Override
-	public String getExplanationAsHtml(Cell cell) {
 		return null;
 	}
 }

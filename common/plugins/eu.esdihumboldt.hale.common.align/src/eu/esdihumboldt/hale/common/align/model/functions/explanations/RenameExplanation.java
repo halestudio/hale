@@ -25,7 +25,6 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * @author Simon Templer
  */
 public class RenameExplanation extends AbstractCellExplanation implements RenameFunction {
-
 	/**
 	 * @see AbstractCellExplanation#getExplanation(Cell, boolean)
 	 */
@@ -35,16 +34,18 @@ public class RenameExplanation extends AbstractCellExplanation implements Rename
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		
 		if (source != null && target != null) {
-			String text = "For each value in {0} adds the same value to the {1} property. If necessary a conversion is applied.";
+			String text;
+			if (hasIndexCondition(source))
+				text = "For the {0} property";
+			else
+				text = "For each value in {0}";
+			text += " adds the same value to the {1} property. If necessary a conversion is applied.";
 			String structuralRename = CellUtil.getFirstParameter(cell, PARAMETER_STRUCTURAL_RENAME);
 			if (Boolean.parseBoolean(structuralRename))
 				text += " Furthermore child properties get added, too, if the property names match.";
-			return MessageFormat.format(text, 
-					formatEntity(source, html),
-					formatEntity(target, html));
+			return MessageFormat.format(text, formatEntity(source, html), formatEntity(target, html));
 		}
 		
 		return null;
 	}
-
 }

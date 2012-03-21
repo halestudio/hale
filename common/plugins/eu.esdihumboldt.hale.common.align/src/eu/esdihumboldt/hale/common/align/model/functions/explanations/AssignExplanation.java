@@ -15,39 +15,28 @@ package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 import java.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for the assign function.
  * @author Simon Templer
  */
-public class AssignExplanation implements CellExplanation, AssignFunction {
-
+public class AssignExplanation extends AbstractCellExplanation implements AssignFunction {
 	/**
-	 * @see CellExplanation#getExplanation(Cell)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
 	 */
 	@Override
-	public String getExplanation(Cell cell) {
+	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String value = CellUtil.getFirstParameter(cell, PARAMETER_VALUE);
-		
-		if (target != null && value != null) {
-			return MessageFormat.format("Assigns the value ''{1}'' to the ''{0}'' property.", 
-					target.getDefinition().getDefinition().getDisplayName(), value);
-		}
-		
-		return null;
-	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
-	@Override
-	public String getExplanationAsHtml(Cell cell) {
-		// TODO Auto-generated method stub
+		if (target != null && value != null) {
+			return MessageFormat.format("Assigns the value {1} to the {0} property.", 
+					formatEntity(target, html), quoteText(value, html));
+		}
 		return null;
 	}
 
