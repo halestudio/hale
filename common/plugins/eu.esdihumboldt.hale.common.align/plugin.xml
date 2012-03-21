@@ -57,7 +57,7 @@
          </targetProperties>
          <functionParameter
                maxOccurrence="1"
-               minOccurrence="0"
+               minOccurrence="1"
                name="structuralRename"
                label="Structural rename"
                description="If set to true, the rename transformation will try to copy child properties of equal names, too.">
