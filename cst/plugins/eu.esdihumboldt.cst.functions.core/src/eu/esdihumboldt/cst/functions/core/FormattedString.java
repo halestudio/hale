@@ -42,13 +42,6 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 public class FormattedString extends
 		AbstractSingleTargetPropertyTransformation<TransformationEngine> 
 		implements FormattedStringFunction {
-	
-	/**
-	 * Entity name for variables.
-	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
-	 */
-	public static final String ENTITY_VARIABLE = "var";
-
 	@Override
 	protected Object evaluate(String transformationIdentifier,
 			TransformationEngine engine,

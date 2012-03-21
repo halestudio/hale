@@ -15,50 +15,29 @@ package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 import java.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for the retype function.
+ *
  * @author Simon Templer
  */
-public class RetypeExplanation implements CellExplanation {
-
+public class RetypeExplanation extends AbstractCellExplanation {
 	private static final String EXPLANATION_PATTERN = "Creates a {1} instance for each {0} instance in the source data set.";
 
 	/**
-	 * @see CellExplanation#getExplanation(Cell)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
 	 */
 	@Override
-	public String getExplanation(Cell cell) {
+	protected String getExplanation(Cell cell, boolean html) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		
-		if (source != null && target != null) {
-			return MessageFormat.format(EXPLANATION_PATTERN, 
-					source.getDefinition().getDefinition().getDisplayName(),
-					target.getDefinition().getDefinition().getDisplayName());
-		}
+		if (source != null && target != null)
+			return MessageFormat.format(EXPLANATION_PATTERN, formatEntity(source, html, true), formatEntity(target, html, true));
 		
 		return null;
 	}
-
-	/**
-	 * @see CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
-	@Override
-	public String getExplanationAsHtml(Cell cell) {
-		Entity source = CellUtil.getFirstEntity(cell.getSource());
-		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		
-		if (source != null && target != null) {
-			return MessageFormat.format(EXPLANATION_PATTERN, 
-					"<span style=\"font-style: italic;\">" + source.getDefinition().getDefinition().getDisplayName() + "</span>",
-					"<span style=\"font-style: italic;\">" + target.getDefinition().getDefinition().getDisplayName() + "</span>");
-		}
-		
-		return null;
-	}
-
 }

@@ -39,7 +39,11 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 	 * Name for the parameter containing the groovy script.
 	 */
 	public static final String PARAMETER_SCRIPT = "script";
-	private static final String ENTITY_VARIABLE = "var";
+
+	/**
+	 * Entity name for variables.
+	 */
+	public static final String ENTITY_VARIABLE = "var";
 
 	/**
 	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String, TransformationEngine, ListMultimap, String, PropertyEntityDefinition, Map, TransformationLog)

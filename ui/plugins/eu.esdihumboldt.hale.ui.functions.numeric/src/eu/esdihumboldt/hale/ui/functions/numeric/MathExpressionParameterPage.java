@@ -9,7 +9,6 @@ import com.iabcinc.jmep.Expression;
 import com.iabcinc.jmep.hooks.Constant;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 
 /**
@@ -85,9 +84,8 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 
 		// update environment
 		environment = new Environment();
-		DefinitionLabelProvider dlp = new DefinitionLabelProvider(true, true);
 		for (EntityDefinition variable : variables)
-			environment.addVariable(dlp.getText(variable), new Constant(new Double(1)));
+			environment.addVariable(getVariableName(variable), new Constant(new Double(1)));
 
 		// re set text to get modify event
 		textField.setText(textField.getText());
