@@ -12,8 +12,10 @@
 
 package eu.esdihumboldt.hale.common.instance.extension;
 
+import java.util.List;
+
 import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.util.definition.AbstractObjectFactory;
@@ -26,6 +28,10 @@ public class FilterDefinitionManager extends
 		AbstractObjectFactory<Filter, FilterDefinition<?>> {
 	
 	private static volatile FilterDefinitionManager instance;
+	
+	private FilterDefinitionManager() {
+		super();
+	}
 	
 	/**
 	 * Get the {@link FilterDefinitionManager} instance.
@@ -44,8 +50,8 @@ public class FilterDefinitionManager extends
 	 * @see AbstractObjectFactory#getDefinitions()
 	 */
 	@Override
-	protected Iterable<FilterDefinition<?>> getDefinitions() {
-		return Collections2.transform(extension.getFactories(), new Function<FilterDefinitionFactory, FilterDefinition<?>>() {
+	protected List<FilterDefinition<?>> getDefinitions() {
+		return Lists.transform(extension.getFactories(), new Function<FilterDefinitionFactory, FilterDefinition<?>>() {
 
 			@Override
 			public FilterDefinition<?> apply(FilterDefinitionFactory input) {

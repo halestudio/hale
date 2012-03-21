@@ -55,6 +55,7 @@ public class MessageFactory extends AbstractObjectFactory<Message, MessageDefini
 	 */
 	private MessageFactory() {
 		/* nothing */
+		super();
 	}
 	
 	/**
@@ -120,7 +121,7 @@ public class MessageFactory extends AbstractObjectFactory<Message, MessageDefini
 	 * @see AbstractObjectFactory#getDefinitions()
 	 */
 	@Override
-	protected Iterable<MessageDefinition<?>> getDefinitions() {
+	protected List<MessageDefinition<?>> getDefinitions() {
 		// check if definitions are available
 		if (this.messageDefinitions.size() > 0) {
 			return this.messageDefinitions;

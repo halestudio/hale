@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.common.align.transformation.report.impl;
 
 import net.jcip.annotations.Immutable;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationMessage;
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
@@ -25,10 +26,10 @@ import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 public class TransformationMessageImpl extends MessageImpl implements
 		TransformationMessage {
 
-	private final Cell cell;
+	private final CellBean cell;
 
 	/**
-	 * Create a new transformation message
+	 * Create a new transformation message.
 	 * 
 	 * @param cell the cell the message is associated to
 	 * @param message the message
@@ -37,6 +38,34 @@ public class TransformationMessageImpl extends MessageImpl implements
 	public TransformationMessageImpl(Cell cell, String message, Throwable throwable) {
 		super(message, throwable);
 		
+		this.cell = new CellBean(cell);
+	}
+	
+	/**
+	 * Create a new transformation message.
+	 * 
+	 * @param cell the cell the message is associated to
+	 * @param message the message
+	 * @param throwable the throwable associated to the message, may be <code>null</code>
+	 * @param stackTrace the associated stack trace, or <code>null</code>
+	 */
+	public TransformationMessageImpl(Cell cell, String message, Throwable throwable, String stackTrace) {
+		super(message, throwable, stackTrace);
+		
+		this.cell = new CellBean(cell);
+	}
+	
+	/**
+	 * Create a new transformation message.
+	 * 
+	 * @param cell the cell the message is associated to
+	 * @param message the message
+	 * @param throwable the throwable associated to the message, may be <code>null</code>
+	 * @param stackTrace the associated stack trace, or <code>null</code>
+	 */
+	public TransformationMessageImpl(CellBean cell, String message, Throwable throwable, String stackTrace) {
+		super(message, throwable, stackTrace);
+		
 		this.cell = cell;
 	}
 
@@ -44,7 +73,7 @@ public class TransformationMessageImpl extends MessageImpl implements
 	 * @see TransformationMessage#getCell()
 	 */
 	@Override
-	public Cell getCell() {
+	public CellBean getCell() {
 		return cell;
 	}
 
