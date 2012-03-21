@@ -12,12 +12,12 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.report;
 
-import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.core.report.Message;
 
 /**
- * TODO Type description
- * @author sitemple
+ * Transformation message
+ * @author Simon Templer
  */
 public interface TransformationMessage extends Message {
 	
@@ -25,6 +25,6 @@ public interface TransformationMessage extends Message {
 	 * Get the transformation cell
 	 * @return the cell
 	 */
-	public Cell getCell();
+	public CellBean getCell();
 
 }

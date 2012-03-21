@@ -41,7 +41,7 @@ public class CellBean {
 	private List<ParameterValue> transformationParameters = new ArrayList<ParameterValue>();
 	
 	private String transformationIdentifier;
-
+	
 	/**
 	 * Default constructor.
 	 * Creates an empty cell bean. 

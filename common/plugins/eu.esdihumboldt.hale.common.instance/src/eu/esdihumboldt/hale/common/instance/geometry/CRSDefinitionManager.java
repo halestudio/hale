@@ -10,7 +10,6 @@
 package eu.esdihumboldt.hale.common.instance.geometry;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
@@ -26,6 +25,10 @@ import eu.esdihumboldt.util.definition.AbstractObjectFactory;
  */
 public class CRSDefinitionManager extends AbstractObjectFactory<CRSDefinition,
 		CRSDefinitionFactory<?>> {
+	
+	private CRSDefinitionManager() {
+		super();
+	}
 	
 	/**
 	 * Get the CRS definition manager instance
@@ -46,7 +49,7 @@ public class CRSDefinitionManager extends AbstractObjectFactory<CRSDefinition,
 	 * @see AbstractObjectFactory#getDefinitions()
 	 */
 	@Override
-	protected Collection<CRSDefinitionFactory<?>> getDefinitions() {
+	protected List<CRSDefinitionFactory<?>> getDefinitions() {
 		List<CRSDefinitionFactory<?>> result = new ArrayList<CRSDefinitionFactory<?>>();
 		for (CRSDefinitionFactory<?> def : OsgiUtils.getServices(CRSDefinitionFactory.class)) {
 			result.add(def);

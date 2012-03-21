@@ -29,7 +29,8 @@ import eu.esdihumboldt.util.definition.AbstractObjectFactory;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportFactory extends AbstractObjectFactory<Report<?>, ReportDefinition<?>> {
+@SuppressWarnings("rawtypes")
+public class ReportFactory extends AbstractObjectFactory<Report, ReportDefinition<?>> {
 	
 	/**
 	 * Extension point ID
@@ -58,6 +59,7 @@ public class ReportFactory extends AbstractObjectFactory<Report<?>, ReportDefini
 	 */
 	private ReportFactory() {
 		/* nothing */
+		super();
 	}
 	
 	/**
@@ -123,7 +125,7 @@ public class ReportFactory extends AbstractObjectFactory<Report<?>, ReportDefini
 	 * @see eu.esdihumboldt.util.definition.AbstractObjectFactory#getDefinitions()
 	 */
 	@Override
-	public Iterable<ReportDefinition<?>> getDefinitions() {
+	public List<ReportDefinition<?>> getDefinitions() {
 		// check if definitions are available
 		if (this.reportDefinitions.size() > 0) {
 			return this.reportDefinitions;
