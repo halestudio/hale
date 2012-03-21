@@ -118,7 +118,10 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 
 	@Override
 	public String getFormattedMessage() {
-		return String.format("%s, on line %d, column %d", getMessage(), getLineNumber(), getColumn());
-		
+		if (getLineNumber() == 0) {
+			return this.getMessage();
+		} else {
+			return String.format("%s, on line %d, column %d", getMessage(), getLineNumber(), getColumn());
+		}
 	}
 }
