@@ -82,6 +82,8 @@ public class LoadProjectAction extends Action implements IIntroAction, ICheatShe
 			return;
 		}
 
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().forceActive();
+
 		// close intro if specified and visible
 		if (closeIntro) {
 			IIntroPart introPart = PlatformUI.getWorkbench().getIntroManager().getIntro();
