@@ -25,6 +25,11 @@ import java.util.List;
 public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? extends T>> {
 	
 	/**
+	 * The cached sorted definitions.
+	 */
+	private Iterable<D> sortedDefinitions;
+	
+	/**
 	 * Default constructor.
 	 */
 	public AbstractObjectFactory() {
@@ -96,39 +101,43 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 	 * @return sorted definitions
 	 */
 	private Iterable<D> getSortedDefinitions() {
-		List<D> list = getDefinitions();
-		ArrayList<D> result = new ArrayList<D>(list.size());
+		if (sortedDefinitions == null) {
+			List<D> list = getDefinitions();
+			ArrayList<D> result = new ArrayList<D>(list.size());
+			
+			while (!list.isEmpty()) {
+				Iterator<D> iter = list.iterator();
+				while (iter.hasNext()) {
+					D def = iter.next();
+					boolean isSuper = false;
 		
-		while (!list.isEmpty()) {
-			Iterator<D> iter = list.iterator();
-			while (iter.hasNext()) {
-				D def = iter.next();
-				boolean isSuper = false;
-	
-				for (D d : list) {
-					// skip if it's the same object
-					if (def.equals(d)) continue;
+					for (D d : list) {
+						// skip if it's the same object
+						if (def.equals(d)) continue;
+						
+						// check if it's super class
+						if (def.getObjectClass().isAssignableFrom(d.getObjectClass())) {
+							isSuper = true;
+							break;
+						}
+					}
 					
-					// check if it's super class
-					if (def.getObjectClass().isAssignableFrom(d.getObjectClass())) {
-						isSuper = true;
-						break;
+					/*
+					 * if it's not a super class/interface add it to result
+					 * and remove it from list
+					 */
+					if (!isSuper) {
+						result.add(def);
+						iter.remove();
 					}
 				}
-				
-				/*
-				 * if it's not a super class/interface add it to result
-				 * and remove it from list
-				 */
-				if (!isSuper) {
-					result.add(def);
-					iter.remove();
-				}
 			}
+			
+			sortedDefinitions = result;
 		}
 		
 		// return the sorted list
-		return result;
+		return sortedDefinitions;
 	}
 	
 	/**
