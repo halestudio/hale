@@ -56,6 +56,8 @@ public class ImportAction extends Action implements ICheatSheetAction, ILiveHelp
 		if (actionId == null)
 			return;
 
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().forceActive();
+
 		IOWizardAction action = new IOWizardAction(actionId);
 		if (action.isEnabled()) {
 			action.addPropertyChangeListener(new IPropertyChangeListener() {
