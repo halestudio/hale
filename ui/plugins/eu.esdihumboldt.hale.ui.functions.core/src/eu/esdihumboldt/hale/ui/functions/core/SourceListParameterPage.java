@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.functions.core;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -32,11 +33,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -106,15 +109,23 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	}
 
 	/**
-	 * This gets called when the user chose a source property to insert.<br>
-	 * Subclasses can change the inserted string here.
+	 * This gets called for all variables.<br>
+	 * Subclasses can change how they are displayed here.<br>
+	 * The default format is like "part1.part2.name".
 	 * 
-	 * @param value the value that should get inserted
-	 * @return the modified value which gets inserted
+	 * @param variable the variable
+	 * @return the modified name
 	 */
-	protected String insert(String value) {
-		// give EntityDefinition instead? More freedom for subclasses...
-		return value;
+	protected String getVariableName(EntityDefinition variable) {
+		if (variable.getPropertyPath() != null && !variable.getPropertyPath().isEmpty()) {
+			List<String> names = new ArrayList<String>();
+			for (ChildContext context : variable.getPropertyPath()) {
+				names.add(context.getChild().getName().getLocalPart());
+			}
+			String longName = Joiner.on('.').join(names);
+			return longName;
+		} else
+			return variable.getDefinition().getDisplayName();
 	}
 
 	/**
@@ -176,10 +187,10 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 		for (int i = 0; i < variables.length; i++)
 			variables[i] = iter.next().getDefinition();
 
+		varTable.setInput(variables);
+
 		// inform subclasses
 		sourcePropertiesChanged(variables);
-
-		varTable.setInput(variables);
 
 		((Composite) getControl()).layout();
 	}
@@ -215,7 +226,15 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 		TableViewerColumn column = new TableViewerColumn(varTable, SWT.NONE);
 		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
 		varTable.setContentProvider(ArrayContentProvider.getInstance());
-		varTable.setLabelProvider(new DefinitionLabelProvider(true, true));
+		varTable.setLabelProvider(new DefinitionLabelProvider(true, true) {
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getText(java.lang.Object)
+			 */
+			@Override
+			public String getText(Object element) {
+				return getVariableName((EntityDefinition) element);
+			}
+		});
 		varTable.getTable().addMouseListener(new MouseAdapter() {
 			/**
 			 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
@@ -226,7 +245,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 				if (index >= 0) {
 					String var = varTable.getTable().getItem(index).getText();
 					// let subclass modify variable
-					textField.insert(insert(var));
+					textField.insert(var);
 					textField.setFocus();
 				}
 			}

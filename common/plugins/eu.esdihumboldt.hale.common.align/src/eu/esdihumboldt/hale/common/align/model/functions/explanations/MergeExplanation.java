@@ -16,22 +16,22 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for merge function cells.
  * @author Simon Templer
  */
-public class MergeExplanation implements CellExplanation, MergeFunction {
-
+public class MergeExplanation extends AbstractCellExplanation implements MergeFunction {
 	/**
-	 * @see CellExplanation#getExplanation(Cell)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
 	 */
 	@Override
-	public String getExplanation(Cell cell) {
+	protected String getExplanation(Cell cell, boolean html) {
+
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		
@@ -41,9 +41,7 @@ public class MergeExplanation implements CellExplanation, MergeFunction {
 				&& !properties.isEmpty()) {
 			StringBuffer propertiesString = new StringBuffer();
 			for (int i = 0; i < properties.size(); i++) {
-				propertiesString.append('\'');
-				propertiesString.append(properties.get(i));
-				propertiesString.append('\'');
+				propertiesString.append(quoteText(properties.get(i), html));
 				
 				if (i == properties.size() - 2) {
 					propertiesString.append(" and ");
@@ -52,22 +50,15 @@ public class MergeExplanation implements CellExplanation, MergeFunction {
 					propertiesString.append(", ");
 				}
 			}
+
+			// XXX additional properties and auto detect of equal properties
 			
 			return MessageFormat.format("Merges different instances of the type {0} based on its properties {2} being equal. The values of these properties are merged into one, while the values of the other properties will be available in the target instance of type {1} as separate values for each source instance.",
-					source.getDefinition().getDefinition().getDisplayName(),
-					target.getDefinition().getDefinition().getDisplayName(),
+					formatEntity(source, html, true),
+					formatEntity(target, html, true),
 					propertiesString);
 		}
 		
-		return null;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.CellExplanation#getExplanationAsHtml(eu.esdihumboldt.hale.common.align.model.Cell)
-	 */
-	@Override
-	public String getExplanationAsHtml(Cell cell) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

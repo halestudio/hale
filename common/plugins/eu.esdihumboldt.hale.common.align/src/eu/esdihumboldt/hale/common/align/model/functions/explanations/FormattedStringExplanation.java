@@ -13,54 +13,51 @@
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for formatted string cells.
  * @author Simon Templer
  */
-public class FormattedStringExplanation implements CellExplanation, FormattedStringFunction {
-	
+public class FormattedStringExplanation extends AbstractCellExplanation implements FormattedStringFunction {
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with a string formatted according to this pattern:\n"
-			+ "{1}\n\nSource property names in curly braces are replaced by the corresponding property value.";
+			+ "{1}\nSource property names in curly braces are replaced by the corresponding property value, if the context condition/index matches, otherwise the value isn't set.";
 
 	/**
-	 * @see CellExplanation#getExplanation(Cell)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
 	 */
 	@Override
-	public String getExplanation(Cell cell) {
+	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN);
-		
+		List<? extends Entity> sources = cell.getSource().get(ENTITY_VARIABLE);
+
 		if (target != null && pattern != null) {
-			return MessageFormat.format(EXPLANATION_PATTERN, 
-					"'" + target.getDefinition().getDefinition().getDisplayName() + "'",
-					pattern);
+			if (html)
+				pattern = "<pre>" + pattern + "</pre>";
+			String explanation = MessageFormat.format(EXPLANATION_PATTERN, 
+					formatEntity(target, html, true), pattern);
+			if (html)
+				explanation = explanation.replaceAll("\n", "<br />");
+			if (html) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("<br>Replacement table:<br>");
+				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
+				for (Entity entity : sources)
+					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>", '{' + getEntityNameWithoutCondition(entity) + '}',
+							formatEntity(entity, true, false)));
+				sb.append("</table>");
+				explanation += sb.toString();
+			}
+			return explanation;
 		}
-		
+
 		return null;
 	}
-
-	/**
-	 * @see CellExplanation#getExplanationAsHtml(Cell)
-	 */
-	@Override
-	public String getExplanationAsHtml(Cell cell) {
-		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN);
-		
-		if (target != null && pattern != null) {
-			return MessageFormat.format(EXPLANATION_PATTERN, 
-					"<span style=\"font-style: italic;\">" + target.getDefinition().getDefinition().getDisplayName() + "</span>",
-					"<span style=\"font-weight: bold;\">" + pattern + "</span>").replaceAll("\n", "<br />");
-		}
-		
-		return null;
-	}
-
 }
