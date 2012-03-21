@@ -11,6 +11,14 @@
             function="eu.esdihumboldt.hale.align.rename"
             id="eu.esdihumboldt.hale.align.rename.generic">
       </propertyWizard>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.CheckboxParameterPage"
+            function="eu.esdihumboldt.hale.align.rename"
+            id="eu.esdihumboldt.hale.ui.functions.core.rename_page">
+         <parameter
+               name="structuralRename">
+         </parameter>
+      </propertyParameterPage>
       <propertyWizard
             function="eu.esdihumboldt.hale.align.assign"
             id="eu.esdihumboldt.hale.align.assign.generic">
@@ -52,7 +60,7 @@
          </parameter>
       </typeParameterPage>
       <typeParameterPage
-            class="eu.esdihumboldt.hale.ui.function.generic.pages.GenericParameterPage"
+            class="eu.esdihumboldt.hale.ui.functions.core.CheckboxParameterPage"
             function="eu.esdihumboldt.hale.align.merge"
             id="eu.esdihumboldt.hale.ui.functions.core.merge2"
             order="1">
