@@ -78,6 +78,41 @@
             </validator>
          </functionParameter>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            description="Creates a buffer on a geometry."
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.networkexpansion"
+            name="Network Expansion">
+         <targetProperties>
+            <property
+                  description="The property that shall hold the created point"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <geometryCondition></geometryCondition>
+            </property>
+         </sourceProperties>
+         <functionParameter
+               description="The size of the buffer to create on the source geometry."
+               label="Buffer width"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="bufferWidth">
+            <validator
+                  class="eu.esdihumboldt.hale.common.align.extension.function.validator.NumberValidator">
+               <parameter
+                     name="type"
+                     value="float">
+               </parameter>
+            </validator>
+         </functionParameter>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -86,6 +121,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.geometric.ordinates_to_point"
             id="eu.esdihumboldt.cst.functions.geometric.ordinates_to_point">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.NetworkExpansion"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.networkexpansion"
+            id="eu.esdihumboldt.cst.functions.geometric.networkexpansion">
       </propertyTransformation>
    </extension>
 
