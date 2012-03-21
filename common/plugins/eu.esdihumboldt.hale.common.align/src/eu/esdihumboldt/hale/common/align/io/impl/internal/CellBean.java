@@ -41,6 +41,8 @@ public class CellBean {
 	private List<ParameterValue> transformationParameters = new ArrayList<ParameterValue>();
 	
 	private String transformationIdentifier;
+	
+	private Cell cell = null;
 
 	/**
 	 * Default constructor.
@@ -56,6 +58,7 @@ public class CellBean {
 	 */
 	public CellBean(Cell cell) {
 		this.transformationIdentifier = cell.getTransformationIdentifier();
+		this.cell = cell;
 		
 		if (cell.getTransformationParameters() != null) {
 			for (Entry<String, String> param : cell.getTransformationParameters().entries()) {
@@ -192,4 +195,11 @@ public class CellBean {
 		this.transformationIdentifier = transformationIdentifier;
 	}
 
+
+	/**
+	 * @return the cell
+	 */
+	public Cell getCell() {
+		return cell;
+	}
 }

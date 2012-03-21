@@ -286,5 +286,16 @@
          </save>
       </action-file>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.report">
+      <messageDefinition
+            class="eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImplDefinition"
+            id="eu.esdihumboldt.hale.common.core.transformation">
+      </messageDefinition>
+      <reportDefinition
+            class="eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationReportImplDefinition"
+            id="eu.esdihumboldt.hale.common.core.transformation">
+      </reportDefinition>
+   </extension>
 
 </plugin>
