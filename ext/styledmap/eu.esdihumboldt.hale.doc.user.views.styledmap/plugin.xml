@@ -12,6 +12,10 @@
             file="toc.views.xml"
             primary="false">
       </toc>
+      <toc
+            file="toc.tasks_data.xml"
+            primary="false">
+      </toc>
    </extension>
 
 </plugin>

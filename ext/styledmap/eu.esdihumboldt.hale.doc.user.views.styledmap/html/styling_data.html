@@ -5,24 +5,39 @@
 <title>Styling of your Data</title>
 </head>
 <body>
-
-<h2>Styling of your Data</h2>
-
-On the top left corner of the Map View you can find
-the settings for controlling the map rendering. Specifically,
-you can configure so-called Styled Layer
-Descriptors there, using a rich GUI. Click on the
-Styles button, select the <i>FeatureType</i> for which
-you want to define a styling, and then configure your
-styling rule. You can define styles for points, lines
-and polygons, and you can define complex styles
-with filter rules. It's also possible to define a style for
-selected Features.
-<br>
-It is also possible to load a styling from a XML Styled
-layer Descriptor file. Using this feature to load a predefined
-styling for the transformed data allows to get
-a live impression in the Map Viewer of the progress
-of your mapping endeavour.
+	<h1>Styling of your Data</h1>
+	<p>
+		For the <a href="map_view.html">map view</a> it is possible to use a
+		custom styling. The easiest way to do this, is to change the settings
+		for the default styles. To do so, open the <i>Settings</i> dialog,
+		using <i>Window</i>&#8594;<i>Settings</i>, then choose the <i>Default
+			styles</i> preference page and adapt it to your liking.
+	</p>
+	<p>
+		But there are also more advanced options to customize the styling.
+		Specifically, you can configure so-called Styled Layer Descriptors for
+		each schema type, using a rich GUI. In the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/schema_explorer.html">Schema
+			Explorer</a>, select the type for which you want to define a styling,
+		select <i>Change style</i> from the context menu and then configure your styling
+		rule. You can define styles for points, lines and polygons, and you
+		can define complex styles with filter rules.
+	</p>
+	<div>
+		<img src="../images/edit_style.png" title="Change style dialog">
+	</div>
+	<p>
+		It is also possible to <a class="command-link"
+			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.ImportAction",
+	"eu.esdihumboldt.hale.ui.style.load")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link">load a styling</a> from a XML Styled layer
+		Descriptor file. Using this feature to load a predefined styling for
+		the transformed data allows to get a live impression in the map of the
+		progress of your mapping endeavor.
+	</p>
+	<div>
+		<img src="../images/map_rules.png">
+	</div>
 </body>
 </html>
