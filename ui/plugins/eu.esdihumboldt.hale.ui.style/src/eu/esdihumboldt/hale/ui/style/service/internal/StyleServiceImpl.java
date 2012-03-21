@@ -87,6 +87,8 @@ public class StyleServiceImpl extends AbstractStyleService {
 
 	private RGB background = null;
 	
+	private FeatureTypeStyle fbStyle = null;
+	
 	// Constructor, instance accessor ..........................................
 	
 	/**
@@ -227,7 +229,12 @@ public class StyleServiceImpl extends AbstractStyleService {
 			style.featureTypeStyles().add(fts);
 		}
 		else {
+			if(fbStyle != null){
+				style.featureTypeStyles().add(fbStyle);
+			}
+			else{
  			style.featureTypeStyles().add(StyleHelper.getDefaultStyle(type, dataSet));
+			}
 		}
 		return style;
 	}
@@ -257,6 +264,9 @@ public class StyleServiceImpl extends AbstractStyleService {
 		
 		for (FeatureTypeStyle fts : styles.values()) {
 			style.featureTypeStyles().add(fts);
+		}
+		if(fbStyle != null){
+			style.featureTypeStyles().add(fbStyle);
 		}
 		
 		return style;
@@ -288,7 +298,13 @@ public class StyleServiceImpl extends AbstractStyleService {
 				// only add styles for non-abstract feature types
 				FeatureTypeStyle fts = styles.get(type);
 				if (fts == null) {
-					fts = StyleHelper.getDefaultStyle(type, dataset);
+					if(fbStyle != null){
+						fts = fbStyle;
+					}
+					else{
+						fts = StyleHelper.getDefaultStyle(type, dataset);	
+					}
+					
 				}
 				if (selected) {
 					fts = getSelectedStyle(fts);
@@ -378,20 +394,27 @@ public class StyleServiceImpl extends AbstractStyleService {
 		
 		for (Style style : styles) {
 			for (FeatureTypeStyle fts : style.featureTypeStyles()) {
-				Collection<TypeDefinition> types = findTypes(fts.featureTypeNames());
-				if (types != null && !types.isEmpty()) {
-					for (TypeDefinition type : types) {
-						if (addStyle(type, fts)) {
-							somethingHappened = true;
+				if (fts.featureTypeNames().iterator().next().getLocalPart()
+						.equals("Feature")) {
+					this.fbStyle = fts;
+					somethingHappened = true;
+				}
+				else{
+					Collection<TypeDefinition> types = findTypes(fts.featureTypeNames());
+					if (types != null && !types.isEmpty()) {
+						for (TypeDefinition type : types) {
+							if (addStyle(type, fts)) {
+								somethingHappened = true;
+							}
 						}
 					}
-				}
-				else {
-					/*
-					 * store for later schema update when
-					 * feature type might be present
-					 */
-					queuedStyles.add(fts);
+					else {
+						/*
+						 * store for later schema update when
+						 * feature type might be present
+						 */
+						queuedStyles.add(fts);
+					}
 				}
 			}
 		}
@@ -456,6 +479,23 @@ public class StyleServiceImpl extends AbstractStyleService {
 		}
 		return result;
 	}
+	
+	/*
+	private Collection<TypeDefinition> findFallbackTypes(){
+		Collection<TypeDefinition> result = new ArrayList<TypeDefinition>();
+		
+		TypeIndex typeIndexSource = schemaService.getSchemas(SchemaSpaceID.SOURCE);
+		TypeIndex typeIndexTarget = schemaService.getSchemas(SchemaSpaceID.TARGET);
+		
+		for (TypeDefinition type : typeIndexSource.getMappingRelevantTypes()){
+			result.add(type);
+		}
+		for (TypeDefinition type : typeIndexTarget.getMappingRelevantTypes()){
+			result.add(type);
+		}	
+		return result;
+	}
+	*/
 
 	/**
 	 * Add a type style.
@@ -530,6 +570,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 	public void clearStyles() {
 		queuedStyles.clear();
 		styles.clear();
+		fbStyle = null;
 		
 		notifyStylesRemoved();
 	}
