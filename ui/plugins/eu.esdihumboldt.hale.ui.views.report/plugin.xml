@@ -88,7 +88,7 @@
                id="eu.esdihumboldt.hale.ui.views.report.properties.details.info"
                image="icons/info.gif"
                indented="true"
-               label="Info">
+               label="Info  ">
          </propertyTab>
          <propertyTab
                afterTab="eu.esdihumboldt.hale.ui.views.report.properties.details"
@@ -96,15 +96,15 @@
                id="eu.esdihumboldt.hale.ui.views.report.properties.details.warning"
                image="icons/warning.gif"
                indented="true"
-               label="Warning">
+               label="Warnings  ">
          </propertyTab>
          <propertyTab
                afterTab="eu.esdihumboldt.hale.ui.views.report.properties.details"
                category="eu.esdihumboldt.hale.ui.views.report.properties.definition"
                id="eu.esdihumboldt.hale.ui.views.report.properties.details.error"
-               image="icons/error_log.gif"
+               image="icons/error.gif"
                indented="true"
-               label="Error">
+               label="Errors  ">
          </propertyTab>
       </propertyTabs>
    </extension>
