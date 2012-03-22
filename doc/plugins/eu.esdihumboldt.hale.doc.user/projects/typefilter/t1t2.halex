@@ -27,8 +27,8 @@ The source type 'item' is mapped to two different target types 'shirt' and 'hat'
         <setting name="source">file:/D:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/instance1.xml</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
     </resource>
-    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t1t2.halex.styles.sld"/>
-    <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t1t2.halex.alignment.xml"/>
+    <file name="styles.sld" location="file:/D:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/D:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/typefilter/t1t2.halex.alignment.xml"/>
     <property name="eu.esdihumboldt.hale.ui.function.new_relation.last_function">eu.esdihumboldt.hale.align.rename</property>
     <property name="mappableSourceType/1">{http://www.example.org/t1/}ItemType</property>
     <property name="mappableSourceType/count">1</property>
