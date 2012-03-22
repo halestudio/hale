@@ -12,15 +12,15 @@
 
 package eu.esdihumboldt.hale.ui.views.report.properties.details;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
-import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
@@ -38,22 +38,17 @@ public abstract class ReportDetailsPage extends AbstractPropertySection {
 	/**
 	 * The FilteredTree
 	 */
-	public FilteredTree tree;
+	protected FilteredTree tree;
 	
 	/**
 	 * Contains the report for which details should be displayed
 	 */
-	public Report<?> report;
+	protected Report<?> report;
 	
 	/**
 	 * Composite for the tabbed property page
 	 */
-	public Composite composite;
-	
-	/**
-	 * Contains the formdata
-	 */
-	public FormData data;
+	private Composite composite;
 	
 	/**
 	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
@@ -61,20 +56,25 @@ public abstract class ReportDetailsPage extends AbstractPropertySection {
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		composite = getWidgetFactory().createFlatFormComposite(parent);
+		
+		composite = getWidgetFactory().createComposite(parent);
+		composite.setLayout(GridLayoutFactory.fillDefaults().create());
 		
 		PatternFilter filter = new PatternFilter();
 		tree = new FilteredTree(composite, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL, filter, true);
-		
-		data = new FormData();
-		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-		data.right = new FormAttachment(100, 0);
-		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-		tree.setLayoutData(data);
 
 		TreeViewer viewer = tree.getViewer();
 		viewer.setContentProvider(new ReportTreeContentProvider());
 		viewer.setLabelProvider(new ReportTreeLabelProvider());
 	}
+
+	/**
+	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#shouldUseExtraSpace()
+	 */
+	@Override
+	public boolean shouldUseExtraSpace() {
+		return true;
+	}
+	
 }
