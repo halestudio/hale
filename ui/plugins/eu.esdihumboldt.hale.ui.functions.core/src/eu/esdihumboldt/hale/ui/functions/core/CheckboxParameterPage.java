@@ -47,7 +47,7 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 	 */
 	public CheckboxParameterPage() {
 		super("checkbox", "Please choose", null);
-		setPageComplete(false);
+		setPageComplete(true);
 	}
 
 	/**
