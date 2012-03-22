@@ -16,7 +16,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
@@ -30,7 +34,11 @@ import eu.esdihumboldt.hale.ui.views.properties.cell.AbstractCellSection;
  */
 public class HtmlExplanationCellSection extends AbstractCellSection {
 	
+	private static final ALogger log = ALoggerFactory.getLogger(HtmlExplanationCellSection.class);
+	
 	private Browser browser;
+	
+	private Text textField;
 
 	@Override
 	public void createControls(Composite parent,
@@ -40,7 +48,12 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 		Composite page = getWidgetFactory().createComposite(parent);
 		page.setLayout(new FillLayout());
 		
-		browser = new Browser(page, SWT.NONE);
+		try {
+			browser = new Browser(page, SWT.NONE);
+		} catch (Throwable e) {
+			log.warn("Could not create embedded browser, using text field as fall-back", e);
+			textField = new Text(page, SWT.MULTI | SWT.WRAP);
+		}
 	}
 
 	@Override
@@ -58,19 +71,33 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 			if (function != null) {
 				CellExplanation explanation =  function.getExplanation();
 				if (explanation != null) {
-					String text = explanation.getExplanationAsHtml(cell);
-					if (text == null) {
-						text = explanation.getExplanation(cell);
+					if (browser != null) {
+						String text = explanation.getExplanationAsHtml(cell);
+						if (text == null) {
+							text = explanation.getExplanation(cell);
+						}
+						if (text != null) {
+							browser.setText(text);
+							return;
+						}
 					}
-					if (text != null) {
-						browser.setText(text);
-						return;
+					else if (textField != null) {
+						String text = explanation.getExplanation(cell);
+						if (text != null) {
+							textField.setText(text);
+						}
 					}
 				}
 			}
 		}
 		
-		browser.setText("Sorry, no explanation available.");
+		String text = "Sorry, no explanation available.";
+		if (browser != null) {
+			browser.setText(text);
+		}
+		else if (textField != null) {
+			textField.setText(text);
+		}
 	}
 
 }
