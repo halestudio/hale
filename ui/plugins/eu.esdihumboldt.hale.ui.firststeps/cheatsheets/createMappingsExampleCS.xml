@@ -25,15 +25,36 @@ Click on <b>Click to perform</b> to load the example project.
    <item
          title="Add missing alignments">
       <description>
-Use the <b>Schema Explorer</b> to find missing alignments. <br />
-Select them in <b>Edit->Add relation...->General->Rename</b> and click <b>Finish</b>,
+Use the <b>Schema Explorer</b> to explore the source and target schema.
+Each contains a type that is semantically equal to the one from the other schema, but has a different structure.
+The schema elements that are not highlighted are not mapped yet.
+To complete the alignment, add the missing relations.<br />
+Select them in <b>Edit&#8594;Add relation...&#8594;General&#8594;Rename</b> and click <b>Finish</b>,
 or select them directly in the Schema Explorer, click the arrow in between, click <b>Rename</b>
 and then <b>Finish</b> in the opened dialog. <br />
 <br />
 Note, that you are mapping a simple type to a complex nested type. You are done, if you found the two missing alignments.
       </description>
+   </item>
+   <item
+         title="Save the transformation result">
+      <action
+            pluginId="eu.esdihumboldt.hale.ui.firststeps"
+            class="eu.esdihumboldt.hale.ui.firststeps.ImportAction"
+            param1="eu.esdihumboldt.hale.io.instance.write.transformed"
+            required="false" /> 
+      <description>
+The project includes a small sample source data set.
+You can use the <b>Source Data</b> view and the <b>Transformed Data</b> view in the <b>Data</b> perspective to inspect the source instances and the transformed instances that are created based on the alignment.<br />
+<br />
+To export the transformed instances to a XML file, select <b>File&#8594;Export&#8594;Transformed data...</b>.
+Then select <b>XML (Custom root element)</b> as export format and continue with <b>Next</b>. You may now specify a target file and whether it should be validated on completion.
+On the next page, select the <b>collection</b> element as root element for the file and press finish.<br />
+<br />
+If you added the mapping for <b>city</b> in the previous step, the validator will report success after the file has been written. 
+      </description>
       <onCompletion>
-Congratulations, you added mappings to an existing project, now continue with you own project!
+Congratulations, you added mappings to an existing project, now continue with your own project!
       </onCompletion>
    </item>
 </cheatsheet>
