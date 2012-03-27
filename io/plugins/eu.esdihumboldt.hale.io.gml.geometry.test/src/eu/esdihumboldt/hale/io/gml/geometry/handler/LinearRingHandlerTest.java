@@ -38,8 +38,8 @@ public class LinearRingHandlerTest extends AbstractHandlerTest {
 
 	private LinearRing reference;
 
-	//XXX no test for geometry properties
-	
+	// XXX no test for geometry properties
+
 	@Override
 	public void init() {
 		super.init();
@@ -157,7 +157,8 @@ public class LinearRingHandlerTest extends AbstractHandlerTest {
 			instance = it.next();
 			checkLinearRingPropertyInstance(instance);
 
-			// 5. LinearRingProperty with LinearRing defined through pointProperty
+			// 5. LinearRingProperty with LinearRing defined through
+			// pointProperty
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLinearRingPropertyInstance(instance);
@@ -171,50 +172,51 @@ public class LinearRingHandlerTest extends AbstractHandlerTest {
 		}
 	}
 
-//	/**
-//	 * Test linear ring geometries read from a GML 3.2 file
-//	 * 
-//	 * @throws Exception
-//	 *             if an error occurs
-//	 */
-//	@Test
-//	public void testLinearRingGml32() throws Exception {
-//		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-//				getClass().getResource("/data/geom-gml32.xsd").toURI(),
-//				getClass().getResource("/data/sample-linearring-gml32.xml")
-//						.toURI());
-//
-//		// five instances expected
-//		ResourceIterator<Instance> it = instances.iterator();
-//		try {
-//			// 1. LinearRingProperty with LinearRing defined through coordinates
-//			assertTrue("First sample feature missing", it.hasNext());
-//			Instance instance = it.next();
-//			checkLinearRingPropertyInstance(instance);
-//
-//			// 2. LinearRingProperty with LinearRing defined through pos
-//			assertTrue("Second sample feature missing", it.hasNext());
-//			instance = it.next();
-//			checkLinearRingPropertyInstance(instance);
-//
-//			// 3. LinearRingProperty with LinearRing defined through pointRep
-//			assertTrue("Third sample feature missing", it.hasNext());
-//			instance = it.next();
-//			checkLinearRingPropertyInstance(instance);
-//
-//			// 4. LinearRingProperty with LinearRing defined through pointProperty
-//			assertTrue("Fourth sample feature missing", it.hasNext());
-//			instance = it.next();
-//			checkLinearRingPropertyInstance(instance);
-//
-//			// 5. LinearRingProperty with LinearRing defined through posList
-//			assertTrue("Fifth sample feature missing", it.hasNext());
-//			instance = it.next();
-//			checkLinearRingPropertyInstance(instance);
-//		} finally {
-//			it.close();
-//		}
-//	}
+	/**
+	 * Test linear ring geometries read from a GML 3.2 file
+	 * 
+	 * @throws Exception
+	 *             if an error occurs
+	 */
+	@Test
+	public void testLinearRingGml32() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/sample-linearring-gml32.xml")
+						.toURI());
+
+		// five instances expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// 1. LinearRingProperty with LinearRing defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkLinearRingPropertyInstance(instance);
+
+			// 2. LinearRingProperty with LinearRing defined through pos
+			assertTrue("Second sample feature missing", it.hasNext());
+			instance = it.next();
+			checkLinearRingPropertyInstance(instance);
+
+			// 3. LinearRingProperty with LinearRing defined through pointRep
+			assertTrue("Third sample feature missing", it.hasNext());
+			instance = it.next();
+			checkLinearRingPropertyInstance(instance);
+
+			// 4. LinearRingProperty with LinearRing defined through
+			// pointProperty
+			assertTrue("Fourth sample feature missing", it.hasNext());
+			instance = it.next();
+			checkLinearRingPropertyInstance(instance);
+
+			// 5. LinearRingProperty with LinearRing defined through posList
+			assertTrue("Fifth sample feature missing", it.hasNext());
+			instance = it.next();
+			checkLinearRingPropertyInstance(instance);
+		} finally {
+			it.close();
+		}
+	}
 
 	private void checkLinearRingPropertyInstance(Instance instance) {
 		Object[] geomVals = instance

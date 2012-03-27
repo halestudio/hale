@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
  * Handler for point geometries.
+ * 
  * @author Simon Templer
  */
 public class PointHandler extends FixedConstraintsGeometryHandler {
@@ -53,37 +54,41 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 	public Object createGeometry(Instance instance)
 			throws GeometryNotSupportedException {
 		Point point = null;
-		
+
 		// Point is either defined by a CoordinatesType named coordinates
-		Collection<Object> values = PropertyResolver.getValues(instance, "coordinates", false);
+		Collection<Object> values = PropertyResolver.getValues(instance,
+				"coordinates", false);
 		if (values != null && !values.isEmpty()) {
 			Object value = values.iterator().next();
 			if (value instanceof Instance) {
 				try {
-					Coordinate[] cs = GMLGeometryUtil.parseCoordinates((Instance) value);
+					Coordinate[] cs = GMLGeometryUtil
+							.parseCoordinates((Instance) value);
 					if (cs != null && cs.length > 0) {
 						point = getGeometryFactory().createPoint(cs[0]);
 					}
 				} catch (ParseException e) {
-					throw new GeometryNotSupportedException("Could not parse coordinates", e);
+					throw new GeometryNotSupportedException(
+							"Could not parse coordinates", e);
 				}
 			}
 		}
-		
+
 		// or by a DirectPositionType named pos
 		if (point == null) {
 			values = PropertyResolver.getValues(instance, "pos", false);
 			if (values != null && !values.isEmpty()) {
 				Object value = values.iterator().next();
 				if (value instanceof Instance) {
-					Coordinate c = GMLGeometryUtil.parseDirectPosition((Instance) value);
+					Coordinate c = GMLGeometryUtil
+							.parseDirectPosition((Instance) value);
 					if (c != null) {
 						point = getGeometryFactory().createPoint(c);
 					}
 				}
 			}
 		}
-		
+
 		// or even by a CoordType in GML 2
 		if (point == null) {
 			values = PropertyResolver.getValues(instance, "coord", false);
@@ -97,13 +102,13 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 				}
 			}
 		}
-		
+
 		if (point != null) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
 			return new DefaultGeometryProperty<Point>(crsDef, point);
 		}
-		
-		throw new GeometryNotSupportedException(); //XXX
+
+		throw new GeometryNotSupportedException(); // XXX
 	}
 
 	/**
@@ -111,14 +116,15 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
-		
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
+				2);
+
 		// contains one point
 		constraints.add(Binding.get(GeometryProperty.class));
 		constraints.add(GeometryType.get(Point.class));
 		// set geometry factory constraint
 		constraints.add(new GeometryFactory(this));
-		
+
 		return constraints;
 	}
 
@@ -128,10 +134,10 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 	@Override
 	protected Set<? extends QName> initSupportedTypes() {
 		Set<QName> types = new HashSet<QName>();
-		
+
 		types.add(new QName(NS_GML, POINT_TYPE));
 		types.add(new QName(NS_GML_32, POINT_TYPE));
-		
+
 		return types;
 	}
 

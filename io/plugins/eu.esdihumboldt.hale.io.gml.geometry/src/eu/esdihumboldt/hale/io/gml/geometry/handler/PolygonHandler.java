@@ -46,8 +46,6 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String POLYGON_TYPE = "PolygonType";
 
-	LinearRingHandler linearRingHandler = new LinearRingHandler();
-
 	private Polygon polygon = null;
 
 	/**
@@ -56,6 +54,8 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	@Override
 	public Object createGeometry(Instance instance)
 			throws GeometryNotSupportedException {
+
+		LinearRingHandler linearRingHandler = new LinearRingHandler();
 
 		// XXX need support for instances of Rings
 
