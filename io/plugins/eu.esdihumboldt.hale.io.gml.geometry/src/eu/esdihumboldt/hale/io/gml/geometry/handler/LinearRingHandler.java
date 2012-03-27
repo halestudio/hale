@@ -35,28 +35,32 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
  * Handler for linear ring geometries
+ * 
  * @author Patrick Lieb
  */
-public class LinearRingHandler extends FixedConstraintsGeometryHandler{
+public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String LINEAR_RING_TYPE = "LinearRingType";
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance)
 	 */
 	@Override
 	public Object createGeometry(Instance instance)
 			throws GeometryNotSupportedException {
-		
+
 		LinearRing ring = null;
 		LineStringHandler handler = new LineStringHandler();
-		
+
 		// for use with GML 2
-		// XXX support for other types in GML 3.2
 		@SuppressWarnings("unchecked")
-		DefaultGeometryProperty<LineString> linestring = (DefaultGeometryProperty<LineString>)handler.createGeometry(instance);
-		ring = getGeometryFactory().createLinearRing(linestring.getGeometry().getCoordinates());
-		
+		DefaultGeometryProperty<LineString> linestring = (DefaultGeometryProperty<LineString>) handler
+				.createGeometry(instance);
+		ring = getGeometryFactory().createLinearRing(
+				linestring.getGeometry().getCoordinates());
+
+		// XXX support for other types in GML 3.2
+
 		if (ring != null) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
 			return new DefaultGeometryProperty<LinearRing>(crsDef, ring);

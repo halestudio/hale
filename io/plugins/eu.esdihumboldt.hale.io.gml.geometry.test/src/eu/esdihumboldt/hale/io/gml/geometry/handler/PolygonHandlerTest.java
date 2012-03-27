@@ -140,30 +140,30 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 		}
 	}
 	
-//	/**
-//	 * Test linear ring geometries read from a GML 3.2 file
-//	 * 
-//	 * @throws Exception
-//	 *             if an error occurs
-//	 */
-//	@Test
-//	public void testLinearRingGml32() throws Exception {
-//		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-//				getClass().getResource("/data/geom-gml32.xsd").toURI(),
-//				getClass().getResource("/data/sample-polygon-gml32.xml")
-//						.toURI());
-//
-//		// one instance expected
-//		ResourceIterator<Instance> it = instances.iterator();
-//		try {
-//			// LinearRingProperty with LinearRing defined through coordinates
-//			assertTrue("First sample feature missing", it.hasNext());
-//			Instance instance = it.next();
-//			checkPolygonPropertyInstance(instance);
-//		} finally {
-//			it.close();
-//		}
-//	}
+	/**
+	 * Test linear ring geometries read from a GML 3.2 file
+	 * 
+	 * @throws Exception
+	 *             if an error occurs
+	 */
+	@Test
+	public void testLinearRingGml32() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/sample-polygon-gml32.xml")
+						.toURI());
+
+		// one instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// LinearRingProperty with LinearRing defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkPolygonPropertyInstance(instance);
+		} finally {
+			it.close();
+		}
+	}
 	
 	private void checkPolygonPropertyInstance(Instance instance) {
 		Object[] geomVals = instance
