@@ -53,93 +53,39 @@ public class CurveHandler extends FixedConstraintsGeometryHandler {
 	@Override
 	public Object createGeometry(Instance instance)
 			throws GeometryNotSupportedException {
-		Point point = null;
+		Curve curve = null;
+		Point[] pointArr;
+		PointHandler handler = new PointHandler();
 
 		// Curve is either defined by a CoordinatesType named coordinates
 		// GML 3.0, 3.1, 3.2
 		Collection<Object> values = PropertyResolver.getValues(instance,
-				"coordinates", false);
+				"segments.LineStringSegment", false);
 		if (values != null && !values.isEmpty()) {
-			Object value = values.iterator().next();
-			if (value instanceof Instance) {
-				try {
-					Coordinate[] cs = GMLGeometryUtil
-							.parseCoordinates((Instance) value);
-					if (cs != null && cs.length > 0) {
-						point = getGeometryFactory().createPoint(cs[0]);
-					}
-				} catch (ParseException e) {
-					throw new GeometryNotSupportedException(
-							"Could not parse coordinates", e);
-				}
-			}
-		}
-
-		// or by a DirectPositionType named pos
-		// GML 3.0, 3.1, 3.2
-		if (point == null) {
-			values = PropertyResolver.getValues(instance, "pos", false);
-			if (values != null && !values.isEmpty()) {
+			Collection<Point> points = new ArrayList<Point>();
+			while (values.iterator().hasNext()) {
 				Object value = values.iterator().next();
 				if (value instanceof Instance) {
-					Coordinate c = GMLGeometryUtil
-							.parseDirectPosition((Instance) value);
-					if (c != null) {
-						point = getGeometryFactory().createPoint(c);
+					try {
+						DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler
+								.createGeometry((Instance) value);
+						points.add(point.getGeometry());
+
+					} catch (ParseException e) {
+						throw new GeometryNotSupportedException(
+								"Could not parse coordinates", e);
 					}
 				}
 			}
+
+			pointArr = points.toArray(new Point[points.size()]);
 		}
 
-		// or by a PointPropertyType named pointRep
-		// GML 3.0, 3.1, 3.2
-		if (point == null) {
-			values = PropertyResolver.getValues(instance, "pointRep", false);
-			if (values != null && !values.isEmpty()) {
-				Object value = values.iterator().next();
-				if (value instanceof Instance) {
-					Coordinate c = GMLGeometryUtil.parseCoord((Instance) value);
-					if (c != null) {
-						point = getGeometryFactory().createPoint(c);
-					}
-				}
-			}
-		}
+		curve = getGeometryFactory().createCurve(pointArr);
 
-		// or by a PointPropertyType named pointProperty
-		// GML 3.1, 3.2
-		if (point == null) {
-			values = PropertyResolver.getValues(instance, "pointProperty",
-					false);
-			if (values != null && !values.isEmpty()) {
-				Object value = values.iterator().next();
-				if (value instanceof Instance) {
-					Coordinate c = GMLGeometryUtil.parseCoord((Instance) value);
-					if (c != null) {
-						point = getGeometryFactory().createPoint(c);
-					}
-				}
-			}
-		}
-
-		// or by a DirectPositionListType named posList
-		// GML 3.1, 3.2
-		if (point == null) {
-			values = PropertyResolver.getValues(instance, "posList", false);
-			if (values != null && !values.isEmpty()) {
-				Object value = values.iterator().next();
-				if (value instanceof Instance) {
-					Coordinate c = GMLGeometryUtil.parseCoord((Instance) value);
-					if (c != null) {
-						point = getGeometryFactory().createPoint(c);
-					}
-				}
-			}
-		}
-
-		if (point != null) {
+		if (curve != null) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
-			return new DefaultGeometryProperty<Point>(crsDef, point);
+			return new DefaultGeometryProperty<Curve>(crsDef, curve);
 		}
 
 		throw new GeometryNotSupportedException(); // XXX
@@ -155,7 +101,7 @@ public class CurveHandler extends FixedConstraintsGeometryHandler {
 
 		// contains one point
 		constraints.add(Binding.get(GeometryProperty.class));
-		constraints.add(GeometryType.get(Point.class));
+		constraints.add(GeometryType.get(Curve.class));
 		// set geometry factory constraint
 		constraints.add(new GeometryFactory(this));
 
