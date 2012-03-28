@@ -45,7 +45,7 @@ public class StructuredEquals {
 		}
 		
 		Iterable<?> iterable1 = asIterable(o1);
-		Iterable<?> iterable2 = asIterable(o1);
+		Iterable<?> iterable2 = asIterable(o2);
 		if (iterable1 != null && iterable2 != null) {
 			if (Iterables.size(iterable1) == Iterables.size(iterable2)) { // size check
 				Iterator<?> it1 = iterable1.iterator();
