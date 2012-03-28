@@ -36,6 +36,15 @@ public class ReportTreeLabelProvider extends LabelProvider {
 	private Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
 	
 	@Override
+	public void dispose() {
+		for (Image i : imageCache.values()) {
+			i.dispose();
+		}
+		
+		imageCache.clear();
+	}
+	
+	@Override
 	public String getText(Object obj) {
 		if (obj instanceof Message) {
 			return ((Message) obj).getFormattedMessage();
