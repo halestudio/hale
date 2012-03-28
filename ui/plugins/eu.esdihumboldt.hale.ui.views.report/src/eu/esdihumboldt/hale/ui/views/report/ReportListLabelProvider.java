@@ -52,8 +52,11 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	 */
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		for (Image i : imageCache.values()) {
+			i.dispose();
+		}
 		
+		imageCache.clear();
 	}
 
 	/**
