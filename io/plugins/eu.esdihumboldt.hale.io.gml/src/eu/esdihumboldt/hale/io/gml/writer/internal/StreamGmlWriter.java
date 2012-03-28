@@ -756,9 +756,9 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			}
 			else {
 				GmlWriterUtil.writeStartElement(writer, propDef.getName());
-				
-				if (value instanceof GeometryProperty<?> || value instanceof Geometry) {
-					Pair<Geometry, String> pair = getGeometryAndSRSName(value);
+
+				Pair<Geometry, String> pair = getGeometryAndSRSName(value);
+				if (pair != null) {
 					// write geometry
 					writeGeometry(pair.getFirst(), propDef, pair.getSecond());
 				}
@@ -778,11 +778,10 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			
 			boolean hasValue = propDef.getPropertyType().getConstraint(
 					HasValueFlag.class).isEnabled();
-			
+
+			Pair<Geometry, String> pair = getGeometryAndSRSName(value);
 			// handle about annotated geometries
-			if (!hasValue && (value instanceof Geometry || value instanceof GeometryProperty<?>)) {
-				//XXX what about collections of geometries?
-				Pair<Geometry, String> pair = getGeometryAndSRSName(value);
+			if (!hasValue && pair != null) {
 				// write geometry
 				writeGeometry(pair.getFirst(), propDef, pair.getSecond());
 			}
@@ -805,21 +804,28 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 * Value has to be a Geometry or a GeometryProperty, otherwise null is returned.
 	 * The returned srsname may be null.
 	 * 
-	 * @param value the value to extract the information from (a Geometry or a GeometryProperty)
-	 * @return a pair of geometry and srsname (latter may be null), or null if the argument isn't valid
+	 * @param value the value to extract the information from
+	 * @return a pair of geometry and srsname (latter may be null), or null if the argument doesn't contain a geometry
 	 */
 	private Pair<Geometry, String> getGeometryAndSRSName(Object value) {
+		// TODO collection handling (-> happens for example with target CompositeSurface)
+		if (value instanceof Collection)
+			if (!((Collection<?>) value).isEmpty())
+				value = ((Collection<?>) value).iterator().next();
 		if (value instanceof Geometry)
 			return new Pair<Geometry, String>((Geometry) value, null);
 		else if (value instanceof GeometryProperty<?>) {
-			String srsName = null;
+			String srsName;
 			CRSDefinition def = ((GeometryProperty<?>) value).getCRSDefinition();
 			if (def != null) {
 				if (def instanceof CodeDefinition)
 					srsName = ((CodeDefinition) def).getCode();
-				else if (def.getCRS() != null) // TODO getName().toString() is not correct
+				else if (def.getCRS() != null)
+					srsName = null; // TODO getName().toString() is not correct
+				else
 					srsName = null;
-			}
+			} else
+				srsName = null;
 
 			return new Pair<Geometry, String>(((GeometryProperty<?>) value).getGeometry(), srsName);
 		} else
@@ -892,12 +898,11 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	protected StreamGeometryWriter getGeometryWriter() {
 		if (geometryWriter == null) {
 			boolean simplifyGeometry;
-			try {
-				simplifyGeometry = Boolean.parseBoolean(getParameter(PARAM_SIMPLIFY_GEOMETRY));
-			} catch (Throwable e) {
+			if (getParameter(PARAM_SIMPLIFY_GEOMETRY) == null) {
 				// default to true
 				simplifyGeometry = true;
-			}
+			} else
+				simplifyGeometry = Boolean.parseBoolean(getParameter(PARAM_SIMPLIFY_GEOMETRY));
 			
 			geometryWriter = StreamGeometryWriter.getDefaultInstance(gmlNs,
 					simplifyGeometry);
