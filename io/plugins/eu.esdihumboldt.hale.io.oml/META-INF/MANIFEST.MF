@@ -1,14 +1,32 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OML Alignment I/O
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.oml
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.oml;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: de.cs3d.util.logging,
+Import-Package: com.google.common.io;version="9.0.0",
+ de.cs3d.util.logging,
  eu.esdihumboldt.commons.goml.align,
  eu.esdihumboldt.commons.goml.oml.io,
  eu.esdihumboldt.commons.goml.omwg,
+ eu.esdihumboldt.commons.goml.rdf,
+ eu.esdihumboldt.hale.common.align.io,
+ eu.esdihumboldt.hale.common.align.io.impl,
+ eu.esdihumboldt.hale.common.align.io.impl.internal,
+ eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.report,
+ eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.schema,
+ eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.hale.common.schema.model.impl,
+ eu.esdihumboldt.hale.io.xsd.constraint,
+ eu.esdihumboldt.hale.io.xsd.model,
  eu.esdihumboldt.hale.prefixmapper,
  eu.esdihumboldt.specification.cst.align,
+ eu.esdihumboldt.specification.cst.align.ext,
  eu.esdihumboldt.specification.cst.rdf,
+ org.apache.log4j,
  org.slf4j;version="1.5.11"
+Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
+ eu.esdihumboldt.hale.common.core
