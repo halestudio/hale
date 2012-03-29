@@ -18,11 +18,10 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
- * Instance traverser that traverses the model breadth first.
+ * Instance traverser that traverses the model depth first.
  * @author Simon Templer
- * @deprecated This is not breath first!
  */
-public class BreadthFirstInstanceTraverser implements InstanceTraverser {
+public class DepthFirstInstanceTraverser implements InstanceTraverser {
 
 	/**
 	 * @see InstanceTraverser#traverse(Instance, InstanceTraversalCallback)
