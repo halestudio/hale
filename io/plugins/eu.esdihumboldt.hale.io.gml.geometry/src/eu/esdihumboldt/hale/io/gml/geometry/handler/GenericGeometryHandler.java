@@ -206,6 +206,9 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 		}
 		
 		// fall-back: return a collection of geometry properties
+		if (childGeometries.isEmpty()) {
+			return null;
+		}
 		return childGeometries;
 	}
 
