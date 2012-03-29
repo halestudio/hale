@@ -46,8 +46,6 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String POLYGON_TYPE = "PolygonType";
 
-	private Polygon polygon = null;
-
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance)
 	 */
@@ -59,6 +57,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 		// XXX need support for instances of Rings
 
 		LinearRing[] holes = null;
+		Polygon polygon = null;
 
 		// for use with GML 2
 		// to parse inner linear rings
