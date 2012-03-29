@@ -435,7 +435,7 @@ public class GroupUtil {
 				// sequence, group(, attributeGroup)
 				
 				// check order
-				if (!allowAddCheckOrder(group, propertyName, groupDef)) {
+				if (!allowAddCheckOrder(group, propertyName, def)) {
 					return false;
 				}
 				
