@@ -108,8 +108,7 @@ public class GeometryUtil {
 			if (!geoms.isEmpty()) {
 				geometries.addAll(geoms);
 				// early exit #2
-				// don't check the children
-				//XXX is this OK in all cases?
+				// don't check the children as they usually are only parts of the geometry found here 
 			}
 			else {
 				// check children for geometries
