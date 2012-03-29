@@ -14,22 +14,34 @@ package eu.esdihumboldt.hale.io.gml.geometry.handler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.helper.InstanceTraversalCallback;
+import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.gml.geometry.AbstractGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
-import eu.esdihumboldt.hale.io.gml.geometry.Geometries;
+import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
@@ -80,12 +92,121 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	@Override
 	public Object createGeometry(Instance instance)
 			throws GeometryNotSupportedException {
-		Geometries geoms = Geometries.getInstance();
-		//TODO use geometry handlers to read geometries of sub-types
-		//TODO extract this to abstract geometry handler as default?
+		final CRSDefinition defaultCrsDef = GMLGeometryUtil.findCRS(instance);
 		
-		// TODO Auto-generated method stub
-		return null;
+		// collect contained geometries
+		final List<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>();
+		InstanceTraverser traverser = new DepthFirstInstanceTraverser();
+		
+		InstanceTraversalCallback collector = new InstanceTraversalCallback() {
+			
+			@Override
+			public boolean visit(Object value, QName name) {
+				if (value instanceof Collection<?>) {
+					boolean found = false;
+					// traverse all collection elements
+					for (Object element : ((Collection<?>) value)) {
+						found = found || !visit(element, name);
+					}
+					return !found;
+				}
+				
+				if (value instanceof GeometryProperty<?>) {
+					geometries.add(((GeometryProperty<?>) value));
+					// stop traversion afterwards, as there will be only parts of the geometry as children 
+					return false;
+				}
+				if (value instanceof Geometry) {
+					geometries.add(new DefaultGeometryProperty<Geometry>(
+							defaultCrsDef, (Geometry) value));
+					// stop traversion afterwards, as there will be only parts of the geometry as children
+					return false;
+				}
+				
+				return true;
+			}
+			
+			@Override
+			public boolean visit(Group group, QName name) {
+				return true;
+			}
+			
+			@Override
+			public boolean visit(Instance instance, QName name) {
+				return true;
+			}
+		};
+		traverser.traverse(instance, collector);
+		
+		return createGeometry(instance, geometries, defaultCrsDef);
+	}
+
+	/**
+	 * Create a geometry value from a given instance.
+	 * @param instance the instance
+	 * @param childGeometries the child geometries found in the instance
+	 * @param defaultCrs the definition of the default CRS for this instance
+	 * @return the geometry value derived from the instance, the return type
+	 *   should match the {@link Binding} created in
+	 *   {@link #getTypeConstraints(TypeDefinition)}.
+	 * @throws GeometryNotSupportedException if the type definition doesn't 
+	 *   represent a geometry type supported by the handler
+	 */
+	@SuppressWarnings("unused")
+	protected Object createGeometry(Instance instance,
+			List<GeometryProperty<?>> childGeometries,
+			CRSDefinition defaultCrs) throws GeometryNotSupportedException {
+		Class<? extends Geometry> commonGeomType = null;
+		//TODO also check for common crs? no equals for CRSDefinitions implemented!
+		
+		// find the common geometry class
+		for (GeometryProperty<?> geomProp : childGeometries) {
+			Class<? extends Geometry> geometryType = geomProp.getGeometry().getClass();
+			if (commonGeomType == null) {
+				commonGeomType = geometryType;
+			}
+			else if (!commonGeomType.equals(geometryType)) {
+				// TODO determine common type in inheritance?
+				commonGeomType = Geometry.class;
+			}
+		}
+		
+		if (commonGeomType != null) {
+			Geometry geom = null;
+			if (commonGeomType.equals(Polygon.class)) {
+				// create a MultiPolygon
+				Polygon[] polygons = new Polygon[childGeometries.size()];
+				for (int i = 0; i < childGeometries.size(); i++) {
+					polygons[i] = (Polygon) childGeometries.get(i).getGeometry();
+				}
+				geom = getGeometryFactory().createMultiPolygon(polygons);
+			}
+			else if (commonGeomType.equals(LineString.class)) {
+				// create a MultiLineString
+				LineString[] lines = new LineString[childGeometries.size()];
+				for (int i = 0; i < childGeometries.size(); i++) {
+					lines[i] = (LineString) childGeometries.get(i).getGeometry();
+				}
+				geom = getGeometryFactory().createMultiLineString(lines);
+			}
+			else if (commonGeomType.equals(Point.class)) {
+				// create a MultiPoint
+				Point[] points = new Point[childGeometries.size()];
+				for (int i = 0; i < childGeometries.size(); i++) {
+					points[i] = (Point) childGeometries.get(i).getGeometry();
+				}
+				geom = getGeometryFactory().createMultiPoint(points);
+			}
+			if (geom != null) {
+				// returned combined property
+				return Collections
+						.singleton(new DefaultGeometryProperty<Geometry>(
+								defaultCrs, geom));
+			}
+		}
+		
+		// fall-back: return a collection of geometry properties
+		return childGeometries;
 	}
 
 }
