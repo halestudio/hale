@@ -67,6 +67,12 @@ public class CRSFinder implements InstanceTraversalCallback {
 				// if definition is set, abort the traversal
 				return false;
 			}
+			
+			// urn:x-ogc:def:crs:EPSG:(:)xxx style code
+			if (checkCode(candidate, "urn:x-ogc:def:crs:EPSG:")) {
+				// if definition is set, abort the traversal
+				return false;
+			}
 		}
 		
 		return true;
