@@ -51,11 +51,10 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object createGeometry(Instance instance)
 			throws GeometryNotSupportedException {
-
-		LinearRingHandler linearRingHandler = new LinearRingHandler();
 
 		// XXX need support for instances of Rings
 
@@ -70,18 +69,12 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 			List<LinearRing> innerRings = new ArrayList<LinearRing>();
 			while (iterator.hasNext()) {
 				Object value = iterator.next();
-
 				if (value instanceof Instance) {
-					try {
-						System.out.print(instance.getValue());
-						@SuppressWarnings("unchecked")
-						DefaultGeometryProperty<LinearRing> linearRing = (DefaultGeometryProperty<LinearRing>) linearRingHandler
-								.createGeometry((Instance) value);
-						innerRings.add(linearRing.getGeometry());
-					} catch (GeometryNotSupportedException e) {
-						throw new GeometryNotSupportedException(
-								"Could not parse innerBoundaryIs", e);
-					}
+					// innerRings have to be a
+					// DefaultGeometryProperty<LinearRing> instances
+					innerRings
+							.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
+									.getValue()).getGeometry());
 				}
 			}
 			holes = innerRings.toArray(new LinearRing[innerRings.size()]);
@@ -94,18 +87,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 				iterator = values.iterator();
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
-
 					if (value instanceof Instance) {
-						try {
-							@SuppressWarnings("unchecked")
-							LinearRing ring = ((DefaultGeometryProperty<LinearRing>) linearRingHandler
-									.createGeometry((Instance) value))
-									.getGeometry();
-							outerRing = ring;
-						} catch (GeometryNotSupportedException e) {
-							throw new GeometryNotSupportedException(
-									"Could not parse outerBoundaryIs", e);
-						}
+						// outerRing must be a
+						// DefaultGeometryProperty<LinearRing> instance
+						outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
+								.getValue()).getGeometry();
 					}
 				}
 
@@ -123,17 +109,12 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 				List<LinearRing> innerRings = new ArrayList<LinearRing>();
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
-
 					if (value instanceof Instance) {
-						try {
-							@SuppressWarnings("unchecked")
-							DefaultGeometryProperty<LinearRing> linearRing = (DefaultGeometryProperty<LinearRing>) linearRingHandler
-									.createGeometry((Instance) value);
-							innerRings.add(linearRing.getGeometry());
-						} catch (GeometryNotSupportedException e) {
-							throw new GeometryNotSupportedException(
-									"Could not parse interior", e);
-						}
+						// innerRings have to be a
+						// DefaultGeometryProperty<LinearRing> instances
+						innerRings
+								.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
+										.getValue()).getGeometry());
 					}
 				}
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
@@ -147,18 +128,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 				Iterator<Object> iterator = values.iterator();
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
-
 					if (value instanceof Instance) {
-						try {
-							@SuppressWarnings("unchecked")
-							LinearRing ring = ((DefaultGeometryProperty<LinearRing>) linearRingHandler
-									.createGeometry((Instance) value))
-									.getGeometry();
-							outerRing = ring;
-						} catch (GeometryNotSupportedException e) {
-							throw new GeometryNotSupportedException(
-									"Could not parse exterior", e);
-						}
+						// outerRing must be a
+						// DefaultGeometryProperty<LinearRing> instance
+						outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
+								.getValue()).getGeometry();
 					}
 				}
 			}
@@ -167,7 +141,6 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 		if (polygon != null) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
-			System.out.println(polygon);
 			return new DefaultGeometryProperty<Polygon>(crsDef, polygon);
 		}
 		throw new GeometryNotSupportedException();
