@@ -35,6 +35,8 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentPro
  */
 public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 
+	private static final int MAX_STRING_LENGTH = 200;
+
 	private final Instance instance;
 	
 	private final DefinitionImages images = new DefinitionImages();
@@ -97,7 +99,19 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 				value = ((Instance) value).getValue();
 			}
 			//TODO some kind of conversion?
-			styledString = new StyledString(value.toString(), null);
+			String stringValue = value.toString();
+			/*
+			 * Values that are very large, e.g. string representations of very
+			 * complex geometries lead to StyledCellLabelProvider.updateTextLayout
+			 * taking a very long time, rendering the application unresponsive
+			 * when the data views are displayed.
+			 * As such, we reduce the string to a maximum size.
+			 */
+			if (stringValue.length() > MAX_STRING_LENGTH) {
+				stringValue = stringValue.substring(0, MAX_STRING_LENGTH) + "...";
+			}
+			
+			styledString = new StyledString(stringValue, null);
 		}
 		
 		// mark cell if there are other values
