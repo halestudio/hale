@@ -22,6 +22,26 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
  * @author Simon Templer
  */
 public class DepthFirstInstanceTraverser implements InstanceTraverser {
+	
+	private final boolean cancelChildTraversalOnly;
+
+	/**
+	 * Creates a depth first instance traverser.
+	 */
+	public DepthFirstInstanceTraverser() {
+		this(false);
+	}
+
+	/**
+	 * Creates a depth first instance traverser.
+	 * @param cancelChildTraversalOnly if when the callback cancels the traversal,
+	 *   only the traversal of the children should be canceled (meaning traversal
+	 *   is continued but not down from the current object)
+	 */
+	public DepthFirstInstanceTraverser(boolean cancelChildTraversalOnly) {
+		super();
+		this.cancelChildTraversalOnly = cancelChildTraversalOnly;
+	}
 
 	/**
 	 * @see InstanceTraverser#traverse(Instance, InstanceTraversalCallback)
@@ -38,15 +58,27 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 			Object value = instance.getValue();
 			if (value != null) {
 				 if (!traverse(value, callback, name)) {
-					 return false;
+					 if (!cancelChildTraversalOnly) {
+						 // cancel whole traversal
+						 return false;
+					 }
+					 else {
+						 // only skip traversing children
+						 return true;
+					 }
 				 }
 			}
 			
 			// traverse children
 			return traverseChildren(instance, callback);
 		}
-		
-		return false;
+		else if (!cancelChildTraversalOnly) {
+			// cancel whole traversal
+			return false;
+		} else {
+			// only skipped traversing the current instance
+			return true;
+		}
 	}
 
 	/**
@@ -63,8 +95,13 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 			// traverse children
 			return traverseChildren(group, callback);
 		}
-		
-		return false;
+		else if (!cancelChildTraversalOnly) {
+			// cancel whole traversal
+			return false;
+		} else {
+			// only skipped traversing the current group
+			return true;
+		}
 	}
 
 	/**
@@ -79,7 +116,9 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 			if (values != null) {
 				for (Object value : values) {
 					if (!traverse(value, callback, name)) {
-						return false;
+						if (!cancelChildTraversalOnly) {
+							return false;
+						}
 					}
 				}
 			}
