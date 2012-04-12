@@ -20,7 +20,7 @@
 					</gml:LinearRing>
 				</gml:interior>
 				<gml:interior>
-					<gml:LinearRing>
+	<gml:LinearRing>
 						<gml:coordinates>0,2 2,2 0,-2 -2,-2 0,2</gml:coordinates>
 					</gml:LinearRing>
 				</gml:interior>
