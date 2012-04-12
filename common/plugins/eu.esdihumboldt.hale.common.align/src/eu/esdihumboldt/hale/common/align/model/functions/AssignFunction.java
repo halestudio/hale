@@ -19,6 +19,11 @@ package eu.esdihumboldt.hale.common.align.model.functions;
 public interface AssignFunction {
 	
 	/**
+	 * the assign function Id
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.align.assign";
+	
+	/**
 	 * Name of the parameter specifying the value to assign. See the function
 	 * definition on <code>eu.esdihumboldt.hale.common.align</code>.
 	 */

@@ -18,6 +18,12 @@ package eu.esdihumboldt.hale.common.align.model.functions;
  * @author Kai Schwierczek
  */
 public interface RenameFunction {
+	
+	/**
+	 * The rename function Id
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.align.rename";
+	
 	/**
 	 * Name of the parameter specifying whether a structural rename should be
 	 * performed or not.
