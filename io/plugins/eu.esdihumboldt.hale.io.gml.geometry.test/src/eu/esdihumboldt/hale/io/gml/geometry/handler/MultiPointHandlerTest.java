@@ -76,13 +76,13 @@ public class MultiPointHandlerTest extends AbstractHandlerTest {
 
 			// 2. MultiPointProperty with MultiPoint defined through pointMember
 			// - coordinates
-			assertTrue("First sample feature missing", it.hasNext());
+			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 
 			// 2. MultiPointProperty with MultiPoint defined through
 			// pointMembers - coordinates
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 		} finally {
@@ -115,19 +115,19 @@ public class MultiPointHandlerTest extends AbstractHandlerTest {
 			// 2. MultiPointProperty with MultiPoint defined through
 			// pointMembers
 			// - coordinates
-			assertTrue("First sample feature missing", it.hasNext());
+			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 
 			// 3. MultiPointProperty with MultiPoint defined through
 			// pointMembers - coord
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 
 			// 4. MultiPointProperty with MultiPoint defined through
 			// pointMembers - pos
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 		} finally {
@@ -159,19 +159,19 @@ public class MultiPointHandlerTest extends AbstractHandlerTest {
 
 			// 2. MultiPointProperty with MultiPoint defined through pointMember
 			// - coordinates
-			assertTrue("First sample feature missing", it.hasNext());
+			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 
 			// 3. MultiPointProperty with MultiPoint defined through
 			// pointMembers - coord
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 
 			// 4. MultiPointProperty with MultiPoint defined through
 			// pointMembers - pos
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 		} finally {
@@ -203,13 +203,13 @@ public class MultiPointHandlerTest extends AbstractHandlerTest {
 
 			// 2. MultiPointProperty with MultiPoint defined through pointMember
 			// - coordinates
-			assertTrue("First sample feature missing", it.hasNext());
+			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 
 			// 3. MultiPointProperty with MultiPoint defined through
 			// pointMembers - pos
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiPointPropertyInstance(instance);
 		} finally {
