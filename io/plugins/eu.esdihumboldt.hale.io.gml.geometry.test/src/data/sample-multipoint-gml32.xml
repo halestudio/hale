@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection gml:id="FC1" xmlns:gml="http://www.opengis.net/gml/3.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+		<gml:featureMember>
+		<hale:MultiPointProperty gml:id="multipoint1">
+			<hale:geometry gml:id="mpgeom1" srsName="EPSG:28992">
+				<gml:pointMember>
+					<gml:Point gml:id="point11">
+						<gml:coordinates>-39799.68820381,273207.53980172</gml:coordinates>
+					</gml:Point>
+				</gml:pointMember>
+				<gml:pointMember>
+					<gml:Point gml:id="point12">
+						<gml:coordinates>-39841.185,273182.863</gml:coordinates>
+					</gml:Point>
+				</gml:pointMember>
+				<gml:pointMember>
+					<gml:Point gml:id="point13">
+						<gml:coordinates>-39882.89,273153.86</gml:coordinates>
+					</gml:Point>
+				</gml:pointMember>
+			</hale:geometry>
+		</hale:MultiPointProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:MultiPointProperty gml:id="multipoint2">
+			<hale:geometry gml:id="mgeom2" srsName="EPSG:28992">
+				<gml:pointMembers>
+					<gml:Point gml:id="point21">
+						<gml:coordinates>-39799.68820381,273207.53980172</gml:coordinates>
+					</gml:Point>
+					<gml:Point gml:id="point22">
+						<gml:coordinates>-39841.185,273182.863</gml:coordinates>
+					</gml:Point>
+					<gml:Point gml:id="point23">
+						<gml:coordinates>-39882.89,273153.86</gml:coordinates>
+					</gml:Point>
+				</gml:pointMembers>
+			</hale:geometry>
+		</hale:MultiPointProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:MultiPointProperty gml:id="multipoint3">
+			<hale:geometry gml:id="mgeom3" srsName="EPSG:28992">
+				<gml:pointMembers>
+					<gml:Point gml:id="point31">
+						<gml:pos>-39799.68820381 273207.53980172</gml:pos>
+					</gml:Point>
+					<gml:Point gml:id="point32">
+						<gml:pos>-39841.185 273182.863</gml:pos>
+					</gml:Point>
+					<gml:Point gml:id="point33">
+						<gml:pos>-39882.89 273153.86</gml:pos>
+					</gml:Point>
+				</gml:pointMembers>
+			</hale:geometry>
+		</hale:MultiPointProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>

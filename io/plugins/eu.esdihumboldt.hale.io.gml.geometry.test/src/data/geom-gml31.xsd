@@ -83,5 +83,31 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	
+	<element name="MultiLineStringProperty" substitutionGroup="gml:_Feature"
+		type="hale:MultiLineStringPropertyType" />
 
+	<complexType name="MultiLineStringPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:MultiLineStringType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="MultiPointProperty" substitutionGroup="gml:_Feature"
+		type="hale:MultiPointPropertyType" />
+
+	<complexType name="MultiPointPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:MultiPointType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
 </schema>

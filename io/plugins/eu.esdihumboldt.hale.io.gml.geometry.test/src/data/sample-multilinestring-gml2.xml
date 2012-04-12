@@ -10,7 +10,7 @@
 		<hale:MultiLineStringProperty>
 			<hale:geometry srsName="EPSG:31251">
 				<gml:lineStringMember>
-				<gml:LineString>
+					<gml:LineString>
 						<gml:coord>
 							<gml:X>-39799.68820381</gml:X>
 							<gml:Y>273207.53980172</gml:Y>
@@ -23,7 +23,7 @@
 							<gml:X>-39882.89</gml:X>
 							<gml:Y>273153.86</gml:Y>
 						</gml:coord>
-					</gml:LineString>	
+					</gml:LineString>
 				</gml:lineStringMember>
 				<gml:lineStringMember>
 					<gml:LineString>
@@ -39,6 +39,22 @@
 							<gml:X>-39882.99</gml:X>
 							<gml:Y>273153.99</gml:Y>
 						</gml:coord>
+					</gml:LineString>
+				</gml:lineStringMember>
+			</hale:geometry>
+		</hale:MultiLineStringProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:MultiLineStringProperty>
+			<hale:geometry srsName="EPSG:31251">
+				<gml:lineStringMember>
+					<gml:LineString>
+						<gml:coordinates>-39799.68820381,273207.53980172 -39841.185,273182.863 -39882.89,273153.86</gml:coordinates>
+					</gml:LineString>
+				</gml:lineStringMember>
+				<gml:lineStringMember>
+					<gml:LineString>
+						<gml:coordinates>-39799.8,273207.7 -39841.3,273182.95 -39882.99,273153.99</gml:coordinates>
 					</gml:LineString>
 				</gml:lineStringMember>
 			</hale:geometry>
