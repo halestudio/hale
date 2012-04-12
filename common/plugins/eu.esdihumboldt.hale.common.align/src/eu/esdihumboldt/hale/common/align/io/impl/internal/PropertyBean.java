@@ -14,7 +14,11 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Condition;
@@ -27,19 +31,21 @@ import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Represents a {@link Property}.
+ * 
  * @author Simon Templer
  */
 public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 
 	private List<ChildContextBean> properties = new ArrayList<ChildContextBean>();
-	
+
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public PropertyBean() {
 		super();
@@ -47,7 +53,9 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 
 	/**
 	 * Create a property entity bean based on the given property entity
-	 * @param property the property entity
+	 * 
+	 * @param property
+	 *            the property entity
 	 */
 	public PropertyBean(Property property) {
 		super();
@@ -55,7 +63,7 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 		setTypeName(property.getDefinition().getType().getName());
 		setFilter(FilterDefinitionManager.getInstance().asString(
 				property.getDefinition().getFilter()));
-		
+
 		for (ChildContext child : property.getDefinition().getPropertyPath()) {
 			properties.add(new ChildContextBean(child));
 		}
@@ -80,48 +88,72 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 			throw new IllegalStateException(MessageFormat.format(
 					"TypeDefinition for type {0} not found", getTypeName()));
 		}
-		
+
 		List<ChildContext> path = new ArrayList<ChildContext>();
-		
+
 		DefinitionGroup parent = typeDef;
 		for (ChildContextBean childContext : properties) {
 			if (parent == null) {
-				throw new IllegalStateException("Could not resolve property entity definition: child not present");
+				throw new IllegalStateException(
+						"Could not resolve property entity definition: child not present");
 			}
-			
-			ChildDefinition<?> child = parent.getChild(childContext.getChildName());
+
+			ChildDefinition<?> child = parent.getChild(childContext
+					.getChildName());
 			if (child == null) {
-				throw new IllegalStateException("Could not resolve property entity definition: child not found");
+				// if the child is null there can be still a childname
+				QName childname = childContext.getChildName();
+				// if the namespace is not null
+				if (childname.getNamespaceURI()
+						.equals(XMLConstants.NULL_NS_URI)) {
+					// get all children and iterate over them
+					Collection<? extends ChildDefinition<?>> children = DefinitionUtil
+							.getAllChildren(parent);
+					for (ChildDefinition<?> _child : children) {
+						// try to find another child with the same local part,
+						// if we find a child with the same local part but
+						// different namespace we overwrite child
+						if (_child.getName().getLocalPart().equals(childname
+								.getLocalPart())) {
+							child = _child;
+							break;
+						}
+					}
+				}
+				// if the child is still null throw an exception
+				if (child == null) {
+					throw new IllegalStateException(
+							"Could not resolve property entity definition: child not found");
+				}
 			}
-			
-			path.add(new ChildContext(
-					childContext.getContextName(), 
-					childContext.getContextIndex(), 
-					createCondition(childContext.getConditionFilter()), 
-					child));
-			
+
+			path.add(new ChildContext(childContext.getContextName(),
+					childContext.getContextIndex(),
+					createCondition(childContext.getConditionFilter()), child));
+
 			if (child instanceof DefinitionGroup) {
 				parent = (DefinitionGroup) child;
-			}
-			else if (child.asProperty() != null) {
+			} else if (child.asProperty() != null) {
 				parent = child.asProperty().getPropertyType();
-			}
-			else {
+			} else {
 				parent = null;
 			}
 		}
-		
-		return new PropertyEntityDefinition(typeDef, path, schemaSpace, 
+
+		return new PropertyEntityDefinition(typeDef, path, schemaSpace,
 				FilterDefinitionManager.getInstance().parse(getFilter()));
 	}
 
 	/**
 	 * Create a condition.
-	 * @param conditionFilter the condition filter
+	 * 
+	 * @param conditionFilter
+	 *            the condition filter
 	 * @return the condition or <code>null</code>
 	 */
 	private Condition createCondition(String conditionFilter) {
-		Filter filter = FilterDefinitionManager.getInstance().parse(conditionFilter);
+		Filter filter = FilterDefinitionManager.getInstance().parse(
+				conditionFilter);
 		if (filter != null) {
 			return new Condition(filter);
 		}
@@ -130,6 +162,7 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 
 	/**
 	 * Get the property names
+	 * 
 	 * @return the property names
 	 */
 	public List<ChildContextBean> getProperties() {
@@ -138,7 +171,9 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 
 	/**
 	 * Set the property names
-	 * @param properties the property names to set
+	 * 
+	 * @param properties
+	 *            the property names to set
 	 */
 	public void setProperties(List<ChildContextBean> properties) {
 		this.properties = properties;
