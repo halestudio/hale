@@ -117,12 +117,12 @@ public class MultiLineStringHandlerTest extends AbstractHandlerTest {
 			checkMultiLineStringPropertyInstance(instance);
 
 			// 3. MultiLineStringProperty with MultiLineString defined through pointRep
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
 			// 4. MultiLineStringProperty with MultiLineString defined through pos
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 		} finally {
@@ -158,22 +158,22 @@ public class MultiLineStringHandlerTest extends AbstractHandlerTest {
 			checkMultiLineStringPropertyInstance(instance);
 
 			// 3. MultiLineStringProperty with MultiLineString defined through pointRep
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
 			// 4. MultiLineStringProperty with MultiLineString defined through pos
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
 			// 5. MultiLineStringProperty with MultiLineString defined through pointProperty
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
 			// 6. MultiLineStringProperty with MultiLineString defined through posList
-			assertTrue("Second sample feature missing", it.hasNext());
+			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 		} finally {
