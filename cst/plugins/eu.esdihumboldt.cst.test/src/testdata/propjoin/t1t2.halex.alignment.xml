@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-alignment>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}PersonType</type>
+                <child>id</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>id</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}PersonType</type>
+                <child>name</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>name</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}PersonType</type>
+                <child>details</child>
+                <child>age</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>details</child>
+                <child>age</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}PersonType</type>
+                <child>details</child>
+                <child>income</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>details</child>
+                <child>income</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}CityType</type>
+                <child>zip</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>details</child>
+                <child>address</child>
+                <child>zip</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}CityType</type>
+                <child>name</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>details</child>
+                <child>address</child>
+                <child>city</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{http://www.example.org/t1/}AddressType</type>
+                <child>street</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}PersonType</type>
+                <child>details</child>
+                <child>address</child>
+                <child>street</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.join">
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}PersonType</type>
+            </class>
+        </source>
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}AddressType</type>
+            </class>
+        </source>
+        <source>
+            <class>
+                <type>{http://www.example.org/t1/}CityType</type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type>{http://www.example.org/t2/}PersonType</type>
+            </class>
+        </target>
+        <parameter name="join" value="person address city  person,details.addressId=address,id address,zip=city,zip"/>
+    </cell>
+</hale-alignment>

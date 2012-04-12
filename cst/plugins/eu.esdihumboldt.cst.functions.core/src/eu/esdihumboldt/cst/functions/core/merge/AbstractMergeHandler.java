@@ -14,26 +14,23 @@ package eu.esdihumboldt.cst.functions.core.merge;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
-
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.common.align.transformation.function.MergeHandler;
+import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
-import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceFactory;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -44,17 +41,14 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @param <K> the merge key type
  * @author Simon Templer
  */
-public abstract class AbstractMergeHandler<T, K> implements MergeHandler<TransformationEngine> {
+public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<TransformationEngine> {
 
 	/**
-	 * Instance collection representing the merged instances
+	 * Resource iterator over the merged instances
 	 */
-	public class MergedInstances implements InstanceCollection {
-		
+	public class MergedIterator extends GenericResourceIteratorAdapter<K, Collection<Instance>> {
 		private final Multimap<K, InstanceReference> index;
-		
 		private final InstanceCollection originalInstances;
-		
 		private final T mergeConfig;
 
 		/**
@@ -63,90 +57,51 @@ public abstract class AbstractMergeHandler<T, K> implements MergeHandler<Transfo
 		 * @param instances the original instance collection
 		 * @param mergeConfig the merge configuration
 		 */
-		public MergedInstances(Multimap<K, InstanceReference> index,
+		public MergedIterator(Multimap<K, InstanceReference> index,
 				InstanceCollection instances, T mergeConfig) {
-			this.index = Multimaps.unmodifiableMultimap(index);
+			super(index.keySet().iterator());
+			this.index = index;
 			this.originalInstances = instances;
 			this.mergeConfig = mergeConfig;
 		}
 
 		@Override
-		public InstanceReference getReference(Instance instance) {
-			return originalInstances.getReference(instance);
-		}
+		protected Collection<Instance> convert(K next) {
+			// next is the merge key
 
-		@Override
-		public Instance getInstance(InstanceReference reference) {
-			return originalInstances.getInstance(reference);
-		}
-
-		@Override
-		public ResourceIterator<Instance> iterator() {
-			return new GenericResourceIteratorAdapter<K, Instance>(
-					index.keySet().iterator()) {
-
-				@Override
-				protected Instance convert(K next) {
-					// next is the merge key
-					
-					// get the instances to merge
-					Collection<InstanceReference> references = index.get(next);
-					//TODO get all instances in one call from instance collection? see InstanceResolver
-					Collection<Instance> instances = new ArrayList<Instance>(references.size());
-					TypeDefinition type = null;
-					for (InstanceReference ref : references) {
-						Instance instance = originalInstances.getInstance(ref);
-						if (instance == null) {
-							throw new IllegalStateException(
-									"Instance reference could not be resolved");
-						}
-						else {
-							instances.add(instance);
-							if (type == null) {
-								type = instance.getDefinition();
-							}
-						}
+			// get the instances to merge
+			Collection<InstanceReference> references = index.get(next);
+			//TODO get all instances in one call from instance collection? see InstanceResolver
+			Collection<Instance> instances = new ArrayList<Instance>(references.size());
+			TypeDefinition type = null;
+			for (InstanceReference ref : references) {
+				Instance instance = originalInstances.getInstance(ref);
+				if (instance == null) {
+					throw new IllegalStateException(
+							"Instance reference could not be resolved");
+				} else {
+					instances.add(instance);
+					if (type == null) {
+						type = instance.getDefinition();
 					}
-					
-					return merge(instances, type, next, mergeConfig);
 				}
+			}
 
-				@Override
-				public void remove() {
-					// prohibit remove
-					throw new UnsupportedOperationException();
-				}
-				
-			};
+			return Collections.singletonList(merge(instances, type, next, mergeConfig));
 		}
 
 		@Override
-		public boolean hasSize() {
-			return true;
+		public void remove() {
+			// prohibit remove
+			throw new UnsupportedOperationException();
 		}
-
-		@Override
-		public int size() {
-			return index.size();
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return index.isEmpty();
-		}
-
-		@Override
-		public InstanceCollection select(Filter filter) {
-			return new FilteredInstanceCollection(this, filter);
-		}
-
 	}
 
 	/**
-	 * @see MergeHandler#mergeInstances(InstanceCollection, String, TransformationEngine, ListMultimap, Map, TransformationLog)
+	 * @see InstanceHandler#partitionInstances(InstanceCollection, String, TransformationEngine, ListMultimap, Map, TransformationLog)
 	 */
 	@Override
-	public InstanceCollection mergeInstances(InstanceCollection instances,
+	public ResourceIterator<Collection<Instance>> partitionInstances(InstanceCollection instances,
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, String> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
@@ -168,7 +123,7 @@ public abstract class AbstractMergeHandler<T, K> implements MergeHandler<Transfo
 			it.close();
 		}
 		
-		return new MergedInstances(index, instances, mergeConfig);
+		return new MergedIterator(index, instances, mergeConfig);
 	}
 	
 	/**

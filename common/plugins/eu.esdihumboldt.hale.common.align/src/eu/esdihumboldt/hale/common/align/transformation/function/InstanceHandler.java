@@ -12,23 +12,27 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.function;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
 /**
- * Merges multiple instances of the same type.
+ * Partitions multiple instances.
+ * 
  * @param <E> the transformation engine type
- * @author Simon Templer
+ * @author Kai Schwierczek
  */
-public interface MergeHandler<E extends TransformationEngine> {
-
+public interface InstanceHandler<E extends TransformationEngine> {
 	/**
-	 * Merge the given instances.
+	 * Partition the given instances.
+	 * 
 	 * @param instances the instances
 	 * @param transformationIdentifier the transformation function identifier
 	 * @param engine the transformation engine that may be used for the
@@ -39,13 +43,12 @@ public interface MergeHandler<E extends TransformationEngine> {
 	 *   may be <code>null</code>
 	 * @param log the transformation log to report any information about the
 	 *   execution of the transformation to
-	 * @return the collection of merged instances
+	 * @return a resource iterator over partitioned instances instances
 	 * @throws TransformationException if an unrecoverable error occurs during
 	 *   transformation
 	 */
-	public InstanceCollection mergeInstances(InstanceCollection instances,
+	public ResourceIterator<Collection<Instance>> partitionInstances(InstanceCollection instances,
 			String transformationIdentifier, E engine,
 			ListMultimap<String, String> transformationParameters, 
 			Map<String, String> executionParameters, TransformationLog log) throws TransformationException;
-	
 }

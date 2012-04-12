@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
@@ -71,11 +70,10 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	}
 
 	/**
-	 * @see PropertyTransformer#publish(Collection, Instance, MutableInstance)
+	 * @see PropertyTransformer#publish(Collection, MutableInstance)
 	 */
 	@Override
-	public void publish(Collection<? extends Type> sourceTypes,
-			final Instance source, final MutableInstance target) {
+	public void publish(final Collection<Instance> source, final MutableInstance target) {
 		executorService.execute(new Runnable() {
 			
 			@Override
@@ -85,8 +83,10 @@ public class TreePropertyTransformer implements PropertyTransformer {
 				TransformationTree tree = treePool.getTree(target.getDefinition());
 				
 				// apply instance values to transformation tree
-				InstanceVisitor instanceVisitor = new InstanceVisitor(source);
-				tree.accept(instanceVisitor);
+				for (Instance instance : source) {
+					InstanceVisitor instanceVisitor = new InstanceVisitor(instance);
+					tree.accept(instanceVisitor);
+				}
 				
 				// duplicate subtree as necessary
 				DuplicationVisitor duplicationVisitor = new DuplicationVisitor();

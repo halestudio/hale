@@ -14,6 +14,8 @@ package eu.esdihumboldt.cst;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,9 +35,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.common.align.transformation.function.MergeHandler;
-import eu.esdihumboldt.hale.common.align.transformation.function.MultiTypeTransformation;
-import eu.esdihumboldt.hale.common.align.transformation.function.SingleTypeTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.TypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
@@ -48,11 +48,12 @@ import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.filter.TypeFilter;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Transformation service implementation
@@ -125,6 +126,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	 * @param reporter the reporter
 	 * @param progressIndicator the progress indicator 
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void doTypeTransformation(TypeTransformationFactory transformation,
 			Cell typeCell, InstanceCollection source, InstanceSink target, 
 			Alignment alignment, EngineManager engines, 
@@ -132,7 +134,6 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			ProgressIndicator progressIndicator) {
 		TransformationLog cellLog = new CellLog(reporter, typeCell); 
 		
-		// TODO Auto-generated method stub
 		TypeTransformation<?> function;
 		try {
 			function = transformation.createExtensionObject();
@@ -150,39 +151,8 @@ public class ConceptualSchemaTransformer implements TransformationService {
 					"Skipping type transformation: No matching transformation engine found", null));
 			return;
 		}
-		
-		if (function instanceof SingleTypeTransformation<?>) {
-			doSingleTypeTransformation((SingleTypeTransformation<?>) function,
-					typeCell, source, target, transformer, cellLog, engine,
-					transformation, progressIndicator);
-		}
-		
-		if (function instanceof MultiTypeTransformation<?>) {
-			//TODO
-		}
-	}
 
-	/**
-	 * Execute a single type transformation
-	 * @param function the transformation function 
-	 * @param typeCell the type transformation cell
-	 * @param source the source instances
-	 * @param target the target instance sink
-	 * @param transformer the property transformer
-	 * @param cellLog the transformation log
-	 * @param transformation the transformation function factory 
-	 * @param engine the transformation engine
-	 * @param progressIndicator the progress indicator
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected void doSingleTypeTransformation(
-			SingleTypeTransformation<?> function, Cell typeCell, InstanceCollection source,
-			InstanceSink target, PropertyTransformer transformer,
-			TransformationLog cellLog, TransformationEngine engine, 
-			TypeTransformationFactory transformation, ProgressIndicator progressIndicator) {
-		
 		// prepare transformation configuration
-		Type sourceType = (Type) typeCell.getSource().values().iterator().next();
 		ListMultimap<String, Type> targetTypes = ArrayListMultimap.create();
 		for (Entry<String, ? extends Entity> entry : typeCell.getTarget().entries()) {
 			targetTypes.put(entry.getKey(), (Type) entry.getValue());
@@ -195,58 +165,89 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		
 		// Step 1: selection
 		// Select only instances that are relevant for the transformation.
-		//TODO filters defined on entity! additional to type filter
-		source = source.select(new TypeFilter(
-				sourceType.getDefinition().getDefinition()));
-		
-		// apply entity filter
-		Filter entityFilter = sourceType.getDefinition().getFilter();
-		if (entityFilter != null) {
-			source = source.select(entityFilter);
-		}
+		source = source.select(new TypeCellFilter(typeCell));
 		
 		// Step 2: partition
-		// Partition instances into sets to be transformed together.
-		// In case of a SingleTypeTransformation each (merged) instance may be
-		// transformed separately.
-		// If a merge handler is present, the partitioning and merging is
-		// performed by the merge handler, otherwise the instance collection
-		// is used as is.
-		MergeHandler mergeHandler = function.getMergeHandler();
-		if (mergeHandler != null) {
-			progressIndicator.setCurrentTask("Perform instance merge");
+		ResourceIterator<Collection<Instance>> iterator;
+		// use InstanceHandler if available - for example merge or join
+		InstanceHandler instanceHandler = function.getInstanceHandler();
+		if (instanceHandler != null) {
+			progressIndicator.setCurrentTask("Perform instance partitioning");
 			try {
-				source = mergeHandler.mergeInstances(source, 
+				iterator = instanceHandler.partitionInstances(source, 
 						transformation.getFunctionId(), engine, parameters,
 						executionParameters, cellLog);
 			} catch (TransformationException e) {
-				cellLog.error(cellLog.createMessage("Merge operation failed, type transformation.", e));
+				cellLog.error(cellLog.createMessage("Type transformation: partitioning failed", e));
 				return;
 			}
+		} else {
+			// else just use every instance as is
+			iterator = new GenericResourceIteratorAdapter<Instance, Collection<Instance>>(source.iterator()) {
+				/**
+				 * @see eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter#convert(java.lang.Object)
+				 */
+				@Override
+				protected Collection<Instance> convert(Instance next) {
+					return Collections.singletonList(next);
+				}
+			};
 		}
 		
 		progressIndicator.setCurrentTask("Execute type transformations");
-		
-		ResourceIterator<Instance> it = source.iterator();
+
 		try {
-			while (it.hasNext()) {
-				Instance sourceInstance = it.next();
-				
-				function.setSource(sourceType, sourceInstance);
+			while (iterator.hasNext()) {
+				function.setSource(iterator.next());
 				function.setPropertyTransformer(transformer);
 				function.setParameters(parameters);
 				function.setTarget(targetTypes);
 				
 				try {
-					((SingleTypeTransformation) function).execute(transformation.getFunctionId(), engine, 
+					((TypeTransformation) function).execute(transformation.getFunctionId(), engine, 
 							executionParameters, cellLog);
 				} catch (TransformationException e) {
 					cellLog.error(cellLog.createMessage("Type transformation failed, skipping instance.", e));
 				}
 			}
 		} finally {
-			it.close();
+			iterator.close();
 		}
 	}
 
+	private static final Object NO_FILTER = new Object();
+
+	/**
+	 * A filter that matches all instances relevant to a given type cell.
+	 * 
+	 * @author Kai Schwierczek
+	 */
+	private static class TypeCellFilter implements Filter{
+		private final HashMap<TypeDefinition, Object> lookup = new HashMap<TypeDefinition, Object>();
+
+		/**
+		 * Constructs a filter that matches all instances relevant to the given cell.
+		 * 
+		 * @param typeCell the type cell
+		 */
+		private TypeCellFilter(Cell typeCell) {
+			for (Entity sourceEntity : typeCell.getSource().values()) {
+				Type sourceType = (Type) sourceEntity;
+				Filter filter = sourceType.getDefinition().getFilter();
+				lookup.put(sourceType.getDefinition().getDefinition(), filter == null ? NO_FILTER : filter);
+			}
+		}
+
+		/**
+		 * @see eu.esdihumboldt.hale.common.instance.model.Filter#match(eu.esdihumboldt.hale.common.instance.model.Instance)
+		 */
+		@Override
+		public boolean match(Instance instance) {
+			Object filter = lookup.get(instance.getDefinition());
+			if (filter == null)
+				return false;
+			else 
+				return filter == NO_FILTER || ((Filter) filter).match(instance);
+		}
+	}
 }

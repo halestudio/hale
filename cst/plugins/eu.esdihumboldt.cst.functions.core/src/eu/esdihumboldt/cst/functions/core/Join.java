@@ -12,21 +12,22 @@
 
 package eu.esdihumboldt.cst.functions.core;
 
-import eu.esdihumboldt.cst.functions.core.merge.PropertiesMergeHandler;
+import eu.esdihumboldt.cst.functions.core.join.JoinHandler;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 
 /**
- * Type transformation that merges multiple instances of the same source type
+ * Type transformation that joins multiple instances of different source types
  * into one target instance, based on matching properties.
- * @author Simon Templer
+ * 
+ * @author Kai Schwierczek
  */
-public class Merge extends Retype {
+public class Join extends Retype {
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation#getInstanceHandler()
 	 */
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
-		return new PropertiesMergeHandler();
+		return new JoinHandler();
 	}
 }
