@@ -37,15 +37,29 @@ public interface TypeTransformation<E extends TransformationEngine> extends Tran
 	 * instance pairs created during
 	 * {@link #execute(String, TransformationEngine, java.util.Map, TransformationLog)}ion 
 	 * to the property transformer using
-	 * {@link PropertyTransformer#publish(Collection, Instance, MutableInstance)}.
+	 * {@link PropertyTransformer#publish(Collection, MutableInstance)}.
 	 * @param propertyTransformer the property transformer
 	 */
 	public void setPropertyTransformer(PropertyTransformer propertyTransformer);
 	
 	/**
-	 * Set the target types
+	 * Set the target types.
+	 * 
 	 * @param targetTypes the source properties
 	 */
 	public void setTarget(ListMultimap<String, ? extends Type> targetTypes);
 
+	/**
+	 * Set the source instances.
+	 * 
+	 * @param sourceInstances the source instances
+	 */
+	public void setSource(Collection<Instance> sourceInstances);
+
+	/**
+	 * Get the handler to partition the source instances (e.g. merge or join).
+	 * 
+	 * @return the instance handler or <code>null</code> if none is required
+	 */
+	public InstanceHandler<? super E> getInstanceHandler();
 }

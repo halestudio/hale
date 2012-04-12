@@ -10,18 +10,16 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.transformation.function;
-
-import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+package eu.esdihumboldt.hale.common.align.model.functions;
 
 /**
- * Type transformation function that processes multiple source types.
- * @param <E> the transformation engine type
+ * Join function constants.
  * 
- * @author Simon Templer
+ * @author Kai Schwierczek
  */
-public interface MultiTypeTransformation<E extends TransformationEngine> extends TypeTransformation<E> {
-	
-	//TODO
-
+public interface JoinFunction {
+	/**
+	 * Name of the parameter specifying the join function.
+	 */
+	public static final String PARAMETER_JOIN = "join";
 }

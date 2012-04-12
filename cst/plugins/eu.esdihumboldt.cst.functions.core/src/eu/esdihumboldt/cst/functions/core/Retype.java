@@ -12,14 +12,12 @@
 
 package eu.esdihumboldt.cst.functions.core;
 
-import java.util.Collections;
 import java.util.Map;
 
 import net.jcip.annotations.Immutable;
-
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
-import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTypeTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -29,7 +27,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 @Immutable
-public class Retype extends AbstractSingleTypeTransformation<TransformationEngine> {
+public class Retype extends AbstractTypeTransformation<TransformationEngine> {
 
 	/**
 	 * @see TransformationFunction#execute(String, TransformationEngine, Map, TransformationLog)
@@ -41,7 +39,7 @@ public class Retype extends AbstractSingleTypeTransformation<TransformationEngin
 		// for each source instance create a target instance
 		TypeDefinition targetType = getTarget().values().iterator().next().getDefinition().getDefinition();
 		MutableInstance target = getInstanceFactory().createInstance(targetType);
-		getPropertyTransformer().publish(Collections.singleton(getSourceType()), getSourceInstance(), target);
+		getPropertyTransformer().publish(getSource(), target);
 	}
 
 }
