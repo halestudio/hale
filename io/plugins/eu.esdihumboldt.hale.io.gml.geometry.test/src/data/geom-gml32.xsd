@@ -104,5 +104,18 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	
+	<element name="MultiPointProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:MultiPointPropertyType" />
+
+	<complexType name="MultiPointPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:MultiPointType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
 
 </schema>
