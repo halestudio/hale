@@ -15,12 +15,13 @@
 #macro(cell_info $cell)
 <div class="cell">
 	<img src='$cell.getImageLocation()'>
+	<br />
 	#if ($cell.explanationAsHtml)
+		<div class="explanation">$cell.explanationAsHtml</div>
 		<br />
-		<div>$cell.explanationAsHtml</div>
 	#elseif ($cell.explanation)
-		<br />
 		<p class="explanation">$cell.explanation</p>
+		<br />
 	#end
 </div>
 <br />

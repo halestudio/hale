@@ -18,8 +18,13 @@ body
 	border: 1px solid #eee;
 }
 
-.explanation {
+p.explanation {
 	white-space: pre-wrap;
+	margin-left: 0px;
+	max-width: 580px;
+}
+
+.explanation {
 	margin-left: 0px;
 	max-width: 580px;
 }
