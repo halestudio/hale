@@ -96,7 +96,10 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 		
 		// collect contained geometries
 		final List<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>();
-		InstanceTraverser traverser = new DepthFirstInstanceTraverser();
+		
+		// depth first traverser that on cancel continues traversal but w/o the
+		// children of the current object
+		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
 		
 		InstanceTraversalCallback collector = new InstanceTraversalCallback() {
 			

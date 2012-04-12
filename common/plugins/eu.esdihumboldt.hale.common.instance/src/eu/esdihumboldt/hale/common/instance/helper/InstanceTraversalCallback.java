@@ -49,5 +49,5 @@ public interface InstanceTraversalCallback {
 	 * @return if traversal shall be continued
 	 */
 	public boolean visit(Object value, QName name);
-
+	
 }
