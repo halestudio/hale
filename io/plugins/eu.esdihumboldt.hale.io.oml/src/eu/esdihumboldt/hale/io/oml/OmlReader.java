@@ -79,6 +79,7 @@ public class OmlReader extends AbstractAlignmentReader implements
 	 */
 	public OmlReader() {
 		map.put("eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction", new RenameTranslator());
+		map.put("eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction", new RenameTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.DateExtractionFunction", new DateExtractionTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction", new ClassificationMappingTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.ConstantValueFunction", new AssignTranslator());
