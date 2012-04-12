@@ -18,6 +18,13 @@ package eu.esdihumboldt.hale.common.align.model.functions;
  * @author Kai Schwierczek
  */
 public interface ClassificationMappingFunction {
+	
+	/**
+	 * the classification mapping Id
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.align.classification";
+	
+	
 	/**
 	 * Name of the parameter specifying the classifications.
 	 */
