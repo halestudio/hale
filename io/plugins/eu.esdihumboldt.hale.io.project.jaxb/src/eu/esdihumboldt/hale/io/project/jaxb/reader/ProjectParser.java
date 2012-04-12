@@ -237,7 +237,7 @@ public class ProjectParser extends AbstractImportProvider implements
 //			IOConfiguration conf = new IOConfiguration();
 //			conf.setActionId(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA);
 //			loadSchema(conf, source);
-			load(source, SchemaIO.ACTION_LOAD_TARGET_SCHEMA, msgCT, msgIO, SchemaReader.class);
+			load(source, SchemaIO.ACTION_LOAD_SOURCE_SCHEMA, msgCT, msgIO, SchemaReader.class);
 		}
 
 		if (haleProject.getTargetSchema() != null

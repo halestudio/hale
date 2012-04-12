@@ -20,6 +20,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.commons.goml.align.Alignment;
+import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
 import eu.esdihumboldt.commons.goml.omwg.ComposedFeatureClass;
 import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
@@ -168,13 +169,36 @@ public class OmlReader extends AbstractAlignmentReader implements
 	private void setBeanLists(IEntity entity, List<NamedEntityBean> list,
 			TypeIndex schema) {
 
-		if (entity instanceof FeatureClass) {
+		if (entity.getAbout().getAbout()
+				.equals(Entity.NULL_ENTITY.getAbout().getAbout())) {
+			return;
+		}
+
+		if (entity instanceof ComposedFeatureClass) {
+			ComposedFeatureClass cfc = (ComposedFeatureClass) entity;
+
+			List<FeatureClass> coll = cfc.getCollection();
+
+			for (FeatureClass fc : coll) {
+				setBeanLists(fc, list, schema);
+			}
+		} else if (entity instanceof ComposedProperty) {
+			ComposedProperty cp = (ComposedProperty) entity;
+
+			List<Property> coll = cp.getCollection();
+
+			for (Property prop : coll) {
+				setBeanLists(prop, list, schema);
+			}
+
+		} else if (entity instanceof FeatureClass) {
+
 			// get the detailed about-information
 			IDetailedAbout about = DetailedAbout.getDetailedAbout(
 					entity.getAbout(), false);
 
 			TypeBean typeBean = new TypeBean();
-			
+
 			setTypeNameBean(typeBean, about, schema);
 
 			NamedEntityBean namedEntityBean = new NamedEntityBean();
@@ -183,15 +207,6 @@ public class OmlReader extends AbstractAlignmentReader implements
 			namedEntityBean.setName(null);
 
 			list.add(namedEntityBean);
-
-		} else if (entity instanceof ComposedFeatureClass) {
-			ComposedFeatureClass cfc = (ComposedFeatureClass) entity;
-
-			List<FeatureClass> coll = cfc.getCollection();
-
-			for (FeatureClass fc : coll) {
-				setBeanLists(fc, list, schema);
-			}
 
 		} else if (entity instanceof Property) {
 			// get the detailed about-information
@@ -209,7 +224,7 @@ public class OmlReader extends AbstractAlignmentReader implements
 
 				childList.add(ccb);
 			}
-			
+
 			setTypeNameBean(prop, about, schema);
 			prop.setProperties(childList);
 
@@ -220,30 +235,21 @@ public class OmlReader extends AbstractAlignmentReader implements
 
 			list.add(namedEntityBean);
 
-		} else if (entity instanceof ComposedProperty) {
-			ComposedProperty cp = (ComposedProperty) entity;
-
-			List<Property> coll = cp.getCollection();
-
-			for (Property prop : coll) {
-				setBeanLists(prop, list, schema);
-			}
-
 		}
 
 	}
 
-	private void setTypeNameBean(EntityBean<?> entityBean, IDetailedAbout about, TypeIndex schema) {
-		
-		QName name = new QName(about.getNamespace(),
-				about.getFeatureClass());
+	private void setTypeNameBean(EntityBean<?> entityBean,
+			IDetailedAbout about, TypeIndex schema) {
+
+		QName name = new QName(about.getNamespace(), about.getFeatureClass());
 
 		if (schema.getType(name) == null) {
 			name = findElementType(schema, name);
 		}
 
 		entityBean.setTypeName(name);
-		
+
 	}
 
 	private QName findElementType(TypeIndex schema, QName elementName) {
@@ -259,10 +265,10 @@ public class OmlReader extends AbstractAlignmentReader implements
 				}
 			}
 		} else {
-			for(TypeDefinition typedef : schema.getTypes()) {
+			for (TypeDefinition typedef : schema.getTypes()) {
 				XmlElements xmlelem = typedef.getConstraint(XmlElements.class);
-				for(XmlElement elem : xmlelem.getElements()) {
-					if(elem.getName().equals(elementName)) {
+				for (XmlElement elem : xmlelem.getElements()) {
+					if (elem.getName().equals(elementName)) {
 						return typedef.getName();
 					}
 				}
