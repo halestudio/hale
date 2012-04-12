@@ -15,7 +15,9 @@ package eu.esdihumboldt.hale.io.oml;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -47,6 +49,11 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.io.oml.helper.AssignTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.ClassificationMappingTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.DateExtractionTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.RenameTranslator;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
@@ -63,8 +70,20 @@ import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 public class OmlReader extends AbstractAlignmentReader implements
 		AlignmentReader {
 
+	private Map<String, FunctionTranslator> map = new HashMap<String, FunctionTranslator>();
+	
 	private MutableAlignment mutableAlignment = null;
 
+	/**
+	 * Default Constructor
+	 */
+	public OmlReader() {
+		map.put("eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction", new RenameTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.DateExtractionFunction", new DateExtractionTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction", new ClassificationMappingTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.ConstantValueFunction", new AssignTranslator());
+	}
+	
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
 	 */
@@ -304,9 +323,15 @@ public class OmlReader extends AbstractAlignmentReader implements
 
 	private void setTransformationId(CellBean cellBean, IEntity entity) {
 
+		String transId = entity.getTransformation()
+				.getService().getLocation();
+		
 		// set the new transformation identifier
-		cellBean.setTransformationIdentifier(entity.getTransformation()
-				.getService().getLocation());
+		if(map.containsKey(transId)) {
+			cellBean.setTransformationIdentifier(map.get(transId).getTransformationId());
+		} else {
+			cellBean.setTransformationIdentifier(transId);
+		}
 
 	}
 
