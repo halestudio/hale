@@ -104,7 +104,7 @@
 			</extension>
 		</complexContent>
 	</complexType>
-	
+
 	<element name="MultiPointProperty" substitutionGroup="gml:AbstractFeature"
 		type="hale:MultiPointPropertyType" />
 

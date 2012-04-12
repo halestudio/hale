@@ -83,7 +83,7 @@
 			</extension>
 		</complexContent>
 	</complexType>
-	
+
 	<element name="MultiLineStringProperty" substitutionGroup="gml:_Feature"
 		type="hale:MultiLineStringPropertyType" />
 
@@ -96,7 +96,7 @@
 			</extension>
 		</complexContent>
 	</complexType>
-	
+
 	<element name="MultiPointProperty" substitutionGroup="gml:_Feature"
 		type="hale:MultiPointPropertyType" />
 
@@ -109,5 +109,18 @@
 			</extension>
 		</complexContent>
 	</complexType>
-	
+
+	<element name="MultiPolygonProperty" substitutionGroup="gml:_Feature"
+		type="hale:MultiPolygonPropertyType" />
+
+	<complexType name="MultiPolygonPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:MultiPolygonType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
 </schema>
