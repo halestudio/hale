@@ -74,14 +74,16 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 	 * @return if traversal shall be continued
 	 */
 	protected boolean traverseChildren(Group group, InstanceTraversalCallback callback) {
+		boolean traverse = true;
 		for (QName name : group.getPropertyNames()) {
 			Object[] values = group.getProperty(name);
 			if (values != null) {
 				for (Object value : values) {
 					if (!traverse(value, callback, name)) {
-						return false;
+						traverse = false;
 					}
 				}
+				return traverse;
 			}
 		}
 		
