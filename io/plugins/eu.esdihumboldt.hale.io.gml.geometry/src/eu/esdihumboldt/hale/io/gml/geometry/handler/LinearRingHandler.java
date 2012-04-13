@@ -52,14 +52,12 @@ public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 		LinearRing ring = null;
 		LineStringHandler handler = new LineStringHandler();
 
-		// for use with GML 2
+		// for use with GML 2, 3, 3.1, 3.2
 		@SuppressWarnings("unchecked")
 		DefaultGeometryProperty<LineString> linestring = (DefaultGeometryProperty<LineString>) handler
 				.createGeometry(instance);
 		ring = getGeometryFactory().createLinearRing(
 				linestring.getGeometry().getCoordinates());
-
-		// XXX support for other types in GML 3.2
 
 		if (ring != null) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
