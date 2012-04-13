@@ -12,6 +12,7 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
+
    <launcher name="Infocenter">
       <solaris/>
       <win useIco="false">
@@ -109,7 +110,7 @@
    </plugins>
 
    <configurations>
-      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help.base" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help.webapp" autoStart="true" startLevel="0" />
