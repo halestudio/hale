@@ -28,6 +28,7 @@ import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.cst.internal.EngineManager;
 import eu.esdihumboldt.cst.internal.TreePropertyTransformer;
+import eu.esdihumboldt.cst.internal.util.CountingInstanceSink;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -48,6 +49,7 @@ import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -71,6 +73,32 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			InstanceSink target, ProgressIndicator progressIndicator) {
 		TransformationReporter reporter = new DefaultTransformationReporter(
 				"Instance transformation", true);
+		
+		final SubtaskProgressIndicator sub = new SubtaskProgressIndicator(progressIndicator) {
+
+			@Override
+			protected String getCombinedTaskName(String taskName,
+					String subtaskName) {
+				return taskName + " (" + subtaskName + ")";
+			}
+			
+		};
+		progressIndicator = sub;
+		
+		target = new CountingInstanceSink(target) {
+			
+			private long lastUpdate = 0;
+
+			@Override
+			protected void countChanged(int count) {
+				long now = System.currentTimeMillis();
+				if (now - lastUpdate > 500) {
+					lastUpdate = now;
+					sub.subTask(count + " transformed instances");
+				}
+			}
+			
+		};
 		
 		progressIndicator.begin("Transformation", ProgressIndicator.UNKNOWN);
 		try {
@@ -132,7 +160,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			Alignment alignment, EngineManager engines, 
 			PropertyTransformer transformer, TransformationReporter reporter, 
 			ProgressIndicator progressIndicator) {
-		TransformationLog cellLog = new CellLog(reporter, typeCell); 
+		TransformationLog cellLog = new CellLog(reporter, typeCell);
 		
 		TypeTransformation<?> function;
 		try {

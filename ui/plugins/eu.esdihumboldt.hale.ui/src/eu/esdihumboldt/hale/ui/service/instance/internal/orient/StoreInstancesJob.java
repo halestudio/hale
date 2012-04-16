@@ -83,6 +83,8 @@ public abstract class StoreInstancesJob extends Job {
 			
 			//TODO decouple next() and save()?
 			
+			long lastUpdate = 0; // last count update 
+			
 			ResourceIterator<Instance> it = instances.iterator();
 			try {
 				while (it.hasNext() && !monitor.isCanceled()) {
@@ -102,6 +104,12 @@ public abstract class StoreInstancesJob extends Job {
 					
 					if (exactProgress) {
 						monitor.worked(1);
+					}
+					
+					long now = System.currentTimeMillis();
+					if (now - lastUpdate > 500) {
+						monitor.subTask(String.valueOf(count) + " instances processed");
+						lastUpdate = now;
 					}
 				}
 			} finally {
