@@ -92,7 +92,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			@Override
 			protected void countChanged(int count) {
 				long now = System.currentTimeMillis();
-				if (now - lastUpdate > 500) {
+				if (now - lastUpdate > 100) { // only update every 100 milliseconds
 					lastUpdate = now;
 					sub.subTask(count + " transformed instances");
 				}
