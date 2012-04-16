@@ -13,7 +13,6 @@
 package eu.esdihumboldt.util.orient.embedded;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.util.UUID;
@@ -25,8 +24,6 @@ import java.util.concurrent.Future;
 import org.junit.Test;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-
-import eu.esdihumboldt.util.orient.embedded.EmbeddedOrientDB;
 
 /**
  * Tests basic functions in the document based DB in the file system
@@ -46,7 +43,7 @@ public class LocalDocumentTest extends AbstractDocumentTest {
 	 */
 	@Override
 	public void init() {
-		assertNotNull(EmbeddedOrientDB.getServer()); // to activate the embedded DB
+//		assertNotNull(EmbeddedOrientDB.getServer()); // to activate the embedded DB
 		
 		db = new ODatabaseDocumentTx(TEST_DB).create();
 	}

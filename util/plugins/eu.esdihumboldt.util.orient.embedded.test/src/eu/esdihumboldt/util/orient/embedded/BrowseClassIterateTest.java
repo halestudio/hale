@@ -29,7 +29,6 @@ import org.junit.Test;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.iterator.ORecordIteratorClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.server.OServer;
 
 /**
  * Test the iterator provided through browseClass.
@@ -43,7 +42,7 @@ public class BrowseClassIterateTest {
 
 	private ODatabaseDocumentTx db;
 	
-	private static OServer server;
+//	private static OServer server;
 
 	/**
 	 * Test if the correct number of persons is retrieved through the iterator
@@ -151,7 +150,7 @@ public class BrowseClassIterateTest {
 	 */
 	@BeforeClass
 	public static void initServer() throws Exception {
-		server = EmbeddedOrientDB.getServer();
+//		server = EmbeddedOrientDB.getServer();
 		
 //		server = OServerMain.create();
 //		server.startup("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
@@ -183,7 +182,7 @@ public class BrowseClassIterateTest {
 	 */
 	@Before
 	public void init() {
-		assertNotNull(server);
+//		assertNotNull(server);
 		db = new ODatabaseDocumentTx(TEST_DB).create();
 	}
 
