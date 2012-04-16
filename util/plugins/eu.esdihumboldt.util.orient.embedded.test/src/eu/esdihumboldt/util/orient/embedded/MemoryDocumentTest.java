@@ -12,13 +12,9 @@
 
 package eu.esdihumboldt.util.orient.embedded;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.UUID;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-
-import eu.esdihumboldt.util.orient.embedded.EmbeddedOrientDB;
 
 /**
  * Tests basic functions in the document based DB in memory
@@ -40,7 +36,7 @@ public class MemoryDocumentTest extends AbstractDocumentTest {
 	 */
 	@Override
 	public void init() {
-		assertNotNull(EmbeddedOrientDB.getServer()); // to activate the embedded DB
+//		assertNotNull(EmbeddedOrientDB.getServer()); // to activate the embedded DB
 		
 		// use random db name as deletion doesn't seem to be supported (in 1.0rc1)
 		db = new ODatabaseDocumentTx(TEST_DB + "_" + UUID.randomUUID().toString()).create();
