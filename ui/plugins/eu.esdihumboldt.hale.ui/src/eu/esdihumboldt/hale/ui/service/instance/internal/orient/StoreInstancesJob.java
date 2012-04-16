@@ -107,7 +107,7 @@ public abstract class StoreInstancesJob extends Job {
 					}
 					
 					long now = System.currentTimeMillis();
-					if (now - lastUpdate > 500) {
+					if (now - lastUpdate > 100) { // only update every 100 milliseconds
 						monitor.subTask(String.valueOf(count) + " instances processed");
 						lastUpdate = now;
 					}
