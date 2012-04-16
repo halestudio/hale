@@ -103,6 +103,9 @@ public abstract class StoreInstancesJob extends Job {
 					if (exactProgress) {
 						monitor.worked(1);
 					}
+//					else {
+						monitor.subTask(String.valueOf(count) + " instances processed");
+//					}
 				}
 			} finally {
 				it.close();
