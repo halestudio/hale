@@ -14,6 +14,7 @@ package eu.esdihumboldt.util.orient.embedded;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.esdihumboldt.util.orient.embedded.EmbeddedOrientDB;
@@ -29,6 +30,7 @@ public class ServerTest {
 	/**
 	 * Test if a server instance is available
 	 */
+	@Ignore
 	@Test
 	public void testServerInstance() {
 		assertNotNull(EmbeddedOrientDB.getServer());
