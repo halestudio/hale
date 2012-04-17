@@ -32,10 +32,12 @@ import javax.xml.namespace.QName;
 
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.ORecordAbstract;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.record.impl.ORecordBytes;
+import com.orientechnologies.orient.core.storage.OStorage.CLUSTER_TYPE;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -146,14 +148,25 @@ public class OGroup implements MutableGroup {
 		if (document instanceof ODocument) {
 			// reset class name
 			ODocument doc = (ODocument) document;
+			String className = null;
 			if (definition != null) {
-				doc.setClassName(ONameUtil.encodeName(definition.getIdentifier()));
+				className = ONameUtil.encodeName(definition.getIdentifier());
 			}
 			else if (doc.containsField(BINARY_WRAPPER_FIELD)) {
-				doc.setClassName(BINARY_WRAPPER_CLASSNAME);
+				className = BINARY_WRAPPER_CLASSNAME;
 			}
 			else if (doc.containsField(COLLECTION_WRAPPER_FIELD)) {
-				doc.setClassName(COLLECTION_WRAPPER_CLASSNAME);
+				className = COLLECTION_WRAPPER_CLASSNAME;
+			}
+			
+			if (className != null) {
+				OSchema schema = db.getMetadata().getSchema();
+				if (!schema.existsClass(className)) {
+					// if the class doesn't exist yet, create a physical cluster manually for it
+					int cluster = db.addCluster(className, CLUSTER_TYPE.PHYSICAL);
+					schema.createClass(className, cluster);
+				}
+				doc.setClassName(className);
 			}
 			
 			// configure children
