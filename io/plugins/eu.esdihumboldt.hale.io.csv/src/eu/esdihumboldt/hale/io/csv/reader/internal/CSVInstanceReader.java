@@ -33,8 +33,8 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
@@ -92,7 +92,7 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 		}
 
 		while ((nextLine = reader.readNext()) != null) {
-			MutableInstance instance = new OInstance(type, null);
+			MutableInstance instance = new DefaultInstance(type, null);
 			line++;
 			// nextLine[] is now an array of all values in the line (starting in
 			// second line if skipFirst == true)

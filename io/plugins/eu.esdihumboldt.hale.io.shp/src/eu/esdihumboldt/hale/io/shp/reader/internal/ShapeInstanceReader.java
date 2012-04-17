@@ -42,8 +42,8 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -121,7 +121,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 	 * @return the instance or <code>null</code> if it couldn't be created
 	 */
 	private Instance createInstance(TypeDefinition type, SimpleFeature feature) {
-		MutableInstance instance = new OInstance(type, null);
+		MutableInstance instance = new DefaultInstance(type, null);
 		
 		for (Property property : feature.getProperties()) {
 			Object value = property.getValue();
