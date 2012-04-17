@@ -67,6 +67,16 @@ public class OGroup implements MutableGroup {
 	 * Binary wrapper class name
 	 */
 	public static final String BINARY_WRAPPER_CLASSNAME = "___BinaryWrapper___";
+	
+	/**
+	 * Collection wrapper class field name
+	 */
+	private static final String COLLECTION_WRAPPER_FIELD = "___collection___";
+
+	/**
+	 * Collection wrapper class name
+	 */
+	public static final String COLLECTION_WRAPPER_CLASSNAME = "___CollectionWrapper___";
 
 	private static final ALogger log = ALoggerFactory.getLogger(OGroup.class);
 	
@@ -76,6 +86,7 @@ public class OGroup implements MutableGroup {
 	private static final Set<String> SPECIAL_FIELDS = new HashSet<String>();
 	static {
 		SPECIAL_FIELDS.add(BINARY_WRAPPER_FIELD);
+		SPECIAL_FIELDS.add(COLLECTION_WRAPPER_FIELD);
 	}
 	
 	/**
@@ -143,6 +154,9 @@ public class OGroup implements MutableGroup {
 			}
 			else if (doc.containsField(BINARY_WRAPPER_FIELD)) {
 				className = BINARY_WRAPPER_CLASSNAME;
+			}
+			else if (doc.containsField(COLLECTION_WRAPPER_FIELD)) {
+				className = COLLECTION_WRAPPER_CLASSNAME;
 			}
 			
 			if (className != null) {
@@ -328,6 +342,26 @@ public class OGroup implements MutableGroup {
 		 */
 		//TODO objects that are not supported inside document
 		else if (!isSupportedFieldType(value.getClass())) {
+			// collection handling
+			Object[] collection = null;
+			if (Collection.class.isAssignableFrom(value.getClass())) {
+				collection = ((Collection<?>) value).toArray();
+			}
+			else if (value.getClass().isArray()) {
+				collection = (Object[]) value;
+			}
+			if (collection != null) {
+				List<Object> valueList = new ArrayList<Object>(collection.length);
+				
+				// use a collection wrapper document
+				ODocument doc = new ODocument();
+				for (Object element : collection) {
+					valueList.add(convertInstance(element));
+				}
+				doc.field(COLLECTION_WRAPPER_FIELD, valueList);
+				return doc;
+			}
+			
 			//TODO try conversion first?!
 			
 			// object serialization
@@ -533,6 +567,27 @@ public class OGroup implements MutableGroup {
 				// extract wrapped ORecordBytes
 				value = doc.field(BINARY_WRAPPER_FIELD);
 			}
+			else if (doc.containsField(COLLECTION_WRAPPER_FIELD)) {
+				// wrapped collection
+				Object elements = doc.field(COLLECTION_WRAPPER_FIELD);
+				Object[] elementArray = null;
+				if (elements instanceof Collection<?>) {
+					// is a collection
+					elementArray = ((Collection<?>) elements).toArray();
+				}
+				else if (elements.getClass().isArray()) {
+					// is an array
+					elementArray = (Object[]) elements;
+				}
+				if (elementArray == null) {
+					throw new IllegalStateException("Illegal value in a collection wrapper");
+				}
+				Collection<Object> result = new ArrayList<Object>(elementArray.length); //TODO something other than list?
+				for (Object element : elementArray) {
+					result.add(convertDocument(element, propertyName));
+				}
+				return result;
+			}
 			else {
 				ChildDefinition<?> child = definition.getChild(propertyName);
 				if (child.asProperty() != null) {
@@ -549,7 +604,6 @@ public class OGroup implements MutableGroup {
 				}
 			}
 		}
-		//TODO also treat collections etc?
 		
 		//TODO objects that are not supported inside document
 		if (value instanceof ORecordBytes) {
