@@ -135,9 +135,14 @@ public abstract class StoreInstancesJob extends Job {
 		
 		onComplete();
 		
-		monitor.done();
-		String message = MessageFormat.format("Stored {0} instances in the database", count);
+		String message = MessageFormat.format("Stored {0} instances in the database.", count);
+		if (monitor.isCanceled()) {
+			log.warn("Loading instances was canceled, incomplete data set in the database.");
+		}
 		log.info(message);
+		
+		monitor.done();
+		
 		return new Status((monitor.isCanceled())?(IStatus.CANCEL):(IStatus.OK), 
 				HALEUIPlugin.PLUGIN_ID, message );
 	}
