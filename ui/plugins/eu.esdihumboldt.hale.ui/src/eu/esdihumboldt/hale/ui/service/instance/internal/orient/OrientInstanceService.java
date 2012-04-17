@@ -263,7 +263,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 						InterruptedException {
 					storeInstances.run(monitor);
 				}
-			}, false);
+			}, true);
 		} catch (Exception e) {
 			log.error("Error starting process to load source data", e);
 		}
