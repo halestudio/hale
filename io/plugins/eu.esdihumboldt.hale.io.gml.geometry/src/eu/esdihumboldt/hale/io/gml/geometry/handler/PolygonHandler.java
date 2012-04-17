@@ -45,6 +45,8 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String POLYGON_TYPE = "PolygonType";
+	
+	private static final String POLYGON_PATCH_TYPE = "PolygonPatchType";
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance)
@@ -170,6 +172,9 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 		types.add(new QName(NS_GML, POLYGON_TYPE));
 		types.add(new QName(NS_GML_32, POLYGON_TYPE));
+		
+		types.add(new QName(NS_GML, POLYGON_PATCH_TYPE));
+		types.add(new QName(NS_GML_32, POLYGON_PATCH_TYPE));
 
 		return types;
 	}
