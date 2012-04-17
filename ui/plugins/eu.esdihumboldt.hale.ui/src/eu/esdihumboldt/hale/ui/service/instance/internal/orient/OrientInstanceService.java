@@ -199,7 +199,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 			
 			for (OClass clazz : classes) {
 				try {
-					if (clazz.getName().equals(OGroup.BINARY_WRAPPER_CLASSNAME)) {
+					if (clazz.getName().equals(OGroup.BINARY_WRAPPER_CLASSNAME)
+							|| clazz.getName().equals(OGroup.COLLECTION_WRAPPER_CLASSNAME)) {
 						// ignore binary wrapper class
 						continue;
 					}
