@@ -69,12 +69,13 @@ public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 					SourceNode node = leftover.getFirst();
 					Object value = node.getValue();
 					if (value instanceof Group) {
-						// annotate children with leftovers
 						InstanceVisitor instanceVisitor = new InstanceVisitor((Group) value);
-						node.accept(instanceVisitor);
-						
-						// run the duplication on the children
-						node.accept(this);
+						for (SourceNode child : node.getChildren(instanceVisitor.includeAnnotatedNodes())) {
+							// annotate children with leftovers
+							child.accept(instanceVisitor);
+							// run the duplication on the children
+							child.accept(this);
+						}
 					}
 				}
 			}
