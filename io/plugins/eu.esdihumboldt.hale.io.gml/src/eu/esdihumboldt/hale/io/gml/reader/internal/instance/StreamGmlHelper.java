@@ -30,7 +30,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -70,7 +70,7 @@ public abstract class StreamGmlHelper {
 		
 		MutableInstance instance;
 		if (indexInStream == null) {
-			instance = new OInstance(type, null); // not necessary to associate data set
+			instance = new DefaultInstance(type, null); // not necessary to associate data set
 		}
 		else {
 			instance = new StreamGmlInstance(type, indexInStream);

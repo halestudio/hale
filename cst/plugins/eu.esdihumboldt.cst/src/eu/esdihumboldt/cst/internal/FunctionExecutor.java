@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.impl.Transformati
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -221,7 +222,7 @@ public class FunctionExecutor extends CellNodeValidator {
 							.getPropertyType();
 					if (!(value instanceof Group)
 							&& !propertyType .getChildren().isEmpty()) {
-						MutableInstance instance = new OInstance(propertyType, null);
+						MutableInstance instance = new DefaultInstance(propertyType, null);
 						instance.setValue(value);
 						value = instance;
 					}

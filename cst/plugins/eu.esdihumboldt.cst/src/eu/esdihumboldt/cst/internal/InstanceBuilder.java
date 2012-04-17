@@ -18,8 +18,8 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 
 /**
  * Populates an instance from a transformation tree.
@@ -68,7 +68,7 @@ public class InstanceBuilder {
 			group = new OGroup(node.getDefinition().asGroup());
 		}
 		else if (node.getDefinition().asProperty() != null) {
-			group = new OInstance(node.getDefinition().asProperty().getPropertyType(), null);
+			group = new DefaultInstance(node.getDefinition().asProperty().getPropertyType(), null);
 		}
 		else {
 			throw new IllegalStateException("Illegal child definition");

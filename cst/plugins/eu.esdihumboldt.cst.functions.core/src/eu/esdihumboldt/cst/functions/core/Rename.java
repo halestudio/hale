@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
@@ -105,7 +106,7 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 					return convertValue(source, targetDefinition.asProperty().getPropertyType());
 				} else {
 					// instance with value
-					MutableInstance instance = new OInstance(targetDefinition.asProperty().getPropertyType(),
+					MutableInstance instance = new DefaultInstance(targetDefinition.asProperty().getPropertyType(),
 							DataSet.TRANSFORMED);
 					instance.setValue(convertValue(source, targetDefinition.asProperty().getPropertyType()));
 					return instance;
@@ -123,7 +124,7 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 					return convertValue(((Instance) source).getValue(), targetDefinition.asProperty().getPropertyType());
 				} else {
 					// instance with value
-					MutableInstance instance = new OInstance(targetDefinition.asProperty().getPropertyType(),
+					MutableInstance instance = new DefaultInstance(targetDefinition.asProperty().getPropertyType(),
 							DataSet.TRANSFORMED);
 					instance.setValue(convertValue(((Instance) source).getValue(), targetDefinition.asProperty()
 							.getPropertyType()));
@@ -136,7 +137,7 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 					return NO_MATCH; // no match possible
 				else {
 					// instance with no value set
-					MutableInstance instance = new OInstance(targetDefinition.asProperty().getPropertyType(),
+					MutableInstance instance = new DefaultInstance(targetDefinition.asProperty().getPropertyType(),
 							DataSet.TRANSFORMED);
 					if (renameChildren((Group) source, instance, targetDefinition))
 						return instance;

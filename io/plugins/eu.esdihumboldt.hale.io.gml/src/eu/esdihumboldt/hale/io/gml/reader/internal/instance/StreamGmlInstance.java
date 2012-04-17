@@ -12,14 +12,14 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
 
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Instance read from a XML or GML stream. Stores its index in the stream.
  * @author Simon Templer
  */
-public class StreamGmlInstance extends OInstance {
+public class StreamGmlInstance extends DefaultInstance {
 	
 	private final int indexInStream;
 
