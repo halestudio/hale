@@ -10,21 +10,22 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.model.functions;
+package eu.esdihumboldt.cst.functions.geometric;
 
 /**
- * Join function constants.
+ * Network expansion constants.
  * 
- * @author Kai Schwierczek
+ * @author Kevin Mais
  */
-public interface JoinFunction {
-	/**
-	 * Name of the parameter specifying the join function.
-	 */
-	public static final String PARAMETER_JOIN = "join";
+public interface NetworkExpansionFunction {
 	
 	/**
-	 * the join function Id
+	 * Name of the parameter specifying the buffer width.
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.align.join";
+	public static final String PARAMETER_BUFFER_WIDTH = "bufferWidth";
+
+	/**
+	 * the network expansion function id
+	 */
+	public static final String ID = "eu.esdihumboldt.cst.functions.geometric.networkexpansion";
 }

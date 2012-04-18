@@ -10,21 +10,24 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.model.functions;
+package eu.esdihumboldt.cst.functions.string;
 
 /**
- * Join function constants.
+ * Date extraction constants
  * 
- * @author Kai Schwierczek
+ * @author Kevin Mais
  */
-public interface JoinFunction {
+public interface DateExtractionFunction {
+
 	/**
-	 * Name of the parameter specifying the join function.
+	 * the date extraction function Id
 	 */
-	public static final String PARAMETER_JOIN = "join";
+	public static final String ID = "eu.esdihumboldt.cst.functions.string.dateextraction";
 	
 	/**
-	 * the join function Id
+	 * Name of the parameter specifying the date format of the source entity.<br>
+	 * See the function definition on <code>eu.esdihumboldt.hale.common.align</code>.
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.align.join";
+	public static final String PARAMETER_DATE_FORMAT = "dateFormat";
+	
 }

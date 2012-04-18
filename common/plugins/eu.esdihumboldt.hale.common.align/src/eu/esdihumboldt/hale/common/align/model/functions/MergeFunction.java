@@ -32,5 +32,10 @@ public interface MergeFunction {
 	 * Name of the parameter specifying whether auto detection of other equal properties
 	 */
 	public static final String PARAMETER_AUTO_DETECT = "auto_detect";
+	
+	/**
+	 * the merge function Id
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.align.merge";
 
 }

@@ -31,12 +31,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
  * 
  * @author Kai Schwierczek
  */
-public class DateExtraction extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
-	/**
-	 * Name of the parameter specifying the date format of the source entity.<br>
-	 * See the function definition on <code>eu.esdihumboldt.hale.common.align</code>.
-	 */
-	public static final String PARAMETER_DATE_FORMAT = "dateFormat";
+public class DateExtraction extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements DateExtractionFunction {
 	
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation#evaluate(java.lang.String, eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine, com.google.common.collect.ListMultimap, java.lang.String, eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition, java.util.Map, eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)

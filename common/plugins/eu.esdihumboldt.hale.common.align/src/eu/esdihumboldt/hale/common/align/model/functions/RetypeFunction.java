@@ -13,18 +13,15 @@
 package eu.esdihumboldt.hale.common.align.model.functions;
 
 /**
- * Join function constants.
+ * Retype function constants.
  * 
- * @author Kai Schwierczek
+ * @author Kevin Mais
  */
-public interface JoinFunction {
+public interface RetypeFunction {
+
 	/**
-	 * Name of the parameter specifying the join function.
+	 * The retype function Id
 	 */
-	public static final String PARAMETER_JOIN = "join";
+	public static final String ID = "eu.esdihumboldt.hale.align.retype";
 	
-	/**
-	 * the join function Id
-	 */
-	public static final String ID = "eu.esdihumboldt.hale.align.join";
 }
