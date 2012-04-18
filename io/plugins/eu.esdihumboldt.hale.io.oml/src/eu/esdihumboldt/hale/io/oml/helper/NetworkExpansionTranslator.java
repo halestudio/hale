@@ -14,17 +14,18 @@ package eu.esdihumboldt.hale.io.oml.helper;
 
 import java.util.List;
 
-import eu.esdihumboldt.cst.functions.string.DateExtractionFunction;
+import eu.esdihumboldt.cst.functions.geometric.NetworkExpansionFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 
 /**
- * Translator class for date extraction
+ * Translator class for network expansion
  * 
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class DateExtractionTranslator implements FunctionTranslator, DateExtractionFunction {
+public class NetworkExpansionTranslator implements FunctionTranslator,
+		NetworkExpansionFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -43,5 +44,6 @@ public class DateExtractionTranslator implements FunctionTranslator, DateExtract
 		// TODO Auto-generated method stub
 		return params;
 	}
+
 
 }

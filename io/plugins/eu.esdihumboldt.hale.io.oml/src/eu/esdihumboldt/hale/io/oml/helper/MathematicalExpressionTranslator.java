@@ -12,19 +12,23 @@
 
 package eu.esdihumboldt.hale.io.oml.helper;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import eu.esdihumboldt.cst.functions.string.DateExtractionFunction;
+import eu.esdihumboldt.cst.functions.numeric.MathematicalExpressionFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 
 /**
- * Translator class for date extraction
+ * Class to translate the generic math function to the mathematical expression
+ * function
  * 
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class DateExtractionTranslator implements FunctionTranslator, DateExtractionFunction {
+public class MathematicalExpressionTranslator implements FunctionTranslator,
+		MathematicalExpressionFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -35,13 +39,29 @@ public class DateExtractionTranslator implements FunctionTranslator, DateExtract
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List, eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
+	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
 			CellBean cellBean) {
-		// TODO Auto-generated method stub
-		return params;
+		List<ParameterValue> newList = new ArrayList<ParameterValue>();
+
+		for (ParameterValue val : params) {
+			// translate "math_expression" to "expression"
+			if (val.getName().equals("math_expression")) {
+				newList.add(new ParameterValue(PARAMETER_EXPRESSION, val.getValue()));
+			} else {
+				newList.add(val);
+			}
+		}
+
+		List<NamedEntityBean> src = cellBean.getSource();
+		for (NamedEntityBean bean : src) {
+			bean.setName(ENTITY_VARIABLE);
+		}
+		
+		return newList;
 	}
 
 }

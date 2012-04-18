@@ -12,6 +12,10 @@
 
 package eu.esdihumboldt.hale.io.oml.helper;
 
+import java.util.List;
+
+import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 
 /**
@@ -19,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFu
  * 
  * @author Kevin Mais
  */
+@SuppressWarnings("restriction")
 public class ClassificationMappingTranslator implements FunctionTranslator, ClassificationMappingFunction {
 
 	/**
@@ -28,5 +33,16 @@ public class ClassificationMappingTranslator implements FunctionTranslator, Clas
 	public String getTransformationId() {
 		return ID;
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List, eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
+	 */
+	@Override
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
+			CellBean cellBean) {
+		// TODO Auto-generated method stub
+		return params;
+	}
+
 
 }

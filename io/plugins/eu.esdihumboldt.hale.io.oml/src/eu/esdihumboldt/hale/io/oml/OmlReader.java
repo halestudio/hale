@@ -52,8 +52,13 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.io.oml.helper.AssignTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.ClassificationMappingTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.DateExtractionTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.FormattedStringTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.MathematicalExpressionTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.NetworkExpansionTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.OrdinatesToPointTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.RenameTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.RetypeTranslator;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
@@ -71,20 +76,33 @@ public class OmlReader extends AbstractAlignmentReader implements
 		AlignmentReader {
 
 	private Map<String, FunctionTranslator> map = new HashMap<String, FunctionTranslator>();
-	
+
 	private MutableAlignment mutableAlignment = null;
 
 	/**
 	 * Default Constructor
 	 */
 	public OmlReader() {
-		map.put("eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction", new RenameTranslator());
-		map.put("eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction", new RenameTranslator());
-		map.put("eu.esdihumboldt.cst.corefunctions.DateExtractionFunction", new DateExtractionTranslator());
-		map.put("eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction", new ClassificationMappingTranslator());
-		map.put("eu.esdihumboldt.cst.corefunctions.ConstantValueFunction", new AssignTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction",
+				new RenameTranslator());
+		map.put("eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction",
+				new RetypeTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.DateExtractionFunction",
+				new DateExtractionTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction",
+				new ClassificationMappingTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.ConstantValueFunction",
+				new AssignTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.GenericMathFunction",
+				new MathematicalExpressionTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.OrdinatesToPointFunction",
+				new OrdinatesToPointTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.NetworkExpansionFunction",
+				new NetworkExpansionTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.ConcatenationOfAttributesFunction",
+				new FormattedStringTranslator());
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
 	 */
@@ -282,6 +300,15 @@ public class OmlReader extends AbstractAlignmentReader implements
 					if (xmlelem != null) {
 						return xmlelem.getType().getName();
 					}
+					// if there is no element try to find one with an extra "/"
+					// sign in the namespace because in earlier version this
+					// case can occur
+					xmlelem = ((XmlIndex) schem).getElements().get(
+							new QName(elementName.getNamespaceURI() + "/",
+									elementName.getLocalPart()));
+					if (xmlelem != null) {
+						return xmlelem.getType().getName();
+					}
 				}
 			}
 		} else {
@@ -298,6 +325,8 @@ public class OmlReader extends AbstractAlignmentReader implements
 	}
 
 	private void setParameters(CellBean cellBean, IEntity entity) {
+
+		String transId = entity.getTransformation().getService().getLocation();
 
 		// get the list of parameters
 		List<IParameter> list = entity.getTransformation().getParameters();
@@ -318,18 +347,23 @@ public class OmlReader extends AbstractAlignmentReader implements
 		}
 
 		// set the new transformation parameters
-		cellBean.setTransformationParameters(params);
+		if (map.containsKey(transId)) {
+			cellBean.setTransformationParameters(map.get(transId)
+					.getNewParameters(params, cellBean));
+		} else {
+			cellBean.setTransformationParameters(params);
+		}
 
 	}
 
 	private void setTransformationId(CellBean cellBean, IEntity entity) {
 
-		String transId = entity.getTransformation()
-				.getService().getLocation();
-		
+		String transId = entity.getTransformation().getService().getLocation();
+
 		// set the new transformation identifier
-		if(map.containsKey(transId)) {
-			cellBean.setTransformationIdentifier(map.get(transId).getTransformationId());
+		if (map.containsKey(transId)) {
+			cellBean.setTransformationIdentifier(map.get(transId)
+					.getTransformationId());
 		} else {
 			cellBean.setTransformationIdentifier(transId);
 		}

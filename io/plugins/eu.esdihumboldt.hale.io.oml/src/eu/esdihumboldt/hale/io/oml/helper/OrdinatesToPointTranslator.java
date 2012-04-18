@@ -14,17 +14,19 @@ package eu.esdihumboldt.hale.io.oml.helper;
 
 import java.util.List;
 
-import eu.esdihumboldt.cst.functions.string.DateExtractionFunction;
+import eu.esdihumboldt.cst.functions.geometric.OrdinatesToPointFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 
 /**
- * Translator class for date extraction
+ * Class to translate the old ordinates to point function to the new ordinates
+ * to point function
  * 
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class DateExtractionTranslator implements FunctionTranslator, DateExtractionFunction {
+public class OrdinatesToPointTranslator implements FunctionTranslator,
+		OrdinatesToPointFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()

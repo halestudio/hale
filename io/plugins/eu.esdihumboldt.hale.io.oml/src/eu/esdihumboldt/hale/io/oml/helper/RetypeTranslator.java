@@ -12,19 +12,20 @@
 
 package eu.esdihumboldt.hale.io.oml.helper;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import eu.esdihumboldt.cst.functions.string.DateExtractionFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 
 /**
- * Translator class for date extraction
+ * Class to translate rename feature function to retype function
  * 
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class DateExtractionTranslator implements FunctionTranslator, DateExtractionFunction {
+public class RetypeTranslator implements FunctionTranslator,RetypeFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -35,13 +36,17 @@ public class DateExtractionTranslator implements FunctionTranslator, DateExtract
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List, eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
+	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean) {
-		// TODO Auto-generated method stub
-		return params;
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean) {
+		// the retype function has no parameters, so just return null
+		// if it doesn't work, return an empty list
+		if(cellBean.getSource() != null || cellBean.getTarget() != null) {
+			// TODO: add error to reporter if src/tar is not null
+		}
+		return new ArrayList<ParameterValue>();
 	}
 
 }

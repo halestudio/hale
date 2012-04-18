@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<align:Alignment xmlns:omwg="http://www.omwg.org/TR/d7/ontology/alignment" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment" xmlns:goml="http://www.esdi-humboldt.eu/goml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/" xsi:schemaLocation="http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd">
+    <align:level></align:level>
+    <align:onto1>
+        <align:Ontology rdf:about="http://www.example.org/t2/">
+            <align:location>file:/C:/Users/Baboo/Documents/hale2/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmix/t2.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto1>
+    <align:onto2>
+        <align:Ontology rdf:about="http://www.example.org/t2/">
+            <align:location>file:/C:/Users/Baboo/Documents/hale2/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propmix/t2.xsd</align:location>
+            <align:formalism>
+                <align:Formalism>
+                    <align:uri>http://www.opengis.net/gml</align:uri>
+                    <align:name>GML Application Schema</align:name>
+                </align:Formalism>
+            </align:formalism>
+        </align:Ontology>
+    </align:onto2>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Class rdf:about="http://www.example.org/t2/person">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction">
+                        <omwg:param>
+                            <omwg:name>SelectedAttribute</omwg:name>
+                            <omwg:value></omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                </omwg:Class>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Class rdf:about="http://www.example.org/t2/person"/>
+            </omwg:entity2>
+            <align:relation>Equivalence</align:relation>
+        </align:Cell>
+    </align:map>
+    <align:map>
+        <align:Cell>
+            <omwg:entity1>
+                <omwg:Property rdf:about="http://www.example.org/t2/2e7d40d2-2df5-4e92-97d8-1836f2679d53">
+                    <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConcatenationOfAttributesFunction">
+                        <omwg:param>
+                            <omwg:name>seperator</omwg:name>
+                            <omwg:value>-</omwg:value>
+                        </omwg:param>
+                        <omwg:param>
+                            <omwg:name>concatenation</omwg:name>
+                            <omwg:value>id--!-split-!--xxx--!-split-!--details;address;street--!-split-!--</omwg:value>
+                        </omwg:param>
+                    </omwg:transf>
+                    <omwg:propertyComposition>
+                        <omwg:operator>UNION</omwg:operator>
+                        <omwg:collection>
+                            <omwg:item>
+<omwg:Property rdf:about="http://www.example.org/t2/person/id"/>
+                            </omwg:item>
+                            <omwg:item>
+<omwg:Property rdf:about="http://www.example.org/t2/person/details;address;street"/>
+                            </omwg:item>
+                        </omwg:collection>
+                        <omwg:Relation/>
+                    </omwg:propertyComposition>
+                </omwg:Property>
+            </omwg:entity1>
+            <omwg:entity2>
+                <omwg:Property rdf:about="http://www.example.org/t2/person/id"/>
+            </omwg:entity2>
+        </align:Cell>
+    </align:map>
+</align:Alignment>

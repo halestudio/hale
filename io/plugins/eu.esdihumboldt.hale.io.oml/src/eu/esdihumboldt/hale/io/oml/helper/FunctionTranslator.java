@@ -12,11 +12,17 @@
 
 package eu.esdihumboldt.hale.io.oml.helper;
 
+import java.util.List;
+
+import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+
 /**
  * The interface for all translator functions
  * 
  * @author Kevin Mais
  */
+@SuppressWarnings("restriction")
 public interface FunctionTranslator {
 
 	/**
@@ -25,5 +31,14 @@ public interface FunctionTranslator {
 	 * @return the transformation ID
 	 */
 	public String getTransformationId();
+	
+	/**
+	 * Returns the list with the translated parameters
+	 * 
+	 * @param params the pre-translation parameters
+	 * @param cellBean the cell bean containing source and target cells
+	 * @return the post-translation parameters
+	 */
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean);
 
 }
