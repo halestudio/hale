@@ -10,6 +10,9 @@ Import-Package: com.google.common.io;version="9.0.0",
  eu.esdihumboldt.commons.goml.oml.io,
  eu.esdihumboldt.commons.goml.omwg,
  eu.esdihumboldt.commons.goml.rdf,
+ eu.esdihumboldt.cst.functions.geometric,
+ eu.esdihumboldt.cst.functions.numeric,
+ eu.esdihumboldt.cst.functions.string,
  eu.esdihumboldt.hale.common.align.io,
  eu.esdihumboldt.hale.common.align.io.impl,
  eu.esdihumboldt.hale.common.align.io.impl.internal,
@@ -31,3 +34,4 @@ Import-Package: com.google.common.io;version="9.0.0",
  org.slf4j;version="1.5.11"
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
  eu.esdihumboldt.hale.common.core
+Export-Package: eu.esdihumboldt.hale.io.oml

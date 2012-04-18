@@ -12,6 +12,11 @@
 
 package eu.esdihumboldt.hale.io.oml.helper;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 
 /**
@@ -19,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
  * 
  * @author Kevin Mais
  */
+@SuppressWarnings("restriction")
 public class RenameTranslator implements FunctionTranslator, RenameFunction {
 
 	/**
@@ -27,6 +33,19 @@ public class RenameTranslator implements FunctionTranslator, RenameFunction {
 	@Override
 	public String getTransformationId() {
 		return ID;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
+	 */
+	@Override
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean) {
+		
+		List<ParameterValue> newList = new ArrayList<ParameterValue>();
+		newList.add(new ParameterValue("structuralRename", "false"));
+		
+		return newList;
 	}
 
 }
