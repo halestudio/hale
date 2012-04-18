@@ -13,6 +13,7 @@
 package eu.esdihumboldt.cst.functions.core;
 
 import eu.esdihumboldt.cst.functions.core.join.JoinHandler;
+import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 
@@ -22,7 +23,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler
  * 
  * @author Kai Schwierczek
  */
-public class Join extends Retype {
+public class Join extends Retype implements JoinFunction {
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation#getInstanceHandler()
 	 */

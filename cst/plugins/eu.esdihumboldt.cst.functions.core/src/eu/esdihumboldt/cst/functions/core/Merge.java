@@ -13,6 +13,7 @@
 package eu.esdihumboldt.cst.functions.core;
 
 import eu.esdihumboldt.cst.functions.core.merge.PropertiesMergeHandler;
+import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 
@@ -21,7 +22,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler
  * into one target instance, based on matching properties.
  * @author Simon Templer
  */
-public class Merge extends Retype {
+public class Merge extends Retype implements MergeFunction {
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation#getInstanceHandler()
 	 */

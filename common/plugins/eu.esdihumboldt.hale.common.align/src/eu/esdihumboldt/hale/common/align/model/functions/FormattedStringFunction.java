@@ -28,4 +28,9 @@ public interface FormattedStringFunction {
 	 * See the function definition in <code>eu.esdihumboldt.hale.common.align</code>.
 	 */
 	public static final String ENTITY_VARIABLE = "var";
+	
+	/**
+	 * the formatted string function Id
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.align.formattedstring";
 }

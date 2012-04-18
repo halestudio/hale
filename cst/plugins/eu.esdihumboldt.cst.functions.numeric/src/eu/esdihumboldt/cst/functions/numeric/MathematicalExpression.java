@@ -38,17 +38,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
  * @author Simon Templer
  */
 @Immutable
-public class MathematicalExpression extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
-
-	/**
-	 * Name of the parameter specifying the mathematical expression.
-	 */
-	public static final String PARAMETER_EXPRESSION = "expression";
-	
-	/**
-	 * Entity name for variables.
-	 */
-	public static final String ENTITY_VARIABLE = "var";
+public class MathematicalExpression extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements MathematicalExpressionFunction {
 
 	/**
 	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String, TransformationEngine, ListMultimap, String, PropertyEntityDefinition, Map, TransformationLog)

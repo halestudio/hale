@@ -37,12 +37,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
  * Network expansion function.
  * @author Simon Templer
  */
-public class NetworkExpansion extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
-	
-	/**
-	 * Name of the parameter specifying the buffer width.
-	 */
-	public static final String PARAMETER_BUFFER_WIDTH = "bufferWidth";
+public class NetworkExpansion extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements NetworkExpansionFunction{
 	
 	private static int CAP_STYLE = BufferParameters.CAP_ROUND;
 

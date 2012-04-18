@@ -38,11 +38,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
  * @author Kai Schwierczek
  */
 @Immutable
-public class OrdinatesToPoint extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
-	/**
-	 * Name of the parameter specifying the reference system to use.
-	 */
-	public static final String PARAMETER_REFERENCE_SYSTEM = "referenceSystem";
+public class OrdinatesToPoint extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements OrdinatesToPointFunction{
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractPropertyTransformation#evaluate(java.lang.String, eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine, com.google.common.collect.ListMultimap, com.google.common.collect.ListMultimap, java.util.Map, eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)

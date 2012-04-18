@@ -9,3 +9,4 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.schema.model,
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0"
+Export-Package: eu.esdihumboldt.cst.functions.string

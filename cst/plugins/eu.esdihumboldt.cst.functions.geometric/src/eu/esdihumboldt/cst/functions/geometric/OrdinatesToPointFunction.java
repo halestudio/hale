@@ -10,21 +10,23 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.model.functions;
+package eu.esdihumboldt.cst.functions.geometric;
 
 /**
- * Join function constants.
+ * Ordinates to point constants.
  * 
- * @author Kai Schwierczek
+ * @author Kevin Mais
  */
-public interface JoinFunction {
+public interface OrdinatesToPointFunction {
+
 	/**
-	 * Name of the parameter specifying the join function.
+	 * Name of the parameter specifying the reference system to use.
 	 */
-	public static final String PARAMETER_JOIN = "join";
+	public static final String PARAMETER_REFERENCE_SYSTEM = "referenceSystem";
 	
 	/**
-	 * the join function Id
+	 * the ordinates to point function id
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.align.join";
+	public static final String ID = "eu.esdihumboldt.cst.functions.geometric.ordinates_to_point";
+	
 }
