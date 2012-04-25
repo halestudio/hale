@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
 /**
  * Class to translate concatenation of attributes to the formatted string
@@ -47,12 +48,13 @@ public class FormattedStringTranslator implements FunctionTranslator,
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
-	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean) {
-		
+			CellBean cellBean, IOReporter reporter) {
+
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
 		String separator = "";
@@ -76,7 +78,7 @@ public class FormattedStringTranslator implements FunctionTranslator,
 			String[] properties = thisElement.split(String
 					.valueOf(DetailedAbout.PROPERTY_DELIMITER));
 			for (String str : properties) {
-				
+
 				if (finalConcatString.length() > 0) {
 					if (separator.isEmpty()) {
 						finalConcatString += " ";
@@ -84,14 +86,14 @@ public class FormattedStringTranslator implements FunctionTranslator,
 						finalConcatString += separator;
 					}
 				}
-				
+
 				for (NamedEntityBean bean : src) {
 					if (str.equals(bean.getName())) {
 						finalConcatString += "{" + str + "}";
 						break;
 					}
 				}
-				if(finalConcatString.endsWith(separator)) {
+				if (finalConcatString.endsWith(separator)) {
 					finalConcatString += str;
 				}
 			}

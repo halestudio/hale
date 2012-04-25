@@ -12,11 +12,14 @@
 
 package eu.esdihumboldt.hale.io.oml.helper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.cst.functions.string.DateExtractionFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
  * Translator class for date extraction
@@ -24,7 +27,8 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class DateExtractionTranslator implements FunctionTranslator, DateExtractionFunction {
+public class DateExtractionTranslator implements FunctionTranslator,
+		DateExtractionFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -35,13 +39,31 @@ public class DateExtractionTranslator implements FunctionTranslator, DateExtract
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List, eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
+	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean) {
-		// TODO Auto-generated method stub
-		return params;
+			CellBean cellBean, IOReporter reporter) {
+		List<ParameterValue> newList = new ArrayList<ParameterValue>();
+
+		for (ParameterValue val : params) {
+			if (val.getName().equals("dateFormatTarget")
+					&& val.getValue() != null) {
+				reporter.warn(new IOMessageImpl(
+						"The 'dateFormatTarget' value has been removed, your result could be different.",
+						null));
+			}
+			// translate "dateFormatSource" to "dateFormat"
+			if (val.getName().equals("dateFormatSource")) {
+				newList.add(new ParameterValue(PARAMETER_DATE_FORMAT, val
+						.getValue()));
+			} else {
+				newList.add(val);
+			}
+		}
+		return newList;
 	}
 
 }

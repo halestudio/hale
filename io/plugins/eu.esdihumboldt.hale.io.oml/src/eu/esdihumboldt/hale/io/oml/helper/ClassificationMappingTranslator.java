@@ -17,14 +17,17 @@ import java.util.List;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
 /**
- * Translator class to convert old classification mappings to the new classification mapping
+ * Translator class to convert old classification mappings to the new
+ * classification mapping
  * 
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class ClassificationMappingTranslator implements FunctionTranslator, ClassificationMappingFunction {
+public class ClassificationMappingTranslator implements FunctionTranslator,
+		ClassificationMappingFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -35,14 +38,15 @@ public class ClassificationMappingTranslator implements FunctionTranslator, Clas
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List, eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
+	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean) {
+			CellBean cellBean, IOReporter reporter) {
 		// TODO Auto-generated method stub
 		return params;
 	}
-
 
 }

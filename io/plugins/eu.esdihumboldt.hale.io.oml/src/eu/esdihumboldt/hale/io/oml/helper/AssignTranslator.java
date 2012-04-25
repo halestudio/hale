@@ -18,6 +18,7 @@ import java.util.List;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
 /**
  * Class to translate the constant value function to the assign function
@@ -37,11 +38,11 @@ public class AssignTranslator implements FunctionTranslator, AssignFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
-	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean, eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean) {
+			CellBean cellBean, IOReporter reporter) {
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
 		for (ParameterValue val : params) {
