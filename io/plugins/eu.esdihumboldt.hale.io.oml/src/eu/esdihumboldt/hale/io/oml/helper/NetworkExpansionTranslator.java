@@ -12,11 +12,14 @@
 
 package eu.esdihumboldt.hale.io.oml.helper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.cst.functions.geometric.NetworkExpansionFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
  * Translator class for network expansion
@@ -36,14 +39,29 @@ public class NetworkExpansionTranslator implements FunctionTranslator,
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List, eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean)
+	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean) {
-		// TODO Auto-generated method stub
+			CellBean cellBean, IOReporter reporter) {
+		List<ParameterValue> newList = new ArrayList<ParameterValue>();
+
+		for (ParameterValue val : params) {
+			if(val.getName().equals("CAPSSTYLE") && val.getValue() != null) {
+				reporter.warn(new IOMessageImpl("The 'CAPSSTYLE' value has been removed.", null));
+			}
+			
+			// translate "BUFFERWIDTH" to "bufferWidth"
+			if (val.getName().equals("BUFFERWIDTH")) {
+				newList.add(new ParameterValue(PARAMETER_BUFFER_WIDTH, val
+						.getValue()));
+			} else {
+				newList.add(val);
+			}
+		}
 		return params;
 	}
-
 
 }
