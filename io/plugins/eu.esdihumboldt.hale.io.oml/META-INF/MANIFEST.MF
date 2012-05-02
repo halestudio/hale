@@ -4,7 +4,8 @@ Bundle-Name: OML Alignment I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.oml;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.google.common.io;version="9.0.0",
+Import-Package: com.google.common.base;version="9.0.0",
+ com.google.common.io;version="9.0.0",
  de.cs3d.util.logging,
  eu.esdihumboldt.commons.goml.align,
  eu.esdihumboldt.commons.goml.oml.io,
