@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
@@ -14,6 +15,7 @@ import org.exolab.castor.xml.ValidationException;
 import org.junit.Test;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -25,15 +27,25 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 public class OMLReaderTest {
 	
+	Alignment alignment = null;
+	
 	@Test
-	public void testOML() throws Exception {
+	public void testOMLreader() throws Exception {
 		
-		Alignment alignment = loadAlignment(
+		alignment = loadAlignment(
 				getClass().getResource("/testdata/testOML/t2.xsd").toURI(), 
 				getClass().getResource("/testdata/testOML/t2.xsd").toURI(), 
 				getClass().getResource("/testdata/testOML/testOMLmapping.goml").toURI());
 		
 		assertNotNull(alignment);
+	}
+	
+	@Test
+	public void testCellCount() {
+		
+		Collection<? extends Cell> cells = alignment.getCells();
+		
+		assertTrue(cells.size() == 2);
 	}
 	
 	private Alignment loadAlignment(URI sourceSchemaLocation, 
