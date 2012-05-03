@@ -44,13 +44,13 @@ public class PropertyResolver {
 
 	
 	//the cache for storing found paths in instance definitions for certain querys
-	private static Map<QueryDefinitionIndex, LinkedList<String>> definitioncache = new ConcurrentHashMap<QueryDefinitionIndex, LinkedList<String>>();
+	private static final Map<QueryDefinitionIndex, LinkedList<String>> definitioncache = new ConcurrentHashMap<QueryDefinitionIndex, LinkedList<String>>();
 	
 	/**
 	 * This variable holds state about the last {@link #hasProperty(Instance, String)}
 	 * call.
 	 */
-	private static ThreadLocal<QueryDefinitionIndex> lastQDI = new ThreadLocal<QueryDefinitionIndex>();
+	private static final ThreadLocal<QueryDefinitionIndex> lastQDI = new ThreadLocal<QueryDefinitionIndex>();
 
 	/**
 	 * Method for retrieving values from instances using a certain path query 
@@ -725,10 +725,14 @@ public class PropertyResolver {
 		QueryDefinitionIndex qdi = lastQDI.get();
 		lastQDI.remove();
 		
-		if(qdi != null && definitioncache.get(qdi).size() > 1) {
-			return false;
+		if(qdi != null) {
+			LinkedList<String> paths = definitioncache.get(qdi);
+			if (paths != null && paths.size() > 1) {
+				return false;
+			}
 		}
-		else return true;
+		
+		return true;
 	}
 
 	/**
