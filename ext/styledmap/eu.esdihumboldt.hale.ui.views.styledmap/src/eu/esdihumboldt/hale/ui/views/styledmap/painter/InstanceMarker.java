@@ -104,6 +104,10 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		
 		super.reset();
 	}
+	
+	protected void areaReset() {
+		super.reset();
+	}
 
 	/**
 	 * @see BoundingBoxMarker#doPaintMarker(Graphics2D, SelectableWaypoint, PixelConverter, int, int, int, int, int, Rectangle, boolean)

@@ -15,26 +15,53 @@ package eu.esdihumboldt.hale.ui.views.styledmap.painter;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import org.eclipse.ui.PlatformUI;
+import org.geotools.geometry.jts.GeomCollectionIterator;
+import org.geotools.geometry.jts.LiteShape2;
+import org.geotools.renderer.lite.StyledShapePainter;
+import org.geotools.renderer.style.MarkStyle2D;
+import org.geotools.renderer.style.SLDStyleFactory;
+import org.geotools.renderer.style.Style2D;
 import org.geotools.styling.Fill;
 import org.geotools.styling.LineSymbolizer;
+import org.geotools.styling.Mark;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLD;
 import org.geotools.styling.Stroke;
 import org.geotools.styling.Style;
+import org.geotools.styling.StyleBuilder;
+import org.geotools.styling.Symbolizer;
+import org.geotools.util.Range;
+import org.jdesktop.swingx.mapviewer.GeoPosition;
+import org.jdesktop.swingx.mapviewer.PixelConverter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.Point;
+
+import de.cs3d.common.metamodel.Point3D;
 import de.fhg.igd.mapviewer.marker.BoundingBoxMarker;
+import de.fhg.igd.mapviewer.marker.area.Area;
 import de.fhg.igd.mapviewer.waypoints.SelectableWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
+import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSConverter;
 
 /**
  * Instance marker support styles provided through the {@link StyleService}.
@@ -48,6 +75,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 	private volatile Color styleStrokeColor;
 	private volatile java.awt.Stroke styleStroke;
 	private boolean hasFill = true;
+	private PointSymbolizer pointSymbolizer;
+	private static final StyleBuilder styleBuilder = new StyleBuilder();
 	
 	/**
 	 * Initialize the style information.
@@ -62,7 +91,16 @@ public class StyledInstanceMarker extends InstanceMarker {
 		}
 		
 		//check if there is a Rule from the Rulestyle-Page and apply to the instancemarker on the map
+		//performs a special task if the found symbolizer is a point symbolizer
 		Rule honoredRule = honorRules(context);
+		pointSymbolizer = null;
+		for (Symbolizer sym : honoredRule.symbolizers()){
+			if (sym instanceof PointSymbolizer){
+				pointSymbolizer = (PointSymbolizer) sym;
+				break;
+			}
+		}
+		
 		fillStyle(honoredRule, context);
 		strokeStyle(honoredRule, context);	
 
@@ -264,6 +302,7 @@ public class StyledInstanceMarker extends InstanceMarker {
 	 */
 	public synchronized void resetStyle() {
 		styleInitialized = false;
+		areaReset();
 	}
 
 	/**
@@ -352,4 +391,161 @@ public class StyledInstanceMarker extends InstanceMarker {
 		return ss.getStyle(instance.getDefinition(), ref.getDataSet());
 	}
 
+
+
+/**
+	 * @see de.fhg.igd.mapviewer.marker.BoundingBoxMarker#isToSmall(int, int, int)
+	 */
+	@Override
+	protected boolean isToSmall(int width, int height, int zoom) {
+		return false;
+	}
+
+/**
+ * @see eu.esdihumboldt.hale.ui.views.styledmap.painter.InstanceMarker#paintPoint(com.vividsolutions.jts.geom.Point, java.awt.Graphics2D, eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition, eu.esdihumboldt.hale.ui.views.styledmap.painter.InstanceWaypoint, org.jdesktop.swingx.mapviewer.PixelConverter, int, org.opengis.referencing.crs.CoordinateReferenceSystem, boolean)
+ */
+@Override
+	protected Area paintPoint(Point geometry, Graphics2D g,
+			CRSDefinition crsDefinition, InstanceWaypoint context,
+		PixelConverter converter, int zoom, CoordinateReferenceSystem mapCRS, 
+		boolean calculateArea) {
+		
+	initStyle(context);
+	Area area = null;
+	try{
+		if(pointSymbolizer == null){
+			//if there is no specialized PointSymbolizer, fall back to a generic
+		return super.paintFallback(g, context, converter, zoom, null, calculateArea);
+		}
+		
+		// get CRS converter
+		CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
+		
+		// manually convert to map CRS
+		Point3D mapPoint = conv.convert(geometry.getX(), geometry.getY(), 0);
+		
+		GeoPosition pos = new GeoPosition(mapPoint.getX(), 
+				mapPoint.getY(), converter.getMapEpsg());
+		
+		// determine pixel coordinates
+		Point2D point = converter.geoToPixel(pos, zoom);
+		Coordinate coordinate = new Coordinate(point.getX(), point.getY());
+		Point newPoint = geometry.getFactory().createPoint(coordinate);
+		
+		//create a LiteShape and instantiate the Painter and the StyleFactory
+		LiteShape2 lites = new LiteShape2(newPoint, null, null, false);
+		StyledShapePainter ssp = new StyledShapePainter();
+		SLDStyleFactory styleFactory = new SLDStyleFactory();
+
+		Range<Double> range = new Range<Double>(Double.class, 0.5, 1.5);
+		
+		PointSymbolizer pointS;
+		//is the Waypoint selected?
+		if (context.isSelected()) {
+			//switch to the SelectionSymbolizer
+			pointS = getSelectionSymbolizer(pointSymbolizer);
+		}
+		//use the specific PointSymbolizer
+		else pointS = pointSymbolizer;
+		
+		//Create the Style2D object for painting with the use of a DummyFeature wich extends SimpleFeatures
+		//because Geotools can only work with that
+		DummyFeature dummy = new DummyFeature();
+		Style2D style2d = styleFactory.createStyle(dummy,
+                pointS, range);
+		//create the area object of the painted image for further use
+		area = getArea(style2d, lites, g);
+		//actually paint
+		ssp.paint(g, lites, style2d, 1);
+		
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+		return null;
+			}
+		return area;
+		
+		}
+	
+
+	
+	/**
+	 * Creates a certain Point Symbolizer if the waypoint is selected
+	 * @param symbolizer a simbolizer wich is used to create the selection symbolizer
+	 * @return returns the selection symbolizer
+	 */
+	private PointSymbolizer getSelectionSymbolizer(PointSymbolizer symbolizer){
+		
+		//XXX only works with marks right now
+		Mark mark = SLD.mark(symbolizer);		
+		Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(), 
+				styleBuilder.createFill(StylePreferences.getSelectionColor(), StyleHelper.DEFAULT_FILL_OPACITY), 
+				styleBuilder.createStroke(StylePreferences.getSelectionColor(), StylePreferences.getSelectionWidth()));
+
+		// create new symbolizer
+		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
+				null, mutiMark, null));
+	}
+
+	/**
+	 * returns the area of the drawn object
+	 * @param style the Style2D object
+	 * @param shape the Light Shape
+	 * @param g the Graphics2d Object
+	 * @return the area, which should equal the space of the drawn object
+	 */
+	private Area getArea(Style2D style, LiteShape2 shape, Graphics2D g){
+		
+		if(style instanceof MarkStyle2D){
+			
+			 PathIterator citer = getPathIterator(shape);
+
+	           
+	            float[] coords = new float[2];
+	            MarkStyle2D ms2d = (MarkStyle2D) style;
+
+	            Shape transformedShape;
+	            while (!(citer.isDone())) {
+	                citer.currentSegment(coords);
+	                transformedShape = ms2d.getTransformedShape(coords[0],
+	                        coords[1]);
+	                if (transformedShape != null) {
+	                	
+	                	java.awt.geom.Area areatemp = new java.awt.geom.Area(transformedShape);
+	                	Rectangle rec = areatemp.getBounds();
+	                	AdvancedBoxArea area = new AdvancedBoxArea(areatemp, rec.x, rec.y, rec.x+rec.width, rec.y+rec.height);
+	                	
+	                	
+		        		return area;
+	                }
+	            }
+		}
+			return null;
+	}
+		
+
+	            
+	/**
+	 * returns a path iterator
+	 * @param shape a shape to determine the iterator
+	 * @return the path iterator
+	 */
+	private PathIterator getPathIterator(final LiteShape2 shape) {
+	    // DJB: changed this to handle multi* geometries and line and
+	     // polygon geometries better
+	     GeometryCollection gc;
+	     if (shape.getGeometry() instanceof GeometryCollection)
+	            gc = (GeometryCollection) shape.getGeometry();
+	     else {
+	            Geometry[] gs = new Geometry[1];
+	            gs[0] = shape.getGeometry();
+	            gc = shape.getGeometry().getFactory().createGeometryCollection(
+	            gs); // make a Point,Line, or Poly into a GC
+	     }
+	      AffineTransform IDENTITY_TRANSFORM = new AffineTransform();
+	      GeomCollectionIterator citer = new GeomCollectionIterator(gc,
+	                        IDENTITY_TRANSFORM, false, 1.0);
+	      return citer;
+	            }
+		
 }
