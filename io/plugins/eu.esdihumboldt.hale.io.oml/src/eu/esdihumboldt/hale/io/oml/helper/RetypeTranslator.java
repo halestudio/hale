@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Class to translate rename feature function to retype function
@@ -40,11 +41,12 @@ public class RetypeTranslator implements FunctionTranslator, RetypeFunction {
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
 	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
+	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter) {
+			CellBean cellBean, IOReporter reporter, ICell cell) {
 		for (ParameterValue val : params) {
 			if (val.getName().equals("split") && val.getValue() != null) {
 				reporter.error(new IOMessageImpl(

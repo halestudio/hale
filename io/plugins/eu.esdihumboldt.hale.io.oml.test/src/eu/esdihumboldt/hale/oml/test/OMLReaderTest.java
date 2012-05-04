@@ -1,7 +1,6 @@
 package eu.esdihumboldt.hale.oml.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +11,7 @@ import java.util.Collection;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -27,15 +27,18 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 public class OMLReaderTest {
 	
-	Alignment alignment = null;
+	static Alignment alignment = null;
+	
+	@BeforeClass
+	public static void load() throws MarshalException, ValidationException, IOProviderConfigurationException, IOException, MappingException, URISyntaxException {
+		alignment = loadAlignment(
+				OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd").toURI(), 
+				OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd").toURI(), 
+				OMLReaderTest.class.getResource("/testdata/testOML/testOMLmapping.goml").toURI());
+	}
 	
 	@Test
 	public void testOMLreader() throws Exception {
-		
-		alignment = loadAlignment(
-				getClass().getResource("/testdata/testOML/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/testOML/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/testOML/testOMLmapping.goml").toURI());
 		
 		assertNotNull(alignment);
 	}
@@ -45,10 +48,10 @@ public class OMLReaderTest {
 		
 		Collection<? extends Cell> cells = alignment.getCells();
 		
-		assertTrue(cells.size() == 2);
+		assertEquals(2, cells.size());
 	}
 	
-	private Alignment loadAlignment(URI sourceSchemaLocation, 
+	private static Alignment loadAlignment(URI sourceSchemaLocation, 
 			URI targetSchemaLocation, final URI alignmentLocation) throws IOProviderConfigurationException, IOException, MarshalException, ValidationException, MappingException, URISyntaxException {
 		
 		// load source schema
@@ -83,7 +86,7 @@ public class OMLReaderTest {
 	 *   reader is invalid
 	 * @throws IOException if reading the schema fails
 	 */
-	private Schema readXMLSchema(LocatableInputSupplier<? extends InputStream> input) throws IOProviderConfigurationException, IOException {
+	private static Schema readXMLSchema(LocatableInputSupplier<? extends InputStream> input) throws IOProviderConfigurationException, IOException {
 		XmlSchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(new DefaultTypeIndex());
 		reader.setSource(input);
