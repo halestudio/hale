@@ -168,12 +168,12 @@ public class OmlReader extends AbstractAlignmentReader implements
 					// from
 					// entity 1 if it has the transformation
 					if (entity.getTransformation() != null) {
-						setParameters(cellBean, entity, reporter);
+						setParameters(cellBean, entity, reporter, cell);
 						setTransformationId(cellBean, entity);
 					} else {
 						// else set parameters and transformation id from entity
 						// 2
-						setParameters(cellBean, entity2, reporter);
+						setParameters(cellBean, entity2, reporter, cell);
 						setTransformationId(cellBean, entity2);
 					}
 				}
@@ -315,7 +315,10 @@ public class OmlReader extends AbstractAlignmentReader implements
 			for (TypeDefinition typedef : schema.getTypes()) {
 				XmlElements xmlelem = typedef.getConstraint(XmlElements.class);
 				for (XmlElement elem : xmlelem.getElements()) {
-					if (elem.getName().equals(elementName)) {
+					if (elem.getName().equals(elementName)
+							|| elem.getName().equals(
+									new QName(elementName.getNamespaceURI()
+											+ "/", elementName.getLocalPart()))) {
 						return typedef.getName();
 					}
 				}
@@ -324,7 +327,8 @@ public class OmlReader extends AbstractAlignmentReader implements
 		return elementName;
 	}
 
-	private void setParameters(CellBean cellBean, IEntity entity, IOReporter reporter) {
+	private void setParameters(CellBean cellBean, IEntity entity,
+			IOReporter reporter, ICell cell) {
 
 		String transId = entity.getTransformation().getService().getLocation();
 
@@ -349,7 +353,7 @@ public class OmlReader extends AbstractAlignmentReader implements
 		// set the new transformation parameters
 		if (map.containsKey(transId)) {
 			cellBean.setTransformationParameters(map.get(transId)
-					.getNewParameters(params, cellBean, reporter));
+					.getNewParameters(params, cellBean, reporter, cell));
 		} else {
 			cellBean.setTransformationParameters(params);
 		}

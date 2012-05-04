@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Class to translate the generic math function to the mathematical expression
@@ -42,11 +43,12 @@ public class MathematicalExpressionTranslator implements FunctionTranslator,
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
 	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
+	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter) {
+			CellBean cellBean, IOReporter reporter, ICell cell) {
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
 		for (ParameterValue val : params) {

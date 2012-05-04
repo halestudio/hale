@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.specification.cst.align.ICell;
 
 /**
  * Class to translate the old ordinates to point function to the new ordinates
@@ -42,13 +43,15 @@ public class OrdinatesToPointTranslator implements FunctionTranslator,
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
 	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
+	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter) {
-		
-		reporter.warn(new IOMessageImpl("Behavior of this function has changed.", null));
+			CellBean cellBean, IOReporter reporter, ICell cell) {
+
+		reporter.warn(new IOMessageImpl(
+				"Behavior of this function has changed.", null));
 
 		List<NamedEntityBean> src = cellBean.getSource();
 
