@@ -14,7 +14,6 @@ package eu.esdihumboldt.cst;
 
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +35,11 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.TypeTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
@@ -196,7 +197,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		source = source.select(new TypeCellFilter(typeCell));
 		
 		// Step 2: partition
-		ResourceIterator<Collection<Instance>> iterator;
+		ResourceIterator<FamilyInstance> iterator;
 		// use InstanceHandler if available - for example merge or join
 		InstanceHandler instanceHandler = function.getInstanceHandler();
 		if (instanceHandler != null) {
@@ -211,13 +212,13 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			}
 		} else {
 			// else just use every instance as is
-			iterator = new GenericResourceIteratorAdapter<Instance, Collection<Instance>>(source.iterator()) {
+			iterator = new GenericResourceIteratorAdapter<Instance, FamilyInstance>(source.iterator()) {
 				/**
 				 * @see eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter#convert(java.lang.Object)
 				 */
 				@Override
-				protected Collection<Instance> convert(Instance next) {
-					return Collections.singletonList(next);
+				protected FamilyInstance convert(Instance next) {
+					return new FamilyInstanceImpl(next);
 				}
 			};
 		}
