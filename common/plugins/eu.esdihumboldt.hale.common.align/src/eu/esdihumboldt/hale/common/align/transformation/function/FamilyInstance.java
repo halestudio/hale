@@ -10,26 +10,29 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.transformation.function.impl;
+package eu.esdihumboldt.hale.common.align.transformation.function;
 
-import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import java.util.Collection;
+
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
- * Transformation function base class
- * @param <E> the transformation engine type
+ * FamilyInstance is an Instance with functionality to add child instance links.
  * 
- * @author Simon Templer
+ * @author Kai Schwierczek
  */
-public abstract class AbstractSingleTypeTransformation<E extends TransformationEngine> extends
-		AbstractTypeTransformation<E> {
+public interface FamilyInstance extends Instance {
+	/**
+	 * Returns the child instances.
+	 * 
+	 * @return the child instances
+	 */
+	public Collection<FamilyInstance> getChildren();
 
 	/**
-	 * Get the source instance.
+	 * Adds the given instance as child to this instance.
 	 * 
-	 * @return the source instance
+	 * @param child the child instance to add
 	 */
-	public Instance getSourceInstance() {
-		return getSource();
-	}
+	public void addChild(FamilyInstance child);
 }

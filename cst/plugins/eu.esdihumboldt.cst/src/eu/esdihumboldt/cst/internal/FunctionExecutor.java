@@ -45,7 +45,6 @@ import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
