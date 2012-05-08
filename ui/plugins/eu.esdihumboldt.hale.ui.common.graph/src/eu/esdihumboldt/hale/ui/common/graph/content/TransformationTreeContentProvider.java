@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.DuplicationVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -60,6 +61,9 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(Object inputElement) {
+		if (inputElement instanceof TransformationTree)
+			return collectNodes((TransformationTree) inputElement).toArray();
+
 		Collection<Instance> instances = null;
 		if (inputElement instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) inputElement;
@@ -140,7 +144,7 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 		matcher.findMatches(tree);
 		
 		// process and annotate the tree
-		InstanceVisitor visitor = new InstanceVisitor(instance);
+		InstanceVisitor visitor = new InstanceVisitor(new FamilyInstanceImpl(instance), tree);
 		tree.accept(visitor);
 		
 		// duplicate subtree as necessary

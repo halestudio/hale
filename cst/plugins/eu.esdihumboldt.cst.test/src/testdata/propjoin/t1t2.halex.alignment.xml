@@ -136,6 +136,6 @@
                 <type>{http://www.example.org/t2/}PersonType</type>
             </class>
         </target>
-        <parameter name="join" value="person address city  person,details.addressId=address,id address,zip=city,zip"/>
+        <parameter name="join" value="{http://www.example.org/t1/}PersonType {http://www.example.org/t1/}AddressType {http://www.example.org/t1/}CityType::{http://www.example.org/t1/}PersonType,details.addressId={http://www.example.org/t1/}AddressType,id {http://www.example.org/t1/}AddressType,zip={http://www.example.org/t1/}CityType,zip"/>
     </cell>
 </hale-alignment>

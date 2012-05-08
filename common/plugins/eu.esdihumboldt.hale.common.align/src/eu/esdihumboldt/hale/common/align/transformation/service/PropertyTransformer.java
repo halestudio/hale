@@ -12,9 +12,7 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.service;
 
-import java.util.Collection;
-
-import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
 /**
@@ -29,7 +27,7 @@ public interface PropertyTransformer {
 	 * @param source the source instances
 	 * @param target the target instance
 	 */
-	public void publish(Collection<Instance> source, MutableInstance target);
+	public void publish(FamilyInstance source, MutableInstance target);
 
 	/**
 	 * Join with the property transformer and wait for its completion, e.g. 
