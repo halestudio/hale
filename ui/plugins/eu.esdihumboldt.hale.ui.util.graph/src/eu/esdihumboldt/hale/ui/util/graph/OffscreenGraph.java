@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.util.graph;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 import javax.imageio.ImageIO;
 import javax.xml.transform.OutputKeys;
@@ -38,6 +39,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.Graph;
+import org.eclipse.zest.internal.dot.DotExport;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.w3c.dom.Element;
 
@@ -234,6 +236,25 @@ public abstract class OffscreenGraph {
 			transformer.transform(source, result);
 		} finally {
 			graphics.dispose();
+			out.close();
+		}
+	}
+
+	/**
+	 * Save a graph in the dot format to an output stream.
+	 *  
+	 * @param graph the graph
+	 * @param out the output stream
+	 * @throws IOException if writing to the output stream fails
+	 */
+	public static void saveDot(Graph graph, OutputStream out) throws IOException {
+		OutputStreamWriter writer = null;
+		try {
+			writer = new OutputStreamWriter(out);
+			writer.write(new DotExport(graph).toDotString());
+		} finally {
+			if (writer != null)
+				writer.close();
 			out.close();
 		}
 	}
