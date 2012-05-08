@@ -12,14 +12,12 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.function;
 
-import java.util.Collection;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
@@ -47,7 +45,7 @@ public interface InstanceHandler<E extends TransformationEngine> {
 	 * @throws TransformationException if an unrecoverable error occurs during
 	 *   transformation
 	 */
-	public ResourceIterator<Collection<Instance>> partitionInstances(InstanceCollection instances,
+	public ResourceIterator<FamilyInstance> partitionInstances(InstanceCollection instances,
 			String transformationIdentifier, E engine,
 			ListMultimap<String, String> transformationParameters, 
 			Map<String, String> executionParameters, TransformationLog log) throws TransformationException;

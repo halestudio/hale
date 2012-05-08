@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree;
 
+import java.util.Collection;
+
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -33,5 +35,13 @@ public interface TransformationTree extends GroupNode {
 	 * @return the source node associated to the type or <code>null</code>
 	 */
 	public SourceNode getSourceNode(TypeEntityDefinition type);
+
+	/**
+	 * Gets all root source nodes of the given type.
+	 * 
+	 * @param type the type definition
+	 * @return root source nodes associated to the type
+	 */
+	public Collection<SourceNode> getRootSourceNodes(TypeDefinition type);
 
 }
