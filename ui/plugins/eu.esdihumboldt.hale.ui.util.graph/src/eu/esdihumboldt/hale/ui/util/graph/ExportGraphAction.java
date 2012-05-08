@@ -64,6 +64,7 @@ public class ExportGraphAction extends Action {
 	public void run() {
 		FileDialog dialog = new FileDialog(Display.getCurrent()
 				.getActiveShell(), SWT.SAVE);
+		//XXX if called from TTreeExporter during transformation, the active shell may be null!
 		
 		dialog.setOverwrite(true);
 		dialog.setText("Export graph to file");
