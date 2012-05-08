@@ -69,7 +69,7 @@ public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 					SourceNode node = leftover.getFirst();
 					Object value = node.getValue();
 					if (value instanceof Group) {
-						InstanceVisitor instanceVisitor = new InstanceVisitor((Group) value);
+						InstanceVisitor instanceVisitor = new InstanceVisitor(null, null);
 						for (SourceNode child : node.getChildren(instanceVisitor.includeAnnotatedNodes())) {
 							// annotate children with leftovers
 							child.accept(instanceVisitor);
@@ -89,9 +89,8 @@ public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 	 */
 	@Override
 	public boolean includeAnnotatedNodes() {
-		//FIXME is this still true?!
-		// annotated nodes are ignored, as these are handled when created
-		return false;
+		// follow annotated nodes in case of an instance family that is important
+		return true;
 	}
 
 }
