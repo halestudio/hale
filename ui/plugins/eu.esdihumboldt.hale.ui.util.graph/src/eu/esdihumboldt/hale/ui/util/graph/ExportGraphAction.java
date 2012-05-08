@@ -52,7 +52,7 @@ public class ExportGraphAction extends Action {
 		this.viewer = viewer;
 		
 		setText("Export to file");
-		setToolTipText("Export the graph to an image or SVG file");
+		setToolTipText("Export the graph to an image, SVG or dot file");
 		setImageDescriptor(GraphUIUtilBundle.getImageDescriptor(
 				"icons/export.gif"));
 	}
@@ -70,7 +70,7 @@ public class ExportGraphAction extends Action {
 		
 		String[] imageExtensions = ImageIO.getWriterFileSuffixes();
 		
-		StringBuffer extensions = new StringBuffer("*.svg");
+		StringBuffer extensions = new StringBuffer("*.svg;*.gv;*.dot");
 		for (String imageExt : imageExtensions) {
 			extensions.append(";*.");
 			extensions.append(imageExt);
@@ -78,7 +78,7 @@ public class ExportGraphAction extends Action {
 		
 		dialog.setFilterExtensions(new String[]{extensions.toString()});
 		
-		dialog.setFilterNames(new String[]{"Image or SVG file (" + extensions + ")"});
+		dialog.setFilterNames(new String[]{"Image, SVG or dot file (" + extensions + ")"});
 		
 		String fileName = dialog.open();
 		if (fileName != null) {
@@ -97,7 +97,7 @@ public class ExportGraphAction extends Action {
 //			};
 			
 			// get the graph
-			Graph graph = viewer.getGraphControl();
+			final Graph graph = viewer.getGraphControl();
 			
 			final String ext = FilenameUtils.getExtension(file.getAbsolutePath());
 			final IFigure root = graph.getRootLayer();
@@ -111,7 +111,10 @@ public class ExportGraphAction extends Action {
 		            		InterruptedException {
 						try {
 							FileOutputStream out = new FileOutputStream(file);
-							
+
+							if (ext.equalsIgnoreCase("gv") || ext.equalsIgnoreCase("dot")) {
+								OffscreenGraph.saveDot(graph, out);
+							}
 							if (ext.equalsIgnoreCase("svg")) {
 								OffscreenGraph.saveSVG(root, out);
 							}
