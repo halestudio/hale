@@ -14,10 +14,8 @@ package eu.esdihumboldt.cst.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 
 import org.exolab.castor.mapping.MappingException;
@@ -25,20 +23,12 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.junit.Test;
 
-import eu.esdihumboldt.hale.common.align.io.impl.DefaultAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.transformation.Transformation;
 import eu.esdihumboldt.hale.common.align.transformation.service.AlignmentProcessor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
-import eu.esdihumboldt.hale.common.core.io.report.IOReport;
-import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
-import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
-import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
-import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
-import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
+import eu.esdihumboldt.hale.common.test.TestUtil;
 
 /**
  * Tests for the CST's alignment processor implementation
@@ -292,48 +282,15 @@ public class DefaultAlignmentProcessorTest {
 	private Alignment loadAlignment(URI sourceSchemaLocation, 
 			URI targetSchemaLocation, final URI alignmentLocation) throws IOProviderConfigurationException, IOException, MarshalException, ValidationException, MappingException {
 		// load source schema
-		Schema source = readXMLSchema(new DefaultInputSupplier(sourceSchemaLocation));
+		Schema source = TestUtil.loadSchema(sourceSchemaLocation);
 		
 		// load target schema
-		Schema target = readXMLSchema(new DefaultInputSupplier(targetSchemaLocation));
+		Schema target = TestUtil.loadSchema(targetSchemaLocation);
 
 		// load alignment
-		IOReporter report = new DefaultIOReporter(new Locatable() {
-			@Override
-			public URI getLocation() {
-				return alignmentLocation;
-			}
-		}, "Load alignment", true);
-		Alignment result = DefaultAlignmentIO.load(alignmentLocation.toURL().openStream(), report , 
-				source, target);
-		
-		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
+		Alignment result = TestUtil.loadAlignment(alignmentLocation, source, target);
 		
 		return result;
-	}
-	
-	/**
-	 * Reads a XML schema
-	 * 
-	 * @param input the input supplier
-	 * @return the schema
-	 * @throws IOProviderConfigurationException if the configuration of the
-	 *   reader is invalid
-	 * @throws IOException if reading the schema fails
-	 */
-	private Schema readXMLSchema(LocatableInputSupplier<? extends InputStream> input) throws IOProviderConfigurationException, IOException {
-		XmlSchemaReader reader = new XmlSchemaReader();
-//		reader.setContentType(XMLSchemaIO.XSD_CT);
-		reader.setSharedTypes(new DefaultTypeIndex());
-		reader.setSource(input);
-		
-		reader.validate();
-		IOReport report = reader.execute(null);
-		
-		assertTrue(report.isSuccess());
-		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
-		
-		return reader.getSchema();
 	}
 
 }
