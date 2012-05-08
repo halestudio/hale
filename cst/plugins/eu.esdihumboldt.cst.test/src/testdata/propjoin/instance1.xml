@@ -8,6 +8,7 @@
             <age>30</age>
             <income>6000</income>
             <addressId>0</addressId>
+            <addressId>1</addressId>
         </details>
     </tns:person>
 	<tns:address id="0">
@@ -18,22 +19,6 @@
 		<name>Kingsbridge</name>
 		<zip>10463</zip>
 	</tns:city>
-	<tns:person id="1">
-        <name>Agnes Builder</name>
-        <details>
-            <age>30</age>
-            <income>0</income>
-            <addressId>0</addressId>
-        </details>
-    </tns:person>
-	<tns:person id="2">
-        <name>Yoda</name>
-        <details>
-            <age>1000</age>
-            <income>500</income>
-            <addressId>1</addressId>
-        </details>
-    </tns:person>
 	<tns:address id="1">
         <street>Jedi Temple</street>
         <zip>85792380</zip>

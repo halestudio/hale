@@ -14,7 +14,6 @@ package eu.esdihumboldt.cst.functions.core.merge;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import com.google.common.collect.HashMultimap;
@@ -23,8 +22,10 @@ import com.google.common.collect.Multimap;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -46,7 +47,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	/**
 	 * Resource iterator over the merged instances
 	 */
-	public class MergedIterator extends GenericResourceIteratorAdapter<K, Collection<Instance>> {
+	public class MergedIterator extends GenericResourceIteratorAdapter<K, FamilyInstance> {
 		private final Multimap<K, InstanceReference> index;
 		private final InstanceCollection originalInstances;
 		private final T mergeConfig;
@@ -66,7 +67,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 		}
 
 		@Override
-		protected Collection<Instance> convert(K next) {
+		protected FamilyInstance convert(K next) {
 			// next is the merge key
 
 			// get the instances to merge
@@ -87,7 +88,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 				}
 			}
 
-			return Collections.singletonList(merge(instances, type, next, mergeConfig));
+			return new FamilyInstanceImpl(merge(instances, type, next, mergeConfig));
 		}
 
 		@Override
@@ -101,7 +102,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	 * @see InstanceHandler#partitionInstances(InstanceCollection, String, TransformationEngine, ListMultimap, Map, TransformationLog)
 	 */
 	@Override
-	public ResourceIterator<Collection<Instance>> partitionInstances(InstanceCollection instances,
+	public ResourceIterator<FamilyInstance> partitionInstances(InstanceCollection instances,
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, String> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)

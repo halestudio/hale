@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.cst.internal;
 
-import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -23,11 +22,11 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.Conte
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.DuplicationVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
+import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
 /**
@@ -71,13 +70,12 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	}
 
 	/**
-	 * @see PropertyTransformer#publish(Collection, MutableInstance, TransformationLog)
+	 * @see PropertyTransformer#publish(FamilyInstance, MutableInstance, TransformationLog)
 	 */
 	@Override
-	public void publish(final Collection<Instance> source, 
+	public void publish(final FamilyInstance source, 
 			final MutableInstance target, final TransformationLog typeLog) {
 		executorService.execute(new Runnable() {
-			
 			@Override
 			public void run() {
 				try {
@@ -85,11 +83,9 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					// create/get a transformation tree
 					TransformationTree tree = treePool.getTree(target.getDefinition());
 					
-					// apply instance values to transformation tree
-					for (Instance instance : source) {
-						InstanceVisitor instanceVisitor = new InstanceVisitor(instance);
-						tree.accept(instanceVisitor);
-					}
+					// apply instance value to transformation tree
+					InstanceVisitor instanceVisitor = new InstanceVisitor(source, tree);
+					tree.accept(instanceVisitor);
 					
 					// duplicate subtree as necessary
 					DuplicationVisitor duplicationVisitor = new DuplicationVisitor();
@@ -100,7 +96,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					
 					// fill instance
 					builder.populate(target, tree);
-					
+
 					//XXX ok to add to sink in any thread?!
 					//XXX addInstance and close were made synchronized in OrientInstanceSink
 					//XXX instead collect instances and write them in only one thread?
