@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationRep
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.ui.ttreeexporter.TTreeExporter;
 
 /**
  * Property transformer based on a {@link TransformationTree}.
@@ -84,16 +85,22 @@ public class TreePropertyTransformer implements PropertyTransformer {
 				// apply instance value to transformation tree
 				InstanceVisitor instanceVisitor = new InstanceVisitor(source, tree);
 				tree.accept(instanceVisitor);
+
+				TTreeExporter.exportTTree(tree);
 				
 				// duplicate subtree as necessary
 				DuplicationVisitor duplicationVisitor = new DuplicationVisitor();
 				tree.accept(duplicationVisitor);
+
+				TTreeExporter.exportTTree(tree);
 				
 				// apply functions
 				tree.accept(executor);
 				
 				// fill instance
 				builder.populate(target, tree);
+
+				TTreeExporter.exportTTree(tree);
 
 				//XXX ok to add to sink in any thread?!
 				//XXX addInstance and close were made synchronized in OrientInstanceSink
