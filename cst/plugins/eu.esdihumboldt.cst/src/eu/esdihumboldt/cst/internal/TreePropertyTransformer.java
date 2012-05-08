@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
 import eu.esdihumboldt.hale.common.instance.model.InstanceUtil;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.ui.ttreeexporter.TTreeExporter;
 
 /**
  * Property transformer based on a {@link TransformationTree}.
@@ -73,7 +74,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 		executor = new FunctionExecutor(reporter, engines);
 		builder = new InstanceBuilder();
 		
-		executorService = Executors.newFixedThreadPool(4);
+		executorService = Executors.newFixedThreadPool(1);
 	}
 
 	/**
@@ -100,15 +101,19 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					// identify transformations to be executed on given instances
 					// create/get a transformation tree
 					TransformationTree tree = treePool.getTree(target.getDefinition());
+					TTreeExporter.exportTTree(tree);
 					
 					// apply instance value to transformation tree
 					InstanceVisitor instanceVisitor = new InstanceVisitor(source, tree);
 					tree.accept(instanceVisitor);
+					TTreeExporter.exportTTree(tree);
 					
 					// duplicate subtree as necessary
 					DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree);
 					tree.accept(duplicationVisitor);
+					TTreeExporter.exportTTree(tree);
 					duplicationVisitor.doAugmentationTrackback();
+					TTreeExporter.exportTTree(tree);
 					
 					// apply functions
 					tree.accept(executor);
