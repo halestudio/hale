@@ -8,7 +8,7 @@
     				<sequence>
     					<element name="age" type="int" maxOccurs="1" minOccurs="0"></element>
     					<element name="income" type="double" maxOccurs="1" minOccurs="0"></element>
-    					<element name="addressId" type="int" maxOccurs="1" minOccurs="0"></element>
+    					<element name="addressId" type="int" maxOccurs="unbounded" minOccurs="0"></element>
     				</sequence>
     			</complexType>
     		</element>

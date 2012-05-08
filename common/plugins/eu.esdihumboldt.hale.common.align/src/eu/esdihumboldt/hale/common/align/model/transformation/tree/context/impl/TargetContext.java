@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,10 +31,12 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.Leftovers;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.CellNodeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TargetNodeImpl;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractSourceToTargetVisitor;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -208,30 +211,200 @@ public class TargetContext implements TransformationContext {
 	 */
 	@Override
 	public void duplicateContext(SourceNode originalSource,
-			SourceNode duplicate, Set<Cell> ignoreCells) {
-		// create a new duplication context
-		DuplicationContext duplicationContext = new DuplicationContext(ignoreCells);
-		
-		// configure duplicate, but don't add to parent (as it is already added as annotated child)
-		configureSourceDuplicate(originalSource, duplicate, 
-				originalSource.getParent(), duplicationContext, false);
-		
-		// track back to sources from cells where sources are missing
-		for (Pair<CellNodeImpl, CellNode> cellPair : duplicationContext.getIncompleteCellNodes()) {
-			CellNodeImpl cellNode = cellPair.getFirst();
-			CellNode originalCell = cellPair.getSecond();
-			
-			cellTrackback(cellNode, originalCell);
+			final SourceNode duplicate, Set<Cell> ignoreCells) {
+		if (duplicate.getParent() != null) {
+			// Try to find fitting places over children of the parent node.
+			Map<EntityDefinition, TargetNode> existingTargets = new HashMap<EntityDefinition, TargetNode>();
+			SourceNode parent = duplicate.getParent();
+			do {
+				// XXX Keep all targets? -> Inefficient, since we'll need to search the list. For now keep first of each entityDef.
+				for (TargetNode existingTarget : collectTargetNodes(parent))
+					if (!existingTargets.containsKey(existingTarget.getEntityDefinition()))
+						existingTargets.put(existingTarget.getEntityDefinition(), existingTarget);
+				parent = parent.getParent();
+			} while (parent != null);
+
+			duplicateTree(originalSource, duplicate, new HashMap<Cell, CellNodeImpl>(), existingTargets);
 		}
-		
-		// track back from targets where augmentations are missing
-		for (Pair<TargetNodeImpl, TargetNode> targetPair : duplicationContext.getIncompleteTargetNodes()) {
-//			TargetNodeImpl targetNode = targetPair.getFirst();
-			TargetNode originalTarget = targetPair.getSecond();
-			
-			augmentationTrackback(originalTarget, duplicationContext);
+
+		// Code matching the old stuff at bottom!
+//		// create a new duplication context
+//		DuplicationContext duplicationContext = new DuplicationContext(ignoreCells);
+//		
+//		// configure duplicate, but don't add to parent (as it is already added as annotated child)
+//		// at this point duplicate may have a parent, even if the original source hasn't
+//		configureSourceDuplicate(originalSource, duplicate, 
+//				duplicate.getParent(), duplicationContext, false);
+//		
+//		// track back to sources from cells where sources are missing
+//		for (Pair<CellNodeImpl, CellNode> cellPair : duplicationContext.getIncompleteCellNodes()) {
+//			CellNodeImpl cellNode = cellPair.getFirst();
+//			CellNode originalCell = cellPair.getSecond();
+//			
+//			cellTrackback(cellNode, originalCell);
+//		}
+//		
+//		// track back from targets where augmentations are missing
+//		for (Pair<TargetNodeImpl, TargetNode> targetPair : duplicationContext.getIncompleteTargetNodes()) {
+////			TargetNodeImpl targetNode = targetPair.getFirst();
+//			TargetNode originalTarget = targetPair.getSecond();
+//			
+//			augmentationTrackback(originalTarget, duplicationContext);
+//		}
+	}
+
+	/**
+	 * Duplicates the transformation tree for the given source node
+	 * to the given duplicate source node.
+	 *
+	 * @param source the original source node
+	 * @param duplicate the duplication target
+	 * @param duplicatedCellNodes map to keep track of newly created cell nodes (should be empty)
+	 * @param existingTargets map with information on existing target nodes which this tree may connect to
+	 */
+	private void duplicateTree(SourceNode source, SourceNode duplicate,
+			 Map<Cell, CellNodeImpl> duplicatedCellNodes, Map<EntityDefinition, TargetNode> existingTargets) {
+		// Duplicate relations.
+		for (CellNode cell : source.getRelations(false)) {
+			// TODO search for existing cells like the source cell and look if there an input like this is needed
+			// Could be used in 1:1 joins and also in augmentations
+			CellNodeImpl duplicatedCell = duplicatedCellNodes.get(cell.getCell());
+			if (duplicatedCell == null) {
+				duplicatedCell = new CellNodeImpl(cell.getCell());
+				duplicatedCellNodes.put(cell.getCell(), duplicatedCell);
+			}
+			duplicate.addRelation(duplicatedCell);
+			duplicatedCell.addSource(cell.getSourceNames(source), duplicate);
+
+			for (TargetNode duplicatedTarget : duplicateTree(cell, duplicatedCell, existingTargets))
+				existingTargets.put(duplicatedTarget.getEntityDefinition(), duplicatedTarget);
+		}
+
+		// Duplicate children.
+		for (SourceNode child : source.getChildren(false)) {
+			SourceNode duplicatedChild = new SourceNodeImpl(child.getEntityDefinition(),
+					duplicate, true);
+			duplicatedChild.setContext(child.getContext());
+			duplicateTree(child, duplicatedChild, duplicatedCellNodes, existingTargets);
 		}
 	}
+
+	/**
+	 * Duplicates the transformation tree for the given cell node
+	 * to the given duplicate cell node.
+	 *
+	 * @param cell the original cell node
+	 * @param duplicateCell the duplication target
+	 * @param existingTargets map with information on existing target nodes which this tree may connect to
+	 * @return a collection of newly created target nodes
+	 */
+	private Collection<TargetNode> duplicateTree(CellNode cell, CellNode duplicateCell,
+			Map<EntityDefinition, TargetNode> existingTargets) {
+		// Duplicate targets.
+		List<TargetNode> createdTargets = new LinkedList<TargetNode>();
+		for (TargetNode target : cell.getTargets()) {
+			List<TargetNodeImpl> newTargets = duplicateTarget(target, existingTargets);
+			createdTargets.addAll(newTargets);
+			duplicateCell.addTarget(newTargets.get(0));
+			newTargets.get(0).addAssignment(target.getAssignmentNames(cell), duplicateCell);
+		}
+		return createdTargets;
+	}
+
+	/**
+	 * Duplicates the transformation tree for the given target node
+	 * to the given duplicate target node.
+	 *
+	 * @param target the original target node
+	 * @param existingTargets map with information on existing target nodes which this tree may connect to
+	 * @return a collection of newly created target nodes
+	 */
+	private List<TargetNodeImpl> duplicateTarget(TargetNode target,
+			Map<EntityDefinition, TargetNode> existingTargets) {
+		GroupNode parent = null;
+		if (target.getParent() instanceof TargetNode) {
+			// Check if the parent node exists in the given context already.
+			parent = existingTargets.get(((TargetNode) target.getParent()).getEntityDefinition());
+		} else if (target.getParent() instanceof TransformationTree && contextTargets.contains(target)) {
+			// Reached root, but this is a possible target.
+			parent = target.getParent();
+		} else {
+			// Reached root, but this is no possible target or the parent is null!
+			throw new IllegalStateException("DuplicationContext present, but no matching target found.");
+		}
+
+		// TODO augmentationTrackback - see dupeassign
+		// TODO cellTrackback
+		// TODO what about cases where contextTargets parent doesn't exist yet, and there is no 
+		// place to build (no direct free place, and no other contextTarget) it on?
+		//      if yes, what do? Right now it would end at the exception in the beginning of this method.
+		//      Basically the duplication should fail, right? Completely, or only of this target?
+
+		if (parent == null ||
+				!(contextTargets.contains(target) || !parent.getChildren(false).contains(target))) {
+			// Does not exist: recursion.
+			List<TargetNodeImpl> duplicatedNodes = duplicateTarget((TargetNode) target.getParent(),
+					existingTargets);
+			TargetNodeImpl newTarget = new TargetNodeImpl(target.getEntityDefinition(), duplicatedNodes.get(0));
+			duplicatedNodes.get(0).addChild(newTarget);
+			duplicatedNodes.add(0, newTarget);
+			return duplicatedNodes;
+		} else {
+			// Exists: add as child.
+			TargetNodeImpl newTarget = new TargetNodeImpl(target.getEntityDefinition(), parent);
+			// If the child is not already present, add it directly, otherwise as annotated child.
+			if (parent instanceof TargetNodeImpl && !parent.getChildren(false).contains(newTarget))
+				((TargetNodeImpl) parent).addChild(newTarget);
+			else
+				parent.addAnnotatedChild(newTarget);
+			LinkedList<TargetNodeImpl> duplicatedNodes = new LinkedList<TargetNodeImpl>();
+			duplicatedNodes.add(newTarget);
+			return duplicatedNodes;
+		}
+	}
+
+	/**
+	 * Collects all TargetNodes associated with the given SourceNode
+	 * excluding SourceNodes with the given EntityDefinition.
+	 *
+	 * @param source the source to start from
+	 * @return all targets associated with this source except the ones excluded
+	 */
+	private List<TargetNode> collectTargetNodes(SourceNode source) {
+		final List<TargetNode> result = new LinkedList<TargetNode>();
+
+
+		source.accept(new AbstractSourceToTargetVisitor() {
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor#includeAnnotatedNodes()
+			 */
+			@Override
+			public boolean includeAnnotatedNodes() {
+				return false;
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTransformationNodeVisitor#visit(eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode)
+			 */
+			@Override
+			public boolean visit(TargetNode target) {
+				result.add(target);
+				return true;
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTransformationNodeVisitor#visit(eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree)
+			 */
+			@Override
+			public boolean visit(TransformationTree root) {
+				return false;
+			}
+		});
+
+		return result;
+	}
+
+	// OLD STUFF!
 
 	/**
 	 * Track back target nodes and duplicate any augmentation cells.

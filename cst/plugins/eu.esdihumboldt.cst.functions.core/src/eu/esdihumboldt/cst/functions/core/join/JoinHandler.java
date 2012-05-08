@@ -13,7 +13,6 @@
 package eu.esdihumboldt.cst.functions.core.join;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,8 +21,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
@@ -32,14 +32,17 @@ import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -48,12 +51,12 @@ import eu.esdihumboldt.util.Pair;
  * @author Kai Schwierczek
  */
 public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinFunction  {
-	// For now no support to join the same type on some condition.
+	// For now no support for using the same type more than once in a join.
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler#partitionInstances(eu.esdihumboldt.hale.common.instance.model.InstanceCollection, java.lang.String, eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine, com.google.common.collect.ListMultimap, java.util.Map, eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
 	 */
 	@Override
-	public ResourceIterator<Collection<Instance>> partitionInstances(InstanceCollection instances,
+	public ResourceIterator<FamilyInstance> partitionInstances(InstanceCollection instances,
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, String> transformationParameters, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException {
@@ -63,19 +66,23 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 			throw new TransformationException("No join parameter defined");
 		}
 
-		// idea for join parameter format: type1 ... typeN  type1,prop1=type2,prop2 ... typeN-1,propN-1=typeN,propN
-		// so: first types in join order URLEncoded, space separated, then two spaces,.
+		// idea for join parameter format: type1 ... typeN::type1,prop1=type2,prop2 ... typeN-1,propN-1=typeN,propN
+		// so: first types in join order - QNames, space separated (focus on left types happens!), then '::'
 		// second space separated pairs of '=' separated join conditions as "<type>,<property>", 
 		// also in order: type on the left side has to be type in front of the type on the right side.
 
 		// first collect relevant properties per type to build an index of those
 		String joinParameter = transformationParameters.get(PARAMETER_JOIN).get(0);
-		String[] typesAndProps = joinParameter.split("  ", -1);
+		String[] typesAndProps = joinParameter.split("::", -1);
 
 		// has two be two parts
 		if (typesAndProps.length != 2)
 			throw new TransformationException("Join parameter invalid.");
-		List<String> types = Arrays.asList(typesAndProps[0].split(" "));
+		String[] typesRaw = typesAndProps[0].split(" ");
+		// List of types with their QNames, and the highest type they depend on.
+		List<Pair<QName, Integer>> types = new ArrayList<Pair<QName, Integer>>(typesRaw.length);
+		for (String name : typesAndProps[0].split(" "))
+			types.add(new Pair<QName, Integer>(PropertyResolver.getQNamesFromPath(name).get(0), 0));
 
 		// join with less than two types is senseless
 		if (types.size() < 2)
@@ -95,18 +102,37 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 			
 			String[] typePropOne = equalSides[0].split(",");
 			String[] typePropTwo = equalSides[1].split(",");
+
+			int typeOneIndex = -1;
+			int typeTwoIndex = -1;
+			for (int i = 0; i < types.size(); i++)
+				if (types.get(i).getFirst().toString().equals(typePropOne[0])) {
+					typeOneIndex = i;
+					break;
+				}
+			for (int i = 0; i < types.size(); i++)
+				if (types.get(i).getFirst().toString().equals(typePropTwo[0])) {
+					typeTwoIndex = i;
+					break;
+				}
 			
 			// some checks...
 			if (typePropOne.length != 2 || typePropTwo.length != 2
-					|| types.indexOf(typePropOne[0]) == -1 || types.indexOf(typePropTwo[0]) == -1
-					|| types.indexOf(typePropTwo[0]) <= types.indexOf(typePropOne[0]))
+					|| typeOneIndex == -1 || typeTwoIndex == -1
+					|| typeTwoIndex <= typeOneIndex)
 				throw new TransformationException("Join parameter invalid.");
 
-			int typeOneIndex = types.indexOf(typePropOne[0]);
-			int typeTwoIndex = types.indexOf(typePropTwo[0]);
+			// add it to join table
 			if (joinTable.get(typeTwoIndex) == null)
 				joinTable.put(typeTwoIndex, ArrayListMultimap.<Integer, Pair<String,String>>create(3, 3));
 			joinTable.get(typeTwoIndex).put(typeOneIndex, new Pair<String, String>(typePropOne[1], typePropTwo[1]));
+
+			// update highest type if necessary
+			if (types.get(typeTwoIndex).getSecond() < typeOneIndex) {
+				if (!dependsOn(typeOneIndex, types.get(typeTwoIndex).getSecond(), types))
+					throw new TransformationException("Dependency on two different types which do not depend on each other is not supported.");
+				types.set(typeTwoIndex, new Pair<QName, Integer>(types.get(typeTwoIndex).getFirst(), typeOneIndex));
+			}
 
 			// build index over second type/property
 			propertyTable.put(typePropTwo[0], typePropTwo[1]);
@@ -134,9 +160,8 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 				Instance next = iterator.next();
 
 				// remember instances of first type
-				// TODO use something else than display name (QName)
-				String type = next.getDefinition().getDisplayName();
-				if (type.equals(types.get(0)))
+				String type = next.getDefinition().getName().toString();
+				if (type.equals(types.get(0).getFirst().toString()))
 					startInstances.add(instances.getReference(next));
 
 				// fill index over needed properties
@@ -158,143 +183,104 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		return new JoinIterator(instances, startInstances, types, index, joinTable);
 	}
 
-	private class JoinIterator implements ResourceIterator<Collection<Instance>> {
+	// Checks whether the first type depends on the second type in the given type list.
+	private boolean dependsOn(int type1, int type2, List<Pair<QName, Integer>> types) {
+		if (type1 == type2)
+			return true;
+
+		while (type1 > type2) {
+			type1 = types.get(type1).getSecond();
+			if (type1 == type2)
+				return true;
+		}
+
+		return false;
+	}
+
+	private class JoinIterator extends GenericResourceIteratorAdapter<InstanceReference, FamilyInstance> {
 		private final InstanceCollection instances;
-		private final List<String> types;
+		private final List<Pair<QName, Integer>> types;
 		//                TypeProp         Value   Reference
 		private final Map<String, Multimap<Object, InstanceReference>> index;
 		//                Type2            Type1          Prop1   Prop2
 		private final Map<Integer, Multimap<Integer, Pair<String, String>>> joinTable;
-	
-		private LinkedList<Iterator<InstanceReference>> currentIterators;
-		private List<Instance> currentInstances;
-
-		// next entry, selected through hasNext...
-		private Collection<Instance> next;
 
 		protected JoinIterator(InstanceCollection instances, Collection<InstanceReference> startInstances,
-				List<String> types, Map<String, Multimap<Object, InstanceReference>> index,
+				List<Pair<QName, Integer>> types, Map<String, Multimap<Object, InstanceReference>> index,
 				Map<Integer, Multimap<Integer, Pair<String, String>>> joinTable) {
+			super(startInstances.iterator());
 			this.instances = instances;
 			this.types = types;
 			this.index = index;
 			this.joinTable = joinTable;
-
-			currentIterators = new LinkedList<Iterator<InstanceReference>>();
-			currentInstances = new ArrayList<Instance>(types.size());
-			currentIterators.add(startInstances.iterator());
-
-			next = null;
 		}
 
 		/**
-		 * @see java.util.Iterator#hasNext()
+		 * @see eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter#convert(java.lang.Object)
 		 */
 		@Override
-		public boolean hasNext() {
-			if (next == null) {
-				try {
-					next = next();
-				} catch (NoSuchElementException nsee) {
-					return false;
-				}
-			}
-			return true;
+		protected FamilyInstance convert(InstanceReference next) {
+			FamilyInstance base = new FamilyInstanceImpl(instances.getInstance(next));
+			HashMap<Integer, FamilyInstance> currentInstances = new HashMap<Integer, FamilyInstance>(types.size() * 2);
+			currentInstances.put(0, base);
+
+			join(currentInstances, 0);
+
+			return base;
 		}
 
-		/**
-		 * @see java.util.Iterator#next()
-		 */
-		@Override
-		public Collection<Instance> next() {
-			// first check whether the result was fetched by hasNext already
-			if (next != null) {
-				Collection<Instance> result = next;
-				next = null;
-				return result;
-			}
+		// Joins to the currentInstances HashMap all direct children of the given type.
+		private void join(HashMap<Integer, FamilyInstance> currentInstances, int currentType) {
+			// Join all types that are direct children of the last type.
+			for (int i = currentType + 1; i < types.size(); i++) {
+				if (types.get(i).getSecond() == currentType) {
+					// Get join condition for the direct child type.
+					//       Type1          Prop1   Prop2                                  Type2
+					Multimap<Integer, Pair<String, String>> joinConditions = joinTable.get(i);
+					// Collect intersection of conditions.     null marks beginning in contrast to an empty set.
+					Set<InstanceReference> possibleInstances = null;
+					//             Type1         Prop1   Prop2
+					for (Map.Entry<Integer, Pair<String, String>> joinCondition : joinConditions.entries()) {
+						Collection<Object> currentValues = PropertyResolver.getValues(currentInstances.get(joinCondition.getKey()), joinCondition.getValue().getFirst());
 
-			findNext();
-
-			// return result
-			return new ArrayList<Instance>(currentInstances);
-		}
-
-		/**
-		 * Searches the next result of this join operation.<br>
-		 * The result will be in the currentInstances List.
-		 * 
-		 * @throws NoSuchElementException if no result is available
-		 */
-		private void findNext() throws NoSuchElementException {
-			// remove last Instance from currentInstance if this isn't the first next call
-			if (!currentInstances.isEmpty())
-				currentInstances.remove(currentInstances.size() - 1);
-
-			// start with highest depth iterator
-			Iterator<InstanceReference> currentIterator = currentIterators.getLast();
-
-			while (true) {
-				while (!currentIterator.hasNext()) {
-					// this iterator is done, remove it
-					currentIterators.removeLast();
-					// retreat
-					currentIterator = currentIterators.getLast();
-					currentInstances.remove(currentInstances.size() - 1);
-				}
-
-				// add next possibility to currentInstances
-				currentInstances.add(instances.getInstance(currentIterator.next()));
-
-				// are we done?
-				if (currentInstances.size() == types.size())
-					return;
-
-				// get join condition for next type
-				//       Type1          Prop1   Prop2                                  Type2
-				Multimap<Integer, Pair<String, String>> joinConditions = joinTable.get(currentInstances.size());
-				// collect intersection of conditions      null marks beginning in contrast to empty
-				Set<InstanceReference> possibleInstances = null;
-				//             Type1         Prop1   Prop2
-				for (Map.Entry<Integer, Pair<String, String>> joinCondition : joinConditions.entries()) {
-					Collection<Object> currentValues = PropertyResolver.getValues(currentInstances.get(joinCondition.getKey()), joinCondition.getValue().getFirst());
-
-					// XXX no value? for now that is not a match in every case.
-					if (currentValues == null || currentValues.isEmpty()) {
-						possibleInstances = Collections.emptySet();
-						break;
-					}
-
-					// XXX take first value for now
-					Object currentValue = currentValues.iterator().next();
-					Collection<InstanceReference> matches = index.get(types.get(currentInstances.size()) + "." + joinCondition.getValue().getSecond()).get(currentValue);
-					if (possibleInstances == null)
-						possibleInstances = new HashSet<InstanceReference>(matches);
-					else {
-						// intersect
-						// XXX put matches in HashSet for fast contains? worth it?
-						Iterator<InstanceReference> iter = possibleInstances.iterator();
-						while (iter.hasNext()) {
-							InstanceReference ref = iter.next();
-							if (!matches.contains(ref))
-								iter.remove();
+						if (currentValues == null) {
+							possibleInstances = Collections.emptySet();
+							break;
 						}
+
+						// Allow targets with any of the property values.
+						HashSet<InstanceReference> matches = new HashSet<InstanceReference>();
+						for (Object currentValue : currentValues) {
+							// XXX Would someone join over a Group/Instance?
+							matches.addAll(index.get(types.get(i).getFirst().toString() + "." + joinCondition.getValue().getSecond()).get(currentValue));
+						}
+						if (possibleInstances == null)
+							possibleInstances = matches;
+						else {
+							// Intersect!
+							Iterator<InstanceReference> iter = possibleInstances.iterator();
+							while (iter.hasNext()) {
+								InstanceReference ref = iter.next();
+								if (!matches.contains(ref))
+									iter.remove();
+							}
+						}
+
+						// Break if set is empty.
+						if (possibleInstances.isEmpty())
+							break;
 					}
 
-					// break is set is empty
-					if (possibleInstances.isEmpty())
-						break;
-				}
-
-				// found possibilities?
-				if (possibleInstances != null && !possibleInstances.isEmpty()) {
-					// add iterator over found possibilities
-					currentIterator = possibleInstances.iterator();
-					// advance
-					currentIterators.add(currentIterator);
-				} else {
-					// remove last instance but keep iterator
-					currentInstances.remove(currentInstances.size() - 1);
+					if (possibleInstances != null && !possibleInstances.isEmpty()) {
+						FamilyInstance parent = currentInstances.get(currentType);
+						for (InstanceReference ref : possibleInstances) {
+							FamilyInstance child = new FamilyInstanceImpl(instances.getInstance(ref));
+							parent.addChild(child);
+							currentInstances.put(i, child);
+							join(currentInstances, i);
+						}
+						currentInstances.put(i, null);
+					}
 				}
 			}
 		}
@@ -305,14 +291,6 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
-		}
-
-		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.ResourceIterator#close()
-		 */
-		@Override
-		public void close() {
-			// do nothing?
 		}
 	}
 }

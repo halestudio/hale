@@ -14,42 +14,53 @@ package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.LeftoversImpl;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
+import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Visitor that annotates a transformation tree with the values of 
- * properties in a source instance.
+ * Visitor that annotates a transformation tree with the values of properties in
+ * a source instance.
+ * 
  * @author Simon Templer
  */
 public class InstanceVisitor extends AbstractSourceToTargetVisitor {
-	
-//	private static final ALogger log = ALoggerFactory.getLogger(InstanceVisitor.class);
-	
-	private final Group instance;
-	
+
+	//	private static final ALogger log = ALoggerFactory.getLogger(InstanceVisitor.class);
+
+	private FamilyInstance instance;
+	private final TransformationTree tree;
+
 	/**
+	 * Creates an instance visitor.
 	 * 
-	 * @param instance the instance
+	 * @param instance the instance, may be null
+	 * @param tree the transformation tree, may be null if instance is null
 	 */
-	public InstanceVisitor(Group instance) {
+	public InstanceVisitor(FamilyInstance instance, TransformationTree tree) {
 		super();
 		this.instance = instance;
-		
+		this.tree = tree;
+
 		//TODO support multiple instances with a instance per type basis or even duplication of type source nodes?
 	}
 
@@ -66,117 +77,135 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 	 */
 	@Override
 	public boolean visit(SourceNode source) {
-		if (source.getParent() == null) {
+		if (source.getDefinition() instanceof TypeDefinition) {
+			if (instance == null)
+				return false;
 			// source root
-			if (instance instanceof Instance
-					&& source.getDefinition().equals(((Instance) instance).getDefinition())) {
+			if (source.getDefinition().equals(instance.getDefinition())) {
 				// check type filter (if any)
 				Filter filter = source.getEntityDefinition().getFilter();
-				if (filter != null) {
-					if (!filter.match((Instance) instance)) {
-						// instance does not match filter, don't descend further
-						return false;
-						/*
-						 * XXX What about merged instances? Will this be OK for those?
-						 * A type filter should only apply to the original instance if
-						 * it is merged - but most filters should evaluate the same
-						 */
+				if (filter != null && !filter.match(instance)) {
+					// instance does not match filter, don't descend further
+					return false;
+					/*
+					 * XXX What about merged instances? Will this be OK for those?
+					 * A type filter should only apply to the original instance if
+					 * it is merged - but most filters should evaluate the same
+					 */
+				} else {
+					source.setValue(instance); // also sets the node to defined
+					for (FamilyInstance child : instance.getChildren()) {
+						// Find fitting SourceNodes.
+						Collection<SourceNode> candidateNodes = tree.getRootSourceNodes(child.getDefinition());
+						for (SourceNode candidateNode : candidateNodes) {
+							filter = candidateNode.getEntityDefinition().getFilter();
+							if (filter == null || filter.match(child)) {
+								// XXX add all!?
+								SourceNode duplicate = new SourceNodeImpl(
+										candidateNode.getEntityDefinition(), 
+										source, false);
+								// add as annotated child to source
+								source.addAnnotatedChild(duplicate);
+								TransformationContext context = candidateNode.getContext();
+								// assign context
+								duplicate.setContext(context);
+								// duplicate tree
+								context.duplicateContext(candidateNode, duplicate, Collections.<Cell>emptySet());
+								// recursion
+								InstanceVisitor visitor = new InstanceVisitor(child, tree);
+								duplicate.accept(visitor);
+							}
+						}
 					}
+					return true;
 				}
-				
-				source.setValue(instance); // also sets the node to defined
-				return true;
-			}
-			else {
+			} else
 				return false;
-			}
-		}
-		else {
+		} else {
 			Object parentValue = source.getParent().getValue();
-			
+
 			if (parentValue == null || !(parentValue instanceof Group)) {
 				source.setDefined(false);
-			}
-			else {
+				return false;
+			} else {
 				Group parentGroup = (Group) parentValue;
-				
 				Definition<?> currentDef = source.getDefinition();
+
 				Object[] values = parentGroup.getProperty(currentDef.getName());
 				if (values == null) {
 					source.setDefined(false);
+					return false;
 				}
-				else {
-					// check for contexts
-					EntityDefinition entityDef = source.getEntityDefinition();
-					
-					// index context
-					Integer index = AlignmentUtil.getContextIndex(entityDef);
-					if (index != null) {
-						// only use the value at the given index, if present
-						if (index < values.length) {
-							// annotate with the value at the index
-							Object value = values[index];
-							source.setValue(value);
-						}
-						else {
-							source.setDefined(false);
-						}
-						// no leftovers
-						return true;
-					}
-					
-					// condition context
-					Condition condition = AlignmentUtil.getContextCondition(entityDef);
-					if (condition != null) {
-						if (condition.getFilter() == null) {
-							// assume exclusion
-							source.setDefined(false);
-							return false;
-						}
-						
-						// apply condition as filter on values and continue with those values
-						Collection<Object> matchedValues = new ArrayList<Object>();
-						for (Object value : values) {
-							// create dummy instance
-							MutableInstance dummy = new DefaultInstance(null, null);
-							// add value as property
-							dummy.addProperty(new QName("value"), value);
-							// add parent value as property
-							SourceNode parentNode = source.getParent();
-							if (parentNode != null && parentNode.isDefined()) {
-								dummy.addProperty(new QName("parent"), parentNode.getValue());
-							}
-							
-							if (condition.getFilter().match(dummy)) {
-								matchedValues.add(value);
-							}
-						}
-						
-						values = matchedValues.toArray();
-					}
-					
-					// (named contexts not allowed)
-					
-					// default behavior (default context)
-					if (values.length >= 1) {
-						// annotate with the first value
-						Object value = values[0];
+
+				// check for contexts
+				EntityDefinition entityDef = source.getEntityDefinition();
+
+				// index context
+				Integer index = AlignmentUtil.getContextIndex(entityDef);
+				if (index != null) {
+					// only use the value at the given index, if present
+					if (index < values.length) {
+						// annotate with the value at the index
+						Object value = values[index];
 						source.setValue(value);
-					}
-					else {
+						return true;
+					} else {
 						source.setDefined(false);
-					}
-					
-					if (values.length > 1) {
-						// handle additional values
-						Object[] leftovers = new Object[values.length - 1];
-						System.arraycopy(values, 1, leftovers, 0, leftovers.length);
-						source.setLeftovers(new LeftoversImpl(leftovers, source));
+						return false;
 					}
 				}
+
+				// condition context
+				Condition condition = AlignmentUtil.getContextCondition(entityDef);
+				if (condition != null) {
+					if (condition.getFilter() == null) {
+						// assume exclusion
+						source.setDefined(false);
+						return false;
+					}
+
+					// apply condition as filter on values and continue with those values
+					Collection<Object> matchedValues = new ArrayList<Object>();
+					for (Object value : values) {
+						// create dummy instance
+						MutableInstance dummy = new DefaultInstance(null, null);
+						// add value as property
+						dummy.addProperty(new QName("value"), value);
+						// add parent value as property
+						SourceNode parentNode = source.getParent();
+						if (parentNode != null && parentNode.isDefined()) {
+							dummy.addProperty(new QName("parent"), parentNode.getValue());
+						}
+
+						if (condition.getFilter().match(dummy)) {
+							matchedValues.add(value);
+						}
+					}
+
+					values = matchedValues.toArray();
+				}
+
+				// (named contexts not allowed)
+
+				// default behavior (default context)
+				if (values.length >= 1) {
+					// annotate with the first value
+					Object value = values[0];
+					source.setValue(value);
+				} else {
+					source.setDefined(false);
+					return false;
+				}
+
+				if (values.length > 1) {
+					// handle additional values
+					Object[] leftovers = new Object[values.length - 1];
+					System.arraycopy(values, 1, leftovers, 0, leftovers.length);
+					source.setLeftovers(new LeftoversImpl(leftovers, source));
+				}
+
+				return true;
 			}
-			
-			return true;
 		}
 	}
 
