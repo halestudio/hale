@@ -12,15 +12,12 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.function;
 
-import java.util.Collection;
-
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
 /**
@@ -37,7 +34,7 @@ public interface TypeTransformation<E extends TransformationEngine> extends Tran
 	 * instance pairs created during
 	 * {@link #execute(String, TransformationEngine, java.util.Map, TransformationLog)}ion 
 	 * to the property transformer using
-	 * {@link PropertyTransformer#publish(Collection, MutableInstance, TransformationLog)}.
+	 * {@link PropertyTransformer#publish(FamilyInstance, MutableInstance, TransformationLog)}.
 	 * @param propertyTransformer the property transformer
 	 */
 	public void setPropertyTransformer(PropertyTransformer propertyTransformer);
@@ -54,7 +51,7 @@ public interface TypeTransformation<E extends TransformationEngine> extends Tran
 	 * 
 	 * @param sourceInstances the source instances
 	 */
-	public void setSource(Collection<Instance> sourceInstances);
+	public void setSource(FamilyInstance sourceInstances);
 
 	/**
 	 * Get the handler to partition the source instances (e.g. merge or join).

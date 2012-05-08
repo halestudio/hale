@@ -113,10 +113,12 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 			}
 		}
 		else {
-			// visit leafs
-			for (SourceNode node : sourceNodes.getNodes()) {
-				if (node.getParent() == null) {
-					node.accept(visitor);
+			if (visitor.visit(this)) {
+				// visit leafs
+				for (SourceNode node : sourceNodes.getNodes()) {
+					if (node.getParent() == null) {
+						node.accept(visitor);
+					}
 				}
 			}
 		}
@@ -144,6 +146,18 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 	@Override
 	public TypeDefinition getType() {
 		return type;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree#getRootSourceNodes(eu.esdihumboldt.hale.common.schema.model.TypeDefinition)
+	 */
+	@Override
+	public Collection<SourceNode> getRootSourceNodes(TypeDefinition type) {
+		List<SourceNode> rootNodes = new ArrayList<SourceNode>();
+		for (SourceNode node : sourceNodes.getNodes())
+			if (node.getParent() == null && node.getDefinition().equals(type))
+				rootNodes.add(node);
+		return rootNodes;
 	}
 
 }
