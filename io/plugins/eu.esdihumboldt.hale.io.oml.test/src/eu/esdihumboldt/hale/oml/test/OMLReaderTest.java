@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
@@ -49,6 +50,21 @@ public class OMLReaderTest {
 		Collection<? extends Cell> cells = alignment.getCells();
 		
 		assertEquals(2, cells.size());
+	}
+	
+	@Test
+	public void testFunction() {
+		
+		Collection<? extends Cell> cells = alignment.getCells();
+		
+		Iterator<? extends Cell> it = cells.iterator();
+		
+		Cell cell1 = it.next();
+		Cell cell2 = it.next();
+		
+		assertEquals("eu.esdihumboldt.hale.align.retype", cell1.getTransformationIdentifier());
+		assertEquals("eu.esdihumboldt.hale.align.formattedstring", cell2.getTransformationIdentifier());
+		
 	}
 	
 	private static Alignment loadAlignment(URI sourceSchemaLocation, 
