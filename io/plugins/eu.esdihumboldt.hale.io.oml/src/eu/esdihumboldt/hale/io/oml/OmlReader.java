@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.io.oml;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +55,7 @@ import eu.esdihumboldt.hale.io.oml.helper.FormattedStringTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.MathematicalExpressionTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.NetworkExpansionTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.NotSupportedTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.OrdinatesToPointTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.RenameTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.RetypeTranslator;
@@ -101,6 +101,22 @@ public class OmlReader extends AbstractAlignmentReader implements
 				new NetworkExpansionTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.ConcatenationOfAttributesFunction",
 				new FormattedStringTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.BoundingBoxFunction",
+				new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.CalculateArea",
+				new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.CalculateLength",
+				new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.CentroidFunction",
+				new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.ClipByRectangleFunction",
+				new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.NilReasonFunction",
+				new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.GeographicalNameFunction",
+				new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.IdentifierFunction",
+				new NotSupportedTranslator());
 	}
 
 	/**
@@ -365,7 +381,8 @@ public class OmlReader extends AbstractAlignmentReader implements
 		String transId = entity.getTransformation().getService().getLocation();
 
 		// set the new transformation identifier
-		if (map.containsKey(transId)) {
+		if (map.containsKey(transId)
+				&& map.get(transId).getTransformationId() != null) {
 			cellBean.setTransformationIdentifier(map.get(transId)
 					.getTransformationId());
 		} else {
