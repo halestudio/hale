@@ -17,8 +17,10 @@ import java.util.List;
 
 import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ChildContextBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.PropertyBean;
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.specification.cst.align.ICell;
@@ -79,9 +81,59 @@ public class FormattedStringTranslator implements FunctionTranslator,
 		for (String thisElement : concat) {
 			String[] properties = thisElement.split(String
 					.valueOf(DetailedAbout.PROPERTY_DELIMITER));
-			for (String str : properties) {
+
+			if (properties.length > 1) {
 
 				if (finalConcatString.length() > 0) {
+
+					if (separator.isEmpty()) {
+						finalConcatString += " ";
+					} else {
+						finalConcatString += separator;
+					}
+				}
+				finalConcatString += "{";
+				for (String str : properties) {
+					next:
+					
+					for (NamedEntityBean bean : src) {
+
+						if (bean.getEntity() instanceof PropertyBean) {
+
+							List<ChildContextBean> props = ((PropertyBean) bean
+									.getEntity()).getProperties();
+							for (int i = 0; i < props.size(); i++) {
+
+								ChildContextBean ccb = props.get(i);
+								if (str.equals(ccb.getChildName()
+										.getLocalPart())
+										&& i == (props.size() - 1)) {
+
+									finalConcatString += str;
+									break next;
+
+								} else {
+									if (str.equals(ccb.getChildName()
+											.getLocalPart())) {
+
+										finalConcatString += str + ".";
+										break next;
+
+									}
+								}
+							}
+
+						}
+					}
+
+				}
+				finalConcatString += "}";
+			} else {
+
+				String str = properties[0];
+
+				if (finalConcatString.length() > 0) {
+
 					if (separator.isEmpty()) {
 						finalConcatString += " ";
 					} else {
@@ -90,19 +142,25 @@ public class FormattedStringTranslator implements FunctionTranslator,
 				}
 
 				for (NamedEntityBean bean : src) {
-					if (str.equals(bean.getName())) {
-						finalConcatString += "{" + str + "}";
-						break;
+					if (bean.getEntity() instanceof PropertyBean) {
+						for (ChildContextBean beanContext : ((PropertyBean) bean
+								.getEntity()).getProperties()) {
+							if (str.equals(beanContext.getChildName()
+									.getLocalPart())) {
+								finalConcatString += "{" + str + "}";
+								break;
+							}
+						}
 					}
 				}
 				if (finalConcatString.endsWith(separator)) {
 					finalConcatString += str;
 				}
 			}
+
 		}
 		newList.add(new ParameterValue(PARAMETER_PATTERN, finalConcatString));
 
 		return newList;
 	}
-
 }
