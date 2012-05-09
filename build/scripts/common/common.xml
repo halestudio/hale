@@ -88,6 +88,9 @@
 			<pathelement location="${common.loc}/lib/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
+	
+	<!-- Load environment properties -->
+	<property environment="env" />
 
 	<!-- set default deployment specific wxs file -->
 	<property name="deploymentSpecificWxs" value="" />
@@ -219,6 +222,39 @@
 			<fileset dir="${c.from}" excludes="${c.excludes}" />
 		</copy>
 	</target>
+	
+	<!-- Create javadoc -->
+	<!-- ================================= 
+          target: javadoc              
+         ================================= -->
+    <target name="javadoc" depends="prepare" description="Create javadoc documentation">
+    	<fail unless="eclipse" message="Please provide the environment variable &quot;eclipse&quot; pointing to your Eclipse RCP with Delta Pack installation" />
+    	
+        <javadoc destdir="${build}/javadoc" useexternalfile="true">
+        	<sourcepath>
+        		<dirset dir="${build}/plugins">
+        			<include name="*/src" />
+        			<exclude name="*.test/src" />
+        		</dirset>
+        	</sourcepath>
+        	<classpath>
+        		<fileset dir="${build}/plugins">
+        			<include name="*.jar" />
+        		</fileset>
+        		<fileset dir="${eclipse}/plugins">
+        			<include name="*.jar" />
+        			<include name="*/junit.jar" />
+        		</fileset>
+        	</classpath>
+        	<package name="eu.esdihumboldt.*" />
+        </javadoc>
+    	
+    	<zip destfile="${release}/${buildId}-${env.BUILD_ID}_javadoc.zip">
+			<zipfileset dir="${build}/javadoc">
+				<include name="**" />
+			</zipfileset>
+		</zip>
+    </target>
 
 	<!-- Build the product -->
 	<target name="build" depends="prepare" description="Build the product">
