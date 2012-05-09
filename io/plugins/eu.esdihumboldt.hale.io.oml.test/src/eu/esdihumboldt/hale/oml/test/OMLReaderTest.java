@@ -122,8 +122,7 @@ public class OMLReaderTest {
 				.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
-		//TODO
-//		assertEquals("{id}-xxx-{details.address.street}", values.get(0));
+		assertEquals("{id}-xxx-{details.address.street}", values.get(0));
 
 		// TODO: test for alignment3 pattern =
 		// "{flurstuecksnummer.AX_Flurstuecksnummer.zaehler}/{flurstuecksnummer.AX_Flurstuecksnummer.nenner}"
