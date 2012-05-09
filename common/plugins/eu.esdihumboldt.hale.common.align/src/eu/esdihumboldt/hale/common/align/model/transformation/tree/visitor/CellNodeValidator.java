@@ -28,6 +28,8 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -38,7 +40,20 @@ import eu.esdihumboldt.util.Pair;
 public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(CellNodeValidator.class);
+	/**
+	 * the transformation reporter
+	 */
+	protected final TransformationReporter reporter;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param reporter the transformation reporter
+	 */
+	public CellNodeValidator(TransformationReporter reporter) {
+		this.reporter = reporter;
+	}
+	
 	/**
 	 * @see AbstractTargetToSourceVisitor#visit(CellNode)
 	 */
@@ -117,7 +132,7 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 			return true;
 		}
 		else {
-			log.error("Invalid cell - function not found: " + functionId);
+			reporter.error(new TransformationMessageImpl(node.getCell(), "Invalid cell - function not found: " + functionId, null));
 		}
 		
 		return false;
