@@ -219,6 +219,32 @@
 			<fileset dir="${c.from}" excludes="${c.excludes}" />
 		</copy>
 	</target>
+	
+	<!-- Create javadoc -->
+	<!-- ================================= 
+          target: javadoc              
+         ================================= -->
+    <target name="javadoc" depends="prepare" description="Create javadoc documentation">
+        <javadoc destdir="${build}/javadoc" useexternalfile="true">
+        	<sourcepath>
+        		<dirset dir="${build}/plugins">
+        			<include name="*/src" />
+        		</dirset>
+        	</sourcepath>
+        	<classpath>
+        		<fileset dir="${build}/plugins">
+        			<include name="*.jar" />
+        		</fileset>
+        	</classpath>
+        	<package name="eu.esdihumboldt.*" />
+        </javadoc>
+    	
+    	<zip destfile="${release}/${buildId}-${env.BUILD_ID}_javadoc.zip">
+			<zipfileset dir="${build}/javadoc">
+				<include name="**" />
+			</zipfileset>
+		</zip>
+    </target>
 
 	<!-- Build the product -->
 	<target name="build" depends="prepare" description="Build the product">
