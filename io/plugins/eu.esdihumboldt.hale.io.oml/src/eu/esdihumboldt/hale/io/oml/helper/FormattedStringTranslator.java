@@ -13,12 +13,18 @@
 package eu.esdihumboldt.hale.io.oml.helper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.base.Joiner;
 
 import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ChildContextBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.PropertyBean;
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.specification.cst.align.ICell;
@@ -59,48 +65,64 @@ public class FormattedStringTranslator implements FunctionTranslator,
 
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
-		String separator = "";
+		String separator = ""; // default separator
 		String concatenation = "";
 
 		for (ParameterValue val : params) {
+			// get original separator parameter 
 			if (val.getName().equals(SEPARATOR)) {
 				separator = val.getValue();
 			}
 
+			// get original concatenation parameter
 			if (val.getName().equals(CONCATENATION)) {
 				concatenation = val.getValue();
 			}
-			newList.add(val);
 		}
 
 		String[] concat = concatenation.split(INTERNALSEPERATOR);
-		String finalConcatString = ""; //$NON-NLS-1$
 		List<NamedEntityBean> src = cellBean.getSource();
-		for (String thisElement : concat) {
-			String[] properties = thisElement.split(String
-					.valueOf(DetailedAbout.PROPERTY_DELIMITER));
-			for (String str : properties) {
-
-				if (finalConcatString.length() > 0) {
-					if (separator.isEmpty()) {
-						finalConcatString += " ";
-					} else {
-						finalConcatString += separator;
-					}
+		
+		// create list of valid source variables
+		Set<String> sourceVars = new HashSet<String>();
+		for (NamedEntityBean bean : src) {
+			if (bean.getEntity() instanceof PropertyBean) {
+				List<ChildContextBean> props = ((PropertyBean) bean.getEntity()).getProperties();
+				String[] children = new String[props.size()];
+				for (int i = 0; i < props.size(); i++) {
+					children[i] = props.get(i).getChildName().getLocalPart();
 				}
-
-				for (NamedEntityBean bean : src) {
-					if (str.equals(bean.getName())) {
-						finalConcatString += "{" + str + "}";
-						break;
-					}
-				}
-				if (finalConcatString.endsWith(separator)) {
-					finalConcatString += str;
-				}
+				sourceVars.add(Joiner.on('.').join(children));
 			}
 		}
-		newList.add(new ParameterValue(PARAMETER_PATTERN, finalConcatString));
+		
+		StringBuffer pattern = new StringBuffer();
+		boolean first = true;
+		for (String thisElement : concat) {
+			// append separator between elements
+			if (first) {
+				first = false;
+			}
+			else {
+				pattern.append(separator);
+			}
+			
+			String[] properties = thisElement.split(String
+					.valueOf(DetailedAbout.PROPERTY_DELIMITER));
+			String varString = Joiner.on('.').join(properties);
+			if (sourceVars.contains(varString)) {
+				// thisElement represents a variable
+				pattern.append('{');
+				pattern.append(varString);
+				pattern.append('}');
+			}
+			else {
+				// thisElement is just a string
+				pattern.append(thisElement); //TODO any escaping of {?
+			}
+		}
+		// add pattern parameter
+		newList.add(new ParameterValue(PARAMETER_PATTERN, pattern.toString()));
 
 		return newList;
 	}
