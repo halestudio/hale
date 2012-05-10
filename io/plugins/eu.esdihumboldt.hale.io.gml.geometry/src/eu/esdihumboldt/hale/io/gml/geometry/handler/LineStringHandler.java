@@ -45,14 +45,42 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * @author Patrick Lieb
  */
 public class LineStringHandler extends FixedConstraintsGeometryHandler {
+	
+	
 
 	private static final String LINE_STRING_TYPE = "LineStringType";
-
+	
+	private static final String LINE_STRING_SEGMENT_TYPE = "LineStringSegmentType";
+	
+	private static final String ARC_TYPE = "ArcType";
+	
+	private static final String ARC_BY_BULGE_TYPE = "ArcByBulgeType";
+	
+	private static final String ARC_BY_CENTER_POINT_TYPE = "ArcByCenterPointType";
+	
+	private static final String ARC_STRING_TYPE = "ArcStringType";
+	
+	private static final String ARC_STRING_BY_BULGE_TYPE = "ArcStringByBulgeType";
+	
+	private static final String BEZIER_TYPE = "BezierType";
+	
+	private static final String BSPLINE_TYPE = "BSplineType";
+	
+	private static final String CIRCLE_TYPE = "CircleType";
+	
+	private static final String CIRCLE_BY_CENTER_TYPE = "CircleByCenterType";
+	
+	private static final String CUBIC_SPLINE = "CubicSplineType";
+	
+	private static final String GEODESIC_TYPE = "Geodesic_Type";
+	
+	private static final String GEODESIC_STRING_TYPE = "GeodesicStringType";
+	
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance)
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance, int)
 	 */
 	@Override
-	public Object createGeometry(Instance instance)
+	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 		LineString line = null;
 		PointHandler handler = new PointHandler();
@@ -111,7 +139,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 				Object value = iterator.next();
 				if (value instanceof Instance) {
 					Coordinate[] cs = GMLGeometryUtil
-							.parsePosList((Instance) value);
+							.parsePosList((Instance) value, srsDimension);
 					if (cs != null) {
 						line = getGeometryFactory().createLineString(cs);
 					}
@@ -134,7 +162,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 						try {
 							@SuppressWarnings("unchecked")
 							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler
-									.createGeometry((Instance) value);
+									.createGeometry((Instance) value, srsDimension);
 							cs.add(point.getGeometry().getCoordinate());
 						} catch (GeometryNotSupportedException e) {
 							throw new GeometryNotSupportedException(
@@ -161,7 +189,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 						try {
 							@SuppressWarnings("unchecked")
 							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler
-									.createGeometry((Instance) value);
+									.createGeometry((Instance) value, srsDimension);
 							cs.add(point.getGeometry().getCoordinate());
 						} catch (GeometryNotSupportedException e) {
 							throw new GeometryNotSupportedException(
@@ -229,6 +257,45 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 
 		types.add(new QName(NS_GML, LINE_STRING_TYPE));
 		types.add(new QName(NS_GML_32, LINE_STRING_TYPE));
+		
+		types.add(new QName(NS_GML, LINE_STRING_SEGMENT_TYPE));
+		types.add(new QName(NS_GML_32, LINE_STRING_SEGMENT_TYPE));
+		
+		types.add(new QName(NS_GML, ARC_TYPE));
+		types.add(new QName(NS_GML_32, ARC_TYPE));
+		
+		types.add(new QName(NS_GML, ARC_BY_BULGE_TYPE));
+		types.add(new QName(NS_GML_32, ARC_BY_BULGE_TYPE));
+		
+		types.add(new QName(NS_GML, ARC_BY_CENTER_POINT_TYPE));
+		types.add(new QName(NS_GML_32, ARC_BY_CENTER_POINT_TYPE));
+		
+		types.add(new QName(NS_GML, ARC_STRING_TYPE));
+		types.add(new QName(NS_GML_32, ARC_STRING_TYPE));
+		
+		types.add(new QName(NS_GML, ARC_STRING_BY_BULGE_TYPE));
+		types.add(new QName(NS_GML_32, ARC_STRING_BY_BULGE_TYPE));
+		
+		types.add(new QName(NS_GML, BEZIER_TYPE));
+		types.add(new QName(NS_GML_32, BEZIER_TYPE));
+		
+		types.add(new QName(NS_GML, BSPLINE_TYPE));
+		types.add(new QName(NS_GML_32, BSPLINE_TYPE));
+		
+		types.add(new QName(NS_GML, CIRCLE_TYPE));
+		types.add(new QName(NS_GML_32, CIRCLE_TYPE));
+		
+		types.add(new QName(NS_GML, CIRCLE_BY_CENTER_TYPE));
+		types.add(new QName(NS_GML_32, CIRCLE_BY_CENTER_TYPE));
+		
+		types.add(new QName(NS_GML, CUBIC_SPLINE));
+		types.add(new QName(NS_GML_32, CUBIC_SPLINE));
+		
+		types.add(new QName(NS_GML, GEODESIC_TYPE));
+		types.add(new QName(NS_GML_32, GEODESIC_TYPE));
+		
+		types.add(new QName(NS_GML, GEODESIC_STRING_TYPE));
+		types.add(new QName(NS_GML_32, GEODESIC_STRING_TYPE));
 
 		return types;
 	}

@@ -87,10 +87,10 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	}
 
 	/**
-	 * @see GeometryHandler#createGeometry(Instance)
+	 * @see GeometryHandler#createGeometry(Instance, int)
 	 */
 	@Override
-	public Object createGeometry(Instance instance)
+	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 		final CRSDefinition defaultCrsDef = GMLGeometryUtil.findCRS(instance);
 		

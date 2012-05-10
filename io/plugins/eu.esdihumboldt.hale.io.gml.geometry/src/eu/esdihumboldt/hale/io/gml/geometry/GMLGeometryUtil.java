@@ -216,27 +216,30 @@ public abstract class GMLGeometryUtil {
 	/**
 	 * Parse a coordinate from a GML PosList instance.
 	 * @param posList the PosList instance
+	 * @param srsDimension the Dimension of the instance
 	 * @return the array of the coordinates or <code>null</code> if the instance contains
 	 *   not a PosList
 	 * @throws GeometryNotSupportedException if no valid coordinate could be 
 	 *   created from the PosList
 	 */
-	public static Coordinate[] parsePosList(Instance posList) throws GeometryNotSupportedException {
+	public static Coordinate[] parsePosList(Instance posList, int srsDimension) throws GeometryNotSupportedException {
 		
 		Object value = posList.getValue();
 		Coordinate[] coordinates = null;
+		
+		// XXX Coordinate support only 2D and 3D coordinates
 		
 		if (value != null){
 			try {
 				List<Double> values = ConversionUtil.getAsList(value, Double.class, true);
 				List<Coordinate> cs = new ArrayList<Coordinate>();
-				if(values.size() % 2 == 0){
+				if(srsDimension == 2){
 					for(int i = 0; i < values.size(); i++){
 						cs.add(new Coordinate(values.get(i), values.get(++i)));
 					}
 					coordinates = cs.toArray(new Coordinate[values.size()/2]);
 				}
-				else if(values.size() % 3 == 0){
+				else if(srsDimension == 3){
 					for(int i = 0; i < values.size(); i++){
 						cs.add(new Coordinate(values.get(i), values.get(++i), values.get(++i)));
 					}

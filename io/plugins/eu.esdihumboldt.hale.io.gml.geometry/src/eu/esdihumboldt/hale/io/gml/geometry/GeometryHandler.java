@@ -54,12 +54,13 @@ public interface GeometryHandler {
 	/**
 	 * Create a geometry value from a given instance.
 	 * @param instance the instance
+	 * @param srsDimension the dimension of the instance
 	 * @return the geometry value derived from the instance, the return type
 	 *   should match the {@link Binding} created in
 	 *   {@link #getTypeConstraints(TypeDefinition)}.
 	 * @throws GeometryNotSupportedException if the type definition doesn't 
 	 *   represent a geometry type supported by the handler
 	 */
-	public Object createGeometry(Instance instance) throws GeometryNotSupportedException;
+	public Object createGeometry(Instance instance, int srsDimension) throws GeometryNotSupportedException;
 
 }
