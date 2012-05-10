@@ -229,14 +229,34 @@
          ================================= -->
     <target name="javadoc" depends="prepare" description="Create javadoc documentation">
     	<fail unless="eclipse" message="Please provide the environment variable &quot;eclipse&quot; pointing to your Eclipse RCP with Delta Pack installation" />
+    	<fail unless="title" message="Please provide the application title in the environment variable &quot;title&quot;" />
     	
-        <javadoc destdir="${build}/javadoc" useexternalfile="true">
+    	<!-- If a build was done before, the version can be determined -->
+    	<property file="${release}/src/.eclipseproduct" />
+    	
+    	<if>
+			<isset property="version" />
+			<then>
+				<var name="long-title" value="${title} ${version}" />
+			</then>
+    		<else>
+    			<var name="long-title" value="${title}" />
+    		</else>
+		</if>
+    	
+        <javadoc destdir="${build}/javadoc"
+        	useexternalfile="true"
+ 			splitindex="true"
+        	use="true"
+        	windowtitle="${long-title} API">
+        	
         	<sourcepath>
         		<dirset dir="${build}/plugins">
         			<include name="*/src" />
         			<exclude name="*.test/src" />
         		</dirset>
         	</sourcepath>
+        	
         	<classpath>
         		<fileset dir="${build}/plugins">
         			<include name="*.jar" />
@@ -246,7 +266,33 @@
         			<include name="*/junit.jar" />
         		</fileset>
         	</classpath>
+        	
         	<package name="eu.esdihumboldt.*" />
+        	
+        	<group title="HALE UI">
+        		<package name="eu.esdihumboldt.hale.ui*"/>
+        	</group>
+        	<group title="HALE Core">
+        		<package name="eu.esdihumboldt.hale.common*"/>
+        	</group>
+        	<group title="HALE I/O">
+        		<package name="eu.esdihumboldt.hale.io*"/>
+        	</group>
+        	<group title="Documentation">
+        		<package name="eu.esdihumboldt.hale.doc*"/>
+        		<package name="eu.esdihumboldt.cst.doc*"/>
+        	</group>
+        	<group title="Conceptual Schema Transformer">
+        		<package name="eu.esdihumboldt.cst*"/>
+        	</group>
+        	<group title="Utilities">
+        		<package name="eu.esdihumboldt.util*"/>
+        	</group>
+        	
+        	<bottom><![CDATA[<i>Revision ${env.GIT_COMMIT}</i>]]></bottom>
+        	
+        	<!-- Link to other API docs -->
+        	<link href="http://docs.oracle.com/javase/6/docs/api/" />
         </javadoc>
     	
     	<zip destfile="${release}/${buildId}-${env.BUILD_ID}_javadoc.zip">
