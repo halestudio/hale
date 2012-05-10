@@ -38,21 +38,39 @@ public abstract class Resources implements ResourcesConstants {
 	/**
 	 * Try resolving an URI for a given resource type.
 	 * @param uri the URI to the resource
-	 * @param resourceType the resource type
+	 * @param resourceType the resource type, <code>null</code> for any resource type
 	 * @return an input supplier for the resource or <code>null</code> if it was
 	 *   not found through resource resolvers
 	 */
 	public static final InputSupplier<? extends InputStream> tryResolve(URI uri, String resourceType) {
 		init();
 		
-		Multimap<String, ResourceResolver> typeResolvers = resolvers.get(resourceType);
-		if (typeResolvers != null) {
-			for (ResourceResolver resolver : typeResolvers.get(uri.getHost())) {
-				try {
-					return resolver.resolve(uri);
-				} catch (ResourceNotFoundException e) {
-					// ignore
+		if (resourceType != null) {
+			Multimap<String, ResourceResolver> typeResolvers = resolvers.get(resourceType);
+			if (typeResolvers != null) {
+				return tryResolve(typeResolvers, uri);
+			}
+		}
+		else {
+			for (Multimap<String, ResourceResolver> typeResolver : resolvers.values()) {
+				InputSupplier<? extends InputStream> input = tryResolve(typeResolver, uri);
+				if (input != null) {
+					// return first match found
+					return input;
 				}
+			}
+		}
+		
+		return null;
+	}
+
+	private static InputSupplier<? extends InputStream> tryResolve(
+			Multimap<String, ResourceResolver> typeResolvers, URI uri) {
+		for (ResourceResolver resolver : typeResolvers.get(uri.getHost())) {
+			try {
+				return resolver.resolve(uri);
+			} catch (ResourceNotFoundException e) {
+				// ignore
 			}
 		}
 		
