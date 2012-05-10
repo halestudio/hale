@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t2/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t2/ t2.xsd">
+    <tns:t2 id="id0">
+        <a2>a10</a2>
+        <b2>b10</b2>
+        <c2>c10</c2>
+    </tns:t2>
+    <tns:t2 id="id1">
+        <a2>a11</a2>
+        <b2>b11</b2>
+        <c2>c11</c2>
+    </tns:t2>
+</tns:collection>
