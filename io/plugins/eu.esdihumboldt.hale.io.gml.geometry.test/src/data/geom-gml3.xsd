@@ -135,5 +135,18 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	
+	<element name="CurveProperty" substitutionGroup="gml:_Feature"
+		type="hale:CurvePropertyType" />
+
+	<complexType name="CurvePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:CurveType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
 
 </schema>

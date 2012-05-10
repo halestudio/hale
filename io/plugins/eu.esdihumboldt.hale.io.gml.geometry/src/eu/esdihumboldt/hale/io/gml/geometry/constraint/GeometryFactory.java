@@ -57,18 +57,19 @@ public class GeometryFactory implements TypeConstraint {
 	/**
 	 * Create a geometry value from a given instance.
 	 * @param instance the instance
+	 * @param srsDimension the dimension of the instance
 	 * @return the geometry value derived from the instance, the return type
 	 *   should match the {@link Binding}, may be <code>null</code> if no
 	 *   geometry could be created or if no geometry handler is associated
 	 */
-	public Object createGeometry(Instance instance) {
+	public Object createGeometry(Instance instance, int srsDimension) {
 		if (handler == null) {
 			return null;
 			//XXX instead fall back to Geometries.getInstance()?
 		}
 		
 		try {
-			return handler.createGeometry(instance);
+			return handler.createGeometry(instance, srsDimension);
 		} catch (GeometryNotSupportedException e) {
 			//TODO report error?
 			//TODO try creating the geometry in any other way?

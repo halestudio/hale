@@ -66,13 +66,13 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	}
 	
 	/**
-	 * Test linear ring geometries read from a GML 2 file
+	 * Test polygon geometries read from a GML 2 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testLinearRingGml2() throws Exception {
+	public void testPolygonGml2() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/geom-gml2.xsd").toURI(),
 				getClass().getResource("/data/sample-polygon-gml2.xml")
@@ -91,13 +91,13 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	}
 	
 	/**
-	 * Test linear ring geometries read from a GML 3 file
+	 * Test polygon geometries read from a GML 3 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testLinearRingGml3() throws Exception {
+	public void testPolygonGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/geom-gml3.xsd").toURI(),
 				getClass().getResource("/data/sample-polygon-gml3.xml")
@@ -116,13 +116,13 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	}
 	
 	/**
-	 * Test linear ring geometries read from a GML 3.1 file
+	 * Test polygon geometries read from a GML 3.1 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testLinearRingGml31() throws Exception {
+	public void testPolygonGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/geom-gml31.xsd").toURI(),
 				getClass().getResource("/data/sample-polygon-gml31.xml")
@@ -141,13 +141,13 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	}
 	
 	/**
-	 * Test linear ring geometries read from a GML 3.2 file
+	 * Test polygon geometries read from a GML 3.2 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testLinearRingGml32() throws Exception {
+	public void testPolygonGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/geom-gml32.xsd").toURI(),
 				getClass().getResource("/data/sample-polygon-gml32.xml")
