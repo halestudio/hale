@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection xmlns:gml="http://www.opengis.net/gml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml31.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:LineStringSegment>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:LineStringSegment>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:Arc>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:Arc>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:ArcByBulge>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:ArcByBulge>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:ArcByCenterPoint>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:ArcByCenterPoint>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:ArcString>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:ArcString>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:ArcStringByBulge>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:ArcStringByBulge>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:Bezier>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:Bezier>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:BSpline>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:BSpline>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:Circle>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:Circle>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:CircleByCenterPoint>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:CircleByCenterPoint>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:CubicSpline>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:CubicSpline>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:Geodesic>
+						<gml:posList>0.01 3.2 3.33 3.33 0.01 -3.2</gml:posList>
+					</gml:Geodesic>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+		<gml:featureMember>
+		<hale:CurveProperty>
+			<hale:geometry>
+				<gml:segments>
+					<gml:GeodesicString><gml:posList>0.01 3.2 3.33 3.33 0.01 -3.2</gml:posList></gml:GeodesicString>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>
