@@ -26,6 +26,8 @@ import org.eclipse.zest.core.widgets.GraphNode;
  */
 public class TransformationTreeTest {
 	/**
+	 * NOT TESTED!
+	 * 
 	 * Compares the two graphs with each other.
 	 * It expects the connections to point from target to source.
 	 * It expects exactly one target with no outgoing connections.

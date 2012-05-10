@@ -14,19 +14,33 @@ package eu.esdihumboldt.cst.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.esdihumboldt.cst.ConceptualSchemaTransformer;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.transformation.Transformation;
 import eu.esdihumboldt.hale.common.align.transformation.service.AlignmentProcessor;
+import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceUtil;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 
@@ -34,50 +48,49 @@ import eu.esdihumboldt.hale.common.test.TestUtil;
  * Tests for the CST's alignment processor implementation
  * @author Simon Templer
  */
-public class DefaultAlignmentProcessorTest {
+public class ConceptualSchemaTransformerTest {
 
 	@SuppressWarnings("restriction")
 	private AlignmentProcessor processor = new DefaultAlignmentProcessor();
+
+	/**
+	 * Wait for needed services.
+	 */
+	@BeforeClass
+	public static void waitForService() {
+		TestUtil.startConversionService();
+		TestUtil.startInstanceFactory();
+	}
 	
 	/**
 	 * Test based on a very simple mapping with a retype and renames. 
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testSimpleRename() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/simplerename/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/simplerename/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/simplerename/t1t2.halex.alignment.xml").toURI());
-		
-		assertNotNull(alignment);
-		assertEquals(5, alignment.getCells().size());
-		
-		Transformation transformation = processor.process(alignment);
-		assertNotNull(transformation);
-		
-		//TODO check transformation instructions (mainly for completeness in this case)
+		test("/testdata/simplerename/t1.xsd",
+				"/testdata/simplerename/t2.xsd",
+				"/testdata/simplerename/t1t2.halex.alignment.xml",
+				"/testdata/simplerename/instance1.xml",
+				"/testdata/simplerename/instance2.xml");
 	}
+
 	
+
 	/**
 	 * Test based on a simple mapping with a retype and renames, where high
 	 * cardinalities are allowed. 
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testCardinalityRename() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/cardrename/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/cardrename/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/cardrename/t1t2.halex.alignment.xml").toURI());
-		
-		assertNotNull(alignment);
-		assertEquals(5, alignment.getCells().size());
-		
-		Transformation transformation = processor.process(alignment);
-		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
+		test("/testdata/cardrename/t1.xsd",
+				"/testdata/cardrename/t2.xsd",
+				"/testdata/cardrename/t1t2.halex.alignment.xml",
+				"/testdata/cardrename/instance1.xml",
+				"/testdata/cardrename/instance2.xml");
 	}
 	
 	/**
@@ -104,22 +117,19 @@ public class DefaultAlignmentProcessorTest {
 	/**
 	 * Test where multiple properties from a simple source type are mapped to
 	 * a complex property structure including a choice in the target type.
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testChoice() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/choice/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/choice/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/choice/t1t2.halex.alignment.xml").toURI());
-		
-		assertNotNull(alignment);
-		assertEquals(8, alignment.getCells().size());
-		
-		Transformation transformation = processor.process(alignment);
-		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
+		fail("What should happen?");
+		// TODO what is expected here? That any of the two choice properties is used?
+		// Currently expected result contains both choice properties, which is the result of the transform, too.
+		test("/testdata/choice/t1.xsd",
+				"/testdata/choice/t2.xsd",
+				"/testdata/choice/t1t2.halex.alignment.xml",
+				"/testdata/choice/instance1.xml",
+				"/testdata/choice/instance2.xml");
 	}
 	
 	/**
@@ -293,4 +303,97 @@ public class DefaultAlignmentProcessorTest {
 		return result;
 	}
 
+	/**
+	 * Tests that the ConceptualSchemaTransformer transforms the source instances
+	 * to the given target instances.
+	 * 
+	 * @param sourceSchemaLocation location of the source schema
+	 * @param targetSchemaLocation location of the target schema
+	 * @param alignmentLocation location of the alignment
+	 * @param sourceDataLocation location of the source data
+	 * @param targetDataLocation location of the target data
+	 * @throws Exception if any exception (mostly IO) occurs
+	 */
+	private void test(String sourceSchemaLocation, String targetSchemaLocation,
+			String alignmentLocation, String sourceDataLocation,
+			String targetDataLocation) throws Exception {
+		Schema sourceSchema = TestUtil.loadSchema(toLocalURI(sourceSchemaLocation));
+		Schema targetSchema = TestUtil.loadSchema(toLocalURI(targetSchemaLocation));
+		Alignment alignment = TestUtil.loadAlignment(toLocalURI(alignmentLocation), sourceSchema, targetSchema);
+		InstanceCollection sourceData = TestUtil.loadInstances(toLocalURI(sourceDataLocation), sourceSchema);
+		InstanceCollection targetData = TestUtil.loadInstances(toLocalURI(targetDataLocation), targetSchema);
+
+		List<Instance> transformedData = transformData(alignment, sourceData);
+		for (Instance instance : transformedData)
+			System.err.println(InstanceUtil.instanceToString(instance));
+
+		test(targetData, transformedData);
+	}
+
+	/**
+	 * Compares the two given collections for equality.
+	 * 
+	 * @param targetData the expected data
+	 * @param transformedData the transformed data to test
+	 */
+	private void test(InstanceCollection targetData, List<Instance> transformedData) {
+		ResourceIterator<Instance> targetIter = targetData.iterator();
+		// make sure we can remove instances from the list...
+		transformedData = new LinkedList<Instance>(transformedData);
+
+		int targetInstanceCount = 0;
+		int transformedInstanceCount = transformedData.size();
+		try {
+			while (targetIter.hasNext()) {
+				Instance targetInstance = targetIter.next();
+				targetInstanceCount++;
+
+				// if transformed data is empty simply continue
+				// will fail equals at the end
+				if (transformedData.isEmpty())
+					continue;
+
+				Iterator<Instance> transformedIter = transformedData.iterator();
+				boolean found = false;
+				while (!found && transformedIter.hasNext()) {
+					if (InstanceUtil.instanceEqual(targetInstance, transformedIter.next(), false)) {
+						transformedIter.remove();
+						found = true;
+					}
+				}
+				assertTrue("Could not find matching instance for: \n" +
+						InstanceUtil.instanceToString(targetInstance), found);
+			}
+		} finally {
+			targetIter.close();
+		}
+		assertEquals("Instance count does not match", targetInstanceCount, transformedInstanceCount);
+	}
+
+	/**
+	 * Returns an URI for the given location: <br>
+	 * <code>getClass().getResource(location).toURI()</code>
+	 *
+	 * @param location the location
+	 * @return an uri for the location
+	 * @throws URISyntaxException if toURI throws an exception
+	 */
+	private URI toLocalURI(String location) throws URISyntaxException {
+		return getClass().getResource(location).toURI();
+	}
+
+	/**
+	 * Transforms the given source data on the given alignment.
+	 * 
+	 * @param alignment the alignment
+	 * @param sourceData the source data
+	 * @return the transformed data
+	 */
+	private List<Instance> transformData(Alignment alignment, InstanceCollection sourceData) {
+		ConceptualSchemaTransformer transformer = new ConceptualSchemaTransformer();
+		DefaultInstanceSink sink = new DefaultInstanceSink();
+		transformer.transform(alignment, sourceData, sink, new NullProgressIndicator());
+
+		return sink.getInstances();
+	}
 }

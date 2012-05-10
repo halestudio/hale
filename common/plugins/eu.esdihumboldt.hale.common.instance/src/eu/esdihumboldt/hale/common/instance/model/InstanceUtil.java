@@ -122,4 +122,62 @@ public final class InstanceUtil {
 
 		return false;
 	}
+
+	// TODO better output for values in case of Collections?
+	/**
+	 * Returns a string representation of the given instance.
+	 * 
+	 * @param instance the instance
+	 * @return a string representation of the given instance
+	 */
+	public static String instanceToString(Instance instance) {
+		StringBuilder builder = new StringBuilder();
+		if (instance.getValue() != null)
+			builder.append("value=").append(instance.getValue()).append('\n');
+		builder.append("properties=[\n");
+		builder.append(indent(groupToString(instance))).append("\n]");
+
+		return builder.toString();
+	}
+
+	/**
+	 * Returns a string representation of the given group.
+	 * 
+	 * @param group the group
+	 * @return a string representation of the given group
+	 */
+	public static String groupToString(Group group) {
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		for (QName property : group.getPropertyNames()) {
+			if (first)
+				first = false;
+			else
+				builder.append('\n');
+			builder.append(property.toString()).append("=[\n");
+			for (Object propertyValue : group.getProperty(property)) {
+				String representation = null;
+				if (propertyValue instanceof Instance)
+					representation = instanceToString((Instance) propertyValue);
+				else if (propertyValue instanceof Group)
+					representation = groupToString((Group) propertyValue);
+				else
+					representation = propertyValue.toString();
+				builder.append(indent(representation)).append('\n');
+			}
+			builder.append("]");
+		}
+
+		return builder.toString();
+	}
+
+	/**
+	 * Indents the given string with one tab.
+	 * 
+	 * @param string the string to indent
+	 * @return the string indented with one tab
+	 */
+	private static String indent(String string) {
+		return "\t" + string.replace("\n", "\n\t");
+	}
 }
