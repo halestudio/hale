@@ -229,14 +229,34 @@
          ================================= -->
     <target name="javadoc" depends="prepare" description="Create javadoc documentation">
     	<fail unless="eclipse" message="Please provide the environment variable &quot;eclipse&quot; pointing to your Eclipse RCP with Delta Pack installation" />
+    	<fail unless="title" message="Please provide the application title in the environment variable &quot;title&quot;" />
     	
-        <javadoc destdir="${build}/javadoc" useexternalfile="true">
+    	<!-- If a build was done before, the version can be determined -->
+    	<property file=".eclipseproduct" />
+    	
+    	<if>
+			<isset property="version" />
+			<then>
+				<var name="long-title" value="${title} ${version}" />
+			</then>
+    		<else>
+    			<var name="long-title" value="${title}" />
+    		</else>
+		</if>
+    	
+        <javadoc destdir="${build}/javadoc"
+        	useexternalfile="true"
+ 			splitindex="true"
+        	use="true"
+        	windowtitle="${long-title} API">
+        	
         	<sourcepath>
         		<dirset dir="${build}/plugins">
         			<include name="*/src" />
         			<exclude name="*.test/src" />
         		</dirset>
         	</sourcepath>
+        	
         	<classpath>
         		<fileset dir="${build}/plugins">
         			<include name="*.jar" />
@@ -246,10 +266,46 @@
         			<include name="*/junit.jar" />
         		</fileset>
         	</classpath>
+        	
         	<package name="eu.esdihumboldt.*" />
+        	
+        	<group title="HALE UI">
+        		<package name="eu.esdihumboldt.hale.ui*"/>
+        	</group>
+        	<group title="HALE Core">
+        		<package name="eu.esdihumboldt.hale.common*"/>
+        	</group>
+        	<group title="HALE I/O">
+        		<package name="eu.esdihumboldt.hale.io*"/>
+        	</group>
+        	<group title="Documentation">
+        		<package name="eu.esdihumboldt.hale.doc*"/>
+        		<package name="eu.esdihumboldt.cst.doc*"/>
+        	</group>
+        	<group title="Conceptual Schema Transformer">
+        		<package name="eu.esdihumboldt.cst*"/>
+        	</group>
+        	<group title="Utilities">
+        		<package name="eu.esdihumboldt.util*"/>
+        	</group>
+        	
+        	<bottom><![CDATA[Revision <i>${env.GIT_COMMIT}</i><br>Build <i>${env.BUILD_ID}</i>]]></bottom>
+        	
+        	<!-- Link to other API docs -->
+        	<link href="http://docs.oracle.com/javase/6/docs/api/" />
         </javadoc>
     	
-    	<zip destfile="${release}/${buildId}-${env.BUILD_ID}_javadoc.zip">
+    	<if>
+			<isset property="version" />
+			<then>
+				<var name="vident" value="${version}" />
+			</then>
+    		<else>
+    			<var name="vident" value="${env.BUILD_ID}" />
+    		</else>
+		</if>
+    	
+    	<zip destfile="${release}/${buildId}-${vident}_javadoc.zip">
 			<zipfileset dir="${build}/javadoc">
 				<include name="**" />
 			</zipfileset>
@@ -296,6 +352,8 @@
 
 		<!-- unzip artifact -->
 		<unzip src="${build}/${buildLabel}/${buildId}-${os}.${ws}.${arch}.zip" dest="${release}" overwrite="true" />
+		<!-- copy eclipseproduct file to build directory, to be able to use version for javadoc target -->
+		<copy file="${release}/src/.eclipseproduct" todir="${build}" flatten="true" />
 
 		<!-- run unit tests (unless the target "no-unit-tests" has been called) -->
 		<if>
@@ -565,6 +623,7 @@
 	<target name="client-pack-win32-zip">
 		<!-- prepare -->
 		<property file="${release}/src/.eclipseproduct" />
+		
 		<delete dir="${release}/${buildId}-${version}-${tag}" />
 		<property name="buildVersion" value="${buildId}-${version}-${tag}" />
 		<move file="${release}/src" tofile="${release}/${buildVersion}" />
