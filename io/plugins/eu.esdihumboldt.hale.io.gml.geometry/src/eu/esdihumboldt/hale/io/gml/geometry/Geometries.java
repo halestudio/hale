@@ -124,17 +124,17 @@ public class Geometries implements GeometryHandler {
 	}
 
 	/**
-	 * @see GeometryHandler#createGeometry(Instance)
+	 * @see GeometryHandler#createGeometry(Instance, int)
 	 */
 	@Override
-	public Object createGeometry(Instance instance)
+	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 		//TODO support retrieving handler from a constraint?
 		
 		synchronized (handlers) {
 			for (GeometryHandler handler : handlers.get(instance.getDefinition().getName())) {
 				try {
-					return handler.createGeometry(instance);
+					return handler.createGeometry(instance, srsDimension);
 				} catch (Throwable e) {
 					// ignore
 				}

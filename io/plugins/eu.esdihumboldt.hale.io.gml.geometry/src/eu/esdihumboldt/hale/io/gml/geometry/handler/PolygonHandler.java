@@ -49,11 +49,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	private static final String POLYGON_PATCH_TYPE = "PolygonPatchType";
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance)
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance, int)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createGeometry(Instance instance)
+	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 
 		// XXX need support for instances of Rings

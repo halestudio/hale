@@ -18,7 +18,7 @@
 						</gml:exterior>
 						<gml:interior>
 							<gml:LinearRing>
-								<gml:coordinates>-122.44,37.80 -122.45,37.80 -122.45,37.78 -122.44,37.78 -122.44,37.80</gml:coordinates>
+								<gml:coordinates>-122.24,37.60 -122.25,37.60 -122.25,37.58 -122.24,37.58 -122.24,37.60</gml:coordinates>
 							</gml:LinearRing>
 						</gml:interior>
 					</gml:PolygonPatch>
