@@ -48,10 +48,10 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 	private static final String POINT_TYPE = "PointType";
 
 	/**
-	 * @see GeometryHandler#createGeometry(Instance)
+	 * @see GeometryHandler#createGeometry(Instance, int)
 	 */
 	@Override
-	public Object createGeometry(Instance instance)
+	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 		Point point = null;
 
