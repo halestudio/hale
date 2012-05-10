@@ -21,4 +21,7 @@ target/
 # all hail windows
 Thumbs.db
 
+# and mac too
+.DS_Store
+
 #.gitignore
