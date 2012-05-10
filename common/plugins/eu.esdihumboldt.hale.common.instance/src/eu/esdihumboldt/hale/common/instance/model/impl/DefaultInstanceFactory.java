@@ -17,17 +17,17 @@ import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Instance factory based on {@link OInstance}
+ * Instance factory based on {@link DefaultInstance}
  * @author Simon Templer
  */
-public class OInstanceFactory implements InstanceFactory {
+public class DefaultInstanceFactory implements InstanceFactory {
 
 	/**
 	 * @see InstanceFactory#createInstance(TypeDefinition)
 	 */
 	@Override
 	public MutableInstance createInstance(TypeDefinition type) {
-		return new OInstance(type, null); // initially no data set associated
+		return new DefaultInstance(type, null); // initially no data set associated
 	}
 
 }
