@@ -250,7 +250,8 @@
         	author="true"
         	version="false"
         	use="true"
-        	windowtitle="${long-title} API">
+        	windowtitle="${long-title} API"
+        	linksource="true">
         	
         	<sourcepath>
         		<dirset dir="${build}/plugins">
