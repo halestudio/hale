@@ -96,9 +96,11 @@ public class OMLReaderTest {
 	public void testCellCount() {
 		Collection<? extends Cell> cells = alignment.getCells();
 		Collection<? extends Cell> cells2 = alignment2.getCells();
+		Collection<? extends Cell> cells3 = alignment3.getCells();
 
 		assertEquals(2, cells.size());
 		assertEquals(11, cells2.size());
+		assertEquals(33, cells3.size());
 	}
 
 	/**
@@ -107,25 +109,76 @@ public class OMLReaderTest {
 	@Test
 	public void testFunction() {
 		Collection<? extends Cell> cells = alignment.getCells();
+		Collection<? extends Cell> cells2 = alignment2.getCells();
+		Collection<? extends Cell> cells3 = alignment3.getCells();
 
 		Iterator<? extends Cell> it = cells.iterator();
+		Iterator<? extends Cell> it2 = cells2.iterator();
+		Iterator<? extends Cell> it3 = cells3.iterator();
 
+		// simple test for the formatted string translation
+		
+		Cell cell0 = it.next();
 		Cell cell1 = it.next();
-		Cell cell2 = it.next();
 
 		assertEquals("eu.esdihumboldt.hale.align.retype",
-				cell1.getTransformationIdentifier());
+				cell0.getTransformationIdentifier());
 		assertEquals("eu.esdihumboldt.hale.align.formattedstring",
-				cell2.getTransformationIdentifier());
+				cell1.getTransformationIdentifier());
 
-		ListMultimap<String, String> params = cell2
+		ListMultimap<String, String> params = cell1
 				.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
 		assertEquals("{id}-xxx-{details.address.street}", values.get(0));
+		
+		// simple test for the mapping classification translation
+		Cell cell2 = null;
+		while(it2.hasNext()) {
+			Cell temp = it2.next();
+			
+			if(temp.getTransformationIdentifier().equals("eu.esdihumboldt.hale.align.classification")) {
+				cell2 = temp;
+				break;
+			}
+		}
+		
+		ListMultimap<String, String> params2 = cell2
+				.getTransformationParameters();
+		List<String> values2 = params2.get("classificationMapping");
+		
+		for(int i=0; i < values2.size(); i++) {
+			String temp = values2.get(i);
+			
+			if(i==0) {
+				assertEquals("onGroundSurface 3", temp);
+			}
+			if(i==1) {
+				assertEquals("suspendedOrElevated 2", temp);
+			}
+			if(i==2) {
+				assertEquals("underground 1", temp);
+			}
+			 
+		}
 
-		// TODO: test for alignment3 pattern =
-		// "{flurstuecksnummer.AX_Flurstuecksnummer.zaehler}/{flurstuecksnummer.AX_Flurstuecksnummer.nenner}"
+		// extended test for the formated string translation
+		Cell cell3 = null;
+		while(it3.hasNext()) {
+			Cell temp = it3.next();
+			
+			if(temp.getTransformationIdentifier().equals("eu.esdihumboldt.hale.align.formattedstring")) {
+				cell3 = temp;
+				break;
+			}
+		}
+		assertNotNull(cell3);
+		
+		ListMultimap<String, String> params3 = cell3
+				.getTransformationParameters();
+		List<String> values3 = params3.get("pattern");
+		
+		assertEquals("{flurstuecksnummer.AX_Flurstuecksnummer.zaehler}/{flurstuecksnummer.AX_Flurstuecksnummer.nenner}", values3.get(0));
 	}
 
 	private static Alignment loadAlignment(URI sourceSchemaLocation, 
