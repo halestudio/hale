@@ -12,17 +12,15 @@
 
 package eu.esdihumboldt.hale.oml.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
 
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,34 +35,47 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.oml.OmlReader;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
+/**
+ * Test for reading OML files.
+ * @author Kevin Mais
+ */
 public class OMLReaderTest {
 	
-	static Alignment alignment = null;
+	private static Alignment alignment = null;
 	
+	/**
+	 * Load the test alignment. 
+	 * @throws Exception if an error occurs
+	 */
 	@BeforeClass
-	public static void load() throws MarshalException, ValidationException, IOProviderConfigurationException, IOException, MappingException, URISyntaxException {
+	public static void load() throws Exception {
 		alignment = loadAlignment(
 				OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd").toURI(), 
 				OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd").toURI(), 
 				OMLReaderTest.class.getResource("/testdata/testOML/testOMLmapping.goml").toURI());
 	}
 	
+	/**
+	 * Test if the alignment was read correctly.
+	 * @throws Exception if an error occurs
+	 */
 	@Test
 	public void testOMLreader() throws Exception {
 		assertNotNull(alignment);
 	}
-	
+
+	/**
+	 * Test if the cell count is correct.
+	 */
 	@Test
 	public void testCellCount() {
-		
 		Collection<? extends Cell> cells = alignment.getCells();
 		
 		assertEquals(2, cells.size());
 	}
 	
 	private static Alignment loadAlignment(URI sourceSchemaLocation, 
-			URI targetSchemaLocation, final URI alignmentLocation) throws IOProviderConfigurationException, IOException, MarshalException, ValidationException, MappingException, URISyntaxException {
-		
+			URI targetSchemaLocation, final URI alignmentLocation) throws IOProviderConfigurationException, IOException {
 		// load source schema
 		Schema source = readXMLSchema(new DefaultInputSupplier(sourceSchemaLocation));
 		
@@ -110,4 +121,5 @@ public class OMLReaderTest {
 		
 		return reader.getSchema();
 	}
+	
 }
