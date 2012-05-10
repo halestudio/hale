@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * The {@link InstanceService} provides {@link Instance}s from different data
  * sets, e.g. the {@link DataSet#SOURCE} and {@link DataSet#TRANSFORMED} data
  * sets.
- * XXX It also triggers the transformation of the source to the target data set???
+ * It also triggers the transformation of the source to the target data set.
  * 
  * @author Thorsten Reitz
  * @author Simon Templer
@@ -54,6 +54,18 @@ public interface InstanceService extends InstanceResolver {
 	 * @param sourceInstances the instances to add
 	 */
 	public void addSourceInstances(InstanceCollection sourceInstances);
+	
+	/**
+	 * Set if live transformation of source data is enabled.
+	 * @param enabled if transformation is enabled
+	 */
+	public void setTransformationEnabled(boolean enabled);
+	
+	/**
+	 * Get if live transformation of source data is enabled.
+	 * @return if live transformation is enabled
+	 */
+	public boolean isTransformationEnabled();
 	
 	/**
 	 * This will remove all instances from the service.
