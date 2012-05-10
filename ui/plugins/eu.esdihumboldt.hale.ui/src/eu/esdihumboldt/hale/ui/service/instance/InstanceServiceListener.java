@@ -29,12 +29,10 @@ public interface InstanceServiceListener {
 	 */
 	public void datasetChanged(DataSet type);
 	
-	//FIXME
-//	/**
-//	 * Called when the coordinate reference system has been changed
-//	 * 
-//	 * @param crs the new CRS definition 
-//	 */
-//	public void crsChanged(CRSDefinition crs);
-
+	/**
+	 * Called when the transformation has been enabled or disabled.
+	 * @param enabled if the transformation is enabled now
+	 */
+	public void transformationToggled(boolean enabled);
+	
 }

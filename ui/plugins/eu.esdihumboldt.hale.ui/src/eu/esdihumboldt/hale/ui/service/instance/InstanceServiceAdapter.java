@@ -29,12 +29,12 @@ public class InstanceServiceAdapter implements InstanceServiceListener {
 		// please override me
 	}
 
-//	/**
-//	 * @see InstanceServiceListener#crsChanged(CRSDefinition)
-//	 */
-//	@Override
-//	public void crsChanged(CRSDefinition crs) {
-//		// please override me
-//	}
+	/**
+	 * @see InstanceServiceListener#transformationToggled(boolean)
+	 */
+	@Override
+	public void transformationToggled(boolean enabled) {
+		// please override me
+	}
 
 }
