@@ -684,4 +684,12 @@ public abstract class AbstractInstancePainter extends
 		return super.findWaypoint(object);
 	}
 
+	/**
+	 * @see InstanceServiceListener#transformationToggled(boolean)
+	 */
+	@Override
+	public void transformationToggled(boolean enabled) {
+		// ignore
+	}
+
 }

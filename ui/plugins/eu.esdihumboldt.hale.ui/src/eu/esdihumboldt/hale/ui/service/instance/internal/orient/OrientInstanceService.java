@@ -329,10 +329,10 @@ public class OrientInstanceService extends AbstractInstanceService {
 	}
 
 	/**
-	 * @see AbstractInstanceService#retransform()
+	 * @see AbstractInstanceService#doRetransform()
 	 */
 	@Override
-	protected void retransform() {
+	protected void doRetransform() {
 		transformed.clear();
 		
 		performTransformation();

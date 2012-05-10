@@ -38,6 +38,8 @@ public abstract class AbstractInstanceService implements InstanceService {
 	private final AlignmentService alignmentService;
 	private final ProjectService projectService;
 	
+	private boolean liveTransform = true; //TODO where to store the configuration? project?
+	
 	/**
 	 * Create an instance service.
 	 * @param projectService the project service. The instances will be cleared
@@ -99,9 +101,44 @@ public abstract class AbstractInstanceService implements InstanceService {
 	}
 
 	/**
-	 * Retransform all instances
+	 * @see InstanceService#setTransformationEnabled(boolean)
 	 */
-	protected abstract void retransform();
+	@Override
+	public void setTransformationEnabled(boolean enabled) {
+		if (enabled != liveTransform) {
+			liveTransform = enabled; //XXX use a lock for liveTransform?
+			if (enabled) {
+				retransform();
+			}
+			else {
+				clearTransformedInstances();
+			}
+			notifyTransformationToggled(enabled);
+		}
+	}
+
+	/**
+	 * @see InstanceService#isTransformationEnabled()
+	 */
+	@Override
+	public boolean isTransformationEnabled() {
+		return liveTransform;
+	}
+
+	/**
+	 * Retransform all instances. Decides if a transformation should be done
+	 * or not.
+	 */
+	protected final void retransform() {
+		if (isTransformationEnabled()) {
+			doRetransform();
+		}
+	}
+	
+	/**
+	 * Retransform all instances.
+	 */
+	protected abstract void doRetransform();
 
 	/**
 	 * Clear the transformed instances
@@ -127,6 +164,16 @@ public abstract class AbstractInstanceService implements InstanceService {
 	 */
 	protected ProjectService getProjectService() {
 		return projectService;
+	}
+	
+	/**
+	 * Called when the transformation has been enabled or disabled.
+	 * @param enabled if the transformation is enabled now
+	 */
+	public void notifyTransformationToggled(boolean enabled) {
+		for (InstanceServiceListener listener : listeners) {
+			listener.transformationToggled(enabled);
+		}
 	}
 
 	/**
