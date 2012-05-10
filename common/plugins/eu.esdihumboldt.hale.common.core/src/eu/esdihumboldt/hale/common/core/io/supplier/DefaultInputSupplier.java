@@ -19,6 +19,7 @@ import java.net.URI;
 import com.google.common.io.InputSupplier;
 
 import eu.esdihumboldt.hale.common.cache.Request;
+import eu.esdihumboldt.util.resource.Resources;
 
 /**
  * Default I/O supplier based on an URI
@@ -29,6 +30,12 @@ import eu.esdihumboldt.hale.common.cache.Request;
  */
 public class DefaultInputSupplier implements LocatableInputSupplier<InputStream> {
 
+	/**
+	 * Name of the scheme where resolving locally through {@link Resources} 
+	 * is preferred. 
+	 */
+	public static final String SCHEME_LOCAL = "resource";
+	
 	private final URI location;
 	
 	/**
@@ -46,10 +53,35 @@ public class DefaultInputSupplier implements LocatableInputSupplier<InputStream>
 	 */
 	@Override
 	public InputStream getInput() throws IOException {
+		// try resolving using resources
+		boolean triedLocal = false;
+		if (location.getScheme().equals(SCHEME_LOCAL)) { // prefer local
+			InputSupplier<? extends InputStream> localSupplier = Resources.tryResolve(location, null);
+			if (localSupplier != null) {
+				try {
+					triedLocal = true;
+					return localSupplier.getInput();
+				} catch (Throwable e) {
+					// ignore
+				}
+			}
+		}
+		
 		try {
 			return Request.getInstance().get(location);
 		} catch (Exception e) {
-			return location.toURL().openStream();
+			try {
+				return location.toURL().openStream();
+			} catch (IOException ioe) {
+				// try to resolve locally
+				if (!triedLocal) {
+					InputSupplier<? extends InputStream> localSupplier = Resources.tryResolve(location, null);
+					if (localSupplier != null) {
+						return localSupplier.getInput();
+					}
+				}
+				throw ioe;
+			}
 		}
 	}
 
