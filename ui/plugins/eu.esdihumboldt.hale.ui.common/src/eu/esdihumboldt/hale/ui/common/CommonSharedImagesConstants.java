@@ -79,5 +79,15 @@ public interface CommonSharedImagesConstants {
 	 * @since 2.5
 	 */
 	public static final String IMG_DECORATION_MANDATORY = "HALE_IMG_DECORATION_MANDATORY";
+	
+	/**
+	 * Key for play image
+	 */
+	public static final String IMG_PLAY = "IMG_PLAY";
+	
+	/**
+	 * Key for stop image
+	 */
+	public static final String IMG_STOP = "IMG_STOP";
 
 }
