@@ -38,9 +38,8 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.ui.HaleSharedImages;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.function.common.EntitySelector;
-import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 
 /**
  * Represents named entities in a function
@@ -147,8 +146,8 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 									SWT.LEFT | SWT.TOP, parent);
 							FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
 									FieldDecorationRegistry.DEC_REQUIRED);
-							mandatory.setImage(HALEUIPlugin.getDefault().getImageRegistry()
-									.get(HaleSharedImages.IMG_DECORATION_MANDATORY));
+							mandatory.setImage(CommonSharedImages.getImageRegistry()
+									.get(CommonSharedImages.IMG_DECORATION_MANDATORY));
 							mandatory.setDescriptionText(fieldDecoration.getDescription());
 						}
 					}
@@ -237,8 +236,8 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 						selector.getControl(), SWT.LEFT | SWT.TOP, parent);
 				FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
 						.getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
-				mandatory.setImage(HALEUIPlugin.getDefault().getImageRegistry()
-						.get(HaleSharedImages.IMG_DECORATION_MANDATORY));
+				mandatory.setImage(CommonSharedImages.getImageRegistry()
+						.get(CommonSharedImages.IMG_DECORATION_MANDATORY));
 				mandatory.setDescriptionText(fieldDecoration.getDescription());
 			}
 
