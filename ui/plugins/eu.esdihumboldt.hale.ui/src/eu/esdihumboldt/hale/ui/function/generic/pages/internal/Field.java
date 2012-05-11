@@ -166,19 +166,25 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		List<EntityDefinition> fieldValues = new ArrayList<EntityDefinition>();
 		if (initialCell != null) {
 			// entities from cell
-			List<? extends Entity> entities;
+			List<? extends Entity> entities = null;
 			switch (ssid) {
 			case SOURCE:
-				entities = initialCell.getSource().get(definition.getName());
+				if (initialCell.getSource() != null) {
+					entities = initialCell.getSource().get(definition.getName());
+				}
 				break;
 			case TARGET:
-				entities= initialCell.getTarget().get(definition.getName());
+				if (initialCell.getTarget() != null) {
+					entities= initialCell.getTarget().get(definition.getName());
+				}
 				break;
 			default:
 				throw new IllegalStateException("Illegal schema space");
 			}
-			for (Entity entity : entities) {
-				fieldValues.add(entity.getDefinition()); //FIXME what about the information in the entity?!
+			if (entities != null) {
+				for (Entity entity : entities) {
+					fieldValues.add(entity.getDefinition()); //FIXME what about the information in the entity?!
+				}
 			}
 		} else if (candidates != null && !candidates.isEmpty()) {
 			// populate from candidates
