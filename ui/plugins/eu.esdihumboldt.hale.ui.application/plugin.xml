@@ -368,6 +368,14 @@
                   label="Export"
                   style="pulldown">
             </command>
+            <separator
+                  name="eu.esdihumboldt.hale.ui.file.io"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
+                  style="toggle">
+            </command>
          </toolbar>
          <toolbar
                id="eu.esdihumboldt.hale.ui.edit"
@@ -402,10 +410,6 @@
                   label="Add relation..."
                   style="push"
                   tooltip="Add a new relation">
-            </command>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
-                  style="toggle">
             </command>
          </toolbar>
          <toolbar

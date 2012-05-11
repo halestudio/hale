@@ -112,6 +112,10 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			
 			Collection<? extends Cell> typeCells = alignment.getTypeCells();
 			for (Cell typeCell : typeCells) {
+				if (progressIndicator.isCanceled()) {
+					break;
+				}
+				
 				List<TypeTransformationFactory> transformations = typesTransformations.getTransformations(typeCell.getTransformationIdentifier());
 				
 				if (transformations == null || transformations.isEmpty()) {
@@ -129,9 +133,10 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			}
 			
 			progressIndicator.setCurrentTask("Wait for property transformer to complete");
-			
+
 			// wait for the property transformer to complete
-			transformer.join();
+			// cancel property transformations if process was canceled - this may leave transformed instances in inconsistent state
+			transformer.join(progressIndicator.isCanceled());
 	
 			engines.dispose();
 			
@@ -140,6 +145,14 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		} finally {
 			progressIndicator.end();
 		}
+	}
+
+	/**
+	 * @see TransformationService#isCancelable()
+	 */
+	@Override
+	public boolean isCancelable() {
+		return true;
 	}
 
 	/**
@@ -189,7 +202,12 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		if (parameters != null) {
 			parameters = Multimaps.unmodifiableListMultimap(parameters);
 		}
-		Map<String, String> executionParameters = transformation.getExecutionParameters(); 
+		Map<String, String> executionParameters = transformation.getExecutionParameters();
+		
+		// break on cancel
+		if (progressIndicator.isCanceled()) {
+			return;
+		}
 		
 		// Step 1: selection
 		// Select only instances that are relevant for the transformation.
@@ -226,6 +244,11 @@ public class ConceptualSchemaTransformer implements TransformationService {
 
 		try {
 			while (iterator.hasNext()) {
+				// break on cancel
+				if (progressIndicator.isCanceled()) {
+					return;
+				}
+				
 				function.setSource(iterator.next());
 				function.setPropertyTransformer(transformer);
 				function.setParameters(parameters);
