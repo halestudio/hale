@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<hale-project version="2.5.0.alpha">
+<hale-project version="2.5.0.qualifier">
     <name>Source property condition example</name>
     <author>Simon Templer</author>
     <description xml:space="preserve">Simple example project that demonstrates how a condition on a source property can be used to map a source property to different target properties depending on its value.</description>
     <created>2012-03-05T15:00:15.994+01:00</created>
-    <modified>2012-03-05T15:33:06.002+01:00</modified>
+    <modified>2012-05-11T17:33:16.528+02:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="projectFiles.separate">false</setting>
         <setting name="target">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propertyfilter/t1t2.halex</setting>
