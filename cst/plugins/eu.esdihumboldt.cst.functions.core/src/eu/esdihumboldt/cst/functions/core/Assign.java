@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.functions.core;
 
+import java.util.List;
 import java.util.Map;
 
 import net.jcip.annotations.Immutable;
@@ -24,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
@@ -39,7 +41,19 @@ public class Assign extends AbstractSingleTargetPropertyTransformation<Transform
 			ListMultimap<String, PropertyValue> variables,
 			String resultName, PropertyEntityDefinition resultProperty,
 			Map<String, String> executionParameters, TransformationLog log) 
-			throws TransformationException {
+			throws TransformationException, NoResultException {
+		// check anchors
+		List<PropertyValue> anchors = variables.get(ENTITY_ANCHOR);
+		// ensure that every anchor has a value
+		for (PropertyValue anchor : anchors) {
+			if (anchor.getValue() == null) {
+				// if an anchor without value is found, no result is created
+				throw new NoResultException();
+			}
+		}
+		
+		// assign the value supplied as parameter
+		// conversion will be applied automatically to fit the binding
 		return getParameterChecked(PARAMETER_VALUE); 
 	}
 

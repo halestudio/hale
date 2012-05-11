@@ -67,16 +67,6 @@
             </property>
         </target>
     </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child context="0">attribute</child>
-                <child>name</child>
-            </property>
-        </target>
-        <parameter name="value" value="bulkDensity"/>
-    </cell>
     <cell transformation="eu.esdihumboldt.hale.align.rename">
         <source>
             <property>
@@ -96,19 +86,41 @@
         <target>
             <property>
                 <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child>type</child>
+            </property>
+        </target>
+        <parameter name="value" value="profile"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <source name="anchor">
+            <property>
+                <type>{http://www.example.org/t1/}SoilProfileType</type>
+                <child condition="CQL:value like 'Bd%'">bulkDensityOrSolidVolume</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
+                <child context="0">attribute</child>
+                <child>name</child>
+            </property>
+        </target>
+        <parameter name="value" value="bulkDensity"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <source name="anchor">
+            <property>
+                <type>{http://www.example.org/t1/}SoilProfileType</type>
+                <child condition="CQL:value like 'SV%'">bulkDensityOrSolidVolume</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{http://www.example.org/t2/}SoilObjectType</type>
                 <child context="1">attribute</child>
                 <child>name</child>
             </property>
         </target>
         <parameter name="value" value="solidVolume"/>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
-        <target>
-            <property>
-                <type>{http://www.example.org/t2/}SoilObjectType</type>
-                <child>type</child>
-            </property>
-        </target>
-        <parameter name="value" value="profile"/>
     </cell>
 </hale-alignment>
