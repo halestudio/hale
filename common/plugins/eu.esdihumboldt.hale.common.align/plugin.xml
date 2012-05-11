@@ -82,8 +82,18 @@
             category="eu.esdihumboldt.hale.align.general"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.AssignExplanation"
             description="Assigns a value to a target property"
+            icon="icons/augmentation.gif"
             identifier="eu.esdihumboldt.hale.align.assign"
             name="Assign">
+         <sourceProperties>
+            <property
+                  description="Optional anchor. If set, the assignment only is applicable if the anchor has a value."
+                  label="Anchor"
+                  maxOccurrence="1"
+                  minOccurrence="0"
+                  name="anchor">
+            </property>
+         </sourceProperties>
          <targetProperties>
             <property
                   description="The property a value shall be assigned to"
