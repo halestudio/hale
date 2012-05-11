@@ -335,16 +335,33 @@ public class OrientInstanceService extends AbstractInstanceService {
 	protected void doRetransform() {
 		transformed.clear();
 		
-		performTransformation();
-		
-		notifyDatasetChanged(DataSet.TRANSFORMED);
+		boolean success = performTransformation();
+			
+		if (!success) {
+			// there may be some (inconsistent) transformed instances from a canceled transformation
+			// disable transformation (will clear transformed instances)
+			setTransformationEnabled(false);
+			log.userInfo("Live transformation has been disabled.\nYou can again enable it in the main toolbar or in the File menu.");
+		}
+		else {
+			// notify about transformed instances
+			notifyDatasetChanged(DataSet.TRANSFORMED);
+		}
 	}
 	
 	/**
 	 * Perform the transformation
+	 * @return if the transformation was successful
 	 */
-	protected void performTransformation() {
+	protected boolean performTransformation() {
+		final TransformationService ts = getTransformationService();
+		if (ts == null) {
+			log.userError("No transformation service available");
+			return false;
+		}
+		
 		final AtomicBoolean transformationFinished = new AtomicBoolean(false);
+		final AtomicBoolean transformationCanceled = new AtomicBoolean(false);
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 				
 			@Override
@@ -353,12 +370,6 @@ public class OrientInstanceService extends AbstractInstanceService {
 				try {
 					InstanceCollection sources = getInstances(DataSet.SOURCE);
 					if (sources.isEmpty()) {
-						return;
-					}
-					
-					TransformationService ts = getTransformationService();
-					if (ts == null) {
-						log.userError("No transformation service available");
 						return;
 					}
 					
@@ -384,6 +395,12 @@ public class OrientInstanceService extends AbstractInstanceService {
 						trans.end();
 					}
 				} finally {
+					// remember if canceled
+					if (monitor.isCanceled()) {
+						transformationCanceled.set(true);
+					}
+					
+					// transformation finished
 					transformationFinished.set(true);
 				}
 			}
@@ -391,13 +408,15 @@ public class OrientInstanceService extends AbstractInstanceService {
 		};
 		
 		try {
-			ThreadProgressMonitor.runWithProgressDialog(op, false);
+			ThreadProgressMonitor.runWithProgressDialog(op, ts.isCancelable());
 		} catch (Throwable e) {
 			log.error("Error starting transformation process", e);
 		}
 		
 		// wait for transformation to complete
 		HaleUI.waitFor(transformationFinished);
+		
+		return !transformationCanceled.get();
 	}
 
 	/**

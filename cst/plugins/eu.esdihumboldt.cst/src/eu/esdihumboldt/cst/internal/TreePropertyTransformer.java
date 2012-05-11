@@ -111,8 +111,14 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	}
 	
 	@Override
-	public void join() {
-		executorService.shutdown();
+	public void join(boolean cancel) {
+		if (cancel) {
+			executorService.shutdownNow();
+		}
+		else {
+			executorService.shutdown();
+		}
+		
 		if (executorService.isTerminated()) {
 			return;
 		}
