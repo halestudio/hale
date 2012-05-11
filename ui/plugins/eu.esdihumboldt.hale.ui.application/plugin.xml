@@ -175,6 +175,7 @@
                   visible="true">
             </separator>
             <menu
+                  icon="icons/trash.gif"
                   label="Clear">
                <command
                      commandId="eu.esdihumboldt.hale.ui.schema.clear_source"
@@ -196,6 +197,14 @@
             </menu>
             <separator
                   name="HALE.separator3"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
+                  style="toggle">
+            </command>
+            <separator
+                  name="HALE.separator4"
                   visible="true">
             </separator>
             <dynamic
@@ -393,6 +402,10 @@
                   label="Add relation..."
                   style="push"
                   tooltip="Add a new relation">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
+                  style="toggle">
             </command>
          </toolbar>
          <toolbar

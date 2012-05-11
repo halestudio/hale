@@ -84,6 +84,15 @@
             id="eu.esdihumboldt.hale.ui.entity.addconditioncontext"
             name="Add condition context">
       </command>
+      <command
+            defaultHandler="eu.esdihumboldt.hale.ui.service.instance.internal.handler.ToggleTransformationHandler"
+            id="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
+            name="Live transformation">
+         <state
+               class="eu.esdihumboldt.hale.ui.service.instance.internal.handler.TransformationToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -772,6 +781,16 @@
       <image
             commandId="eu.esdihumboldt.hale.ui.entity.removecontext"
             icon="icons/remove.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
+            icon="icons/play.gif">
+      </image>
+      <image
+            commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
+            hoverIcon="icons/play.gif"
+            icon="icons/stop_start.gif"
+            style="toolbar">
       </image>
    </extension>
 
