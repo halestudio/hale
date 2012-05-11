@@ -73,5 +73,11 @@ public interface CommonSharedImagesConstants {
 	 * Key for remove image
 	 */
 	public static final String IMG_REMOVE = "IMG_REMOVE";
+	
+	/**
+	 * Decoration image for mandatory fields
+	 * @since 2.5
+	 */
+	public static final String IMG_DECORATION_MANDATORY = "HALE_IMG_DECORATION_MANDATORY";
 
 }

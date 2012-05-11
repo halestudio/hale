@@ -12,19 +12,17 @@
 package eu.esdihumboldt.hale.ui.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import eu.esdihumboldt.hale.ui.HaleSharedImages;
 import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class HALEUIPlugin extends AbstractUIPlugin implements HaleSharedImages {
+public class HALEUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * The plug-in ID
@@ -95,13 +93,4 @@ public class HALEUIPlugin extends AbstractUIPlugin implements HaleSharedImages {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 	
-	/**
-	 * @see AbstractUIPlugin#initializeImageRegistry(ImageRegistry)
-	 */
-	@Override
-	protected void initializeImageRegistry(ImageRegistry reg) {
-		super.initializeImageRegistry(reg);
-		
-		reg.put(IMG_DECORATION_MANDATORY, imageDescriptorFromPlugin(PLUGIN_ID, "/icons/mandatory.gif"));
-	}
 }
