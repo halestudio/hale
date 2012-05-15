@@ -230,33 +230,38 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 					List<IOConfiguration> configuration = main.getResources();
 					for (IOConfiguration providerconf : configuration) {
-						Map<String, String> conf = providerconf.getProviderConfiguration();
-						URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE));
+						final Map<String, String> conf = providerconf.getProviderConfiguration();
+						final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE));
 						if (!IOUtils.testStream(uri, true)) {
 							URI newUri = update.changePath(uri);
 							if (IOUtils.testStream(newUri, true))
 								conf.put(ImportProvider.PARAM_SOURCE, newUri.toString());
 							else {
-								Shell shell = null;
-								if (Display.getCurrent() != null)
-									shell = Display.getCurrent().getActiveShell();
-								String uriString = uri.toString();
-								MessageDialog.openWarning(shell, "Loading Error", "Can't find " + uriString);
+								// let user choose alternative location
+								final Display display = PlatformUI.getWorkbench().getDisplay();
+								display.syncExec(new Runnable() {
+									
+									@Override
+									public void run() {
+										String uriString = uri.toString();
+										MessageDialog.openWarning(display.getActiveShell(), "Loading Error", "Can't find " + uriString);
 
-								String target = uriString.substring(uriString.lastIndexOf("/") + 1);
-								String extension = "*" + uriString.substring(uriString.lastIndexOf("."));
-								String[] extensions = new String[] { extension };
-								FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN
-										| SWT.SHEET);
-								filedialog.setFilterExtensions(extensions);
-								filedialog.setFileName(target);
+										String target = uriString.substring(uriString.lastIndexOf("/") + 1);
+										String extension = "*" + uriString.substring(uriString.lastIndexOf("."));
+										String[] extensions = new String[] { extension };
+										FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN
+												| SWT.SHEET);
+										filedialog.setFilterExtensions(extensions);
+										filedialog.setFileName(target);
 
-								String openfile = filedialog.open();
-								if (openfile != null) {
-									openfile = openfile.trim();
-									if (openfile.length() > 0)
-										conf.put(ImportProvider.PARAM_SOURCE, new File(openfile).toURI().toString());
-								}
+										String openfile = filedialog.open();
+										if (openfile != null) {
+											openfile = openfile.trim();
+											if (openfile.length() > 0)
+												conf.put(ImportProvider.PARAM_SOURCE, new File(openfile).toURI().toString());
+										}
+									}
+								});
 							}
 						}
 					}
