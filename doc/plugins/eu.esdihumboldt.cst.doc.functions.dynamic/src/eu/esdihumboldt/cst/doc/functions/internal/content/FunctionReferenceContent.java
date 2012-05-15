@@ -16,18 +16,15 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.help.IHelpContentProducer;
 import org.eclipse.swt.widgets.Display;
@@ -46,6 +43,7 @@ import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.doc.util.content.AbstractVelocityContent;
 import eu.esdihumboldt.hale.ui.common.graph.content.FunctionGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
@@ -57,17 +55,17 @@ import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
  * 
  * @author Simon Templer
  */
-public class FunctionReferenceContent implements IHelpContentProducer,
+public class FunctionReferenceContent extends AbstractVelocityContent implements
 		FunctionReferenceConstants {
 
 	private static final ALogger log = ALoggerFactory
 			.getLogger(FunctionReferenceContent.class);
 
-	private VelocityEngine ve;
+	/**
+	 * Directory for storing the generated images.
+	 */
 	private File tempDir;
-
-	private File file_template;
-
+	
 	/**
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
 	 */
@@ -115,100 +113,65 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 		return null;
 	}
 
+	/**
+	 * @see AbstractVelocityContent#getTemplate()
+	 */
+	@Override
+	protected InputStream getTemplate() throws Exception {
+		return FunctionReferenceContent.class.getResource("template.html").openStream();
+	}
+
 	private InputStream getFunctionContent(String func_id) throws Exception {
 		// maps "function" to the real function ID (used by the template)
-		AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
+		final AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
 
 		if (function == null) {
 			log.warn("Unknown function " + func_id);
 			return null;
 		}
 
-		Template template = null;
+		Callable<VelocityContext> contextFactory = new Callable<VelocityContext>() {
+			
+			@Override
+			public VelocityContext call() throws Exception {
+				VelocityContext context = new VelocityContext();
 
-		init();
+				context.put("function", function);
 
-		// creates the template file into the temporary directory
-		// if it doesn't already exist
-		File functionFile = new File(tempDir, func_id + ".html");
-		if (!functionFile.exists()) {
+				if (function.getCategoryId() != null) {
+					String categoryId = function.getCategoryId();
 
-			VelocityContext context = new VelocityContext();
+					Category category = (CategoryExtension.getInstance()
+							.get(categoryId));
 
-			context.put("function", function);
+					// String category = categoryId.substring(categoryId
+					// .lastIndexOf(".") + 1);
+					//
+					// category = capitalize(category);
+					context.put("category", category);
+				}
 
-			if (function.getCategoryId() != null) {
-				String categoryId = function.getCategoryId();
+				// creating path for the file to be included
+				URL help_url = function.getHelpURL();
+				if (help_url != null) {
+					String help_path = help_url.getPath();
+					String bundle = function.getDefiningBundle();
 
-				Category category = (CategoryExtension.getInstance()
-						.get(categoryId));
+					StringBuffer sb_include = new StringBuffer();
+					sb_include.append(bundle);
+					sb_include.append(help_path);
+					sb_include.append("/help");
 
-				// String category = categoryId.substring(categoryId
-				// .lastIndexOf(".") + 1);
-				//
-				// category = capitalize(category);
-				context.put("category", category);
+					String final_help_url = sb_include.toString();
+
+					context.put("include", final_help_url);
+				}
+				
+				return context;
 			}
-
-			// creating path for the file to be included
-			URL help_url = function.getHelpURL();
-			if (help_url != null) {
-				String help_path = help_url.getPath();
-				String bundle = function.getDefiningBundle();
-
-				StringBuffer sb_include = new StringBuffer();
-				sb_include.append(bundle);
-				sb_include.append(help_path);
-				sb_include.append("/help");
-
-				String final_help_url = sb_include.toString();
-
-				context.put("include", final_help_url);
-			}
-
-			template = ve.getTemplate(file_template.getName(), "UTF-8");
-
-			FileWriter fw = new FileWriter(functionFile);
-
-			template.merge(context, fw);
-
-			fw.close();
-
-		}
-
-		return new FileInputStream(functionFile);
-	}
-
-	/**
-	 * Initialize temporary directory and template engine.
-	 * 
-	 * @throws Exception
-	 *             if an error occurs during the initialization
-	 */
-	private void init() throws Exception {
-		synchronized (this) {
-			if (ve == null) {
-				ve = new VelocityEngine();
-				// create a temporary directory
-				tempDir = Files.createTempDir();
-
-				file_template = new File(tempDir, "template.vm");
-				URL templatePath = this.getClass().getResource("template.html");
-				FileOutputStream fos = new FileOutputStream(file_template);
-				InputStream stream = templatePath.openStream();
-
-				// copys the InputStream into FileOutputStream
-				IOUtils.copy(stream, fos);
-
-				stream.close();
-				fos.close();
-
-				ve.setProperty("file.resource.loader.path",
-						tempDir.getAbsolutePath());
-				// initialize VelocityEngine
-				ve.init();
-			}
-		}
+		};
+			
+		return getContentFromTemplate(func_id, contextFactory);
 	}
 
 	private InputStream getImageContent(String func_id) throws Exception {
@@ -220,7 +183,10 @@ public class FunctionReferenceContent implements IHelpContentProducer,
 			return null;
 		}
 
-		init();
+		if (tempDir == null) {
+			tempDir = Files.createTempDir();
+			tempDir.deleteOnExit();
+		}
 
 		final File _functionFile = new File(tempDir, func_id + ".png");
 		if (!_functionFile.exists()) {
