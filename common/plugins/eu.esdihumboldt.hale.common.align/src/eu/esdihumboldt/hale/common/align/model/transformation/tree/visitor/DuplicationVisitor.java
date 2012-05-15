@@ -21,17 +21,32 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.Leftovers;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.TargetContext;
+import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * TODO Type description
+ * DuplicationVisitor visits source nodes to duplicate the transformation tree
+ * for their leftovers.
+ *
  * @author Simon Templer
  */
 public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(DuplicationVisitor.class);
+	private final TransformationTree tree;
+
+	/**
+	 * Creates a duplication visitor.
+	 * 
+	 * @param tree the transformation tree
+	 */
+	public DuplicationVisitor(TransformationTree tree) {
+		this.tree = tree;
+	}
 
 	/**
 	 * @see AbstractTransformationNodeVisitor#visit(CellNode)
@@ -93,4 +108,11 @@ public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 		return true;
 	}
 
+	/**
+	 * Duplicates assignments without connections to source nodes.
+	 * Should be called after all duplication is done.
+	 */
+	public void doAugmentationTrackback() {
+		TargetContext.augmentationTrackback(tree);
+	}
 }

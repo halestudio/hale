@@ -183,6 +183,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 				}
 			}
 		}
+		visitor.leave(this);
 	}
 
 	/**
@@ -313,6 +314,22 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 		} else if (!entityDefinition.equals(other.entityDefinition))
 			return false;
 		return true;
+	}
+
+	/**
+	 * @see SourceNode#setAnnotatedParent(SourceNode)
+	 */
+	@Override
+	public void setAnnotatedParent(SourceNode parent) {
+		setAnnotation(ANNOTATION_PARENT, parent);
+	}
+
+	/**
+	 * @see SourceNode#setAnnotatedParent(SourceNode)
+	 */
+	@Override
+	public SourceNode getAnnotatedParent() {
+		return (SourceNode) getAnnotation(ANNOTATION_PARENT);
 	}
 
 }

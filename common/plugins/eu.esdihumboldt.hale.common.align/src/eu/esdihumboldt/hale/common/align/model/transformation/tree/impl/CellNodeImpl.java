@@ -107,6 +107,7 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 				}
 			}
 		}
+		visitor.leave(this);
 	}
 
 	/**
