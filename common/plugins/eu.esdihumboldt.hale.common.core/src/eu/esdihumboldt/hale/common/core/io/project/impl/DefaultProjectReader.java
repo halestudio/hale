@@ -170,7 +170,7 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 
 			if (projectFile != null) {
 				URI location = fileInfo.getLocation();
-				if (!IOUtils.testStream(fileInfo.getLocation()))
+				if (!IOUtils.testStream(fileInfo.getLocation(), false))
 					location = update.changePath(location);
 				boolean fileSuccess = false;
 				try {
