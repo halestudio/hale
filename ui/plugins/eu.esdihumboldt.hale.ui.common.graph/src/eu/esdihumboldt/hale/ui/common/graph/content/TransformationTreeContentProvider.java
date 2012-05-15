@@ -148,8 +148,10 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 		tree.accept(visitor);
 		
 		// duplicate subtree as necessary
-		DuplicationVisitor duplicationVisitor = new DuplicationVisitor();
+		DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree);
 		tree.accept(duplicationVisitor);
+
+		duplicationVisitor.doAugmentationTrackback();
 		
 		return tree;
 	}

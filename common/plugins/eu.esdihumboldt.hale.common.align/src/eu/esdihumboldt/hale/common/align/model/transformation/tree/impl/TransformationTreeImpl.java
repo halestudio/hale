@@ -103,17 +103,15 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 	 */
 	@Override
 	public void accept(TransformationNodeVisitor visitor) {
-		if (visitor.isFromTargetToSource()) {
-			if (visitor.visit(this)) {
+		if (visitor.visit(this)) {
+			if (visitor.isFromTargetToSource()) {
 				// visit children
 				for (TargetNode child : getChildren(
 						visitor.includeAnnotatedNodes())) {
 					child.accept(visitor);
 				}
 			}
-		}
-		else {
-			if (visitor.visit(this)) {
+			else {
 				// visit leafs
 				for (SourceNode node : sourceNodes.getNodes()) {
 					if (node.getParent() == null) {
@@ -122,6 +120,7 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 				}
 			}
 		}
+		visitor.leave(this);
 	}
 
 	/**
@@ -149,7 +148,7 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree#getRootSourceNodes(eu.esdihumboldt.hale.common.schema.model.TypeDefinition)
+	 * @see TransformationTree#getRootSourceNodes(TypeDefinition)
 	 */
 	@Override
 	public Collection<SourceNode> getRootSourceNodes(TypeDefinition type) {
@@ -160,4 +159,15 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 		return rootNodes;
 	}
 
+	/**
+	 * @see TransformationTree#getRootSourceNodes()
+	 */
+	@Override
+	public Collection<SourceNode> getRootSourceNodes() {
+		List<SourceNode> rootNodes = new ArrayList<SourceNode>();
+		for (SourceNode node : sourceNodes.getNodes())
+			if (node.getParent() == null)
+				rootNodes.add(node);
+		return rootNodes;
+	}
 }

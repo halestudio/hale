@@ -12,9 +12,11 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +27,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.Leftovers;
@@ -37,6 +41,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.CellNode
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TargetNodeImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractSourceToTargetVisitor;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTargetToSourceVisitor;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -165,6 +170,134 @@ public class TargetContext implements TransformationContext {
 		
 	}
 
+	private static class DuplicationInformation {
+		private final Set<Cell> ignoreCells;
+		private final Set<TargetNode> contextTargets;
+
+		private final Map<Cell, CellNode> oldCellNodes;
+		private final Map<EntityDefinition, TargetNode> oldTargetNodes;
+		private final Map<EntityDefinition, SourceNode> oldSourceNodes;
+		private final Map<Cell, CellNodeImpl> newCellNodes;
+		private final Map<EntityDefinition, TargetNodeImpl> newTargetNodes;
+
+		/**
+		 * Create a duplication information
+		 * 
+		 * @param ignoreCells the cells to be ignored
+		 * @param contextTargets the target nodes that can be used as subgraph end-points
+		 */
+		DuplicationInformation(Set<Cell> ignoreCells, Set<TargetNode> contextTargets) {
+			if (ignoreCells != null)
+				this.ignoreCells = Collections.unmodifiableSet(ignoreCells);
+			else
+				this.ignoreCells = Collections.emptySet();
+			this.contextTargets = contextTargets;
+			oldCellNodes = new HashMap<Cell, CellNode>();
+			oldTargetNodes = new HashMap<EntityDefinition, TargetNode>();
+			oldSourceNodes = new HashMap<EntityDefinition, SourceNode>();
+			newCellNodes = new HashMap<Cell, CellNodeImpl>();
+			newTargetNodes = new HashMap<EntityDefinition, TargetNodeImpl>();
+		}
+
+		boolean isIgnoreCell(Cell cell) {
+			return ignoreCells.contains(cell);
+		}
+
+		/**
+		 * Adds the given target node to the map of existing nodes.
+		 * 
+		 * @param entityDef the entity definition
+		 * @param target the target node
+		 */
+		void addOldTargetNode(EntityDefinition entityDef, TargetNode target) {
+			oldTargetNodes.put(entityDef, target);
+		}
+
+		/**
+		 * Adds the given source node to the map of existing nodes.
+		 * 
+		 * @param entityDef the entity definition
+		 * @param source the source node
+		 */
+		void addOldSourceNode(EntityDefinition entityDef, SourceNode source) {
+			oldSourceNodes.put(entityDef, source);
+		}
+
+		/**
+		 * Adds the given cell node to the map of existing nodes.
+		 * 
+		 * @param cell the cell
+		 * @param cellNode the cell node
+		 */
+		void addOldCellNode(Cell cell, CellNode cellNode) {
+			oldCellNodes.put(cell, cellNode);
+		}
+
+		/**
+		 * Adds the given target node to the map of newly created nodes.
+		 * 
+		 * @param entityDef the entity definition
+		 * @param target the target node
+		 */
+		void addNewTargetNode(EntityDefinition entityDef, TargetNodeImpl target) {
+			newTargetNodes.put(entityDef, target);
+		}
+
+		/**
+		 * Adds the given cell node to the map of newly created nodes.
+		 * 
+		 * @param cell the cell
+		 * @param cellNode the cell node
+		 */
+		void addNewCellNode(Cell cell, CellNodeImpl cellNode) {
+			newCellNodes.put(cell, cellNode);
+		}
+
+		/**
+		 * Returns an existing cell node with the given cell.
+		 * 
+		 * @param cell the cell
+		 * @return an existing cell node or null
+		 */
+		CellNode getOldCellNode(Cell cell) {
+			return oldCellNodes.get(cell);
+		}
+
+		/**
+		 * Returns a newly created cell node with the given cell.
+		 * 
+		 * @param cell the cell
+		 * @return a newly created cell node or null
+		 */
+		CellNodeImpl getNewCellNode(Cell cell) {
+			return newCellNodes.get(cell);
+		}
+
+		/**
+		 * Returns, if available, a newly created target node of the given definition,
+		 * otherwise it returns an existing target node, or null.
+		 * 
+		 * @param entityDef the entity definition
+		 * @return a newly created target node, an existing target node, or null
+		 */
+		TargetNode getNewOrOldTargetNode(EntityDefinition entityDef) {
+			TargetNodeImpl newTargetNode = newTargetNodes.get(entityDef);
+			if (newTargetNode != null)
+				return newTargetNode;
+			else
+				return oldTargetNodes.get(entityDef);
+		}
+
+		/**
+		 * Returns the target nodes that can be used as subgraph end-points.
+		 *
+		 * @return the target nodes that can be used as subgraph end-points
+		 */
+		public Set<TargetNode> getContextTargets() {
+			return contextTargets;
+		}
+	}
+
 	private final Set<TargetNode> contextTargets;
 
 	/**
@@ -212,20 +345,39 @@ public class TargetContext implements TransformationContext {
 	@Override
 	public void duplicateContext(SourceNode originalSource,
 			final SourceNode duplicate, Set<Cell> ignoreCells) {
-		if (duplicate.getParent() != null) {
-			// Try to find fitting places over children of the parent node.
-			Map<EntityDefinition, TargetNode> existingTargets = new HashMap<EntityDefinition, TargetNode>();
-			SourceNode parent = duplicate.getParent();
-			do {
-				// XXX Keep all targets? -> Inefficient, since we'll need to search the list. For now keep first of each entityDef.
-				for (TargetNode existingTarget : collectTargetNodes(parent))
-					if (!existingTargets.containsKey(existingTarget.getEntityDefinition()))
-						existingTargets.put(existingTarget.getEntityDefinition(), existingTarget);
-				parent = parent.getParent();
-			} while (parent != null);
+		DuplicationInformation info = new DuplicationInformation(ignoreCells, contextTargets);
 
-			duplicateTree(originalSource, duplicate, new HashMap<Cell, CellNodeImpl>(), existingTargets);
-		}
+		SourceNode parent = duplicate.getParent();
+		if (parent == null)
+			parent = duplicate.getAnnotatedParent();
+
+		if (parent != null) {
+			// Find existing cell/target nodes over children of the parent node.
+			Map<TypeEntityDefinition, SourceNode> allowedTypeNodes = new HashMap<TypeEntityDefinition, SourceNode>();
+			SourceNode root = duplicate;
+			while (root.getParent() != null || root.getAnnotatedParent() != null) {
+				if (root.getParent() != null)
+					root = root.getParent(); // no type node
+				else {
+					// a type node, it is the only allowed node of its type
+					allowedTypeNodes.put((TypeEntityDefinition) root.getEntityDefinition(), root);
+					root = root.getAnnotatedParent();
+				}
+			}
+			collectExistingNodes(root, allowedTypeNodes, info);
+
+			duplicateTree(originalSource, duplicate, info);
+
+			// TODO augmentationTrackback
+			// It is not intelligent to do the augmentation trackback here!
+			// Target nodes created for the augmentation trackback cannot be found
+			// Solution: do trackback in the end, when all duplication is done!
+			// TODO cellTrackback
+			// Really do cell trackback?
+			// It finds free places in existing cells to connect too.
+			// But it does not copy the other inputs, if those won't be filled.
+		} else
+			throw new IllegalStateException("Duplicate node neither got a parent, nor an annotated parent.");
 
 		// Code matching the old stuff at bottom!
 //		// create a new duplication context
@@ -259,25 +411,38 @@ public class TargetContext implements TransformationContext {
 	 *
 	 * @param source the original source node
 	 * @param duplicate the duplication target
-	 * @param duplicatedCellNodes map to keep track of newly created cell nodes (should be empty)
-	 * @param existingTargets map with information on existing target nodes which this tree may connect to
+	 * @param info the duplication info object 
 	 */
-	private void duplicateTree(SourceNode source, SourceNode duplicate,
-			 Map<Cell, CellNodeImpl> duplicatedCellNodes, Map<EntityDefinition, TargetNode> existingTargets) {
+	private static void duplicateTree(SourceNode source, SourceNode duplicate,
+			DuplicationInformation info) {
 		// Duplicate relations.
 		for (CellNode cell : source.getRelations(false)) {
-			// TODO search for existing cells like the source cell and look if there an input like this is needed
-			// Could be used in 1:1 joins and also in augmentations
-			CellNodeImpl duplicatedCell = duplicatedCellNodes.get(cell.getCell());
-			if (duplicatedCell == null) {
-				duplicatedCell = new CellNodeImpl(cell.getCell());
-				duplicatedCellNodes.put(cell.getCell(), duplicatedCell);
+			if (info.isIgnoreCell(cell.getCell()))
+				continue;
+			// First check whether an old cell node with a missing source exists.
+			boolean usedOld = false;
+			// XXX what if multiple existing nodes match?
+			CellNode oldCellNode = info.getOldCellNode(cell.getCell());
+			if (oldCellNode != null) {
+				List<SourceNode> sources = oldCellNode.getSources();
+				Collection<? extends Entity> cellSources = cell.getCell().getSource().values();
+				if (sources.size() != cellSources.size()) {
+//					for (Entity entity : cellSources)
+					// TODO
+				}
 			}
-			duplicate.addRelation(duplicatedCell);
-			duplicatedCell.addSource(cell.getSourceNames(source), duplicate);
 
-			for (TargetNode duplicatedTarget : duplicateTree(cell, duplicatedCell, existingTargets))
-				existingTargets.put(duplicatedTarget.getEntityDefinition(), duplicatedTarget);
+			if (!usedOld) {
+				CellNodeImpl duplicatedCell = info.getNewCellNode(cell.getCell());
+				if (duplicatedCell == null) {
+					duplicatedCell = new CellNodeImpl(cell.getCell());
+					info.addNewCellNode(cell.getCell(), duplicatedCell);
+
+					duplicateTree(cell, duplicatedCell, info);
+				}
+				duplicate.addRelation(duplicatedCell);
+				duplicatedCell.addSource(cell.getSourceNames(source), duplicate);
+			}
 		}
 
 		// Duplicate children.
@@ -285,7 +450,7 @@ public class TargetContext implements TransformationContext {
 			SourceNode duplicatedChild = new SourceNodeImpl(child.getEntityDefinition(),
 					duplicate, true);
 			duplicatedChild.setContext(child.getContext());
-			duplicateTree(child, duplicatedChild, duplicatedCellNodes, existingTargets);
+			duplicateTree(child, duplicatedChild, info);
 		}
 	}
 
@@ -295,18 +460,17 @@ public class TargetContext implements TransformationContext {
 	 *
 	 * @param cell the original cell node
 	 * @param duplicateCell the duplication target
-	 * @param existingTargets map with information on existing target nodes which this tree may connect to
+	 * @param info the duplication info object
 	 * @return a collection of newly created target nodes
 	 */
-	private Collection<TargetNode> duplicateTree(CellNode cell, CellNode duplicateCell,
-			Map<EntityDefinition, TargetNode> existingTargets) {
+	private static Collection<TargetNode> duplicateTree(CellNode cell, CellNode duplicateCell,
+			DuplicationInformation info) {
 		// Duplicate targets.
 		List<TargetNode> createdTargets = new LinkedList<TargetNode>();
 		for (TargetNode target : cell.getTargets()) {
-			List<TargetNodeImpl> newTargets = duplicateTarget(target, existingTargets);
-			createdTargets.addAll(newTargets);
-			duplicateCell.addTarget(newTargets.get(0));
-			newTargets.get(0).addAssignment(target.getAssignmentNames(cell), duplicateCell);
+			TargetNodeImpl duplicatedTarget = duplicateTree(target, info);
+			duplicateCell.addTarget(duplicatedTarget);
+			duplicatedTarget.addAssignment(target.getAssignmentNames(cell), duplicateCell);
 		}
 		return createdTargets;
 	}
@@ -316,16 +480,16 @@ public class TargetContext implements TransformationContext {
 	 * to the given duplicate target node.
 	 *
 	 * @param target the original target node
-	 * @param existingTargets map with information on existing target nodes which this tree may connect to
+	 * @param info the duplication info object
 	 * @return a collection of newly created target nodes
 	 */
-	private List<TargetNodeImpl> duplicateTarget(TargetNode target,
-			Map<EntityDefinition, TargetNode> existingTargets) {
+	private static TargetNodeImpl duplicateTree(TargetNode target,
+			DuplicationInformation info) {
 		GroupNode parent = null;
+		// Check if the parent node exists in the given context already.
 		if (target.getParent() instanceof TargetNode) {
-			// Check if the parent node exists in the given context already.
-			parent = existingTargets.get(((TargetNode) target.getParent()).getEntityDefinition());
-		} else if (target.getParent() instanceof TransformationTree && contextTargets.contains(target)) {
+			parent = info.getNewOrOldTargetNode(((TargetNode) target.getParent()).getEntityDefinition());
+		} else if (target.getParent() instanceof TransformationTree && info.getContextTargets().contains(target)) {
 			// Reached root, but this is a possible target.
 			parent = target.getParent();
 		} else {
@@ -333,34 +497,150 @@ public class TargetContext implements TransformationContext {
 			throw new IllegalStateException("DuplicationContext present, but no matching target found.");
 		}
 
-		// TODO augmentationTrackback - see dupeassign
-		// TODO cellTrackback
-		// TODO what about cases where contextTargets parent doesn't exist yet, and there is no 
+		// TODO What about cases where contextTargets parent doesn't exist yet, and there is no 
 		// place to build (no direct free place, and no other contextTarget) it on?
-		//      if yes, what do? Right now it would end at the exception in the beginning of this method.
+		//      If yes, what do? Right now it would end at the exception in the beginning of this method.
 		//      Basically the duplication should fail, right? Completely, or only of this target?
+		// Construct an example where that happens.
 
 		if (parent == null ||
-				!(contextTargets.contains(target) || !parent.getChildren(false).contains(target))) {
+				!(info.getContextTargets().contains(target) || !parent.getChildren(false).contains(target))) {
 			// Does not exist: recursion.
-			List<TargetNodeImpl> duplicatedNodes = duplicateTarget((TargetNode) target.getParent(),
-					existingTargets);
-			TargetNodeImpl newTarget = new TargetNodeImpl(target.getEntityDefinition(), duplicatedNodes.get(0));
-			duplicatedNodes.get(0).addChild(newTarget);
-			duplicatedNodes.add(0, newTarget);
-			return duplicatedNodes;
+			TargetNodeImpl duplicatedTarget = duplicateTree((TargetNode) target.getParent(),
+					info);
+			TargetNodeImpl newTarget = new TargetNodeImpl(target.getEntityDefinition(), duplicatedTarget);
+			info.addNewTargetNode(newTarget.getEntityDefinition(), newTarget);
+			duplicatedTarget.addChild(newTarget);
+			return newTarget;
 		} else {
 			// Exists: add as child.
 			TargetNodeImpl newTarget = new TargetNodeImpl(target.getEntityDefinition(), parent);
+			info.addNewTargetNode(newTarget.getEntityDefinition(), newTarget);
 			// If the child is not already present, add it directly, otherwise as annotated child.
 			if (parent instanceof TargetNodeImpl && !parent.getChildren(false).contains(newTarget))
 				((TargetNodeImpl) parent).addChild(newTarget);
 			else
 				parent.addAnnotatedChild(newTarget);
-			LinkedList<TargetNodeImpl> duplicatedNodes = new LinkedList<TargetNodeImpl>();
-			duplicatedNodes.add(newTarget);
-			return duplicatedNodes;
+			return newTarget;
 		}
+	}
+
+	/**
+	 * Track back target nodes and duplicate any augmentation cells.
+	 * 
+	 * @param tree the tree to work on
+	 */
+	public static void augmentationTrackback(TransformationTree tree) {
+		final Map<EntityDefinition, TargetNode> targetNodesWithAugmentations = new HashMap<EntityDefinition, TargetNode>();
+
+		// Search for original target nodes
+		tree.accept(new AbstractTargetToSourceVisitor() {
+			Deque<Boolean> hasAugmentation = new ArrayDeque<Boolean>();
+
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTransformationNodeVisitor#visit(eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode)
+			 */
+			@Override
+			public boolean visit(CellNode cell) {
+				// If the cell is an augmentation cell, set the last entry in hasAugmentation to true.
+				if (cell.getSources().isEmpty()) {
+					if (!hasAugmentation.getLast()) {
+						hasAugmentation.pop();
+						hasAugmentation.push(true);
+					}
+				}
+				return false;
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTransformationNodeVisitor#visit(eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode)
+			 */
+			@Override
+			public boolean visit(TargetNode target) {
+				// Simply add a new level to hasAugmentation starting with false.
+				hasAugmentation.push(false);
+				return true;
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTransformationNodeVisitor#leave(eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode)
+			 */
+			@Override
+			public void leave(TargetNode target) {
+				// If this nodes level in hasAugmentation is true...
+				if (hasAugmentation.pop()) {
+					// ... add it to targetNodesWithAugmentations and set parents level to true, too.
+					targetNodesWithAugmentations.put(target.getEntityDefinition(), target);
+					if (!hasAugmentation.isEmpty() && !hasAugmentation.getLast()) {
+						hasAugmentation.pop();
+						hasAugmentation.push(true);
+					}
+				}
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor#includeAnnotatedNodes()
+			 */
+			@Override
+			public boolean includeAnnotatedNodes() {
+				// Only look for original target nodes.
+				return false;
+			}
+		});
+
+		// Add augmentations to all target nodes (no copied target node got them yet)
+		tree.accept(new AbstractTargetToSourceVisitor() {
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTransformationNodeVisitor#visit(eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode)
+			 */
+			@Override
+			public boolean visit(CellNode cell) {
+				return false;
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTransformationNodeVisitor#visit(eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode)
+			 */
+			@Override
+			public boolean visit(TargetNode target) {
+
+				// TODO more intelligent behavior of when NOT to create the augmentation.
+				// For example if the augmentation belongs to a complex structure that can
+				// occur 0..n times, it should not be created for the first time due to an
+				// augmentation.
+
+				TargetNode originalTarget = targetNodesWithAugmentations.get(target.getEntityDefinition());
+				// Only have to do something if the node is present in the map.
+				if (originalTarget != null && originalTarget != target) {
+					// Check for missing relations (all relations without sources are missing).
+					for (CellNode originalAssignment : originalTarget.getAssignments()) {
+						if (originalAssignment.getSources().isEmpty()) {
+							CellNodeImpl duplicatedAssignment = new CellNodeImpl(originalAssignment.getCell());
+							duplicatedAssignment.addTarget(target);
+							((TargetNodeImpl) target).addAssignment(originalTarget.getAssignmentNames(originalAssignment), duplicatedAssignment);
+						}
+					}
+
+					// Check for missing children.
+					for (TargetNode child : originalTarget.getChildren(false)) {
+						// Only add missing children that need an augmentation.
+						if (targetNodesWithAugmentations.containsKey(child.getEntityDefinition())
+								&& !target.getChildren(false).contains(child)) {
+							TargetNodeImpl duplicatedChild = new TargetNodeImpl(child.getEntityDefinition(), target);
+							((TargetNodeImpl) target).addChild(duplicatedChild);
+							// The child will be handled by this visior later.
+						}
+					}
+					return true;
+				} else
+					return false;
+			}
+
+			@Override
+			public boolean includeAnnotatedNodes() {
+				return true;
+			}
+		});
 	}
 
 	/**
@@ -368,19 +648,20 @@ public class TargetContext implements TransformationContext {
 	 * excluding SourceNodes with the given EntityDefinition.
 	 *
 	 * @param source the source to start from
-	 * @return all targets associated with this source except the ones excluded
+	 * @param allowedTypeNodes type nodes with a type in this map are only followed
+	 * 						   if they are exactly the node in this map
+	 * @param info the duplication info object
 	 */
-	private List<TargetNode> collectTargetNodes(SourceNode source) {
-		final List<TargetNode> result = new LinkedList<TargetNode>();
-
-
+	private void collectExistingNodes(SourceNode source,
+			final Map<TypeEntityDefinition, SourceNode> allowedTypeNodes,
+			final DuplicationInformation info) {
 		source.accept(new AbstractSourceToTargetVisitor() {
 			/**
 			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor#includeAnnotatedNodes()
 			 */
 			@Override
 			public boolean includeAnnotatedNodes() {
-				return false;
+				return true;
 			}
 
 			/**
@@ -388,7 +669,16 @@ public class TargetContext implements TransformationContext {
 			 */
 			@Override
 			public boolean visit(TargetNode target) {
-				result.add(target);
+				info.addOldTargetNode(target.getEntityDefinition(), target);
+				return true;
+			}
+
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTransformationNodeVisitor#visit(eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode)
+			 */
+			@Override
+			public boolean visit(CellNode cell) {
+				info.addOldCellNode(cell.getCell(), cell);
 				return true;
 			}
 
@@ -399,9 +689,22 @@ public class TargetContext implements TransformationContext {
 			public boolean visit(TransformationTree root) {
 				return false;
 			}
-		});
 
-		return result;
+			/**
+			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTransformationNodeVisitor#visit(eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode)
+			 */
+			@Override
+			public boolean visit(SourceNode source) {
+				boolean visit = true;
+				if (source.getEntityDefinition() instanceof TypeEntityDefinition) {
+					SourceNode allowedSource = allowedTypeNodes.get(source.getEntityDefinition());
+					visit = allowedSource == null || allowedSource == source;
+				}
+				if (visit)
+					info.addOldSourceNode(source.getEntityDefinition(), source);
+				return visit;
+			}
+		});
 	}
 
 	// OLD STUFF!
