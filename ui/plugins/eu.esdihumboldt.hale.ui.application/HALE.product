@@ -129,6 +129,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
+      <plugin id="eu.esdihumboldt.hale.doc.user.examples"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>

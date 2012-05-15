@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.cst.doc.functions.internal.toc;
+package eu.esdihumboldt.hale.doc.util.toc;
 
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.help.IHelpResource;

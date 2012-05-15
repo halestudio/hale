@@ -10,27 +10,27 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.cst.doc.functions.internal.toc;
+package eu.esdihumboldt.hale.doc.user.examples.internal.toc;
 
 import org.eclipse.help.AbstractTocProvider;
 import org.eclipse.help.IToc;
 import org.eclipse.help.ITocContribution;
 import org.eclipse.help.internal.toc.HrefUtil;
 
-import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
+import eu.esdihumboldt.hale.doc.user.examples.internal.ExamplesConstants;
 import eu.esdihumboldt.hale.doc.util.toc.OneTopicToc;
 
 /**
- * Function reference table of contents provider.
+ * Example projects reference table of contents provider.
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class FunctionReferenceToc extends AbstractTocProvider implements FunctionReferenceConstants {
+public class ExampleReferenceToc extends AbstractTocProvider implements ExamplesConstants {
 	
 	/**
-	 * TOC contribution for the function reference.
+	 * TOC contribution for the examples reference.
 	 */
-	public static class FunctionTocContribution implements ITocContribution {
+	public static class ExampleTocContribution implements ITocContribution {
 
 		private static final String[] NO_DOCS = new String[]{};
 
@@ -39,7 +39,7 @@ public class FunctionReferenceToc extends AbstractTocProvider implements Functio
 		/**
 		 * @param locale the locale
 		 */
-		public FunctionTocContribution(String locale) {
+		public ExampleTocContribution(String locale) {
 			super();
 			this.locale = locale;
 		}
@@ -75,7 +75,7 @@ public class FunctionReferenceToc extends AbstractTocProvider implements Functio
 		 */
 		@Override
 		public String getId() {
-			return HrefUtil.normalizeHref(PLUGIN_ID, "functions.xml");
+			return HrefUtil.normalizeHref(PLUGIN_ID, "examples.xml");
 		}
 
 		/**
@@ -99,7 +99,7 @@ public class FunctionReferenceToc extends AbstractTocProvider implements Functio
 		 */
 		@Override
 		public IToc getToc() {
-			return new OneTopicToc(new FunctionReferenceTopic());
+			return new OneTopicToc(new ExampleReferenceTopic());
 		}
 
 		/**
@@ -115,7 +115,7 @@ public class FunctionReferenceToc extends AbstractTocProvider implements Functio
 	/**
 	 * Default constructor
 	 */
-	public FunctionReferenceToc() {
+	public ExampleReferenceToc() {
 		super();
 	}
 
@@ -124,7 +124,7 @@ public class FunctionReferenceToc extends AbstractTocProvider implements Functio
 	 */
 	@Override
 	public ITocContribution[] getTocContributions(String locale) {
-		return new ITocContribution[]{new FunctionTocContribution(locale)};
+		return new ITocContribution[]{new ExampleTocContribution(locale)};
 	}
 
 }

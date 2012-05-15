@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Example Projects Help
+Bundle-SymbolicName: eu.esdihumboldt.hale.doc.user.examples;singleton:=true
+Bundle-Version: 2.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.help;bundle-version="3.5.100",
+ org.eclipse.core.runtime;bundle-version="3.7.0"
+Import-Package: com.google.common.io;version="9.0.0",
+ de.cs3d.util.eclipse.extension.simple,
+ de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.project,
+ eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.doc.util.content,
+ eu.esdihumboldt.hale.doc.util.context,
+ eu.esdihumboldt.hale.doc.util.toc,
+ org.apache.velocity;version="1.6.2",
+ org.apache.velocity.context;version="1.6.2",
+ org.slf4j;version="1.5.11"

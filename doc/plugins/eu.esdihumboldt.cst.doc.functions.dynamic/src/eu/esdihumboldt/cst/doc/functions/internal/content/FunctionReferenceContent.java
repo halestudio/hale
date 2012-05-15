@@ -114,10 +114,10 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 	}
 
 	/**
-	 * @see AbstractVelocityContent#getTemplate()
+	 * @see AbstractVelocityContent#getTemplate(String)
 	 */
 	@Override
-	protected InputStream getTemplate() throws Exception {
+	protected InputStream getTemplate(String templateId) throws Exception {
 		return FunctionReferenceContent.class.getResource("template.html").openStream();
 	}
 
@@ -171,7 +171,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 			}
 		};
 			
-		return getContentFromTemplate(func_id, contextFactory);
+		return getContentFromTemplate(func_id, "function", contextFactory);
 	}
 
 	private InputStream getImageContent(String func_id) throws Exception {

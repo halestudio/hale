@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.cst.doc.functions.internal.context;
+package eu.esdihumboldt.hale.doc.util.context;
 
 import org.eclipse.help.IContext;
 import org.eclipse.help.IContext2;

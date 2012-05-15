@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Example projects</title>
+</head>
+<body>
+
+<h1>Example projects</h1>
+
+<table>
+#foreach ($project in $projects)
+	<tr>
+		<td style="padding-right: 24px;"><a href="projects/${project.id}.html">$project.info.name</a></td>
+		<td><a class="command-link" title="Load example"
+			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
+	"false||/${project.location}||bundle||${project.bundleName}")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="Load example"></img></a></td>
+	</tr>
+#end
+</table>
+
+</body>
+</html>

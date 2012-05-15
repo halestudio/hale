@@ -14,4 +14,19 @@
             file="contexts.xml">
       </contexts>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.doc.user.examples">
+      <example-project
+            location="projects/indexcontext2/t1t2.halex"
+            id="eu.esdihumboldt.hale.doc.user.indexcontext2">
+      </example-project>
+      <example-project
+            location="projects/propertyfilter/t1t2.halex"
+            id="eu.esdihumboldt.hale.doc.user.propertyfilter">
+      </example-project>
+      <example-project
+            location="projects/typefilter/t1t2.halex"
+            id="eu.esdihumboldt.hale.doc.user.typefilter">
+      </example-project>
+   </extension>
 </plugin>

@@ -20,8 +20,8 @@
    </extensionContent>
    <extensionContent id="euesdihumboldthaleuifirststeps-introExtension_part2" style="css/sample.css" name="Firststeps Projects" path="firststeps/@">
       <group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
-         <link label="First steps in help" url="http://org.eclipse.ui.intro/showHelpTopic?id=/eu.esdihumboldt.hale.doc.user/html/getting_started/main_workflow.html" style-id="content-link header-link">
-            <text>Open the help topic on first steps.</text>
+         <link label="Example projects" url="http://org.eclipse.ui.intro/showHelpTopic?id=/eu.esdihumboldt.hale.doc.user.examples/overview.html" style-id="content-link header-link">
+            <text>Show the list of example projects.</text>
          </link>
       </group>
    </extensionContent>
