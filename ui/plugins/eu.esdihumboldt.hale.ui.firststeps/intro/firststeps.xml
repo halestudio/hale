@@ -2,7 +2,7 @@
 <introContent>
    <extensionContent id="euesdihumboldthaleuifirststeps-introExtension" style="css/sample.css" name="Firststeps" path="firststeps/@">
       <group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
-         <link label="Load Project" url="http://org.eclipse.ui.intro/runAction?class=eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction&amp;closeIntro=true&amp;pluginId=eu.esdihumboldt.hale.ui.firststeps" id="euesdihumboldthaleuifirststeps-introLink" style-id="content-link">
+         <link label="Load Project" url="http://org.eclipse.ui.intro/runAction?class=eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction&amp;closeIntro=true&amp;pluginId=eu.esdihumboldt.hale.ui.firststeps" style-id="content-link header-link">
             <text>Load an existing project or choose one of the recently opened projects.</text>
          </link>
          <group id="recent-files" label="Recent files" expanded="true" expandable="true">

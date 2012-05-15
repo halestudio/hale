@@ -1,6 +1,6 @@
 
-a#euesdihumboldthaleuifirststeps-introLink img { background-image : url(graphics/sample.gif); }
-a#euesdihumboldthaleuifirststeps-introLink:hover img { background-image : url(graphics/sample_hov.gif); }
+a.header-link img { background-image : url(graphics/sample.gif); }
+a.header-link:hover img { background-image : url(graphics/sample_hov.gif); }
 
 div#awcgroup {
 	margin-top: 40px;

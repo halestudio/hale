@@ -2,7 +2,7 @@
 <introContent>
    <extensionContent id="euesdihumboldthaleuifirststeps-introExtension_part2" style="css/sample.css" name="Firststeps Cheatsheets" path="firststeps/@">
       <group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
-         <link label="Get started with HALE" url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=eu.esdihumboldt.hale.ui.firststeps.firststepsCS" id="euesdihumboldthaleuifirststeps-introLink" style-id="content-link">
+         <link label="Get started with HALE" url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=eu.esdihumboldt.hale.ui.firststeps.firststepsCS" style-id="content-link header-link">
             <text>Get a guide along your way to see how the Humboldt Alignment Editor works and to create a new project.</text>
          </link>
          <group id="sub-content-group" label="Or only choose one of the parts of that guide:">
@@ -16,6 +16,13 @@
                <text>Create some mappings for your own project.</text>
             </link>
          </group>
+      </group>
+   </extensionContent>
+   <extensionContent id="euesdihumboldthaleuifirststeps-introExtension_part2" style="css/sample.css" name="Firststeps Projects" path="firststeps/@">
+      <group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
+         <link label="First steps in help" url="http://org.eclipse.ui.intro/showHelpTopic?id=/eu.esdihumboldt.hale.doc.user/html/getting_started/main_workflow.html" style-id="content-link header-link">
+            <text>Open the help topic on first steps.</text>
+         </link>
       </group>
    </extensionContent>
 </introContent>
