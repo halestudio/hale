@@ -80,7 +80,7 @@ public final class InstanceUtil {
 			// check whether the property exists (in the same amount)
 			if (bProperty == null || bProperty.length != aProperty.length)
 				return false;
-			if (!propertyOrderRelevant) {
+			if (propertyOrderRelevant) {
 				// simply iterate over the property array once
 				for (int i = 0; i < aProperty.length; i++)
 					if (!propertyValueEquals(aProperty[i], bProperty[i], propertyOrderRelevant))
