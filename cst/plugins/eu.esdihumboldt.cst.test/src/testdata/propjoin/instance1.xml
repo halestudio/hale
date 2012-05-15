@@ -15,16 +15,19 @@
         <street>Main Street</street>
         <zip>10463</zip>
 	</tns:address>
+	<tns:address id="1">
+        <street>Cathedral</street>
+        <zip>10463</zip>
+	</tns:address>
 	<tns:city>
 		<name>Kingsbridge</name>
 		<zip>10463</zip>
 	</tns:city>
-	<tns:address id="1">
-        <street>Jedi Temple</street>
-        <zip>85792380</zip>
-	</tns:address>
-	<tns:city>
-		<name>Coruscant</name>
-		<zip>85792380</zip>
-	</tns:city>
+	<tns:person id="1">
+        <name>Chester Lampwick</name>
+        <details>
+            <age>103</age>
+            <income>10</income>
+        </details>
+    </tns:person>
 </tns:collection>

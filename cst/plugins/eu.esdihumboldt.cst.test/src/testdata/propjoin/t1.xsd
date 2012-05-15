@@ -6,8 +6,8 @@
     		<element name="details" maxOccurs="1" minOccurs="0">
     			<complexType>
     				<sequence>
-    					<element name="age" type="int" maxOccurs="1" minOccurs="0"></element>
-    					<element name="income" type="double" maxOccurs="1" minOccurs="0"></element>
+    					<element name="age" type="int"></element>
+    					<element name="income" type="double"></element>
     					<element name="addressId" type="int" maxOccurs="unbounded" minOccurs="0"></element>
     				</sequence>
     			</complexType>
@@ -36,4 +36,14 @@
     </complexType>
 
     <element name="city" type="tns:CityType"></element>
+
+	<element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<choice maxOccurs="unbounded" minOccurs="0">
+    		<element ref="tns:person"></element>
+    		<element ref="tns:address"></element>
+    		<element ref="tns:city"></element>
+    	</choice>
+    </complexType>
 </schema>
