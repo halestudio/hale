@@ -29,7 +29,7 @@ import org.eclipse.help.IHelpContentProducer;
 import com.google.common.io.Files;
 
 /**
- * Help content based on a velocity template. Use
+ * Help content based on velocity templates. Use
  * {@link #getContentFromTemplate(VelocityContext, String)} in your
  * {@link #getInputStream(String, String, Locale)} implementation.
  * 
@@ -49,32 +49,27 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 	private File tempDir;
 
 	/**
-	 * The template file inside the temporary directory.
-	 */
-	private File templateFile;
-
-	/**
 	 * Generate content from the template and the given context factory. If 
 	 * called more than once with the same id, the previously generated content
 	 * for that id is returned.
-	 * @param id the content id or <code>null</code>
+	 * @param contentId the content id or <code>null</code>
 	 * @param contextFactory the context factory, is called once or not at all
 	 * @return the content input stream to return in {@link #getInputStream(String, String, Locale)}
 	 * @throws Exception if an error occurs creating the content
 	 */
-	protected InputStream getContentFromTemplate(String id, 
+	protected InputStream getContentFromTemplate(String contentId, String templateId, 
 			Callable<VelocityContext> contextFactory) throws Exception {
-		init();
+		init(templateId);
 		
 		// creates the template file into the temporary directory
 		// if it doesn't already exist
-		File contentFile = (id == null)?(null):(new File(tempDir, id + ".html"));
+		File contentFile = (contentId == null)?(null):(new File(tempDir, templateId + "_" + contentId + ".html"));
 		if (contentFile == null || !contentFile.exists()) {
 			// get the template context
 			VelocityContext context = contextFactory.call();
 
 			// get the template
-			Template template = ve.getTemplate(templateFile.getName(), "UTF-8");
+			Template template = ve.getTemplate(templateId + ".vm", "UTF-8");
 
 			// write to the file
 			FileWriter fw = new FileWriter(contentFile);
@@ -94,31 +89,34 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 	 * @throws Exception
 	 *             if an error occurs during the initialization
 	 */
-	private void init() throws Exception {
+	private void init(String templateId) throws Exception {
 		synchronized (this) {
+			// engine initialization
 			if (ve == null) {
 				ve = new VelocityEngine();
 				// create a temporary directory
 				tempDir = Files.createTempDir();
 				tempDir.deleteOnExit();
 
-				templateFile = new File(tempDir, "template.vm");
-				FileOutputStream fos = new FileOutputStream(templateFile);
-				InputStream stream = getTemplate();
-
-				// copy the InputStream into FileOutputStream
-				IOUtils.copy(stream, fos);
-
-				stream.close();
-				fos.close();
-				
-				templateFile.deleteOnExit();
-
 				ve.setProperty("file.resource.loader.path",
 						tempDir.getAbsolutePath());
 				
 				// initialize VelocityEngine
 				ve.init();
+			}
+			
+			File templateFile = new File(tempDir, templateId + ".vm");
+			if (!templateFile.exists()) {
+				FileOutputStream fos = new FileOutputStream(templateFile);
+				InputStream stream = getTemplate(templateId);
+	
+				// copy the InputStream into FileOutputStream
+				IOUtils.copy(stream, fos);
+	
+				stream.close();
+				fos.close();
+				
+				templateFile.deleteOnExit();
 			}
 		}
 	}
@@ -128,6 +126,6 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 	 * @return the template as input stream
 	 * @throws Exception if an error occurs retrieving the template
 	 */
-	protected abstract InputStream getTemplate() throws Exception;
+	protected abstract InputStream getTemplate(String templateId) throws Exception;
 
 }

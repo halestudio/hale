@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Example project: ${project.info.name}</title>
+</head>
+<body>
+
+	<h1>${project.info.name}</h1>
+
+	#if ($project.info.description)
+	<p style="white-space: pre-wrap; margin-left: 0px; max-width: 580px;">$project.info.description</p>
+	#end
+
+	<p>
+		<a class="command-link"
+			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
+	"false||/${project.location}||bundle||${project.bundleName}")'><img
+			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+			alt="command link"></img> Load example</a>
+	</p>
+
+</body>
+</html>

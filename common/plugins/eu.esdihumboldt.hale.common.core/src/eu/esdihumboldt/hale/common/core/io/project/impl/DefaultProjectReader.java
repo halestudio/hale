@@ -165,36 +165,38 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 				.get(ExportProvider.PARAM_TARGET)), getSource().getLocation());
 
 		// check if there are any external project files listed
-		for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
-			ProjectFile projectFile = projectFiles.get(fileInfo.getName());
-
-			if (projectFile != null) {
-				URI location = fileInfo.getLocation();
-				if (!IOUtils.testStream(fileInfo.getLocation(), false))
-					location = update.changePath(location);
-				boolean fileSuccess = false;
-				try {
-					InputStream input = location.toURL().openStream();
+		if (projectFiles != null) { // only if project files set at all
+			for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
+				ProjectFile projectFile = projectFiles.get(fileInfo.getName());
+	
+				if (projectFile != null) {
+					URI location = fileInfo.getLocation();
+					if (!IOUtils.testStream(fileInfo.getLocation(), false))
+						location = update.changePath(location);
+					boolean fileSuccess = false;
 					try {
-						projectFile.load(input);
-						fileSuccess = true;
+						InputStream input = location.toURL().openStream();
+						try {
+							projectFile.load(input);
+							fileSuccess = true;
+						} catch (Exception e) {
+							throw e; // hand down
+						} finally {
+							input.close();
+						}
 					} catch (Exception e) {
-						throw e; // hand down
-					} finally {
-						input.close();
+						log.debug("Loading project file failed", e);
 					}
-				} catch (Exception e) {
-					log.debug("Loading project file failed", e);
+	
+					if (!fileSuccess) {
+						reporter.error(new IOMessageImpl("Error while loading project file {0}, file will be reset.", null,
+								fileInfo.getName()));
+						projectFile.reset();
+					}
+				} else {
+					reporter.error(new IOMessageImpl("No handler for external project file {0} found.", null, fileInfo
+							.getName()));
 				}
-
-				if (!fileSuccess) {
-					reporter.error(new IOMessageImpl("Error while loading project file {0}, file will be reset.", null,
-							fileInfo.getName()));
-					projectFile.reset();
-				}
-			} else {
-				reporter.error(new IOMessageImpl("No handler for external project file {0} found.", null, fileInfo
-						.getName()));
 			}
 		}
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.doc.user.examples" name="Example projects" schema="schema/eu.esdihumboldt.hale.doc.user.examples.exsd"/>
+   <extension
+         point="org.eclipse.help.contentProducer">
+      <contentProducer
+            producer="eu.esdihumboldt.hale.doc.user.examples.internal.content.ExamplesContent">
+      </contentProducer>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <tocProvider
+            class="eu.esdihumboldt.hale.doc.user.examples.internal.toc.ExampleReferenceToc">
+      </tocProvider>
+   </extension>
+
+</plugin>

@@ -74,4 +74,11 @@
             name="Create mappings on example data">
       </cheatsheet>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.doc.user.examples">
+      <example-project
+            id="eu.esdihumboldt.hale.ui.firststeps.introexample"
+            location="exampleschema/t1t2.halex">
+      </example-project>
+   </extension>
 </plugin>
