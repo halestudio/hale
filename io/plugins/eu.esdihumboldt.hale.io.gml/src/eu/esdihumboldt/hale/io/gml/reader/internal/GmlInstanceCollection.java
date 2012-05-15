@@ -223,7 +223,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 			
 			try {
 				return StreamGmlHelper.parseInstance(reader, nextType, 
-						elementIndex++, strict);
+						elementIndex++, strict, null);
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException(e);
 			} finally {
