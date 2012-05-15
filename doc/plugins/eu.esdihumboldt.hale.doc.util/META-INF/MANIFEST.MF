@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Help Utilities
+Bundle-SymbolicName: eu.esdihumboldt.hale.doc.util
+Bundle-Version: 2.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.help;bundle-version="3.5.100"
+Import-Package: com.google.common.io;version="9.0.0",
+ org.apache.commons.io;version="1.4.0",
+ org.apache.velocity;version="1.6.2",
+ org.apache.velocity.app;version="1.6.2",
+ org.apache.velocity.context;version="1.6.2"
+Export-Package: eu.esdihumboldt.hale.doc.util.content
