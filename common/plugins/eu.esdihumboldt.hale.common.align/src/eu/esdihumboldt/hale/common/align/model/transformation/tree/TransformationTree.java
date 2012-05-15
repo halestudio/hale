@@ -44,4 +44,10 @@ public interface TransformationTree extends GroupNode {
 	 */
 	public Collection<SourceNode> getRootSourceNodes(TypeDefinition type);
 
+	/**
+	 * Gets all root source nodes.
+	 * 
+	 * @return all root source nodes
+	 */
+	public Collection<SourceNode> getRootSourceNodes();
 }
