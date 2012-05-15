@@ -262,7 +262,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 				// close elements
 				int open = 1;
 				while (open > 0 && reader.hasNext()) {
-					int event = reader.nextTag();
+					int event = reader.next();
 					switch (event) {
 					case XMLStreamConstants.START_ELEMENT:
 						open++;
