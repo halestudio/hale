@@ -88,6 +88,35 @@ public class ConceptualSchemaTransformerTest {
 				"/testdata/cardrename/instance1.xml",
 				"/testdata/cardrename/instance2.xml");
 	}
+
+	/**
+	 * Test based on a simple mapping with a retype, rename and assign, duplicated
+	 * targets should also get the assigned values.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testDupeAssign() throws Exception {
+		test("/testdata/dupeassign/t1.xsd",
+				"/testdata/dupeassign/t2.xsd",
+				"/testdata/dupeassign/t1t2.halex.alignment.xml",
+				"/testdata/dupeassign/instance1.xml",
+				"/testdata/dupeassign/instance2.xml");
+	}
+
+	/**
+	 * Test based on a join and some renames.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testPropertyJoin() throws Exception {
+		test("/testdata/propjoin/t1.xsd",
+				"/testdata/propjoin/t2.xsd",
+				"/testdata/propjoin/t1t2.halex.alignment.xml",
+				"/testdata/propjoin/instance1.xml",
+				"/testdata/propjoin/instance2.xml");
+	}
 	
 	/**
 	 * Test where multiple properties from the source type are mapped to
@@ -329,8 +358,6 @@ public class ConceptualSchemaTransformerTest {
 		InstanceCollection targetData = TestUtil.loadInstances(toLocalURI(targetDataLocation), targetSchema);
 
 		List<Instance> transformedData = transformData(alignment, sourceData);
-		for (Instance instance : transformedData)
-			System.err.println(InstanceUtil.instanceToString(instance));
 
 		test(targetData, transformedData);
 	}
@@ -345,6 +372,10 @@ public class ConceptualSchemaTransformerTest {
 		ResourceIterator<Instance> targetIter = targetData.iterator();
 		// make sure we can remove instances from the list...
 		transformedData = new LinkedList<Instance>(transformedData);
+		Iterator<Instance> transformedIter2 = transformedData.iterator();
+		while (transformedIter2.hasNext()) {
+			System.err.println(InstanceUtil.instanceToString(transformedIter2.next()));
+		}
 
 		int targetInstanceCount = 0;
 		int transformedInstanceCount = transformedData.size();
