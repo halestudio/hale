@@ -179,6 +179,7 @@ public class TargetNodeImpl extends AbstractGroupNode implements TargetNode {
 				}
 			}
 		}
+		visitor.leave(this);
 	}
 
 	/**

@@ -86,8 +86,9 @@ public class TreePropertyTransformer implements PropertyTransformer {
 				tree.accept(instanceVisitor);
 				
 				// duplicate subtree as necessary
-				DuplicationVisitor duplicationVisitor = new DuplicationVisitor();
+				DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree);
 				tree.accept(duplicationVisitor);
+				duplicationVisitor.doAugmentationTrackback();
 				
 				// apply functions
 				tree.accept(executor);

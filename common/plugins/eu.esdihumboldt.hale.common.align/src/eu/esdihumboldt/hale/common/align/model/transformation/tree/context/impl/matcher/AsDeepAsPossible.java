@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Stack;
 
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
@@ -59,8 +59,10 @@ public class AsDeepAsPossible implements ContextMatcher {
 		@Override
 		public boolean visit(SourceNode source) {
 			if (!candidates.isEmpty()) {
-				source.setContext(new TargetContext(
-						Collections.singleton(candidates.peek())));
+				// TODO do not always override the context information!
+				// Each path leading to this source can have different candidates.
+				// A per cell or per target of cell basis is needed?
+				source.setContext(new TargetContext(new HashSet<TargetNode>(candidates)));
 			}
 			return true;
 		}
