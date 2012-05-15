@@ -84,8 +84,8 @@
 	</gml:featureMember>
 	<gml:featureMember>
 		<hale:LineStringProperty>
-			<hale:geometry>
-				<gml:posList srsDimension="2">-39799.68820381 273207.53980172 -39841.185 273182.863 -39882.89 273153.86</gml:posList>
+			<hale:geometry srsDimension="2">
+				<gml:posList>-39799.68820381 273207.53980172 -39841.185 273182.863 -39882.89 273153.86</gml:posList>
 			</hale:geometry>
 		</hale:LineStringProperty>
 	</gml:featureMember>

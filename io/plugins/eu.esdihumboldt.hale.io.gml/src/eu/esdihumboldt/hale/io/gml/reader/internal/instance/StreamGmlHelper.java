@@ -67,17 +67,23 @@ public abstract class StreamGmlHelper {
 	 *            if associating elements with properties should be done
 	 *            strictly according to the schema, otherwise a fall-back is
 	 *            used trying to populate values also on invalid property paths
+	 * @param srsDimension
+	 *            the dimension of the instance or <code>null</code>
 	 * @return the parsed instance
 	 * @throws XMLStreamException
 	 *             if parsing the instance failed
 	 */
 	public static Instance parseInstance(XMLStreamReader reader,
-			TypeDefinition type, Integer indexInStream, boolean strict)
-			throws XMLStreamException {
+			TypeDefinition type, Integer indexInStream, boolean strict,
+			Integer srsDimension) throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
-
-		// XXX get srsDimension from the upper geometry
-		String dimension = reader.getAttributeValue(null, "srsDimension");
+		
+		if (srsDimension == null){
+			String dim = reader.getAttributeValue(null,
+					"srsDimension");
+			if(dim != null)
+				srsDimension = Integer.parseInt(dim);
+		}
 
 		MutableInstance instance;
 		if (indexInStream == null) {
@@ -88,7 +94,7 @@ public abstract class StreamGmlHelper {
 		}
 
 		// instance properties
-		parseProperties(reader, instance, strict);
+			parseProperties(reader, instance, strict, srsDimension);
 
 		// instance value
 		if (type.getConstraint(HasValueFlag.class).isEnabled()) {
@@ -112,10 +118,9 @@ public abstract class StreamGmlHelper {
 			// the default value for the srsDimension
 			int defaultValue = 2;
 
-			if (dimension != null)
-				geomValue = geomFactory.createGeometry(instance,
-						Integer.parseInt(dimension));
-			
+			if (srsDimension != null)
+				geomValue = geomFactory.createGeometry(instance, srsDimension);
+
 			// if srsDimension is not set
 			else
 				geomValue = geomFactory.createGeometry(instance, defaultValue);
@@ -139,11 +144,14 @@ public abstract class StreamGmlHelper {
 	 *            if associating elements with properties should be done
 	 *            strictly according to the schema, otherwise a fall-back is
 	 *            used trying to populate values also on invalid property paths
+	 * @param srsDimension
+	 *            the dimension of the instance or <code>null</code>
 	 * @throws XMLStreamException
 	 *             if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader,
-			MutableGroup group, boolean strict) throws XMLStreamException {
+			MutableGroup group, boolean strict, Integer srsDimension)
+			throws XMLStreamException {
 		final MutableGroup topGroup = group;
 
 		// attributes (usually only present in Instances)
@@ -196,7 +204,7 @@ public abstract class StreamGmlHelper {
 									property.getName(),
 									parseInstance(reader,
 											property.getPropertyType(), null,
-											strict));
+											strict, srsDimension));
 						} else {
 							if (hasAttributes(property.getPropertyType())) {
 								// no elements but attributes
@@ -206,7 +214,7 @@ public abstract class StreamGmlHelper {
 										property.getName(),
 										parseInstance(reader,
 												property.getPropertyType(),
-												null, strict));
+												null, strict, srsDimension));
 							} else {
 								// no elements and no attributes
 								// use simple value
