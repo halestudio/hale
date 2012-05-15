@@ -232,9 +232,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					for (IOConfiguration providerconf : configuration) {
 						Map<String, String> conf = providerconf.getProviderConfiguration();
 						URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE));
-						if (!IOUtils.testStream(uri)) {
+						if (!IOUtils.testStream(uri, true)) {
 							URI newUri = update.changePath(uri);
-							if (IOUtils.testStream(newUri))
+							if (IOUtils.testStream(newUri, true))
 								conf.put(ImportProvider.PARAM_SOURCE, newUri.toString());
 							else {
 								Shell shell = null;
