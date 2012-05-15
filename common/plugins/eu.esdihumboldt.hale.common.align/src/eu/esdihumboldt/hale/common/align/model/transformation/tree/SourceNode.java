@@ -53,6 +53,12 @@ public interface SourceNode extends TransformationNode {
 	 * relations.
 	 */
 	public static final String ANNOTATION_RELATIONS = "relations";
+
+	/**
+	 * Name of the parent annotation. It represents a parent of a type
+	 * source node.
+	 */
+	public static final String ANNOTATION_PARENT = "parent";
 	
 	/**
 	 * Get the associated definition
@@ -171,5 +177,19 @@ public interface SourceNode extends TransformationNode {
 	 * @return the associated relations
 	 */
 	public Collection<CellNode> getRelations(boolean includeAnnotated);
+
+	/**
+	 * Sets an annotated parent.
+	 * 
+	 * @param parent the annotated parent
+	 */
+	public void setAnnotatedParent(SourceNode parent);
+
+	/**
+	 * Get the annotated parent.
+	 * 
+	 * @return the annotated parent or null if none is set
+	 */
+	SourceNode getAnnotatedParent();
 
 }

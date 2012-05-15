@@ -36,34 +36,48 @@ public class LeftoversImpl implements Leftovers {
 	 * consumed completely. 
 	 */
 	private final List<Pair<SourceNode, Set<Cell>>> values = new ArrayList<Pair<SourceNode,Set<Cell>>>();
+
+	private final SourceNode originalSource;
 	
 	private int firstNotConsumed = 0;
 	
 	/**
 	 * Constructor
-	 * @param leftovers the left over values
 	 * @param originalSource the original source node to be duplicated
+	 * @param leftovers the left over values
 	 */
-	public LeftoversImpl(Object[] leftovers, SourceNode originalSource) {
+	public LeftoversImpl(SourceNode originalSource, Object... leftovers) {
+		this.originalSource = originalSource;
 		// for each leftover create a source node duplicate
-		for (Object value : leftovers) {
-			SourceNode duplicate = new SourceNodeImpl(
-					originalSource.getEntityDefinition(), 
-					originalSource.getParent(), false);
-			
-			// assign context
-			duplicate.setContext(originalSource.getContext());
-			
-			// add as annotated child to original parent
+		for (Object value : leftovers)
+			addLeftover(value, originalSource.getAnnotatedParent());
+	}
+
+	/**
+	 * Adds the given value to the leftovers.
+	 * 
+	 * @param value the leftover value
+	 * @param annotatedParent the value for the annotated parent field of the duplicate nodes
+	 */
+	public void addLeftover(Object value, SourceNode annotatedParent) {
+		SourceNode duplicate = new SourceNodeImpl(
+				originalSource.getEntityDefinition(), 
+				originalSource.getParent(), false);
+		duplicate.setAnnotatedParent(annotatedParent);
+		
+		// assign context
+		duplicate.setContext(originalSource.getContext());
+		
+		// add as annotated child to original parent
+		if (originalSource.getParent() != null)
 			originalSource.getParent().addAnnotatedChild(duplicate);
-			
-			// set the value
-			duplicate.setValue(value);
-			//XXX where should eventual children be created?
-			
-			// store the leftover
-			values.add(new Pair<SourceNode, Set<Cell>>(duplicate, new HashSet<Cell>()));
-		}
+		
+		// set the value
+		duplicate.setValue(value);
+		//XXX where should eventual children be created?
+		
+		// store the leftover
+		values.add(new Pair<SourceNode, Set<Cell>>(duplicate, new HashSet<Cell>()));
 	}
 
 	/**

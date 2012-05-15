@@ -26,7 +26,6 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.LeftoversImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
 import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
@@ -100,20 +99,26 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 						for (SourceNode candidateNode : candidateNodes) {
 							filter = candidateNode.getEntityDefinition().getFilter();
 							if (filter == null || filter.match(child)) {
-								// XXX add all!?
-								SourceNode duplicate = new SourceNodeImpl(
-										candidateNode.getEntityDefinition(), 
-										source, false);
-								// add as annotated child to source
-								source.addAnnotatedChild(duplicate);
-								TransformationContext context = candidateNode.getContext();
-								// assign context
-								duplicate.setContext(context);
-								// duplicate tree
-								context.duplicateContext(candidateNode, duplicate, Collections.<Cell>emptySet());
-								// recursion
+								// XXX add to all candidates!?
+								if (candidateNode.getValue() == null) {
+									candidateNode.setAnnotatedParent(source);
+									source.addAnnotatedChild(candidateNode);
+								} else {
+									// Duplicate here, because there is no guarantee, that the Duplication
+									// Visitor will visit candidateNode after this node.
+									SourceNodeImpl duplicateNode = new SourceNodeImpl(candidateNode.getEntityDefinition(),
+											candidateNode.getParent(), false);
+									duplicateNode.setAnnotatedParent(source);
+									source.addAnnotatedChild(duplicateNode);
+									duplicateNode.setContext(candidateNode.getContext());
+									candidateNode.getContext().duplicateContext(candidateNode, duplicateNode, Collections.<Cell>emptySet());
+									candidateNode = duplicateNode;
+								}
+
+
+								// run instance visitor on that annotated child
 								InstanceVisitor visitor = new InstanceVisitor(child, tree);
-								duplicate.accept(visitor);
+								candidateNode.accept(visitor);
 							}
 						}
 					}
@@ -201,7 +206,7 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					// handle additional values
 					Object[] leftovers = new Object[values.length - 1];
 					System.arraycopy(values, 1, leftovers, 0, leftovers.length);
-					source.setLeftovers(new LeftoversImpl(leftovers, source));
+					source.setLeftovers(new LeftoversImpl(source, leftovers));
 				}
 
 				return true;
