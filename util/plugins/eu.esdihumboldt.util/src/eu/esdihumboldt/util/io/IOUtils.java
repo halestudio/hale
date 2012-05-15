@@ -13,9 +13,9 @@
 package eu.esdihumboldt.util.io;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
+
+import eu.esdihumboldt.util.resource.Resources;
 
 /**
  * Helper class for IO
@@ -35,21 +35,26 @@ public final class IOUtils {
 	 * it is a lot faster.
 	 * 
 	 * @param uri the URI to test
+	 * @param allowResource allow resolving through {@link Resources} 
 	 * @return true, if a InputStream to the URI could be opened.
 	 */
-	public static boolean testStream(URI uri) {
+	public static boolean testStream(URI uri, boolean allowResource) {
 		if ("file".equalsIgnoreCase(uri.getScheme())) {
 			File file = new File(uri);
 			if (file.isFile() && file.canRead())
 				return true;
 			return false;
 		}
+		
+		// try resolving through local resources
+		if (allowResource && Resources.tryResolve(uri, null) != null) {
+			return true;
+		}
+		
 		// could be further enhanced to check for example for http response codes like 404.
 		try {
 			uri.toURL().openConnection().getInputStream().close();
-		} catch (MalformedURLException e) {
-			return false;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
