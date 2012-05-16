@@ -27,22 +27,29 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSi
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
+import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 
 /**
  * Network expansion function.
+ * 
  * @author Simon Templer
  */
-public class NetworkExpansion extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements NetworkExpansionFunction{
-	
+public class NetworkExpansion extends
+		AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements NetworkExpansionFunction {
+
 	private static int CAP_STYLE = BufferParameters.CAP_ROUND;
 
 	/**
-	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String, TransformationEngine, ListMultimap, String, PropertyEntityDefinition, Map, TransformationLog)
+	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
+	 *      TransformationEngine, ListMultimap, String,
+	 *      PropertyEntityDefinition, Map, TransformationLog)
 	 */
 	@Override
 	protected Object evaluate(String transformationIdentifier,
@@ -54,45 +61,45 @@ public class NetworkExpansion extends AbstractSingleTargetPropertyTransformation
 		// get the buffer width parameter
 		String bufferWidthString = getParameterChecked(PARAMETER_BUFFER_WIDTH);
 		double bufferWidth = Double.parseDouble(bufferWidthString);
-		
+
 		// get input geometry
 		PropertyValue input = variables.get(null).get(0);
 		Object inputValue = input.getValue();
 		if (inputValue instanceof Instance) {
 			inputValue = ((Instance) inputValue).getValue();
 		}
-		
+
 		CRSDefinition crs = null;
-		Geometry old_geometry = null;
-		
-		if (inputValue instanceof GeometryProperty<?>) {
-			GeometryProperty<?> geomProp = (GeometryProperty<?>) inputValue;
-			old_geometry = geomProp.getGeometry();
-			crs = geomProp.getCRSDefinition();
-		}
-		else if (inputValue instanceof Geometry) {
-			old_geometry = (Geometry) inputValue;
-		}
-		
+
+		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
+
+		GeometryFinder geoFind = new GeometryFinder(null);
+
+		traverser.traverse(inputValue, geoFind);
+
+		Geometry old_geometry = geoFind.getGeometries().get(0).getGeometry();
+
 		if (old_geometry != null) {
 			Geometry new_geometry = null;
 			BufferParameters bufferParameters = new BufferParameters();
 			bufferParameters.setEndCapStyle(CAP_STYLE);
 			BufferBuilder bb = new BufferBuilder(new BufferParameters());
 			new_geometry = bb.buffer(old_geometry, bufferWidth);
-			
+
 			// try to yield a result compatible to the target
-			TypeDefinition targetType = resultProperty.getDefinition().getPropertyType();
-			//TODO check element type?
-			Class<?> binding = targetType.getConstraint(Binding.class).getBinding();
-			if (Geometry.class.isAssignableFrom(binding) 
+			TypeDefinition targetType = resultProperty.getDefinition()
+					.getPropertyType();
+			// TODO check element type?
+			Class<?> binding = targetType.getConstraint(Binding.class)
+					.getBinding();
+			if (Geometry.class.isAssignableFrom(binding)
 					&& binding.isAssignableFrom(new_geometry.getClass())) {
 				return new_geometry;
 			}
 			return new DefaultGeometryProperty<Geometry>(crs, new_geometry);
-		}
-		else {
-			throw new TransformationException("Geometry for network expansion could not be retrieved.");
+		} else {
+			throw new TransformationException(
+					"Geometry for network expansion could not be retrieved.");
 		}
 	}
 
