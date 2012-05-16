@@ -3,6 +3,7 @@
     <name>Index context example</name>
     <author>Simon Templer</author>
     <description xml:space="preserve">Small example project demonstrating the use of an index context for source properties.&#xd;
+&#xd;
 In the source type 'placeNames' the information on the name language is given only implicitly through the name order. The first name is in German, the second in English, the third in Italian.&#xd;
 In the target type 'explicitNames' there are explicit name properties for each language defined.</description>
     <created>2012-03-01T09:47:27.512+01:00</created>

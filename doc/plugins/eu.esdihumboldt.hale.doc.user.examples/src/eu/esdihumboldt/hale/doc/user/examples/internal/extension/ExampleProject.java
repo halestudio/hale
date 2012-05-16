@@ -43,6 +43,8 @@ public class ExampleProject implements Identifiable {
 	
 	private final String location;
 	
+	private final String summary;
+	
 	/**
 	 * Create an example project from a configuration element. 
 	 * @param id the project identifier
@@ -57,6 +59,7 @@ public class ExampleProject implements Identifiable {
 		super();
 		
 		this.id = id;
+		this.summary = conf.getAttribute("summary");
 		
 		// determine location
 		bundleName = conf.getDeclaringExtension().getContributor().getName();
@@ -96,6 +99,14 @@ public class ExampleProject implements Identifiable {
 	 */
 	public String getBundleName() {
 		return bundleName;
+	}
+
+	/**
+	 * Get the example project summary.
+	 * @return the summary
+	 */
+	public String getSummary() {
+		return summary;
 	}
 
 	/**

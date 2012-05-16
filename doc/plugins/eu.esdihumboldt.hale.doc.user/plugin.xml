@@ -17,16 +17,19 @@
    <extension
          point="eu.esdihumboldt.hale.doc.user.examples">
       <example-project
+            id="eu.esdihumboldt.hale.doc.user.indexcontext2"
             location="projects/indexcontext2/t1t2.halex"
-            id="eu.esdihumboldt.hale.doc.user.indexcontext2">
+            summary="Small example demonstrating the use of an index context for source properties.">
       </example-project>
       <example-project
+            id="eu.esdihumboldt.hale.doc.user.propertyfilter"
             location="projects/propertyfilter/t1t2.halex"
-            id="eu.esdihumboldt.hale.doc.user.propertyfilter">
+            summary="Simple example that demonstrates how a condition on a source property can be used to map a source property to different target properties depending on its value.">
       </example-project>
       <example-project
+            id="eu.esdihumboldt.hale.doc.user.typefilter"
             location="projects/typefilter/t1t2.halex"
-            id="eu.esdihumboldt.hale.doc.user.typefilter">
+            summary="Simple example demonstrating the use of filters on source types.">
       </example-project>
    </extension>
 </plugin>

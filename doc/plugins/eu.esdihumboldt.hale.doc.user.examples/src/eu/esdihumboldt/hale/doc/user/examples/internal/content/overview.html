@@ -6,20 +6,37 @@
 </head>
 <body>
 
-<h1>Example projects</h1>
+	<h1>Example projects</h1>
+	
+	<table>
+	#foreach ($project in $projects)
+		<tr>
+			<td style="padding-right: 24px; font-weight: bold;">
+				<a href="projects/${project.id}.html">$project.info.name</a>
+			</td>
+		</tr>
+		#if ($project.summary)
+		<tr>
+			<td>
+				<p style="margin-left: 16px; max-width: 580px;">$project.summary</p>
+			</td>
+		</tr>
+		#end
+		<!-- tr>
+			<td><a class="command-link" title="Load example"
+				href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
+		"false||/${project.location}||bundle||${project.bundleName}")'><img
+				src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
+				alt="command link"></img> Load example</a></td>
+		</tr-->
+		<tr><td><br /></td></tr>
+	#end
+	</table>
 
-<table>
-#foreach ($project in $projects)
-	<tr>
-		<td style="padding-right: 24px;"><a href="projects/${project.id}.html">$project.info.name</a></td>
-		<td><a class="command-link" title="Load example"
-			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
-	"false||/${project.location}||bundle||${project.bundleName}")'><img
-			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
-			alt="Load example"></img></a></td>
-	</tr>
-#end
-</table>
+	<p class="Note">We are always looking for data we can include as
+		examples in HALE. If you know any suitable open data or are a data
+		provider that could provide sample data for this purpose, please
+		contact us - also concerning support for the mapping creation.</p>
 
 </body>
 </html>

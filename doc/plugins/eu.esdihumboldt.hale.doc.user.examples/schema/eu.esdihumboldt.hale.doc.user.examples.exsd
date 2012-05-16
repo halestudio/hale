@@ -66,6 +66,13 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="summary" type="string">
+            <annotation>
+               <documentation>
+                  A short (one line) summary of the example.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
