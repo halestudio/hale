@@ -52,6 +52,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 	
 	private static final String LINE_STRING_SEGMENT_TYPE = "LineStringSegmentType";
 	
+	//XXX support for curve types is not optimal
+	
 	private static final String ARC_TYPE = "ArcType";
 	
 	private static final String ARC_BY_BULGE_TYPE = "ArcByBulgeType";

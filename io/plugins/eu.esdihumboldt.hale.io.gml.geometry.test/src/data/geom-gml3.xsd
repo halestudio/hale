@@ -148,5 +148,31 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	
+	<element name="MultiSurfaceProperty" substitutionGroup="gml:_Feature"
+		type="hale:MultiSurfacePropertyType" />
+
+	<complexType name="MultiSurfacePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:MultiSurfaceType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="CompositeSurfaceProperty" substitutionGroup="gml:_Feature"
+		type="hale:CompositeSurfacePropertyType" />
+
+	<complexType name="CompositeSurfacePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:CompositeSurfaceType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
 
 </schema>
