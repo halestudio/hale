@@ -113,6 +113,54 @@
             </validator>
          </functionParameter>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.calculatelength"
+            name="Calculate Length">
+         <targetProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.lang.Double">
+               </bindingCondition>
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <geometryCondition></geometryCondition>
+            </property>
+         </sourceProperties>
+      </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.calculatearea"
+            name="Calculate Area">
+         <targetProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.lang.Double">
+               </bindingCondition>
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <geometryCondition></geometryCondition>
+            </property>
+         </sourceProperties>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -127,6 +175,18 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.geometric.networkexpansion"
             id="eu.esdihumboldt.cst.functions.geometric.networkexpansion">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.CalculateLength"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.calculatelength"
+            id="eu.esdihumboldt.cst.functions.geometric.calculatelength">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.CalculateArea"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.calculatearea"
+            id="eu.esdihumboldt.cst.functions.geometric.calculatearea">
       </propertyTransformation>
    </extension>
 
