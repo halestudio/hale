@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection gml:id="FC1"
+	xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:MultiSurfaceProperty gml:id="multisurface1">
+			<hale:geometry gml:id="surfaceGeom1">
+				<gml:surfaceMember>
+					<gml:Polygon gml:id="polygon1">
+						<gml:exterior>
+							<gml:LinearRing>
+								<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2 -3.33,-3.2 0.01,3.2</gml:coordinates>
+							</gml:LinearRing>
+						</gml:exterior>
+						<gml:interior>
+							<gml:LinearRing>
+								<gml:coordinates>0,1 1,1 0,-1 -1,-1 0,1</gml:coordinates>
+							</gml:LinearRing>
+						</gml:interior>
+						<gml:interior>
+							<gml:LinearRing>
+								<gml:coordinates>0,2 2,2 0,-2 -2,-2 0,2</gml:coordinates>
+							</gml:LinearRing>
+						</gml:interior>
+					</gml:Polygon>
+				</gml:surfaceMember>
+				<gml:surfaceMember>
+					<gml:Polygon>
+						<gml:exterior>
+							<gml:LinearRing>
+								<gml:coordinates>-122.44,37.80 -122.45,37.80 -122.45,37.78 -122.44,37.78 -122.44,37.80</gml:coordinates>
+							</gml:LinearRing>
+						</gml:exterior>
+						<gml:interior>
+							<gml:LinearRing>
+								<gml:coordinates>-122.24,37.60 -122.25,37.60 -122.25,37.58 -122.24,37.58 -122.24,37.60</gml:coordinates>
+							</gml:LinearRing>
+						</gml:interior>
+					</gml:Polygon>
+				</gml:surfaceMember>
+			</hale:geometry>
+		</hale:MultiSurfaceProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>

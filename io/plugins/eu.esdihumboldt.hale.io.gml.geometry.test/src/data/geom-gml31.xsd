@@ -122,15 +122,41 @@
 			</extension>
 		</complexContent>
 	</complexType>
-	
+
 	<element name="CurveProperty" substitutionGroup="gml:_Feature"
 		type="hale:CurvePropertyType" />
-	
+
 	<complexType name="CurvePropertyType">
 		<complexContent>
 			<extension base="gml:AbstractFeatureType">
 				<sequence>
 					<element name="geometry" type="gml:CurveType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="SurfaceProperty" substitutionGroup="gml:_Feature"
+		type="hale:SurfacePropertyType" />
+
+	<complexType name="SurfacePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:SurfaceType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="MultiSurfaceProperty" substitutionGroup="gml:_Feature"
+		type="hale:MultiSurfacePropertyType" />
+
+	<complexType name="MultiSurfacePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:MultiSurfaceType" />
 				</sequence>
 			</extension>
 		</complexContent>

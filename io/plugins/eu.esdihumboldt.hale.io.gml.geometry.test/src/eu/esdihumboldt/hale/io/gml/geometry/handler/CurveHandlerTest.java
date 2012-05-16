@@ -237,7 +237,6 @@ public class CurveHandlerTest extends AbstractHandlerTest {
 	}
 
 	private void checkGeomInstance(Instance geomInstance) {
-		Object value = geomInstance.getValue();
 		assertTrue(geomInstance.getValue() instanceof Collection<?>);
 		for (Object instance : ((Collection<?>) geomInstance.getValue())) {
 			assertTrue(instance instanceof GeometryProperty<?>);

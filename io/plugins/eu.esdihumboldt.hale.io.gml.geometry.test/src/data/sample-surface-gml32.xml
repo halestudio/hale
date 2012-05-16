@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection gml:id="fcollection" xmlns:gml="http://www.opengis.net/gml/3.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:SurfaceProperty gml:id="surface1">
+			<hale:geometry gml:id="geometry">
+				<gml:patches>
+					<gml:PolygonPatch>
+						<gml:exterior>
+							<gml:LinearRing>
+								<gml:coordinates>-122.44,37.80 -122.45,37.80 -122.45,37.78 -122.44,37.78 -122.44,37.80</gml:coordinates>
+							</gml:LinearRing>
+						</gml:exterior>
+						<gml:interior>
+							<gml:LinearRing>
+								<gml:coordinates>-122.24,37.60 -122.25,37.60 -122.25,37.58 -122.24,37.58 -122.24,37.60</gml:coordinates>
+							</gml:LinearRing>
+						</gml:interior>
+					</gml:PolygonPatch>
+				</gml:patches>
+			</hale:geometry>
+		</hale:SurfaceProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>
