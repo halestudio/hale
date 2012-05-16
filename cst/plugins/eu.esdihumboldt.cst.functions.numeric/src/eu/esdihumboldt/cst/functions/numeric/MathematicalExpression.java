@@ -53,8 +53,27 @@ public class MathematicalExpression extends AbstractSingleTargetPropertyTransfor
 		// get the mathematical expression
 		String expression = getParameterChecked(PARAMETER_EXPRESSION);
 		
-		Environment env = new Environment();
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);
+		
+		try {
+			return evaluateExpression(expression, vars);
+		} catch (XExpression e) {
+			throw new TransformationException("Error evaluating the cell expression", e);
+		}
+	}
+
+	/**
+	 * Evaluate a mathematical expression.
+	 * @param expression the mathematical expression. It may contain references
+	 *   to variables
+	 * @param vars the list of available property values that may be bound to
+	 *   variables
+	 * @return the evaluated expression, which can be Double, Integer or String
+	 * @throws XExpression if the expression could not be evaluated
+	 */
+	public static Object evaluateExpression(String expression, List<PropertyValue> vars) throws XExpression {
+		Environment env = new Environment();
+		
 		for (PropertyValue var : vars) {
 			// add the variable to the environment
 			
@@ -95,12 +114,8 @@ public class MathematicalExpression extends AbstractSingleTargetPropertyTransfor
 			}
 		}
 
-		try {
-			Expression ex = new Expression(expression, env);
-			return ex.evaluate();
-		} catch (XExpression e) {
-			throw new TransformationException("Error evaluating the cell expression", e);
-		}
+		Expression ex = new Expression(expression, env);
+		return ex.evaluate();			
 	}
 
 }
