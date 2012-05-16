@@ -29,6 +29,8 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 public class InstanceWaypoint extends GenericWaypoint<InstanceReference, InstanceWaypoint> {
 
 	private final List<GeometryProperty<?>> geometries;
+	
+	private final String name;
 
 	/**
 	 * Create an instance way-point.
@@ -36,12 +38,15 @@ public class InstanceWaypoint extends GenericWaypoint<InstanceReference, Instanc
 	 * @param bb the bounding box
 	 * @param value the reference to the instance
 	 * @param geometries the instance geometries
+	 * @param name the instance name, <code>null</code> if unknown
 	 */
 	public InstanceWaypoint(GeoPosition pos, BoundingBox bb,
-			InstanceReference value, List<GeometryProperty<?>> geometries) {
+			InstanceReference value, List<GeometryProperty<?>> geometries,
+			String name) {
 		super(pos, bb, value);
 		
 		this.geometries = geometries;
+		this.name = name;
 	}
 
 	/**
@@ -59,6 +64,14 @@ public class InstanceWaypoint extends GenericWaypoint<InstanceReference, Instanc
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
+	}
+
+	/**
+	 * Get the instance name.
+	 * @return the instance name or <code>null</code> if unknown
+	 */
+	public String getName() {
+		return name;
 	}
 
 }

@@ -18,6 +18,7 @@ import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -52,6 +53,8 @@ import de.fhg.igd.mapviewer.marker.Marker;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypointPainter;
 import de.fhg.igd.mapviewer.waypoints.MarkerWaypointRenderer;
+import eu.esdihumboldt.hale.common.convert.ConversionUtil;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -89,6 +92,12 @@ public abstract class AbstractInstancePainter extends
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractInstancePainter.class);
 
 	private static final double BUFFER_VALUE = 0.0125;
+
+	/**
+	 * The list of default paths searched in an instance for an instance name.
+	 * Search is done in the given order.
+	 */
+	private static final String[] DEFAULT_NAME_PATHS = new String[]{"name", "id", "fid"};
 
 	private final InstanceService instanceService;
 	
@@ -359,14 +368,48 @@ public abstract class AbstractInstancePainter extends
 		bb.setMinZ(- BUFFER_VALUE);
 		bb.setMaxZ(BUFFER_VALUE);
 		
+		String name = findInstanceName(instance);
+		
 		// create the way-point
 		//XXX in abstract method?
-		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries);
+		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries, name);
 		
 		// each way-point must have its own marker, as the marker stores the marker areas
 		wp.setMarker(createMarker());
 		
 		return wp;
+	}
+
+	/**
+	 * Determine the name for the given instance.
+	 * @param instance the instance
+	 * @return the instance name or <code>null</code> if unknown
+	 */
+	private String findInstanceName(Instance instance) {
+		for (String namePath : DEFAULT_NAME_PATHS) {
+			Collection<Object> values = PropertyResolver.getValues(instance, namePath);
+			if (values != null) {
+				for (Object value : values) {
+					if (value instanceof Instance) {
+						value = ((Instance) value).getValue();
+					}
+					
+					if (value != null) {
+						try {
+							String name = ConversionUtil.getAs(value, String.class);
+							if (name != null && !name.isEmpty()) {
+								return name;
+							}
+						} catch (Exception e) {
+							// ignore
+						}
+					}
+				}
+			}
+		}
+		
+		// no name found
+		return null;
 	}
 
 	/**
