@@ -25,7 +25,6 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
-import eu.esdihumboldt.hale.common.align.transformation.report.TransformationMessage;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
