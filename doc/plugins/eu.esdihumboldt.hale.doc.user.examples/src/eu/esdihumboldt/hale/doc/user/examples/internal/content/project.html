@@ -6,13 +6,14 @@
 </head>
 <body>
 
-	<h1>${project.info.name}</h1>
+	<h2>${project.info.name}</h2>
 
 	#if ($project.info.description)
 	<p style="white-space: pre-wrap; margin-left: 0px; max-width: 580px;">$project.info.description</p>
 	#end
 
 	<p>
+		<br />
 		<a class="command-link"
 			href='javascript:liveAction("eu.esdihumboldt.hale.ui.firststeps", "eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction",
 	"false||/${project.location}||bundle||${project.bundleName}")'><img
