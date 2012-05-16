@@ -65,6 +65,11 @@ public class InstanceMapTip extends HoverMapTip {
 			}
 		}
 		
+		if (sourceName != null && sourceName.equals(transformedName)) {
+			// if both are equal, return one name only
+			return sourceName;
+		}
+		
 		if (sourceName != null) {
 			sourceName += " (source)";
 		}
@@ -73,7 +78,7 @@ public class InstanceMapTip extends HoverMapTip {
 		}
 		
 		if (sourceName != null && transformedName != null) {
-			return sourceName + '\n' + transformedName;
+			return sourceName + "; " + transformedName;
 		}
 		else if (sourceName != null) {
 			return sourceName;
