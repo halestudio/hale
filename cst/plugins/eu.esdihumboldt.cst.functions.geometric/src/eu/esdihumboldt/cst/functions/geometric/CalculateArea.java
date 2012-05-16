@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.functions.geometric;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
@@ -24,7 +25,9 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
+import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
@@ -55,17 +58,33 @@ public class CalculateArea extends
 		// get input geometry
 		PropertyValue input = variables.get(null).get(0);
 		Object inputValue = input.getValue();
-		if (inputValue instanceof Instance) {
-			inputValue = ((Instance) inputValue).getValue();
-		}
+
+		// depth first traverser that on cancel continues traversal but w/o the
+		// children of the current object
+		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
+
+		GeometryFinder geoFind = new GeometryFinder(null);
+
+		traverser.traverse(inputValue, geoFind);
+
+		List<GeometryProperty<?>> geoms = geoFind.getGeometries();
 
 		Geometry geom = null;
 
-		if (inputValue instanceof GeometryProperty<?>) {
-			GeometryProperty<?> geomProp = (GeometryProperty<?>) inputValue;
-			geom = geomProp.getGeometry();
-		} else if (inputValue instanceof Geometry) {
-			geom = (Geometry) inputValue;
+		if (geoms.size() > 1) {
+
+			int area = 0;
+
+			for (GeometryProperty<?> geoProp : geoms) {
+				area += geoProp.getGeometry().getArea();
+			}
+
+			// TODO: warn ?!
+
+			return area;
+
+		} else {
+			geom = geoms.get(0).getGeometry();
 		}
 
 		if (geom != null) {
