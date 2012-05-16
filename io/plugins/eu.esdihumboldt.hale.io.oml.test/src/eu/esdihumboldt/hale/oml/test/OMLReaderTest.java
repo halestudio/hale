@@ -41,17 +41,21 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 /**
  * Test for reading OML files.
+ * 
  * @author Kevin Mais
  */
+@SuppressWarnings("null")
 public class OMLReaderTest {
-	
+
 	private static Alignment alignment = null;
 	private static Alignment alignment2 = null;
 	private static Alignment alignment3 = null;
-	
+
 	/**
-	 * Load the test alignment. 
-	 * @throws Exception if an error occurs
+	 * Load the test alignment.
+	 * 
+	 * @throws Exception
+	 *             if an error occurs
 	 */
 	@BeforeClass
 	public static void load() throws Exception {
@@ -77,10 +81,12 @@ public class OMLReaderTest {
 						"/testdata/aaa2inspire_cp/aaa2inspire_cp.xml.goml")
 						.toURI());
 	}
-	
+
 	/**
-	 * Test if the alignment was read correctly.
-	 * @throws Exception if an error occurs
+	 * Test if all alignments were read correctly.
+	 * 
+	 * @throws Exception
+	 *             if an error occurs
 	 */
 	@Test
 	public void testOMLreader() throws Exception {
@@ -104,20 +110,14 @@ public class OMLReaderTest {
 	}
 
 	/**
-	 * Test if the cells were converted correctly.
+	 * Test for formatted string translation
 	 */
 	@Test
-	public void testFunction() {
+	public void testFormattedString1() {
 		Collection<? extends Cell> cells = alignment.getCells();
-		Collection<? extends Cell> cells2 = alignment2.getCells();
-		Collection<? extends Cell> cells3 = alignment3.getCells();
 
 		Iterator<? extends Cell> it = cells.iterator();
-		Iterator<? extends Cell> it2 = cells2.iterator();
-		Iterator<? extends Cell> it3 = cells3.iterator();
 
-		// simple test for the formatted string translation
-		
 		Cell cell0 = it.next();
 		Cell cell1 = it.next();
 
@@ -131,58 +131,83 @@ public class OMLReaderTest {
 		List<String> values = params.get("pattern");
 
 		assertEquals("{id}-xxx-{details.address.street}", values.get(0));
-		
-		// simple test for the mapping classification translation
-		Cell cell2 = null;
-		while(it2.hasNext()) {
-			Cell temp = it2.next();
-			
-			if(temp.getTransformationIdentifier().equals("eu.esdihumboldt.hale.align.classification")) {
-				cell2 = temp;
-				break;
-			}
-		}
-		
-		ListMultimap<String, String> params2 = cell2
-				.getTransformationParameters();
-		List<String> values2 = params2.get("classificationMapping");
-		
-		for(int i=0; i < values2.size(); i++) {
-			String temp = values2.get(i);
-			
-			if(i==0) {
-				assertEquals("onGroundSurface 3", temp);
-			}
-			if(i==1) {
-				assertEquals("suspendedOrElevated 2", temp);
-			}
-			if(i==2) {
-				assertEquals("underground 1", temp);
-			}
-			 
-		}
 
-		// extended test for the formated string translation
-		Cell cell3 = null;
-		while(it3.hasNext()) {
-			Cell temp = it3.next();
-			
-			if(temp.getTransformationIdentifier().equals("eu.esdihumboldt.hale.align.formattedstring")) {
-				cell3 = temp;
-				break;
-			}
-		}
-		assertNotNull(cell3);
-		
-		ListMultimap<String, String> params3 = cell3
-				.getTransformationParameters();
-		List<String> values3 = params3.get("pattern");
-		
-		assertEquals("{flurstuecksnummer.AX_Flurstuecksnummer.zaehler}/{flurstuecksnummer.AX_Flurstuecksnummer.nenner}", values3.get(0));
 	}
 
-	private static Alignment loadAlignment(URI sourceSchemaLocation, 
-		URI targetSchemaLocation, final URI alignmentLocation) throws IOProviderConfigurationException, IOException {
+	/**
+	 * Extended test for formatted string function
+	 */
+	@Test
+	public void testFormattedString2() {
+
+		Collection<? extends Cell> cells = alignment3.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.formattedstring")) {
+				cell = temp;
+				break;
+			}
+		}
+		assertNotNull(cell);
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+		List<String> values = params.get("pattern");
+
+		assertEquals(
+				"{flurstuecksnummer.AX_Flurstuecksnummer.zaehler}/{flurstuecksnummer.AX_Flurstuecksnummer.nenner}",
+				values.get(0));
+	}
+
+	/**
+	 * Test for classification mapping function
+	 */
+	@Test
+	public void testClassificationMapping() {
+
+		Collection<? extends Cell> cells = alignment2.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.classification")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+		List<String> values = params.get("classificationMapping");
+
+		for (int i = 0; i < values.size(); i++) {
+			String temp = values.get(i);
+
+			if (i == 0) {
+				assertEquals("onGroundSurface 3", temp);
+			}
+			if (i == 1) {
+				assertEquals("suspendedOrElevated 2", temp);
+			}
+			if (i == 2) {
+				assertEquals("underground 1", temp);
+			}
+		}
+	}
+
+	private static Alignment loadAlignment(URI sourceSchemaLocation,
+			URI targetSchemaLocation, final URI alignmentLocation)
+			throws IOProviderConfigurationException, IOException {
 
 		// load source schema
 		Schema source = readXMLSchema(new DefaultInputSupplier(
@@ -234,5 +259,5 @@ public class OMLReaderTest {
 
 		return reader.getSchema();
 	}
-	
+
 }
