@@ -97,20 +97,20 @@
                   minOccurrence="1">
                <geometryCondition></geometryCondition>
             </property>
+            <property
+                  description="Variable that can be used in the buffer width expression"
+                  label="Variable"
+                  maxOccurrence="n"
+                  minOccurrence="0"
+                  name="var">
+            </property>
          </sourceProperties>
          <functionParameter
-               description="The size of the buffer to create on the source geometry."
+               description="The size of the buffer to create on the source geometry. May be a mathematical expression."
                label="Buffer width"
                maxOccurrence="1"
                minOccurrence="1"
                name="bufferWidth">
-            <validator
-                  class="eu.esdihumboldt.hale.common.align.extension.function.validator.NumberValidator">
-               <parameter
-                     name="type"
-                     value="float">
-               </parameter>
-            </validator>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
