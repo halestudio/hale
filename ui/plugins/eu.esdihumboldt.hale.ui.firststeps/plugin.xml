@@ -78,7 +78,8 @@
          point="eu.esdihumboldt.hale.doc.user.examples">
       <example-project
             id="eu.esdihumboldt.hale.ui.firststeps.introexample"
-            location="exampleschema/t1t2.halex">
+            location="exampleschema/t1t2.halex"
+            summary="Basic example project used in the &apos;Get started with HALE&apos; guide.">
       </example-project>
    </extension>
 </plugin>

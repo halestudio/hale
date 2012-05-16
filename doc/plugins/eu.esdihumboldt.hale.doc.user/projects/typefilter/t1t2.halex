@@ -3,6 +3,7 @@
     <name>Type filter example</name>
     <author>Simon Templer</author>
     <description xml:space="preserve">Simple example project demonstrating the use of filters on source types.&#xd;
+&#xd;
 The source type 'item' is mapped to two different target types 'shirt' and 'hat', according to the value of the property 'type'.</description>
     <created>2012-03-01T10:54:53.357+01:00</created>
     <modified>2012-03-21T21:08:24.458+01:00</modified>
