@@ -28,10 +28,9 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
-import eu.esdihumboldt.hale.common.instance.helper.InstanceTraversalCallback;
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
-import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
@@ -96,58 +95,17 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	@Override
 	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
-		final CRSDefinition defaultCrsDef = GMLGeometryUtil.findCRS(instance);
-
-		// collect contained geometries
-		final List<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>();
-
+		CRSDefinition defaultCrsDef = GMLGeometryUtil.findCRS(instance);
+		
 		// depth first traverser that on cancel continues traversal but w/o the
 		// children of the current object
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
-
-		InstanceTraversalCallback collector = new InstanceTraversalCallback() {
-
-			@Override
-			public boolean visit(Object value, QName name) {
-				if (value instanceof Collection<?>) {
-					boolean found = false;
-					// traverse all collection elements
-					for (Object element : ((Collection<?>) value)) {
-						found = found || !visit(element, name);
-					}
-					return !found;
-				}
-
-				if (value instanceof GeometryProperty<?>) {
-					geometries.add(((GeometryProperty<?>) value));
-					// stop traversion afterwards, as there will be only parts
-					// of the geometry as children
-					return false;
-				}
-				if (value instanceof Geometry) {
-					geometries.add(new DefaultGeometryProperty<Geometry>(
-							defaultCrsDef, (Geometry) value));
-					// stop traversion afterwards, as there will be only parts
-					// of the geometry as children
-					return false;
-				}
-
-				return true;
-			}
-
-			@Override
-			public boolean visit(Group group, QName name) {
-				return true;
-			}
-
-			@Override
-			public boolean visit(Instance instance, QName name) {
-				return true;
-			}
-		};
-		traverser.traverse(instance, collector);
-
-		return createGeometry(instance, geometries, defaultCrsDef);
+		
+		GeometryFinder geoFind = new GeometryFinder(defaultCrsDef);
+		
+		traverser.traverse(instance, geoFind);
+		
+		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef);
 	}
 
 	/**
