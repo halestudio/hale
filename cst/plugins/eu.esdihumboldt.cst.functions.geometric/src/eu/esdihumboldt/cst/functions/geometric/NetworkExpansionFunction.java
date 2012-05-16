@@ -28,4 +28,10 @@ public interface NetworkExpansionFunction {
 	 * the network expansion function id
 	 */
 	public static final String ID = "eu.esdihumboldt.cst.functions.geometric.networkexpansion";
+	
+	/**
+	 * Entity name for variables.
+	 */
+	public static final String ENTITY_VARIABLE = "var";
+	
 }
