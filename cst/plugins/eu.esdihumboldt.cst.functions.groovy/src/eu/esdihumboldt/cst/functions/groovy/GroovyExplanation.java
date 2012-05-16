@@ -36,7 +36,7 @@ public class GroovyExplanation extends AbstractCellExplanation {
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String script = CellUtil.getFirstParameter(cell, GroovyTransformation.PARAMETER_SCRIPT);
-		List<? extends Entity> sources = cell.getSource().get(GroovyTransformation.ENTITY_VARIABLE);
+		List<? extends Entity> sources = (cell.getSource() == null)?(null):(cell.getSource().get(GroovyTransformation.ENTITY_VARIABLE));
 
 		if (target != null && script != null) {
 			if (html)
@@ -45,7 +45,7 @@ public class GroovyExplanation extends AbstractCellExplanation {
 					script);
 			if (html)
 				explanation = explanation.replaceAll("\n", "<br />");
-			if (html) {
+			if (html && sources != null) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("<br>Replacement table:<br>");
 				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
