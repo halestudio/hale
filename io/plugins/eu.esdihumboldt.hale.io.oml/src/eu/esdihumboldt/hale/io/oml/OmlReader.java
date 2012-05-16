@@ -49,6 +49,7 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.io.oml.helper.AssignTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.CalculateLengthTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.ClassificationMappingTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.DateExtractionTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.FormattedStringTranslator;
@@ -106,7 +107,7 @@ public class OmlReader extends AbstractAlignmentReader implements
 		map.put("eu.esdihumboldt.cst.corefunctions.CalculateArea",
 				new NotSupportedTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.CalculateLength",
-				new NotSupportedTranslator());
+				new CalculateLengthTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.CentroidFunction",
 				new NotSupportedTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.ClipByRectangleFunction",
