@@ -107,6 +107,9 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 		
 		IPartService partService = (IPartService)mapView.getSite().getService(IPartService.class);
         partService.addPartListener(this);
+        
+        // map tips
+        mapView.getMapTips().addMapTip(new InstanceMapTip(mapView.getMapKit()), 5);
 	}
 	
 	/**
