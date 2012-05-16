@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.functions.geometric;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
@@ -24,7 +25,10 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationMessage;
+import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
+import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
@@ -55,26 +59,42 @@ public class CalculateLength extends
 		// get input geometry
 		PropertyValue input = variables.get(null).get(0);
 		Object inputValue = input.getValue();
-		if (inputValue instanceof Instance) {
-			inputValue = ((Instance) inputValue).getValue();
-		}
+
+		// depth first traverser that on cancel continues traversal but w/o the
+		// children of the current object
+		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
 		
+		GeometryFinder geoFind = new GeometryFinder(null);
+		
+		traverser.traverse(inputValue, geoFind);
+		
+		List<GeometryProperty<?>> geoms = geoFind.getGeometries();
+
 		Geometry geom = null;
-		
-		if (inputValue instanceof GeometryProperty<?>) {
-			GeometryProperty<?> geomProp = (GeometryProperty<?>) inputValue;
-			geom = geomProp.getGeometry();
+
+		if(geoms.size() > 1) {
+			
+			int length = 0;
+			
+			for(GeometryProperty<?> geoProp : geoms) {
+				length += geoProp.getGeometry().getLength();
+			}
+			
+			// TODO: warn ?!
+
+			return length;
+			
+		} else {
+			geom = geoms.get(0).getGeometry();
 		}
-		else if (inputValue instanceof Geometry) {
-			geom = (Geometry) inputValue;
+
+		if (geom != null) {
+			return geom.getLength();
+		} else {
+			throw new TransformationException(
+					"Geometry for calculate length could not be retrieved.");
 		}
-		
-		if(geom != null) {
-			 return geom.getLength();
-		}else {
-			throw new TransformationException("Geometry for calculate length could not be retrieved.");
-		}
-		
+
 	}
 
 }
