@@ -31,6 +31,7 @@ import org.osgi.framework.Version;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -383,13 +384,10 @@ public class ProjectParser extends AbstractImportProvider implements
 			// XXX how to handle project files?
 			// TODO create OML Alignment ProjectFile
 			
-			// change to static final string in right alignment class
-			String ACTION_LOAD_ALIGNMENT = "eu.esdihumboldt.hale.io.align.read";
-			
 			String msgCT = "Could not load mapping data at {0}, the content type could not be identified.";
 			String msgIO = "Could not load mapping data at {0}, no matching I/O provider could be found.";
 			
-			load(omlPath, ACTION_LOAD_ALIGNMENT, msgCT, msgIO, AlignmentReader.class);
+			load(omlPath, AlignmentIO.ACTION_LOAD_ALIGNMENT, msgCT, msgIO, AlignmentReader.class);
 
 			// try {
 			// OmlRdfReader reader = new OmlRdfReader();
