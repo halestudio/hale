@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -50,6 +52,8 @@ public class OMLReaderTest {
 	private static Alignment alignment = null;
 	private static Alignment alignment2 = null;
 	private static Alignment alignment3 = null;
+	private static Alignment alignment4 = null;
+	private static Alignment alignment5 = null;
 
 	/**
 	 * Load the test alignment.
@@ -80,6 +84,22 @@ public class OMLReaderTest {
 				OMLReaderTest.class.getResource(
 						"/testdata/aaa2inspire_cp/aaa2inspire_cp.xml.goml")
 						.toURI());
+
+		alignment4 = loadAlignment(
+				OMLReaderTest.class.getResource(
+						"/testdata/watrcrsl/ERM_Watercourse_FME.xsd").toURI(),
+				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
+				OMLReaderTest.class.getResource(
+						"/testdata/watrcrsl/_watrcrsl_inspire.xml.goml")
+						.toURI());
+
+		alignment5 = loadAlignment(
+				OMLReaderTest.class.getResource(
+						"/testdata/dkm_inspire/KA_14168_EPSG25833.xsd").toURI(),
+				URI.create("http://hale-test/inspire3/CadastralParcels.xsd"),
+				OMLReaderTest.class.getResource(
+						"/testdata/dkm_inspire/mapping_dkm_inspire.xml.goml")
+						.toURI());
 	}
 
 	/**
@@ -93,6 +113,8 @@ public class OMLReaderTest {
 		assertNotNull(alignment);
 		assertNotNull(alignment2);
 		assertNotNull(alignment3);
+		assertNotNull(alignment4);
+		assertNotNull(alignment5);
 	}
 
 	/**
@@ -103,14 +125,18 @@ public class OMLReaderTest {
 		Collection<? extends Cell> cells = alignment.getCells();
 		Collection<? extends Cell> cells2 = alignment2.getCells();
 		Collection<? extends Cell> cells3 = alignment3.getCells();
+		Collection<? extends Cell> cells4 = alignment4.getCells();
+		Collection<? extends Cell> cells5 = alignment5.getCells();
 
-		assertEquals(2, cells.size());
+		assertEquals(4, cells.size());
 		assertEquals(11, cells2.size());
 		assertEquals(33, cells3.size());
+		assertEquals(18, cells4.size());
+		assertEquals(51, cells5.size());
 	}
 
 	/**
-	 * Test for formatted string translation
+	 * Test for formatted string translation in aligment
 	 */
 	@Test
 	public void testFormattedString1() {
@@ -118,24 +144,29 @@ public class OMLReaderTest {
 
 		Iterator<? extends Cell> it = cells.iterator();
 
-		Cell cell0 = it.next();
-		Cell cell1 = it.next();
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
 
-		assertEquals("eu.esdihumboldt.hale.align.retype",
-				cell0.getTransformationIdentifier());
-		assertEquals("eu.esdihumboldt.hale.align.formattedstring",
-				cell1.getTransformationIdentifier());
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.formattedstring")) {
+				cell = temp;
+				break;
+			}
+		}
 
-		ListMultimap<String, String> params = cell1
+		ListMultimap<String, String> params = cell
 				.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
+		assertEquals(1, values.size());
+		// size is 1, so "get(0)" works fine
 		assertEquals("{id}-xxx-{details.address.street}", values.get(0));
 
 	}
 
 	/**
-	 * Extended test for formatted string function
+	 * Extended test for formatted string function in alignment3
 	 */
 	@Test
 	public void testFormattedString2() {
@@ -160,16 +191,49 @@ public class OMLReaderTest {
 				.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
+		assertEquals(1, values.size());
+		// size is 1
 		assertEquals(
 				"{flurstuecksnummer.AX_Flurstuecksnummer.zaehler}/{flurstuecksnummer.AX_Flurstuecksnummer.nenner}",
 				values.get(0));
 	}
 
 	/**
-	 * Test for classification mapping function
+	 * Test for formatted string function in alignment5
 	 */
 	@Test
-	public void testClassificationMapping() {
+	public void testFormattedString3() {
+
+		Collection<? extends Cell> cells = alignment5.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.formattedstring")) {
+				cell = temp;
+				break;
+			}
+		}
+		assertNotNull(cell);
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+		List<String> values = params.get("pattern");
+
+		assertEquals(1, values.size());
+		// size is 1
+		assertEquals("{Grundbuch}:{Nummer}:{Einlage}", values.get(0));
+	}
+
+	/**
+	 * Test for classification mapping function in alignment2
+	 */
+	@Test
+	public void testClassificationMapping1() {
 
 		Collection<? extends Cell> cells = alignment2.getCells();
 
@@ -203,6 +267,495 @@ public class OMLReaderTest {
 				assertEquals("underground 1", temp);
 			}
 		}
+		
+		// check if all values were tested
+		assertEquals(3, values.size());
+	}
+
+	/**
+	 * Test for classification mapping function in alignment4
+	 */
+	@Test
+	public void testClassificationMapping2() {
+
+		Collection<? extends Cell> cells = alignment4.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		List<Cell> classMapCells = new ArrayList<Cell>();
+
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.classification")) {
+				classMapCells.add(temp);
+			}
+		}
+
+		// test all cells that have a classification mapping function
+		for (int i = 0; i < classMapCells.size(); i++) {
+			Cell cell = classMapCells.get(i);
+
+			ListMultimap<String, String> params = cell
+					.getTransformationParameters();
+			List<String> values = params.get("classificationMapping");
+
+			// each cell can have more than one value, so iterate through them
+			// for each cell too
+			for (int j = 0; j < values.size(); j++) {
+				String temp = values.get(j);
+
+				// "i" is the index for the cell number
+				// "j" stands for the indices of the values per cell
+				// test cell #1
+				if (i == 0 && j == 0) {
+					assertEquals("underConstruction 5", temp);
+				}
+				// test cell #2
+				if (i == 1 && j == 0) {
+					assertEquals("manMade 4", temp);
+				}
+				if (i == 1 && j == 1) {
+					assertEquals("natural 5", temp);
+				}
+				// test cell #3
+				if (i == 2 && j == 0) {
+					assertEquals("intermittent 6", temp);
+				}
+				if (i == 2 && j == 1) {
+					assertEquals("perennial 8", temp);
+				}
+				// test cell #4
+				if (i == 3 && j == 0) {
+					assertEquals("false 1", temp);
+				}
+				if (i == 3 && j == 1) {
+					assertEquals("true 2", temp);
+				}
+
+			}
+		}
+
+		// check if all cells with a classification mapping function were tested
+		assertEquals(4, classMapCells.size());
+
+	}
+
+	/**
+	 * Test for network expansion function in alignment4
+	 */
+	@Test
+	public void testNetworkExpansion1() {
+
+		Collection<? extends Cell> cells = alignment4.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.geometric.networkexpansion")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+		List<String> values = params.get("bufferWidth");
+
+		assertEquals(1, values.size());
+		// size is always 1
+		String temp = values.get(0);
+
+		assertEquals("0.005", temp);
+	}
+
+	/**
+	 * Test for network expansion function in alignment5
+	 */
+	@Test
+	public void testNetworkExpansion2() {
+
+		Collection<? extends Cell> cells = alignment5.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		List<Cell> networkCells = new ArrayList<Cell>();
+
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.geometric.networkexpansion")) {
+				networkCells.add(temp);
+			}
+		}
+
+		for (int i = 0; i < networkCells.size(); i++) {
+
+			Cell cell = networkCells.get(i);
+
+			ListMultimap<String, String> params = cell
+					.getTransformationParameters();
+			List<String> values = params.get("bufferWidth");
+
+			String temp = values.get(0);
+
+			if (i == 0) {
+				assertEquals("50", temp);
+			}
+			if (i == 1) {
+				assertEquals("5", temp);
+			}
+		}
+		
+		// check if all cells were tested
+		assertEquals(2, networkCells.size());
+
+	}
+
+	/**
+	 * Test assign function in alignment4
+	 */
+	@Test
+	public void testAssign1() {
+
+		Collection<? extends Cell> cells = alignment4.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		List<Cell> assignCells = new ArrayList<Cell>();
+
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.assign")) {
+				assignCells.add(temp);
+			}
+		}
+
+		// test all cells that have an assign function
+		for (int i = 0; i < assignCells.size(); i++) {
+			Cell cell = assignCells.get(i);
+
+			ListMultimap<String, String> params = cell
+					.getTransformationParameters();
+			List<String> values = params.get("value");
+
+			assertEquals(1, values.size());
+			// size is always 1
+			String temp = values.get(0);
+
+			// test cell #1
+			if (i == 0) {
+				assertEquals("FR", temp);
+			}
+			// test cell #2
+			if (i == 1) {
+				assertEquals("FR.IGN.ERM", temp);
+			}
+			// test cell #3
+			if (i == 2) {
+				assertEquals("250000", temp);
+			}
+		}
+
+		// check if all cells with an assign function were tested
+		assertEquals(3, assignCells.size());
+
+	}
+
+	/**
+	 * Test for assign function in alignment2
+	 */
+	@Test
+	public void testAssign2() {
+
+		Collection<? extends Cell> cells = alignment2.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		List<Cell> assignCells = new ArrayList<Cell>();
+
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.assign")) {
+				assignCells.add(temp);
+			}
+		}
+
+		// test all cells that have an assign function
+		for (int i = 0; i < assignCells.size(); i++) {
+			Cell cell = assignCells.get(i);
+
+			ListMultimap<String, String> params = cell
+					.getTransformationParameters();
+			List<String> values = params.get("value");
+
+			assertEquals(1, values.size());
+			// size is always 1
+			String temp = values.get(0);
+
+			// test cell #1
+			if (i == 0) {
+				assertEquals("manMade", temp);
+			}
+			// test cell #2
+			if (i == 1) {
+				assertEquals("false", temp);
+			}
+			// test cell #3
+			if (i == 2) {
+				assertEquals("2009-12-23 12:13:14", temp);
+			}
+			// test cell #4
+			if (i == 3) {
+				assertEquals("m", temp);
+			}
+		}
+
+		// check if all cells with an assign function were tested
+		assertEquals(4, assignCells.size());
+	}
+
+	/**
+	 * Test for assign function in alignment5
+	 */
+	@Test
+	public void testAssign3() {
+		Collection<? extends Cell> cells = alignment5.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		List<Cell> assignCells = new ArrayList<Cell>();
+
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.assign")) {
+				assignCells.add(temp);
+			}
+		}
+
+		// test all cells that have an assign function
+		for (int i = 0; i < assignCells.size(); i++) {
+			Cell cell = assignCells.get(i);
+
+			ListMultimap<String, String> params = cell
+					.getTransformationParameters();
+			List<String> values = params.get("value");
+
+			assertEquals(1, values.size());
+			// size is always 1
+			String temp = values.get(0);
+
+			// test cell #1
+			if (i == 0) {
+				assertEquals("2000", temp);
+			}
+			// test cell #2
+			if (i == 1) {
+				assertEquals("20", temp);
+			}
+			// test cell #3
+			if (i == 2) {
+				assertEquals("20", temp);
+			}
+			// test cell #4
+			if (i == 3) {
+				assertEquals("2", temp);
+			}
+			// test cell #5
+			if (i == 4) {
+				assertEquals("Katastralgemeinde", temp);
+			}
+			// test cell #6
+			if (i == 5) {
+				assertEquals("m²", temp);
+			}
+			// test cell #7
+			if (i == 6) {
+				assertEquals("m²", temp);
+			}
+			// test cell #8
+			if (i == 7) {
+				assertEquals("m", temp);
+			}
+			// test cell #9
+			if (i == 8) {
+				assertEquals("m", temp);
+			}
+		}
+
+		// check if all cells with an assign function were tested
+		assertEquals(9, assignCells.size());
+	}
+
+	/**
+	 * Test for ordinates to point function in alignment5
+	 */
+	@Test
+	public void testOrdinatesToPoint1() {
+
+		Collection<? extends Cell> cells = alignment5.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.geometric.ordinates_to_point")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		ListMultimap<String, ? extends Entity> src = cell.getSource();
+
+		// the parameters were moved to the source entities with the appropriate
+		// names so get the source entities with name "X"/"Y"
+		Entity srcX = src.get("X").get(0);
+		Entity srcY = src.get("Y").get(0);
+
+		// check if the source entity has the correct value
+		assertEquals("HOCHWERT", srcX.getDefinition().getDefinition()
+				.getDisplayName());
+		assertEquals("RECHTSWERT", srcY.getDefinition().getDefinition()
+				.getDisplayName());
+
+	}
+
+	/**
+	 * Test for centroid function in alignment3
+	 */
+	@Test
+	public void testCentroid1() {
+
+		Collection<? extends Cell> cells = alignment5.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.geometric.centroid")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		// test if there is only one source and one target
+		assertEquals(1, cell.getSource().size());
+		assertEquals(1, cell.getTarget().size());
+
+		List<? extends Entity> list = cell.getTarget().get(null);
+		assertEquals(1, list.size());
+
+		Entity ent = list.get(0);
+
+		String name = ent.getDefinition().getDefinition().getDisplayName();
+
+		assertEquals("referencePoint", name);
+	}
+
+	/**
+	 * Test for date extraction function in alignment
+	 */
+	@Test
+	public void testDateExtraction() {
+		Collection<? extends Cell> cells = alignment.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.string.dateextraction")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+		List<String> values = params.get("dateFormat");
+
+		assertEquals(1, values.size());
+
+		String date = values.get(0);
+
+		assertEquals("yyyy-MM-dd HH:mm:ss", date);
+	}
+
+	/**
+	 * Test for mathematical expression in alignment
+	 */
+	@Test
+	public void testMathematicalExpression() {
+		Collection<? extends Cell> cells = alignment.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.numeric.mathexpression")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+		List<String> values = params.get("expression");
+
+		// test the amount and the correctness of the parameter
+		assertEquals(1, values.size());
+
+		String date = values.get(0);
+
+		assertEquals("income * age/10", date);
+
+		// test the amount and the correctness of source properties
+		ListMultimap<String, ? extends Entity> src = cell.getSource();
+
+		// all source properties should be named "var" so we test if both lists
+		// have the same size
+		List<? extends Entity> srcCells = src.get("var");
+		assertEquals(2, src.size());
+		assertEquals(2, srcCells.size());
+
+		// since we have now the right amount of source properties we can now
+		// test the correctness of their names
+		Entity srcCell1 = srcCells.get(0);
+		Entity srcCell2 = srcCells.get(1);
+
+		String name1 = srcCell1.getDefinition().getDefinition()
+				.getDisplayName();
+		String name2 = srcCell2.getDefinition().getDefinition()
+				.getDisplayName();
+
+		assertEquals("age", name1);
+		assertEquals("income", name2);
+
 	}
 
 	private static Alignment loadAlignment(URI sourceSchemaLocation,
