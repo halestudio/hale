@@ -162,6 +162,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.filter"/>
       <plugin id="eu.esdihumboldt.hale.ui.firststeps"/>
       <plugin id="eu.esdihumboldt.hale.ui.functions.core"/>
+      <plugin id="eu.esdihumboldt.hale.ui.functions.geometric"/>
       <plugin id="eu.esdihumboldt.hale.ui.functions.groovy"/>
       <plugin id="eu.esdihumboldt.hale.ui.functions.numeric"/>
       <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
