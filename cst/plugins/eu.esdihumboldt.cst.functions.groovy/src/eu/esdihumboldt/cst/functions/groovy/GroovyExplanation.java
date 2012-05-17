@@ -26,8 +26,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * @author Kai Schwierczek
  */
 public class GroovyExplanation extends AbstractCellExplanation {
-	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n"
-			+ "{1}\nSource property names are bind to their value, if the context condition/index matches, otherwise the value isn't set.";
+	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script (be sure to include a return statement):\n"
+			+ "{1}\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn't set.";
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
@@ -47,7 +47,7 @@ public class GroovyExplanation extends AbstractCellExplanation {
 				explanation = explanation.replaceAll("\n", "<br />");
 			if (html && sources != null) {
 				StringBuilder sb = new StringBuilder();
-				sb.append("<br>Replacement table:<br>");
+				sb.append("<br /><br />Replacement table:<br />");
 				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
 				for (Entity entity : sources)
 					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>", getEntityNameWithoutCondition(entity).replace('.', '_'),
