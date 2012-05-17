@@ -92,10 +92,9 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 			values = null;
 
 		composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(GridLayoutFactory.swtDefaults().create());
+		composite.setLayout(GridLayoutFactory.swtDefaults().margins(0, 0).create());
 
 		// info on what inputs are valid
-		Label inputInfo = new Label(composite, SWT.NONE);
 		StringBuilder infoText = new StringBuilder();
 		// every string is convertable to string -> leave that out
 		if (!binding.equals(String.class))
@@ -106,7 +105,11 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 				infoText.append('\n');
 			infoText.append(validator.getDescription());
 		}
-		inputInfo.setText(infoText.toString());
+		
+		if (infoText.length() > 0) {
+			Label inputInfo = new Label(composite, SWT.NONE);
+			inputInfo.setText(infoText.toString());
+		}
 
 		viewer = new ComboViewer(composite, (otherValuesAllowed ? SWT.NONE : SWT.READ_ONLY) | SWT.BORDER);
 		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().indent(5, 0).grab(true, false).create());
