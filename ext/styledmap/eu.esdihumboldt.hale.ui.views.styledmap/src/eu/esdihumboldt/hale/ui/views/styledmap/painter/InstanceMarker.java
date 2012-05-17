@@ -305,6 +305,13 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 			CRSDefinition crsDefinition, InstanceWaypoint context,
 			PixelConverter converter, int zoom, CoordinateReferenceSystem mapCRS, boolean calculateArea) {
 		try {
+			/*
+			 * Conversion to map pixel coordinates:
+			 * Though most of the time the result will be the origin (0,0), e.g.
+			 * for way-points representing a single point, the coordinates may
+			 * also be different, e.g. for MultiPoint way-points.
+			 */
+			
 			// get CRS converter
 			CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
 			
