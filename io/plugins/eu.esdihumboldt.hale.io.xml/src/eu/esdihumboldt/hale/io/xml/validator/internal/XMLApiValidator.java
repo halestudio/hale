@@ -20,7 +20,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
-import eu.esdihumboldt.hale.common.cache.Request;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.io.xml.validator.Report;
 import eu.esdihumboldt.hale.io.xml.validator.Validator;
 
@@ -60,8 +60,8 @@ public class XMLApiValidator implements Validator {
 				}
 		
 			    // load a WXS schema, represented by a Schema instance
-//				sources[i] = new StreamSource(schema.getLocation().openStream());
-				sources[i] = new StreamSource(Request.getInstance().get(schemaLocation));
+				DefaultInputSupplier dis = new DefaultInputSupplier(schemaLocation);
+				sources[i] = new StreamSource(dis.getInput());
 			}
 			// create a SchemaFactory capable of understanding WXS schemas
 		    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
