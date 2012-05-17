@@ -7,11 +7,7 @@
 <body>
 
 	<h2>${project.info.name}</h2>
-
-	#if ($project.info.description)
-	<p style="white-space: pre-wrap; margin-left: 0px; max-width: 580px;">$project.info.description</p>
-	#end
-
+	
 	<p>
 		<br />
 		<a class="command-link"
@@ -19,6 +15,14 @@
 	"false||/${project.location}||bundle||${project.bundleName}")'><img
 			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
 			alt="command link"></img> Load example</a>
+	</p>
+
+	#if ($project.info.description)
+	<p style="white-space: pre-wrap; max-width: 580px; padding: 16px;">$project.info.description</p>
+	#end
+
+	<p>
+		<a href="${project.id}/mapping.html">Show mapping documentation (generate)</a>
 	</p>
 
 </body>

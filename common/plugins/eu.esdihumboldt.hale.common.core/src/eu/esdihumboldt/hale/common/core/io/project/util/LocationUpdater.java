@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
+import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
 import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.io.PathUpdate;
 
@@ -46,6 +47,7 @@ public class LocationUpdater {
 		if (!targetLoc.equals(newProjectLoc)) {
 			PathUpdate update = new PathUpdate(targetLoc, newProjectLoc);
 
+			// update I/O configurations
 			List<IOConfiguration> configuration = project.getResources();
 			for (IOConfiguration providerconf : configuration) {
 				final Map<String, String> conf = providerconf.getProviderConfiguration();
@@ -61,6 +63,21 @@ public class LocationUpdater {
 							conf.put(ImportProvider.PARAM_SOURCE, replacement.toString());
 						}
 					}
+				}
+			}
+			
+			// update project file infos
+			for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
+				URI location = fileInfo.getLocation();
+				if (!IOUtils.testStream(fileInfo.getLocation(), false)) {
+					location = update.changePath(location);
+					fileInfo.setLocation(location);
+					/*
+					 * For this the fallback method is not called intentionally,
+					 * as in the project service, this update has no effect,
+					 * as the project files are laready loaded in the
+					 * DefaultProjectReader.
+					 */
 				}
 			}
 		}

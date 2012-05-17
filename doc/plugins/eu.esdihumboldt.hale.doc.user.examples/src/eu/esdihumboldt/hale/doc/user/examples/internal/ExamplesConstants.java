@@ -41,6 +41,11 @@ public interface ExamplesConstants {
 	public static final String PATH_PREFIX_PROJECT = "projects/";
 	
 	/**
+	 * The suffix for references to the mapping documentation
+	 */
+	public static final String PATH_SUFFIX_MAPPINGDOC = "/mapping";
+	
+	/**
 	 * Empty topics array
 	 */
 	public static final ITopic[] NO_TOPICS = new ITopic[]{};
