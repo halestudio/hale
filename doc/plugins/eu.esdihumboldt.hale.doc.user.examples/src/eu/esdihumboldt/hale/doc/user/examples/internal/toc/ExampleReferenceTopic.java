@@ -20,6 +20,10 @@ import org.eclipse.help.IHelpResource;
 import org.eclipse.help.ITopic;
 import org.eclipse.help.IUAElement;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
+
 import eu.esdihumboldt.hale.doc.user.examples.internal.ExamplesConstants;
 import eu.esdihumboldt.hale.doc.user.examples.internal.extension.ExampleProject;
 import eu.esdihumboldt.hale.doc.user.examples.internal.extension.ExampleProjectExtension;
@@ -28,6 +32,8 @@ import eu.esdihumboldt.hale.doc.user.examples.internal.extension.ExampleProjectE
  * Table of contents for the function reference
  */
 public class ExampleReferenceTopic implements ITopic, ExamplesConstants {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(ExampleReferenceTopic.class);
 	
 	private ITopic[] projectTopics;
 	
@@ -69,19 +75,24 @@ public class ExampleReferenceTopic implements ITopic, ExamplesConstants {
 	@Override
 	public ITopic[] getSubtopics() {
 		if (projectTopics == null) {
-			Collection<ITopic> topics = new ArrayList<ITopic>();
-			
-			// initialize function topics
-			for (ExampleProject project : ExampleProjectExtension.getInstance().getElements()) {
-				ITopic projectTopic = new ProjectTopic(project);
-				topics.add(projectTopic);
-			}
-			
-			if (topics.isEmpty()) {
-				projectTopics = NO_TOPICS;
-			}
-			else {
-				projectTopics = topics.toArray(new ITopic[topics.size()]);
+			ATransaction trans = log.begin("Initializing example project topics");
+			try {
+				Collection<ITopic> topics = new ArrayList<ITopic>();
+				
+				// initialize function topics
+				for (ExampleProject project : ExampleProjectExtension.getInstance().getElements()) {
+					ITopic projectTopic = new ProjectTopic(project);
+					topics.add(projectTopic);
+				}
+				
+				if (topics.isEmpty()) {
+					projectTopics = NO_TOPICS;
+				}
+				else {
+					projectTopics = topics.toArray(new ITopic[topics.size()]);
+				}
+			} finally {
+				trans.end();
 			}
 		}
 		
