@@ -50,6 +50,7 @@ public class OMLReaderTest {
 	private static Alignment alignment = null;
 	private static Alignment alignment2 = null;
 	private static Alignment alignment3 = null;
+	private static Alignment alignment4 = null;
 
 	/**
 	 * Load the test alignment.
@@ -80,6 +81,14 @@ public class OMLReaderTest {
 				OMLReaderTest.class.getResource(
 						"/testdata/aaa2inspire_cp/aaa2inspire_cp.xml.goml")
 						.toURI());
+
+		alignment4 = loadAlignment(
+				OMLReaderTest.class.getResource(
+						"/testdata/watrcrsl/ERM_Watercourse_FME.xsd").toURI(),
+				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
+				OMLReaderTest.class.getResource(
+						"/testdata/watrcrsl/_watrcrsl_inspire.xml.goml")
+						.toURI());
 	}
 
 	/**
@@ -93,6 +102,7 @@ public class OMLReaderTest {
 		assertNotNull(alignment);
 		assertNotNull(alignment2);
 		assertNotNull(alignment3);
+		assertNotNull(alignment4);
 	}
 
 	/**
@@ -103,10 +113,13 @@ public class OMLReaderTest {
 		Collection<? extends Cell> cells = alignment.getCells();
 		Collection<? extends Cell> cells2 = alignment2.getCells();
 		Collection<? extends Cell> cells3 = alignment3.getCells();
+		Collection<? extends Cell> cells4 = alignment4.getCells();
 
 		assertEquals(2, cells.size());
 		assertEquals(11, cells2.size());
 		assertEquals(33, cells3.size());
+		// TODO: test fails 'cause last cell can't be created -> 17 cells
+		assertEquals(18, cells4.size());
 	}
 
 	/**
