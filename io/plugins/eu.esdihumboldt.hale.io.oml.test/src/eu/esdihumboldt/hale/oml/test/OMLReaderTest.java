@@ -128,7 +128,7 @@ public class OMLReaderTest {
 		Collection<? extends Cell> cells4 = alignment4.getCells();
 		Collection<? extends Cell> cells5 = alignment5.getCells();
 
-		assertEquals(2, cells.size());
+		assertEquals(4, cells.size());
 		assertEquals(11, cells2.size());
 		assertEquals(33, cells3.size());
 		assertEquals(18, cells4.size());
@@ -144,18 +144,23 @@ public class OMLReaderTest {
 
 		Iterator<? extends Cell> it = cells.iterator();
 
-		Cell cell0 = it.next();
-		Cell cell1 = it.next();
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
 
-		assertEquals("eu.esdihumboldt.hale.align.retype",
-				cell0.getTransformationIdentifier());
-		assertEquals("eu.esdihumboldt.hale.align.formattedstring",
-				cell1.getTransformationIdentifier());
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.formattedstring")) {
+				cell = temp;
+				break;
+			}
+		}
 
-		ListMultimap<String, String> params = cell1
+		ListMultimap<String, String> params = cell
 				.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
+		assertEquals(1, values.size());
+		// size is 1, so "get(0)" works fine
 		assertEquals("{id}-xxx-{details.address.street}", values.get(0));
 
 	}
@@ -186,6 +191,8 @@ public class OMLReaderTest {
 				.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
+		assertEquals(1, values.size());
+		// size is 1
 		assertEquals(
 				"{flurstuecksnummer.AX_Flurstuecksnummer.zaehler}/{flurstuecksnummer.AX_Flurstuecksnummer.nenner}",
 				values.get(0));
@@ -217,6 +224,8 @@ public class OMLReaderTest {
 				.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
+		assertEquals(1, values.size());
+		// size is 1
 		assertEquals("{Grundbuch}:{Nummer}:{Einlage}", values.get(0));
 	}
 
@@ -258,6 +267,9 @@ public class OMLReaderTest {
 				assertEquals("underground 1", temp);
 			}
 		}
+		
+		// check if all values were tested
+		assertEquals(3, values.size());
 	}
 
 	/**
@@ -355,6 +367,8 @@ public class OMLReaderTest {
 				.getTransformationParameters();
 		List<String> values = params.get("bufferWidth");
 
+		assertEquals(1, values.size());
+		// size is always 1
 		String temp = values.get(0);
 
 		assertEquals("0.005", temp);
@@ -398,6 +412,9 @@ public class OMLReaderTest {
 				assertEquals("5", temp);
 			}
 		}
+		
+		// check if all cells were tested
+		assertEquals(2, networkCells.size());
 
 	}
 
@@ -430,7 +447,8 @@ public class OMLReaderTest {
 					.getTransformationParameters();
 			List<String> values = params.get("value");
 
-			// size should always be 1
+			assertEquals(1, values.size());
+			// size is always 1
 			String temp = values.get(0);
 
 			// test cell #1
@@ -481,7 +499,8 @@ public class OMLReaderTest {
 					.getTransformationParameters();
 			List<String> values = params.get("value");
 
-			// size should always be 1
+			assertEquals(1, values.size());
+			// size is always 1
 			String temp = values.get(0);
 
 			// test cell #1
@@ -534,7 +553,8 @@ public class OMLReaderTest {
 					.getTransformationParameters();
 			List<String> values = params.get("value");
 
-			// size should always be 1
+			assertEquals(1, values.size());
+			// size is always 1
 			String temp = values.get(0);
 
 			// test cell #1
@@ -604,8 +624,7 @@ public class OMLReaderTest {
 		ListMultimap<String, ? extends Entity> src = cell.getSource();
 
 		// the parameters were moved to the source entities with the appropriate
-		// names
-		// so get the source entities with name "X"/"Y"
+		// names so get the source entities with name "X"/"Y"
 		Entity srcX = src.get("X").get(0);
 		Entity srcY = src.get("Y").get(0);
 
@@ -616,14 +635,13 @@ public class OMLReaderTest {
 				.getDisplayName());
 
 	}
-	
 
 	/**
 	 * Test for centroid function in alignment3
 	 */
 	@Test
 	public void testCentroid1() {
-		
+
 		Collection<? extends Cell> cells = alignment5.getCells();
 
 		Iterator<? extends Cell> it = cells.iterator();
@@ -633,25 +651,111 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier()
-					.equals("eu.esdihumboldt.cst.functions.geometric.centroid")) {
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.geometric.centroid")) {
 				cell = temp;
 				break;
 			}
 		}
-		
+
 		// test if there is only one source and one target
 		assertEquals(1, cell.getSource().size());
 		assertEquals(1, cell.getTarget().size());
-		
+
 		List<? extends Entity> list = cell.getTarget().get(null);
 		assertEquals(1, list.size());
-		
+
 		Entity ent = list.get(0);
-		
+
 		String name = ent.getDefinition().getDefinition().getDisplayName();
-		
+
 		assertEquals("referencePoint", name);
+	}
+
+	/**
+	 * Test for date extraction function in alignment
+	 */
+	@Test
+	public void testDateExtraction() {
+		Collection<? extends Cell> cells = alignment.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.string.dateextraction")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+		List<String> values = params.get("dateFormat");
+
+		assertEquals(1, values.size());
+
+		String date = values.get(0);
+
+		assertEquals("yyyy-MM-dd HH:mm:ss", date);
+	}
+
+	/**
+	 * Test for mathematical expression in alignment
+	 */
+	@Test
+	public void testMathematicalExpression() {
+		Collection<? extends Cell> cells = alignment.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.numeric.mathexpression")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+		List<String> values = params.get("expression");
+
+		// test the amount and the correctness of the parameter
+		assertEquals(1, values.size());
+
+		String date = values.get(0);
+
+		assertEquals("income * age/10", date);
+
+		// test the amount and the correctness of source properties
+		ListMultimap<String, ? extends Entity> src = cell.getSource();
+
+		// all source properties should be named "var" so we test if both lists
+		// have the same size
+		List<? extends Entity> srcCells = src.get("var");
+		assertEquals(2, src.size());
+		assertEquals(2, srcCells.size());
+
+		// since we have now the right amount of source properties we can now
+		// test the correctness of their names
+		Entity srcCell1 = srcCells.get(0);
+		Entity srcCell2 = srcCells.get(1);
+
+		String name1 = srcCell1.getDefinition().getDefinition()
+				.getDisplayName();
+		String name2 = srcCell2.getDefinition().getDefinition()
+				.getDisplayName();
+
+		assertEquals("age", name1);
+		assertEquals("income", name2);
+
 	}
 
 	private static Alignment loadAlignment(URI sourceSchemaLocation,
