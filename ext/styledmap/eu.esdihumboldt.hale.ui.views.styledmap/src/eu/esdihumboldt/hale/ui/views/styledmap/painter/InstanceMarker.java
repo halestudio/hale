@@ -378,30 +378,50 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 			// exterior
 			Coordinate[] coordinates = geometry.getExteriorRing().getCoordinates();
 			java.awt.Polygon outerPolygon = createPolygon(coordinates, conv, converter, zoom);
-			java.awt.geom.Area drawArea = new java.awt.geom.Area(outerPolygon);
 			
-			// interior
-			for (int i = 0; i < geometry.getNumInteriorRing(); i++) {
-				LineString interior = geometry.getInteriorRingN(i);
-				java.awt.Polygon innerPolygon = createPolygon(
-						interior.getCoordinates(), conv, converter, zoom);
-				drawArea.subtract(new java.awt.geom.Area(innerPolygon));
-			}
-			
-			if (applyFill(g, context)) {
-				g.fill(drawArea);
-			}
-
-			if (applyStroke(g, context)) {
-				g.draw(drawArea);
-			}
-			
-			if (calculateArea) {
-				return new AdvancedPolygonArea(drawArea, outerPolygon);
+			if (geometry.getNumInteriorRing() > 0) {
+				// polygon has interior geometries
+				
+				java.awt.geom.Area drawArea = new java.awt.geom.Area(outerPolygon);
+				
+				// interior
+				for (int i = 0; i < geometry.getNumInteriorRing(); i++) {
+					LineString interior = geometry.getInteriorRingN(i);
+					java.awt.Polygon innerPolygon = createPolygon(
+							interior.getCoordinates(), conv, converter, zoom);
+					drawArea.subtract(new java.awt.geom.Area(innerPolygon));
+				}
+				
+				if (applyFill(g, context)) {
+					g.fill(drawArea);
+				}
+	
+				if (applyStroke(g, context)) {
+					g.draw(drawArea);
+				}
+				
+				if (calculateArea) {
+					return new AdvancedPolygonArea(drawArea, outerPolygon);
+				}
 			}
 			else {
-				return null;
+				// polygon has no interior
+				// use polygon instead of Area for painting, as painting small
+				// Areas sometimes produces strange results (some are not visible)
+				if (applyFill(g, context)) {
+					g.fill(outerPolygon);
+				}
+	
+				if (applyStroke(g, context)) {
+					g.draw(outerPolygon);
+				}
+				
+				if (calculateArea) {
+					return new PolygonArea(outerPolygon);
+				}
 			}
+			
+			return null; // no calculateArea set
 		} catch (Exception e) {
 			log.error("Error painting instance polygon geometry", e);
 			return null;
