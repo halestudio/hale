@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.doc.user.examples">
+      <example-project
+            id="eu.esdihumboldt.hale.doc.user.examples.meridian2.hydro_inspire"
+            location="hydro/hydroEx_inspire.halex"
+            summary="Example of a mapping of a simple hydrography data set to the GML schemas of the corresponding INSPIRE data specification.">
+      </example-project>
+   </extension>
+
+</plugin>
