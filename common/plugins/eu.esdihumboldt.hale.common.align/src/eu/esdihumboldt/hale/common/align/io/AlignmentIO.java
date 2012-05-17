@@ -28,4 +28,10 @@ public abstract class AlignmentIO {
 	public static final String ACTION_LOAD_ALIGNMENT = 
 			"eu.esdihumboldt.hale.io.align.read";
 	
+	/**
+	 * The name of the project file containing the alignment.
+	 * Reflects the file name registered in the extension.
+	 */
+	public static final String PROJECT_FILE_ALIGNMENT = "alignment.xml";
+	
 }

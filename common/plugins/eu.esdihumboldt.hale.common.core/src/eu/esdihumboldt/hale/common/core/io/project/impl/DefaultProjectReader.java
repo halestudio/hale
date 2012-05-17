@@ -194,7 +194,7 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 						projectFile.reset();
 					}
 				} else {
-					reporter.error(new IOMessageImpl("No handler for external project file {0} found.", null, fileInfo
+					reporter.info(new IOMessageImpl("No handler for external project file {0} found.", null, fileInfo
 							.getName()));
 				}
 			}

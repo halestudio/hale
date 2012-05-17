@@ -137,6 +137,11 @@ table {
 	border-collapse: collapse;
 }
 
+table.intro th {
+	vertical-align: top;
+	white-space: nowrap;
+}
+
 td,th { }
 
 th { font-weight: bold; text-align: right;}

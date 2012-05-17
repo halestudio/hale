@@ -21,24 +21,20 @@ import eu.esdihumboldt.hale.doc.user.examples.internal.ExamplesConstants;
 import eu.esdihumboldt.hale.doc.user.examples.internal.extension.ExampleProject;
 
 /**
- * Topic representing a project.
+ * Topic representing the mapping documentation of a project.
  * @author Simon Templer
  */
-public class ProjectTopic implements ITopic, ExamplesConstants {
+public class MappingDocumentationTopic implements ITopic, ExamplesConstants {
 
 	private final ExampleProject project;
-	
-	private final ITopic[] subtopics;
 
 	/**
 	 * Create the project topic.
 	 * @param project the associated project
 	 */
-	public ProjectTopic(ExampleProject project) {
+	public MappingDocumentationTopic(ExampleProject project) {
 		super();
 		this.project = project;
-		
-		subtopics = new ITopic[]{new MappingDocumentationTopic(project)};
 	}
 
 	/**
@@ -63,7 +59,7 @@ public class ProjectTopic implements ITopic, ExamplesConstants {
 	@Override
 	public String getHref() {
 		return "/" + PLUGIN_ID + "/" + PATH_PREFIX_PROJECT
-				+ project.getId() + ".html";
+				+ project.getId() + PATH_SUFFIX_MAPPINGDOC + ".html";
 	}
 
 	/**
@@ -71,7 +67,7 @@ public class ProjectTopic implements ITopic, ExamplesConstants {
 	 */
 	@Override
 	public String getLabel() {
-		return project.getInfo().getName();
+		return "Mapping Documentation";
 	}
 
 	/**
@@ -79,7 +75,7 @@ public class ProjectTopic implements ITopic, ExamplesConstants {
 	 */
 	@Override
 	public ITopic[] getSubtopics() {
-		return subtopics;
+		return NO_TOPICS;
 	}
 
 	/**
@@ -105,7 +101,7 @@ public class ProjectTopic implements ITopic, ExamplesConstants {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ProjectTopic other = (ProjectTopic) obj;
+		MappingDocumentationTopic other = (MappingDocumentationTopic) obj;
 		if (project == null) {
 			if (other.project != null)
 				return false;

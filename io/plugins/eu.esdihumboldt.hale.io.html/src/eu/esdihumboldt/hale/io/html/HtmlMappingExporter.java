@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -87,7 +87,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-
+		context = new VelocityContext();
 		cellIds = new Identifiers<Cell>(Cell.class, false);
 
 		alignment = getAlignment();
@@ -102,6 +102,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 				.getLocation().getPath()), filesSubDir);
 		
 		filesDir.mkdirs();
+		context.put("filesDir", filesSubDir);
 
 		try {
 			init();
@@ -177,29 +178,27 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			e.printStackTrace();
 		}
 
-		File htmlExportFile = null;
+		File htmlExportFile = new File(getTarget().getLocation().getPath());
 		if (pi != null) {
 			Date date = new Date();
-			SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"); //$NON-NLS-1$
+			DateFormat dfm = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
+//			SimpleDateFormat dfm = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"); //$NON-NLS-1$
 			if (getTarget().getLocation() == null) {
 				return null;
 			}
-			htmlExportFile = new File(getTarget().getLocation().getPath());
-
-			String exportDate = dfm.format(date);
-			String created = dfm.format(pi.getCreated());
-
-			context = new VelocityContext();
 
 			// associate variables with information data
+			String exportDate = dfm.format(date);
 			context.put("exportDate", exportDate);
-			context.put("createdDate", created);
-			context.put("pi", pi);
-			context.put("filesDir", filesSubDir);
-		} else {
-			// do nothing
-		}
+			
+			if (pi.getCreated() != null) {
+				String created = dfm.format(pi.getCreated());
+				context.put("createdDate", created);
+			}
 
+			context.put("pi", pi);
+		}
+		
 		if (alignment != null) {
 			Collection<TypeCellInfo> typeCellInfos = new ArrayList<TypeCellInfo>();
 			Collection<? extends Cell> cells = alignment.getTypeCells();
@@ -225,7 +224,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			e.printStackTrace();
 		}
 
-		if (template != null && htmlExportFile != null) {
+		if (template != null) {
 			FileWriter fw = new FileWriter(htmlExportFile);
 			template.merge(context, fw);
 			fw.close();
