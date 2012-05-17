@@ -47,7 +47,7 @@ public class FormattedStringExplanation extends AbstractCellExplanation implemen
 				explanation = explanation.replaceAll("\n", "<br />");
 			if (html) {
 				StringBuilder sb = new StringBuilder();
-				sb.append("<br>Replacement table:<br>");
+				sb.append("<br /><br />Replacement table:<br />");
 				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
 				for (Entity entity : sources)
 					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>", '{' + getEntityNameWithoutCondition(entity) + '}',

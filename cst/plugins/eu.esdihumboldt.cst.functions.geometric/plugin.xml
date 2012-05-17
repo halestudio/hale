@@ -80,6 +80,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
+            cellExplanation="eu.esdihumboldt.cst.functions.geometric.NetworkExpansionExplanation"
             description="Creates a buffer on a geometry."
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.networkexpansion"
@@ -93,6 +94,8 @@
          </targetProperties>
          <sourceProperties>
             <property
+                  description="The geometry to create a buffer on."
+                  label="Geometry"
                   maxOccurrence="1"
                   minOccurrence="1">
                <geometryCondition></geometryCondition>
@@ -115,6 +118,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
+            description="Calculate the length of a geometry"
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.calculatelength"
             name="Calculate Length">
@@ -139,6 +143,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
+            description="Calculate the area of a geometry"
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.calculatearea"
             name="Calculate Area">
