@@ -115,6 +115,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
+            description="Calculates the length of a Geometry"
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.calculatelength"
             name="Calculate Length">
@@ -139,6 +140,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
+            description="Calculates the area of a Geometry"
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.calculatearea"
             name="Calculate Area">
@@ -151,6 +153,25 @@
                      allowConversion="true"
                      compatibleClass="java.lang.Double">
                </bindingCondition>
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <geometryCondition></geometryCondition>
+            </property>
+         </sourceProperties>
+      </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.centroid"
+            name="Centroid">
+         <targetProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
             </property>
          </targetProperties>
          <sourceProperties>
@@ -187,6 +208,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.geometric.calculatearea"
             id="eu.esdihumboldt.cst.functions.geometric.calculatearea">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.Centroid"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.centroid"
+            id="eu.esdihumboldt.cst.functions.geometric.centroid">
       </propertyTransformation>
    </extension>
 
