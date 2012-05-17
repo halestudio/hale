@@ -15,12 +15,13 @@ package eu.esdihumboldt.hale.ui.functions.core;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -31,6 +32,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
+import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 
@@ -43,6 +45,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	private String initialValue;
 	private AttributeEditor<?> editor;
 	private Composite page;
+	private Composite title;
 	
 	/**
 	 * Constructor.
@@ -59,6 +62,9 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
 		// selected target could've changed!
+		if (title != null) {
+			title.dispose();
+		}
 		if (editor != null)
 			editor.getControl().dispose();
 		createContent(page);
@@ -97,11 +103,23 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	@Override
 	protected void createContent(Composite page) {
 		this.page = page;
-		page.setLayout(new GridLayout());
+		page.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		// check whether a target was chosen (can be null the moment a new cell is created)
 		if (getWizard().getUnfinishedCell().getTarget() != null) {
+			PropertyDefinition propDef = (PropertyDefinition) getWizard()
+					.getUnfinishedCell().getTarget().values().iterator().next()
+					.getDefinition().getDefinition();
+			
+			title = new Composite(page, SWT.NONE);
+			title.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
+//			title.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.END).create());
+			DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
+			dlf.createLabel(title, propDef, false);
+			Label label = new Label(title, SWT.NONE);
+			label.setText(" = ");
+			
 			editor = ((AttributeEditorFactory) PlatformUI.getWorkbench().getService(AttributeEditorFactory.class))
-					.createEditor(page, (PropertyDefinition) getWizard().getUnfinishedCell().getTarget().values().iterator().next().getDefinition().getDefinition());
+					.createEditor(page, propDef);
 			editor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 			editor.setPropertyChangeListener(new IPropertyChangeListener() {
 				@Override
