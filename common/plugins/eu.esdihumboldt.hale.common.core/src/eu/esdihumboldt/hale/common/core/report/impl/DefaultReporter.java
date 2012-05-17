@@ -115,7 +115,7 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 		infos.add(message);
 		
 		if (doLog) {
-			log.error(message.getMessage(), message.getThrowable());
+			log.info(message.getMessage(), message.getThrowable());
 		}
 	}
 	
