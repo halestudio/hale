@@ -15,15 +15,14 @@ package eu.esdihumboldt.hale.ui.common.definition;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import eu.esdihumboldt.hale.schemaprovider.model.AttributeDefinition;
-import eu.esdihumboldt.hale.schemaprovider.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * Factory for {@link Definition} labels
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
  */
 public interface DefinitionLabelFactory {
 	
@@ -32,10 +31,10 @@ public interface DefinitionLabelFactory {
 	 * 
 	 * @param parent the parent composite
 	 * @param definition the definition
-	 * @param verbose show parent type if definition is an {@link AttributeDefinition}
+	 * @param verbose show parent type if definition is a {@link PropertyDefinition}
 	 * 
 	 * @return the control presenting the label
 	 */
-	public Control createLabel(Composite parent, Definition definition, boolean verbose);
+	public Control createLabel(Composite parent, Definition<?> definition, boolean verbose);
 
 }

@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 
@@ -36,9 +35,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 
 /**
  * Form for creating a CQL filter based on a feature type
@@ -106,7 +103,7 @@ public class FeatureFilterForm extends Composite {
 	private FeatureFilterForm(FeatureType featureType, TypeDefinition definition, Composite parent, int style) {
 		super(parent, style);
 		
-		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
+//		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
 		
 		SortedSet<String> attributeNames = new TreeSet<String>();
 		Collection<PropertyDescriptor> properties = featureType.getDescriptors();
@@ -139,7 +136,10 @@ public class FeatureFilterForm extends Composite {
 		
 		Control featureyTypeName;
 		if (definition != null) {
-			featureyTypeName = dlf.createLabel(this, definition, false);
+//			featureyTypeName = dlf.createLabel(this, definition, false);
+			Label label = new Label(this, SWT.NONE);
+			label.setText(definition.getDisplayName());
+			featureyTypeName = label;
 		}
 		else {
 			Text featureTypeEditor = new Text(this, SWT.BORDER);
