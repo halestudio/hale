@@ -27,12 +27,10 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -47,11 +45,9 @@ import de.cs3d.util.logging.ATransaction;
 import de.fhg.igd.osgi.util.configuration.AbstractConfigurationService;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
-import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -75,9 +71,8 @@ import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
+import eu.esdihumboldt.hale.ui.service.project.UILocationUpdater;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
-import eu.esdihumboldt.util.io.IOUtils;
-import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Default implementation of the {@link ProjectService}.
@@ -151,6 +146,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	private final ProjectConfigurationService configurationService = new ProjectConfigurationService();
 
 	private boolean changed = false;
+	
+	private final UILocationUpdater updater = new UILocationUpdater();
 
 	/**
 	 * Default constructor
@@ -179,7 +176,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 				synchronized (ProjectServiceImpl.this) {
 					main = provider.getProject();
-					updatePaths(main, provider.getSource().getLocation());
+					updater.updateProject(main, provider.getSource().getLocation());
 					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme()))
 						projectFile = new File(provider.getSource().getLocation());
 					changed = false;
@@ -216,56 +213,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					changed = false;
 				}
 				updateWindowTitle();
-			}
-
-			// uses paths based on "/" in FilePathUpdate
-			private void updatePaths(Project main, URI newProjectLoc) {
-				IOConfiguration saveconfig = main.getSaveConfiguration();
-				if (saveconfig == null)
-					return;
-
-				URI targetLoc = URI.create(saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET));
-				if (!targetLoc.equals(newProjectLoc)) {
-					PathUpdate update = new PathUpdate(targetLoc, newProjectLoc);
-
-					List<IOConfiguration> configuration = main.getResources();
-					for (IOConfiguration providerconf : configuration) {
-						final Map<String, String> conf = providerconf.getProviderConfiguration();
-						final URI uri = URI.create(conf.get(ImportProvider.PARAM_SOURCE));
-						if (!IOUtils.testStream(uri, true)) {
-							URI newUri = update.changePath(uri);
-							if (IOUtils.testStream(newUri, true))
-								conf.put(ImportProvider.PARAM_SOURCE, newUri.toString());
-							else {
-								// let user choose alternative location
-								final Display display = PlatformUI.getWorkbench().getDisplay();
-								display.syncExec(new Runnable() {
-									
-									@Override
-									public void run() {
-										String uriString = uri.toString();
-										MessageDialog.openWarning(display.getActiveShell(), "Loading Error", "Can't find " + uriString);
-
-										String target = uriString.substring(uriString.lastIndexOf("/") + 1);
-										String extension = "*" + uriString.substring(uriString.lastIndexOf("."));
-										String[] extensions = new String[] { extension };
-										FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN
-												| SWT.SHEET);
-										filedialog.setFilterExtensions(extensions);
-										filedialog.setFileName(target);
-
-										String openfile = filedialog.open();
-										if (openfile != null) {
-											openfile = openfile.trim();
-											if (openfile.length() > 0)
-												conf.put(ImportProvider.PARAM_SOURCE, new File(openfile).toURI().toString());
-										}
-									}
-								});
-							}
-						}
-					}
-				}
 			}
 		};
 
