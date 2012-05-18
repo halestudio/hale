@@ -146,6 +146,9 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry,
 			PropertyDefinition property, String srsName) throws XMLStreamException {
+		// write eventual required id
+		GmlWriterUtil.writeRequiredID(writer, property.getPropertyType(), null, false);
+		
 		// write any srsName attribute on the parent element
 		writeSrsName(writer, property.getPropertyType(), geometry, srsName);
 		
