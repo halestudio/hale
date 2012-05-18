@@ -208,34 +208,6 @@
             </validator>
          </functionParameter>
       </typeFunction>
-      <typeFunction
-            category="eu.esdihumboldt.hale.align.general"
-            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation"
-            description="Joins multiple instances of different source types into one instance of the target type, based on one or more matching properties."
-            icon="icons/merge.gif"
-            identifier="eu.esdihumboldt.hale.align.join"
-            name="Join">
-         <sourceTypes>
-            <type
-                  description="The source types that are to be joined based on their properties."
-                  maxOccurrence="n"
-                  minOccurrence="2">
-            </type>
-         </sourceTypes>
-         <targetTypes>
-            <type
-                  maxOccurrence="1"
-                  minOccurrence="1">
-            </type>
-         </targetTypes>
-         <functionParameter
-               description="Join definition"
-               label="Join definition"
-               maxOccurrence="1"
-               minOccurrence="1"
-               name="join">
-         </functionParameter>
-      </typeFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">
