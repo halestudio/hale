@@ -124,6 +124,7 @@
             name="Calculate Length">
          <targetProperties>
             <property
+                  description="The property that shall hold the calculated area"
                   maxOccurrence="1"
                   minOccurrence="1">
                <bindingCondition
@@ -135,6 +136,7 @@
          </targetProperties>
          <sourceProperties>
             <property
+                  description="The given geometry to calculate the area"
                   maxOccurrence="1"
                   minOccurrence="1">
                <geometryCondition></geometryCondition>
@@ -149,6 +151,7 @@
             name="Calculate Area">
          <targetProperties>
             <property
+                  description="The property that shall hold the calculated area"
                   maxOccurrence="1"
                   minOccurrence="1">
                <bindingCondition
@@ -160,6 +163,7 @@
          </targetProperties>
          <sourceProperties>
             <property
+                  description="The given geometry to calculate the area"
                   maxOccurrence="1"
                   minOccurrence="1">
                <geometryCondition></geometryCondition>
@@ -174,12 +178,14 @@
             name="Centroid">
          <targetProperties>
             <property
+                  description="The property that shall hold the point of the geometric center"
                   maxOccurrence="1"
                   minOccurrence="1">
             </property>
          </targetProperties>
          <sourceProperties>
             <property
+                  description="The given geometry to calculate the geometric center"
                   maxOccurrence="1"
                   minOccurrence="1">
                <geometryCondition></geometryCondition>
