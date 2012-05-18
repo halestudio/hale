@@ -37,7 +37,7 @@ public interface TypeTransformation<E extends TransformationEngine> extends Tran
 	 * instance pairs created during
 	 * {@link #execute(String, TransformationEngine, java.util.Map, TransformationLog)}ion 
 	 * to the property transformer using
-	 * {@link PropertyTransformer#publish(Collection, MutableInstance)}.
+	 * {@link PropertyTransformer#publish(Collection, MutableInstance, TransformationLog)}.
 	 * @param propertyTransformer the property transformer
 	 */
 	public void setPropertyTransformer(PropertyTransformer propertyTransformer);

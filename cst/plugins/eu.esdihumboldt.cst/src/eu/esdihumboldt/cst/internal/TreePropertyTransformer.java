@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.Conte
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.DuplicationVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
@@ -70,42 +71,51 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	}
 
 	/**
-	 * @see PropertyTransformer#publish(Collection, MutableInstance)
+	 * @see PropertyTransformer#publish(Collection, MutableInstance, TransformationLog)
 	 */
 	@Override
-	public void publish(final Collection<Instance> source, final MutableInstance target) {
+	public void publish(final Collection<Instance> source, 
+			final MutableInstance target, final TransformationLog typeLog) {
 		executorService.execute(new Runnable() {
 			
 			@Override
 			public void run() {
-				// identify transformations to be executed on given instances
-				// create/get a transformation tree
-				TransformationTree tree = treePool.getTree(target.getDefinition());
-				
-				// apply instance values to transformation tree
-				for (Instance instance : source) {
-					InstanceVisitor instanceVisitor = new InstanceVisitor(instance);
-					tree.accept(instanceVisitor);
+				try {
+					// identify transformations to be executed on given instances
+					// create/get a transformation tree
+					TransformationTree tree = treePool.getTree(target.getDefinition());
+					
+					// apply instance values to transformation tree
+					for (Instance instance : source) {
+						InstanceVisitor instanceVisitor = new InstanceVisitor(instance);
+						tree.accept(instanceVisitor);
+					}
+					
+					// duplicate subtree as necessary
+					DuplicationVisitor duplicationVisitor = new DuplicationVisitor();
+					tree.accept(duplicationVisitor);
+					
+					// apply functions
+					tree.accept(executor);
+					
+					// fill instance
+					builder.populate(target, tree);
+					
+					//XXX ok to add to sink in any thread?!
+					//XXX addInstance and close were made synchronized in OrientInstanceSink
+					//XXX instead collect instances and write them in only one thread?
+					// after property transformations, publish target instance
+					sink.addInstance(target);
+					
+					// and release the tree for further use
+					treePool.releaseTree(tree);
+				} catch (Throwable e) {
+					/*
+					 * Catch any error, as exceptions in the executor service
+					 * will only result in a message on the console.
+					 */
+					typeLog.error(typeLog.createMessage("Error performing property transformations", e));
 				}
-				
-				// duplicate subtree as necessary
-				DuplicationVisitor duplicationVisitor = new DuplicationVisitor();
-				tree.accept(duplicationVisitor);
-				
-				// apply functions
-				tree.accept(executor);
-				
-				// fill instance
-				builder.populate(target, tree);
-				
-				//XXX ok to add to sink in any thread?!
-				//XXX addInstance and close were made synchronized in OrientInstanceSink
-				//XXX instead collect instances and write them in only one thread?
-				// after property transformations, publish target instance
-				sink.addInstance(target);
-				
-				// and release the tree for further use
-				treePool.releaseTree(tree);
 			}
 		});
 	}
