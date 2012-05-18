@@ -31,45 +31,6 @@
         <source>
             <property>
                 <type>{eu:esdihumboldt:hale:example}RiverType</type>
-                <child>{http://www.opengis.net/gml}description</child>
-            </property>
-        </source>
-        <target>
-            <property>
-                <type>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</type>
-                <child>{http://www.opengis.net/gml/3.2}description</child>
-            </property>
-        </target>
-        <parameter name="structuralRename" value="false"/>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
-        <target>
-            <property>
-                <type>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</type>
-                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}width</child>
-                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WidthRange</child>
-                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}lower</child>
-                <child>uom</child>
-            </property>
-        </target>
-        <parameter name="value" value="m"/>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.assign">
-        <target>
-            <property>
-                <type>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</type>
-                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}width</child>
-                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WidthRange</child>
-                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}upper</child>
-                <child>uom</child>
-            </property>
-        </target>
-        <parameter name="value" value="m"/>
-    </cell>
-    <cell transformation="eu.esdihumboldt.hale.align.rename">
-        <source>
-            <property>
-                <type>{eu:esdihumboldt:hale:example}RiverType</type>
                 <child>fid</child>
             </property>
         </source>
@@ -128,6 +89,43 @@
         </target>
         <parameter name="structuralRename" value="false"/>
     </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.rename">
+        <source>
+            <property>
+                <type>{eu:esdihumboldt:hale:example}RiverType</type>
+                <child>{http://www.opengis.net/gml}description</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</type>
+                <child>{http://www.opengis.net/gml/3.2}description</child>
+            </property>
+        </target>
+        <parameter name="structuralRename" value="false"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.cst.functions.geometric.networkexpansion">
+        <source>
+            <property>
+                <type>{eu:esdihumboldt:hale:example}RiverType</type>
+                <child>{eu:esdihumboldt:hale:example}geometry</child>
+                <child>{http://www.opengis.net/gml}LineString</child>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type>{eu:esdihumboldt:hale:example}RiverType</type>
+                <child>{eu:esdihumboldt:hale:example}width</child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</type>
+                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</child>
+            </property>
+        </target>
+        <parameter name="bufferWidth" value="width / 3.28"/>
+    </cell>
     <cell transformation="eu.esdihumboldt.cst.functions.geometric.calculatelength">
         <source>
             <property>
@@ -153,14 +151,7 @@
         </target>
         <parameter name="value" value="m"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.cst.functions.geometric.networkexpansion">
-        <source>
-            <property>
-                <type>{eu:esdihumboldt:hale:example}RiverType</type>
-                <child>{eu:esdihumboldt:hale:example}geometry</child>
-                <child>{http://www.opengis.net/gml}LineString</child>
-            </property>
-        </source>
+    <cell transformation="eu.esdihumboldt.cst.functions.numeric.mathexpression">
         <source name="var">
             <property>
                 <type>{eu:esdihumboldt:hale:example}RiverType</type>
@@ -170,10 +161,24 @@
         <target>
             <property>
                 <type>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</type>
-                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</child>
+                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}width</child>
+                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WidthRange</child>
+                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}upper</child>
             </property>
         </target>
-        <parameter name="bufferWidth" value="width / 3.28"/>
+        <parameter name="expression" value="width / 3.28"/>
+    </cell>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
+        <target>
+            <property>
+                <type>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</type>
+                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}width</child>
+                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WidthRange</child>
+                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}upper</child>
+                <child>uom</child>
+            </property>
+        </target>
+        <parameter name="value" value="m"/>
     </cell>
     <cell transformation="eu.esdihumboldt.cst.functions.numeric.mathexpression">
         <source name="var">
@@ -192,21 +197,16 @@
         </target>
         <parameter name="expression" value="width / 3.28"/>
     </cell>
-    <cell transformation="eu.esdihumboldt.cst.functions.numeric.mathexpression">
-        <source name="var">
-            <property>
-                <type>{eu:esdihumboldt:hale:example}RiverType</type>
-                <child>{eu:esdihumboldt:hale:example}width</child>
-            </property>
-        </source>
+    <cell transformation="eu.esdihumboldt.hale.align.assign">
         <target>
             <property>
                 <type>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</type>
                 <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}width</child>
                 <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WidthRange</child>
-                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}upper</child>
+                <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}lower</child>
+                <child>uom</child>
             </property>
         </target>
-        <parameter name="expression" value="width / 3.28"/>
+        <parameter name="value" value="m"/>
     </cell>
 </hale-alignment>
