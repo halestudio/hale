@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -343,6 +344,17 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	public void write(InstanceCollection instances, 
 			ProgressIndicator progress, IOReporter reporter) throws XMLStreamException {
+		final SubtaskProgressIndicator sub = new SubtaskProgressIndicator(progress) {
+
+			@Override
+			protected String getCombinedTaskName(String taskName,
+					String subtaskName) {
+				return taskName + " (" + subtaskName + ")";
+			}
+			
+		};
+		progress = sub;
+		
 		progress.begin("Generating " + getTypeName(), instances.size());
 		
 		TypeDefinition containerDefinition = null;
@@ -474,11 +486,13 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			writer.writeEndElement();
 		}
 		
-		//FIXME write the instances
+		// write the instances
 		ResourceIterator<Instance> itInstance = instances.iterator();
 		try {
 			Map<TypeDefinition, DefinitionPath> paths = new HashMap<TypeDefinition, DefinitionPath>();
 			
+			long lastUpdate = 0;
+			int count = 0;
 			Descent lastDescent = null;
 			while (itInstance.hasNext() && !progress.isCanceled()) {
 				Instance instance = itInstance.next();
@@ -510,6 +524,13 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				}
 	            
 	            progress.advance(1);
+	            count++;
+	            
+	            long now = System.currentTimeMillis();
+				if (now - lastUpdate > 100 || !itInstance.hasNext()) { // only update every 100 milliseconds
+					lastUpdate = now;
+					sub.subTask(String.valueOf(count) + " instances");
+				}
 			}
 			if (lastDescent != null) {
 				lastDescent.close();
