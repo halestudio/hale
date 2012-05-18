@@ -40,7 +40,7 @@ public class Retype extends AbstractTypeTransformation<TransformationEngine> imp
 		// for each source instance create a target instance
 		TypeDefinition targetType = getTarget().values().iterator().next().getDefinition().getDefinition();
 		MutableInstance target = getInstanceFactory().createInstance(targetType);
-		getPropertyTransformer().publish(getSource(), target);
+		getPropertyTransformer().publish(getSource(), target, log);
 	}
 
 }

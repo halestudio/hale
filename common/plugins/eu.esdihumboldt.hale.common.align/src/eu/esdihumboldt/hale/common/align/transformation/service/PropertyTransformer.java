@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.align.transformation.service;
 
 import java.util.Collection;
 
+import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
@@ -28,8 +29,10 @@ public interface PropertyTransformer {
 	 * 
 	 * @param source the source instances
 	 * @param target the target instance
+	 * @param typeLog the type transformation log 
 	 */
-	public void publish(Collection<Instance> source, MutableInstance target);
+	public void publish(Collection<Instance> source, MutableInstance target,
+			TransformationLog typeLog);
 
 	/**
 	 * Join with the property transformer and wait for its completion, e.g. 
