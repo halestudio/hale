@@ -8,6 +8,11 @@
             location="hydro/hydroEx_inspire.halex"
             summary="Example of a mapping of a simple hydrography data set to the GML schemas of the corresponding INSPIRE data specification.">
       </example-project>
+      <example-project
+            id="eu.esdihumboldt.hale.doc.user.examples.meridian2.hydro_inspire_merge"
+            location="hydro/hydroEx_inspire_merge.halex"
+            summary="Example of using a Merge type relation in a mapping of a simple hydrography data set to the GML schemas of the corresponding INSPIRE data specification.">
+      </example-project>
    </extension>
 
 </plugin>
