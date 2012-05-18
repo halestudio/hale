@@ -2,7 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="eu.esdihumboldt.hale.ui.io.config" name="I/O configuration wizard pages" schema="schema/eu.esdihumboldt.hale.ui.io.config.exsd"/>
-   <extension-point id="eu.esdihumboldt.hale.MappingExport" name="Mapping Export Providers" schema="schema/eu.esdihumboldt.hale.MappingExport.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.function" name="Function wizards" schema="schema/eu.esdihumboldt.hale.ui.function.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.io.action" name="UI extensions for I/O actions" schema="schema/eu.esdihumboldt.hale.ui.io.action.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.ui.io.source" name="Import sources" schema="schema/eu.esdihumboldt.hale.ui.io.source.exsd"/>
