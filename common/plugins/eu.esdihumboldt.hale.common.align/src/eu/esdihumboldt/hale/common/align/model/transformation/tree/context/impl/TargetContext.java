@@ -481,6 +481,9 @@ public class TargetContext implements TransformationContext {
 					// create a duplicated parent
 					duplicatedParent = duplicateTarget((TargetNode) parent, 
 							null, duplicationContext);
+					if (duplicatedParent == null) {
+						return null;
+					}
 				}
 				else {
 					// parent is either null or the root
