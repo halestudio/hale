@@ -118,6 +118,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
+            cellExplanation="eu.esdihumboldt.cst.functions.geometric.CalculateLengthExplanation"
             description="Calculate the length of a geometry."
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.calculatelength"
@@ -145,6 +146,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
+            cellExplanation="eu.esdihumboldt.cst.functions.geometric.CalculateAreaExplanation"
             description="Calculate the area of a geometry."
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.calculatearea"
@@ -172,6 +174,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.geometric"
+            cellExplanation="eu.esdihumboldt.cst.functions.geometric.CentroidExplanation"
             description="Calculates the centroid of a given geometry."
             icon="icons/geometry.png"
             identifier="eu.esdihumboldt.cst.functions.geometric.centroid"
