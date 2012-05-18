@@ -11,7 +11,7 @@ The example data is based on the Ordnance Survey Meridian 2 open data, converted
 Contains Ordnance Survey data (c) Crown copyright and database right 2011&#xd;
 http://www.ordnancesurvey.co.uk/oswebsite/opendata/licence</description>
     <created>2012-05-16T17:53:54.315+02:00</created>
-    <modified>2012-05-18T11:30:54.275+02:00</modified>
+    <modified>2012-05-18T17:23:11.908+02:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="projectFiles.separate">false</setting>
         <setting name="target">file:/C:/Users/sitemple/Entwicklung/hale/_testdata/hydro%20UK/basic/hydroEx_inspire_merge.halex</setting>
@@ -29,8 +29,8 @@ http://www.ordnancesurvey.co.uk/oswebsite/opendata/licence</description>
         <setting name="source">http://hale-test/inspire3/HydroPhysicalWaters.xsd</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
     </resource>
-    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/_testdata/hydro%20UK/basic/hydroEx_inspire_merge.halex.styles.sld"/>
-    <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/_testdata/hydro%20UK/basic/hydroEx_inspire_merge.halex.alignment.xml"/>
+    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/doc/plugins/eu.esdihumboldt.hale.doc.user.examples.meridian2/hydro/hydroEx_inspire_merge.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/doc/plugins/eu.esdihumboldt.hale.doc.user.examples.meridian2/hydro/hydroEx_inspire_merge.halex.alignment.xml"/>
     <property name="defaultGeometry:{eu:esdihumboldt:hale:example}RiverType/1">{eu:esdihumboldt:hale:example}geometry</property>
     <property name="defaultGeometry:{eu:esdihumboldt:hale:example}RiverType/count">1</property>
     <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}CrossingType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>

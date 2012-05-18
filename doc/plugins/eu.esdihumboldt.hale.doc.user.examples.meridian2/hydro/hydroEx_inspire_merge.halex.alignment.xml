@@ -119,10 +119,10 @@
                 <type>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</type>
                 <child>{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</child>
                 <child>{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</child>
-                <child>{http://www.opengis.net/gml/3.2}Curve</child>
-                <child>{http://www.opengis.net/gml/3.2}segments</child>
-                <child>{http://www.opengis.net/gml/3.2/AbstractCurveSegment}choice</child>
-                <child>{http://www.opengis.net/gml/3.2}LineStringSegment</child>
+                <child>{http://www.opengis.net/gml/3.2}CompositeCurve</child>
+                <child>{http://www.opengis.net/gml/3.2}curveMember</child>
+                <child>{http://www.opengis.net/gml/3.2/AbstractCurve}choice</child>
+                <child>{http://www.opengis.net/gml/3.2}LineString</child>
             </property>
         </target>
         <parameter name="structuralRename" value="false"/>
