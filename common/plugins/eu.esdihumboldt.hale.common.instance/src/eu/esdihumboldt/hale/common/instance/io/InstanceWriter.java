@@ -47,15 +47,6 @@ public interface InstanceWriter extends ExportProvider {
 	 */
 	public SchemaSpace getTargetSchema();
 	
-//	/**
-//	 * Set the common SRS name
-//	 * FIXME can we do without?
-//	 * 
-//	 * @param commonSRSName the name of the common SRS of the instances,
-//	 *   may be <code>null</code>
-//	 */
-//	public void setCommonSRSName(String commonSRSName);
-	
 	/**
 	 * Get the schemas needed for validation of the output written using 
 	 * {@link #execute(ProgressIndicator)}, this usually is at least the 
