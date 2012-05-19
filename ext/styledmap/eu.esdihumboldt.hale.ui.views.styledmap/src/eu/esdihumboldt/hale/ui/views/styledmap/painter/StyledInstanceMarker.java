@@ -48,6 +48,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
 import de.cs3d.common.metamodel.Point3D;
@@ -57,6 +58,7 @@ import de.fhg.igd.mapviewer.waypoints.SelectableWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
@@ -78,6 +80,19 @@ public class StyledInstanceMarker extends InstanceMarker {
 	private PointSymbolizer pointSymbolizer;
 	private static final StyleBuilder styleBuilder = new StyleBuilder();
 	
+	/**
+	 * The way-point the marker is associated with
+	 */
+	private final InstanceWaypoint wp;
+	
+	/**
+	 * Create a instance marker supporting styles.
+	 * @param wp the way-point the marker is associated with
+	 */
+	public StyledInstanceMarker(InstanceWaypoint wp) {
+		this.wp = wp;
+	}
+
 	/**
 	 * Initialize the style information.
 	 * @param context the context
@@ -390,8 +405,39 @@ public class StyledInstanceMarker extends InstanceMarker {
 	 */
 	@Override
 	protected boolean isToSmall(int width, int height, int zoom) {
-		// disable fallback marker, as paintPoint would never be called
-		return false;
+		if (representsSinglePoint()) {
+			// disable fallback marker, as paintPoint would never be called
+			return false;
+		}
+		return super.isToSmall(width, height, zoom);
+	}
+
+	/**
+	 * Determines if the associated way-point represents a single point.
+	 * @return if the way-point represents a single point
+	 */
+	private boolean representsSinglePoint() {
+		boolean pointFound = false;
+		for (GeometryProperty<?> geom : wp.getGeometries()) {
+			if (geom.getGeometry() != null && geom.getCRSDefinition() != null) {
+				// valid geometry
+				if (pointFound) {
+					// a point was already found before
+					return false;
+				}
+				
+				if (geom.getGeometry() instanceof Point ||
+						(geom.getGeometry() instanceof MultiPoint && geom.getGeometry().getNumGeometries() == 1)) {
+					// a single point found
+					pointFound = true;
+				}
+				else {
+					// another geometry found
+					return false;
+				}
+			}
+		}
+		return pointFound;
 	}
 
 	/**
