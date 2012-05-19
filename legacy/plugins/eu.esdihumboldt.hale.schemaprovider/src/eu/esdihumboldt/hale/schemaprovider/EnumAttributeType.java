@@ -23,6 +23,7 @@ import org.opengis.feature.type.AttributeType;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public interface EnumAttributeType extends AttributeType {
 	
 	/**

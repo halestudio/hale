@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.schemaprovider.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public abstract class AttributeDefinition extends AbstractDefinition implements 
 	Comparable<AttributeDefinition>, Definition {
 	

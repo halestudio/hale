@@ -104,6 +104,7 @@ import eu.esdihumboldt.util.DependencyOrderedList;
  *   Simon Templer, Fraunhofer IGD
  * @version $Id$
  */
+@Deprecated
 public class ApacheSchemaProvider 
 	extends AbstractSchemaProvider {
 	

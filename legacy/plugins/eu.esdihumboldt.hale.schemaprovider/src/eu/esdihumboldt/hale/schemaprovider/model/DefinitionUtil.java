@@ -21,6 +21,7 @@ import org.opengis.feature.type.FeatureType;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public abstract class DefinitionUtil {
 	
 	/**

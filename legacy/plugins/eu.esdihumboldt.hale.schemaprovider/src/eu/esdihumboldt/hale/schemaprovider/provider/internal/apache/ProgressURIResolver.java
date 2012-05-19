@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.schemaprovider.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public class ProgressURIResolver implements CollectionURIResolver {
 	
 	private final URIResolver decoratee;

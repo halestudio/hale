@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @author Thorsten Reitz
  * @version $Id$
  */
+@Deprecated
 public class ShapeSchemaProvider 
 	extends AbstractSchemaProvider {
 	

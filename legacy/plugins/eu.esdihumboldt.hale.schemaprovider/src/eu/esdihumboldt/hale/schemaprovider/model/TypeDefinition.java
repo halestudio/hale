@@ -42,6 +42,7 @@ import eu.esdihumboldt.commons.goml.rdf.About;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public class TypeDefinition extends AbstractDefinition implements Comparable<TypeDefinition>,
 	Definition {
 	

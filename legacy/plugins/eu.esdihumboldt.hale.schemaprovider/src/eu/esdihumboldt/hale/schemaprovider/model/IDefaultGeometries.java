@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.schemaprovider.model;
 
 import org.opengis.feature.type.Name;
 
+@Deprecated
 public interface IDefaultGeometries {
 
 	/**
