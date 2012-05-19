@@ -375,7 +375,7 @@ public abstract class AbstractInstancePainter extends
 		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries, name);
 		
 		// each way-point must have its own marker, as the marker stores the marker areas
-		wp.setMarker(createMarker());
+		wp.setMarker(createMarker(wp));
 		
 		return wp;
 	}
@@ -414,11 +414,12 @@ public abstract class AbstractInstancePainter extends
 
 	/**
 	 * Create a new marker for a way-point.
+	 * @param wp the way-point
 	 * @return the marker
 	 */
-	private Marker<? super InstanceWaypoint> createMarker() {
+	private Marker<? super InstanceWaypoint> createMarker(InstanceWaypoint wp) {
 //		return new InstanceMarker();
-		return new StyledInstanceMarker();
+		return new StyledInstanceMarker(wp);
 	}
 
 	/**
