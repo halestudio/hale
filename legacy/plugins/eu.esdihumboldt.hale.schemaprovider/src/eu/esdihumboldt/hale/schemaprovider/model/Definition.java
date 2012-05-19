@@ -21,6 +21,7 @@ import eu.esdihumboldt.commons.goml.align.Entity;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public interface Definition {
 	
 	/**

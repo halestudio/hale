@@ -23,6 +23,7 @@ import java.util.Set;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public abstract class AbstractSchemaProvider implements SchemaProvider {
 	
 	private final Set<String> supportedFormats = new HashSet<String>();

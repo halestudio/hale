@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public class SchemaResult {
 	
 	private final Map<Name, TypeDefinition> types;

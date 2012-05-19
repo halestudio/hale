@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public class SchemaReferenceResolver {
 
 	private final Map<Name, SchemaElement> elements;

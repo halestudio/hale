@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public abstract class AbstractElementAttribute extends AttributeDefinition {
 
 	private static final Logger log = Logger.getLogger(AbstractElementAttribute.class);

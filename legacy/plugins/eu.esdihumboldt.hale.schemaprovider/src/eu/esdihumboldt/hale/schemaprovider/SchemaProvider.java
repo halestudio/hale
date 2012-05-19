@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public interface SchemaProvider {
 
 	/**

@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.schemaprovider.model;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public abstract class AbstractDefinition implements Definition {
 
 	private String description = null;

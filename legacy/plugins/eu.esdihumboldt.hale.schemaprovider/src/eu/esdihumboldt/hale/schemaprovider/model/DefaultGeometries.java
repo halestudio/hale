@@ -27,6 +27,7 @@ import de.cs3d.util.logging.ALoggerFactory;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
+@Deprecated
 public class DefaultGeometries implements IDefaultGeometries {
 	
 	private static final ALogger log = ALoggerFactory.getLogger(DefaultGeometries.class);

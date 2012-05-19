@@ -54,6 +54,7 @@ import eu.esdihumboldt.hale.common.cache.Request;
  * given schema document. The system will call this default resolver if there
  * is no other resolver present in the system. 
  */
+@Deprecated
 public class HumboldtURIResolver 
 	implements CollectionURIResolver {
 	
