@@ -29,8 +29,8 @@ http://www.ordnancesurvey.co.uk/oswebsite/opendata/licence</description>
         <setting name="source">http://hale-test/inspire3/HydroPhysicalWaters.xsd</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
     </resource>
-    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/doc/plugins/eu.esdihumboldt.hale.doc.user.examples.meridian2/hydro/hydroEx_inspire_merge.halex.styles.sld"/>
-    <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/doc/plugins/eu.esdihumboldt.hale.doc.user.examples.meridian2/hydro/hydroEx_inspire_merge.halex.alignment.xml"/>
+    <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/_testdata/hydro%20UK/basic/hydroEx_inspire_merge.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/C:/Users/sitemple/Entwicklung/hale/_testdata/hydro%20UK/basic/hydroEx_inspire_merge.halex.alignment.xml"/>
     <property name="defaultGeometry:{eu:esdihumboldt:hale:example}RiverType/1">{eu:esdihumboldt:hale:example}geometry</property>
     <property name="defaultGeometry:{eu:esdihumboldt:hale:example}RiverType/count">1</property>
     <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}CrossingType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
