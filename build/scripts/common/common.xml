@@ -601,6 +601,13 @@
 
 	<!-- build and pack the client -->
 	<target name="package-client" depends="build" description="Build and package the client">
+    <property file="${release}/src/.eclipseproduct" />
+	
+    <!-- delete unit test fragments -->
+		<delete verbose="true">
+			<fileset dir="${release}/${buildVersion}/plugins" includes="*.test_*.jar" />
+		</delete>
+	
 		<!-- package client -->
 		<antcall target="client-pack-${os}" />
 	</target>
