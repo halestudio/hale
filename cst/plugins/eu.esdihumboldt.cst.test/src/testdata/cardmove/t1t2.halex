@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hale-project version="2.5.0.M2">
+    <name>Cardinality move</name>
+    <author>Kai Schwierczek</author>
+    <description xml:space="preserve">In this project the element that can occur multiple times moves to a structure.</description>
+    <created>2012-05-22T14:28:14.988+02:00</created>
+    <modified>2012-05-22T14:38:06.907+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="target">file:/F:/Kai/Desktop/Fraunhofer%20IGD/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cardmove/t1t2.halex</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="source">file:/F:/Kai/Desktop/Fraunhofer%20IGD/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cardmove/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="source">file:/F:/Kai/Desktop/Fraunhofer%20IGD/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cardmove/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="source">file:/F:/Kai/Desktop/Fraunhofer%20IGD/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cardmove/instance1.xml</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+    </resource>
+    <file name="styles.sld" location="file:/F:/Kai/Desktop/Fraunhofer%20IGD/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cardmove/t1t2.halex.styles.sld"/>
+    <file name="alignment.xml" location="file:/F:/Kai/Desktop/Fraunhofer%20IGD/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cardmove/t1t2.halex.alignment.xml"/>
+</hale-project>

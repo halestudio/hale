@@ -117,6 +117,47 @@ public class ConceptualSchemaTransformerTest {
 				"/testdata/propjoin/instance1.xml",
 				"/testdata/propjoin/instance2.xml");
 	}
+
+	/**
+	 * Test based on a retype and a formatted string with several inputs
+	 * where one input exists several times, whereas the others only exist
+	 * once. So those should be used all the times.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testSimpleMerge() throws Exception {
+		test("/testdata/simplemerge/t1.xsd",
+				"/testdata/simplemerge/t2.xsd",
+				"/testdata/simplemerge/t1t2.halex.alignment.xml",
+				"/testdata/simplemerge/instance1.xml",
+				"/testdata/simplemerge/instance2.xml");
+	}
+
+	/**
+	 * Test based on a retype and a formatted string with several inputs
+	 * where each input exists several times, so they should be combined accordingly.
+	 *
+	 * If some inputs exist more often than others there is no way to decide
+	 * which of the others to use, so none should be used, so formatted string will
+	 * not produce a value.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testCardinalityMerge() throws Exception {
+		test("/testdata/cardmerge/t1.xsd",
+				"/testdata/cardmerge/t2.xsd",
+				"/testdata/cardmerge/t1t2.halex.alignment.xml",
+				"/testdata/cardmerge/instance1_1.xml",
+				"/testdata/cardmerge/instance2_1.xml");
+
+		test("/testdata/cardmerge/t1.xsd",
+				"/testdata/cardmerge/t2.xsd",
+				"/testdata/cardmerge/t1t2.halex.alignment.xml",
+				"/testdata/cardmerge/instance1_2.xml",
+				"/testdata/cardmerge/instance2_2.xml");
+	}
 	
 	/**
 	 * Test where multiple properties from the source type are mapped to
@@ -158,7 +199,41 @@ public class ConceptualSchemaTransformerTest {
 				"/testdata/choice/instance1.xml",
 				"/testdata/choice/instance2.xml");
 	}
-	
+
+	/**
+	 * Test where a type with complex properties is mapped to itself, switching
+	 * certain attributes.
+	 *
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testSimpleComplex() throws Exception {
+		test("/testdata/simplecomplex/t2.xsd",
+				"/testdata/simplecomplex/t2.xsd",
+				"/testdata/simplecomplex/t2t2.halex.alignment.xml",
+				"/testdata/simplecomplex/instance2.xml",
+				"/testdata/simplecomplex/instance2_result.xml");
+	}
+
+	/**
+	 * Test where elements with a high cardinality are mapped to
+	 * an element which may only occur once within an element that
+	 * allows a high cardinality.
+	 * The elements should be grouped together to fill the target
+	 * element.
+	 *
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Ignore // Does not work yet
+	@Test
+	public void testCardinalityMove() throws Exception {
+		test("/testdata/cardmove/t1.xsd",
+				"/testdata/cardmove/t2.xsd",
+				"/testdata/cardmove/t1t2.halex.alignment.xml",
+				"/testdata/cardmove/instance1.xml",
+				"/testdata/cardmove/instance2.xml");
+	}
+
 	/**
 	 * Test where multiple properties from a simple source type are mapped to
 	 * a complex property structure in the target type.
@@ -301,27 +376,7 @@ public class ConceptualSchemaTransformerTest {
 		//TODO check transformation instructions
 	}
 	
-	/**
-	 * Test where a type with complex properties is mapped to itself, switching
-	 * certain attributes.
-	 * @throws Exception if an error occurs executing the test
-	 */
-	@Ignore
-	@Test
-	public void testSimpleComplex() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/simplecomplex/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/simplecomplex/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/simplecomplex/t2t2.halex.alignment.xml").toURI());
-		
-		assertNotNull(alignment);
-		assertEquals(7, alignment.getCells().size());
-		
-//		Transformation transformation = processor.process(alignment);
-//		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
-	}
+	
 	
 	private Alignment loadAlignment(URI sourceSchemaLocation, 
 			URI targetSchemaLocation, final URI alignmentLocation) throws IOProviderConfigurationException, IOException, MarshalException, ValidationException, MappingException {
@@ -372,10 +427,6 @@ public class ConceptualSchemaTransformerTest {
 		ResourceIterator<Instance> targetIter = targetData.iterator();
 		// make sure we can remove instances from the list...
 		transformedData = new LinkedList<Instance>(transformedData);
-		Iterator<Instance> transformedIter2 = transformedData.iterator();
-		while (transformedIter2.hasNext()) {
-			System.err.println(InstanceUtil.instanceToString(transformedIter2.next()));
-		}
 
 		int targetInstanceCount = 0;
 		int transformedInstanceCount = transformedData.size();
