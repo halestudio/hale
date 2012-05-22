@@ -24,12 +24,13 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Multimap;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.Leftovers;
@@ -171,34 +172,59 @@ public class TargetContext implements TransformationContext {
 	}
 
 	private static class DuplicationInformation {
+		private final SourceNode duplicatedNode;
 		private final Set<Cell> ignoreCells;
 		private final Set<TargetNode> contextTargets;
 
-		private final Map<Cell, CellNode> oldCellNodes;
+		// Existing cell nodes for this duplication.
+		private final Multimap<Cell, CellNode> oldCellNodes;
+		// Existing target nodes for this duplication.
+		// XXX What about multiple existing target nodes per definition?
+		// For example "T(a*, b*) -> T(x(a, b)*)": duplication of "a" leads to multiple "x"s, which should be used one after another for the "b"s.
 		private final Map<EntityDefinition, TargetNode> oldTargetNodes;
-		private final Map<EntityDefinition, SourceNode> oldSourceNodes;
+		// Existing source nodes for this duplication.
+		private final Multimap<EntityDefinition, SourceNode> oldSourceNodes;
+		// Created cell nodes in this duplication. A cell node is only created once in a duplication!
 		private final Map<Cell, CellNodeImpl> newCellNodes;
+		// Created target nodes in this duplication. XXX Are multiple created target nodes of the same definition important?
 		private final Map<EntityDefinition, TargetNodeImpl> newTargetNodes;
 
 		/**
-		 * Create a duplication information
-		 * 
+		 * Create a duplication information.
+		 *
+		 * @param duplicatedNode the duplicated node this is all about
 		 * @param ignoreCells the cells to be ignored
 		 * @param contextTargets the target nodes that can be used as subgraph end-points
 		 */
-		DuplicationInformation(Set<Cell> ignoreCells, Set<TargetNode> contextTargets) {
+		DuplicationInformation(SourceNode duplicatedNode, Set<Cell> ignoreCells, Set<TargetNode> contextTargets) {
+			this.duplicatedNode = duplicatedNode;
 			if (ignoreCells != null)
 				this.ignoreCells = Collections.unmodifiableSet(ignoreCells);
 			else
 				this.ignoreCells = Collections.emptySet();
 			this.contextTargets = contextTargets;
-			oldCellNodes = new HashMap<Cell, CellNode>();
+			oldCellNodes = ArrayListMultimap.create();
 			oldTargetNodes = new HashMap<EntityDefinition, TargetNode>();
-			oldSourceNodes = new HashMap<EntityDefinition, SourceNode>();
+			oldSourceNodes = ArrayListMultimap.create();
 			newCellNodes = new HashMap<Cell, CellNodeImpl>();
 			newTargetNodes = new HashMap<EntityDefinition, TargetNodeImpl>();
 		}
 
+		/**
+		 * Returns the node that this duplication is all about.
+		 *
+		 * @return the duplicated node
+		 */
+		public SourceNode getDuplicatedNode() {
+			return duplicatedNode;
+		}
+
+		/**
+		 * Checks whether the given cell is in the ignored cells.
+		 *
+		 * @param cell the cell to check
+		 * @return true, if the given cell is in the ignored cells, false otherwise
+		 */
 		boolean isIgnoreCell(Cell cell) {
 			return ignoreCells.contains(cell);
 		}
@@ -254,12 +280,12 @@ public class TargetContext implements TransformationContext {
 		}
 
 		/**
-		 * Returns an existing cell node with the given cell.
+		 * Returns a collection of existing cell nodes with the given cell.
 		 * 
 		 * @param cell the cell
-		 * @return an existing cell node or null
+		 * @return a collection of existing cell nodes
 		 */
-		CellNode getOldCellNode(Cell cell) {
+		Collection<CellNode> getOldCellNodes(Cell cell) {
 			return oldCellNodes.get(cell);
 		}
 
@@ -271,6 +297,16 @@ public class TargetContext implements TransformationContext {
 		 */
 		CellNodeImpl getNewCellNode(Cell cell) {
 			return newCellNodes.get(cell);
+		}
+
+		/**
+		 * Returns a collection of existing source nodes with the given entity definition.
+		 * 
+		 * @param entityDef the entity definition
+		 * @return a collection of existing source nodes
+		 */
+		Collection<SourceNode> getOldSourceNodes(EntityDefinition entityDef) {
+			return oldSourceNodes.get(entityDef);
 		}
 
 		/**
@@ -345,7 +381,7 @@ public class TargetContext implements TransformationContext {
 	@Override
 	public void duplicateContext(SourceNode originalSource,
 			final SourceNode duplicate, Set<Cell> ignoreCells) {
-		DuplicationInformation info = new DuplicationInformation(ignoreCells, contextTargets);
+		DuplicationInformation info = new DuplicationInformation(duplicate, ignoreCells, contextTargets);
 
 		SourceNode parent = duplicate.getParent();
 		if (parent == null)
@@ -353,18 +389,18 @@ public class TargetContext implements TransformationContext {
 
 		if (parent != null) {
 			// Find existing cell/target nodes over children of the parent node.
-			Map<TypeEntityDefinition, SourceNode> allowedTypeNodes = new HashMap<TypeEntityDefinition, SourceNode>();
-			SourceNode root = duplicate;
-			while (root.getParent() != null || root.getAnnotatedParent() != null) {
-				if (root.getParent() != null)
-					root = root.getParent(); // no type node
-				else {
-					// a type node, it is the only allowed node of its type
-					allowedTypeNodes.put((TypeEntityDefinition) root.getEntityDefinition(), root);
-					root = root.getAnnotatedParent();
-				}
-			}
-			collectExistingNodes(root, allowedTypeNodes, info);
+			Map<EntityDefinition, SourceNode> contextPath = new HashMap<EntityDefinition, SourceNode>();
+			SourceNode pathNode = duplicate;
+			SourceNode root;
+			do {
+				contextPath.put(pathNode.getEntityDefinition(), pathNode);
+				root = pathNode;
+				if (pathNode.getParent() != null)
+					pathNode = pathNode.getParent();
+				else
+					pathNode = pathNode.getAnnotatedParent();
+			} while (pathNode != null) ;
+			collectExistingNodes(root, contextPath, info);
 
 			duplicateTree(originalSource, duplicate, info);
 
@@ -417,29 +453,41 @@ public class TargetContext implements TransformationContext {
 			DuplicationInformation info) {
 		// Duplicate relations.
 		for (CellNode cell : source.getRelations(false)) {
+			// Check whether the cell is ignored.
 			if (info.isIgnoreCell(cell.getCell()))
 				continue;
+
+			// XXX prioritize already created cell nodes (in this run) over old nodes?
+
 			// First check whether an old cell node with a missing source exists.
+			// If so, add this source to the first so found cell.
 			boolean usedOld = false;
-			// XXX what if multiple existing nodes match?
-			CellNode oldCellNode = info.getOldCellNode(cell.getCell());
-			if (oldCellNode != null) {
-				List<SourceNode> sources = oldCellNode.getSources();
-				Collection<? extends Entity> cellSources = cell.getCell().getSource().values();
-				if (sources.size() != cellSources.size()) {
-//					for (Entity entity : cellSources)
-					// TODO
+			for (CellNode oldCellNode : info.getOldCellNodes(cell.getCell())) {
+				// Skip the cell if it's full.
+				if (oldCellNode.getSources().size() == cell.getSources().size())
+					continue;
+				// XXX Other logic to decide which cell to use?
+				// Check whether out duplicate source node is missing...
+				if (!oldCellNode.getSources().contains(duplicate)) {
+					usedOld = true;
+					// Has to be a cell created with the cell constructor.
+					((CellNodeImpl) oldCellNode).addSource(cell.getSourceNames(source), duplicate);
+					duplicate.addRelation(oldCellNode);
+					break;
 				}
 			}
 
+			// If no old cell was used, use a newly created one / create one.
 			if (!usedOld) {
 				CellNodeImpl duplicatedCell = info.getNewCellNode(cell.getCell());
 				if (duplicatedCell == null) {
+					// Create a new cell, augment it with existing sources, add it to info and duplicate targets.
 					duplicatedCell = new CellNodeImpl(cell.getCell());
+					augmentCell(cell, duplicatedCell, info);
 					info.addNewCellNode(cell.getCell(), duplicatedCell);
-
 					duplicateTree(cell, duplicatedCell, info);
 				}
+				// Add as relation/source.
 				duplicate.addRelation(duplicatedCell);
 				duplicatedCell.addSource(cell.getSourceNames(source), duplicate);
 			}
@@ -451,6 +499,31 @@ public class TargetContext implements TransformationContext {
 					duplicate, true);
 			duplicatedChild.setContext(child.getContext());
 			duplicateTree(child, duplicatedChild, info);
+		}
+	}
+
+	/**
+	 * Adds existing sources to the duplicated cell.
+	 *
+	 * @param cell the original cell
+	 * @param duplicatedCell the duplicated cell
+	 * @param info the duplication info object
+	 */
+	private static void augmentCell(CellNode cell, CellNodeImpl duplicatedCell,
+			DuplicationInformation info) {
+		// This handles the case "a,b* -(a,b)> c": If there is exactly one a and multiple "b"s and there is a
+		// cell using an "a" and a "b" the a is used multiple times.
+		for (SourceNode source : cell.getSources()) {
+			if (!source.getEntityDefinition().equals(info.getDuplicatedNode().getEntityDefinition()) &&
+					!AlignmentUtil.isParent(info.getDuplicatedNode().getEntityDefinition(), source.getEntityDefinition())) {
+				// This source node does not belong to the duplicated tree, add an existing fitting source node!
+				Collection<SourceNode> possibleSources = info.getOldSourceNodes(source.getEntityDefinition());
+				// Only add the node here if there is exactly one possible source.
+				// For zero there is nothing to add, for more they are duplicates (is that always true?)
+				// which should add themselves to this cell when they are handled.
+				if (possibleSources.size() == 1)
+					duplicatedCell.addSource(cell.getSourceNames(source), possibleSources.iterator().next());
+			}
 		}
 	}
 
@@ -494,6 +567,7 @@ public class TargetContext implements TransformationContext {
 			parent = target.getParent();
 		} else {
 			// Reached root, but this is no possible target or the parent is null!
+			// XXX instead log and return null or not connected TargetNode? See T O D O below
 			throw new IllegalStateException("DuplicationContext present, but no matching target found.");
 		}
 
@@ -648,12 +722,12 @@ public class TargetContext implements TransformationContext {
 	 * excluding SourceNodes with the given EntityDefinition.
 	 *
 	 * @param source the source to start from
-	 * @param allowedTypeNodes type nodes with a type in this map are only followed
-	 * 						   if they are exactly the node in this map
+	 * @param contextPath source nodes with a definition in this map are only followed
+	 * 					  if they are exactly the node in this map
 	 * @param info the duplication info object
 	 */
 	private void collectExistingNodes(SourceNode source,
-			final Map<TypeEntityDefinition, SourceNode> allowedTypeNodes,
+			final Map<EntityDefinition, SourceNode> contextPath,
 			final DuplicationInformation info) {
 		source.accept(new AbstractSourceToTargetVisitor() {
 			/**
@@ -661,7 +735,7 @@ public class TargetContext implements TransformationContext {
 			 */
 			@Override
 			public boolean includeAnnotatedNodes() {
-				return true;
+				return true; // Really include annotated nodes? Maybe only special handling for types in visit(SourceNode)?
 			}
 
 			/**
@@ -678,6 +752,11 @@ public class TargetContext implements TransformationContext {
 			 */
 			@Override
 			public boolean visit(CellNode cell) {
+				// CellNodes can be found more than once...
+				Collection<CellNode> cellNodes = info.getOldCellNodes(cell.getCell());
+				for (CellNode other : cellNodes)
+					if (other == cell)
+						return true;
 				info.addOldCellNode(cell.getCell(), cell);
 				return true;
 			}
@@ -695,16 +774,29 @@ public class TargetContext implements TransformationContext {
 			 */
 			@Override
 			public boolean visit(SourceNode source) {
-				boolean visit = true;
-				if (source.getEntityDefinition() instanceof TypeEntityDefinition) {
-					SourceNode allowedSource = allowedTypeNodes.get(source.getEntityDefinition());
-					visit = allowedSource == null || allowedSource == source;
-				}
-				if (visit)
+				SourceNode contextNode = contextPath.get(source.getEntityDefinition());
+				if (contextNode == null || source == contextNode) {
 					info.addOldSourceNode(source.getEntityDefinition(), source);
-				return visit;
+					return true;
+				} else
+					return false;
 			}
 		});
+	}
+
+	/**
+	 * Checks whether the given source node is part of the context for the duplication.
+	 *
+	 * @param source the source node to check
+	 * @param info the context information
+	 * @return true, if the given node is in the context for the duplication, false otherwise
+	 */
+	private boolean isInContext(SourceNode source, DuplicationInformation info) {
+		Collection<SourceNode> contextNodes = info.getOldSourceNodes(source.getEntityDefinition());
+		for (SourceNode node : contextNodes)
+			if (node == source)
+				return true;
+		return false;
 	}
 
 	// OLD STUFF!
