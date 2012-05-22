@@ -18,7 +18,7 @@
         <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
     </resource>
     <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
-        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cardmerge/instance1.xml</setting>
+        <setting name="source">file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cardmerge/instance1_1.xml</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
     </resource>
     <file name="styles.sld" location="file:/C:/Users/sitemple/Entwicklung/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/cardmerge/t1t2.halex.styles.sld"/>
