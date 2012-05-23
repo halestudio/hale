@@ -64,7 +64,7 @@ public class NetworkExpansionTranslator implements FunctionTranslator,
 				newList.add(val);
 			}
 		}
-		return params;
+		return newList;
 	}
 
 }
