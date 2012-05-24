@@ -224,7 +224,6 @@ public class ConceptualSchemaTransformerTest {
 	 *
 	 * @throws Exception if an error occurs executing the test
 	 */
-	@Ignore // Does not work yet
 	@Test
 	public void testCardinalityMove() throws Exception {
 		test("/testdata/cardmove/t1.xsd",
