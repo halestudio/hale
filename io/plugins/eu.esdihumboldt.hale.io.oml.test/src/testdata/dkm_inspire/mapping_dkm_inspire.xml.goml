@@ -913,7 +913,7 @@
                     <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
                         <omwg:param>
                             <omwg:name>defaultValue</omwg:name>
-                            <omwg:value>m²</omwg:value>
+                            <omwg:value>m2</omwg:value>
                         </omwg:param>
                     </omwg:transf>
                 </omwg:Property>
@@ -943,7 +943,7 @@
                     <omwg:transf rdf:resource="eu.esdihumboldt.cst.corefunctions.ConstantValueFunction">
                         <omwg:param>
                             <omwg:name>defaultValue</omwg:name>
-                            <omwg:value>m²</omwg:value>
+                            <omwg:value>m2</omwg:value>
                         </omwg:param>
                     </omwg:transf>
                 </omwg:Property>
