@@ -125,14 +125,14 @@ public class OMLReaderTest {
 		Collection<? extends Cell> cells = alignment.getCells();
 		Collection<? extends Cell> cells2 = alignment2.getCells();
 		Collection<? extends Cell> cells3 = alignment3.getCells();
-		// Collection<? extends Cell> cells4 = alignment4.getCells();
+		Collection<? extends Cell> cells4 = alignment4.getCells();
+		Collection<? extends Cell> cells5 = alignment5.getCells();
 
 		assertEquals(2, cells.size());
 		assertEquals(11, cells2.size());
 		assertEquals(33, cells3.size());
-		// FIXME: test fails 'cause last cell can't be created, why ?!
-		// -> 17 cells
-		// assertEquals(18, cells4.size());
+		assertEquals(18, cells4.size());
+		assertEquals(51, cells5.size());
 	}
 
 	/**
@@ -190,19 +190,19 @@ public class OMLReaderTest {
 				"{flurstuecksnummer.AX_Flurstuecksnummer.zaehler}/{flurstuecksnummer.AX_Flurstuecksnummer.nenner}",
 				values.get(0));
 	}
-	
+
 	/**
 	 * Test for formatted string function in alignment5
 	 */
 	@Test
 	public void testFormattedString3() {
-		
+
 		Collection<? extends Cell> cells = alignment5.getCells();
 
 		Iterator<? extends Cell> it = cells.iterator();
 
 		Cell cell = null;
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			Cell temp = it.next();
 
 			if (temp.getTransformationIdentifier().equals(
@@ -217,9 +217,7 @@ public class OMLReaderTest {
 				.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
-		assertEquals(
-				"{Grundbuch}:{Nummer}:{Einlage}",
-				values.get(0));
+		assertEquals("{Grundbuch}:{Nummer}:{Einlage}", values.get(0));
 	}
 
 	/**
@@ -444,17 +442,13 @@ public class OMLReaderTest {
 				assertEquals("FR.IGN.ERM", temp);
 			}
 			// test cell #3
-			// FIXME: doesn't add this cell to the assignCells list because it's
-			// an "integer", not a "namespace" ? -> watrcrsl_inspire.xml.goml
-			// line 260
 			if (i == 2) {
 				assertEquals("250000", temp);
 			}
 		}
 
 		// check if all cells with an assign function were tested
-		// FIXME: fails 'cause cell#3 is not added to the list
-		// assertEquals(3, assignCells.size());
+		assertEquals(3, assignCells.size());
 
 	}
 
@@ -511,8 +505,79 @@ public class OMLReaderTest {
 		// check if all cells with an assign function were tested
 		assertEquals(4, assignCells.size());
 	}
-	
-	// TODO: testAssign3 (alignment5 -> line 583)
+
+	/**
+	 * Test for assign function in alignment5
+	 */
+	@Test
+	public void testAssign3() {
+		Collection<? extends Cell> cells = alignment5.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		List<Cell> assignCells = new ArrayList<Cell>();
+
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.hale.align.assign")) {
+				assignCells.add(temp);
+			}
+		}
+
+		// test all cells that have an assign function
+		for (int i = 0; i < assignCells.size(); i++) {
+			Cell cell = assignCells.get(i);
+
+			ListMultimap<String, String> params = cell
+					.getTransformationParameters();
+			List<String> values = params.get("value");
+
+			// size should always be 1
+			String temp = values.get(0);
+
+			// test cell #1
+			if (i == 0) {
+				assertEquals("2000", temp);
+			}
+			// test cell #2
+			if (i == 1) {
+				assertEquals("20", temp);
+			}
+			// test cell #3
+			if (i == 2) {
+				assertEquals("20", temp);
+			}
+			// test cell #4
+			if (i == 3) {
+				assertEquals("2", temp);
+			}
+			// test cell #5
+			if (i == 4) {
+				assertEquals("Katastralgemeinde", temp);
+			}
+			// test cell #6
+			if (i == 5) {
+				assertEquals("m²", temp);
+			}
+			// test cell #7
+			if (i == 6) {
+				assertEquals("m²", temp);
+			}
+			// test cell #8
+			if (i == 7) {
+				assertEquals("m", temp);
+			}
+			// test cell #9
+			if (i == 8) {
+				assertEquals("m", temp);
+			}
+		}
+
+		// check if all cells with an assign function were tested
+		assertEquals(9, assignCells.size());
+	}
 
 	/**
 	 * Test for ordinates to point function in alignment5
@@ -537,16 +602,56 @@ public class OMLReaderTest {
 		}
 
 		ListMultimap<String, ? extends Entity> src = cell.getSource();
-		
-		// the parameters were moved to the source entities with the appropriate names
+
+		// the parameters were moved to the source entities with the appropriate
+		// names
 		// so get the source entities with name "X"/"Y"
 		Entity srcX = src.get("X").get(0);
 		Entity srcY = src.get("Y").get(0);
-		
+
 		// check if the source entity has the correct value
-		assertEquals("HOCHWERT" ,srcX.getDefinition().getDefinition().getDisplayName());
-		assertEquals("RECHTSWERT" ,srcY.getDefinition().getDefinition().getDisplayName());
+		assertEquals("HOCHWERT", srcX.getDefinition().getDefinition()
+				.getDisplayName());
+		assertEquals("RECHTSWERT", srcY.getDefinition().getDefinition()
+				.getDisplayName());
+
+	}
+	
+
+	/**
+	 * Test for centroid function in alignment3
+	 */
+	@Test
+	public void testCentroid1() {
 		
+		Collection<? extends Cell> cells = alignment5.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.geometric.centroid")) {
+				cell = temp;
+				break;
+			}
+		}
+		
+		// test if there is only one source and one target
+		assertEquals(1, cell.getSource().size());
+		assertEquals(1, cell.getTarget().size());
+		
+		List<? extends Entity> list = cell.getTarget().get(null);
+		assertEquals(1, list.size());
+		
+		Entity ent = list.get(0);
+		
+		String name = ent.getDefinition().getDefinition().getDisplayName();
+		
+		assertEquals("referencePoint", name);
 	}
 
 	private static Alignment loadAlignment(URI sourceSchemaLocation,
