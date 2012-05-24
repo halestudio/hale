@@ -32,8 +32,10 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Represents a {@link Property}.
@@ -98,32 +100,23 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 						"Could not resolve property entity definition: child not present");
 			}
 
-			ChildDefinition<?> child = parent.getChild(childContext
-					.getChildName());
+			Pair<ChildDefinition<?>, List<ChildDefinition<?>>> childs = findChild(
+					parent, childContext.getChildName());
+
+			ChildDefinition<?> child = childs.getFirst();
+
+			// if the child is still null throw an exception
 			if (child == null) {
-				// if the child is null there can be still a childname
-				QName childname = childContext.getChildName();
-				// if the namespace is not null
-				if (childname.getNamespaceURI()
-						.equals(XMLConstants.NULL_NS_URI)) {
-					// get all children and iterate over them
-					Collection<? extends ChildDefinition<?>> children = DefinitionUtil
-							.getAllChildren(parent);
-					for (ChildDefinition<?> _child : children) {
-						// try to find another child with the same local part,
-						// if we find a child with the same local part but
-						// different namespace we overwrite child
-						if (_child.getName().getLocalPart().equals(childname
-								.getLocalPart())) {
-							child = _child;
-							break;
-						}
-					}
-				}
-				// if the child is still null throw an exception
-				if (child == null) {
-					throw new IllegalStateException(
-							"Could not resolve property entity definition: child not found");
+				throw new IllegalStateException(
+						"Could not resolve property entity definition: child not found");
+			}
+
+			if (childs.getSecond() != null) {
+				for (ChildDefinition<?> pathElems : childs.getSecond()) {
+					path.add(new ChildContext(childContext.getContextName(),
+							childContext.getContextIndex(),
+							createCondition(childContext.getConditionFilter()),
+							pathElems));
 				}
 			}
 
@@ -142,6 +135,75 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 
 		return new PropertyEntityDefinition(typeDef, path, schemaSpace,
 				FilterDefinitionManager.getInstance().parse(getFilter()));
+	}
+
+	/**
+	 * The function to look for a child as ChildDefinition or as Group
+	 * 
+	 * @param parent
+	 *            the starting point to traverse from
+	 * @param childName
+	 *            the name of the parent's child
+	 * @return a pair of child and a list with the full path from parent to the
+	 *         child
+	 */
+	private Pair<ChildDefinition<?>, List<ChildDefinition<?>>> findChild(
+			DefinitionGroup parent, QName childName) {
+
+		ChildDefinition<?> child = parent.getChild(childName);
+		if (child == null) {
+			// if the child is null there can be still a childname
+
+			// if the namespace is not null
+			if (childName.getNamespaceURI().equals(XMLConstants.NULL_NS_URI)) {
+				// get all children and iterate over them
+				Collection<? extends ChildDefinition<?>> children = DefinitionUtil
+						.getAllChildren(parent);
+				for (ChildDefinition<?> _child : children) {
+					// try to find another child with the same local part,
+					// if we find a child with the same local part but
+					// different namespace we overwrite child
+					if (_child.getName().getLocalPart()
+							.equals(childName.getLocalPart())) {
+						child = _child;
+						break;
+					}
+				}
+			}
+
+		}
+
+		if (child != null) {
+			return new Pair<ChildDefinition<?>, List<ChildDefinition<?>>>(
+					child, null);
+		}
+
+		Collection<? extends ChildDefinition<?>> children = DefinitionUtil
+				.getAllChildren(parent);
+
+		for (ChildDefinition<?> groupChild : children) {
+
+			if (groupChild.asGroup() != null) {
+				GroupPropertyDefinition temp = groupChild.asGroup();
+
+				if (findChild(temp, childName) != null) {
+					Pair<ChildDefinition<?>, List<ChildDefinition<?>>> recTemp = findChild(
+							temp, childName);
+
+					if (recTemp.getSecond() == null) {
+						List<ChildDefinition<?>> second = new ArrayList<ChildDefinition<?>>();
+						second.add(temp);
+						ChildDefinition<?> first = recTemp.getFirst();
+						return new Pair<ChildDefinition<?>, List<ChildDefinition<?>>>(
+								first, second);
+					} else {
+						recTemp.getSecond().add(0, temp);
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	/**
