@@ -88,7 +88,12 @@
 			<pathelement location="${common.loc}/lib/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
-	
+
+	<!-- Add the Sonar task -->
+	<taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+		<classpath path="${common.loc}/lib/sonar-ant-task-1.4.jar" />
+	</taskdef>
+
 	<!-- Load environment properties -->
 	<property environment="env" />
 
@@ -135,13 +140,13 @@
 	<!-- include property files -->
 	<property file="${additional.name}" />
 	<property file="${common.loc}/build.properties" />
-	
+
 	<propertyset id="proxy-props">
-	  <propertyref prefix="java.net.useSystemProxies"/>
-	  <propertyref prefix="http."/>
-	  <propertyref prefix="https."/>
-	  <propertyref prefix="ftp."/>
-	  <propertyref prefix="socksProxy"/>
+		<propertyref prefix="java.net.useSystemProxies"/>
+		<propertyref prefix="http."/>
+		<propertyref prefix="https."/>
+		<propertyref prefix="ftp."/>
+		<propertyref prefix="socksProxy"/>
 	</propertyset>
 
 	<!-- Delete the build directory -->
@@ -222,101 +227,145 @@
 			<fileset dir="${c.from}" excludes="${c.excludes}" />
 		</copy>
 	</target>
-	
+
 	<!-- Create javadoc -->
 	<!-- ================================= 
           target: javadoc              
          ================================= -->
-    <target name="javadoc" depends="prepare" description="Create javadoc documentation">
-    	<fail unless="eclipse" message="Please provide the environment variable &quot;eclipse&quot; pointing to your Eclipse RCP with Delta Pack installation" />
-    	<fail unless="title" message="Please provide the application title in the environment variable &quot;title&quot;" />
-    	
-    	<!-- If a build was done before, the version can be determined -->
-    	<property file="${build}/.eclipseproduct" />
-    	
-    	<if>
+	<target name="javadoc" depends="prepare" description="Create javadoc documentation">
+		<fail unless="eclipse" message="Please provide the environment variable &quot;eclipse&quot; pointing to your Eclipse RCP with Delta Pack installation" />
+		<fail unless="title" message="Please provide the application title in the environment variable &quot;title&quot;" />
+
+		<!-- If a build was done before, the version can be determined -->
+		<property file="${build}/.eclipseproduct" />
+
+		<if>
 			<isset property="version" />
 			<then>
 				<var name="long-title" value="${title} ${version}" />
 			</then>
-    		<else>
-    			<var name="long-title" value="${title}" />
-    		</else>
+			<else>
+				<var name="long-title" value="${title}" />
+			</else>
 		</if>
-    	
-        <javadoc destdir="${build}/javadoc"
+
+		<javadoc destdir="${build}/javadoc"
         	useexternalfile="true"
  			splitindex="true"
         	author="true"
         	version="false"
         	use="true"
         	windowtitle="${long-title} API Documentation">
-        	
-        	<sourcepath>
-        		<dirset dir="${build}/plugins">
-        			<include name="*/src" />
-        			<exclude name="*.test/src" />
-        		</dirset>
-        	</sourcepath>
-        	
-        	<classpath>
-        		<fileset dir="${build}/plugins">
-        			<include name="*.jar" />
-        		</fileset>
-        		<fileset dir="${eclipse}/plugins">
-        			<include name="*.jar" />
-        			<include name="*/junit.jar" />
-        		</fileset>
-        	</classpath>
-        	
-        	<package name="eu.esdihumboldt.*" />
-        	
-        	<group title="HALE UI">
-        		<package name="eu.esdihumboldt.hale.ui*"/>
-        	</group>
-        	<group title="HALE Core">
-        		<package name="eu.esdihumboldt.hale.common*"/>
-        	</group>
-        	<group title="HALE I/O">
-        		<package name="eu.esdihumboldt.hale.io*"/>
-        	</group>
-        	<group title="Documentation">
-        		<package name="eu.esdihumboldt.hale.doc*"/>
-        		<package name="eu.esdihumboldt.cst.doc*"/>
-        	</group>
-        	<group title="Conceptual Schema Transformer">
-        		<package name="eu.esdihumboldt.cst*"/>
-        	</group>
-        	<group title="Utilities">
-        		<package name="eu.esdihumboldt.util*"/>
-        	</group>
-        	
-        	<doctitle><![CDATA[${long-title} API Documentation]]></doctitle>
-        	<header><![CDATA[${long-title}]]></header>
-        	<bottom><![CDATA[Build ${env.BUILD_ID}<br>Revision ${env.GIT_COMMIT}]]></bottom>
-        	
-        	<tag name="partner" scope="all" description="Partner:"/>
-        	
-        	<!-- Link to other API docs -->
-        	<link href="http://docs.oracle.com/javase/6/docs/api/" />
-        </javadoc>
-    	
-    	<if>
+
+			<sourcepath>
+				<dirset dir="${build}/plugins">
+					<include name="*/src" />
+					<exclude name="*.test/src" />
+				</dirset>
+			</sourcepath>
+
+			<classpath>
+				<fileset dir="${build}/plugins">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${eclipse}/plugins">
+					<include name="*.jar" />
+					<include name="*/junit.jar" />
+				</fileset>
+			</classpath>
+
+			<package name="eu.esdihumboldt.*" />
+
+			<group title="HALE UI">
+				<package name="eu.esdihumboldt.hale.ui*"/>
+			</group>
+			<group title="HALE Core">
+				<package name="eu.esdihumboldt.hale.common*"/>
+			</group>
+			<group title="HALE I/O">
+				<package name="eu.esdihumboldt.hale.io*"/>
+			</group>
+			<group title="Documentation">
+				<package name="eu.esdihumboldt.hale.doc*"/>
+				<package name="eu.esdihumboldt.cst.doc*"/>
+			</group>
+			<group title="Conceptual Schema Transformer">
+				<package name="eu.esdihumboldt.cst*"/>
+			</group>
+			<group title="Utilities">
+				<package name="eu.esdihumboldt.util*"/>
+			</group>
+
+			<doctitle>
+				<![CDATA[${long-title} API Documentation]]>
+			</doctitle>
+			<header>
+				<![CDATA[${long-title}]]>
+			</header>
+			<bottom>
+				<![CDATA[Build ${env.BUILD_ID}<br>Revision ${env.GIT_COMMIT}]]></bottom>
+
+			<tag name="partner" scope="all" description="Partner:"/>
+
+			<!-- Link to other API docs -->
+			<link href="http://docs.oracle.com/javase/6/docs/api/" />
+		</javadoc>
+
+		<if>
 			<isset property="version" />
 			<then>
 				<var name="vident" value="${version}" />
 			</then>
-    		<else>
-    			<var name="vident" value="${env.BUILD_ID}" />
-    		</else>
+			<else>
+				<var name="vident" value="${env.BUILD_ID}" />
+			</else>
 		</if>
-    	
-    	<zip destfile="${release}/${buildId}-${vident}_javadoc.zip">
+
+		<zip destfile="${release}/${buildId}-${vident}_javadoc.zip">
 			<zipfileset dir="${build}/javadoc">
 				<include name="**" />
 			</zipfileset>
 		</zip>
-    </target>
+	</target>
+
+	<!-- Sonar analysis -->
+	<target name="sonar" depends="prepare" description="Analyse and publish for Sonar">
+		<!-- If a build was done before, the version can be determined -->
+		<property file="${build}/.eclipseproduct" />
+
+		<if>
+			<isset property="version" />
+			<then>
+				<var name="vident" value="${version}" />
+			</then>
+			<else>
+				<var name="vident" value="${env.BUILD_ID}" />
+			</else>
+		</if>
+
+		<!-- list of mandatories Sonar properties -->
+		<!--property name="sonar.sources" value="list of source directories separated by a comma" /-->
+
+		<!-- list of optional Sonar properties -->
+		<!--property name="sonar.projectName" value="this value overrides the name defined in Ant root node" /-->
+		<!--property name="sonar.binaries" value="list of directories which contain for example the Java bytecode" /-->
+		<!--property name="sonar.tests" value="list of test source directories separated by a comma" /-->
+		<!--property name="sonar.libraries" value="list of paths to libraries separated by a comma (These libraries are for example used by the Sonar Findbugs plugin)" /-->
+
+		<sonar:sonar key="eu.esdihumboldt:hale" version="${vident}" xmlns:sonar="antlib:org.sonar.ant">
+			<sources>
+				<path>
+					<dirset dir="${build}/plugins">
+						<include name="*/src" />
+						<exclude name="*.test/src" />
+					</dirset>
+				</path>
+			</sources>
+			
+			<property name="sonar.dynamicAnalysis" value="reuseReports" />
+			<property name="sonar.surefire.reportsPath" value="${build}/testlogs" />
+		</sonar:sonar>
+	</target>
 
 	<!-- Build the product -->
 	<target name="build" depends="prepare" description="Build the product">
@@ -332,7 +381,7 @@
 
 		<!-- convert relative paths to absolute paths -->
 		<path id="absoluteEclipse" path="${eclipse}" />
-		
+
 		<echo message="Starting headless build of ${product}" />
 		<echo message="Using eclipse installation at ${eclipse}" />
 
@@ -624,12 +673,12 @@
 		</if>
 		<antcall target="client-pack-win32-${client-variant}" />
 	</target>
-	
+
 	<!-- pack client for windows as zip archive -->
 	<target name="client-pack-win32-zip">
 		<!-- prepare -->
 		<property file="${release}/src/.eclipseproduct" />
-		
+
 		<delete dir="${release}/${buildId}-${version}-${tag}" />
 		<property name="buildVersion" value="${buildId}-${version}-${tag}" />
 		<move file="${release}/src" tofile="${release}/${buildVersion}" />
