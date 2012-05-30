@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.align.transformation">
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.inspire.Identifier"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.inspire.identifier"
+            id="eu.esdihumboldt.cst.functions.inspire.identifier">
+      </propertyTransformation>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.function">
+      <propertyFunction
+            cellExplanation="eu.esdihumboldt.cst.functions.inspire.IdentifierExplanation"
+            identifier="eu.esdihumboldt.cst.functions.inspire.identifier"
+            name="Inspire Identifier">
+         <targetProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <propertyCondition
+                     class="eu.esdihumboldt.cst.functions.inspire.PropertyCondition1">
+               </propertyCondition>
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <bindingCondition
+                     allowCollection="false"
+                     allowConversion="true"
+                     compatibleClass="java.lang.String">
+               </bindingCondition>
+            </property>
+         </sourceProperties>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="countryName">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="providerName">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="productName">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="version">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="versionNilReason">
+         </functionParameter>
+      </propertyFunction>
+   </extension>
+
+</plugin>
