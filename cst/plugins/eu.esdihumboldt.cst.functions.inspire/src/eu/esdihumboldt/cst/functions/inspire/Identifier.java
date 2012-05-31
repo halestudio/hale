@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.cst.functions.inspire;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
@@ -23,14 +24,20 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Class for the identifier function
+ * 
  * @author Kevin Mais
- *
+ * 
  */
-public class Identifier extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
-implements IdentifierFunction {
+public class Identifier extends
+		AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements IdentifierFunction {
 
 	@Override
 	protected Object evaluate(String transformationIdentifier,
@@ -39,8 +46,101 @@ implements IdentifierFunction {
 			PropertyEntityDefinition resultProperty,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException, NoResultException {
-		// TODO Auto-generated method stub
+
+		// get input
+		PropertyValue input = variables.get(null).get(0);
+		// source value as string (will be written into localid)
+		String source = input.getValueAs(String.class);
+
+		// get all values for the parameters set by the parameter page
+		String countryName = getParameterChecked(COUNTRY_PARAMETER_NAME);
+		String providerName = getParameterChecked(DATA_PROVIDER_PARAMETER_NAME);
+		String productName = getParameterChecked(PRODUCT_PARAMETER_NAME);
+		String version = getParameterChecked(VERSION);
+		String versionNilReason = getParameterChecked(VERSION_NIL_REASON);
+
+		// TODO: delete
+		System.out.println("country: " + countryName);
+		System.out.println("provider: " + providerName);
+		System.out.println("product: " + productName);
+		System.out.println("version: " + version);
+		System.out.println("versionNil: " + versionNilReason);
+		System.out.println("source: " + source);
+
+		// definition of the target property (inspireId in this case)
+		TypeDefinition inspireType = resultProperty.getDefinition()
+				.getPropertyType();
+
+		// instance that can be changed (add property/instance as child)
+		DefaultInstance inspireInstance = new DefaultInstance(inspireType, null);
+
+		// search for the child named "Identifier"
+		PropertyDefinition inspireChildPropDef = getChild("Identifier",
+				inspireType);
+
+		// get type definition to create the "Identifier" instance
+		TypeDefinition identType = inspireChildPropDef.getPropertyType();
+
+		DefaultInstance identInstance = new DefaultInstance(identType, null);
+
+		PropertyDefinition identChildLocal = getChild("localId", identType);
+
+		PropertyDefinition identChildNamespace = getChild("namespace",
+				identType);
+
+		PropertyDefinition identChildVersion = getChild("versionId", identType);
+
+		TypeDefinition versionType = identChildVersion.getPropertyType();
+
+		DefaultInstance versionInstance = new DefaultInstance(versionType, null);
+
+		PropertyDefinition versionIdChildVersion = getChild("nilReason",
+				versionType);
+
+		// 1.)
+		// add the "localId" and "namespace" properties to the identifier
+		// instance
+		identInstance.addProperty(identChildLocal.getName(), source);
+		identInstance.addProperty(identChildNamespace.getName(), countryName
+				+ ":" + providerName + ":" + productName + ":"
+				+ resultProperty.getType().getDisplayName());
+
+		// 2.)
+		// add the "nilReason" property to the version instance
+		if (version == null || version.isEmpty()) {
+			versionInstance.addProperty(versionIdChildVersion.getName(),
+					versionNilReason);
+		} else {
+			versionInstance.setValue(version);
+		}
+
+		// 3.)
+		// add the "versionId" instance to the identifier instance
+		identInstance.addProperty(identChildVersion.getName(), versionInstance);
+
+		// 4.)
+		// add the "identifier" instance to the inspireId instance
+		inspireInstance.addProperty(inspireChildPropDef.getName(),
+				identInstance);
+
+		return inspireInstance;
+	}
+
+	private PropertyDefinition getChild(String localpart,
+			TypeDefinition definition) {
+
+		Collection<? extends ChildDefinition<?>> children = definition
+				.getChildren();
+
+		for (ChildDefinition<?> child : children) {
+			if (child.asProperty() != null
+					&& child.getName().getLocalPart().equals(localpart)) {
+				return child.asProperty();
+			}
+		}
+
 		return null;
+
 	}
 
 }
