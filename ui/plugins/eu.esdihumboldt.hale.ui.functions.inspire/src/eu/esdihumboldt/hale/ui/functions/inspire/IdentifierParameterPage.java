@@ -40,17 +40,22 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.functions.inspire.internal.Messages;
 
+/**
+ * Wizard page for the inspire identifier function
+ * 
+ * @author Kevin Mais
+ */
 public class IdentifierParameterPage extends
 		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
 		ParameterPage, IdentifierFunction {
 
-	Text countryCode = null;
+	private Text countryCode = null;
 
-	Text providerName = null;
+	private Text providerName = null;
 
-	Text productName = null;
+	private Text productName = null;
 
-	Text version = null;
+	private Text version = null;
 
 	private AttributeEditor<?> nilEditor;
 
@@ -59,10 +64,15 @@ public class IdentifierParameterPage extends
 	private String initialProduct;
 	private String initialVersion;
 	private String initialVersionNil;
-	
-	private ListMultimap<String, String> configuration = ArrayListMultimap.create(5, 5);
 
-	protected IdentifierParameterPage() {
+	private Composite parent;
+
+	private Composite page;
+
+	/**
+	 * Default Constructor
+	 */
+	public IdentifierParameterPage() {
 		super("identifier", Messages.IdentifierFunctionWizardPage_0, null);
 		setPageComplete(false);
 	}
@@ -71,53 +81,73 @@ public class IdentifierParameterPage extends
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, String> initialValues) {
 
-		for (int i = 0; i < initialValues.size(); i++) {
+		if (initialValues == null) {
+			return;
+		}
 
-			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0);
-			initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME)
-					.get(0);
-			initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0);
-			initialVersion = initialValues.get(VERSION).get(0);
-			initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0);
+		if (!initialValues.get(COUNTRY_PARAMETER_NAME).isEmpty()
+				&& !initialValues.get(DATA_PROVIDER_PARAMETER_NAME).isEmpty()
+				&& !initialValues.get(PRODUCT_PARAMETER_NAME).isEmpty()
+				&& (!initialValues.get(VERSION).isEmpty() || !initialValues
+						.get(VERSION_NIL_REASON).isEmpty())) {
+
+			for (int i = 0; i < initialValues.size(); i++) {
+
+				initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(
+						0);
+				initialProvider = initialValues.get(
+						DATA_PROVIDER_PARAMETER_NAME).get(0);
+				initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(
+						0);
+				initialVersion = initialValues.get(VERSION).get(0);
+				initialVersionNil = initialValues.get(VERSION_NIL_REASON)
+						.get(0);
+
+			}
 			
-//			Iterator<FunctionParameter> it = params.iterator();
-//			while(it.hasNext()) {
-//				FunctionParameter param = it.next();
-//				
-//				if(param.getName().equals(COUNTRY_PARAMETER_NAME)) {
-//					configuration.put(COUNTRY_PARAMETER_NAME, nilEditor.getAsText());
-//				}
-//				if(param.getName().equals(DATA_PROVIDER_PARAMETER_NAME)) {
-//					configuration.put(DATA_PROVIDER_PARAMETER_NAME, nilEditor.getAsText());
-//				}
-//				if(param.getName().equals(PRODUCT_PARAMETER_NAME)) {
-//					configuration.put(PRODUCT_PARAMETER_NAME, nilEditor.getAsText());
-//				}
-//				if(param.getName().equals(VERSION)) {
-//					configuration.put(VERSION, nilEditor.getAsText());
-//				}
-//				if(param.getName().equals(VERSION_NIL_REASON)) {
-//					configuration.put(VERSION_NIL_REASON, nilEditor.getAsText());
-//				}
-//			}
+			setPageComplete(true);
 		}
 		
 	}
 
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
-		return /*configuration*/null;
+		ListMultimap<String, String> configuration = ArrayListMultimap.create(
+				5, 5);
+		if (nilEditor != null && !nilEditor.getControl().isDisposed()) {
+			configuration.put(COUNTRY_PARAMETER_NAME, nilEditor.getAsText());
+			configuration.put(DATA_PROVIDER_PARAMETER_NAME,
+					nilEditor.getAsText());
+			configuration.put(PRODUCT_PARAMETER_NAME, nilEditor.getAsText());
+			configuration.put(VERSION, nilEditor.getAsText());
+			configuration.put(VERSION_NIL_REASON, nilEditor.getAsText());
+		}
+		return configuration;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage(boolean)
+	 */
+	@Override
+	protected void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
+		// selected target could've changed!
+		if (page != null)
+			page.dispose();
+		createContent(parent);
+		parent.layout();
 	}
 
 	@Override
 	protected void createContent(Composite parent) {
+		this.parent = parent;
 		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI
 				.getWorkbench().getService(AttributeEditorFactory.class);
 		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI
 				.getWorkbench().getService(DefinitionLabelFactory.class);
 
 		// create a composite to hold the widgets
-		Composite page = new Composite(parent, SWT.NULL);
+		page = new Composite(parent, SWT.NULL);
 		setControl(parent);
 		// create layout for this wizard page
 		GridLayout gl = new GridLayout();
@@ -154,7 +184,7 @@ public class IdentifierParameterPage extends
 		if (identifierType != null) {
 			PropertyDefinition propDef = null; //$NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
-				String namespace = child.getName().getNamespaceURI().toString();
+				String namespace = child.getName().getLocalPart();
 				if (namespace.equals("namespace")) {
 					if (child.asProperty() != null) {
 						propDef = child.asProperty();
@@ -217,7 +247,7 @@ public class IdentifierParameterPage extends
 		if (identifierType != null) {
 			PropertyDefinition propDef = null; //$NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
-				String namespace = child.getName().getNamespaceURI().toString();
+				String namespace = child.getName().getLocalPart();
 				if (namespace.equals("localId")) {
 					if (child.asProperty() != null) {
 						propDef = child.asProperty();
@@ -233,7 +263,7 @@ public class IdentifierParameterPage extends
 			((Label) idLabel).setText("localId"); //$NON-NLS-1$
 		}
 		idLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		;
+		
 		Control localId = dlf.createLabel(idGroup, getWizard()
 				.getUnfinishedCell().getSource().get(null).get(0)
 				.getDefinition().getDefinition(), true);
@@ -250,7 +280,7 @@ public class IdentifierParameterPage extends
 		if (identifierType != null) {
 			PropertyDefinition propDef = null; //$NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
-				String namespace = child.getName().getNamespaceURI().toString();
+				String namespace = child.getName().getLocalPart();
 				if (namespace.equals("versionId")) {
 					if (child.asProperty() != null) {
 						propDef = child.asProperty();
@@ -279,7 +309,7 @@ public class IdentifierParameterPage extends
 		if (identifierType != null) {
 			PropertyDefinition propDef = null; //$NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
-				String namespace = child.getName().getNamespaceURI().toString();
+				String namespace = child.getName().getLocalPart();
 				if (namespace.equals("versionId")) {
 					if (child.asProperty() != null) {
 						propDef = child.asProperty();
@@ -289,8 +319,7 @@ public class IdentifierParameterPage extends
 			if (propDef != null) {
 				for (ChildDefinition<?> child : propDef.getPropertyType()
 						.getChildren()) {
-					String namespace = child.getName().getNamespaceURI()
-							.toString();
+					String namespace = child.getName().getLocalPart();
 					if (namespace.equals("nilReason")) {
 						if (child.asProperty() != null) {
 							propDef = child.asProperty();
