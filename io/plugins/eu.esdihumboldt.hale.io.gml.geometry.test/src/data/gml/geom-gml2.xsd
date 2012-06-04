@@ -3,17 +3,28 @@
 	xmlns:gml="http://www.opengis.net/gml" elementFormDefault="qualified"
 	targetNamespace="eu:esdihumboldt:hale:test">
 
-	<import namespace="http://www.opengis.net/gml"
-		schemaLocation="http://schemas.opengis.net/gml/3.0.1/base/gml.xsd" />
+	<import namespace="http://www.opengis.net/gml" schemaLocation="../schemas/gml/2.1.2.1/feature.xsd" />
 
-	<element name="PrimitiveTest" substitutionGroup="gml:_Feature"
-		type="hale:PrimitiveTestType" />
+	<element name="Test" substitutionGroup="gml:_Feature" type="hale:TestType" />
 
-	<complexType name="PrimitiveTestType">
+	<complexType name="TestType">
 		<complexContent>
 			<extension base="gml:AbstractFeatureType">
 				<sequence>
-					<element name="geometry" type="gml:GeometricPrimitivePropertyType" />
+					<element name="geometry" type="gml:GeometryPropertyType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="MultiTest" substitutionGroup="gml:_Feature"
+		type="hale:MultiTestType" />
+
+	<complexType name="MultiTestType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:MultiGeometryPropertyType" />
 				</sequence>
 			</extension>
 		</complexContent>
@@ -58,6 +69,19 @@
 		</complexContent>
 	</complexType>
 
+	<element name="MultiLineStringProperty" substitutionGroup="gml:_Feature"
+		type="hale:MultiLineStringPropertyType" />
+
+	<complexType name="MultiLineStringPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:MultiLineStringType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
 	<element name="LinearRingProperty" substitutionGroup="gml:_Feature"
 		type="hale:LinearRingPropertyType" />
 
@@ -83,33 +107,7 @@
 			</extension>
 		</complexContent>
 	</complexType>
-
-	<element name="SurfaceProperty" substitutionGroup="gml:_Feature"
-		type="hale:SurfacePropertyType" />
-
-	<complexType name="SurfacePropertyType">
-		<complexContent>
-			<extension base="gml:AbstractFeatureType">
-				<sequence>
-					<element name="geometry" type="gml:SurfaceType" />
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-
-	<element name="MultiLineStringProperty" substitutionGroup="gml:_Feature"
-		type="hale:MultiLineStringPropertyType" />
-
-	<complexType name="MultiLineStringPropertyType">
-		<complexContent>
-			<extension base="gml:AbstractFeatureType">
-				<sequence>
-					<element name="geometry" type="gml:MultiLineStringType" />
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-
+	
 	<element name="MultiPointProperty" substitutionGroup="gml:_Feature"
 		type="hale:MultiPointPropertyType" />
 
@@ -131,45 +129,6 @@
 			<extension base="gml:AbstractFeatureType">
 				<sequence>
 					<element name="geometry" type="gml:MultiPolygonType" />
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-	
-	<element name="CurveProperty" substitutionGroup="gml:_Feature"
-		type="hale:CurvePropertyType" />
-
-	<complexType name="CurvePropertyType">
-		<complexContent>
-			<extension base="gml:AbstractFeatureType">
-				<sequence>
-					<element name="geometry" type="gml:CurveType" />
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-	
-	<element name="MultiSurfaceProperty" substitutionGroup="gml:_Feature"
-		type="hale:MultiSurfacePropertyType" />
-
-	<complexType name="MultiSurfacePropertyType">
-		<complexContent>
-			<extension base="gml:AbstractFeatureType">
-				<sequence>
-					<element name="geometry" type="gml:MultiSurfaceType" />
-				</sequence>
-			</extension>
-		</complexContent>
-	</complexType>
-	
-	<element name="CompositeSurfaceProperty" substitutionGroup="gml:_Feature"
-		type="hale:CompositeSurfacePropertyType" />
-
-	<complexType name="CompositeSurfacePropertyType">
-		<complexContent>
-			<extension base="gml:AbstractFeatureType">
-				<sequence>
-					<element name="geometry" type="gml:CompositeSurfaceType" />
 				</sequence>
 			</extension>
 		</complexContent>

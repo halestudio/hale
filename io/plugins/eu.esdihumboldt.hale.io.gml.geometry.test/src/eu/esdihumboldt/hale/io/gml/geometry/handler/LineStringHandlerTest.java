@@ -59,8 +59,8 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testLineStringGml2() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml2.xsd").toURI(), 
-				getClass().getResource("/data/sample-linestring-gml2.xml").toURI());
+				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(), 
+				getClass().getResource("/data/linestring/sample-linestring-gml2.xml").toURI());
 		
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -91,8 +91,8 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testLineStringGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-		getClass().getResource("/data/geom-gml3.xsd").toURI(), 
-		getClass().getResource("/data/sample-linestring-gml3.xml").toURI());
+		getClass().getResource("/data/gml/geom-gml3.xsd").toURI(), 
+		getClass().getResource("/data/linestring/sample-linestring-gml3.xml").toURI());
 		
 		// five instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -133,8 +133,8 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testLineStringGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-		getClass().getResource("/data/geom-gml31.xsd").toURI(), 
-		getClass().getResource("/data/sample-linestring-gml31.xml").toURI());
+		getClass().getResource("/data/gml/geom-gml31.xsd").toURI(), 
+		getClass().getResource("/data/linestring/sample-linestring-gml31.xml").toURI());
 		
 		// five instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -180,8 +180,8 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testLineStringGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-		getClass().getResource("/data/geom-gml32.xsd").toURI(), 
-		getClass().getResource("/data/sample-linestring-gml32.xml").toURI());
+		getClass().getResource("/data/gml/geom-gml32.xsd").toURI(), 
+		getClass().getResource("/data/linestring/sample-linestring-gml32.xml").toURI());
 		
 		// five instances expected
 		ResourceIterator<Instance> it = instances.iterator();
