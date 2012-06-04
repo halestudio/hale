@@ -45,11 +45,16 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String POLYGON_TYPE = "PolygonType";
-	
+
 	private static final String POLYGON_PATCH_TYPE = "PolygonPatchType";
 
+	private static final String RECTANGLE_TYPE = "RectangleType";
+
+	private static final String TRIANGLE_TYPE = "TriangleType";
+
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance, int)
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
+	 *      int)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -136,8 +141,16 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 								.getValue()).getGeometry();
 					}
 				}
+				polygon = getGeometryFactory().createPolygon(outerRing, holes);
 			}
-			polygon = getGeometryFactory().createPolygon(outerRing, holes);
+		}
+		if (polygon == null) {
+			values = PropertyResolver.getValues(instance, "exterior.Ring",
+					false);
+			if (values != null && !values.isEmpty()) {
+				GenericGeometryHandler handler = new GenericGeometryHandler();
+				return handler.createGeometry(instance, srsDimension);
+			}
 		}
 
 		if (polygon != null) {
@@ -172,9 +185,15 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 		types.add(new QName(NS_GML, POLYGON_TYPE));
 		types.add(new QName(NS_GML_32, POLYGON_TYPE));
-		
+
 		types.add(new QName(NS_GML, POLYGON_PATCH_TYPE));
 		types.add(new QName(NS_GML_32, POLYGON_PATCH_TYPE));
+
+		types.add(new QName(NS_GML, RECTANGLE_TYPE));
+		types.add(new QName(NS_GML_32, RECTANGLE_TYPE));
+
+		types.add(new QName(NS_GML, TRIANGLE_TYPE));
+		types.add(new QName(NS_GML_32, TRIANGLE_TYPE));
 
 		return types;
 	}
