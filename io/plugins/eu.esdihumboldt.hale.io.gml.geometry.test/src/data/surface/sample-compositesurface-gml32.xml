@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection gml:id="fcollection"
+	xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:CompositeSurfaceProperty gml:id="compositesurface1">
+			<hale:geometry gml:id="geom1">
+				<gml:surfaceMember>
+					<gml:Surface gml:id="surface1">
+						<gml:polygonPatches>
+							<gml:PolygonPatch>
+								<gml:exterior>
+									<gml:LinearRing>
+										<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2 -3.33,-3.2 0.01,3.2
+							</gml:coordinates>
+									</gml:LinearRing>
+								</gml:exterior>
+								<gml:interior>
+									<gml:LinearRing>
+										<gml:coordinates>0,1 1,1 0,-1 -1,-1 0,1</gml:coordinates>
+									</gml:LinearRing>
+								</gml:interior>
+								<gml:interior>
+									<gml:LinearRing>
+										<gml:coordinates>0,2 2,2 0,-2 -2,-2 0,2</gml:coordinates>
+									</gml:LinearRing>
+								</gml:interior>
+							</gml:PolygonPatch>
+						</gml:polygonPatches>
+					</gml:Surface>
+				</gml:surfaceMember>
+				<gml:surfaceMember>
+					<gml:Polygon gml:id="polygon2">
+						<gml:exterior>
+							<gml:LinearRing>
+								<gml:coordinates>6.01,9.2 9.33,9.33 6.01,-9.2 -9.33,-9.2 6.01,9.2
+							</gml:coordinates>
+							</gml:LinearRing>
+						</gml:exterior>
+						<gml:interior>
+							<gml:LinearRing>
+								<gml:coordinates>2,3 3,3 2,-3 -3,-3 2,3</gml:coordinates>
+							</gml:LinearRing>
+						</gml:interior>
+						<gml:interior>
+							<gml:LinearRing>
+								<gml:coordinates>2,4 4,4 2,-4 -4,-4 2,4</gml:coordinates>
+							</gml:LinearRing>
+						</gml:interior>
+					</gml:Polygon>
+				</gml:surfaceMember>
+			</hale:geometry>
+		</hale:CompositeSurfaceProperty>
+	</gml:featureMember>

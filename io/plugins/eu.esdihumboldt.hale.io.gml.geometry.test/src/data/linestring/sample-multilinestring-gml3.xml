@@ -9,7 +9,7 @@
 	<gml:featureMember>
 		<hale:MultiLineStringProperty>
 			<hale:geometry srsName="EPSG:31251">
-				<gml:lineStringMember>
+				<gml:lineStringMember >
 					<gml:LineString>
 						<gml:coord>
 							<gml:X>-39799.68820381</gml:X>

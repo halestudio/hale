@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.io.gml.geometry.handler;
+package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,16 +31,13 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
 
 /**
- * Tests for reading polygon geometries
- * 
+ * Test for reading polyhedral surface geometries
  * @author Patrick Lieb
  */
-public class PolygonHandlerTest extends AbstractHandlerTest {
-
+public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
+	
 	private Polygon reference;
 
-	//XXX no test for geometry properties
-	
 	@Override
 	public void init() {
 		super.init();
@@ -66,56 +63,6 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	}
 	
 	/**
-	 * Test polygon geometries read from a GML 2 file
-	 * 
-	 * @throws Exception
-	 *             if an error occurs
-	 */
-	@Test
-	public void testPolygonGml2() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
-				getClass().getResource("/data/polygon/sample-polygon-gml2.xml")
-						.toURI());
-
-		// one instance expected
-		ResourceIterator<Instance> it = instances.iterator();
-		try {
-			// PolygonProperty with LinearRing defined through coordinates
-			assertTrue("First sample feature missing", it.hasNext());
-			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
-		} finally {
-			it.close();
-		}
-	}
-	
-	/**
-	 * Test polygon geometries read from a GML 3 file
-	 * 
-	 * @throws Exception
-	 *             if an error occurs
-	 */
-	@Test
-	public void testPolygonGml3() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/polygon/sample-polygon-gml3.xml")
-						.toURI());
-
-		// one instance expected
-		ResourceIterator<Instance> it = instances.iterator();
-		try {
-			// PolygonProperty with LinearRing defined through coordinates
-			assertTrue("First sample feature missing", it.hasNext());
-			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
-		} finally {
-			it.close();
-		}
-	}
-	
-	/**
 	 * Test polygon geometries read from a GML 3.1 file
 	 * 
 	 * @throws Exception
@@ -125,32 +72,7 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	public void testPolygonGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/polygon/sample-polygon-gml31.xml")
-						.toURI());
-
-		// one instance expected
-		ResourceIterator<Instance> it = instances.iterator();
-		try {
-			// PolygonProperty with LinearRing defined through coordinates
-			assertTrue("First sample feature missing", it.hasNext());
-			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
-		} finally {
-			it.close();
-		}
-	}
-	
-	/**
-	 * Test polygon geometries read from a GML 3.2 file
-	 * 
-	 * @throws Exception
-	 *             if an error occurs
-	 */
-	@Test
-	public void testPolygonGml32() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/polygon/sample-polygon-gml32.xml")
+				getClass().getResource("/data/surface/sample-polyhedralsurface-gml31.xml")
 						.toURI());
 
 		// one instance expected
@@ -159,13 +81,13 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 			// LinearRingProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
+			checkPolyhedralSurfacePropertyInstance(instance);
 		} finally {
 			it.close();
 		}
 	}
 	
-	private void checkPolygonPropertyInstance(Instance instance) {
+	private void checkPolyhedralSurfacePropertyInstance(Instance instance) {
 		Object[] geomVals = instance
 				.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);

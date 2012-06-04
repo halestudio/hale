@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.io.gml.geometry.handler;
+package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
  * 
  * @author Patrick Lieb
  */
-public class MultiLineStringHandlerTest extends AbstractHandlerTest {
+public class MultiLineStringGeometryTest extends AbstractHandlerTest {
 
 	private MultiLineString reference;
 
@@ -69,8 +69,8 @@ public class MultiLineStringHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testMultiLineStringGml2() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml2.xsd").toURI(),
-				getClass().getResource("/data/sample-multilinestring-gml2.xml")
+				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
+				getClass().getResource("/data/linestring/sample-multilinestring-gml2.xml")
 						.toURI());
 
 		// two instances expected
@@ -99,8 +99,8 @@ public class MultiLineStringHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testMultiLineStringGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/sample-multilinestring-gml3.xml")
+				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
+				getClass().getResource("/data/linestring/sample-multilinestring-gml3.xml")
 						.toURI());
 
 		// four instances expected
@@ -139,9 +139,9 @@ public class MultiLineStringHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testMultiLineStringGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml31.xsd").toURI(),
+				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
 				getClass()
-						.getResource("/data/sample-multilinestring-gml31.xml")
+						.getResource("/data/linestring/sample-multilinestring-gml31.xml")
 						.toURI());
 
 		// six instances expected

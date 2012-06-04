@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.io.gml.geometry.handler;
+package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,137 +34,117 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
 
 /**
- * Test for reading multi polygon geometries
+ * Test for reading surface geometries
+ * 
  * @author Patrick Lieb
  */
-public class MultiPolygonHandlerTest extends AbstractHandlerTest {
-	
+public class SurfaceGeometryTest extends AbstractHandlerTest {
+
 	private MultiPolygon reference;
-	
-	
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
+	 */
 	@Override
 	public void init() {
 		super.init();
 		
 		LinearRing shell = geomFactory.createLinearRing(new Coordinate[] {
-				new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
-				new Coordinate(0.01, -3.2), new Coordinate(-3.33, -3.2),
-				new Coordinate(0.01, 3.2) });
+				new Coordinate(-122.44, 37.80), new Coordinate(-122.45, 37.80),
+				new Coordinate(-122.45, 37.78), new Coordinate(-122.44, 37.78),
+				new Coordinate(-122.44, 37.80) });
 
-		LinearRing[] holes = new LinearRing[2];
+		LinearRing[] holes = new LinearRing[1];
 		LinearRing hole1 = geomFactory.createLinearRing(new Coordinate[] {
-				new Coordinate(0, 1), new Coordinate(1, 1),
-				new Coordinate(0, -1), new Coordinate(-1, -1),
-				new Coordinate(0, 1) });
-		LinearRing hole2 = geomFactory.createLinearRing(new Coordinate[] {
-				new Coordinate(0, 2), new Coordinate(2, 2),
-				new Coordinate(0, -2), new Coordinate(-2, -2),
-				new Coordinate(0, 2) });
+				new Coordinate(-122.24, 37.60), new Coordinate(-122.25, 37.60),
+				new Coordinate(-122.25, 37.58), new Coordinate(-122.24, 37.58),
+				new Coordinate(-122.24, 37.60) });
 		holes[0] = hole1;
-		holes[1] = hole2;
 
-		Polygon polygon1 = geomFactory.createPolygon(shell, holes);
-		
-		shell = geomFactory.createLinearRing(new Coordinate[] {
-				new Coordinate(6.01, 9.2), new Coordinate(9.33, 9.33),
-				new Coordinate(6.01, -9.2), new Coordinate(-9.33, -9.2),
-				new Coordinate(6.01, 9.2) });
-
-		holes = new LinearRing[2];
-		hole1 = geomFactory.createLinearRing(new Coordinate[] {
-				new Coordinate(2, 3), new Coordinate(3, 3),
-				new Coordinate(2, -3), new Coordinate(-3, -3),
-				new Coordinate(2, 3) });
-		hole2 = geomFactory.createLinearRing(new Coordinate[] {
-				new Coordinate(2, 4), new Coordinate(4, 4),
-				new Coordinate(2, -4), new Coordinate(-4, -4),
-				new Coordinate(2, 4) });
-		holes[0] = hole1;
-		holes[1] = hole2;
-
-		Polygon polygon2 = geomFactory.createPolygon(shell, holes);
-		
-		Polygon[] polygons = new Polygon[]{polygon1, polygon2};
+		Polygon[] polygons = new Polygon[]{ geomFactory.createPolygon(shell, holes) };
 		
 		reference = geomFactory.createMultiPolygon(polygons);
 	}
-	
+
 	/**
-	 * Test multi polygon geometries read from a GML 2 file
+	 * Test surface geometries read from a GML 3 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testLinearRingGml2() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml2.xsd").toURI(),
-				getClass().getResource("/data/sample-multipolygon-gml2.xml")
-						.toURI());
+	public void testSurfaceGml3() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest
+				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml3.xsd")
+						.toURI(),
+						getClass().getResource("/data/surface/sample-surface-gml3.xml")
+								.toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			// MultiPolygonProperty with LinearRings defined through coordinates
+			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
+			checkSurfacePropertyInstance(instance);
 		} finally {
 			it.close();
 		}
 	}
 	
 	/**
-	 * Test multi polygon geometries read from a GML 3 file
+	 * Test surface geometries read from a GML 3.1 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testLinearRingGml3() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/sample-multipolygon-gml3.xml")
-						.toURI());
+	public void testSurfaceGml31() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest
+				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml31.xsd")
+						.toURI(),
+						getClass().getResource("/data/surface/sample-surface-gml31.xml")
+								.toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			// MultiPolygonProperty with LinearRings defined through coordinates
+			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
+			checkSurfacePropertyInstance(instance);
 		} finally {
 			it.close();
 		}
 	}
 	
 	/**
-	 * Test multi polygon geometries read from a GML 3.1 file
+	 * Test surface geometries read from a GML 3.2 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testLinearRingGml31() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/sample-multipolygon-gml31.xml")
-						.toURI());
+	public void testSurfaceGml32() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest
+				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml32.xsd")
+						.toURI(),
+						getClass().getResource("/data/surface/sample-surface-gml32.xml")
+								.toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			// MultiPolygonProperty with LinearRings defined through coordinates
+			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
+			checkSurfacePropertyInstance(instance);
 		} finally {
 			it.close();
 		}
 	}
-	
-	private void checkPolygonPropertyInstance(Instance instance) {
+
+	private void checkSurfacePropertyInstance(Instance instance) {
 		Object[] geomVals = instance
 				.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
