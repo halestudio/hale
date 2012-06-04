@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.io.gml.geometry.handler;
+package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,7 +36,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
  * 
  * @author Patrick Lieb
  */
-public class MultiPointHandlerTest extends AbstractHandlerTest {
+public class MultiPointGeometryTest extends AbstractHandlerTest {
 
 	private MultiPoint reference;
 
@@ -61,8 +61,8 @@ public class MultiPointHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testMultiPointGml2() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml2.xsd").toURI(),
-				getClass().getResource("/data/sample-multipoint-gml2.xml")
+				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
+				getClass().getResource("/data/point/sample-multipoint-gml2.xml")
 						.toURI());
 
 		// three instances expected
@@ -99,8 +99,8 @@ public class MultiPointHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testMultiPointGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/sample-multipoint-gml3.xml")
+				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
+				getClass().getResource("/data/point/sample-multipoint-gml3.xml")
 						.toURI());
 
 		// four instances expected
@@ -144,8 +144,8 @@ public class MultiPointHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testMultiPointGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/sample-multipoint-gml31.xml")
+				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
+				getClass().getResource("/data/point/sample-multipoint-gml31.xml")
 						.toURI());
 
 		// four instances expected
@@ -188,8 +188,8 @@ public class MultiPointHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testMultiPointGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/sample-multipoint-gml32.xml")
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/point/sample-multipoint-gml32.xml")
 						.toURI());
 
 		// three instances expected

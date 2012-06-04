@@ -52,7 +52,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 	
 	private static final String LINE_STRING_SEGMENT_TYPE = "LineStringSegmentType";
 	
-	//XXX support for curve types is not optimal
+	//XXX support for curve types is not optimal (different number of feature members needed)
 	
 	private static final String ARC_TYPE = "ArcType";
 	
@@ -77,6 +77,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 	private static final String GEODESIC_TYPE = "Geodesic_Type";
 	
 	private static final String GEODESIC_STRING_TYPE = "GeodesicStringType";
+	
+	// XXX support for Triangle and Rectangle is not optimal (only exterior and outerBounderIs needed)
 	
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance, int)
@@ -298,6 +300,12 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 		
 		types.add(new QName(NS_GML, GEODESIC_STRING_TYPE));
 		types.add(new QName(NS_GML_32, GEODESIC_STRING_TYPE));
+		
+//		types.add(new QName(NS_GML, ENVELOPE_TYPE));
+//		types.add(new QName(NS_GML_32, ENVELOPE_TYPE));
+//		
+//		types.add(new QName(NS_GML, ENVELOPE_WITH_TIME_PERIOD_TYPE));
+//		types.add(new QName(NS_GML_32, ENVELOPE_WITH_TIME_PERIOD_TYPE));
 
 		return types;
 	}

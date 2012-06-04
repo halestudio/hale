@@ -59,8 +59,8 @@ public class PointHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testPointGml2() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml2.xsd").toURI(), 
-				getClass().getResource("/data/sample-point-gml2.xml").toURI());
+				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(), 
+				getClass().getResource("/data/point/sample-point-gml2.xml").toURI());
 		
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -91,8 +91,8 @@ public class PointHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testPointGml3() throws Exception {
 		InstanceCollection instances = loadXMLInstances(
-				getClass().getResource("/data/geom-gml3.xsd").toURI(), 
-				getClass().getResource("/data/sample-point-gml3.xml").toURI());
+				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(), 
+				getClass().getResource("/data/point/sample-point-gml3.xml").toURI());
 		
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -133,8 +133,8 @@ public class PointHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testPointGml31() throws Exception {
 		InstanceCollection instances = loadXMLInstances(
-				getClass().getResource("/data/geom-gml31.xsd").toURI(), 
-				getClass().getResource("/data/sample-point-gml31.xml").toURI());
+				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(), 
+				getClass().getResource("/data/point/sample-point-gml31.xml").toURI());
 		
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -175,8 +175,8 @@ public class PointHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testPointGml32() throws Exception {
 		InstanceCollection instances = loadXMLInstances(
-				getClass().getResource("/data/geom-gml32.xsd").toURI(), 
-				getClass().getResource("/data/sample-point-gml32.xml").toURI());
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(), 
+				getClass().getResource("/data/point/sample-point-gml32.xml").toURI());
 		
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
