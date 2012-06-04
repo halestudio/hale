@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,7 +22,9 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
@@ -38,115 +41,86 @@ import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
- * Handler for polygon geometries
+ * Handler for envelope geometries
  * 
  * @author Patrick Lieb
  */
-public class PolygonHandler extends FixedConstraintsGeometryHandler {
+public class EnvelopeHandler extends FixedConstraintsGeometryHandler {
+	
+	private static final String ENVELOPE_TYPE = "EnvelopeType";
 
-	private static final String POLYGON_TYPE = "PolygonType";
-	
-	private static final String POLYGON_PATCH_TYPE = "PolygonPatchType";
-	
-	private static final String RECTANGLE_TYPE = "RectangleType";
-	
-	private static final String TRIANGLE_TYPE = "TriangleType";
-	
+	private static final String ENVELOPE_WITH_TIME_PERIOD_TYPE = "EnvelopeWithTimePeriodType";
+
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance, int)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 
-		// XXX need support for instances of Rings
+		MultiPoint envelope;
+		List<Point> points = new ArrayList<Point>();
 
-		LinearRing[] holes = null;
-		Polygon polygon = null;
-
-		// for use with GML 2
-		// to parse inner linear rings
 		Collection<Object> values = PropertyResolver.getValues(instance,
-				"innerBoundaryIs.LinearRing", false);
+				"coordinates", false);
 		if (values != null && !values.isEmpty()) {
 			Iterator<Object> iterator = values.iterator();
-			List<LinearRing> innerRings = new ArrayList<LinearRing>();
 			while (iterator.hasNext()) {
 				Object value = iterator.next();
 				if (value instanceof Instance) {
-					// innerRings have to be a
-					// DefaultGeometryProperty<LinearRing> instances
-					innerRings
-							.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-									.getValue()).getGeometry());
-				}
-			}
-			holes = innerRings.toArray(new LinearRing[innerRings.size()]);
-
-			// to parse outer linear rings
-			values = PropertyResolver.getValues(instance,
-					"outerBoundaryIs.LinearRing", false);
-			LinearRing outerRing = null;
-			if (values != null && !values.isEmpty()) {
-				iterator = values.iterator();
-				while (iterator.hasNext()) {
-					Object value = iterator.next();
-					if (value instanceof Instance) {
-						// outerRing must be a
-						// DefaultGeometryProperty<LinearRing> instance
-						outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-								.getValue()).getGeometry();
+					try {
+						Coordinate[] cs = GMLGeometryUtil
+								.parseCoordinates((Instance) value);
+						if (cs != null && cs.length > 0) {
+							points.add(getGeometryFactory().createPoint(cs[0]));
+						}
+					} catch (ParseException e) {
+						throw new GeometryNotSupportedException(
+								"Could not parse coordinates", e);
 					}
 				}
-
 			}
-			polygon = getGeometryFactory().createPolygon(outerRing, holes);
 		}
 
-		// for use with GML 3, 3.1 and 3.2
-		// to parse inner linear rings
-		if (polygon == null) {
-			values = PropertyResolver.getValues(instance,
-					"interior.LinearRing", false);
-			if (values != null && !values.isEmpty()) {
-				Iterator<Object> iterator = values.iterator();
-				List<LinearRing> innerRings = new ArrayList<LinearRing>();
-				while (iterator.hasNext()) {
-					Object value = iterator.next();
-					if (value instanceof Instance) {
-						// innerRings have to be a
-						// DefaultGeometryProperty<LinearRing> instances
-						innerRings
-								.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-										.getValue()).getGeometry());
-					}
-				}
-				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
-			}
-
-			// to parse outer linear rings
-			values = PropertyResolver.getValues(instance,
-					"exterior.LinearRing", false);
-			LinearRing outerRing = null;
+		if (points.isEmpty()) {
+			values = PropertyResolver.getValues(instance, "pos", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
-						// outerRing must be a
-						// DefaultGeometryProperty<LinearRing> instance
-						outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-								.getValue()).getGeometry();
+						Coordinate c = GMLGeometryUtil
+								.parseDirectPosition((Instance) value);
+						if (c != null) {
+							points.add(getGeometryFactory().createPoint(c));
+						}
 					}
 				}
 			}
-			polygon = getGeometryFactory().createPolygon(outerRing, holes);
 		}
 
-		if (polygon != null) {
+		if (points.isEmpty()) {
+			values = PropertyResolver.getValues(instance, "coord", false);
+			if (values != null && !values.isEmpty()) {
+				Iterator<Object> iterator = values.iterator();
+				while (iterator.hasNext()) {
+					Object value = iterator.next();
+					if (value instanceof Instance) {
+						Coordinate c = GMLGeometryUtil.parseCoord((Instance) value);
+						if (c != null) {
+							points.add(getGeometryFactory().createPoint(c));
+						}
+					}
+				}
+			}
+		}
+		
+		Coordinate[] coordinates = new Coordinate[]{points.get(0).getCoordinate(), points.get(1).getCoordinate()};
+		envelope =  getGeometryFactory().createMultiPoint(coordinates);
+		
+		if(envelope != null){
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
-			return new DefaultGeometryProperty<Polygon>(crsDef, polygon);
+			return new DefaultGeometryProperty<MultiPoint>(crsDef, envelope);
 		}
 		throw new GeometryNotSupportedException();
 	}
@@ -174,18 +148,13 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	protected Set<? extends QName> initSupportedTypes() {
 		Set<QName> types = new HashSet<QName>();
 
-		types.add(new QName(NS_GML, POLYGON_TYPE));
-		types.add(new QName(NS_GML_32, POLYGON_TYPE));
-		
-		types.add(new QName(NS_GML, POLYGON_PATCH_TYPE));
-		types.add(new QName(NS_GML_32, POLYGON_PATCH_TYPE));
-		
-		types.add(new QName(NS_GML, RECTANGLE_TYPE));
-		types.add(new QName(NS_GML_32, RECTANGLE_TYPE));
-		
-		types.add(new QName(NS_GML, TRIANGLE_TYPE));
-		types.add(new QName(NS_GML_32, TRIANGLE_TYPE));
+		types.add(new QName(NS_GML, ENVELOPE_TYPE));
+		types.add(new QName(NS_GML_32, ENVELOPE_TYPE));
+
+		types.add(new QName(NS_GML, ENVELOPE_WITH_TIME_PERIOD_TYPE));
+		types.add(new QName(NS_GML_32, ENVELOPE_WITH_TIME_PERIOD_TYPE));
 
 		return types;
 	}
+
 }
