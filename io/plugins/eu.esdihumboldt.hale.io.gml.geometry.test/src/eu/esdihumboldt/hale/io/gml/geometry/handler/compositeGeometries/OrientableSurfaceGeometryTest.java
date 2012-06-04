@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.io.gml.geometry.handler;
+package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,12 +34,11 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
 
 /**
- * Test for reading surface geometries
- * 
+ * Test for reading orientable surface geometries
  * @author Patrick Lieb
  */
-public class SurfaceHandlerTest extends AbstractHandlerTest {
-
+public class OrientableSurfaceGeometryTest extends AbstractHandlerTest{
+	
 	private MultiPolygon reference;
 
 	/**
@@ -65,86 +64,34 @@ public class SurfaceHandlerTest extends AbstractHandlerTest {
 		
 		reference = geomFactory.createMultiPolygon(polygons);
 	}
-
-	/**
-	 * Test surface geometries read from a GML 3 file
-	 * 
-	 * @throws Exception
-	 *             if an error occurs
-	 */
-	@Test
-	public void testSurfaceGml3() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest
-				.loadXMLInstances(getClass().getResource("/data/geom-gml3.xsd")
-						.toURI(),
-						getClass().getResource("/data/sample-surface-gml3.xml")
-								.toURI());
-
-		// one instance expected
-		ResourceIterator<Instance> it = instances.iterator();
-		try {
-			// PolygonPatch with LinearRings defined through coordinates
-			assertTrue("First sample feature missing", it.hasNext());
-			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance);
-		} finally {
-			it.close();
-		}
-	}
 	
 	/**
-	 * Test surface geometries read from a GML 3.1 file
+	 * Test orientable surface geometries read from a GML 3.2 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testSurfaceGml31() throws Exception {
+	public void testOrientableSurfaceGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest
-				.loadXMLInstances(getClass().getResource("/data/geom-gml31.xsd")
+				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml32.xsd")
 						.toURI(),
-						getClass().getResource("/data/sample-surface-gml31.xml")
+						getClass().getResource("/data/surface/sample-orientablesurface-gml32.xml")
 								.toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			// PolygonPatch with LinearRings defined through coordinates
+			// Polygon with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance);
-		} finally {
-			it.close();
-		}
-	}
-	
-	/**
-	 * Test surface geometries read from a GML 3.2 file
-	 * 
-	 * @throws Exception
-	 *             if an error occurs
-	 */
-	@Test
-	public void testSurfaceGml32() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest
-				.loadXMLInstances(getClass().getResource("/data/geom-gml32.xsd")
-						.toURI(),
-						getClass().getResource("/data/sample-surface-gml32.xml")
-								.toURI());
-
-		// one instance expected
-		ResourceIterator<Instance> it = instances.iterator();
-		try {
-			// PolygonPatch with LinearRings defined through coordinates
-			assertTrue("First sample feature missing", it.hasNext());
-			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance);
+			checkOrientableSurfacePropertyInstance(instance);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkSurfacePropertyInstance(Instance instance) {
+	private void checkOrientableSurfacePropertyInstance(Instance instance) {
 		Object[] geomVals = instance
 				.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);

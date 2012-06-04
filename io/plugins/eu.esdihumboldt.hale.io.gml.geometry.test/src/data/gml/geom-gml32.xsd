@@ -156,5 +156,148 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	
+	<element name="GeometricComplexProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:GeometricComplexPropertyType" />
+
+	<complexType name="GeometricComplexPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:GeometricComplexType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="PolyhedralSurfaceProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:PolyhedralSurfacePropertyType" />
+
+	<complexType name="PolyhedralSurfacePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:SurfaceType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="TriangulatedSurfaceProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:TriangulatedSurfacePropertyType" />
+
+	<complexType name="TriangulatedSurfacePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:SurfaceType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="TriangleProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:TrianglePropertyType" />
+
+	<complexType name="TrianglePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:TriangleType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="RectangleProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:RectanglePropertyType" />
+
+	<complexType name="RectanglePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:RectangleType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="OrientableCurveProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:OrientableCurvePropertyType" />
+
+	<complexType name="OrientableCurvePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:OrientableCurveType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="OrientableSurfaceProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:OrientableSurfacePropertyType" />
+
+	<complexType name="OrientableSurfacePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:OrientableSurfaceType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="CompositeSurfaceProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:CompositeSurfacePropertyType" />
+
+	<complexType name="CompositeSurfacePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:CompositeSurfaceType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="CompositeCurveProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:CompositeCurvePropertyType" />
+
+	<complexType name="CompositeCurvePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:CompositeCurveType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="PolygonPatchProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:PolygonPatchPropertyType" />
+
+	<complexType name="PolygonPatchPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:PolygonPatchType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<element name="OffsetCurveProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:OffsetCurvePropertyType" />
+
+	<complexType name="OffsetCurvePropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:OffsetCurveType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
 
 </schema>

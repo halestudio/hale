@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection gml:id="fcollection"
+	xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="one">
+			<hale:geometry gml:id="geom1">
+				<gml:segments>
+					<gml:LineStringSegment>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:LineStringSegment>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="two">
+			<hale:geometry gml:id="geom2">
+				<gml:segments>
+					<gml:LineStringSegment>
+						<gml:posList>0.01 3.2 3.33 3.33 0.01 -3.2</gml:posList>
+					</gml:LineStringSegment>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="three">
+			<hale:geometry gml:id="geom3">
+				<gml:segments>
+					<gml:Arc>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:Arc>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="four">
+			<hale:geometry gml:id="geom4">
+				<gml:segments>
+					<gml:ArcByBulge>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:ArcByBulge>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="five">
+			<hale:geometry gml:id="geom5">
+				<gml:segments>
+					<gml:ArcByCenterPoint>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:ArcByCenterPoint>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="six">
+			<hale:geometry gml:id="geom6">
+				<gml:segments>
+					<gml:ArcString>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:ArcString>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="seven">
+			<hale:geometry gml:id="geom7">
+				<gml:segments>
+					<gml:ArcStringByBulge>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:ArcStringByBulge>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="eight">
+			<hale:geometry gml:id="geom8">
+				<gml:segments>
+					<gml:Bezier>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:Bezier>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="nine">
+			<hale:geometry gml:id="geom9">
+				<gml:segments>
+					<gml:BSpline>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:BSpline>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="ten">
+			<hale:geometry gml:id="geom10">
+				<gml:segments>
+					<gml:Circle>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:Circle>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="eleven">
+			<hale:geometry gml:id="geom11">
+				<gml:segments>
+					<gml:CircleByCenterPoint>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:CircleByCenterPoint>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="twelve">
+			<hale:geometry gml:id="geom12">
+				<gml:segments>
+					<gml:CubicSpline>
+						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					</gml:CubicSpline>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="thirteen">
+			<hale:geometry gml:id="geom13">
+				<gml:segments>
+					<gml:Geodesic>
+						<gml:posList>0.01 3.2 3.33 3.33 0.01 -3.2</gml:posList>
+					</gml:Geodesic>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:CurveProperty gml:id="fourteen">
+			<hale:geometry gml:id="geom14">
+				<gml:segments>
+					<gml:GeodesicString>
+						<gml:posList>0.01 3.2 3.33 3.33 0.01 -3.2</gml:posList>
+					</gml:GeodesicString>
+				</gml:segments>
+			</hale:geometry>
+		</hale:CurveProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>

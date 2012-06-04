@@ -60,8 +60,8 @@ public class LinearRingHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testLinearRingGml2() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml2.xsd").toURI(),
-				getClass().getResource("/data/sample-linearring-gml2.xml")
+				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
+				getClass().getResource("/data/linearring/sample-linearring-gml2.xml")
 						.toURI());
 
 		// two instances expected
@@ -90,8 +90,8 @@ public class LinearRingHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testLinearRingGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/sample-linearring-gml3.xml")
+				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
+				getClass().getResource("/data/linearring/sample-linearring-gml3.xml")
 						.toURI());
 
 		// four instances expected
@@ -130,8 +130,8 @@ public class LinearRingHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testLinearRingGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/sample-linearring-gml31.xml")
+				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
+				getClass().getResource("/data/linearring/sample-linearring-gml31.xml")
 						.toURI());
 
 		// six instances expected
@@ -181,8 +181,8 @@ public class LinearRingHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testLinearRingGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/sample-linearring-gml32.xml")
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/linearring/sample-linearring-gml32.xml")
 						.toURI());
 
 		// five instances expected
