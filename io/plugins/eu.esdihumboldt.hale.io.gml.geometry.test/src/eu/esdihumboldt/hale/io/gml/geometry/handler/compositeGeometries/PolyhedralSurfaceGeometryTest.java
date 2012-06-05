@@ -63,7 +63,7 @@ public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 	}
 	
 	/**
-	 * Test polygon geometries read from a GML 3.1 file
+	 * Test polygon geometries read from a GML 3.2 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
@@ -71,14 +71,14 @@ public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 	@Test
 	public void testPolygonGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/surface/sample-polyhedralsurface-gml31.xml")
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-polyhedralsurface-gml32.xml")
 						.toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			// LinearRingProperty with LinearRing defined through coordinates
+			// PolyhedralSurfaceProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkPolyhedralSurfacePropertyInstance(instance);
