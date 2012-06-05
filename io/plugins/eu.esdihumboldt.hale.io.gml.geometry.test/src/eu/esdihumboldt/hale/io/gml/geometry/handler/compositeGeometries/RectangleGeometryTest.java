@@ -62,13 +62,13 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 	}
 
 	/**
-	 * Test orientable curve geometries read from a GML 3.2 file
+	 * Test rectangle geometries read from a GML 3.2 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testorientableCurveGml32() throws Exception {
+	public void testRectangleGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 				getClass().getResource("/data/sample-rectangle-gml32.xml")
