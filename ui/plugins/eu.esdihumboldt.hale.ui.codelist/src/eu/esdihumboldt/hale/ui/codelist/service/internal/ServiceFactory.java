@@ -16,9 +16,10 @@ import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
- * Service factory for code list service
+ * Service factory for code list service.
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -32,10 +33,8 @@ public class ServiceFactory extends AbstractServiceFactory {
 	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
 		if (serviceInterface.equals(CodeListService.class)) {
-			return new CodeListServiceImpl();
+			return new CodeListServiceImpl((ProjectService) locator.getService(ProjectService.class));
 		}
-		
 		return null;
 	}
-
 }

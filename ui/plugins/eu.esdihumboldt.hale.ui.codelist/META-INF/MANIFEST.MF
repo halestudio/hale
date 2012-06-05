@@ -5,18 +5,21 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.ui.codelist;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.cs3d.util.logging,
+ de.fhg.igd.osgi.util.configuration,
  eu.esdihumboldt.hale.common.codelist,
  eu.esdihumboldt.hale.common.codelist.io,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.impl,
  eu.esdihumboldt.hale.schemaprovider.model,
- eu.esdihumboldt.hale.ui.common.definition,
  eu.esdihumboldt.hale.ui.io,
  eu.esdihumboldt.hale.ui.io.config,
+ eu.esdihumboldt.hale.ui.service.project,
  eu.esdihumboldt.hale.ui.util.tree,
- org.opengis.feature.type,
- org.slf4j;version="1.5.11"
+ org.slf4j
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.core.runtime;bundle-version="3.6.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.codelist.internal.CodeListUIPlugin
+Export-Package: eu.esdihumboldt.hale.ui.codelist.internal,
+ eu.esdihumboldt.hale.ui.codelist.selector,
+ eu.esdihumboldt.hale.ui.codelist.service

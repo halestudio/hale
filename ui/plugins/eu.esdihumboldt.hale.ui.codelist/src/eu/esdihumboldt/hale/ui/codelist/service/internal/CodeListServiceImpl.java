@@ -17,41 +17,60 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.fhg.igd.osgi.util.configuration.IConfigurationService;
+import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
+
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
 /**
- * Code list service
+ * Code list service.
  *
+ * @author Kai Schwierczek
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class CodeListServiceImpl implements CodeListService {
-	
-//	private static final ALogger log = ALoggerFactory.getLogger(CodeListServiceImpl.class);
-	
-//	private boolean initialized = false;
-	
 	/**
-	 * Maps code list identifiers to code lists
+	 * The associated project service.
+	 */
+	protected final ProjectService projectService;
+	/**
+	 * The configuration service to use for storing/loading assignments.
+	 */
+	protected final IConfigurationService configurationService;
+
+	/**
+	 * Constructs this code list service with the given project service.
+	 * It will listen to cleans on the project service to clear all code lists.
+	 * Also it will get/set code list assignments of the current project.
+	 *
+	 * @param projectService the project service
+	 */
+	public CodeListServiceImpl(ProjectService projectService) {
+		this.projectService = projectService;
+		configurationService = new NamespaceConfigurationServiceDecorator(
+				projectService.getConfigurationService(), "codelist", ":");
+		projectService.addListener(new ProjectServiceAdapter() {
+			@Override
+			public void onClean() {
+				codelists.clear();
+			}
+		});
+	}
+
+	/**
+	 * Maps code list identifiers to code lists.
 	 */
 	private final Map<String, CodeList> codelists = new HashMap<String, CodeList>();
-	
-//	/**
-//	 * Maps attribute identifiers to code lists
-//	 */
-//	private final Map<String, CodeList> cachedAttributeCodeLists = new HashMap<String, CodeList>();
 
 	/**
 	 * @see CodeListService#findCodeListByIdentifier(String, String)
 	 */
 	@Override
 	public CodeList findCodeListByIdentifier(String namespace, String identifier) {
-//		if (!initialized) {
-//			init();
-//			initialized = true;
-//		}
-		
 		String key = namespace + "/" + identifier; //$NON-NLS-1$
 		return codelists.get(key);
 	}
@@ -61,58 +80,41 @@ public class CodeListServiceImpl implements CodeListService {
 	 */
 	@Override
 	public List<CodeList> getCodeLists() {
-//		if (!initialized) {
-//			init();
-//			initialized = true;
-//		}
-		
 		return new ArrayList<CodeList>(codelists.values());
 	}
 
-//	/**
-//	 * @see CodeListService#assignAttributeCodeList(String, CodeList)
-//	 */
-//	@Override
-//	public void assignAttributeCodeList(String attributeIdentifier,
-//			CodeList codeList) {
-//		if (codeList != null) {
-//			// cache code list
-//			cachedAttributeCodeLists.put(attributeIdentifier, codeList);
-//			
-//			// store assignment
-//			CodeListPreferenceInitializer.assignCodeList(attributeIdentifier, codeList.getLocation());
-//		}
-//		else {
-//			cachedAttributeCodeLists.remove(attributeIdentifier);
-//			CodeListPreferenceInitializer.assignCodeList(attributeIdentifier, null);
-//		}
-//	}
+	/**
+	 * @see CodeListService#assignAttributeCodeList(String, CodeList)
+	 */
+	@Override
+	public void assignAttributeCodeList(String attributeIdentifier,
+			CodeList code) {
+		if (code == null)
+			configurationService.set(attributeIdentifier, null);
+		else
+			configurationService.set(attributeIdentifier, code.getNamespace() + "/" + code.getIdentifier());
+	}
 
-//	/**
-//	 * @see CodeListService#findCodeListByAttribute(String)
-//	 */
-//	@Override
-//	public CodeList findCodeListByAttribute(String attributeIdentifier) {
-//		CodeList cached = cachedAttributeCodeLists.get(attributeIdentifier);
-//		if (cached != null) {
-//			// return cached code list
-//			return cached;
-//		}
-//		else {
-//			URI location = CodeListPreferenceInitializer.getAssignedCodeList(attributeIdentifier);
-//			if (location != null) {
-//				try {
-//					// load the code list
-//					CodeList codeList = new XmlCodeList(location.toURL().openStream(), location);
-//					cachedAttributeCodeLists.put(attributeIdentifier, codeList);
-//					return codeList;
-//				} catch (Exception e) {
-//					log.error("Error loading code list from " + location); //$NON-NLS-1$
-//				}
-//			}
-//			return null;
-//		}
-//	}
+	/**
+	 * @see CodeListService#findCodeListByAttribute(String)
+	 */
+	@Override
+	public CodeList findCodeListByAttribute(String attributeIdentifier) {
+		String key = configurationService.get(attributeIdentifier);
+		if (key == null)
+			return null;
+		else
+			return codelists.get(key);
+	}
+
+	/**
+	 * @see CodeListService#addCodeList(CodeList)
+	 */
+	@Override
+	public void addCodeList(CodeList code) {
+		String key = code.getNamespace() + "/" + code.getIdentifier(); //$NON-NLS-1$
+		codelists.put(key, code);
+	}
 
 //	/**
 //	 * @see CodeListService#searchPathChanged()
@@ -180,15 +182,4 @@ public class CodeListServiceImpl implements CodeListService {
 //			log.debug("Tried to load code list but failed", e); //$NON-NLS-1$
 //		}
 //	}
-
-	/**
-	 * @see CodeListService#addCodeList(CodeList)
-	 */
-	@Override
-	public void addCodeList(CodeList code) {
-
-		String ident = code.getNamespace() + "/" + code.getIdentifier();
-		codelists.put(ident, code);
-	}
-
 }

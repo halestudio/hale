@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.codelist.editor;
+package eu.esdihumboldt.hale.ui.codelist.selector;
 
 import java.net.URI;
 

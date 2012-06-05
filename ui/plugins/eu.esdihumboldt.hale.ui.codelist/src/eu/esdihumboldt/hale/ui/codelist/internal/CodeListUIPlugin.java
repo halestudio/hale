@@ -25,7 +25,7 @@ public class CodeListUIPlugin extends AbstractUIPlugin {
 	/**
 	 * The plug-in ID
 	 */
-	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.common.codelist.ui"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.ui.codelist"; //$NON-NLS-1$
 
 	// The shared instance
 	private static CodeListUIPlugin plugin;
