@@ -68,7 +68,7 @@ public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 	}
 
 	/**
-	 * Test polygon geometries read from a GML 3.1 file
+	 * Test polygon geometries read from a GML 3.2 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
