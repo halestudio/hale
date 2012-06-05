@@ -61,13 +61,13 @@ public class TriangleGeometryTest extends AbstractHandlerTest{
 	}
 
 	/**
-	 * Test orientable curve geometries read from a GML 3.2 file
+	 * Test triangle geometries read from a GML 3.2 file
 	 * 
 	 * @throws Exception
 	 *             if an error occurs
 	 */
 	@Test
-	public void testorientableCurveGml32() throws Exception {
+	public void testTriangleGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 				getClass().getResource("/data/sample-triangle-gml32.xml")
