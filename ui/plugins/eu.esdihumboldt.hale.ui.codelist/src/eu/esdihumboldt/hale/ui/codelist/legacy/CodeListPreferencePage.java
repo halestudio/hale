@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.codelist;
+package eu.esdihumboldt.hale.ui.codelist.legacy;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

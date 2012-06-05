@@ -10,31 +10,31 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.codelist;
+package eu.esdihumboldt.hale.ui.codelist.selector;
+
+import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.common.codelist.CodeList;
-import eu.esdihumboldt.hale.common.codelist.CodeList.CodeEntry;
-import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 
 /**
- * Tree node representing a code list
+ * Interface for components to select code lists from.
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @version $Id$ 
  */
-public class CodeListNode extends DefaultTreeNode {
+public interface CodeListSelector {
+	/**
+	 * Get the control.
+	 * 
+	 * @return the control
+	 */
+	public Control getControl();
 
 	/**
-	 * Create a new tree node with a given code list
+	 * Get the selected code list.
 	 * 
-	 * @param codes the code list
+	 * @return the selected code list or <code>null</code>
 	 */
-	public CodeListNode(CodeList codes) {
-		super(codes.getIdentifier());
-		
-		for (CodeEntry entry : codes.getEntries()) {
-			addChild(new DefaultTreeNode(entry.getName()));
-		}
-	}
-
+	public CodeList getCodeList();
 }

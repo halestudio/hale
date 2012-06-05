@@ -10,32 +10,29 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition.internal;
+package eu.esdihumboldt.hale.ui.common.editors;
 
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
-import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
+import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 
 /**
- * Service factory for table view related services
+ * Service factory for the attribute editor factory.
  *
- * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @author Kai Schwierczek
  */
 public class ServiceFactory extends AbstractServiceFactory {
-
 	/**
 	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
 	 */
 	@Override
 	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
-		if (serviceInterface.equals(DefinitionLabelFactory.class)) {
-			return new DefaultDefinitionLabelFactory();
+		if (serviceInterface.equals(AttributeEditorFactory.class)) {
+			return new DefaultAttributeEditorFactory();
 		}
-		
+
 		return null;
 	}
-
 }

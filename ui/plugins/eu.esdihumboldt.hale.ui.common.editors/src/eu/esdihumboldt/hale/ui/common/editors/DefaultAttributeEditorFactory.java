@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition.internal;
+package eu.esdihumboldt.hale.ui.common.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -20,8 +20,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
-import eu.esdihumboldt.hale.ui.common.definition.internal.editors.BooleanAttributeEditor;
-import eu.esdihumboldt.hale.ui.common.definition.internal.editors.DefaultAttributeEditor;
 
 /**
  * Default attribute editor factory
@@ -38,13 +36,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 	public AttributeEditor<?> createEditor(Composite parent,
 			PropertyDefinition property) {
 		TypeDefinition type = property.getPropertyType();
-		
-		// Code type
-		//XXX would introduce cycle, should be solved through extension point
-//		if (isCodeType(attributeType)) {
-//			return new CodeListAttributeEditor(parent, attribute);
-//		}
-		
+
 //		if (attributeType.isComplexType()) {
 //			// complex type or type that could not be resolved
 //			//TODO create composed editor (uses attribute editors and definition labels) XXX check if necessary
@@ -65,29 +57,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 			return null;
 		} else {
 			// fall back to default editor
-			return new DefaultAttributeEditor(parent, type);
+			return new DefaultAttributeEditor(parent, property);
 		}
 	}
-
-//	/**
-//	 * Determines if the given type definition represents a code type
-//	 * 
-//	 * @param type the type definition
-//	 * 
-//	 * @return if the type represents a code type
-//	 */
-//	public static boolean isCodeType(TypeDefinition type) {
-//		while (type != null) {
-//			Name typeName = type.getName();
-//			//TODO improve check for code type
-//			if (typeName.getLocalPart().equals("CodeType") && typeName.getNamespaceURI().toLowerCase().contains("gml")) { //$NON-NLS-1$ //$NON-NLS-2$
-//				return true;
-//			}
-//			
-//			type = type.getSuperType();
-//		}
-//		
-//		return false;
-//	}
-
 }

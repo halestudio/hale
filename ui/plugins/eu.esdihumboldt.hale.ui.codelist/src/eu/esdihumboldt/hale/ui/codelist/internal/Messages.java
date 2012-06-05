@@ -19,7 +19,7 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings("all")
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.common.codelist.ui.internal.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.ui.codelist.internal.messages"; //$NON-NLS-1$
 
 	public static String CodeListSelectionDialog_0;
 	public static String CodeListSelectionDialog_1;
@@ -38,9 +38,6 @@ public class Messages extends NLS {
 	public static String CodeListPreferencePage_5;
 	public static String CodeListPreferencePage_6;
 	public static String CodeListPreferencePage_7;
-
-	public static String CodeListAttributeEditor_0;
-	public static String CodeListAttributeEditor_2;
 	
 	public static String ListSelector_0;
 	public static String ListSelector_1;

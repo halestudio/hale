@@ -9,7 +9,7 @@
  * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
-package eu.esdihumboldt.hale.ui.codelist.editor;
+package eu.esdihumboldt.hale.ui.codelist.selector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,22 +117,24 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 		selectors.add(listSelector);
 		
 		// file
-		TabItem fileItem = new TabItem(tabFolder, SWT.NONE);
-		fileItem.setText(Messages.CodeListSelectionDialog_3); //$NON-NLS-1$
-		FileSelector fileSelector = new FileSelector(tabFolder);
-		fileItem.setControl(fileSelector.getControl());
-		selectors.add(fileSelector);
-		if (codeList != null) {
-			fileSelector.setLocation(codeList.getLocation());
-		}
+		// FIXME Update
+//		TabItem fileItem = new TabItem(tabFolder, SWT.NONE);
+//		fileItem.setText(Messages.CodeListSelectionDialog_3); //$NON-NLS-1$
+//		FileSelector fileSelector = new FileSelector(tabFolder);
+//		fileItem.setControl(fileSelector.getControl());
+//		selectors.add(fileSelector);
+//		if (codeList != null) {
+//			fileSelector.setLocation(codeList.getLocation());
+//		}
 		
 		// initial state
 		if (listSelector.selectCodeList(codeList)) {
 			tabFolder.setSelection(listItem);
 		}
-		else {
-			tabFolder.setSelection(fileItem);
-		}
+		// FIXME Update
+//		else {
+//			tabFolder.setSelection(fileItem);
+//		}
 		
 		return page;
 	}

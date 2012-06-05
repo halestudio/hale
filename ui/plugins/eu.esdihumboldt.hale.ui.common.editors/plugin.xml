@@ -4,11 +4,10 @@
    <extension
          point="org.eclipse.ui.services">
       <serviceFactory
-            factoryClass="eu.esdihumboldt.hale.ui.common.definition.internal.ServiceFactory">
+            factoryClass="eu.esdihumboldt.hale.ui.common.editors.ServiceFactory">
          <service
-               serviceClass="eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory">
+               serviceClass="eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory">
          </service>
       </serviceFactory>
    </extension>
-
 </plugin>
