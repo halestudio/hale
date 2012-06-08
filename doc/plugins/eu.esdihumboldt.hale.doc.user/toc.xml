@@ -91,7 +91,7 @@
       </topic>
       <topic label="Supported formats">
          <topic label="Import">
-            <topic href="html/reference/import/shapefile.html" label="Shapefile">
+            <topic href="html/reference/import/shapefile.html" label="Shapefile (SHP)">
             </topic>
             <topic href="html/reference/import/xml_schema.html" label="XML Schema">
             </topic>
