@@ -56,6 +56,7 @@ import eu.esdihumboldt.hale.io.oml.helper.ClassificationMappingTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.DateExtractionTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.FormattedStringTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator;
+import eu.esdihumboldt.hale.io.oml.helper.GeographicalNameTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.IdentifierTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.MathematicalExpressionTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.NetworkExpansionTranslator;
@@ -117,8 +118,8 @@ public class OmlReader extends AbstractAlignmentReader implements
 				new NotSupportedTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.NilReasonFunction",
 				new NotSupportedTranslator());
-		map.put("eu.esdihumboldt.cst.corefunctions.GeographicalNameFunction",
-				new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction",
+				new GeographicalNameTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction",
 				new IdentifierTranslator());
 	}
