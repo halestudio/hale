@@ -17,6 +17,7 @@ package eu.esdihumboldt.cst.functions.inspire;
  * @author Kevin Mais
  *
  */
+@SuppressWarnings("javadoc")
 public interface IdentifierFunction {
 
 	public static final String ID = "eu.esdihumboldt.cst.functions.inspire.identifier";
