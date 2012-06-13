@@ -23,7 +23,7 @@ import eu.esdihumboldt.specification.cst.align.ICell;
 /**
  * Translator class for inspire identifier function
  * 
- * @author Baboo
+ * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
 public class IdentifierTranslator implements FunctionTranslator, IdentifierFunction {
