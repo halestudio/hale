@@ -59,27 +59,19 @@ public class Identifier extends
 		String version = getParameterChecked(VERSION);
 		String versionNilReason = getParameterChecked(VERSION_NIL_REASON);
 
-		// TODO: delete
-		System.out.println("country: " + countryName);
-		System.out.println("provider: " + providerName);
-		System.out.println("product: " + productName);
-		System.out.println("version: " + version);
-		System.out.println("versionNil: " + versionNilReason);
-		System.out.println("source: " + source);
-
 		// definition of the target property (inspireId in this case)
-		TypeDefinition inspireType = resultProperty.getDefinition()
+		TypeDefinition targetType = resultProperty.getDefinition()
 				.getPropertyType();
 
 		// instance that can be changed (add property/instance as child)
-		DefaultInstance inspireInstance = new DefaultInstance(inspireType, null);
+		DefaultInstance inspireInstance = new DefaultInstance(targetType, null);
 
 		// search for the child named "Identifier"
-		PropertyDefinition inspireChildPropDef = getChild("Identifier",
-				inspireType);
+		PropertyDefinition targetChildPropDef = getChild("Identifier",
+				targetType);
 
 		// get type definition to create the "Identifier" instance
-		TypeDefinition identType = inspireChildPropDef.getPropertyType();
+		TypeDefinition identType = targetChildPropDef.getPropertyType();
 
 		DefaultInstance identInstance = new DefaultInstance(identType, null);
 
@@ -106,7 +98,8 @@ public class Identifier extends
 				+ resultProperty.getType().getDisplayName());
 
 		// 2.)
-		// add the "nilReason" property to the version instance
+		// add the "nilReason" property to the version instance or set the
+		// version if it's not null or empty
 		if (version == null || version.isEmpty()) {
 			versionInstance.addProperty(versionIdChildVersion.getName(),
 					versionNilReason);
@@ -120,8 +113,8 @@ public class Identifier extends
 
 		// 4.)
 		// add the "identifier" instance to the inspireId instance
-		inspireInstance.addProperty(inspireChildPropDef.getName(),
-				identInstance);
+		inspireInstance
+				.addProperty(targetChildPropDef.getName(), identInstance);
 
 		return inspireInstance;
 	}
