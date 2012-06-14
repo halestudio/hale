@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.cst.functions.inspire;
 
-import java.util.Collection;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
@@ -25,7 +24,6 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSi
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -60,33 +58,33 @@ public class Identifier extends
 		String versionNilReason = getParameterChecked(VERSION_NIL_REASON);
 
 		// definition of the target property (inspireId in this case)
-		TypeDefinition inspireType = resultProperty.getDefinition()
+		TypeDefinition targetType = resultProperty.getDefinition()
 				.getPropertyType();
 
 		// instance that can be changed (add property/instance as child)
-		DefaultInstance inspireInstance = new DefaultInstance(inspireType, null);
+		DefaultInstance inspireInstance = new DefaultInstance(targetType, null);
 
 		// search for the child named "Identifier"
-		PropertyDefinition inspireChildPropDef = getChild("Identifier",
-				inspireType);
+		PropertyDefinition inspireChildPropDef = Util.getChild("Identifier",
+				targetType);
 
 		// get type definition to create the "Identifier" instance
 		TypeDefinition identType = inspireChildPropDef.getPropertyType();
 
 		DefaultInstance identInstance = new DefaultInstance(identType, null);
 
-		PropertyDefinition identChildLocal = getChild("localId", identType);
-
-		PropertyDefinition identChildNamespace = getChild("namespace",
+		PropertyDefinition identChildLocal = Util.getChild("localId", identType);
+		
+		PropertyDefinition identChildNamespace = Util.getChild("namespace",
 				identType);
 
-		PropertyDefinition identChildVersion = getChild("versionId", identType);
+		PropertyDefinition identChildVersion = Util.getChild("versionId", identType);
 
 		TypeDefinition versionType = identChildVersion.getPropertyType();
 
 		DefaultInstance versionInstance = new DefaultInstance(versionType, null);
 
-		PropertyDefinition versionIdChildVersion = getChild("nilReason",
+		PropertyDefinition versionIdChildVersion = Util.getChild("nilReason",
 				versionType);
 
 		// 1.)
@@ -116,23 +114,6 @@ public class Identifier extends
 				identInstance);
 
 		return inspireInstance;
-	}
-
-	private PropertyDefinition getChild(String localpart,
-			TypeDefinition definition) {
-
-		Collection<? extends ChildDefinition<?>> children = definition
-				.getChildren();
-
-		for (ChildDefinition<?> child : children) {
-			if (child.asProperty() != null
-					&& child.getName().getLocalPart().equals(localpart)) {
-				return child.asProperty();
-			}
-		}
-
-		return null;
-
 	}
 
 }
