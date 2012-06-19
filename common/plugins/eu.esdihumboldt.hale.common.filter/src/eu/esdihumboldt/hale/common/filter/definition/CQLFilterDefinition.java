@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.common.filter.definition;
 import org.geotools.filter.text.cql2.CQLException;
 
 import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
-import eu.esdihumboldt.hale.common.instance.extension.FilterDefinition;
+import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinition;
 import eu.esdihumboldt.util.definition.ObjectDefinition;
 
 /**

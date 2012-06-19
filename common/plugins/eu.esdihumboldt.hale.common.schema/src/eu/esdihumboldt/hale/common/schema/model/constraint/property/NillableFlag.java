@@ -62,5 +62,4 @@ public class NillableFlag extends AbstractFlagConstraint implements PropertyCons
 	private NillableFlag(boolean enabled) {
 		super(enabled);
 	}
-
 }

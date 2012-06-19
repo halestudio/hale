@@ -10,17 +10,16 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.instance.extension;
+package eu.esdihumboldt.hale.common.instance.extension.filter;
 
-import eu.esdihumboldt.hale.common.instance.model.Filter;
-import eu.esdihumboldt.util.definition.ObjectDefinition;
+import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 
 /**
- * Definition for a certain type of {@link Filter}s.
+ * Factory interface for {@link FilterDefinition}s.
  * @author Simon Templer
- * @param <F> the filter type
  */
-public interface FilterDefinition<F extends Filter> extends ObjectDefinition<F> {
+public interface FilterDefinitionFactory extends
+		ExtensionObjectFactory<FilterDefinition<?>> {
 
 	// concrete typed interface
 	

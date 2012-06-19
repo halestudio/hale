@@ -27,7 +27,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 @Immutable
 @Constraint(mutable = false)
 public class Enumeration<T> implements TypeConstraint {
-	
 	private final Collection<? extends T> values;
 	
 	private final boolean allowOthers;

@@ -60,10 +60,13 @@ public class ValidationConstraint implements TypeConstraint {
 	public Validator getValidator() {
 		if (type != null && type.getSuperType() != null && !init) {
 			init = true;
-			ArrayList<Validator> validators = new ArrayList<Validator>(2);
-			validators.add(type.getSuperType().getConstraint(ValidationConstraint.class).getValidator());
-			validators.add(validator);
-			validator = new AndValidator(validators);
+			Validator parentValidator = type.getSuperType().getConstraint(ValidationConstraint.class).getValidator();
+			if (!parentValidator.isAlwaysTrue()) {
+				ArrayList<Validator> validators = new ArrayList<Validator>(2);
+				validators.add(parentValidator);
+				validators.add(validator);
+				validator = new AndValidator(validators);
+			}
 		}
 		return validator;
 	}
