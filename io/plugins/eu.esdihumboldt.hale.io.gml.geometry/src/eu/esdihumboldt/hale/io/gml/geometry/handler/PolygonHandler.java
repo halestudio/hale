@@ -61,8 +61,6 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 
-		// XXX need support for instances of Rings
-
 		LinearRing[] holes = null;
 		Polygon polygon = null;
 
@@ -144,6 +142,10 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 				polygon = getGeometryFactory().createPolygon(outerRing, holes);
 			}
 		}
+		// only for triangle and rectangle geometries to resolve ring with
+		// generic geometry handler
+		// normal rings should automatically be handled with generic geometry
+		// handler
 		if (polygon == null) {
 			values = PropertyResolver.getValues(instance, "exterior.Ring",
 					false);

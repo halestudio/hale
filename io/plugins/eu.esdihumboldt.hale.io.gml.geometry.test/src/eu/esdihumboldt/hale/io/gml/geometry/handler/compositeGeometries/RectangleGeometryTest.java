@@ -53,12 +53,14 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 				new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
 				new Coordinate(0.01, -3.2), new Coordinate(-3.33, -3.2),
 				new Coordinate(0.01, 3.2) };
-		
+
 		LinearRing linearRing = geomFactory.createLinearRing(coordinates);
 		referencePolygon = geomFactory.createPolygon(linearRing, null);
-		
-		LineString[] lineStrings = new LineString[]{geomFactory.createLineString(coordinates)};
-		referenceMultiLineString = geomFactory.createMultiLineString(lineStrings);
+
+		LineString[] lineStrings = new LineString[] { geomFactory
+				.createLineString(coordinates) };
+		referenceMultiLineString = geomFactory
+				.createMultiLineString(lineStrings);
 	}
 
 	/**
