@@ -24,6 +24,7 @@ import org.eclipse.ui.internal.util.PrefUtil;
 import org.osgi.framework.Version;
 
 import eu.esdihumboldt.hale.ui.application.internal.Messages;
+import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTracker;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerImpl;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
@@ -85,6 +86,10 @@ public class ApplicationWorkbenchWindowAdvisor
 			tracker = new SelectionTrackerImpl(getWindowConfigurer().getWindow().getSelectionService());
 			SelectionTrackerUtil.registerTracker(tracker);
 		}
+
+		// XXX do the following somewhere else:
+		// start instance validation service
+		PlatformUI.getWorkbench().getService(InstanceValidationService.class);
 	}
 
 	/**

@@ -16,7 +16,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.common.instance.extension.FilterDefinitionManager;
+import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;

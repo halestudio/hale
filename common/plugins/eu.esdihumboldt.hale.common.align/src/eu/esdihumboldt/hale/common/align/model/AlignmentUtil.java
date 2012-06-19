@@ -22,7 +22,7 @@ import com.google.common.base.Objects;
 import eu.esdihumboldt.hale.common.align.model.impl.ChildEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.common.instance.extension.FilterDefinitionManager;
+import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
