@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.instance.extension;
+package eu.esdihumboldt.hale.common.instance.extension.filter;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 

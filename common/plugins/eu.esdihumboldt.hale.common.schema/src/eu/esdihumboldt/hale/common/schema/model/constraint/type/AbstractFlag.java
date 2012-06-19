@@ -71,5 +71,4 @@ public class AbstractFlag extends AbstractFlagConstraint implements TypeConstrai
 		// must be set explicitly on abstract types
 		return false;
 	}
-
 }

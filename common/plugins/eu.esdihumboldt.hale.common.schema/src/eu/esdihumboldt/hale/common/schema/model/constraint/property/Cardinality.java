@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
  */
 @Immutable
 @Constraint(mutable = false)
-public class Cardinality implements PropertyConstraint, GroupPropertyConstraint {
+public class Cardinality implements GroupPropertyConstraint, PropertyConstraint {
 
 	/**
 	 * Value for unrestricted {@link #maxOccurs}
@@ -52,7 +52,7 @@ public class Cardinality implements PropertyConstraint, GroupPropertyConstraint 
 	public static final Cardinality CC_ANY_NUMBER = new Cardinality(0, UNBOUNDED);
 	
 	/**
-	 * Get the cardinality constraint with the given occurences
+	 * Get the cardinality constraint with the given occurrences
 	 * 
 	 * @param minOccurs the number of minimum occurrences of a property, may not
 	 *   be negative
@@ -137,5 +137,4 @@ public class Cardinality implements PropertyConstraint, GroupPropertyConstraint 
 	public long getMaxOccurs() {
 		return maxOccurs;
 	}
-
 }

@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
-import eu.esdihumboldt.hale.common.instance.extension.FilterDefinitionManager;
+import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
 
 /**
  * Bean representing a {@link ChildContext}. Instead of the child definition it
