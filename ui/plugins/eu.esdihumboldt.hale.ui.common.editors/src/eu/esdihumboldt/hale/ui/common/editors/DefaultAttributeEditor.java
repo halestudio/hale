@@ -241,7 +241,7 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 		
 		if (infoText.length() > 0) {
 			Label inputInfo = new Label(composite, SWT.NONE);
-			inputInfo.setLayoutData(GridDataFactory.fillDefaults().span(2, 1));
+			inputInfo.setLayoutData(GridDataFactory.fillDefaults().span(2, 1).create());
 			inputInfo.setText(infoText.toString());
 		}
 	}
