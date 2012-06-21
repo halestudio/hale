@@ -48,10 +48,16 @@ public class Messages extends NLS {
 	public static String RuleStylePage_RuleLabelText;
 	public static String RuleStylePage_SuperTitle;
 	public static String RuleStylePage_UpRuleButtonToolTippText;
+	public static String PointGraphicEditor_UrlTextField;
+	public static String PointGraphicEditor_FileDialogButton;
+	public static String PointGraphicEditor_ErrorMessageFile;
+	public static String PointGraphicEditor_ErrorMessageFormat;
+	public static String PointGraphicEditor_SupportedTypes;
 	public static String SaveStylesAction_SuperTitle;
 	public static String SimpleLineStylePage_SuperTitle;
 	public static String SimplePointStylePage_SuperTitle;
 	public static String SimplePolygonStylePage_SuperTitle;
+	public static String SimpleGraphicStylePage_SuperTitle;
 	public static String StrokeEditor_ColorLabel;
 	public static String StrokeEditor_OpacityLabel;
 	public static String StrokeEditor_WidthLabel;
