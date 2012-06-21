@@ -27,6 +27,12 @@
             </parameter>
          </describer>
       </content-type>
+      <content-type
+            file-extensions="zip"
+            id="eu.esdihumboldt.hale.io.project.hale25.zip"
+            name="HALE project archive"
+            priority="normal">
+      </content-type>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.io.provider">
@@ -60,6 +66,14 @@
             name="HALE XML project">
          <contentType
                ref="eu.esdihumboldt.hale.io.project.hale25.xml">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter"
+            id="eu.esdihumboldt.hale.io.project.hale25.zip.writer"
+            name="HALE project archive">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.project.hale25.zip">
          </contentType>
       </provider>
    </extension>
