@@ -235,6 +235,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		addPage(new SimpleLineStylePage(this));
 		addPage(new SimplePointStylePage(this));
 		addPage(new SimplePolygonStylePage(this));
+		addPage(new SimpleGraphicStylePage(this));
 		addPage(new XMLStylePage3(this));
 	}
 
