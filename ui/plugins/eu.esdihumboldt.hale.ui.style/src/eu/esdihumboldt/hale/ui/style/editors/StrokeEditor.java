@@ -170,7 +170,12 @@ public class StrokeEditor implements Editor<Stroke> {
 	 * @return the {@link Stroke} color
 	 */
 	public Color getColor() {
-		RGB rgb = color.getValue();
+		RGB rgb;
+		try {
+			rgb = color.getValue();
+		} catch (Exception e) {
+			throw new IllegalStateException("Could not get Color from Editor.", e);
+		}
 		return new Color(rgb.red, rgb.green, rgb.blue);
 	}
 
