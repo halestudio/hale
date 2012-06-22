@@ -11,6 +11,8 @@
  */
 package eu.esdihumboldt.hale.ui.style.editors;
 
+import java.net.MalformedURLException;
+
 import org.eclipse.swt.widgets.Control;
 
 
@@ -27,8 +29,9 @@ public interface Editor<T> {
 	 * Get the value
 	 * 
 	 * @return the value
+	 * @throws Exception 
 	 */
-	public abstract T getValue();
+	public abstract T getValue() throws Exception;
 	
 	/**
 	 * Set the value

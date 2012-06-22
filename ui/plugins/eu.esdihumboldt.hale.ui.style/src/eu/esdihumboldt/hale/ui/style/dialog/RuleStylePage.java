@@ -44,6 +44,9 @@ import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
 import org.opengis.filter.Filter;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.style.StyleHelper;
 import eu.esdihumboldt.hale.ui.style.editors.Editor;
@@ -146,6 +149,8 @@ public class RuleStylePage extends FeatureStylePage {
 	private List<RuleItem> rules;
 	
 	private boolean changed = false;
+	
+	private static final ALogger log = ALoggerFactory.getLogger(RuleStylePage.class);
 
 	/**
 	 * Creates a new editor page
@@ -215,7 +220,7 @@ public class RuleStylePage extends FeatureStylePage {
 	/**
 	 * Update the {@link Rule} whose editor is currently open
 	 */
-	private void updateCurrentRule() {
+	private void updateCurrentRule() throws Exception {
 		if (currentEditor != null && currentEditor.isChanged()) {
 			Rule rule = currentEditor.getValue();
 			
@@ -321,7 +326,12 @@ public class RuleStylePage extends FeatureStylePage {
 				int newIndex = rules.indexOf(item);
 				
 				if (currentIndex != newIndex) {
-					updateCurrentRule();
+					try {
+						updateCurrentRule();
+					} catch (Exception e) {
+						log.userError("Invalid editor state, could not update rule.", e);
+						return;
+					}
 					currentIndex = newIndex;
 					updateEditor();
 				}
@@ -429,7 +439,12 @@ public class RuleStylePage extends FeatureStylePage {
 	 */
 	protected void moveCurrentRuleUp() {
 		if (currentIndex >= 1 && currentIndex < rules.size()) {
-			updateCurrentRule();
+			try {
+				updateCurrentRule();
+			} catch (Exception e) {
+				log.userError("Invalid editor state, could not update rule.", e);
+				return;
+			}
 			
 			RuleItem item1 = rules.get(currentIndex);
 			Rule temp = item1.getRule();
@@ -451,7 +466,12 @@ public class RuleStylePage extends FeatureStylePage {
 	 */
 	protected void moveCurrentRuleDown() {
 		if (currentIndex >= 0 && currentIndex < rules.size() - 1) {
-			updateCurrentRule();
+			try {
+				updateCurrentRule();
+			} catch (Exception e) {
+				log.userError("Invalid editor state, could not update rule.", e);
+				return;
+			}
 			
 			RuleItem item1 = rules.get(currentIndex);
 			Rule temp = item1.getRule();

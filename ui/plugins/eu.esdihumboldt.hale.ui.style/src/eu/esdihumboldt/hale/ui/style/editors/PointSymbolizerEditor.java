@@ -54,7 +54,7 @@ public class PointSymbolizerEditor implements Editor<PointSymbolizer> {
 	 * @see Editor#getValue()
 	 */
 	@Override
-	public PointSymbolizer getValue() {
+	public PointSymbolizer getValue() throws Exception {
 		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
 				null, markEditor.getValue(), null));
 	}
