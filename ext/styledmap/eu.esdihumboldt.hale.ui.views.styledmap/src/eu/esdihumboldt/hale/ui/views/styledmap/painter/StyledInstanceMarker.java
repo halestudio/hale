@@ -26,9 +26,14 @@ import org.eclipse.ui.PlatformUI;
 import org.geotools.geometry.jts.GeomCollectionIterator;
 import org.geotools.geometry.jts.LiteShape2;
 import org.geotools.renderer.lite.StyledShapePainter;
+import org.geotools.renderer.style.GraphicStyle2D;
 import org.geotools.renderer.style.MarkStyle2D;
 import org.geotools.renderer.style.SLDStyleFactory;
 import org.geotools.renderer.style.Style2D;
+import org.geotools.styling.ColorReplacement;
+import org.geotools.styling.ColorReplacementImpl;
+import org.geotools.styling.ExternalGraphic;
+import org.geotools.styling.ExternalGraphicImpl;
 import org.geotools.styling.Fill;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.Mark;
@@ -54,6 +59,7 @@ import com.vividsolutions.jts.geom.Point;
 import de.cs3d.common.metamodel.Point3D;
 import de.fhg.igd.mapviewer.marker.BoundingBoxMarker;
 import de.fhg.igd.mapviewer.marker.area.Area;
+import de.fhg.igd.mapviewer.marker.area.BoxArea;
 import de.fhg.igd.mapviewer.waypoints.SelectableWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
@@ -256,9 +262,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 		Stroke stroke = null;
 		
 		//try the Symbolizers from the Rule
-		int i = -1;
-		while(rule != null && stroke == null && i < rule.getSymbolizers().length){
-			i++;
+
+		for(int i = 0; rule != null && stroke == null && i < rule.getSymbolizers().length; i++){
 			if (rule.getSymbolizers()[i] instanceof LineSymbolizer){
 				stroke = SLD.stroke((LineSymbolizer)rule.getSymbolizers()[i]);				
 				}
@@ -452,7 +457,9 @@ public class StyledInstanceMarker extends InstanceMarker {
 		Area area = null;
 		try {
 			if (pointSymbolizer == null
-					|| SLD.mark(pointSymbolizer) == null) { // only marks supported for now
+					|| (SLD.mark(pointSymbolizer) == null 
+					&& pointSymbolizer.getGraphic().graphicalSymbols().isEmpty())) { 
+				// only marks supported for now
 				// if there is no specialized PointSymbolizer, fall back to a
 				// generic
 				return super.paintFallback(g, context, converter, zoom, null,
@@ -499,10 +506,25 @@ public class StyledInstanceMarker extends InstanceMarker {
 			DummyFeature dummy = new DummyFeature();
 			Style2D style2d = styleFactory.createStyle(dummy, pointS, range);
 			// create the area object of the painted image for further use
-			area = getArea(style2d, lites, g);
+			area = getArea(point, style2d, lites);
 			// actually paint
 			ssp.paint(g, lites, style2d, 1);
-
+			
+			//used to draw selection if a graphic style is used (external graphic)
+			if(context.isSelected() && style2d instanceof GraphicStyle2D){
+				 GraphicStyle2D gs2d = (GraphicStyle2D) style2d;
+				 
+				 //get minX and minY for the drawn rectangle arround the image
+				int minX = (int) point.getX() -  gs2d.getImage().getWidth() / 2;
+	            int minY = (int) point.getY() -  gs2d.getImage().getHeight() / 2;
+	            
+	            //apply the specification of the selection rectangle
+	            applyFill(g, context);
+	            applyStroke(g, context);
+	            //draw the selection rectangle
+				g.drawRect(minX-1 , minY-1, gs2d.getImage().getWidth()+1, gs2d.getImage().getHeight()+1);
+				
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -517,25 +539,34 @@ public class StyledInstanceMarker extends InstanceMarker {
 	 * @return returns the selection symbolizer
 	 */
 	private PointSymbolizer getSelectionSymbolizer(PointSymbolizer symbolizer){
-		//XXX only works with marks right now
-		Mark mark = SLD.mark(symbolizer);		
+		//XXX only works with marks and external graphics right now
+		Mark mark = SLD.mark(symbolizer);	
+		if(mark != null){
 		Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(), 
 				styleBuilder.createFill(StylePreferences.getSelectionColor(), StyleHelper.DEFAULT_FILL_OPACITY), 
 				styleBuilder.createStroke(StylePreferences.getSelectionColor(), StylePreferences.getSelectionWidth()));
-
+		
 		// create new symbolizer
 		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
 				null, mutiMark, null));
+		}
+
+		else {
+			return symbolizer;
+
+		}
 	}
 
 	/**
 	 * Returns the area of the drawn object
+	 * @param point 
 	 * @param style the Style2D object
 	 * @param shape the Light Shape
 	 * @param g the Graphics2d Object
 	 * @return the area, which should equal the space of the drawn object
 	 */
-	private Area getArea(Style2D style, LiteShape2 shape, Graphics2D g) {
+	private Area getArea(Point2D point, Style2D style, LiteShape2 shape) {
+		//if it is a mark style
 		if (style instanceof MarkStyle2D) {
 			PathIterator citer = getPathIterator(shape);
 
@@ -553,11 +584,24 @@ public class StyledInstanceMarker extends InstanceMarker {
 					Rectangle rec = areatemp.getBounds();
 					AdvancedBoxArea area = new AdvancedBoxArea(areatemp, rec.x,
 							rec.y, rec.x + rec.width, rec.y + rec.height);
-
+					
 					return area;
 				}
 			}
 		}
+		//if it is an external graphic style
+		else if (style instanceof GraphicStyle2D) {
+            GraphicStyle2D gs2d = (GraphicStyle2D) style;
+            
+            int minX = (int) point.getX() -  gs2d.getImage().getWidth() / 2;
+            int minY = (int) point.getY() -  gs2d.getImage().getHeight() / 2;
+            int maxX = (int) point.getX() +  gs2d.getImage().getWidth() / 2;
+            int maxY = (int) point.getX() +  gs2d.getImage().getHeight() / 2;
+                            
+            BoxArea area = new BoxArea(minX, minY, maxX, maxY);
+           return area;  
+		}  
+		
 		return null;
 	}
 		
