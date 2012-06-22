@@ -91,7 +91,7 @@ public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
 	 * @see Editor#getValue()
 	 */
 	@Override
-	public Rule getValue() {
+	public Rule getValue() throws Exception {
 		Rule rule = styleBuilder.createRule(symbolizerEditor.getValue());
 		rule.setFilter(filterEditor.getValue());
 		
