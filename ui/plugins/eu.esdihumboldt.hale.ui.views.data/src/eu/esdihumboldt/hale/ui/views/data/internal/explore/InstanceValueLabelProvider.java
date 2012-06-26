@@ -12,14 +12,22 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.explore;
 
+import java.util.Collection;
+
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -40,7 +48,9 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		Object element = treePath.getLastSegment();
 		
 		Object value = ((Pair<?, ?>) element).getSecond();
-		
+
+		Report<Message> report = InstanceValidator.validate(value, (ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
+
 		boolean hasValue = false;
 		if (value instanceof Instance) {
 			hasValue = ((Instance) value).getValue() != null;
@@ -75,8 +85,31 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		
 		cell.setText(styledString.toString());
 		cell.setStyleRanges(styledString.getStyleRanges());
+
+		if (!report.getWarnings().isEmpty())
+			cell.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK));
 		
 		super.update(cell);
+	}
+
+	/**
+	 * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipText(java.lang.Object)
+	 */
+	@Override
+	public String getToolTipText(Object element) {
+		Report<Message> report = InstanceValidator.validate(((Pair<?, ?>) element).getSecond(),
+				(ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
+
+		Collection<Message> warnings = report.getWarnings();
+
+		if (warnings.isEmpty())
+			return null;
+
+		StringBuilder toolTip = new StringBuilder();
+		for (Message m : warnings)
+			toolTip.append(m.getFormattedMessage()).append('\n');
+
+		return toolTip.substring(0, toolTip.length() - 1);
 	}
 	
 }

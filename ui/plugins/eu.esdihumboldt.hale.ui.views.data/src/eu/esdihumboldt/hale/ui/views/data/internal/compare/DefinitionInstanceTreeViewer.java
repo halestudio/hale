@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
@@ -67,7 +68,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 		treeViewer.getTree().setHeaderVisible(true);
 		treeViewer.getTree().setLinesVisible(true);
 		
-		treeViewer.getTree().setToolTipText(""); //$NON-NLS-1$
+		ColumnViewerToolTipSupport.enableFor(treeViewer);
 		
 		setInput(null, null);
 	}

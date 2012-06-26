@@ -20,9 +20,14 @@ import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
@@ -62,11 +67,12 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		// descend in instance
 		int otherValues = 0;
 		Object value = instance;
+		ChildDefinition<?> childDef = null;
 		for (int i = 0; value != null && i < treePath.getSegmentCount(); i++) {
 			Object segment = treePath.getSegment(i);
 			if (segment instanceof ChildDefinition<?>) {
-				ChildDefinition<?> child = (ChildDefinition<?>) segment;
-				Object[] values = ((Group) value).getProperty(child.getName());
+				childDef = (ChildDefinition<?>) segment;
+				Object[] values = ((Group) value).getProperty(childDef.getName());
 				if (values != null && values.length > 0) {
 					value = values[0];
 					//FIXME what about the other values? XXX mark cell? XXX create button for cell to see all for this instance?
@@ -81,7 +87,9 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 				value = null;
 			}
 		}
-		
+
+		Report<Message> report = InstanceValidator.validate(value, childDef);
+
 		boolean hasValue = false;
 		if (value instanceof Instance) {
 			hasValue = ((Instance) value).getValue() != null;
@@ -136,7 +144,9 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 //		cell.setBackground(getBackground(element));
 //		cell.setForeground(getForeground(element));
 //		cell.setFont(getFont(element));
-		
+		if (!report.getWarnings().isEmpty())
+			cell.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK));
+
 		super.update(cell);
 	}
 
@@ -150,6 +160,12 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		super.dispose();
 	}
 
-	//TODO override some of the tooltip methods?!
-	
+	/**
+	 * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipText(java.lang.Object)
+	 */
+	@Override
+	public String getToolTipText(Object element) {
+		// TODO how to be sure which path in the instance is meant with just the definition? no way!
+		return String.valueOf(element);
+	}
 }
