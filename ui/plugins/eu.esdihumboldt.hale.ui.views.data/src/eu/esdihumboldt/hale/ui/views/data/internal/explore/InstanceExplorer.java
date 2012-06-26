@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
@@ -121,6 +122,8 @@ public class InstanceExplorer implements InstanceViewer {
 		column.getColumn().setText("Value");
 		column.setLabelProvider(new InstanceValueLabelProvider());
 //				new PairLabelProvider(false, new LabelProvider())));
+
+		ColumnViewerToolTipSupport.enableFor(viewer);
 				
 		layout.setColumnData(column.getColumn(), new ColumnWeightData(1));
 		

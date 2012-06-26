@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -20,9 +21,14 @@ import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
@@ -62,11 +68,13 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		// descend in instance
 		int otherValues = 0;
 		Object value = instance;
-		for (int i = 0; value != null && i < treePath.getSegmentCount(); i++) {
+		ChildDefinition<?> childDef = null;
+		// First segment is TypeDefinition.
+		for (int i = 1; value != null && i < treePath.getSegmentCount(); i++) {
 			Object segment = treePath.getSegment(i);
 			if (segment instanceof ChildDefinition<?>) {
-				ChildDefinition<?> child = (ChildDefinition<?>) segment;
-				Object[] values = ((Group) value).getProperty(child.getName());
+				childDef = (ChildDefinition<?>) segment;
+				Object[] values = ((Group) value).getProperty(childDef.getName());
 				if (values != null && values.length > 0) {
 					value = values[0];
 					//FIXME what about the other values? XXX mark cell? XXX create button for cell to see all for this instance?
@@ -81,7 +89,12 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 				value = null;
 			}
 		}
-		
+
+		Report<Message> report = null;
+		// If childDef is null we are at the top element.
+		if (childDef == null)
+			report = InstanceValidator.validate(instance);
+
 		boolean hasValue = false;
 		if (value instanceof Instance) {
 			hasValue = ((Instance) value).getValue() != null;
@@ -136,7 +149,9 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 //		cell.setBackground(getBackground(element));
 //		cell.setForeground(getForeground(element));
 //		cell.setFont(getFont(element));
-		
+		if (report != null && !report.getWarnings().isEmpty())
+			cell.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK));
+
 		super.update(cell);
 	}
 
@@ -150,6 +165,25 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		super.dispose();
 	}
 
-	//TODO override some of the tooltip methods?!
-	
+	/**
+	 * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipText(java.lang.Object)
+	 */
+	@Override
+	public String getToolTipText(Object element) {
+		if (element instanceof TypeDefinition) {
+			Report<Message> report = InstanceValidator.validate(instance);
+
+			Collection<Message> warnings = report.getWarnings();
+
+			if (warnings.isEmpty())
+				return null;
+
+			StringBuilder toolTip = new StringBuilder();
+			for (Message m : warnings)
+				toolTip.append(m.getFormattedMessage()).append('\n');
+
+			return toolTip.substring(0, toolTip.length() - 1);
+		} else
+			return null;
+	}
 }

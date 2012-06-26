@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition;
 
+import java.util.Collections;
+
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -67,7 +69,10 @@ public class TypeDefinitionStructure extends DefaultDefinitionSection<TypeDefini
 	 */
 	@Override
 	public void refresh() {
-		tree.setInput(getDefinition());
+		if (getDefinition() != null)
+			tree.setInput(Collections.singleton(getDefinition()));
+		else
+			tree.setInput(Collections.emptySet());
 	}
 
 	/**
