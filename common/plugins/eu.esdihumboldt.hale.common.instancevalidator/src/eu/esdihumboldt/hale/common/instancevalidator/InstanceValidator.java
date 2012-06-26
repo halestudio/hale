@@ -1,5 +1,6 @@
 package eu.esdihumboldt.hale.common.instancevalidator;
 
+import java.util.Collection;
 import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
@@ -19,7 +20,9 @@ import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationExcep
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
@@ -27,6 +30,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 
 /**
  * Validator for instances using constraints.
@@ -38,6 +42,7 @@ public class InstanceValidator {
 	 * Validates the given instances using all constraints that are validatable.
 	 *
 	 * @param instances the instances to validate
+	 * @param monitor the progress monitor
 	 * @return a report of the validation
 	 */
 	public static Report<Message> validateInstances(InstanceCollection instances, IProgressMonitor monitor) {
@@ -49,7 +54,7 @@ public class InstanceValidator {
 				if (monitor.isCanceled())
 					return reporter;
 				Instance instance = iterator.next();
-				validateInstance(instance, reporter, instance.getDefinition().getDisplayName());
+				validateInstance(instance, reporter, instance.getDefinition().getDisplayName(), false);
 				monitor.worked(1);
 			}
 		} finally {
@@ -59,7 +64,65 @@ public class InstanceValidator {
 		return reporter;
 	}
 
-	private static void validateInstance(Instance instance, Reporter<Message> reporter, String path) {
+	/**
+	 * Validates the given object.
+	 *
+	 * @param object the object to validate (i. e. an instance, group or basic value)
+	 * @param childDef the child definition of the given object
+	 * @return a report of the validation
+	 */
+	public static Report<Message> validate(Object object, ChildDefinition<?> childDef) {
+		Reporter<Message> reporter = new DefaultReporter<Message>("Instance validation", Message.class, false);
+		reporter.setSuccess(false);
+
+		String path = childDef.getName().getLocalPart();
+		// first a special case for Choice-Flag
+		// XXX a better way to do this than coding this special case?
+		boolean onlyCheckExistingChildren = false;
+		if (childDef.asGroup() != null) {
+			GroupPropertyConstraintValidator validator = ConstraintValidatorExtension.getInstance()
+					.getGroupPropertyConstraintValidators().get(ChoiceFlag.class);
+			if (validator != null)
+				try {
+					validator.validateGroupPropertyConstraint(new Object[] {object},
+							childDef.asGroup().getConstraint(ChoiceFlag.class), childDef.asGroup());
+				} catch (ValidationException vE) {
+					reporter.warn(new MessageImpl("Group properties (" + path + ") not valid: " + vE.getMessage(), null));
+				}
+			onlyCheckExistingChildren = childDef.asGroup().getConstraint(ChoiceFlag.class).isEnabled();
+		}
+		// then validate the object as if it were a lone property value
+		validateChildren(new Object[] {object}, childDef, reporter, path, onlyCheckExistingChildren);
+
+		reporter.setSuccess(true);
+		return reporter;
+	}
+
+	/**
+	 * Validates the given {@link Instance}.
+	 *
+	 * @param instance the instance to validate
+	 * @return a report of the validation
+	 */
+	public static Report<Message> validate(Instance instance) {
+		Reporter<Message> reporter = new DefaultReporter<Message>("Instance validation", Message.class, false);
+		reporter.setSuccess(false);
+		validateInstance(instance, reporter, instance.getDefinition().getDisplayName(), false);
+		reporter.setSuccess(true);
+		return reporter;
+	}
+
+	/**
+	 * Validates the instances value against existing {@link TypeConstraintValidator}s and
+	 * calls {@link #validateGroupChildren(Group, Reporter, String, boolean)}.
+	 *
+	 * @param instance the instance to validate
+	 * @param reporter the reporter to report to
+	 * @param path the current property path
+	 * @param onlyCheckExistingChildren whether to only validate existing children (in case of a choice) or not
+	 */
+	private static void validateInstance(Instance instance, Reporter<Message> reporter,
+			String path, boolean onlyCheckExistingChildren) {
 		TypeDefinition typeDef = instance.getDefinition();
 		for (Entry<Class<TypeConstraint>, TypeConstraintValidator> entry :
 				ConstraintValidatorExtension.getInstance().getTypeConstraintValidators().entrySet())
@@ -69,30 +132,50 @@ public class InstanceValidator {
 				reporter.warn(new MessageImpl("Instance (" + path + ") not valid: " + vE.getMessage(), null));
 			}
 
-		for (ChildDefinition<?> childDef : typeDef.getChildren()) {
+		validateGroupChildren(instance, reporter, path, onlyCheckExistingChildren);
+	}
+
+	/**
+	 * Validates the given {@link Group}'s children against the {@link Group}'s definition.
+	 *
+	 * @param group the group to validate
+	 * @param reporter the reporter to report to
+	 * @param path the current property path
+	 * @param onlyCheckExistingChildren whether to only validate existing children (in case of a choice) or not
+	 */
+	private static void validateGroupChildren(Group group, Reporter<Message> reporter,
+			String path, boolean onlyCheckExistingChildren) {
+		Collection<? extends ChildDefinition<?>> childDefs;
+		if (group.getDefinition() instanceof TypeDefinition)
+			childDefs = ((TypeDefinition) group.getDefinition()).getChildren();
+		else
+			childDefs = group.getDefinition().getDeclaredChildren();
+		for (ChildDefinition<?> childDef : childDefs) {
 			QName name = childDef.getName();
-			if (childDef.asGroup() != null)
-				validateGroup(instance.getProperty(name), childDef.asGroup(), reporter, path + '.' + name.getLocalPart());
-			else if (childDef.asProperty() != null)
-				validateProperty(instance.getProperty(name), childDef.asProperty(), reporter, path + '.' + name.getLocalPart());
-			else
-				throw new IllegalStateException("Illegal child type.");
+			// Cannot use getPropertyNames in case of onlyCheckExistingChildren,
+			// because then I got no ChildDefinitions.
+			if (!onlyCheckExistingChildren || group.getProperty(name) != null) {
+				if (childDef.asGroup() != null)
+					validateGroup(group.getProperty(name), childDef.asGroup(), reporter, path + '.' + name.getLocalPart());
+				else if (childDef.asProperty() != null)
+					validateProperty(group.getProperty(name), childDef.asProperty(), reporter, path + '.' + name.getLocalPart());
+				else
+					throw new IllegalStateException("Illegal child type.");
+			}
 		}
 	}
 
-	private static void validateGroupChildren(Group group, Reporter<Message> reporter, String path) {
-		for (ChildDefinition<?> childDef : group.getDefinition().getDeclaredChildren()) {
-			QName name = childDef.getName();
-			if (childDef.asGroup() != null)
-				validateGroup(group.getProperty(name), childDef.asGroup(), reporter, path + '.' + name.getLocalPart());
-			else if (childDef.asProperty() != null)
-				validateProperty(group.getProperty(name), childDef.asProperty(), reporter, path + '.' + name.getLocalPart());
-			else
-				throw new IllegalStateException("Illegal child type.");
-		}
-	}
-
-	private static void validateProperty(Object[] properties, PropertyDefinition propertyDef, Reporter<Message> reporter, String path) {
+	/**
+	 * Validates the given property values against their {@link PropertyDefinition}.<br>
+	 * Then calls {@link #validateChildren(Object[], ChildDefinition, Reporter, String, boolean)}.
+	 *
+	 * @param properties the array of existing properties, may be null
+	 * @param propertyDef their definition
+	 * @param reporter the reporter to report to
+	 * @param path the current property path
+	 */
+	private static void validateProperty(Object[] properties, PropertyDefinition propertyDef,
+			Reporter<Message> reporter, String path) {
 		for (Entry<Class<PropertyConstraint>, PropertyConstraintValidator> entry :
 				ConstraintValidatorExtension.getInstance().getPropertyConstraintValidators().entrySet())
 			try {
@@ -102,10 +185,20 @@ public class InstanceValidator {
 				reporter.warn(new MessageImpl("Properties (" + path + ") not valid: " + vE.getMessage(), null));
 			}
 
-		validateChildren(properties, reporter, path);	
+		validateChildren(properties, propertyDef, reporter, path, false);
 	}
 
-	private static void validateGroup(Object[] properties, GroupPropertyDefinition groupDef, Reporter<Message> reporter, String path) {
+	/**
+	 * Validates the given property values against their {@link GroupPropertyDefinition}.<br>
+	 * Then calls {@link #validateChildren(Object[], ChildDefinition, Reporter, String, boolean)}.
+	 *
+	 * @param properties the array of existing properties, may be null
+	 * @param groupDef their definition
+	 * @param reporter the reporter to report to
+	 * @param path the current property path
+	 */
+	private static void validateGroup(Object[] properties, GroupPropertyDefinition groupDef,
+			Reporter<Message> reporter, String path) {
 		for (Entry<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator> entry :
 				ConstraintValidatorExtension.getInstance().getGroupPropertyConstraintValidators().entrySet())
 			try {
@@ -115,16 +208,40 @@ public class InstanceValidator {
 				reporter.warn(new MessageImpl("Group properties (" + path + ") not valid: " + vE.getMessage(), null));
 			}
 
-		validateChildren(properties, reporter, path);	
+		// In case of enabled choice flag only check existing children.
+		// That only one child exists should get checked above in a validator for the choice flag.
+		validateChildren(properties, groupDef, reporter, path,
+				groupDef.getConstraint(ChoiceFlag.class).isEnabled());
 	}
 
-	private static void validateChildren(Object[] properties, Reporter<Message> reporter, String path) {
+	/**
+	 * Validates the given property values (their values - as instances - and/or group children).
+	 *
+	 * @param properties the array of existing properties, may be null
+	 * @param childDef their definition
+	 * @param reporter the reporter to report to
+	 * @param path the current property path
+	 * @param onlyCheckExistingChildren whether to only validate existing children (in case of a choice) or not
+	 */
+	private static void validateChildren(Object[] properties, ChildDefinition<?> childDef,
+			Reporter<Message> reporter, String path, boolean onlyCheckExistingChildren) {
 		if (properties != null) {
 			for (Object property : properties) {
-				if (property instanceof Instance)
-					validateInstance((Instance) property, reporter, path);
-				else if (property instanceof Group)
-					validateGroupChildren((Group) property, reporter, path);
+				if (property instanceof Instance) {
+					validateInstance((Instance) property, reporter, path,
+							onlyCheckExistingChildren);
+				} else if (property instanceof Group) {
+					validateGroupChildren((Group) property, reporter, path,
+							onlyCheckExistingChildren);
+				} else {
+					if (childDef.asGroup() != null)
+						reporter.warn(new MessageImpl("Group properties (" + path + ") not valid: a property is no group.", null));
+					else if (childDef.asProperty() != null) {
+						MutableInstance instance = new DefaultInstance(childDef.asProperty().getPropertyType(), null);
+						instance.setValue(property);
+						validateInstance(instance, reporter, path, onlyCheckExistingChildren);
+					}
+				}
 			}
 		}
 	}

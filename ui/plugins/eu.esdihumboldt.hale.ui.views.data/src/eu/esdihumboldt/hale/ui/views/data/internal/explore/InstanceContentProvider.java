@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.Viewer;
 import com.google.common.collect.Iterables;
 
 import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.util.Pair;
 
@@ -55,7 +56,10 @@ public class InstanceContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		return getChildren(inputElement);
+		if (inputElement instanceof Instance)
+			return new Object[] {new Pair<Object, Object>(((Instance) inputElement).getDefinition(), inputElement)};
+		else
+			return new Object[0];
 	}
 
 	/**
@@ -63,14 +67,11 @@ public class InstanceContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getChildren(Object parentElement) {
-//		Definition<?> def = null;
-		
 		if (parentElement instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) parentElement;
-//			def = (Definition<?>) pair.getFirst();
 			parentElement = pair.getSecond();
 		}
-		
+
 		if (parentElement instanceof Group) {
 			Group group = (Group) parentElement;
 			List<Object> children = new ArrayList<Object>();
@@ -82,7 +83,7 @@ public class InstanceContentProvider implements ITreeContentProvider {
 			}
 			return children.toArray();
 		}
-		
+
 		return new Object[0];
 	}
 
