@@ -40,6 +40,11 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.functions.inspire.internal.Messages;
 
+/**
+ * Wizard page for the inspire identifier function
+ * 
+ * @author Kevin Mais
+ */
 public class IdentifierParameterPage extends
 		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
 		ParameterPage, IdentifierFunction {
@@ -59,10 +64,13 @@ public class IdentifierParameterPage extends
 	private String initialProduct;
 	private String initialVersion;
 	private String initialVersionNil;
-	
+
 	private ListMultimap<String, String> configuration = ArrayListMultimap.create(5, 5);
 
-	protected IdentifierParameterPage() {
+	/**
+	 * /* Default Constructor
+	 */
+	public IdentifierParameterPage() {
 		super("identifier", Messages.IdentifierFunctionWizardPage_0, null);
 		setPageComplete(false);
 	}
@@ -102,11 +110,34 @@ public class IdentifierParameterPage extends
 //			}
 		}
 		
-	}
+
+			// Iterator<FunctionParameter> it = params.iterator();
+			// while(it.hasNext()) {
+			// FunctionParameter param = it.next();
+			//
+			// if(param.getName().equals(COUNTRY_PARAMETER_NAME)) {
+			// configuration.put(COUNTRY_PARAMETER_NAME, nilEditor.getAsText());
+			// }
+			// if(param.getName().equals(DATA_PROVIDER_PARAMETER_NAME)) {
+			// configuration.put(DATA_PROVIDER_PARAMETER_NAME,
+			// nilEditor.getAsText());
+			// }
+			// if(param.getName().equals(PRODUCT_PARAMETER_NAME)) {
+			// configuration.put(PRODUCT_PARAMETER_NAME, nilEditor.getAsText());
+			// }
+			// if(param.getName().equals(VERSION)) {
+			// configuration.put(VERSION, nilEditor.getAsText());
+			// }
+			// if(param.getName().equals(VERSION_NIL_REASON)) {
+			// configuration.put(VERSION_NIL_REASON, nilEditor.getAsText());
+			// }
+			// }
+		}
+
 
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
-		return /*configuration*/null;
+		return /* configuration */null;
 	}
 
 	@Override
@@ -233,7 +264,6 @@ public class IdentifierParameterPage extends
 			((Label) idLabel).setText("localId"); //$NON-NLS-1$
 		}
 		idLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		;
 		Control localId = dlf.createLabel(idGroup, getWizard()
 				.getUnfinishedCell().getSource().get(null).get(0)
 				.getDefinition().getDefinition(), true);
