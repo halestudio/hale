@@ -59,14 +59,6 @@ public class Identifier extends
 		String version = getParameterChecked(VERSION);
 		String versionNilReason = getParameterChecked(VERSION_NIL_REASON);
 
-		// TODO: delete
-		System.out.println("country: " + countryName);
-		System.out.println("provider: " + providerName);
-		System.out.println("product: " + productName);
-		System.out.println("version: " + version);
-		System.out.println("versionNil: " + versionNilReason);
-		System.out.println("source: " + source);
-
 		// definition of the target property (inspireId in this case)
 		TypeDefinition inspireType = resultProperty.getDefinition()
 				.getPropertyType();
