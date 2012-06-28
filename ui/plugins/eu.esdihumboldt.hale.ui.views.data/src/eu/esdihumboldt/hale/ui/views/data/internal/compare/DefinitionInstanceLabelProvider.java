@@ -14,6 +14,9 @@ package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -36,16 +39,26 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentPro
 
 /**
  * Label provider for instances in a tree based on a 
- * {@link TypeDefinitionContentProvider}
+ * {@link TypeDefinitionContentProvider}.
+ *
  * @author Simon Templer
  */
 public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
+	/**
+	 * The pattern of the text for multiple values.
+	 * This is used by {@link DefinitionInstanceTreeViewer} to determine
+	 * if a cell is "editable".
+	 * Furthermore it is expected to be at the end of the cell text.
+	 */
+	public static final String MULTIPLE_VALUE_FORMAT = "({0} of {1})";
 
 	private static final int MAX_STRING_LENGTH = 200;
 
 	private final Instance instance;
 	
 	private final DefinitionImages images = new DefinitionImages();
+
+	private Map<LinkedList<Object>, Integer> chosenPaths = new HashMap<LinkedList<Object>, Integer>();
 	
 	/**
 	 * Create an instance label provider for tree based on a 
@@ -54,7 +67,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	 */
 	public DefinitionInstanceLabelProvider(Instance instance) {
 		super();
-		
+
 		this.instance = instance;
 	}
 
@@ -66,25 +79,29 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		TreePath treePath = cell.getViewerRow().getTreePath();
 		
 		// descend in instance
-		int otherValues = 0;
+		int valueCount = 0;
+		int choice = 0;
 		Object value = instance;
 		ChildDefinition<?> childDef = null;
+		LinkedList<Object> segmentList = new LinkedList<Object>();
+		segmentList.add(treePath.getFirstSegment());
 		// First segment is TypeDefinition.
 		for (int i = 1; value != null && i < treePath.getSegmentCount(); i++) {
 			Object segment = treePath.getSegment(i);
+			segmentList.add(segment);
 			if (segment instanceof ChildDefinition<?>) {
 				childDef = (ChildDefinition<?>) segment;
 				Object[] values = ((Group) value).getProperty(childDef.getName());
+				choice = 0;
+				valueCount = 0;
 				if (values != null && values.length > 0) {
-					value = values[0];
-					//FIXME what about the other values? XXX mark cell? XXX create button for cell to see all for this instance?
-					otherValues = values.length - 1;
-				}
-				else {
+					Integer chosenPath = chosenPaths.get(segmentList);
+					choice = chosenPath == null ? 0 : chosenPath;
+					value = values[choice];
+					valueCount = values.length;
+				} else
 					value = null;
-				}
-			}
-			else {
+			} else {
 				//TODO log message?
 				value = null;
 			}
@@ -99,7 +116,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		if (value instanceof Instance) {
 			hasValue = ((Instance) value).getValue() != null;
 		}
-		
+
 		StyledString styledString;
 		if (value == null) {
 			styledString = new StyledString("no value", StyledString.DECORATIONS_STYLER);
@@ -123,36 +140,39 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 			if (stringValue.length() > MAX_STRING_LENGTH) {
 				stringValue = stringValue.substring(0, MAX_STRING_LENGTH) + "...";
 			}
-			
+
 			styledString = new StyledString(stringValue, null);
 		}
 		
 		// mark cell if there are other values
-		if (otherValues > 0) {
-			String decoration = " " + MessageFormat.format("(1 of {0})", 
-					new Object[] { Integer.valueOf(otherValues + 1) });
+		if (valueCount > 1) {
+			String decoration = " " + MessageFormat.format(MULTIPLE_VALUE_FORMAT, choice + 1, valueCount);
 			styledString.append(decoration, StyledString.COUNTER_STYLER);
 		}
-		
+
 		cell.setText(styledString.toString());
 		cell.setStyleRanges(styledString.getStyleRanges());
-		
-		//XXX use definition images?
-//		Object lastSegment = treePath.getLastSegment();
-//		if (lastSegment instanceof Definition) {
-//			cell.setImage(images.getImage((Definition<?>) lastSegment));
-//		}
-		
-//		cell.setText(getText(element));
-//		Image image = getImage(element);
-//		cell.setImage(image);
-//		cell.setBackground(getBackground(element));
-//		cell.setForeground(getForeground(element));
-//		cell.setFont(getFont(element));
+
 		if (report != null && !report.getWarnings().isEmpty())
 			cell.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK));
 
 		super.update(cell);
+	}
+
+	/**
+	 * Select a specific path.
+	 *
+	 * @param path the path at which a choice is necessary
+	 * @param choice the made choice
+	 */
+	public void selectPath(TreePath path, int choice) {
+		LinkedList<Object> segmentList = new LinkedList<Object>();
+		for (int i = 0; i < path.getSegmentCount(); i++)
+			segmentList.add(path.getSegment(i));
+		if (choice == 1)
+			chosenPaths.remove(segmentList);
+		else
+			chosenPaths.put(segmentList, choice - 1);
 	}
 
 	/**
@@ -161,7 +181,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	@Override
 	public void dispose() {
 		images.dispose();
-		
+
 		super.dispose();
 	}
 
