@@ -13,19 +13,35 @@
 package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TreeEditor;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -49,8 +65,12 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	private TreeViewer treeViewer;
 	
 	private Composite main;
+
+	private TreeEditor editor;
 	
 	private final SimpleInstanceSelectionProvider selectionProvider = new SimpleInstanceSelectionProvider();
+
+	private Map<Integer, DefinitionInstanceLabelProvider> labelProviders = new HashMap<Integer, DefinitionInstanceLabelProvider>();
 	
 	/**
 	 * @see InstanceViewer#createControls(Composite)
@@ -64,7 +84,68 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 		
 		treeViewer.setContentProvider(new TypeDefinitionContentProvider(treeViewer));
 		treeViewer.setLabelProvider(new DefinitionLabelProvider());
-		
+
+		// Add an editor for selecting specific paths.
+		editor = new TreeEditor(treeViewer.getTree());
+		editor.horizontalAlignment = SWT.RIGHT;
+		editor.minimumWidth = 40;
+		treeViewer.getTree().addMouseMoveListener(new MouseMoveListener() {
+			@Override
+			public void mouseMove(MouseEvent e) {
+				final ViewerCell cell = treeViewer.getCell(new Point(e.x, e.y));
+
+				// Selected cell changed?
+				if (cell == null || editor.getItem() != cell.getItem() || editor.getColumn() != cell.getColumnIndex()) {
+					// Clean up any previous editor control
+					Control oldEditor = editor.getEditor();
+					if (oldEditor != null) {
+						oldEditor.dispose();
+						editor.setEditor(null, null, 0);
+					}
+				}
+
+				// No selected cell or selected cell didn't change.
+				if (cell == null || cell.getColumnIndex() == 0 ||
+						(editor.getItem() == cell.getItem() && editor.getColumn() == cell.getColumnIndex()))
+					return;
+
+				// Quote the format first. Pattern.quote does the same, except,
+				// that it checks the input for \Es.
+				// Since we know that there will be no \Es in this case
+				// do it ourselves to be safe from changes to Pattern.quote.
+				String pattern = "\\Q" + DefinitionInstanceLabelProvider.MULTIPLE_VALUE_FORMAT + "\\E$";
+				pattern = pattern.replace("{0}", "\\E(\\d+)\\Q").replace("{1}", "\\E(\\d+)\\Q");
+				Matcher m = Pattern.compile(pattern).matcher(cell.getText());
+				if (!m.find())
+					return;
+
+				int current = Integer.parseInt(m.group(1));
+				int total = Integer.parseInt(m.group(2));
+
+				// Create the selection control.
+				ComboViewer combo = new ComboViewer(treeViewer.getTree());
+				Integer[] values = new Integer[total];
+				for (int i = 1; i <= total; i++)
+					values[i-1] = i;
+				combo.setContentProvider(ArrayContentProvider.getInstance());
+				combo.setInput(values);
+				combo.setSelection(new StructuredSelection(current));
+				combo.addSelectionChangedListener(new ISelectionChangedListener() {
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						if (event.getSelection() instanceof IStructuredSelection) {
+							// Update label provider and refresh viewer.
+							labelProviders.get(cell.getColumnIndex()).selectPath(cell.getViewerRow().getTreePath(),
+									(Integer) (((IStructuredSelection) event.getSelection()).getFirstElement()));
+							treeViewer.refresh(cell.getElement(), true);
+						}
+					}
+				});
+				editor.setEditor(combo.getControl(), (TreeItem) cell.getItem(), cell.getColumnIndex());
+			}
+		});
+
+
 		treeViewer.setComparator(new DefinitionComparator());
 		
 		treeViewer.getTree().setHeaderVisible(true);
@@ -86,6 +167,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 			for (TreeColumn column : columns) {
 				column.dispose();
 			}
+			labelProviders.clear();
 		}
 		
 			// create row defs for metadata
@@ -175,14 +257,16 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 //			});
 			
 			for (Instance instance : instances) { //sortedFeatures) {
-				TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
+				final TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
 //				FeatureId id = FeatureBuilder.getSourceID(feature);
 //				if (id == null) {
 //					id = feature.getIdentifier();
 //				}
 //				column.getColumn().setText(id.toString());
 				column.getColumn().setText(String.valueOf(index)); //XXX identifier?
-				column.setLabelProvider(new DefinitionInstanceLabelProvider(instance));
+				DefinitionInstanceLabelProvider labelProvider = new DefinitionInstanceLabelProvider(instance);
+				labelProviders.put(index, labelProvider);
+				column.setLabelProvider(labelProvider);
 				if (layout instanceof TreeColumnLayout) {
 					((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(1));
 				}
@@ -200,7 +284,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 		selectionProvider.updateSelection(instances);
 		
 		// auto-expand attributes/metadata
-//		treeViewer.expandToLevel(2);
+		treeViewer.expandToLevel(2);
 	}
 
 	/**
