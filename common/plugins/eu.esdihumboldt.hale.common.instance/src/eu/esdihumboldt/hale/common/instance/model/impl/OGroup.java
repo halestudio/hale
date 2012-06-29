@@ -233,15 +233,29 @@ public class OGroup implements MutableGroup {
 	/**
 	 * @see MutableGroup#addProperty(QName, Object)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void addProperty(QName propertyName, Object value) {
+		addProperty(propertyName, value, document);
+	}
+	
+	/**
+	 * Adds a property value to a given {@link ODocument}
+	 * 
+	 * @param propertyName the property name
+	 * @param value the property value
+	 * @param document the {link ODocument} where the value is to add
+	 */
+	@SuppressWarnings("unchecked")
+	protected void addProperty(QName propertyName, Object value, ODocument document) {
+		
+		boolean isInstanceDocument = document == this.document;
+		
 		// convert instances to documents
 		value = convertInstance(value);
 		
 		String pName = encodeProperty(propertyName);
 		
-		boolean collection = isCollectionProperty(propertyName);
+		boolean collection = !isInstanceDocument || isCollectionProperty(propertyName);
 		if (collection) {
 			// combine value with previous ones
 			Object oldValue = document.field(pName);
@@ -249,7 +263,11 @@ public class OGroup implements MutableGroup {
 				// default: use list
 				List<Object> valueList = new ArrayList<Object>();
 				valueList.add(value);
-				document.field(pName, valueList, getCollectionType(propertyName));
+				document.field(
+						pName,
+						valueList,
+						(isInstanceDocument) ? (getCollectionType(propertyName))
+								: (OType.EMBEDDEDLIST));
 			}
 			else if (oldValue instanceof Collection<?>) {
 				// add value to collection
@@ -261,7 +279,9 @@ public class OGroup implements MutableGroup {
 				Object[] values = new Object[oldArray.length + 1];
 				System.arraycopy(oldArray, 0, values, 0, oldArray.length);
 				values[oldArray.length] = value;
-				document.field(pName, values, getCollectionType(propertyName));
+				document.field(pName, values, 
+						(isInstanceDocument) ? (getCollectionType(propertyName))
+						: (OType.EMBEDDEDLIST));
 			}
 		}
 		else {
@@ -483,11 +503,25 @@ public class OGroup implements MutableGroup {
 		}
 	}
 
+
 	/**
 	 * @see Instance#getProperty(QName)
 	 */
 	@Override
 	public Object[] getProperty(QName propertyName) {
+		return getProperty(propertyName, this.document);
+	}
+	
+	
+	
+	/**
+	 * Gets a property value from a given {@link ODocument}
+	 * 
+	 * @param propertyName the property name
+	 * @param document the {link ODocument} which contains the property
+	 * @return an Array of Objects containing the needed property
+	 */
+	protected Object[] getProperty(QName propertyName, ODocument document) {
 		associatedDbWithThread();
 		
 		String pName = encodeProperty(propertyName);

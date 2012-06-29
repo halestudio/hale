@@ -13,6 +13,8 @@
 package eu.esdihumboldt.hale.common.instance.model;
 
 
+import java.util.List;
+
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
@@ -55,4 +57,13 @@ public interface Instance extends Group {
 	 */
 	public DataSet getDataSet();
 
+	
+	/**
+	 * Get the metadata the instance my be associated with
+	 * @param key the key to access a certain metadata
+	 * @return A list of objects from the metadata, 
+	 * may be an empty List if the key can not be found 
+	 * or there is not metadata associated with the Instance
+	 */
+	public List<Object> getMetaData(String key);
 }
