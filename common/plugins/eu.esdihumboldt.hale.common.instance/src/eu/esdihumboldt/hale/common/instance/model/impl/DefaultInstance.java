@@ -12,6 +12,10 @@
 
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -28,6 +32,8 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 	private DataSet dataSet;
 	
 	private Object value;
+	
+	private ListMultimap<String, Object> metaData;
 
 	/**
 	 * Create an empty instance.
@@ -90,6 +96,29 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 	@Override
 	public TypeDefinition getDefinition() {
 		return (TypeDefinition) super.getDefinition();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaData(java.lang.String)
+	 */
+	@Override
+	public List<Object> getMetaData(String key) {
+		if(metaData == null || metaData.isEmpty()){
+			return Collections.emptyList();
+		}
+		else return metaData.get(key);
+		
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.MutableInstance#puttMetaData(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void puttMetaData(String key, Object obj) {
+		if(metaData == null){
+			metaData = ArrayListMultimap.create();
+		}
+		metaData.put(key, obj);
 	}
 
 }

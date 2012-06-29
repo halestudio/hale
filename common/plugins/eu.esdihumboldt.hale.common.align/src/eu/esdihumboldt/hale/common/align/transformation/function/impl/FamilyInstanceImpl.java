@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.common.align.transformation.function.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -65,6 +66,14 @@ public class FamilyInstanceImpl implements FamilyInstance {
 	@Override
 	public Object[] getProperty(QName propertyName) {
 		return instance.getProperty(propertyName);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaData(java.lang.String)
+	 */
+	@Override
+	public List<Object> getMetaData(String key) {
+		return instance.getMetaData(key);
 	}
 
 	/**

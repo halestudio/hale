@@ -36,5 +36,12 @@ public interface MutableInstance extends Instance, MutableGroup {
 	public void setDataSet(DataSet dataSet);
 	
 	//XXX more manipulation needed? e.g. for transformation?
-
+	
+	/**
+	 * add Data to the MetaData, which the Instance can be associated with
+	 * If there is no MetaData in the Instance, a new container will be created
+	 * @param key a key the data to add will be associated with
+	 * @param obj the Data to add, may not be {@link Instance} or {@link Group}
+	 */
+	public void puttMetaData(String key, Object obj);
 }
