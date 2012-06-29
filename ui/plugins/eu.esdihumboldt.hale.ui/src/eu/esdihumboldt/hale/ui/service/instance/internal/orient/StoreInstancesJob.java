@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
 
 import java.text.MessageFormat;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -30,6 +31,7 @@ import de.cs3d.util.logging.ATransaction;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
@@ -93,6 +95,9 @@ public abstract class StoreInstancesJob extends Job {
 					// get/create OInstance
 					OInstance conv = ((instance instanceof OInstance)?
 							((OInstance) instance):(new OInstance(instance)));
+					
+					
+					InstanceMetadata.setID(conv, UUID.randomUUID().toString());
 					
 					ODatabaseRecordThreadLocal.INSTANCE.set(db);
 					// configure the document
