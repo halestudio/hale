@@ -46,9 +46,10 @@ import eu.esdihumboldt.commons.inspire.data.NameStatusValue;
 import eu.esdihumboldt.commons.inspire.data.NativenessValue;
 import eu.esdihumboldt.cst.functions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
-import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
@@ -116,11 +117,14 @@ public class GeographicalNamePage extends
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
 		
+		if(namePronounciationIPA == null) {
+			return ArrayListMultimap.create();
+		}
+		
 		// TODO: check if "input" is the right value
-//		configuration.put(PROPERTY_TEXT, (String)nameSpellingText.getInput());
-//		configuration.put(PROPERTY_SCRIPT, nameSpellingScript.getText());
-//		configuration.put(PROPERTY_TRANSLITERATION, nameSpellingTransliteration.getText());
-//		configuration.put(PROPERTY_PRONUNCIATIONSOUNDLINK, namePronounciationSounds.getText());
+		configuration.put(PROPERTY_SCRIPT, nameSpellingScript.getText());
+		configuration.put(PROPERTY_TRANSLITERATION, nameSpellingTransliteration.getText());
+		configuration.put(PROPERTY_PRONUNCIATIONSOUNDLINK, namePronounciationSounds.getText());
 		configuration.put(PROPERTY_PRONUNCIATIONIPA, namePronounciationIPA.getText());
 		configuration.put(PROPERTY_LANGUAGE, nameLanguageText.getText());
 		configuration.put(PROPERTY_SOURCEOFNAME, nameSourceText.getText());
@@ -148,9 +152,9 @@ public class GeographicalNamePage extends
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
 
-		this.createSpellingGroup(composite);
-		this.createPronounciationGroup(composite);
-		this.createOptionalAttributes(composite);
+		createSpellingGroup(composite);
+		createPronounciationGroup(composite);
+		createOptionalAttributes(composite);
 
 		setErrorMessage(null); // should not initially have error message
 		super.setControl(composite);
@@ -215,7 +219,7 @@ public class GeographicalNamePage extends
 		this.nameSourceText.setLayoutData(configurationLayoutData);
 		String nameSource = null;
 		if (getSourceOfName() != null
-				&& !getSourceOfName().equals("") && !sourceOfName.equals("unknown")) { //$NON-NLS-1$ //$NON-NLS-2$
+				&& !getSourceOfName().equals("") && !getSourceOfName().equals("unknown")) { //$NON-NLS-1$ //$NON-NLS-2$
 			nameSource = getSourceOfName();
 
 		} else {
@@ -372,7 +376,6 @@ public class GeographicalNamePage extends
 		}
 		this.nameNumberCombo.select(numberIndex);
 		setNumber(nameNumberCombo.getItem(numberIndex));
-		setNumber(nameNumberCombo.getItem(numberIndex));
 		this.nameNumberCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
@@ -482,9 +485,8 @@ public class GeographicalNamePage extends
 		// init spelling types if it doesn't exists
 		if (getSpellings() == null || getSpellings().size() == 0) {
 			spellings = new ArrayList<SpellingType>();
-			// FIXME: getUnfinishedCell returns a NullPointerException
-			for (Entity item : getWizard().getUnfinishedCell().getSource().values()) {
-				EntityDefinition entity = item.getDefinition();
+			for (Entity item : getWizard().getUnfinishedCell().getSource().get(null)) {
+				Definition<?> entity = item.getDefinition().getDefinition();
 				if (entity instanceof PropertyDefinition) {
 					spellings
 							.add(new SpellingType((PropertyDefinition) entity));
