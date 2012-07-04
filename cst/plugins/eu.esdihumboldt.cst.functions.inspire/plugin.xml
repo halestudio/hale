@@ -9,6 +9,12 @@
             function="eu.esdihumboldt.cst.functions.inspire.identifier"
             id="eu.esdihumboldt.cst.functions.inspire.identifier">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.inspire.GeographicalName"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.inspire.geographicalname"
+            id="eu.esdihumboldt.cst.functions.inspire.geographicalname">
+      </propertyTransformation>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.function">
@@ -57,6 +63,78 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="versionNilReason">
+         </functionParameter>
+      </propertyFunction>
+      <propertyFunction
+            cellExplanation="eu.esdihumboldt.cst.functions.inspire.GeographicalNameExplanation"
+            identifier="eu.esdihumboldt.cst.functions.inspire.geographicalname"
+            name="Geographical Name">
+         <targetProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </sourceProperties>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="text">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="script">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="transliterationScheme">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="nameStatus">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="language">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="nativeness">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="sourceOfName">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="pronunciationIPA">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="pronunciationSoundLink">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="grammaticalGender">
+         </functionParameter>
+         <functionParameter
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="grammaticalNumber">
          </functionParameter>
       </propertyFunction>
    </extension>
