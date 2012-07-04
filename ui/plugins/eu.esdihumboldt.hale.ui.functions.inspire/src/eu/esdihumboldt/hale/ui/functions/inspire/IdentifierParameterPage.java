@@ -79,65 +79,26 @@ public class IdentifierParameterPage extends
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, String> initialValues) {
 
-		for (int i = 0; i < initialValues.size(); i++) {
-
 			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0);
 			initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME)
 					.get(0);
 			initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0);
 			initialVersion = initialValues.get(VERSION).get(0);
 			initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0);
-			
-//			Iterator<FunctionParameter> it = params.iterator();
-//			while(it.hasNext()) {
-//				FunctionParameter param = it.next();
-//				
-//				if(param.getName().equals(COUNTRY_PARAMETER_NAME)) {
-//					configuration.put(COUNTRY_PARAMETER_NAME, nilEditor.getAsText());
-//				}
-//				if(param.getName().equals(DATA_PROVIDER_PARAMETER_NAME)) {
-//					configuration.put(DATA_PROVIDER_PARAMETER_NAME, nilEditor.getAsText());
-//				}
-//				if(param.getName().equals(PRODUCT_PARAMETER_NAME)) {
-//					configuration.put(PRODUCT_PARAMETER_NAME, nilEditor.getAsText());
-//				}
-//				if(param.getName().equals(VERSION)) {
-//					configuration.put(VERSION, nilEditor.getAsText());
-//				}
-//				if(param.getName().equals(VERSION_NIL_REASON)) {
-//					configuration.put(VERSION_NIL_REASON, nilEditor.getAsText());
-//				}
-//			}
-		}
-		
 
-			// Iterator<FunctionParameter> it = params.iterator();
-			// while(it.hasNext()) {
-			// FunctionParameter param = it.next();
-			//
-			// if(param.getName().equals(COUNTRY_PARAMETER_NAME)) {
-			// configuration.put(COUNTRY_PARAMETER_NAME, nilEditor.getAsText());
-			// }
-			// if(param.getName().equals(DATA_PROVIDER_PARAMETER_NAME)) {
-			// configuration.put(DATA_PROVIDER_PARAMETER_NAME,
-			// nilEditor.getAsText());
-			// }
-			// if(param.getName().equals(PRODUCT_PARAMETER_NAME)) {
-			// configuration.put(PRODUCT_PARAMETER_NAME, nilEditor.getAsText());
-			// }
-			// if(param.getName().equals(VERSION)) {
-			// configuration.put(VERSION, nilEditor.getAsText());
-			// }
-			// if(param.getName().equals(VERSION_NIL_REASON)) {
-			// configuration.put(VERSION_NIL_REASON, nilEditor.getAsText());
-			// }
-			// }
 		}
 
 
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
-		return /* configuration */null;
+		
+		configuration.put(COUNTRY_PARAMETER_NAME, countryCode.getText());
+		configuration.put(DATA_PROVIDER_PARAMETER_NAME, providerName.getText());
+		configuration.put(PRODUCT_PARAMETER_NAME, productName.getText());
+		configuration.put(VERSION, version.getText());
+		configuration.put(VERSION_NIL_REASON, nilEditor.getAsText());
+		
+		return configuration;
 	}
 
 	@Override
@@ -309,7 +270,7 @@ public class IdentifierParameterPage extends
 		if (identifierType != null) {
 			PropertyDefinition propDef = null; //$NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
-				String namespace = child.getName().getNamespaceURI().toString();
+				String namespace = child.getName().getLocalPart();
 				if (namespace.equals("versionId")) {
 					if (child.asProperty() != null) {
 						propDef = child.asProperty();
@@ -343,6 +304,8 @@ public class IdentifierParameterPage extends
 			}
 
 		}
+		
+		setPageComplete(true);
 
 	}
 
