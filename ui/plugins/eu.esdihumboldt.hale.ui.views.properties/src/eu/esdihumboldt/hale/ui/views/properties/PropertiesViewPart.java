@@ -42,8 +42,9 @@ public abstract class PropertiesViewPart extends ViewPart
 
 	/**
 	 * Since createPartControl does an important job this is used for subclasses.
-	 * 
+	 *
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+	 * @param parent the parent control
 	 */
 	protected abstract void createViewControl(Composite parent);
 

@@ -191,6 +191,22 @@ public abstract class AbstractInstanceService implements InstanceService {
 			}
 		}
 	}
+
+	/**
+	 * Notify listeners that a data set is about to be changed
+	 * 
+	 * @param type the data set type, <code>null</code> if both sets will change
+	 */
+	protected void notifyDatasetAboutToChange(DataSet type) {
+		for (InstanceServiceListener listener : listeners) {
+			if (type == null) {
+				listener.datasetAboutToChange(DataSet.SOURCE);
+				listener.datasetAboutToChange(DataSet.TRANSFORMED);
+			} else {
+				listener.datasetAboutToChange(type);
+			}
+		}
+	}
 	
 //	/**
 //	 * Notify listeners that the CRS has changed

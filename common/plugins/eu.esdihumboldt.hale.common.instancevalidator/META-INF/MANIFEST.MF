@@ -4,7 +4,8 @@ Bundle-Name: Instancevalidator
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instancevalidator;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: eu.esdihumboldt.hale.common.core.report,
+Import-Package: de.cs3d.util.logging,
+ eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.core.report.impl,
  eu.esdihumboldt.hale.common.instance.extension.validation,
  eu.esdihumboldt.hale.common.instance.model,
@@ -14,6 +15,8 @@ Import-Package: eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.schema.model.constraint.property,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.util.validator,
- org.osgi.framework;version="1.6.0"
-Export-Package: eu.esdihumboldt.hale.common.instancevalidator
+ org.osgi.framework;version="1.6.0",
+ org.slf4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.common.instancevalidator,
+ eu.esdihumboldt.hale.common.instancevalidator.report
 Require-Bundle: org.eclipse.core.runtime

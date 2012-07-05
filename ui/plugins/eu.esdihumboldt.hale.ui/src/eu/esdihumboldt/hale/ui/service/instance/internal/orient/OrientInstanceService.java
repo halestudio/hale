@@ -237,6 +237,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	@Override
 	public void addSourceInstances(InstanceCollection sourceInstances) {
+		notifyDatasetAboutToChange(DataSet.SOURCE);
 		final StoreInstancesJob storeInstances = new StoreInstancesJob(
 				"Load source instances into database", source, sourceInstances) {
 					@Override
@@ -279,6 +280,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 			 */
 			@Override
 			public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+				notifyDatasetAboutToChange(null);
 				source.clear();
 				transformed.clear();
 				notifyDatasetChanged(null);
@@ -333,6 +335,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	@Override
 	protected void doRetransform() {
+		notifyDatasetAboutToChange(DataSet.TRANSFORMED);
+
 		transformed.clear();
 		
 		boolean success = performTransformation();
@@ -424,6 +428,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	@Override
 	protected void clearTransformedInstances() {
+		notifyDatasetAboutToChange(DataSet.TRANSFORMED);
 		transformed.clear();
 		notifyDatasetChanged(DataSet.TRANSFORMED);
 	}

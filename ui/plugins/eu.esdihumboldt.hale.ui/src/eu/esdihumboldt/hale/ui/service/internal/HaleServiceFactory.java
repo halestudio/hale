@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceSe
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceSampleServiceImpl;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
+import eu.esdihumboldt.hale.ui.service.instance.validation.internal.InstanceValidationServiceImpl;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.service.project.internal.ProjectServiceImpl;
@@ -96,7 +97,7 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 
 		if (InstanceValidationService.class.equals(serviceInterface))
-			return new InstanceValidationService(
+			return new InstanceValidationServiceImpl(
 					(InstanceService) locator.getService(InstanceService.class),
 					(ReportService) locator.getService(ReportService.class)); 
 		
