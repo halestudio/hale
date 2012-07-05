@@ -77,7 +77,7 @@
          </targetProperties>
          <sourceProperties>
             <property
-                  maxOccurrence="1"
+                  maxOccurrence="-1"
                   minOccurrence="1">
             </property>
          </sourceProperties>
