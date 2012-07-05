@@ -23,10 +23,11 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
-import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
+import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -52,7 +53,7 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		Object value = ((Pair<?, ?>) element).getSecond();
 		Definition<?> definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
 
-		Report<Message> report = null;
+		InstanceValidationReport report = null;
 		if (definition instanceof ChildDefinition<?>)
 			report = InstanceValidator.validate(value, (ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
 		else if (definition instanceof TypeDefinition)
@@ -104,7 +105,7 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 	 */
 	@Override
 	public String getToolTipText(Object element) {
-		Report<Message> report;
+		InstanceValidationReport report;
 
 		Object value = ((Pair<?, ?>) element).getSecond();
 		Definition<?> definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
@@ -116,7 +117,7 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		else
 			return null;
 
-		Collection<Message> warnings = report.getWarnings();
+		Collection<InstanceValidationMessage> warnings = report.getWarnings();
 
 		if (warnings.isEmpty())
 			return null;

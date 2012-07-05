@@ -531,5 +531,14 @@
             pattern="org.eclipse.ui.console/org.eclipse.ui.console.ConsoleView">
       </activityPatternBinding>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Progress View"
+            icon="icons/pview.gif"
+            category="org.eclipse.ui"
+            class="org.eclipse.ui.ExtensionFactory:progressView"
+            id="org.eclipse.ui.views.ProgressView">
+      </view>
+   </extension>
 </plugin>

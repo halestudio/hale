@@ -12,23 +12,18 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.validation;
 
+import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
+
 /**
- * Service that listens to the instance service and validates instances.
+ * Listener for instance validation.
  *
  * @author Kai Schwierczek
  */
-public interface InstanceValidationService {
+public interface InstanceValidationListener {
 	/**
-	 * Adds a listener.
+	 * Called, when instance validation ran.
 	 *
-	 * @param listener the listener to add
+	 * @param report the resulting report
 	 */
-	public void addListener(InstanceValidationListener listener);
-
-	/**
-	 * Removes a listener.
-	 *
-	 * @param listener the listener to remove
-	 */
-	public void removeListener(InstanceValidationListener listener);
+	public void instancesValidated(InstanceValidationReport report);
 }

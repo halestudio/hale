@@ -37,4 +37,12 @@ public class InstanceServiceAdapter implements InstanceServiceListener {
 		// please override me
 	}
 
+	/**
+	 * @see InstanceServiceListener#datasetAboutToChange(DataSet)
+	 */
+	@Override
+	public void datasetAboutToChange(DataSet type) {
+		// please override me
+	}
+
 }
