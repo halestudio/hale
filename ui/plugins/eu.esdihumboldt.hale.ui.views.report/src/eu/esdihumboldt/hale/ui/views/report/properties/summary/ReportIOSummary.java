@@ -74,15 +74,7 @@ public class ReportIOSummary extends AbstractReportSummary {
 		data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(composite, 0, SWT.CENTER);
 		linkLabel.setLayoutData(data);
-		
-		CLabel namespaceLabel = getWidgetFactory()
-		.createCLabel(composite, "Location:"); //$NON-NLS-1$
-		data = new FormData();
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(displayLink,15);
-		data.top = new FormAttachment(displayLink, 0, SWT.CENTER);
-		namespaceLabel.setLayoutData(data);
-		
+
 		linktext = getWidgetFactory().createText(composite, "");
 		linktext.setEditable(false);
 
@@ -94,14 +86,14 @@ public class ReportIOSummary extends AbstractReportSummary {
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		linktext.setLayoutData(data);
 
-		namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, ""); //$NON-NLS-1$
+		CLabel locationLabel = getWidgetFactory()
+				.createCLabel(composite, "Location:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(linktext,
 				-ITabbedPropertyConstants.HSPACE);
-		data.top = new FormAttachment(linktext, 0, SWT.TOP);
-		namespaceLabel.setLayoutData(data);
+		data.top = new FormAttachment(linktext, 0, SWT.CENTER);
+		locationLabel.setLayoutData(data);
 	}
 	
 	/**
