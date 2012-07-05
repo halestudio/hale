@@ -95,6 +95,15 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	private void loadReports() {
 		_treeViewer.setInput(this.repService.getAllSessions());
 	}
+
+	/**
+	 * Selects the given report if it exists, otherwise the selection is removed.
+	 *
+	 * @param report the report to select
+	 */
+	public void selectReport(Report<? extends Message> report) {
+		_treeViewer.setSelection(new StructuredSelection(report), true);
+	}
 	
 	/**
 	* @see ITabbedPropertySheetPageContributor#getContributorId()

@@ -736,4 +736,12 @@ public abstract class AbstractInstancePainter extends
 		// ignore
 	}
 
+	/**
+	 * @see InstanceServiceListener#datasetAboutToChange(DataSet)
+	 */
+	@Override
+	public void datasetAboutToChange(DataSet type) {
+		// ignore
+	}
+
 }

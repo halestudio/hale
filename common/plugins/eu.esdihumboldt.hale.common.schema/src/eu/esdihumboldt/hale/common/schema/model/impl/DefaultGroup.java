@@ -91,14 +91,16 @@ public class DefaultGroup implements DefinitionGroup {
 	
 	private LinkedHashMap<QName, ChildDefinition<?>> flattenChildren() {
 		if (flatten) {
-			if (flattenedChildren == null) {
-				Collection<? extends ChildDefinition<?>> flat = flattenIfPossible(declaredChildren.values());
-				flattenedChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
-				for (ChildDefinition<?> child : flat) {
-					flattenedChildren.put(child.getName(), child);
+			synchronized (this) {
+				if (flattenedChildren == null) {
+					Collection<? extends ChildDefinition<?>> flat = flattenIfPossible(declaredChildren.values());
+					flattenedChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
+					for (ChildDefinition<?> child : flat) {
+						flattenedChildren.put(child.getName(), child);
+					}
 				}
+				return flattenedChildren;
 			}
-			return flattenedChildren;
 		}
 		else {
 			return declaredChildren;

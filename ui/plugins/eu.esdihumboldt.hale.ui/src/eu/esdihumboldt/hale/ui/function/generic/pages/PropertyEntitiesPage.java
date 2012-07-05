@@ -135,7 +135,7 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 					AlignmentUtil.getTypeEntity(getInitialCell().getTarget()
 							.values().iterator().next().getDefinition()));
 			
-			if (getInitialCell().getSource() != null) {
+			if (getInitialCell().getSource() != null && !getInitialCell().getSource().isEmpty()) {
 				Type source = new DefaultType(
 						AlignmentUtil.getTypeEntity(getInitialCell().getSource()
 								.values().iterator().next().getDefinition()));

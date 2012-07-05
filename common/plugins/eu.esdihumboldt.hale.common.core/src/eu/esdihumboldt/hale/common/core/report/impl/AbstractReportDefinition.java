@@ -200,24 +200,23 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 	 */
 	protected Properties asProperties(T report) {
 		Properties props = new Properties();
-		
+
 		props.setProperty(KEY_REPORT_TASKNAME, report.getTaskName());
 		props.setProperty(KEY_REPORT_SUCCESS, ""+report.isSuccess());
 		props.setProperty(KEY_REPORT_SUMMARY, report.getSummary());
-		
+
 		if (report.getTimestamp() != null) {
 			props.setProperty(KEY_REPORT_TIME, ""+report.getTimestamp().getTime());
 		}
-		
+
 		if (report.getStartTime() != null) {
 			props.setProperty(KEY_REPORT_STARTTIME, ""+report.getStartTime().getTime());
 		}
-		
+
 		if (report.getMessageType() != null) {
 			props.setProperty(KEY_REPORT_MESSAGE_TYPE, ""+report.getMessageType().getCanonicalName());
 		}
-				
+
 		return props ;
 	}
-
 }

@@ -40,10 +40,8 @@ http://www.esdi-community.eu/projects/show/hale
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="au.com.bytecode.opencsv"/>
@@ -162,7 +160,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.cache"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
       <plugin id="eu.esdihumboldt.hale.ui.common"/>
-      <plugin id="eu.esdihumboldt.hale.ui.common.editors" fragment=""/>
+      <plugin id="eu.esdihumboldt.hale.ui.common.editors"/>
       <plugin id="eu.esdihumboldt.hale.ui.common.graph"/>
       <plugin id="eu.esdihumboldt.hale.ui.filter"/>
       <plugin id="eu.esdihumboldt.hale.ui.firststeps"/>
@@ -173,6 +171,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.functions.numeric"/>
       <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.status.validation"/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>

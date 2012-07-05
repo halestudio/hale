@@ -10,25 +10,15 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.service.instance.validation;
+package eu.esdihumboldt.hale.common.instancevalidator.report;
+
+import eu.esdihumboldt.hale.common.core.report.Reporter;
 
 /**
- * Service that listens to the instance service and validates instances.
+ * {@link Reporter} with {@link InstanceValidationMessage}s.
  *
  * @author Kai Schwierczek
  */
-public interface InstanceValidationService {
-	/**
-	 * Adds a listener.
-	 *
-	 * @param listener the listener to add
-	 */
-	public void addListener(InstanceValidationListener listener);
-
-	/**
-	 * Removes a listener.
-	 *
-	 * @param listener the listener to remove
-	 */
-	public void removeListener(InstanceValidationListener listener);
+public interface InstanceValidationReporter extends Reporter<InstanceValidationMessage>, InstanceValidationReport {
+	// nothing to add, just for concrete type...
 }

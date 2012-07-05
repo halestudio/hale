@@ -28,10 +28,11 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
-import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
+import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
@@ -107,7 +108,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 			}
 		}
 
-		Report<Message> report = null;
+		InstanceValidationReport report = null;
 		// If childDef is null we are at the top element.
 		if (childDef == null)
 			report = InstanceValidator.validate(instance);
@@ -191,9 +192,9 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	@Override
 	public String getToolTipText(Object element) {
 		if (element instanceof TypeDefinition) {
-			Report<Message> report = InstanceValidator.validate(instance);
+			InstanceValidationReport report = InstanceValidator.validate(instance);
 
-			Collection<Message> warnings = report.getWarnings();
+			Collection<InstanceValidationMessage> warnings = report.getWarnings();
 
 			if (warnings.isEmpty())
 				return null;
