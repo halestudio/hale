@@ -44,4 +44,14 @@ public interface MutableInstance extends Instance, MutableGroup {
 	 * @param obj the Data to add, may not be {@link Instance} or {@link Group}
 	 */
 	public void puttMetaData(String key, Object obj);
+
+
+	/**
+	 * Sets the  metadata of a certain key, may also delet or reset the value of the key
+	 * if the values parameter is null or empty
+	 * @param key the key the data is associated with
+	 * @param values the values to set, may not contain {@link Instance} or {@link Group}
+	 */
+	public void setMetaData(String key, Object... values);
+	
 }

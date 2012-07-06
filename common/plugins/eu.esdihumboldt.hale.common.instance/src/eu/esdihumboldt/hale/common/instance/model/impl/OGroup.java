@@ -452,6 +452,17 @@ public class OGroup implements MutableGroup {
 	 */
 	@Override
 	public void setProperty(QName propertyName, Object... values) {
+		setPropertyInternal(this.document, propertyName, values);
+	}
+			
+	/**
+	 * Sets values for a property in a certain ODocument
+	 * 
+	 * @param propertyName the property name
+	 * @param values the values for the property
+	 * @param document the document which should contain the data
+	 */
+	protected void setPropertyInternal(ODocument document, QName propertyName, Object... values) {
 		String pName = encodeProperty(propertyName);
 		
 		if (values == null || values.length == 0) {
@@ -625,6 +636,16 @@ public class OGroup implements MutableGroup {
 	 */
 	@Override
 	public Iterable<QName> getPropertyNames() {
+		return getPropertyNames(this.document);
+	}
+		
+	
+	/**
+	 * Returns the index keys of a certain ODocument
+	 * @param document the keys are retrieved from
+	 * @return an Iterable with the keys as QNames
+	 */
+	protected Iterable<QName> getPropertyNames(ODocument document) {
 		associatedDbWithThread();
 		
 		Set<String> fields = new HashSet<String>(
@@ -640,7 +661,8 @@ public class OGroup implements MutableGroup {
 		
 		return qFields;
 	}
-
+	
+	
 	/**
 	 * Get the special field names, e.g. for metadata.
 	 * @return the collection of special field names. 
