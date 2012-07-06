@@ -204,5 +204,49 @@ public class OInstance extends OGroup implements MutableInstance {
 
 		addProperty(new QName(key), obj, metaData);
 	}
+	
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaDataNames()
+	 */
+	@Override
+	public Iterable<String> getMetaDataNames(){
+		
+		if(document.field(FIELD_METADATA) == null 
+				|| ((ODocument) document.field(FIELD_METADATA)).isEmpty()){
+			return Collections.emptySet();
+		}
+		
+		Iterable<QName> it = getPropertyNames((ODocument) document.field(FIELD_METADATA));
+		
+		Set<String> keys = new HashSet<String>();
+		for (QName field : it) {
+			keys.add(field.getLocalPart());
+			
+		}
+		return keys;
+			
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * The parameter values may not contain an ODocument
+	 */
+	@Override
+	public void setMetaData(String key, Object... values){
+		
+		for(Object value : values){
+			Preconditions.checkArgument(!(value instanceof ODocument
+					|| value instanceof Instance || value instanceof Group));
+		}
+		
+		ODocument metaData;
+		if (document.field(FIELD_METADATA) == null) {
+			metaData = new ODocument();
+			document.field(FIELD_METADATA, metaData);
+		} 
+		else metaData = ((ODocument) document.field(FIELD_METADATA));
+		
+		setPropertyInternal(metaData, new QName(key), values);
+	}
 
 }
