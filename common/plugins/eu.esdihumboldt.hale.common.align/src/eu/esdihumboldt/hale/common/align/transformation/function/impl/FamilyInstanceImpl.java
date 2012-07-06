@@ -107,4 +107,12 @@ public class FamilyInstanceImpl implements FamilyInstance {
 	public DataSet getDataSet() {
 		return instance.getDataSet();
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaDataNames()
+	 */
+	@Override
+	public Iterable<String> getMetaDataNames() {
+		return instance.getMetaDataNames();
+	}
 }

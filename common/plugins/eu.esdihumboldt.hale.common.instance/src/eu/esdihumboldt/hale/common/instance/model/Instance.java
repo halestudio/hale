@@ -66,4 +66,13 @@ public interface Instance extends Group {
 	 * or there is not metadata associated with the Instance
 	 */
 	public List<Object> getMetaData(String key);
+
+
+	/**
+	 * Get all keys the metadata is associated with
+	 * @return an Iterable of String keys 
+	 * or an empty Set if the data doesn't exist or the container is empty
+	 */
+	public Iterable<String> getMetaDataNames();
+	
 }
