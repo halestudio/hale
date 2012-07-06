@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.common.instance.model.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -126,11 +127,12 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaDataNames()
 	 */
 	@Override
-	public Iterable<String> getMetaDataNames() {		
+	public Set<String> getMetaDataNames() {		
 		if(metaData == null){
 			return Collections.emptySet();		
 		}	
-		else return metaData.keySet();
+		
+		else return Collections.unmodifiableSet(metaData.keySet());
 
 	}
 

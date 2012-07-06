@@ -209,7 +209,7 @@ public class OInstance extends OGroup implements MutableInstance {
 	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaDataNames()
 	 */
 	@Override
-	public Iterable<String> getMetaDataNames(){
+	public Set<String> getMetaDataNames(){
 		
 		if(document.field(FIELD_METADATA) == null 
 				|| ((ODocument) document.field(FIELD_METADATA)).isEmpty()){

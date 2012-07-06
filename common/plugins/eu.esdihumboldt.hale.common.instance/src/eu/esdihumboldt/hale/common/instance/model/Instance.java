@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.instance.model;
 
 
 import java.util.List;
+import java.util.Set;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
@@ -70,9 +71,10 @@ public interface Instance extends Group {
 
 	/**
 	 * Get all keys the metadata is associated with
-	 * @return an Iterable of String keys 
-	 * or an empty Set if the data doesn't exist or the container is empty
+	 * @return an Set of String keys, 
+	 * or an empty Set if the data doesn't exist or the container is empty,
+	 * the Set may not be changed
 	 */
-	public Iterable<String> getMetaDataNames();
+	public Set<String> getMetaDataNames();
 	
 }
