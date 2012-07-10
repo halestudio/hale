@@ -15,8 +15,6 @@ package eu.esdihumboldt.hale.ui.io.source;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
@@ -59,7 +57,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
-import eu.esdihumboldt.hale.ui.io.util.URLFieldEditor;
+import eu.esdihumboldt.hale.ui.io.util.URIFieldEditor;
 
 /**
  * URL import source
@@ -73,7 +71,7 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 	/**
 	 * The file field editor for the source URL
 	 */
-	private URLFieldEditor sourceURL;
+	private URIFieldEditor sourceURL;
 	
 	/**
 	 * The set of supported content types
@@ -96,7 +94,7 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 		detectImage = HALEUIPlugin.getImageDescriptor("icons/find_obj.gif").createImage();
 		
 		// source file
-		sourceURL = new URLFieldEditor("sourceURL", "Source URL:", parent);
+		sourceURL = new URIFieldEditor("sourceURL", "Source URL:", parent);
 		sourceURL.setPage(getPage());
 		
 		// set content types for file field
@@ -232,10 +230,10 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 			
 			@Override
 			public void run() {
-				if (sourceURL.isValid() && sourceURL.getURL() != null) {
+				if (sourceURL.isValid() && sourceURL.getURI() != null) {
 					sourceString.set(sourceURL.getStringValue());
 					try {
-						sourceURI.set(sourceURL.getURL().toURI());
+						sourceURI.set(sourceURL.getURI());
 					} catch (Throwable e) {
 						getPage().setErrorMessage(e.getLocalizedMessage());
 					}
@@ -279,7 +277,7 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 	 */
 	@Override
 	protected void updateState(boolean updateContentType) {
-		boolean enableSelection = sourceURL.isValid() && sourceURL.getURL() != null;
+		boolean enableSelection = sourceURL.isValid() && sourceURL.getURI() != null;
 		
 		detect.setEnabled(enableSelection);
 		types.getControl().setEnabled(enableSelection);
@@ -297,7 +295,7 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 	 */
 	@Override
 	protected boolean isValidSource() {
-		return sourceURL.isValid() && sourceURL.getURL() != null;
+		return sourceURL.isValid() && sourceURL.getURI() != null;
 	}
 
 	/**
@@ -305,15 +303,8 @@ public class URLSource<P extends ImportProvider> extends AbstractProviderSource<
 	 */
 	@Override
 	protected LocatableInputSupplier<? extends InputStream> getSource() {
-		URL url = sourceURL.getURL();
-		if (url != null) {
-			URI uri;
-			try {
-				uri = url.toURI();
-			} catch (URISyntaxException e) {
-				//TODO set error message?
-				return null;
-			}
+		URI uri = sourceURL.getURI();
+		if (uri != null) {
 			return new DefaultInputSupplier(uri);
 		}
 		
