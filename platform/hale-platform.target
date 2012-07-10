@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="eu.esdihumboldt.hale.platform" sequenceNumber="24">
+<target name="eu.esdihumboldt.hale.platform" sequenceNumber="31">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.jdesktop.swingx" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
@@ -76,5 +76,12 @@
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.0.1.v201108020636"/>
 <repository location="http://www.cityserver3d.de/updates/releases/indigo"/>
 </location>
+<location path="${project_loc:hale-platform}/target/org.apache.ddlutils" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.mysql.jdbc" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.oracle.jdbc" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/schemacrawler" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.thoughtworks.xstream" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.xmlpull" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.postgresql.jdbc" type="Directory"/>
 </locations>
 </target>
