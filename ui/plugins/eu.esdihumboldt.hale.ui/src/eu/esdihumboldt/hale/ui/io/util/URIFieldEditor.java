@@ -12,22 +12,21 @@
 
 package eu.esdihumboldt.hale.ui.io.util;
 
-import java.net.URL;
+import java.net.URI;
 
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * A field editor for URLs. Does validation based on the URL syntax
- * and available protocols.
+ * A field editor for URIs. Does validation based on the URI syntax.
  * @author Simon Templer
  */
-public class URLFieldEditor extends StringFieldEditor {
+public class URIFieldEditor extends StringFieldEditor {
 	
 	/**
 	 * Default constructor
 	 */
-	public URLFieldEditor() {
+	public URIFieldEditor() {
 		super();
 		
 		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
@@ -37,7 +36,7 @@ public class URLFieldEditor extends StringFieldEditor {
 	/**
 	 * @see StringFieldEditor#StringFieldEditor(String, String, Composite)
 	 */
-	public URLFieldEditor(String name, String labelText, Composite parent) {
+	public URIFieldEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, parent);
 		
 		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
@@ -50,7 +49,7 @@ public class URLFieldEditor extends StringFieldEditor {
 	@Override
 	protected boolean checkState() {
 		// reset error message in case of an empty string
-		setErrorMessage("Please specify a valid URL");
+		setErrorMessage("Please specify a valid URI");
 		
 		return super.checkState();
 	}
@@ -63,7 +62,7 @@ public class URLFieldEditor extends StringFieldEditor {
 		final String value = getStringValue();
 		
 		try {
-			new URL(value);
+			new URI(value);
 		} catch (Throwable e) {
 			setErrorMessage(e.getLocalizedMessage());
 			return false;
@@ -73,12 +72,12 @@ public class URLFieldEditor extends StringFieldEditor {
 	}
 	
 	/**
-	 * Get the URL value.
-	 * @return the URL or <code>null</code> if the content is no valid URL.
+	 * Get the URI value.
+	 * @return the URL or <code>null</code> if the content is no valid URI.
 	 */
-	public URL getURL() {
+	public URI getURI() {
 		try {
-			return new URL(getStringValue());
+			return new URI(getStringValue());
 		} catch (Throwable e) {
 			setErrorMessage(e.getLocalizedMessage());
 			return null;
