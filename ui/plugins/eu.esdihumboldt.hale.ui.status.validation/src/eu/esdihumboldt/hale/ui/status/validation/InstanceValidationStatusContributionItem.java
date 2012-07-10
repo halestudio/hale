@@ -7,14 +7,29 @@ import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 
+/**
+ * Contribution item only delegating it's work to an
+ * {@link ActionContributionItem} with the {@link InstanceValidationStatusAction}.
+ *
+ * @author Kai Schwierczek
+ */
 public class InstanceValidationStatusContributionItem extends ContributionItem {
 	InstanceValidationStatusAction action;
 	ActionContributionItem actionContribution;
 
+	/**
+	 * Constructor. Sets id to <code>null</code>.
+	 */
 	public InstanceValidationStatusContributionItem() {
+		super();
 		createActionContributionItem();
 	}
 
+	/**
+	 * Constructor with specified id.
+	 *
+	 * @param id the contribution item identifier, or <code>null</code>
+	 */
 	public InstanceValidationStatusContributionItem(String id) {
 		super(id);
 		createActionContributionItem();

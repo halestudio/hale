@@ -20,8 +20,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.ui.codelist.internal.Messages;
 
@@ -32,8 +30,7 @@ import eu.esdihumboldt.hale.ui.codelist.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class FileSelector implements CodeListSelector {
-	
-	private static final ALogger log = ALoggerFactory.getLogger(FileSelector.class);
+//	private static final ALogger log = ALoggerFactory.getLogger(FileSelector.class);
 	
 	private final Composite fileComposite;
 	
