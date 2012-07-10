@@ -77,7 +77,7 @@ public class ReportListLabelDateProvider implements ILabelProvider {
 	 */
 	@Override
 	public String getText(Object element) {
-		if (element instanceof Report<?>) {
+		if (element instanceof Report<?> && ((Report<?>) element).getStartTime() != null) {
 			return df.format(((Report<?>) element).getStartTime());
 		}
 		
