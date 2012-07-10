@@ -14,9 +14,7 @@ package eu.esdihumboldt.hale.ui.views.report;
 
 import java.text.SimpleDateFormat;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.jface.viewers.LabelProvider;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
 
@@ -27,61 +25,17 @@ import eu.esdihumboldt.hale.common.core.report.Report;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportListLabelDateProvider implements ILabelProvider {
-	
+public class ReportListLabelDateProvider extends LabelProvider {
 	private SimpleDateFormat df = new SimpleDateFormat("HH:mm.ss");
-
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-	 */
-	@Override
-	public void addListener(ILabelProviderListener listener) {
-		/* not supported/needed */
-	}
-
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-	 */
-	@Override
-	public void dispose() {
-		/* not supported/needed */
-	}
-
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-	 */
-	@Override
-	public boolean isLabelProperty(Object element, String property) {
-		return false;
-	}
-
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-	 */
-	@Override
-	public void removeListener(ILabelProviderListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-	 */
-	@Override
-	public Image getImage(Object element) {
-		return null;
-	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
 	 */
 	@Override
 	public String getText(Object element) {
-		if (element instanceof Report<?>) {
+		if (element instanceof Report<?>)
 			return df.format(((Report<?>) element).getStartTime());
-		}
-		
+
 		return "";
 	}
-
 }
