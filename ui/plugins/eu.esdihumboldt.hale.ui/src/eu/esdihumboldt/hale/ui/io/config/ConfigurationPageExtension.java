@@ -82,7 +82,7 @@ public class ConfigurationPageExtension extends AbstractExtension<AbstractConfig
 		 */
 		@Override
 		public String getIdentifier() {
-			return conf.getAttribute("id");
+			return conf.getAttribute("class");
 		}
 
 		/**
