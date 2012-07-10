@@ -19,6 +19,14 @@ import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationLis
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
 import eu.esdihumboldt.hale.ui.views.report.ReportList;
 
+/**
+ * Action for instance validation status. On click shows the latest report,
+ * and the icon shows the current status.
+ * 
+ * Must be {@link #dispose()}d!
+ *
+ * @author Kai Schwierczek
+ */
 public class InstanceValidationStatusAction extends Action {
 	private Image noReportBaseImage;
 	private ImageDescriptor noReportDescriptor;
@@ -29,6 +37,9 @@ public class InstanceValidationStatusAction extends Action {
 	// the current report
 	private InstanceValidationReport report;
 
+	/**
+	 * Constructor.
+	 */
 	public InstanceValidationStatusAction() {
 		super();
 
@@ -51,6 +62,7 @@ public class InstanceValidationStatusAction extends Action {
 			// and show properties view
 			page.showView(IPageLayout.ID_PROP_SHEET);
 		} catch (PartInitException e) {
+			// if it's not there we cannot do anything
 		}
 	}
 
@@ -80,6 +92,7 @@ public class InstanceValidationStatusAction extends Action {
 	private void createListeners() {
 		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
 		is.addListener(new InstanceServiceAdapter() {
+			@Override
 			public void datasetAboutToChange(DataSet type) {
 				report = null;
 				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
@@ -88,8 +101,7 @@ public class InstanceValidationStatusAction extends Action {
 						updateStatus();
 					}
 				});
-				
-			};
+			}
 		});
 	
 		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench().getService(InstanceValidationService.class);
