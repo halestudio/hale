@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader"
+            id="eu.esdihumboldt.hale.io.jdbc.schema.reader"
+            name="Database Schema">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.jdbc">
+         </contentType>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            id="eu.esdihumboldt.hale.io.jdbc"
+            name="JDBC"
+            priority="normal">
+      </content-type>
+   </extension>
+
+</plugin>

@@ -40,6 +40,7 @@ http://www.esdi-community.eu/projects/show/hale
       </win>
    </launcher>
 
+
    <vm>
    </vm>
 
@@ -57,6 +58,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.antlr"/>
       <plugin id="com.springsource.com.sun.xml.bind"/>
       <plugin id="com.springsource.com.sun.xml.fastinfoset"/>
+      <plugin id="com.springsource.com.thoughtworks.xstream"/>
       <plugin id="com.springsource.javax.activation"/>
       <plugin id="com.springsource.javax.el"/>
       <plugin id="com.springsource.javax.media.jai.codec"/>
@@ -82,6 +84,8 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.org.dom4j"/>
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.springsource.org.picocontainer"/>
+      <plugin id="com.springsource.org.postgresql.jdbc4"/>
+      <plugin id="com.springsource.org.xmlpull"/>
       <plugin id="com.sun.xsom"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="de.cs3d.common.metamodel"/>
@@ -145,6 +149,9 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.html"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.ui"/>
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
@@ -171,7 +178,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.functions.numeric"/>
       <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.ui.status.validation"/>
+      <plugin id="eu.esdihumboldt.hale.ui.status.validation" fragment=""/>
       <plugin id="eu.esdihumboldt.hale.ui.style"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
@@ -344,6 +351,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.w3c.dom.smil"/>
       <plugin id="org.w3c.dom.svg"/>
       <plugin id="relaxngDatatype"/>
+      <plugin id="schemacrawler.core"/>
       <plugin id="slf4j.ext"/>
    </plugins>
 
@@ -359,6 +367,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.csv" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />
