@@ -18,8 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -32,48 +31,19 @@ import eu.esdihumboldt.hale.common.core.report.ReportSession;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportListLabelProvider implements ILabelProvider  {
-
+public class ReportListLabelProvider extends LabelProvider  {
 	private Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
-	
 	private SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
-	
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-	 */
-	@Override
-	public void addListener(ILabelProviderListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
 	@Override
 	public void dispose() {
-		for (Image i : imageCache.values()) {
+		for (Image i : imageCache.values())
 			i.dispose();
-		}
-		
+
 		imageCache.clear();
-	}
-
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-	 */
-	@Override
-	public boolean isLabelProperty(Object element, String property) {
-		return false;
-	}
-
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-	 */
-	@Override
-	public void removeListener(ILabelProviderListener listener) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -85,8 +55,7 @@ public class ReportListLabelProvider implements ILabelProvider  {
 			String img = "icons/compressed_folder_obj.gif";
 			
 			return getImage(img);
-		}
-		else if (element instanceof Report<?>) {
+		} else if (element instanceof Report<?>) {
 			// get the right image
 			Report<?> report = (Report<?>) element;
 			
@@ -128,10 +97,9 @@ public class ReportListLabelProvider implements ILabelProvider  {
 	 * 
 	 * @return the Image
 	 */
-	private Image getImage(String img) {
+	protected Image getImage(String img) {
 		ImageDescriptor descriptor = null;
-		
-		// TODO Platform.getBundle(ReportList.ID) does not work so here is a static plugin path!
+
 		descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
 		if (descriptor == null) {
 			return null;
