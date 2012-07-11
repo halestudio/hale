@@ -20,20 +20,18 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
-import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
+import eu.esdihumboldt.hale.io.jdbc.JDBCConstants;
+import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
-import eu.esdihumboldt.hale.ui.io.schema.SchemaReaderConfigurationPage;
 
 /**
  * Configuration page for specifying database connection user name and password.
  * @author Simon Templer
  */
-public class UserPasswordPage extends SchemaReaderConfigurationPage {
+public class UserPasswordPage extends AbstractConfigurationPage<IOProvider, IOWizard<IOProvider>>
+	implements JDBCConstants {
 	
-	//TODO common for schema/instance
-
 	private Text user;
 	private Text password;
 
@@ -42,6 +40,8 @@ public class UserPasswordPage extends SchemaReaderConfigurationPage {
 	 */
 	public UserPasswordPage() {
 		super("userPassword", "Authentication", null);
+		
+		setDescription("Please enter user name and password for the database connection");
 	}
 
 	/**
@@ -64,9 +64,9 @@ public class UserPasswordPage extends SchemaReaderConfigurationPage {
 	 * @see IOWizardPage#updateConfiguration(IOProvider)
 	 */
 	@Override
-	public boolean updateConfiguration(SchemaReader provider) {
-		provider.setParameter(JDBCSchemaReader.PARAM_USER, (user.getText().isEmpty())?(null):(user.getText()));
-		provider.setParameter(JDBCSchemaReader.PARAM_PASSWORD, password.getText());
+	public boolean updateConfiguration(IOProvider provider) {
+		provider.setParameter(PARAM_USER, (user.getText().isEmpty())?(null):(user.getText()));
+		provider.setParameter(PARAM_PASSWORD, password.getText());
 		
 		return true;
 	}
@@ -91,7 +91,7 @@ public class UserPasswordPage extends SchemaReaderConfigurationPage {
 		labelPassword.setText("Password:");
 		labelPassword.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
 		
-		password = new Text(page, SWT.BORDER | SWT.SINGLE);
+		password = new Text(page, SWT.BORDER | SWT.SINGLE | SWT.PASSWORD);
 		password.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).create());
 		
 		setPageComplete(false);

@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.io.jdbc;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.xml.namespace.QName;
 
@@ -96,20 +95,18 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 		
 		progress.begin("Read database schema", ProgressIndicator.UNKNOWN);
 		try {
-			URI jdbcURI = getSource().getLocation();
-			if (jdbcURI == null) {
-				fail("JDBC URI needed");
-				return null; // to suppress warning
-			}
-			if (!jdbcURI.toString().startsWith("jdbc:")) {
-				fail("Invalid JDBC URI");
-			}
-			
-			String user = getParameter(PARAM_USER);
-			String password = getParameter(PARAM_PASSWORD);
-			
 			// connect to the database
-			Connection connection = JDBCConnection.getConnection(jdbcURI, user, password);
+			Connection connection;
+			try {
+				connection = JDBCConnection.getConnection(this);
+			} catch (Exception e) {
+				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
+				reporter.setSuccess(false);
+				reporter.setSummary("Failed to connect to database.");
+				return reporter;
+			}
+			
+			URI jdbcURI = getSource().getLocation();
 			
 			final SchemaCrawlerOptions options = new SchemaCrawlerOptions();
 			SchemaInfoLevel level = SchemaInfoLevel.minimum();
@@ -179,8 +176,6 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 			}
 			
 			reporter.setSuccess(true);
-		} catch (SQLException e) {
-			throw new IOProviderConfigurationException("Failed to connect to database", e);
 		} catch (SchemaCrawlerException e) {
 			throw new IOProviderConfigurationException("Failed to read database schema", e);
 		}
