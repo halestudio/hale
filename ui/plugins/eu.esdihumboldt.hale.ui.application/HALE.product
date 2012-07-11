@@ -40,7 +40,6 @@ http://www.esdi-community.eu/projects/show/hale
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -84,7 +83,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="com.springsource.org.dom4j"/>
       <plugin id="com.springsource.org.jvnet.staxex"/>
       <plugin id="com.springsource.org.picocontainer"/>
-      <plugin id="com.springsource.org.postgresql.jdbc4"/>
       <plugin id="com.springsource.org.xmlpull"/>
       <plugin id="com.sun.xsom"/>
       <plugin id="com.vividsolutions.jts"/>
@@ -335,6 +333,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.objectweb.asm"/>
       <plugin id="org.opengis"/>
+      <plugin id="org.postgresql.jdbc4"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.asm"/>
