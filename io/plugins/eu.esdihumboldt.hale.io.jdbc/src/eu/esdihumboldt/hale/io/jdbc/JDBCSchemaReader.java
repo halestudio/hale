@@ -35,17 +35,21 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeExtension;
+import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
 
 /**
  * Reads a database schema through JDBC.
@@ -155,7 +159,8 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 						
 						// determine the column type
 						TypeDefinition columnType = getOrCreateColumnType(
-								column.getType(), overallNamespace, typeIndex, reporter);
+								column.getType(), overallNamespace, typeIndex, reporter,
+								connection);
 						
 						// create the property
 						new DefaultPropertyDefinition(new QName(
@@ -190,10 +195,11 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 	 * @param namespace the database namespace
 	 * @param types the type index
 	 * @param reporter the reporter
+	 * @param connection the database connection
 	 * @return the type definition for the column type
 	 */
 	protected TypeDefinition getOrCreateColumnType(ColumnDataType columnType, final String namespace, 
-			DefaultSchema types, IOReporter reporter) {
+			DefaultSchema types, IOReporter reporter, Connection connection) {
 		//XXX what about shared types?
 		
 		String localName = columnType.getName();
@@ -209,14 +215,27 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 		// create new type
 		DefaultTypeDefinition type = new DefaultTypeDefinition(typeName);
 		
-		// configure type
-		try {
-			Class<?> binding = Class.forName(columnType.getTypeClassName()); //TODO more sophisticated class loading?
-			type.setConstraint(Binding.get(binding));
+		// check for geometry type
+		GeometryTypeInfo geomType = GeometryTypeExtension.getInstance().getTypeInfo(
+				columnType.getName(), connection);
+		
+		if (geomType != null) {
+			// configure geometry type
+			type.setConstraint(GeometryType.get(geomType.getGeometryType()));
+			type.setConstraint(Binding.get(GeometryProperty.class)); // always a single geometry
 			
 			type.setConstraint(HasValueFlag.ENABLED);
-		} catch (ClassNotFoundException e) {
-			reporter.error(new IOMessageImpl("Could not create property type binding", e));
+		}
+		else {
+			// configure type
+			try {
+				Class<?> binding = Class.forName(columnType.getTypeClassName()); //TODO more sophisticated class loading?
+				type.setConstraint(Binding.get(binding));
+				
+				type.setConstraint(HasValueFlag.ENABLED);
+			} catch (ClassNotFoundException e) {
+				reporter.error(new IOMessageImpl("Could not create property type binding", e));
+			}
 		}
 		
 		types.addType(type);
