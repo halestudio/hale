@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.jdbc.config">
+      <connection
+            configurer="eu.esdihumboldt.hale.io.jdbc.postgresql.PostGISConnectionConfigurer"
+            id="eu.esdihumboldt.hale.io.jdbc.postgresql.postgis"
+            type="org.postgresql.PGConnection">
+      </connection>
+   </extension>
+
+</plugin>

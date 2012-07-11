@@ -1,10 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE PostgreSQL Support
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.postgresql
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.postgresql;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.io.jdbc.postgresql.internal.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.osgi.framework;version="1.3.0",
- org.postgresql;version="8.3.604"
+Import-Package: de.cs3d.util.logging,
+ org.osgi.framework;version="1.3.0",
+ org.postgis;version="9.0.801",
+ org.postgresql;version="8.3.604",
+ org.slf4j;version="1.5.11"
+Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="2.5.0"

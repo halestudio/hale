@@ -15,4 +15,6 @@ Import-Package: com.google.common.io;version="9.0.0",
  de.cs3d.util.eclipse.extension.simple,
  de.cs3d.util.logging,
  org.slf4j;version="1.5.11"
-Export-Package: eu.esdihumboldt.hale.io.jdbc
+Export-Package: eu.esdihumboldt.hale.io.jdbc,
+ eu.esdihumboldt.hale.io.jdbc.extension,
+ eu.esdihumboldt.hale.io.jdbc.extension.internal;x-internal:=true
