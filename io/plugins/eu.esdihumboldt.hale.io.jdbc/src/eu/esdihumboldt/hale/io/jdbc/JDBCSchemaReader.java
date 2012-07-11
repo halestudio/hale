@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -57,17 +56,7 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
  * Reads a database schema through JDBC.
  * @author Simon Templer
  */
-public class JDBCSchemaReader extends AbstractSchemaReader {
-	
-	/**
-	 * Parameter name for the user name
-	 */
-	public static final String PARAM_USER = "jdbc.user";
-	
-	/**
-	 * Parameter name for the user password
-	 */
-	public static final String PARAM_PASSWORD = "jdbc.password";
+public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConstants {
 	
 	private DefaultSchema typeIndex;
 
@@ -259,24 +248,6 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 		
 		types.addType(type);
 		return type;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider#storeConfiguration(java.util.Map)
-	 */
-	@Override
-	public void storeConfiguration(Map<String, String> configuration) {
-		// TODO Auto-generated method stub
-		super.storeConfiguration(configuration);
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider#setParameter(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void setParameter(String name, String value) {
-		// TODO Auto-generated method stub
-		super.setParameter(name, value);
 	}
 
 	/**
