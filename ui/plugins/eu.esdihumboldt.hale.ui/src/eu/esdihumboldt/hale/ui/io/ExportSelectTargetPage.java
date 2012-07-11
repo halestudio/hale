@@ -13,6 +13,11 @@
 package eu.esdihumboldt.hale.ui.io;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.content.IContentType;
@@ -30,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
 
@@ -70,6 +76,7 @@ public class ExportSelectTargetPage<P extends ExportProvider,
 		targetFile = new SaveFileFieldEditor("targetFile", "Target file:", true,
 				FileFieldEditor.VALIDATE_ON_KEY_STROKE, page);
 		targetFile.setEmptyStringAllowed(false);
+		targetFile.setAllowUri(true);
 		targetFile.setPage(this);
 		targetFile.setPropertyChangeListener(new IPropertyChangeListener() {
 			
@@ -146,6 +153,28 @@ public class ExportSelectTargetPage<P extends ExportProvider,
 	 */
 	@Override
 	public boolean updateConfiguration(P provider) {
+		try {
+			final URI uri = new URI(targetFile.getStringValue());
+			provider.setTarget(new LocatableOutputSupplier<OutputStream>() {
+
+				@Override
+				public OutputStream getOutput() throws IOException {
+					File file = new File(uri);
+					return new FileOutputStream(file);
+					
+					//XXX other URIs unsupported for now
+				}
+
+				@Override
+				public URI getLocation() {
+					return uri;
+				}
+			});
+			return true;
+		} catch (URISyntaxException e) {
+			// ignore, assume it's a file
+		}
+		
 		File file = new File(targetFile.getStringValue());
 		provider.setTarget(new FileIOSupplier(file));
 		return true;

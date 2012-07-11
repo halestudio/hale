@@ -78,7 +78,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 			// configure validator
 			List<? extends Locatable> schemas = getProvider().getValidationSchemas();
 			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
-			String fileName = getSelectTargetPage().getTargetFileName();
+			String fileName = getSelectTargetPage().getTargetFileName(); //XXX will only work for files!
 			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(fileName));
 			validator.setSource(source);
 			

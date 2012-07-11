@@ -13,6 +13,8 @@
 package eu.esdihumboldt.hale.ui.io.util;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -32,6 +34,11 @@ public class SaveFileFieldEditor extends ExtendedFileFieldEditor {
      * <code>false</code> by default.
      */
     private boolean enforceAbsolute = false;
+    
+    /**
+     * Indicates whether specifying an URI is allowed
+     */
+    private boolean allowUri = false;
 
 	/**
 	 * Default constructor
@@ -99,7 +106,29 @@ public class SaveFileFieldEditor extends ExtendedFileFieldEditor {
 				msg = getErrorMessage();
 			}
         } else {
-            File file = new File(path);
+        	File file = null;
+        	if (allowUri) {
+        		// check if string is an uri
+        		try {
+					URI uri = new URI(path);
+					
+					// check if the URI references a file
+					try {
+						file = new File(uri);
+						// is a file, just continue with normal validity check
+					} catch (IllegalArgumentException e) {
+						// no file
+						return isValid(uri);
+					}
+					
+				} catch (URISyntaxException e) {
+					// ignore - no URI, try file
+				}
+        	}
+        	
+        	if (file == null) {
+        		file = new File(path);
+        	}
             if (isValid(file)) {
                 if (enforceAbsolute && !file.isAbsolute()) {
 					msg = JFaceResources
@@ -149,6 +178,31 @@ public class SaveFileFieldEditor extends ExtendedFileFieldEditor {
 			// no validation for files that are not absolute 
 			return true;
 		}
+	}
+	
+	/**
+	 * Checks if the given URI is valid, may be overridden
+	 * 
+	 * @param uri the URI
+	 * @return if the URI is valid
+	 */
+	protected boolean isValid(URI uri) {
+		// accept all well-formed URIs
+		return true;
+	}
+
+	/**
+	 * @return the allowUri
+	 */
+	public boolean isAllowUri() {
+		return allowUri;
+	}
+
+	/**
+	 * @param allowUri the allowUri to set
+	 */
+	public void setAllowUri(boolean allowUri) {
+		this.allowUri = allowUri;
 	}
 
 }
