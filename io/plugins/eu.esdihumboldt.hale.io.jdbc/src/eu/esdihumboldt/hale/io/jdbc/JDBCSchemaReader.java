@@ -15,7 +15,6 @@ package eu.esdihumboldt.hale.io.jdbc;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -115,7 +114,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 			String password = getParameter(PARAM_PASSWORD);
 			
 			// connect to the database
-			Connection connection = DriverManager.getConnection(jdbcURI.toString(), user, password);
+			Connection connection = JDBCConnection.getConnection(jdbcURI, user, password);
 			
 			final SchemaCrawlerOptions options = new SchemaCrawlerOptions();
 			SchemaInfoLevel level = SchemaInfoLevel.minimum();

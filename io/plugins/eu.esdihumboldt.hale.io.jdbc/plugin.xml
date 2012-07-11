@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="eu.esdihumboldt.hale.io.jdbc.config" name="JDBC Configuration Extension" schema="schema/eu.esdihumboldt.hale.io.jdbc.config.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.io.provider">
       <provider
