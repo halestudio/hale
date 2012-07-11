@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.io.jdbc;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.xml.namespace.QName;
 
@@ -94,9 +95,9 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 		typeIndex = null;
 		
 		progress.begin("Read database schema", ProgressIndicator.UNKNOWN);
+		Connection connection = null;
 		try {
 			// connect to the database
-			Connection connection;
 			try {
 				connection = JDBCConnection.getConnection(this);
 			} catch (Exception e) {
@@ -180,6 +181,13 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 			throw new IOProviderConfigurationException("Failed to read database schema", e);
 		}
 		finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// ignore
+				}
+			}
 			progress.end();
 		}
 		
