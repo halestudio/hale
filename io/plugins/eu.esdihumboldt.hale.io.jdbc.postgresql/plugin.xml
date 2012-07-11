@@ -8,6 +8,12 @@
             id="eu.esdihumboldt.hale.io.jdbc.postgresql.postgis"
             type="org.postgresql.PGConnection">
       </connection>
+      <geometrytype
+            connection="org.postgresql.PGConnection"
+            id="eu.esdihumboldt.hale.io.jdbc.postgresql.postgis.geometry"
+            name="geometry"
+            type="com.vividsolutions.jts.geom.Geometry">
+      </geometrytype>
    </extension>
 
 </plugin>
