@@ -17,6 +17,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.google.common.base.Preconditions;
+
+import eu.esdihumboldt.hale.common.core.io.ExportProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.ConnectionConfigurerExtension;
 
 /**
@@ -24,7 +29,7 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.ConnectionConfigurerExten
  * includes database specific configuration provided through extensions.
  * @author Simon Templer
  */
-public abstract class JDBCConnection {
+public abstract class JDBCConnection implements JDBCConstants {
 	
 	/**
 	 * Get a connection to a database.
@@ -43,6 +48,40 @@ public abstract class JDBCConnection {
 		ConnectionConfigurerExtension.getInstance().applyAll(connection);
 		
 		return connection;
+	}
+	
+	/**
+	 * Get a connection to a database, as configured in the given
+	 * import provider.
+	 * @param jdbcImportProvider the import provider
+	 * @return the database connection
+	 * @throws SQLException if establishing the connection fails
+	 */
+	public static Connection getConnection(ImportProvider jdbcImportProvider) throws SQLException {
+		return getConnection(jdbcImportProvider.getSource().getLocation(), jdbcImportProvider);
+	}
+	
+	/**
+	 * Get a connection to a database, as configured in the given
+	 * export provider.
+	 * @param jdbcExportProvider the export provider
+	 * @return the database connection
+	 * @throws SQLException if establishing the connection fails
+	 */
+	public static Connection getConnection(ExportProvider jdbcExportProvider) throws SQLException {
+		return getConnection(jdbcExportProvider.getTarget().getLocation(), jdbcExportProvider);
+	}
+	
+	@SuppressWarnings("null")
+	private static Connection getConnection(URI jdbcURI, IOProvider jdbcIOProvider) throws SQLException {
+		Preconditions.checkArgument(jdbcURI != null, "JDBC URI needed");
+		Preconditions.checkArgument(jdbcURI.toString().startsWith("jdbc:"), "Invalid JDBC URI");
+		
+		String user = jdbcIOProvider.getParameter(PARAM_USER);
+		String password = jdbcIOProvider.getParameter(PARAM_PASSWORD);
+		
+		// connect to the database
+		return JDBCConnection.getConnection(jdbcURI, user, password);
 	}
 
 }
