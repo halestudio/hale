@@ -40,6 +40,8 @@ import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
@@ -153,6 +155,9 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 					// create the type definition
 					DefaultTypeDefinition type = new DefaultTypeDefinition(
 							new QName(namespace, table.getName()));
+					if (table.getRemarks() != null && !table.getRemarks().isEmpty()) {
+						type.setDescription(table.getRemarks());
+					}
 					
 					for (final Column column : table.getColumns()) {
 						// each column is a property
@@ -163,8 +168,16 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 								connection);
 						
 						// create the property
-						new DefaultPropertyDefinition(new QName(
-								column.getName()), type, columnType);
+						DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+								new QName(column.getName()), type, columnType);
+						
+						// configure property
+						if (column.getRemarks() != null && !column.getRemarks().isEmpty()) {
+							property.setDescription(column.getRemarks());
+						}
+						property.setConstraint(NillableFlag.get(column.isNullable()));
+						//XXX if default value present cardinality = optional?
+						property.setConstraint(Cardinality.CC_EXACTLY_ONCE);
 					}
 					
 					// configure type
@@ -236,6 +249,12 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 			} catch (ClassNotFoundException e) {
 				reporter.error(new IOMessageImpl("Could not create property type binding", e));
 			}
+		}
+		
+		//TODO validation constraint
+		
+		if (columnType.getRemarks() != null && !columnType.getRemarks().isEmpty()) {
+			type.setDescription(columnType.getRemarks());
 		}
 		
 		types.addType(type);
