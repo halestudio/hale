@@ -16,24 +16,24 @@ import java.sql.Connection;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.hale.io.jdbc.extension.ConnectionConfigurer;
 
 /**
- * Applies a {@link ConnectionConfigurer}.
+ * Holds information about a geometry type.
  * @author Simon Templer
  */
-public class ConnectionConfiguration implements Identifiable {
+public class GeometryTypeInfo implements Identifiable {
 	
-	private static final ALogger log = ALoggerFactory.getLogger(ConnectionConfiguration.class);
+//	private static final ALogger log = ALoggerFactory.getLogger(GeometryTypeInfo.class);
 
 	private final String elementId;
 	private final Class<?> connectionType;
-	private final Class<? extends ConnectionConfigurer<?>> configurerClass;
-
+	private final String typeName;
+	private final Class<? extends Geometry> geometryType;
+	
 	/**
 	 * Create a connection configuration from a corresponding 
 	 * configuration element.
@@ -41,12 +41,14 @@ public class ConnectionConfiguration implements Identifiable {
 	 * @param element the configuration element
 	 */
 	@SuppressWarnings("unchecked")
-	public ConnectionConfiguration(String elementId,
+	public GeometryTypeInfo(String elementId,
 			IConfigurationElement element) {
 		this.elementId = elementId;
 		
-		connectionType = ExtensionUtil.loadClass(element, "type");
-		configurerClass = (Class<? extends ConnectionConfigurer<?>>) ExtensionUtil.loadClass(element, "configurer");
+		connectionType = ExtensionUtil.loadClass(element, "connection");
+		geometryType = (Class<? extends Geometry>) ExtensionUtil.loadClass(element, "type");
+		
+		typeName = element.getAttribute("name");
 	}
 
 	/**
@@ -58,23 +60,27 @@ public class ConnectionConfiguration implements Identifiable {
 	}
 	
 	/**
-	 * Apply the configuration to a connection. Does nothing
-	 * if the configuration is not applicable for this type of
-	 * connection.
+	 * Determines if the geometry type applies to a database
+	 * with the given connection.
 	 * @param connection the database connection
+	 * @return if the geometry type is valid for the database
 	 */
-	@SuppressWarnings("unchecked")
-	public void apply(Connection connection) {
-		if (connectionType.isInstance(connection)) {
-			// create configurer
-			try {
-				@SuppressWarnings("rawtypes")
-				ConnectionConfigurer configurer = configurerClass.newInstance();
-				configurer.configureConnection(connection);
-			} catch (Exception e) {
-				log.error("Failed to create configurer for database connection.", e);
-			}
-		}
+	public boolean applies(Connection connection) {
+		return connectionType.isInstance(connection);
+	}
+
+	/**
+	 * @return the typeName
+	 */
+	public String getTypeName() {
+		return typeName;
+	}
+
+	/**
+	 * @return the geometryType
+	 */
+	public Class<? extends Geometry> getGeometryType() {
+		return geometryType;
 	}
 
 }

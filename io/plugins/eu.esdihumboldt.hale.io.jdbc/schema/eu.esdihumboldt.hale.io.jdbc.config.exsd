@@ -19,6 +19,7 @@
       <complexType>
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="connection"/>
+            <element ref="geometrytype"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -79,6 +80,45 @@
                <documentation>
                   ID for the connection configuration
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="geometrytype">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The type name as known in the database
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The associated JTS geometry type
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="com.vividsolutions.jts.geom.Geometry:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="connection" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The connection type for which the geometry type applies
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
