@@ -120,6 +120,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 			SchemaInfoLevel level = SchemaInfoLevel.minimum();
 			level.setRetrieveProcedures(false);
 			level.setRetrieveColumnDataTypes(true);
+			level.setRetrieveUserDefinedColumnDataTypes(true);
 		    level.setRetrieveTableColumns(true);
 		    level.setRetrieveForeignKeys(true);
 //		    level.setRetrieveIndices(true);
@@ -154,7 +155,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 						
 						// determine the column type
 						TypeDefinition columnType = getOrCreateColumnType(
-								column.getType(), database, typeIndex, reporter);
+								column.getType(), overallNamespace, typeIndex, reporter);
 						
 						// create the property
 						new DefaultPropertyDefinition(new QName(
@@ -186,17 +187,16 @@ public class JDBCSchemaReader extends AbstractSchemaReader {
 	/**
 	 * Get or create the type definition for the given column type.
 	 * @param columnType the column type
-	 * @param database the database info
+	 * @param namespace the database namespace
 	 * @param types the type index
 	 * @param reporter the reporter
 	 * @return the type definition for the column type
 	 */
-	protected TypeDefinition getOrCreateColumnType(ColumnDataType columnType, Database database, 
+	protected TypeDefinition getOrCreateColumnType(ColumnDataType columnType, final String namespace, 
 			DefaultSchema types, IOReporter reporter) {
 		//XXX what about shared types?
 		
-		String namespace = database.getName();
-		String localName = columnType.getTypeName();
+		String localName = columnType.getName();
 		
 		QName typeName = new QName(namespace, localName);
 		
