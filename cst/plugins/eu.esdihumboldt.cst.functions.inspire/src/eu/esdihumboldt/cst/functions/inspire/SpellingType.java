@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.functions.inspire.internal;
+package eu.esdihumboldt.cst.functions.inspire;
 
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 

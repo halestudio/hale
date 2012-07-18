@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.functions.inspire;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -45,10 +46,9 @@ import eu.esdihumboldt.commons.inspire.data.GrammaticalNumberValue;
 import eu.esdihumboldt.commons.inspire.data.NameStatusValue;
 import eu.esdihumboldt.commons.inspire.data.NativenessValue;
 import eu.esdihumboldt.cst.functions.inspire.GeographicalNameFunction;
+import eu.esdihumboldt.cst.functions.inspire.SpellingType;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -56,7 +56,6 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.functions.inspire.internal.GeographicalNamePageConstants;
 import eu.esdihumboldt.hale.ui.functions.inspire.internal.Messages;
-import eu.esdihumboldt.hale.ui.functions.inspire.internal.SpellingType;
 
 /**
  * Wizard page for the inspire geographical name function
@@ -82,8 +81,7 @@ public class GeographicalNamePage extends
 	private ArrayList<SpellingType> spellings;
 	private SpellingType activeSpelling;
 
-	private ListMultimap<String, String> configuration = ArrayListMultimap.create(11, 11);
-	
+	private String sound;
 	private String ipa;
 	private String language;
 	private String sourceOfName;
@@ -91,6 +89,11 @@ public class GeographicalNamePage extends
 	private String nativeness;
 	private String gender;
 	private String number;
+	private Composite parent;
+	private Composite composite;
+	private Composite page;
+	private List<String> scripts;
+	private List<String> trans;
 
 	/**
 	 * Default Constructor
@@ -102,13 +105,42 @@ public class GeographicalNamePage extends
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage(boolean)
+	 */
+	@Override
+	protected void onShowPage(boolean firstShow) {
+		// selected source(s) could've changed!
+		page = composite;
+		createContent(parent);
+		if (page != null) {
+			page.dispose();
+		}
+		parent.layout();
+	}
+
+	/**
 	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#setParameter(java.util.Set,
 	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, String> initialValues) {
-		
+		if (initialValues != null && initialValues.size() != 0) {
+			// set the initial values if they exist
+			gender = initialValues.get(PROPERTY_GRAMMA_GENDER).get(0);
+			number = initialValues.get(PROPERTY_GRAMMA_NUMBER).get(0);
+			language = initialValues.get(PROPERTY_LANGUAGE).get(0);
+			nameStatus = initialValues.get(PROPERTY_NAMESTATUS).get(0);
+			nativeness = initialValues.get(PROPERTY_NATIVENESS).get(0);
+			ipa = initialValues.get(PROPERTY_PRONUNCIATIONIPA).get(0);
+			sound = initialValues.get(PROPERTY_PRONUNCIATIONSOUNDLINK).get(0);
+			sourceOfName = initialValues.get(PROPERTY_SOURCEOFNAME).get(0);
+
+			// script and transliteration can have more than one value, so set
+			// lists for them
+			scripts = initialValues.get(PROPERTY_SCRIPT);
+			trans = initialValues.get(PROPERTY_TRANSLITERATION);
+		}
 	}
 
 	/**
@@ -116,23 +148,39 @@ public class GeographicalNamePage extends
 	 */
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
-		
-		if(namePronounciationIPA == null) {
+
+		// if one configuration element is null all are null because the page
+		// isn't built yet
+		// so return a multimap with no configuration and update it after the
+		// page was built
+		if (namePronounciationIPA == null) {
 			return ArrayListMultimap.create();
 		}
-		
-		// TODO: check if "input" is the right value
-		configuration.put(PROPERTY_SCRIPT, nameSpellingScript.getText());
-		configuration.put(PROPERTY_TRANSLITERATION, nameSpellingTransliteration.getText());
-		configuration.put(PROPERTY_PRONUNCIATIONSOUNDLINK, namePronounciationSounds.getText());
-		configuration.put(PROPERTY_PRONUNCIATIONIPA, namePronounciationIPA.getText());
+
+		ListMultimap<String, String> configuration = ArrayListMultimap.create(
+				10, 10);
+
+		if (spellings != null && spellings.size() != 0) {
+			for (SpellingType sp : spellings) {
+				String script = sp.getScript();
+				String trans = sp.getTransliteration();
+
+				configuration.put(PROPERTY_SCRIPT, script);
+				configuration.put(PROPERTY_TRANSLITERATION, trans);
+			}
+		}
+
+		configuration.put(PROPERTY_PRONUNCIATIONSOUNDLINK,
+				namePronounciationSounds.getText());
+		configuration.put(PROPERTY_PRONUNCIATIONIPA,
+				namePronounciationIPA.getText());
 		configuration.put(PROPERTY_LANGUAGE, nameLanguageText.getText());
 		configuration.put(PROPERTY_SOURCEOFNAME, nameSourceText.getText());
 		configuration.put(PROPERTY_NAMESTATUS, nameStatusCombo.getText());
 		configuration.put(PROPERTY_NATIVENESS, nameNativenessCombo.getText());
 		configuration.put(PROPERTY_GRAMMA_GENDER, nameGenderCombo.getText());
 		configuration.put(PROPERTY_GRAMMA_NUMBER, nameNumberCombo.getText());
-		
+
 		return configuration;
 	}
 
@@ -143,11 +191,11 @@ public class GeographicalNamePage extends
 	protected void createContent(Composite parent) {
 		super.initializeDialogUnits(parent);
 
+		this.parent = parent;
+
 		setPageComplete(true);
-		Composite composite = new Composite(parent, SWT.NULL);
+		composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());
-		composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
-				| GridData.HORIZONTAL_ALIGN_FILL));
 
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
@@ -422,7 +470,21 @@ public class GeographicalNamePage extends
 		this.namePronounciationSounds = new Text(configurationComposite,
 				SWT.BORDER);
 		this.namePronounciationSounds.setLayoutData(configurationLayoutData);
-		this.namePronounciationSounds.setEnabled(false);
+		this.namePronounciationSounds.setEnabled(true);
+		String sound = "";
+		if (getSound() != null && !getSound().equals("")) {
+			sound = getSound();
+		}
+		this.namePronounciationSounds.setText(sound);
+		setSound(sound);
+		this.namePronounciationSounds.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				setSound(namePronounciationSounds.getText());
+
+			}
+		});
 
 		// IPA
 		final Label namePronounciatiationIPALabel = new Label(
@@ -436,7 +498,6 @@ public class GeographicalNamePage extends
 		String ipa = ""; //$NON-NLS-1$
 		if (getIpa() != null && !getIpa().equals("")) { //$NON-NLS-1$
 			ipa = getIpa();
-
 		}
 		this.namePronounciationIPA.setText(ipa);
 		setIpa(ipa);
@@ -483,15 +544,75 @@ public class GeographicalNamePage extends
 		configurationComposite.setLayout(spellingLayout);
 
 		// init spelling types if it doesn't exists
+		// or get the known information about the cell to be edited
 		if (getSpellings() == null || getSpellings().size() == 0) {
 			spellings = new ArrayList<SpellingType>();
-			for (Entity item : getWizard().getUnfinishedCell().getSource().get(null)) {
+			for (Entity item : getWizard().getUnfinishedCell().getSource()
+					.values()) {
+				int i = 0;
 				Definition<?> entity = item.getDefinition().getDefinition();
 				if (entity instanceof PropertyDefinition) {
-					spellings
-							.add(new SpellingType((PropertyDefinition) entity));
+					SpellingType sp = new SpellingType(
+							(PropertyDefinition) entity);
+					// set the same script value if you had a value before
+					if (scripts != null && i < scripts.size()) {
+						sp.setScript(scripts.get(i));
+					} else {
+						// else set the default value
+						sp.setScript(ISO_CODE_ENG);
+					}
+					// set the same transliteration value if you had a value
+					// before
+					if (trans != null && i < trans.size()) {
+						sp.setTransliteration(trans.get(i));
+					} else {
+						// else set the default value
+						sp.setTransliteration("");
+					}
+					spellings.add(sp);
+				}
+				i++;
+			}
+		} else {
+			// after initialization of the spellings
+			ArrayList<PropertyDefinition> temp = new ArrayList<PropertyDefinition>();
+			ArrayList<SpellingType> templist = getSpellings();
+			// we have to create a new spellings list because a live
+			// modification of the combo box input would occur an error
+			spellings = new ArrayList<SpellingType>();
+			for (int i = 0; i < templist.size(); i++) {
+				temp.add(templist.get(i).getProperty());
+				if (scripts != null && trans != null && i < scripts.size() && scripts.get(i) != null
+						&& i < trans.size() && trans.get(i) != null) {
+					templist.get(i).setScript(scripts.get(i));
+					templist.get(i).setTransliteration(trans.get(i));
 				}
 			}
+
+			for (Entity item : getWizard().getUnfinishedCell().getSource()
+					.values()) {
+				Definition<?> entity = item.getDefinition().getDefinition();
+				if (entity instanceof PropertyDefinition) {
+					PropertyDefinition propDef = (PropertyDefinition) entity;
+					for (SpellingType st : templist) {
+						// if the spelling already exists just add the full
+						// spelling configuration (text, script,
+						// transliteration) to the new spellings list
+						if (propDef.equals(st.getProperty())) {
+							spellings.add(st);
+						}
+					}
+					// if the spelling didn't exist before add a new spelling
+					// with default values
+					if (!temp.contains(propDef)) {
+						SpellingType sp = new SpellingType(propDef);
+						sp.setScript(ISO_CODE_ENG);
+						sp.setTransliteration("");
+						spellings.add(sp);
+					}
+				}
+			}
+
 		}
 		// Text
 		final Label nameSpellingTextLabel = new Label(configurationComposite,
@@ -746,6 +867,21 @@ public class GeographicalNamePage extends
 	 */
 	public void setNumber(String number) {
 		this.number = number;
+	}
+
+	/**
+	 * @return the sound
+	 */
+	public String getSound() {
+		return sound;
+	}
+
+	/**
+	 * @param sound
+	 *            the sound to set
+	 */
+	public void setSound(String sound) {
+		this.sound = sound;
 	}
 
 	/**
