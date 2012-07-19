@@ -58,6 +58,10 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 		
 		setValue(org.getValue());
 		setDataSet(org.getDataSet());
+		
+		for(String key : org.getMetaDataNames()){
+			putMetaData(key, org.getMetaData(key));
+		}
 	}
 
 	/**
@@ -113,10 +117,10 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.MutableInstance#puttMetaData(java.lang.String, java.lang.Object)
+	 * @see eu.esdihumboldt.hale.common.instance.model.MutableInstance#putMetaData(java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public void puttMetaData(String key, Object obj) {
+	public void putMetaData(String key, Object obj) {
 		if(metaData == null){
 			metaData = ArrayListMultimap.create();
 		}

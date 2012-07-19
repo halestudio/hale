@@ -43,7 +43,7 @@ public interface MutableInstance extends Instance, MutableGroup {
 	 * @param key a key the data to add will be associated with
 	 * @param obj the Data to add, may not be {@link Instance} or {@link Group}
 	 */
-	public void puttMetaData(String key, Object obj);
+	public void putMetaData(String key, Object obj);
 
 
 	/**
