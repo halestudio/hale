@@ -33,7 +33,7 @@ public class InstanceMetadata {
 	 * @param id the id to set
 	 */
 	public static void setID(MutableInstance instance, String id){
-		instance.puttMetaData(METADATA_ID, id);
+		instance.setMetaData(METADATA_ID, id);
 	}
 	
 	/**
