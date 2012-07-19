@@ -89,5 +89,10 @@ public interface CommonSharedImagesConstants {
 	 * Key for stop image
 	 */
 	public static final String IMG_STOP = "IMG_STOP";
+	
+	/**
+	 * Key for meta data image
+	 */
+	public static final String IMG_META = "IMG_META";
 
 }
