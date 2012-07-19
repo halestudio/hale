@@ -40,6 +40,7 @@ import com.google.common.collect.Iterables;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionMetaLabelProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.PairLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
 import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvider;
@@ -114,7 +115,7 @@ public class InstanceExplorer implements InstanceViewer {
 		TreeViewerColumn column = new TreeViewerColumn(viewer, SWT.LEFT);
 		column.getColumn().setText("Definition");
 		column.setLabelProvider(new TreeColumnViewerLabelProvider(
-				new PairLabelProvider(true, new DefinitionLabelProvider(false, true))));
+				new PairLabelProvider(true, new DefinitionMetaLabelProvider(false, true))));
 		layout.setColumnData(column.getColumn(), new ColumnWeightData(1));
 		
 		// add value column

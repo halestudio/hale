@@ -56,9 +56,21 @@ public class InstanceContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof Instance)
-			return new Object[] {new Pair<Object, Object>(((Instance) inputElement).getDefinition(), inputElement)};
-		else
+
+		if (inputElement instanceof Instance) {
+			
+			if (!((Instance) inputElement).getMetaDataNames().isEmpty()) {
+				return new Object[] {
+						new Pair<Object, Object>(
+								((Instance) inputElement).getDefinition(),
+								inputElement),
+						(new Pair<String, Object>("metadata", inputElement)) };
+			}
+
+			else
+				return new Object[] { new Pair<Object, Object>(
+						((Instance) inputElement).getDefinition(), inputElement) };
+		} else
 			return new Object[0];
 	}
 
@@ -67,12 +79,19 @@ public class InstanceContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getChildren(Object parentElement) {
+		
+		boolean isMetaData = false;
+		
 		if (parentElement instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) parentElement;
 			parentElement = pair.getSecond();
+			
+			if(pair.getFirst().equals("metadata")){
+				isMetaData = true;
+			}
 		}
 
-		if (parentElement instanceof Group) {
+		if (parentElement instanceof Group && isMetaData == false) {
 			Group group = (Group) parentElement;
 			List<Object> children = new ArrayList<Object>();
 			for (QName name : group.getPropertyNames()) {
@@ -82,6 +101,19 @@ public class InstanceContentProvider implements ITreeContentProvider {
 				}
 			}
 			return children.toArray();
+		}
+		
+		if (parentElement instanceof Group && isMetaData == true){
+			Instance inst = (Instance) parentElement;
+			List<Object> metachildren = new ArrayList<Object>();
+			for(String key : inst.getMetaDataNames()){
+				List<Object> values = inst.getMetaData(key);
+				for(Object value : values){
+					metachildren.add(new Pair<String, Object>(key, value));
+				}
+				
+			}
+			return metachildren.toArray();
 		}
 
 		return new Object[0];
@@ -102,6 +134,10 @@ public class InstanceContentProvider implements ITreeContentProvider {
 	public boolean hasChildren(Object element) {
 		if (element instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) element;
+			if(pair.getFirst().equals("metadata")){
+				return true;
+			}
+			
 			element = pair.getSecond();
 		}
 		
