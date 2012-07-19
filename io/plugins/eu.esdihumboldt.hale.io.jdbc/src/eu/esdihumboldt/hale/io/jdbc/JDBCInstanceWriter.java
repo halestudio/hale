@@ -16,11 +16,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -28,7 +31,9 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Writes instance to a database through a JDBC connection.
@@ -45,17 +50,12 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator, eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		InstanceCollection instances = getInstances();
-		
-		boolean trackProgress = instances.hasSize();
-		progress.begin("Write instances to database",
-				(trackProgress) ? (instances.size())
-						: (ProgressIndicator.UNKNOWN));
 		
 		Connection connection = null;
 		try {
@@ -71,30 +71,13 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			
 //			URI jdbcURI = getTarget().getLocation();
 			
-			ResourceIterator<Instance> it = instances.iterator();
-			try {
-				while (it.hasNext() && !progress.isCanceled()) {
-					Instance instance = it.next();
-					
-					try {
-						writeInstance(instance, connection);
-					} catch (Exception e) {
-						reporter.error(new IOMessageImpl("Error saving an instance to the database", e));
-					}
-					
-					if (trackProgress) {
-						progress.advance(1);
-					}
-				}
-			} finally {
-				it.close();
-			}
-			
-			if (progress.isCanceled() && it.hasNext()) {
-				reporter.error(new IOMessageImpl("Saving to database was canceled, not all instances were saved.", null));
-			}
+			writeInstances(connection, instances, progress, reporter);
 			
 			reporter.setSuccess(true);
+		} catch (Exception e) {
+			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
+			reporter.setSuccess(false);
+			reporter.setSummary("Saving instances to database failed.");
 		}
 		finally {
 			if (connection != null) {
@@ -111,69 +94,178 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	}
 
 	/**
-	 * Write an instance to the database.
-	 * @param instance the instance
+	 * Write instances to a database connection
 	 * @param connection the database connection
-	 * @throws SQLException if writing the instance fails
+	 * @param instances the instances to write
+	 * @param progress the progress indicator
+	 * @param reporter the reporter
+	 * @throws Exception if saving the instances fails
 	 */
-	private void writeInstance(Instance instance, Connection connection) throws SQLException {
-		//TODO transaction?!
+	private void writeInstances(Connection connection,
+			InstanceCollection instances, ProgressIndicator progress,
+			IOReporter reporter) throws Exception {
+		connection.setAutoCommit(false);
 		
-		String tableName = instance.getDefinition().getName().getLocalPart();
+		boolean trackProgress = instances.hasSize();
+		progress.begin("Write instances to database",
+				(trackProgress) ? (instances.size())
+						: (ProgressIndicator.UNKNOWN));
 		
-		// create prepared statement SQL
-		StringBuffer pSql = new StringBuffer();
+		// maps type definitions to prepared statements
+		Map<TypeDefinition, PreparedStatement> typeStatements = new HashMap<TypeDefinition, PreparedStatement>();
+		Map<TypeDefinition, Integer> typeCount = new HashMap<TypeDefinition, Integer>();
 		
-		pSql.append("INSERT INTO \"");
-		pSql.append(tableName);
-		pSql.append("\" (");
+		//TODO some kind of ordering needed?! because of IDs and constraints!
 		
-		StringBuffer valuesSql = new StringBuffer();
-		
-		boolean first = true;
-		for (QName column : instance.getPropertyNames()) {
-			if (first) {
-				first = false;
-			}
-			else {
-				pSql.append(", ");
-				valuesSql.append(",");
-			}
-			
-			pSql.append(column.getLocalPart());
-			valuesSql.append('?');
-		}
-		
-		pSql.append(") VALUES (");
-		pSql.append(valuesSql);
-		pSql.append(")");
-		
-		// create prepared statement
-		PreparedStatement statement = connection.prepareStatement(pSql.toString()); //XXX what about auto-generated keys
-		//TODO statement reuse?!
+		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			int index = 1;
-			for (QName column : instance.getPropertyNames()) {
-				Object[] values = instance.getProperty(column);
-				Object value = (values == null || values.length == 0)?(null):(values[0]); //TODO warn multiple values being ignored
-				
-				if (value == null) {
-//					statement.setNull(parameterIndex, sqlType);
-					statement.setObject(index, null);
+			while (it.hasNext() && !progress.isCanceled()) { //XXX should cancel result in a rollback?
+				Instance instance = it.next();
+				TypeDefinition type = instance.getDefinition();
+				// per type count
+				int count;
+				if (!typeCount.containsKey(type)) {
+					// first of that type
+					count = 1;
 				}
 				else {
-					setStatementParameter(statement, index, value, 
-							instance.getDefinition().getChild(column).asProperty()); //XXX there should be a check first - maybe building a map in the first iteration?
+					// increase count
+					count = typeCount.get(type) + 1;
+				}
+				typeCount.put(type, count);
+				
+				
+				// get prepared statement for instance type
+				PreparedStatement statement = getInsertStatement(type, 
+						typeStatements, connection);
+				
+				// populate insert statement with values
+				populateInsertStatement(statement, instance);
+				
+				statement.addBatch();
+				
+				if (count % 100 == 0) {
+					statement.executeBatch();
 				}
 				
-				index++;
+				if (trackProgress) {
+					progress.advance(1);
+				}
 			}
 			
-//			statement.executeQuery();
-			statement.execute();
+			// execute remaining batches
+			for (PreparedStatement statement : typeStatements.values()) {
+				statement.executeBatch();
+			}
+			
+			connection.commit();
+		} catch (Exception e) {
+			connection.rollback();
+			throw e;
+		} finally {
+			// close iterator
+			it.close();
+			
+			// close statements
+			for (PreparedStatement statement : typeStatements.values()) {
+				statement.close();
+			}
 		}
-		finally {
-			statement.close();
+		
+		if (progress.isCanceled() && it.hasNext()) {
+			reporter.error(new IOMessageImpl("Saving to database was canceled, not all instances were saved.", null));
+		}
+	}
+
+	private Iterable<? extends PropertyDefinition> getInsertProperties(TypeDefinition type) {
+		List<PropertyDefinition> result = new ArrayList<PropertyDefinition>();
+		for (ChildDefinition<?> child : type.getChildren()) {
+			if (child.asProperty() != null) {
+				result.add(child.asProperty());
+			}
+			// groups are not supported and ignored
+		}
+		return result;
+	}
+
+	/**
+	 * Create a prepared insert statement, based on the given type definition.
+	 * @param type the type definition
+	 * @param typeStatements the already created statements 
+	 * @param connection the database connection
+	 * @return the insert statement
+	 * @throws SQLException if creating the prepared statement fails
+	 */
+	private PreparedStatement getInsertStatement(TypeDefinition type,
+			Map<TypeDefinition, PreparedStatement> typeStatements, Connection connection) throws SQLException {
+		PreparedStatement result = typeStatements.get(type);
+		
+		if (result == null) {
+			String tableName = type.getName().getLocalPart();
+			
+			// create prepared statement SQL
+			StringBuffer pSql = new StringBuffer();
+			
+			pSql.append("INSERT INTO \"");
+			pSql.append(tableName);
+			pSql.append("\" (");
+			
+			StringBuffer valuesSql = new StringBuffer();
+			
+			boolean first = true;
+			for (PropertyDefinition property : getInsertProperties(type)) {
+				//XXX what about auto-generated keys?!
+				
+				if (first) {
+					first = false;
+				}
+				else {
+					pSql.append(", ");
+					valuesSql.append(",");
+				}
+				
+				pSql.append(property.getName().getLocalPart());
+				valuesSql.append('?');
+			}
+			
+			pSql.append(") VALUES (");
+			pSql.append(valuesSql);
+			pSql.append(")");
+			
+			result = connection.prepareStatement(pSql.toString());
+			typeStatements.put(type, result);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Populate a prepared insert statement with values from the given instance.
+	 * @param statement the insert statement
+	 * @param instance the instance
+	 * @throws SQLException if configuring the statement fails
+	 */
+	private void populateInsertStatement(PreparedStatement statement,
+			Instance instance) throws SQLException {
+		TypeDefinition type = instance.getDefinition();
+		
+		int index = 1;
+		for (PropertyDefinition property : getInsertProperties(type)) {
+			Object[] values = instance.getProperty(property.getName());
+			Object value = (values == null || values.length == 0)?(null):(values[0]); //TODO warn multiple values being ignored
+			
+			if (value == null) {
+				// null value
+//				statement.setNull(parameterIndex, sqlType);
+				statement.setObject(index, null);
+			}
+			else {
+				// non-null value
+				setStatementParameter(statement, index, value, 
+						property);
+			}
+			
+			index++;
 		}
 	}
 
