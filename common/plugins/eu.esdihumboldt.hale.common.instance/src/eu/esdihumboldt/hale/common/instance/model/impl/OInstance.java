@@ -108,6 +108,10 @@ public class OInstance extends OGroup implements MutableInstance {
 
 		setValue(org.getValue());
 		setDataSet(org.getDataSet());
+		
+		for(String key : org.getMetaDataNames()){
+			setMetaData(key, org.getMetaData(key).toArray());
+		}
 	}
 
 	/**
@@ -166,15 +170,15 @@ public class OInstance extends OGroup implements MutableInstance {
 	 */
 	@Override
 	public List<Object> getMetaData(String key) {
+		associatedDbWithThread();
 
-
-		if (document.field(FIELD_METADATA) == null) {
+		ODocument datafield = (ODocument) document.field(FIELD_METADATA);
+		
+		if (datafield == null) {
 			return Collections.emptyList();
 		}
 
-		ODocument metaData = (ODocument) document.field(FIELD_METADATA);
-
-		Object[] values = getProperty(new QName(key), metaData);
+		Object[] values = getProperty(new QName(key), datafield);
 
 		if (values == null || values.length == 0) {
 			return Collections.emptyList();
@@ -188,7 +192,7 @@ public class OInstance extends OGroup implements MutableInstance {
 	 * The parameter "Object obj" may not be an ODocument
 	 */
 	@Override
-	public void puttMetaData(String key, Object obj) {
+	public void putMetaData(String key, Object obj) {
 
 		Preconditions.checkArgument(!(obj instanceof ODocument
 				|| obj instanceof Instance || obj instanceof Group));
@@ -210,13 +214,17 @@ public class OInstance extends OGroup implements MutableInstance {
 	 */
 	@Override
 	public Set<String> getMetaDataNames(){
+		associatedDbWithThread();
 		
-		if(document.field(FIELD_METADATA) == null 
-				|| ((ODocument) document.field(FIELD_METADATA)).isEmpty()){
+		ODocument datafield = (ODocument) document.field(FIELD_METADATA);
+		
+		if(datafield == null 
+				//|| datafield.isEmpty()
+				){
 			return Collections.emptySet();
 		}
 		
-		Iterable<QName> it = getPropertyNames((ODocument) document.field(FIELD_METADATA));
+		Iterable<QName> it = getPropertyNames(datafield);
 		
 		Set<String> keys = new HashSet<String>();
 		for (QName field : it) {
