@@ -100,6 +100,7 @@ public class JDBCSchemaReader extends AbstractSchemaReader implements JDBCConsta
 			// connect to the database
 			try {
 				connection = JDBCConnection.getConnection(this);
+				connection.setReadOnly(true);
 			} catch (Exception e) {
 				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 				reporter.setSuccess(false);
