@@ -267,7 +267,7 @@ public class OMLReaderTest {
 				assertEquals("underground 1", temp);
 			}
 		}
-		
+
 		// check if all values were tested
 		assertEquals(3, values.size());
 	}
@@ -412,7 +412,7 @@ public class OMLReaderTest {
 				assertEquals("5", temp);
 			}
 		}
-		
+
 		// check if all cells were tested
 		assertEquals(2, networkCells.size());
 
@@ -757,6 +757,9 @@ public class OMLReaderTest {
 		assertEquals("income", name2);
 
 	}
+
+	// TODO: geographical name function doesn't work with "import project" or
+	// load schemas + alignment as single imports
 
 	private static Alignment loadAlignment(URI sourceSchemaLocation,
 			URI targetSchemaLocation, final URI alignmentLocation)
