@@ -37,6 +37,8 @@ public class Messages extends NLS {
 	public static String DefinitionFeatureTreeViewer_5;
 	public static String DefinitionFeatureTreeViewer_6;
 
+	public static String InstanceContentProvider_metadata;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
