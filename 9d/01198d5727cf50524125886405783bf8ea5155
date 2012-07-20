@@ -1,0 +1,7 @@
+Code-Review+2: Simon Templer <simon.templer@igd.fraunhofer.de>
+Verified+1: Jenkins <sitemple@igd.fraunhofer.de>
+Submitted-by: Simon Templer <simon.templer@igd.fraunhofer.de>
+Submitted-at: Fri, 20 Jul 2012 08:01:21 +0200
+Reviewed-on: http://gerrit.esdi-community.eu/1268
+Project: hale
+Branch: refs/heads/jdbc
