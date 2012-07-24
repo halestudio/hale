@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.trim.status?after=additions">
+         <toolbar
+               id="eu.esdihumboldt.hale.ui.instancevalidation.status">
+            <dynamic
+                  class="eu.esdihumboldt.hale.ui.instancevalidation.status.InstanceValidationStatusContributionItem"
+                  id="instance_validation_status">
+            </dynamic>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.views.report.detailpage">
+      <detailpage
+            class="eu.esdihumboldt.hale.ui.instancevalidation.report.InstanceValidationReportDetailsPage"
+            id="eu.esdihumboldt.hale.ui.instancevalidation.report.detailpage"
+            reportType="eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport">
+      </detailpage>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="eu.esdihumboldt.hale.ui.instancevalidation.status.ToggleInstanceValidationHandler"
+            id="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
+            name="Validate transformed instances automatically">
+         <state
+               class="eu.esdihumboldt.hale.ui.instancevalidation.status.ToggleInstanceValidationState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
+            icon="icons/auto_instance_validation.gif">
+      </image>
+   </extension>
+</plugin>

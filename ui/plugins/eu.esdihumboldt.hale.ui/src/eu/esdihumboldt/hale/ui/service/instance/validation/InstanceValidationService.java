@@ -31,4 +31,22 @@ public interface InstanceValidationService {
 	 * @param listener the listener to remove
 	 */
 	public void removeListener(InstanceValidationListener listener);
+
+	/**
+	 * Returns whether the automatic instance validation after each transformation
+	 * is enabled.
+	 *
+	 * @return whether the automatic instance validation after each transformation
+	 * 	       is enabled
+	 */
+	public boolean isValidationEnabled();
+
+	/**
+	 * Set whether the automatic instance validation after each transformation
+	 * is enabled.
+	 *
+	 * @param enable whether the automatic instance validation after each transformation
+	 * 	             is enabled
+	 */
+	public void setValidationEnabled(boolean enable);
 }

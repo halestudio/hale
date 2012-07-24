@@ -63,14 +63,9 @@ public class WindowSelectionSelector implements InstanceSelector {
 	 * Instance selector control
 	 */
 	private class InstanceSelectorControl extends Composite implements ISelectionListener {
-		
 		private final ComboViewer instanceTypes;
-		
 		private final Map<TypeDefinition, List<Instance>> instanceMap = new HashMap<TypeDefinition, List<Instance>>();
-		
 		private TypeDefinition selectedType;
-		
-		private ISelection lastSelection;
 
 		/**
 		 * @see Composite#Composite(Composite, int)
@@ -110,15 +105,13 @@ public class WindowSelectionSelector implements InstanceSelector {
 			ISelectionService ss = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 			ss.addPostSelectionListener(this);
 			
-			lastSelection = ss.getSelection();
-			
-			if (!(lastSelection instanceof InstanceSelection)) {
-				// try to get instance selection from tracker
-				InstanceSelection selection = SelectionTrackerUtil.getTracker().getSelection(InstanceSelection.class);
-				if (selection != null) {
-					lastSelection = selection;
-				}
-			}
+			ISelection selection = ss.getSelection();
+
+			if (!(selection instanceof InstanceSelection))
+				selection = SelectionTrackerUtil.getTracker().getSelection(InstanceSelection.class);
+
+			if (selection != null)
+				lastSelection = (InstanceSelection) selection;
 			
 			updateTypeSelection();
 		}
@@ -171,11 +164,11 @@ public class WindowSelectionSelector implements InstanceSelector {
 		 * @return the selected features or <code>null</code>
 		 */
 		private Collection<Instance> getSelectedInstances(TypeDefinition typeFilter) {
-			if (lastSelection == null || lastSelection.isEmpty() || !(lastSelection instanceof InstanceSelection)) {
+			if (lastSelection == null || lastSelection.isEmpty()) {
 				return null;
 			}
 			else {
-				List<?> elements = ((InstanceSelection) lastSelection).toList();
+				List<?> elements = lastSelection.toList();
 				Collection<Instance> result = new ArrayList<Instance>(elements.size());
 				
 				final InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
@@ -251,18 +244,16 @@ public class WindowSelectionSelector implements InstanceSelector {
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 			if (!(part instanceof AbstractDataView) // don't react on data view changes (to prevent loops)
 					&& selection instanceof InstanceSelection) {
-				lastSelection = selection;
+				lastSelection = (InstanceSelection) selection;
 				updateTypeSelection();
 			}
 		}
-
 	}
-	
+
 	private final Set<InstanceSelectionListener> listeners = new HashSet<InstanceSelectionListener>();
-	
 	private InstanceSelectorControl current;
-	
 	private final DataSet dataSet;
+	private InstanceSelection lastSelection;
 
 	/**
 	 * Constructor
@@ -301,4 +292,13 @@ public class WindowSelectionSelector implements InstanceSelector {
 		listeners.remove(listener);
 	}
 
+	/**
+	 * Show the given selection.
+	 *
+	 * @param is the selection to show
+	 */
+	public void showSelection(InstanceSelection is) {
+		if (current != null && !current.isDisposed())
+			current.selectionChanged(null, is);
+	}
 }

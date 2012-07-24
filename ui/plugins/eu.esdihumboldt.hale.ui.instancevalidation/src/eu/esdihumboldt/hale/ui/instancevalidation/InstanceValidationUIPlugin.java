@@ -1,6 +1,19 @@
-package eu.esdihumboldt.hale.ui.status.validation;
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ */
+
+package eu.esdihumboldt.hale.ui.instancevalidation;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -13,10 +26,12 @@ public class InstanceValidationUIPlugin extends AbstractUIPlugin {
 	/**
 	 * The plug-in ID
 	 */
-	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.ui.status.validation"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.ui.instancevalidation"; //$NON-NLS-1$
 
 	// The shared instance
 	private static InstanceValidationUIPlugin plugin;
+
+	public static final String IMG_INSTANCE_VALIDATION = "IMG_INSTANCE_VALIDATION";
 	
 	/**
 	 * Default constructor
@@ -61,5 +76,14 @@ public class InstanceValidationUIPlugin extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+
+	/**
+	 * @see AbstractUIPlugin#initializeImageRegistry(ImageRegistry)
+	 */
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		super.initializeImageRegistry(reg);
+		reg.put(IMG_INSTANCE_VALIDATION, getImageDescriptor("icons/instance_validation.gif"));
 	}
 }

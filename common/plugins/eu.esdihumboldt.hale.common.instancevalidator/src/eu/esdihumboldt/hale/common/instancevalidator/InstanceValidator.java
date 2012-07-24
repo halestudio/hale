@@ -38,6 +38,9 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
  * @author Kai Schwierczek
  */
 public class InstanceValidator {
+	// XXX Data views show only warnings, if something will be changed to errors
+	// they need an update, too.
+
 	/**
 	 * Validates the given instances using all constraints that are validatable.
 	 *
@@ -91,7 +94,7 @@ public class InstanceValidator {
 					validator.validateGroupPropertyConstraint(new Object[] {object},
 							childDef.asGroup().getConstraint(ChoiceFlag.class), childDef.asGroup());
 				} catch (ValidationException vE) {
-					reporter.warn(new DefaultInstanceValidationMessage(null, "Group properties (" + path + ") not valid: " + vE.getMessage(), null));
+					reporter.warn(new DefaultInstanceValidationMessage(null, "Group properties (" + path + ") not valid: " + vE.getMessage()));
 				}
 			onlyCheckExistingChildren = childDef.asGroup().getConstraint(ChoiceFlag.class).isEnabled();
 		}
@@ -135,7 +138,7 @@ public class InstanceValidator {
 			try {
 				entry.getValue().validateTypeConstraint(instance, typeDef.getConstraint(entry.getKey()));
 			} catch (ValidationException vE) {
-				reporter.warn(new DefaultInstanceValidationMessage(reference, "Instance (" + path + ") not valid: " + vE.getMessage(), null));
+				reporter.warn(new DefaultInstanceValidationMessage(reference, "Instance (" + path + ") not valid: " + vE.getMessage()));
 			}
 
 		validateGroupChildren(instance, reporter, path, onlyCheckExistingChildren, reference);
@@ -190,7 +193,7 @@ public class InstanceValidator {
 				entry.getValue().validatePropertyConstraint(properties,
 						propertyDef.getConstraint(entry.getKey()), propertyDef);
 			} catch (ValidationException vE) {
-				reporter.warn(new DefaultInstanceValidationMessage(reference, "Properties (" + path + ") not valid: " + vE.getMessage(), null));
+				reporter.warn(new DefaultInstanceValidationMessage(reference, "Properties (" + path + ") not valid: " + vE.getMessage()));
 			}
 
 		validateChildren(properties, propertyDef, reporter, path, false, reference);
@@ -214,7 +217,7 @@ public class InstanceValidator {
 				entry.getValue().validateGroupPropertyConstraint(properties,
 						groupDef.getConstraint(entry.getKey()), groupDef);
 			} catch (ValidationException vE) {
-				reporter.warn(new DefaultInstanceValidationMessage(reference, "Group properties (" + path + ") not valid: " + vE.getMessage(), null));
+				reporter.warn(new DefaultInstanceValidationMessage(reference, "Group properties (" + path + ") not valid: " + vE.getMessage()));
 			}
 
 		// In case of enabled choice flag only check existing children.
@@ -245,7 +248,7 @@ public class InstanceValidator {
 							onlyCheckExistingChildren, reference);
 				} else {
 					if (childDef.asGroup() != null)
-						reporter.warn(new DefaultInstanceValidationMessage(reference, "Group properties (" + path + ") not valid: a property is no group.", null));
+						reporter.warn(new DefaultInstanceValidationMessage(reference, "Group properties (" + path + ") not valid: a property is no group."));
 					else if (childDef.asProperty() != null) {
 						MutableInstance instance = new DefaultInstance(childDef.asProperty().getPropertyType(), null);
 						instance.setValue(property);

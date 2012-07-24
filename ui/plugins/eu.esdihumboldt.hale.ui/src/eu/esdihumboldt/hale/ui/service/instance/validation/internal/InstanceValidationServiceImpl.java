@@ -40,6 +40,7 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 	private final InstanceService instanceService;
 	private final ReportService reportService;
 	private InstanceValidationJob validationJob;
+	private boolean liveValidation = true; // TODO store somewhere? project?
 	private final TypeSafeListenerList<InstanceValidationListener> listeners =
 			new TypeSafeListenerList<InstanceValidationListener>();
 
@@ -65,7 +66,7 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 	@Override
 	public void datasetChanged(DataSet type) {
 		// validate transformed instances
-		if (type == DataSet.TRANSFORMED) {
+		if (type == DataSet.TRANSFORMED && liveValidation) {
 			final InstanceCollection instances = instanceService.getInstances(DataSet.TRANSFORMED);
 			if (instances.isEmpty())
 				return;
@@ -142,5 +143,29 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 	@Override
 	public void removeListener(InstanceValidationListener listener) {
 		listeners.remove(listener);
+	}
+
+
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService#isValidationEnabled()
+	 */
+	@Override
+	public boolean isValidationEnabled() {
+		return liveValidation;
+	}
+
+
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService#setValidationEnabled(boolean)
+	 */
+	@Override
+	public void setValidationEnabled(boolean enable) {
+		if (!enable) {
+			if (validationJob != null)
+				validationJob.cancel();
+		}
+		liveValidation = enable;
 	}
 }

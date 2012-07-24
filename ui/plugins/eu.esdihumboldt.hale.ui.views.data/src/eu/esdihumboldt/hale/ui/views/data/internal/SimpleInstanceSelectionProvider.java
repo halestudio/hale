@@ -40,5 +40,4 @@ public class SimpleInstanceSelectionProvider extends AbstactSelectionProvider {
 		}
 		fireSelectionChange(selection);
 	}
-	
 }
