@@ -1,4 +1,16 @@
-package eu.esdihumboldt.hale.ui.status.validation;
+/*
+ * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
+ * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * 
+ * For more information on the project, please refer to the this web site:
+ * http://www.esdi-humboldt.eu
+ * 
+ * LICENSE: For information on the license under which this program is 
+ * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
+ * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ */
+
+package eu.esdihumboldt.hale.ui.instancevalidation.status;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -13,6 +25,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
+import eu.esdihumboldt.hale.ui.instancevalidation.InstanceValidationUIPlugin;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationListener;
@@ -28,7 +41,7 @@ import eu.esdihumboldt.hale.ui.views.report.ReportList;
  * @author Kai Schwierczek
  */
 public class InstanceValidationStatusAction extends Action {
-	private Image noReportBaseImage;
+//	private Image noReportBaseImage;
 	private ImageDescriptor noReportDescriptor;
 	private ImageDescriptor reportOkDescriptor;
 	private ImageDescriptor reportWarningsDescriptor;
@@ -41,12 +54,11 @@ public class InstanceValidationStatusAction extends Action {
 	 * Constructor.
 	 */
 	public InstanceValidationStatusAction() {
-		super();
+		super("Open instance validation report");
 
 		createImageDescriptors();
 		createListeners();
 
-		setText(null);
 		setDisabledImageDescriptor(noReportDescriptor);
 		updateStatus();
 	}
@@ -67,19 +79,12 @@ public class InstanceValidationStatusAction extends Action {
 	}
 
 	/**
-	 * Disposes of used images.
-	 */
-	public void dispose() {
-		noReportBaseImage.dispose();
-	}
-
-	/**
 	 * Creates needed {@link ImageDescriptor}s.
 	 */
 	private void createImageDescriptors() {
 		// load images
-		noReportDescriptor = InstanceValidationUIPlugin.getImageDescriptor("icons/instance_validation.gif");
-		noReportBaseImage = noReportDescriptor.createImage();
+		noReportDescriptor = InstanceValidationUIPlugin.getImageDescriptor("icons/instance_validation_disabled.gif");
+		Image noReportBaseImage = InstanceValidationUIPlugin.getDefault().getImageRegistry().get(InstanceValidationUIPlugin.IMG_INSTANCE_VALIDATION);
 
 		reportOkDescriptor = new DecorationOverlayIcon(noReportBaseImage, InstanceValidationUIPlugin.getImageDescriptor("icons/signed_yes_ovr.gif"), IDecoration.BOTTOM_LEFT);
 		reportWarningsDescriptor = new DecorationOverlayIcon(noReportBaseImage, PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_DEC_FIELD_WARNING), IDecoration.BOTTOM_LEFT);
@@ -104,7 +109,7 @@ public class InstanceValidationStatusAction extends Action {
 			}
 		});
 	
-		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench().getService(InstanceValidationService.class);
+		final InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench().getService(InstanceValidationService.class);
 		ivs.addListener(new InstanceValidationListener() {
 			@Override
 			public void instancesValidated(InstanceValidationReport report) {
@@ -115,6 +120,11 @@ public class InstanceValidationStatusAction extends Action {
 						updateStatus();
 					}
 				});
+			}
+
+			@Override
+			public void validationEnabledChange() {
+				// don't care
 			}
 		});
 	}

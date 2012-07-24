@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
  * Extension for constraint validators.
  * @author Kai Schwierczek
  */
-public class ConstraintValidatorExtension extends AbstractExtension<ConstraintValidator, ConstraintValidatorFactory<ConstraintValidator>> {
+public class ConstraintValidatorExtension extends AbstractExtension<ConstraintValidator, ConstraintValidatorFactory> {
 	private static final ALogger log = ALoggerFactory.getLogger(ConstraintValidatorExtension.class);
 
 	/**
@@ -64,7 +64,7 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 		super(ID);
 
 		// Build maps
-		List<ConstraintValidatorFactory<ConstraintValidator>> factories = getFactories();
+		List<ConstraintValidatorFactory> factories = getFactories();
 		Map<Class<TypeConstraint>, TypeConstraintValidator> typeValidators =
 				new HashMap<Class<TypeConstraint>, TypeConstraintValidator>();
 		Map<Class<PropertyConstraint>, PropertyConstraintValidator> propertyValidators =
@@ -72,7 +72,7 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 		Map<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator> groupPropertyValidators =
 				new HashMap<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator>();
 
-		for (ConstraintValidatorFactory<ConstraintValidator> factory : factories) {
+		for (ConstraintValidatorFactory factory : factories) {
 			Class<?> clazz = factory.getConstraintClass();
 			if (factory.isTypeConstraintValidator()) {
 				if (typeValidators.containsKey(clazz))
@@ -119,8 +119,8 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 	 * @see de.cs3d.util.eclipse.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
-	protected ConstraintValidatorFactory<ConstraintValidator> createFactory(IConfigurationElement conf) throws Exception {
-		return new ConstraintValidatorFactory<ConstraintValidator>(conf);
+	protected ConstraintValidatorFactory createFactory(IConfigurationElement conf) throws Exception {
+		return new ConstraintValidatorFactory(conf);
 	}
 
 	/**

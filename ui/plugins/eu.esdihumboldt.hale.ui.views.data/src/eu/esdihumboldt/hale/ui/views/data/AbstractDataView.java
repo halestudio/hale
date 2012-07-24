@@ -48,7 +48,7 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractDataView extends PropertiesViewPart {
+public abstract class AbstractDataView extends PropertiesViewPart implements InstanceSelectionListener {
 
 	/**
 	 * Action for toggling if an instance selection is provided by the view.
@@ -296,9 +296,14 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 	 * @param instanceSelector the instance selector to set
 	 */
 	public void setInstanceSelector(InstanceSelector instanceSelector) {
-		if (this.instanceSelector == instanceSelector) return;
+		if (this.instanceSelector == instanceSelector)
+			return;
 		
 		selectionFacade.setSelectionProvider(null); // disable selection provider
+
+		// remove listener
+		if (this.instanceSelector != null)
+			this.instanceSelector.removeSelectionListener(this);
 		
 		this.instanceSelector = instanceSelector;
 		
@@ -306,6 +311,9 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		if (selectorControl != null) {
 			selectorControl.dispose();
 		}
+		
+		// add listener
+		instanceSelector.addSelectionListener(this);
 		
 		// create new control
 		selectorControl = instanceSelector.createControl(selectorComposite);
@@ -315,20 +323,16 @@ public abstract class AbstractDataView extends PropertiesViewPart {
 		
 		// re-layout
 		selectorComposite.getParent().getParent().layout(true, true);
-		
-		// add listener
-		instanceSelector.addSelectionListener(new InstanceSelectionListener() {
-			
-			@Override
-			public void selectionChanged(TypeDefinition type, Iterable<Instance> selection) {
-				if (viewer != null) {
-					viewer.setInput(type, selection);
-				}
-				lastType = type;
-				lastSelection = selection;
-				onSelectionChange(selection);
-			}
-		});
+	}
+
+	@Override
+	public void selectionChanged(TypeDefinition type, Iterable<Instance> selection) {
+		if (viewer != null) {
+			viewer.setInput(type, selection);
+		}
+		lastType = type;
+		lastSelection = selection;
+		onSelectionChange(selection);
 	}
 	
 	/**

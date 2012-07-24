@@ -12,6 +12,9 @@
 
 package eu.esdihumboldt.hale.ui.views.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,6 +26,7 @@ import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceSelector;
@@ -54,6 +58,9 @@ public class TransformedDataView extends AbstractDataView {
 	private SampleTransformInstanceSelector sampleSelector;
 	
 	private WindowSelectionSelector mapSelector;
+
+	private Button mapButton;
+	private List<Button> selectorButtons;
 
 	/**
 	 * Default constructor
@@ -87,7 +94,9 @@ public class TransformedDataView extends AbstractDataView {
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
 		parent.setLayout(layout);
-		
+
+		selectorButtons = new ArrayList<Button>(3);
+
 		final Button instanceButton = new Button(parent, SWT.RADIO);
 		if (instanceImage == null) {
 			instanceImage = DataViewPlugin.getImageDescriptor("icons/random.gif").createImage(); //$NON-NLS-1$
@@ -98,10 +107,12 @@ public class TransformedDataView extends AbstractDataView {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setInstanceSelector(instanceSelector);
+				if (instanceButton.getSelection())
+					setInstanceSelector(instanceSelector);
 			}
 			
 		});
+		selectorButtons.add(instanceButton);
 		
 		final Button sampleButton = new Button(parent, SWT.RADIO);
 		if (sampleImage == null) {
@@ -114,12 +125,14 @@ public class TransformedDataView extends AbstractDataView {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setInstanceSelector(sampleSelector);
+				if (sampleButton.getSelection())
+					setInstanceSelector(sampleSelector);
 			}
 			
 		});
+		selectorButtons.add(sampleButton);
 		
-		final Button mapButton = new Button(parent, SWT.RADIO);
+		mapButton = new Button(parent, SWT.RADIO);
 		if (mapImage == null) {
 			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
 		}
@@ -129,10 +142,30 @@ public class TransformedDataView extends AbstractDataView {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setInstanceSelector(mapSelector);
+				if (mapButton.getSelection())
+					setInstanceSelector(mapSelector);
 			}
 			
 		});
+		selectorButtons.add(mapButton);
+	}
+
+	/**
+	 * Show the given selection.
+	 *
+	 * @param is the selection to show
+	 */
+	public void showSelection(InstanceSelection is) {
+		if (mapButton.getSelection())
+			return;
+		else {
+			// mapButton.setSelected(true) neither fires an event (at least not directly), nor deselects the other buttons
+			for (Button b : selectorButtons)
+				b.setSelection(false);
+			mapButton.setSelection(true);
+			setInstanceSelector(mapSelector);
+			mapSelector.showSelection(is);
+		}
 	}
 
 	/**
