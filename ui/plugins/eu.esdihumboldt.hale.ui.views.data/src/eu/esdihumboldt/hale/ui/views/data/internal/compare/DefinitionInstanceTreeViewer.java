@@ -14,7 +14,9 @@ package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,10 +48,9 @@ import org.eclipse.swt.widgets.TreeItem;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentProvider;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
 import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvider;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Tree viewer for {@link Instance}s of a common type, based on the corresponding
@@ -82,8 +83,8 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 		
 		treeViewer = new TreeViewer(main, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 		
-		treeViewer.setContentProvider(new TypeDefinitionContentProvider(treeViewer));
-		treeViewer.setLabelProvider(new DefinitionLabelProvider());
+		treeViewer.setContentProvider(new TypeMetaPairContentProvider(treeViewer));
+		treeViewer.setLabelProvider(new DefinitionMetaCompareLabelProvider());
 
 		// Add an editor for selecting specific paths.
 		editor = new TreeEditor(treeViewer.getTree());
@@ -211,8 +212,18 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 //				}
 			
 		// set input
-		if (type != null)
-			treeViewer.setInput(Collections.singleton(type));
+		if (type != null){
+			//pass metadatas to the treeviewer, if instances contain metadatas
+			Set<String> completeMetaNames = new HashSet<String>();
+			for(Instance inst : instances){
+				for(String name : inst.getMetaDataNames()){					
+						completeMetaNames.add(name);
+				}	
+			}	
+			
+			Pair<TypeDefinition, Set<String>> pair = new Pair<TypeDefinition, Set<String>>(type, completeMetaNames);
+			treeViewer.setInput(pair);
+		}
 		else
 			treeViewer.setInput(Collections.emptySet());
 		
@@ -223,7 +234,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 			TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
 			column.getColumn().setText(type.getDisplayName());
 			column.setLabelProvider(new TreeColumnViewerLabelProvider(
-					new DefinitionLabelProvider()));
+					new DefinitionMetaCompareLabelProvider()));
 			if (layout instanceof TreeColumnLayout) {
 				((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(1));
 			}
