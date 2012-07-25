@@ -58,20 +58,27 @@ public class GeographicalName extends
 
 		// get all parameters defined by the wizard page
 		String ipa = getParameterChecked(PROPERTY_PRONUNCIATIONIPA);
-		String sound = getParameterChecked(PROPERTY_PRONUNCIATIONSOUNDLINK);
+		// we need a default value and a try/catch-block because in older
+		// version we couldn't edit the pronunciationSoundLink text field
+		String sound = "";
+		try {
+			sound = getParameterChecked(PROPERTY_PRONUNCIATIONSOUNDLINK);
+		} catch (Exception e) {
+			// do nothing
+		}
 		String language = getParameterChecked(PROPERTY_LANGUAGE);
 		String sourceOfName = getParameterChecked(PROPERTY_SOURCEOFNAME);
 		String nameStatus = getParameterChecked(PROPERTY_NAMESTATUS);
 		String nativeness = getParameterChecked(PROPERTY_NATIVENESS);
 		String gender = getParameterChecked(PROPERTY_GRAMMA_GENDER);
 		String number = getParameterChecked(PROPERTY_GRAMMA_NUMBER);
-		
+
 		// get the script and transliteration parameters
 		// should have the same order like source properties
 		ListMultimap<String, String> params = getParameters();
 		List<String> scripts = params.get(PROPERTY_SCRIPT);
 		List<String> trans = params.get(PROPERTY_TRANSLITERATION);
-		
+
 		// definition of the target property
 		TypeDefinition targetType = resultProperty.getDefinition()
 				.getPropertyType();
@@ -219,7 +226,6 @@ public class GeographicalName extends
 
 			}
 		}
-
 
 		// set value of the grammaticalGender instance
 		grammarGenderInst.setValue(gender);
