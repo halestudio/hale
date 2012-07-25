@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
 import java.util.Comparator;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -88,6 +89,10 @@ public class DefinitionComparator extends ViewerComparator {
 		}
 		if (element instanceof PropertyDefinition) {
 			return 1;
+		}
+		//used if instances contain metadata, used in DefinitionInstanceTreeViewer
+		if (element instanceof Set){
+			return 2;
 		}
 		
 		return super.category(element);

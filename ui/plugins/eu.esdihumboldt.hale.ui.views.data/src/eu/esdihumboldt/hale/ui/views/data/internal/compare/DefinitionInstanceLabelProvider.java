@@ -16,7 +16,9 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -40,7 +42,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentPro
 
 /**
  * Label provider for instances in a tree based on a 
- * {@link TypeDefinitionContentProvider}.
+ * {@link TypeDefinitionContentProvider}. Also handles metadata of those instances.
  *
  * @author Simon Templer
  */
@@ -85,29 +87,52 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		Object value = instance;
 		ChildDefinition<?> childDef = null;
 		LinkedList<Object> segmentList = new LinkedList<Object>();
-		segmentList.add(treePath.getFirstSegment());
+		
 		// First segment is TypeDefinition.
-		for (int i = 1; value != null && i < treePath.getSegmentCount(); i++) {
-			Object segment = treePath.getSegment(i);
-			segmentList.add(segment);
-			if (segment instanceof ChildDefinition<?>) {
-				childDef = (ChildDefinition<?>) segment;
-				Object[] values = ((Group) value).getProperty(childDef.getName());
-				choice = 0;
-				valueCount = 0;
-				if (values != null && values.length > 0) {
-					Integer chosenPath = chosenPaths.get(segmentList);
-					choice = chosenPath == null ? 0 : chosenPath;
-					value = values[choice];
-					valueCount = values.length;
-				} else
+		if(treePath.getFirstSegment() instanceof TypeDefinition){
+			segmentList.add(treePath.getFirstSegment());
+			for (int i = 1; value != null && i < treePath.getSegmentCount(); i++) {
+				Object segment = treePath.getSegment(i);
+				segmentList.add(segment);
+				if (segment instanceof ChildDefinition<?>) {
+					childDef = (ChildDefinition<?>) segment;
+					Object[] values = ((Group) value).getProperty(childDef.getName());
+					choice = 0;
+					valueCount = 0;
+					if (values != null && values.length > 0) {
+						Integer chosenPath = chosenPaths.get(segmentList);
+						choice = chosenPath == null ? 0 : chosenPath;
+						value = values[choice];
+						valueCount = values.length;
+					} else
+						value = null;
+				} else {
+					//TODO log message?
 					value = null;
-			} else {
-				//TODO log message?
-				value = null;
+				}
 			}
 		}
-
+		
+		else{
+			//if segments contain a set of metadata keys
+			if(treePath.getFirstSegment() instanceof Set<?>){
+				if(treePath.getSegmentCount() > 1){
+					Object data = treePath.getLastSegment();
+					List<Object> list = instance.getMetaData(data.toString());
+					valueCount = list.size();
+					
+					if (list.isEmpty()){
+						value = null;
+					}
+					
+					else value = list.get(0);
+					
+				}
+				
+				
+			}
+		}
+		
 		InstanceValidationReport report = null;
 		// If childDef is null we are at the top element.
 		if (childDef == null)
