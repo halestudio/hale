@@ -54,6 +54,8 @@ public class OMLReaderTest {
 	private static Alignment alignment3 = null;
 	private static Alignment alignment4 = null;
 	private static Alignment alignment5 = null;
+	private static Alignment alignment6 = null;
+	private static Alignment alignment7 = null;
 
 	/**
 	 * Load the test alignment.
@@ -100,6 +102,20 @@ public class OMLReaderTest {
 				OMLReaderTest.class.getResource(
 						"/testdata/dkm_inspire/mapping_dkm_inspire.xml.goml")
 						.toURI());
+
+		alignment6 = loadAlignment(
+				OMLReaderTest.class
+						.getResource("/testdata/testOML/hydroEx.xsd").toURI(),
+				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
+				OMLReaderTest.class.getResource(
+						"/testdata/testOML/test3.xml.goml").toURI());
+
+		alignment7 = loadAlignment(
+				OMLReaderTest.class
+						.getResource("/testdata/testOML/hydroEx.xsd").toURI(),
+				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
+				OMLReaderTest.class.getResource(
+						"/testdata/testOML/test.xml.goml").toURI());
 	}
 
 	/**
@@ -115,6 +131,8 @@ public class OMLReaderTest {
 		assertNotNull(alignment3);
 		assertNotNull(alignment4);
 		assertNotNull(alignment5);
+		assertNotNull(alignment6);
+		assertNotNull(alignment7);
 	}
 
 	/**
@@ -127,12 +145,16 @@ public class OMLReaderTest {
 		Collection<? extends Cell> cells3 = alignment3.getCells();
 		Collection<? extends Cell> cells4 = alignment4.getCells();
 		Collection<? extends Cell> cells5 = alignment5.getCells();
+		Collection<? extends Cell> cells6 = alignment6.getCells();
+		Collection<? extends Cell> cells7 = alignment7.getCells();
 
 		assertEquals(4, cells.size());
 		assertEquals(11, cells2.size());
 		assertEquals(33, cells3.size());
 		assertEquals(18, cells4.size());
 		assertEquals(51, cells5.size());
+		assertEquals(2, cells6.size());
+		assertEquals(2, cells7.size());
 	}
 
 	/**
@@ -757,9 +779,207 @@ public class OMLReaderTest {
 		assertEquals("income", name2);
 
 	}
+	
+	/**
+	 * test for the inspire identifier function in alignment5
+	 */
+	@Test
+	public void testIdentifier() {
+		Collection<? extends Cell> cells = alignment5.getCells();
 
-	// TODO: geographical name function doesn't work with "import project" or
-	// load schemas + alignment as single imports
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.inspire.identifier")) {
+				cell = temp;
+				break;
+			}
+		}
+		
+		ListMultimap<String, String> params = cell.getTransformationParameters();
+		
+		List<String> country = params.get("countryName");
+		List<String> provider = params.get("providerName");
+		List<String> product = params.get("productName");
+		List<String> version = params.get("version");
+		List<String> versionNilReason = params.get("versionNilReason");
+		
+		// check if all parameters were set once
+		assertEquals(1, country.size());
+		assertEquals(1, provider.size());
+		assertEquals(1, product.size());
+		assertEquals(1, version.size());
+		assertEquals(1, versionNilReason.size());
+		
+		// now test if they have correct values
+		assertEquals("at", country.get(0));
+		assertEquals("BEV", provider.get(0));
+		assertEquals("humboldt-sample-transformed-data-CadastralParcels", product.get(0));
+		assertEquals("", version.get(0));
+		assertEquals("unknown", versionNilReason.get(0));
+		
+		// check if all parameters were tested
+		assertEquals(5, params.size());
+	}
+
+	/**
+	 * test for the inspire geographical name function in alignment6
+	 */
+	@Test
+	public void testGeographicalName1() {
+		Collection<? extends Cell> cells = alignment6.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.inspire.geographicalname")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+
+		List<String> gender = params.get("grammaticalGender");
+		List<String> number = params.get("grammaticalNumber");
+		List<String> lang = params.get("language");
+		List<String> nameStatus = params.get("nameStatus");
+		List<String> nativeness = params.get("nativeness");
+		List<String> ipa = params.get("pronunciationIPA");
+		List<String> sound = params.get("pronunciationSoundLink");
+		List<String> source = params.get("sourceOfName");
+		List<String> script = params.get("script");
+		List<String> text = params.get("text");
+		List<String> trans = params.get("transliterationScheme");
+
+		// test if all parameters were set only once
+		assertEquals(1, gender.size());
+		assertEquals(1, number.size());
+		assertEquals(1, lang.size());
+		assertEquals(1, nameStatus.size());
+		assertEquals(1, nativeness.size());
+		assertEquals(1, ipa.size());
+		// sound shouldn't be available because in older version we couldn't
+		// enter a value
+		assertEquals(0, sound.size());
+		assertEquals(1, source.size());
+		assertEquals(1, script.size());
+		assertEquals(1, text.size());
+		assertEquals(1, trans.size());
+
+		// now test if they have the correct values
+		assertEquals("common", gender.get(0));
+		assertEquals("dual", number.get(0));
+		assertEquals("deu", lang.get(0));
+		assertEquals("historical", nameStatus.get(0));
+		assertEquals("exonym", nativeness.get(0));
+		assertEquals("IDipa", ipa.get(0));
+		assertEquals("source", source.get(0));
+		assertEquals("IDscript", script.get(0));
+		assertEquals("identifier", text.get(0));
+		assertEquals("IDtrans", trans.get(0));
+
+		// check if all parameters were tested (size is 10 because "sound" is
+		// not defined in params)
+		assertEquals(10, params.size());
+	}
+
+	/**
+	 * test for the inspire geographical name function in alignment7
+	 */
+	@Test
+	public void testGeographicalName2() {
+		Collection<? extends Cell> cells = alignment7.getCells();
+
+		Iterator<? extends Cell> it = cells.iterator();
+
+		Cell cell = null;
+		while (it.hasNext()) {
+			Cell temp = it.next();
+
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.inspire.geographicalname")) {
+				cell = temp;
+				break;
+			}
+		}
+
+		ListMultimap<String, String> params = cell
+				.getTransformationParameters();
+
+		List<String> gender = params.get("grammaticalGender");
+		List<String> number = params.get("grammaticalNumber");
+		List<String> lang = params.get("language");
+		List<String> nameStatus = params.get("nameStatus");
+		List<String> nativeness = params.get("nativeness");
+		List<String> ipa = params.get("pronunciationIPA");
+		List<String> sound = params.get("pronunciationSoundLink");
+		List<String> source = params.get("sourceOfName");
+		List<String> script = params.get("script");
+		List<String> text = params.get("text");
+		List<String> trans = params.get("transliterationScheme");
+
+		// test if all parameters (except the parameters for the spellings) were
+		// set only once
+		assertEquals(1, gender.size());
+		assertEquals(1, number.size());
+		assertEquals(1, lang.size());
+		assertEquals(1, nameStatus.size());
+		assertEquals(1, nativeness.size());
+		assertEquals(1, ipa.size());
+		// sound shouldn't be available because in older version we couldn't
+		// enter a value
+		assertEquals(0, sound.size());
+		assertEquals(1, source.size());
+
+		// spelling parameters
+		assertEquals(2, script.size());
+		assertEquals(2, text.size());
+		assertEquals(2, trans.size());
+
+		// now test if they have the correct values
+		assertEquals("", gender.get(0));
+		assertEquals("", number.get(0));
+		assertEquals("esp", lang.get(0));
+		assertEquals("official", nameStatus.get(0));
+		assertEquals("endonym", nativeness.get(0));
+		assertEquals("", ipa.get(0));
+		assertEquals("unknown", source.get(0));
+
+		for (int i = 0; i < text.size(); i++) {
+			String spellText = text.get(i);
+			String spellScript = script.get(i);
+			String spellTrans = trans.get(i);
+			if (i == 0) {
+				assertEquals("identifier", spellText);
+				assertEquals("idScript", spellScript);
+				// no value set, initial value is "null"
+				assertEquals(null, spellTrans);
+			}
+			if (i == 1) {
+				assertEquals("name", spellText);
+				// initial value is "eng", that was removed so we expect an
+				// empty string
+				assertEquals("", spellScript);
+				assertEquals("nameTrans", spellTrans);
+			}
+		}
+
+		// check if all parameters were tested (size is 13 because "sound" is
+		// not defined in params and there are 2 spellings this time and 1
+		// spelling has 3 parameters -> +3 parameters)
+		assertEquals(13, params.size());
+
+	}
 
 	private static Alignment loadAlignment(URI sourceSchemaLocation,
 			URI targetSchemaLocation, final URI alignmentLocation)

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ex="eu:esdihumboldt:hale:example"
+	xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs" elementFormDefault="qualified"
+	targetNamespace="eu:esdihumboldt:hale:example">
+
+	<import namespace="http://www.opengis.net/gml"
+		schemaLocation="http://schemas.opengis.net/gml/2.1.2/feature.xsd" />
+	<import namespace="http://www.opengis.net/wfs"
+	  schemaLocation="http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd" />
+
+	<element name="River" substitutionGroup="gml:_Feature"
+		type="ex:RiverType" />
+
+	<complexType name="RiverType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:LineStringPropertyType" />
+					<element name="code" type="string" minOccurs="0">
+						<annotation>
+							<documentation>
+								A code classifying the river feature.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="identifier" type="string" minOccurs="0">
+						<annotation>
+							<documentation>
+								River segment identifier. This identifier is not unique, as some segments are split into multiple features.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="width" type="double" minOccurs="0">
+						<annotation>
+							<documentation>
+								Average width of the river measured in foot (ft).&#xD;&#xA;
+								(fictional value)
+							</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+</schema>
