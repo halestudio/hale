@@ -39,8 +39,6 @@ import com.google.common.collect.Iterables;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionMetaLabelProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.PairLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
 import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvider;

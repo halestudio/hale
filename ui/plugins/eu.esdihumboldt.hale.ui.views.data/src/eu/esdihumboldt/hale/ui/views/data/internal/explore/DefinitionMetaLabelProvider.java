@@ -10,13 +10,15 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition.viewer;
+package eu.esdihumboldt.hale.ui.views.data.internal.explore;
 
 import org.eclipse.swt.graphics.Image;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 
 
 /**
@@ -45,7 +47,7 @@ public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 	 */
 	@Override
 	public Image getImage(Object element){
-		if (element.equals("metadata")){
+		if (element.equals(Messages.InstanceContentProvider_metadata)){
 			return CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_META);
 		}
 		
