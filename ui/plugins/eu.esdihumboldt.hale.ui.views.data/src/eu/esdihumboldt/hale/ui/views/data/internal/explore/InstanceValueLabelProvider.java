@@ -116,8 +116,6 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		if(((Pair<?, ?>) element).getFirst() instanceof Definition){
 			definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
 		}
-		
-		definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
 
 		if (definition instanceof ChildDefinition<?>)
 			report = InstanceValidator.validate(value, (ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
