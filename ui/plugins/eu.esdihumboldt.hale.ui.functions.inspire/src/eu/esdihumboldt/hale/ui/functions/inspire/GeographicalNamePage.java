@@ -133,7 +133,11 @@ public class GeographicalNamePage extends
 			nameStatus = initialValues.get(PROPERTY_NAMESTATUS).get(0);
 			nativeness = initialValues.get(PROPERTY_NATIVENESS).get(0);
 			ipa = initialValues.get(PROPERTY_PRONUNCIATIONIPA).get(0);
+			try {
 			sound = initialValues.get(PROPERTY_PRONUNCIATIONSOUNDLINK).get(0);
+			} catch (Exception e) {
+				sound = "";
+			}
 			sourceOfName = initialValues.get(PROPERTY_SOURCEOFNAME).get(0);
 
 			// script and transliteration can have more than one value, so set
