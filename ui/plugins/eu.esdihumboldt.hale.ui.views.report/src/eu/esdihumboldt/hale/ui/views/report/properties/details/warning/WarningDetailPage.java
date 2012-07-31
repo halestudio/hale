@@ -19,6 +19,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.ui.views.report.properties.details.ReportDetailsPage;
+import eu.esdihumboldt.hale.ui.views.report.properties.details.extension.CustomReportDetailsPage.MessageType;
 
 /**
  * Default details page for {@link Report}s.
@@ -39,13 +40,10 @@ public class WarningDetailPage extends ReportDetailsPage {
 			// overwrite element with first element from selection
 			report = ((IStructuredSelection) selection).getFirstElement();
 		}
-		
-		// set new report
-		if (report instanceof Report) {
-			this.report = (Report<?>) report;
-		}
-		
-		// provide input for tree
-		tree.getViewer().setInput(this.report.getWarnings());
+
+		if (report instanceof Report)
+			super.setReport((Report<?>) report);
+
+		super.setInputFor(MessageType.Warning);
 	}
 }

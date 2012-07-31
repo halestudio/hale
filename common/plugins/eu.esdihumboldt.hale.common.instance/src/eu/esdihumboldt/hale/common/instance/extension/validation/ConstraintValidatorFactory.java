@@ -16,18 +16,17 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.cs3d.util.eclipse.extension.AbstractConfigurationFactory;
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
-import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinition;
 
 /**
  * Factory for constraint validators.
  *
  * @author Kai Schwierczek
- * @param <T> the validation class
  */
-public class ConstraintValidatorFactory<T> extends AbstractConfigurationFactory<T> {
+public class ConstraintValidatorFactory extends AbstractConfigurationFactory<ConstraintValidator> {
 	/**
-	 * Create a {@link FilterDefinition} factory based on the given
+	 * Create a {@link ConstraintValidator} factory based on the given
 	 * configuration element.
+	 *
 	 * @param conf the configuration element
 	 */
 	public ConstraintValidatorFactory(IConfigurationElement conf) {
@@ -38,7 +37,7 @@ public class ConstraintValidatorFactory<T> extends AbstractConfigurationFactory<
 	 * @see de.cs3d.util.eclipse.extension.ExtensionObjectFactory#dispose(java.lang.Object)
 	 */
 	@Override
-	public void dispose(T arg0) {
+	public void dispose(ConstraintValidator arg0) {
 		// do nothing
 	}
 

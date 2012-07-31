@@ -12,13 +12,18 @@
 
 package eu.esdihumboldt.hale.io.oml.helper;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.cst.functions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.specification.cst.align.IEntity;
+import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * Translator class for geographical name functions
@@ -38,12 +43,53 @@ public class GeographicalNameTranslator implements FunctionTranslator,
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List, eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean, eu.esdihumboldt.hale.common.core.io.report.IOReporter, eu.esdihumboldt.specification.cst.align.ICell)
+	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
+	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
 			CellBean cellBean, IOReporter reporter, ICell cell) {
-		return params;
+		
+		// create the new parameter list
+		List<ParameterValue> newParams = new ArrayList<ParameterValue>();
+		
+		IEntity source = cell.getEntity1();
+		if (source instanceof ComposedProperty) {
+			ComposedProperty cp = (ComposedProperty) source;
+			// usually the composed property should only have one element in the
+			// collection
+			Property coll = cp.getCollection().get(0);
+			// that should be a composed property too
+			if (coll instanceof ComposedProperty) {
+				ComposedProperty comProp = (ComposedProperty) coll;
+				// parameters defined by the parameter page
+				List<IParameter> pageParams = comProp.getTransformation()
+						.getParameters();
+				// add each parameter defined by the parameter page
+				for (IParameter p : pageParams) {
+					newParams
+							.add(new ParameterValue(p.getName(), p.getValue()));
+				}
+				// the collection of the collection contains the parameters
+				// defined for the spellings
+				List<Property> props = comProp.getCollection();
+				for (Property prop : props) {
+					// each property has a list of 3 parameters (text, script,
+					// transliterationScheme)
+					List<IParameter> spellingParams = prop.getTransformation()
+							.getParameters();
+					for (IParameter p : spellingParams) {
+						newParams.add(new ParameterValue(p.getName(), p
+								.getValue()));
+					}
+				}
+			}
+
+		}
+
+		return newParams;
 	}
 
 }

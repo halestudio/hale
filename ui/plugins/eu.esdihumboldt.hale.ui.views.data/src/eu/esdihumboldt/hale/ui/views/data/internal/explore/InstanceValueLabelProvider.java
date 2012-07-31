@@ -49,9 +49,13 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 	public void update(ViewerCell cell) {
 		TreePath treePath = cell.getViewerRow().getTreePath();
 		Object element = treePath.getLastSegment();
+		Definition<?> definition = null;
 
 		Object value = ((Pair<?, ?>) element).getSecond();
-		Definition<?> definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
+		if(((Pair<?, ?>) element).getFirst() instanceof Definition){
+		definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
+		}
+		
 
 		InstanceValidationReport report = null;
 		if (definition instanceof ChildDefinition<?>)
@@ -108,7 +112,10 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		InstanceValidationReport report;
 
 		Object value = ((Pair<?, ?>) element).getSecond();
-		Definition<?> definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
+		Definition<?> definition = null;
+		if(((Pair<?, ?>) element).getFirst() instanceof Definition){
+			definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
+		}
 
 		if (definition instanceof ChildDefinition<?>)
 			report = InstanceValidator.validate(value, (ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());

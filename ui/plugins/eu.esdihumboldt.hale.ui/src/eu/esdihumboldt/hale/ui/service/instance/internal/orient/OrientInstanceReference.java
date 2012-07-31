@@ -134,15 +134,15 @@ public class OrientInstanceReference implements InstanceReference {
 						getTypeDefinition(), db.getDatabase(), getDataSet());
 //				handle.addReference(instance);
 				return new DefaultInstance(instance);
-			}
-		}
-		finally {
+			} else
+				return null;
+		} catch (IllegalArgumentException iae) {
+			return null;
+		} finally {
 			db.dispose();
 //			db.dispose(false);
 //			handle.tryClose();
 		}
-		
-		return null;
 	}
 
 }

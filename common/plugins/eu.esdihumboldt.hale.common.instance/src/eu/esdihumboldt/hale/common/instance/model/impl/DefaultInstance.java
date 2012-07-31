@@ -12,6 +12,12 @@
 
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -28,6 +34,8 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 	private DataSet dataSet;
 	
 	private Object value;
+	
+	private ListMultimap<String, Object> metaData;
 
 	/**
 	 * Create an empty instance.
@@ -50,6 +58,10 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 		
 		setValue(org.getValue());
 		setDataSet(org.getDataSet());
+		
+		for(String key : org.getMetaDataNames()){
+			setMetaData(key, org.getMetaData(key).toArray());
+		}
 	}
 
 	/**
@@ -90,6 +102,64 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 	@Override
 	public TypeDefinition getDefinition() {
 		return (TypeDefinition) super.getDefinition();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaData(java.lang.String)
+	 */
+	@Override
+	public List<Object> getMetaData(String key) {
+		if(metaData == null || metaData.isEmpty()){
+			return Collections.emptyList();
+		}
+		else return metaData.get(key);
+		
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.MutableInstance#putMetaData(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void putMetaData(String key, Object obj) {
+		if(metaData == null){
+			metaData = ArrayListMultimap.create();
+		}
+		metaData.put(key, obj);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaDataNames()
+	 */
+	@Override
+	public Set<String> getMetaDataNames() {		
+		if(metaData == null){
+			return Collections.emptySet();		
+		}	
+		
+		else return Collections.unmodifiableSet(metaData.keySet());
+
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.MutableInstance#setMetaData(java.lang.String, java.lang.Object[])
+	 */
+	@Override
+	public void setMetaData(String key, Object... values) {
+		if(metaData == null){
+			metaData = ArrayListMultimap.create();
+		}
+		
+		if (values == null || values.length == 0) {
+			metaData.removeAll(key);
+			return;
+		}
+		
+		else{
+			List<Object> valueList = new ArrayList<Object>();
+			for (Object value : values) {
+				valueList.add(value);
+			}
+			metaData.putAll(key, valueList);		}
 	}
 
 }

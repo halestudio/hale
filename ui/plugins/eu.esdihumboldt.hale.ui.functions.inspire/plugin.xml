@@ -24,6 +24,45 @@
                name="versionNilReason">
          </parameter>
       </propertyParameterPage>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.inspire.GeographicalNamePage"
+            function="eu.esdihumboldt.cst.functions.inspire.geographicalname"
+            id="eu.esdihumboldt.hale.ui.functions.inspire.geographicalname"
+            order="0">
+         <parameter
+               name="text">
+         </parameter>
+         <parameter
+               name="script">
+         </parameter>
+         <parameter
+               name="transliterationScheme">
+         </parameter>
+         <parameter
+               name="nameStatus">
+         </parameter>
+         <parameter
+               name="language">
+         </parameter>
+         <parameter
+               name="nativeness">
+         </parameter>
+         <parameter
+               name="sourceOfName">
+         </parameter>
+         <parameter
+               name="pronunciationIPA">
+         </parameter>
+         <parameter
+               name="pronunciationSoundLink">
+         </parameter>
+         <parameter
+               name="grammaticalGender">
+         </parameter>
+         <parameter
+               name="grammaticalNumber">
+         </parameter>
+      </propertyParameterPage>
    </extension>
 
 </plugin>

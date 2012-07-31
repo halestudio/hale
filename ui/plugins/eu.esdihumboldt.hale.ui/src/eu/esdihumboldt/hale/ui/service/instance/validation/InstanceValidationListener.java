@@ -26,4 +26,9 @@ public interface InstanceValidationListener {
 	 * @param report the resulting report
 	 */
 	public void instancesValidated(InstanceValidationReport report);
+
+	/**
+	 * Called, when the automatic instance validation gets enabled/disabled.
+	 */
+	public void validationEnabledChange();
 }

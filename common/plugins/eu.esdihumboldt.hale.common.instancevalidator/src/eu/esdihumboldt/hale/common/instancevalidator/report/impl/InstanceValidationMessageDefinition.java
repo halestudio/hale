@@ -37,7 +37,6 @@ public class InstanceValidationMessageDefinition extends AbstractMessageDefiniti
 	@Override
 	protected InstanceValidationMessage createMessage(Properties props) {
 		// instance reference isn't valid anymore either way... simply use null
-		return new DefaultInstanceValidationMessage(null, props.getProperty(KEY_MESSAGE),
-				null, props.getProperty(KEY_STACK_TRACE));
+		return new DefaultInstanceValidationMessage(null, props.getProperty(KEY_MESSAGE));
 	}
 }

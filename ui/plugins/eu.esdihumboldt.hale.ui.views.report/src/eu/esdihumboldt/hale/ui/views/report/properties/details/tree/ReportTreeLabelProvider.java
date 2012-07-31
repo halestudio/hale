@@ -12,17 +12,11 @@
 
 package eu.esdihumboldt.hale.ui.views.report.properties.details.tree;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.dialogs.FilteredTree;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
-import eu.esdihumboldt.hale.common.core.report.ReportSession;
+import eu.esdihumboldt.hale.ui.views.report.ReportListLabelProvider;
 import eu.esdihumboldt.hale.ui.views.report.properties.details.ReportDetailsPage;
 
 /**
@@ -31,26 +25,14 @@ import eu.esdihumboldt.hale.ui.views.report.properties.details.ReportDetailsPage
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportTreeLabelProvider extends LabelProvider {
-
-	private Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
-	
+public class ReportTreeLabelProvider extends ReportListLabelProvider {
 	@Override
-	public void dispose() {
-		for (Image i : imageCache.values()) {
-			i.dispose();
+	public String getText(Object element) {
+		if (element instanceof Message) {
+			return ((Message) element).getFormattedMessage();
 		}
 		
-		imageCache.clear();
-	}
-	
-	@Override
-	public String getText(Object obj) {
-		if (obj instanceof Message) {
-			return ((Message) obj).getFormattedMessage();
-		}
-		
-		return obj.toString();
+		return super.getText(element);
 	}
 	
 	/**
@@ -58,12 +40,7 @@ public class ReportTreeLabelProvider extends LabelProvider {
 	 */
 	@Override
 	public Image getImage(Object element) {
-		if (element instanceof ReportSession) {
-			String img = "icons/compressed_folder_obj.gif";
-			
-			return getImage(img);
-		}
-		else if (element instanceof Message) {
+		if (element instanceof Message) {
 			// get the right image
 			Message message = (Message) element;
 			
@@ -73,31 +50,7 @@ public class ReportTreeLabelProvider extends LabelProvider {
 			}
 
 			return getImage(img);
-		}
-		return null;
-	}
-	
-	/**
-	 * Get an Image from cache or resource.
-	 * 
-	 * @param img name of file
-	 * 
-	 * @return the Image
-	 */
-	private Image getImage(String img) {
-		ImageDescriptor descriptor = null;
-		
-		// TODO Platform.getBundle(ReportList.ID) does not work so here is a static plugin path!
-		descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
-		if (descriptor == null) {
-			return null;
-		}
-		
-		Image image = imageCache.get(descriptor);
-		if (image == null) {
-			image = descriptor.createImage();
-			imageCache.put(descriptor, image);
-		}
-		return image;
+		} else
+			return super.getImage(element);
 	}
 }

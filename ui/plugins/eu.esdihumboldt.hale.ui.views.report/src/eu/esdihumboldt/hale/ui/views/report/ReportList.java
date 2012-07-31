@@ -31,17 +31,14 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
-import org.eclipse.wb.swt.ResourceManager;
 
-import swing2swt.layout.BorderLayout;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
@@ -59,16 +56,14 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportList extends PropertiesViewPart implements ReportListener<Report<Message>, Message> {
+	private static final ALogger _log = ALoggerFactory.getLogger(ReportList.class);
 
 	/**
 	 * The ID for this plugin.
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.report.ReportList"; //$NON-NLS-1$
-	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
-	private TreeViewer _treeViewer;
 
-	private static final ALogger _log = ALoggerFactory.getLogger(ReportList.class);
-	
+	private TreeViewer _treeViewer;
 	private ReportService repService;
 	
 	/**
@@ -119,43 +114,34 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 	 */
 	@Override
 	public void createViewControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
-		container.setLayout(new BorderLayout(0, 0));
+		Composite composite = new Composite(parent, SWT.NONE);
+		TreeColumnLayout layout = new TreeColumnLayout();
+		composite.setLayout(layout);
 		{
-			Composite composite = new Composite(container, SWT.NONE);
-			composite.setLayoutData(BorderLayout.CENTER);
-			formToolkit.adapt(composite);
-			formToolkit.paintBordersFor(composite);
-			TreeColumnLayout layout = new TreeColumnLayout();
-			composite.setLayout(layout);
-			{
-				_treeViewer = new TreeViewer(composite, SWT.BORDER);
-				final Tree tree = _treeViewer.getTree();
-				tree.setHeaderVisible(false);
-				tree.setLinesVisible(false);
-				
-				// create column for reports
-				TreeViewerColumn col1 = new TreeViewerColumn(_treeViewer, SWT.NONE);
-				
-				// add the label provider
-				col1.setLabelProvider(new TreeColumnViewerLabelProvider(new ReportListLabelProvider()));
-				
-				// and layout
-				layout.setColumnData(col1.getColumn(), new ColumnWeightData(3));
-				
-				// create column for reports
-				TreeViewerColumn col2 = new TreeViewerColumn(_treeViewer, SWT.NONE);
-				
-				// add the label provider
-				col2.setLabelProvider(new TreeColumnViewerLabelProvider(new ReportListLabelDateProvider()));
-				
-				// create column for reports
-				layout.setColumnData(col2.getColumn(), new ColumnWeightData(1));
-				
-				formToolkit.paintBordersFor(tree);
-				
-				new ReportListMenu(getSite(), _treeViewer);
-			}
+			_treeViewer = new TreeViewer(composite, SWT.BORDER);
+			final Tree tree = _treeViewer.getTree();
+			tree.setHeaderVisible(false);
+			tree.setLinesVisible(false);
+			
+			// create column for reports
+			TreeViewerColumn col1 = new TreeViewerColumn(_treeViewer, SWT.NONE);
+			
+			// add the label provider
+			col1.setLabelProvider(new TreeColumnViewerLabelProvider(new ReportListLabelProvider()));
+			
+			// and layout
+			layout.setColumnData(col1.getColumn(), new ColumnWeightData(3));
+			
+			// create column for reports
+			TreeViewerColumn col2 = new TreeViewerColumn(_treeViewer, SWT.NONE);
+			
+			// add the label provider
+			col2.setLabelProvider(new TreeColumnViewerLabelProvider(new ReportListLabelDateProvider()));
+			
+			// create column for reports
+			layout.setColumnData(col2.getColumn(), new ColumnWeightData(1));
+			
+			new ReportListMenu(getSite(), _treeViewer);
 		}
 
 		createActions();
@@ -331,7 +317,7 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 		
 		@Override
 		public void menuAboutToShow(IMenuManager manager) {
-			manager.add(new Action("Clear Report List", ResourceManager.getPluginImageDescriptor("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/clear_co.gif")) {
+			manager.add(new Action("Clear Report List", AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/clear_co.gif")) {
 
 				/**
 				 * @see org.eclipse.jface.action.Action#run()
@@ -343,7 +329,7 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 				}
 			});
 			
-			manager.add(new Action("Delete Log", ResourceManager.getPluginImageDescriptor("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/delete_obj.gif")) {
+			manager.add(new Action("Delete Log", AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/delete_obj.gif")) {
 
 				/**
 				 * @see org.eclipse.jface.action.Action#run()
@@ -363,7 +349,7 @@ public class ReportList extends PropertiesViewPart implements ReportListener<Rep
 				}
 			});
 			
-			manager.add(new Action("Restore Log", ResourceManager.getPluginImageDescriptor("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/restore_log.gif")) {
+			manager.add(new Action("Restore Log", AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", "icons/popupmenu/restore_log.gif")) {
 
 				/**
 				 * @see org.eclipse.jface.action.Action#run()

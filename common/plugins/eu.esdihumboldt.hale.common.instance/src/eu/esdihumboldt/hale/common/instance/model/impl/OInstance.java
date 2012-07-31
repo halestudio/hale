@@ -12,21 +12,28 @@
 
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
+import com.google.common.base.Preconditions;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Instance implementation based on {@link ODocument}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -36,7 +43,12 @@ public class OInstance extends OGroup implements MutableInstance {
 	 * Name for the special field for an instance value
 	 */
 	public static final String FIELD_VALUE = "___value___";
-	
+
+	/**
+	 * Name for the special field for MetaData documents
+	 */
+	public static final String FIELD_METADATA = "___metadata___";
+
 	/**
 	 * The data set the instance is associated to. This value is not persisted.
 	 */
@@ -48,45 +60,58 @@ public class OInstance extends OGroup implements MutableInstance {
 	private static final Set<String> SPECIAL_FIELDS = new HashSet<String>();
 	static {
 		SPECIAL_FIELDS.add(FIELD_VALUE);
+		SPECIAL_FIELDS.add(FIELD_METADATA);
 	}
-	
+
 	/**
 	 * Creates an empty instance associated with the given type.
-	 * @param typeDef the definition of the instance's type 
-	 * @param dataSet the data set the instance is associated to
+	 * 
+	 * @param typeDef
+	 *            the definition of the instance's type
+	 * @param dataSet
+	 *            the data set the instance is associated to
 	 */
 	public OInstance(TypeDefinition typeDef, DataSet dataSet) {
 		super(typeDef);
-		
+
 		this.dataSet = dataSet;
 	}
-	
+
 	/**
 	 * Creates an instance based on the given document.
-	 * @param document the document
-	 * @param typeDef the definition of the instance's type
-	 * @param db the database
-	 * @param dataSet the data set the instance is associated to 
+	 * 
+	 * @param document
+	 *            the document
+	 * @param typeDef
+	 *            the definition of the instance's type
+	 * @param db
+	 *            the database
+	 * @param dataSet
+	 *            the data set the instance is associated to
 	 */
-	public OInstance(ODocument document, TypeDefinition typeDef, 
+	public OInstance(ODocument document, TypeDefinition typeDef,
 			ODatabaseRecord db, DataSet dataSet) {
 		super(document, typeDef, db);
-		
+
 		this.dataSet = dataSet;
 	}
-	
+
 	/**
-	 * Copy constructor.
-	 * Creates an instance based on the properties and values of the given 
-	 * instance.
+	 * Copy constructor. Creates an instance based on the properties and values
+	 * of the given instance.
 	 * 
-	 * @param org the instance to copy
+	 * @param org
+	 *            the instance to copy
 	 */
 	public OInstance(Instance org) {
 		super(org);
-		
+
 		setValue(org.getValue());
 		setDataSet(org.getDataSet());
+		
+		for(String key : org.getMetaDataNames()){
+			setMetaData(key, org.getMetaData(key).toArray());
+		}
 	}
 
 	/**
@@ -103,7 +128,7 @@ public class OInstance extends OGroup implements MutableInstance {
 	@Override
 	public Object getValue() {
 		associatedDbWithThread();
-		
+
 		return convertDocument(document.field(FIELD_VALUE), null);
 	}
 
@@ -115,8 +140,7 @@ public class OInstance extends OGroup implements MutableInstance {
 		Collection<String> superFields = super.getSpecialFieldNames();
 		if (superFields.isEmpty()) {
 			return SPECIAL_FIELDS;
-		}
-		else {
+		} else {
 			Set<String> result = new HashSet<String>(superFields);
 			result.addAll(SPECIAL_FIELDS);
 			return result;
@@ -139,6 +163,98 @@ public class OInstance extends OGroup implements MutableInstance {
 	@Override
 	public void setDataSet(DataSet dataSet) {
 		this.dataSet = dataSet;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaData(java.lang.String)
+	 */
+	@Override
+	public List<Object> getMetaData(String key) {
+		associatedDbWithThread();
+
+		ODocument datafield = (ODocument) document.field(FIELD_METADATA);
+		
+		if (datafield == null) {
+			return Collections.emptyList();
+		}
+
+		Object[] values = getProperty(new QName(key), datafield);
+
+		if (values == null || values.length == 0) {
+			return Collections.emptyList();
+		}
+		return Arrays.asList(values);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * The parameter "Object obj" may not be an ODocument
+	 */
+	@Override
+	public void putMetaData(String key, Object obj) {
+
+		Preconditions.checkArgument(!(obj instanceof ODocument
+				|| obj instanceof Instance || obj instanceof Group));
+
+		ODocument metaData;
+
+		if (document.field(FIELD_METADATA) == null) {
+			metaData = new ODocument();
+			document.field(FIELD_METADATA, metaData);
+		} else {
+			metaData = (ODocument) document.field(FIELD_METADATA);
+		}
+
+		addProperty(new QName(key), obj, metaData);
+	}
+	
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaDataNames()
+	 */
+	@Override
+	public Set<String> getMetaDataNames(){
+		associatedDbWithThread();
+		
+		ODocument datafield = (ODocument) document.field(FIELD_METADATA);
+		
+		if(datafield == null 
+				//|| datafield.isEmpty()
+				){
+			return Collections.emptySet();
+		}
+		
+		Iterable<QName> it = getPropertyNames(datafield);
+		
+		Set<String> keys = new HashSet<String>();
+		for (QName field : it) {
+			keys.add(field.getLocalPart());
+			
+		}
+		return keys;
+			
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * The parameter values may not contain an ODocument
+	 */
+	@Override
+	public void setMetaData(String key, Object... values){
+		
+		for(Object value : values){
+			Preconditions.checkArgument(!(value instanceof ODocument
+					|| value instanceof Instance || value instanceof Group));
+		}
+		
+		ODocument metaData;
+		if (document.field(FIELD_METADATA) == null) {
+			metaData = new ODocument();
+			document.field(FIELD_METADATA, metaData);
+		} 
+		else metaData = ((ODocument) document.field(FIELD_METADATA));
+		
+		setPropertyInternal(metaData, new QName(key), values);
 	}
 
 }

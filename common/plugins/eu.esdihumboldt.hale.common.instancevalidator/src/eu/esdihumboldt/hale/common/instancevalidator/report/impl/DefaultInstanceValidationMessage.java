@@ -23,28 +23,15 @@ import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMe
  */
 public class DefaultInstanceValidationMessage extends MessageImpl implements InstanceValidationMessage {
 	private final InstanceReference instanceReference;
-	/**
-	 * Create a new instance validation message.
-	 *
-	 * @param instanceReference the instance reference this message is associated to, may be null
-	 * @param message the message string
-	 * @param throwable the associated throwable, may be null
-	 * @param stackTrace the associated stack trace, or null
-	 */
-	public DefaultInstanceValidationMessage(InstanceReference instanceReference, String message, Throwable throwable, String stackTrace) {
-		super(message, throwable, stackTrace);
-		this.instanceReference = instanceReference;
-	}
 
 	/**
 	 * Create a new instance validation message.
 	 *
 	 * @param instanceReference the instance reference this message is associated to, may be null
 	 * @param message the message string
-	 * @param throwable the associated throwable, may be null
 	 */
-	public DefaultInstanceValidationMessage(InstanceReference instanceReference, String message, Throwable throwable) {
-		super(message, throwable);
+	public DefaultInstanceValidationMessage(InstanceReference instanceReference, String message) {
+		super(message, null);
 		this.instanceReference = instanceReference;
 	}
 
