@@ -233,6 +233,26 @@ public abstract class GMLGeometryUtil {
 			try {
 				List<Double> values = ConversionUtil.getAsList(value, Double.class, true);
 				List<Coordinate> cs = new ArrayList<Coordinate>();
+				
+				// validate dimension
+				if (values.size() % srsDimension != 0) {
+					// try alternative dimension
+					int alternative = (srsDimension == 2)?(3):(2);
+					
+					if (values.size() % alternative != 0) {
+						// still not valid
+						throw new GeometryNotSupportedException(
+								"Value count in posList not compatible to given dimension.");
+					}
+					else {
+						log.debug("Assuming "
+								+ alternative
+								+ "-dimensional coordinates, as value count doesn't match "
+								+ srsDimension + " dimensions.");
+						srsDimension = alternative;
+					}
+				}
+				
 				if(srsDimension == 2){
 					for(int i = 0; i < values.size(); i++){
 						cs.add(new Coordinate(values.get(i), values.get(++i)));
