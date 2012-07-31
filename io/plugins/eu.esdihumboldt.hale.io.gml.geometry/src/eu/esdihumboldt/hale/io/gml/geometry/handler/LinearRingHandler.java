@@ -21,6 +21,9 @@ import javax.xml.namespace.QName;
 
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
+
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -30,6 +33,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
+import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
@@ -41,12 +45,30 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String LINEAR_RING_TYPE = "LinearRingType";
+	
+	private static final ALogger log = ALoggerFactory.getLogger(LinearRingHandler.class);
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance, int)
+	 * @see GeometryHandler#createGeometry(Instance, int)
 	 */
 	@Override
 	public Object createGeometry(Instance instance, int srsDimension)
+			throws GeometryNotSupportedException {
+		return createGeometry(instance, srsDimension, true);
+	}
+		
+	/**
+	 * Create a {@link LinearRing} geometry from the given instance.
+	 * @param instance the instance
+	 * @param srsDimension the SRS dimension
+	 * @param allowTryOtherDimension if trying another dimension is allowed on 
+	 *   failure (e.g. 3D instead of 2D)
+	 * @return the {@link LinearRing} geometry
+	 * @throws GeometryNotSupportedException if the type definition doesn't 
+	 *   represent a geometry type supported by the handler
+	 */
+	protected GeometryProperty<LinearRing> createGeometry(Instance instance, int srsDimension,
+			boolean allowTryOtherDimension)
 			throws GeometryNotSupportedException {
 
 		LinearRing ring = null;
@@ -56,8 +78,21 @@ public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 		@SuppressWarnings("unchecked")
 		DefaultGeometryProperty<LineString> linestring = (DefaultGeometryProperty<LineString>) handler
 				.createGeometry(instance, srsDimension);
-		ring = getGeometryFactory().createLinearRing(
-				linestring.getGeometry().getCoordinates());
+		try {
+			ring = getGeometryFactory().createLinearRing(
+					linestring.getGeometry().getCoordinates());
+		} catch (IllegalArgumentException e) {
+			if (allowTryOtherDimension) {
+				// the error "Points of LinearRing do not form a closed linestring"
+				// can be an expression of a wrong dimension being used
+				// we try an alternative, to be sure (e.g. 3D instead of 2D)
+				int alternativeDimension = (srsDimension == 2)?(3):(2);
+				GeometryProperty<LinearRing> geom = createGeometry(instance, alternativeDimension, false);
+				log.debug("Assuming geometry is " + alternativeDimension + "-dimensional.");
+				return geom;
+			}
+			throw e;
+		}
 
 		if (ring != null) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
