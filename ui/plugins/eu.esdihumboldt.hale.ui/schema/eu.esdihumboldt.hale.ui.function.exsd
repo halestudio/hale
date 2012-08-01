@@ -156,6 +156,57 @@
       </complexType>
    </element>
 
+   <element name="propertyParameterEditor">
+      <annotation>
+         <documentation>
+            Associate an editor to a parameter of a property function for use in the generic parameter page.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="function" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.function/propertyFunction/@identifier"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.ui.common.EditorFactory"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="parameter" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The parameter name
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Attribute specifying the priority of an editor. The editor with the highest priority is used.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
    <element name="typeParameterPage">
       <complexType>
          <choice minOccurs="1" maxOccurs="unbounded">
@@ -192,6 +243,57 @@
             <annotation>
                <documentation>
                   Attribute to specify the order of parameter pages. The smaller the number, the earlier the page will be used.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="typeParameterEditor">
+      <annotation>
+         <documentation>
+            Associate an editor to a parameter of a type function for use in the generic parameter page.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="function" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.align.function/typeFunction/@identifier"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.ui.common.EditorFactory"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="parameter" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The parameter name
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Attribute specifying the priority of an editor. The editor with the highest priority is used.
                </documentation>
             </annotation>
          </attribute>
