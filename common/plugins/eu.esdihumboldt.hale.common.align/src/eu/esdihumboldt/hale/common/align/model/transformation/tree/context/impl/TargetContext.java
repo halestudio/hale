@@ -35,7 +35,6 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.GroupNode;
-import eu.esdihumboldt.hale.common.align.model.transformation.tree.Leftovers;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
@@ -810,104 +809,104 @@ public class TargetContext implements TransformationContext {
 		});
 	}
 
-	/**
-	 * Checks whether the given source node is part of the context for the duplication.
-	 *
-	 * @param source the source node to check
-	 * @param info the context information
-	 * @return true, if the given node is in the context for the duplication, false otherwise
-	 */
-	private boolean isInContext(SourceNode source, DuplicationInformation info) {
-		Collection<SourceNode> contextNodes = info.getOldSourceNodes(source.getEntityDefinition());
-		for (SourceNode node : contextNodes)
-			if (node == source)
-				return true;
-		return false;
-	}
+//	/**
+//	 * Checks whether the given source node is part of the context for the duplication.
+//	 *
+//	 * @param source the source node to check
+//	 * @param info the context information
+//	 * @return true, if the given node is in the context for the duplication, false otherwise
+//	 */
+//	private boolean isInContext(SourceNode source, DuplicationInformation info) {
+//		Collection<SourceNode> contextNodes = info.getOldSourceNodes(source.getEntityDefinition());
+//		for (SourceNode node : contextNodes)
+//			if (node == source)
+//				return true;
+//		return false;
+//	}
 
 	// OLD STUFF!
 
-	/**
-	 * Track back target nodes and duplicate any augmentation cells.
-	 * @param originalTarget the original target node
-	 * @param duplicationContext the duplication context
-	 */
-	private void augmentationTrackback(TargetNode originalTarget, 
-			DuplicationContext duplicationContext) {
-		// track back child augmentations
-		for (TargetNode child : originalTarget.getChildren(false)) { //XXX should annotated children be included?
-			augmentationTrackback(child, duplicationContext);
-		}
-		
-		// track back augmentations
-		for (CellNode originalAssignment : originalTarget.getAssignments()) {
-			/*
-			 * Duplicated target does not contain an assignment representing
-			 * the same cell as originalAssignment. 
-			 */
-			if (originalAssignment.getSources().isEmpty()) {
-				// the cell is an augmentation, thus we duplicate it
-				duplicateCell(originalAssignment, null, duplicationContext);
-				/*
-				 * it is automatically added to the target nodes (which are 
-				 * retrieved from the duplication context or created as
-				 * necessary)
-				 */
-			}
-		}
-	}
-
-	/**
-	 * Track the graph back to sources that are missing in a cell node compared
-	 * to the original cell node.
-	 * @param cellNode the cell node
-	 * @param originalCell the original cell node the node was duplicated from
-	 */
-	private void cellTrackback(CellNodeImpl cellNode, CellNode originalCell) {
-		for (SourceNode originalSource : originalCell.getSources()) {
-			if (!cellNode.getSources().contains(originalSource)) {
-				/*
-				 * Duplicated cell does not contain a source representing the
-				 * same entity as originalSource.
-				 */
-				SourceNode newSource = null;
-				
-				// now there are several possible cases
-				// a) the original source has leftovers and we grab one
-				Leftovers leftovers = originalSource.getLeftovers();
-				if (leftovers != null) {
-					newSource = leftovers.consumeValue(originalCell.getCell());
-					
-					if (newSource != null) {
-						// interconnect both
-						newSource.addRelation(cellNode);
-						cellNode.addSource(originalCell.getSourceNames(originalSource), 
-								newSource);
-						//XXX hard connections are OK here, as a leftover source is a duplicate
-					}
-					else {
-						//TODO add an undefined source node in this case?
-					}
-				}
-				
-				// b) the original source has a parent (ot it has a parent etc.)
-				//    that has leftovers
-				if (newSource == null) {
-					//TODO
-				}
-				
-				// c) we use the original source node
-				if (newSource == null) {
-					newSource = originalSource;
-					
-					// interconnect both
-					newSource.addAnnotatedRelation(cellNode); //FIXME should be an augmentated relation!!!!
-					cellNode.addSource(originalCell.getSourceNames(originalSource), 
-							newSource);
-				}
-			}
-		}
-	}
+//	/**
+//	 * Track back target nodes and duplicate any augmentation cells.
+//	 * @param originalTarget the original target node
+//	 * @param duplicationContext the duplication context
+//	 */
+//	private void augmentationTrackback(TargetNode originalTarget, 
+//			DuplicationContext duplicationContext) {
+//		// track back child augmentations
+//		for (TargetNode child : originalTarget.getChildren(false)) { //XXX should annotated children be included?
+//			augmentationTrackback(child, duplicationContext);
+//		}
+//		
+//		// track back augmentations
+//		for (CellNode originalAssignment : originalTarget.getAssignments()) {
+//			/*
+//			 * Duplicated target does not contain an assignment representing
+//			 * the same cell as originalAssignment. 
+//			 */
+//			if (originalAssignment.getSources().isEmpty()) {
+//				// the cell is an augmentation, thus we duplicate it
+//				duplicateCell(originalAssignment, null, duplicationContext);
+//				/*
+//				 * it is automatically added to the target nodes (which are 
+//				 * retrieved from the duplication context or created as
+//				 * necessary)
+//				 */
+//			}
+//		}
+//	}
+//
+//	/**
+//	 * Track the graph back to sources that are missing in a cell node compared
+//	 * to the original cell node.
+//	 * @param cellNode the cell node
+//	 * @param originalCell the original cell node the node was duplicated from
+//	 */
+//	private void cellTrackback(CellNodeImpl cellNode, CellNode originalCell) {
+//		for (SourceNode originalSource : originalCell.getSources()) {
+//			if (!cellNode.getSources().contains(originalSource)) {
+//				/*
+//				 * Duplicated cell does not contain a source representing the
+//				 * same entity as originalSource.
+//				 */
+//				SourceNode newSource = null;
+//				
+//				// now there are several possible cases
+//				// a) the original source has leftovers and we grab one
+//				Leftovers leftovers = originalSource.getLeftovers();
+//				if (leftovers != null) {
+//					newSource = leftovers.consumeValue(originalCell.getCell());
+//					
+//					if (newSource != null) {
+//						// interconnect both
+//						newSource.addRelation(cellNode);
+//						cellNode.addSource(originalCell.getSourceNames(originalSource), 
+//								newSource);
+//						//XXX hard connections are OK here, as a leftover source is a duplicate
+//					}
+//					else {
+//						//TODO add an undefined source node in this case?
+//					}
+//				}
+//				
+//				// b) the original source has a parent (ot it has a parent etc.)
+//				//    that has leftovers
+//				if (newSource == null) {
+//					//TODO
+//				}
+//				
+//				// c) we use the original source node
+//				if (newSource == null) {
+//					newSource = originalSource;
+//					
+//					// interconnect both
+//					newSource.addAnnotatedRelation(cellNode); //FIXME should be an augmentated relation!!!!
+//					cellNode.addSource(originalCell.getSourceNames(originalSource), 
+//							newSource);
+//				}
+//			}
+//		}
+//	}
 
 	/**
 	 * Duplicate a source node.
