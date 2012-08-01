@@ -91,5 +91,22 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 		
 		return getParameters().get(parameterName).get(0);
 	}
+	
+	/**
+	 * Get the first parameter defined with the given parameter name. If no
+	 * such parameter exists, the given default value is returned.
+	 * @param parameterName the parameter name
+	 * @param defaultValue the default value for the parameter
+	 * @return the parameter value, or the default if none is specified
+	 */
+	protected String getOptionalParameter(String parameterName, String defaultValue) {
+		if (getParameters() == null
+				|| getParameters().get(parameterName) == null
+				|| getParameters().get(parameterName).isEmpty()) {
+			return defaultValue;
+		}
+		
+		return getParameters().get(parameterName).get(0);
+	}
 
 }
