@@ -18,3 +18,4 @@ Import-Package: de.fhg.igd.osgi.util,
  org.springframework.core.convert
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
+Export-Package: eu.esdihumboldt.hale.ui.common.editors
