@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Attribute Editor Bundle
-Bundle-SymbolicName: eu.esdihumboldt.hale.ui.common.editors;singleton:=true
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.common.definition.editors;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.fhg.igd.osgi.util,
@@ -19,4 +19,4 @@ Import-Package: de.fhg.igd.osgi.util,
  org.springframework.core.convert
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
-Export-Package: eu.esdihumboldt.hale.ui.common.editors
+Export-Package: eu.esdihumboldt.hale.ui.common.definition.editors
