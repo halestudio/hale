@@ -160,7 +160,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.cache"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
       <plugin id="eu.esdihumboldt.hale.ui.common"/>
-      <plugin id="eu.esdihumboldt.hale.ui.common.editors"/>
+      <plugin id="eu.esdihumboldt.hale.ui.common.definition.editors"/>
       <plugin id="eu.esdihumboldt.hale.ui.common.graph"/>
       <plugin id="eu.esdihumboldt.hale.ui.filter"/>
       <plugin id="eu.esdihumboldt.hale.ui.firststeps"/>
