@@ -77,5 +77,12 @@
                name="additional_property">
          </parameter>
       </typeParameterPage>
+      <propertyParameterEditor
+            class="eu.esdihumboldt.hale.ui.common.editors.BooleanEditorFactory"
+            function="eu.esdihumboldt.hale.align.rename"
+            id="eu.esdihumboldt.hale.align.rename.ignoreNamespaces.editor"
+            parameter="ignoreNamespaces"
+            priority="0">
+      </propertyParameterEditor>
    </extension>
 </plugin>
