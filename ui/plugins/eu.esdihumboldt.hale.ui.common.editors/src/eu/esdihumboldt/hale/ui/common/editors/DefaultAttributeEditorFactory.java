@@ -18,7 +18,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 
 /**
@@ -33,7 +33,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 	 * @see AttributeEditorFactory#createEditor(Composite, PropertyDefinition)
 	 */
 	@Override
-	public AttributeEditor<?> createEditor(Composite parent,
+	public Editor<?> createEditor(Composite parent,
 			PropertyDefinition property) {
 		TypeDefinition type = property.getPropertyType();
 

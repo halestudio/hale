@@ -30,7 +30,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  */
 public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
 	private String initialValue;
-	private AttributeEditor<?> editor;
+	private Editor<?> editor;
 	private Composite page;
 	private Composite title;
 	
@@ -124,7 +124,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 			editor.setPropertyChangeListener(new IPropertyChangeListener() {
 				@Override
 				public void propertyChange(PropertyChangeEvent event) {
-					if (event.getProperty().equals(AttributeEditor.IS_VALID))
+					if (event.getProperty().equals(Editor.IS_VALID))
 						setPageComplete((Boolean) event.getNewValue());
 				}
 			});

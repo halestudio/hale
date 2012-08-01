@@ -23,8 +23,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
-import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
 
 /**
  * Attribute editor for boolean values
@@ -63,7 +63,7 @@ public class BooleanAttributeEditor extends AbstractAttributeEditor<Boolean> {
 	}
 
 	/**
-	 * @see AttributeEditor#getAsText()
+	 * @see Editor#getAsText()
 	 */
 	@Override
 	public String getAsText() {
@@ -71,7 +71,7 @@ public class BooleanAttributeEditor extends AbstractAttributeEditor<Boolean> {
 	}
 
 	/**
-	 * @see AttributeEditor#getControl()
+	 * @see Editor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -79,7 +79,7 @@ public class BooleanAttributeEditor extends AbstractAttributeEditor<Boolean> {
 	}
 
 	/**
-	 * @see AttributeEditor#getValue()
+	 * @see Editor#getValue()
 	 */
 	@Override
 	public Boolean getValue() {
@@ -87,7 +87,7 @@ public class BooleanAttributeEditor extends AbstractAttributeEditor<Boolean> {
 	}
 
 	/**
-	 * @see AttributeEditor#setAsText(String)
+	 * @see Editor#setAsText(String)
 	 */
 	@Override
 	public void setAsText(String text) {
@@ -95,7 +95,7 @@ public class BooleanAttributeEditor extends AbstractAttributeEditor<Boolean> {
 	}
 
 	/**
-	 * @see AttributeEditor#setValue(Object)
+	 * @see Editor#setValue(Object)
 	 */
 	@Override
 	public void setValue(Boolean value) {
@@ -103,7 +103,7 @@ public class BooleanAttributeEditor extends AbstractAttributeEditor<Boolean> {
 	}
 
 	/**
-	 * @see AttributeEditor#isValid()
+	 * @see Editor#isValid()
 	 */
 	@Override
 	public boolean isValid() {

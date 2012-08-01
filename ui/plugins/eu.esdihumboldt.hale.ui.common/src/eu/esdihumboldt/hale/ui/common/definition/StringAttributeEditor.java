@@ -19,6 +19,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.hale.ui.common.Editor;
+
 
 /**
  * Simple attribute editor for string values.
@@ -48,7 +50,7 @@ public class StringAttributeEditor extends AbstractAttributeEditor<String> {
 	}
 	
 	/**
-	 * @see AttributeEditor#getAsText()
+	 * @see Editor#getAsText()
 	 */
 	@Override
 	public String getAsText() {
@@ -56,7 +58,7 @@ public class StringAttributeEditor extends AbstractAttributeEditor<String> {
 	}
 
 	/**
-	 * @see AttributeEditor#getControl()
+	 * @see Editor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -64,7 +66,7 @@ public class StringAttributeEditor extends AbstractAttributeEditor<String> {
 	}
 
 	/**
-	 * @see AttributeEditor#getValue()
+	 * @see Editor#getValue()
 	 */
 	@Override
 	public String getValue() {
@@ -72,7 +74,7 @@ public class StringAttributeEditor extends AbstractAttributeEditor<String> {
 	}
 
 	/**
-	 * @see AttributeEditor#setAsText(String)
+	 * @see Editor#setAsText(String)
 	 */
 	@Override
 	public void setAsText(String text) {
@@ -80,7 +82,7 @@ public class StringAttributeEditor extends AbstractAttributeEditor<String> {
 	}
 
 	/**
-	 * @see AttributeEditor#setValue(Object)
+	 * @see Editor#setValue(Object)
 	 */
 	@Override
 	public void setValue(String value) {
@@ -92,7 +94,7 @@ public class StringAttributeEditor extends AbstractAttributeEditor<String> {
 	}
 
 	/**
-	 * @see AttributeEditor#isValid()
+	 * @see Editor#isValid()
 	 */
 	@Override
 	public boolean isValid() {

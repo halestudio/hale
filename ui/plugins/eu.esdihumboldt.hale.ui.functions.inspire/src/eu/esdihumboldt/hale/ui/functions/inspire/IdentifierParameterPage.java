@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
@@ -57,7 +57,7 @@ public class IdentifierParameterPage extends
 
 	Text version = null;
 
-	private AttributeEditor<?> nilEditor;
+	private Editor<?> nilEditor;
 
 	private String initialCountry;
 	private String initialProvider;
