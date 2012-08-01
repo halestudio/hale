@@ -52,6 +52,11 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
  */
 @Immutable
 public class Rename extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements RenameFunction {
+	
+	// object symbolizing that no match for the source to the target definition was found (in contrast to null value)
+	private static enum Result {
+		NO_MATCH
+	}
 
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
@@ -62,6 +67,9 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 
 		String structuralRename = getOptionalParameter(PARAMETER_STRUCTURAL_RENAME, "false");
 		boolean structuralRenameEnabled = Boolean.parseBoolean(structuralRename);
+		
+		String ignoreNamespaces = getOptionalParameter(PARAMETER_IGNORE_NAMESPACES, "false");
+		boolean ignoreNamespacesEnabled = Boolean.parseBoolean(ignoreNamespaces);
 
 		// not a group? just return value.
 		if (!(sourceValue instanceof Group))
@@ -74,15 +82,13 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 				return null;
 		} else {
 			// structural rename
-			Object result = structuralRename(sourceValue, resultProperty.getDefinition());
-			if (result == NO_MATCH)
+			Object result = structuralRename(sourceValue, resultProperty.getDefinition(),
+					ignoreNamespacesEnabled);
+			if (result == Result.NO_MATCH)
 				return null; // source could neither be used for target value, nor any child properties
 			return result;
 		}
 	}
-
-	// object symbolizing that no match for the source to the target definition was found (in contrast to null value)
-	private Object NO_MATCH = new Object();
 
 	/**
 	 * Performs a structural rename on the given source object to the given
@@ -90,9 +96,12 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 	 * 
 	 * @param source the source value (or group/instance)
 	 * @param targetDefinition the target definition
+	 * @param allowIgnoreNamespaces if for the structure comparison, namespaces
+	 *   may be ignored
 	 * @return the transformed value (or group/instance) or NO_MATCH
 	 */
-	private Object structuralRename(Object source, ChildDefinition<?> targetDefinition) {
+	private Object structuralRename(Object source, ChildDefinition<?> targetDefinition, 
+			boolean allowIgnoreNamespaces) {
 		if (!(source instanceof Group)) {
 			// source simple value
 			if (targetDefinition.asProperty() != null) {
@@ -124,35 +133,38 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 							DataSet.TRANSFORMED);
 					instance.setValue(convertValue(((Instance) source).getValue(), targetDefinition.asProperty()
 							.getPropertyType()));
-					renameChildren((Group) source, instance, targetDefinition);
+					renameChildren((Group) source, instance, targetDefinition,
+							allowIgnoreNamespaces);
 					return instance;
 				}
 			} else {
 				// source has no value
 				if (targetDefinition.asProperty().getPropertyType().getChildren().isEmpty())
-					return NO_MATCH; // no match possible
+					return Result.NO_MATCH; // no match possible
 				else {
 					// instance with no value set
 					MutableInstance instance = new DefaultInstance(targetDefinition.asProperty().getPropertyType(),
 							DataSet.TRANSFORMED);
-					if (renameChildren((Group) source, instance, targetDefinition))
+					if (renameChildren((Group) source, instance, targetDefinition,
+							allowIgnoreNamespaces))
 						return instance;
 					else
-						return NO_MATCH; // no child matched and no value
+						return Result.NO_MATCH; // no child matched and no value
 				}
 			}
 
 		} else if (targetDefinition.asGroup() != null) {
 			// target can not have a value
 			if (targetDefinition.asGroup().getDeclaredChildren().isEmpty())
-				return NO_MATCH; // target neither has a value nor children?
+				return Result.NO_MATCH; // target neither has a value nor children?
 			else {
 				// group
 				MutableGroup group = new OGroup(targetDefinition.asGroup());
-				if (renameChildren((Group) source, group, targetDefinition))
+				if (renameChildren((Group) source, group, targetDefinition,
+						allowIgnoreNamespaces))
 					return group;
 				else
-					return NO_MATCH; // no child matched and no value
+					return Result.NO_MATCH; // no child matched and no value
 			}
 		} else {
 			// neither asProperty nor asGroup -> illegal ChildDefinition
@@ -167,23 +179,35 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 	 * @param source the source group
 	 * @param target the target group
 	 * @param targetDefinition the target definition
+	 * @param allowIgnoreNamespaces if for the structure comparison, namespaces
+	 *   may be ignored
 	 * @return true, if any property could be matched to the targetDefinition
 	 */
-	private boolean renameChildren(Group source, MutableGroup target, ChildDefinition<?> targetDefinition) {
+	private boolean renameChildren(Group source, MutableGroup target, ChildDefinition<?> targetDefinition,
+			boolean allowIgnoreNamespaces) {
 		boolean matchedChild = false;
 		// walk over all source property names
 		for (QName sourcePropertyName : source.getPropertyNames()) {
 			// find property name in target definition
 			ChildDefinition<?> targetDefinitionChild = DefinitionUtil.getChild(targetDefinition, sourcePropertyName);
+			
+			if (targetDefinitionChild == null && allowIgnoreNamespaces) {
+				// no corresponding target found
+				// but we have the option to switch to another namespace
+				targetDefinitionChild = DefinitionUtil.getChild(
+						targetDefinition, sourcePropertyName, true);
+			}
+			
 			if (targetDefinitionChild != null) {
 				Object[] sourceProperties = source.getProperty(sourcePropertyName);
 				// walk over all source property values
 				for (Object sourceProperty : sourceProperties) {
 					// try to match them
-					Object result = structuralRename(sourceProperty, targetDefinitionChild);
-					if (result != NO_MATCH) {
+					Object result = structuralRename(sourceProperty, 
+							targetDefinitionChild, allowIgnoreNamespaces);
+					if (result != Result.NO_MATCH) {
 						// found match!
-						target.addProperty(sourcePropertyName, result);
+						target.addProperty(targetDefinitionChild.getName(), result);
 						matchedChild = true;
 					}
 				}
