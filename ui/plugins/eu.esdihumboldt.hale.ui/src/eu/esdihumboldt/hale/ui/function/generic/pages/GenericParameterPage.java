@@ -23,9 +23,9 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -44,6 +43,8 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
+import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.definition.StringAttributeEditor;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.util.Pair;
@@ -57,7 +58,7 @@ import eu.esdihumboldt.util.Pair;
 public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
 	private ListMultimap<String, String> initialValues;
 	private Set<FunctionParameter> params;
-	private ListMultimap<FunctionParameter, Pair<Text, Button>> inputFields;
+	private ListMultimap<FunctionParameter, Pair<AttributeEditor<?>, Button>> inputFields;
 	private HashMap<FunctionParameter, Button> addButtons;
 	private static final Image removeImage = HALEUIPlugin.getImageDescriptor("icons/remove.gif").createImage();
 
@@ -88,9 +89,9 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * Update the page state.
 	 */
 	private void updateState() {
-		for (Map.Entry<FunctionParameter, Pair<Text, Button>> entry : inputFields.entries())
+		for (Map.Entry<FunctionParameter, Pair<AttributeEditor<?>, Button>> entry : inputFields.entries())
 			if (entry.getKey().getValidator() != null
-					&& entry.getKey().getValidator().validate(entry.getValue().getFirst().getText()) != null) {
+					&& entry.getKey().getValidator().validate(entry.getValue().getFirst().getAsText()) != null) {
 				setPageComplete(false);
 				return;
 			}
@@ -115,8 +116,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
 		ListMultimap<String, String> conf = ArrayListMultimap.create();
-		for (Map.Entry<FunctionParameter, Pair<Text, Button>> entry : inputFields.entries())
-			conf.put(entry.getKey().getName(), entry.getValue().getFirst().getText());
+		for (Map.Entry<FunctionParameter, Pair<AttributeEditor<?>, Button>> entry : inputFields.entries())
+			conf.put(entry.getKey().getName(), entry.getValue().getFirst().getAsText());
 		return conf;
 	}
 
@@ -163,7 +164,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 
 			// enable remove buttons if initial cell added more fields than required
 			if (i > fp.getMinOccurrence())
-				for (Pair<Text, Button> pair : inputFields.get(fp))
+				for (Pair<AttributeEditor<?>, Button> pair : inputFields.get(fp))
 					pair.getSecond().setEnabled(true);
 		}
 
@@ -192,10 +193,10 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// add text field
-				List<Pair<Text, Button>> texts = inputFields.get(fp);
+				List<Pair<AttributeEditor<?>, Button>> texts = inputFields.get(fp);
 				boolean removeButtonsDisabled = texts.size() == fp.getMinOccurrence();
-				Pair<Text, Button> added = createField(addButton.getParent(), fp, null);
-				added.getFirst().moveAbove(addButton);
+				Pair<AttributeEditor<?>, Button> added = createField(addButton.getParent(), fp, null);
+				added.getFirst().getControl().moveAbove(addButton);
 				added.getSecond().moveAbove(addButton);
 				
 				// update add button
@@ -204,7 +205,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 
 				// need to enable all remove buttons or only the new one?
 				if (removeButtonsDisabled)
-					for (Pair<Text, Button> pair : texts)
+					for (Pair<AttributeEditor<?>, Button> pair : texts)
 						pair.getSecond().setEnabled(true);
 				else
 					added.getSecond().setEnabled(true);
@@ -212,7 +213,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 				// do layout
 				((Composite) getControl()).layout();
 				// run validator to update ControlDecoration and updateState
-				added.getFirst().setText("");
+				added.getFirst().setAsText(""); //XXX would prefer if we would use a more straightforward way for this
+				
 				// pack to make wizard larger if necessary
 				pack();
 			}
@@ -228,18 +230,22 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * @param initialData initial value or null
 	 * @return the created text field
 	 */
-	private Pair<Text, Button> createField(Composite parent, final FunctionParameter fp, String initialData) {
-		// create text, button and pair
-		final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+	private Pair<AttributeEditor<?>, Button> createField(Composite parent, final FunctionParameter fp, String initialData) {
+		// create editor, button and pair
+		
+		// use attribute editors - FIXME currently disregarding the internal editor validation
+		final AttributeEditor<?> editor = new StringAttributeEditor(parent);
 		final Button removeButton = new Button(parent, SWT.NONE);
-		final Pair<Text, Button> pair = new Pair<Text, Button>(text, removeButton);
+		final Pair<AttributeEditor<?>, Button> pair = new Pair<AttributeEditor<?>, Button>(editor, removeButton);
 
 		// configure text
-		text.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		editor.getControl().setLayoutData(
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
 		// add validator 
 		if (fp.getValidator() != null) {
-			final ControlDecoration decorator = new ControlDecoration(text, SWT.LEFT | SWT.TOP);
+			final ControlDecoration decorator = new ControlDecoration(
+					editor.getControl(), SWT.LEFT | SWT.TOP);
 
 			// set initial status
 			decorator.hide();
@@ -250,25 +256,28 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			decorator.setImage(fieldDecoration.getImage());
 
 			// add modify listener
-			text.addModifyListener(new ModifyListener() {
+			editor.setPropertyChangeListener(new IPropertyChangeListener() {
+				
 				@Override
-				public void modifyText(ModifyEvent e) {
-					// update decorator and state
-					String result = fp.getValidator().validate(text.getText());
-					if (result == null)
-						decorator.hide();
-					else {
-						decorator.setDescriptionText(result);
-						decorator.show();
+				public void propertyChange(PropertyChangeEvent event) {
+					if (event.getProperty().equals(AttributeEditor.VALUE)) {
+						// update decorator and state
+						String result = fp.getValidator().validate(editor.getAsText());
+						if (result == null)
+							decorator.hide();
+						else {
+							decorator.setDescriptionText(result);
+							decorator.show();
+						}
+						updateState();
 					}
-					updateState();
 				}
 			});
 		}
 
 		// set initial text
 		if (initialData != null)
-			text.setText(initialData);
+			editor.setAsText(initialData);
 
 		// configure button
 		removeButton.setImage(removeImage);
@@ -277,14 +286,14 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// remove last text field
-				List<Pair<Text, Button>> texts = inputFields.get(fp);
+				List<Pair<AttributeEditor<?>, Button>> texts = inputFields.get(fp);
 				texts.remove(pair);
 				updateState();
 				removeButton.dispose();
-				text.dispose();
+				editor.getControl().dispose();
 				addButtons.get(fp).setEnabled(true);
 				if (texts.size() == fp.getMinOccurrence())
-					for (Pair<Text, Button> otherPair : texts)
+					for (Pair<AttributeEditor<?>, Button> otherPair : texts)
 						otherPair.getSecond().setEnabled(false);
 
 				// do layout
