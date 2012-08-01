@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.ui.common.Editor;
 
 
 /**
@@ -44,7 +45,7 @@ public class AttributeInputDialog extends Dialog {
 	
 	private final String title;
 	
-	private AttributeEditor<?> editor;
+	private Editor<?> editor;
 
 	private String text;
 
@@ -108,7 +109,7 @@ public class AttributeInputDialog extends Dialog {
         editor.setPropertyChangeListener(new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(AttributeEditor.IS_VALID))
+				if (event.getProperty().equals(Editor.IS_VALID))
 					getButton(IDialogConstants.OK_ID).setEnabled((Boolean) event.getNewValue());
 			}
 		});
@@ -131,7 +132,7 @@ public class AttributeInputDialog extends Dialog {
 	/**
 	 * @return the editor
 	 */
-	public AttributeEditor<?> getEditor() {
+	public Editor<?> getEditor() {
 		return editor;
 	}
 

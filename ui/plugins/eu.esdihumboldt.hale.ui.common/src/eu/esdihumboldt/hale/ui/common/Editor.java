@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition;
+package eu.esdihumboldt.hale.ui.common;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.widgets.Control;
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Control;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$ 
  */
-public interface AttributeEditor<T> {
+public interface Editor<T> {
 	/**
      * Property name constant (value <code>"editor_is_valid"</code>)
      * to signal a change in the validity of the value of this field editor.

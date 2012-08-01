@@ -43,7 +43,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.common.definition.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.StringAttributeEditor;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
@@ -58,7 +58,7 @@ import eu.esdihumboldt.util.Pair;
 public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
 	private ListMultimap<String, String> initialValues;
 	private Set<FunctionParameter> params;
-	private ListMultimap<FunctionParameter, Pair<AttributeEditor<?>, Button>> inputFields;
+	private ListMultimap<FunctionParameter, Pair<Editor<?>, Button>> inputFields;
 	private HashMap<FunctionParameter, Button> addButtons;
 	private static final Image removeImage = HALEUIPlugin.getImageDescriptor("icons/remove.gif").createImage();
 
@@ -89,7 +89,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * Update the page state.
 	 */
 	private void updateState() {
-		for (Map.Entry<FunctionParameter, Pair<AttributeEditor<?>, Button>> entry : inputFields.entries())
+		for (Map.Entry<FunctionParameter, Pair<Editor<?>, Button>> entry : inputFields.entries())
 			if (entry.getKey().getValidator() != null
 					&& entry.getKey().getValidator().validate(entry.getValue().getFirst().getAsText()) != null) {
 				setPageComplete(false);
@@ -116,7 +116,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
 		ListMultimap<String, String> conf = ArrayListMultimap.create();
-		for (Map.Entry<FunctionParameter, Pair<AttributeEditor<?>, Button>> entry : inputFields.entries())
+		for (Map.Entry<FunctionParameter, Pair<Editor<?>, Button>> entry : inputFields.entries())
 			conf.put(entry.getKey().getName(), entry.getValue().getFirst().getAsText());
 		return conf;
 	}
@@ -164,7 +164,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 
 			// enable remove buttons if initial cell added more fields than required
 			if (i > fp.getMinOccurrence())
-				for (Pair<AttributeEditor<?>, Button> pair : inputFields.get(fp))
+				for (Pair<Editor<?>, Button> pair : inputFields.get(fp))
 					pair.getSecond().setEnabled(true);
 		}
 
@@ -193,9 +193,9 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// add text field
-				List<Pair<AttributeEditor<?>, Button>> texts = inputFields.get(fp);
+				List<Pair<Editor<?>, Button>> texts = inputFields.get(fp);
 				boolean removeButtonsDisabled = texts.size() == fp.getMinOccurrence();
-				Pair<AttributeEditor<?>, Button> added = createField(addButton.getParent(), fp, null);
+				Pair<Editor<?>, Button> added = createField(addButton.getParent(), fp, null);
 				added.getFirst().getControl().moveAbove(addButton);
 				added.getSecond().moveAbove(addButton);
 				
@@ -205,7 +205,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 
 				// need to enable all remove buttons or only the new one?
 				if (removeButtonsDisabled)
-					for (Pair<AttributeEditor<?>, Button> pair : texts)
+					for (Pair<Editor<?>, Button> pair : texts)
 						pair.getSecond().setEnabled(true);
 				else
 					added.getSecond().setEnabled(true);
@@ -230,13 +230,13 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * @param initialData initial value or null
 	 * @return the created text field
 	 */
-	private Pair<AttributeEditor<?>, Button> createField(Composite parent, final FunctionParameter fp, String initialData) {
+	private Pair<Editor<?>, Button> createField(Composite parent, final FunctionParameter fp, String initialData) {
 		// create editor, button and pair
 		
 		// use attribute editors - FIXME currently disregarding the internal editor validation
-		final AttributeEditor<?> editor = new StringAttributeEditor(parent);
+		final Editor<?> editor = new StringAttributeEditor(parent);
 		final Button removeButton = new Button(parent, SWT.NONE);
-		final Pair<AttributeEditor<?>, Button> pair = new Pair<AttributeEditor<?>, Button>(editor, removeButton);
+		final Pair<Editor<?>, Button> pair = new Pair<Editor<?>, Button>(editor, removeButton);
 
 		// configure text
 		editor.getControl().setLayoutData(
@@ -260,7 +260,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 				
 				@Override
 				public void propertyChange(PropertyChangeEvent event) {
-					if (event.getProperty().equals(AttributeEditor.VALUE)) {
+					if (event.getProperty().equals(Editor.VALUE)) {
 						// update decorator and state
 						String result = fp.getValidator().validate(editor.getAsText());
 						if (result == null)
@@ -286,14 +286,14 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// remove last text field
-				List<Pair<AttributeEditor<?>, Button>> texts = inputFields.get(fp);
+				List<Pair<Editor<?>, Button>> texts = inputFields.get(fp);
 				texts.remove(pair);
 				updateState();
 				removeButton.dispose();
 				editor.getControl().dispose();
 				addButtons.get(fp).setEnabled(true);
 				if (texts.size() == fp.getMinOccurrence())
-					for (Pair<AttributeEditor<?>, Button> otherPair : texts)
+					for (Pair<Editor<?>, Button> otherPair : texts)
 						otherPair.getSecond().setEnabled(false);
 
 				// do layout

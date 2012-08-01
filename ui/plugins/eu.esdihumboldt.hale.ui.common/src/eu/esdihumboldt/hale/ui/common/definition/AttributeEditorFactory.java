@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.common.definition;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.ui.common.Editor;
 
 /**
  * Factory for editors based on {@link PropertyDefinition}s
@@ -34,6 +35,6 @@ public interface AttributeEditorFactory {
 	 * @return the attribute editor or <code>null</code> if no editor could be
 	 *         created for the attribute
 	 */
-	public AttributeEditor<?> createEditor(Composite parent, PropertyDefinition attribute);
+	public Editor<?> createEditor(Composite parent, PropertyDefinition attribute);
 
 }

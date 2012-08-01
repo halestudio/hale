@@ -321,7 +321,7 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.definition.AttributeEditor#getControl()
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -329,7 +329,7 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.definition.AttributeEditor#setValue(java.lang.Object)
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#setValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(Object value) {
@@ -337,7 +337,7 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.definition.AttributeEditor#getValue()
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValue()
 	 * 
 	 * @throws IllegalStateException if the current input is not valid
 	 */
@@ -350,7 +350,7 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.definition.AttributeEditor#setAsText(java.lang.String)
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#setAsText(java.lang.String)
 	 */
 	@Override
 	public void setAsText(String text) {
@@ -360,7 +360,7 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.definition.AttributeEditor#getAsText()
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#getAsText()
 	 * 
 	 * @throws IllegalStateException if the current input is not valid
 	 */
@@ -375,7 +375,7 @@ public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.definition.AttributeEditor#isValid()
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#isValid()
 	 */
 	@Override
 	public boolean isValid() {
