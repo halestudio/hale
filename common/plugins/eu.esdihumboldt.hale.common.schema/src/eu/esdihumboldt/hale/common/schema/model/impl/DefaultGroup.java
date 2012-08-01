@@ -77,7 +77,11 @@ public class DefaultGroup implements DefinitionGroup {
 	 */
 	@Override
 	public void addChild(ChildDefinition<?> child) {
-		flattenedChildren = null;
+		if (flatten) {
+			synchronized (this) {
+				flattenedChildren = null;
+			}
+		}
 		declaredChildren.put(child.getName(), child);
 	}
 
