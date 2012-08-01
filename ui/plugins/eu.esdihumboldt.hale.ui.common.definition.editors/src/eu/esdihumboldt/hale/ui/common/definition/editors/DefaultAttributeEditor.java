@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.common.editors;
+package eu.esdihumboldt.hale.ui.common.definition.editors;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
