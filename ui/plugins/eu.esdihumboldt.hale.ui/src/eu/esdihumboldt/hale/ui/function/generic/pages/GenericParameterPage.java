@@ -214,6 +214,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 				((Composite) getControl()).layout();
 				// run validator to update ControlDecoration and updateState
 				added.getFirst().setAsText(""); //XXX would prefer if we would use a more straightforward way for this
+				//TODO use a default value? could be included with parameter specification (e.g. default = 'true')
 				
 				// pack to make wizard larger if necessary
 				pack();
