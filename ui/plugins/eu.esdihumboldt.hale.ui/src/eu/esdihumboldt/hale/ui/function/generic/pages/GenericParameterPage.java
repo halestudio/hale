@@ -44,7 +44,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.Editor;
-import eu.esdihumboldt.hale.ui.common.definition.StringAttributeEditor;
+import eu.esdihumboldt.hale.ui.function.extension.ParameterEditorExtension;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.util.Pair;
@@ -234,7 +234,8 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		// create editor, button and pair
 		
 		// use attribute editors - FIXME currently disregarding the internal editor validation
-		final Editor<?> editor = new StringAttributeEditor(parent);
+		final Editor<?> editor = ParameterEditorExtension.getInstance().createEditor(
+				parent, getWizard().getFunctionId(), fp.getName());
 		final Button removeButton = new Button(parent, SWT.NONE);
 		final Pair<Editor<?>, Button> pair = new Pair<Editor<?>, Button>(editor, removeButton);
 
