@@ -15,6 +15,7 @@ Import-Package: de.fhg.igd.osgi.util,
  eu.esdihumboldt.hale.ui.codelist.service,
  eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.hale.ui.common.definition,
+ eu.esdihumboldt.hale.ui.common.editors,
  eu.esdihumboldt.util.validator,
  org.springframework.core.convert
 Require-Bundle: org.eclipse.ui,

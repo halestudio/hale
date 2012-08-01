@@ -24,7 +24,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.EditorFactory;
-import eu.esdihumboldt.hale.ui.common.definition.StringAttributeEditor;
+import eu.esdihumboldt.hale.ui.common.editors.StringEditor;
 import eu.esdihumboldt.hale.ui.function.extension.impl.ParameterEditorFactoryImpl;
 
 /**
@@ -103,7 +103,7 @@ public class ParameterEditorExtension extends AbstractExtension<EditorFactory, P
 		}
 		
 		// default editor
-		return new StringAttributeEditor(parent);
+		return new StringEditor(parent);
 	}
 	
 }

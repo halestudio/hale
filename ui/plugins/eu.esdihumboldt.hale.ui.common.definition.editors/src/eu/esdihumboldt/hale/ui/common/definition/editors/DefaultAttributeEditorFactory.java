@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
+import eu.esdihumboldt.hale.ui.common.editors.BooleanEditor;
 
 /**
  * Default attribute editor factory
@@ -49,7 +50,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 		
 		if (Boolean.class.isAssignableFrom(binding)) {
 			// boolean
-			return new BooleanAttributeEditor(parent);
+			return new BooleanEditor(parent);
 		}
 		// TODO other editors (for date/time for example)
 		

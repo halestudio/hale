@@ -57,7 +57,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstr
 import eu.esdihumboldt.hale.ui.codelist.internal.CodeListUIPlugin;
 import eu.esdihumboldt.hale.ui.codelist.selector.CodeListSelectionDialog;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
-import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
+import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
 import eu.esdihumboldt.util.validator.Validator;
 
 /**
@@ -66,7 +66,7 @@ import eu.esdihumboldt.util.validator.Validator;
  * 
  * @author Kai Schwierczek
  */
-public class DefaultAttributeEditor extends AbstractAttributeEditor<Object> {
+public class DefaultAttributeEditor extends AbstractEditor<Object> {
 	// XXX generic version instead?
 
 	private final PropertyDefinition property;
