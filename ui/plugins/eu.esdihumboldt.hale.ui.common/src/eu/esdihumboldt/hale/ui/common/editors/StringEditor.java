@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition;
+package eu.esdihumboldt.hale.ui.common.editors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.ui.common.Editor;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class StringAttributeEditor extends AbstractAttributeEditor<String> {
+public class StringEditor extends AbstractEditor<String> {
 	
 	private final Text text;
 
@@ -36,7 +36,7 @@ public class StringAttributeEditor extends AbstractAttributeEditor<String> {
 	 * Create a string attribute editor.
 	 * @param parent the parent composite
 	 */
-	public StringAttributeEditor(Composite parent) {
+	public StringEditor(Composite parent) {
 		text = new Text(parent, SWT.BORDER | SWT.SINGLE);
 		
 		text.addModifyListener(new ModifyListener() {

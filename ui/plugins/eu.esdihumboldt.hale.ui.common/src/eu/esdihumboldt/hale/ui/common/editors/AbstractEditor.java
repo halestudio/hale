@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition;
+package eu.esdihumboldt.hale.ui.common.editors;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.ui.common.Editor;
  * @author Kai Schwierczek
  * @param <T> the attribute value type/binding
  */
-public abstract class AbstractAttributeEditor<T> implements Editor<T> {
+public abstract class AbstractEditor<T> implements Editor<T> {
 	private IPropertyChangeListener propertyChangeListener;
 
 	/**
