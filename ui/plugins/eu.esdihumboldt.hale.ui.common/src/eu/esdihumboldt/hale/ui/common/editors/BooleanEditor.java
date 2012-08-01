@@ -10,7 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-package eu.esdihumboldt.hale.ui.common.definition.editors;
+package eu.esdihumboldt.hale.ui.common.editors;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.ui.common.Editor;
-import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
 
 /**
  * Attribute editor for boolean values
@@ -32,7 +31,7 @@ import eu.esdihumboldt.hale.ui.common.definition.AbstractAttributeEditor;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class BooleanAttributeEditor extends AbstractAttributeEditor<Boolean> {
+public class BooleanEditor extends AbstractEditor<Boolean> {
 	private Boolean value;
 	private final ComboViewer combo;
 	
@@ -41,7 +40,7 @@ public class BooleanAttributeEditor extends AbstractAttributeEditor<Boolean> {
 	 * 
 	 * @param parent the parent composite
 	 */
-	public BooleanAttributeEditor(Composite parent) {
+	public BooleanEditor(Composite parent) {
 		super();
 		
 		combo = new ComboViewer(parent, SWT.READ_ONLY);
