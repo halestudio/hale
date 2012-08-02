@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core Converters
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert.core
+Bundle-Version: 2.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.5.0"
