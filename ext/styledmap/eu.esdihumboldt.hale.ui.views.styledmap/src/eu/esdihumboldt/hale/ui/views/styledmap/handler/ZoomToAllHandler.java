@@ -21,6 +21,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import de.fhg.igd.mapviewer.view.MapView;
 import eu.esdihumboldt.hale.ui.views.styledmap.StyledMapUtil;
+import eu.esdihumboldt.hale.ui.views.styledmap.StyledMapView;
 
 /**
  * Zooms to all instances present in the map.
@@ -33,7 +34,7 @@ public class ZoomToAllHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IViewPart viewPart = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().findView(MapView.ID);
+		IViewPart viewPart = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().findView(StyledMapView.ID);
 		
 		if (viewPart instanceof MapView) {
 			StyledMapUtil.zoomToAll(((MapView) viewPart).getMapKit());
