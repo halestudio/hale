@@ -12,8 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.style;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -25,13 +24,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionDialog;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 import eu.esdihumboldt.hale.ui.style.dialog.FeatureStyleDialog;
@@ -51,18 +52,15 @@ public class TypeStyleHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		
-		//TODO instead of grabbing the first type found use a selection dialog to allow chosing?
-		
 		// collect types and associated data sets
-		//XXX if the same type is contained in different data sets, there may be a conflict!
-		Map<TypeDefinition, DataSet> types = new HashMap<TypeDefinition, DataSet>();
+		SetMultimap<DataSet, TypeDefinition> types = HashMultimap.create();
 		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
 			for (Object object : ((IStructuredSelection) selection).toArray()) {
 				if (object instanceof TypeDefinition) {
 					TypeDefinition type = (TypeDefinition) object;
-					if (!types.containsKey(type)) {
+					if (!types.containsValue(type)) {
 						DataSet dataSet = findDataSet(type);
-						types.put(type, dataSet);
+						types.put(dataSet, type);
 					}
 				}
 				if (object instanceof EntityDefinition) {
@@ -70,7 +68,7 @@ public class TypeStyleHandler extends AbstractHandler {
 					if (entityDef.getPropertyPath().isEmpty()) {
 						DataSet dataSet = (entityDef.getSchemaSpace() == SchemaSpaceID.SOURCE) ? (DataSet.SOURCE)
 								: (DataSet.TRANSFORMED);
-						types.put(entityDef.getType(), dataSet);
+						types.put(dataSet, entityDef.getType());
 					}
 				}
 				if (object instanceof InstanceReference) {
@@ -79,8 +77,7 @@ public class TypeStyleHandler extends AbstractHandler {
 				}
 				if (object instanceof Instance) {
 					Instance instance = (Instance) object;
-					types.put(instance.getDefinition(), 
-							instance.getDataSet());
+					types.put(instance.getDataSet(), instance.getDefinition());
 				}
 			}
 		}
@@ -89,21 +86,18 @@ public class TypeStyleHandler extends AbstractHandler {
 		
 		// select a type
 		if (types.size() == 1) {
+			Entry<DataSet, TypeDefinition> entry = types.entries().iterator().next();
 			typeInfo = new Pair<TypeDefinition, DataSet>(
-					types.keySet().iterator().next(), 
-					types.values().iterator().next());
+					entry.getValue(), 
+					entry.getKey());
 		}
 		else if (!types.isEmpty()) {
 			// choose through dialog
-			//TODO instead a dialog where the types are separated into source and target?
-			TypeDefinitionDialog dialog = new TypeDefinitionDialog(Display
-					.getCurrent().getActiveShell(), "Select type to change the style for", null,
-					types.keySet());
-			if (dialog.open() == TypeDefinitionDialog.OK) {
-				TypeDefinition def = dialog.getObject();
-				if (def != null) {
-					typeInfo = new Pair<TypeDefinition, DataSet>(def, types.get(def));
-				}
+			DataSetTypeSelectionDialog dialog = new DataSetTypeSelectionDialog(Display
+					.getCurrent().getActiveShell(), "Multiple types: select which to change the style for", null,
+					types);
+			if (dialog.open() == DataSetTypeSelectionDialog.OK) {
+				typeInfo = dialog.getObject();
 			}
 		}
 		
