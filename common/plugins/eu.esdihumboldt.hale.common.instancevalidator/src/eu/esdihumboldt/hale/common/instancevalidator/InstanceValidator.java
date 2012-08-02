@@ -163,12 +163,13 @@ public class InstanceValidator {
 		for (ChildDefinition<?> childDef : childDefs) {
 			QName name = childDef.getName();
 			// Cannot use getPropertyNames in case of onlyCheckExistingChildren,
-			// because then I got no ChildDefinitions.
-			if (!onlyCheckExistingChildren || group.getProperty(name) != null) {
+			// because then I get no ChildDefinitions.
+			Object[] property = group.getProperty(name);
+			if (!onlyCheckExistingChildren || (property != null && property.length > 0)) {
 				if (childDef.asGroup() != null)
-					validateGroup(group.getProperty(name), childDef.asGroup(), reporter, path + '.' + name.getLocalPart(), reference);
+					validateGroup(property, childDef.asGroup(), reporter, path + '.' + name.getLocalPart(), reference);
 				else if (childDef.asProperty() != null)
-					validateProperty(group.getProperty(name), childDef.asProperty(), reporter, path + '.' + name.getLocalPart(), reference);
+					validateProperty(property, childDef.asProperty(), reporter, path + '.' + name.getLocalPart(), reference);
 				else
 					throw new IllegalStateException("Illegal child type.");
 			}
