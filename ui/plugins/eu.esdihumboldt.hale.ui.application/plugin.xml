@@ -534,6 +534,10 @@
             activityId="eu.esdihumboldt.hale.ui.application.activities.hideViews"
             pattern="org.eclipse.ui.console/org.eclipse.ui.console.ConsoleView">
       </activityPatternBinding>
+      <activityPatternBinding
+            activityId="eu.esdihumboldt.hale.ui.application.activities.hideViews"
+            pattern="de.fhg.igd.mapviewer/de.fhg.igd.mapviewer.view.MapView">
+      </activityPatternBinding>
    </extension>
    <extension
          point="org.eclipse.ui.views">

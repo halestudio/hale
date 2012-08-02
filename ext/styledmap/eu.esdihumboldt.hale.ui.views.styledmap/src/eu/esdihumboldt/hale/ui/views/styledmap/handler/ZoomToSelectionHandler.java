@@ -23,6 +23,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import de.fhg.igd.mapviewer.view.MapView;
 import eu.esdihumboldt.hale.ui.views.styledmap.StyledMapUtil;
+import eu.esdihumboldt.hale.ui.views.styledmap.StyledMapView;
 
 /**
  * Zooms to selected instances.
@@ -35,7 +36,7 @@ public class ZoomToSelectionHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IViewPart viewPart = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().findView(MapView.ID);
+		IViewPart viewPart = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().findView(StyledMapView.ID);
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		
 		if (viewPart instanceof MapView 

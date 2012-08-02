@@ -49,7 +49,7 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:de.fhg.igd.mapviewer.view.MapView">
+            locationURI="toolbar:eu.esdihumboldt.hale.ui.views.styledmap">
          <separator
                name="eu.esdihumboldt.hale.ui.views.styledmap"
                visible="true">
@@ -97,7 +97,7 @@
                   <with
                         variable="activePartId">
                      <equals
-                           value="de.fhg.igd.mapviewer.view.MapView">
+                           value="eu.esdihumboldt.hale.ui.views.styledmap">
                      </equals>
                   </with>
                   <with
@@ -125,7 +125,7 @@
                      <with
                            variable="activePartId">
                         <equals
-                              value="de.fhg.igd.mapviewer.view.MapView">
+                              value="eu.esdihumboldt.hale.ui.views.styledmap">
                         </equals>
                      </with>
                      <with
@@ -346,6 +346,17 @@
             </with>
          </activeWhen>
       </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.styledmap.StyledMapView"
+            icon="icons/world.gif"
+            id="eu.esdihumboldt.hale.ui.views.styledmap"
+            name="Map"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>
