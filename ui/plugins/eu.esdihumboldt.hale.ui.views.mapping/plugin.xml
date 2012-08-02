@@ -20,5 +20,52 @@
             restorable="true">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=eu.esdihumboldt.hale.ui.popup.end">
+         <command
+               commandId="eu.esdihumboldt.hale.ui.views.mapping.open"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eu.esdihumboldt.hale.ui.views.mapping.handler.OpenMappingViewHandler"
+            commandId="eu.esdihumboldt.hale.ui.views.mapping.open">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate>
+                  <or>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.EntityDefinition">
+                     </instanceof>
+                  </or>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="eu.esdihumboldt.hale.ui.views.mapping.open"
+            icon="icons/mapping.gif">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="eu.esdihumboldt.hale.ui.views.mapping.open"
+            name="Show mapping">
+      </command>
+   </extension>
 
 </plugin>
