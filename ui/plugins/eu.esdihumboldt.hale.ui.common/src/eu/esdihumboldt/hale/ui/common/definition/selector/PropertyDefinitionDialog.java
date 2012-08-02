@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypePropertyContentProvider;
-import eu.esdihumboldt.hale.ui.util.selector.AbstractTreeSelectionDialog;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
@@ -47,7 +47,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  * path (represented in an {@link EntityDefinition}).
  * @author Simon Templer
  */
-public class PropertyDefinitionDialog extends AbstractTreeSelectionDialog<EntityDefinition> {
+public class PropertyDefinitionDialog extends AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> {
 	
 	private final TypeDefinition parentType;
 	
@@ -72,7 +72,7 @@ public class PropertyDefinitionDialog extends AbstractTreeSelectionDialog<Entity
 	}
 	
 	/**
-	 * @see AbstractTreeSelectionDialog#createViewer(Composite)
+	 * @see AbstractViewerSelectionDialog#createViewer(Composite)
 	 */
 	@Override
 	protected TreeViewer createViewer(Composite parent) {

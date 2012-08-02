@@ -20,7 +20,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
-import eu.esdihumboldt.hale.ui.util.selector.AbstractTreeSelectionDialog;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Selector for type definitions.
@@ -49,7 +49,7 @@ public class TypeDefinitionSelector extends AbstractSelector<TypeDefinition> {
 	 * @see AbstractSelector#createSelectionDialog(Shell)
 	 */
 	@Override
-	protected AbstractTreeSelectionDialog<TypeDefinition> createSelectionDialog(
+	protected AbstractViewerSelectionDialog<TypeDefinition, ?> createSelectionDialog(
 			Shell parentShell) {
 		return new TypeDefinitionDialog(parentShell, dialogTitle, 
 				getSelectedObject(), typeIndex);
