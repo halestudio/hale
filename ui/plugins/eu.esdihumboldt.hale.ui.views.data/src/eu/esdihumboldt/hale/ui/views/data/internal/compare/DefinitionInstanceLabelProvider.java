@@ -155,8 +155,15 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		}
 
 		boolean hasValue = false;
-		if (value instanceof Instance) {
+		if (definition && value instanceof Instance) {
 			hasValue = ((Instance) value).getValue() != null;
+		}
+		else if (!definition && treePath.getSegmentCount() == 1) {
+			// metadata root
+			if (instance.getMetaDataNames().isEmpty()) {
+				hasValue = true;
+				value = null;
+			}
 		}
 
 		StyledString styledString;
