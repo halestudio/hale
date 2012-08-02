@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,8 +30,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -40,13 +40,17 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterField;
+import eu.esdihumboldt.hale.ui.filter.TypeFilterField.FilterType;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
@@ -66,30 +70,24 @@ public class WindowSelectionSelector implements InstanceSelector {
 		private final ComboViewer instanceTypes;
 		private final Map<TypeDefinition, List<Instance>> instanceMap = new HashMap<TypeDefinition, List<Instance>>();
 		private TypeDefinition selectedType;
+		private final TypeFilterField filterField;
+		private final ComboViewer count;
 
 		/**
 		 * @see Composite#Composite(Composite, int)
 		 */
 		public InstanceSelectorControl(Composite parent, int style) {
 			super(parent, style);
-			
-			setLayout(new GridLayout(1, false));
+
+			GridLayout layout = new GridLayout(3, false);
+			layout.marginHeight = 2;
+			layout.marginWidth = 3;
+			setLayout(layout);
 			
 			// instance type selector
 			instanceTypes = new ComboViewer(this, SWT.READ_ONLY);
 			instanceTypes.setContentProvider(ArrayContentProvider.getInstance());
-			instanceTypes.setComparator(new ViewerComparator() {
-
-				@Override
-				public int compare(Viewer viewer, Object e1, Object e2) {
-					if (e1 instanceof FeatureType && e2 instanceof FeatureType) {
-						return ((FeatureType) e1).getName().getLocalPart().compareTo(
-								((FeatureType) e2).getName().getLocalPart());
-					}
-					return super.compare(viewer, e1, e2);
-				}
-				
-			});
+			instanceTypes.setComparator(new DefinitionComparator());
 			instanceTypes.setLabelProvider(new DefinitionLabelProvider());
 			instanceTypes.addSelectionChangedListener(new ISelectionChangedListener() {
 				
@@ -100,7 +98,33 @@ public class WindowSelectionSelector implements InstanceSelector {
 				
 			});
 			instanceTypes.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-					
+
+			// filter field
+			filterField = new TypeFilterField((selectedType == null)?(null):(selectedType), 
+					this, SWT.NONE, SchemaSpaceID.TARGET, FilterType.CQL);
+			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+			filterField.addListener(new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if (evt.getPropertyName().equals(TypeFilterField.PROPERTY_FILTER)) {
+						updateSelection();
+					}
+				}
+			});
+
+			// max count selector
+			count = new ComboViewer(this, SWT.READ_ONLY);
+			count.setContentProvider(ArrayContentProvider.getInstance());
+			count.setInput(new Integer[]{Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
+					Integer.valueOf(4), Integer.valueOf(5)});
+			count.setSelection(new StructuredSelection(Integer.valueOf(2)));
+			count.addSelectionChangedListener(new ISelectionChangedListener() {
+				@Override
+				public void selectionChanged(SelectionChangedEvent event) {
+					updateSelection();
+				}
+			});
+
 			// service listeners
 			ISelectionService ss = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 			ss.addPostSelectionListener(this);
@@ -143,14 +167,14 @@ public class WindowSelectionSelector implements InstanceSelector {
 			Set<TypeDefinition> selectableTypes = instanceMap.keySet();
 			
 			instanceTypes.setInput(selectableTypes);
-			
-			if (!selectableTypes.isEmpty()) {
+
+			boolean enabled = !selectableTypes.isEmpty();
+			if (enabled)
 				instanceTypes.setSelection(new StructuredSelection(selectableTypes.iterator().next()));
-				instanceTypes.getControl().setEnabled(true);
-			}
-			else {
-				instanceTypes.getControl().setEnabled(false);
-			}
+
+			instanceTypes.getControl().setEnabled(enabled);
+			count.getControl().setEnabled(enabled);
+			filterField.setEnabled(enabled);
 			
 			layout(true, true);
 			
@@ -203,10 +227,11 @@ public class WindowSelectionSelector implements InstanceSelector {
 		protected void updateSelection() {
 			if (!instanceTypes.getSelection().isEmpty()) {
 				TypeDefinition type = (TypeDefinition) ((IStructuredSelection) instanceTypes.getSelection()).getFirstElement();
-				
+				filterField.setType(type);
 				selectedType = type;
 			}
 			else {
+				filterField.setType(null);
 				selectedType = null;
 			}
 			
@@ -220,11 +245,26 @@ public class WindowSelectionSelector implements InstanceSelector {
 		 * @return the currently selected instances
 		 */
 		public Iterable<Instance> getSelection() {
-			if (selectedType == null) {
+			if (selectedType == null)
 				return null;
-			}
 			else {
-				return instanceMap.get(selectedType);
+				List<Instance> selection = instanceMap.get(selectedType);
+
+				Integer max = (Integer) ((IStructuredSelection) count.getSelection()).getFirstElement();
+				Filter filter = filterField.getFilter();
+
+				List<Instance> result = new ArrayList<Instance>(max);
+				int count = 0;
+				Iterator<Instance> iter = selection.iterator();
+				while(iter.hasNext() && count < max) {
+					Instance instance = iter.next();
+					if (filter == null || filter.match(instance)) {
+						result.add(instance);
+						count++;
+					}
+				}
+
+				return result;
 			}
 		}
 		
