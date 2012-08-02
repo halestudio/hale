@@ -12,7 +12,9 @@
 
 package eu.esdihumboldt.hale.common.instance.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -179,5 +181,30 @@ public final class InstanceUtil {
 	 */
 	private static String indent(String string) {
 		return "\t" + string.replace("\n", "\n\t");
+	}
+	
+	/**
+	 * Creates a list of instances out of a FamilyInstance
+	 * @param fi the FamilyInstance
+	 * @return a collection of instances
+	 */
+	public static Collection<Instance> getInstanceOutOfFamily(FamilyInstance fi){
+		Collection<Instance> result = new ArrayList<Instance>();
+		
+		if(fi.getChildren().isEmpty()){
+			result.add(fi);
+		}
+		else{
+			for(FamilyInstance inst : fi.getChildren()){
+				if (!inst.getChildren().isEmpty()){
+					result.addAll(getInstanceOutOfFamily(inst));
+				}
+				else result.add(inst);
+			}
+		}
+		
+		
+		
+		return result;
 	}
 }
