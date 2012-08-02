@@ -119,6 +119,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
+      <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
       <plugin id="eu.esdihumboldt.hale.common.core"/>
       <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
@@ -353,6 +354,7 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert.core" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.core" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
