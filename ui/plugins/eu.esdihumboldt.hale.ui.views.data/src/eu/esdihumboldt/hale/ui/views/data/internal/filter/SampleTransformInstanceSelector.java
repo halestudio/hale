@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.filter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Observable;
@@ -44,6 +45,8 @@ import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInst
 import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
@@ -180,8 +183,33 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 					//TODO log message
 				}
 				
+				
+				//Sort target instances by comparing meta data IDs of the source 
+				//instances with the SourcesIDs of the target instances
+				ArrayList<Instance> targetSorted = new ArrayList<Instance>();				
+				ResourceIterator<Instance> it = instances.iterator();
+				try{
+				while(it.hasNext()){
+					Instance inst = it.next();
+					for(Instance instance : target.getInstances()){
+						if (InstanceMetadata.getID(inst).equals(InstanceMetadata.getSourceID(instance))){
+							targetSorted.add(instance);
+						}						
+					}	
+				}
+				}finally{
+					it.close();
+				}
+				
+				//check if there are target instances without a matched source id
+				for(Instance instance : target.getInstances()){
+					if (!targetSorted.contains(instance)){
+						targetSorted.add(instance);
+					}
+				}
+				
 				// determine types
-				for (Instance instance : target.getInstances()) {
+				for (Instance instance : targetSorted) {
 					instanceMap.put(instance.getDefinition(), instance);
 				}
 			}
@@ -210,7 +238,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				TypeDefinition featureType = (TypeDefinition) ((IStructuredSelection) typesCombo.getSelection()).getFirstElement();
 				
 				selectedType = featureType;
-			}
+			}	
 			else {
 				selectedType = null;
 			}
