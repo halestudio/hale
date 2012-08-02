@@ -17,13 +17,16 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
+import com.google.common.collect.Iterables;
+
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
- * Tree content provider using a {@link TypeIndex} as root
+ * Tree content provider using a {@link TypeIndex} as root, or an
+ * {@link Iterable} of {@link TypeDefinition}s.
  * XXX for now not lazy
  * @author Simon Templer
  */
@@ -56,6 +59,9 @@ public class TypeIndexContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof TypeIndex) {
 			return ((TypeIndex) inputElement).getMappingRelevantTypes().toArray();
+		}
+		else if (inputElement instanceof Iterable<?>) {
+			return Iterables.toArray((Iterable<?>) inputElement, Object.class);
 		}
 		else {
 			throw new IllegalArgumentException("Content provider only applicable for type indexes.");
