@@ -10,11 +10,10 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2011.
  */
 
-package eu.esdihumboldt.hale.common.align.transformation.function;
+package eu.esdihumboldt.hale.common.instance.model;
 
 import java.util.Collection;
 
-import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * FamilyInstance is an Instance with functionality to add child instance links.

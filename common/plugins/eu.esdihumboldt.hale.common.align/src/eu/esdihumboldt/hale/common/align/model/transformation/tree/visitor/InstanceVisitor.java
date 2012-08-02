@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.LeftoversImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
-import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
+import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;

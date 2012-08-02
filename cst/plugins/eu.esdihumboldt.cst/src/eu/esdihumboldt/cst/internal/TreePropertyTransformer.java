@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.Conte
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.DuplicationVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
-import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
+import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
