@@ -27,13 +27,13 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypesContentProvider;
-import eu.esdihumboldt.hale.ui.util.selector.AbstractTreeSelectionDialog;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Selection dialog for {@link TypeDefinition}s.
  * @author Simon Templer
  */
-public class TypeDefinitionDialog extends AbstractTreeSelectionDialog<TypeDefinition> {
+public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefinition, TreeViewer> {
 
 	private final TypeIndex types;
 

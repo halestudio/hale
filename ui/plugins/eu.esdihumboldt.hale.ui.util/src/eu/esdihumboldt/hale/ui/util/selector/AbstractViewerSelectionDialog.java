@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
@@ -33,23 +33,19 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Abstract tree selection dialog.
+ * Abstract selection dialog based on a structured viewer.
  * @author Simon Templer
  * @param <T> the type of object that can be selected in the dialog
+ * @param <V> the type of the viewer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractTreeSelectionDialog<T> extends Dialog {
+public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewer> extends Dialog {
 	
 	private static final int NONE_ID = IDialogConstants.CLIENT_ID + 1;
 
 	private T selected;
 	
-	private TreeViewer viewer;
-	
-//	/**
-//	 * The schema space
-//	 */
-//	protected final SchemaSpaceID ssid;
+	private V viewer;
 	
 	private final String title;
 
@@ -64,11 +60,10 @@ public abstract class AbstractTreeSelectionDialog<T> extends Dialog {
 	 * @param initialSelection the entity definition to select initially (if
 	 *   possible), may be <code>null</code>
 	 */
-	public AbstractTreeSelectionDialog(Shell parentShell, String title,
+	public AbstractViewerSelectionDialog(Shell parentShell, String title,
 			T initialSelection) {
 		super(parentShell);
 		
-//		this.ssid = ssid;
 		this.title = title;
 		this.initialSelection = initialSelection;
 	}
@@ -144,7 +139,7 @@ public abstract class AbstractTreeSelectionDialog<T> extends Dialog {
 	 * @param parent the parent composite
 	 * @return the tree viewer
 	 */
-	protected abstract TreeViewer createViewer(Composite parent);
+	protected abstract V createViewer(Composite parent);
 
 	/**
 	 * @see Dialog#createButtonsForButtonBar(Composite)
@@ -217,7 +212,7 @@ public abstract class AbstractTreeSelectionDialog<T> extends Dialog {
 	 * @param initialSelection the object to select (if possible),
 	 *   may be <code>null</code> 
 	 */
-	protected abstract void setupViewer(TreeViewer viewer, 
+	protected abstract void setupViewer(V viewer, 
 			T initialSelection);
 
 	/**

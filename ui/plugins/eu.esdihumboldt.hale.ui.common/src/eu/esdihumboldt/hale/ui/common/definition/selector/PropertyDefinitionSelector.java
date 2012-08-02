@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
-import eu.esdihumboldt.hale.ui.util.selector.AbstractTreeSelectionDialog;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Entity selector for {@link PropertyDefinition}s with complete property
@@ -74,7 +74,7 @@ public class PropertyDefinitionSelector extends AbstractSelector<EntityDefinitio
 	 * @see eu.esdihumboldt.hale.ui.util.selector.AbstractSelector#createSelectionDialog(org.eclipse.swt.widgets.Shell)
 	 */
 	@Override
-	protected AbstractTreeSelectionDialog<EntityDefinition> createSelectionDialog(
+	protected AbstractViewerSelectionDialog<EntityDefinition, ?> createSelectionDialog(
 			Shell parentShell) {
 		String title;
 		if(ssid == null){

@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
-import eu.esdihumboldt.hale.ui.util.selector.AbstractTreeSelectionDialog;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
 
 /**
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class EntityDialog extends AbstractTreeSelectionDialog<EntityDefinition> {
+public abstract class EntityDialog extends AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> {
 	
 	/**
 	 * The schema space
@@ -56,7 +56,7 @@ public abstract class EntityDialog extends AbstractTreeSelectionDialog<EntityDef
 	}
 	
 	/**
-	 * @see AbstractTreeSelectionDialog#createViewer(Composite)
+	 * @see AbstractViewerSelectionDialog#createViewer(Composite)
 	 */
 	@Override
 	protected TreeViewer createViewer(Composite parent) {
