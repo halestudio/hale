@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.PathElement;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
@@ -228,15 +229,17 @@ public abstract class GmlWriterUtil {
 	public static void writeStartPathElement(XMLStreamWriter writer, PathElement step, 
 			boolean generateRequiredID) throws XMLStreamException {
 		QName name = step.getName();
-		writeStartElement(writer, name);
-		if (step.isDowncast()) {
-			// add xsi:type
-			writer.writeAttribute(StreamGmlWriter.SCHEMA_INSTANCE_NS, "type", 
-					step.getType().getName().getLocalPart()); //XXX namespace needed for the attribute value?
-		}
-		// write eventual required ID
-		if (generateRequiredID) {
-			GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
+		if (!step.isTransient()) {
+			writeStartElement(writer, name);
+			if (step.isDowncast()) {
+				// add xsi:type
+				writer.writeAttribute(StreamGmlWriter.SCHEMA_INSTANCE_NS, "type", 
+						step.getType().getName().getLocalPart()); //XXX namespace needed for the attribute value?
+			}
+			// write eventual required ID
+			if (generateRequiredID) {
+				GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
+			}
 		}
 	}
 
@@ -246,7 +249,7 @@ public abstract class GmlWriterUtil {
 	 * @param children the child definitions 
 	 * @return the property definitions
 	 */
-	public static Collection<PropertyDefinition> collectProperties(
+	private static Collection<PropertyDefinition> collectProperties(
 			Iterable<? extends ChildDefinition<?>> children) {
 		List<PropertyDefinition> result = new ArrayList<PropertyDefinition>();
 		for (ChildDefinition<?> child : children) {
@@ -256,6 +259,38 @@ public abstract class GmlWriterUtil {
 			else if (child.asGroup() != null) {
 				result.addAll(collectProperties(
 						child.asGroup().getDeclaredChildren()));
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Collect all the paths to all child properties, even those contained in
+	 * groups.
+	 * @param children the children
+	 * @param basePath the base path
+	 * @param elementsOnly if only properties representing an XML element should
+	 *   be considered
+	 * @return the child paths, each ending with a property element
+	 */
+	public static Collection<DefinitionPath> collectPropertyPaths(
+			Iterable<? extends ChildDefinition<?>> children, DefinitionPath basePath,
+					boolean elementsOnly) {
+		List<DefinitionPath> result = new ArrayList<DefinitionPath>();
+		for (ChildDefinition<?> child : children) {
+			if (child.asProperty() != null) { 
+				if (!elementsOnly || !child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+					DefinitionPath path = new DefinitionPath(basePath);
+					path.addProperty(child.asProperty());
+					result.add(path);
+				}
+			}
+			else if (child.asGroup() != null) {
+				DefinitionPath path = new DefinitionPath(basePath);
+				path.addGroup(child.asGroup());
+				result.addAll(collectPropertyPaths(
+						child.asGroup().getDeclaredChildren(), path,
+						elementsOnly));
 			}
 		}
 		return result;
