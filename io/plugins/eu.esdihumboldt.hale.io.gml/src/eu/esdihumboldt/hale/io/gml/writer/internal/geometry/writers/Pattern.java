@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
@@ -413,11 +412,11 @@ public class Pattern {
 			// step down properties
 			@java.lang.SuppressWarnings("unchecked")
 			Iterable<ChildDefinition<?>> children = (Iterable<ChildDefinition<?>>) ((path.isEmpty())?(type.getChildren()):(type.getDeclaredChildren()));
-			Iterable<PropertyDefinition> properties = GmlWriterUtil.collectProperties(children);
-			for (PropertyDefinition prop : properties) {
+			Iterable<DefinitionPath> childPaths = GmlWriterUtil.collectPropertyPaths(children, path, true);
+			for (DefinitionPath childPath : childPaths) {
 				DefinitionPath candidate = match(
-						prop.getPropertyType(),
-						new DefinitionPath(path).addProperty(prop),
+						path.getLastType(),
+						childPath,
 						gmlNs,
 						new HashSet<TypeDefinition>(checkedTypes),
 						new ArrayList<PatternElement>(remainingElements));

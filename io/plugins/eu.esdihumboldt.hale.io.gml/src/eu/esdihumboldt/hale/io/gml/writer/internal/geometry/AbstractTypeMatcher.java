@@ -22,11 +22,9 @@ import java.util.Queue;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
-import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
  * Abstract type matcher. Finds candidates matching a custom parameter.
@@ -127,14 +125,12 @@ public abstract class AbstractTypeMatcher<T> {
 				//XXX why differentiate here?
 				@SuppressWarnings("unchecked")
 				Iterable<ChildDefinition<?>> children = (Iterable<ChildDefinition<?>>) ((basePath.isEmpty() || basePath.getLastElement().isProperty())?(type.getChildren()):(type.getDeclaredChildren()));
-				Iterable<PropertyDefinition> properties = GmlWriterUtil.collectProperties(children);
-				for (PropertyDefinition prop : properties) {
-					if (!prop.getConstraint(XmlAttributeFlag.class).isEnabled()) {
-						// only descend into elements
-						candidates.add(new PathCandidate(prop.getPropertyType(), 
-								new DefinitionPath(basePath).addProperty(prop), 
-								new HashSet<TypeDefinition>(checkedTypes)));
-					}
+				Iterable<DefinitionPath> childPaths = GmlWriterUtil.collectPropertyPaths(children, basePath, true);
+				for (DefinitionPath childPath : childPaths) {
+					// only descend into elements
+					candidates.add(new PathCandidate(childPath.getLastType(), 
+							childPath, 
+							new HashSet<TypeDefinition>(checkedTypes)));
 				}
 			}
 			
