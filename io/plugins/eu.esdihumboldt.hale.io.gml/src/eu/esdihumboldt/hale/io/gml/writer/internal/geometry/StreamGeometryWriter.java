@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.MultiPolygon
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.Pattern;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.PointWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.PolygonWriter;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
  * Write geometries for a GML document.
@@ -303,6 +304,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			PropertyDefinition srsAtt = null;
 			for (ChildDefinition<?> att : DefinitionUtil.getAllProperties(type)) { //XXX is this enough? or should groups be handled explicitly?
 				if (att.asProperty() != null
+						&& att.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled() // if we write an attribute, it must be an attribute ;)
 						&& att.getName().getLocalPart().equals("srsName") //TODO improve condition? //$NON-NLS-1$
 						&& (att.getName().getNamespaceURI() == null || 
 								att.getName().getNamespaceURI().equals(gmlNs) || 
