@@ -170,7 +170,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		try {
 			write(getInstances(), progress, reporter);
 			reporter.setSuccess(true);
-		} catch (XMLStreamException e) {
+		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 			reporter.setSuccess(false);
 		} finally {
@@ -348,73 +348,10 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 		
 		progress.begin("Generating " + getTypeName(), instances.size());
 		
-		TypeDefinition containerDefinition = null;
-		QName containerName = null;
+		XmlElement container = findDefaultContainter(targetIndex, reporter);
 		
-		if (useFeatureCollection) {
-			// try to find FeatureCollection element
-			Iterator<XmlElement> it = targetIndex.getElements().values().iterator();
-			Collection<XmlElement> fcElements = new HashSet<XmlElement>();
-			while (it.hasNext()) {
-				XmlElement el = it.next();
-				if (isFeatureCollection(el)) {
-					fcElements.add(el);
-				}
-			}
-			
-			
-			if (fcElements.isEmpty() && gmlNs.equals("http://www.opengis.net/gml")) { //$NON-NLS-1$
-				// no FeatureCollection defined and "old" namespace -> GML 2
-				// include WFS 1.0.0 for the FeatureCollection element
-				try {
-					URI location = StreamGmlWriter.class.getResource("/schemas/wfs/1.0.0/WFS-basic.xsd").toURI(); //$NON-NLS-1$
-					XmlSchemaReader schemaReader = new XmlSchemaReader();
-					schemaReader.setSource(new DefaultInputSupplier(location));
-					//FIXME to work with the extra schema it must be integrated with the main schema
-//					schemaReader.setSharedTypes(sharedTypes);
-					
-					IOReport report = schemaReader.execute(null);
-					
-					if (report.isSuccess()) {
-						XmlIndex wfsSchema = schemaReader.getSchema();
-						
-						// look for FeatureCollection element
-						for (XmlElement el : wfsSchema.getElements().values()) {
-							if (isFeatureCollection(el)) {
-								fcElements.add(el);
-							}
-						}
-						
-						// add as additional schema, replace location for verification
-						additionalSchemas.add(new SchemaDecorator(wfsSchema) {
-							@Override
-							public URI getLocation() {
-								return URI.create("http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd");
-							}
-						});
-						
-						// add namespace
-						GmlWriterUtil.addNamespace(writer, wfsSchema.getNamespace(), "wfs"); //$NON-NLS-1$
-					}
-				} catch (Exception e) {
-					log.warn("Using WFS schema for the FeatureCollection definition failed", e); //$NON-NLS-1$
-				}
-			}
-			
-			if (fcElements.isEmpty()) {
-				reporter.warn(new IOMessageImpl(
-						"No element describing a FeatureCollection found", null)); //$NON-NLS-1$
-			}
-			else {
-				// select fc element TODO priorized selection (root element parameters)
-				XmlElement fcElement = fcElements.iterator().next();
-				containerDefinition = fcElement.getType();
-				containerName = fcElement.getName();
-				
-				log.info("Found " + fcElements.size() + " possible FeatureCollection elements" + //$NON-NLS-1$ //$NON-NLS-2$
-						", using element " + fcElement.getName()); //$NON-NLS-1$
-			}
-		}
+		TypeDefinition containerDefinition = (container == null)?(null):(container.getType());
+		QName containerName = (container == null)?(null):(container.getName());
 		
 		if (containerDefinition == null) {
 			// no container defined, try to use a custom root element
@@ -535,6 +472,81 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
         writer.writeEndDocument();
         
         writer.close();
+	}
+
+	/**
+	 * Find the default container element.
+	 * @param targetIndex the target type index
+	 * @param reporter the reporter
+	 * @return the container XML element or <code>null</code>
+	 */
+	protected XmlElement findDefaultContainter(XmlIndex targetIndex, IOReporter reporter) {
+		if (useFeatureCollection) {
+			// try to find FeatureCollection element
+			Iterator<XmlElement> it = targetIndex.getElements().values().iterator();
+			Collection<XmlElement> fcElements = new HashSet<XmlElement>();
+			while (it.hasNext()) {
+				XmlElement el = it.next();
+				if (isFeatureCollection(el)) {
+					fcElements.add(el);
+				}
+			}
+			
+			
+			if (fcElements.isEmpty() && gmlNs.equals("http://www.opengis.net/gml")) { //$NON-NLS-1$
+				// no FeatureCollection defined and "old" namespace -> GML 2
+				// include WFS 1.0.0 for the FeatureCollection element
+				try {
+					URI location = StreamGmlWriter.class.getResource("/schemas/wfs/1.0.0/WFS-basic.xsd").toURI(); //$NON-NLS-1$
+					XmlSchemaReader schemaReader = new XmlSchemaReader();
+					schemaReader.setSource(new DefaultInputSupplier(location));
+					//FIXME to work with the extra schema it must be integrated with the main schema
+//					schemaReader.setSharedTypes(sharedTypes);
+					
+					IOReport report = schemaReader.execute(null);
+					
+					if (report.isSuccess()) {
+						XmlIndex wfsSchema = schemaReader.getSchema();
+						
+						// look for FeatureCollection element
+						for (XmlElement el : wfsSchema.getElements().values()) {
+							if (isFeatureCollection(el)) {
+								fcElements.add(el);
+							}
+						}
+						
+						// add as additional schema, replace location for verification
+						additionalSchemas.add(new SchemaDecorator(wfsSchema) {
+							@Override
+							public URI getLocation() {
+								return URI.create("http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd");
+							}
+						});
+						
+						// add namespace
+						GmlWriterUtil.addNamespace(writer, wfsSchema.getNamespace(), "wfs"); //$NON-NLS-1$
+					}
+				} catch (Exception e) {
+					log.warn("Using WFS schema for the FeatureCollection definition failed", e); //$NON-NLS-1$
+				}
+			}
+			
+			if (fcElements.isEmpty()) {
+				reporter.warn(new IOMessageImpl(
+						"No element describing a FeatureCollection found", null)); //$NON-NLS-1$
+			}
+			else {
+				// select fc element TODO priorized selection (root element parameters)
+				XmlElement fcElement = fcElements.iterator().next();
+				
+				log.info("Found " + fcElements.size() + " possible FeatureCollection elements" + //$NON-NLS-1$ //$NON-NLS-2$
+						", using element " + fcElement.getName()); //$NON-NLS-1$
+				
+				return fcElement;
+			}
+		}
+		
+		return null;
 	}
 
 	/**

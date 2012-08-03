@@ -17,6 +17,20 @@
             </parameter>
          </describer>
       </content-type>
+      <content-type
+            base-type="eu.esdihumboldt.hale.io.gml"
+            file-extensions="gml,xml"
+            id="eu.esdihumboldt.hale.io.citygml"
+            name="CityGML file"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="CityModel">
+            </parameter>
+         </describer>
+      </content-type>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.io.provider">
@@ -50,6 +64,14 @@
             name="XML (Custom root element)">
          <contentType
                ref="org.eclipse.core.runtime.xml">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
+            id="eu.esdihumboldt.hale.io.citygml.writer"
+            name="CityGML (CityModel)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.citygml">
          </contentType>
       </provider>
    </extension>
