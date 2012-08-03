@@ -307,15 +307,6 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			log.debug("GML namespace is " + gmlNs); //$NON-NLS-1$
 		}
 		
-		//FIXME fill type index with root types
-//		types = new TypeIndex();
-//		for (SchemaElement element : getTargetSchema().getElements().values()) {
-//			types.addType(element.getType());
-//		}
-//		for (Definition def : getTargetSchema().getTypes().keySet()) {
-//			types.addType(DefinitionUtil.getType(def));
-//		}
-		
 		return outStream;
 	}
 
@@ -876,26 +867,6 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 					propDef.getPropertyType()));
 		}
 	}
-
-//	/**
-//	 * Write any attributes for simple type elements
-//	 * 
-//	 * @param property the property of the simple type element
-//	 * @param propDef the property definition of the simple type element
-//	 * @throws XMLStreamException if an error occurs writing the attributes
-//	 */
-//	private void writeSimpleTypeAttributes(Property property,
-//			PropertyDefinition propDef) throws XMLStreamException {
-//		if (property != null && propDef.isElement() // only elements may have properties
-//				&& !(property instanceof AttributeProperty)) { //XXX this is a dirty hack - find a better solution
-//			Collection<Property> properties = FeatureInspector.getProperties(property);
-//			if (properties != null && !properties.isEmpty()) {
-//				//XXX create dummy attribute for writeProperties TODO better: FeatureInspector must support Property
-//				ComplexAttribute ca = new ComplexAttributeImpl(properties, GMLSchema.ABSTRACTSTYLETYPE_TYPE, null);
-//				writeProperties(ca, propDef.getAttributeType(), false);
-//			}
-//		}
-//	}
 
 	/**
 	 * Write a geometry
