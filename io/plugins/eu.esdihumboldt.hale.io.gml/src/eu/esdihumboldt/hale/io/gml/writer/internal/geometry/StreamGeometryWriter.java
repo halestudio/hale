@@ -261,21 +261,27 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		}
 		else {
 			for (PathElement step : path.getSteps()) {
-				// start elements
-				name = step.getName();
-				GmlWriterUtil.writeStartPathElement(writer, step, false);
-				// write eventual required ID
-				GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
-				// write eventual srsName
-				writeSrsName(writer, step.getType(), geometry, srsName);
+				if (!step.isTransient()) {
+					// start elements
+					name = step.getName();
+					GmlWriterUtil.writeStartPathElement(writer, step, false);
+					// write eventual required ID
+					GmlWriterUtil.writeRequiredID(writer, step.getType(), null, false);
+					// write eventual srsName
+					writeSrsName(writer, step.getType(), geometry, srsName);
+				}
 			}
 			
 			// write geometry
 			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs);
 			
 			for (int i = 0; i < path.getSteps().size(); i++) {
-				// end elements
-				writer.writeEndElement();
+				PathElement step = path.getSteps().get(path.getSteps().size() - 1 - i);
+				
+				if (!step.isTransient()) {
+					// end elements
+					writer.writeEndElement();
+				}
 			}
 		}
 	}
