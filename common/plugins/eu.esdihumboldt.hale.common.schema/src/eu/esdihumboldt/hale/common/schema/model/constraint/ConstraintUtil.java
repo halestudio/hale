@@ -22,6 +22,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.ParentBound;
 
 /**
  * Helper for creating default constraints and dealing with the 
@@ -151,6 +152,21 @@ public abstract class ConstraintUtil {
 		
 		Constraint constraint = type.getAnnotation(Constraint.class);
 		return constraint.mutable();
+	}
+	
+	/**
+	 * Determine if the constraint type in the hierarchy of the given type is
+	 * annotated with {@link ParentBound}.
+	 * 
+	 * @param type the type to determine the constraint type for
+	 * @return if the constraint is parent bound
+	 * @throws IllegalArgumentException if no constraint type exists in the type
+	 *   hierarchy
+	 */
+	public static boolean isParentBound(Class<?> type) {
+		type = getConstraintType(type);
+		
+		return type.isAnnotationPresent(ParentBound.class);
 	}
 	
 }

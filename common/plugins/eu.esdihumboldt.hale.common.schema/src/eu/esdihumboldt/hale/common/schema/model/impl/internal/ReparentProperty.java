@@ -16,8 +16,10 @@ import net.jcip.annotations.Immutable;
 
 import com.google.common.base.Preconditions;
 
+import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.ConstraintUtil;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
 
 /**
@@ -25,7 +27,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
  * @author Simon Templer
  */
 @Immutable
-public class ReparentProperty extends AbstractPropertyDecorator {
+public class ReparentProperty extends ConstraintOverrideProperty {
 	
 	private final TypeDefinition parent;
 
@@ -57,6 +59,15 @@ public class ReparentProperty extends AbstractPropertyDecorator {
 	@Override
 	public TypeDefinition getParentType() {
 		return parent;
+	}
+
+	/**
+	 * @see ConstraintOverrideProperty#useLocalConstraint(Class)
+	 */
+	@Override
+	protected <T extends PropertyConstraint> boolean useLocalConstraint(
+			Class<T> constraintType) {
+		return ConstraintUtil.isParentBound(constraintType);
 	}
 
 }

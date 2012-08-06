@@ -62,5 +62,5 @@ public final class XmlAttributeFlag extends AbstractFlagConstraint implements Pr
 	private XmlAttributeFlag(boolean enabled) {
 		super(enabled);
 	}
-
+	
 }

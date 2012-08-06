@@ -55,11 +55,22 @@ public class ConstraintOverrideProperty extends AbstractPropertyDecorator {
 	public <T extends PropertyConstraint> T getConstraint(
 			Class<T> constraintType) {
 		// return overriding constraint if present
-		if (constraints.hasConstraint(constraintType)) {
+		if (useLocalConstraint(constraintType)) {
 			return constraints.getConstraint(constraintType);
 		}
 		
 		return super.getConstraint(constraintType);
+	}
+	
+	/**
+	 * Determines if a local constraint should be used, or if the constraint
+	 * should be retrieved from the decoratee.
+	 * @param constraintType the constraint type
+	 * @return if a local constraint should be used
+	 */
+	protected <T extends PropertyConstraint> boolean useLocalConstraint(
+			Class<T> constraintType) {
+		return constraints.hasConstraint(constraintType);
 	}
 
 }

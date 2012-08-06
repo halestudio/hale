@@ -48,5 +48,5 @@ public @interface Constraint {
 	 *   <code>true</code> by default
 	 */
 	boolean mutable() default true;
-
+	
 }

@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.schema.model.constraint;
 
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
+import eu.esdihumboldt.hale.common.schema.model.ParentBound;
 import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 
@@ -24,6 +25,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
  * @author Simon Templer
  */
 @Constraint(mutable = true)
+@ParentBound
 public class Population implements PropertyConstraint, TypeConstraint,
 		GroupPropertyConstraint {
 	

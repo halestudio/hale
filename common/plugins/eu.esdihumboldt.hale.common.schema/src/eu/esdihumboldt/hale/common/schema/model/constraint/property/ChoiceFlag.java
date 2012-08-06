@@ -62,4 +62,5 @@ public class ChoiceFlag extends AbstractFlagConstraint implements GroupPropertyC
 	private ChoiceFlag(boolean enabled) {
 		super(enabled);
 	}
+	
 }

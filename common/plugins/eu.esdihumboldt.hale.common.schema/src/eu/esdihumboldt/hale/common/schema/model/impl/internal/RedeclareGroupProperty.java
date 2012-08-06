@@ -17,7 +17,9 @@ import net.jcip.annotations.Immutable;
 import com.google.common.base.Preconditions;
 
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.ConstraintUtil;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractGroupPropertyDecorator;
 
 /**
@@ -26,7 +28,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractGroupPropertyDecora
  * @author Simon Templer
  */
 @Immutable
-public class RedeclareGroupProperty extends AbstractGroupPropertyDecorator {
+public class RedeclareGroupProperty extends ConstraintOverrideGroupProperty {
 	
 	private final DefinitionGroup declaringGroup;
 
@@ -53,6 +55,15 @@ public class RedeclareGroupProperty extends AbstractGroupPropertyDecorator {
 	@Override
 	public DefinitionGroup getDeclaringGroup() {
 		return declaringGroup;
+	}
+
+	/**
+	 * @see ConstraintOverrideGroupProperty#useLocalConstraint(Class)
+	 */
+	@Override
+	protected <T extends GroupPropertyConstraint> boolean useLocalConstraint(
+			Class<T> constraintType) {
+		return ConstraintUtil.isParentBound(constraintType);
 	}
 
 }

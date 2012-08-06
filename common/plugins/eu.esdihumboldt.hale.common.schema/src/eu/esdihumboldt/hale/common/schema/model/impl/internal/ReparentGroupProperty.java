@@ -16,9 +16,10 @@ import net.jcip.annotations.Immutable;
 
 import com.google.common.base.Preconditions;
 
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.impl.AbstractGroupPropertyDecorator;
+import eu.esdihumboldt.hale.common.schema.model.constraint.ConstraintUtil;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
 
 /**
@@ -26,7 +27,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
  * @author Simon Templer
  */
 @Immutable
-public class ReparentGroupProperty extends AbstractGroupPropertyDecorator {
+public class ReparentGroupProperty extends ConstraintOverrideGroupProperty {
 	
 	private final TypeDefinition parent;
 
@@ -58,6 +59,15 @@ public class ReparentGroupProperty extends AbstractGroupPropertyDecorator {
 	@Override
 	public TypeDefinition getParentType() {
 		return parent;
+	}
+
+	/**
+	 * @see ConstraintOverrideGroupProperty#useLocalConstraint(Class)
+	 */
+	@Override
+	protected <T extends GroupPropertyConstraint> boolean useLocalConstraint(
+			Class<T> constraintType) {
+		return ConstraintUtil.isParentBound(constraintType);
 	}
 
 }
