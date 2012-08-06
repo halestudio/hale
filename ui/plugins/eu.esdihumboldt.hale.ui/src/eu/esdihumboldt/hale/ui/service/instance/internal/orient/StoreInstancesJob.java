@@ -29,6 +29,9 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 
+import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.helper.population.PopulationCounter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
@@ -74,6 +77,9 @@ public abstract class StoreInstancesJob extends Job {
 
 		int count = 0;
 		
+		PopulationCounter counter = new PopulationCounter();
+		InstanceTraverser traverser = new DepthFirstInstanceTraverser();
+		
 		// get database connection
 		DatabaseReference<ODatabaseDocumentTx> ref = database.openWrite();
 		ODatabaseDocumentTx db = ref.getDatabase();
@@ -96,7 +102,10 @@ public abstract class StoreInstancesJob extends Job {
 					OInstance conv = ((instance instanceof OInstance)?
 							((OInstance) instance):(new OInstance(instance)));
 					
+					// increase population count
+					traverser.traverse(instance, counter);
 					
+					// compute metadata
 					InstanceMetadata.setID(conv, UUID.randomUUID().toString());
 					
 					ODatabaseRecordThreadLocal.INSTANCE.set(db);

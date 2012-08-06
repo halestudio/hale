@@ -57,6 +57,14 @@ public class Population implements PropertyConstraint, TypeConstraint,
 	public void increase() {
 		count++;
 	}
+	
+	/**
+	 * Increase the population count.
+	 * @param number by how much to increase the count
+	 */
+	public void increase(int number) {
+		count += number;
+	}
 
 	/**
 	 * @see TypeConstraint#isInheritable()
