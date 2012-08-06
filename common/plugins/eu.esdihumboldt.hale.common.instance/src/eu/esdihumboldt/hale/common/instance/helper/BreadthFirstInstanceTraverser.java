@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
  * @author Simon Templer
  * @deprecated This is not breath first!
  */
+@Deprecated
 public class BreadthFirstInstanceTraverser implements InstanceTraverser {
 
 	/**
