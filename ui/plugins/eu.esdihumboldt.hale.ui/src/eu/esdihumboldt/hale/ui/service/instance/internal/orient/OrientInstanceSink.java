@@ -15,13 +15,17 @@ package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
 import java.io.Closeable;
 import java.io.IOException;
 
+import org.eclipse.ui.PlatformUI;
+
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 
 /**
  * Instance sink based on a {@link LocalOrientDB}
@@ -31,6 +35,8 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 
 	private final LocalOrientDB database;
 	private DatabaseReference<ODatabaseDocumentTx> ref;
+	
+	private final PopulationService ps;
 	
 	/**
 	 * Create an instance sink based on a {@link LocalOrientDB}
@@ -45,6 +51,8 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 			ref = database.openWrite();
 			ref.getDatabase();
 		}
+		
+		ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
 	}
 	
 	/**
@@ -61,6 +69,16 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 		// get/create OInstance
 		OInstance conv = ((instance instanceof OInstance)?
 				((OInstance) instance):(new OInstance(instance)));
+		
+		// population count
+		/*
+		 * XXX This is done here because otherwise the whole
+		 * data set would have again to be retrieved from the
+		 * database. See PopulationServiceImpl
+		 */
+		if (ps != null) {
+			ps.addToPopulation(instance, DataSet.TRANSFORMED);
+		}
 		
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		// configure the document

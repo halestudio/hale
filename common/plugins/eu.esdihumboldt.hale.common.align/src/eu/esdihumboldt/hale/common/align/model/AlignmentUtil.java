@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import com.google.common.base.Objects;
 
 import eu.esdihumboldt.hale.common.align.model.impl.ChildEntityDefinition;
@@ -26,6 +28,7 @@ import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionMan
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -133,6 +136,25 @@ public abstract class AlignmentUtil {
 			return createEntity(entity.getType(), newPath,
 					entity.getSchemaSpace(), entity.getFilter());
 		}
+	}
+	
+	/**
+	 * Get the default child of the given entity.
+	 * @param entity the parent entity
+	 * @param childName the child name
+	 * @return the child entity or <code>null</code> if no child with the
+	 *   given name exists
+	 */
+	public static EntityDefinition getChild(EntityDefinition entity,
+			QName childName) {
+		ChildDefinition<?> child = DefinitionUtil.getChild(entity.getDefinition(), childName);
+		if (child == null) {
+			return null;
+		}
+		
+		List<ChildContext> path = new ArrayList<ChildContext>(entity.getPropertyPath());
+		path.add(new ChildContext(child));
+		return createEntity(entity.getType(), path, entity.getSchemaSpace(), entity.getFilter());
 	}
 
 	/**
@@ -493,5 +515,24 @@ public abstract class AlignmentUtil {
 		}
 		return filterString;
 	}
-	
+
+	/**
+	 * Determines if the given entity is a default entity.
+	 * @param entity the entity to check
+	 * @return if the entity is a default entity
+	 */
+	public static boolean isDefaultEntity(EntityDefinition entity) {
+		if (entity.getFilter() != null) {
+			return false;
+		}
+		
+		for (ChildContext context : entity.getPropertyPath()) {
+			if (context.getCondition() != null || context.getContextName() != null || context.getIndex() != null) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
 }
