@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.internal.AlignmentServiceImpl;
@@ -29,6 +30,7 @@ import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.internal.InstanceSampleServiceImpl;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
 import eu.esdihumboldt.hale.ui.service.instance.validation.internal.InstanceValidationServiceImpl;
+import eu.esdihumboldt.hale.ui.service.population.internal.PopulationServiceImpl;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.service.project.internal.ProjectServiceImpl;
@@ -100,6 +102,11 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 			return new InstanceValidationServiceImpl(
 					(InstanceService) locator.getService(InstanceService.class),
 					(ReportService) locator.getService(ReportService.class)); 
+		
+		if (PopulationService.class.equals(serviceInterface)) {
+			return new PopulationServiceImpl(
+					(InstanceService) locator.getService(InstanceService.class));
+		}
 		
 		return null;
 	}

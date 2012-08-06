@@ -383,6 +383,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.common.service.population.PopulationService">
+         </service>
       </serviceFactory>
       <sourceProvider
             provider="eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceSource">
