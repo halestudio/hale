@@ -26,8 +26,10 @@ import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.helper.population.PopulationUtil;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.Population;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 
 /**
@@ -107,6 +109,14 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 							(cardinality.getMaxOccurs() == Cardinality.UNBOUNDED)?("n"):(Long.valueOf(cardinality.getMaxOccurs()))});
 					text.append(card, StyledString.COUNTER_STYLER);
 				}
+			}
+		}
+		
+		if (contextText == null // displaying population allowed
+				&& element instanceof Definition<?>) {
+			Population pop = PopulationUtil.getPopulation((Definition<?>) element);
+			if (pop.getCount() > 0) {
+				contextText = "x" + pop.getCount();
 			}
 		}
 		
