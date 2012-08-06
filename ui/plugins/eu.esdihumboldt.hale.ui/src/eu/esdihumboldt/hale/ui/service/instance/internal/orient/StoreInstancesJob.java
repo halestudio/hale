@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.PlatformUI;
 
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -34,6 +35,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 
 /**
@@ -74,6 +76,8 @@ public abstract class StoreInstancesJob extends Job {
 
 		int count = 0;
 		
+		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+		
 		// get database connection
 		DatabaseReference<ODatabaseDocumentTx> ref = database.openWrite();
 		ODatabaseDocumentTx db = ref.getDatabase();
@@ -96,8 +100,13 @@ public abstract class StoreInstancesJob extends Job {
 					OInstance conv = ((instance instanceof OInstance)?
 							((OInstance) instance):(new OInstance(instance)));
 					
-					
+					// compute metadata
 					InstanceMetadata.setID(conv, UUID.randomUUID().toString());
+					
+					// population count
+					if (ps != null) {
+						ps.addToPopulation(instance);
+					}
 					
 					ODatabaseRecordThreadLocal.INSTANCE.set(db);
 					// configure the document

@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -29,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 
 /**
  * Extended label provider for definitions.
@@ -84,7 +86,22 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 		cell.setImage(defaultLabels.getImage(element));
 		
 		String contextText = null;
+		String countText = null;
 		if (element instanceof EntityDefinition) {
+			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+			if (ps != null) {
+				int count = ps.getPopulation((EntityDefinition) element);
+				switch (count) {
+				case PopulationService.UNKNOWN:
+					countText = "x?";
+					break;
+				case 0:
+					break;
+				default:
+					countText = "x" + count;
+				}
+			}
+			
 			contextText = AlignmentUtil.getContextText((EntityDefinition) element);
 			element = ((EntityDefinition) element).getDefinition();
 		}
@@ -113,6 +130,11 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 		if (contextText != null) {
 			contextText = " " + contextText;
 			text.append(contextText, StyledString.DECORATIONS_STYLER);
+		}
+		
+		if (countText != null) {
+			countText = " " + countText;
+			text.append(countText, StyledString.QUALIFIER_STYLER);
 		}
 		
 		cell.setText(text.toString());
