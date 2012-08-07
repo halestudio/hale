@@ -15,9 +15,9 @@ package eu.esdihumboldt.hale.ui.common.definition;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -277,7 +277,9 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 					}
 					
 					if (faded) {
-						Image copy2 = new Image(image.getDevice(), copy, SWT.IMAGE_GRAY);
+						ImageData imgData = copy.getImageData();
+						imgData.alpha = 150;
+						Image copy2 = new Image(image.getDevice(), imgData);
 						copy.dispose();
 						copy = copy2;
 					}
