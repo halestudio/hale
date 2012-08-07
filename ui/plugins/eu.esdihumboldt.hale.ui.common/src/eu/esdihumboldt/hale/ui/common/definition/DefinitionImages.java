@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -31,6 +32,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants;
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
+import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
 
 /**
@@ -52,6 +54,8 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 		private final boolean def;
 		
 		private final boolean mandatory;
+		
+		private final boolean faded;
 
 		/**
 		 * Constructor
@@ -60,14 +64,16 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 		 * @param attribute if an attribute is represented (not an element)
 		 * @param def if the image is to be marked a default (e.g. default geometry)
 		 * @param mandatory if the image is to be marked as mandatory 
+		 * @param faded if the image is displayed faded
 		 */
 		public ImageConf(String identifier, boolean attribute, boolean def,
-				boolean mandatory) {
+				boolean mandatory, boolean faded) {
 			super();
 			this.identifier = identifier;
 			this.attribute = attribute;
 			this.def = def;
 			this.mandatory = mandatory;
+			this.faded = faded;
 		}
 
 		/**
@@ -79,6 +85,7 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 			int result = 1;
 			result = prime * result + (attribute ? 1231 : 1237);
 			result = prime * result + (def ? 1231 : 1237);
+			result = prime * result + (faded ? 1231 : 1237);
 			result = prime * result
 					+ ((identifier == null) ? 0 : identifier.hashCode());
 			result = prime * result + (mandatory ? 1231 : 1237);
@@ -100,6 +107,8 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 			if (attribute != other.attribute)
 				return false;
 			if (def != other.def)
+				return false;
+			if (faded != other.faded)
 				return false;
 			if (identifier == null) {
 				if (other.identifier != null)
@@ -229,14 +238,21 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 			}
 			
 			boolean deflt = false;
+			boolean faded = false;
 			if (entityDef != null) {
 				// entity definition needed to determine if item is a default geometry
 				deflt = DefaultGeometryUtil.isDefaultGeometry(entityDef);
+				
+				// and to determine population
+				PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+				if (ps != null && ps.hasPopulation(entityDef.getSchemaSpace())) {
+					faded = (ps.getPopulation(entityDef) == 0);
+				}
 			}
 			
-			if (deflt || mandatory || attribute) {
+			if (deflt || mandatory || attribute || faded) {
 				// overlayed image
-				ImageConf conf = new ImageConf(imageName, attribute, deflt, mandatory);
+				ImageConf conf = new ImageConf(imageName, attribute, deflt, mandatory, faded);
 				Image overlayedImage = overlayedImages.get(conf);
 				
 				if (overlayedImage == null) {
@@ -258,6 +274,14 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 						}
 					} finally {
 						gc.dispose();
+					}
+					
+					if (faded) {
+						ImageData imgData = copy.getImageData();
+						imgData.alpha = 150;
+						Image copy2 = new Image(image.getDevice(), imgData);
+						copy.dispose();
+						copy = copy2;
 					}
 					
 					image = copy;

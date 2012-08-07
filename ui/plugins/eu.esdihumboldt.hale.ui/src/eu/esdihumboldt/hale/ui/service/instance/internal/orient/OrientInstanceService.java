@@ -55,6 +55,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.io.util.ThreadProgressMonitor;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -338,6 +339,16 @@ public class OrientInstanceService extends AbstractInstanceService {
 		notifyDatasetAboutToChange(DataSet.TRANSFORMED);
 
 		transformed.clear();
+		
+		/*
+		 * XXX cause population updated are currently coupled to
+		 * StoreInstancesJob/OrientInstanceSink and not to events, we have to
+		 * clear the transformed population at this point. 
+		 */
+		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+		if (ps != null) {
+			ps.resetPopulation(DataSet.TRANSFORMED);
+		}
 		
 		boolean success = performTransformation();
 			

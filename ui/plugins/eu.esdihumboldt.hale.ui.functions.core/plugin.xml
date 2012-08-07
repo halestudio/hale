@@ -11,14 +11,6 @@
             function="eu.esdihumboldt.hale.align.rename"
             id="eu.esdihumboldt.hale.align.rename.generic">
       </propertyWizard>
-      <propertyParameterPage
-            class="eu.esdihumboldt.hale.ui.functions.core.CheckboxParameterPage"
-            function="eu.esdihumboldt.hale.align.rename"
-            id="eu.esdihumboldt.hale.ui.functions.core.rename_page">
-         <parameter
-               name="structuralRename">
-         </parameter>
-      </propertyParameterPage>
       <propertyWizard
             function="eu.esdihumboldt.hale.align.assign"
             id="eu.esdihumboldt.hale.align.assign.generic">
@@ -77,5 +69,19 @@
                name="additional_property">
          </parameter>
       </typeParameterPage>
+      <propertyParameterEditor
+            class="eu.esdihumboldt.hale.ui.common.editors.BooleanEditorFactory"
+            function="eu.esdihumboldt.hale.align.rename"
+            id="eu.esdihumboldt.hale.align.rename.ignoreNamespaces.editor"
+            parameter="ignoreNamespaces"
+            priority="0">
+      </propertyParameterEditor>
+      <propertyParameterEditor
+            class="eu.esdihumboldt.hale.ui.common.editors.BooleanEditorFactory"
+            function="eu.esdihumboldt.hale.align.rename"
+            id="eu.esdihumboldt.hale.align.rename.structuralRename.editor"
+            parameter="structuralRename"
+            priority="0">
+      </propertyParameterEditor>
    </extension>
 </plugin>

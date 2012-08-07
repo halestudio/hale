@@ -12,8 +12,8 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.service;
 
-import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
 /**

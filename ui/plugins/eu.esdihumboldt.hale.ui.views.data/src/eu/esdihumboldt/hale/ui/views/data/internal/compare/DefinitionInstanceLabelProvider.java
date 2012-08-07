@@ -89,9 +89,12 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		Object value = instance;
 		ChildDefinition<?> childDef = null;
 		LinkedList<Object> segmentList = new LinkedList<Object>();
+		boolean definition = false; // if a definition is represented
 
 		// First segment is TypeDefinition.
 		if (treePath.getFirstSegment() instanceof TypeDefinition) {
+			definition = true;
+			
 			segmentList.add(treePath.getFirstSegment());
 			for (int i = 1; value != null && i < treePath.getSegmentCount(); i++) {
 				Object segment = treePath.getSegment(i);
@@ -115,7 +118,6 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 				}
 			}
 		}
-
 		else {
 			// if segments contain a set of metadata keys
 			if (treePath.getFirstSegment() instanceof Set<?>) {
@@ -139,22 +141,29 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 								value = values.get(choice);
 								valueCount = values.size();
 							} else value = null;
-							}
 						}
-
 					}
 				}
 			}
+		}
 		
 
 		InstanceValidationReport report = null;
 		// If childDef is null we are at the top element.
-		if (childDef == null)
+		if (definition && childDef == null) {
 			report = InstanceValidator.validate(instance);
+		}
 
 		boolean hasValue = false;
-		if (value instanceof Instance) {
+		if (definition && value instanceof Instance) {
 			hasValue = ((Instance) value).getValue() != null;
+		}
+		else if (!definition && treePath.getSegmentCount() == 1) {
+			// metadata root
+			if (instance.getMetaDataNames().isEmpty()) {
+				hasValue = true;
+				value = null;
+			}
 		}
 
 		StyledString styledString;

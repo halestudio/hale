@@ -64,7 +64,11 @@ public class Descent {
 		}
 		
 		for (int i = 0; i < path.getSteps().size(); i++) {
-			writer.writeEndElement();
+			PathElement step = path.getSteps().get(path.getSteps().size() - 1 - i);
+			
+			if (!step.isTransient()) {
+				writer.writeEndElement();
+			}
 		}
 	}
 	
@@ -132,8 +136,10 @@ public class Descent {
 	 				}
 					
 					// close step
-					writer.writeEndElement();
-					endedSomething = true;
+					if (!step.isTransient()) {
+						writer.writeEndElement();
+						endedSomething = true;
+					}
 	 			}
 				
 				if (!endedSomething) {
@@ -144,10 +150,13 @@ public class Descent {
 			}
 			else {
 				while (itPrev.hasPrevious()) {
-					// close step
-					writer.writeEndElement();
-					
 					PathElement step = itPrev.previous();
+					
+					if (!step.isTransient()) {
+						// close step
+						writer.writeEndElement();
+					}
+					
 					if (firstNonUniqueMatch.equals(step)) {
 						// step after this may not be closed, as the next path also wants to enter
 						// from the next path all steps before this step must be ignored for stepping down
@@ -164,8 +173,11 @@ public class Descent {
 			}
 			
 			if (downFrom == null && downAfter == null) {
-				// start elements
-				GmlWriterUtil.writeStartPathElement(writer, step, generateRequiredIDs);
+				if (!step.isTransient()) {
+					// start elements
+					GmlWriterUtil.writeStartPathElement(writer, step, 
+							generateRequiredIDs);
+				}
 			}
 			
 			if (downAfter != null && downAfter.equals(step)) {

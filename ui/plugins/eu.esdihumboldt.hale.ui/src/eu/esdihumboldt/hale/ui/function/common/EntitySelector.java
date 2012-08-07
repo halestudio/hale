@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
-import eu.esdihumboldt.hale.ui.util.selector.AbstractTreeSelectionDialog;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Entity selector
@@ -63,7 +63,7 @@ public abstract class EntitySelector<F extends AbstractParameter> extends Abstra
 	 * @see AbstractSelector#createSelectionDialog(Shell)
 	 */
 	@Override
-	protected AbstractTreeSelectionDialog<EntityDefinition> createSelectionDialog(
+	protected AbstractViewerSelectionDialog<EntityDefinition, ?> createSelectionDialog(
 			Shell parentShell) {
 		return createEntityDialog(parentShell, ssid, field);
 	}

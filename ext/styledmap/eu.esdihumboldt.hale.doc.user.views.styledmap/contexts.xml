@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contexts>
+   <context id="view">
+      <description>The map displays the geo-referenced default geometries of source and transformed instances.</description>
+      <topic href="html/map_view.html" label="Map view"/>
+      <topic href="html/styling_data.html" label="Styling of your Data"/>
+   </context>
+</contexts>

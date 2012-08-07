@@ -98,10 +98,10 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 					return;
 				}
 				
-				AbstractTreeSelectionDialog<T> dialog = createSelectionDialog(
+				AbstractViewerSelectionDialog<T, ?> dialog = createSelectionDialog(
 						Display.getCurrent().getActiveShell());
 				dialog.setFilters(AbstractSelector.this.filters);
-				if (dialog.open() == AbstractTreeSelectionDialog.OK) {
+				if (dialog.open() == AbstractViewerSelectionDialog.OK) {
 					T selected = dialog.getObject();
 					if ((selected == null && currentInput == null) || (selected != null && selected.equals(currentInput)))
 						return;
@@ -137,7 +137,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 	 * @return if the object is accepted by all filters
 	 */
 	public boolean accepts(Object candidate) {
-		return AbstractTreeSelectionDialog.acceptObject(viewer, filters, candidate);
+		return AbstractViewerSelectionDialog.acceptObject(viewer, filters, candidate);
 	}
 
 	/**
@@ -178,7 +178,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 			Object selected = ((IStructuredSelection) selection).getFirstElement();
 			if (selected != null) {
 				// run against filters
-				if (AbstractTreeSelectionDialog.acceptObject(viewer, filters, selected)) {
+				if (AbstractViewerSelectionDialog.acceptObject(viewer, filters, selected)) {
 					// valid selection
 					currentInput = selected;
 					viewer.setInput(selected);
@@ -217,7 +217,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 	 * @param parentShell the parent shell for the dialog
 	 * @return the entity dialog
 	 */
-	protected abstract AbstractTreeSelectionDialog<T> createSelectionDialog(Shell parentShell);
+	protected abstract AbstractViewerSelectionDialog<T, ?> createSelectionDialog(Shell parentShell);
 
 	/**
 	 * Get the main selector control

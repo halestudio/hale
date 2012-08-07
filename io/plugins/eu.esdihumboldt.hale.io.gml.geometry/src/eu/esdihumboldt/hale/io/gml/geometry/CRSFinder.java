@@ -91,9 +91,10 @@ public class CRSFinder implements InstanceTraversalCallback {
 			String codePart = candidate.substring(prefix.length());
 			
 			try {
-				// remove leading :'s
-				while (codePart.startsWith(":")) {
-					codePart = codePart.substring(1);
+				// ignore anything before the last colon
+				int colonIndex = codePart.lastIndexOf(':');
+				if (colonIndex >= 0) {
+					codePart = codePart.substring(colonIndex + 1);
 				}
 				
 				// check if codePart represents an integer

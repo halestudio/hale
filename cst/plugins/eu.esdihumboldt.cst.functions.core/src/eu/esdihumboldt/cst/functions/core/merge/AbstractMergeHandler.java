@@ -22,11 +22,11 @@ import com.google.common.collect.Multimap;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
-import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceFactory;

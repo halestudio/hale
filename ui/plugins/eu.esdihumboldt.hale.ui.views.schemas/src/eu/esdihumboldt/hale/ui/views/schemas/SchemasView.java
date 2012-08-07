@@ -55,6 +55,8 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.service.population.PopulationListener;
+import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionContribution;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaServiceListener;
@@ -336,6 +338,8 @@ public class SchemasView extends PropertiesViewPart {
 	private AlignmentServiceListener alignmentListener;
 
 	private GeometrySchemaServiceListener geometryListener;
+
+	private PopulationListener populationListener;
 //
 //	private StyleServiceListener styleListener;
 	
@@ -474,6 +478,16 @@ public class SchemasView extends PropertiesViewPart {
 			public void alignmentCleared() {
 				refreshInDisplayThread();
 			}
+		});
+		
+		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+		ps.addListener(populationListener = new PopulationListener() {
+			
+			@Override
+			public void populationChanged(SchemaSpaceID ssid) {
+				refreshInDisplayThread();
+			}
+			
 		});
 		
 		// also add the alignment listener to the style service (for refreshing icons when style changes)
@@ -676,6 +690,11 @@ public class SchemasView extends PropertiesViewPart {
 		if (geometryListener != null) {
 			GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
 			gss.removeListener(geometryListener);
+		}
+		
+		if (populationListener != null) {
+			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+			ps.removeListener(populationListener);
 		}
 		
 		if (functionImage != null) {

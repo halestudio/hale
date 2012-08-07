@@ -12,8 +12,11 @@
 
 package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
@@ -22,7 +25,9 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
+import eu.esdihumboldt.hale.ui.util.viewer.FilterAction;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
+import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
 /**
  * Schema explorer with {@link EntityDefinition}s instead of {@link Definition}s
@@ -49,6 +54,20 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 		EntityDefinitionService service = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
 		return new TreePathProviderAdapter(
 				new EntityTypeIndexContentProvider(tree, service, getSchemaSpace()));
+	}
+
+	/**
+	 * @see SchemaExplorer#prependToolbarActions(ToolBarManager)
+	 */
+	@Override
+	protected void prependToolbarActions(ToolBarManager manager) {
+		ViewerFilter filter = new UnpopulatedPropertiesFilter();
+		manager.add(new FilterAction("Hide unpopulated properties",
+				"Show unpopulated properties", SchemasViewPlugin
+						.getImageDescriptor("icons/empty.gif"),
+				getTreeViewer(), filter, true, true));
+		
+		manager.add(new Separator());
 	}
 
 }

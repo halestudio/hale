@@ -7,6 +7,11 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import de.cs3d.util.logging.ALoggerFactory;
+import de.cs3d.util.logging.ATransaction;
+
+import de.cs3d.util.logging.ALogger;
+
 import eu.esdihumboldt.hale.common.instance.extension.validation.ConstraintValidatorExtension;
 import eu.esdihumboldt.hale.common.instance.extension.validation.GroupPropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.PropertyConstraintValidator;
@@ -38,6 +43,9 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
  * @author Kai Schwierczek
  */
 public class InstanceValidator {
+	
+	private static final ALogger log = ALoggerFactory.getLogger(InstanceValidator.class);
+	
 	// XXX Data views show only warnings, if something will be changed to errors
 	// they need an update, too.
 
@@ -54,6 +62,7 @@ public class InstanceValidator {
 
 		InstanceValidationReporter reporter = new DefaultInstanceValidationReporter(true);
 		reporter.setSuccess(false);
+		ATransaction trans = log.begin("Instance validation");
 		ResourceIterator<Instance> iterator = instances.iterator();
 		try {
 			while (iterator.hasNext()) {
@@ -65,6 +74,7 @@ public class InstanceValidator {
 			}
 		} finally {
 			iterator.close();
+			trans.end();
 		}
 		reporter.setSuccess(true);
 		return reporter;
@@ -163,12 +173,13 @@ public class InstanceValidator {
 		for (ChildDefinition<?> childDef : childDefs) {
 			QName name = childDef.getName();
 			// Cannot use getPropertyNames in case of onlyCheckExistingChildren,
-			// because then I got no ChildDefinitions.
-			if (!onlyCheckExistingChildren || group.getProperty(name) != null) {
+			// because then I get no ChildDefinitions.
+			Object[] property = group.getProperty(name);
+			if (!onlyCheckExistingChildren || (property != null && property.length > 0)) {
 				if (childDef.asGroup() != null)
-					validateGroup(group.getProperty(name), childDef.asGroup(), reporter, path + '.' + name.getLocalPart(), reference);
+					validateGroup(property, childDef.asGroup(), reporter, path + '.' + name.getLocalPart(), reference);
 				else if (childDef.asProperty() != null)
-					validateProperty(group.getProperty(name), childDef.asProperty(), reporter, path + '.' + name.getLocalPart(), reference);
+					validateProperty(property, childDef.asProperty(), reporter, path + '.' + name.getLocalPart(), reference);
 				else
 					throw new IllegalStateException("Illegal child type.");
 			}

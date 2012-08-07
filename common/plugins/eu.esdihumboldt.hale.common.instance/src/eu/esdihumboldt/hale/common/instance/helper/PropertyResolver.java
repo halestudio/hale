@@ -405,14 +405,14 @@ public class PropertyResolver {
 
 					ChildDefinition<?> tempdef = tempit.next();
 
-					for(ArrayList<QName> loop : currentItem.getLoopQNames()){
+					for(List<QName> loop : currentItem.getLoopQNames()){
 						if(loop.contains(tempdef.getName())){
 							continue;
 						}
 					}
 					
 					if (currentItem.getQnames().contains(tempdef.getName())){
-						ArrayList<QName> loops = new ArrayList<QName>();
+						List<QName> loops = new ArrayList<QName>();
 						
 						for (int i = currentItem.getQnames().indexOf(tempdef.getName());
 								i < currentItem.getQnames().size(); i++){
@@ -430,7 +430,7 @@ public class PropertyResolver {
 					qudi.addQnames(currentItem.getQnames());
 					
 					
-					for(ArrayList<QName> loop : currentItem.getLoopQNames()){
+					for(List<QName> loop : currentItem.getLoopQNames()){
 						qudi.addLoopQNames(loop);
 						}
 
@@ -524,7 +524,7 @@ public class PropertyResolver {
 					
 					
 					
-					for(ArrayList<QName> loop : currentItem.getLoopQNames()){
+					for(List<QName> loop : currentItem.getLoopQNames()){
 						qudi.addLoopQNames(loop);
 						}
 
@@ -630,7 +630,7 @@ public class PropertyResolver {
 					
 					
 					
-					for(ArrayList<QName> loop : currentItem.getLoopQNames()){
+					for(List<QName> loop : currentItem.getLoopQNames()){
 					qudi.addLoopQNames(loop);
 					}
 					

@@ -106,6 +106,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementName;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
+import eu.esdihumboldt.util.Identifiers;
 import gnu.trove.TObjectIntHashMap;
 
 /**
@@ -149,6 +150,11 @@ public class XmlSchemaReader
 	 * The current reporter
 	 */
 	private IOReporter reporter;
+	
+	/**
+	 * The generated namespace prefixes
+	 */
+	private Identifiers<String> namespaceGeneratedPrefixes = new Identifiers<String>("ns", true, 1);
 	
 	/**
 	 * @see SchemaReader#getSchema()
@@ -233,11 +239,12 @@ public class XmlSchemaReader
 		index = new XmlIndex(namespace, location);
 		
 		// add namespace prefixes
-		NamespacePrefixList namespaces = xmlSchema.getNamespaceContext();
-		Map<String, String> prefixes = index.getPrefixes();
-		for (String prefix : namespaces.getDeclaredPrefixes()) {
-			prefixes.put(namespaces.getNamespaceURI(prefix), prefix);
-		}
+		//XXX instead done for each schema
+//		NamespacePrefixList namespaces = xmlSchema.getNamespaceContext();
+//		Map<String, String> prefixes = index.getPrefixes();
+//		for (String prefix : namespaces.getDeclaredPrefixes()) {
+//			prefixes.put(namespaces.getNamespaceURI(prefix), prefix);
+//		}
 		
 		// create group counter
 		groupCounter = new TObjectIntHashMap<String>();
@@ -288,6 +295,10 @@ public class XmlSchemaReader
 		if (namespace == null) {
 			namespace = XMLConstants.NULL_NS_URI;
 		}
+		
+		// add namespace prefixes
+		NamespacePrefixList namespaces = xmlSchema.getNamespaceContext();
+		addPrefixes(namespaces, namespace, mainSchema);
 	
 		// the schema items
 		XmlSchemaObjectCollection items = xmlSchema.getItems();
@@ -456,6 +467,47 @@ public class XmlSchemaReader
 		
 		progress.setCurrentTask(MessageFormat.format(
 				Messages.getString("ApacheSchemaProvider.33"), namespace)); //$NON-NLS-1$
+	}
+
+	/**
+	 * Add namespace prefixes from a schema to the XmlIndex.
+	 * @param namespaces the namespace prefixes defined in the (single) schema
+	 * @param defaultNamespace the default namespace of the schema
+	 * @param mainSchema specifies if the schema is the main schema
+	 */
+	private void addPrefixes(NamespacePrefixList namespaces, String defaultNamespace,
+			boolean mainSchema) {
+		Map<String, String> prefixes = index.getPrefixes(); // namespaces mapped to prefixes
+		Set<String> orphanedNamespaces = new HashSet<String>();
+		for (String prefix : namespaces.getDeclaredPrefixes()) {
+			String ns = namespaces.getNamespaceURI(prefix);
+			
+			if (!prefixes.containsKey(ns)) {
+				// prefix for namespace is not yet included
+				if (prefixes.containsValue(prefix)) {
+					// prefix already there, may not override
+					orphanedNamespaces.add(ns);
+				}
+				else {
+					// ok to use prefix
+					prefixes.put(ns, prefix);
+				}
+			}
+		}
+		// handle orphaned namespaces
+		for (String ns : orphanedNamespaces) {
+			if (!XMLConstants.XML_NS_URI.equals(ns)) { // exclude XML namespace, its prefix is fixed
+				String prefix = namespaceGeneratedPrefixes.getId(ns);
+				prefixes.put(ns, prefix);
+			}
+		}
+		// special handling of default namespace (add it if not known)
+		if (!mainSchema && !prefixes.containsKey(defaultNamespace) 
+				&& !XMLConstants.XML_NS_URI.equals(defaultNamespace)) { // exclude XML namespace, its prefix is fixed
+			// generate a namespace prefix for imported schemas that might have none
+			String prefix = namespaceGeneratedPrefixes.getId(defaultNamespace);
+			prefixes.put(defaultNamespace, prefix);
+		}
 	}
 
 	/**

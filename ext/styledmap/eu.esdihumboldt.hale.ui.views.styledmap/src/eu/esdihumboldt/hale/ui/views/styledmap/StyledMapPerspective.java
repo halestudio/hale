@@ -16,8 +16,6 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-import de.fhg.igd.mapviewer.view.MapView;
-
 import eu.esdihumboldt.hale.ui.views.data.SourceDataView;
 import eu.esdihumboldt.hale.ui.views.data.TransformedDataView;
 
@@ -36,7 +34,7 @@ public class StyledMapPerspective implements IPerspectiveFactory {
 		// top
 		IFolderLayout top = layout.createFolder(
 				"top", IPageLayout.TOP, 0.7f, editorArea);
-		top.addView(MapView.ID);
+		top.addView(StyledMapView.ID);
 
 		// bottom left
 		IFolderLayout bottomLeft = layout.createFolder("bottomLeft",

@@ -13,27 +13,32 @@
 package eu.esdihumboldt.hale.common.instance.helper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 
 /**
- * Objects of these Class are used by the PropertyResolver in a Queue for traversing the instance-definition-tree	
+ * Objects of these Class are used by the {@link PropertyResolver} in a Queue
+ * for traversing the instance-definition-tree.	
  * @author Sebastian Reinhardt
  */
-
-
 public class QueueDefinitionItem {
 
-	ChildDefinition<?> def;
-	ArrayList<QName> qnames;
-	ArrayList<ArrayList<QName>> loops;
+	private ChildDefinition<?> def;
+	private List<QName> qnames;
+	private List<List<QName>> loops;
 	
+	/**
+	 * Create a definition item.
+	 * @param def the child definition
+	 * @param qname the child name
+	 */
 	public QueueDefinitionItem(ChildDefinition<?> def, QName qname){
 		this.def = def;
 		this.qnames = new ArrayList<QName>();
-		this.loops = new ArrayList<ArrayList<QName>>();
+		this.loops = new ArrayList<List<QName>>();
 		qnames.add(qname);
 	}
 
@@ -54,7 +59,7 @@ public class QueueDefinitionItem {
 	/**
 	 * @return the qnames from the path of the definition inside the instance-definition-tree
 	 */
-	public ArrayList<QName> getQnames() {
+	public List<QName> getQnames() {
 		return qnames;
 	}
 
@@ -70,23 +75,20 @@ public class QueueDefinitionItem {
 	 * Adds multiple QNames to the path
 	 * @param qnames the QName sto be add
 	 */
-	public void addQnames(ArrayList<QName> qnames){
-		
+	public void addQnames(List<QName> qnames){
 		int i = 0;
 		for (QName name : qnames){
 			this.qnames.add(i, name);
 			i++;
 		}
-		
 	}
-	
 	
 	/**
 	 * adds known loop paths wich appear in the 
 	 * path of the instance-definition-tree on the way to the definition of this item
 	 * @param loopQNames the loop paths to add
 	 */
-	public void addLoopQNames(ArrayList<QName> loopQNames) {
+	public void addLoopQNames(List<QName> loopQNames) {
 		loops.add(loopQNames);
 	}
 	
@@ -95,13 +97,13 @@ public class QueueDefinitionItem {
 	 * path of the instance-definition-tree on the way to the definition of this item
 	 * @return the known loop-paths
 	 */
-	public ArrayList<ArrayList<QName>> getLoopQNames(){
+	public List<List<QName>> getLoopQNames(){
 		return loops;
 	}
 	
 	/**
 	 * returns the path of the definition of this item in the instance-definition-tree as a String
-	 * @return the stringrespresentation of the path
+	 * @return the string representation of the path
 	 */
 	public String qNamesToString(){
 		String result = "";

@@ -18,6 +18,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
@@ -95,6 +97,14 @@ public class DefinitionPath {
 		@Override
 		public boolean isUnique() {
 			return unique;
+		}
+
+		/**
+		 * @see PathElement#isTransient()
+		 */
+		@Override
+		public boolean isTransient() {
+			return false;
 		}
 
 		/**
@@ -231,7 +241,108 @@ public class DefinitionPath {
 //
 //	}
 	
-	//FIXME path element for groups?
+	/**
+	 * Path element representing a group.
+	 * XXX a {@link DefinitionPath} that is used for writing should never end
+	 * on a {@link GroupElement}!
+	 * @author Simon Templer
+	 */
+	private static class GroupElement implements PathElement {
+		
+		private final GroupPropertyDefinition groupDef;
+
+		/**
+		 * Create a path element representing a group.
+		 * @param groupDef the group property definition
+		 */
+		public GroupElement(GroupPropertyDefinition groupDef) {
+			super();
+			this.groupDef = groupDef;
+		}
+
+		/**
+		 * @see PathElement#getName()
+		 */
+		@Override
+		public QName getName() {
+			return groupDef.getName();
+		}
+
+		/**
+		 * @see PathElement#getType()
+		 */
+		@Override
+		public TypeDefinition getType() {
+			// no type for a group
+			return null;
+		}
+
+		/**
+		 * @see PathElement#isProperty()
+		 */
+		@Override
+		public boolean isProperty() {
+			return false;
+		}
+
+		/**
+		 * @see PathElement#isDowncast()
+		 */
+		@Override
+		public boolean isDowncast() {
+			return false;
+		}
+
+		/**
+		 * @see PathElement#isUnique()
+		 */
+		@Override
+		public boolean isUnique() {
+			long max = groupDef.getConstraint(Cardinality.class).getMaxOccurs();
+			return max != Cardinality.UNBOUNDED && max <= 1;
+		}
+
+		/**
+		 * @see PathElement#isTransient()
+		 */
+		@Override
+		public boolean isTransient() {
+			return true;
+		}
+
+		/**
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((groupDef == null) ? 0 : groupDef.hashCode());
+			return result;
+		}
+
+		/**
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			GroupElement other = (GroupElement) obj;
+			if (groupDef == null) {
+				if (other.groupDef != null)
+					return false;
+			} else if (!groupDef.equals(other.groupDef))
+				return false;
+			return true;
+		}
+		
+	}
 
 	/**
 	 * A property path element 
@@ -288,6 +399,14 @@ public class DefinitionPath {
 		public boolean isUnique() {
 			long max = propDef.getConstraint(Cardinality.class).getMaxOccurs();
 			return max != Cardinality.UNBOUNDED && max <= 1;
+		}
+
+		/**
+		 * @see PathElement#isTransient()
+		 */
+		@Override
+		public boolean isTransient() {
+			return false;
 		}
 
 		/**
@@ -403,7 +522,31 @@ public class DefinitionPath {
 		
 		return this;
 	}
-
+	
+	/**
+	 * Add a group to the path
+	 * @param groupDef the group definition
+	 * @return this path for chaining
+	 */
+	public DefinitionPath addGroup(GroupPropertyDefinition groupDef) {
+		steps.add(new GroupElement(groupDef));
+		return this;
+	}
+	
+	/**
+	 * Add a child to the path
+	 * @param child the child, either a group or property
+	 * @return this path for chaining
+	 */
+	public DefinitionPath add(ChildDefinition<?> child) {
+		if (child.asGroup() != null) {
+			return addGroup(child.asGroup());
+		}
+		if (child.asProperty() != null) {
+			return addProperty(child.asProperty());
+		}
+		throw new IllegalArgumentException("Supplied an invalif child definition.");
+	}
 	
 	private void addStep(PathElement step) {
 		steps.add(step);
@@ -458,7 +601,7 @@ public class DefinitionPath {
 	/**
 	 * Get the last type of the path. For empty paths this will be the type
 	 * specified on creation
-	 * 
+	 * XXX not for groups
 	 * @return the last type
 	 */
 	public TypeDefinition getLastType() {
@@ -468,7 +611,7 @@ public class DefinitionPath {
 	/**
 	 * Get the last name of the path. For empty paths this will be the name
 	 * specified on creation
-	 * 
+	 * XXX not if last is a group
 	 * @return the last type
 	 */
 	public QName getLastName() {
@@ -478,7 +621,7 @@ public class DefinitionPath {
 	/**
 	 * Get if the last element in the path is unique, which means that it cannot
 	 * be repeated
-	 * 
+	 * XXX not if last is a group
 	 * @return if the last element in the path is unique, which means that it 
 	 *   cannot be repeated
 	 */

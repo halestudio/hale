@@ -34,9 +34,14 @@ public abstract class ConversionUtil {
 	 * @return the converted value
 	 * @throws ConversionException if the conversion failed
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T getAs(Object value, Class<T> targetType) throws ConversionException {
 		if (value == null) {
 			return null;
+		}
+		
+		if (targetType.isInstance(value)) {
+			return (T) value;
 		}
 		
 		ConversionService cs = OsgiUtils.getService(ConversionService.class);

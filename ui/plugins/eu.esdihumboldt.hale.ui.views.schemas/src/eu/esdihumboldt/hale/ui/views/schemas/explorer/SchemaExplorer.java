@@ -128,6 +128,8 @@ public class SchemaExplorer {
 		
 		ToolBarManager manager = new ToolBarManager(toolBar);
 		
+		prependToolbarActions(manager);
+		
 		manager.add(new ClassificationFilterAction(
 				Classification.ABSTRACT_FT, 
 				"Hide abstract feature types", 
@@ -189,6 +191,14 @@ public class SchemaExplorer {
 		manager.update(false);
 		
 		return toolBar;
+	}
+
+	/**
+	 * Prepend toolbar actions to the schema explorer tool bar. 
+	 * @param manager the toolbar manager
+	 */
+	protected void prependToolbarActions(ToolBarManager manager) {
+		// none to add
 	}
 
 	/**

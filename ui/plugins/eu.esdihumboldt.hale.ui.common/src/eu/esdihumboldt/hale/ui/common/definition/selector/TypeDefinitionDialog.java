@@ -27,15 +27,19 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypesContentProvider;
-import eu.esdihumboldt.hale.ui.util.selector.AbstractTreeSelectionDialog;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Selection dialog for {@link TypeDefinition}s.
  * @author Simon Templer
  */
-public class TypeDefinitionDialog extends AbstractTreeSelectionDialog<TypeDefinition> {
+public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefinition, TreeViewer> {
 
-	private final TypeIndex types;
+	/**
+	 * The types, either a {@link TypeIndex} or an {@link Iterable} of
+	 * {@link TypeDefinition}s.
+	 */
+	private final Object types;
 
 	/**
 	 * Create a type definition selection dialog.
@@ -46,6 +50,20 @@ public class TypeDefinitionDialog extends AbstractTreeSelectionDialog<TypeDefini
 	 */
 	public TypeDefinitionDialog(Shell parentShell, String title,
 			TypeDefinition initialSelection, TypeIndex types) {
+		super(parentShell, title, initialSelection);
+		
+		this.types = types;
+	}
+	
+	/**
+	 * Create a type definition selection dialog.
+	 * @param parentShell the parent shell
+	 * @param title the dialog title 
+	 * @param initialSelection the initial selection
+	 * @param types the type index
+	 */
+	public TypeDefinitionDialog(Shell parentShell, String title,
+			TypeDefinition initialSelection, Iterable<TypeDefinition> types) {
 		super(parentShell, title, initialSelection);
 		
 		this.types = types;

@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.cst.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +24,10 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.Conte
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.DuplicationVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
-import eu.esdihumboldt.hale.common.align.transformation.function.FamilyInstance;
+import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
+import eu.esdihumboldt.hale.common.instance.model.InstanceUtil;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
@@ -79,6 +84,14 @@ public class TreePropertyTransformer implements PropertyTransformer {
 			@Override
 			public void run() {
 				try {
+					//Add the meta data ID of the source as SourceID to the target
+					Collection<Instance> sources = InstanceUtil.getInstanceOutOfFamily(source);
+					ArrayList<Object> ids = new ArrayList<Object>();
+				    for(Instance inst : sources){
+						ids.add(InstanceMetadata.getID(inst));
+				        }					
+				    InstanceMetadata.setSourceID(target, ids.toArray());
+					
 					// identify transformations to be executed on given instances
 					// create/get a transformation tree
 					TransformationTree tree = treePool.getTree(target.getDefinition());

@@ -12,14 +12,20 @@
 
 package eu.esdihumboldt.hale.ui.style;
 
+import java.util.Map.Entry;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -46,25 +52,23 @@ public class TypeStyleHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		
-		//TODO instead of grabbing the first type found use a selection dialog to allow chosing?
-		
-		Pair<TypeDefinition, DataSet> typeInfo = null;
+		// collect types and associated data sets
+		SetMultimap<DataSet, TypeDefinition> types = HashMultimap.create();
 		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
 			for (Object object : ((IStructuredSelection) selection).toArray()) {
 				if (object instanceof TypeDefinition) {
 					TypeDefinition type = (TypeDefinition) object;
-					DataSet dataSet = findDataSet(type);
-					typeInfo = new Pair<TypeDefinition, DataSet>(type, dataSet);
-					break;
+					if (!types.containsValue(type)) {
+						DataSet dataSet = findDataSet(type);
+						types.put(dataSet, type);
+					}
 				}
 				if (object instanceof EntityDefinition) {
 					EntityDefinition entityDef = (EntityDefinition) object;
 					if (entityDef.getPropertyPath().isEmpty()) {
 						DataSet dataSet = (entityDef.getSchemaSpace() == SchemaSpaceID.SOURCE) ? (DataSet.SOURCE)
 								: (DataSet.TRANSFORMED);
-						typeInfo = new Pair<TypeDefinition, DataSet>(
-								entityDef.getType(), dataSet );
-						break;
+						types.put(dataSet, entityDef.getType());
 					}
 				}
 				if (object instanceof InstanceReference) {
@@ -73,11 +77,27 @@ public class TypeStyleHandler extends AbstractHandler {
 				}
 				if (object instanceof Instance) {
 					Instance instance = (Instance) object;
-					typeInfo = new Pair<TypeDefinition, DataSet>(
-							instance.getDefinition(), 
-							instance.getDataSet());
-					break;
+					types.put(instance.getDataSet(), instance.getDefinition());
 				}
+			}
+		}
+		
+		Pair<TypeDefinition, DataSet> typeInfo = null;
+		
+		// select a type
+		if (types.size() == 1) {
+			Entry<DataSet, TypeDefinition> entry = types.entries().iterator().next();
+			typeInfo = new Pair<TypeDefinition, DataSet>(
+					entry.getValue(), 
+					entry.getKey());
+		}
+		else if (!types.isEmpty()) {
+			// choose through dialog
+			DataSetTypeSelectionDialog dialog = new DataSetTypeSelectionDialog(Display
+					.getCurrent().getActiveShell(), "Multiple types: select which to change the style for", null,
+					types);
+			if (dialog.open() == DataSetTypeSelectionDialog.OK) {
+				typeInfo = dialog.getObject();
 			}
 		}
 		
