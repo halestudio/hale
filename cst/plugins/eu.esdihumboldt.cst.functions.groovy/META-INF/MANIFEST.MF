@@ -6,6 +6,7 @@ Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
+ eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model,
  groovy.lang;version="1.7.3",
  org.springframework.core.convert;version="3.0.0.RELEASE"

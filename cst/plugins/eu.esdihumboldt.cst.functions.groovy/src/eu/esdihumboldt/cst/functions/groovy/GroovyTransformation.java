@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
@@ -65,6 +66,9 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 			
 			// determine the variable value
 			Object value = var.getValue();
+			if (value instanceof Instance) {
+				value = ((Instance) value).getValue(); //XXX check if there are any properties?
+			}
 			if (value instanceof Number) {
 				// use numbers as is
 			}
