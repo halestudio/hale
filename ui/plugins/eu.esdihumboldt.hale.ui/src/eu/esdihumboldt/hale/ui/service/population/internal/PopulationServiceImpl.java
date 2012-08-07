@@ -119,6 +119,18 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	}
 
 	/**
+	 * @see PopulationService#hasPopulation(SchemaSpaceID)
+	 */
+	@Override
+	public boolean hasPopulation(SchemaSpaceID schemaSpace) {
+		synchronized (this) {
+			Map<EntityDefinition, Integer> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
+					: (sourcePopulation);
+			return !population.isEmpty();
+		}
+	}
+
+	/**
 	 * @see PopulationService#addToPopulation(Instance)
 	 */
 	@Override

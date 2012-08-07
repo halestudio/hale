@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.ui.common.service.population;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
  * Service for tracking instance population.
@@ -72,5 +73,12 @@ public interface PopulationService {
 	 * @param listener the listener
 	 */
 	public void removeListener(PopulationListener listener);
+
+	/**
+	 * Determines if there is any population for the given schema space.
+	 * @param schemaSpace the schema space
+	 * @return if there is any population for the schema space
+	 */
+	public boolean hasPopulation(SchemaSpaceID schemaSpace);
 
 }
