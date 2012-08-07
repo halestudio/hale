@@ -49,6 +49,12 @@ public interface PopulationService {
 	 */
 	public void addToPopulation(Instance instance, DataSet dataSet);
 	
+	/**
+	 * Reset the population of the given data set
+	 * @param dataSet the data set
+	 */
+	public void resetPopulation(DataSet dataSet);
+	
 //	/**
 //	 * Increase the population count for the given entity by one.
 //	 * @param entity the entity

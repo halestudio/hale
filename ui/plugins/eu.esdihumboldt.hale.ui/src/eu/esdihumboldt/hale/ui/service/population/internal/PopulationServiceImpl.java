@@ -165,6 +165,30 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	}
 
 	/**
+	 * @see PopulationService#resetPopulation(DataSet)
+	 */
+	@Override
+	public void resetPopulation(DataSet dataSet) {
+		SchemaSpaceID schemaSpace;
+		switch (dataSet) {
+		case TRANSFORMED:
+			schemaSpace = SchemaSpaceID.TARGET;
+			break;
+		case SOURCE:
+		default:
+			schemaSpace = SchemaSpaceID.SOURCE;
+		}
+		
+		synchronized (this) {
+			Map<EntityDefinition, Integer> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
+					: (sourcePopulation);
+			population.clear();
+		}
+		
+		//XXX rely on dataSetChanged events for update
+	}
+
+	/**
 	 * Count the population for the properties of the given group.
 	 * @param group the group
 	 * @param groupDef the group entity definition
