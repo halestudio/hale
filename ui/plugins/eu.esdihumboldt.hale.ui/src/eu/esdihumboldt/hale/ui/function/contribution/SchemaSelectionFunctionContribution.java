@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.SchemaSelectionWizardAction;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -45,7 +46,7 @@ public class SchemaSelectionFunctionContribution extends
 	 * @see AbstractFunctionWizardContribution#createWizardAction(FunctionWizardDescriptor, AlignmentService)
 	 */
 	@Override
-	protected SchemaSelectionWizardAction createWizardAction(
+	protected AbstractWizardAction<?> createWizardAction(
 			FunctionWizardDescriptor<?> descriptor,
 			AlignmentService alignmentService) {
 		return new SchemaSelectionWizardAction(this, descriptor, alignmentService);
