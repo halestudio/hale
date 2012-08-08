@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import groovy.lang.MissingPropertyException;
 
 /**
  * Property transformation based on a Groovy script.
@@ -60,7 +61,19 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 		// get the mathematical expression
 		String script = getParameterChecked(PARAMETER_SCRIPT);
 		
-		Binding binding = new Binding();
+		Binding binding = new Binding() {
+
+			@Override
+			public Object getVariable(String name) {
+				try {
+					return super.getVariable(name);
+				} catch (MissingPropertyException mpe) {
+					// use null value for variables that are not defined
+					return null;
+				}
+			}
+			
+		};
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);
 		for (PropertyValue var : vars) {
 			// add the variable to the environment
