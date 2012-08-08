@@ -31,6 +31,9 @@ public class InstanceValidationUIPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static InstanceValidationUIPlugin plugin;
 
+	/**
+	 * Key for shared instance validation image.
+	 */
 	public static final String IMG_INSTANCE_VALIDATION = "IMG_INSTANCE_VALIDATION";
 	
 	/**
