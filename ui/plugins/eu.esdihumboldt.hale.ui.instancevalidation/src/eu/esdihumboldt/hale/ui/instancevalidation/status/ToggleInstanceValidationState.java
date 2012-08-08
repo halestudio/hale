@@ -19,6 +19,12 @@ import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationRe
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationListener;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
 
+/**
+ * Toggle state for the instance validation, backed by the
+ * {@link InstanceValidationService}.
+ * 
+ * @author Kai Schwierczek
+ */
 public class ToggleInstanceValidationState extends State {
 	private final InstanceValidationListener listener;
 
