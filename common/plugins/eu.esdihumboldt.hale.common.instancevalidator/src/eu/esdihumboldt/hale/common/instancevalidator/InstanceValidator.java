@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationRe
 import eu.esdihumboldt.hale.common.instancevalidator.report.impl.DefaultInstanceValidationMessage;
 import eu.esdihumboldt.hale.common.instancevalidator.report.impl.DefaultInstanceValidationReporter;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
@@ -165,11 +166,8 @@ public class InstanceValidator {
 	 */
 	private static void validateGroupChildren(Group group, InstanceValidationReporter reporter,
 			String path, boolean onlyCheckExistingChildren, InstanceReference reference) {
-		Collection<? extends ChildDefinition<?>> childDefs;
-		if (group.getDefinition() instanceof TypeDefinition)
-			childDefs = ((TypeDefinition) group.getDefinition()).getChildren();
-		else
-			childDefs = group.getDefinition().getDeclaredChildren();
+		Collection<? extends ChildDefinition<?>> childDefs = DefinitionUtil.getAllChildren(group.getDefinition());
+
 		for (ChildDefinition<?> childDef : childDefs) {
 			QName name = childDef.getName();
 			// Cannot use getPropertyNames in case of onlyCheckExistingChildren,
