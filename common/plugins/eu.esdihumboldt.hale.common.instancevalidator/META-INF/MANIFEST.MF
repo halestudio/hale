@@ -14,6 +14,7 @@ Import-Package: de.cs3d.util.logging,
  eu.esdihumboldt.hale.common.schema.model.constraint,
  eu.esdihumboldt.hale.common.schema.model.constraint.property,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
+ eu.esdihumboldt.hale.io.xsd.constraint,
  eu.esdihumboldt.util.validator,
  org.osgi.framework;version="1.6.0",
  org.slf4j;version="1.5.11"

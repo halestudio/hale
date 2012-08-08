@@ -1,6 +1,8 @@
 package eu.esdihumboldt.hale.common.instancevalidator;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
@@ -36,7 +38,11 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
  * Validator for instances using constraints.
@@ -167,7 +173,22 @@ public class InstanceValidator {
 	private static void validateGroupChildren(Group group, InstanceValidationReporter reporter,
 			String path, boolean onlyCheckExistingChildren, InstanceReference reference) {
 		Collection<? extends ChildDefinition<?>> childDefs = DefinitionUtil.getAllChildren(group.getDefinition());
+		validateGroupChildren(group, childDefs, reporter, path, onlyCheckExistingChildren, reference);
+	}
 
+	/**
+	 * Validates the given {@link Group}'s children against the {@link Group}'s definition.
+	 *
+	 * @param group the group to validate
+	 * @param childDefs the pre-determined children to validate (can be all children or a subset)
+	 * @param reporter the reporter to report to
+	 * @param path the current property path
+	 * @param onlyCheckExistingChildren whether to only validate existing children (in case of a choice) or not
+	 * @param reference the instance reference
+	 */
+	private static void validateGroupChildren(Group group, Collection<? extends ChildDefinition<?>> childDefs, 
+			InstanceValidationReporter reporter,
+			String path, boolean onlyCheckExistingChildren, InstanceReference reference) {
 		for (ChildDefinition<?> childDef : childDefs) {
 			QName name = childDef.getName();
 			// Cannot use getPropertyNames in case of onlyCheckExistingChildren,
@@ -247,7 +268,7 @@ public class InstanceValidator {
 	 */
 	private static void validateChildren(Object[] properties, ChildDefinition<?> childDef,
 			InstanceValidationReporter reporter, String path, boolean onlyCheckExistingChildren, InstanceReference reference) {
-		if (properties != null) {
+		if (properties != null && properties.length > 0) {
 			for (Object property : properties) {
 				if (property instanceof Instance) {
 					validateInstance((Instance) property, reporter, path,
@@ -263,6 +284,37 @@ public class InstanceValidator {
 						instance.setValue(property);
 						validateInstance(instance, reporter, path, onlyCheckExistingChildren, reference);
 					}
+				}
+			}
+		}
+		else {
+			// no property value
+			
+			/*
+			 *  Special case:
+			 *  No property value, but a combination of minimum cardinality
+			 *  greater than zero and NillableFlag is set.
+			 *  Then there can be sub-properties that are required.
+			 *  
+			 *  Applicable for XML (simple) types with mandatory attributes.
+			 */
+			if (childDef.asProperty() != null
+					&& childDef.asProperty().getConstraint(Cardinality.class).getMinOccurs() > 0
+					&& childDef.asProperty().getConstraint(NillableFlag.class).isEnabled()
+					&& childDef.asProperty().getPropertyType().getConstraint(HasValueFlag.class).isEnabled()
+					&& !childDef.asProperty().getPropertyType().getChildren().isEmpty()) {
+				// collect XML attribute children
+				List<ChildDefinition<?>> attributes = new ArrayList<ChildDefinition<?>>();
+				for (ChildDefinition<?> child : childDef.asProperty().getPropertyType().getChildren()) {
+					if (child.asProperty() != null && child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+						attributes.add(child);
+					}
+				}
+				
+				if (!attributes.isEmpty()) {
+					// create an empty dummy instance
+					Instance instance = new DefaultInstance(childDef.asProperty().getPropertyType(), null);
+					validateGroupChildren(instance, attributes, reporter, path, onlyCheckExistingChildren, reference);
 				}
 			}
 		}
