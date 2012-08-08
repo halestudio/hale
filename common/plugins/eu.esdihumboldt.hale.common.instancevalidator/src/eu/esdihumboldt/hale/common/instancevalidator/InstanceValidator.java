@@ -60,7 +60,7 @@ public class InstanceValidator {
 		monitor.beginTask("Instance validation",
 				instances.hasSize() ? instances.size() : IProgressMonitor.UNKNOWN);
 
-		InstanceValidationReporter reporter = new DefaultInstanceValidationReporter(true);
+		InstanceValidationReporter reporter = new DefaultInstanceValidationReporter(false);
 		reporter.setSuccess(false);
 		ATransaction trans = log.begin("Instance validation");
 		ResourceIterator<Instance> iterator = instances.iterator();
