@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import groovy.lang.Binding;
@@ -55,7 +56,7 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+			throws TransformationException, NoResultException {
 		// get the mathematical expression
 		String script = getParameterChecked(PARAMETER_SCRIPT);
 		
@@ -97,12 +98,18 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 			}
 		}
 
+		Object result;
 		try {
 			GroovyShell shell = new GroovyShell(binding);
-			return shell.evaluate(script);
+			result = shell.evaluate(script);
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the cell script", e);
 		}
+		
+		if (result == null) {
+			throw new NoResultException();
+		}
+		return result;
 	}
 
 }
