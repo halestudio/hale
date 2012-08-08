@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -152,6 +153,17 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMerge
 						result.addProperty(name, value);
 			}
 		}
+		
+		//XXX what about metadata?!
+		//XXX for now only retain IDs
+		Set<Object> ids = new HashSet<Object>();
+		for (Instance instance : instances) {
+			List<Object> instanceIDs = instance.getMetaData(InstanceMetadata.METADATA_ID);
+			for (Object id : instanceIDs) {
+				ids.add(id);
+			}
+		}
+		result.setMetaData(InstanceMetadata.METADATA_ID, ids.toArray());
 		
 		return result;
 	}

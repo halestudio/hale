@@ -12,8 +12,10 @@
 
 package eu.esdihumboldt.cst.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -24,14 +26,14 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.Conte
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher.AsDeepAsPossible;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.DuplicationVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
-import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
-import eu.esdihumboldt.hale.common.instance.model.InstanceUtil;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
+import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
+import eu.esdihumboldt.hale.common.instance.model.InstanceUtil;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
 /**
@@ -86,10 +88,13 @@ public class TreePropertyTransformer implements PropertyTransformer {
 				try {
 					//Add the meta data ID of the source as SourceID to the target
 					Collection<Instance> sources = InstanceUtil.getInstanceOutOfFamily(source);
-					ArrayList<Object> ids = new ArrayList<Object>();
+					Set<Object> ids = new HashSet<Object>();
 				    for(Instance inst : sources){
-						ids.add(InstanceMetadata.getID(inst));
-				        }					
+				    	List<Object> sourceIDs = inst.getMetaData(InstanceMetadata.METADATA_ID); // Merge instances may have multiple IDs
+				    	if (sourceIDs != null) {
+				    		ids.addAll(sourceIDs);
+				    	}
+			        }					
 				    InstanceMetadata.setSourceID(target, ids.toArray());
 					
 					// identify transformations to be executed on given instances
