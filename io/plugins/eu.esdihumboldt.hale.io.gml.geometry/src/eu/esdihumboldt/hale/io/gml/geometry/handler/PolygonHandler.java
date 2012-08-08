@@ -65,41 +65,41 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 		Polygon polygon = null;
 
 		// for use with GML 2
-		// to parse inner linear rings
+		// to parse outer linear rings
 		Collection<Object> values = PropertyResolver.getValues(instance,
-				"innerBoundaryIs.LinearRing", false);
+				"outerBoundaryIs.LinearRing", false);
 		if (values != null && !values.isEmpty()) {
 			Iterator<Object> iterator = values.iterator();
-			List<LinearRing> innerRings = new ArrayList<LinearRing>();
+			LinearRing outerRing = null;
 			while (iterator.hasNext()) {
 				Object value = iterator.next();
 				if (value instanceof Instance) {
-					// innerRings have to be a
-					// DefaultGeometryProperty<LinearRing> instances
-					innerRings
-							.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-									.getValue()).getGeometry());
+					// outerRing must be a
+					// DefaultGeometryProperty<LinearRing> instance
+					outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
+							.getValue()).getGeometry();
 				}
 			}
-			holes = innerRings.toArray(new LinearRing[innerRings.size()]);
-
-			// to parse outer linear rings
+			
+			// to parse inner linear rings
 			values = PropertyResolver.getValues(instance,
-					"outerBoundaryIs.LinearRing", false);
-			LinearRing outerRing = null;
+					"innerBoundaryIs.LinearRing", false);
 			if (values != null && !values.isEmpty()) {
 				iterator = values.iterator();
+				List<LinearRing> innerRings = new ArrayList<LinearRing>();
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
-						// outerRing must be a
-						// DefaultGeometryProperty<LinearRing> instance
-						outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-								.getValue()).getGeometry();
+						// innerRings have to be a
+						// DefaultGeometryProperty<LinearRing> instances
+						innerRings
+								.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
+										.getValue()).getGeometry());
 					}
 				}
-
+				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 			}
+			
 			polygon = getGeometryFactory().createPolygon(outerRing, holes);
 		}
 
