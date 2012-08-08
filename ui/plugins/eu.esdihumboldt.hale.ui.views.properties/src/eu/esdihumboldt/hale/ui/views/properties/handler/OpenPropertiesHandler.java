@@ -16,9 +16,14 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.views.properties.PropertySheet;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
@@ -37,8 +42,37 @@ public class OpenPropertiesHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
+			// unpin the property sheet if possible
+			IViewReference ref = HandlerUtil.getActiveWorkbenchWindow(event)
+					.getActivePage().findViewReference(IPageLayout.ID_PROP_SHEET);
+			if (ref != null) {
+				IViewPart part = ref.getView(false);
+				if (part instanceof PropertySheet) {
+					PropertySheet sheet = (PropertySheet) part;
+					if (sheet.isPinned()) {
+						sheet.setPinned(false);
+						
+						IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
+						
+						/*
+						 * Feign the part has been activated (cause else the
+						 * PropertySheet will only take a selection from the
+						 * last part it was displaying properties about) 
+						 */
+						sheet.partActivated(activePart);
+						
+						// get the current selection
+						ISelection sel = HandlerUtil.getActivePart(event).getSite().getSelectionProvider().getSelection();
+						
+						// Update the properties view with the current selection
+						sheet.selectionChanged(activePart, sel);
+					}
+				}
+			}
+			
+			// show the view
 			HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-					.showView(IPageLayout.ID_PROP_SHEET);
+				.showView(IPageLayout.ID_PROP_SHEET);
 		} catch (PartInitException e) {
 			log.error("Error opening properties view", e);
 		}
