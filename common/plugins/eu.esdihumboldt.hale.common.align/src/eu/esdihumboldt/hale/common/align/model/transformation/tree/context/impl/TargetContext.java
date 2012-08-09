@@ -403,7 +403,9 @@ public class TargetContext implements TransformationContext {
 		if (parent != null) {
 			// Find existing cell/target nodes over children of the parent node.
 			Map<EntityDefinition, SourceNode> contextPath = new HashMap<EntityDefinition, SourceNode>();
-			SourceNode pathNode = duplicate;
+			// start from original source to not miss out on needed target nodes only reachable through it
+			// XXX maybe remove the original source node, its cells and maybe some targets afterwards?
+			SourceNode pathNode = originalSource;
 			SourceNode root;
 			do {
 				contextPath.put(pathNode.getEntityDefinition(), pathNode);
