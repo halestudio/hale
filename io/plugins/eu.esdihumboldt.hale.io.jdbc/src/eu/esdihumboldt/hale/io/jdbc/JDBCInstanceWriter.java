@@ -13,13 +13,16 @@
 package eu.esdihumboldt.hale.io.jdbc;
 
 import java.io.IOException;
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -34,6 +37,9 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
+import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
 
 /**
  * Writes instance to a database through a JDBC connection.
@@ -112,40 +118,45 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 						: (ProgressIndicator.UNKNOWN));
 		
 		// maps type definitions to prepared statements
-		Map<TypeDefinition, PreparedStatement> typeStatements = new HashMap<TypeDefinition, PreparedStatement>();
-		Map<TypeDefinition, Integer> typeCount = new HashMap<TypeDefinition, Integer>();
+		Map<TypeDefinition, Map<Set<QName>, PreparedStatement>> typeStatements = new HashMap<TypeDefinition, Map<Set<QName>, PreparedStatement>>();
+		Map<TypeDefinition, Map<Set<QName>, Integer>> typeCount = new HashMap<TypeDefinition, Map<Set<QName>, Integer>>();
 		
 		//TODO some kind of ordering needed?! because of IDs and constraints!
 		
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			while (it.hasNext() && !progress.isCanceled()) { //XXX should cancel result in a rollback?
+			while (it.hasNext() && !progress.isCanceled()) {
 				Instance instance = it.next();
 				TypeDefinition type = instance.getDefinition();
+
+				Set<QName> properties = new HashSet<QName>();
+				for (QName property : instance.getPropertyNames())
+					properties.add(property);
+				filterInsertProperties(type, properties);
+
 				// per type count
-				int count;
-				if (!typeCount.containsKey(type)) {
-					// first of that type
-					count = 1;
+				Map<Set<QName>, Integer> typeCountMap = typeCount.get(type);
+				if (typeCountMap == null) {
+					typeCountMap = new HashMap<Set<QName>, Integer>();
+					typeCount.put(type, typeCountMap);
 				}
-				else {
-					// increase count
-					count = typeCount.get(type) + 1;
-				}
-				typeCount.put(type, count);
-				
-				
+				Integer count = typeCountMap.get(properties);
+				if (count == null)
+					count = 0;
+				typeCountMap.put(properties, count + 1);
+
 				// get prepared statement for instance type
 				PreparedStatement statement = getInsertStatement(type, 
-						typeStatements, connection);
+						properties, typeStatements, connection);
 				
 				// populate insert statement with values
-				populateInsertStatement(statement, instance);
+				populateInsertStatement(statement, properties, instance, reporter);
 				
 				statement.addBatch();
 				
 				if (count % 100 == 0) {
 					statement.executeBatch();
+					// TODO statement.getGeneratedKeys() / does not work with batches for PostgreSQL
 				}
 				
 				if (trackProgress) {
@@ -154,11 +165,18 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			}
 			
 			// execute remaining batches
-			for (PreparedStatement statement : typeStatements.values()) {
-				statement.executeBatch();
-			}
-			
-			connection.commit();
+			outer: 
+			for (Map<Set<QName>, PreparedStatement> typeSpecificMap : typeStatements.values())
+				for (PreparedStatement statement : typeSpecificMap.values()) {
+					if (progress.isCanceled())
+						break outer;
+					statement.executeBatch();
+				}
+
+			if (!progress.isCanceled())
+				connection.commit();
+			else
+				connection.rollback();
 		} catch (Exception e) {
 			connection.rollback();
 			throw e;
@@ -167,38 +185,55 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			it.close();
 			
 			// close statements
-			for (PreparedStatement statement : typeStatements.values()) {
-				statement.close();
-			}
+			for (Map<Set<QName>, PreparedStatement> typeSpecificMap : typeStatements.values())
+				for (PreparedStatement statement : typeSpecificMap.values())
+					statement.close();
 		}
-		
-		if (progress.isCanceled() && it.hasNext()) {
-			reporter.error(new IOMessageImpl("Saving to database was canceled, not all instances were saved.", null));
-		}
+
+		// right now cancel => rollback. Otherwise this would have to be in front of it.close()...
+//		if (progress.isCanceled() && it.hasNext()) {
+//			reporter.error(new IOMessageImpl("Saving to database was canceled, not all instances were saved.", null));
+//		}
 	}
 
-	private Iterable<? extends PropertyDefinition> getInsertProperties(TypeDefinition type) {
-		List<PropertyDefinition> result = new ArrayList<PropertyDefinition>();
+	/**
+	 * Filters the set of properties to only contain properties that can be used for inserting
+	 * (e. g. no groups).
+	 *
+	 * @param type the type definition
+	 * @param properties the available properties
+	 */
+	private void filterInsertProperties(TypeDefinition type, Set<QName> properties) {
 		for (ChildDefinition<?> child : type.getChildren()) {
-			if (child.asProperty() != null) {
-				result.add(child.asProperty());
+			if (properties.contains(child.getName())) {
+				if (child.asProperty() == null) {
+					// remove it since it is a group and no property
+					// XXX warn?
+					properties.remove(child.getName());
+				}
 			}
-			// groups are not supported and ignored
 		}
-		return result;
 	}
 
 	/**
 	 * Create a prepared insert statement, based on the given type definition.
+	 *
 	 * @param type the type definition
+	 * @param properties the set properties of the instance for which this statement is
 	 * @param typeStatements the already created statements 
 	 * @param connection the database connection
 	 * @return the insert statement
 	 * @throws SQLException if creating the prepared statement fails
 	 */
-	private PreparedStatement getInsertStatement(TypeDefinition type,
-			Map<TypeDefinition, PreparedStatement> typeStatements, Connection connection) throws SQLException {
-		PreparedStatement result = typeStatements.get(type);
+	private PreparedStatement getInsertStatement(TypeDefinition type, Set<QName> properties,
+			Map<TypeDefinition, Map<Set<QName>, PreparedStatement>> typeStatements, Connection connection) throws SQLException {
+		Map<Set<QName>, PreparedStatement> typeSpecificMap = typeStatements.get(type);
+		if (typeSpecificMap == null) {
+			typeSpecificMap = new HashMap<Set<QName>, PreparedStatement>();
+			typeStatements.put(type, typeSpecificMap);
+		}
+
+		PreparedStatement result = typeSpecificMap.get(properties);
 		
 		if (result == null) {
 			String tableName = type.getName().getLocalPart();
@@ -211,59 +246,80 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			pSql.append("\" (");
 			
 			StringBuffer valuesSql = new StringBuffer();
-			
+
 			boolean first = true;
-			for (PropertyDefinition property : getInsertProperties(type)) {
-				//XXX what about auto-generated keys?!
-				
-				if (first) {
+			for (QName property : properties) {
+				if (first)
 					first = false;
-				}
 				else {
 					pSql.append(", ");
 					valuesSql.append(",");
 				}
-				
-				pSql.append(property.getName().getLocalPart());
+
+				pSql.append('"').append(property.getLocalPart()).append('"');
 				valuesSql.append('?');
 			}
 			
 			pSql.append(") VALUES (");
 			pSql.append(valuesSql);
 			pSql.append(")");
-			
+
+			// XXX Actually we don't necessarily need the auto generated keys, we need the primary key!
+			// XXX , Statement.RETURN_GENERATED_KEYS does not work with batches in PostgreSQL
 			result = connection.prepareStatement(pSql.toString());
-			typeStatements.put(type, result);
+			typeSpecificMap.put(properties, result);
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Populate a prepared insert statement with values from the given instance.
+	 *
 	 * @param statement the insert statement
+	 * @param properties the properties to fill the statement with
 	 * @param instance the instance
+	 * @param reporter the reporter
 	 * @throws SQLException if configuring the statement fails
 	 */
-	private void populateInsertStatement(PreparedStatement statement,
-			Instance instance) throws SQLException {
+	private void populateInsertStatement(PreparedStatement statement, Set<QName> properties,
+			Instance instance, IOReporter reporter) throws SQLException {
 		TypeDefinition type = instance.getDefinition();
 		
 		int index = 1;
-		for (PropertyDefinition property : getInsertProperties(type)) {
-			Object[] values = instance.getProperty(property.getName());
-			Object value = (values == null || values.length == 0)?(null):(values[0]); //TODO warn multiple values being ignored
-			
-			if (value == null) {
-				// null value
-//				statement.setNull(parameterIndex, sqlType);
+		for (QName propertyName : properties) {
+			PropertyDefinition property = (PropertyDefinition) type.getChild(propertyName);
+			Object[] values = instance.getProperty(propertyName);
+			SQLType sqlType = property.getPropertyType().getConstraint(SQLType.class);
+			if (!sqlType.isSet()) {
+				reporter.error(new IOMessageImpl("SQL type not set. Please only export to schemas read from a database.", null));
 				statement.setObject(index, null);
+				continue;
 			}
-			else {
-				// non-null value
+			if (values != null && values.length > 1)
+				reporter.warn(new IOMessageImpl("Multiple values for a property. Only exporting first.", null));
+			Object value = (values == null || values.length == 0) ? null : values[0];
+
+			if (values == null || values.length == 0) {
+				// XXX The default value could be a function call.
+				// Better would be to leave the column out of the insert statement, or set it to the SQL keyword "DEFAULT".
+				DefaultValue defaultValue = property.getConstraint(DefaultValue.class);
+				if (defaultValue.isSet())
+					statement.setObject(index, defaultValue.getValue(), sqlType.getType());
+				else if (property.getConstraint(NillableFlag.class).isEnabled())
+					statement.setNull(index, sqlType.getType());
+				else {
+					// no default, not nillable, will not work...
+					// set it to null here and let query fail (probably)
+					// XXX maybe skip this insert?
+					statement.setNull(index, sqlType.getType());
+					reporter.warn(new IOMessageImpl("Property no value, not nillable, no default value, insert will probably fail.", null));
+				}
+			} else if (value == null)
+				statement.setNull(index, sqlType.getType());
+			else
 				setStatementParameter(statement, index, value, 
-						property);
-			}
+						property, sqlType.getType());
 			
 			index++;
 		}
@@ -271,15 +327,17 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 
 	/**
 	 * Set a prepared statement parameter value.
+	 *
 	 * @param statement the prepared statement
 	 * @param index the parameter index
-	 * @param value the value
+	 * @param value the value, not <code>null</code>
 	 * @param propertyDef the associated property definition
+	 * @param sqlType the sql type
 	 * @throws SQLException if setting the parameter fails
 	 */
 	private void setStatementParameter(PreparedStatement statement, int index,
-			Object value, PropertyDefinition propertyDef) throws SQLException {
-		statement.setObject(index, value);
+			Object value, PropertyDefinition propertyDef, int sqlType) throws SQLException {
+		statement.setObject(index, value, sqlType);
 		
 		//TODO handling of geometries, other types?
 	}
@@ -291,5 +349,4 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	protected String getDefaultTypeName() {
 		return "Database";
 	}
-
 }
