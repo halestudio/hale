@@ -413,7 +413,10 @@ public class TargetContext implements TransformationContext {
 				else
 					pathNode = pathNode.getAnnotatedParent();
 			} while (pathNode != null) ;
-			collectExistingNodes(root, contextPath, info);
+			collectExistingNodes(root, contextPath, info, false);
+			// add target nodes reachable through original source node
+			// XXX not all target nodes are needed, collection of some of them could even lead to wrong results
+			collectExistingNodes(originalSource, Collections.<EntityDefinition, SourceNode>emptyMap(), info, true);
 
 			duplicateTree(originalSource, duplicate, info);
 		} else
@@ -745,10 +748,11 @@ public class TargetContext implements TransformationContext {
 	 * @param contextPath source nodes with a definition in this map are only followed
 	 * 					  if they are exactly the node in this map
 	 * @param info the duplication info object
+	 * @param targetsOnly whether to only collect target nodes, or all nodes
 	 */
 	private void collectExistingNodes(SourceNode source,
 			final Map<EntityDefinition, SourceNode> contextPath,
-			final DuplicationInformation info) {
+			final DuplicationInformation info, final boolean targetsOnly) {
 		source.accept(new AbstractSourceToTargetVisitor() {
 			/**
 			 * @see eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor#includeAnnotatedNodes()
@@ -782,7 +786,8 @@ public class TargetContext implements TransformationContext {
 				for (CellNode other : cellNodes)
 					if (other == cell)
 						return false; // already found & followed...
-				info.addOldCellNode(cell.getCell(), cell);
+				if (!targetsOnly)
+					info.addOldCellNode(cell.getCell(), cell);
 				return true;
 			}
 
@@ -801,7 +806,8 @@ public class TargetContext implements TransformationContext {
 			public boolean visit(SourceNode source) {
 				SourceNode contextNode = contextPath.get(source.getEntityDefinition());
 				if (contextNode == null || source == contextNode) {
-					info.addOldSourceNode(source.getEntityDefinition(), source);
+					if (!targetsOnly)
+						info.addOldSourceNode(source.getEntityDefinition(), source);
 					return true;
 				} else
 					return false;
