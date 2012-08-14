@@ -20,6 +20,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
+
+import eu.esdihumboldt.cst.extension.hooks.HooksUtil;
+import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHooks;
+import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook.TreeState;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.ContextMatcher;
@@ -54,6 +59,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	
 	private final ExecutorService executorService;
 
+	private final TransformationTreeHooks treeHooks;
+
 	/**
 	 * Create a simple property transformer
 	 * @param alignment the alignment
@@ -72,6 +79,8 @@ public class TreePropertyTransformer implements PropertyTransformer {
 		treePool = new TransformationTreePool(alignment, matcher);
 		executor = new FunctionExecutor(reporter, engines);
 		builder = new InstanceBuilder();
+		
+		treeHooks = OsgiUtils.getService(TransformationTreeHooks.class);
 		
 		executorService = Executors.newFixedThreadPool(4);
 	}
@@ -101,17 +110,28 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					// create/get a transformation tree
 					TransformationTree tree = treePool.getTree(target.getDefinition());
 					
+					//State: base tree
+					HooksUtil.executeTreeHooks(treeHooks, TreeState.MINIMAL, tree, target);
+					
 					// apply instance value to transformation tree
 					InstanceVisitor instanceVisitor = new InstanceVisitor(source, tree);
 					tree.accept(instanceVisitor);
+					
+					//State: basic source populated tree
 					
 					// duplicate subtree as necessary
 					DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree);
 					tree.accept(duplicationVisitor);
 					duplicationVisitor.doAugmentationTrackback();
 					
+					//State: source populated tree (duplication complete)
+					HooksUtil.executeTreeHooks(treeHooks, TreeState.SOURCE_POPULATED, tree, target);
+					
 					// apply functions
 					tree.accept(executor);
+					
+					//State: full tree (target populated)
+					HooksUtil.executeTreeHooks(treeHooks, TreeState.FULL, tree, target);
 					
 					// fill instance
 					builder.populate(target, tree);
