@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.common.instance.extension.metadata;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
+import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
 
 /**
@@ -26,6 +27,7 @@ public class MetadataInfo  implements Identifiable {
 	private final String key;
 	private final String label;
 	private final String description;
+	private final Class<? extends MetadataGenerator> generator;
 	
 	
 	/**
@@ -33,12 +35,14 @@ public class MetadataInfo  implements Identifiable {
 	 * @param key the data key
 	 * @param conf the configuration element
 	 */
+	@SuppressWarnings("unchecked")
 	public MetadataInfo(String key, IConfigurationElement conf){
 		super();
 		
 		this.key = key;
 		this.label = conf.getAttribute("label");
 		this.description = conf.getAttribute("description");
+		this.generator = (Class<? extends MetadataGenerator>) ExtensionUtil.loadClass(conf, "generator");
 	}
 		
 		
@@ -65,4 +69,12 @@ public class MetadataInfo  implements Identifiable {
 	public String getDescription() {
 		return description;
 	}
+	
+	/**
+	 * @return the generator class
+	 */
+	public Class<? extends MetadataGenerator> getGenerator() {
+		return generator;
+	}
+
 }
