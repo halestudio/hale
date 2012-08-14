@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
+import eu.esdihumboldt.hale.ui.views.data.internal.Metadata;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -65,7 +66,7 @@ public class InstanceContentProvider implements ITreeContentProvider {
 						new Pair<Object, Object>(
 								((Instance) inputElement).getDefinition(),
 								inputElement),
-						(new Pair<String, Object>(Messages.InstanceContentProvider_metadata, inputElement)) };
+						(new Pair<Object, Object>(Metadata.METADATA, inputElement)) };
 			}
 
 			else
@@ -87,7 +88,7 @@ public class InstanceContentProvider implements ITreeContentProvider {
 			Pair<?, ?> pair = (Pair<?, ?>) parentElement;
 			parentElement = pair.getSecond();
 			
-			if(pair.getFirst() instanceof String && pair.getSecond() instanceof Instance){
+			if(pair.getFirst() == Metadata.METADATA && pair.getSecond() instanceof Instance){
 				isMetaData = true;
 			}
 		}
@@ -135,7 +136,7 @@ public class InstanceContentProvider implements ITreeContentProvider {
 	public boolean hasChildren(Object element) {
 		if (element instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) element;
-			if(pair.getFirst() instanceof String && pair.getSecond() instanceof Instance){
+			if(pair.getFirst() == Metadata.METADATA && pair.getSecond() instanceof Instance){
 				return true;
 			}
 			
