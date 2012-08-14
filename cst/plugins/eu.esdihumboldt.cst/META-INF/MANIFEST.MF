@@ -6,6 +6,7 @@ Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.collect;version="9.0.0",
  de.cs3d.util.eclipse.extension,
+ de.cs3d.util.eclipse.extension.selective,
  de.cs3d.util.logging,
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.align.extension.engine,
@@ -40,4 +41,8 @@ Import-Package: com.google.common.collect;version="9.0.0",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Service-Component: OSGI-INF/CST.xml
 Export-Package: eu.esdihumboldt.cst,
- eu.esdihumboldt.cst.internal;x-internal:=true
+ eu.esdihumboldt.cst.extension.hooks,
+ eu.esdihumboldt.cst.extension.hooks.internal;x-internal:=true,
+ eu.esdihumboldt.cst.internal;x-internal:=true,
+ eu.esdihumboldt.cst.internal.util;x-internal:=true
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
