@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
+import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataWorker;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
@@ -53,6 +54,16 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	private final InstanceBuilder builder;
 	
 	private final ExecutorService executorService;
+	
+	//make metadataworker threadsave
+	private final ThreadLocal<MetadataWorker> metaworkerthread = new ThreadLocal<MetadataWorker>(){
+		
+		
+		@Override
+		protected MetadataWorker initialValue(){
+			return new MetadataWorker();
+		}
+	};
 
 	/**
 	 * Create a simple property transformer
@@ -115,7 +126,10 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					
 					// fill instance
 					builder.populate(target, tree);
-
+					
+					//generate the rest of the matadatas
+					metaworkerthread.get().generate(target);
+					
 					//XXX ok to add to sink in any thread?!
 					//XXX addInstance and close were made synchronized in OrientInstanceSink
 					//XXX instead collect instances and write them in only one thread?

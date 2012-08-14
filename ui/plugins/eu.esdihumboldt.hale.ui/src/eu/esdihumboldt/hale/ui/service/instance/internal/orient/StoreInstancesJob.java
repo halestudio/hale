@@ -30,10 +30,10 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
 
+import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataWorker;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
@@ -93,6 +93,7 @@ public abstract class StoreInstancesJob extends Job {
 			long lastUpdate = 0; // last count update 
 			
 			ResourceIterator<Instance> it = instances.iterator();
+			MetadataWorker metaworker = new MetadataWorker();
 			try {
 				while (it.hasNext() && !monitor.isCanceled()) {
 					Instance instance = it.next();
@@ -101,8 +102,9 @@ public abstract class StoreInstancesJob extends Job {
 					OInstance conv = ((instance instanceof OInstance)?
 							((OInstance) instance):(new OInstance(instance)));
 					
-					// compute metadata
-					InstanceMetadata.setID(conv, UUID.randomUUID().toString());
+					//generate metadata into instance
+					metaworker.generate(conv);
+					
 					
 					// population count
 					/*
