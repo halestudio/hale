@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="eu.esdihumboldt.hale.instance.filter" name="Filter definitions" schema="schema/eu.esdihumboldt.hale.instance.filter.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.instance.validation" name="Instance validator" schema="schema/eu.esdihumboldt.hale.instance.validation.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.instance.metadata" name="Instance Metadata" schema="schema/eu.esdihumboldt.hale.instance.metadata.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <action
@@ -18,6 +19,15 @@
             name="Save transformed data"
             type="eu.esdihumboldt.hale.common.instance.io.InstanceWriter">
       </action>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.instance.metadata">
+      <metadata
+            description="Uniquely identifies an instance"
+            generator="eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataIdGenerator"
+            key="ID"
+            label="Identifier">
+      </metadata>
    </extension>
 
 </plugin>
