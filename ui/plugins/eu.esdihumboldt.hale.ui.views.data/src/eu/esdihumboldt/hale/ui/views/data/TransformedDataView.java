@@ -156,16 +156,12 @@ public class TransformedDataView extends AbstractDataView {
 	 * @param is the selection to show
 	 */
 	public void showSelection(InstanceSelection is) {
-		if (mapButton.getSelection())
-			return;
-		else {
-			// mapButton.setSelected(true) neither fires an event (at least not directly), nor deselects the other buttons
-			for (Button b : selectorButtons)
-				b.setSelection(false);
-			mapButton.setSelection(true);
-			setInstanceSelector(mapSelector);
-			mapSelector.showSelection(is);
-		}
+		// mapButton.setSelected(true) neither fires an event (at least not directly), nor deselects the other buttons
+		for (Button b : selectorButtons)
+			b.setSelection(false);
+		mapButton.setSelection(true);
+		setInstanceSelector(mapSelector);
+		mapSelector.showSelection(is);
 	}
 
 	/**

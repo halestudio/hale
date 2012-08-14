@@ -2,6 +2,7 @@ package eu.esdihumboldt.hale.common.instancevalidator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -76,7 +77,7 @@ public class InstanceValidator {
 				if (monitor.isCanceled())
 					return reporter;
 				Instance instance = iterator.next();
-				validateInstance(instance, reporter, instance.getDefinition().getDisplayName(), false, instances.getReference(instance));
+				validateInstance(instance, reporter, instance.getDefinition().getName(), new ArrayList<QName>(), false, instances.getReference(instance));
 				monitor.worked(1);
 			}
 		} finally {
@@ -99,7 +100,6 @@ public class InstanceValidator {
 		InstanceValidationReporter reporter = new DefaultInstanceValidationReporter(false);
 		reporter.setSuccess(false);
 
-		String path = childDef.getName().getLocalPart();
 		// first a special case for Choice-Flag
 		// XXX a better way to do this than coding this special case?
 		boolean onlyCheckExistingChildren = false;
@@ -111,12 +111,12 @@ public class InstanceValidator {
 					validator.validateGroupPropertyConstraint(new Object[] {object},
 							childDef.asGroup().getConstraint(ChoiceFlag.class), childDef.asGroup());
 				} catch (ValidationException vE) {
-					reporter.warn(new DefaultInstanceValidationMessage(null, "Group properties (" + path + ") not valid: " + vE.getMessage()));
+					reporter.warn(new DefaultInstanceValidationMessage(null, null, Collections.<QName>emptyList(), ChoiceFlag.class.getSimpleName(), vE.getMessage()));
 				}
 			onlyCheckExistingChildren = childDef.asGroup().getConstraint(ChoiceFlag.class).isEnabled();
 		}
 		// then validate the object as if it were a lone property value
-		validateChildren(new Object[] {object}, childDef, reporter, path, onlyCheckExistingChildren, null);
+		validateChildren(new Object[] {object}, childDef, reporter, null, new ArrayList<QName>(), onlyCheckExistingChildren, null);
 
 		reporter.setSuccess(true);
 		return reporter;
@@ -132,33 +132,34 @@ public class InstanceValidator {
 	public static InstanceValidationReporter validate(Instance instance) {
 		InstanceValidationReporter reporter = new DefaultInstanceValidationReporter(false);
 		reporter.setSuccess(false);
-		validateInstance(instance, reporter, instance.getDefinition().getDisplayName(), false, null);
+		validateInstance(instance, reporter, instance.getDefinition().getName(), new ArrayList<QName>(), false, null);
 		reporter.setSuccess(true);
 		return reporter;
 	}
 
 	/**
 	 * Validates the instances value against existing {@link TypeConstraintValidator}s and
-	 * calls {@link #validateGroupChildren(Group, InstanceValidationReporter, String, boolean, InstanceReference)}.
+	 * calls {@link #validateGroupChildren(Group, InstanceValidationReporter, QName, List, boolean, InstanceReference)}.
 	 *
 	 * @param instance the instance to validate
 	 * @param reporter the reporter to report to
+	 * @param type the top level type
 	 * @param path the current property path
 	 * @param onlyCheckExistingChildren whether to only validate existing children (in case of a choice) or not
 	 * @param reference the instance reference
 	 */
 	private static void validateInstance(Instance instance, InstanceValidationReporter reporter,
-			String path, boolean onlyCheckExistingChildren, InstanceReference reference) {
+			QName type, List<QName> path, boolean onlyCheckExistingChildren, InstanceReference reference) {
 		TypeDefinition typeDef = instance.getDefinition();
 		for (Entry<Class<TypeConstraint>, TypeConstraintValidator> entry :
 				ConstraintValidatorExtension.getInstance().getTypeConstraintValidators().entrySet())
 			try {
 				entry.getValue().validateTypeConstraint(instance, typeDef.getConstraint(entry.getKey()));
 			} catch (ValidationException vE) {
-				reporter.warn(new DefaultInstanceValidationMessage(reference, "Instance (" + path + ") not valid: " + vE.getMessage()));
+				reporter.warn(new DefaultInstanceValidationMessage(reference, type, new ArrayList<QName>(path), entry.getKey().getSimpleName(), vE.getMessage()));
 			}
 
-		validateGroupChildren(instance, reporter, path, onlyCheckExistingChildren, reference);
+		validateGroupChildren(instance, reporter, type, path, onlyCheckExistingChildren, reference);
 	}
 
 	/**
@@ -166,14 +167,15 @@ public class InstanceValidator {
 	 *
 	 * @param group the group to validate
 	 * @param reporter the reporter to report to
+	 * @param type the top level type
 	 * @param path the current property path
 	 * @param onlyCheckExistingChildren whether to only validate existing children (in case of a choice) or not
 	 * @param reference the instance reference
 	 */
 	private static void validateGroupChildren(Group group, InstanceValidationReporter reporter,
-			String path, boolean onlyCheckExistingChildren, InstanceReference reference) {
+			QName type, List<QName> path, boolean onlyCheckExistingChildren, InstanceReference reference) {
 		Collection<? extends ChildDefinition<?>> childDefs = DefinitionUtil.getAllChildren(group.getDefinition());
-		validateGroupChildren(group, childDefs, reporter, path, onlyCheckExistingChildren, reference);
+		validateGroupChildren(group, childDefs, reporter, type, path, onlyCheckExistingChildren, reference);
 	}
 
 	/**
@@ -182,77 +184,84 @@ public class InstanceValidator {
 	 * @param group the group to validate
 	 * @param childDefs the pre-determined children to validate (can be all children or a subset)
 	 * @param reporter the reporter to report to
+	 * @param type the top level type
 	 * @param path the current property path
 	 * @param onlyCheckExistingChildren whether to only validate existing children (in case of a choice) or not
 	 * @param reference the instance reference
 	 */
 	private static void validateGroupChildren(Group group, Collection<? extends ChildDefinition<?>> childDefs, 
-			InstanceValidationReporter reporter,
-			String path, boolean onlyCheckExistingChildren, InstanceReference reference) {
+			InstanceValidationReporter reporter, QName type, List<QName> path,
+			boolean onlyCheckExistingChildren, InstanceReference reference) {
 		for (ChildDefinition<?> childDef : childDefs) {
 			QName name = childDef.getName();
+			path.add(name);
 			// Cannot use getPropertyNames in case of onlyCheckExistingChildren,
 			// because then I get no ChildDefinitions.
 			Object[] property = group.getProperty(name);
 			if (!onlyCheckExistingChildren || (property != null && property.length > 0)) {
 				if (childDef.asGroup() != null)
-					validateGroup(property, childDef.asGroup(), reporter, path + '.' + name.getLocalPart(), reference);
+					validateGroup(property, childDef.asGroup(), reporter, type, path, reference);
 				else if (childDef.asProperty() != null)
-					validateProperty(property, childDef.asProperty(), reporter, path + '.' + name.getLocalPart(), reference);
+					validateProperty(property, childDef.asProperty(), reporter, type, path, reference);
 				else
 					throw new IllegalStateException("Illegal child type.");
 			}
+			path.remove(path.size() - 1);
 		}
 	}
 
 	/**
 	 * Validates the given property values against their {@link PropertyDefinition}.<br>
-	 * Then calls {@link #validateChildren(Object[], ChildDefinition, InstanceValidationReporter, String, boolean, InstanceReference)}.
+	 * Then calls {@link #validateChildren(Object[], ChildDefinition, InstanceValidationReporter, QName, List, boolean, InstanceReference)}.
 	 *
 	 * @param properties the array of existing properties, may be null
 	 * @param propertyDef their definition
 	 * @param reporter the reporter to report to
+	 * @param type the top level type
 	 * @param path the current property path
 	 * @param reference the instance reference
 	 */
 	private static void validateProperty(Object[] properties, PropertyDefinition propertyDef,
-			InstanceValidationReporter reporter, String path, InstanceReference reference) {
+			InstanceValidationReporter reporter, QName type, List<QName> path,
+			InstanceReference reference) {
 		for (Entry<Class<PropertyConstraint>, PropertyConstraintValidator> entry :
 				ConstraintValidatorExtension.getInstance().getPropertyConstraintValidators().entrySet())
 			try {
 				entry.getValue().validatePropertyConstraint(properties,
 						propertyDef.getConstraint(entry.getKey()), propertyDef);
 			} catch (ValidationException vE) {
-				reporter.warn(new DefaultInstanceValidationMessage(reference, "Properties (" + path + ") not valid: " + vE.getMessage()));
+				reporter.warn(new DefaultInstanceValidationMessage(reference, type, new ArrayList<QName>(path), entry.getKey().getSimpleName(), vE.getMessage()));
 			}
 
-		validateChildren(properties, propertyDef, reporter, path, false, reference);
+		validateChildren(properties, propertyDef, reporter, type, path, false, reference);
 	}
 
 	/**
 	 * Validates the given property values against their {@link GroupPropertyDefinition}.<br>
-	 * Then calls {@link #validateChildren(Object[], ChildDefinition, InstanceValidationReporter, String, boolean, InstanceReference)}.
+	 * Then calls {@link #validateChildren(Object[], ChildDefinition, InstanceValidationReporter, QName, List, boolean, InstanceReference)}.
 	 *
 	 * @param properties the array of existing properties, may be null
 	 * @param groupDef their definition
 	 * @param reporter the reporter to report to
+	 * @param type the top level type
 	 * @param path the current property path
 	 * @param reference the instance reference
 	 */
 	private static void validateGroup(Object[] properties, GroupPropertyDefinition groupDef,
-			InstanceValidationReporter reporter, String path, InstanceReference reference) {
+			InstanceValidationReporter reporter, QName type, List<QName> path,
+			InstanceReference reference) {
 		for (Entry<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator> entry :
 				ConstraintValidatorExtension.getInstance().getGroupPropertyConstraintValidators().entrySet())
 			try {
 				entry.getValue().validateGroupPropertyConstraint(properties,
 						groupDef.getConstraint(entry.getKey()), groupDef);
 			} catch (ValidationException vE) {
-				reporter.warn(new DefaultInstanceValidationMessage(reference, "Group properties (" + path + ") not valid: " + vE.getMessage()));
+				reporter.warn(new DefaultInstanceValidationMessage(reference, type, new ArrayList<QName>(path), entry.getKey().getSimpleName(), vE.getMessage()));
 			}
 
 		// In case of enabled choice flag only check existing children.
 		// That only one child exists should get checked above in a validator for the choice flag.
-		validateChildren(properties, groupDef, reporter, path,
+		validateChildren(properties, groupDef, reporter, type, path,
 				groupDef.getConstraint(ChoiceFlag.class).isEnabled(), reference);
 	}
 
@@ -262,27 +271,29 @@ public class InstanceValidator {
 	 * @param properties the array of existing properties, may be null
 	 * @param childDef their definition
 	 * @param reporter the reporter to report to
+	 * @param type the top level type
 	 * @param path the current property path
 	 * @param onlyCheckExistingChildren whether to only validate existing children (in case of a choice) or not
 	 * @param reference the instance reference
 	 */
 	private static void validateChildren(Object[] properties, ChildDefinition<?> childDef,
-			InstanceValidationReporter reporter, String path, boolean onlyCheckExistingChildren, InstanceReference reference) {
+			InstanceValidationReporter reporter, QName type, List<QName> path,
+			boolean onlyCheckExistingChildren, InstanceReference reference) {
 		if (properties != null && properties.length > 0) {
 			for (Object property : properties) {
 				if (property instanceof Instance) {
-					validateInstance((Instance) property, reporter, path,
+					validateInstance((Instance) property, reporter, type, path,
 							onlyCheckExistingChildren, reference);
 				} else if (property instanceof Group) {
-					validateGroupChildren((Group) property, reporter, path,
+					validateGroupChildren((Group) property, reporter, type, path,
 							onlyCheckExistingChildren, reference);
 				} else {
 					if (childDef.asGroup() != null)
-						reporter.warn(new DefaultInstanceValidationMessage(reference, "Group properties (" + path + ") not valid: a property is no group."));
+						reporter.warn(new DefaultInstanceValidationMessage(reference, type, new ArrayList<QName>(path), "Wrong group", "A property is no group"));
 					else if (childDef.asProperty() != null) {
 						MutableInstance instance = new DefaultInstance(childDef.asProperty().getPropertyType(), null);
 						instance.setValue(property);
-						validateInstance(instance, reporter, path, onlyCheckExistingChildren, reference);
+						validateInstance(instance, reporter, type, path, onlyCheckExistingChildren, reference);
 					}
 				}
 			}
@@ -314,7 +325,7 @@ public class InstanceValidator {
 				if (!attributes.isEmpty()) {
 					// create an empty dummy instance
 					Instance instance = new DefaultInstance(childDef.asProperty().getPropertyType(), null);
-					validateGroupChildren(instance, attributes, reporter, path, onlyCheckExistingChildren, reference);
+					validateGroupChildren(instance, attributes, reporter, type, path, onlyCheckExistingChildren, reference);
 				}
 			}
 		}

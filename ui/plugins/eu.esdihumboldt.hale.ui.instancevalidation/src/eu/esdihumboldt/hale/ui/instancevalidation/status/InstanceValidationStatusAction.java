@@ -35,8 +35,6 @@ import eu.esdihumboldt.hale.ui.views.report.ReportList;
 /**
  * Action for instance validation status. On click shows the latest report,
  * and the icon shows the current status.
- * 
- * Must be {@link #dispose()}d!
  *
  * @author Kai Schwierczek
  */
