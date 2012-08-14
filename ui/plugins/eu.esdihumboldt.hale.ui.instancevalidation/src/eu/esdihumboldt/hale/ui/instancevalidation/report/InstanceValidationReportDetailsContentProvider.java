@@ -13,85 +13,192 @@
 package eu.esdihumboldt.hale.ui.instancevalidation.report;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.jface.viewers.ITreeContentProvider;
+import javax.xml.namespace.QName;
+
+import org.eclipse.jface.viewers.ITreePathContentProvider;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.PlatformUI;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Content provider for the instance validation report details page.
  *
  * @author Kai Schwierczek
  */
-public class InstanceValidationReportDetailsContentProvider implements ITreeContentProvider {
+public class InstanceValidationReportDetailsContentProvider implements ITreePathContentProvider {
+	/**
+	 * Maximum number of messages shown for one path/category.
+	 */
+	public static final int LIMIT = 5;
+
+	private Map<TreePath, Set<Object>> childCache = new HashMap<TreePath, Set<Object>>();
+	private Multimap<TreePath, InstanceValidationMessage> messages = ArrayListMultimap.create();
+	private Set<TreePath> limitedPaths = new HashSet<TreePath>();
 
 	/**
-	 * @see ITreeContentProvider#dispose()
+	 * @see ITreePathContentProvider#dispose()
 	 */
 	@Override
 	public void dispose() {
-		// do nothing
+		childCache.clear();
+		messages.clear();
+		limitedPaths.clear();
 	}
 
 	/**
-	 * @see ITreeContentProvider#inputChanged(Viewer, Object, Object)
+	 * @see ITreePathContentProvider#inputChanged(Viewer, Object, Object)
 	 */
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		// do nothing
+		childCache.clear();
+		messages.clear();
+		limitedPaths.clear();
+		if (newInput instanceof Collection<?>) {
+			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+			TreePath emptyPath = new TreePath(new Object[0]);
+			for (Object o : (Collection<?>) newInput) {
+				if (o instanceof InstanceValidationMessage) {
+					InstanceValidationMessage message = ((InstanceValidationMessage) o);
+					Set<Object> baseTypes = childCache.get(Collections.emptyList());
+					if (baseTypes == null) {
+						baseTypes = new HashSet<Object>();
+						childCache.put(emptyPath, baseTypes);
+					}
+					// XXX maybe expand messages with SSID?
+					TypeDefinition typeDef = ss.getSchemas(SchemaSpaceID.TARGET).getType(message.getType());
+					// use typeDef if available, QName otherwise
+					Object use = typeDef == null ? message.getType() : typeDef;
+					baseTypes.add(use);
+					messages.put(new TreePath(new Object[] {use}), message);
+				}
+			}
+		}
 	}
 
 	/**
-	 * @see ITreeContentProvider#getElements(Object)
+	 * @see ITreePathContentProvider#getElements(Object)
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof Collection<?>) {
-			Map<String, List<InstanceValidationMessage>> map = new HashMap<String, List<InstanceValidationMessage>>();
-			for (Object o : (Collection<?>) inputElement) {
-				if (o instanceof InstanceValidationMessage) {
-					InstanceValidationMessage message = ((InstanceValidationMessage) o);
-					List<InstanceValidationMessage> messages = map.get(message.getMessage());
-					if (messages == null) {
-						messages = new LinkedList<InstanceValidationMessage>();
-						map.put(message.getMessage(), messages);
+		Set<Object> baseTypes = childCache.get(new TreePath(new Object[0]));
+		if (baseTypes == null)
+			return new Object[0];
+		return baseTypes.toArray();
+	}
+
+	/**
+	 * @see ITreePathContentProvider#getChildren(TreePath)
+	 */
+	@Override
+	public Object[] getChildren(TreePath parentPath) {
+		Set<Object> children = childCache.get(parentPath);
+		if (children == null) {
+			Collection<InstanceValidationMessage> ivms = messages.get(parentPath);
+			if (!ivms.isEmpty()) {
+				children = new HashSet<Object>();
+
+				// count of added messages
+				int messageCount = 0;
+
+				for (InstanceValidationMessage message : ivms) {
+					if (message.getPath().size() > parentPath.getSegmentCount() - 1) {
+						// path not done, add next segment
+						QName name = message.getPath().get(parentPath.getSegmentCount() - 1);
+						Object child = name;
+						Object parent = parentPath.getLastSegment();
+						if (parent instanceof Definition<?>) {
+							ChildDefinition<?> childDef = DefinitionUtil.getChild((Definition<?>) parent, name);
+							if (childDef != null)
+								child = childDef;
+						}
+						children.add(child);
+						messages.put(parentPath.createChildPath(child), message);
+					} else if (message.getPath().size() == parentPath.getSegmentCount() - 1) {
+						// path done, go by category
+						String category = message.getCategory();
+						children.add(category);
+						messages.put(parentPath.createChildPath(category), message);
+					} else {
+						// all done, add as child
+						if (messageCount < LIMIT) {
+							children.add(message);
+							messageCount++;
+						} else {
+							limitedPaths.add(parentPath);
+						}
 					}
-					messages.add(message);
-				} else
-					throw new IllegalArgumentException("Input must be a Collection<InstanceValidationReport>");
-			}
-			return map.values().toArray();
+				}
+			} else
+				children = Collections.emptySet();
+
+			childCache.put(parentPath, children);
 		}
-		return new Object[0];
+
+		return children.toArray();
 	}
 
 	/**
-	 * @see ITreeContentProvider#getChildren(Object)
+	 * Returns the number of messages that are children of the given path.
+	 *
+	 * @param path the path
+	 * @return the number of messages that are children of the given path
 	 */
-	@Override
-	public Object[] getChildren(Object parentElement) {
-		return new Object[0];
+	public int getMessageCount(TreePath path) {
+		return messages.get(path).size();
 	}
 
 	/**
-	 * @see ITreeContentProvider#getParent(Object)
+	 * Returns whether the given path has more instances available than those which are shown.
+	 *
+	 * @see #LIMIT
+	 * @param path the path
+	 * @return whether the given path has more instances available than those which are shown
 	 */
-	@Override
-	public Object getParent(Object element) {
-		return null;
+	public boolean isLimited(TreePath path) {
+		getChildren(path); // get children so limitedPaths is updated
+		return limitedPaths.contains(path);
 	}
 
 	/**
-	 * @see ITreeContentProvider#hasChildren(Object)
+	 * Returns all messages that are children of the given path.
+	 *
+	 * @param path the path
+	 * @return all messages that are children of the given path
 	 */
-	@Override
-	public boolean hasChildren(Object element) {
-		return false;
+	public Collection<InstanceValidationMessage> getMessages(TreePath path) {
+		return messages.get(path);
 	}
 
+	/**
+	 * @see ITreePathContentProvider#hasChildren(TreePath)
+	 */
+	@Override
+	public boolean hasChildren(TreePath path) {
+		return !messages.get(path).isEmpty();
+	}
+
+	/**
+	 * @see ITreePathContentProvider#getParents(Object)
+	 */
+	@Override
+	public TreePath[] getParents(Object element) {
+		return new TreePath[0]; // only possible for messages
+	}
 }
