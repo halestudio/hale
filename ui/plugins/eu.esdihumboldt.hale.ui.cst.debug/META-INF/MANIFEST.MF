@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CST Debug UI
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.cst.debug;singleton:=true
+Bundle-Version: 2.5.0.qualifier
+Bundle-Activator: eu.esdihumboldt.hale.ui.cst.debug.internal.CSTDebugBundle
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.align;bundle-version="2.5.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: eu.esdihumboldt.cst.extension.hooks
