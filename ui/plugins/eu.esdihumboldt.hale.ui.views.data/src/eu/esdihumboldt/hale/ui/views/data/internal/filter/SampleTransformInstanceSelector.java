@@ -18,7 +18,12 @@ import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -42,7 +47,6 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
-import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
@@ -51,6 +55,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
@@ -159,59 +164,89 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 		protected void updateFeatureTypesSelection() {
 			instanceMap.clear();
 			
-			final InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
-			final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-			final TransformationService cst = OsgiUtils.getService(TransformationService.class);
-			
-			// get reference instances
-			Collection<Instance> reference = rss.getReferenceInstances();
-			
-			if (reference != null && !reference.isEmpty()) {
-				// create an instance collection
-				InstanceCollection instances = new DefaultInstanceCollection(reference);
+			final AtomicBoolean finished = new AtomicBoolean(false);
+			Job job = new Job("Transform samples") {
 				
-				DefaultInstanceSink target = new DefaultInstanceSink();
-				
-				// transform features
-				TransformationReport report = cst.transform(
-						alService.getAlignment(), // Alignment
-						instances,
-						target,
-						new NullProgressIndicator());
-				
-				if (!report.isSuccess()) {
-					//TODO log message
-				}
-				
-				
-				//Sort target instances by comparing meta data IDs of the source 
-				//instances with the SourcesIDs of the target instances
-				ArrayList<Instance> targetSorted = new ArrayList<Instance>();				
-				ResourceIterator<Instance> it = instances.iterator();
-				try{
-				while(it.hasNext()){
-					Instance inst = it.next();
-					for(Instance instance : target.getInstances()){
-						if (InstanceMetadata.getID(inst).equals(InstanceMetadata.getSourceID(instance))){
-							targetSorted.add(instance);
-						}						
-					}	
-				}
-				}finally{
-					it.close();
-				}
-				
-				//check if there are target instances without a matched source id
-				for(Instance instance : target.getInstances()){
-					if (!targetSorted.contains(instance)){
-						targetSorted.add(instance);
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					try {
+						final InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
+						final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+						final TransformationService cst = OsgiUtils.getService(TransformationService.class);
+						
+						// get reference instances
+						Collection<Instance> reference = rss.getReferenceInstances();
+						
+						if (reference != null && !reference.isEmpty()) {
+							// create an instance collection
+							InstanceCollection instances = new DefaultInstanceCollection(reference);
+							
+							DefaultInstanceSink target = new DefaultInstanceSink();
+							
+							// transform features
+							TransformationReport report = cst.transform(
+									alService.getAlignment(), // Alignment
+									instances,
+									target,
+									new ProgressMonitorIndicator(monitor));
+							
+							if (!report.isSuccess()) {
+								//TODO log message
+							}
+							
+							//Sort target instances by comparing meta data IDs of the source 
+							//instances with the SourcesIDs of the target instances
+							ArrayList<Instance> targetSorted = new ArrayList<Instance>();				
+							ResourceIterator<Instance> it = instances.iterator();
+							try{
+							while(it.hasNext()){
+								Instance inst = it.next();
+								for(Instance instance : target.getInstances()){
+									if (InstanceMetadata.getID(inst).equals(InstanceMetadata.getSourceID(instance))){
+										targetSorted.add(instance);
+									}						
+								}	
+							}
+							}finally{
+								it.close();
+							}
+							
+							//check if there are target instances without a matched source id
+							for(Instance instance : target.getInstances()){
+								if (!targetSorted.contains(instance)){
+									targetSorted.add(instance);
+								}
+							}
+							
+							// determine types
+							for (Instance instance : targetSorted) {
+								instanceMap.put(instance.getDefinition(), instance);
+							}
+						}
+					
+						return Status.OK_STATUS;
+					} finally {
+						finished.set(true);
 					}
 				}
-				
-				// determine types
-				for (Instance instance : targetSorted) {
-					instanceMap.put(instance.getDefinition(), instance);
+			};
+			
+			job.schedule();
+			if (Display.getCurrent() != null) {
+				while (!finished.get()) {
+					if (!Display.getCurrent().readAndDispatch()) {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// ignore
+						}
+					}
 				}
+			}
+			try {
+				job.join();
+			} catch (InterruptedException e) {
+				// ignore
 			}
 			
 			Collection<TypeDefinition> selectableTypes = instanceMap.keySet();
