@@ -12,5 +12,10 @@ Import-Package: de.cs3d.ui.util.eclipse.extension,
  de.cs3d.util.eclipse.extension,
  de.cs3d.util.eclipse.extension.selective,
  de.cs3d.util.logging,
+ de.fhg.igd.osgi.util;version="1.0.0",
  org.slf4j;version="1.5.11"
 Service-Component: OSGI-INF/ttreehooks.xml
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: eu.esdihumboldt.hale.ui.cst.internal.CSTUIPlugin
+Export-Package: eu.esdihumboldt.hale.ui.cst.contribution,
+ eu.esdihumboldt.hale.ui.cst.internal;x-internal:=true

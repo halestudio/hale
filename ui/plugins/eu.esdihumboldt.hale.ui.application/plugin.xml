@@ -304,6 +304,20 @@
                   label="Validate transformed instances"
                   style="toggle">
             </command>
+            <separator
+                  name="transformation.separator1"
+                  visible="true">
+            </separator>
+            <menu
+                  label="Hooks">
+               <menu
+                     label="Transformation tree">
+                  <dynamic
+                        class="eu.esdihumboldt.hale.ui.cst.contribution.TransformationTreeHooksContribution"
+                        id="cst.hooks.ttree">
+                  </dynamic>
+               </menu>
+            </menu>
          </menu>
          <menu
                id="window"
