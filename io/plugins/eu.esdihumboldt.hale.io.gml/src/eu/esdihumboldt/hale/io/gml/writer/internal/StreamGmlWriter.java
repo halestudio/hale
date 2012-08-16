@@ -659,7 +659,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	}
 
 	private boolean hasChild(TypeDefinition type, String localName) {
-		for (ChildDefinition<?> child : type.getChildren()) {
+		for (ChildDefinition<?> child : DefinitionUtil.getAllProperties(type)) {
 			if (localName.equals(child.getName().getLocalPart())) {
 				return true;
 			}
