@@ -42,7 +42,12 @@ public class MetadataInfo  implements Identifiable {
 		this.key = key;
 		this.label = conf.getAttribute("label");
 		this.description = conf.getAttribute("description");
-		this.generator = (Class<? extends MetadataGenerator>) ExtensionUtil.loadClass(conf, "generator");
+		if (conf.getAttribute("generator") != null) {
+			this.generator = (Class<? extends MetadataGenerator>) ExtensionUtil.loadClass(conf, "generator");
+		}
+		else {
+			this.generator = null;
+		}
 	}
 		
 		
