@@ -171,6 +171,8 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 				list.refresh();
 			}
 		});
+		
+		updateList();
 	}
 	
 	/**
@@ -200,12 +202,15 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	}
 
 	private void updateList() {
-		//TODO instead of showing all elemets allow filtering for elements that can hold the type in some form?
-		SchemaSpace schemas = getWizard().getProvider().getTargetSchema();
-		XmlIndex index = StreamGmlWriter.getXMLIndex(schemas);
-		//FIXME use filtered table for selection?
-		list.setInput(index.getElements().values());
-		setPageComplete(!list.getSelection().isEmpty());
+		if (list != null // during enable if content not yet created
+				&& getWizard().getProvider() != null) {
+			//TODO instead of showing all elemets allow filtering for elements that can hold the type in some form?
+			SchemaSpace schemas = getWizard().getProvider().getTargetSchema();
+			XmlIndex index = StreamGmlWriter.getXMLIndex(schemas);
+			//FIXME use filtered table for selection?
+			list.setInput(index.getElements().values());
+			setPageComplete(!list.getSelection().isEmpty());
+		}
 	}
 	
 }

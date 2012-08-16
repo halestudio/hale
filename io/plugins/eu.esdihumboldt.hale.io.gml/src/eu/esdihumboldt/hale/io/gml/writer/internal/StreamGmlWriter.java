@@ -197,9 +197,46 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	 */
 	@Override
 	public void validate() throws IOProviderConfigurationException {
+		super.validate();
+		
 		if (getXMLIndex() == null) {
 			fail("No XML target schema");
 		}
+	}
+
+	/**
+	 * @see AbstractInstanceWriter#checkCompatibility()
+	 */
+	@Override
+	public void checkCompatibility() throws IOProviderConfigurationException {
+		super.checkCompatibility();
+		
+		XmlIndex xmlIndex = getXMLIndex();
+		if (xmlIndex == null) {
+			fail("No XML target schema");
+		}
+		
+		if (requiresDefaultContainer()) {
+			XmlElement element;
+			try {
+				element = findDefaultContainter(xmlIndex, null);
+			} catch (Exception e) {
+				// ignore
+				element = null;
+			}
+			if (element == null) {
+				fail("Cannot find container element in schema.");
+			}
+		}
+	}
+
+	/**
+	 * States if the instance writer in all cases requires that the default
+	 * container is being found.
+	 * @return if the default container must be present in the target schema
+	 */
+	protected boolean requiresDefaultContainer() {
+		return false; // not needed, we allow specifying it through a parameter 
 	}
 
 	/**
@@ -477,7 +514,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 	/**
 	 * Find the default container element.
 	 * @param targetIndex the target type index
-	 * @param reporter the reporter
+	 * @param reporter the reporter, may be <code>null</code>
 	 * @return the container XML element or <code>null</code>
 	 */
 	protected XmlElement findDefaultContainter(XmlIndex targetIndex, IOReporter reporter) {
@@ -493,7 +530,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 			}
 			
 			
-			if (fcElements.isEmpty() && gmlNs.equals("http://www.opengis.net/gml")) { //$NON-NLS-1$
+			if (fcElements.isEmpty() && gmlNs != null && gmlNs.equals("http://www.opengis.net/gml")) { //$NON-NLS-1$
 				// no FeatureCollection defined and "old" namespace -> GML 2
 				// include WFS 1.0.0 for the FeatureCollection element
 				try {
@@ -531,7 +568,7 @@ public class StreamGmlWriter extends AbstractInstanceWriter {
 				}
 			}
 			
-			if (fcElements.isEmpty()) {
+			if (fcElements.isEmpty() && reporter != null) {
 				reporter.warn(new IOMessageImpl(
 						"No element describing a FeatureCollection found", null)); //$NON-NLS-1$
 			}

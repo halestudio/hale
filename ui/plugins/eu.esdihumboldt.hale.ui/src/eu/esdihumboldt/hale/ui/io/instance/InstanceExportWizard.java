@@ -14,12 +14,14 @@ package eu.esdihumboldt.hale.ui.io.instance;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -46,6 +48,8 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceExportWizard.class);
 	
 	private IOProviderDescriptor validatorFactory;
+	
+	private List<IOProviderDescriptor> cachedFactories;
 
 	/**
 	 * Default constructor
@@ -54,6 +58,51 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 		super(InstanceWriter.class);
 		
 		setWindowTitle("Export instances");
+	}
+
+	/**
+	 * @see IOWizard#getFactories()
+	 */
+	@Override
+	public List<IOProviderDescriptor> getFactories() {
+		if (cachedFactories != null) {
+			return cachedFactories;
+		}
+		
+		List<IOProviderDescriptor> providers = super.getFactories();
+		IOAdvisor<InstanceWriter> advisor = getAdvisor();
+		if (advisor == null) {
+			return providers;
+		}
+		
+		List<IOProviderDescriptor> result = new ArrayList<IOProviderDescriptor>();
+		
+		for (IOProviderDescriptor providerFactory : providers) {
+			// create a dummy provider
+			InstanceWriter provider;
+			try {
+				provider = (InstanceWriter) providerFactory.createExtensionObject();
+			} catch (Exception e) {
+				log.error("Error creating an instance writer: "
+						+ providerFactory.getIdentifier(), e);
+				continue; // ignore this provider as it cannot be created
+			}
+			
+			// assign the basic configuration
+			advisor.prepareProvider(provider);
+			advisor.updateConfiguration(provider);
+			
+			// and check the compatibility
+			try {
+				provider.checkCompatibility();
+				result.add(providerFactory);
+			} catch (IOProviderConfigurationException e) {
+				// ignore this export provider, it is not compatible
+			}
+		}
+		
+		cachedFactories = result;
+		return cachedFactories;
 	}
 
 	/**
