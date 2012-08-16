@@ -27,4 +27,12 @@ public class GmlInstanceWriter extends StreamGmlWriter {
 		super(true);
 	}
 
+	/**
+	 * @see StreamGmlWriter#requiresDefaultContainer()
+	 */
+	@Override
+	protected boolean requiresDefaultContainer() {
+		return true; // requires a FeatureCollection being present
+	}
+
 }

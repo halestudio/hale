@@ -56,6 +56,16 @@ public abstract class AbstractInstanceWriter extends AbstractExportProvider impl
 	}
 
 	/**
+	 * @see InstanceWriter#checkCompatibility()
+	 */
+	@Override
+	public void checkCompatibility() throws IOProviderConfigurationException {
+		if (targetSchema == null || instances == null) {
+			fail("Target schema or instances not defined.");
+		}
+	}
+
+	/**
 	 * Returns the target schema; override to return another set of schemas
 	 * 
 	 * @see InstanceWriter#getValidationSchemas()

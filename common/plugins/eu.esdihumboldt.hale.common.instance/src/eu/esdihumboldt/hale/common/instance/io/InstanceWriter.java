@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.common.instance.io;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -55,5 +56,15 @@ public interface InstanceWriter extends ExportProvider {
 	 * @return the schemas needed for validation
 	 */
 	public List<? extends Locatable> getValidationSchemas();
+	
+	/**
+	 * Validate the basic {@link InstanceWriter} configuration, to determine
+	 * if the target schema (and instances) are compatible to the writer.
+	 * Other parameters should be ignored for the check. 
+	 * 
+	 * @throws IOProviderConfigurationException if the I/O provider was not
+	 *   configured properly
+	 */
+	public void checkCompatibility() throws IOProviderConfigurationException;
 
 }
