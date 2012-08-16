@@ -44,6 +44,12 @@
 			<bind-xml name="resource" node="element" />
 		</field>
 		
+		<field name="exportConfigurations" 
+			type="eu.esdihumboldt.hale.common.core.io.project.model.ExportConfiguration" collection="arraylist" required="false">
+
+			<bind-xml name="export" node="element" />
+		</field>
+		
 		<field name="projectFiles" 
 			type="eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo" collection="arraylist" required="false">
 
@@ -86,6 +92,16 @@
 					</field>
 				</class>
 			</bind-xml>
+		</field>
+	</class>
+	<class name="eu.esdihumboldt.hale.common.core.io.project.model.ExportConfiguration" auto-complete="true">
+	
+		<field name="name" type="string" required="true">
+			<bind-xml name="name" node="attribute" />
+		</field>
+		
+		<field name="configuration" type="eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration" required="true">
+			<bind-xml name="config" node="element" />
 		</field>
 	</class>
 	<class name="eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo" auto-complete="true">

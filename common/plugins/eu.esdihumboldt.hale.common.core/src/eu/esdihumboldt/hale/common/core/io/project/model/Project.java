@@ -155,6 +155,11 @@ public class Project implements ProjectInfo {
 	private final List<ProjectFileInfo> projectFiles = new ArrayList<ProjectFileInfo>();
 	
 	/**
+	 * Stored export configurations
+	 */
+	private final List<ExportConfiguration> exportConfigurations = new ArrayList<ExportConfiguration>();
+	
+	/**
 	 * @return the configurations
 	 */
 	public List<IOConfiguration> getResources() {
@@ -277,6 +282,13 @@ public class Project implements ProjectInfo {
 	 */
 	public List<ProjectFileInfo> getProjectFiles() {
 		return projectFiles;
+	}
+
+	/**
+	 * @return the exportConfigurations
+	 */
+	public List<ExportConfiguration> getExportConfigurations() {
+		return exportConfigurations;
 	}
 	
 }
