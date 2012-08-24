@@ -25,6 +25,7 @@
       <metadata
             description="Uniquely identifies an instance"
             generator="eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataIdGenerator"
+            icon="icons/pin_editor.gif"
             key="ID"
             label="Identifier">
       </metadata>
