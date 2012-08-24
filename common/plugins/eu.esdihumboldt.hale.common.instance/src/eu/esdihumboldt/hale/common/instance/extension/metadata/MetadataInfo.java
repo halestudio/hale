@@ -12,7 +12,11 @@
 
 package eu.esdihumboldt.hale.common.instance.extension.metadata;
 
+import java.net.URL;
+
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
@@ -27,6 +31,7 @@ public class MetadataInfo implements Identifiable {
 	private final String key;
 	private final String label;
 	private final String description;
+	private final IConfigurationElement conf;
 	private final Class<? extends MetadataGenerator> generator;
 
 	/**
@@ -39,6 +44,7 @@ public class MetadataInfo implements Identifiable {
 	public MetadataInfo(String key, IConfigurationElement conf) {
 		super();
 
+		this.conf = conf;
 		this.key = key;
 		this.label = conf.getAttribute("label");
 		this.description = conf.getAttribute("description");
@@ -78,6 +84,35 @@ public class MetadataInfo implements Identifiable {
 	 */
 	public Class<? extends MetadataGenerator> getGenerator() {
 		return generator;
+	}
+
+	/**
+	 * Returns the URL of an Icon specified on the extention point.
+	 * 
+	 * @return the URL, or null if no Icon is specified
+	 */
+	public URL getIconURL() {
+		String icon = conf.getAttribute("icon");
+		return getURL(icon);
+	}
+
+	/**
+	 * Resolves the url of a certain source
+	 * 
+	 * @param resource the resource
+	 * @return the url, may be null if source not found
+	 */
+	private URL getURL(String resource) {
+		if (resource != null && !resource.isEmpty()) {
+			String contributor = conf.getDeclaringExtension().getContributor().getName();
+			Bundle bundle = Platform.getBundle(contributor);
+
+			if (bundle != null) {
+				return bundle.getResource(resource);
+			}
+		}
+
+		return null;
 	}
 
 }
