@@ -448,6 +448,7 @@ public class XmlSchemaReader
 			try {
 				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
 				XmlSchema importedSchema = imp.getSchema();
+				// XXX imports überprüfen
 				String location = importedSchema.getSourceURI();
 				if (!(imports.contains(location))) { // only add schemas that were not already added
 					imports.add(location); // place a marker in the map to prevent loading the location in the call to loadSchema 

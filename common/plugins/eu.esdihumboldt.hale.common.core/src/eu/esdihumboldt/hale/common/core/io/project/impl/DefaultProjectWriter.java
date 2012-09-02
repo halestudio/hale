@@ -251,7 +251,7 @@ public class DefaultProjectWriter extends AbstractExportProvider implements Proj
 			} finally {
 				zip.close();
 			}
-		} 
+		}
 		else {
 			// save project file to XML
 			OutputStream out = getTarget().getOutput();
