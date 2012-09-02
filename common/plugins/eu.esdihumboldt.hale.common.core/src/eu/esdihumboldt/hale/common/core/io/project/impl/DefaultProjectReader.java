@@ -21,20 +21,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.text.MessageFormat;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
@@ -50,7 +46,7 @@ import eu.esdihumboldt.util.io.PathUpdate;
  * 
  * @author Simon Templer
  */
-public class DefaultProjectReader extends AbstractImportProvider implements ProjectReader {
+public class DefaultProjectReader extends AbstractProjectReader {
 
 	/**
 	 * Input stream for a ZIP entry
@@ -84,17 +80,6 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 	private static final ALogger log = ALoggerFactory.getLogger(DefaultProjectReader.class);
 
 	/**
-	 * The additional project files, file names are mapped to project file
-	 * objects
-	 */
-	private Map<String, ProjectFile> projectFiles;
-
-	/**
-	 * The main project file, <code>null</code> if not yet loaded
-	 */
-	private Project project;
-
-	/**
 	 * If the project shall be read from a ZIP archive
 	 */
 	private final boolean archive;
@@ -115,8 +100,6 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Load project", ProgressIndicator.UNKNOWN);
 
-		project = null;
-
 		InputStream in = getSource().getInput();
 		if (archive) {
 			// read from archive
@@ -130,7 +113,7 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 
 					if (name.equals(ProjectIO.PROJECT_FILE)) {
 						try {
-							project = Project.load(new EntryInputStream(zip));
+							setProject(Project.load(new EntryInputStream(zip)));
 						} catch (Exception e) {
 							// fail if main project file cannot be loaded
 							throw new IOProviderConfigurationException(
@@ -138,7 +121,7 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 						}
 					}
 					else {
-						ProjectFile file = projectFiles.get(name);
+						ProjectFile file = getProjectFiles().get(name);
 
 						if (file != null) {
 							try {
@@ -160,7 +143,7 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 		else {
 			// read from XML
 			try {
-				project = Project.load(in);
+				setProject(Project.load(in));
 			} catch (Exception e) {
 				// fail if main project file cannot be loaded
 				throw new IOProviderConfigurationException("Source is no valid project file", e);
@@ -169,15 +152,14 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 			}
 		}
 
-		PathUpdate update = new PathUpdate(URI.create(project.getSaveConfiguration()
+		PathUpdate update = new PathUpdate(URI.create(getProject().getSaveConfiguration()
 				.getProviderConfiguration().get(ExportProvider.PARAM_TARGET)), getSource()
 				.getLocation());
 
 		// check if there are any external project files listed
-		if (projectFiles != null) { // only if project files set at all
-			for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
-				ProjectFile projectFile = projectFiles.get(fileInfo.getName());
-
+		if (getProjectFiles() != null) { // only if project files set at all
+			for (ProjectFileInfo fileInfo : getProject().getProjectFiles()) {
+				ProjectFile projectFile = getProjectFiles().get(fileInfo.getName());
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
 					if (!IOUtils.testStream(fileInfo.getLocation(), false))
@@ -213,52 +195,10 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 		}
 
 		// clear project infos
-		project.getProjectFiles().clear();
+		getProject().getProjectFiles().clear();
 
 		progress.end();
 		reporter.setSuccess(true);
 		return reporter;
 	}
-
-	/**
-	 * @see ProjectReader#setProjectFiles(Map)
-	 */
-	@Override
-	public void setProjectFiles(Map<String, ProjectFile> projectFiles) {
-		this.projectFiles = projectFiles;
-	}
-
-	/**
-	 * @see ProjectReader#getProjectFiles()
-	 */
-	@Override
-	public Map<String, ProjectFile> getProjectFiles() {
-		return projectFiles;
-	}
-
-	/**
-	 * @see ProjectReader#getProject()
-	 */
-	@Override
-	public Project getProject() {
-		return project;
-	}
-
-	/**
-	 * @see IOProvider#isCancelable()
-	 */
-	@Override
-	public boolean isCancelable() {
-		// TODO change?
-		return false;
-	}
-
-	/**
-	 * @see AbstractIOProvider#getDefaultTypeName()
-	 */
-	@Override
-	protected String getDefaultTypeName() {
-		return ProjectIO.PROJECT_TYPE_NAME;
-	}
-
 }
