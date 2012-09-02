@@ -76,6 +76,14 @@
                ref="eu.esdihumboldt.hale.io.project.hale25.zip">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader"
+            id="eu.esdihumboldt.hale.io.project.hale25.zip.reader"
+            name="HALE project archive">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.project.hale25.zip">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.report">
