@@ -155,7 +155,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	/**
 	 * The generated namespace prefixes
 	 */
-	private Identifiers<String> namespaceGeneratedPrefixes = new Identifiers<String>("ns", true, 1);
+	private final Identifiers<String> namespaceGeneratedPrefixes = new Identifiers<String>("ns",
+			true, 1);
 
 	/**
 	 * @see SchemaReader#getSchema()
@@ -466,6 +467,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			try {
 				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
 				XmlSchema importedSchema = imp.getSchema();
+				// XXX imports überprüfen
 				String location = importedSchema.getSourceURI();
 				if (!(imports.contains(location))) { // only add schemas that
 														// were not already
