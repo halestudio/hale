@@ -466,6 +466,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			try {
 				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
 				XmlSchema importedSchema = imp.getSchema();
+				// XXX imports überprüfen
 				String location = importedSchema.getSourceURI();
 				if (!(imports.contains(location))) { // only add schemas that
 														// were not already
