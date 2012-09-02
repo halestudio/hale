@@ -155,7 +155,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	/**
 	 * The generated namespace prefixes
 	 */
-	private Identifiers<String> namespaceGeneratedPrefixes = new Identifiers<String>("ns", true, 1);
+	private final Identifiers<String> namespaceGeneratedPrefixes = new Identifiers<String>("ns",
+			true, 1);
 
 	/**
 	 * @see SchemaReader#getSchema()

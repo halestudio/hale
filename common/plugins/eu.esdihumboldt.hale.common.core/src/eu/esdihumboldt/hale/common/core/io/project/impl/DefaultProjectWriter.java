@@ -27,13 +27,11 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFileInfo;
@@ -47,7 +45,7 @@ import eu.esdihumboldt.hale.common.core.io.util.OutputStreamDecorator;
  * 
  * @author Simon Templer
  */
-public class DefaultProjectWriter extends AbstractExportProvider implements ProjectWriter {
+public class DefaultProjectWriter extends AbstractProjectWriter {
 
 	/**
 	 * Output stream for a ZIP entry
@@ -85,17 +83,6 @@ public class DefaultProjectWriter extends AbstractExportProvider implements Proj
 	public static final String PARAM_SEPARATE_FILES = "projectFiles.separate";
 
 	/**
-	 * The additional project files, file names are mapped to project file
-	 * objects
-	 */
-	private Map<String, ProjectFile> projectFiles;
-
-	/**
-	 * The main project file
-	 */
-	private Project project;
-
-	/**
 	 * If project files are to be placed outside the archive. Only has effect if
 	 * {@link #archive} is <code>true</code>
 	 */
@@ -121,7 +108,7 @@ public class DefaultProjectWriter extends AbstractExportProvider implements Proj
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
 
-		if (project == null) {
+		if (getProject() == null) {
 			fail("The main project file has not been set");
 		}
 	}
@@ -176,25 +163,25 @@ public class DefaultProjectWriter extends AbstractExportProvider implements Proj
 		}
 
 		int entries = 1;
-		if (projectFiles != null) {
-			entries += projectFiles.size();
+		if (getProjectFiles() != null) {
+			entries += getProjectFiles().size();
 		}
 		progress.begin("Save project", entries);
 
 		// clear project file information in project
-		project.getProjectFiles().clear();
+		getProject().getProjectFiles().clear();
 
 		// write additional project files if they are to be placed in separate
 		// files
 		if (separateProjectFiles && targetFile != null) {
-			for (Entry<String, ProjectFile> entry : projectFiles.entrySet()) {
+			for (Entry<String, ProjectFile> entry : getProjectFiles().entrySet()) {
 				String name = entry.getKey();
 
 				// determine target file for project file
 				File pfile = new File(targetFile.getParentFile(), targetFile.getName() + "." + name);
 
 				// add project file information to project
-				project.getProjectFiles().add(new ProjectFileInfo(name, pfile.toURI()));
+				getProject().getProjectFiles().add(new ProjectFileInfo(name, pfile.toURI()));
 
 				// write entry
 				ProjectFile file = entry.getValue();
@@ -221,7 +208,7 @@ public class DefaultProjectWriter extends AbstractExportProvider implements Proj
 				// write main entry
 				zip.putNextEntry(new ZipEntry(ProjectIO.PROJECT_FILE));
 				try {
-					Project.save(project, new EntryOutputStream(zip));
+					Project.save(getProject(), new EntryOutputStream(zip));
 				} catch (Exception e) {
 					reporter.error(new IOMessageImpl("Could not save main project configuration.",
 							e));
@@ -232,8 +219,8 @@ public class DefaultProjectWriter extends AbstractExportProvider implements Proj
 				progress.advance(1);
 
 				// write additional project files to zip stream
-				if (projectFiles != null && !separateProjectFiles) {
-					for (Entry<String, ProjectFile> entry : projectFiles.entrySet()) {
+				if (getProjectFiles() != null && !separateProjectFiles) {
+					for (Entry<String, ProjectFile> entry : getProjectFiles().entrySet()) {
 						String name = entry.getKey();
 						if (name.equalsIgnoreCase(ProjectIO.PROJECT_FILE)) {
 							reporter.error(new IOMessageImpl(
@@ -265,7 +252,7 @@ public class DefaultProjectWriter extends AbstractExportProvider implements Proj
 			// save project file to XML
 			OutputStream out = getTarget().getOutput();
 			try {
-				Project.save(project, out);
+				Project.save(getProject(), out);
 			} catch (Exception e) {
 				reporter.error(new IOMessageImpl("Could not save main project file.", e));
 				reporter.setSuccess(false);
@@ -279,46 +266,6 @@ public class DefaultProjectWriter extends AbstractExportProvider implements Proj
 
 		reporter.setSuccess(true);
 		return reporter;
-	}
-
-	/**
-	 * @see ProjectWriter#setProjectFiles(Map)
-	 */
-	@Override
-	public void setProjectFiles(Map<String, ProjectFile> projectFiles) {
-		this.projectFiles = projectFiles;
-	}
-
-	/**
-	 * @see ProjectWriter#setProject(Project)
-	 */
-	@Override
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	/**
-	 * @see ProjectWriter#getProject()
-	 */
-	@Override
-	public Project getProject() {
-		return project;
-	}
-
-	/**
-	 * @see AbstractIOProvider#getDefaultTypeName()
-	 */
-	@Override
-	protected String getDefaultTypeName() {
-		return ProjectIO.PROJECT_TYPE_NAME;
-	}
-
-	/**
-	 * @see IOProvider#isCancelable()
-	 */
-	@Override
-	public boolean isCancelable() {
-		return false;
 	}
 
 	/**
