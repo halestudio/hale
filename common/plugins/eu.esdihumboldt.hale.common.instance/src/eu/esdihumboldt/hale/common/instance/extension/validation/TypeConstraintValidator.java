@@ -26,8 +26,9 @@ public interface TypeConstraintValidator extends ConstraintValidator {
 	 *
 	 * @param instance the instance to validate
 	 * @param constraint the constraint to validate
+	 * @param context the validation context
 	 * @throws ValidationException if the validation fails
 	 */
 	public void validateTypeConstraint(Instance instance,
-			TypeConstraint constraint) throws ValidationException;
+			TypeConstraint constraint, InstanceValidationContext context) throws ValidationException;
 }

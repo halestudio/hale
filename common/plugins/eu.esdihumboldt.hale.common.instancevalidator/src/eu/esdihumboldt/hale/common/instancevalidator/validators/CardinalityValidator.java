@@ -1,6 +1,7 @@
 package eu.esdihumboldt.hale.common.instancevalidator.validators;
 
 import eu.esdihumboldt.hale.common.instance.extension.validation.GroupPropertyConstraintValidator;
+import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.PropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
@@ -18,14 +19,14 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 public class CardinalityValidator implements GroupPropertyConstraintValidator, PropertyConstraintValidator {
 	@Override
 	public void validatePropertyConstraint(Object[] values, PropertyConstraint constraint,
-			PropertyDefinition property) throws ValidationException {
+			PropertyDefinition property, InstanceValidationContext context) throws ValidationException {
 		validateConstraint(values, (Cardinality) constraint,
 				property.getConstraint(NillableFlag.class).isEnabled());
 	}
 
 	@Override
 	public void validateGroupPropertyConstraint(Object[] values, GroupPropertyConstraint constraint,
-			GroupPropertyDefinition property) throws ValidationException {
+			GroupPropertyDefinition property, InstanceValidationContext context) throws ValidationException {
 		validateConstraint(values, (Cardinality) constraint, false);
 	}
 

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.instance.extension.validation.GroupPropertyConstraintValidator;
+import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
@@ -19,7 +20,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 public class ChoiceFlagValidator implements GroupPropertyConstraintValidator {
 	@Override
 	public void validateGroupPropertyConstraint(Object[] values, GroupPropertyConstraint constraint,
-			GroupPropertyDefinition property) throws ValidationException {
+			GroupPropertyDefinition property, InstanceValidationContext context) throws ValidationException {
 		if (((ChoiceFlag) constraint).isEnabled() && values != null) {
 			for (Object value : values) {
 				if (value instanceof Group) {

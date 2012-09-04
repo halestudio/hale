@@ -1,5 +1,6 @@
 package eu.esdihumboldt.hale.common.instancevalidator.validators;
 
+import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.PropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -16,7 +17,8 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 public class NillableFlagValidator implements PropertyConstraintValidator {
 	@Override
 	public void validatePropertyConstraint(Object[] values,
-			PropertyConstraint constraint, PropertyDefinition property) throws ValidationException {
+			PropertyConstraint constraint, PropertyDefinition property,
+			InstanceValidationContext context) throws ValidationException {
 		if (!((NillableFlag) constraint).isEnabled() && values != null) {
 			for (Object value : values)
 				if (value == null || (value instanceof Instance &&

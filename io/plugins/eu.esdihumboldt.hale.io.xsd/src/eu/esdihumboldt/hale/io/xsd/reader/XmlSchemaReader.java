@@ -88,6 +88,7 @@ import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlIdUnique;
 import eu.esdihumboldt.hale.io.xsd.internal.Messages;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttribute;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttributeGroup;
@@ -1048,6 +1049,8 @@ public class XmlSchemaReader
 	 */
 	private void setMetadataAndConstraints(DefaultPropertyDefinition property,
 			XmlSchemaElement element, String schemaLocation) {
+		property.setConstraint(new XmlIdUnique(property));
+
 		// set constraints
 		property.setConstraint(NillableFlag.get(element.isNillable()));
 		long max = (element.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(element.getMaxOccurs());
@@ -1381,6 +1384,8 @@ public class XmlSchemaReader
 	 */
 	private void setMetadataAndConstraints(DefaultPropertyDefinition property,
 			XmlSchemaAttribute attribute, String schemaLocation) {
+		property.setConstraint(new XmlIdUnique(property));
+
 		// set constraints
 		property.setConstraint(XmlAttributeFlag.ENABLED);
 		
@@ -1412,8 +1417,4 @@ public class XmlSchemaReader
 		_log.info("Base URI for schemas to be used: " + baseUri); //$NON-NLS-1$
 		return baseUri;
 	}
-	
 }
-
-
-
