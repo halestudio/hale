@@ -140,10 +140,10 @@ public class DefaultAlignmentIOTest {
 				source, target);
 
 		// compare loaded alignment
-		Collection<? extends MutableCell> cells = align2.getCells();
+		Collection<? extends Cell> cells = align2.getCells();
 		assertFalse(cells.isEmpty());
 
-		Iterator<? extends MutableCell> it = cells.iterator();
+		Iterator<? extends Cell> it = cells.iterator();
 
 		// cell 1
 		Cell ncell1 = it.next();

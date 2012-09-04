@@ -66,7 +66,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 
 	private static final ALogger log = ALoggerFactory.getLogger(IOWizard.class);
 
-	private Set<IOWizardListener<P, ? extends IOWizard<P>>> listeners = new HashSet<IOWizardListener<P, ? extends IOWizard<P>>>();
+	private final Set<IOWizardListener<P, ? extends IOWizard<P>>> listeners = new HashSet<IOWizardListener<P, ? extends IOWizard<P>>>();
 
 	private final Class<P> providerType;
 
@@ -493,37 +493,45 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 
 		// validate and execute provider
 		try {
-			IOReport report = validateAndExecute(provider, defReport);
-			// add report to report server
-			ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
-					ReportService.class);
-			repService.addReport(report);
-			// show message to user
-			if (report.isSuccess()) {
-				// no message, we rely on the report being shown/processed
+			// validate configuration
+			provider.validate();
+			IOReport report = execute(provider, defReport);
 
-				// let advisor handle results
-				advisor.handleResults(getProvider());
+			if (report != null) {
+				// add report to report server
+				ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
+						ReportService.class);
+				repService.addReport(report);
 
-				// add to project service if necessary
-				if (actionId != null) {
-					// XXX instead move project resource to action?
-					ActionUI factory = ActionUIExtension.getInstance().findActionUI(actionId);
+				// show message to user
+				if (report.isSuccess()) {
+					// no message, we rely on the report being shown/processed
 
-					if (factory.isProjectResource()) {
-						ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-								ProjectService.class);
-						ps.rememberIO(actionId, getProviderFactory().getIdentifier(), provider);
+					// let advisor handle results
+					advisor.handleResults(getProvider());
+
+					// add to project service if necessary
+					if (actionId != null) {
+						// XXX instead move project resource to action?
+						ActionUI factory = ActionUIExtension.getInstance().findActionUI(actionId);
+
+						if (factory.isProjectResource()) {
+							ProjectService ps = (ProjectService) PlatformUI.getWorkbench()
+									.getService(ProjectService.class);
+							ps.rememberIO(actionId, getProviderFactory().getIdentifier(), provider);
+						}
 					}
-				}
 
+					return true;
+				}
+				else {
+					// error message
+					log.userError(report.getSummary());
+					return false;
+				}
+			}
+			else
 				return true;
-			}
-			else {
-				// error message
-				log.userError(report.getSummary());
-				return false;
-			}
 		} catch (IOProviderConfigurationException e) {
 			// user feedback
 			log.userError(
@@ -534,20 +542,15 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 	}
 
 	/**
-	 * Validate and execute the given provider
+	 * Execute the given provider
 	 * 
 	 * @param provider the I/O provider
 	 * @param defaultReporter the default reporter that is used if the provider
 	 *            doesn't supply a report
-	 * @return the execution report
-	 * @throws IOProviderConfigurationException if the provider validation
-	 *             failed
+	 * @return the execution report, if null it will not give feedback to the
+	 *         user and the advisor's handleResult method won't be called either
 	 */
-	protected IOReport validateAndExecute(final IOProvider provider,
-			final IOReporter defaultReporter) throws IOProviderConfigurationException {
-		// validate configuration
-		provider.validate();
-
+	protected IOReport execute(final IOProvider provider, final IOReporter defaultReporter) {
 		// execute provider
 		final AtomicReference<IOReport> report = new AtomicReference<IOReport>(defaultReporter);
 		defaultReporter.setSuccess(false);
