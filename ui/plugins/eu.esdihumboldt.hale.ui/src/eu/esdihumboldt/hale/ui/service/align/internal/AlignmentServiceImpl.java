@@ -130,7 +130,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 
 		// add cells
 		synchronized (this) {
-			for (MutableCell cell : alignment.getCells()) {
+			for (Cell cell : alignment.getCells()) {
 				this.alignment.addCell(cell);
 				added.add(cell);
 			}

@@ -92,6 +92,10 @@
                id="org.eclipse.ui.commands.toggleState">
          </state>
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.transformation"
+            name="Transform data">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -227,6 +231,20 @@
       <handler
             class="eu.esdihumboldt.hale.ui.io.action.wizard.SelectExportHandler"
             commandId="eu.esdihumboldt.hale.ui.io.export">
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.transformation.TransformDataHandler"
+            commandId="eu.esdihumboldt.hale.ui.transformation">
+         <enabledWhen>
+            <and>
+               <with
+                     variable="hale.alignment.has_cells">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </and>
+         </enabledWhen>
       </handler>
       <handler
             class="eu.esdihumboldt.hale.ui.function.internal.NewRelationHandler"
