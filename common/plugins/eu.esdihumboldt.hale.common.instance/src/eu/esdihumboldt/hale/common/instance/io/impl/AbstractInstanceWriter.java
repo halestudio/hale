@@ -42,9 +42,9 @@ public abstract class AbstractInstanceWriter extends AbstractExportProvider impl
 	private SchemaSpace targetSchema;
 
 	/**
-	 * @see AbstractExportProvider#validate()
-	 * 
 	 * Additionally checks for instances
+	 *
+	 * @see AbstractExportProvider#validate()
 	 */
 	@Override
 	public void validate() throws IOProviderConfigurationException {

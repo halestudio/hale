@@ -26,7 +26,6 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
-import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -40,12 +39,12 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 * List with all cells contained in the alignment.
 	 * XXX use a LinkedHashSet instead?
 	 */
-	private final Collection<MutableCell> cells = new ArrayList<MutableCell>();
+	private final Collection<Cell> cells = new ArrayList<Cell>();
 	
 	/**
 	 * List with all type cells contained in the alignment.
 	 */
-	private final Collection<MutableCell> typeCells = new ArrayList<MutableCell>();
+	private final Collection<Cell> typeCells = new ArrayList<Cell>();
 	
 	/**
 	 * Entity definitions mapped to alignment cells.
@@ -63,10 +62,27 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	private final ListMultimap<TypeDefinition, Cell> cellsPerTargetType = ArrayListMultimap.create();
 
 	/**
-	 * @see MutableAlignment#addCell(MutableCell)
+	 * Default constructor.
+	 */
+	public DefaultAlignment() {
+		// do nothing
+	}
+
+	/**
+	 * Copy constructor. Adds all cells of the given alignment.
+	 *
+	 * @param alignment the alignment to copy
+	 */
+	public DefaultAlignment(Alignment alignment) {
+		for (Cell cell : alignment.getCells())
+			addCell(cell);
+	}
+
+	/**
+	 * @see MutableAlignment#addCell(Cell)
 	 */
 	@Override
-	public void addCell(MutableCell cell) {
+	public void addCell(Cell cell) {
 		internalAdd(cell);
 	}
 	
@@ -74,7 +90,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 * Add a cell to the various internal containers.
 	 * @param cell the cell to add
 	 */
-	private void internalAdd(MutableCell cell) {
+	private void internalAdd(Cell cell) {
 		cells.add(cell);
 		
 		// check if cell is a type cell
@@ -206,7 +222,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 * @see Alignment#getCells()
 	 */
 	@Override
-	public Collection<MutableCell> getCells() {
+	public Collection<? extends Cell> getCells() {
 		return Collections.unmodifiableCollection(cells);
 	}
 
@@ -260,7 +276,7 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 * @see Alignment#getTypeCells()
 	 */
 	@Override
-	public Collection<MutableCell> getTypeCells() {
+	public Collection<Cell> getTypeCells() {
 		return Collections.unmodifiableCollection(typeCells);
 	}
 
