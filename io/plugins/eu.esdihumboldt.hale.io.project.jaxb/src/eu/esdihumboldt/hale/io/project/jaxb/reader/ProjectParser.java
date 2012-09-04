@@ -153,7 +153,7 @@ public class ProjectParser extends AbstractImportProvider implements
 			} catch (JAXBException e) {
 				reporter.error(new IOMessageImpl(
 						"Unmarshalling the HaleProject from the given resource failed: {0}",
-						e, getSource().getLocation()));
+						e, -1, -1, getSource().getLocation()));
 				reporter.setSuccess(false);
 				return reporter;
 			}
@@ -272,7 +272,7 @@ public class ProjectParser extends AbstractImportProvider implements
 		if (ct == null) {
 			report.error(new IOMessageImpl(
 					"Could not load schema at {0}, the content type could not be identified.",
-					null, source));
+					null, -1, -1, source));
 			return;
 		}
 		IOProviderDescriptor srf = HaleIO.findIOProviderFactory(
@@ -280,7 +280,7 @@ public class ProjectParser extends AbstractImportProvider implements
 		if (srf == null) {
 			report.error(new IOMessageImpl(
 					"Could not load schema at {0}, no matching I/O provider could be found.",
-					null, source));
+					null, -1, -1, source));
 			return;
 		}
 		conf.setProviderId(srf.getIdentifier());
@@ -571,13 +571,13 @@ public class ProjectParser extends AbstractImportProvider implements
 				new DefaultInputSupplier(source), (file == null) ? (null)
 						: (file.getAbsolutePath()));
 		if (ct == null) {
-			report.error(new IOMessageImpl(msgCT, null, source));
+			report.error(new IOMessageImpl(msgCT, null, -1, -1, source));
 			return;
 		}
 		IOProviderDescriptor srf = HaleIO
 				.findIOProviderFactory(clazz, ct, null);
 		if (srf == null) {
-			report.error(new IOMessageImpl(msgIO, null, source));
+			report.error(new IOMessageImpl(msgIO, null, -1, -1, source));
 			return;
 		}
 		conf.setProviderId(srf.getIdentifier());

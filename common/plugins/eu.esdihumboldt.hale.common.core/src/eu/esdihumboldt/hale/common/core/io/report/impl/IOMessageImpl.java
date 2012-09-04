@@ -78,17 +78,6 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 	 * 
 	 * @param pattern the message format pattern
 	 * @param throwable the associated throwable, may be <code>null</code>
-	 * @param arguments the arguments for the message format
-	 */
-	public IOMessageImpl(String pattern, Throwable throwable, Object... arguments) {
-		this(pattern, throwable, -1, -1, arguments);
-	}
-	
-	/**
-	 * Create a new message and format it using {@link MessageFormat}
-	 * 
-	 * @param pattern the message format pattern
-	 * @param throwable the associated throwable, may be <code>null</code>
 	 * @param lineNumber the line number in the file, <code>-1</code> for none
 	 * @param column the column in the line, <code>-1</code> for none
 	 * @param arguments the arguments for the message format

@@ -139,7 +139,8 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 								file.load(new EntryInputStream(zip));
 							} catch (Exception e) {
 								reporter.error(new IOMessageImpl(
-										"Error while loading project file {0}, file will be reset.", e, name));
+										"Error while loading project file {0}, file will be reset.", 
+										e, -1, -1, name));
 								// reset file
 								file.reset();
 							}
@@ -189,13 +190,13 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 					}
 	
 					if (!fileSuccess) {
-						reporter.error(new IOMessageImpl("Error while loading project file {0}, file will be reset.", null,
-								fileInfo.getName()));
+						reporter.error(new IOMessageImpl("Error while loading project file {0}, file will be reset.", 
+								null, -1, -1, fileInfo.getName()));
 						projectFile.reset();
 					}
 				} else {
-					reporter.info(new IOMessageImpl("No handler for external project file {0} found.", null, fileInfo
-							.getName()));
+					reporter.info(new IOMessageImpl("No handler for external project file {0} found.", 
+							null, -1, -1, fileInfo.getName()));
 				}
 			}
 		}

@@ -229,7 +229,7 @@ public class DefaultProjectWriter extends AbstractExportProvider implements Proj
 						if (name.equalsIgnoreCase(ProjectIO.PROJECT_FILE)) {
 							reporter.error(new IOMessageImpl(
 									"Invalid file name {0}. File name may not match the name of the main project configuration.", 
-									null, name));
+									null, -1, -1, name));
 						}
 						else {
 							// write entry
