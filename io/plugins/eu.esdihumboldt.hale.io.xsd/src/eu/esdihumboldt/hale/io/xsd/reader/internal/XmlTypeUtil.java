@@ -251,7 +251,7 @@ public abstract class XmlTypeUtil {
 		
 		// it's a simple type
 		type.setConstraint(HasValueFlag.ENABLED);
-		
+
 		if (content instanceof XmlSchemaSimpleTypeUnion) {
 			// simple type union
 			configureSimpleTypeUnion(type, (XmlSchemaSimpleTypeUnion) content, 

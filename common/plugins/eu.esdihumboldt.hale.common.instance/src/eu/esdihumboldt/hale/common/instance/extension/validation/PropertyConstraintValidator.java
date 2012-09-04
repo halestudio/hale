@@ -25,11 +25,13 @@ public interface PropertyConstraintValidator extends ConstraintValidator {
 	 * Validate <code>values</code> against <code>constraint</code>.
 	 * The constraint and the values belong to <code>property</code>.
 	 *
-	 * @param values the values to validate
+	 * @param values the values to validate, may be <code>null</code>
 	 * @param constraint the constraint to validate
 	 * @param property the property the values and the constraint belong to
+	 * @param context the validation context
 	 * @throws ValidationException if the validation fails
 	 */
 	public void validatePropertyConstraint(Object[] values,
-			PropertyConstraint constraint, PropertyDefinition property) throws ValidationException;
+			PropertyConstraint constraint, PropertyDefinition property,
+			InstanceValidationContext context) throws ValidationException;
 }

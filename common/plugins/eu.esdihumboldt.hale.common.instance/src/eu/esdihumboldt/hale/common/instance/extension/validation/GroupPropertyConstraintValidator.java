@@ -25,11 +25,13 @@ public interface GroupPropertyConstraintValidator extends ConstraintValidator {
 	 * Validate <code>values</code> against <code>constraint</code>.
 	 * The constraint and the values belong to <code>property</code>.
 	 *
-	 * @param values the values to validate
+	 * @param values the values to validate, may be <code>null</code>
 	 * @param constraint the constraint to validate
 	 * @param property the property the values and the constraint belong to
+	 * @param context the validation context
 	 * @throws ValidationException if the validation fails
 	 */
 	public void validateGroupPropertyConstraint(Object[] values,
-			GroupPropertyConstraint constraint, GroupPropertyDefinition property) throws ValidationException;
+			GroupPropertyConstraint constraint, GroupPropertyDefinition property,
+			InstanceValidationContext context) throws ValidationException;
 }

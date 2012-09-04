@@ -1,5 +1,6 @@
 package eu.esdihumboldt.hale.common.instancevalidator.validators;
 
+import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.TypeConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -16,7 +17,8 @@ public class ValidationConstraintValidator implements TypeConstraintValidator {
 	// So Enumeration does not need an own validator.
 
 	@Override
-	public void validateTypeConstraint(Instance instance, TypeConstraint constraint) throws ValidationException {
+	public void validateTypeConstraint(Instance instance, TypeConstraint constraint,
+			InstanceValidationContext context) throws ValidationException {
 		String result = ((ValidationConstraint) constraint).getValidator().validate(instance.getValue());
 		if (result != null)
 			throw new ValidationException("Validation of the value (" + instance.getValue() +
