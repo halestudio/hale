@@ -14,31 +14,24 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.model;
+package eu.esdihumboldt.hale.ui.transformation;
 
+import org.eclipse.jface.wizard.IWizard;
+
+import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
 
 /**
- * Mutable {@link Alignment} which is used where changes to the alignment are
- * allowed.
+ * Show the {@link TransformDataWizard}.
  * 
- * @author Simon Templer
+ * @author Kai Schwierczek
  */
-public interface MutableAlignment extends Alignment {
+public class TransformDataHandler extends AbstractWizardHandler {
 
 	/**
-	 * Add a cell to the alignment
-	 * 
-	 * @param cell the cell to add. It should be already configured, especially
-	 *            with the cell target
+	 * @see AbstractWizardHandler#createWizard()
 	 */
-	public void addCell(Cell cell);
-
-	/**
-	 * Remove a cell
-	 * 
-	 * @param cell the cell to remove
-	 * @return if the cell was present and removed
-	 */
-	public boolean removeCell(Cell cell);
-
+	@Override
+	protected IWizard createWizard() {
+		return new TransformDataWizard();
+	}
 }
