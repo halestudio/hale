@@ -19,6 +19,7 @@
       <complexType>
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="metadata"/>
+            <element ref="action"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -87,6 +88,55 @@
             </annotation>
          </attribute>
          <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="action">
+      <complexType>
+         <attribute name="key" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.instance.metadata/metadata/@key"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataAction"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string" use="required">
             <annotation>
                <documentation>
                   

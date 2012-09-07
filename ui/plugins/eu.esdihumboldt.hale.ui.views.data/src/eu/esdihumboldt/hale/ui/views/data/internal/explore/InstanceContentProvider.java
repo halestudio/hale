@@ -26,7 +26,6 @@ import com.google.common.collect.Iterables;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.data.internal.Metadata;
 import eu.esdihumboldt.util.Pair;
 
