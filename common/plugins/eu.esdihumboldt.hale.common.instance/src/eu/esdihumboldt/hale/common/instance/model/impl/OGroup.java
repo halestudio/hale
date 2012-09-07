@@ -13,10 +13,8 @@
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +44,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.impl.internal.ONamespaceMap;
+import eu.esdihumboldt.hale.common.instance.model.impl.internal.OSerializationHelper;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -62,7 +61,7 @@ public class OGroup implements MutableGroup {
 	/**
 	 * Binary wrapper class field name
 	 */
-	private static final String BINARY_WRAPPER_FIELD = "___bin___";
+	public static final String BINARY_WRAPPER_FIELD = "___bin___";
 
 	/**
 	 * Binary wrapper class name
@@ -77,6 +76,9 @@ public class OGroup implements MutableGroup {
 	private static final Set<String> SPECIAL_FIELDS = new HashSet<String>();
 	static {
 		SPECIAL_FIELDS.add(BINARY_WRAPPER_FIELD);
+		
+		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_SERIALIZATION_TYPE);
+		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CRS_ID);
 	}
 	
 	/**
@@ -142,7 +144,8 @@ public class OGroup implements MutableGroup {
 			if (definition != null) {
 				className = ONameUtil.encodeName(definition.getIdentifier());
 			}
-			else if (doc.containsField(BINARY_WRAPPER_FIELD)) {
+			else if (doc.containsField(BINARY_WRAPPER_FIELD) || 
+					doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
 				className = BINARY_WRAPPER_CLASSNAME;
 			}
 			
@@ -349,34 +352,7 @@ public class OGroup implements MutableGroup {
 		 */
 		//TODO objects that are not supported inside document
 		else if (!isSupportedFieldType(value.getClass())) {
-			//TODO try conversion first?!
-			
-			// object serialization
-			ORecordBytes record = new ORecordBytes();
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			try {
-				ObjectOutputStream out = new ObjectOutputStream(bytes);
-				out.writeObject(value);
-			} catch (IOException e) {
-				throw new IllegalStateException("Could not serialize field value.");
-			}
-			record.fromStream(bytes.toByteArray());
-
-			/*
-			 * As collections of ORecordBytes are not supported (or rather 
-			 * of records that are no documents, see embeddedCollectionToStream
-			 * in ORecordSerializerCSVAbstract ~578) they are wrapped in a
-			 * document.
-			 */
-//			return record;			
-			ODocument doc = new ODocument();
-			/*
-			 * XXX Class name is set in configureDocument, as the class name
-			 * may only bet set after the database was set.
-			 */
-//			doc.setClassName(BINARY_WRAPPER_CLASSNAME);
-			doc.field(BINARY_WRAPPER_FIELD, record);
-			return doc;
+			return OSerializationHelper.serialize(value);
 		}
 		
 		return value;
@@ -581,9 +557,11 @@ public class OGroup implements MutableGroup {
 	protected Object convertDocument(Object value, QName propertyName) {
 		if (value instanceof ODocument) {
 			ODocument doc = (ODocument) value;
-			if (doc.containsField(BINARY_WRAPPER_FIELD)) {
+			if (doc.containsField(BINARY_WRAPPER_FIELD) ||
+					doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
 				// extract wrapped ORecordBytes
-				value = doc.field(BINARY_WRAPPER_FIELD);
+//				value = doc.field(BINARY_WRAPPER_FIELD);
+				return OSerializationHelper.deserialize(doc);
 			}
 			else {
 				ChildDefinition<?> child = definition.getChild(propertyName);
@@ -605,6 +583,7 @@ public class OGroup implements MutableGroup {
 		
 		//TODO objects that are not supported inside document
 		if (value instanceof ORecordBytes) {
+			//XXX should not be reached as every ORecordBytes should be contained in a wrapper 
 			//TODO try conversion first?!
 			
 			// object deserialization
