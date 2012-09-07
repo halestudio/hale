@@ -18,7 +18,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
+import java.math.BigInteger;
+import java.net.URI;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
+
+import org.springframework.core.convert.ConversionService;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.record.impl.ORecordBytes;
@@ -42,20 +48,131 @@ import eu.esdihumboldt.util.Identifiers;
 public abstract class OSerializationHelper {
 	
 	/**
+	 * Store information on how to convert a value back to its original form.
+	 */
+	public static class ConvertProxy {
+
+		private final ConversionService cs;
+		private Class<? extends Object> original;
+
+		/**
+		 * Create a convert proxy
+		 * @param cs the conversion service to use
+		 * @param original the original type
+		 */
+		public ConvertProxy(ConversionService cs, Class<? extends Object> original) {
+			this.cs = cs;
+			this.original = original;
+		}
+		
+		/**
+		 * Convert the string to its original form.
+		 * @param value the string value
+		 * @return the converted value
+		 */
+		public Object convert(String value) {
+			return cs.convert(value, original);
+		}
+
+		/**
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((original == null) ? 0 : original.hashCode());
+			return result;
+		}
+
+		/**
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ConvertProxy other = (ConvertProxy) obj;
+			if (original == null) {
+				if (other.original != null)
+					return false;
+			} else if (!original.equals(other.original))
+				return false;
+			return true;
+		}
+
+	}
+
+	/**
 	 * Cache for resolved classes for deserialization
 	 */
 	private static final LinkedHashMap<String, Class<?>> resolved = new LinkedHashMap<String, Class<?>>();
 	
+	/**
+	 * Field specifying the serialization type
+	 */
 	public static final String FIELD_SERIALIZATION_TYPE = "___st___";
 	
+	/**
+	 * Java object serialization (Swiss army knife)
+	 */
 	private static final int SERIALIZATION_TYPE_JAVA = 0;
-	private static final int SERIALIZATION_TYPE_GEOM = 1;
-	private static final int SERIALIZATION_TYPE_GEOM_PROP = 2;
 	
-	private static final String FIELD_CRS_ID = "___crs___";
+	/**
+	 * Converted value
+	 */
+	private static final int SERIALIZATION_TYPE_STRING = 1;
 	
+	/**
+	 * WKB geometry
+	 */
+	private static final int SERIALIZATION_TYPE_GEOM = 2;
+	
+	/**
+	 * Geometry property (WKB + optional CRS ID)
+	 */
+	private static final int SERIALIZATION_TYPE_GEOM_PROP = 3;
+	
+	/**
+	 * Field specifying the CRS ID
+	 */
+	public static final String FIELD_CRS_ID = "___crs___";
+	
+	/**
+	 * Field specifying the converter ID
+	 */
+	public static final String FIELD_CONVERT_ID = "___cnv___";
+	
+	/**
+	 * Field specifying the string value
+	 */
+	public static final String FIELD_STRING_VALUE = "___str___";
+	
+	/**
+	 * Runtime identifiers for CRSs
+	 */
 	private static final Identifiers<CRSDefinition> CRS_IDS = new Identifiers<CRSDefinition>(
 			"crs", true);
+	
+	/**
+	 * Runtime identifiers for {@link ConvertProxy}s
+	 */
+	private static final Identifiers<ConvertProxy> CONVERTER_IDS = new Identifiers<ConvertProxy>(
+			"cnv", true);
+	
+	/**
+	 * String conversion white list
+	 */
+	private static final Set<Class<?>> CONV_WHITE_LIST = new HashSet<Class<?>>();
+	static {
+		CONV_WHITE_LIST.add(BigInteger.class);
+		CONV_WHITE_LIST.add(URI.class);
+	}
 	
 	/**
 	 * Prepare a value not supported as field in OrientDB so it can be stored
@@ -64,8 +181,6 @@ public abstract class OSerializationHelper {
 	 * @return the document wrapping the value
 	 */
 	public static ODocument serialize(Object value) {
-		//TODO try conversion first?!
-		
 		/*
 		 * As collections of ORecordBytes are not supported (or rather 
 		 * of records that are no documents, see embeddedCollectionToStream
@@ -73,6 +188,23 @@ public abstract class OSerializationHelper {
 		 * document.
 		 */
 		ODocument doc = new ODocument();
+		
+		// try conversion to string first
+		final ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		if (cs != null) {
+			// check if conversion allowed and possible
+			if (CONV_WHITE_LIST.contains(value.getClass()) &&
+					cs.canConvert(value.getClass(), String.class) &&
+					cs.canConvert(String.class, value.getClass())) {
+				String stringValue = cs.convert(value, String.class);
+				
+				ConvertProxy convert = new ConvertProxy(cs, value.getClass());
+				doc.field(FIELD_CONVERT_ID, CONVERTER_IDS.getId(convert));
+				doc.field(FIELD_SERIALIZATION_TYPE, SERIALIZATION_TYPE_STRING);
+				doc.field(FIELD_STRING_VALUE, stringValue);
+				return doc;
+			}
+		}
 		
 		ORecordBytes record = new ORecordBytes();
 		int serType = SERIALIZATION_TYPE_JAVA;
@@ -132,6 +264,19 @@ public abstract class OSerializationHelper {
 	 */
 	public static Object deserialize(ODocument doc) {
 		int serType = doc.field(FIELD_SERIALIZATION_TYPE);
+		
+		switch (serType) {
+		case SERIALIZATION_TYPE_STRING:
+			// convert a string value back to its original form
+			
+			Object val = doc.field(FIELD_STRING_VALUE);
+			String stringVal = (val == null)?(null):(val.toString());
+			ConvertProxy cp = CONVERTER_IDS.getObject((String) doc.field(FIELD_CONVERT_ID));
+			if (cp != null) {
+				return cp.convert(stringVal);
+			}
+			return stringVal;
+		}
 		
 		ORecordBytes record = (ORecordBytes) doc.field(OGroup.BINARY_WRAPPER_FIELD);
 		Object result;
