@@ -49,6 +49,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
+import eu.esdihumboldt.hale.ui.views.data.internal.MetadataActionProvider;
 import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvider;
 import eu.esdihumboldt.util.Pair;
 
@@ -61,7 +62,8 @@ import eu.esdihumboldt.util.Pair;
  */
 public class DefinitionInstanceTreeViewer implements InstanceViewer {
 
-//	private static ALogger _log = ALoggerFactory.getLogger(DefinitionInstanceTreeViewer.class);
+	// private static ALogger _log =
+	// ALoggerFactory.getLogger(DefinitionInstanceTreeViewer.class);
 
 	private TreeViewer treeViewer;
 
@@ -71,19 +73,20 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 
 	private final SimpleInstanceSelectionProvider selectionProvider = new SimpleInstanceSelectionProvider();
 
-	private Map<Integer, DefinitionInstanceLabelProvider> labelProviders = new HashMap<Integer, DefinitionInstanceLabelProvider>();
+	private final Map<Integer, DefinitionInstanceLabelProvider> labelProviders = new HashMap<Integer, DefinitionInstanceLabelProvider>();
 
 	/**
 	 * @see InstanceViewer#createControls(Composite)
 	 */
 	@Override
-	public void createControls(Composite parent) {
+	public void createControls(final Composite parent) {
 		main = new Composite(parent, SWT.NONE);
 		main.setLayout(new TreeColumnLayout());
 
 		treeViewer = new TreeViewer(main, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 
 		treeViewer.setContentProvider(new TypeMetaPairContentProvider(treeViewer));
+
 		treeViewer.setLabelProvider(new DefinitionMetaCompareLabelProvider());
 
 		// Add an editor for selecting specific paths.
@@ -110,17 +113,21 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 				// No selected cell or selected cell didn't change.
 				if (cell == null
 						|| cell.getColumnIndex() == 0
+
 						|| (editor.getItem() == cell.getItem() && editor.getColumn() == cell
 								.getColumnIndex()))
+
 					return;
 
 				// Quote the format first. Pattern.quote does the same, except,
 				// that it checks the input for \Es.
 				// Since we know that there will be no \Es in this case
 				// do it ourselves to be safe from changes to Pattern.quote.
+
 				String pattern = "\\Q" + DefinitionInstanceLabelProvider.MULTIPLE_VALUE_FORMAT
 						+ "\\E$";
 				pattern = pattern.replace("{0}", "\\E(\\d+)\\Q").replace("{1}", "\\E(\\d+)\\Q");
+
 				Matcher m = Pattern.compile(pattern).matcher(cell.getText());
 				if (!m.find())
 					return;
@@ -142,10 +149,12 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 					public void selectionChanged(SelectionChangedEvent event) {
 						if (event.getSelection() instanceof IStructuredSelection) {
 							// Update label provider and refresh viewer.
+
 							labelProviders.get(cell.getColumnIndex()).selectPath(
 									cell.getViewerRow().getTreePath(),
 									(Integer) (((IStructuredSelection) event.getSelection())
 											.getFirstElement()));
+
 							treeViewer.refresh(cell.getElement(), true);
 						}
 					}
@@ -154,6 +163,9 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 						cell.getColumnIndex());
 			}
 		});
+
+		MetadataActionProvider maep = new MetadataCompareActionProvider(treeViewer);
+		maep.setup();
 
 		treeViewer.setComparator(new DefinitionComparator());
 
@@ -218,7 +230,6 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 //						lineage.addChild(processStep);
 //					}
 //				}
-
 		// set input
 		if (type != null) {
 			// pass metadatas to the treeviewer, if instances contain metadatas
@@ -231,6 +242,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 
 			Pair<TypeDefinition, Set<String>> pair = new Pair<TypeDefinition, Set<String>>(type,
 					completeMetaNames);
+
 			treeViewer.setInput(pair);
 		}
 		else
