@@ -78,7 +78,9 @@ public class OGroup implements MutableGroup {
 		SPECIAL_FIELDS.add(BINARY_WRAPPER_FIELD);
 		
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_SERIALIZATION_TYPE);
+		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CONVERT_ID);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CRS_ID);
+		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_STRING_VALUE);
 	}
 	
 	/**
