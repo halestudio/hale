@@ -45,6 +45,7 @@ import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
+import eu.esdihumboldt.hale.common.instance.model.impl.internal.ONamespaceMap;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -496,7 +497,10 @@ public class OGroup implements MutableGroup {
 	 * @return the name encoded as a single string
 	 */
 	protected String encodeProperty(QName propertyName) {
-		//TODO handle namespace separately (prefix map?)
+		//TODO optimize encoding?
+		// map namespace to short identifier
+		propertyName = ONamespaceMap.map(propertyName);
+		// encode name
 		return ONameUtil.encodeName(propertyName.toString());
 	}
 	
@@ -508,7 +512,10 @@ public class OGroup implements MutableGroup {
 	 */
 	protected QName decodeProperty(String encodedProperty) {
 		try {
-			return QName.valueOf(ONameUtil.decodeName(encodedProperty));
+			// decode name
+			QName name = QName.valueOf(ONameUtil.decodeName(encodedProperty));
+			// unmap namespace
+			return ONamespaceMap.unmap(name);
 		} catch (Throwable e) {
 			throw new RuntimeException("Could not encode property name", e);
 		}
