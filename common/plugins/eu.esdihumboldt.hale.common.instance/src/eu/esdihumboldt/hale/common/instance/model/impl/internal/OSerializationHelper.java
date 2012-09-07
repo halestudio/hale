@@ -25,7 +25,6 @@ import com.orientechnologies.orient.core.record.impl.ORecordBytes;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKBReader;
 import com.vividsolutions.jts.io.WKBWriter;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
@@ -97,7 +96,7 @@ public abstract class OSerializationHelper {
 			Coordinate sample = geom.getCoordinate();
 			int dimension = (sample != null && !Double.isNaN(sample.z))?(3):(2);
 			
-			WKBWriter writer = new WKBWriter(dimension);
+			WKBWriter writer = new ExtendedWKBWriter(dimension);
 			record.fromStream(writer.write(geom));
 			
 			if (serType != SERIALIZATION_TYPE_GEOM_PROP) {
@@ -117,7 +116,7 @@ public abstract class OSerializationHelper {
 		}
 
 		/*
-		 * XXX Class name is set in configureDocument, as the class name
+		 * XXX Class name is set in OGroup.configureDocument, as the class name
 		 * may only bet set after the database was set.
 		 */
 //		doc.setClassName(BINARY_WRAPPER_CLASSNAME);
@@ -140,7 +139,7 @@ public abstract class OSerializationHelper {
 		switch (serType) {
 		case SERIALIZATION_TYPE_GEOM:
 		case SERIALIZATION_TYPE_GEOM_PROP:
-			WKBReader reader = new WKBReader();
+			ExtendedWKBReader reader = new ExtendedWKBReader();
 			try {
 				result = reader.read(record.toStream());
 			} catch (ParseException e1) {
