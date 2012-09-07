@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.explore;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -26,22 +28,36 @@ import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TreeEditor;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.TreeItem;
 
 import com.google.common.collect.Iterables;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataActionExtension;
+import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataActionFactory;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.util.viewer.PairLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
 import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvider;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Instance explorer
@@ -60,9 +76,13 @@ public class InstanceExplorer implements InstanceViewer {
 
 	private List<Instance> instances = new ArrayList<Instance>();
 
-	private List<Control> selectButtons = new ArrayList<Control>();
+	private final List<Control> selectButtons = new ArrayList<Control>();
 
 	private int selectedIndex = 0;
+
+	private TreeEditor metaEditor;
+
+	private static ALogger _log = ALoggerFactory.getLogger(InstanceExplorer.class);
 
 	private final SelectionListener selectListener = new SelectionAdapter() {
 
@@ -119,11 +139,86 @@ public class InstanceExplorer implements InstanceViewer {
 		column = new TreeViewerColumn(viewer, SWT.LEFT);
 		column.getColumn().setText("Value");
 		column.setLabelProvider(new InstanceValueLabelProvider());
-//				new PairLabelProvider(false, new LabelProvider())));
+		// new PairLabelProvider(false, new LabelProvider())));
 
 		ColumnViewerToolTipSupport.enableFor(viewer);
 
 		layout.setColumnData(column.getColumn(), new ColumnWeightData(1));
+
+		// /Additional functionality for meta data
+		metaEditor = new TreeEditor(viewer.getTree());
+		metaEditor.horizontalAlignment = SWT.LEFT;
+		metaEditor.verticalAlignment = SWT.TOP;
+
+		viewer.getTree().addMouseMoveListener(new MouseMoveListener() {
+
+			@Override
+			public void mouseMove(MouseEvent e) {
+				final ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
+
+				// Selected cell changed?
+				if (cell == null || metaEditor.getItem() != cell.getItem()
+						|| metaEditor.getColumn() != cell.getColumnIndex()) {
+					// Clean up any previous editor control
+					Control oldmetaEditor = metaEditor.getEditor();
+					if (oldmetaEditor != null) {
+						oldmetaEditor.dispose();
+						metaEditor.setEditor(null, null, 0);
+					}
+				}
+
+				// No selected cell or selected cell didn't change.
+				if (cell == null
+						|| cell.getColumnIndex() == 0
+						|| (metaEditor.getItem() == cell.getItem() && metaEditor.getColumn() == cell
+								.getColumnIndex())) {
+					return;
+				}
+
+				// Initiate the extensionpoint
+				MetadataActionExtension mae = MetadataActionExtension.getInstance();
+
+				// get all defined actions
+				Pair<?, ?> cellContent = (Pair<?, ?>) cell.getElement();
+				final Object key = cellContent.getFirst();
+				final Object value = cellContent.getSecond();
+
+				final List<MetadataActionFactory> actionSources = mae
+						.getMetadataActions(cellContent.getFirst().toString());
+				if (actionSources == null || actionSources.isEmpty()) {
+					return;
+				}
+
+				// Toolbar used to view and trigger the different possible
+				// actions
+				ToolBar tooli = new ToolBar(viewer.getTree(), SWT.NONE);
+
+				for (final MetadataActionFactory source : actionSources) {
+					ToolItem actionItem = new ToolItem(tooli, SWT.PUSH);
+
+					// get the Icon of the action
+					URL iconURL = source.getIconURL();
+					Image image = ImageDescriptor.createFromURL(iconURL).createImage();
+					actionItem.setImage(image);
+					actionItem.setToolTipText(source.getDisplayName());
+
+					actionItem.addSelectionListener(new SelectionAdapter() {
+
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+
+							try {
+								source.createExtensionObject().execute(key, value);
+							} catch (Exception e1) {
+								_log.userError("error creating metadata action", e1);
+							}
+						}
+					});
+				}
+				metaEditor.setEditor(tooli, (TreeItem) cell.getItem(), cell.getColumnIndex());
+				tooli.pack();
+			}
+		});
 
 		update();
 	}
@@ -141,7 +236,6 @@ public class InstanceExplorer implements InstanceViewer {
 		selectorComposite.setLayout(GridLayoutFactory.swtDefaults()
 				.numColumns((instances.isEmpty()) ? (1) : (instances.size())).margins(3, 0)
 				.create());
-
 		// create new buttons for each instance
 		for (int index = 0; index < instances.size(); index++) {
 			Button button = new Button(selectorComposite, SWT.RADIO);

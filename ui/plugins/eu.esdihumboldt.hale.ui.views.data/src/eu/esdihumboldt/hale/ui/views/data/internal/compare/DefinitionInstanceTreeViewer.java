@@ -12,15 +12,18 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -38,13 +41,22 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataActionExtension;
+import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataActionFactory;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
@@ -61,7 +73,7 @@ import eu.esdihumboldt.util.Pair;
  */
 public class DefinitionInstanceTreeViewer implements InstanceViewer {
 
-//	private static ALogger _log = ALoggerFactory.getLogger(DefinitionInstanceTreeViewer.class);
+	private static ALogger _log = ALoggerFactory.getLogger(DefinitionInstanceTreeViewer.class);
 
 	private TreeViewer treeViewer;
 
@@ -69,27 +81,36 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 
 	private TreeEditor editor;
 
+	private TreeEditor metaEditor;
+
 	private final SimpleInstanceSelectionProvider selectionProvider = new SimpleInstanceSelectionProvider();
 
-	private Map<Integer, DefinitionInstanceLabelProvider> labelProviders = new HashMap<Integer, DefinitionInstanceLabelProvider>();
+	private final Map<Integer, DefinitionInstanceLabelProvider> labelProviders = new HashMap<Integer, DefinitionInstanceLabelProvider>();
 
 	/**
 	 * @see InstanceViewer#createControls(Composite)
 	 */
 	@Override
-	public void createControls(Composite parent) {
+	public void createControls(final Composite parent) {
 		main = new Composite(parent, SWT.NONE);
 		main.setLayout(new TreeColumnLayout());
 
 		treeViewer = new TreeViewer(main, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 
 		treeViewer.setContentProvider(new TypeMetaPairContentProvider(treeViewer));
+
 		treeViewer.setLabelProvider(new DefinitionMetaCompareLabelProvider());
 
 		// Add an editor for selecting specific paths.
 		editor = new TreeEditor(treeViewer.getTree());
 		editor.horizontalAlignment = SWT.RIGHT;
 		editor.minimumWidth = 40;
+		metaEditor = new TreeEditor(treeViewer.getTree());
+		metaEditor.horizontalAlignment = SWT.LEFT;
+		metaEditor.verticalAlignment = SWT.TOP;
+		// metaEditor.grabHorizontal = true;
+		// metaEditor.minimumHeight = 30;
+
 		treeViewer.getTree().addMouseMoveListener(new MouseMoveListener() {
 
 			@Override
@@ -110,17 +131,21 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 				// No selected cell or selected cell didn't change.
 				if (cell == null
 						|| cell.getColumnIndex() == 0
+
 						|| (editor.getItem() == cell.getItem() && editor.getColumn() == cell
 								.getColumnIndex()))
+
 					return;
 
 				// Quote the format first. Pattern.quote does the same, except,
 				// that it checks the input for \Es.
 				// Since we know that there will be no \Es in this case
 				// do it ourselves to be safe from changes to Pattern.quote.
+
 				String pattern = "\\Q" + DefinitionInstanceLabelProvider.MULTIPLE_VALUE_FORMAT
 						+ "\\E$";
 				pattern = pattern.replace("{0}", "\\E(\\d+)\\Q").replace("{1}", "\\E(\\d+)\\Q");
+
 				Matcher m = Pattern.compile(pattern).matcher(cell.getText());
 				if (!m.find())
 					return;
@@ -142,16 +167,87 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 					public void selectionChanged(SelectionChangedEvent event) {
 						if (event.getSelection() instanceof IStructuredSelection) {
 							// Update label provider and refresh viewer.
+
 							labelProviders.get(cell.getColumnIndex()).selectPath(
 									cell.getViewerRow().getTreePath(),
 									(Integer) (((IStructuredSelection) event.getSelection())
 											.getFirstElement()));
+
 							treeViewer.refresh(cell.getElement(), true);
 						}
 					}
 				});
 				editor.setEditor(combo.getControl(), (TreeItem) cell.getItem(),
 						cell.getColumnIndex());
+			}
+		});
+
+		// /Additional functionality for meta data
+		treeViewer.getTree().addMouseMoveListener(new MouseMoveListener() {
+
+			@Override
+			public void mouseMove(MouseEvent e) {
+				final ViewerCell cell = treeViewer.getCell(new Point(e.x, e.y));
+
+				// Selected cell changed?
+				if (cell == null || metaEditor.getItem() != cell.getItem()
+						|| metaEditor.getColumn() != cell.getColumnIndex()) {
+					// Clean up any previous editor control
+					Control oldmetaEditor = metaEditor.getEditor();
+					if (oldmetaEditor != null) {
+						oldmetaEditor.dispose();
+						metaEditor.setEditor(null, null, 0);
+					}
+				}
+
+				// No selected cell or selected cell didn't change.
+				if (cell == null
+						|| cell.getColumnIndex() == 0
+						|| (metaEditor.getItem() == cell.getItem() && metaEditor.getColumn() == cell
+								.getColumnIndex())) {
+					return;
+				}
+
+				// Initiate the extensionpoint
+				MetadataActionExtension mae = MetadataActionExtension.getInstance();
+
+				// get all defined actions
+				final List<MetadataActionFactory> actionSources = mae.getMetadataActions(cell
+						.getElement().toString());
+				if (actionSources == null || actionSources.isEmpty()) {
+					return;
+				}
+				final String key = cell.getViewerRow().getCell(0).getText();
+				final String value = cell.getText();
+
+				// Toolbar used to view and trigger the different possible
+				// actions
+				ToolBar tooli = new ToolBar(treeViewer.getTree(), SWT.NONE);
+
+				for (final MetadataActionFactory source : actionSources) {
+					ToolItem actionItem = new ToolItem(tooli, SWT.PUSH);
+
+					// get the Icon of the action
+					URL iconURL = source.getIconURL();
+					Image image = ImageDescriptor.createFromURL(iconURL).createImage();
+					actionItem.setImage(image);
+					actionItem.setToolTipText(source.getDisplayName());
+
+					actionItem.addSelectionListener(new SelectionAdapter() {
+
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+
+							try {
+								source.createExtensionObject().execute(key, value);
+							} catch (Exception e1) {
+								_log.userError("error creating metadata action", e1);
+							}
+						}
+					});
+				}
+				metaEditor.setEditor(tooli, (TreeItem) cell.getItem(), cell.getColumnIndex());
+				tooli.pack();
 			}
 		});
 
@@ -218,7 +314,6 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 //						lineage.addChild(processStep);
 //					}
 //				}
-
 		// set input
 		if (type != null) {
 			// pass metadatas to the treeviewer, if instances contain metadatas
@@ -231,6 +326,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 
 			Pair<TypeDefinition, Set<String>> pair = new Pair<TypeDefinition, Set<String>>(type,
 					completeMetaNames);
+
 			treeViewer.setInput(pair);
 		}
 		else

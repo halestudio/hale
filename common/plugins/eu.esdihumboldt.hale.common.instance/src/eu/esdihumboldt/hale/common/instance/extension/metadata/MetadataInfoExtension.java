@@ -48,7 +48,13 @@ public class MetadataInfoExtension extends IdentifiableExtension<MetadataInfo> {
 	@Override
 	protected MetadataInfo create(String key, IConfigurationElement conf) {
 		try {
-			return new MetadataInfo(key, conf);
+			if (conf.getName().equals("metadata")) {
+				return new MetadataInfo(key, conf);
+			}
+
+			else
+				return null;
+
 		} catch (Exception e) {
 			log.error("Error initializing metadata", e);
 			return null;
