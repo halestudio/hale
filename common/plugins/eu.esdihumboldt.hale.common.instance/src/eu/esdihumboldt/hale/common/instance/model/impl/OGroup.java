@@ -76,6 +76,9 @@ public class OGroup implements MutableGroup {
 	private static final Set<String> SPECIAL_FIELDS = new HashSet<String>();
 	static {
 		SPECIAL_FIELDS.add(BINARY_WRAPPER_FIELD);
+		
+		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_SERIALIZATION_TYPE);
+		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CRS_ID);
 	}
 	
 	/**
@@ -141,7 +144,8 @@ public class OGroup implements MutableGroup {
 			if (definition != null) {
 				className = ONameUtil.encodeName(definition.getIdentifier());
 			}
-			else if (doc.containsField(BINARY_WRAPPER_FIELD)) {
+			else if (doc.containsField(BINARY_WRAPPER_FIELD) || 
+					doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
 				className = BINARY_WRAPPER_CLASSNAME;
 			}
 			
@@ -553,7 +557,8 @@ public class OGroup implements MutableGroup {
 	protected Object convertDocument(Object value, QName propertyName) {
 		if (value instanceof ODocument) {
 			ODocument doc = (ODocument) value;
-			if (doc.containsField(BINARY_WRAPPER_FIELD)) {
+			if (doc.containsField(BINARY_WRAPPER_FIELD) ||
+					doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
 				// extract wrapped ORecordBytes
 //				value = doc.field(BINARY_WRAPPER_FIELD);
 				return OSerializationHelper.deserialize(doc);
