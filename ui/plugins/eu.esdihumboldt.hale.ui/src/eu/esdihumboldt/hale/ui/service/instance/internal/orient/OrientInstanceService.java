@@ -49,8 +49,8 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
-import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
 import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
+import eu.esdihumboldt.hale.common.instance.model.impl.internal.OSerializationHelper;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -72,6 +72,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 public class OrientInstanceService extends AbstractInstanceService {
 
 	private static final ALogger log = ALoggerFactory.getLogger(OrientInstanceService.class);
@@ -202,7 +203,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 
 			for (OClass clazz : classes) {
 				try {
-					if (clazz.getName().equals(OGroup.BINARY_WRAPPER_CLASSNAME)) {
+					if (clazz.getName().equals(OSerializationHelper.BINARY_WRAPPER_CLASSNAME)) {
 						// ignore binary wrapper class
 						continue;
 					}
