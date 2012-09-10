@@ -20,16 +20,19 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.math.BigInteger;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import org.springframework.core.convert.ConversionService;
 
+import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.ORecordAbstract;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.record.impl.ORecordBytes;
@@ -121,6 +124,13 @@ public abstract class OSerializationHelper {
 	}
 
 	/**
+	 * Collection types
+	 */
+	private static enum CollectionType {
+		SET, LIST
+	}
+
+	/**
 	 * Cache for resolved classes for deserialization
 	 */
 	private static final LinkedHashMap<String, Class<?>> resolved = new LinkedHashMap<String, Class<?>>();
@@ -161,6 +171,11 @@ public abstract class OSerializationHelper {
 	private static final int SERIALIZATION_TYPE_GEOM_PROP = 3;
 
 	/**
+	 * Collection property
+	 */
+	private static final int SERIALIZATION_TYPE_COLLECTION = 4;
+
+	/**
 	 * Field specifying the CRS ID
 	 */
 	public static final String FIELD_CRS_ID = "___crs___";
@@ -174,6 +189,16 @@ public abstract class OSerializationHelper {
 	 * Field specifying the string value
 	 */
 	public static final String FIELD_STRING_VALUE = "___str___";
+
+	/**
+	 * Field holding the collection type
+	 */
+	public static final String FIELD_COLLECTION_TYPE = "___clc___";
+
+	/**
+	 * Field holding the values of a collection
+	 */
+	public static final String FIELD_VALUES = "___vls___";
 
 	/**
 	 * Runtime identifiers for CRSs
@@ -296,6 +321,35 @@ public abstract class OSerializationHelper {
 			}
 		}
 
+		if (value instanceof Collection) {
+			CollectionType type = null;
+			if (value instanceof List) {
+				type = CollectionType.LIST;
+			}
+			else if (value instanceof Set) {
+				type = CollectionType.SET;
+			}
+
+			if (type != null) {
+				// wrap collection values
+				Collection<?> elements = (Collection<?>) value;
+
+				List<Object> values = new ArrayList<Object>();
+				for (Object element : elements) {
+					Object convElement = convertForDB(element);
+					values.add(convElement);
+				}
+
+				// set values
+				// XXX ok to always use EMBEDDEDLIST as type?
+				doc.field(FIELD_VALUES, values, OType.EMBEDDEDLIST);
+				doc.field(FIELD_SERIALIZATION_TYPE, SERIALIZATION_TYPE_COLLECTION);
+				doc.field(FIELD_COLLECTION_TYPE, type.name());
+
+				return doc;
+			}
+		}
+
 		ORecordBytes record = new ORecordBytes();
 		int serType = SERIALIZATION_TYPE_JAVA;
 
@@ -362,7 +416,7 @@ public abstract class OSerializationHelper {
 			if (doc.containsField(BINARY_WRAPPER_FIELD)
 					|| doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
 				// extract wrapped ORecordBytes
-				return OSerializationHelper.deserialize(doc);
+				return OSerializationHelper.deserialize(doc, parent, childName);
 			}
 			else {
 				ChildDefinition<?> child = parent.getDefinition().getChild(childName);
@@ -423,13 +477,15 @@ public abstract class OSerializationHelper {
 	 * Deserialize a serialized value wrapped in the given document.
 	 * 
 	 * @param doc the document
+	 * @param parent the parent group
+	 * @param childName the name of the child the value is associated to
 	 * @return the deserialized value
 	 */
-	public static Object deserialize(ODocument doc) {
+	public static Object deserialize(ODocument doc, OGroup parent, QName childName) {
 		int serType = doc.field(FIELD_SERIALIZATION_TYPE);
 
 		switch (serType) {
-		case SERIALIZATION_TYPE_STRING:
+		case SERIALIZATION_TYPE_STRING: {
 			// convert a string value back to its original form
 
 			Object val = doc.field(FIELD_STRING_VALUE);
@@ -439,6 +495,27 @@ public abstract class OSerializationHelper {
 				return cp.convert(stringVal);
 			}
 			return stringVal;
+		}
+		case SERIALIZATION_TYPE_COLLECTION: {
+			// recreate collection
+
+			Object val = doc.field(FIELD_VALUES);
+			Object typeVal = doc.field(FIELD_COLLECTION_TYPE);
+			CollectionType type = (typeVal != null) ? (CollectionType.valueOf(typeVal.toString()))
+					: (CollectionType.LIST);
+			if (val instanceof Collection<?>) {
+				Collection<?> values = (Collection<?>) val;
+				Collection<Object> target = createCollection(type);
+
+				for (Object element : values) {
+					Object convElement = convertFromDB(element, parent, childName);
+					target.add(convElement);
+				}
+
+				return target;
+			}
+		}
+			break;
 		}
 
 		ORecordBytes record = (ORecordBytes) doc.field(BINARY_WRAPPER_FIELD);
@@ -504,6 +581,16 @@ public abstract class OSerializationHelper {
 		}
 
 		return result;
+	}
+
+	private static Collection<Object> createCollection(CollectionType type) {
+		switch (type) {
+		case SET:
+			return new HashSet<Object>();
+		case LIST:
+		default:
+			return new ArrayList<Object>();
+		}
 	}
 
 }

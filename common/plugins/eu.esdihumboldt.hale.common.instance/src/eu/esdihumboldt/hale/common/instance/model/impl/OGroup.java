@@ -62,6 +62,8 @@ public class OGroup implements MutableGroup {
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CONVERT_ID);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CRS_ID);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_STRING_VALUE);
+		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_COLLECTION_TYPE);
+		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_VALUES);
 	}
 
 	/**
