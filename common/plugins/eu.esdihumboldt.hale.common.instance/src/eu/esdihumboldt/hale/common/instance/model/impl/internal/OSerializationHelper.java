@@ -20,12 +20,17 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.math.BigInteger;
 import java.net.URI;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.springframework.core.convert.ConversionService;
 
+import com.orientechnologies.orient.core.record.ORecordAbstract;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.record.impl.ORecordBytes;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -35,9 +40,13 @@ import com.vividsolutions.jts.io.WKBWriter;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
+import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.util.Identifiers;
 
 /**
@@ -54,7 +63,7 @@ public abstract class OSerializationHelper {
 	public static class ConvertProxy {
 
 		private final ConversionService cs;
-		private Class<? extends Object> original;
+		private final Class<? extends Object> original;
 
 		/**
 		 * Create a convert proxy
@@ -115,6 +124,16 @@ public abstract class OSerializationHelper {
 	 * Cache for resolved classes for deserialization
 	 */
 	private static final LinkedHashMap<String, Class<?>> resolved = new LinkedHashMap<String, Class<?>>();
+
+	/**
+	 * Binary wrapper class name
+	 */
+	public static final String BINARY_WRAPPER_CLASSNAME = "___BinaryWrapper___";
+
+	/**
+	 * Binary wrapper class field name
+	 */
+	public static final String BINARY_WRAPPER_FIELD = "___bin___";
 
 	/**
 	 * Field specifying the serialization type
@@ -178,8 +197,76 @@ public abstract class OSerializationHelper {
 	}
 
 	/**
+	 * Determines if the given field type is supported directly by the database
+	 * 
+	 * @param type the field type
+	 * @return if the field type is supported
+	 */
+	private static boolean isSupportedFieldType(Class<? extends Object> type) {
+		// records
+		if (ORecordAbstract.class.isAssignableFrom(type)) {
+			return true;
+		}
+		// primitives and arrays
+		else if (type.isPrimitive() || type.isArray()) {
+			return true;
+		}
+		// wrapper types
+		else if (Double.class.isAssignableFrom(type) || Float.class.isAssignableFrom(type)
+				|| Integer.class.isAssignableFrom(type) || Long.class.isAssignableFrom(type)
+				|| Short.class.isAssignableFrom(type) || Byte.class.isAssignableFrom(type)
+				|| String.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
+			return true;
+		}
+		// date
+		else if (Date.class.isAssignableFrom(type)) {
+			return true;
+		}
+		// collections
+		else if (Collection.class.isAssignableFrom(type)) {
+			/*
+			 * XXX OrientDB can't deal with nested collections/lists!(?) as a
+			 * work-around we also serialize collections
+			 */
+//			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Prepare a value not supported as field in OrientDB so it can be stored in
 	 * the database.
+	 * 
+	 * @param value the value to convert
+	 * @return the converted value that may be used as a property value
+	 */
+	public static Object convertForDB(Object value) {
+		if (value == null)
+			return null;
+		if (value instanceof OGroup) {
+			// special case: if possible use the internal document for
+			// OGroup/OInstance
+			return ((OGroup) value).getDocument();
+		}
+		else if (value instanceof Instance) {
+			OInstance tmp = new OInstance((Instance) value);
+			return tmp.getDocument();
+		}
+		else if (value instanceof Group) {
+			OGroup tmp = new OGroup((Group) value);
+			return tmp.getDocument();
+		}
+		else if (isSupportedFieldType(value.getClass())) {
+			return value;
+		}
+
+		return serialize(value);
+	}
+
+	/**
+	 * Serialize and/or wrap a value not supported as field in OrientDB so it
+	 * can be stored in the database.
 	 * 
 	 * @param value the value to serialize
 	 * @return the document wrapping the value
@@ -255,9 +342,81 @@ public abstract class OSerializationHelper {
 		 * may only bet set after the database was set.
 		 */
 //		doc.setClassName(BINARY_WRAPPER_CLASSNAME);
-		doc.field(OGroup.BINARY_WRAPPER_FIELD, record);
+		doc.field(BINARY_WRAPPER_FIELD, record);
 		doc.field(FIELD_SERIALIZATION_TYPE, serType);
 		return doc;
+	}
+
+	/**
+	 * Convert a value received from the database, e.g. {@link ODocument}s to
+	 * {@link Instance}s, {@link Group}s or unwraps contained values.
+	 * 
+	 * @param value the value
+	 * @param parent the parent group
+	 * @param childName the name of the child the value is associated to
+	 * @return the converted object
+	 */
+	public static Object convertFromDB(Object value, OGroup parent, QName childName) {
+		if (value instanceof ODocument) {
+			ODocument doc = (ODocument) value;
+			if (doc.containsField(BINARY_WRAPPER_FIELD)
+					|| doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
+				// extract wrapped ORecordBytes
+				return OSerializationHelper.deserialize(doc);
+			}
+			else {
+				ChildDefinition<?> child = parent.getDefinition().getChild(childName);
+				if (child.asProperty() != null) {
+					return new OInstance((ODocument) value, child.asProperty().getPropertyType(),
+							parent.getDb(), null); // no data set necessary for
+													// nested instances
+				}
+				else if (child.asGroup() != null) {
+					return new OGroup((ODocument) value, child.asGroup(), parent.getDb());
+				}
+				else {
+					throw new IllegalStateException("Field " + childName
+							+ " is associated neither with a property nor a group.");
+				}
+			}
+		}
+		// TODO also treat collections etc?
+
+		// TODO objects that are not supported inside document
+		if (value instanceof ORecordBytes) {
+			// XXX should not be reached as every ORecordBytes should be
+			// contained in a wrapper
+			// TODO try conversion first?!
+
+			// object deserialization
+			ORecordBytes record = (ORecordBytes) value;
+			ByteArrayInputStream bytes = new ByteArrayInputStream(record.toStream());
+			try {
+				ObjectInputStream in = new ObjectInputStream(bytes) {
+
+					@Override
+					protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
+							ClassNotFoundException {
+						Class<?> result = resolved.get(desc.getName());
+						if (result == null) {
+							result = OsgiUtils.loadClass(desc.getName(), null);
+
+							if (resolved.size() > 200) {
+								resolved.entrySet().iterator().remove();
+							}
+
+							resolved.put(desc.getName(), result);
+						}
+						return result;
+					}
+				};
+				return in.readObject();
+			} catch (Exception e) {
+				throw new IllegalStateException("Could not deserialize field value.", e);
+			}
+		}
+
+		return value;
 	}
 
 	/**
@@ -282,7 +441,7 @@ public abstract class OSerializationHelper {
 			return stringVal;
 		}
 
-		ORecordBytes record = (ORecordBytes) doc.field(OGroup.BINARY_WRAPPER_FIELD);
+		ORecordBytes record = (ORecordBytes) doc.field(BINARY_WRAPPER_FIELD);
 		Object result;
 
 		switch (serType) {

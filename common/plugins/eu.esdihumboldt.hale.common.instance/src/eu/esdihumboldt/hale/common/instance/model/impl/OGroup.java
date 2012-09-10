@@ -12,16 +12,10 @@
 
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -34,12 +28,10 @@ import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.ORecordAbstract;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.core.record.impl.ORecordBytes;
 import com.orientechnologies.orient.core.storage.OStorage.CLUSTER_TYPE;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
@@ -58,16 +50,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
  */
 public class OGroup implements MutableGroup {
 
-	/**
-	 * Binary wrapper class field name
-	 */
-	public static final String BINARY_WRAPPER_FIELD = "___bin___";
-
-	/**
-	 * Binary wrapper class name
-	 */
-	public static final String BINARY_WRAPPER_CLASSNAME = "___BinaryWrapper___";
-
 	private static final ALogger log = ALoggerFactory.getLogger(OGroup.class);
 
 	/**
@@ -75,18 +57,12 @@ public class OGroup implements MutableGroup {
 	 */
 	private static final Set<String> SPECIAL_FIELDS = new HashSet<String>();
 	static {
-		SPECIAL_FIELDS.add(BINARY_WRAPPER_FIELD);
-
+		SPECIAL_FIELDS.add(OSerializationHelper.BINARY_WRAPPER_FIELD);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_SERIALIZATION_TYPE);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CONVERT_ID);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CRS_ID);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_STRING_VALUE);
 	}
-
-	/**
-	 * Cache for resolved classes for deserialization
-	 */
-	private static final LinkedHashMap<String, Class<?>> resolved = new LinkedHashMap<String, Class<?>>();
 
 	/**
 	 * The document backing the group
@@ -150,9 +126,9 @@ public class OGroup implements MutableGroup {
 			if (definition != null) {
 				className = ONameUtil.encodeName(definition.getIdentifier());
 			}
-			else if (doc.containsField(BINARY_WRAPPER_FIELD)
+			else if (doc.containsField(OSerializationHelper.BINARY_WRAPPER_FIELD)
 					|| doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
-				className = BINARY_WRAPPER_CLASSNAME;
+				className = OSerializationHelper.BINARY_WRAPPER_CLASSNAME;
 			}
 
 			if (className != null) {
@@ -336,70 +312,7 @@ public class OGroup implements MutableGroup {
 	 * @return the converted object
 	 */
 	protected Object convertInstance(Object value) {
-		if (value == null)
-			return null;
-		if (value instanceof OGroup) {
-			// special case: if possible use the internal document for
-			// OGroup/OInstance
-			return ((OGroup) value).document;
-		}
-		else if (value instanceof Instance) {
-			OInstance tmp = new OInstance((Instance) value);
-			return tmp.document;
-		}
-		else if (value instanceof Group) {
-			OGroup tmp = new OGroup((Group) value);
-			return tmp.document;
-		}
-		// TODO also treat collections etc?
-		/*
-		 * XXX OrientDB can't deal with nested collections/lists!(?) as a
-		 * work-around we also serialize collections see isSupportedFieldType
-		 */
-		// TODO objects that are not supported inside document
-		else if (!isSupportedFieldType(value.getClass())) {
-			return OSerializationHelper.serialize(value);
-		}
-
-		return value;
-	}
-
-	/**
-	 * Determines if the given field type is supported directly by the database
-	 * 
-	 * @param type the field type
-	 * @return if the field type is supported
-	 */
-	private boolean isSupportedFieldType(Class<? extends Object> type) {
-		// records
-		if (ORecordAbstract.class.isAssignableFrom(type)) {
-			return true;
-		}
-		// primitives and arrays
-		else if (type.isPrimitive() || type.isArray()) {
-			return true;
-		}
-		// wrapper types
-		else if (Double.class.isAssignableFrom(type) || Float.class.isAssignableFrom(type)
-				|| Integer.class.isAssignableFrom(type) || Long.class.isAssignableFrom(type)
-				|| Short.class.isAssignableFrom(type) || Byte.class.isAssignableFrom(type)
-				|| String.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
-			return true;
-		}
-		// date
-		else if (Date.class.isAssignableFrom(type)) {
-			return true;
-		}
-		// collections
-		else if (Collection.class.isAssignableFrom(type)) {
-			/*
-			 * XXX OrientDB can't deal with nested collections/lists!(?) as a
-			 * work-around we also serialize collections
-			 */
-//			return true;
-		}
-
-		return false;
+		return OSerializationHelper.convertForDB(value);
 	}
 
 	/**
@@ -556,67 +469,7 @@ public class OGroup implements MutableGroup {
 	 * @return the converted object
 	 */
 	protected Object convertDocument(Object value, QName propertyName) {
-		if (value instanceof ODocument) {
-			ODocument doc = (ODocument) value;
-			if (doc.containsField(BINARY_WRAPPER_FIELD)
-					|| doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
-				// extract wrapped ORecordBytes
-//				value = doc.field(BINARY_WRAPPER_FIELD);
-				return OSerializationHelper.deserialize(doc);
-			}
-			else {
-				ChildDefinition<?> child = definition.getChild(propertyName);
-				if (child.asProperty() != null) {
-					return new OInstance((ODocument) value, child.asProperty().getPropertyType(),
-							db, null); // no data set necessary for nested
-										// instances
-				}
-				else if (child.asGroup() != null) {
-					return new OGroup((ODocument) value, child.asGroup(), db);
-				}
-				else {
-					throw new IllegalStateException("Field " + propertyName
-							+ " is associated neither with a property nor a group.");
-				}
-			}
-		}
-		// TODO also treat collections etc?
-
-		// TODO objects that are not supported inside document
-		if (value instanceof ORecordBytes) {
-			// XXX should not be reached as every ORecordBytes should be
-			// contained in a wrapper
-			// TODO try conversion first?!
-
-			// object deserialization
-			ORecordBytes record = (ORecordBytes) value;
-			ByteArrayInputStream bytes = new ByteArrayInputStream(record.toStream());
-			try {
-				ObjectInputStream in = new ObjectInputStream(bytes) {
-
-					@Override
-					protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
-							ClassNotFoundException {
-						Class<?> result = resolved.get(desc.getName());
-						if (result == null) {
-							result = OsgiUtils.loadClass(desc.getName(), null);
-
-							if (resolved.size() > 200) {
-								resolved.entrySet().iterator().remove();
-							}
-
-							resolved.put(desc.getName(), result);
-						}
-						return result;
-					}
-				};
-				return in.readObject();
-			} catch (Exception e) {
-				throw new IllegalStateException("Could not deserialize field value.", e);
-			}
-		}
-
-		return value;
+		return OSerializationHelper.convertFromDB(value, this, propertyName);
 	}
 
 	/**
@@ -664,6 +517,15 @@ public class OGroup implements MutableGroup {
 	@Override
 	public DefinitionGroup getDefinition() {
 		return definition;
+	}
+
+	/**
+	 * Get the associated database.
+	 * 
+	 * @return the associated database record
+	 */
+	public ODatabaseRecord getDb() {
+		return db;
 	}
 
 }
