@@ -25,20 +25,23 @@ import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationSer
 
 /**
  * Handler for toggling the live instance validation.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class ToggleInstanceValidationHandler extends AbstractHandler implements IElementUpdater {
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench().getService(InstanceValidationService.class);
+		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+				.getService(InstanceValidationService.class);
 		ivs.setValidationEnabled(!ivs.isValidationEnabled());
 		return null;
 	}
 
 	@Override
 	public void updateElement(UIElement element, @SuppressWarnings("rawtypes") Map parameters) {
-		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench().getService(InstanceValidationService.class);
+		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+				.getService(InstanceValidationService.class);
 		element.setChecked(ivs.isValidationEnabled());
 	}
 }

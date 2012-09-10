@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 
 /**
  * Topic representing a function.
+ * 
  * @author Simon Templer
  */
 public class FunctionTopic implements ITopic, FunctionReferenceConstants {
@@ -30,6 +31,7 @@ public class FunctionTopic implements ITopic, FunctionReferenceConstants {
 
 	/**
 	 * Create the function topic.
+	 * 
 	 * @param function the associated function
 	 */
 	public FunctionTopic(AbstractFunction<?> function) {
@@ -58,8 +60,8 @@ public class FunctionTopic implements ITopic, FunctionReferenceConstants {
 	 */
 	@Override
 	public String getHref() {
-		return PLUGINS_ROOT + "/" + PLUGIN_ID + "/" + FUNCTION_TOPIC_PATH
-				+ function.getId() + ".html";
+		return PLUGINS_ROOT + "/" + PLUGIN_ID + "/" + FUNCTION_TOPIC_PATH + function.getId()
+				+ ".html";
 	}
 
 	/**
@@ -85,8 +87,7 @@ public class FunctionTopic implements ITopic, FunctionReferenceConstants {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((function == null) ? 0 : function.getId().hashCode());
+		result = prime * result + ((function == null) ? 0 : function.getId().hashCode());
 		return result;
 	}
 
@@ -105,7 +106,8 @@ public class FunctionTopic implements ITopic, FunctionReferenceConstants {
 		if (function == null) {
 			if (other.function != null)
 				return false;
-		} else if (!function.getId().equals(other.function.getId()))
+		}
+		else if (!function.getId().equals(other.function.getId()))
 			return false;
 		return true;
 	}

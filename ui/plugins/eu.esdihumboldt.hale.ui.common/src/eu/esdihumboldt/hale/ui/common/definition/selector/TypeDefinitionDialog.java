@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Selection dialog for {@link TypeDefinition}s.
+ * 
  * @author Simon Templer
  */
 public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefinition, TreeViewer> {
@@ -43,29 +44,31 @@ public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefi
 
 	/**
 	 * Create a type definition selection dialog.
+	 * 
 	 * @param parentShell the parent shell
-	 * @param title the dialog title 
+	 * @param title the dialog title
 	 * @param initialSelection the initial selection
 	 * @param types the type index
 	 */
-	public TypeDefinitionDialog(Shell parentShell, String title,
-			TypeDefinition initialSelection, TypeIndex types) {
+	public TypeDefinitionDialog(Shell parentShell, String title, TypeDefinition initialSelection,
+			TypeIndex types) {
 		super(parentShell, title, initialSelection);
-		
+
 		this.types = types;
 	}
-	
+
 	/**
 	 * Create a type definition selection dialog.
+	 * 
 	 * @param parentShell the parent shell
-	 * @param title the dialog title 
+	 * @param title the dialog title
 	 * @param initialSelection the initial selection
 	 * @param types the type index
 	 */
-	public TypeDefinitionDialog(Shell parentShell, String title,
-			TypeDefinition initialSelection, Iterable<TypeDefinition> types) {
+	public TypeDefinitionDialog(Shell parentShell, String title, TypeDefinition initialSelection,
+			Iterable<TypeDefinition> types) {
 		super(parentShell, title, initialSelection);
-		
+
 		this.types = types;
 	}
 
@@ -74,23 +77,21 @@ public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefi
 		// create viewer
 		PatternFilter patternFilter = new PatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new FilteredTree(parent, 
-				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new DefinitionComparator());
 		return tree.getViewer();
 	}
 
 	@Override
-	protected void setupViewer(TreeViewer viewer,
-			TypeDefinition initialSelection) {
+	protected void setupViewer(TreeViewer viewer, TypeDefinition initialSelection) {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
 		viewer.setContentProvider(new TypesContentProvider(viewer));
-		
+
 		viewer.setInput(types);
-		
+
 		if (initialSelection != null) {
-			viewer.setSelection(new StructuredSelection(
-					initialSelection));
+			viewer.setSelection(new StructuredSelection(initialSelection));
 		}
 	}
 
@@ -102,7 +103,7 @@ public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefi
 				return (TypeDefinition) element;
 			}
 		}
-		
+
 		return null;
 	}
 

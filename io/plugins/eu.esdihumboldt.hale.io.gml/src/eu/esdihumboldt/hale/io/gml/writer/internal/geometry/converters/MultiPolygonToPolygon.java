@@ -16,11 +16,11 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 /**
- * Converts {@link MultiPolygon}s to {@link Polygon}s 
- *
+ * Converts {@link MultiPolygon}s to {@link Polygon}s
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class MultiPolygonToPolygon extends
 		AbstractGeometryCollectionConverter<MultiPolygon, Polygon> {

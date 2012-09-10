@@ -46,19 +46,20 @@ import eu.esdihumboldt.util.IdentityWrapper;
 
 /**
  * Label provider for transformation trees
+ * 
  * @author Simon Templer
  */
 public class TransformationTreeLabelProvider extends GraphLabelProvider {
-	
+
 	private Color disabledBackgroundColor;
 	private Color valueBackgroundColor;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public TransformationTreeLabelProvider() {
 		super();
-		
+
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		disabledBackgroundColor = new Color(display, 240, 240, 240);
 		valueBackgroundColor = new Color(display, 220, 245, 245);
@@ -78,7 +79,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		element = TransformationTreeUtil.extractObject(element);
-		
+
 		return super.getImage(element);
 	}
 
@@ -90,34 +91,30 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		if (element instanceof IdentityWrapper<?>) {
 			element = ((IdentityWrapper<?>) element).getValue();
 		}
-		
+
 		if (element instanceof EntityConnectionData) {
 			// text for connections
 			EntityConnectionData connection = (EntityConnectionData) element;
-			
+
 			Set<String> names = null;
-			
+
 			Object source = connection.source;
 			if (source instanceof IdentityWrapper<?>) {
 				source = ((IdentityWrapper<?>) source).getValue();
 			}
-			
+
 			Object dest = connection.dest;
 			if (dest instanceof IdentityWrapper<?>) {
 				dest = ((IdentityWrapper<?>) dest).getValue();
 			}
-			
-			if (source instanceof TargetNode
-					&& dest instanceof CellNode) {
-				names = ((TargetNode) source)
-						.getAssignmentNames((CellNode) dest);
+
+			if (source instanceof TargetNode && dest instanceof CellNode) {
+				names = ((TargetNode) source).getAssignmentNames((CellNode) dest);
 			}
-			if (source instanceof CellNode
-					&& dest instanceof SourceNode) {
-				names = ((CellNode) source)
-						.getSourceNames((SourceNode) dest);
+			if (source instanceof CellNode && dest instanceof SourceNode) {
+				names = ((CellNode) source).getSourceNames((SourceNode) dest);
 			}
-			
+
 			if (names != null && !names.isEmpty()) {
 				if (names.contains(null)) {
 					names = new HashSet<String>(names);
@@ -130,16 +127,16 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 				Joiner joiner = Joiner.on(',');
 				return joiner.join(names);
 			}
-			
+
 			return "";
 		}
-		
+
 		if (hasTransformationAnnotations(element)) {
 			if (element instanceof SourceNode) {
 				SourceNode node = (SourceNode) element;
 				if (node.isDefined()) {
 					Object value = node.getValue();
-					
+
 					if (value == null) {
 						// no value
 						return "(not set)";
@@ -148,18 +145,18 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 						// use the instance value if present
 						value = ((Instance) value).getValue();
 					}
-					
+
 					if (value != null && !(value instanceof Group)) {
 						// the value string representation
-						return value.toString(); //TODO shorten if needed?
+						return value.toString(); // TODO shorten if needed?
 					}
 					// otherwise, just display the definition name
 				}
 			}
 		}
-		
+
 		element = TransformationTreeUtil.extractObject(element);
-		
+
 		return super.getText(element);
 	}
 
@@ -169,7 +166,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	@Override
 	public Color getNodeHighlightColor(Object entity) {
 		entity = TransformationTreeUtil.extractObject(entity);
-		
+
 		return super.getNodeHighlightColor(entity);
 	}
 
@@ -179,7 +176,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	@Override
 	public Color getBorderColor(Object entity) {
 		entity = TransformationTreeUtil.extractObject(entity);
-		
+
 		return super.getBorderColor(entity);
 	}
 
@@ -189,7 +186,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	@Override
 	public Color getBorderHighlightColor(Object entity) {
 		entity = TransformationTreeUtil.extractObject(entity);
-		
+
 		return super.getBorderHighlightColor(entity);
 	}
 
@@ -206,14 +203,15 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 				return valueBackgroundColor;
 			}
 		}
-		
+
 		entity = TransformationTreeUtil.extractObject(entity);
-		
+
 		return super.getBackgroundColour(entity);
 	}
 
 	/**
 	 * Determines if a node shows a value.
+	 * 
 	 * @param entity the node
 	 * @return if the node has a value
 	 */
@@ -221,17 +219,18 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		if (entity instanceof IdentityWrapper<?>) {
 			entity = ((IdentityWrapper<?>) entity).getValue();
 		}
-		
+
 		if (entity instanceof SourceNode) {
 			return ((SourceNode) entity).isDefined();
 		}
-		
+
 		return false;
 	}
 
 	/**
-	 * Determines if the given node is a transformation node and
-	 * has transformation annotations.
+	 * Determines if the given node is a transformation node and has
+	 * transformation annotations.
+	 * 
 	 * @param entity the node
 	 * @return if there a transformation annotations present
 	 */
@@ -239,13 +238,14 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		if (entity instanceof IdentityWrapper<?>) {
 			entity = ((IdentityWrapper<?>) entity).getValue();
 		}
-		
-		return entity instanceof TransformationNode && 
-				((TransformationNode) entity).hasAnnotations();
+
+		return entity instanceof TransformationNode
+				&& ((TransformationNode) entity).hasAnnotations();
 	}
 
 	/**
 	 * Determines if a node is disabled.
+	 * 
 	 * @param entity the node
 	 * @return if the node is disabled
 	 */
@@ -253,14 +253,14 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		if (entity instanceof IdentityWrapper<?>) {
 			entity = ((IdentityWrapper<?>) entity).getValue();
 		}
-		
+
 		if (entity instanceof SourceNode) {
 			return !((SourceNode) entity).isDefined();
 		}
 		if (entity instanceof CellNode) {
 			return !((CellNode) entity).isValid();
 		}
-		
+
 		return false;
 	}
 
@@ -270,7 +270,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	@Override
 	public Color getForegroundColour(Object entity) {
 		entity = TransformationTreeUtil.extractObject(entity);
-		
+
 		return super.getForegroundColour(entity);
 	}
 
@@ -282,18 +282,18 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		if (element instanceof IdentityWrapper<?>) {
 			element = ((IdentityWrapper<?>) element).getValue();
 		}
-		
+
 		ShapePainter shape = null;
 		String contextText = null;
-		
+
 		if (element instanceof TransformationTree) {
 			shape = new TransformationNodeShape(10, SWT.NONE);
 		}
 		else if (element instanceof TargetNode) {
 			TargetNode node = (TargetNode) element;
-			
+
 			contextText = AlignmentUtil.getContextText(node.getEntityDefinition());
-			
+
 			if (node.getAssignments().isEmpty()) {
 				shape = new TransformationNodeShape(10, SWT.NONE);
 			}
@@ -304,9 +304,9 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 		}
 		else if (element instanceof SourceNode) {
 			SourceNode node = (SourceNode) element;
-			
+
 			contextText = AlignmentUtil.getContextText(node.getEntityDefinition());
-			
+
 			if (node.getParent() == null) {
 				shape = new TransformationNodeShape(10, SWT.NONE);
 			}
@@ -314,7 +314,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 				shape = new FingerPost(10, SWT.RIGHT);
 			}
 		}
-		
+
 		if (shape != null) {
 			CustomShapeFigure figure;
 			if (contextText != null) {
@@ -326,9 +326,9 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 			figure.setMaximumWidth(MAX_FIGURE_WIDTH);
 			return figure;
 		}
-		
+
 		element = TransformationTreeUtil.extractObject(element);
-		
+
 		return super.getFigure(element);
 	}
 
@@ -339,7 +339,7 @@ public class TransformationTreeLabelProvider extends GraphLabelProvider {
 	public void dispose() {
 		disabledBackgroundColor.dispose();
 		valueBackgroundColor.dispose();
-		
+
 		super.dispose();
 	}
 

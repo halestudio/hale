@@ -16,12 +16,12 @@ import javax.xml.namespace.QName;
 
 /**
  * A mutable group that allows adding/changing properties
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface MutableGroup extends Group {
-	
+
 	/**
 	 * Adds a property value
 	 * 
@@ -29,7 +29,7 @@ public interface MutableGroup extends Group {
 	 * @param value the property value
 	 */
 	public void addProperty(QName propertyName, Object value);
-	
+
 	/**
 	 * Sets values for a property
 	 * 
@@ -37,7 +37,7 @@ public interface MutableGroup extends Group {
 	 * @param values the values for the property
 	 */
 	public void setProperty(QName propertyName, Object... values);
-	
-	//XXX more manipulation needed? e.g. for transformation?
+
+	// XXX more manipulation needed? e.g. for transformation?
 
 }

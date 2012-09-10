@@ -17,7 +17,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 
 import eu.esdihumboldt.hale.ui.common.Editor;
 
-
 /**
  * Abstract base class for editors for events.
  * 
@@ -25,6 +24,7 @@ import eu.esdihumboldt.hale.ui.common.Editor;
  * @param <T> the attribute value type/binding
  */
 public abstract class AbstractEditor<T> implements Editor<T> {
+
 	private IPropertyChangeListener propertyChangeListener;
 
 	/**
@@ -36,38 +36,37 @@ public abstract class AbstractEditor<T> implements Editor<T> {
 	}
 
 	/**
-     * Informs this editor's listener, if it has one, about a change to
-     * one of this editor's boolean-valued properties. Does nothing
-     * if the old and new values are the same.
-     *
-     * @param property the editor property name, 
-     *   such as <code>VALUE</code> or <code>IS_VALID</code>
-     * @param oldValue the old value
-     * @param newValue the new value
-     */
-    protected void fireStateChanged(String property, boolean oldValue,
-            boolean newValue) {
-        if (oldValue == newValue) {
+	 * Informs this editor's listener, if it has one, about a change to one of
+	 * this editor's boolean-valued properties. Does nothing if the old and new
+	 * values are the same.
+	 * 
+	 * @param property the editor property name, such as <code>VALUE</code> or
+	 *            <code>IS_VALID</code>
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 */
+	protected void fireStateChanged(String property, boolean oldValue, boolean newValue) {
+		if (oldValue == newValue) {
 			return;
 		}
-        fireValueChanged(property, oldValue ? Boolean.TRUE : Boolean.FALSE, newValue ? Boolean.TRUE : Boolean.FALSE);
-    }
+		fireValueChanged(property, oldValue ? Boolean.TRUE : Boolean.FALSE, newValue ? Boolean.TRUE
+				: Boolean.FALSE);
+	}
 
-    /**
-     * Informs this editor's listener, if it has one, about a change to
-     * one of this editor's properties.
-     *
-     * @param property the editor property name, 
-     *   such as <code>VALUE</code> or <code>IS_VALID</code>
-     * @param oldValue the old value object, or <code>null</code>
-     * @param newValue the new value, or <code>null</code>
-     */
-    protected void fireValueChanged(String property, Object oldValue,
-            Object newValue) {
-        if (propertyChangeListener == null) {
+	/**
+	 * Informs this editor's listener, if it has one, about a change to one of
+	 * this editor's properties.
+	 * 
+	 * @param property the editor property name, such as <code>VALUE</code> or
+	 *            <code>IS_VALID</code>
+	 * @param oldValue the old value object, or <code>null</code>
+	 * @param newValue the new value, or <code>null</code>
+	 */
+	protected void fireValueChanged(String property, Object oldValue, Object newValue) {
+		if (propertyChangeListener == null) {
 			return;
 		}
-        propertyChangeListener.propertyChange(new PropertyChangeEvent(this,
-                property, oldValue, newValue));
-    }
+		propertyChangeListener.propertyChange(new PropertyChangeEvent(this, property, oldValue,
+				newValue));
+	}
 }

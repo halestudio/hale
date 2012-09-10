@@ -17,9 +17,11 @@ import eu.esdihumboldt.hale.ui.functions.numeric.MathExpressionParameterPage;
 
 /**
  * Parameter page for specifying the buffer width expression.
+ * 
  * @author Simon Templer
  */
-public class NetworkExpansionParameterPage extends MathExpressionParameterPage implements NetworkExpansionFunction {
+public class NetworkExpansionParameterPage extends MathExpressionParameterPage implements
+		NetworkExpansionFunction {
 
 	/**
 	 * @see MathExpressionParameterPage#getParameterName()

@@ -21,12 +21,13 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 
 /**
  * Property referencing a XML element
+ * 
  * @author Simon Templer
  */
 public class XmlElementReferenceProperty extends LazyPropertyDefinition {
 
 	private final QName elementName;
-	
+
 	/**
 	 * Create a property that references a XML element
 	 * 
@@ -35,11 +36,10 @@ public class XmlElementReferenceProperty extends LazyPropertyDefinition {
 	 * @param index the XML index
 	 * @param elementName the element name
 	 */
-	public XmlElementReferenceProperty(QName name,
-			DefinitionGroup declaringGroup, XmlIndex index,
+	public XmlElementReferenceProperty(QName name, DefinitionGroup declaringGroup, XmlIndex index,
 			QName elementName) {
 		super(name, declaringGroup, index);
-		
+
 		this.elementName = elementName;
 	}
 
@@ -49,11 +49,11 @@ public class XmlElementReferenceProperty extends LazyPropertyDefinition {
 	@Override
 	protected TypeDefinition resolvePropertyType(XmlIndex index) {
 		XmlElement element = index.getElements().get(elementName);
-		
+
 		if (element == null) {
 			throw new IllegalStateException("Referenced element could not be found");
 		}
-		
+
 		return element.getType();
 	}
 

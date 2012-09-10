@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.io.csv;
 
-
 /**
  * Utilities and constants for CSVfile I/O
  * 

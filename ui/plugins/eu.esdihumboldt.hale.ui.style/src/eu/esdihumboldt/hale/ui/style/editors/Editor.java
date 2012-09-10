@@ -11,42 +11,40 @@
  */
 package eu.esdihumboldt.hale.ui.style.editors;
 
-import java.net.MalformedURLException;
-
 import org.eclipse.swt.widgets.Control;
-
 
 /**
  * Editor interface
+ * 
  * @param <T> the type to edit
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface Editor<T> {
-	
+
 	/**
 	 * Get the value
 	 * 
 	 * @return the value
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public abstract T getValue() throws Exception;
-	
+
 	/**
 	 * Set the value
 	 * 
 	 * @param value the value to set
 	 */
 	public abstract void setValue(T value);
-	
+
 	/**
 	 * Get the editor control
 	 * 
 	 * @return the editor control
 	 */
 	public Control getControl();
-	
+
 	/**
 	 * States if the value has been changed
 	 * 

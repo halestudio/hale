@@ -63,19 +63,16 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 
 		Polygon polygon2 = geomFactory.createPolygon(shell, holes);
 
-		shell = geomFactory.createLinearRing(new Coordinate[] {
-				new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
-				new Coordinate(0.01, -3.2), new Coordinate(-3.33, -3.2),
-				new Coordinate(0.01, 3.2) });
+		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0.01, 3.2),
+				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2),
+				new Coordinate(-3.33, -3.2), new Coordinate(0.01, 3.2) });
 
 		holes = new LinearRing[2];
-		hole1 = geomFactory.createLinearRing(new Coordinate[] {
-				new Coordinate(0, 1), new Coordinate(1, 1),
-				new Coordinate(0, -1), new Coordinate(-1, -1),
+		hole1 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 1),
+				new Coordinate(1, 1), new Coordinate(0, -1), new Coordinate(-1, -1),
 				new Coordinate(0, 1) });
-		LinearRing hole2 = geomFactory.createLinearRing(new Coordinate[] {
-				new Coordinate(0, 2), new Coordinate(2, 2),
-				new Coordinate(0, -2), new Coordinate(-2, -2),
+		LinearRing hole2 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 2),
+				new Coordinate(2, 2), new Coordinate(0, -2), new Coordinate(-2, -2),
 				new Coordinate(0, 2) });
 		holes[0] = hole1;
 		holes[1] = hole2;
@@ -86,20 +83,17 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 
 		reference = geomFactory.createMultiPolygon(polygons);
 	}
-	
+
 	/**
 	 * Test multi-surface geometries read from a GML 3 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiSurfaceGml3() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest
-				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml3.xsd")
-						.toURI(),
-						getClass().getResource("/data/surface/sample-multisurface-gml3.xml")
-								.toURI());
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-multisurface-gml3.xml").toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -112,20 +106,17 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 			it.close();
 		}
 	}
-	
+
 	/**
 	 * Test multi-surface geometries read from a GML 3.1 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiSurfaceGml31() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest
-				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml31.xsd")
-						.toURI(),
-						getClass().getResource("/data/surface/sample-multisurface-gml31.xml")
-								.toURI());
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-multisurface-gml31.xml").toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -138,20 +129,17 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 			it.close();
 		}
 	}
-	
+
 	/**
 	 * Test multi-surface geometries read from a GML 3.2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiSurfaceGml32() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest
-				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml32.xsd")
-						.toURI(),
-						getClass().getResource("/data/surface/sample-multisurface-gml32.xml")
-								.toURI());
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-multisurface-gml32.xml").toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -166,8 +154,7 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkSurfacePropertyInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 
@@ -183,8 +170,7 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 		for (Object instance : ((Collection<?>) geomInstance.getValue())) {
 			assertTrue(instance instanceof GeometryProperty<?>);
 			@SuppressWarnings("unchecked")
-			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance)
-					.getGeometry();
+			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance).getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
 					multipolygon.equalsExact(reference));
 		}

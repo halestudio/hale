@@ -22,8 +22,7 @@ import eu.esdihumboldt.hale.ui.views.report.properties.details.ReportDetailsPage
 import eu.esdihumboldt.hale.ui.views.report.properties.details.extension.CustomReportDetailsPage.MessageType;
 
 /**
- * Default details page for {@link Report}s.
- * Does only show errors.
+ * Default details page for {@link Report}s. Does only show errors.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

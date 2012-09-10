@@ -23,21 +23,21 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 
 /**
  * Lazy property group definition
+ * 
  * @author Simon Templer
  */
-public abstract class LazyGroupPropertyDefinition extends
-		DefaultGroupPropertyDefinition {
+public abstract class LazyGroupPropertyDefinition extends DefaultGroupPropertyDefinition {
 
 	/**
 	 * The XML index that can be used to resolve needed objects
 	 */
 	protected final XmlIndex index;
-	
+
 	/**
 	 * If the definition is yet initialized
 	 */
 	private boolean initialized = false;
-	
+
 	/**
 	 * Create a lazy group property definition
 	 * 
@@ -46,13 +46,13 @@ public abstract class LazyGroupPropertyDefinition extends
 	 * @param index the XML index
 	 * @param allowFlatten if the group may be replaced by its children
 	 */
-	public LazyGroupPropertyDefinition(QName name, DefinitionGroup parentGroup,
-			XmlIndex index, boolean allowFlatten) {
+	public LazyGroupPropertyDefinition(QName name, DefinitionGroup parentGroup, XmlIndex index,
+			boolean allowFlatten) {
 		super(name, parentGroup, allowFlatten);
-		
+
 		this.index = index;
 	}
-	
+
 	/**
 	 * Initialize
 	 */
@@ -64,8 +64,8 @@ public abstract class LazyGroupPropertyDefinition extends
 	}
 
 	/**
-	 * Initialize the children. {@link #addChild(ChildDefinition)} can be used 
-	 * to add them. 
+	 * Initialize the children. {@link #addChild(ChildDefinition)} can be used
+	 * to add them.
 	 */
 	protected abstract void initChildren();
 

@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.ui.common.EditorFactory;
 
 /**
  * Creates a {@link StringEditor}.
+ * 
  * @author Simon Templer
  */
 public class StringEditorFactory implements EditorFactory {

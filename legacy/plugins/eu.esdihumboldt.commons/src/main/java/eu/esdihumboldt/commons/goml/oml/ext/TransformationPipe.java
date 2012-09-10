@@ -18,17 +18,14 @@ import java.util.List;
  * Use a {@link TransformationPipe} if you want to apply a sequence of more than
  * one transformation to a defined input set.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public class TransformationPipe 
-	extends Transformation {
-
+public class TransformationPipe extends Transformation {
 
 	private List<Transformation> pipe;
-	
-	
+
 	/**
 	 * @param pipe
 	 */
@@ -45,11 +42,11 @@ public class TransformationPipe
 	}
 
 	/**
-	 * @param pipe the pipe to set
+	 * @param pipe
+	 *            the pipe to set
 	 */
 	public void setPipe(List<Transformation> pipe) {
 		this.pipe = pipe;
 	}
-
 
 }

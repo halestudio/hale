@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for RelationCompositionType complex type.
+ * <p>
+ * Java class for RelationCompositionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="RelationCompositionType">
@@ -38,89 +39,77 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RelationCompositionType", propOrder = {
-    "operator",
-    "collection",
-    "relation"
-})
+@XmlType(name = "RelationCompositionType", propOrder = { "operator",
+		"collection", "relation" })
 public class RelationCompositionType {
 
-    @XmlElement(required = true)
-    protected RelationOperatorType operator;
-    protected ClassCollectionType collection;
-    @XmlElement(name = "Relation")
-    protected RelationType relation;
+	@XmlElement(required = true)
+	protected RelationOperatorType operator;
+	protected ClassCollectionType collection;
+	@XmlElement(name = "Relation")
+	protected RelationType relation;
 
-    /**
-     * Gets the value of the operator property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RelationOperatorType }
-     *     
-     */
-    public RelationOperatorType getOperator() {
-        return operator;
-    }
+	/**
+	 * Gets the value of the operator property.
+	 * 
+	 * @return possible object is {@link RelationOperatorType }
+	 * 
+	 */
+	public RelationOperatorType getOperator() {
+		return operator;
+	}
 
-    /**
-     * Sets the value of the operator property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RelationOperatorType }
-     *     
-     */
-    public void setOperator(RelationOperatorType value) {
-        this.operator = value;
-    }
+	/**
+	 * Sets the value of the operator property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link RelationOperatorType }
+	 * 
+	 */
+	public void setOperator(RelationOperatorType value) {
+		this.operator = value;
+	}
 
-    /**
-     * Gets the value of the collection property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ClassCollectionType }
-     *     
-     */
-    public ClassCollectionType getCollection() {
-        return collection;
-    }
+	/**
+	 * Gets the value of the collection property.
+	 * 
+	 * @return possible object is {@link ClassCollectionType }
+	 * 
+	 */
+	public ClassCollectionType getCollection() {
+		return collection;
+	}
 
-    /**
-     * Sets the value of the collection property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ClassCollectionType }
-     *     
-     */
-    public void setCollection(ClassCollectionType value) {
-        this.collection = value;
-    }
+	/**
+	 * Sets the value of the collection property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ClassCollectionType }
+	 * 
+	 */
+	public void setCollection(ClassCollectionType value) {
+		this.collection = value;
+	}
 
-    /**
-     * Gets the value of the relation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RelationType }
-     *     
-     */
-    public RelationType getRelation() {
-        return relation;
-    }
+	/**
+	 * Gets the value of the relation property.
+	 * 
+	 * @return possible object is {@link RelationType }
+	 * 
+	 */
+	public RelationType getRelation() {
+		return relation;
+	}
 
-    /**
-     * Sets the value of the relation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RelationType }
-     *     
-     */
-    public void setRelation(RelationType value) {
-        this.relation = value;
-    }
+	/**
+	 * Sets the value of the relation property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link RelationType }
+	 * 
+	 */
+	public void setRelation(RelationType value) {
+		this.relation = value;
+	}
 
 }

@@ -31,13 +31,12 @@ import eu.esdihumboldt.specification.mediator.context.Context;
 import eu.esdihumboldt.specification.mediator.context.DefaultContext;
 
 /**
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: DefaultContextImpl.java,v 1.5 2007-11-27 13:27:57 pitaeva Exp $ 
+ * @version $Id: DefaultContextImpl.java,v 1.5 2007-11-27 13:27:57 pitaeva Exp $
  */
-public class DefaultContextImpl 
-	implements DefaultContext, Serializable {
-	
+public class DefaultContextImpl implements DefaultContext, Serializable {
+
 	/**
 	 * 
 	 */
@@ -52,16 +51,15 @@ public class DefaultContextImpl
 	private SpatialConstraint spatialConstraint;
 	private PortrayalConstraint portrayalConstraint;
 
-
 	private long id;
 	private UUID uuid;
 	private String title;
 
-	
 	// Constructors ............................................................
-	
+
 	/**
 	 * Full constructor for {@link DefaultContextImpl}.
+	 * 
 	 * @param _languageCons
 	 * @param _metadataConstraint
 	 * @param _qualityConstraint
@@ -70,15 +68,13 @@ public class DefaultContextImpl
 	 * @param _temporalCons
 	 * @param _spatialCons
 	 * @param _portrayalCons
-	 * TODO remove inconsistent naming.
+	 *            TODO remove inconsistent naming.
 	 */
 	public DefaultContextImpl(LanguageConstraint _languageCons,
 			MetadataConstraint _metadataConstraint,
 			QualityConstraint _qualityConstraint,
-			ResolutionConstraint _resoCons, 
-			ThematicConstraint _thematicCons,
-			TemporalConstraint _temporalCons, 
-			SpatialConstraint _spatialCons,
+			ResolutionConstraint _resoCons, ThematicConstraint _thematicCons,
+			TemporalConstraint _temporalCons, SpatialConstraint _spatialCons,
 			PortrayalConstraint _portrayalCons) {
 		this.languageConstraint = _languageCons;
 		this.metadataConstraint = _metadataConstraint;
@@ -91,11 +87,11 @@ public class DefaultContextImpl
 		this.uuid = UUID.randomUUID();
 
 	}
-	
+
 	// DefaultContext operations ...............................................
 
 	public DefaultContextImpl() {
-		//this.uuid = UUID.randomUUID();
+		// this.uuid = UUID.randomUUID();
 	}
 
 	public LanguageConstraint getLanguageConstraint() {
@@ -134,8 +130,8 @@ public class DefaultContextImpl
 		// builds up a mapping of all the constraints that belongs to the
 		// default context
 		Map<ContextType, Set<Constraint>> allDef_Constraints = new HashMap<ContextType, Set<Constraint>>();
-		allDef_Constraints.put(this.getContextType(), this
-				.assembleConstraintSet());
+		allDef_Constraints.put(this.getContextType(),
+				this.assembleConstraintSet());
 		return allDef_Constraints;
 	}
 
@@ -156,18 +152,16 @@ public class DefaultContextImpl
 	public UUID getContextID() {
 		return this.uuid;
 	}
-	
-	public void setContextID(UUID uuid){
+
+	public void setContextID(UUID uuid) {
 		this.uuid = uuid;
 	}
-	
-	public String getTitle()
-	{
+
+	public String getTitle() {
 		return this.title;
 	}
-	
-	public void setTitle(String title)
-	{
+
+	public void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -198,7 +192,8 @@ public class DefaultContextImpl
 
 	/**
 	 * 
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -212,63 +207,73 @@ public class DefaultContextImpl
 	}
 
 	/**
-	 * @param uuid the uuid to set
+	 * @param uuid
+	 *            the uuid to set
 	 */
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
 	}
 
 	/**
-	 * @param languageConstraint the languageConstraint to set
+	 * @param languageConstraint
+	 *            the languageConstraint to set
 	 */
 	public void setLanguageConstraint(LanguageConstraint languageConstraint) {
 		this.languageConstraint = languageConstraint;
 	}
 
 	/**
-	 * @param metadataConstraint the metadataConstraint to set
+	 * @param metadataConstraint
+	 *            the metadataConstraint to set
 	 */
 	public void setMetadataConstraint(MetadataConstraint metadataConstraint) {
 		this.metadataConstraint = metadataConstraint;
 	}
 
 	/**
-	 * @param qualityConstraint the qualityConstraint to set
+	 * @param qualityConstraint
+	 *            the qualityConstraint to set
 	 */
 	public void setQualityConstraint(QualityConstraint qualityConstraint) {
 		this.qualityConstraint = qualityConstraint;
 	}
 
 	/**
-	 * @param resolutionConstraint the resolutionConstraint to set
+	 * @param resolutionConstraint
+	 *            the resolutionConstraint to set
 	 */
-	public void setResolutionConstraint(ResolutionConstraint resolutionConstraint) {
+	public void setResolutionConstraint(
+			ResolutionConstraint resolutionConstraint) {
 		this.resolutionConstraint = resolutionConstraint;
 	}
 
 	/**
-	 * @param thematicConstraint the thematicConstraint to set
+	 * @param thematicConstraint
+	 *            the thematicConstraint to set
 	 */
 	public void setThematicConstraint(ThematicConstraint thematicConstraint) {
 		this.thematicConstraint = thematicConstraint;
 	}
 
 	/**
-	 * @param temporalConstraint the temporalConstraint to set
+	 * @param temporalConstraint
+	 *            the temporalConstraint to set
 	 */
 	public void setTemporalConstraint(TemporalConstraint temporalConstraint) {
 		this.temporalConstraint = temporalConstraint;
 	}
 
 	/**
-	 * @param spatialConstraint the spatialConstraint to set
+	 * @param spatialConstraint
+	 *            the spatialConstraint to set
 	 */
 	public void setSpatialConstraint(SpatialConstraint spatialConstraint) {
 		this.spatialConstraint = spatialConstraint;
 	}
 
 	/**
-	 * @param portrayalConstraint the portrayalConstraint to set
+	 * @param portrayalConstraint
+	 *            the portrayalConstraint to set
 	 */
 	public void setPortrayalConstraint(PortrayalConstraint portrayalConstraint) {
 		this.portrayalConstraint = portrayalConstraint;

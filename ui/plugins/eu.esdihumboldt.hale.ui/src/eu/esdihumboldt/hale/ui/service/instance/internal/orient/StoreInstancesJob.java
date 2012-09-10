@@ -13,7 +13,6 @@
 package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
 
 import java.text.MessageFormat;
-import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -29,7 +28,6 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
-
 import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataWorker;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -41,10 +39,11 @@ import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 
 /**
  * Store instances in a database
+ * 
  * @author Simon Templer
  */
 public abstract class StoreInstancesJob extends Job {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(StoreInstancesJob.class);
 
 	private InstanceCollection instances;
@@ -59,9 +58,9 @@ public abstract class StoreInstancesJob extends Job {
 	 */
 	public StoreInstancesJob(String name, LocalOrientDB database, InstanceCollection instances) {
 		super(name);
-		
+
 		setUser(true);
-		
+
 		this.database = database;
 		this.instances = instances;
 	}
@@ -72,64 +71,65 @@ public abstract class StoreInstancesJob extends Job {
 	@Override
 	public IStatus run(IProgressMonitor monitor) {
 		boolean exactProgress = instances.hasSize();
-		monitor.beginTask("Store instances in database", 
-				(exactProgress)?(instances.size()):(IProgressMonitor.UNKNOWN));
+		monitor.beginTask("Store instances in database", (exactProgress) ? (instances.size())
+				: (IProgressMonitor.UNKNOWN));
 
 		int count = 0;
-		
-		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
-		
+
+		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
+				PopulationService.class);
+
 		// get database connection
 		DatabaseReference<ODatabaseDocumentTx> ref = database.openWrite();
 		ODatabaseDocumentTx db = ref.getDatabase();
-		
+
 		ATransaction trans = log.begin("Store instances in database");
 		try {
 			// use intent
 			db.declareIntent(new OIntentMassiveInsert());
-			
-			//TODO decouple next() and save()?
-			
-			long lastUpdate = 0; // last count update 
-			
+
+			// TODO decouple next() and save()?
+
+			long lastUpdate = 0; // last count update
+
 			ResourceIterator<Instance> it = instances.iterator();
 			MetadataWorker metaworker = new MetadataWorker();
 			try {
 				while (it.hasNext() && !monitor.isCanceled()) {
 					Instance instance = it.next();
-					
+
 					// get/create OInstance
-					OInstance conv = ((instance instanceof OInstance)?
-							((OInstance) instance):(new OInstance(instance)));
-					
-					//generate metadata into instance
+					OInstance conv = ((instance instanceof OInstance) ? ((OInstance) instance)
+							: (new OInstance(instance)));
+
+					// generate metadata into instance
 					metaworker.generate(conv);
-					
-					
+
 					// population count
 					/*
-					 * XXX This is done here because otherwise the whole
-					 * data set would have again to be retrieved from the
-					 * database. See PopulationServiceImpl
+					 * XXX This is done here because otherwise the whole data
+					 * set would have again to be retrieved from the database.
+					 * See PopulationServiceImpl
 					 */
 					if (ps != null) {
 						ps.addToPopulation(instance, DataSet.SOURCE);
 					}
-					
+
 					ODatabaseRecordThreadLocal.INSTANCE.set(db);
 					// configure the document
 					ODocument doc = conv.configureDocument(db);
 					// and save it
 					doc.save();
-					
+
 					count++;
-					
+
 					if (exactProgress) {
 						monitor.worked(1);
 					}
-					
+
 					long now = System.currentTimeMillis();
-					if (now - lastUpdate > 100) { // only update every 100 milliseconds
+					if (now - lastUpdate > 100) { // only update every 100
+													// milliseconds
 						monitor.subTask(String.valueOf(count) + " instances processed");
 						lastUpdate = now;
 					}
@@ -137,36 +137,35 @@ public abstract class StoreInstancesJob extends Job {
 			} finally {
 				it.close();
 			}
-			
+
 			db.declareIntent(null);
 		} finally {
 			ref.dispose();
 			trans.end();
-			
+
 			/*
-			 * Reset instances to prevent memory leak.
-			 * It seems Eclipse internally holds a reference to the job
-			 * (in JobInfo and/or ProgressMonitorFocusJobDialog) and this 
-			 * results in the instance collection not being garbage collected.
-			 * This is especially bad, if an in-memory instance collection is
-			 * used, e.g. a DefaultInstanceCollection that is used when loading
-			 * a Shapefile.
+			 * Reset instances to prevent memory leak. It seems Eclipse
+			 * internally holds a reference to the job (in JobInfo and/or
+			 * ProgressMonitorFocusJobDialog) and this results in the instance
+			 * collection not being garbage collected. This is especially bad,
+			 * if an in-memory instance collection is used, e.g. a
+			 * DefaultInstanceCollection that is used when loading a Shapefile.
 			 */
 			instances = null;
 		}
-		
+
 		onComplete();
-		
+
 		String message = MessageFormat.format("Stored {0} instances in the database.", count);
 		if (monitor.isCanceled()) {
 			log.warn("Loading instances was canceled, incomplete data set in the database.");
 		}
 		log.info(message);
-		
+
 		monitor.done();
-		
-		return new Status((monitor.isCanceled())?(IStatus.CANCEL):(IStatus.OK), 
-				HALEUIPlugin.PLUGIN_ID, message );
+
+		return new Status((monitor.isCanceled()) ? (IStatus.CANCEL) : (IStatus.OK),
+				HALEUIPlugin.PLUGIN_ID, message);
 	}
 
 	/**

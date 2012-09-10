@@ -20,15 +20,16 @@ import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
  * Factory for {@link CustomReportDetailsPage}s.
- *
+ * 
  * @author Kai Schwierczek
  */
-public class CustomReportDetailsPageFactory extends AbstractConfigurationFactory<CustomReportDetailsPage> {
+public class CustomReportDetailsPageFactory extends
+		AbstractConfigurationFactory<CustomReportDetailsPage> {
 
 	/**
 	 * Create a {@link CustomReportDetailsPage} factory based on the given
 	 * configuration element.
-	 *
+	 * 
 	 * @param conf the configuration element
 	 */
 	protected CustomReportDetailsPageFactory(IConfigurationElement conf) {
@@ -61,7 +62,7 @@ public class CustomReportDetailsPageFactory extends AbstractConfigurationFactory
 
 	/**
 	 * Returns the {@link Report} class this detail page is registered for.
-	 *
+	 * 
 	 * @return the {@link Report} class this detail page is registered for
 	 */
 	@SuppressWarnings("unchecked")

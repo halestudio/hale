@@ -36,34 +36,37 @@ import com.google.common.io.Files;
  * @author Simon Templer
  */
 public abstract class AbstractVelocityContent implements IHelpContentProducer {
-	
+
 	/**
 	 * The velocity engine used for content generation.
 	 */
 	private VelocityEngine ve;
-	
+
 	/**
-	 * The temporary directory where the template is copied to, and the
-	 * already generated is stored.
+	 * The temporary directory where the template is copied to, and the already
+	 * generated is stored.
 	 */
 	private File tempDir;
 
 	/**
-	 * Generate content from the template and the given context factory. If 
+	 * Generate content from the template and the given context factory. If
 	 * called more than once with the same id, the previously generated content
 	 * for that id is returned.
+	 * 
 	 * @param contentId the content id or <code>null</code>
 	 * @param contextFactory the context factory, is called once or not at all
-	 * @return the content input stream to return in {@link #getInputStream(String, String, Locale)}
+	 * @return the content input stream to return in
+	 *         {@link #getInputStream(String, String, Locale)}
 	 * @throws Exception if an error occurs creating the content
 	 */
-	protected InputStream getContentFromTemplate(String contentId, String templateId, 
+	protected InputStream getContentFromTemplate(String contentId, String templateId,
 			Callable<VelocityContext> contextFactory) throws Exception {
 		init(templateId);
-		
+
 		// creates the template file into the temporary directory
 		// if it doesn't already exist
-		File contentFile = (contentId == null)?(null):(new File(tempDir, templateId + "_" + contentId + ".html"));
+		File contentFile = (contentId == null) ? (null) : (new File(tempDir, templateId + "_"
+				+ contentId + ".html"));
 		if (contentFile == null || !contentFile.exists()) {
 			// get the template context
 			VelocityContext context = contextFactory.call();
@@ -86,8 +89,7 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 	/**
 	 * Initialize temporary directory and template engine.
 	 * 
-	 * @throws Exception
-	 *             if an error occurs during the initialization
+	 * @throws Exception if an error occurs during the initialization
 	 */
 	private void init(String templateId) throws Exception {
 		synchronized (this) {
@@ -98,31 +100,31 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 				tempDir = Files.createTempDir();
 				tempDir.deleteOnExit();
 
-				ve.setProperty("file.resource.loader.path",
-						tempDir.getAbsolutePath());
-				
+				ve.setProperty("file.resource.loader.path", tempDir.getAbsolutePath());
+
 				// initialize VelocityEngine
 				ve.init();
 			}
-			
+
 			File templateFile = new File(tempDir, templateId + ".vm");
 			if (!templateFile.exists()) {
 				FileOutputStream fos = new FileOutputStream(templateFile);
 				InputStream stream = getTemplate(templateId);
-	
+
 				// copy the InputStream into FileOutputStream
 				IOUtils.copy(stream, fos);
-	
+
 				stream.close();
 				fos.close();
-				
+
 				templateFile.deleteOnExit();
 			}
 		}
 	}
-	
+
 	/**
 	 * Get the template content.
+	 * 
 	 * @return the template as input stream
 	 * @throws Exception if an error occurs retrieving the template
 	 */

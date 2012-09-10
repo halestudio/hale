@@ -59,7 +59,7 @@ import eu.esdihumboldt.hale.io.shp.internal.Messages;
 public class ShapeSchemaReader extends AbstractSchemaReader {
 
 	private DefaultSchema schema;
-	
+
 	/**
 	 * @see IOProvider#isCancelable()
 	 */
@@ -83,14 +83,14 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin(Messages.getString("ShapeSchemaProvider.1"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
-		
+
 //		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
 		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
-		
-		//TODO namespace from configuration parameter?!
+
+		// TODO namespace from configuration parameter?!
 		String namespace = ShapefileIO.SHAPEFILE_NS;
 		schema = new DefaultSchema(namespace, getSource().getLocation());
-		
+
 		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.2")); //$NON-NLS-1$
 
 		// build type definitions based on Schema extracted by geotools
@@ -98,39 +98,38 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 			SimpleFeatureType sft = store.getSchema(name);
 			try {
 				// create type definition
-				DefaultTypeDefinition type = new DefaultTypeDefinition(
-						new QName(namespace, sft.getName().getLocalPart()));
-				
+				DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(namespace, sft
+						.getName().getLocalPart()));
+
 				// constraints on main type
 				type.setConstraint(MappingRelevantFlag.ENABLED);
 				type.setConstraint(MappableFlag.ENABLED);
 				type.setConstraint(HasValueFlag.DISABLED);
 				type.setConstraint(AbstractFlag.DISABLED);
 				type.setConstraint(Binding.get(Instance.class));
-				
+
 				for (AttributeDescriptor ad : sft.getAttributeDescriptors()) {
-					DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-							new QName(ad.getLocalName()), 
-							type, 
-							getTypeFromAttributeType(ad.getType(), schema,
-									namespace));
-					
+					DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
+							ad.getLocalName()), type, getTypeFromAttributeType(ad.getType(),
+							schema, namespace));
+
 					// set constraints on property
 					property.setConstraint(NillableFlag.get(ad.isNillable())); // nillable
 					property.setConstraint(Cardinality.get(ad.getMinOccurs(), ad.getMaxOccurs())); // cardinality
-					
+
 					// set metadata
 					property.setLocation(getSource().getLocation());
 				}
-				
+
 				schema.addType(type);
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			progress.setCurrentTask(MessageFormat.format(Messages.getString("ShapeSchemaProvider.7"),  //$NON-NLS-1$
+			progress.setCurrentTask(MessageFormat.format(
+					Messages.getString("ShapeSchemaProvider.7"), //$NON-NLS-1$
 					sft.getTypeName()));
 		}
-		
+
 		reporter.setSuccess(true);
 		return reporter;
 	}
@@ -143,25 +142,25 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 	 * @param namespace the namespace to use for the type definition
 	 * @return the type definition
 	 */
-	private TypeDefinition getTypeFromAttributeType(AttributeType type,
-			DefaultSchema schema, String namespace) {
+	private TypeDefinition getTypeFromAttributeType(AttributeType type, DefaultSchema schema,
+			String namespace) {
 		QName typeName = new QName(namespace, type.getName().getLocalPart());
 		TypeDefinition result = null;
-		
+
 		// check shared types
 		if (getSharedTypes() != null) {
 			result = getSharedTypes().getType(typeName);
 		}
-		
+
 		if (result == null) {
 			// get type from schema
 			result = schema.getType(typeName);
 		}
-		
+
 		if (result == null) {
 			// create new type
 			DefaultTypeDefinition typeDef = new DefaultTypeDefinition(typeName);
-			
+
 			// set constraints
 			typeDef.setConstraint(MappingRelevantFlag.DISABLED); // not mappable
 			typeDef.setConstraint(MappableFlag.DISABLED);
@@ -174,17 +173,17 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 				typeDef.setConstraint(Binding.get(type.getBinding()));
 			}
 			typeDef.setConstraint(HasValueFlag.ENABLED); // simple type
-			
+
 			// set metadata
 			typeDef.setLocation(getSource().getLocation());
 			if (type.getDescription() != null) {
 				typeDef.setDescription(type.getDescription().toString());
 			}
-			
+
 			result = typeDef;
 			schema.addType(result);
 		}
-		
+
 		return result;
 	}
 

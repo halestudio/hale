@@ -18,17 +18,17 @@ package eu.esdihumboldt.cst.functions.numeric;
  * @author Kevin Mais
  */
 public interface MathematicalExpressionFunction {
-	
+
 	/**
 	 * the mathematical expression function Id
 	 */
 	public static final String ID = "eu.esdihumboldt.cst.functions.numeric.mathexpression";
-	
+
 	/**
 	 * Name of the parameter specifying the mathematical expression.
 	 */
 	public static final String PARAMETER_EXPRESSION = "expression";
-	
+
 	/**
 	 * Entity name for variables.
 	 */

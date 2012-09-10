@@ -14,11 +14,13 @@ package eu.esdihumboldt.specification.mediator.usermanagement;
 import java.util.Date;
 
 /**
- * A ValidatyDates Interface allows to specify a start and end date of a period in which user data are valid.
+ * A ValidatyDates Interface allows to specify a start and end date of a period
+ * in which user data are valid.
  * 
  * @author Anna Pitaev, Logica CMG
  * @version $Id: ValidatyDates.java,v 1.1 2007-10-19 10:03:07 pitaeva Exp $
- * @Deprecated too complex for the prototype needs, can be used for the Production 
+ * @Deprecated too complex for the prototype needs, can be used for the
+ *             Production
  */
 
 @Deprecated
@@ -28,10 +30,9 @@ public interface ValidatyDates {
 	 * 
 	 * @return the first point in time on which validity/effectivity occurs.
 	 */
-	
+
 	public Date getStartDate();
-	
-	
+
 	/**
 	 * 
 	 * @return the last point in time for which a validity/effectivity occurs.
@@ -40,4 +41,3 @@ public interface ValidatyDates {
 	public Date getEndDate();
 
 }
-

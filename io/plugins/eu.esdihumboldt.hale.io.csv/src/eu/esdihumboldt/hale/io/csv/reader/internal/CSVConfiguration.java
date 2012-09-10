@@ -24,21 +24,21 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 @Immutable
 @Constraint(mutable = false)
 public class CSVConfiguration implements TypeConstraint, CSVConstants {
-	
+
 	private final char separator;
-	
+
 	private final char quote;
-	
+
 	private final char escape;
-	
+
 	private final boolean skip_first_line;
-	
+
 	/**
 	 * default constructor
 	 */
-	
+
 	public CSVConfiguration() {
-		this(DEFAULT_SEPARATOR, DEFAULT_QUOTE, DEFAULT_ESCAPE, false);	
+		this(DEFAULT_SEPARATOR, DEFAULT_QUOTE, DEFAULT_ESCAPE, false);
 	}
 
 	/**
@@ -92,5 +92,5 @@ public class CSVConfiguration implements TypeConstraint, CSVConstants {
 		// must be set explicitly
 		return false;
 	}
-	
+
 }

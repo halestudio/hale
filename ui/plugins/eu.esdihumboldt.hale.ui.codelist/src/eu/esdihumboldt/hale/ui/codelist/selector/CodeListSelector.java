@@ -18,12 +18,13 @@ import eu.esdihumboldt.hale.common.codelist.CodeList;
 
 /**
  * Interface for components to select code lists from.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface CodeListSelector {
+
 	/**
 	 * Get the control.
 	 * 

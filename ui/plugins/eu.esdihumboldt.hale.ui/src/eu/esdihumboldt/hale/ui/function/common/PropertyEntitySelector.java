@@ -63,9 +63,9 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	 * @param parentType the parentType to set
 	 */
 	public void setParentType(TypeEntityDefinition parentType) {
-		boolean forceUpdate = this.parentType != null && 
-				!Objects.equal(this.parentType, parentType);
-		
+		boolean forceUpdate = this.parentType != null
+				&& !Objects.equal(this.parentType, parentType);
+
 		this.parentType = parentType;
 		// reset candidates?? refresh viewer?
 		if (forceUpdate) {
@@ -79,7 +79,8 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	 *      AbstractParameter)
 	 */
 	@Override
-	protected EntityDialog createEntityDialog(Shell parentShell, SchemaSpaceID ssid, PropertyParameter field) {
+	protected EntityDialog createEntityDialog(Shell parentShell, SchemaSpaceID ssid,
+			PropertyParameter field) {
 		String title;
 		switch (ssid) {
 		case SOURCE:
@@ -100,7 +101,7 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	protected Entity createEntity(EntityDefinition element) {
 		if (element instanceof PropertyEntityDefinition) {
 			Property property = new DefaultProperty((PropertyEntityDefinition) element);
-			//TODO configure entity?
+			// TODO configure entity?
 			return property;
 		}
 
@@ -108,30 +109,32 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	}
 
 	private static ViewerFilter[] createFilters(PropertyParameter field) {
-		if(field == null){
+		if (field == null) {
 			return new ViewerFilter[0];
 		}
 
 		List<PropertyCondition> conditions = field.getConditions();
-				
+
 		if (conditions == null)
 			return new ViewerFilter[0];
 
 		ViewerFilter[] filters = new ViewerFilter[conditions.size()];
 		int i = 0;
 		for (final PropertyCondition condition : conditions) {
-			filters[i] = new ViewerFilter() {				
+			filters[i] = new ViewerFilter() {
+
 				@Override
 				public boolean select(Viewer viewer, Object parentElement, Object element) {
 					if (element instanceof PropertyEntityDefinition) {
 						Property property = new DefaultProperty((PropertyEntityDefinition) element);
 						return condition.accept(property);
-					} else
+					}
+					else
 						return false;
 				}
 			};
 		}
 		return filters;
 	}
-	
+
 }

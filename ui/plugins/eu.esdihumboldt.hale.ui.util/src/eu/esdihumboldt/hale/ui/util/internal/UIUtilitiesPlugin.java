@@ -17,7 +17,7 @@ public class UIUtilitiesPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static UIUtilitiesPlugin plugin;
-	
+
 	/**
 	 * The constructor
 	 */
@@ -45,7 +45,7 @@ public class UIUtilitiesPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static UIUtilitiesPlugin getDefault() {

@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings("all")
 public class Messages extends NLS {
+
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.ui.common.internal.messages"; //$NON-NLS-1$
 
 	public static String URIAttributeEditor_0;
@@ -67,7 +68,7 @@ public class Messages extends NLS {
 
 	public static String FeatureFilterFormDialog_0;
 	public static String FeatureFilterFormDialog_1;
-	
+
 	public static String CRSPreferencePage_0;
 	public static String CRSPreferencePage_2;
 	public static String CRSPreferencePage_3;
@@ -78,7 +79,7 @@ public class Messages extends NLS {
 	public static String CRSPreferencePage_8;
 	public static String CRSPreferencePage_11;
 	public static String CRSPreferencePage_12;
-	
+
 	public static String ListFunctionsDialog_1;
 	public static String ListFunctionsDialog_2;
 	public static String ListFunctionsDialog_4;

@@ -12,16 +12,16 @@
 package eu.esdihumboldt.specification.workflow.exceptions;
 
 /**
- *
+ * 
  * @author mgone
  */
 class InputTypeException extends Exception {
 
-    public InputTypeException(String string) {
-        super(string);
-    }
+	public InputTypeException(String string) {
+		super(string);
+	}
 
-    public InputTypeException() {
-    }
+	public InputTypeException() {
+	}
 
 }

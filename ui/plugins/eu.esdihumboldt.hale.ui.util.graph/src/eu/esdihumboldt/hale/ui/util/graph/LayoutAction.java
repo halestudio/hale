@@ -19,21 +19,23 @@ import eu.esdihumboldt.hale.ui.util.graph.internal.GraphUIUtilBundle;
 
 /**
  * Action that triggers relayouting a {@link GraphViewer}
+ * 
  * @author Simon Templer
  */
 public class LayoutAction extends Action {
 
 	private final GraphViewer viewer;
-	
+
 	/**
 	 * Constructor
+	 * 
 	 * @param viewer the graph viewer to layout
 	 */
 	public LayoutAction(GraphViewer viewer) {
 		super();
-		
+
 		this.viewer = viewer;
-		
+
 		setText("Apply layout");
 		setToolTipText("Layout the graph");
 		setImageDescriptor(GraphUIUtilBundle.getImageDescriptor("icons/layout.gif"));

@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunctionExte
 
 /**
  * Function reference topic for a set of functions
+ * 
  * @author Simon Templer
  */
 public class FunctionsTopic implements ITopic, FunctionReferenceConstants {
@@ -33,17 +34,17 @@ public class FunctionsTopic implements ITopic, FunctionReferenceConstants {
 	private final AbstractFunctionExtension<?> functions;
 	private final String label;
 	private final String href;
-	
+
 	private ITopic[] functionTopics;
 
 	/**
 	 * Create the topic for the given function extension
+	 * 
 	 * @param functions the function extension
 	 * @param label the topic label
-	 * @param href the reference to the topic content, may be <code>null</code> 
+	 * @param href the reference to the topic content, may be <code>null</code>
 	 */
-	public FunctionsTopic(AbstractFunctionExtension<?> functions, String label, 
-			String href) {
+	public FunctionsTopic(AbstractFunctionExtension<?> functions, String label, String href) {
 		this.functions = functions;
 		this.label = label;
 		this.href = href;
@@ -88,14 +89,14 @@ public class FunctionsTopic implements ITopic, FunctionReferenceConstants {
 	public ITopic[] getSubtopics() {
 		if (functionTopics == null) {
 			Collection<ITopic> topics = new ArrayList<ITopic>();
-			
+
 			// initialize function topics
 			for (AbstractFunction<?> function : functions.getElements()) {
-				//TODO topic per category?!
+				// TODO topic per category?!
 				ITopic functionTopic = new FunctionTopic(function);
 				topics.add(functionTopic);
 			}
-			
+
 			if (topics.isEmpty()) {
 				functionTopics = NO_TOPICS;
 			}
@@ -103,7 +104,7 @@ public class FunctionsTopic implements ITopic, FunctionReferenceConstants {
 				functionTopics = topics.toArray(new ITopic[topics.size()]);
 			}
 		}
-		
+
 		return functionTopics;
 	}
 

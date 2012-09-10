@@ -39,7 +39,7 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
  * @author Patrick Lieb
  */
 public class FunctionFigure extends CustomShapeFigure {
-	
+
 	private static final Resource<Font> SMALL_ITALIC_FONT_RESOURCE = new Resource<Font>() {
 
 		@Override
@@ -55,15 +55,13 @@ public class FunctionFigure extends CustomShapeFigure {
 
 	/**
 	 * Create a new function figure.
-	 * @param resourceManager
-	 *            the resource manager
-	 * @param parameters
-	 *            the Parameters of the Function
-	 * @param showToolTip
-	 *            if the ToolTip should be shown
+	 * 
+	 * @param resourceManager the resource manager
+	 * @param parameters the Parameters of the Function
+	 * @param showToolTip if the ToolTip should be shown
 	 */
-	public FunctionFigure(ResourceManager resourceManager, 
-			Set<FunctionParameter> parameters, boolean showToolTip) {
+	public FunctionFigure(ResourceManager resourceManager, Set<FunctionParameter> parameters,
+			boolean showToolTip) {
 		super(new StretchedHexagon(10));
 
 		setAntialias(SWT.ON);
@@ -75,8 +73,7 @@ public class FunctionFigure extends CustomShapeFigure {
 		setLayoutManager(gridLayout);
 
 		Label label = new Label();
-		GridData gridData = new GridData(GridData.FILL, GridData.BEGINNING,
-				true, false, 3, 1);
+		GridData gridData = new GridData(GridData.FILL, GridData.BEGINNING, true, false, 3, 1);
 		add(label, gridData);
 		setTextLabel(label);
 		setIconLabel(label);
@@ -91,8 +88,8 @@ public class FunctionFigure extends CustomShapeFigure {
 			}
 
 			Label name = new Label();
-			GridData nameGrid = new GridData(GridData.BEGINNING, GridData.BEGINNING,
-					true, false, 3, 1);
+			GridData nameGrid = new GridData(GridData.BEGINNING, GridData.BEGINNING, true, false,
+					3, 1);
 			name.setText("Defined Parameters");
 			if (font != null) {
 				name.setFont(font);
@@ -102,14 +99,13 @@ public class FunctionFigure extends CustomShapeFigure {
 			Iterator<FunctionParameter> iter = parameters.iterator();
 			while (iter.hasNext()) {
 				FunctionParameter para = iter.next();
-				
+
 				// tip
 				Label descriptionlabel = new Label();
 
 				if (showToolTip && para.getDescription() != null) {
-					FieldDecoration fieldDecoration = FieldDecorationRegistry
-							.getDefault().getFieldDecoration(
-									FieldDecorationRegistry.DEC_INFORMATION);
+					FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+							.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 					Image image = fieldDecoration.getImage();
 
 					IFigure descriptionfigure = new Label(para.getDescription());
@@ -117,21 +113,19 @@ public class FunctionFigure extends CustomShapeFigure {
 					descriptionlabel.setToolTip(descriptionfigure);
 				}
 
-				GridData descriptiongrid = new GridData(GridData.CENTER,
-						GridData.CENTER, false, false);
+				GridData descriptiongrid = new GridData(GridData.CENTER, GridData.CENTER, false,
+						false);
 				add(descriptionlabel, descriptiongrid);
-				
+
 				// parameter name
 				name = new Label();
-				nameGrid = new GridData(GridData.BEGINNING, GridData.CENTER, true,
-						false);
+				nameGrid = new GridData(GridData.BEGINNING, GridData.CENTER, true, false);
 				name.setText(para.getDisplayName());
 				add(name, nameGrid);
 
 				// parameter occurrence
 				Label occurence = new Label();
-				GridData occurenceGrid = new GridData(GridData.END, GridData.CENTER,
-						false, false);
+				GridData occurenceGrid = new GridData(GridData.END, GridData.CENTER, false, false);
 				occurence.setText(getOccurence(para));
 				if (font != null) {
 					occurence.setFont(font);
@@ -140,18 +134,20 @@ public class FunctionFigure extends CustomShapeFigure {
 			}
 		}
 	}
-	
-	private String getOccurence(FunctionParameter parameter){
+
+	private String getOccurence(FunctionParameter parameter) {
 		String result = "";
-		if(parameter.getMinOccurrence() == -1){
+		if (parameter.getMinOccurrence() == -1) {
 			result += "n";
-		} else {
+		}
+		else {
 			result += parameter.getMinOccurrence();
 		}
 		result += "..";
-		if(parameter.getMaxOccurrence() == -1){
+		if (parameter.getMaxOccurrence() == -1) {
 			result += "n";
-		} else {
+		}
+		else {
 			result += parameter.getMaxOccurrence();
 		}
 		return result;

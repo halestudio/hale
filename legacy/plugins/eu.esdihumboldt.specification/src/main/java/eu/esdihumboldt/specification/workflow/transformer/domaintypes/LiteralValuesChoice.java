@@ -15,8 +15,8 @@ import java.io.Serializable;
 
 import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
-
-/**A super interface that identifies the type of literal input/output and 
+/**
+ * A super interface that identifies the type of literal input/output and
  * provides supporting information
  * 
  * @author Moses Gone
@@ -24,7 +24,4 @@ import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 @ReferenceSpecification("OGC 05-007r6:1.0.0 9.3.1")
 public interface LiteralValuesChoice extends Serializable {
 
-
-
 }
-

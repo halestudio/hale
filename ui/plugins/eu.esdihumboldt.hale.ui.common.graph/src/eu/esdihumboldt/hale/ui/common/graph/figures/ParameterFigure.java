@@ -34,17 +34,13 @@ import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 public class ParameterFigure extends CustomShapeFigure {
 
 	/**
-	 * @param painter
-	 *            the painter drawing the figure shape
-	 * @param occurrence
-	 *            the occurrence of the figure
-	 * @param description
-	 *            the description of the figure
-	 * @param showToolTip
-	 *            if the ToolTip should be shown
+	 * @param painter the painter drawing the figure shape
+	 * @param occurrence the occurrence of the figure
+	 * @param description the description of the figure
+	 * @param showToolTip if the ToolTip should be shown
 	 */
-	public ParameterFigure(ShapePainter painter, String occurrence,
-			String description, boolean showToolTip) {
+	public ParameterFigure(ShapePainter painter, String occurrence, String description,
+			boolean showToolTip) {
 		super(painter);
 
 		final Display display = Display.getCurrent();
@@ -58,30 +54,26 @@ public class ParameterFigure extends CustomShapeFigure {
 		setLayoutManager(gridLayout);
 
 		Label namelabel = new Label();
-		GridData namegrid = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
+		GridData namegrid = new GridData(GridData.FILL, GridData.FILL, true, true);
 		add(namelabel, namegrid);
 		setTextLabel(namelabel);
 		setIconLabel(namelabel);
 
 		Label textlabel = new Label(occurrence);
-		GridData textgrid = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
+		GridData textgrid = new GridData(GridData.FILL, GridData.FILL, true, true);
 		Font font = new Font(display, "Arial", 8, SWT.ITALIC);
 		textlabel.setFont(font);
 		add(textlabel, textgrid);
 
 		if (showToolTip) {
-			FieldDecoration fieldDecoration = FieldDecorationRegistry
-					.getDefault().getFieldDecoration(
-							FieldDecorationRegistry.DEC_INFORMATION);
+			FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 			Image image = fieldDecoration.getImage();
 
 			Label descriptionlabel = new Label(image);
 			IFigure descriptionfigure = new Label(description);
 			descriptionlabel.setToolTip(descriptionfigure);
-			GridData descriptiongrid = new GridData(GridData.FILL,
-					GridData.FILL, true, true);
+			GridData descriptiongrid = new GridData(GridData.FILL, GridData.FILL, true, true);
 			add(descriptionlabel, descriptiongrid);
 		}
 	}

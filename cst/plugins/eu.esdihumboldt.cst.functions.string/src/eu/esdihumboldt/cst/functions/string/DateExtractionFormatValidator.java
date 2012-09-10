@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.Validator;
  * @author Kai Schwierczek
  */
 public class DateExtractionFormatValidator implements Validator {
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.extension.function.Validator#validate(java.lang.String)
 	 */

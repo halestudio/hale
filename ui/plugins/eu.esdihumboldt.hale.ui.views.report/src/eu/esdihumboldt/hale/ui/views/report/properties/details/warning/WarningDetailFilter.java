@@ -34,7 +34,7 @@ public class WarningDetailFilter implements IFilter {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 }

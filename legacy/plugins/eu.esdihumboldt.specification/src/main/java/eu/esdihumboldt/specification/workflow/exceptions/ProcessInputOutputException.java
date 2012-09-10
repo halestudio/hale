@@ -13,16 +13,16 @@
 package eu.esdihumboldt.specification.workflow.exceptions;
 
 /**
- *
+ * 
  * @author mgone
  */
-public class ProcessInputOutputException extends Exception{
+public class ProcessInputOutputException extends Exception {
 
-    public ProcessInputOutputException(){
-    }
+	public ProcessInputOutputException() {
+	}
 
-    public ProcessInputOutputException(String message){
-        super(message);
-    }
+	public ProcessInputOutputException(String message) {
+		super(message);
+	}
 
 }

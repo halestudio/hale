@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
  * HALE alignment reader
+ * 
  * @author Simon Templer
  */
 public class DefaultAlignmentReader extends AbstractAlignmentReader {
@@ -59,8 +60,7 @@ public class DefaultAlignmentReader extends AbstractAlignmentReader {
 
 		InputStream in = getSource().getInput();
 		try {
-			alignment = DefaultAlignmentIO.load(in , reporter, getSourceSchema(), 
-					getTargetSchema());
+			alignment = DefaultAlignmentIO.load(in, reporter, getSourceSchema(), getTargetSchema());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
@@ -68,7 +68,7 @@ public class DefaultAlignmentReader extends AbstractAlignmentReader {
 		} finally {
 			in.close();
 		}
-		
+
 		progress.end();
 		reporter.setSuccess(true);
 		return reporter;

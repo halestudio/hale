@@ -19,22 +19,24 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Adapter for using  an {@link ITreeContentProvider} as an 
- * {@link ITreePathContentProvider}. Does not support providing parent
- * tree paths.
+ * Adapter for using an {@link ITreeContentProvider} as an
+ * {@link ITreePathContentProvider}. Does not support providing parent tree
+ * paths.
+ * 
  * @see #getParents(Object)
  * 
  * @author Simon Templer
  */
 public class TreePathProviderAdapter implements ITreePathContentProvider {
-	
-	private static final TreePath[] EMPTY_PATHS = new TreePath[]{};
-	
+
+	private static final TreePath[] EMPTY_PATHS = new TreePath[] {};
+
 	private final ITreeContentProvider contentProvider;
 
 	/**
-	 * Create an {@link ITreePathContentProvider} wrapping an 
+	 * Create an {@link ITreePathContentProvider} wrapping an
 	 * {@link ITreeContentProvider}.
+	 * 
 	 * @param contentProvider the tree content provider to wrap
 	 */
 	public TreePathProviderAdapter(ITreeContentProvider contentProvider) {
@@ -94,6 +96,7 @@ public class TreePathProviderAdapter implements ITreePathContentProvider {
 
 	/**
 	 * Get the internal tree content provider.
+	 * 
 	 * @return the internal tree content provider
 	 */
 	public ITreeContentProvider getTreeContentProvider() {

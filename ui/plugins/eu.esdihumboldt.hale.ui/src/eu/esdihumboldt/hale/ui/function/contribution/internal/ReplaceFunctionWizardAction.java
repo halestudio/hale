@@ -20,29 +20,29 @@ import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
-
 /**
  * Action for creating a function wizard based on a {@link SchemaSelection}
+ * 
  * @author Simon Templer
  */
-public class ReplaceFunctionWizardAction extends AbstractWizardAction<SchemaSelectionFunctionContribution> {
+public class ReplaceFunctionWizardAction extends
+		AbstractWizardAction<SchemaSelectionFunctionContribution> {
 
 	private final Cell originalCell;
-	
+
 	/**
 	 * Constructor
-	 *
+	 * 
 	 * @param functionContribution the parent contribution
 	 * @param originalCell the original cell
 	 * @param descriptor the function wizard descriptor
 	 * @param alignmentService the alignment service
 	 */
-	public ReplaceFunctionWizardAction(
-			SchemaSelectionFunctionContribution functionContribution,
+	public ReplaceFunctionWizardAction(SchemaSelectionFunctionContribution functionContribution,
 			Cell originalCell, FunctionWizardDescriptor<?> descriptor,
 			AlignmentService alignmentService) {
 		super(functionContribution, descriptor, alignmentService);
-		
+
 		this.originalCell = originalCell;
 	}
 

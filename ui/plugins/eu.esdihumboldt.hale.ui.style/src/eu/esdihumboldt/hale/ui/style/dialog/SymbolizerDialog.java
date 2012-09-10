@@ -36,27 +36,27 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SymbolizerDialog extends TrayDialog {
-	
+
 	private static final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private Combo combo;
-	
+
 	private Symbolizer symbolizer = null;
-	
+
 	/**
 	 * @see TrayDialog#TrayDialog(Shell)
 	 */
 	public SymbolizerDialog(Shell shell) {
 		super(shell);
 	}
-	
+
 	/**
 	 * @see Window#configureShell(Shell)
 	 */
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		
+
 		newShell.setText(Messages.SymbolizerDialog_ShellSymbolizerText);
 	}
 
@@ -67,17 +67,17 @@ public class SymbolizerDialog extends TrayDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite page = (Composite) super.createDialogArea(parent);
 		page.setLayout(new RowLayout(SWT.VERTICAL));
-		
+
 		Label label = new Label(page, SWT.NONE);
 		label.setText(Messages.SymbolizerDialog_LabelText);
-		
+
 		combo = new Combo(page, SWT.READ_ONLY);
 		combo.add(LineSymbolizer.class.getSimpleName());
 		combo.add(PolygonSymbolizer.class.getSimpleName());
 		combo.add(PointSymbolizer.class.getSimpleName());
-		
+
 		combo.select(0);
-		
+
 		return page;
 	}
 
@@ -94,11 +94,11 @@ public class SymbolizerDialog extends TrayDialog {
 			symbolizer = styleBuilder.createPointSymbolizer();
 			break;
 		case 0:
-			// fall through 
+			// fall through
 		default:
 			symbolizer = styleBuilder.createLineSymbolizer();
 		}
-		
+
 		super.okPressed();
 	}
 

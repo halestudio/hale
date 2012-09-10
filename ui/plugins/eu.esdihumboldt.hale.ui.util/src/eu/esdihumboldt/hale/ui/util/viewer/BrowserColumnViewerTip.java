@@ -24,21 +24,21 @@ import eu.esdihumboldt.hale.ui.util.tip.BrowserTip;
 
 /**
  * Enables a tool tip for a {@link ColumnViewer}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public abstract class BrowserColumnViewerTip {
-	
+
 	private final BrowserTip tip;
-	
+
 	private final ColumnViewer viewer;
-	
+
 	private Shell toolShell = null;
-	
+
 	private ViewerCell toolCell = null;
-	
+
 	private int tipCharThreshold = 10;
 
 	/**
@@ -51,18 +51,18 @@ public abstract class BrowserColumnViewerTip {
 	 */
 	public BrowserColumnViewerTip(ColumnViewer viewer, int width, int height, boolean plainText) {
 		super();
-		
+
 		this.viewer = viewer;
-		
+
 		viewer.getControl().addMouseTrackListener(new MouseTrackAdapter() {
 
 			@Override
 			public void mouseHover(MouseEvent e) {
 				showToolTip(e.x - 1, e.y - 1);
 			}
-			
+
 		});
-		
+
 		tip = new BrowserTip(width, height, plainText);
 		tip.setHeightAdjustment(5);
 	}
@@ -70,40 +70,39 @@ public abstract class BrowserColumnViewerTip {
 	/**
 	 * Show tooltip for the cell at the given position
 	 * 
-	 * @param x the widget relative x ordinate 
+	 * @param x the widget relative x ordinate
 	 * @param y the widget relative y ordinate
 	 */
 	protected void showToolTip(int x, int y) {
 		ViewerCell cell = viewer.getCell(new Point(x, y));
-		
+
 		if (toolCell != null && toolCell.equals(cell) && BrowserTip.toolTipVisible(toolShell)) {
 			// tooltip already visible -> do nothing
 			return;
 		}
-		
+
 		toolCell = cell;
 		BrowserTip.hideToolTip(toolShell);
-		
+
 		if (cell != null) {
 			Object element = cell.getElement();
 			int col = cell.getColumnIndex();
-			
+
 			/**
 			 * It would be very nice if we could get the column from the viewer
 			 * and the attached label provider, but the getViewerColumn method
 			 * is only package visible
 			 */
-			
+
 			String text = cell.getText();
-			
+
 			String tipText = getToolTip(element, col, text);
-			
+
 			if (tipText != null && !tipText.isEmpty() && tipText.length() >= tipCharThreshold) {
 				Rectangle cellBounds = cell.getBounds();
 //				toolShell = tip.showToolTip(viewer.getControl(), x, y, tipText);
-				toolShell = tip.showToolTip(viewer.getControl(), cellBounds.x, 
-						cellBounds.y + cellBounds.height, tipText, cellBounds,
-						viewer.getControl());
+				toolShell = tip.showToolTip(viewer.getControl(), cellBounds.x, cellBounds.y
+						+ cellBounds.height, tipText, cellBounds, viewer.getControl());
 			}
 		}
 	}
@@ -117,7 +116,6 @@ public abstract class BrowserColumnViewerTip {
 	 * 
 	 * @return the tool tip, <code>null</code> if no tool tip shall be shown
 	 */
-	protected abstract String getToolTip(Object element, int col,
-			String text);
+	protected abstract String getToolTip(Object element, int col, String text);
 
 }

@@ -22,20 +22,21 @@ import eu.esdihumboldt.hale.doc.util.toc.OneTopicToc;
 
 /**
  * Example projects reference table of contents provider.
+ * 
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
 public class ExampleReferenceToc extends AbstractTocProvider implements ExamplesConstants {
-	
+
 	/**
 	 * TOC contribution for the examples reference.
 	 */
 	public static class ExampleTocContribution implements ITocContribution {
 
-		private static final String[] NO_DOCS = new String[]{};
+		private static final String[] NO_DOCS = new String[] {};
 
 		private final String locale;
-		
+
 		/**
 		 * @param locale the locale
 		 */
@@ -124,7 +125,7 @@ public class ExampleReferenceToc extends AbstractTocProvider implements Examples
 	 */
 	@Override
 	public ITocContribution[] getTocContributions(String locale) {
-		return new ITocContribution[]{new ExampleTocContribution(locale)};
+		return new ITocContribution[] { new ExampleTocContribution(locale) };
 	}
 
 }

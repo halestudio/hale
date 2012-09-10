@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
  * @author Simon Templer
  */
 public class MappingView extends AbstractMappingView {
-	
+
 	/**
 	 * The view ID
 	 */
@@ -55,22 +55,23 @@ public class MappingView extends AbstractMappingView {
 	@Override
 	public void createViewControl(Composite parent) {
 		super.createViewControl(parent);
-		
-		getSite().getWorkbenchWindow().getSelectionService().addPostSelectionListener(selectionListener = new ISelectionListener() {
-			
-			@Override
-			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-				if (!(selection instanceof SchemaSelection)) {
-					// only react on schema selections
-					return;
-				}
-				
-				if (part != MappingView.this) {
-					update((SchemaSelection) selection);
-				}
-			}
-		});
-		
+
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addPostSelectionListener(selectionListener = new ISelectionListener() {
+
+					@Override
+					public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+						if (!(selection instanceof SchemaSelection)) {
+							// only react on schema selections
+							return;
+						}
+
+						if (part != MappingView.this) {
+							update((SchemaSelection) selection);
+						}
+					}
+				});
+
 		SchemaSelection current = SchemaSelectionHelper.getSchemaSelection();
 		if (current != null) {
 			update(current);
@@ -79,24 +80,27 @@ public class MappingView extends AbstractMappingView {
 
 	/**
 	 * Update the view
+	 * 
 	 * @param selection the selection
 	 */
 	protected void update(SchemaSelection selection) {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		Alignment alignment = as.getAlignment();
-		
-		List<Cell> cells = new ArrayList<Cell>(); 
-		
+
+		List<Cell> cells = new ArrayList<Cell>();
+
 		Set<EntityDefinition> sourceItems;
 		Set<EntityDefinition> targetItems;
-		
+
 		if (selection instanceof IStructuredSelection) {
-			// prefer getting information from the IStructuredSelection, which from
+			// prefer getting information from the IStructuredSelection, which
+			// from
 			// the Schema Explorer only contains the recently selected elements
 			// on one side
 			sourceItems = new HashSet<EntityDefinition>();
 			targetItems = new HashSet<EntityDefinition>();
-			
+
 			for (Object object : ((IStructuredSelection) selection).toArray()) {
 				if (object instanceof EntityDefinition) {
 					EntityDefinition def = (EntityDefinition) object;
@@ -105,8 +109,8 @@ public class MappingView extends AbstractMappingView {
 						targetItems.add(def);
 						break;
 					case SOURCE:
-						default:
-							sourceItems.add(def);
+					default:
+						sourceItems.add(def);
 					}
 				}
 			}
@@ -115,7 +119,7 @@ public class MappingView extends AbstractMappingView {
 			sourceItems = selection.getSourceItems();
 			targetItems = selection.getTargetItems();
 		}
-		
+
 		// find cells associated with the selection
 		for (Cell cell : alignment.getCells()) {
 			if ((cell.getSource() != null && associatedWith(cell.getSource(), sourceItems))
@@ -123,20 +127,19 @@ public class MappingView extends AbstractMappingView {
 				cells.add(cell);
 			}
 		}
-		
+
 		getViewer().setInput(cells);
 	}
 
-	private boolean associatedWith(
-			ListMultimap<String, ? extends Entity> entities,
+	private boolean associatedWith(ListMultimap<String, ? extends Entity> entities,
 			Set<EntityDefinition> entityDefs) {
 		for (Entity entity : entities.values()) {
 			if (entityDefs.contains(entity.getDefinition())) {
 				return true;
 			}
-			//XXX also add parent type cells?
+			// XXX also add parent type cells?
 		}
-		
+
 		return false;
 	}
 
@@ -146,9 +149,10 @@ public class MappingView extends AbstractMappingView {
 	@Override
 	public void dispose() {
 		if (selectionListener != null) {
-			getSite().getWorkbenchWindow().getSelectionService().removePostSelectionListener(selectionListener);
+			getSite().getWorkbenchWindow().getSelectionService()
+					.removePostSelectionListener(selectionListener);
 		}
-		
+
 		super.dispose();
 	}
 

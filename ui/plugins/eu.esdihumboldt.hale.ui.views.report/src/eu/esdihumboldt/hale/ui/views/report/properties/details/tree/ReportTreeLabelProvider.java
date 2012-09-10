@@ -26,15 +26,16 @@ import eu.esdihumboldt.hale.ui.views.report.properties.details.ReportDetailsPage
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportTreeLabelProvider extends ReportListLabelProvider {
+
 	@Override
 	public String getText(Object element) {
 		if (element instanceof Message) {
 			return ((Message) element).getFormattedMessage();
 		}
-		
+
 		return super.getText(element);
 	}
-	
+
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
 	 */
@@ -43,14 +44,15 @@ public class ReportTreeLabelProvider extends ReportListLabelProvider {
 		if (element instanceof Message) {
 			// get the right image
 			Message message = (Message) element;
-			
+
 			String img = "icons/warning.gif";
 			if (message.getStackTrace() != null && !message.getStackTrace().equals("")) {
 				img = "icons/error_log.gif";
 			}
 
 			return getImage(img);
-		} else
+		}
+		else
 			return super.getImage(element);
 	}
 }

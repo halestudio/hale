@@ -25,8 +25,9 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 
 /**
  * Graph content provider that models cells as edges. Supports an
- * {@link Alignment}, a {@link Cell} or an {@link Iterable} of {@link Cell}s
- * as input.
+ * {@link Alignment}, a {@link Cell} or an {@link Iterable} of {@link Cell}s as
+ * input.
+ * 
  * @author Simon Templer
  */
 @Deprecated
@@ -55,10 +56,10 @@ public class SimpleCellContentProvider implements IGraphContentProvider {
 	public Object getSource(Object rel) {
 		if (rel instanceof Cell) {
 			Cell cell = (Cell) rel;
-			
+
 			return getEntity(cell.getSource());
 		}
-		
+
 		return null;
 	}
 
@@ -69,10 +70,10 @@ public class SimpleCellContentProvider implements IGraphContentProvider {
 	public Object getDestination(Object rel) {
 		if (rel instanceof Cell) {
 			Cell cell = (Cell) rel;
-			
+
 			return getEntity(cell.getTarget());
 		}
-		
+
 		return null;
 	}
 
@@ -80,8 +81,8 @@ public class SimpleCellContentProvider implements IGraphContentProvider {
 		if (entities.isEmpty()) {
 			return null;
 		}
-		
-		//FIXME what about the other entities?!
+
+		// FIXME what about the other entities?!
 		return entities.values().iterator().next();
 	}
 
@@ -90,20 +91,21 @@ public class SimpleCellContentProvider implements IGraphContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object input) {
-		//FIXME what about cells that refer to multiple source or target entities?!
-		
+		// FIXME what about cells that refer to multiple source or target
+		// entities?!
+
 		if (input instanceof Alignment) {
 			return ((Alignment) input).getCells().toArray();
 		}
-		
+
 		if (input instanceof Cell) {
-			return new Object[]{input};
+			return new Object[] { input };
 		}
-		
+
 		if (input instanceof Iterable<?>) {
 			return Iterables.toArray((Iterable<?>) input, Object.class);
 		}
-		
+
 		return null;
 	}
 

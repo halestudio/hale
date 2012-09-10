@@ -16,11 +16,12 @@ import org.eclipse.jface.viewers.TreeViewer;
 
 /**
  * Content provider that only displays types and not their children
+ * 
  * @author Simon Templer
  */
 public class TypesContentProvider extends TypeIndexContentProvider {
-	
-	private static final Object[] EMPTY = new Object[]{};
+
+	private static final Object[] EMPTY = new Object[] {};
 
 	/**
 	 * @see TypeIndexContentProvider#TypeIndexContentProvider(TreeViewer)

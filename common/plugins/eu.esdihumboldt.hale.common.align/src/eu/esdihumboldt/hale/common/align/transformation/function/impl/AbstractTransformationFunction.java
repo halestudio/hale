@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationF
 
 /**
  * Transformation function base class
+ * 
  * @param <E> the transformation engine type
  * 
  * @author Simon Templer
@@ -37,28 +38,31 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 */
 	@Override
 	public void setParameters(ListMultimap<String, String> parameters) {
-		this.parameters = (parameters == null)?(null):(Multimaps.unmodifiableListMultimap(parameters));
+		this.parameters = (parameters == null) ? (null) : (Multimaps
+				.unmodifiableListMultimap(parameters));
 	}
 
 	/**
 	 * Get the function parameters
+	 * 
 	 * @return the parameters, may be <code>null</code> if there are none
 	 */
 	public ListMultimap<String, String> getParameters() {
 		return parameters;
 	}
-	
+
 	/**
 	 * Checks if a certain parameter is defined at least a given number of
 	 * times. Throws a {@link TransformationException} otherwise.
+	 * 
 	 * @param parameterName the parameter name
 	 * @param minCount the minimum count the parameter must be present
 	 * @throws TransformationException if the parameter doesn't exist the given
-	 *   number of times
+	 *             number of times
 	 */
-	protected void checkParameter(String parameterName, int minCount) throws TransformationException {
-		if (getParameters() == null
-				|| getParameters().get(parameterName) == null
+	protected void checkParameter(String parameterName, int minCount)
+			throws TransformationException {
+		if (getParameters() == null || getParameters().get(parameterName) == null
 				|| getParameters().get(parameterName).size() < minCount) {
 			if (minCount == 1) {
 				throw new TransformationException(MessageFormat.format(
@@ -66,46 +70,44 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 			}
 			else {
 				throw new TransformationException(MessageFormat.format(
-						"Parameter {0} is needed at least {1} times", 
-						parameterName, minCount));
+						"Parameter {0} is needed at least {1} times", parameterName, minCount));
 			}
 		}
 	}
-	
+
 	/**
-	 * Get the first parameter defined with the given parameter name.
-	 * Throws a {@link TransformationException} if such a parameter doesn't
-	 * exist.
+	 * Get the first parameter defined with the given parameter name. Throws a
+	 * {@link TransformationException} if such a parameter doesn't exist.
+	 * 
 	 * @param parameterName the parameter name
 	 * @return the parameter value
-	 * @throws TransformationException if a parameter with the given name 
-	 *   doesn't exist
+	 * @throws TransformationException if a parameter with the given name
+	 *             doesn't exist
 	 */
 	protected String getParameterChecked(String parameterName) throws TransformationException {
-		if (getParameters() == null
-				|| getParameters().get(parameterName) == null
+		if (getParameters() == null || getParameters().get(parameterName) == null
 				|| getParameters().get(parameterName).isEmpty()) {
 			throw new TransformationException(MessageFormat.format(
 					"Mandatory parameter {0} not defined", parameterName));
 		}
-		
+
 		return getParameters().get(parameterName).get(0);
 	}
-	
+
 	/**
-	 * Get the first parameter defined with the given parameter name. If no
-	 * such parameter exists, the given default value is returned.
+	 * Get the first parameter defined with the given parameter name. If no such
+	 * parameter exists, the given default value is returned.
+	 * 
 	 * @param parameterName the parameter name
 	 * @param defaultValue the default value for the parameter
 	 * @return the parameter value, or the default if none is specified
 	 */
 	protected String getOptionalParameter(String parameterName, String defaultValue) {
-		if (getParameters() == null
-				|| getParameters().get(parameterName) == null
+		if (getParameters() == null || getParameters().get(parameterName) == null
 				|| getParameters().get(parameterName).isEmpty()) {
 			return defaultValue;
 		}
-		
+
 		return getParameters().get(parameterName).get(0);
 	}
 

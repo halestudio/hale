@@ -13,7 +13,7 @@
 package eu.esdihumboldt.hale.common.instance.model;
 
 /**
- * This enumeration is used to identify the different data sets handled by the 
+ * This enumeration is used to identify the different data sets handled by the
  * application.
  */
 public enum DataSet {

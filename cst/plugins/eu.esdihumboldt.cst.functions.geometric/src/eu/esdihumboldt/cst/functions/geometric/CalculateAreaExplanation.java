@@ -27,18 +27,20 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 public class CalculateAreaExplanation extends AbstractCellExplanation {
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
-		
+
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		
-		if(target != null && source != null) {
+
+		if (target != null && source != null) {
 			String message = "Calculates the area of the geometry contained in the {1} property and assignes the result to the {0} property.";
-			
-			return MessageFormat.format(message, formatEntity(target, html, true), formatEntity(source, html, true));
+
+			return MessageFormat.format(message, formatEntity(target, html, true),
+					formatEntity(source, html, true));
 		}
 		return null;
 	}

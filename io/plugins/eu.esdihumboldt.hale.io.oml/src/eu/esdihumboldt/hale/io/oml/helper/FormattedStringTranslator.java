@@ -36,8 +36,7 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class FormattedStringTranslator implements FunctionTranslator,
-		FormattedStringFunction {
+public class FormattedStringTranslator implements FunctionTranslator, FormattedStringFunction {
 
 	private static final String INTERNALSEPERATOR = "--!-split-!--"; //$NON-NLS-1$
 
@@ -60,8 +59,8 @@ public class FormattedStringTranslator implements FunctionTranslator,
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
@@ -69,7 +68,7 @@ public class FormattedStringTranslator implements FunctionTranslator,
 		String concatenation = "";
 
 		for (ParameterValue val : params) {
-			// get original separator parameter 
+			// get original separator parameter
 			if (val.getName().equals(SEPARATOR)) {
 				separator = val.getValue();
 			}
@@ -82,7 +81,7 @@ public class FormattedStringTranslator implements FunctionTranslator,
 
 		String[] concat = concatenation.split(INTERNALSEPERATOR);
 		List<NamedEntityBean> src = cellBean.getSource();
-		
+
 		// create list of valid source variables
 		Set<String> sourceVars = new HashSet<String>();
 		for (NamedEntityBean bean : src) {
@@ -95,7 +94,7 @@ public class FormattedStringTranslator implements FunctionTranslator,
 				sourceVars.add(Joiner.on('.').join(children));
 			}
 		}
-		
+
 		StringBuffer pattern = new StringBuffer();
 		boolean first = true;
 		for (String thisElement : concat) {
@@ -106,7 +105,7 @@ public class FormattedStringTranslator implements FunctionTranslator,
 			else {
 				pattern.append(separator);
 			}
-			
+
 			String[] properties = thisElement.split(String
 					.valueOf(DetailedAbout.PROPERTY_DELIMITER));
 			String varString = Joiner.on('.').join(properties);
@@ -118,7 +117,7 @@ public class FormattedStringTranslator implements FunctionTranslator,
 			}
 			else {
 				// thisElement is just a string
-				pattern.append(thisElement); //TODO any escaping of {?
+				pattern.append(thisElement); // TODO any escaping of {?
 			}
 		}
 		// add pattern parameter

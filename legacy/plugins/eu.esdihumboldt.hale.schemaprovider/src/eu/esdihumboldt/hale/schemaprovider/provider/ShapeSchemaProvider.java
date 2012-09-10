@@ -48,9 +48,8 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * @version $Id$
  */
 @Deprecated
-public class ShapeSchemaProvider 
-	extends AbstractSchemaProvider {
-	
+public class ShapeSchemaProvider extends AbstractSchemaProvider {
+
 	/**
 	 * Default constructor for {@link ShapeSchemaProvider}.
 	 */
@@ -59,20 +58,24 @@ public class ShapeSchemaProvider
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.schemaprovider.SchemaProvider#loadSchema(java.net.URI, eu.esdihumboldt.hale.common.core.io.ProgressIndicator)
+	 * @see eu.esdihumboldt.hale.schemaprovider.SchemaProvider#loadSchema(java.net.URI,
+	 *      eu.esdihumboldt.hale.common.core.io.ProgressIndicator)
 	 */
 	@Override
 	public Schema loadSchema(URI location, ProgressIndicator progress)
 			throws IOException {
 		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.1")); //$NON-NLS-1$
-//		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
+		// DataStore store = new
+		// ShapefileDataStoreFactory().createDataStore(location.toURL());
 		DataStore store = FileDataStoreFinder.getDataStore(location.toURL());
-		
+
 		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.2")); //$NON-NLS-1$
 		Map<String, SchemaElement> elements = new HashMap<String, SchemaElement>();
-		
-		// build AbstractfeatureType as root for all types extracted from Shapefile
-		Name aftName = new NameImpl("http://www.opengis.net/gml", "AbstractFeatureType"); //$NON-NLS-1$ //$NON-NLS-2$
+
+		// build AbstractfeatureType as root for all types extracted from
+		// Shapefile
+		Name aftName = new NameImpl(
+				"http://www.opengis.net/gml", "AbstractFeatureType"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		SimpleFeatureType ft = null;
 		try {
@@ -84,13 +87,13 @@ public class ShapeSchemaProvider
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
-		TypeDefinition abstractFeatureType = new TypeDefinition(
-				aftName, ft, null);
+		TypeDefinition abstractFeatureType = new TypeDefinition(aftName, ft,
+				null);
 		abstractFeatureType.setAbstract(true);
-		elements.put(aftName.getNamespaceURI() + "/" + aftName.getLocalPart(),  //$NON-NLS-1$
-				new SchemaElement(aftName, abstractFeatureType.getName(), 
+		elements.put(aftName.getNamespaceURI() + "/" + aftName.getLocalPart(), //$NON-NLS-1$
+				new SchemaElement(aftName, abstractFeatureType.getName(),
 						abstractFeatureType, null));
-		
+
 		// build actual FeatureTypes based on Schema extracted by geotools
 		for (Name name : store.getNames()) {
 			SimpleFeatureType sft = store.getSchema(name);
@@ -107,30 +110,33 @@ public class ShapeSchemaProvider
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			progress.setCurrentTask(MessageFormat.format(Messages.getString("ShapeSchemaProvider.7"),  //$NON-NLS-1$
+			progress.setCurrentTask(MessageFormat.format(
+					Messages.getString("ShapeSchemaProvider.7"), //$NON-NLS-1$
 					sft.getTypeName()));
-			
-			TypeDefinition type = new TypeDefinition(sft.getName(), sft, abstractFeatureType);
+
+			TypeDefinition type = new TypeDefinition(sft.getName(), sft,
+					abstractFeatureType);
 			for (PropertyDescriptor pd : sft.getDescriptors()) {
 				type.addDeclaredAttribute(new ShapeAttributeDefintion(pd));
 			}
-			
-			SchemaElement se = new SchemaElement(sft.getName(), 
-					type.getType(null).getName(), type, null);
-			elements.put(sft.getName().getNamespaceURI() + "/" + sft.getTypeName(),  //$NON-NLS-1$
+
+			SchemaElement se = new SchemaElement(sft.getName(), type.getType(
+					null).getName(), type, null);
+			elements.put(
+					sft.getName().getNamespaceURI() + "/" + sft.getTypeName(), //$NON-NLS-1$
 					se);
 		}
 
 		String namespace = "http://www.opengis.net/gml"; //$NON-NLS-1$
 		return new Schema(elements, namespace, location.toURL(), null);
 	}
-	
+
 	/**
-	 * A specific {@link AttributeDefinition} that applies custom naming etc. 
+	 * A specific {@link AttributeDefinition} that applies custom naming etc.
 	 * rules.
 	 */
 	public static class ShapeAttributeDefintion extends AttributeDefinition {
-		
+
 		private PropertyDescriptor pd = null;
 
 		/**
@@ -138,17 +144,14 @@ public class ShapeSchemaProvider
 		 * @param pd
 		 */
 		public ShapeAttributeDefintion(PropertyDescriptor pd) {
-			super(pd.getName().getLocalPart(), 
-					ShapeSchemaProvider.getName(pd.getType()), 
+			super(pd.getName().getLocalPart(), ShapeSchemaProvider.getName(pd
+					.getType()),
 					new TypeDefinition(
-							ShapeSchemaProvider.getName(pd.getType()), 
-							ShapeSchemaProvider.getCompletedAttributeType(pd.getType()), 
-							null), 
-					true, null);
+							ShapeSchemaProvider.getName(pd.getType()),
+							ShapeSchemaProvider.getCompletedAttributeType(pd
+									.getType()), null), true, null);
 			this.pd = pd;
 		}
-		
-		
 
 		@Override
 		public AttributeDefinition copyAttribute(TypeDefinition parentType) {
@@ -157,7 +160,8 @@ public class ShapeSchemaProvider
 		}
 
 		@Override
-		public AttributeDescriptor createAttributeDescriptor(Set<TypeDefinition> resolving) {
+		public AttributeDescriptor createAttributeDescriptor(
+				Set<TypeDefinition> resolving) {
 			return (AttributeDescriptor) this.pd;
 		}
 
@@ -175,70 +179,54 @@ public class ShapeSchemaProvider
 		public boolean isNillable() {
 			return this.pd.isNillable();
 		}
-		
+
 	}
-	
+
 	/**
-	 * adds namespace and correct typename for given bindings in a passed 
+	 * adds namespace and correct typename for given bindings in a passed
 	 * {@link AttributeType}.
+	 * 
 	 * @param at
 	 * @return
 	 */
 	private static Name getName(PropertyType at) {
-		
+
 		if (at.getBinding().equals(Integer.class)) {
-			return new NameImpl("http://www.w3.org/2001/XMLSchema",  //$NON-NLS-1$
+			return new NameImpl("http://www.w3.org/2001/XMLSchema", //$NON-NLS-1$
 					"int"); //$NON-NLS-1$
-		}
-		else if (at.getBinding().equals(Long.class)) {
-			return new NameImpl("http://www.w3.org/2001/XMLSchema",  //$NON-NLS-1$
+		} else if (at.getBinding().equals(Long.class)) {
+			return new NameImpl("http://www.w3.org/2001/XMLSchema", //$NON-NLS-1$
 					"long"); //$NON-NLS-1$
-		}
-		else if (at.getBinding().equals(Double.class)) {
-			return new NameImpl("http://www.w3.org/2001/XMLSchema",  //$NON-NLS-1$
+		} else if (at.getBinding().equals(Double.class)) {
+			return new NameImpl("http://www.w3.org/2001/XMLSchema", //$NON-NLS-1$
 					"double"); //$NON-NLS-1$
-		}
-		else if (at.getBinding().equals(String.class)) {
-			return new NameImpl("http://www.w3.org/2001/XMLSchema",  //$NON-NLS-1$
+		} else if (at.getBinding().equals(String.class)) {
+			return new NameImpl("http://www.w3.org/2001/XMLSchema", //$NON-NLS-1$
 					"string"); //$NON-NLS-1$
-		}
-		else if (Geometry.class.isAssignableFrom(at.getBinding())) {
-			return new NameImpl("http://www.opengis.net/gml",  //$NON-NLS-1$
+		} else if (Geometry.class.isAssignableFrom(at.getBinding())) {
+			return new NameImpl("http://www.opengis.net/gml", //$NON-NLS-1$
 					at.getBinding().getSimpleName());
-		}
-		else {
+		} else {
 			return at.getName();
 		}
 	}
-	
+
 	private static AttributeType getCompletedAttributeType(PropertyType pt) {
 		if (pt instanceof AttributeTypeImpl) {
 			AttributeType at = (AttributeType) pt;
-			return new AttributeTypeImpl(
-					getName(at), 
-					at.getBinding(), 
-					at.isIdentified(), 
-					at.isAbstract(), 
-					at.getRestrictions(), 
-					at.getSuper(), 
-					at.getDescription());
-		}
-		else if (pt instanceof GeometryTypeImpl) {
+			return new AttributeTypeImpl(getName(at), at.getBinding(),
+					at.isIdentified(), at.isAbstract(), at.getRestrictions(),
+					at.getSuper(), at.getDescription());
+		} else if (pt instanceof GeometryTypeImpl) {
 			GeometryTypeImpl ga = (GeometryTypeImpl) pt;
-			return new GeometryTypeImpl(
-					getName(ga), 
-					ga.getBinding(), 
-					ga.getCoordinateReferenceSystem(), 
-					ga.isIdentified(), 
-					ga.isAbstract(), 
-					ga.getRestrictions(), 
-					ga.getSuper(), 
+			return new GeometryTypeImpl(getName(ga), ga.getBinding(),
+					ga.getCoordinateReferenceSystem(), ga.isIdentified(),
+					ga.isAbstract(), ga.getRestrictions(), ga.getSuper(),
 					ga.getDescription());
-		}
-		else {
+		} else {
 			return (AttributeType) pt;
 		}
-		
+
 	}
 
 }

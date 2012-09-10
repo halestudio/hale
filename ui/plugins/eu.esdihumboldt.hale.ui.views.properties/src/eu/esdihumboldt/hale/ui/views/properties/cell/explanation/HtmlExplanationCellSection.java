@@ -21,7 +21,6 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -30,24 +29,24 @@ import eu.esdihumboldt.hale.ui.views.properties.cell.AbstractCellSection;
 
 /**
  * HTML cell explanation section.
+ * 
  * @author Simon Templer
  */
 public class HtmlExplanationCellSection extends AbstractCellSection {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(HtmlExplanationCellSection.class);
-	
+
 	private Browser browser;
-	
+
 	private Text textField;
 
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		
+
 		Composite page = getWidgetFactory().createComposite(parent);
 		page.setLayout(new FillLayout());
-		
+
 		try {
 			browser = new Browser(page, SWT.NONE);
 		} catch (Throwable e) {
@@ -64,12 +63,13 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 	@Override
 	public void refresh() {
 		super.refresh();
-		
+
 		Cell cell = getCell();
 		if (cell != null) {
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+			AbstractFunction<?> function = FunctionUtil.getFunction(cell
+					.getTransformationIdentifier());
 			if (function != null) {
-				CellExplanation explanation =  function.getExplanation();
+				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {
 					if (browser != null) {
 						String text = explanation.getExplanationAsHtml(cell);
@@ -90,7 +90,7 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 				}
 			}
 		}
-		
+
 		String text = "Sorry, no explanation available.";
 		if (browser != null) {
 			browser.setText(text);

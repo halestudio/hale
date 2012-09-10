@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * Base class for UI related {@link IOAdvisor}s.
+ * 
  * @author Simon Templer
  * @param <T> the I/O provider type
  */
@@ -33,9 +34,10 @@ public abstract class DefaultIOAdvisor<T extends IOProvider> extends AbstractIOA
 	@Override
 	public void prepareProvider(T provider) {
 		super.prepareProvider(provider);
-		
+
 		if (provider instanceof ProjectInfoAware) {
-			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+					ProjectService.class);
 			if (ps != null) {
 				((ProjectInfoAware) provider).setProjectInfo(ps.getProjectInfo());
 			}

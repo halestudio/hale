@@ -22,15 +22,17 @@ import eu.esdihumboldt.util.Identifiers;
 /**
  * Temporary static namespace map for storing {@link OInstance}s/{@link OGroup}s
  * in a temporary database or using them inside this JVM.
+ * 
  * @author Simon Templer
  */
 public abstract class ONamespaceMap {
-	
+
 	private static final Identifiers<String> IDS = new Identifiers<String>("", true);
-	
+
 	/**
 	 * Map the namespace of the given qualified name to a short identifier and
 	 * return the adapted name.
+	 * 
 	 * @param org the original qualified name
 	 * @return the adapted qualified name
 	 */
@@ -38,14 +40,15 @@ public abstract class ONamespaceMap {
 		if (XMLConstants.NULL_NS_URI.equals(org.getNamespaceURI())) {
 			return org;
 		}
-		
+
 		return new QName(IDS.getId(org.getNamespaceURI()), org.getLocalPart());
 	}
-	
+
 	/**
 	 * Determine the original namespace of the given qualified name with a
 	 * namespace previously mapped with {@link #map(QName)} and return the
 	 * original name.
+	 * 
 	 * @param mapped the adapted qualified name
 	 * @return the original qualified name
 	 */
@@ -53,7 +56,7 @@ public abstract class ONamespaceMap {
 		if (XMLConstants.NULL_NS_URI.equals(mapped.getNamespaceURI())) {
 			return mapped;
 		}
-		
+
 		return new QName(IDS.getObject(mapped.getNamespaceURI()), mapped.getLocalPart());
 	}
 

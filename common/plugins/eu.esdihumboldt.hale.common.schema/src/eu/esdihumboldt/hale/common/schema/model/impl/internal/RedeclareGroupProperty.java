@@ -23,11 +23,12 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractGroupPropertyDecora
 /**
  * Decorator for {@link GroupPropertyDefinition}s that has a changed declaring
  * group.
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class RedeclareGroupProperty extends AbstractGroupPropertyDecorator {
-	
+
 	private final DefinitionGroup declaringGroup;
 
 	/**
@@ -35,15 +36,15 @@ public class RedeclareGroupProperty extends AbstractGroupPropertyDecorator {
 	 * group.
 	 * 
 	 * @param propertyGroup the property group to decorate
-	 * @param declaringGroup the new declaring group, may not be 
-	 *   <code>null</code>
+	 * @param declaringGroup the new declaring group, may not be
+	 *            <code>null</code>
 	 */
-	public RedeclareGroupProperty(GroupPropertyDefinition propertyGroup, 
+	public RedeclareGroupProperty(GroupPropertyDefinition propertyGroup,
 			DefinitionGroup declaringGroup) {
 		super(propertyGroup);
-		
+
 		Preconditions.checkNotNull(declaringGroup);
-		
+
 		this.declaringGroup = declaringGroup;
 	}
 

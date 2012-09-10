@@ -17,7 +17,8 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
  * Abstract {@link IOAdvisor} base implementation
- * @param <T> the I/O provider type 
+ * 
+ * @param <T> the I/O provider type
  * 
  * @author Simon Templer
  */

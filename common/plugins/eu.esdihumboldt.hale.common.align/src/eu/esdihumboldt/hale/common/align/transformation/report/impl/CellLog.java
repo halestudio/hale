@@ -21,18 +21,19 @@ import eu.esdihumboldt.hale.common.core.report.ReportLog;
 
 /**
  * Transformation log for a fixed cell.
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class CellLog implements TransformationLog {
-	
+
 	private final ReportLog<TransformationMessage> log;
 	private final Cell cell;
 
 	/**
 	 * Create a transformation log based on the given cell
 	 * 
-	 * @param log the transformation message report log to decorate 
+	 * @param log the transformation message report log to decorate
 	 * @param cell the cell the transformation messages shall be associated to
 	 */
 	public CellLog(ReportLog<TransformationMessage> log, Cell cell) {
@@ -61,8 +62,7 @@ public class CellLog implements TransformationLog {
 	 * @see TransformationLog#createMessage(String, Throwable)
 	 */
 	@Override
-	public TransformationMessage createMessage(String message,
-			Throwable throwable) {
+	public TransformationMessage createMessage(String message, Throwable throwable) {
 		return new TransformationMessageImpl(cell, message, throwable);
 	}
 

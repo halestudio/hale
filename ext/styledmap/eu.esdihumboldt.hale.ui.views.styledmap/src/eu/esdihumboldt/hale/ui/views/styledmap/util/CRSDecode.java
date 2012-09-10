@@ -22,41 +22,46 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Utility class for CRS decoding.
+ * 
  * @author Simon Templer
  */
 public abstract class CRSDecode {
-	
+
 	/**
 	 * Code mapped to CRS
 	 */
 	private static final Map<String, CoordinateReferenceSystem> crsMap = new HashMap<String, CoordinateReferenceSystem>();
-	
+
 	/**
 	 * Get or create the CRS with the given code.
+	 * 
 	 * @param code the CRS code
 	 * @return the coordinate reference system
 	 * @throws NoSuchAuthorityCodeException if a code with an unknown authority
-	 *   was supplied
+	 *             was supplied
 	 * @throws FactoryException if creation of the CRS failed
 	 */
-	public synchronized static CoordinateReferenceSystem getCRS(String code) throws NoSuchAuthorityCodeException, FactoryException {
+	public synchronized static CoordinateReferenceSystem getCRS(String code)
+			throws NoSuchAuthorityCodeException, FactoryException {
 		CoordinateReferenceSystem crs = crsMap.get(code);
-		
+
 		if (crs == null) {
-			crs = CRS.decode(code); //XXX
+			crs = CRS.decode(code); // XXX
 		}
-		
+
 		return crs;
 	}
-	
+
 	/**
 	 * Get or create the CRS with the given code.
+	 * 
 	 * @param epsg the EPSG code of the CRS
 	 * @return the coordinate reference system
 	 * @throws NoSuchAuthorityCodeException if EPSG is not known to the system
 	 * @throws FactoryException if creation of the CRS failed
 	 */
-	public static CoordinateReferenceSystem getCRS(int epsg) throws NoSuchAuthorityCodeException, FactoryException {
+	public static CoordinateReferenceSystem getCRS(int epsg) throws NoSuchAuthorityCodeException,
+			FactoryException {
 		return getCRS("EPSG:" + epsg);
 	}
 

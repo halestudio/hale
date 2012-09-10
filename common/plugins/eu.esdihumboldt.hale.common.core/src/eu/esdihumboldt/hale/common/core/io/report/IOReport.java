@@ -17,13 +17,13 @@ import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
  * Report for I/O tasks
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
 public interface IOReport extends Report<IOMessage> {
-	
+
 	/**
 	 * Get the locatable I/O task target
 	 * 

@@ -16,19 +16,19 @@ import java.io.InputStream;
 
 /**
  * XML validator interface
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface Validator {
-	
+
 	/**
 	 * Validate the given XML stream
 	 * 
 	 * @param xml the XML stream
 	 * 
-	 * @return the validation report 
+	 * @return the validation report
 	 */
 	public Report validate(InputStream xml);
 

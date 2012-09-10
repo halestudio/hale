@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Text;
 public class TypeNameField extends StringFieldEditor {
 
 	Composite _parent;
-	
+
 	/**
 	 * Parameter that signals when a test has changed
 	 */
 	public static final String TXT_CHNGD = "text_has_changed";
-	
+
 	/**
 	 * @param name the name intern
 	 * @param labelText the label to be set in the StringFieldEditor
@@ -46,19 +46,17 @@ public class TypeNameField extends StringFieldEditor {
 	@Override
 	protected boolean doCheckState() {
 		boolean containsIllegalChar;
-		
+
 		setErrorMessage("You have not entered a valid Name");
 
 		Text txtField = getTextControl(_parent);
 		String txt = txtField.getText();
-		
+
 		containsIllegalChar = txt.contains("/") || txt.contains(":") || txt.contains(".");
-		
+
 		return !(containsIllegalChar);
 	}
 
-	
-	
 	/**
 	 * @see org.eclipse.jface.preference.StringFieldEditor#valueChanged()
 	 */

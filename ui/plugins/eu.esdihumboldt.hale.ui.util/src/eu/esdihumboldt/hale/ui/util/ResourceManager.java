@@ -18,38 +18,42 @@ import java.util.Map.Entry;
 
 /**
  * Resource manager that holds resources and offers the possibility to dispose
- * them.
- * Not thread safe as designed for use in the display thread.
+ * them. Not thread safe as designed for use in the display thread.
+ * 
  * @author Simon Templer
  */
 public class ResourceManager {
-	
+
 	private Map<Resource<?>, Object> resources = new HashMap<ResourceManager.Resource<?>, Object>();
-	
+
 	/**
 	 * Life cycle control for a resource managed by a {@link ResourceManager}.
+	 * 
 	 * @param <T> the resource type
 	 */
 	public interface Resource<T> {
 
 		/**
 		 * Initialize a resource.
+		 * 
 		 * @return the resource
 		 * @throws Exception if an error occurs creating the resource instance
 		 */
 		public T initializeResource() throws Exception;
-		
+
 		/**
 		 * Dispose a resource.
+		 * 
 		 * @param resource the resource to dispose
 		 */
 		public void dispose(T resource);
-		
+
 	}
 
 	/**
 	 * Abstract resource type for use in anonymous classes. Is equal to another
 	 * resource if they are of the same class.
+	 * 
 	 * @param <T> the resource type
 	 */
 	public abstract static class AnonymousClassResource<T> implements Resource<T> {
@@ -66,15 +70,16 @@ public class ResourceManager {
 			}
 			return getClass().equals(obj.getClass());
 		}
-		
+
 	}
-	
+
 	/**
-	 * Get a resource instance. The same instance is returned for equal
-	 * resource definitions.
+	 * Get a resource instance. The same instance is returned for equal resource
+	 * definitions.
+	 * 
 	 * @param resource the resource definition
 	 * @return an existing instance of the resource or if none was created yet,
-	 *   a new instance 
+	 *         a new instance
 	 * @throws Exception if an error occurs creating a new resource instance
 	 */
 	@SuppressWarnings("unchecked")
@@ -88,7 +93,7 @@ public class ResourceManager {
 		resources.put(resource, instance);
 		return instance;
 	}
-	
+
 	/**
 	 * Dispose all resource instances.
 	 */

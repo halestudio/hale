@@ -27,7 +27,7 @@ public class DataViewPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static DataViewPlugin plugin;
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -55,7 +55,7 @@ public class DataViewPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static DataViewPlugin getDefault() {
@@ -63,9 +63,9 @@ public class DataViewPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path
+	 * 
 	 * @param path the path
 	 * @return the image descriptor
 	 */

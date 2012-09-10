@@ -31,9 +31,9 @@ public class ReportListContentProvider implements ITreeContentProvider {
 
 	/**
 	 * Contains all projects with related data.
-	 */	
+	 */
 	private Collection<ReportSession> reportSessions = new ArrayList<ReportSession>();
-	
+
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 	 */
@@ -43,7 +43,8 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	}
 
 	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+	 *      java.lang.Object, java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -61,7 +62,7 @@ public class ReportListContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 		// display the listing of projects
 		if (inputElement instanceof Collection<?>) {
-			return ((Collection<ReportSession>)inputElement).toArray();
+			return ((Collection<ReportSession>) inputElement).toArray();
 		}
 		return new Object[0];
 	}
@@ -90,7 +91,7 @@ public class ReportListContentProvider implements ITreeContentProvider {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -103,11 +104,12 @@ public class ReportListContentProvider implements ITreeContentProvider {
 			// assume that Reports do not have any children!
 			return false;
 		}
-		
+
 		if (element instanceof ReportSession) {
 			if (((ReportSession) element).getAllReports().size() > 0) {
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 		}

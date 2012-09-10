@@ -21,13 +21,13 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
  * Base class for geometry handlers.
+ * 
  * @author Simon Templer
  */
-public abstract class AbstractGeometryHandler implements GeometryHandler,
-		GeometryConstants {
-	
+public abstract class AbstractGeometryHandler implements GeometryHandler, GeometryConstants {
+
 	private Set<QName> supportedTypes;
-	
+
 	private static final GeometryFactory factory = new GeometryFactory();
 
 	/**
@@ -43,16 +43,18 @@ public abstract class AbstractGeometryHandler implements GeometryHandler,
 
 	/**
 	 * Create the set of supported types.
+	 * 
 	 * @return the set of supported type names
 	 */
 	protected abstract Set<? extends QName> initSupportedTypes();
-	
+
 	/**
 	 * Get a geometry factory instance.
+	 * 
 	 * @return the geometry factory
 	 */
 	protected GeometryFactory getGeometryFactory() {
-		//XXX instead retrieve from a service?
+		// XXX instead retrieve from a service?
 		return factory;
 	}
 

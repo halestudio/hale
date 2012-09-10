@@ -18,23 +18,20 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * UniqueID Generator for Instance Metadatas
+ * 
  * @author Sebastian Reinhardt
  */
 public class MetadataIdGenerator implements MetadataGenerator {
 
-	
 	/**
 	 * generates a unique Identifier for an instance
+	 * 
 	 * @param inst the instance
 	 * @return an array with a unique ID inside
 	 */
 	@Override
 	public Object[] generate(Instance inst) {
-		return new Object[]{UUID.randomUUID().toString()};
+		return new Object[] { UUID.randomUUID().toString() };
 	}
-		
-	
-
-
 
 }

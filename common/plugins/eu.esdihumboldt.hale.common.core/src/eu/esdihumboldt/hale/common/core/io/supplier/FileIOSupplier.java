@@ -23,12 +23,13 @@ import com.google.common.io.OutputSupplier;
 
 /**
  * I/O supplier based on a {@link File}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
-public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>, LocatableOutputSupplier<FileOutputStream> {
+public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>,
+		LocatableOutputSupplier<FileOutputStream> {
 
 	private File file;
 

@@ -12,29 +12,30 @@
 
 package eu.esdihumboldt.hale.io.html;
 
-
 /**
  * The Interface for representing information about a Cell
  * 
  * @author Kevin Mais
  */
 public interface ICellInfo {
-	
+
 	/**
 	 * Gets the location of the image for a Cell
 	 * 
 	 * @return the image location
 	 */
 	public String getImageLocation();
-	
+
 	/**
 	 * Get an explanation for the cell.
+	 * 
 	 * @return the explanation or <code>null</code> if none is available
 	 */
 	public String getExplanation();
-	
+
 	/**
 	 * Get the explanation in html format for the given cell
+	 * 
 	 * @return the cell explanation in html format
 	 */
 	public String getExplanationAsHtml();

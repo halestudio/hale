@@ -25,17 +25,18 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * Contribution for import advisors
+ * 
  * @author Simon Templer
  */
 public class ImportContribution extends ActionUIContribution {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ImportContribution.class);
-	
+
 	/**
 	 * Filter for import {@link ActionUI}s
 	 */
 	public static final FactoryFilter<IOWizard<?>, ActionUI> IMPORT_FILTER = new FactoryFilter<IOWizard<?>, ActionUI>() {
-		
+
 		@Override
 		public boolean acceptFactory(ActionUI factory) {
 			// accept if action is an import action
@@ -44,17 +45,18 @@ public class ImportContribution extends ActionUIContribution {
 			boolean isImport = ImportProvider.class.isAssignableFrom(action.getProviderType());
 			if (isImport) {
 				// and if there are any advisors present for the action
-				for (IOAdvisorFactory advisorFactory : IOAdvisorExtension.getInstance().getFactories()) {
+				for (IOAdvisorFactory advisorFactory : IOAdvisorExtension.getInstance()
+						.getFactories()) {
 					if (advisorFactory.getActionID().equals(actionId)) {
 						return true;
 					}
 				}
-				
+
 				log.warn("No advisors present for action " + actionId);
 			}
 			return false;
 		}
-		
+
 		@Override
 		public boolean acceptCollection(
 				ExtensionObjectFactoryCollection<IOWizard<?>, ActionUI> collection) {
@@ -67,7 +69,7 @@ public class ImportContribution extends ActionUIContribution {
 	 */
 	public ImportContribution() {
 		super();
-		
+
 		setFilter(IMPORT_FILTER);
 	}
 

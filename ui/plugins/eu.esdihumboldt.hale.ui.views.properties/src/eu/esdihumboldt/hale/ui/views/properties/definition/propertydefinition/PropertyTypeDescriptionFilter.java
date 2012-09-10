@@ -17,21 +17,22 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter;
 
 /**
- * Filter that lets only {@link PropertyDefinition}s with a description that is not 
- * <code>null</code> pass.
+ * Filter that lets only {@link PropertyDefinition}s with a description that is
+ * not <code>null</code> pass.
+ * 
  * @author Patrick Lieb
  */
-public class PropertyTypeDescriptionFilter extends DefaultDefinitionFilter{
+public class PropertyTypeDescriptionFilter extends DefaultDefinitionFilter {
 
-		/**
-		 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
-		 */
-		@Override
-		public boolean isFiltered(Definition<?> input) {
-			if(input instanceof PropertyDefinition){
-				return ((PropertyDefinition)input).getPropertyType().getDescription() == null;
-			}
-			return true;
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
+	 */
+	@Override
+	public boolean isFiltered(Definition<?> input) {
+		if (input instanceof PropertyDefinition) {
+			return ((PropertyDefinition) input).getPropertyType().getDescription() == null;
 		}
+		return true;
+	}
 
 }

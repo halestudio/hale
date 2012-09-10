@@ -15,16 +15,18 @@ package eu.esdihumboldt.hale.common.align.model.condition;
 import eu.esdihumboldt.hale.common.align.model.Property;
 
 /**
- * Condition a {@link Property} may fulfill. Implementations may not hold any 
+ * Condition a {@link Property} may fulfill. Implementations may not hold any
  * state apart from its configuration.
+ * 
  * @author Simon Templer
  * @since 2.5
  */
 public interface PropertyCondition extends EntityCondition<Property> {
 
 	// concrete typed interface
-	
-	//TODO some possibility to process property values?
-	//e.g. for conversion - or should this be the responsibility of the function implementation?
-	
+
+	// TODO some possibility to process property values?
+	// e.g. for conversion - or should this be the responsibility of the
+	// function implementation?
+
 }

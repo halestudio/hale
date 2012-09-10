@@ -18,10 +18,11 @@ import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverte
 
 /**
  * Converts Strings to Polygons
+ * 
  * @author Kevin Mais
  */
-public class StringToPolygon extends AbstractGeometryConverter<Polygon>{
+public class StringToPolygon extends AbstractGeometryConverter<Polygon> {
 
 	// concrete typed class
-	
+
 }

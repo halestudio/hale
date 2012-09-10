@@ -30,20 +30,23 @@ import eu.esdihumboldt.hale.ui.views.styledmap.painter.InstanceWaypoint;
 
 /**
  * Utility methods regarding the map view.
+ * 
  * @author Simon Templer
  */
 public abstract class StyledMapUtil {
 
 	/**
-	 * Zoom to all instances available in the map. Does nothing if there are
-	 * no instances displayed.
+	 * Zoom to all instances available in the map. Does nothing if there are no
+	 * instances displayed.
+	 * 
 	 * @param mapKit the map kit
 	 */
 	public static void zoomToAll(BasicMapKit mapKit) {
 		BoundingBox bb = null;
-		
+
 		// determine bounding box
-		for (AbstractInstancePainter painter : mapKit.getTilePainters(AbstractInstancePainter.class)) {
+		for (AbstractInstancePainter painter : mapKit
+				.getTilePainters(AbstractInstancePainter.class)) {
 			BoundingBox painterBB = painter.getBoundingBox();
 			if (painterBB.checkIntegrity() && !painterBB.isEmpty()) {
 				if (bb == null) {
@@ -54,29 +57,30 @@ public abstract class StyledMapUtil {
 				}
 			}
 		}
-		
+
 		if (bb != null) {
 			Set<GeoPosition> positions = new HashSet<GeoPosition>();
-			positions.add(new GeoPosition(bb.getMinX(), bb.getMinY(), 
+			positions.add(new GeoPosition(bb.getMinX(), bb.getMinY(),
 					SelectableWaypoint.COMMON_EPSG));
-			positions.add(new GeoPosition(bb.getMaxX(), bb.getMaxY(), 
+			positions.add(new GeoPosition(bb.getMaxX(), bb.getMaxY(),
 					SelectableWaypoint.COMMON_EPSG));
 			mapKit.zoomToPositions(positions);
 		}
 	}
-	
+
 	/**
-	 * Zoom to the selected instances. Does nothing if the selection is empty
-	 * or contains no {@link Instance}s or {@link InstanceReference}s.
+	 * Zoom to the selected instances. Does nothing if the selection is empty or
+	 * contains no {@link Instance}s or {@link InstanceReference}s.
+	 * 
 	 * @param mapKit the map kit
 	 * @param selection the selection
 	 */
-	public static void zoomToSelection(BasicMapKit mapKit, 
-			IStructuredSelection selection) {
+	public static void zoomToSelection(BasicMapKit mapKit, IStructuredSelection selection) {
 		BoundingBox bb = null;
-		
+
 		// determine bounding box for each reference and accumulate it
-		for (AbstractInstancePainter painter : mapKit.getTilePainters(AbstractInstancePainter.class)) {
+		for (AbstractInstancePainter painter : mapKit
+				.getTilePainters(AbstractInstancePainter.class)) {
 			for (Object element : selection.toList()) {
 				InstanceReference ref = getReference(element);
 				if (ref != null) {
@@ -95,12 +99,12 @@ public abstract class StyledMapUtil {
 				}
 			}
 		}
-		
+
 		if (bb != null) {
 			Set<GeoPosition> positions = new HashSet<GeoPosition>();
-			positions.add(new GeoPosition(bb.getMinX(), bb.getMinY(), 
+			positions.add(new GeoPosition(bb.getMinX(), bb.getMinY(),
 					SelectableWaypoint.COMMON_EPSG));
-			positions.add(new GeoPosition(bb.getMaxX(), bb.getMaxY(), 
+			positions.add(new GeoPosition(bb.getMaxX(), bb.getMaxY(),
 					SelectableWaypoint.COMMON_EPSG));
 			mapKit.zoomToPositions(positions);
 		}
@@ -111,10 +115,11 @@ public abstract class StyledMapUtil {
 			return (InstanceReference) element;
 		}
 		if (element instanceof Instance) {
-			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+					InstanceService.class);
 			is.getReference((Instance) element);
 		}
 		return null;
 	}
-	
+
 }

@@ -31,7 +31,7 @@ import eu.esdihumboldt.util.resource.Resources;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SchemaResolver implements LSResourceResolver {
-	
+
 	private final URI mainSchemaURI;
 
 	/**
@@ -45,11 +45,12 @@ public class SchemaResolver implements LSResourceResolver {
 	}
 
 	/**
-	 * @see LSResourceResolver#resolveResource(String, String, String, String, String)
+	 * @see LSResourceResolver#resolveResource(String, String, String, String,
+	 *      String)
 	 */
 	@Override
-	public LSInput resolveResource(String type, String namespaceURI,
-			String publicId, String systemId, String baseURI) {
+	public LSInput resolveResource(String type, String namespaceURI, String publicId,
+			String systemId, String baseURI) {
 		String schemaLocation;
 		if (baseURI != null) {
 			schemaLocation = baseURI.substring(0, baseURI.lastIndexOf("/") + 1); //$NON-NLS-1$
@@ -70,13 +71,13 @@ public class SchemaResolver implements LSResourceResolver {
 		} catch (URISyntaxException e1) {
 			return null;
 		}
-		
+
 		InputStream inputStream = null;
-		
+
 		// try resolving using (local) Resources
 		try {
-			InputSupplier<? extends InputStream> input = Resources.tryResolve(
-					uri, Resources.RESOURCE_TYPE_XML_SCHEMA);
+			InputSupplier<? extends InputStream> input = Resources.tryResolve(uri,
+					Resources.RESOURCE_TYPE_XML_SCHEMA);
 			if (input != null) {
 				inputStream = input.getInput();
 			}
@@ -92,7 +93,7 @@ public class SchemaResolver implements LSResourceResolver {
 				// ignore
 			}
 		}
-		
+
 		// fall-back
 		if (inputStream == null) {
 			try {

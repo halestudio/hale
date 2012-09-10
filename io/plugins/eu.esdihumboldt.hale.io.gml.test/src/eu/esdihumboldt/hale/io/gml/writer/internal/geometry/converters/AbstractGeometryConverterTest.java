@@ -15,12 +15,12 @@ package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
- * Abstract geometry converter test providing access to a 
- * {@link GeometryFactory} 
- *
+ * Abstract geometry converter test providing access to a
+ * {@link GeometryFactory}
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public abstract class AbstractGeometryConverterTest {
 

@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.ui.style.service.StyleService;
 
 /**
  * Stores loaded styles in the {@link StyleService}.
+ * 
  * @author Simon Templer
  */
 public class LoadStyle extends DefaultIOAdvisor<StyleReader> {
@@ -32,9 +33,9 @@ public class LoadStyle extends DefaultIOAdvisor<StyleReader> {
 	@Override
 	public void handleResults(StyleReader provider) {
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		
+
 		ss.addStyles(provider.getStyles());
-		
+
 		super.handleResults(provider);
 	}
 

@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 /**
  * Reads archived projects
+ * 
  * @author Simon Templer
  */
 public class ZipProjectReader extends DefaultProjectReader {

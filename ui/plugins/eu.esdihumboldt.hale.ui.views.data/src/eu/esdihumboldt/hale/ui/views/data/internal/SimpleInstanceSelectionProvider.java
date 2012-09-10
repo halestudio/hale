@@ -21,19 +21,20 @@ import eu.esdihumboldt.hale.ui.util.selection.AbstactSelectionProvider;
 
 /**
  * Instance selection provider.
+ * 
  * @author Simon Templer
  */
 public class SimpleInstanceSelectionProvider extends AbstactSelectionProvider {
 
 	/**
 	 * Update the instance selection.
+	 * 
 	 * @param instances the selected instances
 	 */
 	public void updateSelection(Iterable<Instance> instances) {
 		InstanceSelection selection;
 		if (instances != null) {
-			selection = new DefaultInstanceSelection(
-					Iterables.toArray(instances, Instance.class));
+			selection = new DefaultInstanceSelection(Iterables.toArray(instances, Instance.class));
 		}
 		else {
 			selection = new DefaultInstanceSelection();

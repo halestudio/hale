@@ -23,10 +23,12 @@ import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMe
 
 /**
  * Default implementation of {@link InstanceValidationMessage}.
- *
+ * 
  * @author Kai Schwierczek
  */
-public class DefaultInstanceValidationMessage extends MessageImpl implements InstanceValidationMessage {
+public class DefaultInstanceValidationMessage extends MessageImpl implements
+		InstanceValidationMessage {
+
 	private final InstanceReference instanceReference;
 	private final QName type;
 	private final List<QName> path;
@@ -34,14 +36,16 @@ public class DefaultInstanceValidationMessage extends MessageImpl implements Ins
 
 	/**
 	 * Create a new instance validation message.
-	 *
-	 * @param instanceReference the instance reference this message is associated to, may be null
+	 * 
+	 * @param instanceReference the instance reference this message is
+	 *            associated to, may be null
 	 * @param type the type's name
 	 * @param path the path within the type
 	 * @param category the message's category
 	 * @param message the message string
 	 */
-	public DefaultInstanceValidationMessage(InstanceReference instanceReference, QName type, List<QName> path, String category, String message) {
+	public DefaultInstanceValidationMessage(InstanceReference instanceReference, QName type,
+			List<QName> path, String category, String message) {
 		super(message, null);
 		this.instanceReference = instanceReference;
 		this.type = type;

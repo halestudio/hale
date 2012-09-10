@@ -18,19 +18,19 @@ import org.opengis.feature.type.FeatureType;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class WfsConfiguration {
-	
+
 	private final String fixedNamespace;
-	
+
 	private String capabilitiesURL;
-	
+
 	private List<FeatureType> featureTypes;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -80,10 +80,10 @@ public class WfsConfiguration {
 	 * Validate the settings
 	 * 
 	 * @return <code>true</code> if the settings are valid, <code>false</code>
-	 *   otherwise
+	 *         otherwise
 	 */
 	public boolean validateSettings() {
-		//TODO
+		// TODO
 		return true;
 	}
 

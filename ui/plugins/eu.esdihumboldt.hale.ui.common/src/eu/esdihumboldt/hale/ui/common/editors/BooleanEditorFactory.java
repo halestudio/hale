@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.ui.common.EditorFactory;
 
 /**
  * Creates a {@link BooleanEditor}.
+ * 
  * @author Simon Templer
  */
 public class BooleanEditorFactory implements EditorFactory {

@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.ui.common.editors.BooleanEditor;
 
 /**
  * Default attribute editor factory
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -34,8 +34,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 	 * @see AttributeEditorFactory#createEditor(Composite, PropertyDefinition)
 	 */
 	@Override
-	public Editor<?> createEditor(Composite parent,
-			PropertyDefinition property) {
+	public Editor<?> createEditor(Composite parent, PropertyDefinition property) {
 		TypeDefinition type = property.getPropertyType();
 
 //		if (attributeType.isComplexType()) {
@@ -47,16 +46,17 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 
 		Binding typeBinding = type.getConstraint(Binding.class);
 		Class<?> binding = typeBinding.getBinding();
-		
+
 		if (Boolean.class.isAssignableFrom(binding)) {
 			// boolean
 			return new BooleanEditor(parent);
 		}
 		// TODO other editors (for date/time for example)
-		
+
 		if (!type.getConstraint(HasValueFlag.class).isEnabled()) {
 			return null;
-		} else {
+		}
+		else {
 			// fall back to default editor
 			return new DefaultAttributeEditor(parent, property);
 		}

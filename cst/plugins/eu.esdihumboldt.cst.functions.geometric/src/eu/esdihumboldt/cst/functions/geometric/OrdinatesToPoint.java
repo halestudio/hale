@@ -38,18 +38,22 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
  * @author Kai Schwierczek
  */
 @Immutable
-public class OrdinatesToPoint extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements OrdinatesToPointFunction{
+public class OrdinatesToPoint extends
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
+		OrdinatesToPointFunction {
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractPropertyTransformation#evaluate(java.lang.String, eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine, com.google.common.collect.ListMultimap, com.google.common.collect.ListMultimap, java.util.Map, eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
+	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractPropertyTransformation#evaluate(java.lang.String,
+	 *      eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine,
+	 *      com.google.common.collect.ListMultimap,
+	 *      com.google.common.collect.ListMultimap, java.util.Map,
+	 *      eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
 	 */
 	@Override
-	protected Object evaluate(
-			String transformationIdentifier, TransformationEngine engine,
-			ListMultimap<String, PropertyValue> variables,
-			String resultName, PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
+			ListMultimap<String, PropertyValue> variables, String resultName,
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException {
 		// get x, y and z properties
 		PropertyValue x = variables.get("x").get(0);
 		PropertyValue y = variables.get("y").get(0);
@@ -73,7 +77,8 @@ public class OrdinatesToPoint extends AbstractSingleTargetPropertyTransformation
 		if (z == null)
 			resultPoint = geomFactory.createPoint(new Coordinate(xValue, yValue));
 		else
-			resultPoint = geomFactory.createPoint(new Coordinate(xValue, yValue, z.getValueAs(Double.class)));
+			resultPoint = geomFactory.createPoint(new Coordinate(xValue, yValue, z
+					.getValueAs(Double.class)));
 
 		// pack result into geometry property and return it
 		GeometryProperty<Point> result = new DefaultGeometryProperty<Point>(crsDef, resultPoint);

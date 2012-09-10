@@ -31,22 +31,25 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 
 /**
  * Label provider for the instance validation report details page.
- *
+ * 
  * @author Kai Schwierczek
  */
-public class InstanceValidationReportDetailsLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
+public class InstanceValidationReportDetailsLabelProvider extends StyledCellLabelProvider implements
+		ILabelProvider {
+
 	private final InstanceValidationReportDetailsContentProvider contentProvider;
 	private final DefinitionLabelProvider dlp = new DefinitionLabelProvider(false, true);
 
 	/**
 	 * Constructor.
-	 *
+	 * 
 	 * @param contentProvider the content provider
 	 */
 	public InstanceValidationReportDetailsLabelProvider(
 			InstanceValidationReportDetailsContentProvider contentProvider) {
 		this.contentProvider = contentProvider;
 	}
+
 	/**
 	 * @see org.eclipse.jface.viewers.StyledCellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
 	 */
@@ -66,14 +69,14 @@ public class InstanceValidationReportDetailsLabelProvider extends StyledCellLabe
 			boolean isLimited = contentProvider.isLimited(treePath);
 			text.append(' ');
 			if (!isLimited)
-				text.append(MessageFormat.format("({0} warnings)",
-						contentProvider.getMessageCount(treePath)),
+				text.append(
+						MessageFormat.format("({0} warnings)",
+								contentProvider.getMessageCount(treePath)),
 						StyledString.COUNTER_STYLER);
 			else
 				text.append(MessageFormat.format("({0} of {1} warnings)",
 						InstanceValidationReportDetailsContentProvider.LIMIT,
-						contentProvider.getMessageCount(treePath)),
-						StyledString.COUNTER_STYLER);
+						contentProvider.getMessageCount(treePath)), StyledString.COUNTER_STYLER);
 		}
 
 		cell.setText(text.getString());
@@ -115,7 +118,8 @@ public class InstanceValidationReportDetailsLabelProvider extends StyledCellLabe
 		if (element instanceof Definition<?>)
 			return dlp.getImage(element);
 		else if (element instanceof String)
-			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK);
+			return PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
 		else
 			return null;
 	}

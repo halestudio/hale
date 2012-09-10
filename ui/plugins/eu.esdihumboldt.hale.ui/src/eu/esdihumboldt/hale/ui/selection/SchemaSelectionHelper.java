@@ -33,47 +33,49 @@ import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
 
 /**
  * Helper class to get current {@link SchemaSelection}.
+ * 
  * @author unkown
  * @author Simon Templer
  */
 public abstract class SchemaSelectionHelper {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(SchemaSelectionHelper.class);
-	
+
 	/**
 	 * Get the current schema selection
 	 * 
 	 * @return the current schema selection or an empty model selection if it
-	 *   can't be determined
+	 *         can't be determined
 	 */
 	public static SchemaSelection getSchemaSelection() {
 		SchemaSelection result = null;
-		
+
 		try {
-			ISelectionService ss = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
-			
+			ISelectionService ss = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getSelectionService();
+
 			ISelection selection = ss.getSelection();
 //			ISelection selection = ss.getSelection(ModelNavigationView.ID); //XXX this is bad!
-			
+
 			if (selection instanceof SchemaSelection) {
 				result = (SchemaSelection) selection;
 			}
 		} catch (Throwable e) {
 			log.warn("Could not get current selection", e);
 		}
-		
+
 		if (result == null) {
 			SelectionTracker tracker = SelectionTrackerUtil.getTracker();
 			if (tracker != null) {
 				result = tracker.getSelection(SchemaSelection.class);
 			}
 		}
-		
+
 		if (result == null) {
 			result = new DefaultSchemaSelection();
 		}
-		
+
 		return result;
 	}
-	
+
 }

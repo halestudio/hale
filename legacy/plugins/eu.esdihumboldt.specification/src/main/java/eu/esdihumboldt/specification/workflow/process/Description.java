@@ -15,28 +15,29 @@ import java.io.Serializable;
 
 import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
-/**This is a super interface for describing processes
+/**
+ * This is a super interface for describing processes
  * 
  * @author Moses Gone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @ReferenceSpecification("OGC 05-007r6:1.0.0 7.2")
-public interface Description extends Serializable{
+public interface Description extends Serializable {
 
-    /**Title of the process, inputs, or outputs, unique for this server
-     * 
-     * @return
-     */
-    public String getTitle();
+	/**
+	 * Title of the process, inputs, or outputs, unique for this server
+	 * 
+	 * @return
+	 */
+	public String getTitle();
 
-    /**Brief narrative description of a process, input, or output, normally 
-     * available for display to human
-     * 
-     * @return
-     */
-    public String getAbstract();
-
+	/**
+	 * Brief narrative description of a process, input, or output, normally
+	 * available for display to human
+	 * 
+	 * @return
+	 */
+	public String getAbstract();
 
 }
-

@@ -21,23 +21,23 @@ import eu.esdihumboldt.hale.schemaprovider.Messages;
 
 /**
  * Decorator for URI resolvers that supports a {@link ProgressIndicator}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class ProgressURIResolver implements CollectionURIResolver {
-	
+
 	private final URIResolver decoratee;
-	
+
 	private final ProgressIndicator progress;
-	
+
 	private String collectionBaseURI;
 
 	/**
 	 * @param decoratee
-	 * @param progress 
+	 * @param progress
 	 */
 	public ProgressURIResolver(URIResolver decoratee, ProgressIndicator progress) {
 		super();
@@ -52,8 +52,7 @@ public class ProgressURIResolver implements CollectionURIResolver {
 	public String getCollectionBaseURI() {
 		if (decoratee instanceof CollectionURIResolver) {
 			return ((CollectionURIResolver) decoratee).getCollectionBaseURI();
-		}
-		else {
+		} else {
 			return collectionBaseURI;
 		}
 	}
@@ -65,8 +64,7 @@ public class ProgressURIResolver implements CollectionURIResolver {
 	public void setCollectionBaseURI(String uri) {
 		if (decoratee instanceof CollectionURIResolver) {
 			((CollectionURIResolver) decoratee).setCollectionBaseURI(uri);
-		}
-		else {
+		} else {
 			collectionBaseURI = uri;
 		}
 	}
@@ -77,11 +75,12 @@ public class ProgressURIResolver implements CollectionURIResolver {
 	@Override
 	public InputSource resolveEntity(String targetNamespace,
 			String schemaLocation, String baseUri) {
-		InputSource is = decoratee.resolveEntity(targetNamespace, schemaLocation, baseUri);
-		
+		InputSource is = decoratee.resolveEntity(targetNamespace,
+				schemaLocation, baseUri);
+
 		String url = is.getSystemId();
-		progress.setCurrentTask(Messages.getString("ProgressURIResolver.0") + ((url == null)?(schemaLocation):(url))); //$NON-NLS-1$
-		
+		progress.setCurrentTask(Messages.getString("ProgressURIResolver.0") + ((url == null) ? (schemaLocation) : (url))); //$NON-NLS-1$
+
 		return is;
 	}
 

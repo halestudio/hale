@@ -28,16 +28,18 @@ import eu.esdihumboldt.hale.ui.util.wizard.ExtendedWizardNode;
 
 /**
  * Wizard node based on {@link ActionUI}
+ * 
  * @author Simon Templer
  */
 public class ActionUIWizardNode extends AbstractWizardNode {
 
 	private final ActionUI actionUI;
-	
+
 	private Image image;
-	
+
 	/**
 	 * Create a wizard node
+	 * 
 	 * @param actionUI the action UI
 	 * @param container the wizard container
 	 */
@@ -51,7 +53,7 @@ public class ActionUIWizardNode extends AbstractWizardNode {
 	 */
 	@Override
 	public String getDescription() {
-		//XXX description?
+		// XXX description?
 		return null;
 	}
 
@@ -62,8 +64,9 @@ public class ActionUIWizardNode extends AbstractWizardNode {
 	@Override
 	protected IWizard createWizard() {
 		try {
-			IOWizard<?> wizard =  actionUI.createExtensionObject();
-			IOAdvisor<?> advisor = IOAdvisorExtension.getInstance().findAdvisor(actionUI.getActionID());
+			IOWizard<?> wizard = actionUI.createExtensionObject();
+			IOAdvisor<?> advisor = IOAdvisorExtension.getInstance().findAdvisor(
+					actionUI.getActionID());
 			((IOWizard) wizard).setAdvisor(advisor, actionUI.getActionID());
 			return wizard;
 		} catch (Exception e) {
@@ -77,9 +80,10 @@ public class ActionUIWizardNode extends AbstractWizardNode {
 	public ActionUI getActionUI() {
 		return actionUI;
 	}
-	
+
 	/**
 	 * Get the wizard image
+	 * 
 	 * @return the image
 	 */
 	public Image getImage() {
@@ -89,7 +93,7 @@ public class ActionUIWizardNode extends AbstractWizardNode {
 				image = ImageDescriptor.createFromURL(iconURL).createImage();
 			}
 		}
-		
+
 		return image;
 	}
 
@@ -101,7 +105,7 @@ public class ActionUIWizardNode extends AbstractWizardNode {
 		if (image != null) {
 			image.dispose();
 		}
-		
+
 		super.dispose();
 	}
 

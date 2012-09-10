@@ -27,14 +27,16 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
  * @author Kai Schwierczek
  */
 public class CleanAlignmentHandler extends AbstractHandler {
+
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), 
-				"Delete cells", "Do you really want to delete all cells?")) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), "Delete cells",
+				"Do you really want to delete all cells?")) {
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			as.clean();
 		}
 

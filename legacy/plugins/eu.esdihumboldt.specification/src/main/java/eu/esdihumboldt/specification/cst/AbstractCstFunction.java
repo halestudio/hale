@@ -11,22 +11,19 @@
  */
 package eu.esdihumboldt.specification.cst;
 
-
 /**
- * A default implementation of the {@link CstFunction} interface.
- * Currently empty, but left in since the interface might get additional
- * methods that will be implemented on a common basis.
+ * A default implementation of the {@link CstFunction} interface. Currently
+ * empty, but left in since the interface might get additional methods that will
+ * be implemented on a common basis.
  * 
  * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id: AbstractCstFunction.java 2742 2010-02-01 22:47:15Z treitz $
  */
-public abstract class AbstractCstFunction 
-	implements CstFunction {
+public abstract class AbstractCstFunction implements CstFunction {
 
 	public AbstractCstFunction() {
 
 	}
-
 
 }

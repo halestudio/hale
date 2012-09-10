@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
 
 /**
  * Validates XML
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -52,8 +52,7 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 			}
 			else {
 				reporter.warn(new IOMessageImpl(
-						"No location for schema, may cause validation to fail.", 
-						null));
+						"No location for schema, may cause validation to fail.", null));
 			}
 		}
 		Validator val = ValidatorFactory.getInstance().createValidator(
@@ -61,7 +60,7 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 		InputStream in = getSource().getInput();
 		try {
 			Report report = val.validate(in);
-			//TODO use the report information/replace old report definition
+			// TODO use the report information/replace old report definition
 			reporter.setSuccess(report.isValid());
 			return reporter;
 		} finally {
@@ -86,7 +85,7 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 			protected String getSuccessSummary() {
 				return "The XML file is valid";
 			}
-			
+
 		};
 	}
 

@@ -22,9 +22,11 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Generic property function wizard
+ * 
  * @author Simon Templer
  */
-public class GenericPropertyFunctionWizard extends AbstractGenericFunctionWizard<PropertyParameter, PropertyFunction> {
+public class GenericPropertyFunctionWizard extends
+		AbstractGenericFunctionWizard<PropertyParameter, PropertyFunction> {
 
 	/**
 	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(Cell)
@@ -34,10 +36,10 @@ public class GenericPropertyFunctionWizard extends AbstractGenericFunctionWizard
 	}
 
 	/**
-	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(SchemaSelection, String)
+	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(SchemaSelection,
+	 *      String)
 	 */
-	public GenericPropertyFunctionWizard(SchemaSelection selection,
-			String functionId) {
+	public GenericPropertyFunctionWizard(SchemaSelection selection, String functionId) {
 		super(selection, functionId);
 	}
 
@@ -51,7 +53,8 @@ public class GenericPropertyFunctionWizard extends AbstractGenericFunctionWizard
 	}
 
 	/**
-	 * @see AbstractGenericFunctionWizard#createEntitiesPage(SchemaSelection, Cell)
+	 * @see AbstractGenericFunctionWizard#createEntitiesPage(SchemaSelection,
+	 *      Cell)
 	 */
 	@Override
 	protected EntitiesPage<PropertyFunction, PropertyParameter, ?> createEntitiesPage(

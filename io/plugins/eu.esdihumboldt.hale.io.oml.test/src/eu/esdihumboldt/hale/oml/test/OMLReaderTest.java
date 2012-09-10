@@ -60,69 +60,50 @@ public class OMLReaderTest {
 	/**
 	 * Load the test alignment.
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@BeforeClass
 	public static void load() throws Exception {
-		alignment = loadAlignment(
-				OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd")
-						.toURI(),
-				OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd")
-						.toURI(),
-				OMLReaderTest.class.getResource(
-						"/testdata/testOML/testOMLmapping.goml").toURI());
+		alignment = loadAlignment(OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd")
+				.toURI(), OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd").toURI(),
+				OMLReaderTest.class.getResource("/testdata/testOML/testOMLmapping.goml").toURI());
 
 		alignment2 = loadAlignment(
-				OMLReaderTest.class.getResource(
-						"/testdata/sample_wva/wfs_va.xsd").toURI(),
+				OMLReaderTest.class.getResource("/testdata/sample_wva/wfs_va.xsd").toURI(),
 				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
-				OMLReaderTest.class.getResource(
-						"/testdata/sample_wva/watercourse_va.xml.goml").toURI());
-
-		alignment3 = loadAlignment(
-				URI.create("http://hale-test/NAS_6.0.1/schema/aaa.xsd"),
-				URI.create("http://hale-test/inspire3/CadastralParcels.xsd"),
-				OMLReaderTest.class.getResource(
-						"/testdata/aaa2inspire_cp/aaa2inspire_cp.xml.goml")
+				OMLReaderTest.class.getResource("/testdata/sample_wva/watercourse_va.xml.goml")
 						.toURI());
 
+		alignment3 = loadAlignment(URI.create("http://hale-test/NAS_6.0.1/schema/aaa.xsd"),
+				URI.create("http://hale-test/inspire3/CadastralParcels.xsd"), OMLReaderTest.class
+						.getResource("/testdata/aaa2inspire_cp/aaa2inspire_cp.xml.goml").toURI());
+
 		alignment4 = loadAlignment(
-				OMLReaderTest.class.getResource(
-						"/testdata/watrcrsl/ERM_Watercourse_FME.xsd").toURI(),
-				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
-				OMLReaderTest.class.getResource(
-						"/testdata/watrcrsl/_watrcrsl_inspire.xml.goml")
+				OMLReaderTest.class.getResource("/testdata/watrcrsl/ERM_Watercourse_FME.xsd")
+						.toURI(), URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
+				OMLReaderTest.class.getResource("/testdata/watrcrsl/_watrcrsl_inspire.xml.goml")
 						.toURI());
 
 		alignment5 = loadAlignment(
-				OMLReaderTest.class.getResource(
-						"/testdata/dkm_inspire/KA_14168_EPSG25833.xsd").toURI(),
+				OMLReaderTest.class.getResource("/testdata/dkm_inspire/KA_14168_EPSG25833.xsd")
+						.toURI(),
 				URI.create("http://hale-test/inspire3/CadastralParcels.xsd"),
 				OMLReaderTest.class.getResource(
-						"/testdata/dkm_inspire/mapping_dkm_inspire.xml.goml")
-						.toURI());
+						"/testdata/dkm_inspire/mapping_dkm_inspire.xml.goml").toURI());
 
-		alignment6 = loadAlignment(
-				OMLReaderTest.class
-						.getResource("/testdata/testOML/hydroEx.xsd").toURI(),
-				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
-				OMLReaderTest.class.getResource(
-						"/testdata/testOML/test3.xml.goml").toURI());
+		alignment6 = loadAlignment(OMLReaderTest.class.getResource("/testdata/testOML/hydroEx.xsd")
+				.toURI(), URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
+				OMLReaderTest.class.getResource("/testdata/testOML/test3.xml.goml").toURI());
 
-		alignment7 = loadAlignment(
-				OMLReaderTest.class
-						.getResource("/testdata/testOML/hydroEx.xsd").toURI(),
-				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
-				OMLReaderTest.class.getResource(
-						"/testdata/testOML/test.xml.goml").toURI());
+		alignment7 = loadAlignment(OMLReaderTest.class.getResource("/testdata/testOML/hydroEx.xsd")
+				.toURI(), URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
+				OMLReaderTest.class.getResource("/testdata/testOML/test.xml.goml").toURI());
 	}
 
 	/**
 	 * Test if all alignments were read correctly.
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testOMLreader() throws Exception {
@@ -177,8 +158,7 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell
-				.getTransformationParameters();
+		ListMultimap<String, String> params = cell.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
 		assertEquals(1, values.size());
@@ -209,8 +189,7 @@ public class OMLReaderTest {
 		}
 		assertNotNull(cell);
 
-		ListMultimap<String, String> params = cell
-				.getTransformationParameters();
+		ListMultimap<String, String> params = cell.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
 		assertEquals(1, values.size());
@@ -242,8 +221,7 @@ public class OMLReaderTest {
 		}
 		assertNotNull(cell);
 
-		ListMultimap<String, String> params = cell
-				.getTransformationParameters();
+		ListMultimap<String, String> params = cell.getTransformationParameters();
 		List<String> values = params.get("pattern");
 
 		assertEquals(1, values.size());
@@ -272,8 +250,7 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell
-				.getTransformationParameters();
+		ListMultimap<String, String> params = cell.getTransformationParameters();
 		List<String> values = params.get("classificationMapping");
 
 		for (int i = 0; i < values.size(); i++) {
@@ -319,8 +296,7 @@ public class OMLReaderTest {
 		for (int i = 0; i < classMapCells.size(); i++) {
 			Cell cell = classMapCells.get(i);
 
-			ListMultimap<String, String> params = cell
-					.getTransformationParameters();
+			ListMultimap<String, String> params = cell.getTransformationParameters();
 			List<String> values = params.get("classificationMapping");
 
 			// each cell can have more than one value, so iterate through them
@@ -385,8 +361,7 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell
-				.getTransformationParameters();
+		ListMultimap<String, String> params = cell.getTransformationParameters();
 		List<String> values = params.get("bufferWidth");
 
 		assertEquals(1, values.size());
@@ -421,8 +396,7 @@ public class OMLReaderTest {
 
 			Cell cell = networkCells.get(i);
 
-			ListMultimap<String, String> params = cell
-					.getTransformationParameters();
+			ListMultimap<String, String> params = cell.getTransformationParameters();
 			List<String> values = params.get("bufferWidth");
 
 			String temp = values.get(0);
@@ -455,8 +429,7 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.hale.align.assign")) {
+			if (temp.getTransformationIdentifier().equals("eu.esdihumboldt.hale.align.assign")) {
 				assignCells.add(temp);
 			}
 		}
@@ -465,8 +438,7 @@ public class OMLReaderTest {
 		for (int i = 0; i < assignCells.size(); i++) {
 			Cell cell = assignCells.get(i);
 
-			ListMultimap<String, String> params = cell
-					.getTransformationParameters();
+			ListMultimap<String, String> params = cell.getTransformationParameters();
 			List<String> values = params.get("value");
 
 			assertEquals(1, values.size());
@@ -507,8 +479,7 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.hale.align.assign")) {
+			if (temp.getTransformationIdentifier().equals("eu.esdihumboldt.hale.align.assign")) {
 				assignCells.add(temp);
 			}
 		}
@@ -517,8 +488,7 @@ public class OMLReaderTest {
 		for (int i = 0; i < assignCells.size(); i++) {
 			Cell cell = assignCells.get(i);
 
-			ListMultimap<String, String> params = cell
-					.getTransformationParameters();
+			ListMultimap<String, String> params = cell.getTransformationParameters();
 			List<String> values = params.get("value");
 
 			assertEquals(1, values.size());
@@ -561,8 +531,7 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.hale.align.assign")) {
+			if (temp.getTransformationIdentifier().equals("eu.esdihumboldt.hale.align.assign")) {
 				assignCells.add(temp);
 			}
 		}
@@ -571,8 +540,7 @@ public class OMLReaderTest {
 		for (int i = 0; i < assignCells.size(); i++) {
 			Cell cell = assignCells.get(i);
 
-			ListMultimap<String, String> params = cell
-					.getTransformationParameters();
+			ListMultimap<String, String> params = cell.getTransformationParameters();
 			List<String> values = params.get("value");
 
 			assertEquals(1, values.size());
@@ -636,8 +604,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier()
-					.equals("eu.esdihumboldt.cst.functions.geometric.ordinates_to_point")) {
+			if (temp.getTransformationIdentifier().equals(
+					"eu.esdihumboldt.cst.functions.geometric.ordinates_to_point")) {
 				cell = temp;
 				break;
 			}
@@ -651,10 +619,8 @@ public class OMLReaderTest {
 		Entity srcY = src.get("Y").get(0);
 
 		// check if the source entity has the correct value
-		assertEquals("HOCHWERT", srcX.getDefinition().getDefinition()
-				.getDisplayName());
-		assertEquals("RECHTSWERT", srcY.getDefinition().getDefinition()
-				.getDisplayName());
+		assertEquals("HOCHWERT", srcX.getDefinition().getDefinition().getDisplayName());
+		assertEquals("RECHTSWERT", srcY.getDefinition().getDefinition().getDisplayName());
 
 	}
 
@@ -714,8 +680,7 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell
-				.getTransformationParameters();
+		ListMultimap<String, String> params = cell.getTransformationParameters();
 		List<String> values = params.get("dateFormat");
 
 		assertEquals(1, values.size());
@@ -745,8 +710,7 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell
-				.getTransformationParameters();
+		ListMultimap<String, String> params = cell.getTransformationParameters();
 		List<String> values = params.get("expression");
 
 		// test the amount and the correctness of the parameter
@@ -770,16 +734,14 @@ public class OMLReaderTest {
 		Entity srcCell1 = srcCells.get(0);
 		Entity srcCell2 = srcCells.get(1);
 
-		String name1 = srcCell1.getDefinition().getDefinition()
-				.getDisplayName();
-		String name2 = srcCell2.getDefinition().getDefinition()
-				.getDisplayName();
+		String name1 = srcCell1.getDefinition().getDefinition().getDisplayName();
+		String name2 = srcCell2.getDefinition().getDefinition().getDisplayName();
 
 		assertEquals("age", name1);
 		assertEquals("income", name2);
 
 	}
-	
+
 	/**
 	 * test for the inspire identifier function in alignment5
 	 */
@@ -799,29 +761,29 @@ public class OMLReaderTest {
 				break;
 			}
 		}
-		
+
 		ListMultimap<String, String> params = cell.getTransformationParameters();
-		
+
 		List<String> country = params.get("countryName");
 		List<String> provider = params.get("providerName");
 		List<String> product = params.get("productName");
 		List<String> version = params.get("version");
 		List<String> versionNilReason = params.get("versionNilReason");
-		
+
 		// check if all parameters were set once
 		assertEquals(1, country.size());
 		assertEquals(1, provider.size());
 		assertEquals(1, product.size());
 		assertEquals(1, version.size());
 		assertEquals(1, versionNilReason.size());
-		
+
 		// now test if they have correct values
 		assertEquals("at", country.get(0));
 		assertEquals("BEV", provider.get(0));
 		assertEquals("humboldt-sample-transformed-data-CadastralParcels", product.get(0));
 		assertEquals("", version.get(0));
 		assertEquals("unknown", versionNilReason.get(0));
-		
+
 		// check if all parameters were tested
 		assertEquals(5, params.size());
 	}
@@ -846,8 +808,7 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell
-				.getTransformationParameters();
+		ListMultimap<String, String> params = cell.getTransformationParameters();
 
 		List<String> gender = params.get("grammaticalGender");
 		List<String> number = params.get("grammaticalNumber");
@@ -913,8 +874,7 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell
-				.getTransformationParameters();
+		ListMultimap<String, String> params = cell.getTransformationParameters();
 
 		List<String> gender = params.get("grammaticalGender");
 		List<String> number = params.get("grammaticalNumber");
@@ -981,17 +941,14 @@ public class OMLReaderTest {
 
 	}
 
-	private static Alignment loadAlignment(URI sourceSchemaLocation,
-			URI targetSchemaLocation, final URI alignmentLocation)
-			throws IOProviderConfigurationException, IOException {
+	private static Alignment loadAlignment(URI sourceSchemaLocation, URI targetSchemaLocation,
+			final URI alignmentLocation) throws IOProviderConfigurationException, IOException {
 
 		// load source schema
-		Schema source = readXMLSchema(new DefaultInputSupplier(
-				sourceSchemaLocation));
+		Schema source = readXMLSchema(new DefaultInputSupplier(sourceSchemaLocation));
 
 		// load target schema
-		Schema target = readXMLSchema(new DefaultInputSupplier(
-				targetSchemaLocation));
+		Schema target = readXMLSchema(new DefaultInputSupplier(targetSchemaLocation));
 
 		OmlReader reader = new OmlReader();
 
@@ -1011,16 +968,13 @@ public class OMLReaderTest {
 	/**
 	 * Reads a XML schema
 	 * 
-	 * @param input
-	 *            the input supplier
+	 * @param input the input supplier
 	 * @return the schema
-	 * @throws IOProviderConfigurationException
-	 *             if the configuration of the reader is invalid
-	 * @throws IOException
-	 *             if reading the schema fails
+	 * @throws IOProviderConfigurationException if the configuration of the
+	 *             reader is invalid
+	 * @throws IOException if reading the schema fails
 	 */
-	private static Schema readXMLSchema(
-			LocatableInputSupplier<? extends InputStream> input)
+	private static Schema readXMLSchema(LocatableInputSupplier<? extends InputStream> input)
 			throws IOProviderConfigurationException, IOException {
 		XmlSchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(new DefaultTypeIndex());
@@ -1030,8 +984,7 @@ public class OMLReaderTest {
 		IOReport report = reader.execute(null);
 
 		assertTrue(report.isSuccess());
-		assertTrue("Errors are contained in the report", report.getErrors()
-				.isEmpty());
+		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
 
 		return reader.getSchema();
 	}

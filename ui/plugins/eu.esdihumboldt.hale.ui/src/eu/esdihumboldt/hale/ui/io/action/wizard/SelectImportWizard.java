@@ -18,16 +18,17 @@ import eu.esdihumboldt.hale.ui.util.wizard.MultiWizard;
 
 /**
  * Generic import wizard
+ * 
  * @author Simon Templer
  */
 public class SelectImportWizard extends MultiWizard<ActionUIWizardPage> {
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public SelectImportWizard() {
 		super();
-		
+
 		setWindowTitle("Import wizard");
 		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(
 				HALEUIPlugin.PLUGIN_ID, "/icons/banner/import_wiz.png"));

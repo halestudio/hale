@@ -23,12 +23,13 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Represents a {@link Type}
+ * 
  * @author Simon Templer
  */
 public class TypeBean extends EntityBean<TypeEntityDefinition> {
-	
+
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public TypeBean() {
 		super();
@@ -36,11 +37,12 @@ public class TypeBean extends EntityBean<TypeEntityDefinition> {
 
 	/**
 	 * Creates a type entity bean based on the given type entity
+	 * 
 	 * @param type the type entity
 	 */
 	public TypeBean(Type type) {
-		super(type.getDefinition().getDefinition().getName(), 
-				FilterDefinitionManager.getInstance().asString(type.getDefinition().getFilter()));
+		super(type.getDefinition().getDefinition().getName(), FilterDefinitionManager.getInstance()
+				.asString(type.getDefinition().getFilter()));
 	}
 
 	/**
@@ -55,11 +57,10 @@ public class TypeBean extends EntityBean<TypeEntityDefinition> {
 	 * @see EntityBean#createEntityDefinition(TypeIndex, SchemaSpaceID)
 	 */
 	@Override
-	protected TypeEntityDefinition createEntityDefinition(TypeIndex index,
-			SchemaSpaceID schemaSpace) {
+	protected TypeEntityDefinition createEntityDefinition(TypeIndex index, SchemaSpaceID schemaSpace) {
 		TypeDefinition typeDef = index.getType(getTypeName());
-		return new TypeEntityDefinition(typeDef, schemaSpace, 
-				FilterDefinitionManager.getInstance().parse(getFilter()));
+		return new TypeEntityDefinition(typeDef, schemaSpace, FilterDefinitionManager.getInstance()
+				.parse(getFilter()));
 	}
 
 }

@@ -23,10 +23,10 @@ import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 /**
  * Combines the information for resolving schema elements, attributes and
  * attribute groups
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class SchemaReferenceResolver {
@@ -41,12 +41,18 @@ public class SchemaReferenceResolver {
 	/**
 	 * Constructor
 	 * 
-	 * @param elements the schema elements
-	 * @param importedElements the imported schema elements
-	 * @param schemaAttributes the schema attributes
-	 * @param importedSchemaAttributes the imported schema attributes
-	 * @param schemaAttributeGroups the schema attribute groups
-	 * @param importedSchemaAttributeGroups the imported schema attribute groups
+	 * @param elements
+	 *            the schema elements
+	 * @param importedElements
+	 *            the imported schema elements
+	 * @param schemaAttributes
+	 *            the schema attributes
+	 * @param importedSchemaAttributes
+	 *            the imported schema attributes
+	 * @param schemaAttributeGroups
+	 *            the schema attribute groups
+	 * @param importedSchemaAttributeGroups
+	 *            the imported schema attribute groups
 	 */
 	public SchemaReferenceResolver(Map<Name, SchemaElement> elements,
 			Map<Name, SchemaElement> importedElements,
@@ -61,13 +67,14 @@ public class SchemaReferenceResolver {
 		this.schemaAttributeGroups = schemaAttributeGroups;
 		this.importedSchemaAttributeGroups = importedSchemaAttributeGroups;
 	}
-	
+
 	/**
 	 * Resolve a schema element by the given name
 	 * 
-	 * @param name the element name
+	 * @param name
+	 *            the element name
 	 * @return the schema element or <code>null</code> if the corresponding
-	 *   element was not found
+	 *         element was not found
 	 */
 	public SchemaElement getSchemaElement(Name name) {
 		SchemaElement element = elements.get(name);
@@ -76,13 +83,14 @@ public class SchemaReferenceResolver {
 		}
 		return element;
 	}
-	
+
 	/**
 	 * Resolve a schema attribute by the given name
 	 * 
-	 * @param name the attribute name
+	 * @param name
+	 *            the attribute name
 	 * @return the schema attribute or <code>null</code> if the corresponding
-	 *   attribute was not found
+	 *         attribute was not found
 	 */
 	public XmlSchemaAttribute getSchemaAttribute(Name name) {
 		XmlSchemaAttribute attribute = schemaAttributes.get(name);
@@ -91,13 +99,14 @@ public class SchemaReferenceResolver {
 		}
 		return attribute;
 	}
-	
+
 	/**
 	 * Resolve a schema attribute group by the given name
 	 * 
-	 * @param name the attribute group name
-	 * @return the schema attribute group or <code>null</code> if the 
-	 * corresponding attribute group was not found
+	 * @param name
+	 *            the attribute group name
+	 * @return the schema attribute group or <code>null</code> if the
+	 *         corresponding attribute group was not found
 	 */
 	public XmlSchemaAttributeGroup getSchemaAttributeGroup(Name name) {
 		XmlSchemaAttributeGroup group = schemaAttributeGroups.get(name);

@@ -17,6 +17,7 @@ import eu.esdihumboldt.hale.ui.io.ExportWizard;
 
 /**
  * Wizard for exporting alignments
+ * 
  * @author Simon Templer
  * @since 2.5
  */

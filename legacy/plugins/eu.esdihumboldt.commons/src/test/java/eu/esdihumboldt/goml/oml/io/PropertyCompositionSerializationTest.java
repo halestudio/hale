@@ -30,58 +30,65 @@ import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
 /**
  * <p>
  * 
- * This is a simple test for the serialization of the OML PropertyComposition instances. 
- *
+ * This is a simple test for the serialization of the OML PropertyComposition
+ * instances.
+ * 
  * @author Anna Pitaev
  * @partner 04 / Logica
- * @version $Id$ 
+ * @version $Id$
  */
 public class PropertyCompositionSerializationTest {
-	
+
 	private static final String TEST_GENERATED_OML_FILE = "PropertyCompositionTest_generated.xml";
 
 	/**
-	 * an Alignment Instance containing the Property Composistion to be serialized
+	 * an Alignment Instance containing the Property Composistion to be
+	 * serialized
 	 */
 	Alignment alignment;
-	
+
 	/**
-	 * OmlRdfGenerator to serialize PropertyComposition 
+	 * OmlRdfGenerator to serialize PropertyComposition
 	 * 
 	 */
 	OmlRdfGenerator omlGenerator;
-	
+
 	/**
 	 * Temporary folder used by the tests. Cleaned up after the tests have run.
 	 */
 	@Rule
 	public static TemporaryFolder TEMP_FOLDER = new TemporaryFolder();
-	
+
 	@Before
-	public void setUp() throws Exception{
-		//creates an Alignment Instance containing the Property Composistion to be serialized
+	public void setUp() throws Exception {
+		// creates an Alignment Instance containing the Property Composistion to
+		// be serialized
 		URI uri = null;
 		try {
-			uri = new URI(PropertyCompositionSerializationTest.class.getResource("PropertyCompositionTest.xml").getFile());
+			uri = new URI(PropertyCompositionSerializationTest.class
+					.getResource("PropertyCompositionTest.xml").getFile());
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.alignment = new OmlRdfReader().read(new URL("file", null, uri.getPath()));
+		this.alignment = new OmlRdfReader().read(new URL("file", null, uri
+				.getPath()));
 		this.omlGenerator = new OmlRdfGenerator();
-		
+
 	}
-	
+
 	@Test
-	public final void testWrite(){
+	public final void testWrite() {
 		try {
-			String xmlGenerationPath = TEMP_FOLDER.getRoot().getPath() + "/" + PropertyCompositionSerializationTest.TEST_GENERATED_OML_FILE;
+			String xmlGenerationPath = TEMP_FOLDER.getRoot().getPath()
+					+ "/"
+					+ PropertyCompositionSerializationTest.TEST_GENERATED_OML_FILE;
 			omlGenerator.write(alignment, xmlGenerationPath);
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }

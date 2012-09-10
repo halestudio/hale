@@ -24,13 +24,14 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * Default {@link GroupPropertyDefinition} implementation
+ * 
  * @author Simon Templer
  */
-public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<GroupPropertyConstraint>
-		implements GroupPropertyDefinition {
-	
+public class DefaultGroupPropertyDefinition extends
+		AbstractChildDefinition<GroupPropertyConstraint> implements GroupPropertyDefinition {
+
 	private final DefinitionGroup children = new DefaultGroup(true);
-	
+
 	private final boolean allowFlatten;
 
 	/**
@@ -42,10 +43,10 @@ public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<Grou
 	 * 
 	 * @see GroupPropertyDefinition#allowFlatten()
 	 */
-	public DefaultGroupPropertyDefinition(QName name, 
-			DefinitionGroup parentGroup, boolean allowFlatten) {
+	public DefaultGroupPropertyDefinition(QName name, DefinitionGroup parentGroup,
+			boolean allowFlatten) {
 		super(name, parentGroup);
-		
+
 		this.allowFlatten = allowFlatten;
 	}
 
@@ -54,7 +55,10 @@ public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<Grou
 	 */
 	@Override
 	public boolean allowFlatten() {
-		return allowFlatten || getDeclaredChildren().isEmpty(); // always allow flattening (removing) an empty group
+		return allowFlatten || getDeclaredChildren().isEmpty(); // always allow
+																// flattening
+																// (removing) an
+																// empty group
 	}
 
 	/**
@@ -96,7 +100,7 @@ public class DefaultGroupPropertyDefinition extends AbstractChildDefinition<Grou
 	public GroupPropertyDefinition asGroup() {
 		return this;
 	}
-	
+
 	/**
 	 * @see AbstractDefinition#toString()
 	 */

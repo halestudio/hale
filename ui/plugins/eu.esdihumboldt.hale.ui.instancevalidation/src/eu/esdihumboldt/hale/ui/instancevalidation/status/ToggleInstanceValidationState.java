@@ -26,20 +26,23 @@ import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationSer
  * @author Kai Schwierczek
  */
 public class ToggleInstanceValidationState extends State {
+
 	private final InstanceValidationListener listener;
 
 	/**
 	 * Constructor.
 	 */
 	public ToggleInstanceValidationState() {
-		final InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench().getService(InstanceValidationService.class);
+		final InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+				.getService(InstanceValidationService.class);
 
 		listener = new InstanceValidationListener() {
+
 			@Override
 			public void validationEnabledChange() {
 				setValue(ivs.isValidationEnabled());
 			}
-			
+
 			@Override
 			public void instancesValidated(InstanceValidationReport report) {
 				// don't care
@@ -52,7 +55,8 @@ public class ToggleInstanceValidationState extends State {
 
 	@Override
 	public void dispose() {
-		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench().getService(InstanceValidationService.class);
+		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+				.getService(InstanceValidationService.class);
 		ivs.removeListener(listener);
 		super.dispose();
 	}

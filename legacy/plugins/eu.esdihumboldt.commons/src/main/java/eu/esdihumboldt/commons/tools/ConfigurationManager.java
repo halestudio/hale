@@ -29,97 +29,101 @@ import eu.esdihumboldt.commons.mediator.util.XMLHandler;
 import eu.esdihumboldt.generated.configuration.Configuration;
 import eu.esdihumboldt.generated.configuration.PropertyType;
 
-
 /**
  * Helper class to load a component configuration.
- *
+ * 
  * @author Anna Pitaev
  * @partner 04 / Logica
- * @version $Id$ 
+ * @version $Id$
  */
 public class ConfigurationManager {
-	
+
 	private static final String CONFIGURATION_CONTEXT = "eu.esdihumboldt.generated.configuration";
 
 	private static final String COMPONENT_CONFIGURATION_FILE = "configuration.xml";
 
 	/** XML Handler to unmarshal configuration */
-	private static  XMLHandler xmlHandler;
-	
+	private static XMLHandler xmlHandler;
+
 	/** container object for the component configuration */
 	private static Configuration configuration;
-	
-   /**
-    * returns a value of component specific property
-    * @param propertyName
-    * @return String propertyValue
-    */
-	
+
+	/**
+	 * returns a value of component specific property
+	 * 
+	 * @param propertyName
+	 * @return String propertyValue
+	 */
+
 	public static String getComponentProperty(String propertyName) {
-		
+
 		boolean isFound = false;
 		String propertyValue = "";
-		//load configuration if needed
-		if (configuration == null) configuration = loadConfiguration();
-		List<PropertyType>  componentProperties = configuration.getComponentproperties().getProperty();
-		
+		// load configuration if needed
+		if (configuration == null)
+			configuration = loadConfiguration();
+		List<PropertyType> componentProperties = configuration
+				.getComponentproperties().getProperty();
+
 		Iterator<PropertyType> iterator = componentProperties.iterator();
-		PropertyType pType; 
-		while(iterator.hasNext()&&!isFound){
+		PropertyType pType;
+		while (iterator.hasNext() && !isFound) {
 			pType = iterator.next();
 			if (pType.getKey().equals(propertyName)) {
 				propertyValue = pType.getValue();
 				isFound = true;
 			}
-			
+
 		}
-		if (propertyValue == null){
-			throw new RuntimeException("Component Configuration Property  " + propertyName +" is not defined for this component");
+		if (propertyValue == null) {
+			throw new RuntimeException("Component Configuration Property  "
+					+ propertyName + " is not defined for this component");
 		}
-		
-		
+
 		return propertyValue;
 	}
-	
-	
 
 	/**
 	 * returns a value of the system property.
+	 * 
 	 * @param systemPropertyName
 	 * @return String systemPropertyValue
 	 */
-	public static String getSystemProperty(String systemPropertyName){
+	public static String getSystemProperty(String systemPropertyName) {
 		boolean isFound = false;
 		String propertyValue = "";
-		//load configuration if needed
-		if (configuration == null) configuration = loadConfiguration();
-		List<PropertyType>  systemProperties = configuration.getSystemproperties().getProperty();
-		
+		// load configuration if needed
+		if (configuration == null)
+			configuration = loadConfiguration();
+		List<PropertyType> systemProperties = configuration
+				.getSystemproperties().getProperty();
+
 		Iterator<PropertyType> iterator = systemProperties.iterator();
-		PropertyType pType; 
-		while(iterator.hasNext()&&!isFound){
+		PropertyType pType;
+		while (iterator.hasNext() && !isFound) {
 			pType = iterator.next();
 			if (pType.getKey().equals(systemPropertyName)) {
 				propertyValue = pType.getValue();
 				isFound = true;
 			}
-			
+
 		}
-		if (propertyValue == null){
-			throw new RuntimeException("System Configuration Property  " + systemPropertyName +" is not defined for this component");
+		if (propertyValue == null) {
+			throw new RuntimeException("System Configuration Property  "
+					+ systemPropertyName + " is not defined for this component");
 		}
-		
-		
+
 		return propertyValue;
-		
+
 	}
 
 	/**
 	 * loads configuration properties from the file to the configuration object
 	 * additionally stores the system property to the SYSTEM
-	 * @return Configuration 
-	 * @throws MalformedURLException 
-	 *
+	 * 
+	 * @return Configuration
+	 * @throws MalformedURLException
+	 * 
 	 */
 	private static Configuration loadConfiguration() {
 		JAXBContext jc;
@@ -129,52 +133,55 @@ public class ConfigurationManager {
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling
-			u.setEventHandler(
-					new javax.xml.bind.helpers.DefaultValidationEventHandler());
+			u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
 			URL configurationURL = null;
 			String configurationPath = null;
 			try {
-				configurationPath = ConfigurationManager.class.getResource(COMPONENT_CONFIGURATION_FILE).toURI().toString();
+				configurationPath = ConfigurationManager.class
+						.getResource(COMPONENT_CONFIGURATION_FILE).toURI()
+						.toString();
 			} catch (URISyntaxException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-			
+
 			try {
 				configurationURL = new URL(configurationPath);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				try {
-					configurationURL = new URL("file", null,configurationPath);
+					configurationURL = new URL("file", null, configurationPath);
 				} catch (MalformedURLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}finally{
-			
-			try {
-				root = u.unmarshal(new StreamSource(configurationURL.openStream()),
-						Configuration.class);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			configuration = root.getValue();
+			} finally {
+
+				try {
+					root = u.unmarshal(
+							new StreamSource(configurationURL.openStream()),
+							Configuration.class);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				configuration = root.getValue();
 			}
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
-		//2. store system property to the system	
-		List<PropertyType> systemProperties = configuration.getSystemproperties().getProperty();
-			Iterator<PropertyType> iterator = systemProperties.iterator();
-			PropertyType property; 
-			while (iterator.hasNext()){
-			     property = iterator.next();
-			     System.setProperty(property.getKey(), property.getValue());
-			}
-		
+
+		// 2. store system property to the system
+		List<PropertyType> systemProperties = configuration
+				.getSystemproperties().getProperty();
+		Iterator<PropertyType> iterator = systemProperties.iterator();
+		PropertyType property;
+		while (iterator.hasNext()) {
+			property = iterator.next();
+			System.setProperty(property.getKey(), property.getValue());
+		}
+
 		return configuration;
 	}
 }

@@ -34,7 +34,7 @@ public class InfoDetailFilter implements IFilter {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 }

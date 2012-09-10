@@ -52,7 +52,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
  * Group implementation based on {@link ODocument}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -69,51 +69,53 @@ public class OGroup implements MutableGroup {
 	public static final String BINARY_WRAPPER_CLASSNAME = "___BinaryWrapper___";
 
 	private static final ALogger log = ALoggerFactory.getLogger(OGroup.class);
-	
+
 	/**
 	 * The set of special field names, e.g. for the binary wrapper field
 	 */
 	private static final Set<String> SPECIAL_FIELDS = new HashSet<String>();
 	static {
 		SPECIAL_FIELDS.add(BINARY_WRAPPER_FIELD);
-		
+
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_SERIALIZATION_TYPE);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CONVERT_ID);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_CRS_ID);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_STRING_VALUE);
 	}
-	
+
 	/**
 	 * Cache for resolved classes for deserialization
 	 */
 	private static final LinkedHashMap<String, Class<?>> resolved = new LinkedHashMap<String, Class<?>>();
-	
+
 	/**
 	 * The document backing the group
 	 */
 	protected final ODocument document;
-	
+
 	/**
 	 * The associated database record.
 	 */
 	protected ODatabaseRecord db;
-	
+
 	/**
 	 * The definition group
 	 */
 	private final DefinitionGroup definition;
-	
+
 	/**
 	 * Creates an empty group with an associated definition group.
+	 * 
 	 * @param definition the associated group
 	 */
 	public OGroup(DefinitionGroup definition) {
 		document = new ODocument();
 		this.definition = definition;
 	}
-	
+
 	/**
 	 * Configure the internal document with the given database and return it
+	 * 
 	 * @param db the database
 	 * @return the internal document configured with the database
 	 */
@@ -122,20 +124,22 @@ public class OGroup implements MutableGroup {
 		configureDocument(document, db, definition);
 		return document;
 	}
-	
+
 	/**
 	 * Get the internal document.
+	 * 
 	 * @return the internal document
 	 */
 	public ODocument getDocument() {
 		return document;
 	}
-	
+
 	private void configureDocument(ORecordAbstract<?> document, ODatabaseRecord db,
 			DefinitionGroup definition) {
 		// configure document
-		
-		// as of OrientDB 1.0rc8 the database may no longer be set on the document
+
+		// as of OrientDB 1.0rc8 the database may no longer be set on the
+		// document
 		// instead the current database can be set using
 		// ODatabaseRecordThreadLocal.INSTANCE.set(db);
 //		document.setDatabase(db);
@@ -146,27 +150,28 @@ public class OGroup implements MutableGroup {
 			if (definition != null) {
 				className = ONameUtil.encodeName(definition.getIdentifier());
 			}
-			else if (doc.containsField(BINARY_WRAPPER_FIELD) || 
-					doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
+			else if (doc.containsField(BINARY_WRAPPER_FIELD)
+					|| doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
 				className = BINARY_WRAPPER_CLASSNAME;
 			}
-			
+
 			if (className != null) {
 				OSchema schema = db.getMetadata().getSchema();
 				if (!schema.existsClass(className)) {
-					// if the class doesn't exist yet, create a physical cluster manually for it
+					// if the class doesn't exist yet, create a physical cluster
+					// manually for it
 					int cluster = db.addCluster(className, CLUSTER_TYPE.PHYSICAL);
 					schema.createClass(className, cluster);
 				}
 				doc.setClassName(className);
 			}
-			
+
 			// configure children
 			for (Entry<String, Object> field : doc) {
 				List<ODocument> docs = new ArrayList<ODocument>();
 				List<ORecordAbstract<?>> recs = new ArrayList<ORecordAbstract<?>>();
 				if (field.getValue() instanceof Collection<?>) {
-					for (Object value : (Collection<?>)field.getValue()) {
+					for (Object value : (Collection<?>) field.getValue()) {
 						if (value instanceof ODocument) {
 							docs.add((ODocument) value);
 						}
@@ -175,17 +180,18 @@ public class OGroup implements MutableGroup {
 						}
 					}
 				}
-				else if (field.getValue() instanceof ODocument 
-						&& !getSpecialFieldNames().contains(field.getKey())) { 
+				else if (field.getValue() instanceof ODocument
+						&& !getSpecialFieldNames().contains(field.getKey())) {
 					docs.add((ODocument) field.getValue());
 				}
 				else if (field.getValue() instanceof ORecordAbstract<?>) {
 					recs.add((ORecordAbstract<?>) field.getValue());
 				}
-				
+
 				if (definition != null) {
 					for (ODocument valueDoc : docs) {
-						ChildDefinition<?> child = definition.getChild(decodeProperty(field.getKey()));
+						ChildDefinition<?> child = definition.getChild(decodeProperty(field
+								.getKey()));
 						DefinitionGroup childGroup;
 						if (child.asProperty() != null) {
 							childGroup = child.asProperty().getPropertyType();
@@ -194,12 +200,13 @@ public class OGroup implements MutableGroup {
 							childGroup = child.asGroup();
 						}
 						else {
-							throw new IllegalStateException("Document is associated neither with a property nor a property group.");
+							throw new IllegalStateException(
+									"Document is associated neither with a property nor a property group.");
 						}
 						configureDocument(valueDoc, db, childGroup);
 					}
 				}
-				
+
 				for (ORecordAbstract<?> fieldRec : recs) {
 					configureDocument(fieldRec, db, null);
 				}
@@ -212,25 +219,23 @@ public class OGroup implements MutableGroup {
 	 * 
 	 * @param document the document
 	 * @param definition the definition of the associated group
-	 * @param db the database 
+	 * @param db the database
 	 */
-	public OGroup(ODocument document, DefinitionGroup definition,
-			ODatabaseRecord db) {
+	public OGroup(ODocument document, DefinitionGroup definition, ODatabaseRecord db) {
 		this.document = document;
 		this.definition = definition;
 		this.db = db;
 	}
-	
+
 	/**
-	 * Copy constructor.
-	 * Creates a group based on the properties and values of the given 
-	 * group.
+	 * Copy constructor. Creates a group based on the properties and values of
+	 * the given group.
 	 * 
 	 * @param org the instance to copy
 	 */
 	public OGroup(Group org) {
 		this(org.getDefinition());
-		
+
 		for (QName property : org.getPropertyNames()) {
 			setProperty(property, org.getProperty(property).clone());
 		}
@@ -243,7 +248,7 @@ public class OGroup implements MutableGroup {
 	public void addProperty(QName propertyName, Object value) {
 		addProperty(propertyName, value, document);
 	}
-	
+
 	/**
 	 * Adds a property value to a given {@link ODocument}
 	 * 
@@ -253,14 +258,14 @@ public class OGroup implements MutableGroup {
 	 */
 	@SuppressWarnings("unchecked")
 	protected void addProperty(QName propertyName, Object value, ODocument document) {
-		
+
 		boolean isInstanceDocument = document == this.document;
-		
+
 		// convert instances to documents
 		value = convertInstance(value);
-		
+
 		String pName = encodeProperty(propertyName);
-		
+
 		boolean collection = !isInstanceDocument || isCollectionProperty(propertyName);
 		if (collection) {
 			// combine value with previous ones
@@ -269,9 +274,7 @@ public class OGroup implements MutableGroup {
 				// default: use list
 				List<Object> valueList = new ArrayList<Object>();
 				valueList.add(value);
-				document.field(
-						pName,
-						valueList,
+				document.field(pName, valueList,
 						(isInstanceDocument) ? (getCollectionType(propertyName))
 								: (OType.EMBEDDEDLIST));
 			}
@@ -285,9 +288,9 @@ public class OGroup implements MutableGroup {
 				Object[] values = new Object[oldArray.length + 1];
 				System.arraycopy(oldArray, 0, values, 0, oldArray.length);
 				values[oldArray.length] = value;
-				document.field(pName, values, 
+				document.field(pName, values,
 						(isInstanceDocument) ? (getCollectionType(propertyName))
-						: (OType.EMBEDDEDLIST));
+								: (OType.EMBEDDEDLIST));
 			}
 		}
 		else {
@@ -298,9 +301,10 @@ public class OGroup implements MutableGroup {
 
 	/**
 	 * Get the OrientDB collection type for the given property name
+	 * 
 	 * @param propertyName the property name
-	 * @return the collection type, either {@link OType#EMBEDDEDLIST} or 
-	 *   {@link OType#LINKLIST}
+	 * @return the collection type, either {@link OType#EMBEDDEDLIST} or
+	 *         {@link OType#LINKLIST}
 	 */
 	private OType getCollectionType(QName propertyName) {
 		ChildDefinition<?> child = definition.getChild(propertyName);
@@ -319,23 +323,24 @@ public class OGroup implements MutableGroup {
 				return OType.LINKLIST;
 			}
 		}
-		
+
 		// default to embedded llist
 		return OType.EMBEDDEDLIST;
 	}
 
 	/**
-	 * Converts {@link Group}s and {@link Instance}s to {@link ODocument} but 
+	 * Converts {@link Group}s and {@link Instance}s to {@link ODocument} but
 	 * leaves other objects untouched.
 	 * 
 	 * @param value the object to convert
 	 * @return the converted object
 	 */
 	protected Object convertInstance(Object value) {
-		if (value == null) 
+		if (value == null)
 			return null;
 		if (value instanceof OGroup) {
-			// special case: if possible use the internal document for OGroup/OInstance
+			// special case: if possible use the internal document for
+			// OGroup/OInstance
 			return ((OGroup) value).document;
 		}
 		else if (value instanceof Instance) {
@@ -346,22 +351,22 @@ public class OGroup implements MutableGroup {
 			OGroup tmp = new OGroup((Group) value);
 			return tmp.document;
 		}
-		//TODO also treat collections etc?
+		// TODO also treat collections etc?
 		/*
-		 * XXX OrientDB can't deal with nested collections/lists!(?)
-		 * as a work-around we also serialize collections
-		 * see isSupportedFieldType 
+		 * XXX OrientDB can't deal with nested collections/lists!(?) as a
+		 * work-around we also serialize collections see isSupportedFieldType
 		 */
-		//TODO objects that are not supported inside document
+		// TODO objects that are not supported inside document
 		else if (!isSupportedFieldType(value.getClass())) {
 			return OSerializationHelper.serialize(value);
 		}
-		
+
 		return value;
 	}
 
 	/**
 	 * Determines if the given field type is supported directly by the database
+	 * 
 	 * @param type the field type
 	 * @return if the field type is supported
 	 */
@@ -375,14 +380,10 @@ public class OGroup implements MutableGroup {
 			return true;
 		}
 		// wrapper types
-		else if (Double.class.isAssignableFrom(type) ||
-				Float.class.isAssignableFrom(type) ||
-				Integer.class.isAssignableFrom(type) ||
-				Long.class.isAssignableFrom(type) ||
-				Short.class.isAssignableFrom(type) ||
-				Byte.class.isAssignableFrom(type) ||
-				String.class.isAssignableFrom(type) ||
-				Boolean.class.isAssignableFrom(type)) {
+		else if (Double.class.isAssignableFrom(type) || Float.class.isAssignableFrom(type)
+				|| Integer.class.isAssignableFrom(type) || Long.class.isAssignableFrom(type)
+				|| Short.class.isAssignableFrom(type) || Byte.class.isAssignableFrom(type)
+				|| String.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
 			return true;
 		}
 		// date
@@ -392,12 +393,12 @@ public class OGroup implements MutableGroup {
 		// collections
 		else if (Collection.class.isAssignableFrom(type)) {
 			/*
-			 * XXX OrientDB can't deal with nested collections/lists!(?)
-			 * as a work-around we also serialize collections
+			 * XXX OrientDB can't deal with nested collections/lists!(?) as a
+			 * work-around we also serialize collections
 			 */
 //			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -422,7 +423,8 @@ public class OGroup implements MutableGroup {
 //		}
 //		
 //		return max == Cardinality.UNBOUNDED || max > 1;
-		//XXX treat everything as a collection property, as we may deal with merged instances
+		// XXX treat everything as a collection property, as we may deal with
+		// merged instances
 		return true;
 	}
 
@@ -433,7 +435,7 @@ public class OGroup implements MutableGroup {
 	public void setProperty(QName propertyName, Object... values) {
 		setPropertyInternal(this.document, propertyName, values);
 	}
-			
+
 	/**
 	 * Sets values for a property in a certain ODocument
 	 * 
@@ -443,20 +445,20 @@ public class OGroup implements MutableGroup {
 	 */
 	protected void setPropertyInternal(ODocument document, QName propertyName, Object... values) {
 		String pName = encodeProperty(propertyName);
-		
+
 		if (values == null || values.length == 0) {
 			document.removeField(pName);
 			return;
 		}
-		
+
 		boolean collection = isCollectionProperty(propertyName);
-		
+
 		if (!collection) {
 			if (values.length > 1) {
-				//TODO log type and property
+				// TODO log type and property
 				log.warn("Attempt to set multiple values on a property that supports only one, using only the first value");
 			}
-			
+
 			document.field(pName, convertInstance(values[0]));
 		}
 		else {
@@ -464,7 +466,7 @@ public class OGroup implements MutableGroup {
 			for (Object value : values) {
 				valueList.add(convertInstance(value));
 			}
-			document.field(pName, valueList,getCollectionType(propertyName));
+			document.field(pName, valueList, getCollectionType(propertyName));
 		}
 	}
 
@@ -475,13 +477,13 @@ public class OGroup implements MutableGroup {
 	 * @return the name encoded as a single string
 	 */
 	protected String encodeProperty(QName propertyName) {
-		//TODO optimize encoding?
+		// TODO optimize encoding?
 		// map namespace to short identifier
 		propertyName = ONamespaceMap.map(propertyName);
 		// encode name
 		return ONameUtil.encodeName(propertyName.toString());
 	}
-	
+
 	/**
 	 * Decode an encoded property name to a qualified name
 	 * 
@@ -499,7 +501,6 @@ public class OGroup implements MutableGroup {
 		}
 	}
 
-
 	/**
 	 * @see Instance#getProperty(QName)
 	 */
@@ -507,9 +508,7 @@ public class OGroup implements MutableGroup {
 	public Object[] getProperty(QName propertyName) {
 		return getProperty(propertyName, this.document);
 	}
-	
-	
-	
+
 	/**
 	 * Gets a property value from a given {@link ODocument}
 	 * 
@@ -519,10 +518,10 @@ public class OGroup implements MutableGroup {
 	 */
 	protected Object[] getProperty(QName propertyName, ODocument document) {
 		associatedDbWithThread();
-		
+
 		String pName = encodeProperty(propertyName);
 		Object value = document.field(pName);
-		
+
 		if (value == null) {
 			return null;
 		}
@@ -535,7 +534,7 @@ public class OGroup implements MutableGroup {
 			return valueList.toArray();
 		}
 		else {
-			return new Object[]{convertDocument(value, propertyName)};
+			return new Object[] { convertDocument(value, propertyName) };
 		}
 	}
 
@@ -559,8 +558,8 @@ public class OGroup implements MutableGroup {
 	protected Object convertDocument(Object value, QName propertyName) {
 		if (value instanceof ODocument) {
 			ODocument doc = (ODocument) value;
-			if (doc.containsField(BINARY_WRAPPER_FIELD) ||
-					doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
+			if (doc.containsField(BINARY_WRAPPER_FIELD)
+					|| doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
 				// extract wrapped ORecordBytes
 //				value = doc.field(BINARY_WRAPPER_FIELD);
 				return OSerializationHelper.deserialize(doc);
@@ -568,43 +567,44 @@ public class OGroup implements MutableGroup {
 			else {
 				ChildDefinition<?> child = definition.getChild(propertyName);
 				if (child.asProperty() != null) {
-					return new OInstance((ODocument) value, 
-							child.asProperty().getPropertyType(), db,
-							null); // no data set necessary for nested instances
+					return new OInstance((ODocument) value, child.asProperty().getPropertyType(),
+							db, null); // no data set necessary for nested
+										// instances
 				}
 				else if (child.asGroup() != null) {
 					return new OGroup((ODocument) value, child.asGroup(), db);
 				}
 				else {
-					throw new IllegalStateException("Field " + propertyName + 
-							" is associated neither with a property nor a group.");
+					throw new IllegalStateException("Field " + propertyName
+							+ " is associated neither with a property nor a group.");
 				}
 			}
 		}
-		//TODO also treat collections etc?
-		
-		//TODO objects that are not supported inside document
+		// TODO also treat collections etc?
+
+		// TODO objects that are not supported inside document
 		if (value instanceof ORecordBytes) {
-			//XXX should not be reached as every ORecordBytes should be contained in a wrapper 
-			//TODO try conversion first?!
-			
+			// XXX should not be reached as every ORecordBytes should be
+			// contained in a wrapper
+			// TODO try conversion first?!
+
 			// object deserialization
 			ORecordBytes record = (ORecordBytes) value;
 			ByteArrayInputStream bytes = new ByteArrayInputStream(record.toStream());
 			try {
 				ObjectInputStream in = new ObjectInputStream(bytes) {
-					
+
 					@Override
-					protected Class<?> resolveClass(ObjectStreamClass desc)
-							throws IOException, ClassNotFoundException {
+					protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
+							ClassNotFoundException {
 						Class<?> result = resolved.get(desc.getName());
 						if (result == null) {
 							result = OsgiUtils.loadClass(desc.getName(), null);
-							
+
 							if (resolved.size() > 200) {
 								resolved.entrySet().iterator().remove();
 							}
-							
+
 							resolved.put(desc.getName(), result);
 						}
 						return result;
@@ -615,7 +615,7 @@ public class OGroup implements MutableGroup {
 				throw new IllegalStateException("Could not deserialize field value.", e);
 			}
 		}
-		
+
 		return value;
 	}
 
@@ -626,34 +626,33 @@ public class OGroup implements MutableGroup {
 	public Iterable<QName> getPropertyNames() {
 		return getPropertyNames(this.document);
 	}
-		
-	
+
 	/**
 	 * Returns the index keys of a certain ODocument
+	 * 
 	 * @param document the keys are retrieved from
 	 * @return an Iterable with the keys as QNames
 	 */
 	protected Iterable<QName> getPropertyNames(ODocument document) {
 		associatedDbWithThread();
-		
-		Set<String> fields = new HashSet<String>(
-				Arrays.asList(document.fieldNames()));
-		
+
+		Set<String> fields = new HashSet<String>(Arrays.asList(document.fieldNames()));
+
 		// remove value field
 		fields.removeAll(getSpecialFieldNames());
-		
+
 		Set<QName> qFields = new HashSet<QName>();
 		for (String field : fields) {
 			qFields.add(decodeProperty(field));
 		}
-		
+
 		return qFields;
 	}
-	
-	
+
 	/**
 	 * Get the special field names, e.g. for metadata.
-	 * @return the collection of special field names. 
+	 * 
+	 * @return the collection of special field names.
 	 */
 	protected Collection<String> getSpecialFieldNames() {
 		return SPECIAL_FIELDS;

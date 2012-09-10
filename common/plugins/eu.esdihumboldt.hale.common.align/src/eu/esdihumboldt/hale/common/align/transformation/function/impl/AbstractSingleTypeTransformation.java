@@ -17,6 +17,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Transformation function base class
+ * 
  * @param <E> the transformation engine type
  * 
  * @author Simon Templer

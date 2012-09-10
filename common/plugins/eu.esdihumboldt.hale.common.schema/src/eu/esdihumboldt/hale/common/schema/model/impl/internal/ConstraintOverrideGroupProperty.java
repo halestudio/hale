@@ -20,30 +20,31 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractGroupPropertyDecora
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
 
 /**
- * Decorator for {@link GroupPropertyDefinition}s that overrides given 
+ * Decorator for {@link GroupPropertyDefinition}s that overrides given
  * constraints.
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class ConstraintOverrideGroupProperty extends AbstractGroupPropertyDecorator {
-	
+
 	private final AbstractDefinition<GroupPropertyConstraint> constraints;
 
 	/**
-	 * Create a decorator for the given group property where the given 
+	 * Create a decorator for the given group property where the given
 	 * constraints override the constraints of the group.
 	 * 
 	 * @param property the property to decorate
 	 * @param constraints the overriding constraints
 	 */
-	public ConstraintOverrideGroupProperty(GroupPropertyDefinition property, 
+	public ConstraintOverrideGroupProperty(GroupPropertyDefinition property,
 			GroupPropertyConstraint... constraints) {
 		super(property);
-		
+
 		this.constraints = new AbstractDefinition<GroupPropertyConstraint>(property.getName()) {
 			// empty implementation
 		};
-		
+
 		// add constraints
 		for (GroupPropertyConstraint constraint : constraints) {
 			this.constraints.setConstraint(constraint);
@@ -54,13 +55,12 @@ public class ConstraintOverrideGroupProperty extends AbstractGroupPropertyDecora
 	 * @see AbstractPropertyDecorator#getConstraint(Class)
 	 */
 	@Override
-	public <T extends GroupPropertyConstraint> T getConstraint(
-			Class<T> constraintType) {
+	public <T extends GroupPropertyConstraint> T getConstraint(Class<T> constraintType) {
 		// return overriding constraint if present
 		if (constraints.hasConstraint(constraintType)) {
 			return constraints.getConstraint(constraintType);
 		}
-		
+
 		return super.getConstraint(constraintType);
 	}
 

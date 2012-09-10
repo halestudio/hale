@@ -17,14 +17,16 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 
 /**
  * Represents a type in a mapping cell
+ * 
  * @author Simon Templer
  */
 public class DefaultType implements Type {
 
 	private final TypeEntityDefinition definition;
-	
+
 	/**
 	 * Create a type entity
+	 * 
 	 * @param definition the type entity definition
 	 */
 	public DefaultType(TypeEntityDefinition definition) {
@@ -39,8 +41,8 @@ public class DefaultType implements Type {
 	public TypeEntityDefinition getDefinition() {
 		return definition;
 	}
-	
-	//TODO type filter/restriction stuff - also update hashCode/equals?!
+
+	// TODO type filter/restriction stuff - also update hashCode/equals?!
 
 	/**
 	 * @see java.lang.Object#hashCode()
@@ -49,8 +51,7 @@ public class DefaultType implements Type {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((definition == null) ? 0 : definition.hashCode());
+		result = prime * result + ((definition == null) ? 0 : definition.hashCode());
 		return result;
 	}
 
@@ -69,7 +70,8 @@ public class DefaultType implements Type {
 		if (definition == null) {
 			if (other.definition != null)
 				return false;
-		} else if (!definition.equals(other.definition))
+		}
+		else if (!definition.equals(other.definition))
 			return false;
 		return true;
 	}
@@ -78,5 +80,5 @@ public class DefaultType implements Type {
 	public String toString() {
 		return getDefinition().toString();
 	}
-	
+
 }

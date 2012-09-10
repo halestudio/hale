@@ -25,8 +25,10 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * @author Kai Schwierczek
  */
 public class OrdinatesToPointExplanation extends AbstractCellExplanation {
+
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
@@ -34,7 +36,8 @@ public class OrdinatesToPointExplanation extends AbstractCellExplanation {
 		Entity sourceX = cell.getSource().get("x").get(0);
 		Entity sourceY = cell.getSource().get("y").get(0);
 		Entity sourceZ = null;
-		String srsName = CellUtil.getFirstParameter(cell, OrdinatesToPoint.PARAMETER_REFERENCE_SYSTEM);
+		String srsName = CellUtil.getFirstParameter(cell,
+				OrdinatesToPoint.PARAMETER_REFERENCE_SYSTEM);
 
 		if (!cell.getSource().get("z").isEmpty())
 			sourceZ = cell.getSource().get("z").get(0);
@@ -51,8 +54,9 @@ public class OrdinatesToPointExplanation extends AbstractCellExplanation {
 			message += ".";
 			if (srsName != null)
 				message += " The reference system {4} is used.";
-			return MessageFormat.format(message, formatEntity(target, html, true), formatEntity(sourceX, html, true),
-					formatEntity(sourceY, html, true), formatEntity(sourceZ, html, true), quoteText(srsName, html));
+			return MessageFormat.format(message, formatEntity(target, html, true),
+					formatEntity(sourceX, html, true), formatEntity(sourceY, html, true),
+					formatEntity(sourceZ, html, true), quoteText(srsName, html));
 		}
 
 		return null;

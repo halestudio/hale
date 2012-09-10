@@ -22,11 +22,12 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
 
 /**
  * Decorator for {@link PropertyDefinition}s that has a changed parent type
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class ReparentProperty extends AbstractPropertyDecorator {
-	
+
 	private final TypeDefinition parent;
 
 	/**
@@ -37,9 +38,9 @@ public class ReparentProperty extends AbstractPropertyDecorator {
 	 */
 	public ReparentProperty(PropertyDefinition property, TypeDefinition newParent) {
 		super(property);
-		
+
 		Preconditions.checkNotNull(newParent);
-		
+
 		this.parent = newParent;
 	}
 

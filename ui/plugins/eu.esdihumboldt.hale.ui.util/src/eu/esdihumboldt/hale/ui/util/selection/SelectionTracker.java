@@ -15,8 +15,8 @@ package eu.esdihumboldt.hale.ui.util.selection;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
- * Selection tracker interface. Implementations track 
- * selections of different kinds.
+ * Selection tracker interface. Implementations track selections of different
+ * kinds.
  * 
  * @author Simon Templer
  */
@@ -24,12 +24,13 @@ public interface SelectionTracker {
 
 	/**
 	 * Get the selection last with the given type
+	 * 
 	 * @param <T> the selection type
 	 * 
 	 * @param selectionType the selection class
-	 * @return the last matching selection or <code>null</code>
-	 *   if none is available
+	 * @return the last matching selection or <code>null</code> if none is
+	 *         available
 	 */
 	public <T extends ISelection> T getSelection(Class<T> selectionType);
-	
+
 }

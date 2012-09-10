@@ -12,395 +12,370 @@ import java.util.UUID;
 import eu.esdihumboldt.specification.mediator.usermanagement.Address;
 
 /**
- * This abstract type stores the information, that is
- *  common for the UserAddress and OrganizationAddress.
- *  
+ * This abstract type stores the information, that is common for the UserAddress
+ * and OrganizationAddress.
+ * 
  * 
  * @version $Revision: 1.3 $ $Date: 2007-10-24 13:42:53 $
  */
-public abstract class AddressType implements java.io.Serializable,Address {
+public abstract class AddressType implements java.io.Serializable, Address {
 
+	// --------------------------/
+	// - Class/Member Variables -/
+	// --------------------------/
 
-      //--------------------------/
-     //- Class/Member Variables -/
-    //--------------------------/
+	/**
+	 * Field _organizationAddressId.
+	 */
+	private UUID addressID;
 
-    /**
-     * Field _organizationAddressId.
+	// private UUID organizationAddressId;
+
+	/**
+	 * Field _POBox.
+	 */
+	private String POBox;
+
+	/**
+	 * keeps track of state for field: _POBox
+	 */
+	private boolean has_POBox;
+
+	/**
+	 * Field _street.
+	 */
+	private java.lang.String street;
+
+	/**
+	 * Field _houseNumber.
+	 */
+	private String houseNumber;
+
+	/**
+	 * keeps track of state for field: _houseNumber
+	 */
+	private boolean has_houseNumber;
+
+	/**
+	 * Field _streetSupplement1.
+	 */
+	private java.lang.String streetSupplement1;
+
+	/**
+	 * Field _streetSupplement2.
+	 */
+	private java.lang.String streetSupplement2;
+
+	/**
+	 * Field _postalCode.
+	 */
+	private java.lang.String postalCode;
+
+	/**
+	 * Field _city.
+	 */
+	private java.lang.String city;
+
+	/**
+	 * Field _county.
+	 */
+	private java.lang.String county;
+
+	/**
+	 * Field _district.
+	 */
+	private java.lang.String district;
+
+	/**
+	 * Field _countryCode.
+	 */
+	private eu.esdihumboldt.commons.mediator.usermanagement.types.impl.CountryCodeType countryCode;
+
+	// ----------------/
+	// - Constructors -/
+	// ----------------/
+
+	public AddressType() {
+		super();
+	}
+
+	// -----------/
+	// - Methods -/
+	// -----------/
+
+	/**
      */
-    private UUID addressID;
-    
-    //private UUID organizationAddressId;
+	public void deleteHouseNumber() {
+		this.has_houseNumber = false;
+	}
 
-    /**
-     * Field _POBox.
+	/**
      */
-    private String POBox;
+	public void deletePOBox() {
+		this.has_POBox = false;
+	}
 
-    /**
-     * keeps track of state for field: _POBox
-     */
-    private boolean has_POBox;
+	/**
+	 * Returns the value of field 'city'.
+	 * 
+	 * @return the value of field 'City'.
+	 */
+	public java.lang.String getCity() {
+		return this.city;
+	}
 
-    /**
-     * Field _street.
-     */
-    private java.lang.String street;
+	/**
+	 * Returns the value of field 'countryCode'.
+	 * 
+	 * @return the value of field 'CountryCode'.
+	 */
+	public eu.esdihumboldt.commons.mediator.usermanagement.types.impl.CountryCodeType getCountryCode() {
+		return this.countryCode;
+	}
 
-    /**
-     * Field _houseNumber.
-     */
-    private String houseNumber;
+	/**
+	 * Returns the value of field 'county'.
+	 * 
+	 * @return the value of field 'County'.
+	 */
+	public java.lang.String getCounty() {
+		return this.county;
+	}
 
-    /**
-     * keeps track of state for field: _houseNumber
-     */
-    private boolean has_houseNumber;
+	/**
+	 * Returns the value of field 'district'.
+	 * 
+	 * @return the value of field 'District'.
+	 */
+	public java.lang.String getDistrict() {
+		return this.district;
+	}
 
-    /**
-     * Field _streetSupplement1.
-     */
-    private java.lang.String streetSupplement1;
+	/**
+	 * Returns the value of field 'houseNumber'.
+	 * 
+	 * @return the value of field 'HouseNumber'.
+	 */
+	public String getHouseNumber() {
+		return this.houseNumber;
+	}
 
-    /**
-     * Field _streetSupplement2.
-     */
-    private java.lang.String streetSupplement2;
+	/**
+	 * Returns the value of field 'AddressId'.
+	 * 
+	 * @return the value of field 'AddressId'.
+	 */
+	public UUID getAddressID() {
+		return this.addressID;
+	}
 
-    /**
-     * Field _postalCode.
-     */
-    private java.lang.String postalCode;
+	/**
+	 * Returns the value of field 'POBox'.
+	 * 
+	 * @return the value of field 'POBox'.
+	 */
+	public String getPOBox() {
+		return this.POBox;
+	}
 
-    /**
-     * Field _city.
-     */
-    private java.lang.String city;
+	/**
+	 * Returns the value of field 'postalCode'.
+	 * 
+	 * @return the value of field 'PostalCode'.
+	 */
+	public java.lang.String getPostalCode() {
+		return this.postalCode;
+	}
 
-    /**
-     * Field _county.
-     */
-    private java.lang.String county;
+	/**
+	 * Returns the value of field 'street'.
+	 * 
+	 * @return the value of field 'Street'.
+	 */
+	public java.lang.String getStreet() {
+		return this.street;
+	}
 
-    /**
-     * Field _district.
-     */
-    private java.lang.String district;
+	/**
+	 * Returns the value of field 'streetSupplement1'.
+	 * 
+	 * @return the value of field 'StreetSupplement1'.
+	 */
+	public java.lang.String getStreetSupplement1() {
+		return this.streetSupplement1;
+	}
 
-    /**
-     * Field _countryCode.
-     */
-    private eu.esdihumboldt.commons.mediator.usermanagement.types.impl.CountryCodeType countryCode;
+	/**
+	 * Returns the value of field 'streetSupplement2'.
+	 * 
+	 * @return the value of field 'StreetSupplement2'.
+	 */
+	public java.lang.String getStreetSupplement2() {
+		return this.streetSupplement2;
+	}
 
+	/**
+	 * Method hasHouseNumber.
+	 * 
+	 * @return true if at least one HouseNumber has been added
+	 */
+	public boolean hasHouseNumber() {
+		return this.has_houseNumber;
+	}
 
-      //----------------/
-     //- Constructors -/
-    //----------------/
+	/**
+	 * Method hasPOBox.
+	 * 
+	 * @return true if at least one POBox has been added
+	 */
+	public boolean hasPOBox() {
+		return this.has_POBox;
+	}
 
-    public AddressType() {
-        super();
-    }
+	/**
+	 * Method isValid.
+	 * 
+	 * @return true if this object is valid according to the schema
+	 */
+	public boolean isValid() {
+		try {
+			validate();
+		} catch (org.exolab.castor.xml.ValidationException vex) {
+			return false;
+		}
+		return true;
+	}
 
+	/**
+	 * Sets the value of field 'city'.
+	 * 
+	 * @param city
+	 *            the value of field 'city'.
+	 */
+	public void setCity(final java.lang.String city) {
+		this.city = city;
+	}
 
-      //-----------/
-     //- Methods -/
-    //-----------/
+	/**
+	 * Sets the value of field 'countryCode'.
+	 * 
+	 * @param countryCode
+	 *            the value of field 'countryCode'.
+	 */
+	public void setCountryCode(
+			final eu.esdihumboldt.commons.mediator.usermanagement.types.impl.CountryCodeType countryCode) {
+		this.countryCode = countryCode;
+	}
 
-    /**
-     */
-    public void deleteHouseNumber(
-    ) {
-        this.has_houseNumber= false;
-    }
+	/**
+	 * Sets the value of field 'county'.
+	 * 
+	 * @param county
+	 *            the value of field 'county'.
+	 */
+	public void setCounty(final java.lang.String county) {
+		this.county = county;
+	}
 
-    /**
-     */
-    public void deletePOBox(
-    ) {
-        this.has_POBox= false;
-    }
+	/**
+	 * Sets the value of field 'district'.
+	 * 
+	 * @param district
+	 *            the value of field 'district'.
+	 */
+	public void setDistrict(final java.lang.String district) {
+		this.district = district;
+	}
 
-    /**
-     * Returns the value of field 'city'.
-     * 
-     * @return the value of field 'City'.
-     */
-    public java.lang.String getCity(
-    ) {
-        return this.city;
-    }
+	/**
+	 * Sets the value of field 'houseNumber'.
+	 * 
+	 * @param houseNumber
+	 *            the value of field 'houseNumber'.
+	 */
+	public void setHouseNumber(final String houseNumber) {
+		this.houseNumber = houseNumber;
+		this.has_houseNumber = true;
+	}
 
-    /**
-     * Returns the value of field 'countryCode'.
-     * 
-     * @return the value of field 'CountryCode'.
-     */
-    public eu.esdihumboldt.commons.mediator.usermanagement.types.impl.CountryCodeType getCountryCode(
-    ) {
-        return this.countryCode;
-    }
+	/**
+	 * Sets the value of field 'organizationAddressId'.
+	 * 
+	 * @param organizationAddressId
+	 *            the value of field 'organizationAddressId'.
+	 */
+	public void setAddressID(final java.util.UUID addressId) {
+		this.addressID = addressId;
+	}
 
-    /**
-     * Returns the value of field 'county'.
-     * 
-     * @return the value of field 'County'.
-     */
-    public java.lang.String getCounty(
-    ) {
-        return this.county;
-    }
+	/**
+	 * Sets the value of field 'POBox'.
+	 * 
+	 * @param POBox
+	 *            the value of field 'POBox'.
+	 */
+	public void setPOBox(final String POBox) {
+		this.POBox = POBox;
+		this.has_POBox = true;
+	}
 
-    /**
-     * Returns the value of field 'district'.
-     * 
-     * @return the value of field 'District'.
-     */
-    public java.lang.String getDistrict(
-    ) {
-        return this.district;
-    }
+	/**
+	 * Sets the value of field 'postalCode'.
+	 * 
+	 * @param postalCode
+	 *            the value of field 'postalCode'.
+	 */
+	public void setPostalCode(final java.lang.String postalCode) {
+		this.postalCode = postalCode;
+	}
 
-    /**
-     * Returns the value of field 'houseNumber'.
-     * 
-     * @return the value of field 'HouseNumber'.
-     */
-    public String getHouseNumber(
-    ) {
-        return this.houseNumber;
-    }
+	/**
+	 * Sets the value of field 'street'.
+	 * 
+	 * @param street
+	 *            the value of field 'street'.
+	 */
+	public void setStreet(final java.lang.String street) {
+		this.street = street;
+	}
 
-    /**
-     * Returns the value of field 'AddressId'.
-     * 
-     * @return the value of field 'AddressId'.
-     */
-    public UUID getAddressID(
-    ) {
-        return this.addressID;
-    }
+	/**
+	 * Sets the value of field 'streetSupplement1'.
+	 * 
+	 * @param streetSupplement1
+	 *            the value of field 'streetSupplement1'.
+	 */
+	public void setStreetSupplement1(final java.lang.String streetSupplement1) {
+		this.streetSupplement1 = streetSupplement1;
+	}
 
-    /**
-     * Returns the value of field 'POBox'.
-     * 
-     * @return the value of field 'POBox'.
-     */
-    public String getPOBox(
-    ) {
-        return this.POBox;
-    }
+	/**
+	 * Sets the value of field 'streetSupplement2'.
+	 * 
+	 * @param streetSupplement2
+	 *            the value of field 'streetSupplement2'.
+	 */
+	public void setStreetSupplement2(final java.lang.String streetSupplement2) {
+		this.streetSupplement2 = streetSupplement2;
+	}
 
-    /**
-     * Returns the value of field 'postalCode'.
-     * 
-     * @return the value of field 'PostalCode'.
-     */
-    public java.lang.String getPostalCode(
-    ) {
-        return this.postalCode;
-    }
+	/**
+	 * 
+	 * 
+	 * @throws org.exolab.castor.xml.ValidationException
+	 *             if this object is an invalid instance according to the schema
+	 */
+	public void validate() throws org.exolab.castor.xml.ValidationException {
+		org.exolab.castor.xml.Validator validator = new org.exolab.castor.xml.Validator();
+		validator.validate(this);
+	}
 
-    /**
-     * Returns the value of field 'street'.
-     * 
-     * @return the value of field 'Street'.
-     */
-    public java.lang.String getStreet(
-    ) {
-        return this.street;
-    }
+	// public UUID getOrganizationAddressID() {
+	// return organizationAddressId;
+	// }
 
-    /**
-     * Returns the value of field 'streetSupplement1'.
-     * 
-     * @return the value of field 'StreetSupplement1'.
-     */
-    public java.lang.String getStreetSupplement1(
-    ) {
-        return this.streetSupplement1;
-    }
-
-    /**
-     * Returns the value of field 'streetSupplement2'.
-     * 
-     * @return the value of field 'StreetSupplement2'.
-     */
-    public java.lang.String getStreetSupplement2(
-    ) {
-        return this.streetSupplement2;
-    }
-
-    /**
-     * Method hasHouseNumber.
-     * 
-     * @return true if at least one HouseNumber has been added
-     */
-    public boolean hasHouseNumber(
-    ) {
-        return this.has_houseNumber;
-    }
-
-    /**
-     * Method hasPOBox.
-     * 
-     * @return true if at least one POBox has been added
-     */
-    public boolean hasPOBox(
-    ) {
-        return this.has_POBox;
-    }
-
-    /**
-     * Method isValid.
-     * 
-     * @return true if this object is valid according to the schema
-     */
-    public boolean isValid(
-    ) {
-        try {
-            validate();
-        } catch (org.exolab.castor.xml.ValidationException vex) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Sets the value of field 'city'.
-     * 
-     * @param city the value of field 'city'.
-     */
-    public void setCity(
-            final java.lang.String city) {
-        this.city = city;
-    }
-
-    /**
-     * Sets the value of field 'countryCode'.
-     * 
-     * @param countryCode the value of field 'countryCode'.
-     */
-    public void setCountryCode(
-            final eu.esdihumboldt.commons.mediator.usermanagement.types.impl.CountryCodeType countryCode) {
-        this.countryCode = countryCode;
-    }
-
-    /**
-     * Sets the value of field 'county'.
-     * 
-     * @param county the value of field 'county'.
-     */
-    public void setCounty(
-            final java.lang.String county) {
-        this.county = county;
-    }
-
-    /**
-     * Sets the value of field 'district'.
-     * 
-     * @param district the value of field 'district'.
-     */
-    public void setDistrict(
-            final java.lang.String district) {
-        this.district = district;
-    }
-
-    /**
-     * Sets the value of field 'houseNumber'.
-     * 
-     * @param houseNumber the value of field 'houseNumber'.
-     */
-    public void setHouseNumber(
-            final String houseNumber) {
-        this.houseNumber = houseNumber;
-        this.has_houseNumber = true;
-    }
-
-    /**
-     * Sets the value of field 'organizationAddressId'.
-     * 
-     * @param organizationAddressId the value of field
-     * 'organizationAddressId'.
-     */
-    public void setAddressID(
-            final java.util.UUID addressId) {
-        this.addressID = addressId;
-    }
-
-    /**
-     * Sets the value of field 'POBox'.
-     * 
-     * @param POBox the value of field 'POBox'.
-     */
-    public void setPOBox(
-            final String POBox) {
-        this.POBox = POBox;
-        this.has_POBox = true;
-    }
-
-    /**
-     * Sets the value of field 'postalCode'.
-     * 
-     * @param postalCode the value of field 'postalCode'.
-     */
-    public void setPostalCode(
-            final java.lang.String postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    /**
-     * Sets the value of field 'street'.
-     * 
-     * @param street the value of field 'street'.
-     */
-    public void setStreet(
-            final java.lang.String street) {
-        this.street = street;
-    }
-
-    /**
-     * Sets the value of field 'streetSupplement1'.
-     * 
-     * @param streetSupplement1 the value of field
-     * 'streetSupplement1'.
-     */
-    public void setStreetSupplement1(
-            final java.lang.String streetSupplement1) {
-        this.streetSupplement1 = streetSupplement1;
-    }
-
-    /**
-     * Sets the value of field 'streetSupplement2'.
-     * 
-     * @param streetSupplement2 the value of field
-     * 'streetSupplement2'.
-     */
-    public void setStreetSupplement2(
-            final java.lang.String streetSupplement2) {
-        this.streetSupplement2 = streetSupplement2;
-    }
-
-    /**
-     * 
-     * 
-     * @throws org.exolab.castor.xml.ValidationException if this
-     * object is an invalid instance according to the schema
-     */
-    public void validate(
-    )
-    throws org.exolab.castor.xml.ValidationException {
-        org.exolab.castor.xml.Validator validator = new org.exolab.castor.xml.Validator();
-        validator.validate(this);
-    }
-
-
-//	public UUID getOrganizationAddressID() {
-//		return organizationAddressId;
-//	}
-
-
-//	public void setOrganizationAddressID(UUID addressId) {
-//		organizationAddressId = addressId;
-//	}
+	// public void setOrganizationAddressID(UUID addressId) {
+	// organizationAddressId = addressId;
+	// }
 
 }

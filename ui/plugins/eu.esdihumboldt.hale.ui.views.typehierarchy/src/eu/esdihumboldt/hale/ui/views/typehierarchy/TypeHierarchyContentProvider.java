@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Tree content provider showing the hierarchy of a {@link TypeDefinition}
+ * 
  * @author Simon Templer
  */
 public class TypeHierarchyContentProvider implements ITreeContentProvider {
@@ -33,28 +34,30 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 	 * Parent path for a type definition
 	 */
 	public static class ParentPath {
-		
+
 		private final List<TypeDefinition> path;
-		
+
 		private final TypeDefinition main;
 
 		/**
 		 * Create a parent path for the given type
+		 * 
 		 * @param main the main type definition
 		 */
 		public ParentPath(TypeDefinition main) {
 			this.main = main;
-			
+
 			path = new ArrayList<TypeDefinition>();
-			
+
 			while (main != null) {
 				path.add(0, main);
 				main = main.getSuperType();
 			}
 		}
-		
+
 		/**
 		 * Create a parent path
+		 * 
 		 * @param path the path
 		 * @param main the main type
 		 */
@@ -62,25 +65,27 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 			if (path.isEmpty()) {
 				throw new IllegalArgumentException("Path may not be empty");
 			}
-			
+
 			this.main = main;
 			this.path = path;
 		}
 
 		/**
 		 * Get the head type in the path
+		 * 
 		 * @return the head type or <code>null</code>
 		 */
 		public TypeDefinition getHead() {
 			if (path.isEmpty()) {
 				return null;
 			}
-			
+
 			return path.get(0);
 		}
-		
+
 		/**
 		 * Get the path tail
+		 * 
 		 * @return the tail or <code>null</code>
 		 */
 		public ParentPath getTail() {
@@ -89,9 +94,10 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 			}
 			return new ParentPath(path.subList(1, path.size()), main);
 		}
-		
+
 		/**
 		 * Create the sub-paths of the current path
+		 * 
 		 * @return the sub-paths
 		 */
 		public List<ParentPath> createSubPaths() {
@@ -99,16 +105,17 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 			if (tail != null) {
 				return Collections.singletonList(tail);
 			}
-			
+
 			List<ParentPath> paths = new ArrayList<ParentPath>();
 			for (TypeDefinition subType : getHead().getSubTypes()) {
 				paths.add(new ParentPath(Collections.singletonList(subType), main));
 			}
 			return paths;
 		}
-		
+
 		/**
 		 * Determines if this path represents the main type.
+		 * 
 		 * @return if this path represents the main type
 		 */
 		public boolean isMainType() {
@@ -117,19 +124,20 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 
 		/**
 		 * Get the main type.
+		 * 
 		 * @return the main type
 		 */
 		public TypeDefinition getMainType() {
 			return main;
 		}
-		
+
 		/**
 		 * Get the path that only represents the main type.
+		 * 
 		 * @return the path that represents the main type
 		 */
 		public ParentPath getMainPath() {
-			return new ParentPath(Collections.singletonList(getMainType()), 
-					getMainType());
+			return new ParentPath(Collections.singletonList(getMainType()), getMainType());
 		}
 
 		/**
@@ -159,12 +167,14 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 			if (main == null) {
 				if (other.main != null)
 					return false;
-			} else if (!main.equals(other.main))
+			}
+			else if (!main.equals(other.main))
 				return false;
 			if (path == null) {
 				if (other.path != null)
 					return false;
-			} else if (!path.equals(other.path))
+			}
+			else if (!path.equals(other.path))
 				return false;
 			return true;
 		}
@@ -191,12 +201,13 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 				roots.add(path);
 			}
 		}
-		
+
 		return roots.toArray();
 	}
 
 	/**
 	 * Create a parent path for the given input element if possible
+	 * 
 	 * @param inputElement the input element
 	 * @return the parent path or <code>null</code>
 	 */
@@ -204,11 +215,11 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 		if (inputElement instanceof TypeDefinition) {
 			return new ParentPath((TypeDefinition) inputElement);
 		}
-		
+
 		if (inputElement instanceof PropertyDefinition) {
 			return new ParentPath(((PropertyDefinition) inputElement).getPropertyType());
 		}
-		
+
 		return null;
 	}
 
@@ -221,7 +232,7 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 			ParentPath path = (ParentPath) parentElement;
 			return path.createSubPaths().toArray();
 		}
-		
+
 		throw new IllegalArgumentException("Given element not supported in type hierarchy tree.");
 	}
 
@@ -240,11 +251,11 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 				parentElement = path.getHead();
 			}
 		}
-		
+
 		if (parentElement instanceof TypeDefinition) {
 			return !((TypeDefinition) parentElement).getSubTypes().isEmpty();
 		}
-		
+
 		throw new IllegalArgumentException("Given element not supported in type hierarchy tree.");
 	}
 
@@ -271,7 +282,7 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 	public Object getParent(Object element) {
 		if (element instanceof ParentPath) {
 			ParentPath path = (ParentPath) element;
-			
+
 			TypeDefinition superType = path.getHead().getSuperType();
 			if (superType == null) {
 				// root -> parent is child
@@ -284,8 +295,9 @@ public class TypeHierarchyContentProvider implements ITreeContentProvider {
 				return new ParentPath(list, path.getMainType());
 			}
 		}
-		
-		// don't know at this point if the parent should be a parent path or a type definition
+
+		// don't know at this point if the parent should be a parent path or a
+		// type definition
 		return null;
 	}
 

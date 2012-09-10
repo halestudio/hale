@@ -32,12 +32,14 @@ import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 /**
  * Schema explorer with {@link EntityDefinition}s instead of {@link Definition}s
  * as elements.
+ * 
  * @author Simon Templer
  */
 public class EntitySchemaExplorer extends SchemaExplorer {
 
 	/**
 	 * Create an {@link EntityDefinition} based schema explorer
+	 * 
 	 * @param parent the parent composite
 	 * @param title the title
 	 * @param schemaSpace the associated schema space
@@ -51,9 +53,10 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 	 */
 	@Override
 	protected IContentProvider createContentProvider(TreeViewer tree) {
-		EntityDefinitionService service = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-		return new TreePathProviderAdapter(
-				new EntityTypeIndexContentProvider(tree, service, getSchemaSpace()));
+		EntityDefinitionService service = (EntityDefinitionService) PlatformUI.getWorkbench()
+				.getService(EntityDefinitionService.class);
+		return new TreePathProviderAdapter(new EntityTypeIndexContentProvider(tree, service,
+				getSchemaSpace()));
 	}
 
 	/**
@@ -62,11 +65,10 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 	@Override
 	protected void prependToolbarActions(ToolBarManager manager) {
 		ViewerFilter filter = new UnpopulatedPropertiesFilter();
-		manager.add(new FilterAction("Hide unpopulated properties",
-				"Show unpopulated properties", SchemasViewPlugin
-						.getImageDescriptor("icons/empty.gif"),
-				getTreeViewer(), filter, true, true));
-		
+		manager.add(new FilterAction("Hide unpopulated properties", "Show unpopulated properties",
+				SchemasViewPlugin.getImageDescriptor("icons/empty.gif"), getTreeViewer(), filter,
+				true, true));
+
 		manager.add(new Separator());
 	}
 

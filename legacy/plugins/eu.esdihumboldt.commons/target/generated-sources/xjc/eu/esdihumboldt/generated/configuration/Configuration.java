@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.configuration;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,11 +14,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for anonymous complex type.
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -38,89 +39,77 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "componentproperties",
-    "systemproperties"
-})
+@XmlType(name = "", propOrder = { "componentproperties", "systemproperties" })
 @XmlRootElement(name = "Configuration")
 public class Configuration {
 
-    @XmlElement(required = true)
-    protected PropertiesType componentproperties;
-    protected PropertiesType systemproperties;
-    @XmlAttribute(required = true)
-    protected String componentName;
+	@XmlElement(required = true)
+	protected PropertiesType componentproperties;
+	protected PropertiesType systemproperties;
+	@XmlAttribute(required = true)
+	protected String componentName;
 
-    /**
-     * Gets the value of the componentproperties property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PropertiesType }
-     *     
-     */
-    public PropertiesType getComponentproperties() {
-        return componentproperties;
-    }
+	/**
+	 * Gets the value of the componentproperties property.
+	 * 
+	 * @return possible object is {@link PropertiesType }
+	 * 
+	 */
+	public PropertiesType getComponentproperties() {
+		return componentproperties;
+	}
 
-    /**
-     * Sets the value of the componentproperties property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PropertiesType }
-     *     
-     */
-    public void setComponentproperties(PropertiesType value) {
-        this.componentproperties = value;
-    }
+	/**
+	 * Sets the value of the componentproperties property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link PropertiesType }
+	 * 
+	 */
+	public void setComponentproperties(PropertiesType value) {
+		this.componentproperties = value;
+	}
 
-    /**
-     * Gets the value of the systemproperties property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PropertiesType }
-     *     
-     */
-    public PropertiesType getSystemproperties() {
-        return systemproperties;
-    }
+	/**
+	 * Gets the value of the systemproperties property.
+	 * 
+	 * @return possible object is {@link PropertiesType }
+	 * 
+	 */
+	public PropertiesType getSystemproperties() {
+		return systemproperties;
+	}
 
-    /**
-     * Sets the value of the systemproperties property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PropertiesType }
-     *     
-     */
-    public void setSystemproperties(PropertiesType value) {
-        this.systemproperties = value;
-    }
+	/**
+	 * Sets the value of the systemproperties property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link PropertiesType }
+	 * 
+	 */
+	public void setSystemproperties(PropertiesType value) {
+		this.systemproperties = value;
+	}
 
-    /**
-     * Gets the value of the componentName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getComponentName() {
-        return componentName;
-    }
+	/**
+	 * Gets the value of the componentName property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getComponentName() {
+		return componentName;
+	}
 
-    /**
-     * Sets the value of the componentName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setComponentName(String value) {
-        this.componentName = value;
-    }
+	/**
+	 * Sets the value of the componentName property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setComponentName(String value) {
+		this.componentName = value;
+	}
 
 }

@@ -34,10 +34,10 @@ public class PathUpdate {
 	 */
 	public PathUpdate(URI oldLocation, URI newLocation) {
 		super();
-		/* 
-		 * analyze paths (w/o file name) of both URIs to find out which of the 
-		 * later parts are equal, to determine which part of the old location 
-		 * has to be replaced by which part of the new location for other files 
+		/*
+		 * analyze paths (w/o file name) of both URIs to find out which of the
+		 * later parts are equal, to determine which part of the old location
+		 * has to be replaced by which part of the new location for other files
 		 * that have been moved in a similar way to the analyzed file.
 		 */
 		analysePaths(oldLocation, newLocation);
@@ -58,14 +58,16 @@ public class PathUpdate {
 	private void analysePaths(URI oldLocation, URI newLocation) {
 		String o = oldLocation.toString();
 		String n = newLocation.toString();
-		
+
 		// cut off file name. only look at the path to the files.
 		o = o.substring(0, o.lastIndexOf('/'));
 		n = n.substring(0, n.lastIndexOf('/'));
-		
+
 		int commonEndLength = 0;
-		while (commonEndLength < o.length() && commonEndLength < n.length() && 
-				o.charAt(o.length() - commonEndLength - 1) == n.charAt(n.length() - commonEndLength - 1)) {
+		while (commonEndLength < o.length()
+				&& commonEndLength < n.length()
+				&& o.charAt(o.length() - commonEndLength - 1) == n.charAt(n.length()
+						- commonEndLength - 1)) {
 			commonEndLength++;
 		}
 		oldRaw = o.substring(0, o.length() - commonEndLength);

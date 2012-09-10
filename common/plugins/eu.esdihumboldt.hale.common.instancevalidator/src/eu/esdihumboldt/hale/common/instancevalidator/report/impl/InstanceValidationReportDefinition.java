@@ -23,13 +23,15 @@ import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationRe
 
 /**
  * Definition for {@link InstanceValidationReport}s.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class InstanceValidationReportDefinition extends
 		AbstractReportDefinition<InstanceValidationReport, InstanceValidationReporter> {
-	private static final ALogger log = ALoggerFactory.getLogger(InstanceValidationReportDefinition.class);
-	
+
+	private static final ALogger log = ALoggerFactory
+			.getLogger(InstanceValidationReportDefinition.class);
+
 	/**
 	 * Constructor.
 	 */
@@ -49,14 +51,14 @@ public class InstanceValidationReportDefinition extends
 	 * @see AbstractReportDefinition#configureReport(Report, Properties)
 	 */
 	@Override
-	protected InstanceValidationReport configureReport(
-			InstanceValidationReporter reporter, Properties props) {
+	protected InstanceValidationReport configureReport(InstanceValidationReporter reporter,
+			Properties props) {
 		try {
 			AbstractReportDefinition.configureBasicReporter(reporter, props);
 		} catch (Exception e) {
 			log.error("Error while parsing a report", e.getStackTrace());
 		}
-		
+
 		return reporter;
 	}
 }

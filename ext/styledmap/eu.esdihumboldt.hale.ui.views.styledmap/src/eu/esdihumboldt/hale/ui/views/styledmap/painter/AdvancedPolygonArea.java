@@ -18,16 +18,18 @@ import de.fhg.igd.mapviewer.marker.area.Area;
 import de.fhg.igd.mapviewer.marker.area.PolygonArea;
 
 /**
- * Create a polygon area where an AWT area provides a more accurate 
+ * Create a polygon area where an AWT area provides a more accurate
  * {@link #contains(int, int)}, e.g. for polygons with holes.
+ * 
  * @author Simon Templer
  */
 public class AdvancedPolygonArea extends PolygonArea {
-	
+
 	private final java.awt.geom.Area area;
 
 	/**
 	 * Create a marker area.
+	 * 
 	 * @param area the polygon area
 	 * @param exterior the exterior polygon
 	 */

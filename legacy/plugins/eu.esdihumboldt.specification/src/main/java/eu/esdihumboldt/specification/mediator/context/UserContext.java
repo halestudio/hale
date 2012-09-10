@@ -15,10 +15,9 @@ package eu.esdihumboldt.specification.mediator.context;
 import eu.esdihumboldt.specification.mediator.constraints.MetadataConstraint;
 import eu.esdihumboldt.specification.mediator.usermanagement.User;
 
-
 /**
- * A UserContext Interface is a SubInterface of the DefaultContext 
- * and allows access to the user context details like:
+ * A UserContext Interface is a SubInterface of the DefaultContext and allows
+ * access to the user context details like:
  * <ul>
  * <li>User, who is owner of this context,</li>
  * <li>Metadata Constraint for this user.</li>
@@ -30,20 +29,18 @@ import eu.esdihumboldt.specification.mediator.usermanagement.User;
  */
 public interface UserContext extends Context {
 
-	
 	/**
 	 * 
 	 * 
 	 * @return the UserConstraint, which describes e.g.:
-	 * <ul>
-	 * <li>User Name,</li>
-	 * <li>User Adress Information.</li>
-	 * </ul>
+	 *         <ul>
+	 *         <li>User Name,</li>
+	 *         <li>User Adress Information.</li>
+	 *         </ul>
 	 * 
 	 */
 	public MetadataConstraint getUserConstraint();
-	
-	
+
 	/**
 	 * 
 	 * 
@@ -51,15 +48,15 @@ public interface UserContext extends Context {
 	 */
 	public User getUser();
 
-
 	/**
-	 * Allows access to the ParentContext, that is a mandatory element for each UserContext.
-	 * It contains all default constraints for the ChildContext.
-	 * The User Default Constraints are defined for the Organization this user belongs to. 
+	 * Allows access to the ParentContext, that is a mandatory element for each
+	 * UserContext. It contains all default constraints for the ChildContext.
+	 * The User Default Constraints are defined for the Organization this user
+	 * belongs to.
 	 * 
-	 * @return OrganizationContext parentContext.  
+	 * @return OrganizationContext parentContext.
 	 */
-		
+
 	public OrganizationContext getParentContext();
 
 }

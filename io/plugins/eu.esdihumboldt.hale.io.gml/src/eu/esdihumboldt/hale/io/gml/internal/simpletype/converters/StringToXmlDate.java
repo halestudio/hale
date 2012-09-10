@@ -30,10 +30,10 @@ public class StringToXmlDate implements Converter<String, XmlDate> {
 		if (value == null) {
 			return null;
 		}
-		
+
 		XmlDate result = XmlDate.Factory.newInstance();
 		result.setStringValue(value);
 		return result;
 	}
-	
+
 }

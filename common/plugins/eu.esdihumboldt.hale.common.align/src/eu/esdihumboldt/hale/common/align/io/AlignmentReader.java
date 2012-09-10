@@ -18,24 +18,28 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Provides support for reading an alignment
+ * 
  * @author Simon Templer
  */
 public interface AlignmentReader extends ImportProvider {
-	
+
 	/**
 	 * Set the source schema
+	 * 
 	 * @param sourceSchema the source schema
 	 */
 	public void setSourceSchema(TypeIndex sourceSchema);
-	
+
 	/**
 	 * Set the target schema
+	 * 
 	 * @param targetSchema the source schema
 	 */
 	public void setTargetSchema(TypeIndex targetSchema);
-	
+
 	/**
 	 * Get the loaded alignment
+	 * 
 	 * @return the loaded alignment
 	 */
 	public MutableAlignment getAlignment();

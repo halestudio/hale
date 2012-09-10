@@ -17,13 +17,11 @@ package eu.esdihumboldt.commons.inspire.data;
  * 
  * @author Ana Belen Anton
  * @partner 02 / ETRA Research and Development
- * @version $Id$ 
+ * @version $Id$
  */
 
 public enum GrammaticalNumberValue {
-	
-	singular,
-	plural,
-	dual;
+
+	singular, plural, dual;
 
 }

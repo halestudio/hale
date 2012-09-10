@@ -26,20 +26,22 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Properties section with element type and binding information
+ * 
  * @author Patrick Lieb
  */
-public class TypeDefinitionElementTypeBindingSection extends DefaultDefinitionSection<TypeDefinition>{
-	
+public class TypeDefinitionElementTypeBindingSection extends
+		DefaultDefinitionSection<TypeDefinition> {
+
 	private Text elementType;
-	
+
 	private Text binding;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "ElementType:", "Binding:");
 		elementType = getText();
 		binding = getText2();
@@ -56,7 +58,7 @@ public class TypeDefinitionElementTypeBindingSection extends DefaultDefinitionSe
 			elementType.setText(element.getBinding().getName());
 		}
 		else {
-			elementType.setText(""); //XXX should not be displayed
+			elementType.setText(""); // XXX should not be displayed
 		}
 		binding.setText(bind.getBinding().getName());
 	}

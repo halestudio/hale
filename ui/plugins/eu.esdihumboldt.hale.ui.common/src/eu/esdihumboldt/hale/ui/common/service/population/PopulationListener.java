@@ -16,12 +16,14 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
  * Listens on {@link PopulationService} events.
+ * 
  * @author Simon Templer
  */
 public interface PopulationListener {
-	
+
 	/**
 	 * Called when the population for a schema space has changed.
+	 * 
 	 * @param ssid the schema space
 	 */
 	public void populationChanged(SchemaSpaceID ssid);

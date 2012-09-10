@@ -18,6 +18,7 @@ import org.eclipse.help.IHelpResource;
 
 /**
  * A context with a single topic.
+ * 
  * @author Simon Templer
  */
 public class SingleTopicContext implements IContext2 {
@@ -28,12 +29,12 @@ public class SingleTopicContext implements IContext2 {
 
 	/**
 	 * Create a context
+	 * 
 	 * @param title the title, may be <code>null</code>
-	 * @param description the context description 
+	 * @param description the context description
 	 * @param topic the context topic
 	 */
-	public SingleTopicContext(String title, String description, 
-			IHelpResource topic) {
+	public SingleTopicContext(String title, String description, IHelpResource topic) {
 		this.title = title;
 		this.description = description;
 		this.topic = topic;
@@ -44,7 +45,7 @@ public class SingleTopicContext implements IContext2 {
 	 */
 	@Override
 	public IHelpResource[] getRelatedTopics() {
-		return new IHelpResource[]{topic};
+		return new IHelpResource[] { topic };
 	}
 
 	/**

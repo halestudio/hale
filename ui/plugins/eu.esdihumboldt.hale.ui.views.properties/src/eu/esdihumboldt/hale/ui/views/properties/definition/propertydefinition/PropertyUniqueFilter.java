@@ -19,10 +19,11 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilt
 
 /**
  * Filter for unique section
- *
+ * 
  * @author Kai Schwierczek
  */
 public class PropertyUniqueFilter extends DefaultDefinitionFilter {
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */

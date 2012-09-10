@@ -16,17 +16,18 @@ import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
 /**
- * This class is used for proxy authentication.
- * (Sometimes just setting System properties does not work)
- *  
+ * This class is used for proxy authentication. (Sometimes just setting System
+ * properties does not work)
+ * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
 public class HttpAuth extends Authenticator {
+
 	private String user = ""; //$NON-NLS-1$
 	private String password = ""; //$NON-NLS-1$
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -37,7 +38,7 @@ public class HttpAuth extends Authenticator {
 		this.user = user;
 		this.password = password;
 	}
-	
+
 	@Override
 	protected PasswordAuthentication getPasswordAuthentication() {
 		return new PasswordAuthentication(this.user, this.password.toCharArray());

@@ -18,9 +18,10 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionLocationLin
 
 /**
  * Properties section with a link to open the location in editor or browser
+ * 
  * @author Patrick Lieb
  */
-public class PropertyTypeLocationLinkSection extends DefinitionLocationLinkSection{
+public class PropertyTypeLocationLinkSection extends DefinitionLocationLinkSection {
 
 	/**
 	 * @see DefaultDefinitionSection#setInput(Object)
@@ -28,7 +29,7 @@ public class PropertyTypeLocationLinkSection extends DefinitionLocationLinkSecti
 	@Override
 	protected void setInput(Object input) {
 		super.setInput(input);
-		
+
 		setDefinition(((PropertyDefinition) getDefinition()).getPropertyType());
 	}
 }

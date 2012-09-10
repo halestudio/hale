@@ -23,5 +23,5 @@ public interface CalculateAreaFunction {
 	 * the calculate area function ID
 	 */
 	public static final String ID = "eu.esdihumboldt.cst.functions.geometric.calculatearea";
-	
+
 }

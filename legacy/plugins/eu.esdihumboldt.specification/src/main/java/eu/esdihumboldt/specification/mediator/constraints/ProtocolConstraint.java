@@ -16,28 +16,28 @@ import java.util.Map;
 /**
  * The {@link ProtocolConstraint} is not a {@link Constraint} in the strict
  * sense, but instead contains useful information derived from the protocol
- * layer of a request that was sent to the Mediator. In the example of a 
- * HTTP request, this will include things like the method used, the 
- * authentication scheme, the URL that was requested, cookies and other 
- * information.
+ * layer of a request that was sent to the Mediator. In the example of a HTTP
+ * request, this will include things like the method used, the authentication
+ * scheme, the URL that was requested, cookies and other information.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface ProtocolConstraint extends Constraint {
 
 	/**
-	 * @return a Map, with the parameter names (see protocol specification) 
-	 * serving as Keys and the parameter values as values.
+	 * @return a Map, with the parameter names (see protocol specification)
+	 *         serving as Keys and the parameter values as values.
 	 */
 	public Map<String, String> getProtocolParameters();
-	
+
 	/**
-	 * @param _key the key String for which to retrieve the value.
+	 * @param _key
+	 *            the key String for which to retrieve the value.
 	 * @return the value for the given key, or null if there is no correspondent
-	 * value.
+	 *         value.
 	 */
 	public String getParameter(String _key);
-	
+
 }

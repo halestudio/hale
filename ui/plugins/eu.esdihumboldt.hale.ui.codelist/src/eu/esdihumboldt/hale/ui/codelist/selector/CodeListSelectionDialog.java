@@ -39,17 +39,17 @@ import eu.esdihumboldt.hale.ui.codelist.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class CodeListSelectionDialog extends TitleAreaDialog {
-	
+
 	private static final int NONE_ID = IDialogConstants.CLIENT_ID + 1;
 
 	private CodeList codeList;
-	
+
 	private final List<CodeListSelector> selectors = new ArrayList<CodeListSelector>();
-	
+
 	private TabFolder tabFolder;
-	
+
 	private final String message;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -59,21 +59,21 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 	 */
 	public CodeListSelectionDialog(Shell parentShell, CodeList codeList, String message) {
 		super(parentShell);
-		
+
 		this.codeList = codeList;
 		this.message = message;
 	}
-	
+
 	/**
 	 * @see TitleAreaDialog#createContents(Composite)
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
-		
-		//setMessage("");
+
+		// setMessage("");
 		setTitle(Messages.CodeListSelectionDialog_0); //$NON-NLS-1$
-		
+
 		return control;
 	}
 
@@ -83,7 +83,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		
+
 		newShell.setText(Messages.CodeListSelectionDialog_1); //$NON-NLS-1$
 	}
 
@@ -93,29 +93,29 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		setMessage(message, IMessageProvider.INFORMATION);
-		
+
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.widthHint = 600;
 		page.setLayoutData(data);
-		
+
 		GridLayout pageLayout = new GridLayout(2, false);
 		pageLayout.marginLeft = 0;
 		pageLayout.marginTop = 0;
 		pageLayout.marginLeft = 0;
 		pageLayout.marginBottom = 0;
 		page.setLayout(pageLayout);
-		
+
 		tabFolder = new TabFolder(page, SWT.TOP);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+
 		// list
 		TabItem listItem = new TabItem(tabFolder, SWT.NONE);
 		listItem.setText(Messages.CodeListSelectionDialog_2); //$NON-NLS-1$
 		ListSelector listSelector = new ListSelector(tabFolder);
 		listItem.setControl(listSelector.getControl());
 		selectors.add(listSelector);
-		
+
 		// file
 		// FIXME Update
 //		TabItem fileItem = new TabItem(tabFolder, SWT.NONE);
@@ -126,7 +126,7 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 //		if (codeList != null) {
 //			fileSelector.setLocation(codeList.getLocation());
 //		}
-		
+
 		// initial state
 		if (listSelector.selectCodeList(codeList)) {
 			tabFolder.setSelection(listItem);
@@ -135,21 +135,19 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 //		else {
 //			tabFolder.setSelection(fileItem);
 //		}
-		
+
 		return page;
 	}
-	
+
 	/**
 	 * @see Dialog#createButtonsForButtonBar(Composite)
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
-				true);
-		
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL,
-				false);
-		
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+
 		createButton(parent, NONE_ID, Messages.CodeListSelectionDialog_4, //$NON-NLS-1$
 				false);
 	}
@@ -160,17 +158,18 @@ public class CodeListSelectionDialog extends TitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		CodeListSelector selector = selectors.get(tabFolder.getSelectionIndex());
-		
+
 		CodeList codeList = selector.getCodeList();
-		
+
 		if (codeList != null) {
 			this.codeList = codeList;
-			
+
 			super.okPressed();
 		}
 		else {
-			//setErrorMessage("Invalid code list selection");
-			MessageDialog.openError(getShell(), Messages.CodeListSelectionDialog_5, Messages.CodeListSelectionDialog_6); //$NON-NLS-1$ //$NON-NLS-2$
+			// setErrorMessage("Invalid code list selection");
+			MessageDialog.openError(getShell(), Messages.CodeListSelectionDialog_5,
+					Messages.CodeListSelectionDialog_6); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 

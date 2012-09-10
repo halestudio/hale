@@ -18,12 +18,14 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * Factory for attribute editors not coupled to {@link Definition}s.
+ * 
  * @author Simon Templer
  */
 public interface EditorFactory {
-	
+
 	/**
 	 * Create an editor.
+	 * 
 	 * @param parent the parent composite
 	 * @return the created editor
 	 */

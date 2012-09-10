@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 
 /**
  * Base class for implementing {@link PropertyTransformation}s
+ * 
  * @param <E> the transformation engine type
  * 
  * @author Simon Templer
@@ -42,8 +43,7 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	 * @see PropertyTransformation#setVariables(ListMultimap)
 	 */
 	@Override
-	public void setVariables(
-			ListMultimap<String, PropertyValue> variables) {
+	public void setVariables(ListMultimap<String, PropertyValue> variables) {
 		this.variables = Multimaps.unmodifiableListMultimap(variables);
 	}
 
@@ -64,42 +64,44 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	}
 
 	/**
-	 * @see TransformationFunction#execute(String, TransformationEngine, Map, TransformationLog)
+	 * @see TransformationFunction#execute(String, TransformationEngine, Map,
+	 *      TransformationLog)
 	 */
 	@Override
 	public void execute(String transformationIdentifier, E engine,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
-		results = evaluate(transformationIdentifier, engine, variables, 
-				resultNames, executionParameters, log);
+		results = evaluate(transformationIdentifier, engine, variables, resultNames,
+				executionParameters, log);
 	}
-	
-	/**
-	 * Execute the evaluation function as configured.
-	 * @param transformationIdentifier the transformation function identifier
-	 * @param engine the transformation engine that may be used for the
-	 *   function execution
-	 * @param variables the input variables
-	 * @param resultNames the expected results (names associated with the
-	 *   corresponding entity definitions)
-	 * @param executionParameters additional parameters for the execution, 
-	 *   may be <code>null</code>
-	 * @param log the transformation log to report any information about the
-	 *   execution of the transformation to
-	 * @return the evaluation result
-	 * @throws TransformationException if an unrecoverable error occurs during
-	 *   transformation
-	 */
-	protected abstract ListMultimap<String, Object> evaluate(
-			String transformationIdentifier, E engine,
-			ListMultimap<String, PropertyValue> variables,
-			ListMultimap<String, PropertyEntityDefinition> resultNames, 
-			Map<String, String> executionParameters, 
-			TransformationLog log) throws TransformationException;
 
 	/**
-	 * Automatic result conversion allowed by default. Override to change
-	 * this behavior.
+	 * Execute the evaluation function as configured.
+	 * 
+	 * @param transformationIdentifier the transformation function identifier
+	 * @param engine the transformation engine that may be used for the function
+	 *            execution
+	 * @param variables the input variables
+	 * @param resultNames the expected results (names associated with the
+	 *            corresponding entity definitions)
+	 * @param executionParameters additional parameters for the execution, may
+	 *            be <code>null</code>
+	 * @param log the transformation log to report any information about the
+	 *            execution of the transformation to
+	 * @return the evaluation result
+	 * @throws TransformationException if an unrecoverable error occurs during
+	 *             transformation
+	 */
+	protected abstract ListMultimap<String, Object> evaluate(String transformationIdentifier,
+			E engine, ListMultimap<String, PropertyValue> variables,
+			ListMultimap<String, PropertyEntityDefinition> resultNames,
+			Map<String, String> executionParameters, TransformationLog log)
+			throws TransformationException;
+
+	/**
+	 * Automatic result conversion allowed by default. Override to change this
+	 * behavior.
+	 * 
 	 * @see PropertyTransformation#allowAutomatedResultConversion()
 	 */
 	@Override

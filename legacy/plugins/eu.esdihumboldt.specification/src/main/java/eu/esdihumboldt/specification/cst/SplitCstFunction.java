@@ -16,21 +16,23 @@ import java.util.Collection;
 import org.opengis.feature.Feature;
 
 /**
- * An extension of the {@link CstFunction} interface that declares a 
- * method for the splitting of a single Features into multiple ones. Note that 
- * any necessary configuration of how the aggregate has to be performed 
- * must happen via the 
- * {@link CstFunction#configure(eu.esdihumboldt.cst.align.ICell)} method.
+ * An extension of the {@link CstFunction} interface that declares a method for
+ * the splitting of a single Features into multiple ones. Note that any
+ * necessary configuration of how the aggregate has to be performed must happen
+ * via the {@link CstFunction#configure(eu.esdihumboldt.cst.align.ICell)}
+ * method.
  * 
  * @author Thorsten Reitz
  * @version {$Id}
  */
 public interface SplitCstFunction extends CstFunction {
-	
+
 	/**
-	 * @param source the Feature from which multiple Features should be 
-	 * created by splitting.
-	 * @param target the target Collection of Features
+	 * @param source
+	 *            the Feature from which multiple Features should be created by
+	 *            splitting.
+	 * @param target
+	 *            the target Collection of Features
 	 * @return the target Collection of Features
 	 */
 	public Feature splitTransform(Feature source, Collection<Feature> target);

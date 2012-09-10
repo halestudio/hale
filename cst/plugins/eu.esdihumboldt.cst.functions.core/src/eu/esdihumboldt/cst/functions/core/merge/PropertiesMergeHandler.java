@@ -39,16 +39,21 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Merge based on equal properties.
+ * 
  * @author Simon Templer
  */
-public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMergeHandler.PropertiesMergeConfig, DeepIterableKey> implements MergeFunction {
+public class PropertiesMergeHandler extends
+		AbstractMergeHandler<PropertiesMergeHandler.PropertiesMergeConfig, DeepIterableKey>
+		implements MergeFunction {
+
 	class PropertiesMergeConfig {
+
 		private List<List<QName>> keyProperties;
 		private List<List<QName>> additionalProperties;
 		private boolean autoDetect;
 
-		private PropertiesMergeConfig(List<List<QName>> keyProperties, List<List<QName>> additionalProperties,
-				boolean autoDetect) {
+		private PropertiesMergeConfig(List<List<QName>> keyProperties,
+				List<List<QName>> additionalProperties, boolean autoDetect) {
 			super();
 			this.keyProperties = keyProperties;
 			this.additionalProperties = additionalProperties;
@@ -57,16 +62,16 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMerge
 	}
 
 	@Override
-	protected PropertiesMergeConfig createMergeConfiguration(
-			String transformationIdentifier,
+	protected PropertiesMergeConfig createMergeConfiguration(String transformationIdentifier,
 			ListMultimap<String, String> transformationParameters,
-			Map<String, String> executionParameters, TransformationLog log) throws TransformationException {
-		if (transformationParameters == null 
+			Map<String, String> executionParameters, TransformationLog log)
+			throws TransformationException {
+		if (transformationParameters == null
 				|| !transformationParameters.containsKey(PARAMETER_PROPERTY)
 				|| transformationParameters.get(PARAMETER_PROPERTY).isEmpty()) {
 			throw new TransformationException("No merge property defined");
 		}
-		
+
 		List<List<QName>> properties = new ArrayList<List<QName>>();
 		for (String property : transformationParameters.get(PARAMETER_PROPERTY)) {
 			properties.add(PropertyResolver.getQNamesFromPath(property));
@@ -85,8 +90,8 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMerge
 			autoDetect = false;
 		}
 		else {
-			autoDetect = Boolean.parseBoolean(
-					transformationParameters.get(PARAMETER_AUTO_DETECT).get(0));
+			autoDetect = Boolean.parseBoolean(transformationParameters.get(PARAMETER_AUTO_DETECT)
+					.get(0));
 		}
 
 		return new PropertiesMergeConfig(properties, additionalProperties, autoDetect);
@@ -95,40 +100,39 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMerge
 	@Override
 	protected DeepIterableKey getMergeKey(Instance instance, PropertiesMergeConfig mergeConfig) {
 		List<Object> valueList = new ArrayList<Object>(mergeConfig.keyProperties.size());
-		
+
 		for (List<QName> propertyPath : mergeConfig.keyProperties) {
 			String query = Joiner.on('.').join(
 					Collections2.transform(propertyPath, new Function<QName, String>() {
 
-				@Override
-				public String apply(QName input) {
-					return input.toString();
-				}
-			}));
+						@Override
+						public String apply(QName input) {
+							return input.toString();
+						}
+					}));
 
 			valueList.add(PropertyResolver.getValues(instance, query, false));
 		}
-		
+
 		return new DeepIterableKey(valueList);
 	}
 
 	@Override
-	protected Instance merge(Collection<Instance> instances,
-			TypeDefinition type, DeepIterableKey mergeKey, 
-			PropertiesMergeConfig mergeConfig) {
+	protected Instance merge(Collection<Instance> instances, TypeDefinition type,
+			DeepIterableKey mergeKey, PropertiesMergeConfig mergeConfig) {
 		if (instances.size() == 1) {
 			// early exit if only one instance to merge
 			return instances.iterator().next();
 		}
-		
+
 		MutableInstance result = getInstanceFactory().createInstance(type);
-		
+
 		/*
 		 * FIXME This a first VERY basic implementation, where only the first
-		 * item in each property path is regarded, and that whole tree is
-		 * added only once (from the first instance).
-		 * XXX This especially will be a problem, if a path contains a choice.
-		 * XXX For more advanced stuff we need more advanced test cases.
+		 * item in each property path is regarded, and that whole tree is added
+		 * only once (from the first instance). XXX This especially will be a
+		 * problem, if a path contains a choice. XXX For more advanced stuff we
+		 * need more advanced test cases.
 		 */
 		Set<QName> rootNames = new HashSet<QName>();
 		// collect path roots
@@ -143,19 +147,21 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMerge
 				properties.put(name, instance.getProperty(name));
 
 		for (QName name : properties.keySet()) {
-			if (rootNames.contains(name) || (mergeConfig.autoDetect && allEqual(properties.get(name)))) {
+			if (rootNames.contains(name)
+					|| (mergeConfig.autoDetect && allEqual(properties.get(name)))) {
 				Object[] values = properties.get(name).get(0);
 				for (Object value : values)
 					result.addProperty(name, value);
-			} else {
+			}
+			else {
 				for (Object[] values : properties.get(name))
 					for (Object value : values)
 						result.addProperty(name, value);
 			}
 		}
-		
-		//XXX what about metadata?!
-		//XXX for now only retain IDs
+
+		// XXX what about metadata?!
+		// XXX for now only retain IDs
 		Set<Object> ids = new HashSet<Object>();
 		for (Instance instance : instances) {
 			List<Object> instanceIDs = instance.getMetaData(InstanceMetadata.METADATA_ID);
@@ -164,7 +170,7 @@ public class PropertiesMergeHandler extends AbstractMergeHandler<PropertiesMerge
 			}
 		}
 		result.setMetaData(InstanceMetadata.METADATA_ID, ids.toArray());
-		
+
 		return result;
 	}
 

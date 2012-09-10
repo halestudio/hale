@@ -74,8 +74,7 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	 * indentation and whitespace stripping policy.
 	 * 
 	 * @param xmlWriter the internal writer
-	 * @param indent
-	 *            the indent string for each indent level, must not be
+	 * @param indent the indent string for each indent level, must not be
 	 *            <code>null</code>
 	 */
 	public IndentingXMLStreamWriter(XMLStreamWriter xmlWriter, String indent) {
@@ -114,8 +113,7 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	}
 
 	@Override
-	public void setNamespaceContext(NamespaceContext context)
-			throws XMLStreamException {
+	public void setNamespaceContext(NamespaceContext context) throws XMLStreamException {
 		s.setNamespaceContext(context);
 	}
 
@@ -125,20 +123,19 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	}
 
 	@Override
-	public void writeAttribute(String localName, String value)
-			throws XMLStreamException {
+	public void writeAttribute(String localName, String value) throws XMLStreamException {
 		s.writeAttribute(localName, value);
 	}
 
 	@Override
-	public void writeAttribute(String namespaceURI, String localName,
-			String value) throws XMLStreamException {
+	public void writeAttribute(String namespaceURI, String localName, String value)
+			throws XMLStreamException {
 		s.writeAttribute(namespaceURI, localName, value);
 	}
 
 	@Override
-	public void writeAttribute(String prefix, String namespaceURI,
-			String localName, String value) throws XMLStreamException {
+	public void writeAttribute(String prefix, String namespaceURI, String localName, String value)
+			throws XMLStreamException {
 		s.writeAttribute(prefix, namespaceURI, localName, value);
 	}
 
@@ -153,8 +150,7 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	}
 
 	@Override
-	public void writeCharacters(char[] text, int start, int len)
-			throws XMLStreamException {
+	public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
 		s.writeCharacters(text, start, len);
 	}
 
@@ -171,8 +167,7 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	}
 
 	@Override
-	public void writeDefaultNamespace(String namespaceURI)
-			throws XMLStreamException {
+	public void writeDefaultNamespace(String namespaceURI) throws XMLStreamException {
 		s.writeDefaultNamespace(namespaceURI);
 	}
 
@@ -184,16 +179,15 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	}
 
 	@Override
-	public void writeEmptyElement(String namespaceURI, String localName)
-			throws XMLStreamException {
+	public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
 		indent();
 		s.writeEmptyElement(namespaceURI, localName);
 		unindent();
 	}
 
 	@Override
-	public void writeEmptyElement(String prefix, String localName,
-			String namespaceURI) throws XMLStreamException {
+	public void writeEmptyElement(String prefix, String localName, String namespaceURI)
+			throws XMLStreamException {
 		indent();
 		s.writeEmptyElement(prefix, localName, namespaceURI);
 		unindent();
@@ -205,20 +199,17 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	}
 
 	@Override
-	public void writeNamespace(String prefix, String namespaceURI)
-			throws XMLStreamException {
+	public void writeNamespace(String prefix, String namespaceURI) throws XMLStreamException {
 		s.writeNamespace(prefix, namespaceURI);
 	}
 
 	@Override
-	public void writeProcessingInstruction(String target)
-			throws XMLStreamException {
+	public void writeProcessingInstruction(String target) throws XMLStreamException {
 		s.writeProcessingInstruction(target);
 	}
 
 	@Override
-	public void writeProcessingInstruction(String target, String data)
-			throws XMLStreamException {
+	public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
 		s.writeProcessingInstruction(target, data);
 	}
 
@@ -235,8 +226,7 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	}
 
 	@Override
-	public void writeStartDocument(String encoding, String version)
-			throws XMLStreamException {
+	public void writeStartDocument(String encoding, String version) throws XMLStreamException {
 		s.writeStartDocument(encoding, version);
 		s.writeCharacters("\n"); //$NON-NLS-1$
 	}
@@ -248,15 +238,14 @@ public class IndentingXMLStreamWriter implements XMLStreamWriter {
 	}
 
 	@Override
-	public void writeStartElement(String namespaceURI, String localName)
-			throws XMLStreamException {
+	public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
 		indent();
 		s.writeStartElement(namespaceURI, localName);
 	}
 
 	@Override
-	public void writeStartElement(String prefix, String localName,
-			String namespaceURI) throws XMLStreamException {
+	public void writeStartElement(String prefix, String localName, String namespaceURI)
+			throws XMLStreamException {
 		indent();
 		s.writeStartElement(prefix, localName, namespaceURI);
 	}

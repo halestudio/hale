@@ -17,7 +17,6 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 
 import net.jcip.annotations.Immutable;
-
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -29,6 +28,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Abstract decorator for {@link PropertyDefinition}s
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -101,8 +101,7 @@ public abstract class AbstractPropertyDecorator implements PropertyDefinition {
 	 * @see Definition#getConstraint(Class)
 	 */
 	@Override
-	public <T extends PropertyConstraint> T getConstraint(
-			Class<T> constraintType) {
+	public <T extends PropertyConstraint> T getConstraint(Class<T> constraintType) {
 		return property.getConstraint(constraintType);
 	}
 

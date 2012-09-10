@@ -13,23 +13,21 @@
 package eu.esdihumboldt.specification.workflow.exceptions;
 
 /**
- *
+ * 
  * @author mgone
  */
-public class ConcretizationException extends Exception{
+public class ConcretizationException extends Exception {
 
-    public ConcretizationException(Throwable cause){
-        super(cause);
-    }
+	public ConcretizationException(Throwable cause) {
+		super(cause);
+	}
 
-    public ConcretizationException(String message, Throwable cause){
-        super(message, cause);
-    }
+	public ConcretizationException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public ConcretizationException(String message){
-        super(message);
-    }
-
-
+	public ConcretizationException(String message) {
+		super(message);
+	}
 
 }

@@ -27,7 +27,7 @@ public class TransformationViewPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static TransformationViewPlugin plugin;
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -55,7 +55,7 @@ public class TransformationViewPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static TransformationViewPlugin getDefault() {
@@ -63,9 +63,9 @@ public class TransformationViewPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path
+	 * 
 	 * @param path the path
 	 * @return the image descriptor
 	 */

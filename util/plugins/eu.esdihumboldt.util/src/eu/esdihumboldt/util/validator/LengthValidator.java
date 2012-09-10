@@ -18,11 +18,13 @@ package eu.esdihumboldt.util.validator;
  * @author Kai Schwierczek
  */
 public class LengthValidator extends AbstractValidator {
+
 	private Type type;
 	private int length;
-	
+
 	/**
-	 * Construct a validator that checks the length of the input to match the given type and value.
+	 * Construct a validator that checks the length of the input to match the
+	 * given type and value.
 	 * 
 	 * @param type the length attribute to check for
 	 * @param length the length to check for
@@ -31,7 +33,7 @@ public class LengthValidator extends AbstractValidator {
 		this.type = type;
 		this.length = length;
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.util.validator.Validator#validate(Object)
 	 */

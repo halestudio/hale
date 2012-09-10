@@ -40,8 +40,7 @@ import eu.esdihumboldt.hale.ui.views.properties.function.AbstractFunctionSection
  * 
  * @author Patrick Lieb
  */
-public class AbstractFunctionParameterSection extends
-		AbstractFunctionSection<AbstractFunction<?>> {
+public class AbstractFunctionParameterSection extends AbstractFunctionSection<AbstractFunction<?>> {
 
 	private TableViewer tableViewer;
 
@@ -50,8 +49,7 @@ public class AbstractFunctionParameterSection extends
 	 *      org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 
 		Composite compparent = getWidgetFactory().createComposite(parent);
@@ -74,8 +72,7 @@ public class AbstractFunctionParameterSection extends
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
-		TableViewerColumn nameviewercol = new TableViewerColumn(tableViewer,
-				SWT.NONE);
+		TableViewerColumn nameviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn namecol = nameviewercol.getColumn();
 		columnLayout.setColumnData(namecol, new ColumnWeightData(20));
 		namecol.setText("Name");
@@ -88,8 +85,7 @@ public class AbstractFunctionParameterSection extends
 
 		});
 
-		TableViewerColumn lableviewercol = new TableViewerColumn(tableViewer,
-				SWT.NONE);
+		TableViewerColumn lableviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn lablecol = lableviewercol.getColumn();
 		columnLayout.setColumnData(lablecol, new ColumnWeightData(20));
 		lablecol.setText("Label");
@@ -97,14 +93,12 @@ public class AbstractFunctionParameterSection extends
 
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(((FunctionParameter) cell.getElement())
-						.getDisplayName());
+				cell.setText(((FunctionParameter) cell.getElement()).getDisplayName());
 			}
 
 		});
 
-		TableViewerColumn occurenceviewercol = new TableViewerColumn(
-				tableViewer, SWT.NONE);
+		TableViewerColumn occurenceviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn occurencecol = occurenceviewercol.getColumn();
 		columnLayout.setColumnData(occurencecol, new ColumnWeightData(10));
 		occurencecol.setText("Occurence");
@@ -112,17 +106,14 @@ public class AbstractFunctionParameterSection extends
 
 			@Override
 			public void update(ViewerCell cell) {
-				FunctionParameter cellparameter = ((FunctionParameter) cell
-						.getElement());
-				cell.setText(String.valueOf(cellparameter.getMinOccurrence())
-						+ ".."
+				FunctionParameter cellparameter = ((FunctionParameter) cell.getElement());
+				cell.setText(String.valueOf(cellparameter.getMinOccurrence()) + ".."
 						+ (String.valueOf(cellparameter.getMaxOccurrence())));
 			}
 
 		});
 
-		TableViewerColumn descriptionviewercol = new TableViewerColumn(
-				tableViewer, SWT.NONE);
+		TableViewerColumn descriptionviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn descriptioncol = descriptionviewercol.getColumn();
 		columnLayout.setColumnData(descriptioncol, new ColumnWeightData(40));
 		descriptioncol.setText("Description");
@@ -130,8 +121,8 @@ public class AbstractFunctionParameterSection extends
 
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(String.valueOf(((FunctionParameter) cell
-						.getElement()).getDescription()));
+				cell.setText(String.valueOf(((FunctionParameter) cell.getElement())
+						.getDescription()));
 			}
 
 		});

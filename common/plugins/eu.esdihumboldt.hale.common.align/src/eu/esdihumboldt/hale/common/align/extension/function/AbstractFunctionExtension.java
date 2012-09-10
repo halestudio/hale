@@ -27,16 +27,18 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 
 /**
  * Abstract function extension
- * @param <T> the function type 
+ * 
+ * @param <T> the function type
  * 
  * @author Simon Templer
  */
-public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> extends IdentifiableExtension<T> {
+public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> extends
+		IdentifiableExtension<T> {
 
 	private SetMultimap<String, T> categoryFunctions;
-	
+
 	private boolean initialized = false;
-	
+
 	/**
 	 * @see IdentifiableExtension#IdentifiableExtension(String)
 	 */
@@ -61,9 +63,10 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 		}
 		return function;
 	}
-	
+
 	/**
 	 * Get the functions associated to the category with the given ID
+	 * 
 	 * @param category the category ID, may be <code>null</code>
 	 * @return the list of functions or an empty list
 	 */
@@ -72,12 +75,12 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 			// initialize
 			getElements();
 		}
-		
+
 		if (categoryFunctions != null) {
 			Set<T> res = categoryFunctions.get(category);
 			return new ArrayList<T>(res);
 		}
-		
+
 		return Collections.emptyList();
 	}
 
@@ -95,6 +98,7 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 
 	/**
 	 * Create an object for the given configuration element
+	 * 
 	 * @param elementId the element ID
 	 * @param element the configuration element
 	 * @return the element object or <code>null</code>

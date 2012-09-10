@@ -21,23 +21,24 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 
 /**
  * Factory for a custom {@link ProjectFile}
+ * 
  * @author Simon Templer
  */
 public class CustomFileFactory implements ProjectFileFactory {
 
 	private final String name;
-	
+
 	private final Class<? extends ProjectFile> fileClass;
-	
+
 	/**
 	 * Create a factory based on the given configuration
+	 * 
 	 * @param element the configuration element
 	 */
 	@SuppressWarnings("unchecked")
 	public CustomFileFactory(IConfigurationElement element) {
 		this.name = element.getAttribute("name");
-		this.fileClass = (Class<? extends ProjectFile>) 
-				ExtensionUtil.loadClass(element, "class");
+		this.fileClass = (Class<? extends ProjectFile>) ExtensionUtil.loadClass(element, "class");
 	}
 
 	/**

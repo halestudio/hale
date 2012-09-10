@@ -22,13 +22,14 @@ import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
  * Interface for custom report details pages for specific {@link Report}s.
- *
+ * 
  * @author Kai Schwierczek
  */
 public interface CustomReportDetailsPage {
+
 	/**
 	 * Create the custom controls for the details page.
-	 *
+	 * 
 	 * @param parent the parent composite for the page
 	 * @return the created control
 	 */
@@ -36,7 +37,7 @@ public interface CustomReportDetailsPage {
 
 	/**
 	 * Set the input messages for the details page to messages.
-	 *
+	 * 
 	 * @param messages the messages to show
 	 * @param type the type of messages
 	 */
@@ -44,7 +45,7 @@ public interface CustomReportDetailsPage {
 
 	/**
 	 * Enum constants indicating the type of {@link Message}.
-	 *
+	 * 
 	 * @author Kai Schwierczek
 	 */
 	public static enum MessageType {

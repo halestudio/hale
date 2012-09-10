@@ -12,27 +12,27 @@
 package eu.esdihumboldt.specification.mediator;
 
 /**
- * Classes implementing this Interface are the ones actually handling the 
- * request from the client. They represent the first step in processing such a 
- * request in the Mediator and have the responsibility of transforming the client-
- * encoded request to the internal request format, thereby enriching it with
- * context information by means of the ContextService. Furthermore, these
- * implementations also handle the specifics of Client Response handling.
- * <br/>
- * For many cases, classes implementing this interface will also extend 
+ * Classes implementing this Interface are the ones actually handling the
+ * request from the client. They represent the first step in processing such a
+ * request in the Mediator and have the responsibility of transforming the
+ * client- encoded request to the internal request format, thereby enriching it
+ * with context information by means of the ContextService. Furthermore, these
+ * implementations also handle the specifics of Client Response handling. <br/>
+ * For many cases, classes implementing this interface will also extend
  * HttpServlet or similar base classes defined by the common APIs.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface InterfaceController {
 
 	/**
-	 * @param _hres the created {@link MediatorResponse}.
-	 * @return true if the {@link InterfaceController} implementation
-	 * accepted and distributed the {@link MediatorResponse}.
+	 * @param _hres
+	 *            the created {@link MediatorResponse}.
+	 * @return true if the {@link InterfaceController} implementation accepted
+	 *         and distributed the {@link MediatorResponse}.
 	 */
 	public boolean notify(MediatorResponse _hres);
-	
+
 }

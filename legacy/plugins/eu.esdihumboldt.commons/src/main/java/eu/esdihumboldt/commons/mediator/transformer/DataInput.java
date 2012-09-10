@@ -5,7 +5,6 @@
 // Generated on: 2009.01.07 at 01:07:31 PM CET 
 //
 
-
 package eu.esdihumboldt.commons.mediator.transformer;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,11 +13,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for DataInput complex type.
+ * <p>
+ * Java class for DataInput complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="DataInput">
@@ -37,95 +38,79 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DataInput", propOrder = {
-    "id",
-    "inputID",
-    "transformerID"
-})
-@XmlSeeAlso({
-    SimpleDataInput.class,
-    TransformerDataInput.class,
-    ComplexDataInput.class
-})
+@XmlType(name = "DataInput", propOrder = { "id", "inputID", "transformerID" })
+@XmlSeeAlso({ SimpleDataInput.class, TransformerDataInput.class,
+		ComplexDataInput.class })
 public class DataInput {
 
-    @XmlElement(name = "ID", required = true)
-    protected String id;
-    @XmlElement(required = true)
-    protected String inputID;
-    @XmlElement(required = true)
-    protected String transformerID;
+	@XmlElement(name = "ID", required = true)
+	protected String id;
+	@XmlElement(required = true)
+	protected String inputID;
+	@XmlElement(required = true)
+	protected String transformerID;
 
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getID() {
-        return id;
-    }
+	/**
+	 * Gets the value of the id property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getID() {
+		return id;
+	}
 
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setID(String value) {
-        this.id = value;
-    }
+	/**
+	 * Sets the value of the id property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setID(String value) {
+		this.id = value;
+	}
 
-    /**
-     * Gets the value of the inputID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getInputID() {
-        return inputID;
-    }
+	/**
+	 * Gets the value of the inputID property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getInputID() {
+		return inputID;
+	}
 
-    /**
-     * Sets the value of the inputID property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setInputID(String value) {
-        this.inputID = value;
-    }
+	/**
+	 * Sets the value of the inputID property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setInputID(String value) {
+		this.inputID = value;
+	}
 
-    /**
-     * Gets the value of the transformerID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTransformerID() {
-        return transformerID;
-    }
+	/**
+	 * Gets the value of the transformerID property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTransformerID() {
+		return transformerID;
+	}
 
-    /**
-     * Sets the value of the transformerID property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTransformerID(String value) {
-        this.transformerID = value;
-    }
+	/**
+	 * Sets the value of the transformerID property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTransformerID(String value) {
+		this.transformerID = value;
+	}
 
 }

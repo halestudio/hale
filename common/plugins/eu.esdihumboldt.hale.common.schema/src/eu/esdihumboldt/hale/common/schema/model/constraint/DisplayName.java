@@ -21,17 +21,17 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 /**
  * Constraint that can provide a custom display name. By default has no custom
  * name.
+ * 
  * @author Simon Templer
  */
 @Immutable
 @Constraint(mutable = false)
-public class DisplayName implements GroupPropertyConstraint,
-		PropertyConstraint, TypeConstraint {
+public class DisplayName implements GroupPropertyConstraint, PropertyConstraint, TypeConstraint {
 
 	private final String customName;
 
 	/**
-	 * Create a default constraint that has no custom name.  
+	 * Create a default constraint that has no custom name.
 	 */
 	public DisplayName() {
 		this(null);
@@ -49,8 +49,9 @@ public class DisplayName implements GroupPropertyConstraint,
 
 	/**
 	 * Get the custom display name.
+	 * 
 	 * @return the customName the custom display name or <code>null</code> if
-	 *   there is no custom name
+	 *         there is no custom name
 	 */
 	public String getCustomName() {
 		return customName;
@@ -64,5 +65,5 @@ public class DisplayName implements GroupPropertyConstraint,
 		// no inheritance for display names
 		return false;
 	}
-	
+
 }

@@ -28,21 +28,22 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
 
 /**
  * Editor for {@link Rule}s
+ * 
  * @param <T> the {@link Symbolizer} type
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
-	
+
 	private final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private final Composite page;
-	
+
 	private final Editor<Filter> filterEditor;
-	
+
 	private final Editor<? extends Symbolizer> symbolizerEditor;
-	
+
 	/**
 	 * Creates a {@link Rule} editor
 	 * 
@@ -56,25 +57,25 @@ public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
 	public RuleEditor(Composite parent, TypeDefinition typeDefinition, Filter filter,
 			Class<T> symbolizerType, T symbolizer, EditorFactory<T> symbolizerFactory) {
 		super();
-	
+
 		page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(1, false));
-		
+
 		// filter
 		Label filterLabel = new Label(page, SWT.NONE);
 		filterLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		filterLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		filterLabel.setText(Messages.RuleEditor_FilterLabel);
-		
+
 		filterEditor = new FilterEditor(page, typeDefinition, filter);
 		filterEditor.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, true, false));
-		
+
 		// symbolizer
 		Label symbolLabel = new Label(page, SWT.NONE);
 		symbolLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 		symbolLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		symbolLabel.setText(symbolizerType.getSimpleName());
-		
+
 		symbolizerEditor = symbolizerFactory.createEditor(page, symbolizer);
 		symbolizerEditor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	}
@@ -94,7 +95,7 @@ public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
 	public Rule getValue() throws Exception {
 		Rule rule = styleBuilder.createRule(symbolizerEditor.getValue());
 		rule.setFilter(filterEditor.getValue());
-		
+
 		return rule;
 	}
 
@@ -111,7 +112,8 @@ public class RuleEditor<T extends Symbolizer> implements Editor<Rule> {
 	 */
 	@Override
 	public void setValue(Rule value) {
-		throw new UnsupportedOperationException("Setting the value on the rule editor not allowed, use the constructor instead."); //$NON-NLS-1$
+		throw new UnsupportedOperationException(
+				"Setting the value on the rule editor not allowed, use the constructor instead."); //$NON-NLS-1$
 	}
 
 }

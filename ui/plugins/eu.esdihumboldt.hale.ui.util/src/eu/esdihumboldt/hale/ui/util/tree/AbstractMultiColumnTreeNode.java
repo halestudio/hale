@@ -18,15 +18,15 @@ import org.eclipse.jface.viewers.TreeNode;
 
 /**
  * Tree node that stores values for multiple columns
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public abstract class AbstractMultiColumnTreeNode extends TreeNode {
-	
+
 	private Object value;
-	
+
 	/**
 	 * Create a new node
 	 * 
@@ -34,10 +34,10 @@ public abstract class AbstractMultiColumnTreeNode extends TreeNode {
 	 */
 	public AbstractMultiColumnTreeNode(Object... values) {
 		super(values);
-		
+
 		this.value = values;
 	}
-	
+
 	/**
 	 * @see TreeNode#getValue()
 	 */
@@ -45,7 +45,7 @@ public abstract class AbstractMultiColumnTreeNode extends TreeNode {
 	public Object getValue() {
 		return value;
 	}
-	
+
 	/**
 	 * Set the node value
 	 * 
@@ -70,7 +70,7 @@ public abstract class AbstractMultiColumnTreeNode extends TreeNode {
 		Collection<? extends TreeNode> children = getChildNodes();
 		return children.toArray(new TreeNode[children.size()]);
 	}
-	
+
 	/**
 	 * @see TreeNode#hasChildren()
 	 */
@@ -78,7 +78,7 @@ public abstract class AbstractMultiColumnTreeNode extends TreeNode {
 	public boolean hasChildren() {
 		return !getChildNodes().isEmpty();
 	}
-	
+
 	/**
 	 * Get the first value
 	 * 
@@ -109,8 +109,7 @@ public abstract class AbstractMultiColumnTreeNode extends TreeNode {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((getChildNodes() == null) ? 0 : getChildNodes().hashCode());
+		result = prime * result + ((getChildNodes() == null) ? 0 : getChildNodes().hashCode());
 		return result;
 	}
 
@@ -129,7 +128,8 @@ public abstract class AbstractMultiColumnTreeNode extends TreeNode {
 		if (getChildNodes() == null) {
 			if (other.getChildNodes() != null)
 				return false;
-		} else if (!getChildNodes().equals(other.getChildNodes()))
+		}
+		else if (!getChildNodes().equals(other.getChildNodes()))
 			return false;
 		return true;
 	}

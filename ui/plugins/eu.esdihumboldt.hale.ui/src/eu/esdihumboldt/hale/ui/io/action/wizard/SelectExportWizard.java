@@ -18,16 +18,17 @@ import eu.esdihumboldt.hale.ui.util.wizard.MultiWizard;
 
 /**
  * Generic export wizard
+ * 
  * @author Simon Templer
  */
 public class SelectExportWizard extends MultiWizard<ActionUIWizardPage> {
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public SelectExportWizard() {
 		super();
-		
+
 		setWindowTitle("Export wizard");
 		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(
 				HALEUIPlugin.PLUGIN_ID, "/icons/banner/export_wiz.png"));

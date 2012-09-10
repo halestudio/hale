@@ -18,16 +18,18 @@ import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
 
 /**
  * Provides access to HALE common shared images
+ * 
  * @author Simon Templer
  */
 public abstract class CommonSharedImages implements CommonSharedImagesConstants {
 
 	/**
 	 * Get the image registry
+	 * 
 	 * @return the image registry
 	 */
 	public static ImageRegistry getImageRegistry() {
 		return CommonUIPlugin.getDefault().getImageRegistry();
 	}
-	
+
 }

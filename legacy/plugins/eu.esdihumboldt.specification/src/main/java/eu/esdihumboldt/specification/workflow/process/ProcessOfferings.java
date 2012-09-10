@@ -15,21 +15,21 @@ import java.util.List;
 
 import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
-/**This interface is used to provide metadata on each of the processes offered 
+/**
+ * This interface is used to provide metadata on each of the processes offered
  * by the service.
  * 
  * @author mgone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @ReferenceSpecification("OGC 05-007r7:1.0.0 8.3.1")
 public interface ProcessOfferings {
 
-    /**
-     * 
-     * @return Unordered list of brief description of processes offered by this 
-     * WPS server
-     */
-    public List<ProcessBrief> getProcessBrief();
+	/**
+	 * 
+	 * @return Unordered list of brief description of processes offered by this
+	 *         WPS server
+	 */
+	public List<ProcessBrief> getProcessBrief();
 }
-

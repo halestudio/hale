@@ -24,7 +24,7 @@ import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * @author schneidersb
- *
+ * 
  */
 public class Parameter implements IParameter {
 

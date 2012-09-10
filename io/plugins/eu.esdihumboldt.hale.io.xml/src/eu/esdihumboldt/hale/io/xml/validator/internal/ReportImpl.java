@@ -22,17 +22,17 @@ import eu.esdihumboldt.hale.io.xml.validator.Report;
 
 /**
  * {@link Report} implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class ReportImpl implements Report {
-	
+
 	private final List<SAXParseException> warnings = new ArrayList<SAXParseException>();
-	
+
 	private final List<SAXParseException> errors = new ArrayList<SAXParseException>();
-	
+
 	/**
 	 * Add a warning
 	 * 
@@ -41,7 +41,7 @@ public class ReportImpl implements Report {
 	public void addWarning(SAXParseException warning) {
 		warnings.add(warning);
 	}
-	
+
 	/**
 	 * Add an error
 	 * 

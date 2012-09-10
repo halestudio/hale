@@ -17,15 +17,15 @@ import java.util.UUID;
  * This is the superinterface for all objects in the Data Abstraction Model.
  * Currently it only defines that each one needs a unique identifier.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface DAMObject {
-	
+
 	/**
 	 * @return the {@link UUID} of this {@link DAMObject}.
 	 */
 	public UUID getIdentifier();
-	
+
 }

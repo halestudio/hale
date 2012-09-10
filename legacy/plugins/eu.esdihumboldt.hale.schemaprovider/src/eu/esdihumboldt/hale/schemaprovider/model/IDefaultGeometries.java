@@ -20,17 +20,20 @@ public interface IDefaultGeometries {
 	/**
 	 * Get the default geometry name for a given type name
 	 * 
-	 * @param typeName the type name
+	 * @param typeName
+	 *            the type name
 	 * 
 	 * @return the default geometry property name or <code>null</code>
 	 */
 	public String getDefaultGeometryName(Name typeName);
-	
+
 	/**
 	 * Set the default geometry property name for a given type
 	 * 
-	 * @param typeName the type name
-	 * @param propertyName the geometry property name
+	 * @param typeName
+	 *            the type name
+	 * @param propertyName
+	 *            the geometry property name
 	 */
 	public void setDefaultGeometryName(Name typeName, String propertyName);
 }

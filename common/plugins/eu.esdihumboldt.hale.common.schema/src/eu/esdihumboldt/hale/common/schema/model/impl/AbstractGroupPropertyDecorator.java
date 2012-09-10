@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Abstract decorator for {@link GroupPropertyDefinition}s
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -157,8 +158,7 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 	 * @see Definition#getConstraint(Class)
 	 */
 	@Override
-	public <T extends GroupPropertyConstraint> T getConstraint(
-			Class<T> constraintType) {
+	public <T extends GroupPropertyConstraint> T getConstraint(Class<T> constraintType) {
 		return propertyGroup.getConstraint(constraintType);
 	}
 

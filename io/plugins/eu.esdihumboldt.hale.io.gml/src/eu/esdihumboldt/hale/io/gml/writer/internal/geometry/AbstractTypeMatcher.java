@@ -28,13 +28,14 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 
 /**
  * Abstract type matcher. Finds candidates matching a custom parameter.
+ * 
  * @param <T> the match parameter type
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class AbstractTypeMatcher<T> {
-	
+
 	/**
 	 * Path candidate
 	 */
@@ -49,11 +50,11 @@ public abstract class AbstractTypeMatcher<T> {
 		 * 
 		 * @param type the associated type
 		 * @param path the definition path
-		 * @param checkedTypes the type definitions that have already been checked
-		 *   (to prevent cycles)
+		 * @param checkedTypes the type definitions that have already been
+		 *            checked (to prevent cycles)
 		 */
-		public PathCandidate(TypeDefinition type,
-				DefinitionPath path, HashSet<TypeDefinition> checkedTypes) {
+		public PathCandidate(TypeDefinition type, DefinitionPath path,
+				HashSet<TypeDefinition> checkedTypes) {
 			this.type = type;
 			this.path = path;
 			this.checkedTypes = checkedTypes;
@@ -81,7 +82,7 @@ public abstract class AbstractTypeMatcher<T> {
 		}
 
 	}
-	
+
 	/**
 	 * Find candidates for a possible path
 	 * 
@@ -92,50 +93,62 @@ public abstract class AbstractTypeMatcher<T> {
 	 * 
 	 * @return the path candidates
 	 */
-	public List<DefinitionPath> findCandidates(TypeDefinition elementType, 
-			QName elementName, boolean unique, T matchParam) {
+	public List<DefinitionPath> findCandidates(TypeDefinition elementType, QName elementName,
+			boolean unique, T matchParam) {
 		Queue<PathCandidate> candidates = new LinkedList<PathCandidate>();
-		PathCandidate base = new PathCandidate(elementType, 
-				new DefinitionPath(elementType, elementName, unique),
-				new HashSet<TypeDefinition>());
+		PathCandidate base = new PathCandidate(elementType, new DefinitionPath(elementType,
+				elementName, unique), new HashSet<TypeDefinition>());
 		candidates.add(base);
-		
+
 		while (!candidates.isEmpty()) {
 			PathCandidate candidate = candidates.poll();
 			TypeDefinition type = candidate.getType();
 			DefinitionPath basePath = candidate.getPath();
 			HashSet<TypeDefinition> checkedTypes = candidate.getCheckedTypes();
-			
+
 			if (checkedTypes.contains(type)) {
 				continue; // prevent cycles
 			}
 			else {
 				checkedTypes.add(type);
 			}
-			
+
 			// check if there is a direct match
 			DefinitionPath path = matchPath(type, matchParam, basePath);
 			if (path != null) {
 				return Collections.singletonList(path); // return instantly
-				//XXX currently always only one path is returned - this might change if we allow matchPath to yield multiple results
+				// XXX currently always only one path is returned - this might
+				// change if we allow matchPath to yield multiple results
 			}
-			
-			if (!type.getConstraint(AbstractFlag.class).isEnabled()) { // only allow stepping down properties if the type is not abstract
+
+			if (!type.getConstraint(AbstractFlag.class).isEnabled()) { // only
+																		// allow
+																		// stepping
+																		// down
+																		// properties
+																		// if
+																		// the
+																		// type
+																		// is
+																		// not
+																		// abstract
 				// step down properties
-				//XXX why differentiate here?
+				// XXX why differentiate here?
 				@SuppressWarnings("unchecked")
-				Iterable<ChildDefinition<?>> children = (Iterable<ChildDefinition<?>>) ((basePath.isEmpty() || basePath.getLastElement().isProperty())?(type.getChildren()):(type.getDeclaredChildren()));
-				Iterable<DefinitionPath> childPaths = GmlWriterUtil.collectPropertyPaths(children, basePath, true);
+				Iterable<ChildDefinition<?>> children = (Iterable<ChildDefinition<?>>) ((basePath
+						.isEmpty() || basePath.getLastElement().isProperty()) ? (type.getChildren())
+						: (type.getDeclaredChildren()));
+				Iterable<DefinitionPath> childPaths = GmlWriterUtil.collectPropertyPaths(children,
+						basePath, true);
 				for (DefinitionPath childPath : childPaths) {
 					// only descend into elements
-					candidates.add(new PathCandidate(childPath.getLastType(), 
-							childPath, 
+					candidates.add(new PathCandidate(childPath.getLastType(), childPath,
 							new HashSet<TypeDefinition>(checkedTypes)));
 				}
 			}
-			
+
 			// step down sub-types
-			//XXX done through choice
+			// XXX done through choice
 //			Set<TypeDefinition> substitutionTypes = new HashSet<TypeDefinition>();
 //			for (SchemaElement element : type.getSubstitutions(basePath.getLastName())) {
 //				substitutionTypes.add(element.getType());
@@ -143,11 +156,28 @@ public abstract class AbstractTypeMatcher<T> {
 //						new DefinitionPath(basePath).addSubstitution(element),
 //						new HashSet<TypeDefinition>(checkedTypes)));
 //			}
-			
+
 			// step down sub-types - elements may be downcast using xsi:type
-			if (!type.getConstraint(AbstractFlag.class).isEnabled()) { // don't do it for abstract types as they have no element that may be used XXX is this true?
+			if (!type.getConstraint(AbstractFlag.class).isEnabled()) { // don't
+																		// do it
+																		// for
+																		// abstract
+																		// types
+																		// as
+																		// they
+																		// have
+																		// no
+																		// element
+																		// that
+																		// may
+																		// be
+																		// used
+																		// XXX
+																		// is
+																		// this
+																		// true?
 				for (TypeDefinition subtype : type.getSubTypes()) {
-					//FIXME how to determine which types are ok for xsi:type?!
+					// FIXME how to determine which types are ok for xsi:type?!
 //					if (!substitutionTypes.contains(subtype)) { // only types that are no valid substitutions
 //						// add candidate
 ////						Name element = basePath.getLastName(); // the element name that will be extended with xsi:type
@@ -158,21 +188,21 @@ public abstract class AbstractTypeMatcher<T> {
 				}
 			}
 		}
-		
+
 		return new ArrayList<DefinitionPath>();
 	}
-	
+
 	/**
 	 * Determines if a type definition is compatible with the match parameter
-	 *  
+	 * 
 	 * @param type the type definition
 	 * @param matchParam the match parameter
 	 * @param path the current definition path
 	 * 
 	 * @return the (eventually updated) definition path if a match is found,
-	 * otherwise <code>null</code>
+	 *         otherwise <code>null</code>
 	 */
-	protected abstract DefinitionPath matchPath(TypeDefinition type, 
-			T matchParam, DefinitionPath path);
+	protected abstract DefinitionPath matchPath(TypeDefinition type, T matchParam,
+			DefinitionPath path);
 
 }

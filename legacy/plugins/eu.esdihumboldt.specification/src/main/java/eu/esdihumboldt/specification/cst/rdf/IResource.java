@@ -17,12 +17,12 @@ import eu.esdihumboldt.specification.cst.align.ext.ITransformation;
  * {@link IResource} is used to denote the location under which a given element,
  * such as a {@link ITransformation} can be found.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface IResource {
-	
+
 	/**
 	 * @return the location
 	 */

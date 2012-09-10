@@ -16,31 +16,31 @@ import eu.esdihumboldt.commons.goml.align.Entity;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public interface Definition {
-	
+
 	/**
 	 * Get the definitions identifier
 	 * 
 	 * @return the unique name of the definition
 	 */
 	public String getIdentifier();
-	
+
 	/**
 	 * Get the definition's display name
 	 * 
 	 * @return the display name
 	 */
 	public String getDisplayName();
-	
+
 	/**
 	 * Get the description
-	 *  
+	 * 
 	 * @return the description string or <code>null</code>
 	 */
 	public abstract String getDescription();
@@ -51,7 +51,7 @@ public interface Definition {
 	 * @return the entity
 	 */
 	public Entity getEntity();
-	
+
 	/**
 	 * Get the definition location
 	 * 

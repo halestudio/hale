@@ -28,24 +28,24 @@ import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.FeatureTypeList.TypeSelectionLi
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
-	
+
 	private FeatureTypeList list;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param configuration the WFS configuration 
+	 * @param configuration the WFS configuration
 	 * @param capsPage the capabilities page
 	 */
 	public FeatureTypesPage(WfsConfiguration configuration, CapabilitiesPage capsPage) {
 		super(configuration, capsPage, Messages.FeatureTypesPage_0); //$NON-NLS-1$
-		
+
 		setTitle(Messages.FeatureTypesPage_1); //$NON-NLS-1$
 		setMessage(Messages.FeatureTypesPage_2); //$NON-NLS-1$
 	}
@@ -56,24 +56,25 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 	@Override
 	protected void update(List<FeatureType> types) {
 		list.setFeatureTypes(types);
-		
-		//XXX the update doesn't refresh the buttons when the page is shown the first time
-		//update();
-		
-		//XXX so try something nasty instead
+
+		// XXX the update doesn't refresh the buttons when the page is shown the
+		// first time
+		// update();
+
+		// XXX so try something nasty instead
 		final Display display = Display.getCurrent();
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
-			
+
 			@Override
 			public void run() {
 				display.asyncExec(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						FeatureTypesPage.this.update();
 					}
-					
+
 				});
 			}
 		}, 500);
@@ -86,20 +87,20 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 	protected void createContent(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(1, false));
-		
+
 		list = new FeatureTypeList(page, getConfiguration().getFixedNamespace());
 		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		list.addTypeSelectionListener(new TypeSelectionListener() {
-			
+
 			@Override
 			public void selectionChanged() {
 				FeatureTypesPage.this.update();
 			}
-			
+
 		});
-		
+
 		setControl(page);
-		
+
 		update();
 	}
 
@@ -113,11 +114,11 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 
 	private void update() {
 		boolean valid = true;
-		
+
 		// test namespace
 		if (valid) {
 			String ns = getConfiguration().getFixedNamespace();
-			
+
 			if (ns != null) {
 				valid = list.getNamespace().equals(ns);
 				if (!valid) {
@@ -125,7 +126,7 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 				}
 			}
 		}
-		
+
 		// test selection
 		if (valid) {
 			List<FeatureType> selection = list.getSelection();
@@ -134,11 +135,11 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 				setErrorMessage(Messages.FeatureTypesPage_4); //$NON-NLS-1$
 			}
 		}
-		
+
 		if (valid) {
 			setErrorMessage(null);
 		}
-		
+
 		setPageComplete(valid);
 	}
 

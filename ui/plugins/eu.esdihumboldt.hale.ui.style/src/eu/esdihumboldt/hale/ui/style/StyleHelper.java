@@ -36,35 +36,34 @@ import eu.esdihumboldt.hale.ui.style.service.internal.StylePreferences;
 
 /**
  * Style helper methods
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class StyleHelper {
-	
+
 	private static final int WIDTH = 16;
-	
+
 	private static final int HEIGHT = 16;
-	
-	@SuppressWarnings("unused")
-	private static final int[] LINE_POINTS = new int[]{0, HEIGHT - 1, WIDTH - 1, 0};
 
 	@SuppressWarnings("unused")
-	private static final int[] POLY_POINTS = new int[]{0, 0, WIDTH - 1, 0, WIDTH - 1, HEIGHT - 1, 0, HEIGHT - 1};
-	
+	private static final int[] LINE_POINTS = new int[] { 0, HEIGHT - 1, WIDTH - 1, 0 };
+
+	@SuppressWarnings("unused")
+	private static final int[] POLY_POINTS = new int[] { 0, 0, WIDTH - 1, 0, WIDTH - 1, HEIGHT - 1,
+			0, HEIGHT - 1 };
+
 	/**
 	 * Default fill opacity
 	 */
 	public static final double DEFAULT_FILL_OPACITY = 0.3;
-	
+
 	private static final StyleBuilder styleBuilder = new StyleBuilder();
-	
-	private static final StyleFactory styleFactory = 
-		CommonFactoryFinder.getStyleFactory(null);
-	
-	private static final FilterFactory filterFactory = 
-		CommonFactoryFinder.getFilterFactory(null);
-	
+
+	private static final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
+
+	private static final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
+
 //	/**
 //	 * Get a legend image for a given feature type
 //	 * @param type the feature type
@@ -118,9 +117,10 @@ public abstract class StyleHelper {
 //		
 //		return null;
 //	}
-	
+
 	/**
 	 * Returns a default style for the given type.
+	 * 
 	 * @param typeDef the type definition
 	 * @param dataSet the data set
 	 * @return the style
@@ -128,19 +128,20 @@ public abstract class StyleHelper {
 	public static FeatureTypeStyle getDefaultStyle(TypeDefinition typeDef, DataSet dataSet) {
 //		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
 //		List<QName> geomPath = gss.getDefaultGeometry(typeDef);
-		//TODO determine default style from default geometry?
-		
+		// TODO determine default style from default geometry?
+
 		Color defColor = StylePreferences.getDefaultColor(dataSet);
 		int defWidth = StylePreferences.getDefaultWidth();
-		
+
 		FeatureTypeStyle result;
-		
-		//XXX for now create a polygon style in any case, as it contains fill and stroke
-		
+
+		// XXX for now create a polygon style in any case, as it contains fill
+		// and stroke
+
 //		if (type != null) {
 //			if (type.isAssignableFrom(Polygon.class)
 //					|| type.isAssignableFrom(MultiPolygon.class)) {
-				result = createPolygonStyle(defColor, defWidth);
+		result = createPolygonStyle(defColor, defWidth);
 //			} else if (type.isAssignableFrom(LineString.class)
 //					|| type.isAssignableFrom(MultiLineString.class)) {
 //				result = createLineStyle(defColor, defWidth);
@@ -151,16 +152,16 @@ public abstract class StyleHelper {
 //		else {
 //			result = createPointStyle(defColor, defWidth);
 //		}
-		
-		//XXX StyleBuilder does not support feature type names with namespace
+
+		// XXX StyleBuilder does not support feature type names with namespace
 //		QName name = getFeatureTypeName(typeDef);
 //		result.featureTypeNames().add(new NameImpl(name.getNamespaceURI(), name.getLocalPart()));
 		result.featureTypeNames().add(new NameImpl(getFeatureTypeName(typeDef)));
-		
+
 		return result;
 	}
-	
-	//XXX StyleBuilder does not support feature type names with namespace
+
+	// XXX StyleBuilder does not support feature type names with namespace
 //	/**
 //	 * Get the name used in styles for the given type definition.
 //	 * @param typeDef the type definition
@@ -177,9 +178,10 @@ public abstract class StyleHelper {
 //		// type
 //		return typeDef.getName();
 //	}
-	
+
 	/**
 	 * Get the name used in styles for the given type definition.
+	 * 
 	 * @param typeDef the type definition
 	 * @return the feature type name
 	 */
@@ -190,45 +192,47 @@ public abstract class StyleHelper {
 
 	/**
 	 * Get a style containing the default style for the given type.
+	 * 
 	 * @param type the type definition
 	 * @param dataSet the data set
 	 * @return the style with the default type style
 	 */
 	public static Style getStyle(TypeDefinition type, DataSet dataSet) {
 		Style style = styleFactory.createStyle();
-		
+
 		style.featureTypeStyles().add(getDefaultStyle(type, dataSet));
-		
+
 		return style;
 	}
-	
+
 	/**
 	 * Create a new point symbolizer based on the given one.
+	 * 
 	 * @param symbolizer the point symbolizer
 	 * @param color the new color
 	 * @param width the new line width
 	 * @return the mutated symbolizer
 	 */
-	public static Symbolizer mutatePointSymbolizer(PointSymbolizer symbolizer,
-			Color color, int width) {
+	public static Symbolizer mutatePointSymbolizer(PointSymbolizer symbolizer, Color color,
+			int width) {
 		// mutate mark
 		Mark mark = SLD.mark(symbolizer);
-		
-		Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(), 
-				styleBuilder.createFill(color, DEFAULT_FILL_OPACITY), 
+
+		Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(),
+				styleBuilder.createFill(color, DEFAULT_FILL_OPACITY),
 				styleBuilder.createStroke(color, width));
-		
-		//XXX commented because unsupported in Geotools 8.0-M1
+
+		// XXX commented because unsupported in Geotools 8.0-M1
 //		mutiMark.setSize(mark.getSize());
 //		mutiMark.setRotation(mark.getRotation());
-		
+
 		// create new symbolizer
-		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
-				null, mutiMark, null));
+		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(null, mutiMark, null));
 	}
-	
+
 	/**
 	 * Manually create a default point style.
+	 * 
 	 * @param color the point color
 	 * @param width the line width
 	 * @return a Style for Point objects.
@@ -236,7 +240,7 @@ public abstract class StyleHelper {
 	@SuppressWarnings("unused")
 	private static FeatureTypeStyle createPointStyle(Color color, double width) {
 		PointSymbolizer symbolizer = createPointSymbolizer(color, width);
-		//symbolizer.getGraphic().setSize(filterFactory.literal(1));
+		// symbolizer.getGraphic().setSize(filterFactory.literal(1));
 		Rule rule = styleFactory.createRule();
 		rule.symbolizers().add(symbolizer);
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
@@ -246,18 +250,22 @@ public abstract class StyleHelper {
 
 	/**
 	 * Create a default point symbolizer.
+	 * 
 	 * @param color the color
 	 * @param width the line width
 	 * @return the point symbolizer
 	 */
 	public static PointSymbolizer createPointSymbolizer(Color color, double width) {
 		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
-				null, styleBuilder.createMark(StyleBuilder.MARK_X, styleBuilder.createFill(color, DEFAULT_FILL_OPACITY), 
+				null,
+				styleBuilder.createMark(StyleBuilder.MARK_X,
+						styleBuilder.createFill(color, DEFAULT_FILL_OPACITY),
 						styleBuilder.createStroke(color, width)), null));
 	}
 
 	/**
 	 * Create a default line style.
+	 * 
 	 * @param color the line color
 	 * @param width the line width
 	 * @return a Style for Line/LineString objects.
@@ -265,7 +273,7 @@ public abstract class StyleHelper {
 	@SuppressWarnings("unused")
 	private static FeatureTypeStyle createLineStyle(Color color, double width) {
 		LineSymbolizer symbolizer = createLineSymbolizer(color, width);
-		
+
 		Rule rule = styleFactory.createRule();
 		rule.symbolizers().add(symbolizer);
 		FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle();
@@ -275,6 +283,7 @@ public abstract class StyleHelper {
 
 	/**
 	 * Create a default line symbolizer.
+	 * 
 	 * @param color the color
 	 * @param width the line width
 	 * @return the line symbolizer
@@ -288,6 +297,7 @@ public abstract class StyleHelper {
 
 	/**
 	 * Create a default polygon style.
+	 * 
 	 * @param color the polygon color
 	 * @param width the line width
 	 * @return a Style for Polygon objects
@@ -303,6 +313,7 @@ public abstract class StyleHelper {
 
 	/**
 	 * Create a default polygon symbolizer.
+	 * 
 	 * @param color the color
 	 * @param width the line width
 	 * @return the polygon symbolizer

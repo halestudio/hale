@@ -36,9 +36,9 @@ import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyContentProvider.ParentPath;
 
-
 /**
  * View that shows the hierarchy of a {@link TypeDefinition}
+ * 
  * @author Simon Templer
  */
 public class TypeHierarchyView extends PropertiesViewPart {
@@ -61,7 +61,7 @@ public class TypeHierarchyView extends PropertiesViewPart {
 	protected String getViewContext() {
 		return "eu.esdihumboldt.hale.doc.user.type_hierarchy";
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -71,39 +71,43 @@ public class TypeHierarchyView extends PropertiesViewPart {
 		viewer.setContentProvider(new TypeHierarchyContentProvider());
 		viewer.setLabelProvider(new TypeHierarchyLabelProvider());
 		viewer.setComparator(new DefinitionComparator());
-		
+
 		contributeToActionBars();
-		
+
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				update(event.getSelection());
 			}
 		});
-		
-		getSite().getWorkbenchWindow().getSelectionService().addPostSelectionListener(selectionListener = new ISelectionListener() {
-			
-			@Override
-			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-				if (!(part instanceof PropertiesViewPart)) {
-					// only update the selection if it originates from a part that provides definition or instance selections
-					return;
-				}
-				
-				if (part != TypeHierarchyView.this) {
-					update(selection);
-				}
-			}
-		});
-		
+
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addPostSelectionListener(selectionListener = new ISelectionListener() {
+
+					@Override
+					public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+						if (!(part instanceof PropertiesViewPart)) {
+							// only update the selection if it originates from a
+							// part that provides definition or instance
+							// selections
+							return;
+						}
+
+						if (part != TypeHierarchyView.this) {
+							update(selection);
+						}
+					}
+				});
+
 		getSite().setSelectionProvider(selectionProvider = new SelectionFilter(viewer) {
-			
+
 			@Override
 			protected ISelection filter(ISelection selection) {
-				if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
+				if (selection != null && !selection.isEmpty()
+						&& selection instanceof IStructuredSelection) {
 					List<Object> elements = new ArrayList<Object>();
-					
+
 					for (Object element : ((IStructuredSelection) selection).toList()) {
 						if (element instanceof ParentPath) {
 							// add parent path head instead of parent path
@@ -120,12 +124,13 @@ public class TypeHierarchyView extends PropertiesViewPart {
 				}
 			}
 		});
-		
+
 		new ViewerMenu(getSite(), viewer);
 	}
 
 	/**
 	 * Update the hierarchy view with the given selection
+	 * 
 	 * @param selection the selection
 	 */
 	protected void update(ISelection selection) {
@@ -166,7 +171,7 @@ public class TypeHierarchyView extends PropertiesViewPart {
 //		// Other plug-ins can contribute there actions here
 //		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 //	}
-	
+
 	/**
 	 * @see WorkbenchPart#setFocus()
 	 */
@@ -181,22 +186,23 @@ public class TypeHierarchyView extends PropertiesViewPart {
 	@Override
 	public void dispose() {
 		if (selectionListener != null) {
-			getSite().getWorkbenchWindow().getSelectionService().removePostSelectionListener(selectionListener);
+			getSite().getWorkbenchWindow().getSelectionService()
+					.removePostSelectionListener(selectionListener);
 		}
-		
+
 		if (selectionProvider != null) {
 			selectionProvider.dispose();
 		}
-		
+
 		super.dispose();
 	}
-	
+
 	/**
 	 * @param type the TypeDefinition to set
 	 */
 	public void setType(TypeDefinition type) {
 		update(new StructuredSelection(type));
-		
+
 	}
-	
+
 }

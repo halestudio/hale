@@ -14,6 +14,7 @@ package eu.esdihumboldt.cst.functions.geometric;
 
 /**
  * Calculate length function constants
+ * 
  * @author Kevin Mais
  */
 public interface CalculateLengthFunction {
@@ -22,5 +23,5 @@ public interface CalculateLengthFunction {
 	 * the calculate length function ID
 	 */
 	public static final String ID = "eu.esdihumboldt.cst.functions.geometric.calculatelength";
-	
+
 }

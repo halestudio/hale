@@ -37,20 +37,20 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 
 /**
  * Function that creates a formatted string from a pattern and input variables.
+ * 
  * @author Simon Templer
  */
 public class FormattedString extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> 
-		implements FormattedStringFunction {
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
+		FormattedStringFunction {
+
 	@Override
-	protected Object evaluate(String transformationIdentifier,
-			TransformationEngine engine,
+	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
-			PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException, NoResultException {
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException, NoResultException {
 		String pattern = getParameterChecked(PARAMETER_PATTERN);
-		
+
 		// name/value mapping
 		Map<String, Object> values = new LinkedHashMap<String, Object>();
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);
@@ -62,16 +62,16 @@ public class FormattedString extends
 			} catch (ConversionException e) {
 				value = var.getValue();
 			}
-			
+
 			// determine the variable name
 			String name = var.getProperty().getDefinition().getName().getLocalPart();
-			
-			// add with short name, but ensure no variable with only a short name is overridden
-			if (!values.keySet().contains(name)
-					|| var.getProperty().getPropertyPath().size() == 1) {
+
+			// add with short name, but ensure no variable with only a short
+			// name is overridden
+			if (!values.keySet().contains(name) || var.getProperty().getPropertyPath().size() == 1) {
 				values.put(name, value);
 			}
-			
+
 			// add with long name if applicable
 			if (var.getProperty().getPropertyPath().size() > 1) {
 				List<String> names = new ArrayList<String>();
@@ -82,23 +82,22 @@ public class FormattedString extends
 				values.put(longName, value);
 			}
 		}
-		
+
 		// replace markers in pattern
-		//FIXME this is quick and dirty! does not handle escaping
+		// FIXME this is quick and dirty! does not handle escaping
 		int i = 0;
 		for (Entry<String, Object> entry : values.entrySet()) {
 			String name = entry.getKey();
-			pattern = pattern.replaceAll(
-					Pattern.quote("{" + name + "}"), "{" + i + "}");
+			pattern = pattern.replaceAll(Pattern.quote("{" + name + "}"), "{" + i + "}");
 			i++;
 		}
-		
+
 		try {
 			return MessageFormat.format(pattern, values.values().toArray());
 		} catch (IllegalArgumentException e) {
 			// missing inputs result in an invalid pattern
-			//TODO better way to handle missing inputs
-			//FIXME an error should still be reported for invalid patterns
+			// TODO better way to handle missing inputs
+			// FIXME an error should still be reported for invalid patterns
 			throw new NoResultException(e);
 		}
 	}

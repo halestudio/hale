@@ -22,19 +22,20 @@ import eu.esdihumboldt.util.definition.AbstractObjectFactory;
 
 /**
  * {@link FilterDefinition} manager.
+ * 
  * @author Simon Templer
  */
-public class FilterDefinitionManager extends
-		AbstractObjectFactory<Filter, FilterDefinition<?>> {
-	
+public class FilterDefinitionManager extends AbstractObjectFactory<Filter, FilterDefinition<?>> {
+
 	private static volatile FilterDefinitionManager instance;
-	
+
 	private FilterDefinitionManager() {
 		super();
 	}
-	
+
 	/**
 	 * Get the {@link FilterDefinitionManager} instance.
+	 * 
 	 * @return the singleton instance
 	 */
 	public static final FilterDefinitionManager getInstance() {
@@ -43,7 +44,7 @@ public class FilterDefinitionManager extends
 		}
 		return instance;
 	}
-	
+
 	private final FilterDefinitionExtension extension = new FilterDefinitionExtension();
 
 	/**
@@ -51,17 +52,18 @@ public class FilterDefinitionManager extends
 	 */
 	@Override
 	protected List<FilterDefinition<?>> getDefinitions() {
-		return Lists.transform(extension.getFactories(), new Function<FilterDefinitionFactory, FilterDefinition<?>>() {
+		return Lists.transform(extension.getFactories(),
+				new Function<FilterDefinitionFactory, FilterDefinition<?>>() {
 
-			@Override
-			public FilterDefinition<?> apply(FilterDefinitionFactory input) {
-				try {
-					return input.createExtensionObject();
-				} catch (Exception e) {
-					throw new IllegalStateException("Could not create filter definition", e);
-				}
-			}
-		});
+					@Override
+					public FilterDefinition<?> apply(FilterDefinitionFactory input) {
+						try {
+							return input.createExtensionObject();
+						} catch (Exception e) {
+							throw new IllegalStateException("Could not create filter definition", e);
+						}
+					}
+				});
 	}
 
 }

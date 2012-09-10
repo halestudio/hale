@@ -51,6 +51,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * A builder for simple feature types.
  * <p>
  * Simple Usage:
+ * 
  * <pre>
  *  <code>
  *  //create the builder
@@ -73,22 +74,23 @@ import com.vividsolutions.jts.geom.Geometry;
  *  SimpleFeatureType featureType = builder.buildFeatureType();
  *  </code>
  * </pre>
+ * 
  * </p>
- * This builder builds type by maintaining state. Two types of state are maintained:
- * <i>Global Type State</i> and <i>Per Attribute State</i>. Methods which set
- * global state are named <code>set&lt;property>()</code>. Methods which set per attribute 
- * state are named <code>&lt;property>()</code>. Furthermore calls to per attribute 
- * </p>
+ * This builder builds type by maintaining state. Two types of state are
+ * maintained: <i>Global Type State</i> and <i>Per Attribute State</i>. Methods
+ * which set global state are named <code>set&lt;property>()</code>. Methods
+ * which set per attribute state are named <code>&lt;property>()</code>.
+ * Furthermore calls to per attribute </p>
  * <p>
- * Global state is reset after a call to {@link #buildFeatureType()}. Per 
+ * Global state is reset after a call to {@link #buildFeatureType()}. Per
  * attribute state is reset after a call to {@link #add}.
  * </p>
  * <p>
- * A default geometry for the feature type can be specified explictly via 
+ * A default geometry for the feature type can be specified explictly via
  * {@link #setDefaultGeometry(String)}. However if one is not set the first
  * geometric attribute ({@link GeometryType}) added will be resulting default.
- * So if only specifying a single geometry for the type there is no need to 
- * call the method. However if specifying multiple geometries then it is good
+ * So if only specifying a single geometry for the type there is no need to call
+ * the method. However if specifying multiple geometries then it is good
  * practice to specify the name of the default geometry type. For instance:
  * <code>
  * 	<pre>
@@ -115,7 +117,7 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	 * Map of java class bound to properties types.
 	 */
 	protected Map/* <Class,AttributeType> */bindings;
-	
+
 	// Global state for the feature type
 	//
 	/**
@@ -143,13 +145,13 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	 */
 	protected List<Filter> restrictions;
 
-	/** 
-	 * Name of the default geometry to use 
+	/**
+	 * Name of the default geometry to use
 	 */
 	protected String defaultGeometry;
 
-	/** 
-	 * coordinate reference system of the type 
+	/**
+	 * coordinate reference system of the type
 	 */
 	protected CoordinateReferenceSystem crs;
 
@@ -157,39 +159,40 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	 * flag controlling if the type is abstract.
 	 */
 	protected boolean isAbstract = false;
-	
+
 	/**
 	 * the parent type.
 	 */
 	protected AttributeType superType;
-	
+
 	/**
 	 * attribute builder
 	 */
 	protected AttributeTypeBuilder attributeBuilder;
 
 	/** Length for next filter */
-    private int length = -1;
-	
+	private int length = -1;
+
 	/**
 	 * Constructs the builder.
 	 */
 	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction() {
-		this( new FeatureTypeFactoryImpl() );
+		this(new FeatureTypeFactoryImpl());
 	}
-	
+
 	/**
-	 * Constructs the builder specifying the factory for creating feature and 
+	 * Constructs the builder specifying the factory for creating feature and
 	 * feature collection types.
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction(FeatureTypeFactory factory) {
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction(
+			FeatureTypeFactory factory) {
 		this.factory = factory;
-		
+
 		attributeBuilder = new AttributeTypeBuilder();
-		setBindings( new SimpleSchema() );
+		setBindings(new SimpleSchema());
 		reset();
 	}
-	
+
 	// Dependency Injection
 	//
 	/**
@@ -198,13 +201,14 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	public void setFeatureTypeFactory(FeatureTypeFactory factory) {
 		this.factory = factory;
 	}
+
 	/**
 	 * The factory used to create feature and feature collection types.
 	 */
 	public FeatureTypeFactory getFeatureTypeFactory() {
 		return factory;
 	}
-	
+
 	// Builder methods
 	//
 	/**
@@ -223,21 +227,21 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 
 		attributes = null;
 		attributes().addAll(type.getAttributeDescriptors());
-		
+
 		isAbstract = type.isAbstract();
 		superType = type.getSuper();
 	}
 
 	/**
-	 * Clears the running list of attributes. 
+	 * Clears the running list of attributes.
 	 */
 	protected void init() {
 		attributes = null;
 	}
-	
+
 	/**
 	 * Completely resets all builder state.
-	 *
+	 * 
 	 */
 	protected void reset() {
 		uri = BasicFeatureTypes.DEFAULT_NAMESPACE;
@@ -249,180 +253,190 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 		isAbstract = false;
 		superType = BasicFeatureTypes.FEATURE;
 	}
-	
+
 	/**
 	 * Set the namespace uri of the built type.
 	 */
 	public void setNamespaceURI(String namespaceURI) {
 		this.uri = namespaceURI;
 	}
+
 	public void setNamespaceURI(URI namespaceURI) {
-	    if ( namespaceURI != null ) {
-	        setNamespaceURI( namespaceURI.toString() );
-	    }
-	    else {
-	        setNamespaceURI( (String) null );
-	    }
+		if (namespaceURI != null) {
+			setNamespaceURI(namespaceURI.toString());
+		} else {
+			setNamespaceURI((String) null);
+		}
 	}
+
 	/**
 	 * The namespace uri of the built type.
 	 */
 	public String getNamespaceURI() {
 		return uri;
 	}
+
 	/**
 	 * Sets the name of the built type.
 	 */
 	public void setName(String name) {
 		this.local = name;
 	}
+
 	/**
 	 * The name of the built type.
 	 */
 	public String getName() {
 		return local;
 	}
-	
+
 	/**
 	 * Sets the local name and namespace uri of the built type.
 	 */
 	public void setName(Name name) {
-	    setName( name.getLocalPart() );
-	    setNamespaceURI( name.getNamespaceURI() );
+		setName(name.getLocalPart());
+		setNamespaceURI(name.getNamespaceURI());
 	}
-	
+
 	/**
 	 * Sets the description of the built type.
 	 */
 	public void setDescription(InternationalString description) {
 		this.description = description;
 	}
+
 	/**
 	 * The description of the built type.
 	 */
 	public InternationalString getDescription() {
 		return description;
 	}
-	
+
 	/**
 	 * Sets the name of the default geometry attribute of the built type.
 	 */
 	public void setDefaultGeometry(String defaultGeometryName) {
 		this.defaultGeometry = defaultGeometryName;
 	}
+
 	/**
 	 * The name of the default geometry attribute of the built type.
 	 */
 	public String getDefaultGeometry() {
 		return defaultGeometry;
 	}
-	
+
 	/**
 	 * Sets the coordinate reference system of the built type.
 	 */
 	public void setCRS(CoordinateReferenceSystem crs) {
 		this.crs = crs;
 	}
+
 	/**
 	 * The coordinate reference system of the built type.
 	 */
 	public CoordinateReferenceSystem getCRS() {
 		return crs;
 	}
-	
+
 	/**
 	 * Sets the coordinate reference system of the built type by specifying its
 	 * srs.
 	 * 
-	 * @throws IllegalArgumentException When the srs specified can be decored 
-	 * into a crs.
+	 * @throws IllegalArgumentException
+	 *             When the srs specified can be decored into a crs.
 	 * 
 	 */
 	public void setSRS(String srs) {
-		setCRS(decode(srs));	
+		setCRS(decode(srs));
 	}
-	
+
 	/**
 	 * Sets the flag controlling if the resulting type is abstract.
 	 */
 	public void setAbstract(boolean isAbstract) {
-        this.isAbstract = isAbstract;
-    }
-	
+		this.isAbstract = isAbstract;
+	}
+
 	/**
 	 * The flag controlling if the resulting type is abstract.
 	 */
 	public boolean isAbstract() {
-        return isAbstract;
-    }
-	
+		return isAbstract;
+	}
+
 	/**
 	 * Sets the super type of the built type.
 	 */
 	public void setSuperType(AttributeType superType) {
-        this.superType = superType;
-    }
+		this.superType = superType;
+	}
+
 	/**
 	 * The super type of the built type.
 	 */
 	public AttributeType getSuperType() {
-        return superType;
-    }
-	
-	
+		return superType;
+	}
+
 	/**
 	 * Specifies an attribute type binding.
 	 * <p>
-	 * This method is used to associate an attribute type with a java class. 
-	 * The class is retreived from <code>type.getBinding()</code>. When the
-	 * {@link #add(String, Class)} method is used to add an attribute to the 
+	 * This method is used to associate an attribute type with a java class. The
+	 * class is retreived from <code>type.getBinding()</code>. When the
+	 * {@link #add(String, Class)} method is used to add an attribute to the
 	 * type being built, this binding is used to locate the attribute type.
 	 * </p>
 	 * 
-	 * @param type The attribute type.
+	 * @param type
+	 *            The attribute type.
 	 */
 	public void addBinding(AttributeType type) {
 		bindings().put(type.getBinding(), type);
 	}
-	
+
 	/**
 	 * Specifies a number of attribute type bindings.
 	 * 
-	 * @param schema The schema containing the attribute types.
+	 * @param schema
+	 *            The schema containing the attribute types.
 	 * 
 	 * @see {@link #addBinding(AttributeType)}.
 	 */
-	public void addBindings( Schema schema ) {
+	public void addBindings(Schema schema) {
 		for (Iterator itr = schema.values().iterator(); itr.hasNext();) {
 			AttributeType type = (AttributeType) itr.next();
 			addBinding(type);
 		}
 	}
-	
+
 	/**
 	 * Specifies a number of attribute type bindings clearing out all existing
 	 * bindings.
 	 * 
-	 * @param schema The schema contianing attribute types.
+	 * @param schema
+	 *            The schema contianing attribute types.
 	 * 
 	 * @see {@link #addBinding(AttributeType)}.
 	 */
-	public void setBindings( Schema schema ) {
+	public void setBindings(Schema schema) {
 		bindings().clear();
-		addBindings( schema );
+		addBindings(schema);
 	}
-	
+
 	/**
 	 * Looks up an attribute type which has been bound to a class.
 	 * 
-	 * @param binding The class.
+	 * @param binding
+	 *            The class.
 	 * 
 	 * @return AttributeType The bound attribute type.
 	 */
 	public AttributeType getBinding(Class<?> binding) {
 		return (AttributeType) bindings().get(binding);
 	}
-	
+
 	// per attribute methods
 	//
 	/**
@@ -431,87 +445,102 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	 * This value is reset after a call to {@link #add(String, Class)}
 	 * </p>
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction minOccurs( int minOccurs ) {
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction minOccurs(
+			int minOccurs) {
 		attributeBuilder.setMinOccurs(minOccurs);
 		return this;
 	}
+
 	/**
 	 * Sets the maxOccurs of the next attribute added to the feature type.
 	 * <p>
 	 * This value is reset after a call to {@link #add(String, Class)}
 	 * </p>
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction maxOccurs( int maxOccurs ) {
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction maxOccurs(
+			int maxOccurs) {
 		attributeBuilder.setMaxOccurs(maxOccurs);
 		return this;
 	}
+
 	/**
 	 * Sets the nullability of the next attribute added to the feature type.
 	 * <p>
 	 * This value is reset after a call to {@link #add(String, Class)}
 	 * </p>
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction nillable( boolean isNillable ) {
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction nillable(
+			boolean isNillable) {
 		attributeBuilder.setNillable(isNillable);
 		return this;
 	}
 
 	/**
-     * Sets a restriction on the field length of the next attribute added to the feature type.
-     * <p>
-     * This method is the same as adding a restriction based on length( value ) < length
-     * This value is reset after a call to {@link #add(String, Class)}
-     * </p>
-     * @return length Used to limit the length of the next attribute created
-     */
-    public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction length( int length) {
-        attributeBuilder.setLength(length);
-        return this;
-    }
-    
-    /**
+	 * Sets a restriction on the field length of the next attribute added to the
+	 * feature type.
+	 * <p>
+	 * This method is the same as adding a restriction based on length( value )
+	 * < length This value is reset after a call to {@link #add(String, Class)}
+	 * </p>
+	 * 
+	 * @return length Used to limit the length of the next attribute created
+	 */
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction length(
+			int length) {
+		attributeBuilder.setLength(length);
+		return this;
+	}
+
+	/**
 	 * Adds a restriction to the next attribute added to the feature type.
 	 * <p>
 	 * This value is reset after a call to {@link #add(String, Class)}
 	 * </p>
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction restriction( Filter filter ) {
-		attributeBuilder.addRestriction( filter );
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction restriction(
+			Filter filter) {
+		attributeBuilder.addRestriction(filter);
 		return this;
 	}
+
 	/**
-	 * Adds a collection of restrictions to the next attribute added to the 
+	 * Adds a collection of restrictions to the next attribute added to the
 	 * <p>
-     * This value is reset after a call to {@link #add(String, Class)}
-     * </p>
+	 * This value is reset after a call to {@link #add(String, Class)}
+	 * </p>
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction restrictions( List<Filter> filters ) {
-	    for ( Filter f : filters ) {
-	        attributeBuilder.addRestriction(f);
-	    }
-	    return this;
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction restrictions(
+			List<Filter> filters) {
+		for (Filter f : filters) {
+			attributeBuilder.addRestriction(f);
+		}
+		return this;
 	}
-	
+
 	/**
 	 * Sets the description of the next attribute added to the feature type.
 	 * <p>
 	 * This value is reset after a call to {@link #add(String, Class)}
 	 * </p>
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction description( String description ) {
-		attributeBuilder.setDescription( description );
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction description(
+			String description) {
+		attributeBuilder.setDescription(description);
 		return this;
 	}
+
 	/**
 	 * Sets the default value of the next attribute added to the feature type.
 	 * <p>
 	 * This value is reset after a call to {@link #add(String, Class)}
 	 * </p>
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction defaultValue( Object defaultValue ) {
-		attributeBuilder.setDefaultValue( defaultValue );
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction defaultValue(
+			Object defaultValue) {
+		attributeBuilder.setDefaultValue(defaultValue);
 		return this;
 	}
+
 	/**
 	 * Sets the crs of the next attribute added to the feature type.
 	 * <p>
@@ -521,11 +550,12 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	 * This value is reset after a call to {@link #add(String, Class)}
 	 * </p>
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction crs( CoordinateReferenceSystem crs ) {
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction crs(
+			CoordinateReferenceSystem crs) {
 		attributeBuilder.setCRS(crs);
 		return this;
 	}
-	
+
 	/**
 	 * Sets the srs of the next attribute added to the feature type.
 	 * <p>
@@ -536,351 +566,393 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 	 * This only applies if the attribute added is geometric.
 	 * </p>
 	 * <p>
-     * This value is reset after a call to {@link #add(String, Class)}
-     * </p>
-     * 
-     * @param srs The spatial reference system.
+	 * This value is reset after a call to {@link #add(String, Class)}
+	 * </p>
+	 * 
+	 * @param srs
+	 *            The spatial reference system.
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction srs( String srs ) {
-	    if ( srs == null ) {
-	        return crs( null );
-	    }
-	    
-	    return crs(decode(srs));
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction srs(
+			String srs) {
+		if (srs == null) {
+			return crs(null);
+		}
+
+		return crs(decode(srs));
 	}
-	
+
 	/**
 	 * Sets the srid of the next attribute added to the feature type.
 	 * <p>
-     * The <tt>srid</tt> parameter is the epsg code of a spatial reference 
-     * system, for example: "4326".
-     * </p>
+	 * The <tt>srid</tt> parameter is the epsg code of a spatial reference
+	 * system, for example: "4326".
+	 * </p>
 	 * <p>
-     * This only applies if the attribute added is geometric.
-     * </p>
-     * <p>
-     * This value is reset after a call to {@link #add(String, Class)}
-     * </p>
+	 * This only applies if the attribute added is geometric.
+	 * </p>
+	 * <p>
+	 * This value is reset after a call to {@link #add(String, Class)}
+	 * </p>
 	 * 
-	 * @param srid The id of a spatial reference system.
+	 * @param srid
+	 *            The id of a spatial reference system.
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction srid( Integer srid ) {
-	    if ( srid == null ) {
-	        return crs( null );
-	    }
-	    
-	    return crs( decode( "EPSG:" + srid ) ); //$NON-NLS-1$
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction srid(
+			Integer srid) {
+		if (srid == null) {
+			return crs(null);
+		}
+
+		return crs(decode("EPSG:" + srid)); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Sets user data for the next attribute added to the feature type.
 	 * <p>
 	 * This value is reset after a call to {@link #add(String, Class)}
 	 * </p>
-	 * @param key  The key of the user data.
-	 * @param value The value of the user data.
+	 * 
+	 * @param key
+	 *            The key of the user data.
+	 * @param value
+	 *            The value of the user data.
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction userData( Object key, Object value ) {
-	    attributeBuilder.addUserData( key, value );
-	    return this;
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction userData(
+			Object key, Object value) {
+		attributeBuilder.addUserData(key, value);
+		return this;
 	}
-	
+
 	/**
 	 * Sets all the attribute specific state from a single descriptor.
 	 * <p>
-	 * This method is convenience for:
-	 * <code>
+	 * This method is convenience for: <code>
 	 * builder.minOccurs( descriptor.getMinOccurs() ).maxOccurs( descriptor.getMaxOccurs() )
 	 *     .nillable( descriptor.isNillable() )...
 	 * </code>
 	 * </p>
 	 */
-	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction descriptor( AttributeDescriptor descriptor ) {
-	    minOccurs( descriptor.getMinOccurs() );
-	    maxOccurs( descriptor.getMaxOccurs() );
-	    nillable( descriptor.isNillable() );
-	    //namespaceURI( descriptor.getName().getNamespaceURI() );
-	    defaultValue( descriptor.getDefaultValue() );
-	    
-	    if ( descriptor instanceof GeometryDescriptor ) {
-	        crs( ( (GeometryDescriptor) descriptor).getCoordinateReferenceSystem() );
-	    }
-	    
-	    return this;
+	public SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction descriptor(
+			AttributeDescriptor descriptor) {
+		minOccurs(descriptor.getMinOccurs());
+		maxOccurs(descriptor.getMaxOccurs());
+		nillable(descriptor.isNillable());
+		// namespaceURI( descriptor.getName().getNamespaceURI() );
+		defaultValue(descriptor.getDefaultValue());
+
+		if (descriptor instanceof GeometryDescriptor) {
+			crs(((GeometryDescriptor) descriptor)
+					.getCoordinateReferenceSystem());
+		}
+
+		return this;
 	}
-	
+
 	/**
 	 * Adds a new attribute w/ provided name and class.
 	 * 
 	 * <p>
-	 * The provided class is used to locate an attribute type binding previously 
-	 * specified by {@link #addBinding(AttributeType)},{@link #addBindings(Schema)}, 
-	 * or {@link #setBindings(Schema)}. 
+	 * The provided class is used to locate an attribute type binding previously
+	 * specified by {@link #addBinding(AttributeType)},
+	 * {@link #addBindings(Schema)}, or {@link #setBindings(Schema)}.
 	 * </p>
 	 * <p>
 	 * If not such binding exists then an attribute type is created on the fly.
 	 * </p>
-	 * @param name The name of the attribute.
-	 * @param bind The class the attribute is bound to.
+	 * 
+	 * @param name
+	 *            The name of the attribute.
+	 * @param bind
+	 *            The class the attribute is bound to.
 	 * 
 	 */
 	public void add(String name, Class binding) {
 
-	    AttributeDescriptor descriptor = null;
-	    
-	    attributeBuilder.setBinding(binding);
-        attributeBuilder.setName(name);
-        
-		//check if this is the name of the default geomtry, in that case we 
+		AttributeDescriptor descriptor = null;
+
+		attributeBuilder.setBinding(binding);
+		attributeBuilder.setName(name);
+
+		// check if this is the name of the default geomtry, in that case we
 		// better make it a geometry type
-		//also check for jts geometry, if we ever actually get to a point where a
-        // feature can be backed by another geometry model (like iso), we need 
-        // to remove this check
-        //
-        if ( ( defaultGeometry != null && defaultGeometry.equals( name ) ) 
-            || Geometry.class.isAssignableFrom(binding) ) {
-		
-            //if no crs was set, set to the global
-            if ( !attributeBuilder.isCRSSet() ) {
-                attributeBuilder.setCRS(crs);
-            }
-            
-            GeometryType type = attributeBuilder.buildGeometryType();
-            descriptor = attributeBuilder.buildDescriptor(name, type);
+		// also check for jts geometry, if we ever actually get to a point where
+		// a
+		// feature can be backed by another geometry model (like iso), we need
+		// to remove this check
+		//
+		if ((defaultGeometry != null && defaultGeometry.equals(name))
+				|| Geometry.class.isAssignableFrom(binding)) {
+
+			// if no crs was set, set to the global
+			if (!attributeBuilder.isCRSSet()) {
+				attributeBuilder.setCRS(crs);
+			}
+
+			GeometryType type = attributeBuilder.buildGeometryType();
+			descriptor = attributeBuilder.buildDescriptor(name, type);
+		} else {
+			AttributeType type = attributeBuilder.buildType();
+			descriptor = attributeBuilder.buildDescriptor(name, type);
 		}
-        else {
-            AttributeType type = attributeBuilder.buildType();
-            descriptor = attributeBuilder.buildDescriptor(name, type );
-        }
-		
-        
+
 		attributes().add(descriptor);
 	}
-	
+
 	/**
 	 * Adds a descriptor directly to the builder.
 	 * <p>
-	 * Use of this method is discouraged. Consider using {@link #add(String, Class)}. 
+	 * Use of this method is discouraged. Consider using
+	 * {@link #add(String, Class)}.
 	 * </p>
 	 */
-	public void add( AttributeDescriptor descriptor ) {
-	    attributes().add(descriptor);
+	public void add(AttributeDescriptor descriptor) {
+		attributes().add(descriptor);
 	}
-	
+
 	/**
-     * Removes an attribute from the builder
-     * 
-     * @param attributeName the name of the AttributeDescriptor to remove
-     * 
-     * @return the AttributeDescriptor with the name attributeName
-     * @throws IllegalArgumentException if there is no AttributeDescriptor with the name attributeName
-     */
-    public AttributeDescriptor remove(String attributeName){
-        for (Iterator iterator = attributes.iterator(); iterator.hasNext();) {
-            AttributeDescriptor descriptor = (AttributeDescriptor) iterator.next();
-            if( descriptor.getLocalName().equals(attributeName) ){
-                iterator.remove();
-                return descriptor;
-            }
-        }
-        throw new IllegalArgumentException(attributeName+" is not an existing attribute descriptor in this builder"); //$NON-NLS-1$
-    }
+	 * Removes an attribute from the builder
+	 * 
+	 * @param attributeName
+	 *            the name of the AttributeDescriptor to remove
+	 * 
+	 * @return the AttributeDescriptor with the name attributeName
+	 * @throws IllegalArgumentException
+	 *             if there is no AttributeDescriptor with the name
+	 *             attributeName
+	 */
+	public AttributeDescriptor remove(String attributeName) {
+		for (Iterator iterator = attributes.iterator(); iterator.hasNext();) {
+			AttributeDescriptor descriptor = (AttributeDescriptor) iterator
+					.next();
+			if (descriptor.getLocalName().equals(attributeName)) {
+				iterator.remove();
+				return descriptor;
+			}
+		}
+		throw new IllegalArgumentException(attributeName
+				+ " is not an existing attribute descriptor in this builder"); //$NON-NLS-1$
+	}
 
 	/**
 	 * Adds a descriptor to the builder by index.
 	 * <p>
-	 * Use of this method is discouraged. Consider using {@link #add(String, Class)}. 
+	 * Use of this method is discouraged. Consider using
+	 * {@link #add(String, Class)}.
 	 * </p>
 	 */
-	public void add( int index, AttributeDescriptor descriptor ) {
-	    attributes().add(index, descriptor);
+	public void add(int index, AttributeDescriptor descriptor) {
+		attributes().add(index, descriptor);
 	}
 
-	
-	
-    /**
-     * Adds a list of descriptors directly to the builder.
-     * <p>
-     * Use of this method is discouraged. Consider using {@link #add(String, Class)}.
-     * </p>
-     */
-    public void addAll( List<AttributeDescriptor>  descriptors ) {
-        for ( AttributeDescriptor ad : descriptors ) {
-            add( ad );
-        }
-    }
 	/**
-     * Adds an array of descriptors directly to the builder.
-     * <p>
-     * Use of this method is discouraged. Consider using {@link #add(String, Class)}.
-     * </p>
-     */
-	public void addAll( AttributeDescriptor[] descriptors ) {
-	    for ( AttributeDescriptor ad : descriptors ) {
-	        add( ad );
-	    }
+	 * Adds a list of descriptors directly to the builder.
+	 * <p>
+	 * Use of this method is discouraged. Consider using
+	 * {@link #add(String, Class)}.
+	 * </p>
+	 */
+	public void addAll(List<AttributeDescriptor> descriptors) {
+		for (AttributeDescriptor ad : descriptors) {
+			add(ad);
+		}
 	}
-	
+
 	/**
-	 * Adds a new geometric attribute w/ provided name, class, and coordinate 
+	 * Adds an array of descriptors directly to the builder.
+	 * <p>
+	 * Use of this method is discouraged. Consider using
+	 * {@link #add(String, Class)}.
+	 * </p>
+	 */
+	public void addAll(AttributeDescriptor[] descriptors) {
+		for (AttributeDescriptor ad : descriptors) {
+			add(ad);
+		}
+	}
+
+	/**
+	 * Adds a new geometric attribute w/ provided name, class, and coordinate
 	 * reference system.
 	 * <p>
 	 * The <tt>crs</tt> parameter may be <code>null</code>.
 	 * </p>
-	 * @param name The name of the attribute.
-	 * @param binding The class that the attribute is bound to.
-	 * @param crs The crs of of the geometry, may be <code>null</code>.
+	 * 
+	 * @param name
+	 *            The name of the attribute.
+	 * @param binding
+	 *            The class that the attribute is bound to.
+	 * @param crs
+	 *            The crs of of the geometry, may be <code>null</code>.
 	 */
-	public void add(String name, Class binding, CoordinateReferenceSystem crs ) {
+	public void add(String name, Class binding, CoordinateReferenceSystem crs) {
 		attributeBuilder.setBinding(binding);
 		attributeBuilder.setName(name);
 		attributeBuilder.setCRS(crs);
-		
+
 		GeometryType type = attributeBuilder.buildGeometryType();
-		GeometryDescriptor descriptor = attributeBuilder.buildDescriptor(name,type);
+		GeometryDescriptor descriptor = attributeBuilder.buildDescriptor(name,
+				type);
 		attributes().add(descriptor);
 	}
-	
+
 	/**
-     * Adds a new geometric attribute w/ provided name, class, and spatial 
-     * reference system identifier
-     * <p>
-     * The <tt>srs</tt> parameter may be <code>null</code>.
-     * </p>
-     * @param name The name of the attribute.
-     * @param binding The class that the attribute is bound to.
-     * @param srs The srs of of the geometry, may be <code>null</code>.
-     */
+	 * Adds a new geometric attribute w/ provided name, class, and spatial
+	 * reference system identifier
+	 * <p>
+	 * The <tt>srs</tt> parameter may be <code>null</code>.
+	 * </p>
+	 * 
+	 * @param name
+	 *            The name of the attribute.
+	 * @param binding
+	 *            The class that the attribute is bound to.
+	 * @param srs
+	 *            The srs of of the geometry, may be <code>null</code>.
+	 */
 	public void add(String name, Class binding, String srs) {
-	    if ( srs == null ) {
-	        add(name,binding,(CoordinateReferenceSystem)null);
-	        return;
-	    }
-	
-	    add(name,binding,decode(srs));
+		if (srs == null) {
+			add(name, binding, (CoordinateReferenceSystem) null);
+			return;
+		}
+
+		add(name, binding, decode(srs));
 	}
-	
+
 	/**
-     * Adds a new geometric attribute w/ provided name, class, and spatial 
-     * reference system identifier
-     * <p>
-     * The <tt>srid</tt> parameter may be <code>null</code>.
-     * </p>
-     * @param name The name of the attribute.
-     * @param binding The class that the attribute is bound to.
-     * @param srid The srid of of the geometry, may be <code>null</code>.
-     */
+	 * Adds a new geometric attribute w/ provided name, class, and spatial
+	 * reference system identifier
+	 * <p>
+	 * The <tt>srid</tt> parameter may be <code>null</code>.
+	 * </p>
+	 * 
+	 * @param name
+	 *            The name of the attribute.
+	 * @param binding
+	 *            The class that the attribute is bound to.
+	 * @param srid
+	 *            The srid of of the geometry, may be <code>null</code>.
+	 */
 	public void add(String name, Class binding, Integer srid) {
-	    if ( srid == null ) {
-	        add(name,binding,(CoordinateReferenceSystem)null);
-	        return;
-	    }
-	    
-	    add( name, binding, decode( "EPSG:" + srid ) ); //$NON-NLS-1$
+		if (srid == null) {
+			add(name, binding, (CoordinateReferenceSystem) null);
+			return;
+		}
+
+		add(name, binding, decode("EPSG:" + srid)); //$NON-NLS-1$
 	}
-	
+
 	/**
-	 * Directly sets the list of attributes. 
-	 * @param attributes the new list of attributes, or null to reset the list
+	 * Directly sets the list of attributes.
+	 * 
+	 * @param attributes
+	 *            the new list of attributes, or null to reset the list
 	 */
 	public void setAttributes(List<AttributeDescriptor> attributes) {
 		List<AttributeDescriptor> atts = attributes();
 		atts.clear();
-		if(attributes != null)
+		if (attributes != null)
 			atts.addAll(attributes);
 	}
-	
+
 	/**
-	 * Directly sets the list of attributes. 
-	 * @param attributes the new list of attributes, or null to reset the list
+	 * Directly sets the list of attributes.
+	 * 
+	 * @param attributes
+	 *            the new list of attributes, or null to reset the list
 	 */
 	public void setAttributes(AttributeDescriptor[] attributes) {
 		List<AttributeDescriptor> atts = attributes();
 		atts.clear();
-		if(attributes != null)
+		if (attributes != null)
 			atts.addAll(Arrays.asList(attributes));
 	}
-	
-	
+
 	/**
 	 * Builds a feature type from compiled state.
 	 * <p>
 	 * After the type is built the running list of attributes is cleared.
 	 * </p>
+	 * 
 	 * @return The built feature type.
 	 */
 	public SimpleFeatureType buildFeatureType() {
-	    GeometryDescriptor defaultGeometry = null;
-		
-		//was a default geometry set?
-		if ( this.defaultGeometry != null ) {
+		GeometryDescriptor defaultGeometry = null;
+
+		// was a default geometry set?
+		if (this.defaultGeometry != null) {
 			List<AttributeDescriptor> atts = attributes();
-			for ( int i = 0; i < atts.size(); i++) {
+			for (int i = 0; i < atts.size(); i++) {
 				AttributeDescriptor att = (AttributeDescriptor) atts.get(i);
-				if ( this.defaultGeometry.equals( att.getName().getLocalPart() ) ) {
-					//ensure the attribute is a geometry attribute
-					if ( !(att instanceof GeometryDescriptor ) ) {
-						attributeBuilder.init( att );
+				if (this.defaultGeometry.equals(att.getName().getLocalPart())) {
+					// ensure the attribute is a geometry attribute
+					if (!(att instanceof GeometryDescriptor)) {
+						attributeBuilder.init(att);
 						attributeBuilder.setCRS(crs);
-						GeometryType type = attributeBuilder.buildGeometryType();						
-						att = attributeBuilder.buildDescriptor(att.getName(),type);
-						atts.set( i, att );
+						GeometryType type = attributeBuilder
+								.buildGeometryType();
+						att = attributeBuilder.buildDescriptor(att.getName(),
+								type);
+						atts.set(i, att);
 					}
-					defaultGeometry = (GeometryDescriptor)att;
+					defaultGeometry = (GeometryDescriptor) att;
 					break;
 				}
 			}
-			
+
 			if (defaultGeometry == null) {
-			    String msg = "'" + this.defaultGeometry + " specified as default" + //$NON-NLS-1$ //$NON-NLS-2$
-		    		" but could find no such attribute."; //$NON-NLS-1$
-			    throw new IllegalArgumentException( msg );
+				String msg = "'" + this.defaultGeometry + " specified as default" + //$NON-NLS-1$ //$NON-NLS-2$
+						" but could find no such attribute."; //$NON-NLS-1$
+				throw new IllegalArgumentException(msg);
 			}
 		}
-		
-		if ( defaultGeometry == null ) {
-			//none was set by name, look for first geometric type
-			for ( AttributeDescriptor att : attributes() ) {
-				if ( att instanceof GeometryDescriptor ) {
+
+		if (defaultGeometry == null) {
+			// none was set by name, look for first geometric type
+			for (AttributeDescriptor att : attributes()) {
+				if (att instanceof GeometryDescriptor) {
 					defaultGeometry = (GeometryDescriptor) att;
 					break;
 				}
 			}
 		}
-		
-		SimpleFeatureType built = factory.createSimpleFeatureType(
-			name(), attributes(), defaultGeometry, isAbstract, 
-			restrictions(), superType, description);
-		
+
+		SimpleFeatureType built = factory.createSimpleFeatureType(name(),
+				attributes(), defaultGeometry, isAbstract, restrictions(),
+				superType, description);
+
 		init();
 		return built;
 	}
-	
+
 	// Internal api available for subclasses to override
 	/**
-	 * Creates a new set instance, this default implementation returns {@link HashSet}.
+	 * Creates a new set instance, this default implementation returns
+	 * {@link HashSet}.
 	 */
-	protected Set newSet(){
+	protected Set newSet() {
 		return new HashSet();
 	}
+
 	/**
-	 * Creates a new list instance, this default impelementation returns {@link ArrayList}.
+	 * Creates a new list instance, this default impelementation returns
+	 * {@link ArrayList}.
 	 */
 	protected List newList() {
 		return new ArrayList();
 	}
-	
+
 	/**
-	 * Creates a new map instance, this default implementation returns {@link HashMap}
+	 * Creates a new map instance, this default implementation returns
+	 * {@link HashMap}
 	 */
 	protected Map newMap() {
 		return new HashMap();
 	}
-	
+
 	/**
 	 * Creates a new list which is the same type as the provided list.
 	 * <p>
-	 * If the new copy can not be created reflectively.. {@link #newList()} is 
+	 * If the new copy can not be created reflectively.. {@link #newList()} is
 	 * returned.
 	 * </p>
 	 */
@@ -899,22 +971,22 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 			return newList();
 		}
 	}
-	
-	// Helper methods, 
+
+	// Helper methods,
 	//
 	/**
 	 * Naming: Accessor which returns type name as follows:
 	 * <ol>
 	 * <li>If <code>typeName</code> has been set, its value is returned.
-	 * <li>If <code>name</code> has been set, it + <code>namespaceURI</code>
-	 * are returned.
+	 * <li>If <code>name</code> has been set, it + <code>namespaceURI</code> are
+	 * returned.
 	 * </ol>
 	 * 
 	 */
 	protected Name name() {
 		if (local == null)
 			return null;
-		
+
 		return new NameImpl(uri, local);
 	}
 
@@ -927,15 +999,17 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 		}
 		return attributes;
 	}
+
 	/**
 	 * Accessor for restrictions.
 	 */
-	protected List<Filter> restrictions(){
+	protected List<Filter> restrictions() {
 		if (restrictions == null) {
 			restrictions = newList();
 		}
-		return restrictions;		
+		return restrictions;
 	}
+
 	/**
 	 * Accessor for bindings.
 	 */
@@ -945,40 +1019,42 @@ public class SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction {
 		}
 		return bindings;
 	}
-	
+
 	/**
 	 * Decodes a srs, supplying a useful error message if there is a problem.
 	 */
-	protected CoordinateReferenceSystem decode( String srs ) {
-	    try {
-            return CRS.decode(srs);
-        } catch (Exception  e) {
-            String msg = "SRS '" + srs + "' unknown:" + e.getLocalizedMessage();  //$NON-NLS-1$ //$NON-NLS-2$
-            throw (IllegalArgumentException) new IllegalArgumentException( msg ).initCause( e );
-        }
+	protected CoordinateReferenceSystem decode(String srs) {
+		try {
+			return CRS.decode(srs);
+		} catch (Exception e) {
+			String msg = "SRS '" + srs + "' unknown:" + e.getLocalizedMessage(); //$NON-NLS-1$ //$NON-NLS-2$
+			throw (IllegalArgumentException) new IllegalArgumentException(msg)
+					.initCause(e);
+		}
 	}
-	
+
 	/**
 	 * H
+	 * 
 	 * @param original
 	 * @param types
 	 * @return
 	 */
-	public static SimpleFeatureType retype( SimpleFeatureType original, String[] types ) {
+	public static SimpleFeatureType retype(SimpleFeatureType original,
+			String[] types) {
 		SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction b = new SimpleFeatureTypeBuilderThatHasNoSillySuperTypeRestriction();
-	    
-	    //initialize the builder
-	    b.init( original );
-	    
-	    //clear the attributes
-	    b.attributes().clear();
-	    
-	    //add attributes in order
-	    for ( int i = 0; i < types.length; i++ ) {
-	        b.add( original.getDescriptor( types[i] ) );
-	    }
-	    
-	    return b.buildFeatureType();
+
+		// initialize the builder
+		b.init(original);
+
+		// clear the attributes
+		b.attributes().clear();
+
+		// add attributes in order
+		for (int i = 0; i < types.length; i++) {
+			b.add(original.getDescriptor(types[i]));
+		}
+
+		return b.buildFeatureType();
 	}
 }
-

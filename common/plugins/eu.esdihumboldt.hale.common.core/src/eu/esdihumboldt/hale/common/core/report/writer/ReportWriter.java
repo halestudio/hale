@@ -27,20 +27,19 @@ import eu.esdihumboldt.hale.common.core.report.MessageFactory;
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportFactory;
 
-
 /**
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.5 
+ * @since 2.5
  */
 public class ReportWriter {
-	
+
 	/**
 	 * Contains all {@link Report}s.
 	 */
 	private Multimap<Class<? extends Report<?>>, Report<?>> reports = HashMultimap.create();
-	
+
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportWriter.class);
 
 	/**
@@ -49,7 +48,7 @@ public class ReportWriter {
 	public ReportWriter() {
 		/* nothing */
 	}
-	
+
 	/**
 	 * Adds all {@link Report}s.
 	 * 
@@ -58,7 +57,7 @@ public class ReportWriter {
 	public void addAllReports(Multimap<Class<? extends Report<?>>, Report<?>> multimap) {
 		this.reports.putAll(multimap);
 	}
-	
+
 	/**
 	 * Writes all {@link Report}s to a {@link File}.
 	 * 
@@ -69,8 +68,8 @@ public class ReportWriter {
 	 * 
 	 * @throws IOException if IO fails
 	 */
-	public boolean writeAll(File file,
-			Multimap<Class<? extends Report<?>>, Report<?>> reports) throws IOException {
+	public boolean writeAll(File file, Multimap<Class<? extends Report<?>>, Report<?>> reports)
+			throws IOException {
 		// check if the file exists
 		if (!file.exists()) {
 			// and create the file
@@ -78,52 +77,52 @@ public class ReportWriter {
 				_log.error("Logfile could not be created!");
 				return false;
 			}
-			
+
 			// make it writable
 			file.setWritable(true);
 		}
-		
+
 		// check if it's writable
 		if (!file.canWrite()) {
 			_log.error("Report could not be saved. No write permission!");
 			return false;
 		}
-		
+
 		// create PrintStream
 		PrintStream p = new PrintStream(file);
-		
+
 		// get an instance of ReportFactory
 		ReportFactory rf = ReportFactory.getInstance();
 		MessageFactory mf = MessageFactory.getInstance();
-		
+
 		// iterate through all reports
 		for (Report<?> r : reports.values()) {
 			// write them to the file
 			p.print(rf.asString(r));
-			
+
 			for (Message m : r.getErrors()) {
 				p.println("!ERROR");
 				p.print(mf.asString(m));
 			}
-			
+
 			for (Message m : r.getWarnings()) {
 				p.println("!WARN");
 				p.print(mf.asString(m));
 			}
-			
+
 			for (Message m : r.getInfos()) {
 				p.println("!INFO");
 				p.print(mf.asString(m));
 			}
 		}
-		
+
 		// set an end marker
 		p.print("!END");
-		
+
 		// close stream
 		p.flush();
 		p.close();
-		
+
 		return true;
 	}
 }

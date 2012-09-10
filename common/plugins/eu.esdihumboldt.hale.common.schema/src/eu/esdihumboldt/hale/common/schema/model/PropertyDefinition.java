@@ -12,13 +12,13 @@
 
 package eu.esdihumboldt.hale.common.schema.model;
 
-
 /**
  * Represents a property definition
+ * 
  * @author Simon Templer
  */
 public interface PropertyDefinition extends ChildDefinition<PropertyConstraint> {
-	
+
 	/**
 	 * Get the type associated with the property
 	 * 

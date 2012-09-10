@@ -77,8 +77,7 @@ import eu.esdihumboldt.specification.cst.align.ext.IParameter;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class OmlReader extends AbstractAlignmentReader implements
-		AlignmentReader {
+public class OmlReader extends AbstractAlignmentReader implements AlignmentReader {
 
 	private Map<String, FunctionTranslator> map = new HashMap<String, FunctionTranslator>();
 
@@ -88,16 +87,14 @@ public class OmlReader extends AbstractAlignmentReader implements
 	 * Default Constructor
 	 */
 	public OmlReader() {
-		map.put("eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction",
-				new RenameTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.RenameAttributeFunction", new RenameTranslator());
 		map.put("eu.esdihumboldt.cst.transformer.service.rename.RenameFeatureFunction",
 				new RetypeTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.DateExtractionFunction",
 				new DateExtractionTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.ClassificationMappingFunction",
 				new ClassificationMappingTranslator());
-		map.put("eu.esdihumboldt.cst.corefunctions.ConstantValueFunction",
-				new AssignTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.ConstantValueFunction", new AssignTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.GenericMathFunction",
 				new MathematicalExpressionTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.OrdinatesToPointFunction",
@@ -108,16 +105,13 @@ public class OmlReader extends AbstractAlignmentReader implements
 				new FormattedStringTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.BoundingBoxFunction",
 				new NotSupportedTranslator());
-		map.put("eu.esdihumboldt.cst.corefunctions.CalculateArea",
-				new CalculateAreaTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.CalculateArea", new CalculateAreaTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.CalculateLength",
 				new CalculateLengthTranslator());
-		map.put("eu.esdihumboldt.cst.corefunctions.CentroidFunction",
-				new CentroidTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.CentroidFunction", new CentroidTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.ClipByRectangleFunction",
 				new NotSupportedTranslator());
-		map.put("eu.esdihumboldt.cst.corefunctions.NilReasonFunction",
-				new NotSupportedTranslator());
+		map.put("eu.esdihumboldt.cst.corefunctions.NilReasonFunction", new NotSupportedTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.inspire.GeographicalNameFunction",
 				new GeographicalNameTranslator());
 		map.put("eu.esdihumboldt.cst.corefunctions.inspire.IdentifierFunction",
@@ -149,13 +143,11 @@ public class OmlReader extends AbstractAlignmentReader implements
 			throws IOProviderConfigurationException, IOException {
 
 		try {
-			progress.begin("Load ontology mapping file",
-					ProgressIndicator.UNKNOWN);
+			progress.begin("Load ontology mapping file", ProgressIndicator.UNKNOWN);
 
 			OmlRdfReader reader = new OmlRdfReader();
 
-			Alignment alignment = reader
-					.read(getSource().getLocation().toURL());
+			Alignment alignment = reader.read(getSource().getLocation().toURL());
 
 			AlignmentBean align = new AlignmentBean();
 
@@ -183,15 +175,15 @@ public class OmlReader extends AbstractAlignmentReader implements
 				cellBean.setTarget(temp_target);
 
 				// check if one of the entities has a transformation
-				if (entity.getTransformation() != null
-						|| entity2.getTransformation() != null) {
+				if (entity.getTransformation() != null || entity2.getTransformation() != null) {
 					// set parameters and transformation id for the cellBean
 					// from
 					// entity 1 if it has the transformation
 					if (entity.getTransformation() != null) {
 						setParameters(cellBean, entity, reporter, cell);
 						setTransformationId(cellBean, entity);
-					} else {
+					}
+					else {
 						// else set parameters and transformation id from entity
 						// 2
 						setParameters(cellBean, entity2, reporter, cell);
@@ -206,8 +198,8 @@ public class OmlReader extends AbstractAlignmentReader implements
 			// set the cells for the alignment after the all iterations
 			align.setCells(cells);
 
-			mutableAlignment = align.createAlignment(reporter,
-					getSourceSchema(), getTargetSchema());
+			mutableAlignment = align
+					.createAlignment(reporter, getSourceSchema(), getTargetSchema());
 
 			reporter.setSuccess(true);
 
@@ -225,11 +217,9 @@ public class OmlReader extends AbstractAlignmentReader implements
 		return null;
 	}
 
-	private void setBeanLists(IEntity entity, List<NamedEntityBean> list,
-			TypeIndex schema) {
+	private void setBeanLists(IEntity entity, List<NamedEntityBean> list, TypeIndex schema) {
 
-		if (entity.getAbout().getAbout()
-				.equals(Entity.NULL_ENTITY.getAbout().getAbout())) {
+		if (entity.getAbout().getAbout().equals(Entity.NULL_ENTITY.getAbout().getAbout())) {
 			return;
 		}
 
@@ -241,7 +231,8 @@ public class OmlReader extends AbstractAlignmentReader implements
 			for (FeatureClass fc : coll) {
 				setBeanLists(fc, list, schema);
 			}
-		} else if (entity instanceof ComposedProperty) {
+		}
+		else if (entity instanceof ComposedProperty) {
 			ComposedProperty cp = (ComposedProperty) entity;
 
 			List<Property> coll = cp.getCollection();
@@ -250,11 +241,11 @@ public class OmlReader extends AbstractAlignmentReader implements
 				setBeanLists(prop, list, schema);
 			}
 
-		} else if (entity instanceof FeatureClass) {
+		}
+		else if (entity instanceof FeatureClass) {
 
 			// get the detailed about-information
-			IDetailedAbout about = DetailedAbout.getDetailedAbout(
-					entity.getAbout(), false);
+			IDetailedAbout about = DetailedAbout.getDetailedAbout(entity.getAbout(), false);
 
 			TypeBean typeBean = new TypeBean();
 
@@ -267,10 +258,10 @@ public class OmlReader extends AbstractAlignmentReader implements
 
 			list.add(namedEntityBean);
 
-		} else if (entity instanceof Property) {
+		}
+		else if (entity instanceof Property) {
 			// get the detailed about-information
-			IDetailedAbout about = DetailedAbout.getDetailedAbout(
-					entity.getAbout(), true);
+			IDetailedAbout about = DetailedAbout.getDetailedAbout(entity.getAbout(), true);
 
 			PropertyBean prop = new PropertyBean();
 			List<ChildContextBean> childList = new ArrayList<ChildContextBean>();
@@ -298,8 +289,7 @@ public class OmlReader extends AbstractAlignmentReader implements
 
 	}
 
-	private void setTypeNameBean(EntityBean<?> entityBean,
-			IDetailedAbout about, TypeIndex schema) {
+	private void setTypeNameBean(EntityBean<?> entityBean, IDetailedAbout about, TypeIndex schema) {
 
 		QName name = new QName(about.getNamespace(), about.getFeatureClass());
 
@@ -316,8 +306,7 @@ public class OmlReader extends AbstractAlignmentReader implements
 			SchemaSpace ss = (SchemaSpace) schema;
 			for (Schema schem : ss.getSchemas()) {
 				if (schem instanceof XmlIndex) {
-					XmlElement xmlelem = ((XmlIndex) schem).getElements().get(
-							elementName);
+					XmlElement xmlelem = ((XmlIndex) schem).getElements().get(elementName);
 					if (xmlelem != null) {
 						return xmlelem.getType().getName();
 					}
@@ -325,21 +314,22 @@ public class OmlReader extends AbstractAlignmentReader implements
 					// sign in the namespace because in earlier version this
 					// case can occur
 					xmlelem = ((XmlIndex) schem).getElements().get(
-							new QName(elementName.getNamespaceURI() + "/",
-									elementName.getLocalPart()));
+							new QName(elementName.getNamespaceURI() + "/", elementName
+									.getLocalPart()));
 					if (xmlelem != null) {
 						return xmlelem.getType().getName();
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			for (TypeDefinition typedef : schema.getTypes()) {
 				XmlElements xmlelem = typedef.getConstraint(XmlElements.class);
 				for (XmlElement elem : xmlelem.getElements()) {
 					if (elem.getName().equals(elementName)
 							|| elem.getName().equals(
-									new QName(elementName.getNamespaceURI()
-											+ "/", elementName.getLocalPart()))) {
+									new QName(elementName.getNamespaceURI() + "/", elementName
+											.getLocalPart()))) {
 						return typedef.getName();
 					}
 				}
@@ -348,8 +338,7 @@ public class OmlReader extends AbstractAlignmentReader implements
 		return elementName;
 	}
 
-	private void setParameters(CellBean cellBean, IEntity entity,
-			IOReporter reporter, ICell cell) {
+	private void setParameters(CellBean cellBean, IEntity entity, IOReporter reporter, ICell cell) {
 
 		String transId = entity.getTransformation().getService().getLocation();
 
@@ -373,9 +362,10 @@ public class OmlReader extends AbstractAlignmentReader implements
 
 		// set the new transformation parameters
 		if (map.containsKey(transId)) {
-			cellBean.setTransformationParameters(map.get(transId)
-					.getNewParameters(params, cellBean, reporter, cell));
-		} else {
+			cellBean.setTransformationParameters(map.get(transId).getNewParameters(params,
+					cellBean, reporter, cell));
+		}
+		else {
 			cellBean.setTransformationParameters(params);
 		}
 
@@ -386,11 +376,10 @@ public class OmlReader extends AbstractAlignmentReader implements
 		String transId = entity.getTransformation().getService().getLocation();
 
 		// set the new transformation identifier
-		if (map.containsKey(transId)
-				&& map.get(transId).getTransformationId() != null) {
-			cellBean.setTransformationIdentifier(map.get(transId)
-					.getTransformationId());
-		} else {
+		if (map.containsKey(transId) && map.get(transId).getTransformationId() != null) {
+			cellBean.setTransformationIdentifier(map.get(transId).getTransformationId());
+		}
+		else {
 			cellBean.setTransformationIdentifier(transId);
 		}
 

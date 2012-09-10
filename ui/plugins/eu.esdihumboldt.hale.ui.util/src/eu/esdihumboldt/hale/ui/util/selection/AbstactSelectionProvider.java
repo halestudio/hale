@@ -21,12 +21,13 @@ import de.cs3d.util.eclipse.TypeSafeListenerList;
 
 /**
  * Abstract selection provider implementation
+ * 
  * @author Simon Templer
  */
 public class AbstactSelectionProvider implements ISelectionProvider {
-	
+
 	private ISelection lastSelection;
-	
+
 	private final TypeSafeListenerList<ISelectionChangedListener> listeners = new TypeSafeListenerList<ISelectionChangedListener>();
 
 	/**
@@ -49,8 +50,7 @@ public class AbstactSelectionProvider implements ISelectionProvider {
 	 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
 	 */
 	@Override
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		listeners.remove(listener);
 	}
 
@@ -61,17 +61,18 @@ public class AbstactSelectionProvider implements ISelectionProvider {
 	public void setSelection(ISelection selection) {
 		this.lastSelection = selection;
 	}
-	
+
 	/**
-	 * Fires a selection change and sets the last selection to the given 
+	 * Fires a selection change and sets the last selection to the given
 	 * selection.
+	 * 
 	 * @param newSelection the new selection
 	 */
 	protected void fireSelectionChange(ISelection newSelection) {
 		this.lastSelection = newSelection;
-		
+
 		SelectionChangedEvent event = new SelectionChangedEvent(this, newSelection);
-		
+
 		for (ISelectionChangedListener listener : listeners) {
 			listener.selectionChanged(event);
 		}
@@ -79,6 +80,7 @@ public class AbstactSelectionProvider implements ISelectionProvider {
 
 	/**
 	 * Get the last selection
+	 * 
 	 * @return the last selection
 	 */
 	protected ISelection getLastSelection() {

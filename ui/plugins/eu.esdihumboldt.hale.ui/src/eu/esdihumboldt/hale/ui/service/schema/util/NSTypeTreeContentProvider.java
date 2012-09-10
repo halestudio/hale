@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
  * @author Kai Schwierczek
  */
 public class NSTypeTreeContentProvider implements ITreeContentProvider {
+
 	private ListMultimap<String, TypeDefinition> nameSpaces;
 
 	/**
@@ -49,7 +50,8 @@ public class NSTypeTreeContentProvider implements ITreeContentProvider {
 	}
 
 	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+	 *      java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {

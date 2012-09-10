@@ -53,10 +53,10 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin(Messages.getString("ShapeSchemaProvider.1"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
-		
+
 //		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
 		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
-		
+
 		progress.setCurrentTask("Extracting shape instances");
 
 		instances = new ShapesInstanceCollection(store, getSourceSchema());

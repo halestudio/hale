@@ -18,29 +18,31 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 
 /**
  * Function category extension
+ * 
  * @author Simon Templer
  */
 public class CategoryExtension extends IdentifiableExtension<Category> {
-	
+
 	/**
 	 * The function category extension point ID
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.category";
-	
+
 	private static CategoryExtension instance;
-	
+
 	/**
 	 * Get the extension instance
+	 * 
 	 * @return the extension
 	 */
 	public static CategoryExtension getInstance() {
 		if (instance == null) {
 			instance = new CategoryExtension();
 		}
-		
+
 		return instance;
 	}
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -61,8 +63,7 @@ public class CategoryExtension extends IdentifiableExtension<Category> {
 	 */
 	@Override
 	protected Category create(String elementId, IConfigurationElement element) {
-		return new Category(elementId, 
-				element.getAttribute("name"), 
+		return new Category(elementId, element.getAttribute("name"),
 				element.getAttribute("description"));
 	}
 

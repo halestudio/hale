@@ -22,14 +22,15 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 
 /**
  * Group property referencing a XML group
+ * 
  * @author Simon Templer
  */
 public class XmlGroupReferenceProperty extends LazyGroupPropertyDefinition {
 
 	private final QName groupName;
-	
+
 	private XmlGroup referencedGroup;
-	
+
 	/**
 	 * Create a property that references a XML group
 	 * 
@@ -39,26 +40,25 @@ public class XmlGroupReferenceProperty extends LazyGroupPropertyDefinition {
 	 * @param groupName the group name
 	 * @param allowFlatten if the group may be replaced by its children
 	 */
-	public XmlGroupReferenceProperty(QName name,
-			DefinitionGroup declaringType, XmlIndex index,
+	public XmlGroupReferenceProperty(QName name, DefinitionGroup declaringType, XmlIndex index,
 			QName groupName, boolean allowFlatten) {
 		super(name, declaringType, index, allowFlatten);
-		
+
 		this.groupName = groupName;
 	}
-	
+
 	/**
 	 * @see LazyGroupPropertyDefinition#initChildren()
 	 */
 	@Override
 	protected void initChildren() {
 		XmlGroup group = resolveGroup();
-		
+
 		if (group == null) {
-			throw new IllegalStateException("Referenced group could not be found: " + 
-					groupName.toString());
+			throw new IllegalStateException("Referenced group could not be found: "
+					+ groupName.toString());
 		}
-		
+
 		// redeclare children
 		for (ChildDefinition<?> child : group.getDeclaredChildren()) {
 			ChildDefinition<?> redeclaredChild = DefinitionUtil.redeclareChild(child, this);
@@ -70,7 +70,7 @@ public class XmlGroupReferenceProperty extends LazyGroupPropertyDefinition {
 		if (referencedGroup == null) {
 			referencedGroup = index.getGroups().get(groupName);
 		}
-		
+
 		return referencedGroup;
 	}
 

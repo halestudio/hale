@@ -28,31 +28,33 @@ import eu.esdihumboldt.util.resource.ResourceResolver;
 /**
  * Resource resolver that attempts to find a resource at the URI path in the
  * bundle that registered the resolver as extension.
+ * 
  * @author Simon Templer
  */
 public class BundleResolver implements ResourceResolver {
 
 	private final Bundle bundle;
-	
+
 	/**
 	 * Create a bundle resolver.
+	 * 
 	 * @param conf the configuration element
 	 */
 	public BundleResolver(IConfigurationElement conf) {
 		String bundleName = conf.getContributor().getName();
 		Bundle contributor = null;
-		
+
 		for (Bundle bundle : ResourceBundle.getBundleContext().getBundles()) {
 			if (bundle.getSymbolicName().equals(bundleName)) {
 				contributor = bundle;
 				break;
 			}
 		}
-		
+
 		if (contributor == null) {
 			throw new IllegalStateException("Contributing bundle not found: " + bundleName);
 		}
-		
+
 		this.bundle = contributor;
 	}
 
@@ -60,13 +62,11 @@ public class BundleResolver implements ResourceResolver {
 	 * @see ResourceResolver#resolve(URI)
 	 */
 	@Override
-	public InputSupplier<? extends InputStream> resolve(URI uri)
-			throws ResourceNotFoundException {
+	public InputSupplier<? extends InputStream> resolve(URI uri) throws ResourceNotFoundException {
 		final URL entry = bundle.getEntry(uri.getPath());
 		if (entry == null) {
-			throw new ResourceNotFoundException("Resource with path "
-					+ uri.getPath() + " not contained in bundle "
-					+ bundle.getSymbolicName());
+			throw new ResourceNotFoundException("Resource with path " + uri.getPath()
+					+ " not contained in bundle " + bundle.getSymbolicName());
 		}
 		return new InputSupplier<InputStream>() {
 

@@ -21,13 +21,14 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Abstract child definition implementation
+ * 
  * @param <C> the supported constraint type
  * 
  * @author Simon Templer
  */
 public abstract class AbstractChildDefinition<C> extends AbstractDefinition<C> implements
 		ChildDefinition<C> {
-	
+
 	/**
 	 * The parent group
 	 */
@@ -39,11 +40,10 @@ public abstract class AbstractChildDefinition<C> extends AbstractDefinition<C> i
 	 * @param name the child qualified name
 	 * @param parentGroup the parent group
 	 */
-	public AbstractChildDefinition(QName name,
-			DefinitionGroup parentGroup) {
+	public AbstractChildDefinition(QName name, DefinitionGroup parentGroup) {
 		super(name);
 		this.parentGroup = parentGroup;
-		
+
 		parentGroup.addChild(this);
 	}
 
@@ -61,18 +61,18 @@ public abstract class AbstractChildDefinition<C> extends AbstractDefinition<C> i
 	@Override
 	public TypeDefinition getParentType() {
 		DefinitionGroup parent = getDeclaringGroup();
-		
+
 		if (parent instanceof TypeDefinition) {
 			return (TypeDefinition) parent;
 		}
 		else if (parent instanceof ChildDefinition<?>) {
 			return ((ChildDefinition<?>) parent).getParentType();
 		}
-		
+
 //		throw new IllegalStateException("No parent type defined.");
 		return null;
 	}
-	
+
 	/**
 	 * @see Definition#getIdentifier()
 	 */

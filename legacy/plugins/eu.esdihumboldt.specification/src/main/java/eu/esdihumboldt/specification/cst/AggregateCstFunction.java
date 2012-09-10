@@ -16,21 +16,22 @@ import java.util.Collection;
 import org.opengis.feature.Feature;
 
 /**
- * An extension of the {@link CstFunction} interface that declare a 
- * method for the aggregation of multiple Features into one. Note that 
- * any necessary configuration of how the aggregate has to be performed 
- * must happen via the 
+ * An extension of the {@link CstFunction} interface that declare a method for
+ * the aggregation of multiple Features into one. Note that any necessary
+ * configuration of how the aggregate has to be performed must happen via the
  * {@link CstFunction#configure(eu.esdihumboldt.cst.align.ICell)} method.
  * 
  * @author Thorsten Reitz
  * @version {$Id}
  */
 public interface AggregateCstFunction extends CstFunction {
-	
+
 	/**
-	 * @param source the Collection of Features from one or multiple FeatureTypes 
-	 * that should be aggregated.
-	 * @param target the target Feature
+	 * @param source
+	 *            the Collection of Features from one or multiple FeatureTypes
+	 *            that should be aggregated.
+	 * @param target
+	 *            the target Feature
 	 * @return the target Feature
 	 */
 	public Feature aggregateTransform(Collection<Feature> source, Feature target);

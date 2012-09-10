@@ -16,14 +16,16 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 
 /**
  * Progress indicator with support for a subtask name.
+ * 
  * @author Simon Templer
  */
 public class SubtaskProgressIndicator extends ProgressIndicatorDecorator {
 
 	private String taskName;
-	
+
 	/**
 	 * Create a progress indicator with support for a subtask name.
+	 * 
 	 * @param decoratee the progress indicator to decorate
 	 */
 	public SubtaskProgressIndicator(ProgressIndicator decoratee) {
@@ -47,9 +49,10 @@ public class SubtaskProgressIndicator extends ProgressIndicatorDecorator {
 		this.taskName = taskName;
 		super.setCurrentTask(taskName);
 	}
-	
+
 	/**
 	 * Start a sub task
+	 * 
 	 * @param subtaskName the sub task name
 	 */
 	public void subTask(String subtaskName) {
@@ -60,7 +63,7 @@ public class SubtaskProgressIndicator extends ProgressIndicatorDecorator {
 			}
 			return;
 		}
-		
+
 		if (taskName == null) {
 			// set subtask as current task
 			super.setCurrentTask(subtaskName);
@@ -72,6 +75,7 @@ public class SubtaskProgressIndicator extends ProgressIndicatorDecorator {
 
 	/**
 	 * Get the combined task name for a sub task
+	 * 
 	 * @param taskName the main task name
 	 * @param subtaskName the sub task name
 	 * @return the combined task name

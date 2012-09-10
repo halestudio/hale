@@ -31,8 +31,7 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class Property 
-	extends Entity {
+public class Property extends Entity {
 
 	/**
 	 * <xs:element ref="omwg:domainRestriction" minOccurs="0"
@@ -41,34 +40,33 @@ public class Property
 	private List<FeatureClass> domainRestriction;
 
 	/**
-	 * <xs:element ref="omwg:valueCondition" minOccurs="0" maxOccurs="unbounded" />
+	 * <xs:element ref="omwg:valueCondition" minOccurs="0" maxOccurs="unbounded"
+	 * />
 	 */
 	private List<Restriction> valueCondition;
 
 	/**
-	 * TODO add explanation
-	 * TODO: use actual geometry classes from GeoAPI instead of String.
+	 * TODO add explanation TODO: use actual geometry classes from GeoAPI
+	 * instead of String.
 	 * 
 	 * <xs:element ref="omwg:typeCondition" minOccurs="0" maxOccurs="unbounded"
 	 * />
 	 */
 	private List<String> typeCondition;
-	
-	
+
 	// constructors ............................................................
-	
-	
 
 	public Property(IAbout about) {
 		super(about);
 	}
-	
+
 	public String getNamespace() {
 		return DetailedAbout.getDetailedAbout(getAbout(), true).getNamespace();
 	}
-	
+
 	public String getFeatureClassName() {
-		return DetailedAbout.getDetailedAbout(getAbout(), true).getFeatureClass();
+		return DetailedAbout.getDetailedAbout(getAbout(), true)
+				.getFeatureClass();
 	}
 
 	// getters/setters .........................................................
@@ -81,7 +79,8 @@ public class Property
 	}
 
 	/**
-	 * @param domainRestriction the domainRestriction to set
+	 * @param domainRestriction
+	 *            the domainRestriction to set
 	 */
 	public void setDomainRestriction(List<FeatureClass> domainRestriction) {
 		this.domainRestriction = domainRestriction;
@@ -95,7 +94,8 @@ public class Property
 	}
 
 	/**
-	 * @param valueCondition the valueCondition to set
+	 * @param valueCondition
+	 *            the valueCondition to set
 	 */
 	public void setValueCondition(List<Restriction> valueCondition) {
 		this.valueCondition = valueCondition;
@@ -109,32 +109,32 @@ public class Property
 	}
 
 	/**
-	 * @param typeCondition the typeCondition to set
+	 * @param typeCondition
+	 *            the typeCondition to set
 	 */
 	public void setTypeCondition(List<String> typeCondition) {
 		this.typeCondition = typeCondition;
 	}
-	
-	
 
 	@Override
 	public IEntity deepCopy() {
 		Property result = new Property(new About(this.getAbout().getAbout()));
-		
-		Transformation t = new Transformation(this.getTransformation().getService());
+
+		Transformation t = new Transformation(this.getTransformation()
+				.getService());
 		List<IParameter> parameters = new ArrayList<IParameter>();
 		for (IParameter p : this.getTransformation().getParameters()) {
 			parameters.add(new Parameter(p.getName(), p.getValue()));
 		}
 		t.setParameters(parameters);
 		result.setTransformation(t);
-		
+
 		List<String> newLabels = new ArrayList<String>();
 		for (String label : this.getLabel()) {
 			newLabels.add(label);
 		}
 		result.setLabel(newLabels);
-		
+
 		return result;
 	}
 

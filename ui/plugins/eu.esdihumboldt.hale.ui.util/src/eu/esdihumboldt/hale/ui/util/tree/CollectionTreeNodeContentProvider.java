@@ -19,11 +19,11 @@ import org.eclipse.jface.viewers.TreeNodeContentProvider;
 
 /**
  * {@link TreeNode} content provider that allows collections of nodes as input
- *   instead of only arrays
- *
+ * instead of only arrays
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class CollectionTreeNodeContentProvider extends TreeNodeContentProvider {
 

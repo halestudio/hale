@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroup;
 
 /**
  * Represents a XML group
+ * 
  * @author Simon Templer
  */
 public class XmlGroup extends DefaultGroup {
@@ -26,5 +27,5 @@ public class XmlGroup extends DefaultGroup {
 	public XmlGroup(boolean flatten) {
 		super(flatten);
 	}
-	
+
 }

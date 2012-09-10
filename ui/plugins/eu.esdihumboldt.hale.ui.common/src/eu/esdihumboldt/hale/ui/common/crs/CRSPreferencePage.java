@@ -55,23 +55,22 @@ import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**
  * CRS preference page
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class CRSPreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
-	
+public class CRSPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+
 	private ComboViewer listViewer;
-	
+
 	private List<String> codes;
 
 	private SourceViewer wktEditor;
-	
+
 	private String lastSelected = null;
 
 	private final Map<String, String> tmpWKTs = new HashMap<String, String>();
-	
+
 	private boolean changed = false;
 
 	/**
@@ -80,25 +79,25 @@ public class CRSPreferencePage extends PreferencePage implements
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
-		
+
 		page.setLayout(new GridLayout(1, false));
 		page.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+
 		Label label = new Label(page, SWT.NONE);
 		label.setText(Messages.CRSPreferencePage_0); //$NON-NLS-1$
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-		
+
 		// code list
 		listViewer = new ComboViewer(page);
 		listViewer.setContentProvider(ArrayContentProvider.getInstance());
 		listViewer.setLabelProvider(new LabelProvider());
 		listViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		
+
 		codes = WKTPreferencesCRSFactory.getInstance().getCodes();
 		listViewer.setInput(codes);
-		
+
 		listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
@@ -111,39 +110,40 @@ public class CRSPreferencePage extends PreferencePage implements
 					}
 				}
 			}
-			
+
 		});
-		
-		// fill wkt map 
+
+		// fill wkt map
 		for (String code : codes) {
 			tmpWKTs.put(code, WKTPreferencesCRSFactory.getInstance().getWKT(code));
 		}
-		
+
 		// WKT editor
 		final Display display = Display.getCurrent();
 		CompositeRuler ruler = new CompositeRuler(3);
 		LineNumberRulerColumn lineNumbers = new LineNumberRulerColumn();
-		lineNumbers.setBackground(display.getSystemColor(SWT.COLOR_GRAY)); //SWT.COLOR_INFO_BACKGROUND));
-		lineNumbers.setForeground(display.getSystemColor(SWT.COLOR_BLACK)); //SWT.COLOR_INFO_FOREGROUND));
+		lineNumbers.setBackground(display.getSystemColor(SWT.COLOR_GRAY)); // SWT.COLOR_INFO_BACKGROUND));
+		lineNumbers.setForeground(display.getSystemColor(SWT.COLOR_BLACK)); // SWT.COLOR_INFO_FOREGROUND));
 		lineNumbers.setFont(JFaceResources.getTextFont());
 		ruler.addDecorator(0, lineNumbers);
-		
-		wktEditor = new SourceViewer(page, ruler, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+
+		wktEditor = new SourceViewer(page, ruler, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL);
 		wktEditor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		wktEditor.getTextWidget().setFont(JFaceResources.getTextFont());
 		SourceViewerConfiguration conf = new SourceViewerConfiguration();
 		wktEditor.configure(conf);
-		
+
 		// create initial document
 		IDocument doc = new Document();
 		doc.set(""); //$NON-NLS-1$
 		wktEditor.setInput(doc);
-		
+
 		// button bar
 		Composite bar = new Composite(page, SWT.NONE);
 		bar.setLayout(new GridLayout(2, true));
 		bar.setLayoutData(new GridData(SWT.FILL, SWT.END, true, false));
-		
+
 		// add button (using a directory dialog)
 		Button add = new Button(bar, SWT.PUSH);
 		add.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
@@ -154,16 +154,17 @@ public class CRSPreferencePage extends PreferencePage implements
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final Display display = Display.getCurrent();
-				InputDialog dialog = new InputDialog(display.getActiveShell(), 
-						Messages.CRSPreferencePage_4, Messages.CRSPreferencePage_5,  //$NON-NLS-1$ //$NON-NLS-2$
+				InputDialog dialog = new InputDialog(display.getActiveShell(),
+						Messages.CRSPreferencePage_4, Messages.CRSPreferencePage_5, //$NON-NLS-1$ //$NON-NLS-2$
 						WKTPreferencesCRSFactory.AUTHORITY_PREFIX, new IInputValidator() {
-							
+
 							@Override
 							public String isValid(String newText) {
 								if (!newText.startsWith(WKTPreferencesCRSFactory.AUTHORITY_PREFIX)) {
-									return MessageFormat.format(Messages.CRSPreferencePage_6, WKTPreferencesCRSFactory.AUTHORITY_PREFIX); //$NON-NLS-1$
+									return MessageFormat.format(Messages.CRSPreferencePage_6,
+											WKTPreferencesCRSFactory.AUTHORITY_PREFIX); //$NON-NLS-1$
 								}
-								
+
 								return null;
 							}
 						});
@@ -175,7 +176,7 @@ public class CRSPreferencePage extends PreferencePage implements
 				}
 			}
 		});
-		
+
 		// remove button
 		Button remove = new Button(bar, SWT.PUSH);
 		remove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
@@ -197,9 +198,9 @@ public class CRSPreferencePage extends PreferencePage implements
 					changed = true; // mark as changed
 				}
 			}
-			
+
 		});
-		
+
 		// update selection
 		if (codes.isEmpty()) {
 			listViewer.setSelection(new StructuredSelection());
@@ -207,10 +208,10 @@ public class CRSPreferencePage extends PreferencePage implements
 		else {
 			listViewer.setSelection(new StructuredSelection(codes.get(0)));
 		}
-		
+
 		return page;
 	}
-	
+
 	/**
 	 * Update the editor
 	 * 
@@ -218,10 +219,10 @@ public class CRSPreferencePage extends PreferencePage implements
 	 */
 	protected void updateEditor(String selected) {
 		saveCurrent();
-		
+
 		IDocument doc = wktEditor.getDocument();
 		lastSelected = selected;
-		
+
 		if (selected != null) {
 			// load WKT for current selection
 			String wkt = getWKT(selected);
@@ -235,7 +236,7 @@ public class CRSPreferencePage extends PreferencePage implements
 			doc.set(""); //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * Get the WKT for the given code
 	 * 
@@ -245,30 +246,30 @@ public class CRSPreferencePage extends PreferencePage implements
 	 */
 	private String getWKT(String code) {
 		String wkt = tmpWKTs.get(code);
-		
+
 //		if (wkt == null) {
 //			wkt = WKTPreferencesCRSFactory.getInstance().getWKT(code);
 //		}
-		
+
 		if (wkt == null) {
 			wkt = ""; //$NON-NLS-1$
 		}
-		
+
 		return wkt;
 	}
 
 	/**
-	 * Save the filter that is currently edited 
+	 * Save the filter that is currently edited
 	 */
 	protected void saveCurrent() {
 		IDocument doc = wktEditor.getDocument();
-		
+
 		if (lastSelected != null) {
 			// save WKT for last selection
 			setWKT(lastSelected, doc.get());
 		}
 	}
-	
+
 	/**
 	 * Set the WKT for the given code
 	 * 
@@ -277,9 +278,9 @@ public class CRSPreferencePage extends PreferencePage implements
 	 */
 	protected void setWKT(String code, String wkt) {
 		String old = tmpWKTs.get(code);
-		
+
 		tmpWKTs.put(code, wkt);
-		
+
 		if (old == null || !old.equals(wkt)) {
 			changed = true; // mark as changed
 		}
@@ -291,21 +292,21 @@ public class CRSPreferencePage extends PreferencePage implements
 	@Override
 	public boolean performOk() {
 		saveCurrent();
-		
+
 		if (changed) {
 			// only apply changes if there is a possibility of a change
-			
+
 			List<String> orgCodes = WKTPreferencesCRSFactory.getInstance().getCodes();
 			// remove all old ones
 			for (String code : orgCodes) {
 				WKTPreferencesCRSFactory.getInstance().removeWKT(code);
 			}
-			
+
 			// add new ones
 			for (Entry<String, String> entry : tmpWKTs.entrySet()) {
 				String code = entry.getKey();
 				String wkt = entry.getValue();
-				
+
 				if (wkt != null) {
 					wkt = wkt.trim();
 					if (!wkt.isEmpty()) {
@@ -313,21 +314,22 @@ public class CRSPreferencePage extends PreferencePage implements
 					}
 				}
 			}
-			
-			if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), 
+
+			if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(),
 					Messages.CRSPreferencePage_11, Messages.CRSPreferencePage_12)) { //$NON-NLS-1$ //$NON-NLS-2$
 				Display.getCurrent().asyncExec(new Runnable() {
-		            @Override
-		            public void run() {
-		                IWorkbench wb = PlatformUI.getWorkbench();
-		                if (wb != null && !wb.isClosing()) {
-		                    wb.restart();
-		                }
-		            }
-		        }); 
+
+					@Override
+					public void run() {
+						IWorkbench wb = PlatformUI.getWorkbench();
+						if (wb != null && !wb.isClosing()) {
+							wb.restart();
+						}
+					}
+				});
 			}
 		}
-		
+
 		return true;
 	}
 

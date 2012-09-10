@@ -19,9 +19,9 @@ import eu.esdihumboldt.hale.ui.function.contribution.CellFunctionContribution;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
-
 /**
  * Action for creating a function wizard based on a {@link Cell}
+ * 
  * @author Simon Templer
  */
 public class CellWizardAction extends AbstractWizardAction<CellFunctionContribution> {
@@ -30,18 +30,16 @@ public class CellWizardAction extends AbstractWizardAction<CellFunctionContribut
 
 	/**
 	 * Constructor
-	 *
+	 * 
 	 * @param functionContribution the parent contribution
 	 * @param originalCell the original cell
 	 * @param descriptor the function wizard descriptor
 	 * @param alignmentService the alignment service
 	 */
-	public CellWizardAction(
-			CellFunctionContribution functionContribution,
-			Cell originalCell, FunctionWizardDescriptor<?> descriptor,
-			AlignmentService alignmentService) {
+	public CellWizardAction(CellFunctionContribution functionContribution, Cell originalCell,
+			FunctionWizardDescriptor<?> descriptor, AlignmentService alignmentService) {
 		super(functionContribution, descriptor, alignmentService);
-		
+
 		this.originalCell = originalCell;
 	}
 

@@ -18,6 +18,7 @@ import org.springframework.core.convert.converter.Converter;
 
 /**
  * Convert a {@link Date} to a {@link java.sql.Date}.
+ * 
  * @author Simon Templer
  */
 public class DateToSqlDateConverter implements Converter<Date, java.sql.Date> {

@@ -36,17 +36,18 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
-
 /**
  * Utilities for the configuration page extension point
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.5 
+ * @since 2.5
  */
-public class ConfigurationPageExtension extends AbstractExtension<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory> {
-	
+public class ConfigurationPageExtension extends
+		AbstractExtension<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory> {
+
 	/**
-	 * Factory for {@link AbstractConfigurationPage}s based on an 
+	 * Factory for {@link AbstractConfigurationPage}s based on an
 	 * {@link IConfigurationElement}
 	 */
 	private static class ConfigurationFactory extends
@@ -55,6 +56,7 @@ public class ConfigurationPageExtension extends AbstractExtension<AbstractConfig
 
 		/**
 		 * Create a factory based on the given configuration
+		 * 
 		 * @param conf the configuration element
 		 */
 		protected ConfigurationFactory(IConfigurationElement conf) {
@@ -102,7 +104,7 @@ public class ConfigurationPageExtension extends AbstractExtension<AbstractConfig
 					order = 0;
 				}
 			}
-			
+
 			return Integer.valueOf(order);
 		}
 
@@ -112,14 +114,14 @@ public class ConfigurationPageExtension extends AbstractExtension<AbstractConfig
 		@Override
 		public Set<String> getSupportedProviderIDs() {
 			IConfigurationElement[] children = conf.getChildren("provider");
-			
+
 			if (children != null) {
 				Set<String> result = new HashSet<String>();
-				
+
 				for (IConfigurationElement child : children) {
 					result.add(child.getAttribute("ref"));
 				}
-				
+
 				return result;
 			}
 			else {
@@ -135,11 +137,12 @@ public class ConfigurationPageExtension extends AbstractExtension<AbstractConfig
 	 * Extension point ID
 	 */
 	public static final String EXTENSION_POINT_ID = "eu.esdihumboldt.hale.ui.io.config";
-	
+
 	private static ConfigurationPageExtension instance;
-	
+
 	/**
 	 * Get the configuration page extension instance
+	 * 
 	 * @return the extension instance
 	 */
 	public static ConfigurationPageExtension getInstance() {
@@ -148,81 +151,83 @@ public class ConfigurationPageExtension extends AbstractExtension<AbstractConfig
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Default constructor
 	 */
 	private ConfigurationPageExtension() {
 		super(EXTENSION_POINT_ID);
 	}
-	
+
 	/**
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected ConfigurationPageFactory createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected ConfigurationPageFactory createFactory(IConfigurationElement conf) throws Exception {
 		return new ConfigurationFactory(conf);
 	}
 
 	/**
 	 * Get the configuration pages registered for the given I/O provider
 	 * descriptors
+	 * 
 	 * @param <P> the {@link IOProvider} type used in the wizard
 	 * 
 	 * @param descriptors the provider descriptors
-	 * @return the configuration pages in a multimap where the corresponding 
-	 *   provider identifier is mapped to the configuration page, one page (the
-	 *   same instance) might be mapped for multiple identifiers
+	 * @return the configuration pages in a multimap where the corresponding
+	 *         provider identifier is mapped to the configuration page, one page
+	 *         (the same instance) might be mapped for multiple identifiers
 	 */
 	@SuppressWarnings("unchecked")
 	public <P extends IOProvider> Multimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> getConfigurationPages(
 			Iterable<IOProviderDescriptor> descriptors) {
 		// collect provider IDs
-		final Set<String> providerIds = new HashSet<String>(); 
+		final Set<String> providerIds = new HashSet<String>();
 		for (IOProviderDescriptor descriptor : descriptors) {
 			providerIds.add(descriptor.getIdentifier());
 		}
-		
+
 		// get all factories that support at least one of the providers
-		List<ConfigurationPageFactory> factories = getFactories(new FactoryFilter<AbstractConfigurationPage<?,?>, ConfigurationPageFactory>() {
-			
+		List<ConfigurationPageFactory> factories = getFactories(new FactoryFilter<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory>() {
+
 			@Override
 			public boolean acceptFactory(ConfigurationPageFactory factory) {
 				Set<String> supported = new HashSet<String>(factory.getSupportedProviderIDs());
 				supported.retainAll(providerIds);
 				return !supported.isEmpty();
 			}
-			
+
 			@Override
 			public boolean acceptCollection(
 					ExtensionObjectFactoryCollection<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory> collection) {
 				return false;
 			}
 		});
-		
-		ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> result = ArrayListMultimap.create();
-		
+
+		ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> result = ArrayListMultimap
+				.create();
+
 		// add pages to result map
 		for (ConfigurationPageFactory factory : factories) {
 			AbstractConfigurationPage<? extends P, ? extends IOWizard<P>> page = null;
 			try {
-				page = (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>) factory.createExtensionObject();
+				page = (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>) factory
+						.createExtensionObject();
 			} catch (Exception e) {
 				log.error("Error creating configuration page " + factory.getTypeName(), e);
 				break;
 			}
-			
+
 			if (page != null) {
 				for (String providerId : factory.getSupportedProviderIDs()) {
 					if (providerIds.contains(providerId)) {
-						result. put (providerId, page);
+						result.put(providerId, page);
 					}
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 }

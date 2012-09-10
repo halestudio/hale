@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings("all")
 public class Messages extends NLS {
+
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.ui.views.data.internal.messages"; //$NON-NLS-1$
 
 	public static String InstanceServiceFeatureSelector_defaultReturnText;
@@ -38,7 +39,7 @@ public class Messages extends NLS {
 	public static String DefinitionFeatureTreeViewer_6;
 
 	public static String InstanceContentProvider_metadata;
-	
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

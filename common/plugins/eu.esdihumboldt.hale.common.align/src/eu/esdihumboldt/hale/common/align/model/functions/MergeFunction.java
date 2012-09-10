@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.align.model.functions;
 
 /**
  * Merge function constants.
+ * 
  * @author Simon Templer
  */
 public interface MergeFunction {
@@ -29,10 +30,11 @@ public interface MergeFunction {
 	public static final String PARAMETER_ADDITIONAL_PROPERTY = "additional_property";
 
 	/**
-	 * Name of the parameter specifying whether auto detection of other equal properties
+	 * Name of the parameter specifying whether auto detection of other equal
+	 * properties
 	 */
 	public static final String PARAMETER_AUTO_DETECT = "auto_detect";
-	
+
 	/**
 	 * the merge function Id
 	 */

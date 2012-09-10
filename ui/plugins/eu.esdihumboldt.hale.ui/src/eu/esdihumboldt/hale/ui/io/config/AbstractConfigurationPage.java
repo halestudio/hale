@@ -21,21 +21,21 @@ import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 /**
  * Base type for I/O configuration wizard pages. A configuration page can either
  * be enabled or disabled, when created it is disabled.
+ * 
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
-public abstract class AbstractConfigurationPage<P extends IOProvider, 
-	W extends IOWizard<P>> extends IOWizardPage<P, W> {
-	
+public abstract class AbstractConfigurationPage<P extends IOProvider, W extends IOWizard<P>>
+		extends IOWizardPage<P, W> {
+
 	/**
 	 * @see IOWizardPage#IOWizardPage(String, String, ImageDescriptor)
 	 */
-	protected AbstractConfigurationPage(String pageName, String title,
-			ImageDescriptor titleImage) {
+	protected AbstractConfigurationPage(String pageName, String title, ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
 	}
 
@@ -45,12 +45,12 @@ public abstract class AbstractConfigurationPage<P extends IOProvider,
 	protected AbstractConfigurationPage(String pageName) {
 		super(pageName);
 	}
-	
+
 	/**
 	 * Enable the configuration page
 	 */
 	public abstract void enable();
-	
+
 	/**
 	 * Disable the configuration page
 	 */

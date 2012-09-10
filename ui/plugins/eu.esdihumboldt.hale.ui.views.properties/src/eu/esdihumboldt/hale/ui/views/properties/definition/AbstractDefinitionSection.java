@@ -17,20 +17,22 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
  * Abstract section for definition properties
+ * 
  * @author Patrick Lieb
  * @param <T> the definition type
  */
-public abstract class AbstractDefinitionSection<T extends Definition<?>> extends AbstractTextSection{
-	
+public abstract class AbstractDefinitionSection<T extends Definition<?>> extends
+		AbstractTextSection {
+
 	/**
 	 * the general Definition for this package
 	 */
 	private T definition;
-	
+
 	/**
 	 * @param def the Definition
 	 */
-	protected void setDefinition(T def){
+	protected void setDefinition(T def) {
 		definition = def;
 	}
 

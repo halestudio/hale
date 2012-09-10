@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Default {@link TargetNode} implementation
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -54,6 +55,7 @@ public class TargetNodeImpl extends AbstractGroupNode implements TargetNode {
 	/**
 	 * Create a target node that is populated with assignments and children
 	 * according to the given parameters.
+	 * 
 	 * @param entity the associated definition
 	 * @param cells the cells associated with this node or its children
 	 * @param parentType the type representing the root
@@ -64,17 +66,18 @@ public class TargetNodeImpl extends AbstractGroupNode implements TargetNode {
 			TypeDefinition parentType, int depth, GroupNode parent) {
 		super(parent);
 		this.entity = entity;
-		
+
 		// partition cells by child
 		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
-		//... and for this node
+		// ... and for this node
 		SetMultimap<CellNode, String> assignSet = HashMultimap.create();
 		for (CellNode cell : cells) {
 			for (Entry<String, ?> entry : cell.getCell().getTarget().asMap().entrySet()) {
 				String name = entry.getKey();
 				@SuppressWarnings("unchecked")
-				Collection<? extends Entity> entities = (Collection<? extends Entity>) entry.getValue(); 
-				
+				Collection<? extends Entity> entities = (Collection<? extends Entity>) entry
+						.getValue();
+
 				for (Entity target : entities) {
 					if (target.getDefinition().getType().equals(parentType)) {
 						List<ChildContext> path = target.getDefinition().getPropertyPath();
@@ -86,31 +89,33 @@ public class TargetNodeImpl extends AbstractGroupNode implements TargetNode {
 							}
 							else {
 								// this cell belongs to a child node
-								childCells.put(AlignmentUtil.deriveEntity(
-										target.getDefinition(), depth + 1), cell);
+								childCells.put(AlignmentUtil.deriveEntity(target.getDefinition(),
+										depth + 1), cell);
 							}
 						}
 					}
 				}
 			}
 		}
-		
+
 		assignments = Multimaps.unmodifiableSetMultimap(assignSet);
-		
+
 		// create child cells
 		List<TargetNode> childList = new ArrayList<TargetNode>();
-		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap().entrySet()) {
-			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), 
-					childEntry.getValue(), parentType, depth + 1, this);
+		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap()
+				.entrySet()) {
+			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), childEntry.getValue(),
+					parentType, depth + 1, this);
 			childList.add(childNode);
 		}
-		
+
 		children = Collections.unmodifiableList(childList);
 	}
-	
+
 	/**
 	 * Create a target node associated with the given entity definition but
 	 * unpopulated.
+	 * 
 	 * @param entity the entity definition
 	 * @param parent the parent node
 	 */
@@ -120,28 +125,30 @@ public class TargetNodeImpl extends AbstractGroupNode implements TargetNode {
 		this.assignments = HashMultimap.create();
 		this.children = new ArrayList<TargetNode>();
 	}
-	
+
 	/**
 	 * Add an assignment to the target node. May only be called if the target
-	 * node was created using the {@link #TargetNodeImpl(EntityDefinition, GroupNode)}
-	 * constructor.
+	 * node was created using the
+	 * {@link #TargetNodeImpl(EntityDefinition, GroupNode)} constructor.
+	 * 
 	 * @param names the entity names associated to the assignment
 	 * @param cell the cell node representing the assignment
 	 */
 	public void addAssignment(Set<String> names, CellNode cell) {
 		assignments.putAll(cell, names);
 	}
-	
+
 	/**
-	 * Add a child to the target node. May only be called if the target node
-	 * was created using the {@link #TargetNodeImpl(EntityDefinition, GroupNode)}
+	 * Add a child to the target node. May only be called if the target node was
+	 * created using the {@link #TargetNodeImpl(EntityDefinition, GroupNode)}
 	 * constructor.
+	 * 
 	 * @param node the node to add as child, this node will be set as its parent
 	 */
 	public void addChild(TargetNode node) {
 		children.add(node);
 	}
-	
+
 //	/**
 //	 * Set the parent node.
 //	 * @param parent the parent node
@@ -221,7 +228,7 @@ public class TargetNodeImpl extends AbstractGroupNode implements TargetNode {
 	public EntityDefinition getEntityDefinition() {
 		return entity;
 	}
-	
+
 	/**
 	 * @see TargetNode#isDefined()
 	 */
@@ -285,7 +292,8 @@ public class TargetNodeImpl extends AbstractGroupNode implements TargetNode {
 		if (entity == null) {
 			if (other.entity != null)
 				return false;
-		} else if (!entity.equals(other.entity))
+		}
+		else if (!entity.equals(other.entity))
 			return false;
 		return true;
 	}

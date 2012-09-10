@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
 /**
  * Page for specifying the capabilities URL
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -41,7 +41,7 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 	 */
 	public CapabilitiesPage(WfsConfiguration configuration) {
 		super(configuration, Messages.CapabilitiesPage_0); //$NON-NLS-1$
-		
+
 		setTitle(Messages.CapabilitiesPage_1); //$NON-NLS-1$
 		setMessage(Messages.CapabilitiesPage_2); //$NON-NLS-1$
 	}
@@ -53,11 +53,11 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 	protected void createContent(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(2, false));
-		
+
 		location = new WfsLocationFieldEditor("location", Messages.CapabilitiesPage_4, page); //$NON-NLS-1$ //$NON-NLS-2$
 		location.setPage(this);
 		location.setPropertyChangeListener(new IPropertyChangeListener() {
-			
+
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
@@ -65,14 +65,14 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 				}
 			}
 		});
-		
+
 		String currentValue = getConfiguration().getCapabilitiesURL();
 		if (currentValue != null) {
 			location.setValue(currentValue);
 		}
-		
+
 		setControl(page);
-		
+
 		update();
 	}
 
@@ -85,7 +85,7 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 			configuration.setCapabilitiesURL(location.getValue());
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -97,7 +97,7 @@ public class CapabilitiesPage extends AbstractWfsPage<WfsConfiguration> {
 			location.updateRecent();
 		}
 	}
-	
+
 	private void update() {
 		setPageComplete(location.isValid());
 	}

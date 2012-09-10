@@ -13,17 +13,18 @@
 package eu.esdihumboldt.specification.util;
 
 /**
- * This interface declares methods to
- * access property information used by JAXB NamespacePrefixMapper. 
+ * This interface declares methods to access property information used by JAXB
+ * NamespacePrefixMapper.
  * 
- *
+ * 
  * @author Anna Pitaev
  * @partner 04 / Logica
- * @version $Id$ 
+ * @version $Id$
  */
 public interface NamespacePrefixMapper {
 	/**
 	 * Returns a property name as String
+	 * 
 	 * @return
 	 */
 	public String getPropertyName();

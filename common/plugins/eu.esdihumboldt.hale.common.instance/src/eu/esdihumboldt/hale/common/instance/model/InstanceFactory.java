@@ -16,13 +16,15 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Factory for creating new instances
+ * 
  * @author Simon Templer
  * @since 2.5
  */
 public interface InstanceFactory {
-	
+
 	/**
 	 * Create an empty instance of the given type
+	 * 
 	 * @param type the type of the instance to create
 	 * @return the created instance
 	 */

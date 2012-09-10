@@ -17,6 +17,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 
 /**
  * Function wizard interface
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -26,12 +27,12 @@ public interface FunctionWizard extends IWizard {
 	 * Initialize the wizard. Is called after wizard construction.
 	 */
 	public void init();
-	
+
 	/**
 	 * Get the result cell
 	 * 
 	 * @return the result cell
 	 */
 	public MutableCell getResult();
-	
+
 }

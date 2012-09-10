@@ -19,25 +19,27 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter;
 
 /**
- * Filter that lets only {@link PropertyDefinition}s with a location that is not 
+ * Filter that lets only {@link PropertyDefinition}s with a location that is not
  * <code>null</code> pass.
+ * 
  * @author Patrick Lieb
  */
-public class PropertyTypeLocationFilter extends DefaultDefinitionFilter{
+public class PropertyTypeLocationFilter extends DefaultDefinitionFilter {
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {
-		if(input instanceof PropertyDefinition){
+		if (input instanceof PropertyDefinition) {
 			URI location;
 			try {
-				location = ((PropertyDefinition)input).getPropertyType().getLocation();
-			} catch(IllegalStateException e){
-					return true;
-				}
-				return location == null;
-		}		return true;
+				location = ((PropertyDefinition) input).getPropertyType().getLocation();
+			} catch (IllegalStateException e) {
+				return true;
+			}
+			return location == null;
+		}
+		return true;
 	}
 }

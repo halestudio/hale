@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 
 /**
  * Alignment service decorator
+ * 
  * @author Simon Templer
  */
 public abstract class AlignmentServiceDecorator implements AlignmentService {
@@ -32,6 +33,7 @@ public abstract class AlignmentServiceDecorator implements AlignmentService {
 
 	/**
 	 * Create a decorator for the given alignment service
+	 * 
 	 * @param alignmentService the alignment service
 	 */
 	public AlignmentServiceDecorator(AlignmentService alignmentService) {

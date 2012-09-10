@@ -18,26 +18,26 @@ import org.opengis.feature.type.AttributeType;
 
 /**
  * Enumeration attribute type
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public interface EnumAttributeType extends AttributeType {
-	
+
 	/**
 	 * Get the allowed values
 	 * 
 	 * @return the allowed values
 	 */
 	public Set<String> getAllowedValues();
-	
+
 	/**
-	 * Determines if other values than the values returned by {@link #getAllowedValues()}
-	 *   are allowed
-	 *   
-	 * @return true if other values are allowed, false otherwise 
+	 * Determines if other values than the values returned by
+	 * {@link #getAllowedValues()} are allowed
+	 * 
+	 * @return true if other values are allowed, false otherwise
 	 */
 	public boolean otherValuesAllowed();
 

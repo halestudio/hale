@@ -14,28 +14,30 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import java.util.Collection;
 
-
 /**
  * Mutable {@link Alignment} which is used where changes to the alignment are
  * allowed.
+ * 
  * @author Simon Templer
  */
 public interface MutableAlignment extends Alignment {
 
 	/**
 	 * Add a cell to the alignment
-	 * @param cell the cell to add. It should be already configured,
-	 *   especially with the cell target
+	 * 
+	 * @param cell the cell to add. It should be already configured, especially
+	 *            with the cell target
 	 */
 	public void addCell(MutableCell cell);
-	
+
 	/**
 	 * Remove a cell
+	 * 
 	 * @param cell the cell to remove
 	 * @return if the cell was present and removed
 	 */
 	public boolean removeCell(Cell cell);
-	
+
 	/**
 	 * @see Alignment#getCells()
 	 */

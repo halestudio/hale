@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * Default {@link SourceNode} implementation
+ * 
  * @author Simon Templer
  */
 public class SourceNodeImpl extends AbstractTransformationNode implements SourceNode {
@@ -40,19 +41,19 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	private final Set<SourceNode> children = new HashSet<SourceNode>();
 //	private final SourceNodeFactory sourceNodeFactory;
 	private final Set<CellNode> relations = new HashSet<CellNode>();
-	
+
 	private TransformationContext context;
 
 	/**
 	 * Constructor
+	 * 
 	 * @param definition the associated entity definition
 	 * @param sourceNodeFactory the factory for creating new source nodes
 	 */
-	public SourceNodeImpl(EntityDefinition definition, 
-			SourceNodeFactory sourceNodeFactory) {
+	public SourceNodeImpl(EntityDefinition definition, SourceNodeFactory sourceNodeFactory) {
 		this.entityDefinition = definition;
 //		this.sourceNodeFactory = sourceNodeFactory;
-		
+
 		EntityDefinition parentDef = AlignmentUtil.getParent(definition);
 		if (parentDef != null) {
 			parent = sourceNodeFactory.getSourceNode(parentDef);
@@ -62,20 +63,20 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 			parent = null;
 		}
 	}
-	
+
 	/**
 	 * Constructor for nodes not associated to a source node factory.
+	 * 
 	 * @param definition the associated entity definition
 	 * @param parent the parent source node
-	 * @param addToParent if the created node should be added as a child to the 
-	 *   given parent
+	 * @param addToParent if the created node should be added as a child to the
+	 *            given parent
 	 */
-	public SourceNodeImpl(EntityDefinition definition, 
-			SourceNode parent, boolean addToParent) {
+	public SourceNodeImpl(EntityDefinition definition, SourceNode parent, boolean addToParent) {
 		this.entityDefinition = definition;
 //		this.sourceNodeFactory = null;
 		this.parent = parent;
-		
+
 		if (addToParent && parent != null) {
 			parent.addChild(this);
 		}
@@ -171,8 +172,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 					child.accept(visitor);
 				}
 				// visit annotated children
-				if (visitor.includeAnnotatedNodes() 
-						&& getAnnotation(ANNOTATION_CHILDREN) != null) {
+				if (visitor.includeAnnotatedNodes() && getAnnotation(ANNOTATION_CHILDREN) != null) {
 					for (SourceNode child : (Iterable<SourceNode>) getAnnotation(ANNOTATION_CHILDREN)) {
 						child.accept(visitor);
 					}
@@ -290,9 +290,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((entityDefinition == null) ? 0 : entityDefinition.hashCode());
+		result = prime * result + ((entityDefinition == null) ? 0 : entityDefinition.hashCode());
 		return result;
 	}
 
@@ -311,7 +309,8 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 		if (entityDefinition == null) {
 			if (other.entityDefinition != null)
 				return false;
-		} else if (!entityDefinition.equals(other.entityDefinition))
+		}
+		else if (!entityDefinition.equals(other.entityDefinition))
 			return false;
 		return true;
 	}

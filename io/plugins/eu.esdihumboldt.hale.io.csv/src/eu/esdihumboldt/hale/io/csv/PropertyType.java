@@ -28,12 +28,12 @@ public interface PropertyType {
 	 * @return the converted value
 	 */
 	public Object convertFromField(String value);
-	
+
 	/**
 	 * Getter for the type definition
 	 * 
 	 * @return the TypeDefinition of the property type
 	 */
 	public TypeDefinition getTypeDefinition();
-	
+
 }

@@ -13,15 +13,15 @@
 package eu.esdihumboldt.specification.workflow.exceptions;
 
 /**
- *
+ * 
  * @author mgone
  */
-public class IllegalConstraintTypeException extends Exception{
+public class IllegalConstraintTypeException extends Exception {
 
-    public IllegalConstraintTypeException() {
-    }
+	public IllegalConstraintTypeException() {
+	}
 
-    public IllegalConstraintTypeException(String message) {
-    }
+	public IllegalConstraintTypeException(String message) {
+	}
 
 }

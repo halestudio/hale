@@ -18,25 +18,25 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 
 /**
  * Base interface for export providers
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2  
+ * @since 2.2
  */
 public interface ExportProvider extends IOProvider {
-	
+
 	/**
 	 * The configuration parameter name for the target URI
 	 */
 	public static final String PARAM_TARGET = "target";
-	
+
 	/**
 	 * Set the export target
 	 * 
 	 * @param target the target output supplier
 	 */
 	public void setTarget(LocatableOutputSupplier<? extends OutputStream> target);
-	
+
 	/**
 	 * Get the export target
 	 * 

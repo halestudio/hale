@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Content provider that shows properties of an input type definition
+ * 
  * @author Simon Templer
  */
 public class TypePropertyContentProvider extends TypeIndexContentProvider {
@@ -38,7 +39,8 @@ public class TypePropertyContentProvider extends TypeIndexContentProvider {
 			return ((TypeDefinition) inputElement).getChildren().toArray();
 		}
 		else {
-			throw new IllegalArgumentException("Content provider only applicable for type definitions.");
+			throw new IllegalArgumentException(
+					"Content provider only applicable for type definitions.");
 		}
 	}
 

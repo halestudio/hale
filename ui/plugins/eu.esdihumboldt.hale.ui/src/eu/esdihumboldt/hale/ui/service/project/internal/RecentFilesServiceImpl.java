@@ -27,11 +27,13 @@ import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
  * @author Michel Kraemer
  */
 public class RecentFilesServiceImpl implements RecentFilesService {
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.project.RecentFilesService.Entry
 	 * @author Kai Schwierczek
 	 */
 	public static class EntryImpl implements Entry {
+
 		private String file;
 		private String projectName;
 

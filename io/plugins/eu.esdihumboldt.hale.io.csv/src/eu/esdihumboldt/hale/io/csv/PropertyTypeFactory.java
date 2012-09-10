@@ -22,5 +22,5 @@ import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 public interface PropertyTypeFactory extends ExtensionObjectFactory<PropertyType> {
 
 	// concrete typed interface
-	
+
 }

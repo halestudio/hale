@@ -25,20 +25,23 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Simple 1:1 retype
+ * 
  * @author Simon Templer
  */
 @Immutable
-public class Retype extends AbstractTypeTransformation<TransformationEngine> implements RetypeFunction {
+public class Retype extends AbstractTypeTransformation<TransformationEngine> implements
+		RetypeFunction {
 
 	/**
-	 * @see TransformationFunction#execute(String, TransformationEngine, Map, TransformationLog)
+	 * @see TransformationFunction#execute(String, TransformationEngine, Map,
+	 *      TransformationLog)
 	 */
 	@Override
-	public void execute(String transformationIdentifier,
-			TransformationEngine engine,
+	public void execute(String transformationIdentifier, TransformationEngine engine,
 			Map<String, String> executionParameters, TransformationLog log) {
 		// for each source instance create a target instance
-		TypeDefinition targetType = getTarget().values().iterator().next().getDefinition().getDefinition();
+		TypeDefinition targetType = getTarget().values().iterator().next().getDefinition()
+				.getDefinition();
 		MutableInstance target = getInstanceFactory().createInstance(targetType);
 		getPropertyTransformer().publish(getSource(), target, log);
 	}

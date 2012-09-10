@@ -17,13 +17,13 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Bundle activator
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
 public class CoreBundle implements BundleActivator {
-	
+
 	/**
 	 * @see BundleActivator#start(BundleContext)
 	 */
@@ -40,9 +40,9 @@ public class CoreBundle implements BundleActivator {
 	public void stop(BundleContext context) throws Exception {
 		// do nothing
 	}
-	
+
 	private BundleContext context;
-	
+
 	/**
 	 * @return the context
 	 */

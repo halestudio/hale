@@ -36,10 +36,11 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * {@link IOAdvisor} extension
+ * 
  * @author Simon Templer
  */
 public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ActionUIExtension.class);
 
 	/**
@@ -50,6 +51,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 
 		/**
 		 * Create a factory based on the given configuration element
+		 * 
 		 * @param conf the configuration
 		 */
 		protected ConfigurationFactory(IConfigurationElement conf) {
@@ -65,7 +67,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 			if (children != null && children.length > 0) {
 				// get child of enabled when
 				children = children[0].getChildren();
-				
+
 				if (children != null && children.length > 0) {
 					try {
 						return ElementHandler.getDefault().create(ExpressionConverter.getDefault(),
@@ -75,7 +77,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 					}
 				}
 			}
-			
+
 			return null;
 		}
 
@@ -113,7 +115,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 				// get child of enabled when
 				return children[0].getAttribute("disabledReason");
 			}
-			
+
 			return null;
 		}
 
@@ -123,7 +125,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		@Override
 		public int getPriority() {
 			try {
-			return Integer.parseInt(conf.getAttribute("priority"));
+				return Integer.parseInt(conf.getAttribute("priority"));
 			} catch (NumberFormatException e) {
 				return 0;
 			}
@@ -144,7 +146,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		public boolean isProjectResource() {
 			return Boolean.parseBoolean(conf.getAttribute("projectResource"));
 		}
-		
+
 		/**
 		 * @see ActionUI#getActionID()
 		 */
@@ -159,11 +161,12 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 	 * The extension point ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.io.action";
-	
+
 	private static ActionUIExtension instance;
-	
+
 	/**
 	 * Get the extension instance
+	 * 
 	 * @return the instance
 	 */
 	public static ActionUIExtension getInstance() {
@@ -172,7 +175,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -184,28 +187,28 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected ActionUI createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected ActionUI createFactory(IConfigurationElement conf) throws Exception {
 		if (conf.getName().equals("action-ui")) {
 			return new ConfigurationFactory(conf);
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Find the {@link ActionUI} associated with a certain action
+	 * 
 	 * @param actionId the action identifier
 	 * @return the action UI or <code>null</code>
 	 */
 	public ActionUI findActionUI(final String actionId) {
 		List<ActionUI> factories = getFactories(new FactoryFilter<IOWizard<?>, ActionUI>() {
-			
+
 			@Override
 			public boolean acceptFactory(ActionUI factory) {
 				return factory.getActionID().equals(actionId);
 			}
-			
+
 			@Override
 			public boolean acceptCollection(
 					ExtensionObjectFactoryCollection<IOWizard<?>, ActionUI> collection) {
@@ -215,7 +218,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		if (factories == null || factories.isEmpty()) {
 			return null;
 		}
-		//XXX what if there are multiple ActionUIs for an action?
+		// XXX what if there are multiple ActionUIs for an action?
 		return factories.get(0);
 	}
 

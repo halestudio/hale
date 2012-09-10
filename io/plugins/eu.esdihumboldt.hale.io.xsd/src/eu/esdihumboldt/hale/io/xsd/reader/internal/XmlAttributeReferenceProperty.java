@@ -23,14 +23,15 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 
 /**
  * Property referencing a XML attribute
+ * 
  * @author Simon Templer
  */
 public class XmlAttributeReferenceProperty extends LazyPropertyDefinition {
 
 	private final QName attributeName;
-	
+
 	private XmlAttribute referencedAttribute;
-	
+
 	/**
 	 * Create a property that references a XML attribute
 	 * 
@@ -39,26 +40,25 @@ public class XmlAttributeReferenceProperty extends LazyPropertyDefinition {
 	 * @param index the XML index
 	 * @param attributeName the attribute name
 	 */
-	public XmlAttributeReferenceProperty(QName name,
-			DefinitionGroup declaringType, XmlIndex index,
+	public XmlAttributeReferenceProperty(QName name, DefinitionGroup declaringType, XmlIndex index,
 			QName attributeName) {
 		super(name, declaringType, index);
-		
+
 		this.attributeName = attributeName;
 	}
-	
+
 	/**
 	 * @see LazyPropertyDefinition#resolvePropertyType(XmlIndex)
 	 */
 	@Override
 	protected TypeDefinition resolvePropertyType(XmlIndex index) {
 		XmlAttribute attribute = resolveAttribute();
-		
+
 		if (attribute == null) {
-			throw new IllegalStateException("Referenced attribute could not be found: " + 
-					attributeName.toString());
+			throw new IllegalStateException("Referenced attribute could not be found: "
+					+ attributeName.toString());
 		}
-		
+
 		return attribute.getType();
 	}
 
@@ -66,7 +66,7 @@ public class XmlAttributeReferenceProperty extends LazyPropertyDefinition {
 		if (referencedAttribute == null) {
 			referencedAttribute = index.getAttributes().get(attributeName);
 		}
-		
+
 		return referencedAttribute;
 	}
 
@@ -74,16 +74,16 @@ public class XmlAttributeReferenceProperty extends LazyPropertyDefinition {
 	 * @see AbstractDefinition#getConstraint(Class)
 	 */
 	@Override
-	public <T extends PropertyConstraint> T getConstraint(
-			Class<T> constraintType) {
+	public <T extends PropertyConstraint> T getConstraint(Class<T> constraintType) {
 		if (!hasConstraint(constraintType)) {
-			// if constraint is not defined look in referenced attribute for the constraint
+			// if constraint is not defined look in referenced attribute for the
+			// constraint
 			XmlAttribute attribute = resolveAttribute();
 			if (attribute != null) {
 				return attribute.getConstraint(constraintType);
 			}
 		}
-		
+
 		return super.getConstraint(constraintType);
 	}
 

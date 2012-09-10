@@ -35,30 +35,31 @@ import eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin;
  */
 @Deprecated
 public class DatasetStyleDropdown extends Action implements IMenuCreator, SchemaServiceListener {
-	
+
 	private final DataSet dataset;
-	
+
 	private Menu menu;
-	
+
 	/**
 	 * Creates a data set style drop-down
 	 * 
 	 * @param dataset the data set
 	 */
 	public DatasetStyleDropdown(final DataSet dataset) {
-		super((dataset == DataSet.SOURCE)?("Source SLD"):("Target SLD"), //$NON-NLS-1$ //$NON-NLS-2$
+		super((dataset == DataSet.SOURCE) ? ("Source SLD") : ("Target SLD"), //$NON-NLS-1$ //$NON-NLS-2$
 				Action.AS_DROP_DOWN_MENU);
-		
+
 		this.dataset = dataset;
-		
-		setImageDescriptor(InstanceStylePlugin.getImageDescriptor(
-				"/icons/ft_stylelist.gif")); //$NON-NLS-1$
-		
+
+		setImageDescriptor(InstanceStylePlugin.getImageDescriptor("/icons/ft_stylelist.gif")); //$NON-NLS-1$
+
 		update();
-		
-		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		schema.addSchemaServiceListener(this); //FIXME remove the listener? when & where?
-		
+
+		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(
+				SchemaService.class);
+		schema.addSchemaServiceListener(this); // FIXME remove the listener?
+												// when & where?
+
 		setMenuCreator(this);
 	}
 
@@ -78,10 +79,10 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, Schema
 	@Override
 	public Menu getMenu(Control parent) {
 		dispose();
-		
+
 		menu = new Menu(parent);
 		fillMenu(menu);
-		
+
 		return menu;
 	}
 
@@ -91,9 +92,10 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, Schema
 	 * @param menu the menu to fill
 	 */
 	public void fillMenu(Menu menu) {
-		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		
-		//FIXME deactivated
+		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(
+				SchemaService.class);
+
+		// FIXME deactivated
 //		Map<Definition, FeatureType> tmp = (dataset == DataSet.SOURCE)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
 //		List<FeatureType> types = new ArrayList<FeatureType>();
 //		for (Entry<Definition, FeatureType> entry : tmp.entrySet()) {
@@ -131,15 +133,15 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, Schema
 	@Override
 	public Menu getMenu(Menu parent) {
 		dispose();
-		
+
 		menu = new Menu(parent);
 		fillMenu(menu);
-		
+
 		return menu;
 	}
 
 	private void update() {
-		//FIXME deactivated
+		// FIXME deactivated
 //		SchemaService schema = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 //		
 //		Map<Definition, FeatureType> elements = (dataset == DataSet.SOURCE)?(schema.getSourceSchema().getTypes()):(schema.getTargetSchema().getTypes());
@@ -164,10 +166,12 @@ public class DatasetStyleDropdown extends Action implements IMenuCreator, Schema
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#mappableTypesChanged(eu.esdihumboldt.hale.common.schema.SchemaSpaceID, java.util.Collection)
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#mappableTypesChanged(eu.esdihumboldt.hale.common.schema.SchemaSpaceID,
+	 *      java.util.Collection)
 	 */
 	@Override
-	public void mappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+	public void mappableTypesChanged(SchemaSpaceID spaceID,
+			Collection<? extends TypeDefinition> types) {
 		update();
 	}
 

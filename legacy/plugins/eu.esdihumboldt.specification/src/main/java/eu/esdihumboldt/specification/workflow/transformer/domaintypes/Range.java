@@ -13,55 +13,56 @@ package eu.esdihumboldt.specification.workflow.transformer.domaintypes;
 
 import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
-/**An interface to represent a range of a numeric value
- *
+/**
+ * An interface to represent a range of a numeric value
+ * 
  * @author Moses Gone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
 @ReferenceSpecification("OGC 05-007r7:1.0.0 9.3.1")
-public interface Range extends  LiteralValuesChoice{
+public interface Range extends LiteralValuesChoice {
 
-    /**
-     *
-     * @return Minimum value of this range of this numeric parameter
-     */
-    public String MinimumValue();
+	/**
+	 * 
+	 * @return Minimum value of this range of this numeric parameter
+	 */
+	public String MinimumValue();
 
-    /**
-     *
-     * @return Maximum value of this range of this numeric parameter
-     */
-    public String MaximumValue();
+	/**
+	 * 
+	 * @return Maximum value of this range of this numeric parameter
+	 */
+	public String MaximumValue();
 
-    /**
-     *
-     * @return Regular distance or spacing between allowed values in this range
-     */
-    public String Spacing();
+	/**
+	 * 
+	 * @return Regular distance or spacing between allowed values in this range
+	 */
+	public String Spacing();
 
-    /**This specifies which of the minimum and maximum values are included in
-     * this range
-     *
-     */
-    public enum rangeClosure {
+	/**
+	 * This specifies which of the minimum and maximum values are included in
+	 * this range
+	 * 
+	 */
+	public enum rangeClosure {
 
-        /**
+		/**
          *
          */
-        closed,
-        /**
+		closed,
+		/**
          *
          */
-        open,
-        /**
+		open,
+		/**
          *
          */
-        closed_open,
-        /**
+		closed_open,
+		/**
          *
          */
-        open_closed;
-    }
+		open_closed;
+	}
 }
-

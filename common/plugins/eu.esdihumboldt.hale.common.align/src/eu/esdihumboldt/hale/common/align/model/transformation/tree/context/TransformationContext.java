@@ -19,17 +19,19 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 
 /**
  * Duplicates a context sub-tree in a transformation tree.
+ * 
  * @author Simon Templer
  */
 public interface TransformationContext {
-	
+
 	/**
 	 * Duplicate the context sub-tree of the given context source.
+	 * 
 	 * @param originalSource the original context source
 	 * @param duplicate the duplicate source node
 	 * @param ignoreCells the cells to be ignored for the duplication
 	 */
-	public void duplicateContext(SourceNode originalSource, 
-			SourceNode duplicate, Set<Cell> ignoreCells);
+	public void duplicateContext(SourceNode originalSource, SourceNode duplicate,
+			Set<Cell> ignoreCells);
 
 }

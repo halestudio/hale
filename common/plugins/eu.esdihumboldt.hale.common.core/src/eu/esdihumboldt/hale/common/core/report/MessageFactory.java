@@ -26,6 +26,7 @@ import eu.esdihumboldt.util.definition.AbstractObjectFactory;
 
 /**
  * Factory for messages
+ * 
  * @author Simon Templer
  * @since 2.5
  * @see MessageDefinition
@@ -37,19 +38,20 @@ public class MessageFactory extends AbstractObjectFactory<Message, MessageDefini
 	 * Logger
 	 */
 	private static final ALogger _log = ALoggerFactory.getLogger(MessageFactory.class);
-	
+
 	private final MessageDefinitions definitionExtension = new MessageDefinitions();
-	
+
 	/**
-	 * Contains all {@link MessageDefinition} for {@link MessageFactory#getDefinitions()}.
+	 * Contains all {@link MessageDefinition} for
+	 * {@link MessageFactory#getDefinitions()}.
 	 */
 	private ArrayList<MessageDefinition<?>> messageDefinitions = new ArrayList<MessageDefinition<?>>();
-	
+
 	/**
 	 * Instance
 	 */
 	private static MessageFactory _instance;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -57,7 +59,7 @@ public class MessageFactory extends AbstractObjectFactory<Message, MessageDefini
 		/* nothing */
 		super();
 	}
-	
+
 	/**
 	 * Get the instance of this factory.
 	 * 
@@ -67,16 +69,17 @@ public class MessageFactory extends AbstractObjectFactory<Message, MessageDefini
 		if (_instance == null) {
 			_instance = new MessageFactory();
 		}
-		
+
 		return _instance;
 	}
-	
+
 	/**
 	 * 
 	 * @author Andreas Burchert
 	 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
 	 */
-	public static class MessageDefinitions extends AbstractExtension<MessageDefinition<?>, ExtensionObjectFactory<MessageDefinition<?>>> {
+	public static class MessageDefinitions extends
+			AbstractExtension<MessageDefinition<?>, ExtensionObjectFactory<MessageDefinition<?>>> {
 
 		/**
 		 * Default constructor
@@ -108,15 +111,15 @@ public class MessageFactory extends AbstractObjectFactory<Message, MessageDefini
 					public String getIdentifier() {
 						return conf.getAttribute("id");
 					}
-					
+
 				};
 			}
-			
+
 			return null;
 		}
 
 	}
-	
+
 	/**
 	 * @see AbstractObjectFactory#getDefinitions()
 	 */
@@ -126,23 +129,24 @@ public class MessageFactory extends AbstractObjectFactory<Message, MessageDefini
 		if (this.messageDefinitions.size() > 0) {
 			return this.messageDefinitions;
 		}
-		
+
 		// get all factories
-		List<ExtensionObjectFactory<MessageDefinition<?>>> factories = definitionExtension.getFactories();
-		
+		List<ExtensionObjectFactory<MessageDefinition<?>>> factories = definitionExtension
+				.getFactories();
+
 		// create arraylist
 		List<MessageDefinition<?>> result = new ArrayList<MessageDefinition<?>>();
-		
+
 		// iterate through factories and create MessageDefinition
 		for (ExtensionObjectFactory<MessageDefinition<?>> m : factories) {
-				try {
-					MessageDefinition<?> md = m.createExtensionObject();
-					result.add(md);
-				} catch (Exception e) {
-					_log.error("Error during object creation", e);
-				}
+			try {
+				MessageDefinition<?> md = m.createExtensionObject();
+				result.add(md);
+			} catch (Exception e) {
+				_log.error("Error during object creation", e);
+			}
 		}
-		
+
 		this.messageDefinitions.addAll(result);
 		return result;
 	}

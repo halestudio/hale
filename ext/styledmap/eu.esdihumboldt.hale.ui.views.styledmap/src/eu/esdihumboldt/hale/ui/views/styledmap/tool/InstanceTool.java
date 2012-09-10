@@ -29,21 +29,22 @@ import de.fhg.igd.mapviewer.tools.renderer.BoxRenderer;
 
 /**
  * Tool for selecting instances, either by a click or through a selection box.
+ * 
  * @author Simon Templer
  */
 public class InstanceTool extends AbstractInstanceTool {
 
 	private static final Log log = LogFactory.getLog(InstanceTool.class);
-	
+
 	/**
 	 * Default constructor
 	 */
 	public InstanceTool() {
 		BoxRenderer renderer = new BoxRenderer();
-		
+
 		renderer.setBackColor(new Color(0, 255, 255, 50));
 		renderer.setBorderColor(new Color(0, 255, 255, 255));
-		
+
 		setRenderer(renderer);
 	}
 
@@ -65,24 +66,25 @@ public class InstanceTool extends AbstractInstanceTool {
 				// finish box selection
 				// action & reset
 				addPosition(pos);
-				
+
 				// action
 				try {
 					List<Point2D> points = getPoints();
-					Rectangle rect = new Rectangle((int) points.get(0).getX(), (int) points.get(0).getY(), 0, 0);
+					Rectangle rect = new Rectangle((int) points.get(0).getX(), (int) points.get(0)
+							.getY(), 0, 0);
 					rect.add(points.get(1));
-					
+
 					updateSelection(rect, me.isControlDown() || me.isMetaDown(), true);
 				} catch (IllegalGeoPositionException e) {
 					log.error("Error calculating selection box", e); //$NON-NLS-1$
 				}
-				
+
 				reset();
 			}
 			else {
 				// click selection
 				reset();
-				
+
 				updateSelection(me.getPoint(), me.isControlDown() || me.isMetaDown(), true);
 			}
 		}

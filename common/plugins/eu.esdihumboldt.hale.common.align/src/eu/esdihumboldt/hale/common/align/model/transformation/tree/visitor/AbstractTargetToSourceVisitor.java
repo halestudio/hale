@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 
 /**
  * Transformation tree visitor for target to source traversal.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractTargetToSourceVisitor extends AbstractTransformationNodeVisitor {

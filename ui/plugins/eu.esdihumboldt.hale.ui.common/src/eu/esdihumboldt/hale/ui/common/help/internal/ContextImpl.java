@@ -17,6 +17,7 @@ import org.eclipse.help.IHelpResource;
 
 /**
  * Context implementation
+ * 
  * @author Simon Templer
  */
 public class ContextImpl implements IContext {
@@ -26,6 +27,7 @@ public class ContextImpl implements IContext {
 
 	/**
 	 * Create a context
+	 * 
 	 * @param description the description
 	 * @param relatedTopics the related topics
 	 */

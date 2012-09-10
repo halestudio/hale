@@ -23,12 +23,13 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterProx
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.impl.NoLayout;
 
 /**
- * Default painter layout factory. Used as fall back in 
+ * Default painter layout factory. Used as fall back in
  * {@link PainterLayoutManager}.
+ * 
  * @author Simon Templer
  */
-public class DefaultFactory extends AbstractObjectFactory<PainterLayout>
-		implements PainterLayoutFactory {
+public class DefaultFactory extends AbstractObjectFactory<PainterLayout> implements
+		PainterLayoutFactory {
 
 	@Override
 	public PainterLayout createExtensionObject() throws Exception {
@@ -37,7 +38,7 @@ public class DefaultFactory extends AbstractObjectFactory<PainterLayout>
 
 	@Override
 	public void dispose(PainterLayout instance) {
-		//TODO ?
+		// TODO ?
 	}
 
 	@Override
@@ -69,5 +70,5 @@ public class DefaultFactory extends AbstractObjectFactory<PainterLayout>
 		// no painters to layout
 		return Collections.emptyList();
 	}
-	
+
 }

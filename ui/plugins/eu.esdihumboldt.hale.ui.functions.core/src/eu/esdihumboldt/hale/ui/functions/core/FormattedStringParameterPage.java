@@ -16,10 +16,11 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 
 /**
  * Parameter page for formatted string function.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class FormattedStringParameterPage extends SourceListParameterPage {
+
 	/**
 	 * Default constructor.
 	 */
@@ -72,5 +73,5 @@ public class FormattedStringParameterPage extends SourceListParameterPage {
 	protected boolean useMultilineInput() {
 		return true;
 	}
-	
+
 }

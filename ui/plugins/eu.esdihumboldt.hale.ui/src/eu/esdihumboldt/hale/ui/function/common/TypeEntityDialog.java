@@ -31,14 +31,16 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
 /**
  * Dialog for selecting a {@link TypeEntityDefinition}.
+ * 
  * @author Simon Templer
  */
 public class TypeEntityDialog extends EntityDialog {
 
 	/**
-	 * @see EntityDialog#EntityDialog(Shell, SchemaSpaceID, String, EntityDefinition) 
+	 * @see EntityDialog#EntityDialog(Shell, SchemaSpaceID, String,
+	 *      EntityDefinition)
 	 */
-	public TypeEntityDialog(Shell parentShell, SchemaSpaceID ssid, String title, 
+	public TypeEntityDialog(Shell parentShell, SchemaSpaceID ssid, String title,
 			EntityDefinition initialSelection) {
 		super(parentShell, ssid, title, initialSelection);
 	}
@@ -49,17 +51,18 @@ public class TypeEntityDialog extends EntityDialog {
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
-		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI
+				.getWorkbench().getService(EntityDefinitionService.class);
 		viewer.setContentProvider(new TreePathProviderAdapter(new EntityTypesContentProvider(
 				viewer, entityDefinitionService, ssid)));
-		
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		
+
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
+
 		viewer.setInput(ss.getSchemas(ssid));
-		
+
 		if (initialSelection instanceof TypeEntityDefinition) {
-			viewer.setSelection(new StructuredSelection(
-					initialSelection.getType()));
+			viewer.setSelection(new StructuredSelection(initialSelection.getType()));
 		}
 	}
 
@@ -77,10 +80,10 @@ public class TypeEntityDialog extends EntityDialog {
 				return new TypeEntityDefinition((TypeDefinition) element, ssid, null);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * @see EntityDialog#getObject()
 	 */

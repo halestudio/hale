@@ -18,19 +18,22 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter;
 
 /**
- * Filter that lets only {@link TypeDefinition}s with xmlelements information which
- * are not empty pass.
+ * Filter that lets only {@link TypeDefinition}s with xmlelements information
+ * which are not empty pass.
+ * 
  * @author Patrick Lieb
  */
-public class TypeDefinitionXmlElementsFilter extends DefaultDefinitionFilter{
+public class TypeDefinitionXmlElementsFilter extends DefaultDefinitionFilter {
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {
-		if(input instanceof TypeDefinition){
-			return ((TypeDefinition)input).getConstraint(XmlElements.class).getElements().isEmpty();
-		}		return true;
+		if (input instanceof TypeDefinition) {
+			return ((TypeDefinition) input).getConstraint(XmlElements.class).getElements()
+					.isEmpty();
+		}
+		return true;
 	}
 }

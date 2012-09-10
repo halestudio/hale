@@ -21,13 +21,15 @@ import eu.esdihumboldt.hale.common.filter.internal.AbstractGeotoolsFilter;
 /**
  * Extended CQL Filter. Two ECQL filters are seen as equal if they are based on
  * the same ECQL expression.
+ * 
  * @author Sebastian Reinhardt
  * @author Simon Templer
  */
 public class FilterGeoECqlImpl extends AbstractGeotoolsFilter {
-	
+
 	/**
 	 * Create a ECQL filter.
+	 * 
 	 * @param filterTerm the ECQL expression
 	 * @throws CQLException if parsing the ECQL fails
 	 */

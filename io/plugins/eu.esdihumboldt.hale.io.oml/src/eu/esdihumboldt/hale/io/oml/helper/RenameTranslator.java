@@ -44,8 +44,8 @@ public class RenameTranslator implements FunctionTranslator, RenameFunction {
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 		newList.add(new ParameterValue("structuralRename", "false"));

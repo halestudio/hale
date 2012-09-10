@@ -18,10 +18,11 @@ import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverte
 
 /**
  * Converts Strings to MultiPoints
+ * 
  * @author Kevin Mais
  */
-public class StringToMultiPoint extends AbstractGeometryConverter<MultiPoint>{
-	
+public class StringToMultiPoint extends AbstractGeometryConverter<MultiPoint> {
+
 	// concrete typed class
 
 }

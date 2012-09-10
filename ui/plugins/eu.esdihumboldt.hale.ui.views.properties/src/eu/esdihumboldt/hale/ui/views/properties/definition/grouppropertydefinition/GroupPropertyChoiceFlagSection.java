@@ -23,30 +23,33 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Properties section with choiceflag information
+ * 
  * @author Patrick Lieb
  */
-public class GroupPropertyChoiceFlagSection extends DefaultDefinitionSection<GroupPropertyDefinition>{
-	
+public class GroupPropertyChoiceFlagSection extends
+		DefaultDefinitionSection<GroupPropertyDefinition> {
+
 	private Text choiceflag;
-	
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "ChoiceFlag:", null);
 		choiceflag = getText();
 	}
-	
+
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		if(getDefinition().getConstraint(ChoiceFlag.class).isEnabled()){
+		if (getDefinition().getConstraint(ChoiceFlag.class).isEnabled()) {
 			choiceflag.setText("true");
-		} else {
+		}
+		else {
 			choiceflag.setText("false");
 		}
 	}

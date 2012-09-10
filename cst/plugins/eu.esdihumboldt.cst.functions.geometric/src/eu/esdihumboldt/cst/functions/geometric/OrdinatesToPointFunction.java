@@ -23,10 +23,10 @@ public interface OrdinatesToPointFunction {
 	 * Name of the parameter specifying the reference system to use.
 	 */
 	public static final String PARAMETER_REFERENCE_SYSTEM = "referenceSystem";
-	
+
 	/**
 	 * the ordinates to point function id
 	 */
 	public static final String ID = "eu.esdihumboldt.cst.functions.geometric.ordinates_to_point";
-	
+
 }

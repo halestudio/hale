@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
  * Removes selected cells from the alignment
+ * 
  * @author Simon Templer
  */
 public class RemoveCellHandler extends AbstractHandler {
@@ -38,24 +39,27 @@ public class RemoveCellHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), 
-				"Delete cells", "Do you really want to delete the selected cells?")) {
+		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), "Delete cells",
+				"Do you really want to delete the selected cells?")) {
 			// collect cells from selection
 			ISelection selection = HandlerUtil.getCurrentSelection(event);
-			
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-			
+
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
+
 			if (selection instanceof IStructuredSelection) {
 				List<?> list = ((IStructuredSelection) selection).toList();
 				for (Object object : list) {
 					if (object instanceof Cell) {
-						//FIXME sanity checks for cell deletion? (e.g. don't allow remove type mapping if there are properties mapped?) where to do it?
+						// FIXME sanity checks for cell deletion? (e.g. don't
+						// allow remove type mapping if there are properties
+						// mapped?) where to do it?
 						as.removeCell((Cell) object);
 					}
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

@@ -110,14 +110,14 @@ public class OmlRdfReader {
 			rdfUrl = new URL(rdfFile);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
-			rdfUrl =  new URL("file", null, rdfFile);
-			
-		}finally{
+			rdfUrl = new URL("file", null, rdfFile);
+
+		} finally {
 			return read(rdfUrl);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Unmarshalls oml-mapping to the HUMBOLDT Alignment.
 	 * 
@@ -134,14 +134,15 @@ public class OmlRdfReader {
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling
-			u
-					.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
-			
-			  root = u.unmarshal(new StreamSource(rdfFile.openStream()), AlignmentType.class);
-			 
+			u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
 
-		/*	root = u.unmarshal(new StreamSource(new File(rdfFile)),
-					AlignmentType.class);*/
+			root = u.unmarshal(new StreamSource(rdfFile.openStream()),
+					AlignmentType.class);
+
+			/*
+			 * root = u.unmarshal(new StreamSource(new File(rdfFile)),
+			 * AlignmentType.class);
+			 */
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -260,7 +261,8 @@ public class OmlRdfReader {
 	 * @param jaxbFormalism
 	 * @return Formalism
 	 */
-	private Formalism getFormalism(eu.esdihumboldt.generated.oml.OntologyType.Formalism jaxbFormalism) {
+	private Formalism getFormalism(
+			eu.esdihumboldt.generated.oml.OntologyType.Formalism jaxbFormalism) {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("getFormalism(eu.esdihumboldt.generated.oml.OntologyType.Formalism) - start");
 		}
@@ -271,10 +273,11 @@ public class OmlRdfReader {
 			URI uri = null;
 			try {
 				uri = new URI(fType.getUri());
-			}
-			catch (URISyntaxException e) {
-				LOG.error("getFormalism(eu.esdihumboldt.generated.oml.OntologyType.Formalism)",e);
-//				throw new RuntimeException(e);
+			} catch (URISyntaxException e) {
+				LOG.error(
+						"getFormalism(eu.esdihumboldt.generated.oml.OntologyType.Formalism)",
+						e);
+				// throw new RuntimeException(e);
 			}
 			formalism = new Formalism(fType.getName(), uri);
 		}
@@ -405,14 +408,14 @@ public class OmlRdfReader {
 				if (entityType.getAbout() != null) {
 					about = new About(entityType.getAbout());
 				}
-				entity = new ComposedProperty(getOperator(propCompType
-						.getOperator()), about);
+				entity = new ComposedProperty(
+						getOperator(propCompType.getOperator()), about);
 
 				// 2. set collection of properties, a single property or
 				// relation
 
-				if (propCompType.getCollection() != null &&
-						propCompType.getCollection().getItem().size() > 0) {
+				if (propCompType.getCollection() != null
+						&& propCompType.getCollection().getItem().size() > 0) {
 					// set collection
 					((ComposedProperty) entity)
 							.setCollection(getPropertyCollection(propCompType
@@ -902,9 +905,9 @@ public class OmlRdfReader {
 			String value;
 			if (values != null && !values.isEmpty()) {
 				value = values.get(0);
-			}
-			else {
-				value = null; //TODO what should be the default empty value? null or empty string?
+			} else {
+				value = null; // TODO what should be the default empty value?
+								// null or empty string?
 			}
 			parameter = new Parameter(paramType.getName(), value);
 			params.add(parameter);
@@ -971,17 +974,18 @@ public class OmlRdfReader {
 		List<Restriction> restrictions = new ArrayList<Restriction>(
 				classConditions.size());
 		Iterator<ClassConditionType> iterator = classConditions.iterator();
-		Restriction restriction = null;;
+		Restriction restriction = null;
+		;
 		ClassConditionType classCondition;
 		while (iterator.hasNext()) {
 			classCondition = iterator.next();
 			RestrictionType rType = classCondition.getRestriction();
-			if (rType != null){
-				
-				//set value expression if exist
-				if (rType.getValue() != null){
-				List<ValueExprType> valueExpr = rType.getValue();
-				restriction = new Restriction(getValueExpression(valueExpr));
+			if (rType != null) {
+
+				// set value expression if exist
+				if (rType.getValue() != null) {
+					List<ValueExprType> valueExpr = rType.getValue();
+					restriction = new Restriction(getValueExpression(valueExpr));
 				}
 				// set value class to add about and resource document
 				ValueClass vClass = new ValueClass();
@@ -989,21 +993,23 @@ public class OmlRdfReader {
 				if (vcType != null) {
 					vClass.setAbout(vcType.getAbout());
 					vClass.setResource(vcType.getResource());
-					vClass.getValue().addAll(getValueExpression(vcType.getValue()));
+					vClass.getValue().addAll(
+							getValueExpression(vcType.getValue()));
 					restriction.setValueClass(vClass);
 				}
-				if (rType.getComparator() != null){
-					restriction.setComparator(getComparator(rType.getComparator()));
+				if (rType.getComparator() != null) {
+					restriction.setComparator(getComparator(rType
+							.getComparator()));
 				}
-				if (rType.getCqlStr() != null){
+				if (rType.getCqlStr() != null) {
 					restriction.setCqlStr(rType.getCqlStr());
 				}
-				
+
 			}
 			// TODO clear with MdV
 			// restriction = new Restriction(null,
 			// getValueExpression(valueExpr));
-			
+
 			restrictions.add(restriction);
 
 		}
@@ -1028,10 +1034,11 @@ public class OmlRdfReader {
 		while (iterator.hasNext()) {
 			ValueConditionType condition = iterator.next();
 			// get List<ValueExpressionType>
-			if (condition.getRestriction() != null && condition.getRestriction().getValue() != null){
+			if (condition.getRestriction() != null
+					&& condition.getRestriction().getValue() != null) {
 				valueExpr = condition.getRestriction().getValue();
 			}
-					
+
 			if ((valueExpr == null || valueExpr.size() == 0)
 					&& condition.getRestriction().getValueClass() != null) {
 				valueExpr = condition.getRestriction().getValueClass()
@@ -1041,10 +1048,12 @@ public class OmlRdfReader {
 			// restriction = new Restriction(null,
 			// getValueExpression(valueExpr));
 			restriction = new Restriction(getValueExpression(valueExpr));
-			if (condition.getRestriction() != null && condition.getRestriction().getComparator() != null){
-				restriction.setComparator(getComparator(condition.getRestriction().getComparator()));
+			if (condition.getRestriction() != null
+					&& condition.getRestriction().getComparator() != null) {
+				restriction.setComparator(getComparator(condition
+						.getRestriction().getComparator()));
 			}
-					
+
 			// add Sequence ID if it exists
 			if (condition.getSeq() != null) {
 				restriction.setSeq(condition.getSeq());
@@ -1114,17 +1123,17 @@ public class OmlRdfReader {
 		Iterator<ValueExprType> iterator = valueExpr.iterator();
 		while (iterator.hasNext()) {
 			ValueExprType jaxbExpr = iterator.next();
-			if (jaxbExpr.getLiteral() != null){
-			omlExpr = new ValueExpression(jaxbExpr.getLiteral());
-			if (jaxbExpr.getMax() != null){
-				omlExpr.setMax(jaxbExpr.getMax());
-			}
-			if (jaxbExpr.getMin() != null) {
-				omlExpr.setMin(jaxbExpr.getMin());
-			}
-			// TODO implement set Apply
-			// omlExpr.setApply(getFunction(jaxbExpr.getApply()));
-			omlExpressions.add(omlExpr);
+			if (jaxbExpr.getLiteral() != null) {
+				omlExpr = new ValueExpression(jaxbExpr.getLiteral());
+				if (jaxbExpr.getMax() != null) {
+					omlExpr.setMax(jaxbExpr.getMax());
+				}
+				if (jaxbExpr.getMin() != null) {
+					omlExpr.setMin(jaxbExpr.getMin());
+				}
+				// TODO implement set Apply
+				// omlExpr.setApply(getFunction(jaxbExpr.getApply()));
+				omlExpressions.add(omlExpr);
 			}
 
 		}

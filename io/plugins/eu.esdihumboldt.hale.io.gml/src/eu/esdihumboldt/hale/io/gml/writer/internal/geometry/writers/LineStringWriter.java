@@ -23,8 +23,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
 
 /**
- * Writer for {@link LineString}s 
- *
+ * Writer for {@link LineString}s
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -35,22 +35,21 @@ public class LineStringWriter extends AbstractGeometryWriter<LineString> {
 	 */
 	public LineStringWriter() {
 		super(LineString.class);
-		
+
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
-				"LineStringType")); //$NON-NLS-1$
-		
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "LineStringType")); //$NON-NLS-1$
+
 		// patterns for matching inside compatible types
 		addBasePattern("*"); //$NON-NLS-1$
 	}
 
 	/**
-	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition, QName, String)
+	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
+	 *      QName, String)
 	 */
 	@Override
-	public void write(XMLStreamWriter writer, LineString geometry,
-			TypeDefinition elementType, QName elementName, String gmlNs)
-			throws XMLStreamException {
+	public void write(XMLStreamWriter writer, LineString geometry, TypeDefinition elementType,
+			QName elementName, String gmlNs) throws XMLStreamException {
 		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs);
 	}
 

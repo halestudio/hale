@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
  * HALE alignment writer
+ * 
  * @author Simon Templer
  */
 public class DefaultAlignmentWriter extends AbstractAlignmentWriter {
@@ -55,7 +56,7 @@ public class DefaultAlignmentWriter extends AbstractAlignmentWriter {
 		} finally {
 			out.close();
 		}
-		
+
 		progress.end();
 		reporter.setSuccess(true);
 		return reporter;

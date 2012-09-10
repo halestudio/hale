@@ -27,14 +27,16 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
  * @author Kai Schwierczek
  */
 public class ClearInstancesHandler extends AbstractHandler {
+
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event),
-				"Delete source data", "Do you really want to delete all source data?")) {
-			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), "Delete source data",
+				"Do you really want to delete all source data?")) {
+			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+					InstanceService.class);
 			is.clearInstances();
 		}
 

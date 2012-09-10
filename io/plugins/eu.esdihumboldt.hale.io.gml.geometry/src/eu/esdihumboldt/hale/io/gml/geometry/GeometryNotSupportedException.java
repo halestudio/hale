@@ -15,6 +15,7 @@ package eu.esdihumboldt.hale.io.gml.geometry;
 /**
  * Exception that is thrown by {@link GeometryHandler}s when they are dealing
  * with geometry types or instances that they don't recognize.
+ * 
  * @author Simon Templer
  */
 public class GeometryNotSupportedException extends Exception {
@@ -22,7 +23,7 @@ public class GeometryNotSupportedException extends Exception {
 	private static final long serialVersionUID = -3898627398397429119L;
 
 	/**
-	 * @see Exception#Exception() 
+	 * @see Exception#Exception()
 	 */
 	public GeometryNotSupportedException() {
 		super();

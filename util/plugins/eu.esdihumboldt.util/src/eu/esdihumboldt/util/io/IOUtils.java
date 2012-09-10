@@ -23,6 +23,7 @@ import eu.esdihumboldt.util.resource.Resources;
  * @author Kai Schwierczek
  */
 public final class IOUtils {
+
 	/**
 	 * Static class, constructor private.
 	 */
@@ -35,7 +36,7 @@ public final class IOUtils {
 	 * it is a lot faster.
 	 * 
 	 * @param uri the URI to test
-	 * @param allowResource allow resolving through {@link Resources} 
+	 * @param allowResource allow resolving through {@link Resources}
 	 * @return true, if a InputStream to the URI could be opened.
 	 */
 	public static boolean testStream(URI uri, boolean allowResource) {
@@ -45,13 +46,14 @@ public final class IOUtils {
 				return true;
 			return false;
 		}
-		
+
 		// try resolving through local resources
 		if (allowResource && Resources.tryResolve(uri, null) != null) {
 			return true;
 		}
-		
-		// could be further enhanced to check for example for http response codes like 404.
+
+		// could be further enhanced to check for example for http response
+		// codes like 404.
 		try {
 			uri.toURL().openConnection().getInputStream().close();
 		} catch (Exception e) {

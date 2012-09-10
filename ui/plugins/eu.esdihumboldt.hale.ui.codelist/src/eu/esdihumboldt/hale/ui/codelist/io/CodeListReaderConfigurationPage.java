@@ -5,16 +5,17 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
-
 /**
  * Configuration page for the code list reader
+ * 
  * @author Patrick Lieb
  */
-public abstract class CodeListReaderConfigurationPage extends AbstractConfigurationPage<CodeListReader, 
-		CodeListImportWizard> {
+public abstract class CodeListReaderConfigurationPage extends
+		AbstractConfigurationPage<CodeListReader, CodeListImportWizard> {
 
 	/**
-	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String, ImageDescriptor)
+	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String,
+	 *      ImageDescriptor)
 	 */
 	protected CodeListReaderConfigurationPage(String pageName, String title,
 			ImageDescriptor titleImage) {

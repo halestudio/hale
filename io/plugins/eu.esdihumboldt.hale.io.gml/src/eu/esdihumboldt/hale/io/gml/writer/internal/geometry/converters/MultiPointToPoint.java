@@ -18,13 +18,12 @@ import com.vividsolutions.jts.geom.Point;
 
 /**
  * Converts a {@link MultiPoint} to a {@link Point}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public class MultiPointToPoint extends
-		AbstractGeometryCollectionConverter<MultiPoint, Point> {
+public class MultiPointToPoint extends AbstractGeometryCollectionConverter<MultiPoint, Point> {
 
 	/**
 	 * Default constructor

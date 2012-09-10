@@ -15,30 +15,29 @@ import java.io.Serializable;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-
-
-
 /**
- * This class contains a GeneralEnvelope-field, id-field and no-args constractor,
- * to enable Hibernate the persisting of Envelope2D-objects.
- *
- *
+ * This class contains a GeneralEnvelope-field, id-field and no-args
+ * constractor, to enable Hibernate the persisting of Envelope2D-objects.
+ * 
+ * 
  * @author Anna Pitaev, LogicaCMG, Bernd Schneiders, LogicaCMG
- * @version $Id: GeneralEnvelopeImpl.java,v 1.3 2007-11-30 10:24:05 pitaeva Exp $
+ * @version $Id: GeneralEnvelopeImpl.java,v 1.3 2007-11-30 10:24:05 pitaeva Exp
+ *          $
  */
-public class GeneralEnvelopeImpl implements Serializable{
+public class GeneralEnvelopeImpl implements Serializable {
 	private long id;
 	private double minX;
 	private double minY;
 	private double maxX;
 	private double maxY;
-	//Ana Belen Anton
+	// Ana Belen Anton
 	private CoordinateReferenceSystem crs;
 
 	/**
 	 * no-args constructor to enable hibernate-mapping.
 	 */
-	public GeneralEnvelopeImpl(){}
+	public GeneralEnvelopeImpl() {
+	}
 
 	/**
 	 * @return unique identifier for the database.
@@ -48,14 +47,12 @@ public class GeneralEnvelopeImpl implements Serializable{
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
-
-
-
 
 	/**
 	 * @return the minX
@@ -65,7 +62,8 @@ public class GeneralEnvelopeImpl implements Serializable{
 	}
 
 	/**
-	 * @param minX the minX to set
+	 * @param minX
+	 *            the minX to set
 	 */
 	public void setMinX(double minX) {
 		this.minX = minX;
@@ -78,19 +76,18 @@ public class GeneralEnvelopeImpl implements Serializable{
 		return this.minY;
 	}
 
-	//Ana Belen Anton
-	public CoordinateReferenceSystem getCoordinateReferenceSystem(){
+	// Ana Belen Anton
+	public CoordinateReferenceSystem getCoordinateReferenceSystem() {
 		return this.crs;
 	}
 
 	/**
-	 * @param minY the minY to set
+	 * @param minY
+	 *            the minY to set
 	 */
 	public void setMinY(double minY) {
 		this.minY = minY;
 	}
-
-
 
 	/**
 	 * @return the maxX
@@ -100,7 +97,8 @@ public class GeneralEnvelopeImpl implements Serializable{
 	}
 
 	/**
-	 * @param maxX the maxX to set
+	 * @param maxX
+	 *            the maxX to set
 	 */
 	public void setMaxX(double maxX) {
 		this.maxX = maxX;
@@ -114,14 +112,15 @@ public class GeneralEnvelopeImpl implements Serializable{
 	}
 
 	/**
-	 * @param maxY the maxY to set
+	 * @param maxY
+	 *            the maxY to set
 	 */
 	public void setMaxY(double maxY) {
 		this.maxY = maxY;
 	}
 
-//	Ana Belen Anton
-	public void setCoordinateReferenceSystem(CoordinateReferenceSystem crs){
+	// Ana Belen Anton
+	public void setCoordinateReferenceSystem(CoordinateReferenceSystem crs) {
 		this.crs = crs;
 	}
 }

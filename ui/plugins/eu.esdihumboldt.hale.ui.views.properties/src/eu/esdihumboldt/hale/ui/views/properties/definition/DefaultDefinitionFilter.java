@@ -21,16 +21,18 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * The default filter for all filters
+ * 
  * @author Patrick Lieb
  */
-public abstract class DefaultDefinitionFilter implements IFilter{
-	
+public abstract class DefaultDefinitionFilter implements IFilter {
+
 	/**
 	 * Determine if an input is invalid and thus should be rejected by the
 	 * filter.
+	 * 
 	 * @param input the definition
 	 * @return <code>true</code> if the definition should be rejected by the
-	 *   filter, <code>false</code> otherwise
+	 *         filter, <code>false</code> otherwise
 	 */
 	public abstract boolean isFiltered(Definition<?> input);
 
@@ -40,19 +42,19 @@ public abstract class DefaultDefinitionFilter implements IFilter{
 	@Override
 	public boolean select(Object input) {
 		input = TransformationTreeUtil.extractObject(input);
-		
+
 		if (input instanceof Entity) {
 			input = ((Entity) input).getDefinition();
 		}
-		
-		if (input instanceof EntityDefinition){
+
+		if (input instanceof EntityDefinition) {
 			input = ((EntityDefinition) input).getDefinition();
 		}
-		
-		if (input instanceof Definition<?>){
+
+		if (input instanceof Definition<?>) {
 			return !isFiltered((Definition<?>) input);
 		}
-		
+
 		return false;
 	}
 }

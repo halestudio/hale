@@ -14,16 +14,17 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
 /**
  * Combines a parameter name and value
+ * 
  * @author Simon Templer
  */
 public class ParameterValue {
-	
+
 	private String name;
-	
+
 	private String value;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public ParameterValue() {
 		super();
@@ -31,6 +32,7 @@ public class ParameterValue {
 
 	/**
 	 * Creates a parameter value an initializes it with the given name and value
+	 * 
 	 * @param name the parameter name
 	 * @param value the parameter value
 	 */
@@ -41,6 +43,7 @@ public class ParameterValue {
 
 	/**
 	 * Get the parameter name
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -49,6 +52,7 @@ public class ParameterValue {
 
 	/**
 	 * Set the parameter name
+	 * 
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
@@ -57,6 +61,7 @@ public class ParameterValue {
 
 	/**
 	 * Get the parameter value
+	 * 
 	 * @return the value
 	 */
 	public String getValue() {
@@ -65,6 +70,7 @@ public class ParameterValue {
 
 	/**
 	 * Set the parameter value
+	 * 
 	 * @param value the value to set
 	 */
 	public void setValue(String value) {

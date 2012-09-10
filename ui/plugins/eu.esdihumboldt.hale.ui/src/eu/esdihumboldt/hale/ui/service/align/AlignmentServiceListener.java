@@ -16,32 +16,35 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 
 /**
  * Listener for alignment service events
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface AlignmentServiceListener {
-	
+
 	/**
 	 * Called when the alignment has been cleared
 	 */
 	public void alignmentCleared();
-	
+
 	/**
 	 * Called when cells have been added
+	 * 
 	 * @param cells the cells that have been added
 	 */
 	public void cellsAdded(Iterable<Cell> cells);
-	
+
 	/**
 	 * Called when an existing cell has been replaced by another.
+	 * 
 	 * @param oldCell the old cell that has been replaced
 	 * @param newCell the new cell that has replaced the other
 	 */
 	public void cellReplaced(Cell oldCell, Cell newCell);
-	
+
 	/**
 	 * Called when an existing cell has been removed
+	 * 
 	 * @param cell the cell that has been removed
 	 */
 	public void cellRemoved(Cell cell);

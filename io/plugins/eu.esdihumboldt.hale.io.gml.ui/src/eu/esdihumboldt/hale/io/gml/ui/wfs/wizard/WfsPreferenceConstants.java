@@ -14,25 +14,25 @@ package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface WfsPreferenceConstants {
-	
+
 	/**
 	 * The maximum number of recent WFS
 	 */
 	public final int MAX_RECENT_WFS = 10;
-	
+
 	/**
 	 * The name of the recent WFS key prefix
 	 */
 	public final String KEY_RECENT_WFS_PREFIX = "wfs.recent.url"; //$NON-NLS-1$
-	
+
 	/**
 	 * The name of the recent WFS count key
 	 */
 	public final String KEY_RECENT_WFS_COUNT = "wfs.recent.count"; //$NON-NLS-1$
-	
+
 }

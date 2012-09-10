@@ -26,14 +26,12 @@ import eu.esdihumboldt.specification.cst.rdf.IResource;
 /**
  * This class represents <xs:group name="transformation">.
  * 
- * @author Thorsten Reitz, Marian de Vries 
+ * @author Thorsten Reitz, Marian de Vries
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @partner 08 / Delft University of Technology
- * @version $Id$ 
+ * @version $Id$
  */
-public class Transformation 
-	implements ITransformation {
-
+public class Transformation implements ITransformation {
 
 	private About about;
 	private IResource resource;
@@ -42,16 +40,15 @@ public class Transformation
 
 	// getters / setters .......................................................
 
-	
 	public Transformation() {
 		this.parameters = new ArrayList<IParameter>();
 	}
-	
+
 	public Transformation(IResource iResource) {
 		this();
-		this.resource = iResource; 
+		this.resource = iResource;
 	}
-	
+
 	/**
 	 * @return the service
 	 */
@@ -74,7 +71,7 @@ public class Transformation
 	public List<IParameter> getParameters() {
 		return this.parameters;
 	}
-	
+
 	public Map<String, IParameter> getParameterMap() {
 		Map<String, IParameter> result = new HashMap<String, IParameter>();
 		for (IParameter p : this.parameters) {
@@ -84,14 +81,16 @@ public class Transformation
 	}
 
 	/**
-	 * @param label the label to set
+	 * @param label
+	 *            the label to set
 	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
-	
+
 	/**
-	 * @param parameters the parameters to set
+	 * @param parameters
+	 *            the parameters to set
 	 */
 	public void setParameters(List<IParameter> parameters) {
 		this.parameters = parameters;
@@ -105,12 +104,11 @@ public class Transformation
 	}
 
 	/**
-	 * @param about the about to set
+	 * @param about
+	 *            the about to set
 	 */
 	public void setAbout(About about) {
 		this.about = about;
 	}
-	
-	
 
 }

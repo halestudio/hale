@@ -16,16 +16,17 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 
 /**
  * Represents a property in a mapping cell
+ * 
  * @author Simon Templer
  */
 public interface Property extends Entity {
-	
+
 	/**
 	 * @see Entity#getDefinition()
 	 */
 	@Override
 	public PropertyEntityDefinition getDefinition();
-	
-	//TODO property filter/restriction stuff
+
+	// TODO property filter/restriction stuff
 
 }

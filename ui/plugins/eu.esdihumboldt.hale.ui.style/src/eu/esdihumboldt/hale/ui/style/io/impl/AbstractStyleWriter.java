@@ -20,11 +20,11 @@ import eu.esdihumboldt.hale.ui.style.io.StyleWriter;
 
 /**
  * Base class for {@link StyleWriter} implementations.
+ * 
  * @author Simon Templer
  */
-public abstract class AbstractStyleWriter extends AbstractExportProvider implements
-		StyleWriter {
-	
+public abstract class AbstractStyleWriter extends AbstractExportProvider implements StyleWriter {
+
 	private Style style;
 
 	/**
@@ -37,6 +37,7 @@ public abstract class AbstractStyleWriter extends AbstractExportProvider impleme
 
 	/**
 	 * Get the style to write.
+	 * 
 	 * @return the style to write
 	 */
 	public Style getStyle() {
@@ -51,7 +52,7 @@ public abstract class AbstractStyleWriter extends AbstractExportProvider impleme
 		if (getStyle() == null) {
 			fail("Style to write not set");
 		}
-		
+
 		super.validate();
 	}
 

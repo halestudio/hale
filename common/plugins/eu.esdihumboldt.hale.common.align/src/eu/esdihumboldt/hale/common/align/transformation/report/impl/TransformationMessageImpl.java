@@ -20,11 +20,11 @@ import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 
 /**
  * Default {@link TransformationMessage} implementation
+ * 
  * @author Simon Templer
  */
 @Immutable
-public class TransformationMessageImpl extends MessageImpl implements
-		TransformationMessage {
+public class TransformationMessageImpl extends MessageImpl implements TransformationMessage {
 
 	private final CellBean cell;
 
@@ -33,39 +33,44 @@ public class TransformationMessageImpl extends MessageImpl implements
 	 * 
 	 * @param cell the cell the message is associated to
 	 * @param message the message
-	 * @param throwable the throwable associated to the message, may be <code>null</code>
+	 * @param throwable the throwable associated to the message, may be
+	 *            <code>null</code>
 	 */
 	public TransformationMessageImpl(Cell cell, String message, Throwable throwable) {
 		super(message, throwable);
-		
+
 		this.cell = new CellBean(cell);
 	}
-	
+
 	/**
 	 * Create a new transformation message.
 	 * 
 	 * @param cell the cell the message is associated to
 	 * @param message the message
-	 * @param throwable the throwable associated to the message, may be <code>null</code>
+	 * @param throwable the throwable associated to the message, may be
+	 *            <code>null</code>
 	 * @param stackTrace the associated stack trace, or <code>null</code>
 	 */
-	public TransformationMessageImpl(Cell cell, String message, Throwable throwable, String stackTrace) {
+	public TransformationMessageImpl(Cell cell, String message, Throwable throwable,
+			String stackTrace) {
 		super(message, throwable, stackTrace);
-		
+
 		this.cell = new CellBean(cell);
 	}
-	
+
 	/**
 	 * Create a new transformation message.
 	 * 
 	 * @param cell the cell the message is associated to
 	 * @param message the message
-	 * @param throwable the throwable associated to the message, may be <code>null</code>
+	 * @param throwable the throwable associated to the message, may be
+	 *            <code>null</code>
 	 * @param stackTrace the associated stack trace, or <code>null</code>
 	 */
-	public TransformationMessageImpl(CellBean cell, String message, Throwable throwable, String stackTrace) {
+	public TransformationMessageImpl(CellBean cell, String message, Throwable throwable,
+			String stackTrace) {
 		super(message, throwable, stackTrace);
-		
+
 		this.cell = cell;
 	}
 

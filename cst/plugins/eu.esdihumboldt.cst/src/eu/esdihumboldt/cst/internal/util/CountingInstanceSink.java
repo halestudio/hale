@@ -19,16 +19,18 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Instance sink decorator that counts the added instances.
+ * 
  * @author Simon Templer
  */
 public class CountingInstanceSink implements InstanceSink {
-	
+
 	private final InstanceSink decoratee;
-	
+
 	private final AtomicInteger count = new AtomicInteger();
 
 	/**
 	 * Create a counting instance sink
+	 * 
 	 * @param decoratee the internal instance sink to use
 	 */
 	public CountingInstanceSink(InstanceSink decoratee) {
@@ -42,12 +44,13 @@ public class CountingInstanceSink implements InstanceSink {
 	@Override
 	public void addInstance(Instance instance) {
 		decoratee.addInstance(instance);
-		
+
 		countChanged(count.incrementAndGet());
 	}
 
 	/**
 	 * Called when the count has been incremented
+	 * 
 	 * @param count the current count
 	 */
 	protected void countChanged(int count) {

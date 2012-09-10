@@ -42,18 +42,19 @@ import eu.esdihumboldt.hale.ui.io.util.OpenFileFieldEditor;
 
 /**
  * File import source
+ * 
  * @param <P> the supported {@link IOProvider} type
  * 
  * @author Simon Templer
- * @since 2.5 
+ * @since 2.5
  */
 public class FileSource<P extends ImportProvider> extends AbstractProviderSource<P> {
-	
+
 	/**
 	 * The file field editor for the source file
 	 */
 	private OpenFileFieldEditor sourceFile;
-	
+
 	/**
 	 * The set of supported content types
 	 */
@@ -65,23 +66,23 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 	@Override
 	public void createControls(Composite parent) {
 		parent.setLayout(new GridLayout(3, false));
-		
+
 		// source file
 		sourceFile = new OpenFileFieldEditor("sourceFile", "Source file:", true,
 				FileFieldEditor.VALIDATE_ON_KEY_STROKE, parent);
 		sourceFile.setEmptyStringAllowed(false);
 		sourceFile.setPage(getPage());
-		
+
 		// set content types for file field
 		Collection<IOProviderDescriptor> factories = getConfiguration().getFactories();
 		supportedTypes = new HashSet<IContentType>();
 		for (IOProviderDescriptor factory : factories) {
 			supportedTypes.addAll(factory.getSupportedTypes());
 		}
-		
+
 		sourceFile.setContentTypes(supportedTypes);
 		sourceFile.setPropertyChangeListener(new IPropertyChangeListener() {
-			
+
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
@@ -92,38 +93,38 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 				}
 			}
 		});
-		
+
 		// provider selection
-		
+
 		// label
 		Label providerLabel = new Label(parent, SWT.NONE);
 		providerLabel.setText("Import as");
-		
+
 		// create provider combo
 		ComboViewer providers = createProviders(parent);
-		providers.getControl().setLayoutData(new GridData(SWT.FILL, 
-				SWT.BEGINNING, true, false, 2, 1));
-		
+		providers.getControl().setLayoutData(
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+
 		// initial state update
 		updateState(true);
 	}
-	
+
 	/**
 	 * @see AbstractProviderSource#updateContentType()
 	 */
 	@Override
 	protected void updateContentType() {
 		IContentType contentType = null;
-		
+
 		if (sourceFile.isValid()) {
 			// determine content type
-			Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(
-					supportedTypes, null, sourceFile.getStringValue());
+			Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(supportedTypes,
+					null, sourceFile.getStringValue());
 			if (!filteredTypes.isEmpty()) {
 				contentType = filteredTypes.iterator().next();
 			}
 		}
-		
+
 		getConfiguration().setContentType(contentType);
 		if (contentType != null) {
 			getPage().setMessage(contentType.getName(), DialogPage.INFORMATION);
@@ -131,7 +132,7 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 		else {
 			getPage().setMessage(null);
 		}
-		
+
 		super.updateContentType();
 	}
 

@@ -24,15 +24,16 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Default selection tracker
+ * 
  * @author Simon Templer
  */
 public class SelectionTrackerImpl implements SelectionTracker {
-	
+
 	/**
 	 * The set of concrete selection types currently stored
 	 */
 	private final Set<Class<? extends ISelection>> storedTypes = new HashSet<Class<? extends ISelection>>();
-	
+
 	/**
 	 * The list of the last selection, the latest selection is at index 0
 	 */
@@ -45,10 +46,10 @@ public class SelectionTrackerImpl implements SelectionTracker {
 	 */
 	public SelectionTrackerImpl(ISelectionService selectionService) {
 		super();
-		
-		//TODO use PostSelectionListener instead?
+
+		// TODO use PostSelectionListener instead?
 		selectionService.addSelectionListener(new ISelectionListener() {
-			
+
 			@Override
 			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 				addSelection(selection);
@@ -75,7 +76,7 @@ public class SelectionTrackerImpl implements SelectionTracker {
 			else {
 				storedTypes.add(type);
 			}
-			
+
 			// add selection
 			lastSelections.addFirst(selection);
 		}
@@ -89,15 +90,16 @@ public class SelectionTrackerImpl implements SelectionTracker {
 	public <T extends ISelection> T getSelection(Class<T> selectionType) {
 		synchronized (this) {
 			for (ISelection selection : lastSelections) {
-				// return the first selection found (which is the most recent) that can be assigned to the given selection type
+				// return the first selection found (which is the most recent)
+				// that can be assigned to the given selection type
 				if (selectionType.isAssignableFrom(selection.getClass())) {
 					return (T) selection;
 				}
 			}
 		}
-		
+
 		// none found
 		return null;
 	}
-	
+
 }

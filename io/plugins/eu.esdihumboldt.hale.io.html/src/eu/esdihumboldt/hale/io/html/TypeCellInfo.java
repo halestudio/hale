@@ -34,17 +34,12 @@ public class TypeCellInfo extends CellInfo implements ICellInfo {
 	/**
 	 * Constructor for a type cell info
 	 * 
-	 * @param cell
-	 *            the type cell
-	 * @param align
-	 *            the alignment
-	 * @param cellIds
-	 *            the cell identifier
-	 * @param subDir
-	 *            the sub directory where files will be created
+	 * @param cell the type cell
+	 * @param align the alignment
+	 * @param cellIds the cell identifier
+	 * @param subDir the sub directory where files will be created
 	 */
-	public TypeCellInfo(Cell cell, Alignment align, Identifiers<Cell> cellIds,
-			String subDir) {
+	public TypeCellInfo(Cell cell, Alignment align, Identifiers<Cell> cellIds, String subDir) {
 		super(cell, cellIds, subDir);
 		this.align = align;
 	}
@@ -56,8 +51,8 @@ public class TypeCellInfo extends CellInfo implements ICellInfo {
 	 */
 	public Collection<ICellInfo> getPropertyCellsInfo() {
 		Collection<ICellInfo> propCellInfo = new ArrayList<ICellInfo>();
-		Collection<? extends Cell> propCells = AlignmentUtil
-				.getPropertyCellsFromTypeCell(align, getCell());
+		Collection<? extends Cell> propCells = AlignmentUtil.getPropertyCellsFromTypeCell(align,
+				getCell());
 
 		Iterator<? extends Cell> it = propCells.iterator();
 
@@ -76,8 +71,7 @@ public class TypeCellInfo extends CellInfo implements ICellInfo {
 	 * @return the name of the source cell(s)
 	 */
 	public String getSourceName() {
-		Iterator<? extends Entity> it = getCell().getSource().values()
-				.iterator();
+		Iterator<? extends Entity> it = getCell().getSource().values().iterator();
 		StringBuffer sb = new StringBuffer();
 		while (it.hasNext()) {
 			Entity entity = it.next();
@@ -88,15 +82,14 @@ public class TypeCellInfo extends CellInfo implements ICellInfo {
 
 		return result.substring(0, result.lastIndexOf(","));
 	}
-	
+
 	/**
 	 * Returns the displayed name of the target cell(s)
 	 * 
 	 * @return the name of the target cell(s)
 	 */
 	public String getTargetName() {
-		Iterator<? extends Entity> it = getCell().getTarget().values()
-				.iterator();
+		Iterator<? extends Entity> it = getCell().getTarget().values().iterator();
 		StringBuffer sb = new StringBuffer();
 		while (it.hasNext()) {
 			Entity entity = it.next();

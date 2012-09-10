@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
 
 /**
  * Flags if a property group is a choice, disabled by default
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -29,12 +30,12 @@ public class ChoiceFlag extends AbstractFlagConstraint implements GroupPropertyC
 	 * Enabled choice flag
 	 */
 	public static final ChoiceFlag ENABLED = new ChoiceFlag(true);
-	
+
 	/**
 	 * Disabled choice flag
 	 */
 	public static final ChoiceFlag DISABLED = new ChoiceFlag(false);
-	
+
 	/**
 	 * Get the choice flag
 	 * 
@@ -42,12 +43,12 @@ public class ChoiceFlag extends AbstractFlagConstraint implements GroupPropertyC
 	 * @return the flag
 	 */
 	public static ChoiceFlag get(boolean isChoice) {
-		return (isChoice)?(ENABLED):(DISABLED);
+		return (isChoice) ? (ENABLED) : (DISABLED);
 	}
-	
+
 	/**
-	 * Creates a default choice flag, which is disabled. If possible, instead
-	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
+	 * Creates a default choice flag, which is disabled. If possible, instead of
+	 * creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or
 	 * {@link #DISABLED}.
 	 * 
 	 * @see Cardinality
@@ -55,7 +56,7 @@ public class ChoiceFlag extends AbstractFlagConstraint implements GroupPropertyC
 	public ChoiceFlag() {
 		this(false);
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */

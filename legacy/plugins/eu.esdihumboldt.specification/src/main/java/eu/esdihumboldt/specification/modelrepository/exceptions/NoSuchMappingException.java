@@ -13,32 +13,36 @@ package eu.esdihumboldt.specification.modelrepository.exceptions;
 
 /**
  * Name: eu.esdihumboldt.modelrepository.exceptions / NoSuchMappingException<br/>
- * Purpose: This Exception is thrown when no mapping was found by a service 
- * that satisfies the stated requirements a user has.<br/>
+ * Purpose: This Exception is thrown when no mapping was found by a service that
+ * satisfies the stated requirements a user has.<br/>
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class NoSuchMappingException extends Exception {
 
 	/**
-	 * @param _description - A meaningful description of the exception.
+	 * @param _description
+	 *            - A meaningful description of the exception.
 	 */
 	public NoSuchMappingException(String _description) {
 		super(_description);
 	}
 
 	/**
-	 * @param _root - the root cause of this Exception.
+	 * @param _root
+	 *            - the root cause of this Exception.
 	 */
 	public NoSuchMappingException(Throwable _root) {
 		super(_root);
 	}
 
 	/**
-	 * @param _description - A meaningful description of the exception.
-	 * @param _root - the root cause of this Exception.
+	 * @param _description
+	 *            - A meaningful description of the exception.
+	 * @param _root
+	 *            - the root cause of this Exception.
 	 */
 	public NoSuchMappingException(String _description, Throwable _root) {
 		super(_description, _root);

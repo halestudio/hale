@@ -22,21 +22,21 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.report.impl.AbstractReportDefinition;
 
-
 /**
-* Object definition for {@link IOReporter}.
-* @author Andreas Burchert
-* @partner 01 / Fraunhofer Institute for Computer Graphics Research
-*/
+ * Object definition for {@link IOReporter}.
+ * 
+ * @author Andreas Burchert
+ * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ */
 public class IOReportImplDefinition extends AbstractReportDefinition<IOReport, IOReporter> {
 
 	private static final ALogger _log = ALoggerFactory.getLogger(IOReportImplDefinition.class);
-	
+
 	/**
 	 * Key for target
 	 */
 	public static final String KEY_IOREPORT_TARGET = "target";
-	
+
 	/**
 	 * Constructor
 	 */
@@ -49,12 +49,13 @@ public class IOReportImplDefinition extends AbstractReportDefinition<IOReport, I
 	 */
 	@Override
 	protected IOReporter createReport(Properties props) {
-		return new DefaultIOReporter(new DefaultInputSupplier(URI.create(props.getProperty(KEY_IOREPORT_TARGET))),
-				props.getProperty(KEY_REPORT_TASKNAME), false);
+		return new DefaultIOReporter(new DefaultInputSupplier(URI.create(props
+				.getProperty(KEY_IOREPORT_TARGET))), props.getProperty(KEY_REPORT_TASKNAME), false);
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.report.impl.AbstractReportDefinition#configureReport(eu.esdihumboldt.hale.common.core.report.Report, java.util.Properties)
+	 * @see eu.esdihumboldt.hale.common.core.report.impl.AbstractReportDefinition#configureReport(eu.esdihumboldt.hale.common.core.report.Report,
+	 *      java.util.Properties)
 	 */
 	@Override
 	protected IOReport configureReport(IOReporter reporter, Properties props) {
@@ -63,16 +64,16 @@ public class IOReportImplDefinition extends AbstractReportDefinition<IOReport, I
 		} catch (Exception e) {
 			_log.error("Error while parsing a report", e.getStackTrace());
 		}
-		
+
 		return reporter;
 	}
 
 	@Override
 	protected Properties asProperties(IOReport report) {
 		Properties props = super.asProperties(report);
-		
+
 		props.setProperty(KEY_IOREPORT_TARGET, report.getTarget().getLocation().toString());
-		
+
 		return props;
 	}
 }

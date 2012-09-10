@@ -22,23 +22,25 @@ import eu.esdihumboldt.hale.doc.user.examples.internal.extension.ExampleProject;
 
 /**
  * Topic representing a project.
+ * 
  * @author Simon Templer
  */
 public class ProjectTopic implements ITopic, ExamplesConstants {
 
 	private final ExampleProject project;
-	
+
 	private final ITopic[] subtopics;
 
 	/**
 	 * Create the project topic.
+	 * 
 	 * @param project the associated project
 	 */
 	public ProjectTopic(ExampleProject project) {
 		super();
 		this.project = project;
-		
-		subtopics = new ITopic[]{new MappingDocumentationTopic(project)};
+
+		subtopics = new ITopic[] { new MappingDocumentationTopic(project) };
 	}
 
 	/**
@@ -62,8 +64,7 @@ public class ProjectTopic implements ITopic, ExamplesConstants {
 	 */
 	@Override
 	public String getHref() {
-		return "/" + PLUGIN_ID + "/" + PATH_PREFIX_PROJECT
-				+ project.getId() + ".html";
+		return "/" + PLUGIN_ID + "/" + PATH_PREFIX_PROJECT + project.getId() + ".html";
 	}
 
 	/**
@@ -89,8 +90,7 @@ public class ProjectTopic implements ITopic, ExamplesConstants {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((project == null) ? 0 : project.getId().hashCode());
+		result = prime * result + ((project == null) ? 0 : project.getId().hashCode());
 		return result;
 	}
 
@@ -109,7 +109,8 @@ public class ProjectTopic implements ITopic, ExamplesConstants {
 		if (project == null) {
 			if (other.project != null)
 				return false;
-		} else if (!project.getId().equals(other.project.getId()))
+		}
+		else if (!project.getId().equals(other.project.getId()))
 			return false;
 		return true;
 	}

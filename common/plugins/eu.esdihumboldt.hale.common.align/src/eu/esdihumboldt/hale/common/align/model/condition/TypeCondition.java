@@ -16,11 +16,12 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 
 /**
  * Condition a {@link Type} may fulfill
+ * 
  * @author Simon Templer
  * @since 2.5
  */
 public interface TypeCondition extends EntityCondition<Type> {
 
 	// concrete typed interface
-	
+
 }

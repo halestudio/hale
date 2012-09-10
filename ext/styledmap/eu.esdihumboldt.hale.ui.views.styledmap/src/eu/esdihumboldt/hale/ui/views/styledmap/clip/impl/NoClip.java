@@ -19,14 +19,16 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
 
 /**
  * Clip algorithm that performs no clipping.
+ * 
  * @author Simon Templer
  */
 public class NoClip implements Clip {
-	
+
 	private static NoClip instance;
-	
+
 	/**
 	 * Get the {@link NoClip} instance.
+	 * 
 	 * @return the instance
 	 */
 	public static NoClip getInstance() {
@@ -37,7 +39,7 @@ public class NoClip implements Clip {
 	}
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	private NoClip() {
 		super();
@@ -47,8 +49,7 @@ public class NoClip implements Clip {
 	 * @see Clip#getClip(Rectangle, int, int, int, int)
 	 */
 	@Override
-	public Shape getClip(Rectangle viewportBounds, int originX, int originY,
-			int width, int height) {
+	public Shape getClip(Rectangle viewportBounds, int originX, int originY, int width, int height) {
 		// no clipping, return the whole area
 		return new Rectangle(width, height);
 	}

@@ -15,17 +15,28 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * <p>Title: PackageResolver</p>
- * <p>Description: This interface provides a method which returns
- * an URL for a package.</p>
- * <p>Copyright: Copyright (c) 2004-2008</p>
- * <p>Company: Fraunhofer IGD</p>
+ * <p>
+ * Title: PackageResolver
+ * </p>
+ * <p>
+ * Description: This interface provides a method which returns an URL for a
+ * package.
+ * </p>
+ * <p>
+ * Copyright: Copyright (c) 2004-2008
+ * </p>
+ * <p>
+ * Company: Fraunhofer IGD
+ * </p>
+ * 
  * @author Michel Kraemer
  * @version $Id$
  */
 public interface PackageResolver {
+
 	/**
 	 * Returns an URL for a package
+	 * 
 	 * @param pkg the package (e.g. de.fhg.igd.CityServer3D)
 	 * @return the URL to the package
 	 * @throws IOException if the URL could not be retrieved

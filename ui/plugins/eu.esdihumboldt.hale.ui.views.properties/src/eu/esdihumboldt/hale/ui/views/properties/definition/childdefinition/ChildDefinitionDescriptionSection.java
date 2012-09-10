@@ -17,9 +17,10 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionDescription
 
 /**
  * Properties section with description
+ * 
  * @author Patrick Lieb
  */
-public class ChildDefinitionDescriptionSection extends DefinitionDescriptionSection{
+public class ChildDefinitionDescriptionSection extends DefinitionDescriptionSection {
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSection#setInput(java.lang.Object)
@@ -27,7 +28,7 @@ public class ChildDefinitionDescriptionSection extends DefinitionDescriptionSect
 	@Override
 	protected void setInput(Object input) {
 		super.setInput(input);
-		
+
 		setDefinition(((ChildDefinition<?>) getDefinition()).getParentType());
 	}
 }

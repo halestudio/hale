@@ -19,7 +19,7 @@ import org.apache.xmlbeans.XmlTime;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Convert {@link Date} to xs:time 
+ * Convert {@link Date} to xs:time
  */
 public class DateToXmlTime implements Converter<Date, XmlTime> {
 

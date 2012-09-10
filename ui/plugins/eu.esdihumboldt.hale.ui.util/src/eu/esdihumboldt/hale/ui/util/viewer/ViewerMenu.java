@@ -19,12 +19,14 @@ import eu.esdihumboldt.hale.ui.util.ViewContextMenu;
 
 /**
  * A viewer context menu.
+ * 
  * @author Simon Templer
  */
 public class ViewerMenu extends ViewContextMenu {
-	
+
 	/**
 	 * Create a viewer context menu.
+	 * 
 	 * @param site the (view) site containing the viewer
 	 * @param viewer the viewer
 	 */

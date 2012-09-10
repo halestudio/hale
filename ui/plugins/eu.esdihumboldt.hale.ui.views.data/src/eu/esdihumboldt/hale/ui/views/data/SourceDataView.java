@@ -34,26 +34,25 @@ import eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceServiceSelecto
 import eu.esdihumboldt.hale.ui.views.data.internal.filter.WindowSelectionSelector;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
-
 /**
  * Table for viewing reference data
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SourceDataView extends AbstractDataView {
-	
+
 	/**
 	 * The view id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.data.source"; //$NON-NLS-1$
-	
+
 	private Image mapImage;
-	
+
 	private Image instanceImage;
-	
+
 	private InstanceServiceSelector instanceSelector;
-	
+
 	private WindowSelectionSelector mapSelector;
 
 	/**
@@ -61,12 +60,12 @@ public class SourceDataView extends AbstractDataView {
 	 */
 	public SourceDataView() {
 		super(new InstanceServiceSelector(SchemaSpaceID.SOURCE), ID + ".viewer");
-		
+
 		instanceSelector = (InstanceServiceSelector) getDefaultInstanceSelector();
 		// another selector based on the map selection
 		mapSelector = new WindowSelectionSelector(DataSet.SOURCE);
 	}
-	
+
 	/**
 	 * @see PropertiesViewPart#getViewContext()
 	 */
@@ -80,18 +79,19 @@ public class SourceDataView extends AbstractDataView {
 	 */
 	@Override
 	protected void onSelectionChange(Iterable<Instance> selection) {
-		InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
-		
+		InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(
+				InstanceSampleService.class);
+
 		List<Instance> res = new ArrayList<Instance>();
 		if (selection != null) {
 			for (Instance instance : selection) {
 				res.add(instance);
 			}
 		}
-		
+
 		rss.setReferenceInstances(res);
 	}
-	
+
 	/**
 	 * @see AbstractDataView#provideCustomControls(Composite)
 	 */
@@ -103,7 +103,7 @@ public class SourceDataView extends AbstractDataView {
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
 		parent.setLayout(layout);
-		
+
 		final Button instanceButton = new Button(parent, SWT.RADIO);
 		if (instanceImage == null) {
 			instanceImage = DataViewPlugin.getImageDescriptor("icons/random.gif").createImage(); //$NON-NLS-1$
@@ -117,9 +117,9 @@ public class SourceDataView extends AbstractDataView {
 			public void widgetSelected(SelectionEvent e) {
 				setInstanceSelector(instanceSelector);
 			}
-			
+
 		});
-		
+
 		final Button mapButton = new Button(parent, SWT.RADIO);
 		if (mapImage == null) {
 			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
@@ -132,7 +132,7 @@ public class SourceDataView extends AbstractDataView {
 			public void widgetSelected(SelectionEvent e) {
 				setInstanceSelector(mapSelector);
 			}
-			
+
 		});
 	}
 
@@ -147,7 +147,7 @@ public class SourceDataView extends AbstractDataView {
 		if (instanceImage != null) {
 			instanceImage.dispose();
 		}
-		
+
 		super.dispose();
 	}
 

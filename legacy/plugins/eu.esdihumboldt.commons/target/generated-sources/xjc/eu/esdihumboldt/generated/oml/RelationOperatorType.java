@@ -5,18 +5,20 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for RelationOperatorType.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for RelationOperatorType.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="RelationOperatorType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -39,23 +41,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum RelationOperatorType {
 
-    INTERSECTION,
-    UNION,
-    UNION_DUPLICATES,
-    COMPLEMENT,
-    INVERSE,
-    SYMMETRIC,
-    TRANSITIVE,
-    REFLEXIVE,
-    FIRST,
-    NEXT;
+	INTERSECTION, UNION, UNION_DUPLICATES, COMPLEMENT, INVERSE, SYMMETRIC, TRANSITIVE, REFLEXIVE, FIRST, NEXT;
 
-    public String value() {
-        return name();
-    }
+	public String value() {
+		return name();
+	}
 
-    public static RelationOperatorType fromValue(String v) {
-        return valueOf(v);
-    }
+	public static RelationOperatorType fromValue(String v) {
+		return valueOf(v);
+	}
 
 }

@@ -18,8 +18,9 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
 
 /**
- * Flags if a type is mapping relevant, i.e. that it is a valid source or target for a
- * retype. Disabled by default.
+ * Flags if a type is mapping relevant, i.e. that it is a valid source or target
+ * for a retype. Disabled by default.
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -30,12 +31,12 @@ public class MappingRelevantFlag extends AbstractFlagConstraint implements TypeC
 	 * Enabled mappable flag
 	 */
 	public static final MappingRelevantFlag ENABLED = new MappingRelevantFlag(true);
-	
+
 	/**
 	 * Disabled mappable flag
 	 */
 	public static final MappingRelevantFlag DISABLED = new MappingRelevantFlag(false);
-	
+
 	/**
 	 * Get the mappable flag
 	 * 
@@ -43,13 +44,13 @@ public class MappingRelevantFlag extends AbstractFlagConstraint implements TypeC
 	 * @return the flag
 	 */
 	public static MappingRelevantFlag get(boolean isMappable) {
-		return (isMappable)?(ENABLED):(DISABLED);
+		return (isMappable) ? (ENABLED) : (DISABLED);
 	}
-	
+
 	/**
-	 * Creates a default mapping relevant flag, which is disabled. If possible, instead
-	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
-	 * {@link #DISABLED}.
+	 * Creates a default mapping relevant flag, which is disabled. If possible,
+	 * instead of creating an instance, use {@link #get(boolean)},
+	 * {@link #ENABLED} or {@link #DISABLED}.
 	 * 
 	 * @see Constraint
 	 */
@@ -57,7 +58,7 @@ public class MappingRelevantFlag extends AbstractFlagConstraint implements TypeC
 		// disabled by default because of simple types etc.
 		this(false);
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */

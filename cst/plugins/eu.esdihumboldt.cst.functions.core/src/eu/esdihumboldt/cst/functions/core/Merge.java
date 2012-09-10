@@ -20,9 +20,11 @@ import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler
 /**
  * Type transformation that merges multiple instances of the same source type
  * into one target instance, based on matching properties.
+ * 
  * @author Simon Templer
  */
 public class Merge extends Retype implements MergeFunction {
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation#getInstanceHandler()
 	 */

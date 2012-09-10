@@ -26,37 +26,38 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
 
 /**
  * Default report implementation
- * @param <T> the message type 
- *
+ * 
+ * @param <T> the message type
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
 public class DefaultReporter<T extends Message> implements Reporter<T> {
-	
+
 	/**
 	 * The logger
 	 */
 	public static final ALogger log = ALoggerFactory.getMaskingLogger(DefaultReporter.class, null);
-	
+
 	private boolean success = false;
-	
+
 	private final Class<T> messageType;
-	
+
 	private final List<T> errors = new ArrayList<T>();
-	
+
 	private final List<T> warnings = new ArrayList<T>();
-	
+
 	private final List<T> infos = new ArrayList<T>();
-	
+
 	private Date startTime;
-	
+
 	private Date timestamp;
-	
+
 	private final boolean doLog;
-	
+
 	private final String taskName;
-	
+
 	private String summary;
 
 	/**
@@ -64,65 +65,66 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	 * should call {@link #setSuccess(boolean)} nonetheless to update the
 	 * timestamp after the task has finished.
 	 * 
-	 * @param taskName the name of the task the report is related to 
+	 * @param taskName the name of the task the report is related to
 	 * @param messageType the message type
-	 * @param doLog if added messages shall also be logged using {@link ALogger} 
+	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public DefaultReporter(String taskName, Class<T> messageType, boolean doLog) {
 		super();
 		this.messageType = messageType;
 		this.doLog = doLog;
 		this.taskName = taskName;
-		
+
 		timestamp = new Date();
 	}
 
 	/**
-	 * Adds a warning to the report. If configured accordingly a log
-	 * message will also be created.
+	 * Adds a warning to the report. If configured accordingly a log message
+	 * will also be created.
 	 * 
 	 * @param message the warning message
 	 */
 	@Override
 	public void warn(T message) {
 		warnings.add(message);
-		
+
 		if (doLog) {
 			log.warn(message.getMessage(), message.getThrowable());
 		}
 	}
-	
+
 	/**
-	 * Adds an error to the report. If configured accordingly a log
-	 * message will also be created.
+	 * Adds an error to the report. If configured accordingly a log message will
+	 * also be created.
 	 * 
 	 * @param message the error message
 	 */
 	@Override
 	public void error(T message) {
 		errors.add(message);
-		
+
 		if (doLog) {
 			log.error(message.getMessage(), message.getThrowable());
 		}
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.report.ReportLog#info(eu.esdihumboldt.hale.common.core.report.Message)
 	 */
 	@Override
 	public void info(T message) {
 		infos.add(message);
-		
+
 		if (doLog) {
 			log.info(message.getMessage(), message.getThrowable());
 		}
 	}
-	
+
 	/**
 	 * Set the summary message of the report.
+	 * 
 	 * @param summary the summary to set, if <code>null</code> the report will
-	 * revert to the default summary.
+	 *            revert to the default summary.
 	 */
 	@Override
 	public void setSummary(String summary) {
@@ -161,7 +163,7 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 		if (summary != null) {
 			return summary;
 		}
-		
+
 		if (success) {
 			return getSuccessSummary();
 		}
@@ -172,7 +174,8 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 
 	/**
 	 * Get the default report summary if it was not successful.
-	 * @return the report summary 
+	 * 
+	 * @return the report summary
 	 */
 	protected String getFailSummary() {
 		return "Failed";
@@ -180,7 +183,8 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 
 	/**
 	 * Get the default report summary if it was successful.
-	 * @return the report summary 
+	 * 
+	 * @return the report summary
 	 */
 	protected String getSuccessSummary() {
 		if (errors.isEmpty()) {
@@ -211,7 +215,7 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	public Collection<T> getWarnings() {
 		return Collections.unmodifiableList(warnings);
 	}
-	
+
 	/**
 	 * @see Report#getInfos()
 	 */
@@ -226,7 +230,7 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	@Override
 	public void setSuccess(boolean success) {
 		this.success = success;
-		
+
 		if (startTime == null) {
 			startTime = timestamp;
 		}
@@ -253,11 +257,11 @@ public class DefaultReporter<T extends Message> implements Reporter<T> {
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		String NL = System.getProperty("line.separator");
-	    
-		result.append("taskname = "+this.getTaskName()+NL);
-		result.append("success = "+this.isSuccess()+NL);
-		result.append("summary = "+this.getSummary()+NL);
-		
+
+		result.append("taskname = " + this.getTaskName() + NL);
+		result.append("success = " + this.isSuccess() + NL);
+		result.append("summary = " + this.getSummary() + NL);
+
 		return result.toString();
 	}
 

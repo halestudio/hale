@@ -24,24 +24,20 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtensio
  * Table of contents for the function reference
  */
 public class FunctionReferenceTopic implements ITopic {
-	
+
 	private final ITopic typeFunctions;
 	private final ITopic propertyFunctions;
-	
+
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public FunctionReferenceTopic() {
 		super();
 		// create topics
-		typeFunctions = new FunctionsTopic(
-				TypeFunctionExtension.getInstance(),
-				"Type relations", 
-				null); //"html/type-functions.html");
-		propertyFunctions = new FunctionsTopic(
-				PropertyFunctionExtension.getInstance(),
-				"Property relations", 
-				null); //"html/property-functions.html");
+		typeFunctions = new FunctionsTopic(TypeFunctionExtension.getInstance(), "Type relations",
+				null); // "html/type-functions.html");
+		propertyFunctions = new FunctionsTopic(PropertyFunctionExtension.getInstance(),
+				"Property relations", null); // "html/property-functions.html");
 	}
 
 	/**
@@ -65,8 +61,8 @@ public class FunctionReferenceTopic implements ITopic {
 	 */
 	@Override
 	public String getHref() {
-		//TODO return HREF to main function reference description?
-		//return "html/functions.html";
+		// TODO return HREF to main function reference description?
+		// return "html/functions.html";
 		return null;
 	}
 
@@ -83,7 +79,7 @@ public class FunctionReferenceTopic implements ITopic {
 	 */
 	@Override
 	public ITopic[] getSubtopics() {
-		return new ITopic[]{typeFunctions, propertyFunctions};
+		return new ITopic[] { typeFunctions, propertyFunctions };
 	}
 
 }

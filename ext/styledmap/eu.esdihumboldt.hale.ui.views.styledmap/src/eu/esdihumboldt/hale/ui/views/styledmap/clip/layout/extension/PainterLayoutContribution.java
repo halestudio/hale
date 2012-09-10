@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 
 /**
  * {@link PainterLayout} contribution
+ * 
  * @author Simon Templer
  */
 public class PainterLayoutContribution extends
@@ -31,7 +32,8 @@ public class PainterLayoutContribution extends
 	 */
 	@Override
 	protected ExclusiveExtension<PainterLayout, PainterLayoutFactory> initExtension() {
-		return (PainterLayoutService) PlatformUI.getWorkbench().getService(PainterLayoutService.class);
+		return (PainterLayoutService) PlatformUI.getWorkbench().getService(
+				PainterLayoutService.class);
 	}
 
 }

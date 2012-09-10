@@ -22,11 +22,12 @@ import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 /**
  * Constraint associating a geometry handler with a type. By default no geometry
  * handler is associated.
+ * 
  * @author Simon Templer
  */
 @Constraint(mutable = false)
 public class GeometryFactory implements TypeConstraint {
-	
+
 	private final GeometryHandler handler;
 
 	/**
@@ -35,9 +36,10 @@ public class GeometryFactory implements TypeConstraint {
 	public GeometryFactory() {
 		handler = null;
 	}
-	
+
 	/**
 	 * Create a geometry factory constraint based on the given geometry handler.
+	 * 
 	 * @param handler the geometry handler
 	 */
 	public GeometryFactory(GeometryHandler handler) {
@@ -53,27 +55,28 @@ public class GeometryFactory implements TypeConstraint {
 		// inherited unless overridden
 		return true;
 	}
-	
+
 	/**
 	 * Create a geometry value from a given instance.
+	 * 
 	 * @param instance the instance
 	 * @param srsDimension the dimension of the instance
 	 * @return the geometry value derived from the instance, the return type
-	 *   should match the {@link Binding}, may be <code>null</code> if no
-	 *   geometry could be created or if no geometry handler is associated
+	 *         should match the {@link Binding}, may be <code>null</code> if no
+	 *         geometry could be created or if no geometry handler is associated
 	 */
 	public Object createGeometry(Instance instance, int srsDimension) {
 		if (handler == null) {
 			return null;
-			//XXX instead fall back to Geometries.getInstance()?
+			// XXX instead fall back to Geometries.getInstance()?
 		}
-		
+
 		try {
 			return handler.createGeometry(instance, srsDimension);
 		} catch (GeometryNotSupportedException e) {
-			//TODO report error?
-			//TODO try creating the geometry in any other way?
-			
+			// TODO report error?
+			// TODO try creating the geometry in any other way?
+
 			return null;
 		}
 	}

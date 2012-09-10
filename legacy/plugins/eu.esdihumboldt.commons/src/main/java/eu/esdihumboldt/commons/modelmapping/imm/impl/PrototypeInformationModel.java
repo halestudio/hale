@@ -1,6 +1,5 @@
 package eu.esdihumboldt.commons.modelmapping.imm.impl;
 
-
 import java.io.Serializable;
 import java.net.URI;
 import java.util.HashSet;
@@ -18,47 +17,47 @@ import eu.esdihumboldt.specification.modelrepository.abstractfc.VersionInformati
 /**
  * Prototype Implementation of the InformationModel.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: PrototypeInformationModel.java,v 1.6 2007-12-06 13:20:24 pitaeva Exp $ 
+ * @version $Id: PrototypeInformationModel.java,v 1.6 2007-12-06 13:20:24
+ *          pitaeva Exp $
  */
-public class PrototypeInformationModel 
-	implements ConceptualSchema, Serializable {
+public class PrototypeInformationModel implements ConceptualSchema,
+		Serializable {
 
 	// Fields ..................................................................
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	private Set<AccessConstraint> accessConstraints = null;
-	
+
 	private Set<String> applicationFields = null;
-	
+
 	private Set<Concept> concepts;
-	
+
 	private String name;
 	private eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers.CitationHelper dbName;
-	
+
 	private Citation parentIMcitation = null;
-	
+
 	private Set<eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers.CitationHelper> dbParentIMcitation;
-																					
-	
+
 	private ResponsiblePartyImpl producer = null;
-	
+
 	private Set<ResponsiblePartyHelper> dbProducer;
-	
+
 	private VersionInformation versionInformation = null;
 	private Set<VersionInformation> dbVersionInformation;
-	
+
 	private long id;
-	
+
 	private URI uri;
 
 	// Constructors ............................................................
-	
+
 	/**
 	 * @return unique identifier for the database.
 	 */
@@ -67,31 +66,27 @@ public class PrototypeInformationModel
 	}
 
 	/**
-	 * @param id unique identifier for tne database.
+	 * @param id
+	 *            unique identifier for tne database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	/** 
-	 * Default no-args constructor
-	 * must be public (castor).
+	/**
+	 * Default no-args constructor must be public (castor).
 	 */
-	public PrototypeInformationModel(){
+	public PrototypeInformationModel() {
 		super();
 		// TODO: discuss default constructoe
 	}
-	
+
 	/**
 	 * Default full constructor.
 	 */
-	public PrototypeInformationModel(
-			Set<AccessConstraint> accessConstraints,
-			Set<String> applicationFields, 
-			Set<Concept> concepts,
-			String name, 
-			Citation parentIMcitation,
-			ResponsiblePartyImpl producer, 
+	public PrototypeInformationModel(Set<AccessConstraint> accessConstraints,
+			Set<String> applicationFields, Set<Concept> concepts, String name,
+			Citation parentIMcitation, ResponsiblePartyImpl producer,
 			VersionInformation versionInformation) {
 		this(name, concepts);
 		this.accessConstraints = accessConstraints;
@@ -111,7 +106,7 @@ public class PrototypeInformationModel
 		this.name = _name;
 		this.concepts = _concepts;
 	}
-	
+
 	/**
 	 * Default minimum constructor - a name must always be given.
 	 */
@@ -120,9 +115,9 @@ public class PrototypeInformationModel
 		this.name = _name;
 		this.concepts = new HashSet<Concept>();
 	}
-	
+
 	// InformationModel methods ................................................
-	
+
 	/**
 	 * @see eu.esdihumboldt.modelrepository.abstractfc.InformationModel#getAccessConstraints()
 	 */
@@ -158,8 +153,6 @@ public class PrototypeInformationModel
 		return this.parentIMcitation;
 	}
 
-	
-
 	/**
 	 * @see eu.esdihumboldt.modelrepository.abstractfc.InformationModel#getVersionInformation()
 	 */
@@ -180,8 +173,6 @@ public class PrototypeInformationModel
 	public void setConcepts(Set<Concept> concepts) {
 		this.concepts = concepts;
 	}
-
-	
 
 	/**
 	 * @param parentIMcitation
@@ -204,8 +195,6 @@ public class PrototypeInformationModel
 		this.name = name;
 	}
 
-	
-
 	/**
 	 * @param versionInformation
 	 */
@@ -213,11 +202,8 @@ public class PrototypeInformationModel
 		this.versionInformation = versionInformation;
 	}
 
-	
-
-	
 	public ResponsiblePartyImpl getProducer() {
-		
+
 		return this.producer;
 	}
 
@@ -229,14 +215,13 @@ public class PrototypeInformationModel
 	}
 
 	/**
-	 * @param dbName the dbName to set
+	 * @param dbName
+	 *            the dbName to set
 	 */
 	public void setDbName(
 			eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers.CitationHelper dbName) {
 		this.dbName = dbName;
 	}
-
-	
 
 	/**
 	 * @return the dbParentIMcitation
@@ -246,7 +231,8 @@ public class PrototypeInformationModel
 	}
 
 	/**
-	 * @param dbParentIMcitation the dbParentIMcitation to set
+	 * @param dbParentIMcitation
+	 *            the dbParentIMcitation to set
 	 */
 	public void setDbParentIMcitation(
 			Set<eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers.CitationHelper> dbParentIMcitation) {
@@ -259,7 +245,8 @@ public class PrototypeInformationModel
 	}
 
 	/**
-	 * @param producer the producer to set
+	 * @param producer
+	 *            the producer to set
 	 */
 	public void setProducer(ResponsiblePartyImpl producer) {
 		this.producer = producer;
@@ -273,10 +260,10 @@ public class PrototypeInformationModel
 	}
 
 	/**
-	 * @param dbProducer the dbProducer to set
+	 * @param dbProducer
+	 *            the dbProducer to set
 	 */
-	public void setDbProducer(
-			Set<ResponsiblePartyHelper> dbProducer) {
+	public void setDbProducer(Set<ResponsiblePartyHelper> dbProducer) {
 		this.dbProducer = dbProducer;
 	}
 
@@ -288,9 +275,11 @@ public class PrototypeInformationModel
 	}
 
 	/**
-	 * @param dbVersionInformation the dbVersionInformation to set
+	 * @param dbVersionInformation
+	 *            the dbVersionInformation to set
 	 */
-	public void setDbVersionInformation(Set<VersionInformation> dbVersionInformation) {
+	public void setDbVersionInformation(
+			Set<VersionInformation> dbVersionInformation) {
 		this.dbVersionInformation = dbVersionInformation;
 	}
 
@@ -302,5 +291,4 @@ public class PrototypeInformationModel
 		return this.uri;
 	}
 
-	
 }

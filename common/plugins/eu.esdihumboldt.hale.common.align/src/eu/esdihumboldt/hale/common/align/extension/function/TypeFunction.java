@@ -21,9 +21,9 @@ import net.jcip.annotations.Immutable;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-
 /**
  * Type function
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -37,17 +37,16 @@ public final class TypeFunction extends AbstractFunction<TypeParameter> {
 	 */
 	public TypeFunction(IConfigurationElement conf) {
 		super(conf);
-		
+
 		// populate source and target properties
 		source = new LinkedHashSet<TypeParameter>();
 		addTypes(source, conf.getChildren("sourceTypes"));
-		
+
 		target = new LinkedHashSet<TypeParameter>();
 		addTypes(target, conf.getChildren("targetTypes"));
 	}
-	
-	private static void addTypes(Set<TypeParameter> collector,
-			IConfigurationElement[] typesElements) {
+
+	private static void addTypes(Set<TypeParameter> collector, IConfigurationElement[] typesElements) {
 		if (typesElements != null) {
 			for (IConfigurationElement typesElement : typesElements) {
 				IConfigurationElement[] types = typesElement.getChildren("type");
@@ -62,29 +61,31 @@ public final class TypeFunction extends AbstractFunction<TypeParameter> {
 
 	/**
 	 * Get the source properties
+	 * 
 	 * @return the source properties
 	 */
 	@Override
 	public Set<TypeParameter> getSource() {
 		return Collections.unmodifiableSet(source);
 	}
-	
+
 	/**
 	 * Get the target properties
+	 * 
 	 * @return the target properties
 	 */
 	@Override
 	public Set<TypeParameter> getTarget() {
 		return Collections.unmodifiableSet(target);
 	}
-	
+
 	/**
 	 * @see AbstractFunction#getIconURL()
 	 */
 	@Override
 	public URL getIconURL() {
 		URL icon = super.getIconURL();
-		if (icon == null)  {
+		if (icon == null) {
 			icon = getClass().getResource("/icons/typeFunction.png");
 		}
 		return icon;

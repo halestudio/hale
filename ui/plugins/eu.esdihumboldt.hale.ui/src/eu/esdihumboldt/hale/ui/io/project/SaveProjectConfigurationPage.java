@@ -19,20 +19,19 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Base class for {@link ProjectWriter} configuration pages
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public abstract class SaveProjectConfigurationPage
-		extends AbstractConfigurationPage<ProjectWriter, 
-		SaveProjectWizard> {
+public abstract class SaveProjectConfigurationPage extends
+		AbstractConfigurationPage<ProjectWriter, SaveProjectWizard> {
 
 	/**
-	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String, ImageDescriptor)
+	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String,
+	 *      ImageDescriptor)
 	 */
-	protected SaveProjectConfigurationPage(String pageName, String title,
-			ImageDescriptor titleImage) {
+	protected SaveProjectConfigurationPage(String pageName, String title, ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
 	}
 

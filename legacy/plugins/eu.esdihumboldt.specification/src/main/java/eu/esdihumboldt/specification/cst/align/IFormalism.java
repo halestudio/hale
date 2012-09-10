@@ -17,12 +17,12 @@ import java.net.URI;
 /**
  * Identifies any formalism that can be used to describe e.g. a {@link ISchema}.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface IFormalism {
-	
+
 	/**
 	 * @return the name
 	 */

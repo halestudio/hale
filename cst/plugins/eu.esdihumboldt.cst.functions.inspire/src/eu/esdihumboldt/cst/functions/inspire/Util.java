@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * Util class for geographical name and identifier function
  * 
  * @author Kevin Mais
- *
+ * 
  */
 public class Util {
 
@@ -30,22 +30,17 @@ public class Util {
 	 * Looks for a child in <code>definition</code> with the name
 	 * <code>localpart</code>
 	 * 
-	 * @param localpart
-	 *            the name of the child to look for
-	 * @param definition
-	 *            the type definition to search the children through
+	 * @param localpart the name of the child to look for
+	 * @param definition the type definition to search the children through
 	 * @return the child with the name <code>localpart</code>, can be
 	 *         <code>null</code>
 	 */
-	public static PropertyDefinition getChild(String localpart,
-			TypeDefinition definition) {
+	public static PropertyDefinition getChild(String localpart, TypeDefinition definition) {
 
-		Collection<? extends ChildDefinition<?>> children = definition
-				.getChildren();
+		Collection<? extends ChildDefinition<?>> children = definition.getChildren();
 
 		for (ChildDefinition<?> child : children) {
-			if (child.asProperty() != null
-					&& child.getName().getLocalPart().equals(localpart)) {
+			if (child.asProperty() != null && child.getName().getLocalPart().equals(localpart)) {
 				return child.asProperty();
 			}
 		}

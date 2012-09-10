@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 
 /**
  * Layout that displays only the first painter.
+ * 
  * @author Simon Templer
  */
 public class OnlyFirstLayout implements PainterLayout {

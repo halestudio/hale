@@ -21,14 +21,16 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
  * Content provider that shows properties of an input type entity definition.
+ * 
  * @author Simon Templer
  */
 public class EntityTypePropertyContentProvider extends EntityTypeIndexContentProvider {
 
 	/**
-	 * @see EntityTypeIndexContentProvider#EntityTypeIndexContentProvider(TreeViewer, EntityDefinitionService, SchemaSpaceID)
+	 * @see EntityTypeIndexContentProvider#EntityTypeIndexContentProvider(TreeViewer,
+	 *      EntityDefinitionService, SchemaSpaceID)
 	 */
-	public EntityTypePropertyContentProvider(TreeViewer tree, 
+	public EntityTypePropertyContentProvider(TreeViewer tree,
 			EntityDefinitionService entityDefinitionService, SchemaSpaceID schemaSpace) {
 		super(tree, entityDefinitionService, schemaSpace);
 	}
@@ -42,7 +44,8 @@ public class EntityTypePropertyContentProvider extends EntityTypeIndexContentPro
 			return getChildren(inputElement);
 		}
 		else {
-			throw new IllegalArgumentException("Content provider only applicable for type definitions.");
+			throw new IllegalArgumentException(
+					"Content provider only applicable for type definitions.");
 		}
 	}
 

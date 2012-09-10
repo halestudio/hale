@@ -14,23 +14,23 @@ package eu.esdihumboldt.hale.ui.codelist.legacy;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface CodeListPreferenceConstants {
-	
+
 	/**
 	 * The name of the search path key prefix
 	 */
 	public final String KEY_SEARCH_PATH_PREFIX = "codelist.searchpath.path"; //$NON-NLS-1$
-	
+
 	/**
 	 * The name of the search path count key
 	 */
 	public final String KEY_SEARCH_PATH_COUNT = "codelist.searchpath.count"; //$NON-NLS-1$
-	
+
 	/**
 	 * The name of the attribute key prefix
 	 */

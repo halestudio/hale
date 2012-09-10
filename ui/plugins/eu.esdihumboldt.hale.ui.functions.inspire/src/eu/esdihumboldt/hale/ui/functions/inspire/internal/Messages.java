@@ -4,6 +4,7 @@ import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("all")
 public class Messages extends NLS {
+
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.ui.functions.inspire.internal.messages"; //$NON-NLS-1$
 	public static String GeographicNameFunctionWizard_1;
 	public static String GeographicNameFunctionWizard_2;

@@ -13,13 +13,9 @@ package eu.esdihumboldt.specification.mediator.constraints.portrayal;
 
 import java.util.Set;
 
-
-
-
-
 /**
  * A NamedLayer describes a layer of data that has a name advertised by a WMS.
- *
+ * 
  * 
  * 
  * @author Anna Pitaev, Logica CMG
@@ -27,31 +23,29 @@ import java.util.Set;
  * 
  */
 public interface NamedLayer {
-	
+
 	/**
 	 * 
 	 * @return Layer Name.
 	 */
 	public String getName();
-	
+
 	/**
 	 * 
 	 * @return a List of User Defined Styles.
 	 */
 	public Set<UserStyle> getUserStyle();
-	
+
 	/**
 	 * 
 	 * @ return a List of NamedStyles.
 	 */
 	public Set<NamedStyle> getNamedStyle();
-	
+
 	/**
 	 * 
 	 * @return a LayerFeatureConstraint.
 	 */
-	public LayerFeatureConstraint getLayerFeatureConstraint(); 
-	
-	
+	public LayerFeatureConstraint getLayerFeatureConstraint();
 
 }

@@ -16,11 +16,11 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TypeTransformat
 
 /**
  * Factory for {@link TypeTransformation}s
+ * 
  * @author Simon Templer
  */
-public interface TypeTransformationFactory extends
-		TransformationFactory<TypeTransformation<?>> {
-	
+public interface TypeTransformationFactory extends TransformationFactory<TypeTransformation<?>> {
+
 	// concrete typed interface
 
 }

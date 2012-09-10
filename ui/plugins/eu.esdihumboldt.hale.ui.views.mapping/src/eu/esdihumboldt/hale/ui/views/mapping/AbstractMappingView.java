@@ -36,10 +36,12 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 /**
  * Abstract mapping graph view. Subclasses are responsible for setting the
  * viewer input.
+ * 
  * @author Simon Templer
  */
-public abstract class AbstractMappingView extends PropertiesViewPart implements IZoomableWorkbenchPart {
-	
+public abstract class AbstractMappingView extends PropertiesViewPart implements
+		IZoomableWorkbenchPart {
+
 	private GraphViewer viewer;
 
 	/**
@@ -57,16 +59,17 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 		viewer.setLayoutAlgorithm(layout, true);
 		viewer.applyLayout();
 		fillToolBar();
-		
+
 		// set selection provider
 		getSite().setSelectionProvider(new PostSelectionSupport(getViewer()));
-		
+
 		// create context menu
 		new ViewerMenu(getSite(), getViewer());
 	}
-	
+
 	/**
 	 * Create the label provider to be used for the graph
+	 * 
 	 * @return the label provider
 	 */
 	protected IBaseLabelProvider createLabelProvider() {
@@ -75,6 +78,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 
 	/**
 	 * Create the content provider to be used for the graph
+	 * 
 	 * @return the content provider
 	 */
 	protected IContentProvider createContentProvider() {
@@ -83,6 +87,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 
 	/**
 	 * Create the initial layout to use
+	 * 
 	 * @return the layout
 	 */
 	protected LayoutAlgorithm createLayout() {
@@ -90,14 +95,14 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements 
 		layout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT);
 		return layout;
 	}
-	
+
 	private void fillToolBar() {
 		ZoomContributionViewItem toolbarZoomContributionViewItem = new ZoomContributionViewItem(
 				this);
 		IActionBars bars = getViewSite().getActionBars();
 		bars.getMenuManager().add(toolbarZoomContributionViewItem);
 		bars.getToolBarManager().add(new LayoutAction(viewer));
-		
+
 		bars.getToolBarManager().add(new ExportGraphAction(viewer));
 	}
 

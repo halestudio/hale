@@ -11,9 +11,9 @@
  */
 package eu.esdihumboldt.hale.common.schema;
 
-
 /**
  * Declares identifiers of different schema spaces available.
+ * 
  * @author Thorsten Reitz
  */
 public enum SchemaSpaceID {

@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
 /**
  * Flags if a type is mappable, i.e. that it is a valid source or target for a
  * retype. Disabled by default.
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -30,12 +31,12 @@ public class MappableFlag extends AbstractFlagConstraint implements TypeConstrai
 	 * Enabled mappable flag
 	 */
 	public static final MappableFlag ENABLED = new MappableFlag(true);
-	
+
 	/**
 	 * Disabled mappable flag
 	 */
 	public static final MappableFlag DISABLED = new MappableFlag(false);
-	
+
 	/**
 	 * Get the mappable flag
 	 * 
@@ -43,12 +44,12 @@ public class MappableFlag extends AbstractFlagConstraint implements TypeConstrai
 	 * @return the flag
 	 */
 	public static MappableFlag get(boolean isMappable) {
-		return (isMappable)?(ENABLED):(DISABLED);
+		return (isMappable) ? (ENABLED) : (DISABLED);
 	}
-	
+
 	/**
 	 * Creates a default mappable flag, which is disabled. If possible, instead
-	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
+	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or
 	 * {@link #DISABLED}.
 	 * 
 	 * @see Constraint
@@ -57,7 +58,7 @@ public class MappableFlag extends AbstractFlagConstraint implements TypeConstrai
 		// disabled by default because of simple types etc.
 		this(false);
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */

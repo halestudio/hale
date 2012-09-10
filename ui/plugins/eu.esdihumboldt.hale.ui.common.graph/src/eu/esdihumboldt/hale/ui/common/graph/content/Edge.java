@@ -18,12 +18,14 @@ import eu.esdihumboldt.util.Pair;
 /**
  * Represents an edge in a cell/entity graph.
  */
-@Immutable class Edge extends Pair<Object, Object> {
+@Immutable
+class Edge extends Pair<Object, Object> {
 
 	private final String name;
-	
+
 	/**
 	 * Create an edge
+	 * 
 	 * @param first the source node
 	 * @param second the destination node
 	 * @param name the edge name, may be <code>null</code>
@@ -74,7 +76,8 @@ import eu.esdihumboldt.util.Pair;
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		}
+		else if (!name.equals(other.name))
 			return false;
 		return true;
 	}

@@ -16,49 +16,48 @@ import org.opengis.feature.type.FeatureType;
 
 /**
  * Utility methods related to {@link Definition}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public abstract class DefinitionUtil {
-	
+
 	/**
-	 * Get the type definition from a definition. For 
+	 * Get the type definition from a definition. For
 	 * {@link AttributeDefinition}s the attribute type will be returned.
 	 * 
-	 * @param def the definition
+	 * @param def
+	 *            the definition
 	 * @return the type definition
 	 */
 	public static TypeDefinition getType(Definition def) {
 		if (def instanceof SchemaElement) {
 			return ((SchemaElement) def).getType();
-		}
-		else if (def instanceof TypeDefinition) {
+		} else if (def instanceof TypeDefinition) {
 			return (TypeDefinition) def;
-		}
-		else {
+		} else {
 			return ((AttributeDefinition) def).getAttributeType();
 		}
 	}
-	
+
 	/**
-	 * Get the feature type from a definition. For 
-	 * {@link AttributeDefinition}s the attribute type will be returned.
+	 * Get the feature type from a definition. For {@link AttributeDefinition}s
+	 * the attribute type will be returned.
 	 * 
-	 * @param def the definition
+	 * @param def
+	 *            the definition
 	 * @return the feature type, may be <code>null</code>
 	 */
 	public static FeatureType getFeatureType(Definition def) {
 		if (def instanceof SchemaElement) {
 			return ((SchemaElement) def).getFeatureType();
-		}
-		else if (def instanceof TypeDefinition) {
+		} else if (def instanceof TypeDefinition) {
 			return ((TypeDefinition) def).getFeatureType();
-		}
-		else {
-			return ((AttributeDefinition) def).getAttributeType().getFeatureType();
+		} else {
+			return ((AttributeDefinition) def).getAttributeType()
+					.getFeatureType();
 		}
 	}
 

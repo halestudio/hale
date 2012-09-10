@@ -22,12 +22,11 @@ import eu.esdihumboldt.hale.io.gml.ui.internal.GmlUIPlugin;
 
 /**
  * WFS preferences
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class WfsPreferences extends
-		AbstractPreferenceInitializer implements WfsPreferenceConstants {
+public class WfsPreferences extends AbstractPreferenceInitializer implements WfsPreferenceConstants {
 
 	/**
 	 * @see AbstractPreferenceInitializer#initializeDefaultPreferences()
@@ -35,10 +34,10 @@ public class WfsPreferences extends
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore preferences = GmlUIPlugin.getDefault().getPreferenceStore();
-		
+
 		preferences.setDefault(KEY_RECENT_WFS_COUNT, 0);
 	}
-	
+
 	/**
 	 * Save the recently used WFS
 	 * 
@@ -46,24 +45,24 @@ public class WfsPreferences extends
 	 */
 	public static void setRecent(List<String> recent) {
 		IPreferenceStore preferences = GmlUIPlugin.getDefault().getPreferenceStore();
-		
+
 		int size = Math.min(MAX_RECENT_WFS, recent.size());
-		
-		//TODO remove old ones
-		/*int oldCount = preferences.getInt(KEY_SEARCH_PATH_COUNT);
-		int numRemove = oldCount - searchPath.size();
-		
-		if (numRemove > 0) {
-			for (int i = ...)
-		}*/
-		
+
+		// TODO remove old ones
+		/*
+		 * int oldCount = preferences.getInt(KEY_SEARCH_PATH_COUNT); int
+		 * numRemove = oldCount - searchPath.size();
+		 * 
+		 * if (numRemove > 0) { for (int i = ...) }
+		 */
+
 		// set new path
 		preferences.setValue(KEY_RECENT_WFS_COUNT, size);
 		for (int i = 0; i < size; i++) {
 			preferences.setValue(KEY_RECENT_WFS_PREFIX + i, recent.get(i));
 		}
 	}
-	
+
 	/**
 	 * Get the recently used WFS
 	 * 
@@ -71,17 +70,17 @@ public class WfsPreferences extends
 	 */
 	public static List<String> getRecent() {
 		IPreferenceStore preferences = GmlUIPlugin.getDefault().getPreferenceStore();
-		
+
 		List<String> result = new ArrayList<String>();
 		int count = preferences.getInt(KEY_RECENT_WFS_COUNT);
-		
+
 		for (int i = 0; i < count; i++) {
 			String path = preferences.getString(KEY_RECENT_WFS_PREFIX + i);
 			if (path != null) {
 				result.add(path);
 			}
 		}
-		
+
 		return result;
 	}
 

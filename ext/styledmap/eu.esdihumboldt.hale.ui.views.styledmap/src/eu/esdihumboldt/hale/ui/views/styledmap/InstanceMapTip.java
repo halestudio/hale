@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.painter.TransformedInstancePainte
 
 /**
  * Map tooltip for instances. Based on {@link AbstractInstancePainter}s.
+ * 
  * @author Simon Templer
  */
 public class InstanceMapTip extends HoverMapTip {
@@ -34,6 +35,7 @@ public class InstanceMapTip extends HoverMapTip {
 
 	/**
 	 * Create instance tool tips.
+	 * 
 	 * @param mapKit the map kit
 	 */
 	public InstanceMapTip(BasicMapKit mapKit) {
@@ -41,42 +43,45 @@ public class InstanceMapTip extends HoverMapTip {
 	}
 
 	/**
-	 * @see de.fhg.igd.mapviewer.tip.HoverMapTip#getTipText(int, int, org.jdesktop.swingx.mapviewer.PixelConverter, int)
+	 * @see de.fhg.igd.mapviewer.tip.HoverMapTip#getTipText(int, int,
+	 *      org.jdesktop.swingx.mapviewer.PixelConverter, int)
 	 */
 	@Override
 	protected String getTipText(int x, int y, PixelConverter converter, int zoom) {
 		Point point = new Point(x, y);
-		
+
 		String sourceName = null;
-		List<SourceInstancePainter> sourcePainters = mapKit.getTilePainters(SourceInstancePainter.class);
+		List<SourceInstancePainter> sourcePainters = mapKit
+				.getTilePainters(SourceInstancePainter.class);
 		if (!sourcePainters.isEmpty()) {
 			InstanceWaypoint wp = sourcePainters.get(0).findWaypoint(point);
 			if (wp != null) {
 				sourceName = wp.getName();
 			}
 		}
-		
+
 		String transformedName = null;
-		List<TransformedInstancePainter> transformedPainters = mapKit.getTilePainters(TransformedInstancePainter.class);
+		List<TransformedInstancePainter> transformedPainters = mapKit
+				.getTilePainters(TransformedInstancePainter.class);
 		if (!transformedPainters.isEmpty()) {
 			InstanceWaypoint wp = transformedPainters.get(0).findWaypoint(point);
 			if (wp != null) {
 				transformedName = wp.getName();
 			}
 		}
-		
+
 		if (sourceName != null && sourceName.equals(transformedName)) {
 			// if both are equal, return one name only
 			return sourceName;
 		}
-		
+
 		if (sourceName != null) {
 			sourceName += " (source)";
 		}
 		if (transformedName != null) {
 			transformedName += " (transformed)";
 		}
-		
+
 		if (sourceName != null && transformedName != null) {
 			return sourceName + "; " + transformedName;
 		}
@@ -86,7 +91,7 @@ public class InstanceMapTip extends HoverMapTip {
 		else if (transformedName != null) {
 			return transformedName;
 		}
-		
+
 		return null;
 	}
 

@@ -26,8 +26,7 @@ public class CustomShapeLabel extends CustomShapeFigure {
 	/**
 	 * Create a custom shaped label.
 	 * 
-	 * @param painter
-	 *            the painter drawing the figure shape
+	 * @param painter the painter drawing the figure shape
 	 */
 	public CustomShapeLabel(ShapePainter painter) {
 		super(painter);
@@ -41,8 +40,7 @@ public class CustomShapeLabel extends CustomShapeFigure {
 		setLayoutManager(gridLayout);
 
 		Label label = new Label();
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
 		add(label, gridData);
 
 		setTextLabel(label);

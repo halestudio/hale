@@ -18,15 +18,15 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 
 /**
  * Progress indicator using an {@link IProgressMonitor}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
 public class ProgressMonitorIndicator implements ProgressIndicator {
-	
+
 	private final IProgressMonitor monitor;
-	
+
 	/**
 	 * Create a progress indicator based on an {@link IProgressMonitor}
 	 * 
@@ -41,7 +41,8 @@ public class ProgressMonitorIndicator implements ProgressIndicator {
 	 */
 	@Override
 	public void begin(String taskName, int totalWork) {
-		monitor.beginTask(taskName, (totalWork == ProgressIndicator.UNKNOWN)?(IProgressMonitor.UNKNOWN):(totalWork));
+		monitor.beginTask(taskName,
+				(totalWork == ProgressIndicator.UNKNOWN) ? (IProgressMonitor.UNKNOWN) : (totalWork));
 	}
 
 	/**

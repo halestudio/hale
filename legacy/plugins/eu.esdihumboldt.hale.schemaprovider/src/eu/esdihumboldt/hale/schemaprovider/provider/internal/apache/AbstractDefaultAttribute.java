@@ -10,7 +10,6 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
 import java.util.Set;
@@ -25,43 +24,49 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Attribute represented as attribute in XML
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
  */
 @Deprecated
 public abstract class AbstractDefaultAttribute extends AttributeDefinition {
-	
+
 	private final XmlSchemaUse use;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param name the attribute name 
-	 * @param typeName the attribute type name
-	 * @param attributeType the attribute type, may be <code>null</code>
-	 * @param namespace the attribute namespace
-	 * @param use the attribute use, may be <code>null</code> (will behave
-	 * similar as with an optional use)
+	 * @param name
+	 *            the attribute name
+	 * @param typeName
+	 *            the attribute type name
+	 * @param attributeType
+	 *            the attribute type, may be <code>null</code>
+	 * @param namespace
+	 *            the attribute namespace
+	 * @param use
+	 *            the attribute use, may be <code>null</code> (will behave
+	 *            similar as with an optional use)
 	 */
 	public AbstractDefaultAttribute(String name, Name typeName,
 			TypeDefinition attributeType, String namespace, XmlSchemaUse use) {
 		super(name, typeName, attributeType, false, null);
-		
+
 		this.use = use;
-		
+
 		setNamespace(namespace);
 	}
 
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other the other 
+	 * @param other
+	 *            the other
 	 */
 	protected AbstractDefaultAttribute(AbstractDefaultAttribute other) {
 		super(other);
-		
+
 		this.use = other.use;
 	}
 
@@ -69,8 +74,9 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 * @see AttributeDefinition#createAttributeDescriptor(Set)
 	 */
 	@Override
-	public AttributeDescriptor createAttributeDescriptor(Set<TypeDefinition> resolving) {
-		//XXX no attribute descriptors are created for non-element attributes
+	public AttributeDescriptor createAttributeDescriptor(
+			Set<TypeDefinition> resolving) {
+		// XXX no attribute descriptors are created for non-element attributes
 		return null;
 	}
 
@@ -79,10 +85,10 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 */
 	@Override
 	public long getMaxOccurs() {
-		if (use != null && use.getValue().equals(Constants.BlockConstants.PROHIBITED)) {
+		if (use != null
+				&& use.getValue().equals(Constants.BlockConstants.PROHIBITED)) {
 			return 0;
-		}
-		else {
+		} else {
 			return 1;
 		}
 	}
@@ -92,10 +98,10 @@ public abstract class AbstractDefaultAttribute extends AttributeDefinition {
 	 */
 	@Override
 	public long getMinOccurs() {
-		if (use != null && use.getValue().equals(Constants.BlockConstants.REQUIRED)) {
+		if (use != null
+				&& use.getValue().equals(Constants.BlockConstants.REQUIRED)) {
 			return 1;
-		}
-		else {
+		} else {
 			return 0;
 		}
 	}

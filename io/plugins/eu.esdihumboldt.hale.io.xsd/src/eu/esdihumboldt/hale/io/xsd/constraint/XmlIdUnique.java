@@ -20,19 +20,20 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Unique;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
- * Unique constraint for XS:ID types.
- * Needed because while loading the property type's supertypes may not be resolved yet.
- *
+ * Unique constraint for XS:ID types. Needed because while loading the property
+ * type's supertypes may not be resolved yet.
+ * 
  * @author Kai Schwierczek
  */
 public class XmlIdUnique extends Unique {
+
 	private static final String IDENTIFIER = "xs:id";
 	private final PropertyDefinition property;
 	private int status = -1; // -1 not resolved, 0 no id, 1 id
 
 	/**
 	 * Default constructor.
-	 *
+	 * 
 	 * @param property the property definition
 	 */
 	public XmlIdUnique(PropertyDefinition property) {
@@ -75,7 +76,7 @@ public class XmlIdUnique extends Unique {
 					return;
 				}
 				definition = definition.getSuperType();
-			} while (definition != null) ;
+			} while (definition != null);
 
 			status = 0;
 		}

@@ -17,64 +17,64 @@ import java.util.UUID;
 import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 
 /**
- *This constraint is used to define the type of a processing Transformer that is not a
- * harmonization Transformer
+ * This constraint is used to define the type of a processing Transformer that
+ * is not a harmonization Transformer
+ * 
  * @author mgone
  */
 public class TransformerType implements Constraint {
 
-    private static final long serialVersionUID = 7438636912465756746L;
+	private static final long serialVersionUID = 7438636912465756746L;
 
-    public TransformerType() {
-    }
+	public TransformerType() {
+	}
 
-    public boolean isSatisfied() {
-        return false;
-    }
+	public boolean isSatisfied() {
+		return false;
+	}
 
-    public ConstraintSource getConstraintSource() {
-        return null;
-    }
+	public ConstraintSource getConstraintSource() {
+		return null;
+	}
 
-    public long getId() {
-        return 1;
-    }
+	public long getId() {
+		return 1;
+	}
 
-    public void setId(long id) {
-      
-    }
+	public void setId(long id) {
 
-    public UUID getIdentifier() {
-        return UUID.randomUUID();
-    }
+	}
 
-    public void setIdentifier(UUID identifier) {
-        
-    }
+	public UUID getIdentifier() {
+		return UUID.randomUUID();
+	}
 
-    public boolean isFinalized() {
-        return false;
-    }
+	public void setIdentifier(UUID identifier) {
 
-    public void setFinalized(boolean write) {
-      
-    }
+	}
 
-    public void setSatisfied(boolean _satisfied) {
-       
-    }
+	public boolean isFinalized() {
+		return false;
+	}
 
-    public boolean compatible(Constraint constraint) {
-        return false;
-    }
+	public void setFinalized(boolean write) {
 
-    public void setShared(boolean shared){
-        
+	}
 
-    }
+	public void setSatisfied(boolean _satisfied) {
 
-    public boolean isShared(){
-        return false;
-    }
+	}
+
+	public boolean compatible(Constraint constraint) {
+		return false;
+	}
+
+	public void setShared(boolean shared) {
+
+	}
+
+	public boolean isShared() {
+		return false;
+	}
 
 }

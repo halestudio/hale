@@ -58,20 +58,18 @@ import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 public class FunctionReferenceContent extends AbstractVelocityContent implements
 		FunctionReferenceConstants {
 
-	private static final ALogger log = ALoggerFactory
-			.getLogger(FunctionReferenceContent.class);
+	private static final ALogger log = ALoggerFactory.getLogger(FunctionReferenceContent.class);
 
 	/**
 	 * Directory for storing the generated images.
 	 */
 	private File tempDir;
-	
+
 	/**
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
 	 */
 	@Override
-	public InputStream getInputStream(String pluginID, String href,
-			Locale locale) {
+	public InputStream getInputStream(String pluginID, String href, Locale locale) {
 		if (href.startsWith(FUNCTION_TOPIC_PATH)) {
 			// it's a function
 			String func_id = href.substring(FUNCTION_TOPIC_PATH.length());
@@ -101,7 +99,8 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			} else {
+			}
+			else {
 				try {
 					return getFunctionContent(func_id);
 				} catch (Exception e) {
@@ -131,7 +130,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 		}
 
 		Callable<VelocityContext> contextFactory = new Callable<VelocityContext>() {
-			
+
 			@Override
 			public VelocityContext call() throws Exception {
 				VelocityContext context = new VelocityContext();
@@ -141,8 +140,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 				if (function.getCategoryId() != null) {
 					String categoryId = function.getCategoryId();
 
-					Category category = (CategoryExtension.getInstance()
-							.get(categoryId));
+					Category category = (CategoryExtension.getInstance().get(categoryId));
 
 					// String category = categoryId.substring(categoryId
 					// .lastIndexOf(".") + 1);
@@ -166,11 +164,11 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 
 					context.put("include", final_help_url);
 				}
-				
+
 				return context;
 			}
 		};
-			
+
 		return getContentFromTemplate(func_id, "function", contextFactory);
 	}
 
@@ -194,7 +192,8 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 			if (Display.getCurrent() != null) {
 				// use the current display if available
 				display = Display.getCurrent();
-			} else {
+			}
+			else {
 				try {
 					// use workbench display if available
 					display = PlatformUI.getWorkbench().getDisplay();
@@ -219,8 +218,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 							LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
 
 							FunctionGraphContentProvider stcp = new FunctionGraphContentProvider();
-							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(
-									false);
+							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(false);
 							viewer.setContentProvider(stcp);
 							viewer.setLabelProvider(fglp);
 							viewer.setInput(function);
@@ -234,7 +232,8 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 					int width;
 					if (dim.width > 450) {
 						width = dim.width;
-					} else {
+					}
+					else {
 						// minimum width = 450
 						width = 450;
 					}
@@ -242,8 +241,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 					off_graph.resize(width, height);
 
 					try {
-						off_graph.saveImage(
-								new FileOutputStream(_functionFile), null);
+						off_graph.saveImage(new FileOutputStream(_functionFile), null);
 					} catch (IOException e) {
 						log.warn("Conversion from Graph to Image failed!");
 					} finally {
@@ -286,10 +284,12 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 			int targetCons = gn.getTargetConnections().size();
 			if (sourceCons == 0 && targetCons == 1) {
 				tempSourceList.add(gn);
-			} else if (sourceCons >= 1 && targetCons >= 1) {
+			}
+			else if (sourceCons >= 1 && targetCons >= 1) {
 				width = width + gn.getFigure().getBounds().width + 10;
 				height = height + gn.getFigure().getBounds().height;
-			} else {
+			}
+			else {
 				tempTargetList.add(gn);
 			}
 		}

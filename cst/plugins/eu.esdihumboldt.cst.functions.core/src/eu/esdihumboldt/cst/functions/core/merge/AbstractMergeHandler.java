@@ -38,7 +38,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 /**
  * Abstract merge handler implementation based on a merge index of instance
  * references.
- * @param <T> the merge configuration type 
+ * 
+ * @param <T> the merge configuration type
  * @param <K> the merge key type
  * @author Simon Templer
  */
@@ -48,18 +49,20 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	 * Resource iterator over the merged instances
 	 */
 	public class MergedIterator extends GenericResourceIteratorAdapter<K, FamilyInstance> {
+
 		private final Multimap<K, InstanceReference> index;
 		private final InstanceCollection originalInstances;
 		private final T mergeConfig;
 
 		/**
 		 * Create a collection of merged instances.
+		 * 
 		 * @param index the merge index
 		 * @param instances the original instance collection
 		 * @param mergeConfig the merge configuration
 		 */
-		public MergedIterator(Multimap<K, InstanceReference> index,
-				InstanceCollection instances, T mergeConfig) {
+		public MergedIterator(Multimap<K, InstanceReference> index, InstanceCollection instances,
+				T mergeConfig) {
 			super(index.keySet().iterator());
 			this.index = index;
 			this.originalInstances = instances;
@@ -72,15 +75,16 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 
 			// get the instances to merge
 			Collection<InstanceReference> references = index.get(next);
-			//TODO get all instances in one call from instance collection? see InstanceResolver
+			// TODO get all instances in one call from instance collection? see
+			// InstanceResolver
 			Collection<Instance> instances = new ArrayList<Instance>(references.size());
 			TypeDefinition type = null;
 			for (InstanceReference ref : references) {
 				Instance instance = originalInstances.getInstance(ref);
 				if (instance == null) {
-					throw new IllegalStateException(
-							"Instance reference could not be resolved");
-				} else {
+					throw new IllegalStateException("Instance reference could not be resolved");
+				}
+				else {
 					instances.add(instance);
 					if (type == null) {
 						type = instance.getDefinition();
@@ -99,7 +103,8 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	}
 
 	/**
-	 * @see InstanceHandler#partitionInstances(InstanceCollection, String, TransformationEngine, ListMultimap, Map, TransformationLog)
+	 * @see InstanceHandler#partitionInstances(InstanceCollection, String,
+	 *      TransformationEngine, ListMultimap, Map, TransformationLog)
 	 */
 	@Override
 	public ResourceIterator<FamilyInstance> partitionInstances(InstanceCollection instances,
@@ -107,12 +112,12 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 			ListMultimap<String, String> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
-		T mergeConfig = createMergeConfiguration(transformationIdentifier, 
+		T mergeConfig = createMergeConfiguration(transformationIdentifier,
 				transformationParameters, executionParameters, log);
-		
+
 		// create merge index over all instances (references)
 		Multimap<K, InstanceReference> index = HashMultimap.create();
-		
+
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
 			while (it.hasNext()) {
@@ -123,12 +128,13 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 		} finally {
 			it.close();
 		}
-		
+
 		return new MergedIterator(index, instances, mergeConfig);
 	}
-	
+
 	/**
 	 * Get the instance factory
+	 * 
 	 * @return the instance factory
 	 */
 	protected InstanceFactory getInstanceFactory() {
@@ -136,40 +142,45 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	}
 
 	/**
-	 * Create the merge configuration from the transformation configuration.
-	 * The merge configuration may be then used in {@link #getMergeKey(Instance, Object)}
-	 * and {@link #merge(Collection, TypeDefinition, Object, Object)}
+	 * Create the merge configuration from the transformation configuration. The
+	 * merge configuration may be then used in
+	 * {@link #getMergeKey(Instance, Object)} and
+	 * {@link #merge(Collection, TypeDefinition, Object, Object)}
+	 * 
 	 * @param transformationIdentifier the transformation identifier
 	 * @param transformationParameters the transformation parameters
 	 * @param executionParameters the execution parameters
 	 * @param log the transformation log
 	 * @return the merge configuration
-	 * @throws TransformationException if the merge configuration cannot be created
+	 * @throws TransformationException if the merge configuration cannot be
+	 *             created
 	 */
 	protected abstract T createMergeConfiguration(String transformationIdentifier,
 			ListMultimap<String, String> transformationParameters,
-			Map<String, String> executionParameters, TransformationLog log) throws TransformationException;
+			Map<String, String> executionParameters, TransformationLog log)
+			throws TransformationException;
 
 	/**
-	 * Get the merge key for a given instance. Instances with an equal merge
-	 * key will be merged.
+	 * Get the merge key for a given instance. Instances with an equal merge key
+	 * will be merged.
+	 * 
 	 * @param instance the instance
 	 * @param mergeConfig the merge configuration
 	 * @return the instance merge key
 	 * @see #merge(Collection, TypeDefinition, Object, Object)
 	 */
-	protected abstract K getMergeKey(Instance instance,
-			T mergeConfig);
-	
+	protected abstract K getMergeKey(Instance instance, T mergeConfig);
+
 	/**
 	 * Merge multiple instance into one.
+	 * 
 	 * @param instances the instances to merge
 	 * @param type the type definition of the instances to merge
 	 * @param mergeKey the merge key associated to the instances
 	 * @param mergeConfig the merge configuration
 	 * @return the merged instance
 	 */
-	protected abstract Instance merge(Collection<Instance> instances, 
-			TypeDefinition type, K mergeKey, T mergeConfig);
+	protected abstract Instance merge(Collection<Instance> instances, TypeDefinition type,
+			K mergeKey, T mergeConfig);
 
 }

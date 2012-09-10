@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 
 /**
  * Dummy progress indicator ignoring everything you tell him.
+ * 
  * @author Simon Templer
  */
 public class NullProgressIndicator implements ProgressIndicator {

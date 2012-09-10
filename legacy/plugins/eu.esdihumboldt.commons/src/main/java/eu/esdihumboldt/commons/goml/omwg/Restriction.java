@@ -33,37 +33,36 @@ public class Restriction {
 	 * <xs:element ref="omwg:onAttribute"/> TODO in future: onAttribute can also
 	 * refer to a Relation between (Feature)Classes
 	 */
-	//FIXME clear with MdV
-	//private Property onAttribute;
+	// FIXME clear with MdV
+	// private Property onAttribute;
 
 	/**
-	 * TODO explain. 
-	 * <xs:element ref="omwg:comparator"/>
+	 * TODO explain. <xs:element ref="omwg:comparator"/>
 	 */
 	private ComparatorType comparator;
 
 	/**
-	 * TODO explain. 
-	 * <xs:element name="value" type="omwg:valueExprType" maxOccurs="unbounded" />
+	 * TODO explain. <xs:element name="value" type="omwg:valueExprType"
+	 * maxOccurs="unbounded" />
 	 */
 	private List<IValueExpression> value;
-	
+
 	/**
 	 * if List of value expressions is empty use the value class
 	 */
 	private ValueClass valueClass;
-	
+
 	/**
 	 * The cql String can be used as an alternative to using the fields above.
 	 * 
 	 * <xs:element ref="goml:cqlStr" minOccurs="0" maxOccurs="1" />
 	 */
 	private String cqlStr;
-	
+
 	/**
 	 * sequnce field describing the position of the value condition in the list
 	 */
-	
+
 	private BigInteger seq;
 
 	// constructors ............................................................
@@ -76,9 +75,8 @@ public class Restriction {
 		this.seq = seq;
 	}
 
-	
 	/**
-	 *
+	 * 
 	 * @param value
 	 * 
 	 */
@@ -87,10 +85,8 @@ public class Restriction {
 		super();
 		this.value = value;
 	}
-	
+
 	// getters / setters .......................................................
-
-
 
 	/**
 	 * @return the comparator
@@ -152,11 +148,12 @@ public class Restriction {
 	public void setValueClass(ValueClass valueClass) {
 		this.valueClass = valueClass;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Restriction [comparator=" + comparator + ", cqlStr=" + cqlStr + ", seq=" + seq + ", value=" + value
-				+ ", valueClass=" + valueClass + "]";
+		return "Restriction [comparator=" + comparator + ", cqlStr=" + cqlStr
+				+ ", seq=" + seq + ", value=" + value + ", valueClass="
+				+ valueClass + "]";
 	}
 
 }

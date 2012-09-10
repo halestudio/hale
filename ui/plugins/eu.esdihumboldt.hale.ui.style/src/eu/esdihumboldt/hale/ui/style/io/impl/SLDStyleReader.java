@@ -32,10 +32,10 @@ import eu.esdihumboldt.hale.ui.style.io.StyleReader;
 
 /**
  * Read styles from SLD.
+ * 
  * @author Simon Templer
  */
-public class SLDStyleReader extends AbstractImportProvider implements
-		StyleReader {
+public class SLDStyleReader extends AbstractImportProvider implements StyleReader {
 
 	private Style[] styles;
 
@@ -62,7 +62,7 @@ public class SLDStyleReader extends AbstractImportProvider implements
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Load styles from SLD", ProgressIndicator.UNKNOWN);
-		
+
 		StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
 		InputStream in = getSource().getInput();
 		try {
@@ -76,7 +76,7 @@ public class SLDStyleReader extends AbstractImportProvider implements
 			in.close();
 			progress.end();
 		}
-		
+
 		return reporter;
 	}
 

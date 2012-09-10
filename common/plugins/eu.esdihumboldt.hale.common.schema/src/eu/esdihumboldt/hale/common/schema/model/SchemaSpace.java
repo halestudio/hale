@@ -13,12 +13,13 @@
 package eu.esdihumboldt.hale.common.schema.model;
 
 /**
- * A schema space combines several schemas. The different schemas may share
- * type definitions internally.
+ * A schema space combines several schemas. The different schemas may share type
+ * definitions internally.
+ * 
  * @author Simon Templer
  */
 public interface SchemaSpace extends TypeIndex {
-	
+
 	/**
 	 * Get the contained schemas
 	 * 

@@ -13,10 +13,9 @@ package eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers;
 
 import org.geotools.util.SimpleInternationalString;
 
-
 /**
- * This is a a subclass of the CitationImpl contains id-field and no-args constractor,
- * to enable Hibernate the persisting of Citation-objects. 
+ * This is a a subclass of the CitationImpl contains id-field and no-args
+ * constractor, to enable Hibernate the persisting of Citation-objects.
  * 
  * 
  * @author Anna Pitaev, Logica CMG
@@ -29,13 +28,12 @@ public class CitationHelper {
 	private static final long serialVersionUID = 1L;
 	/** unique identifier in the database */
 	private long id;
-	
+
 	private String ISBN;
 	private String ISSN;
 	private SimpleInternationalString title;
 	private SimpleInternationalString otherCitationDetails;
 
-	
 	/**
 	 * @return the iSBN
 	 */
@@ -44,7 +42,8 @@ public class CitationHelper {
 	}
 
 	/**
-	 * @param isbn the iSBN to set
+	 * @param isbn
+	 *            the iSBN to set
 	 */
 	public void setISBN(String isbn) {
 		ISBN = isbn;
@@ -58,7 +57,8 @@ public class CitationHelper {
 	}
 
 	/**
-	 * @param issn the iSSN to set
+	 * @param issn
+	 *            the iSSN to set
 	 */
 	public void setISSN(String issn) {
 		ISSN = issn;
@@ -72,7 +72,8 @@ public class CitationHelper {
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title
+	 *            the title to set
 	 */
 	public void setTitle(SimpleInternationalString title) {
 		this.title = title;
@@ -86,7 +87,8 @@ public class CitationHelper {
 	}
 
 	/**
-	 * @param otherCitationDetails the otherCitationDetails to set
+	 * @param otherCitationDetails
+	 *            the otherCitationDetails to set
 	 */
 	public void setOtherCitationDetails(
 			SimpleInternationalString otherCitationDetails) {
@@ -103,7 +105,8 @@ public class CitationHelper {
 
 	/**
 	 * 
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;

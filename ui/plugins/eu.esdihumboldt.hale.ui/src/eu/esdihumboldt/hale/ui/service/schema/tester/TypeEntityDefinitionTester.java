@@ -20,11 +20,11 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
  * Tests on {@link TypeEntityDefinition}s based on the {@link AlignmentService}.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class TypeEntityDefinitionTester extends PropertyTester {
-	
+
 	/**
 	 * The property namespace for this tester.
 	 */
@@ -34,22 +34,25 @@ public class TypeEntityDefinitionTester extends PropertyTester {
 	 * The property that specifies if a cell may be removed.
 	 */
 	public static final String PROPERTY_TYPE_ALLOW_MARK_UNMAPPABLE = "allow_mark_unmappable";
-	
+
 	/**
-	 * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object, java.lang.String, java.lang.Object[], java.lang.Object)
+	 * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object,
+	 *      java.lang.String, java.lang.Object[], java.lang.Object)
 	 */
 	@Override
-	public boolean test(Object receiver, String property, Object[] args,
-			Object expectedValue) {
+	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
 		if (receiver == null)
 			return false;
-		
-		if (property.equals(PROPERTY_TYPE_ALLOW_MARK_UNMAPPABLE) && receiver instanceof TypeEntityDefinition) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+
+		if (property.equals(PROPERTY_TYPE_ALLOW_MARK_UNMAPPABLE)
+				&& receiver instanceof TypeEntityDefinition) {
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			TypeEntityDefinition entityDef = (TypeEntityDefinition) receiver;
-			return as.getAlignment().getCells(entityDef.getType(), entityDef.getSchemaSpace()).isEmpty();
+			return as.getAlignment().getCells(entityDef.getType(), entityDef.getSchemaSpace())
+					.isEmpty();
 		}
-		
+
 		return false;
 	}
 }

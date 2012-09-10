@@ -23,26 +23,27 @@ import org.opengis.util.InternationalString;
 
 /**
  * Abstract decorator for attribute types
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public abstract class AbstractAttributeTypeDecorator implements AttributeType {
-	
+
 	/**
 	 * The decorated type
 	 */
 	protected final AttributeType type;
-	
+
 	/**
 	 * Creates a decorator for the given attribute type
 	 * 
-	 * @param type the attribute type
+	 * @param type
+	 *            the attribute type
 	 */
 	protected AbstractAttributeTypeDecorator(AttributeType type) {
 		super();
-		
+
 		this.type = type;
 	}
 

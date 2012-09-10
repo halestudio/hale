@@ -28,10 +28,10 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
 
 /**
  * Provides UI variables related to the {@link InstanceService}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
 public class InstanceServiceSource extends AbstractSourceProvider {
 
@@ -45,26 +45,29 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 * instances present in the {@link InstanceService}.
 	 */
 	public static final String HAS_SOURCE_INSTANCES = "hale.instances.has_source";
-	
+
 	private InstanceServiceListener instanceListener;
-	
+
 	/**
 	 * Default constructor
 	 */
 	public InstanceServiceSource() {
 		super();
-		
-		final InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+
+		final InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		is.addListener(instanceListener = new InstanceServiceAdapter() {
 
 			@Override
 			public void datasetChanged(DataSet type) {
-				switch(type) {
+				switch (type) {
 				case TRANSFORMED:
-					fireSourceChanged(ISources.WORKBENCH, HAS_TRANSFORMED_INSTANCES, hasTransformedInstances(is));
+					fireSourceChanged(ISources.WORKBENCH, HAS_TRANSFORMED_INSTANCES,
+							hasTransformedInstances(is));
 					break;
 				case SOURCE:
-					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_INSTANCES, hasSourceInstances(is));
+					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_INSTANCES,
+							hasSourceInstances(is));
 					break;
 				}
 			}
@@ -77,7 +80,8 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public void dispose() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		is.removeListener(instanceListener);
 	}
 
@@ -86,11 +90,12 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public Map<String, Object> getCurrentState() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
+
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(HAS_TRANSFORMED_INSTANCES, hasTransformedInstances(is));
-		
+
 		return result;
 	}
 
@@ -109,8 +114,7 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[]{
-				HAS_TRANSFORMED_INSTANCES, HAS_SOURCE_INSTANCES};
+		return new String[] { HAS_TRANSFORMED_INSTANCES, HAS_SOURCE_INSTANCES };
 	}
 
 }

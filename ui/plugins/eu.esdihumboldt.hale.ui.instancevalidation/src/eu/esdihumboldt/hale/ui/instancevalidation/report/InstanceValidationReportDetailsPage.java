@@ -61,10 +61,11 @@ import eu.esdihumboldt.hale.ui.views.report.properties.details.extension.CustomR
 
 /**
  * Custom report details page for instance validation reports.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class InstanceValidationReportDetailsPage implements CustomReportDetailsPage {
+
 	private TreeViewer treeViewer;
 	private InstanceValidationReportDetailsContentProvider contentProvider;
 
@@ -81,7 +82,8 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		filter.setIncludeLeadingWildcard(true);
 
 		// create FilteredTree
-		FilteredTree filteredTree = new TreePathFilteredTree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL, filter, true);
+		FilteredTree filteredTree = new TreePathFilteredTree(parent, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL, filter, true);
 
 		treeViewer = filteredTree.getViewer();
 
@@ -90,10 +92,12 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		treeViewer.setContentProvider(contentProvider);
 
 		// set label provider
-		treeViewer.setLabelProvider(new InstanceValidationReportDetailsLabelProvider(contentProvider));
+		treeViewer.setLabelProvider(new InstanceValidationReportDetailsLabelProvider(
+				contentProvider));
 
 		// set comparator
 		treeViewer.setComparator(new ViewerComparator() {
+
 			/**
 			 * @see org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
 			 */
@@ -113,6 +117,7 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		Menu menu = menuMgr.createContextMenu(treeViewer.getTree());
 
 		menuMgr.addMenuListener(new IMenuListener() {
+
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 				if (getValidSelection() == null)
@@ -130,6 +135,7 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		treeViewer.getTree().setMenu(menu);
 
 		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				showSelectionInDataView();
@@ -148,10 +154,11 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 	}
 
 	/**
-	 * Returns a valid instance selection for the current selection of the tree viewer.
-	 * Returns <code>null</code> if there is none.
-	 *
-	 * @return a valid instance selection for the current selection of the tree viewer or <code>null</code>
+	 * Returns a valid instance selection for the current selection of the tree
+	 * viewer. Returns <code>null</code> if there is none.
+	 * 
+	 * @return a valid instance selection for the current selection of the tree
+	 *         viewer or <code>null</code>
 	 */
 	private InstanceSelection getValidSelection() {
 		ISelection viewerSelection = treeViewer.getSelection();
@@ -159,7 +166,9 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 			return null;
 
 		ITreeSelection treeSelection = (ITreeSelection) treeViewer.getSelection();
-		TreePath firstPath = treeSelection.getPaths()[0]; // XXX use all paths instead of first only?
+		TreePath firstPath = treeSelection.getPaths()[0]; // XXX use all paths
+															// instead of first
+															// only?
 
 		InstanceValidationMessage firstMessage;
 		Iterator<InstanceValidationMessage> restIter;
@@ -167,17 +176,21 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		if (firstPath.getLastSegment() instanceof InstanceValidationMessage) {
 			firstMessage = (InstanceValidationMessage) firstPath.getLastSegment();
 			restIter = Iterators.emptyIterator();
-		} else {
-			Collection<InstanceValidationMessage> messages = contentProvider.getMessages(treeSelection.getPaths()[0]);
+		}
+		else {
+			Collection<InstanceValidationMessage> messages = contentProvider
+					.getMessages(treeSelection.getPaths()[0]);
 			if (messages.isEmpty())
 				return null; // shouldn't happen, but doesn't really matter
 			restIter = messages.iterator();
 			firstMessage = restIter.next();
 		}
 
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		// check first message for valid instance reference
-		if (firstMessage.getInstanceReference() == null || is.getInstance(firstMessage.getInstanceReference()) == null)
+		if (firstMessage.getInstanceReference() == null
+				|| is.getInstance(firstMessage.getInstanceReference()) == null)
 			return null;
 
 		Set<InstanceReference> references = new HashSet<InstanceReference>();
@@ -194,7 +207,8 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 	private void showSelectionInDataView() {
 		InstanceSelection selection = getValidSelection();
 		if (selection != null) {
-			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage();
 
 			// pin the property sheet if possible
 			IViewReference ref = page.findViewReference(IPageLayout.ID_PROP_SHEET);
@@ -206,7 +220,8 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 
 			// show transformed data view with selection if possible
 			try {
-				TransformedDataView transformedDataView = (TransformedDataView) page.showView(TransformedDataView.ID);
+				TransformedDataView transformedDataView = (TransformedDataView) page
+						.showView(TransformedDataView.ID);
 				transformedDataView.showSelection(selection);
 			} catch (PartInitException e) {
 				// if it's not there, we cannot do anything
@@ -215,9 +230,11 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 	}
 
 	/**
-	 * Action that opens the transformed data view with example instances selected here.
+	 * Action that opens the transformed data view with example instances
+	 * selected here.
 	 */
 	private final class ShowExampleAction extends Action {
+
 		/**
 		 * Default constructor.
 		 */

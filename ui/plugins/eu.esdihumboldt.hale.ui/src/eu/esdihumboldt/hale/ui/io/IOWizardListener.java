@@ -19,9 +19,10 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 
 /**
  * Listener interface for {@link IOWizard}s
+ * 
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
@@ -29,15 +30,19 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 public interface IOWizardListener<P extends IOProvider, W extends IOWizard<P>> {
 
 	/**
-	 * Called when the I/O provider descriptor assigned to the wizard has changed
-	 * @param providerDescriptor the provider descriptor, may be <code>null</code>
+	 * Called when the I/O provider descriptor assigned to the wizard has
+	 * changed
+	 * 
+	 * @param providerDescriptor the provider descriptor, may be
+	 *            <code>null</code>
 	 */
 	public void providerDescriptorChanged(IOProviderDescriptor providerDescriptor);
-	
+
 	/**
 	 * Called when the content type assigned to the wizard has changed
+	 * 
 	 * @param contentType the content type, may be <code>null</code>
 	 */
 	public void contentTypeChanged(IContentType contentType);
-	
+
 }

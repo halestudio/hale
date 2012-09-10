@@ -14,16 +14,18 @@ package eu.esdihumboldt.hale.common.align.model;
 
 /**
  * References a type or property and represents it in a mapping cell.
+ * 
  * @author Simon Templer
  */
 public interface Entity {
-	
+
 	/**
 	 * Get the entity definition.
+	 * 
 	 * @return the entity definition
 	 */
 	public EntityDefinition getDefinition();
-	
-	//TODO common filter/restriction stuff
-	
+
+	// TODO common filter/restriction stuff
+
 }

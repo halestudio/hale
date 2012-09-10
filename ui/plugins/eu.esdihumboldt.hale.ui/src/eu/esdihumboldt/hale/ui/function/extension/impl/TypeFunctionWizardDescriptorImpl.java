@@ -23,11 +23,11 @@ import eu.esdihumboldt.hale.ui.function.generic.GenericTypeFunctionWizardFactory
 
 /**
  * Type function wizard descriptor
+ * 
  * @author Simon Templer
  */
 public class TypeFunctionWizardDescriptorImpl extends
-		AbstractFunctionWizardDescriptor<TypeFunction> implements
-		TypeFunctionWizardDescriptor {
+		AbstractFunctionWizardDescriptor<TypeFunction> implements TypeFunctionWizardDescriptor {
 
 	/**
 	 * @see AbstractFunctionWizardDescriptor#AbstractFunctionWizardDescriptor(IConfigurationElement)

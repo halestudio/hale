@@ -34,7 +34,7 @@ public class ErrorDetailFilter implements IFilter {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 }

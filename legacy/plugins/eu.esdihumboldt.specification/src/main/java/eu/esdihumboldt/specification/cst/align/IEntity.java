@@ -20,12 +20,12 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
 /**
  * Represents any object that might be mapped inside an {@link ICell}.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface IEntity {
-	
+
 	/**
 	 * @return the label
 	 */
@@ -35,7 +35,7 @@ public interface IEntity {
 	 * @return the transformation
 	 */
 	public ITransformation getTransformation();
-	
+
 	/**
 	 * @return identification Metadata
 	 */

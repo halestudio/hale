@@ -20,45 +20,35 @@ package eu.esdihumboldt.commons.goml.omwg;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @partner 08 / Delft University of Technology
  * @version $Id$
- */	
+ */
 public enum ComparatorType {
 
-    EQUAL("equal"),
-    NOT_EQUAL("not-equal"),
-    LESS_THAN("less-than"),
-    LESS_THAN_OR_EQUAL("less-than-or-equal"),
-    GREATER_THAN("greater-than"),
-    GREATER_THAN_OR_EQUAL("greater-than-or-equal"),
-    CONTAINS("contains"),
-    STARTS_WITH("starts-with"),
-    ENDS_WITH("ends-with"),
-    MATCHES("matches"),
-    COLLECTION_CONTAINS("collection-contains"),
-    INCLUDES("includes"),
-    INCLUDES_STRICTLY("includes-strictly"),
-    EMPTY("empty"),
-    ONE_OF("oneOf"),
-    OTHERWISE("otherwise"),
-    BETWEEN("between");
+	EQUAL("equal"), NOT_EQUAL("not-equal"), LESS_THAN("less-than"), LESS_THAN_OR_EQUAL(
+			"less-than-or-equal"), GREATER_THAN("greater-than"), GREATER_THAN_OR_EQUAL(
+			"greater-than-or-equal"), CONTAINS("contains"), STARTS_WITH(
+			"starts-with"), ENDS_WITH("ends-with"), MATCHES("matches"), COLLECTION_CONTAINS(
+			"collection-contains"), INCLUDES("includes"), INCLUDES_STRICTLY(
+			"includes-strictly"), EMPTY("empty"), ONE_OF("oneOf"), OTHERWISE(
+			"otherwise"), BETWEEN("between");
 
-    private final String value;
+	private final String value;
 
-    ComparatorType(String v) {
-        value = v;
-    }
+	ComparatorType(String v) {
+		value = v;
+	}
 
-    public String value() {
-        return value;
-    }
+	public String value() {
+		return value;
+	}
 
-    public static ComparatorType fromValue(String v) {
-        for (ComparatorType c: ComparatorType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        //throw new IllegalArgumentException(v); TODO clean up
-        return null;
-    }
+	public static ComparatorType fromValue(String v) {
+		for (ComparatorType c : ComparatorType.values()) {
+			if (c.value.equals(v)) {
+				return c;
+			}
+		}
+		// throw new IllegalArgumentException(v); TODO clean up
+		return null;
+	}
 
 }

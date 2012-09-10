@@ -20,16 +20,18 @@ import de.cs3d.util.logging.ALoggerFactory;
 
 /**
  * Extension point for example projects.
+ * 
  * @author Simon Templer
  */
 public class ExampleProjectExtension extends IdentifiableExtension<ExampleProject> {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ExampleProjectExtension.class);
-	
+
 	private static ExampleProjectExtension instance;
-	
+
 	/**
 	 * Get the extension instance.
+	 * 
 	 * @return the extension instance
 	 */
 	public static ExampleProjectExtension getInstance() {
@@ -60,11 +62,11 @@ public class ExampleProjectExtension extends IdentifiableExtension<ExampleProjec
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension#create(java.lang.String, org.eclipse.core.runtime.IConfigurationElement)
+	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension#create(java.lang.String,
+	 *      org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
-	protected ExampleProject create(String elementId,
-			IConfigurationElement element) {
+	protected ExampleProject create(String elementId, IConfigurationElement element) {
 		if ("example-project".equals(element.getName())) {
 			try {
 				return new ExampleProject(elementId, element);
@@ -73,8 +75,8 @@ public class ExampleProjectExtension extends IdentifiableExtension<ExampleProjec
 				return null;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 }

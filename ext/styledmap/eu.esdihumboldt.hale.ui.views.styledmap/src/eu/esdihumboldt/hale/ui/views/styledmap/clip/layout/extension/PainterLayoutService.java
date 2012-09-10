@@ -17,10 +17,12 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 
 /**
  * Service managing {@link PainterLayout}s.
+ * 
  * @author Simon Templer
  */
-public interface PainterLayoutService extends ExclusiveExtension<PainterLayout, PainterLayoutFactory> {
+public interface PainterLayoutService extends
+		ExclusiveExtension<PainterLayout, PainterLayoutFactory> {
 
 	// marker interface
-	
+
 }

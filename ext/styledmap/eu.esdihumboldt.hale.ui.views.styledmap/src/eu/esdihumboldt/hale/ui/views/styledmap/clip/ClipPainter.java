@@ -12,17 +12,18 @@
 
 package eu.esdihumboldt.hale.ui.views.styledmap.clip;
 
-
 /**
  * Enhancement interface for painters that support a clipping region.
+ * 
  * @author Simon Templer
  */
 public interface ClipPainter {
 
 	/**
 	 * Set the clip algorithm.
+	 * 
 	 * @param clip the clip algorithm
 	 */
 	public void setClip(Clip clip);
-	
+
 }

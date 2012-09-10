@@ -46,7 +46,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
  * Instance collection based on an XML/GML input stream
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -58,34 +58,35 @@ public class GmlInstanceCollection implements InstanceCollection {
 	public class InstanceIterator implements ResourceIterator<Instance> {
 
 		private final InputStream in;
-		
+
 		private final XMLStreamReader reader;
-		
+
 		/**
 		 * Element names associated with type definitions
 		 */
 		private Map<QName, TypeDefinition> allowedTypes;
-		
+
 		private TypeDefinition nextType;
 
 		/**
-		 * The index in the stream for the element returned next with {@link #next()}
+		 * The index in the stream for the element returned next with
+		 * {@link #next()}
 		 */
 		private int elementIndex = 0;
-		
+
 		/**
 		 * States if the root element has been encountered yet.
 		 */
 		private boolean rootEncountered = false;
-		
+
 		/**
 		 * Default constructor
 		 */
 		public InstanceIterator() {
 			super();
-			
+
 			nextType = null;
-			
+
 			try {
 				in = new BufferedInputStream(source.getInput());
 				reader = XMLInputFactory.newInstance().createXMLStreamReader(in);
@@ -104,7 +105,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException("Failed to proceed to next instance", e);
 			}
-			
+
 			return nextType != null;
 		}
 
@@ -112,53 +113,55 @@ public class GmlInstanceCollection implements InstanceCollection {
 			if (nextType != null) {
 				return;
 			}
-			
+
 			if (allowedTypes == null) {
 				initAllowedTypes();
 			}
-			
+
 			while (nextType == null && reader.hasNext()) {
 				int event = reader.next();
 				if (event == XMLStreamConstants.START_ELEMENT) {
 					if (!rootEncountered) {
 						rootEncountered = true;
 						if (ignoreRoot) {
-							// skip to next element, don't create a root instance
+							// skip to next element, don't create a root
+							// instance
 							continue;
 						}
 					}
-					
+
 					// check element and try to determine associated type
-					QName elementName = new QName(reader.getNamespaceURI(), 
-							reader.getLocalName());
+					QName elementName = new QName(reader.getNamespaceURI(), reader.getLocalName());
 					TypeDefinition def = allowedTypes.get(elementName);
-					
+
 					// also check for xsi:type
 					if (reader.getAttributeCount() > 0) {
 						String xsiType = null;
 						for (int i = 0; i < reader.getAttributeCount() && xsiType == null; i++) {
 							String ns = reader.getAttributeNamespace(i);
-							if (ns != null && ns.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
+							if (ns != null
+									&& ns.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
 									&& reader.getAttributeLocalName(i).equals("type")) {
 								// found xsi:type
 								xsiType = reader.getAttributeValue(i);
 							}
 						}
-						
+
 						if (xsiType != null) {
 							String[] parts = xsiType.split(":");
 							if (parts != null && parts.length > 1) {
 								String prefix = parts[0];
-								String type = parts[1]; //XXX also other eventual parts?
-								
+								String type = parts[1]; // XXX also other
+														// eventual parts?
+
 								String ns = reader.getNamespaceURI(prefix);
-								
+
 								// override with xsi:type
 								def = allowedTypes.get(new QName(ns, type));
 							}
 						}
 					}
-					
+
 					if (def != null) {
 						nextType = def;
 					}
@@ -168,7 +171,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 		private void initAllowedTypes() {
 			allowedTypes = new HashMap<QName, TypeDefinition>();
-			
+
 			for (TypeDefinition def : sourceSchema.getMappingRelevantTypes()) {
 				boolean accept;
 				if (restrictToFeatures) {
@@ -186,12 +189,13 @@ public class GmlInstanceCollection implements InstanceCollection {
 					// accept all mappable types
 					accept = true;
 				}
-				
+
 				if (accept) {
-					Collection<? extends XmlElement> elements = def.getConstraint(XmlElements.class).getElements();
+					Collection<? extends XmlElement> elements = def
+							.getConstraint(XmlElements.class).getElements();
 					if (!elements.isEmpty()) {
 						// use element name
-						//XXX MappableFlag also for elements?
+						// XXX MappableFlag also for elements?
 						for (XmlElement element : elements) {
 							allowedTypes.put(element.getName(), def);
 						}
@@ -215,24 +219,23 @@ public class GmlInstanceCollection implements InstanceCollection {
 					throw new IllegalStateException(e);
 				}
 			}
-			
-			if (reader.getEventType() != XMLStreamConstants.START_ELEMENT
-					|| nextType == null) {
+
+			if (reader.getEventType() != XMLStreamConstants.START_ELEMENT || nextType == null) {
 				throw new IllegalStateException();
 			}
-			
+
 			try {
-				return StreamGmlHelper.parseInstance(reader, nextType, 
-						elementIndex++, strict, null);
+				return StreamGmlHelper
+						.parseInstance(reader, nextType, elementIndex++, strict, null);
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException(e);
 			} finally {
 				nextType = null;
 			}
 		}
-		
+
 		/**
-		 * Get the type of the next instance. Must be called after 
+		 * Get the type of the next instance. Must be called after
 		 * {@link #hasNext()} but before {@link #next()} or {@link #skip()}
 		 * 
 		 * @return the type of the next instance
@@ -240,7 +243,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 		public synchronized TypeDefinition nextType() {
 			return nextType;
 		}
-		
+
 		/**
 		 * Skip the next object. Can be used instead of {@link #next()}
 		 */
@@ -252,12 +255,11 @@ public class GmlInstanceCollection implements InstanceCollection {
 					throw new IllegalStateException(e);
 				}
 			}
-			
-			if (reader.getEventType() != XMLStreamConstants.START_ELEMENT
-					|| nextType == null) {
+
+			if (reader.getEventType() != XMLStreamConstants.START_ELEMENT || nextType == null) {
 				throw new IllegalStateException();
 			}
-			
+
 			try {
 				// close elements
 				int open = 1;
@@ -312,26 +314,25 @@ public class GmlInstanceCollection implements InstanceCollection {
 	private final boolean restrictToFeatures;
 	private final boolean ignoreRoot;
 	private final boolean strict;
-	
+
 	private boolean emptyInitialized = false;
 	private boolean empty = false;
 
 	/**
 	 * Create an XMl/GML instance collection based on the given source.
+	 * 
 	 * @param source the source
 	 * @param sourceSchema the source schema
 	 * @param restrictToFeatures if only instances that are GML features shall
-	 *   be loaded
+	 *            be loaded
 	 * @param ignoreRoot if the root element should be ignored for creating
-	 *   instances even if it is recognized as an allowed instance type
+	 *            instances even if it is recognized as an allowed instance type
 	 * @param strict if associating elements with properties should be done
-	 *   strictly according to the schema, otherwise a fall-back is used
-	 *   trying to populate values also on invalid property paths 
+	 *            strictly according to the schema, otherwise a fall-back is
+	 *            used trying to populate values also on invalid property paths
 	 */
-	public GmlInstanceCollection(
-			LocatableInputSupplier<? extends InputStream> source,
-			TypeIndex sourceSchema, boolean restrictToFeatures, 
-			boolean ignoreRoot, boolean strict) {
+	public GmlInstanceCollection(LocatableInputSupplier<? extends InputStream> source,
+			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot, boolean strict) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
@@ -375,10 +376,10 @@ public class GmlInstanceCollection implements InstanceCollection {
 			} finally {
 				it.close();
 			}
-			
+
 			emptyInitialized = true;
 		}
-		
+
 		return empty;
 	}
 
@@ -389,8 +390,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 	public InstanceCollection select(Filter filter) {
 		/*
 		 * FIXME optimize for cases where there is filtering based on a type?
-		 * Those instances where another type is concerned would not have to 
-		 * be created (if they don't include children of that type?!)
+		 * Those instances where another type is concerned would not have to be
+		 * created (if they don't include children of that type?!)
 		 */
 		return new FilteredInstanceCollection(this, filter);
 	}
@@ -401,11 +402,12 @@ public class GmlInstanceCollection implements InstanceCollection {
 	@Override
 	public InstanceReference getReference(Instance instance) {
 		if (instance instanceof StreamGmlInstance) {
-			return new IndexInstanceReference(instance.getDataSet(), 
+			return new IndexInstanceReference(instance.getDataSet(),
 					((StreamGmlInstance) instance).getIndexInStream());
 		}
-		
-		throw new IllegalArgumentException("Reference can only be determined based on a StreamGmlInstance");
+
+		throw new IllegalArgumentException(
+				"Reference can only be determined based on a StreamGmlInstance");
 	}
 
 	/**
@@ -414,7 +416,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	@Override
 	public Instance getInstance(InstanceReference reference) {
 		IndexInstanceReference ref = (IndexInstanceReference) reference;
-		
+
 		InstanceIterator it = iterator();
 		try {
 			for (int i = 0; i < ref.getIndex(); i++) {

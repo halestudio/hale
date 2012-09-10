@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import java.util.ArrayList;
@@ -16,11 +15,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for PropertyCollectionType complex type.
+ * <p>
+ * Java class for PropertyCollectionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="PropertyCollectionType">
@@ -47,96 +48,92 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PropertyCollectionType", propOrder = {
-    "item"
-})
+@XmlType(name = "PropertyCollectionType", propOrder = { "item" })
 public class PropertyCollectionType {
 
-    @XmlElement(required = true)
-    protected List<PropertyCollectionType.Item> item;
+	@XmlElement(required = true)
+	protected List<PropertyCollectionType.Item> item;
 
-    /**
-     * Gets the value of the item property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the item property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getItem().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link PropertyCollectionType.Item }
-     * 
-     * 
-     */
-    public List<PropertyCollectionType.Item> getItem() {
-        if (item == null) {
-            item = new ArrayList<PropertyCollectionType.Item>();
-        }
-        return this.item;
-    }
+	/**
+	 * Gets the value of the item property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the item property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getItem().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link PropertyCollectionType.Item }
+	 * 
+	 * 
+	 */
+	public List<PropertyCollectionType.Item> getItem() {
+		if (item == null) {
+			item = new ArrayList<PropertyCollectionType.Item>();
+		}
+		return this.item;
+	}
 
+	/**
+	 * <p>
+	 * Java class for anonymous complex type.
+	 * 
+	 * <p>
+	 * The following schema fragment specifies the expected content contained
+	 * within this class.
+	 * 
+	 * <pre>
+	 * &lt;complexType>
+	 *   &lt;complexContent>
+	 *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+	 *       &lt;sequence>
+	 *         &lt;element ref="{http://www.omwg.org/TR/d7/ontology/alignment}Property"/>
+	 *       &lt;/sequence>
+	 *     &lt;/restriction>
+	 *   &lt;/complexContent>
+	 * &lt;/complexType>
+	 * </pre>
+	 * 
+	 * 
+	 */
+	@XmlAccessorType(XmlAccessType.FIELD)
+	@XmlType(name = "", propOrder = { "property" })
+	public static class Item {
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element ref="{http://www.omwg.org/TR/d7/ontology/alignment}Property"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "property"
-    })
-    public static class Item {
+		@XmlElement(name = "Property", required = true)
+		protected PropertyType property;
 
-        @XmlElement(name = "Property", required = true)
-        protected PropertyType property;
+		/**
+		 * Gets the value of the property property.
+		 * 
+		 * @return possible object is {@link PropertyType }
+		 * 
+		 */
+		public PropertyType getProperty() {
+			return property;
+		}
 
-        /**
-         * Gets the value of the property property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link PropertyType }
-         *     
-         */
-        public PropertyType getProperty() {
-            return property;
-        }
+		/**
+		 * Sets the value of the property property.
+		 * 
+		 * @param value
+		 *            allowed object is {@link PropertyType }
+		 * 
+		 */
+		public void setProperty(PropertyType value) {
+			this.property = value;
+		}
 
-        /**
-         * Sets the value of the property property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link PropertyType }
-         *     
-         */
-        public void setProperty(PropertyType value) {
-            this.property = value;
-        }
-
-    }
+	}
 
 }

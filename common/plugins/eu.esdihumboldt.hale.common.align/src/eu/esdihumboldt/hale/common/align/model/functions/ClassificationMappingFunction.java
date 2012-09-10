@@ -18,13 +18,12 @@ package eu.esdihumboldt.hale.common.align.model.functions;
  * @author Kai Schwierczek
  */
 public interface ClassificationMappingFunction {
-	
+
 	/**
 	 * the classification mapping Id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.align.classification";
-	
-	
+
 	/**
 	 * Name of the parameter specifying the classifications.
 	 */
@@ -36,18 +35,20 @@ public interface ClassificationMappingFunction {
 	public static final String PARAMETER_NOT_CLASSIFIED_ACTION = "notClassifiedAction";
 
 	/**
-	 * Value for PARAMETER_NOT_CLASSIFIED_ACTION specifying that the source value should be used.
+	 * Value for PARAMETER_NOT_CLASSIFIED_ACTION specifying that the source
+	 * value should be used.
 	 */
 	public static final String USE_SOURCE_ACTION = "source";
 
 	/**
-	 * Value for PARAMETER_NOT_CLASSIFIED_ACTION specifying that null should be used.
+	 * Value for PARAMETER_NOT_CLASSIFIED_ACTION specifying that null should be
+	 * used.
 	 */
 	public static final String USE_NULL_ACTION = "null";
 
 	/**
-	 * Value for PARAMETER_NOT_CLASSIFIED_ACTION specifying that a fixed value, which follows 
-	 * the ":" should be used.
+	 * Value for PARAMETER_NOT_CLASSIFIED_ACTION specifying that a fixed value,
+	 * which follows the ":" should be used.
 	 */
 	public static final String USE_FIXED_VALUE_ACTION_PREFIX = "fixed:";
 }

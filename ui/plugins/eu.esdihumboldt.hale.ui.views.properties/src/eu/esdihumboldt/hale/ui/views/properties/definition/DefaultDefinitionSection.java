@@ -20,11 +20,13 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
  * The default definition section
+ * 
  * @author Patrick Lieb
  * @param <T> the definition type
  */
-public abstract class DefaultDefinitionSection<T extends Definition<?>> extends AbstractDefinitionSection<T> {
-	
+public abstract class DefaultDefinitionSection<T extends Definition<?>> extends
+		AbstractDefinitionSection<T> {
+
 	/**
 	 * @see AbstractTextSection#setInput(Object)
 	 */
@@ -32,16 +34,16 @@ public abstract class DefaultDefinitionSection<T extends Definition<?>> extends 
 	@Override
 	protected void setInput(Object input) {
 		input = TransformationTreeUtil.extractObject(input);
-		
+
 		if (input instanceof Entity) {
 			input = ((Entity) input).getDefinition();
 		}
-			
+
 		if (input instanceof EntityDefinition) {
 			input = ((EntityDefinition) input).getDefinition();
 		}
-			
+
 		setDefinition((T) input);
 	}
-	
+
 }

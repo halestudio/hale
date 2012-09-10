@@ -17,17 +17,20 @@ import java.math.BigDecimal;
 import org.springframework.core.convert.ConversionException;
 
 /**
- * Validator for digit counts. 
- * As in (http://www.w3.org/TR/xmlschema-2/#rf-totalDigits and http://www.w3.org/TR/xmlschema-2/#rf-fractionDigits)
+ * Validator for digit counts. As in
+ * (http://www.w3.org/TR/xmlschema-2/#rf-totalDigits and
+ * http://www.w3.org/TR/xmlschema-2/#rf-fractionDigits)
  * 
  * @author Kai Schwierczek
  */
 public class DigitCountValidator extends AbstractValidator {
+
 	private Type type;
 	private int length;
 
 	/**
-	 * Construct a validator that checks the digit count of the input to match the given type and value.
+	 * Construct a validator that checks the digit count of the input to match
+	 * the given type and value.
 	 * 
 	 * @param type the digits to check for
 	 * @param length the length to check for
@@ -58,16 +61,19 @@ public class DigitCountValidator extends AbstractValidator {
 				// try lowering the scale if it is too large without rounding
 				// -> cut off ending zeros if possible
 				if (decimal.scale() > length)
-					decimal.setScale(length); // throws exception if scaling is not possible
+					decimal.setScale(length); // throws exception if scaling is
+												// not possible
 			} catch (ArithmeticException ae) {
 				ok = false; // scaling failed
 			}
 			if (ok)
 				return null;
 			else
-				return "Input must have at most " + length + " fraction digits but has " + decimal.scale() + ".";
+				return "Input must have at most " + length + " fraction digits but has "
+						+ decimal.scale() + ".";
 		case TOTALDIGITS:
-			// single zero in front of decimal point and ending zeros don't count
+			// single zero in front of decimal point and ending zeros don't
+			// count
 			// here BigDecimal doesn't help, do string work.
 			String numberString = decimal.abs().toPlainString();
 			int indexOfDot = numberString.indexOf('.');
@@ -84,13 +90,15 @@ public class DigitCountValidator extends AbstractValidator {
 					buf.deleteCharAt(indexOfDot); // only delete point
 
 				numberString = buf.toString();
-			} else if (numberString.equals("0"))
+			}
+			else if (numberString.equals("0"))
 				numberString = "";
 
 			if (numberString.length() <= length)
 				return null;
 			else
-				return "Input must have at most " + length + " total digits but has " + decimal.scale() + ".";
+				return "Input must have at most " + length + " total digits but has "
+						+ decimal.scale() + ".";
 		default:
 			return null; // all types checked, doesn't happen
 		}

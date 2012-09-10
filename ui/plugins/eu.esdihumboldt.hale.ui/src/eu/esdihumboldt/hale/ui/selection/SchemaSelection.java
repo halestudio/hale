@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
  * Schema selection interface
+ * 
  * @author Simon Templer
  */
 public interface SchemaSelection extends ISelection {

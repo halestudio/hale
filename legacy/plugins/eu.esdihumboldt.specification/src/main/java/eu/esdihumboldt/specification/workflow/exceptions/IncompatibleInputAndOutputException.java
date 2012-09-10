@@ -12,16 +12,16 @@
 package eu.esdihumboldt.specification.workflow.exceptions;
 
 /**
- *
+ * 
  * @author mgone
  */
 public class IncompatibleInputAndOutputException extends Exception {
 
-    public IncompatibleInputAndOutputException() {
-    }
+	public IncompatibleInputAndOutputException() {
+	}
 
-    public IncompatibleInputAndOutputException(String message) {
-        super(message);
-    }
+	public IncompatibleInputAndOutputException(String message) {
+		super(message);
+	}
 
 }

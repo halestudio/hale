@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for valueExprType complex type.
+ * <p>
+ * Java class for valueExprType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="valueExprType">
@@ -37,114 +38,97 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "valueExprType", propOrder = {
-    "literal",
-    "min",
-    "max",
-    "apply"
-})
+@XmlType(name = "valueExprType", propOrder = { "literal", "min", "max", "apply" })
 public class ValueExprType {
 
-    protected String literal;
-    protected String min;
-    protected String max;
-    @XmlElement(name = "Apply")
-    protected ApplyType apply;
+	protected String literal;
+	protected String min;
+	protected String max;
+	@XmlElement(name = "Apply")
+	protected ApplyType apply;
 
-    /**
-     * Gets the value of the literal property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLiteral() {
-        return literal;
-    }
+	/**
+	 * Gets the value of the literal property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getLiteral() {
+		return literal;
+	}
 
-    /**
-     * Sets the value of the literal property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLiteral(String value) {
-        this.literal = value;
-    }
+	/**
+	 * Sets the value of the literal property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setLiteral(String value) {
+		this.literal = value;
+	}
 
-    /**
-     * Gets the value of the min property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMin() {
-        return min;
-    }
+	/**
+	 * Gets the value of the min property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMin() {
+		return min;
+	}
 
-    /**
-     * Sets the value of the min property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMin(String value) {
-        this.min = value;
-    }
+	/**
+	 * Sets the value of the min property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMin(String value) {
+		this.min = value;
+	}
 
-    /**
-     * Gets the value of the max property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMax() {
-        return max;
-    }
+	/**
+	 * Gets the value of the max property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMax() {
+		return max;
+	}
 
-    /**
-     * Sets the value of the max property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMax(String value) {
-        this.max = value;
-    }
+	/**
+	 * Sets the value of the max property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMax(String value) {
+		this.max = value;
+	}
 
-    /**
-     * Gets the value of the apply property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ApplyType }
-     *     
-     */
-    public ApplyType getApply() {
-        return apply;
-    }
+	/**
+	 * Gets the value of the apply property.
+	 * 
+	 * @return possible object is {@link ApplyType }
+	 * 
+	 */
+	public ApplyType getApply() {
+		return apply;
+	}
 
-    /**
-     * Sets the value of the apply property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ApplyType }
-     *     
-     */
-    public void setApply(ApplyType value) {
-        this.apply = value;
-    }
+	/**
+	 * Sets the value of the apply property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ApplyType }
+	 * 
+	 */
+	public void setApply(ApplyType value) {
+		this.apply = value;
+	}
 
 }

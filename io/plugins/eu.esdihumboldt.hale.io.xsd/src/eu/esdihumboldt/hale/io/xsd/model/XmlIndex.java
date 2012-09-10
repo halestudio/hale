@@ -30,35 +30,36 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 
 /**
  * XML schema used during schema parsing, manages {@link XmlTypeDefinition}s
+ * 
  * @author Simon Templer
  */
 public class XmlIndex extends DefaultSchema {
-	
+
 	/**
 	 * XML attribute definitions
 	 */
 	private final Map<QName, XmlAttribute> attributes = new HashMap<QName, XmlAttribute>();
-	
+
 	/**
 	 * XML attribute group definitions
 	 */
 	private final Map<QName, XmlAttributeGroup> attributeGroups = new HashMap<QName, XmlAttributeGroup>();
-	
+
 	/**
 	 * XML group definitions
 	 */
 	private final Map<QName, XmlGroup> groups = new HashMap<QName, XmlGroup>();
-	
+
 	/**
 	 * XML elements
 	 */
 	private final Map<QName, XmlElement> elements = new HashMap<QName, XmlElement>();
-	
+
 	/**
 	 * Namespaces mapped to prefixes
 	 */
 	private final Map<String, String> prefixes = new HashMap<String, String>();
-	
+
 	/**
 	 * @see DefaultSchema#DefaultSchema(String, URI)
 	 */
@@ -69,6 +70,7 @@ public class XmlIndex extends DefaultSchema {
 	/**
 	 * Get the type definition with the given name. If the type doesn't exist a
 	 * new type definition will be created.
+	 * 
 	 * @param name the type name
 	 * @return the type definition
 	 */
@@ -76,9 +78,9 @@ public class XmlIndex extends DefaultSchema {
 		XmlTypeDefinition type = (XmlTypeDefinition) super.getType(name);
 		if (type == null) {
 			type = new XmlTypeDefinition(name);
-			
+
 			XmlTypeUtil.configureType(type);
-			
+
 			if (name.equals(XmlTypeUtil.NAME_ANY_TYPE)) {
 				type.setConstraint(AbstractFlag.ENABLED);
 				type.setConstraint(MappableFlag.DISABLED);
@@ -87,7 +89,7 @@ public class XmlIndex extends DefaultSchema {
 				// set anyType as default super type
 				type.setSuperType(getOrCreateType(XmlTypeUtil.NAME_ANY_TYPE));
 			}
-			
+
 			addType(type);
 		}
 		return type;
@@ -100,7 +102,7 @@ public class XmlIndex extends DefaultSchema {
 	public void addType(TypeDefinition type) {
 		Preconditions.checkArgument(type instanceof XmlTypeDefinition,
 				"Only XML type definitions may be added to the index");
-		
+
 		super.addType(type);
 	}
 

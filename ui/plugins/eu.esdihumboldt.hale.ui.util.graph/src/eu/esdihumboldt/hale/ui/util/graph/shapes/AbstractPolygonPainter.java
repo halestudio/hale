@@ -25,6 +25,7 @@ public abstract class AbstractPolygonPainter implements ShapePainter {
 
 	/**
 	 * Get the figure's outline points
+	 * 
 	 * @param bounds the figure bounds
 	 * @param lineWidth the line width of the border
 	 * 

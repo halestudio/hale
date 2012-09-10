@@ -16,15 +16,17 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 
 /**
  * A transformation is an {@link Alignment} that has been processed to a set of
- * transformation cells that can be converted to instructions to be executed to 
+ * transformation cells that can be converted to instructions to be executed to
  * perform that transformation on instances.
+ * 
  * @author Simon Templer
  */
 public interface Transformation {
-	
-	//TODO add method to generate specific transformation instructions given a source instance
+
+	// TODO add method to generate specific transformation instructions given a
+	// source instance
 //	public X y(Collection<? extends Type> sourceTypes, Instance source);
-	
+
 //	/**
 //	 * 
 //	 * @param tree

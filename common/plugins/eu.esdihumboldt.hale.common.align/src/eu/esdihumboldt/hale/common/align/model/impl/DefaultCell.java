@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 
 /**
  * Default implementation of an alignment cell
+ * 
  * @author Simon Templer
  */
 public class DefaultCell implements Cell, MutableCell {
@@ -115,5 +116,5 @@ public class DefaultCell implements Cell, MutableCell {
 			return super.toString();
 		}
 	}
-	
+
 }

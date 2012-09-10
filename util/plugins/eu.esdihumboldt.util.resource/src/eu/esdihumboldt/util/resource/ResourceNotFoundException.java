@@ -14,6 +14,7 @@ package eu.esdihumboldt.util.resource;
 
 /**
  * Exception that is thrown when a resource was not found.
+ * 
  * @author Simon Templer
  */
 public class ResourceNotFoundException extends Exception {

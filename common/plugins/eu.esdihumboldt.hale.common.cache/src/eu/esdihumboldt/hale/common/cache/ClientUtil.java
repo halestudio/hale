@@ -25,31 +25,32 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
 /**
-* HTTP client utilities
-* @author Simon Templer, Michel Krämer
-*/
+ * HTTP client utilities
+ * 
+ * @author Simon Templer, Michel Krämer
+ */
 public class ClientUtil {
-	
+
 	/**
 	 * Create a thread safe HTTP client
+	 * 
 	 * @return the created HTTP client
 	 */
 	public static DefaultHttpClient createThreadSafeHttpClient() {
-		//create default scheme registry
+		// create default scheme registry
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
-     schemeRegistry.register(new Scheme("http", 80, //$NON-NLS-1$
-     		PlainSocketFactory.getSocketFactory()));
-     schemeRegistry.register(new Scheme("https", 443, //$NON-NLS-1$
-     		SSLSocketFactory.getSocketFactory()));
-     
-		//create multi-threaded connection manager
+		schemeRegistry.register(new Scheme("http", 80, //$NON-NLS-1$
+				PlainSocketFactory.getSocketFactory()));
+		schemeRegistry.register(new Scheme("https", 443, //$NON-NLS-1$
+				SSLSocketFactory.getSocketFactory()));
+
+		// create multi-threaded connection manager
 		HttpParams params = new BasicHttpParams();
-     HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-     
-     ClientConnectionManager cm =
-     	new ThreadSafeClientConnManager(schemeRegistry);
-     
-     //create HTTP client
+		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+
+		ClientConnectionManager cm = new ThreadSafeClientConnManager(schemeRegistry);
+
+		// create HTTP client
 		return new DefaultHttpClient(cm, params);
 	}
 

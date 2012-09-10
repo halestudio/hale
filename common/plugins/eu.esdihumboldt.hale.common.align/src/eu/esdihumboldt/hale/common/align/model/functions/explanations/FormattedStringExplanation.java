@@ -23,14 +23,18 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for formatted string cells.
+ * 
  * @author Simon Templer
  */
-public class FormattedStringExplanation extends AbstractCellExplanation implements FormattedStringFunction {
+public class FormattedStringExplanation extends AbstractCellExplanation implements
+		FormattedStringFunction {
+
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with a string formatted according to this pattern:\n"
 			+ "{1}\nSource property names in curly braces are replaced by the corresponding property value, if the context condition/index matches, otherwise the value isn't set.";
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
@@ -41,7 +45,7 @@ public class FormattedStringExplanation extends AbstractCellExplanation implemen
 		if (target != null && pattern != null) {
 			if (html)
 				pattern = "<pre>" + pattern + "</pre>";
-			String explanation = MessageFormat.format(EXPLANATION_PATTERN, 
+			String explanation = MessageFormat.format(EXPLANATION_PATTERN,
 					formatEntity(target, html, true), pattern);
 			if (html)
 				explanation = explanation.replaceAll("\n", "<br />");
@@ -50,7 +54,8 @@ public class FormattedStringExplanation extends AbstractCellExplanation implemen
 				sb.append("<br /><br />Replacement table:<br />");
 				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
 				for (Entity entity : sources)
-					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>", '{' + getEntityNameWithoutCondition(entity) + '}',
+					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
+							'{' + getEntityNameWithoutCondition(entity) + '}',
 							formatEntity(entity, true, false)));
 				sb.append("</table>");
 				explanation += sb.toString();

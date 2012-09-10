@@ -32,64 +32,66 @@ import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyView;
 
 /**
  * Properties section with the hierarchy view of a {@link ChildDefinition}
+ * 
  * @author Patrick Lieb
  */
-public class ChildDefinitionTypeHierarchyViewSection extends DefaultDefinitionSection<ChildDefinition<?>>{
+public class ChildDefinitionTypeHierarchyViewSection extends
+		DefaultDefinitionSection<ChildDefinition<?>> {
 
 	private Link link;
-	
+
 	private SelectionAdapter adapter;
-	
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-				.createFlatFormComposite(parent);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
 		link = new Link(composite, 0);
 		link.setBackground(getWidgetFactory().getColors().getBackground());
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		link.setLayoutData(data);
 		link.setText("<A>Open Type in HierarchyView</A>");
-		
-		CLabel namespaceLabel = getWidgetFactory()
-		.createCLabel(composite, "TypeHierarchy:"); //$NON-NLS-1$
+
+		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite, "TypeHierarchy:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(link,15);
+		data.right = new FormAttachment(link, 15);
 		data.top = new FormAttachment(link, 0, SWT.CENTER);
-										namespaceLabel.setLayoutData(data);
-		adapter = new SelectionAdapter(){
+		namespaceLabel.setLayoutData(data);
+		adapter = new SelectionAdapter() {
 			// only initializing
 		};
 		link.addSelectionListener(adapter);
 	}
-	
+
 	@Override
-	public void refresh(){
+	public void refresh() {
 		link.removeSelectionListener(adapter);
-		adapter = new SelectionAdapter(){
-			
+		adapter = new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(TypeHierarchyView.ID);
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+							.showView(TypeHierarchyView.ID);
 				} catch (PartInitException e1) {
 					e1.printStackTrace();
 				}
-				TypeHierarchyView thv = (TypeHierarchyView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(TypeHierarchyView.ID);
+				TypeHierarchyView thv = (TypeHierarchyView) PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getActivePage().findView(TypeHierarchyView.ID);
 				thv.setType(getDefinition().getParentType());
 			}
 		};
 		link.addSelectionListener(adapter);
 	}
-	
+
 }

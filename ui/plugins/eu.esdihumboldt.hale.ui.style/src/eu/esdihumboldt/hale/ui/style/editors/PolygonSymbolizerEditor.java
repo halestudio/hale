@@ -29,15 +29,15 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class PolygonSymbolizerEditor implements Editor<PolygonSymbolizer> {
-	
+
 	private final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private StrokeEditor strokeEditor;
-	
+
 	private FillEditor fillEditor;
-	
+
 	private final Composite page;
-	
+
 	/**
 	 * Creates a {@link PolygonSymbolizer} editor
 	 * 
@@ -46,18 +46,18 @@ public class PolygonSymbolizerEditor implements Editor<PolygonSymbolizer> {
 	 */
 	public PolygonSymbolizerEditor(Composite parent, PolygonSymbolizer poly) {
 		super();
-		
+
 		page = new Composite(parent, SWT.NONE);
 
 		RowLayout layout = new RowLayout(SWT.VERTICAL);
 		page.setLayout(layout);
-		
+
 		// stroke
 		Label strokeLabel = new Label(page, SWT.NONE);
 		strokeLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		strokeLabel.setText(Messages.PolygonSymbolizerEditor_StrokeLabel);
 		strokeEditor = new StrokeEditor(page, poly.getStroke());
-		
+
 		// fill
 		Label fillLabel = new Label(page, SWT.NONE);
 		fillLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
@@ -78,8 +78,7 @@ public class PolygonSymbolizerEditor implements Editor<PolygonSymbolizer> {
 	 */
 	@Override
 	public PolygonSymbolizer getValue() {
-		return styleBuilder.createPolygonSymbolizer(strokeEditor.getValue(),
-				fillEditor.getValue());
+		return styleBuilder.createPolygonSymbolizer(strokeEditor.getValue(), fillEditor.getValue());
 	}
 
 	/**

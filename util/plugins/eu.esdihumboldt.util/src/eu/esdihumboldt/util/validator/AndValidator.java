@@ -22,6 +22,7 @@ import java.util.LinkedList;
  * @author Kai Schwierczek
  */
 public class AndValidator implements Validator {
+
 	private LinkedList<Validator> validators = new LinkedList<Validator>();
 
 	/**
@@ -72,7 +73,8 @@ public class AndValidator implements Validator {
 			}
 		}
 		if (numFailed > 1)
-			return "All of the following are false:\n   " + result.toString().replace("\n", "\n   ");
+			return "All of the following are false:\n   "
+					+ result.toString().replace("\n", "\n   ");
 
 		if (numFailed > 0)
 			return result.toString();

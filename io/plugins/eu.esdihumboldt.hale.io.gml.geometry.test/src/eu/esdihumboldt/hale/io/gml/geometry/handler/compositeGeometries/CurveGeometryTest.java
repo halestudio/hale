@@ -51,9 +51,8 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 	public void init() {
 		super.init();
 
-		Coordinate[] coordinates = new Coordinate[] {
-				new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
-				new Coordinate(0.01, -3.2) };
+		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
+				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
 		LineString linestring1 = geomFactory.createLineString(coordinates);
 
 		LineString[] lines = new LineString[] { linestring1 };
@@ -63,8 +62,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test curve geometries read from a GML 3 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testCurveGml3() throws Exception {
@@ -137,8 +135,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test curve geometries read from a GML 3.1 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testCurveGml31() throws Exception {
@@ -222,12 +219,11 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			it.close();
 		}
 	}
-	
+
 	/**
 	 * Test curve geometries read from a GML 3.2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testCurveGml32() throws Exception {
@@ -313,8 +309,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkCurvePropertyInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 

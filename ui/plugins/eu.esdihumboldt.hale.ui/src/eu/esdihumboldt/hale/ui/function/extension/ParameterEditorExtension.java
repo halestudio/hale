@@ -32,10 +32,11 @@ import eu.esdihumboldt.hale.ui.function.extension.impl.ParameterEditorFactoryImp
  * 
  * @author Simon Templer
  */
-public class ParameterEditorExtension extends AbstractExtension<EditorFactory, ParameterEditorFactory> {
-	
+public class ParameterEditorExtension extends
+		AbstractExtension<EditorFactory, ParameterEditorFactory> {
+
 	private static final ALogger log = ALoggerFactory.getLogger(ParameterEditorExtension.class);
-	
+
 	private static ParameterEditorExtension instance;
 
 	/**
@@ -62,7 +63,8 @@ public class ParameterEditorExtension extends AbstractExtension<EditorFactory, P
 	 */
 	@Override
 	protected ParameterEditorFactory createFactory(IConfigurationElement conf) throws Exception {
-		if (conf.getName().equals("propertyParameterEditor") || conf.getName().equals("typeParameterEditor"))
+		if (conf.getName().equals("propertyParameterEditor")
+				|| conf.getName().equals("typeParameterEditor"))
 			return new ParameterEditorFactoryImpl(conf);
 
 		return null;
@@ -70,28 +72,29 @@ public class ParameterEditorExtension extends AbstractExtension<EditorFactory, P
 
 	/**
 	 * Create an editor for a parameter.
+	 * 
 	 * @param parent the parent composite
-	 * @param functionId the ID of the function the parameter is associated with 
+	 * @param functionId the ID of the function the parameter is associated with
 	 * @param parameterName the parameter name
 	 * @return the editor
 	 */
-	public Editor<?> createEditor(final Composite parent, 
-			final String functionId, final String parameterName) {
+	public Editor<?> createEditor(final Composite parent, final String functionId,
+			final String parameterName) {
 		List<ParameterEditorFactory> factories = getFactories(new FactoryFilter<EditorFactory, ParameterEditorFactory>() {
-			
+
 			@Override
 			public boolean acceptFactory(ParameterEditorFactory factory) {
-				return factory.getParameterName().equals(parameterName) 
+				return factory.getParameterName().equals(parameterName)
 						&& factory.getFunctionId().equals(functionId);
 			}
-			
+
 			@Override
 			public boolean acceptCollection(
 					ExtensionObjectFactoryCollection<EditorFactory, ParameterEditorFactory> collection) {
 				return true;
 			}
 		});
-		
+
 		if (!factories.isEmpty()) {
 			ParameterEditorFactory fact = factories.get(0);
 			try {
@@ -101,9 +104,9 @@ public class ParameterEditorExtension extends AbstractExtension<EditorFactory, P
 				log.error("Could not create editor for parameter, using default editor instead.");
 			}
 		}
-		
+
 		// default editor
 		return new StringEditor(parent);
 	}
-	
+
 }

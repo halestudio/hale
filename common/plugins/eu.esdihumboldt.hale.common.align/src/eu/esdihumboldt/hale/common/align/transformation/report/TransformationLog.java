@@ -15,8 +15,9 @@ package eu.esdihumboldt.hale.common.align.transformation.report;
 import eu.esdihumboldt.hale.common.core.report.ReportLog;
 
 /**
- * Report log for transformation functions. Messages for the report should be 
+ * Report log for transformation functions. Messages for the report should be
  * created using {@link #createMessage(String, Throwable)}
+ * 
  * @author Simon Templer
  * @since 2.5
  */
@@ -24,10 +25,12 @@ public interface TransformationLog extends ReportLog<TransformationMessage> {
 
 	/**
 	 * Create a message configured with the current cell for use with the log
+	 * 
 	 * @param message the message string
-	 * @param throwable a throwable associated to the message, may be <code>null</code>
+	 * @param throwable a throwable associated to the message, may be
+	 *            <code>null</code>
 	 * @return the message
 	 */
 	TransformationMessage createMessage(String message, Throwable throwable);
-	
+
 }

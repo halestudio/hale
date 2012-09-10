@@ -14,10 +14,11 @@ package eu.esdihumboldt.hale.ui.cst.internal;
 
 /**
  * CST UI preference constants.
+ * 
  * @author Simon Templer
  */
 public interface CSTPreferencesConstants {
-	
+
 	/**
 	 * The preferences key for storing the active transformation tree hooks
 	 */

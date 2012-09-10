@@ -23,47 +23,50 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
  * Provides support for writing instances
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
 public interface InstanceWriter extends ExportProvider {
-	
+
 	/**
 	 * Set the instances to write.
+	 * 
 	 * @param instances the instances to write
 	 */
 	public void setInstances(InstanceCollection instances);
-	
+
 	/**
 	 * Set the target schema for the output.
+	 * 
 	 * @param targetSchema the target schema
 	 */
 	public void setTargetSchema(SchemaSpace targetSchema);
-	
+
 	/**
 	 * Get the target schema.
+	 * 
 	 * @return the target schema
 	 */
 	public SchemaSpace getTargetSchema();
-	
+
 	/**
-	 * Get the schemas needed for validation of the output written using 
-	 * {@link #execute(ProgressIndicator)}, this usually is at least the 
-	 * target schema.
+	 * Get the schemas needed for validation of the output written using
+	 * {@link #execute(ProgressIndicator)}, this usually is at least the target
+	 * schema.
 	 * 
 	 * @return the schemas needed for validation
 	 */
 	public List<? extends Locatable> getValidationSchemas();
-	
+
 	/**
-	 * Validate the basic {@link InstanceWriter} configuration, to determine
-	 * if the target schema (and instances) are compatible to the writer.
-	 * Other parameters should be ignored for the check. 
+	 * Validate the basic {@link InstanceWriter} configuration, to determine if
+	 * the target schema (and instances) are compatible to the writer. Other
+	 * parameters should be ignored for the check.
 	 * 
 	 * @throws IOProviderConfigurationException if the I/O provider was not
-	 *   configured properly
+	 *             configured properly
 	 */
 	public void checkCompatibility() throws IOProviderConfigurationException;
 

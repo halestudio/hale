@@ -19,10 +19,10 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Factory for generic type function wizards
+ * 
  * @author Simon Templer
  */
-public class GenericTypeFunctionWizardFactory extends
-		AbstractGenericFunctionWizardFactory {
+public class GenericTypeFunctionWizardFactory extends AbstractGenericFunctionWizardFactory {
 
 	/**
 	 * @see AbstractGenericFunctionWizardFactory#AbstractGenericFunctionWizardFactory(String)

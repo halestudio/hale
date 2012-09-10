@@ -18,24 +18,25 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverter;
 
 /**
- * Abstract geometry converter implementation providing access to a 
- * {@link GeometryFactory} 
- *
+ * Abstract geometry converter implementation providing access to a
+ * {@link GeometryFactory}
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  * @param <S> the source geometry type
  * @param <T> the target geometry type
  */
-public abstract class AbstractGeometryConverter<S extends Geometry, T extends Geometry> implements GeometryConverter<S, T> {
+public abstract class AbstractGeometryConverter<S extends Geometry, T extends Geometry> implements
+		GeometryConverter<S, T> {
 
 	/**
 	 * The geometry factory
 	 */
 	protected static final GeometryFactory geomFactory = new GeometryFactory();
-	
+
 	private final Class<S> sourceType;
-	
+
 	private final Class<T> targetType;
 
 	/**

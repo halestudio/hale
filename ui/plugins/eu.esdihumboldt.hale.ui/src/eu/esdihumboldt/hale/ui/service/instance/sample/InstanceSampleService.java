@@ -17,36 +17,35 @@ import java.util.Observer;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
-
 /**
  * Reference sample service
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface InstanceSampleService {
-	
+
 	/**
 	 * Set the reference instance sample
 	 * 
 	 * @param instances the reference instance sample
 	 */
 	public void setReferenceInstances(Collection<Instance> instances);
-	
+
 	/**
 	 * Get the reference instance sample
 	 * 
 	 * @return the reference instance sample
 	 */
 	public Collection<Instance> getReferenceInstances();
-	
+
 	/**
 	 * Adds a listener
 	 * 
 	 * @param listener the listener to add
 	 */
 	public void addObserver(Observer listener);
-	
+
 	/**
 	 * Removes a listener
 	 * 

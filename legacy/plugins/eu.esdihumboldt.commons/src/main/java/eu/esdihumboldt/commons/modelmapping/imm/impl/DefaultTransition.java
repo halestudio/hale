@@ -21,25 +21,24 @@ import eu.esdihumboldt.specification.modelrepository.abstractfc.Relation;
 import eu.esdihumboldt.specification.modelrepository.abstractfc.Transition;
 
 /**
- * Simple Serializable implementation of a Transition, without too much logic 
- * on it's own.
+ * Simple Serializable implementation of a Transition, without too much logic on
+ * it's own.
  * 
- * TODO: Think about whether a name in case of a Transtion should only be 
- * accepted as a concept (i.e. derived from it's name and UUID or something 
+ * TODO: Think about whether a name in case of a Transtion should only be
+ * accepted as a concept (i.e. derived from it's name and UUID or something
  * similar).
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public class DefaultTransition 
-	extends SimpleRelation 
-	implements Transition, Serializable {
-	
+public class DefaultTransition extends SimpleRelation implements Transition,
+		Serializable {
+
 	// Fields ..................................................................
-	
+
 	private Concept representedConcept;
-	
+
 	private Map<String, ConceptProperty> inputReferences;
 
 	// Constructors ............................................................
@@ -50,10 +49,10 @@ public class DefaultTransition
 	protected DefaultTransition() {
 		super();
 	}
-	
+
 	/**
-	 * Minimum constructor based on one {@link ConceptProperty}. Note that in 
-	 * the case of a {@link Transition}, a name always has to be assigned, 
+	 * Minimum constructor based on one {@link ConceptProperty}. Note that in
+	 * the case of a {@link Transition}, a name always has to be assigned,
 	 * otherwise the matching strategy implementation cannot be found.
 	 * 
 	 * @param name
@@ -65,8 +64,8 @@ public class DefaultTransition
 			String propertyName, ConceptProperty inputProperty) {
 		super(null, name);
 		if (name == null || name.equals("")) {
-			throw new NullPointerException("A name given to a Transition may " +
-					"not be null or empty.");
+			throw new NullPointerException("A name given to a Transition may "
+					+ "not be null or empty.");
 		}
 		this.representedConcept = representedConcept;
 		this.inputReferences = new HashMap<String, ConceptProperty>();
@@ -76,27 +75,28 @@ public class DefaultTransition
 	/**
 	 * Full constructor.
 	 * 
-	 * @param description the String describing the nature of this 
-	 * {@link Relation}.
-	 * @param name the name of this relation (in UML, this is also called the 
-	 * role name)
-	 * @param representedConcept the {@link Concept} created through this 
-	 * {@link Transition}.
-	 * @param inputReferences a Map of named references to 
-	 * {@link ConceptProperty} objects
+	 * @param description
+	 *            the String describing the nature of this {@link Relation}.
+	 * @param name
+	 *            the name of this relation (in UML, this is also called the
+	 *            role name)
+	 * @param representedConcept
+	 *            the {@link Concept} created through this {@link Transition}.
+	 * @param inputReferences
+	 *            a Map of named references to {@link ConceptProperty} objects
 	 */
 	public DefaultTransition(String description, String name,
 			Concept representedConcept,
 			Map<String, ConceptProperty> inputReferences) {
 		super(description, name);
 		if (name == null || name.equals("")) {
-			throw new NullPointerException("A name given to a Transition may " +
-					"not be null or empty.");
+			throw new NullPointerException("A name given to a Transition may "
+					+ "not be null or empty.");
 		}
 		this.representedConcept = representedConcept;
 		this.inputReferences = inputReferences;
 	}
-	
+
 	// Transition operations ...................................................
 
 	/**

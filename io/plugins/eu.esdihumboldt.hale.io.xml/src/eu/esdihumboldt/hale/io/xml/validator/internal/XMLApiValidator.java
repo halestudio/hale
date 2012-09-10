@@ -26,16 +26,17 @@ import eu.esdihumboldt.hale.io.xml.validator.Validator;
 
 /**
  * Validate using the XML API.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class XMLApiValidator implements Validator {
 
 	private final URI[] schemaLocations;
-	
+
 	/**
 	 * Constructor
+	 * 
 	 * @param schemaLocations the schema locations
 	 */
 	public XMLApiValidator(URI[] schemaLocations) {
@@ -54,29 +55,30 @@ public class XMLApiValidator implements Validator {
 			Source[] sources = new Source[schemaLocations.length];
 			for (int i = 0; i < this.schemaLocations.length; i++) {
 				URI schemaLocation = this.schemaLocations[i];
-						    
+
 				if (mainUri == null) { // use first schema location for main URI
 					mainUri = schemaLocation;
 				}
-		
-			    // load a WXS schema, represented by a Schema instance
+
+				// load a WXS schema, represented by a Schema instance
 				DefaultInputSupplier dis = new DefaultInputSupplier(schemaLocation);
 				sources[i] = new StreamSource(dis.getInput());
 			}
 			// create a SchemaFactory capable of understanding WXS schemas
-		    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		    factory.setResourceResolver(new SchemaResolver(mainUri));
-		    validateSchema = factory.newSchema(sources);
+			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			factory.setResourceResolver(new SchemaResolver(mainUri));
+			validateSchema = factory.newSchema(sources);
 		} catch (Exception e) {
 			throw new IllegalStateException("Error parsing schema for XML validation", e); //$NON-NLS-1$
 		}
 
-	    // create a Validator instance, which can be used to validate an instance document
-	    javax.xml.validation.Validator validator = validateSchema.newValidator();
-	    ReportImpl report = new ReportImpl();
+		// create a Validator instance, which can be used to validate an
+		// instance document
+		javax.xml.validation.Validator validator = validateSchema.newValidator();
+		ReportImpl report = new ReportImpl();
 		validator.setErrorHandler(new ReportErrorHandler(report));
-	    
-	    // validate the XML document
+
+		// validate the XML document
 		try {
 			validator.validate(new StreamSource(xml));
 			return report;

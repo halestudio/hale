@@ -26,24 +26,29 @@ import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 
 /**
  * Exports a transformation tree to a file, requiring user interaction.
+ * 
  * @author Kai Schwierczek
  * @author Simon Templer
  */
 public class TTreeExporter implements TransformationTreeHook {
 
 	/**
-	 * @see TransformationTreeHook#processTransformationTree(TransformationTree, TreeState, MutableInstance)
+	 * @see TransformationTreeHook#processTransformationTree(TransformationTree,
+	 *      TreeState, MutableInstance)
 	 */
 	@Override
-	public void processTransformationTree(final TransformationTree tree,
-			TreeState state, MutableInstance target) {
+	public void processTransformationTree(final TransformationTree tree, TreeState state,
+			MutableInstance target) {
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
 			@Override
 			public void run() {
 				final TransformationTreeContentProvider contentProvider = new TransformationTreeContentProvider();
 				final TransformationTreeLabelProvider labelProvider = new TransformationTreeLabelProvider();
-				final TreeLayoutAlgorithm layoutAlgorithm = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
+				final TreeLayoutAlgorithm layoutAlgorithm = new TreeLayoutAlgorithm(
+						TreeLayoutAlgorithm.RIGHT_LEFT);
 				OffscreenGraph offscreenGraph = new OffscreenGraph(1024, 768) {
+
 					@Override
 					protected void configureViewer(GraphViewer viewer) {
 						viewer.setContentProvider(contentProvider);
@@ -54,7 +59,8 @@ public class TTreeExporter implements TransformationTreeHook {
 				};
 				try {
 					GraphViewer viewer = new GraphViewer(offscreenGraph.getGraph());
-					//XXX if called during transformation, the active shell may be null and run will fail!
+					// XXX if called during transformation, the active shell may
+					// be null and run will fail!
 					new ExportGraphAction(viewer).run();
 				} finally {
 					offscreenGraph.dispose();

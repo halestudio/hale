@@ -12,25 +12,25 @@
 package eu.esdihumboldt.commons.tools;
 
 /**
- * The IdentifierManager is used internally during one session to generate 
+ * The IdentifierManager is used internally during one session to generate
  * simple identifiers that need not be persisted.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: IdentifierManager.java,v 1.1 2007-11-06 10:26:29 pitaeva Exp $ 
+ * @version $Id: IdentifierManager.java,v 1.1 2007-11-06 10:26:29 pitaeva Exp $
  */
 public class IdentifierManager {
-	
+
 	/**
 	 * The internal counter for the UIDs used in the application.
 	 */
 	private static long current = 0;
-	
+
 	/**
 	 * @return the next long value that has not been used yet.
 	 */
 	public static synchronized long next() {
 		IdentifierManager.current++;
-        return IdentifierManager.current;
-    }
+		return IdentifierManager.current;
+	}
 }

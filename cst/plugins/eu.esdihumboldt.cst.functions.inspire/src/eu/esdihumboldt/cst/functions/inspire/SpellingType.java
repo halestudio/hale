@@ -50,8 +50,7 @@ public class SpellingType {
 	}
 
 	/**
-	 * @param transliteration
-	 *            the transliteration to set
+	 * @param transliteration the transliteration to set
 	 */
 	public void setTransliteration(String transliteration) {
 		this.transliteration = transliteration;
@@ -60,8 +59,7 @@ public class SpellingType {
 	/**
 	 * Constructor
 	 * 
-	 * @param property
-	 *            the property definition to set
+	 * @param property the property definition to set
 	 */
 	public SpellingType(PropertyDefinition property) {
 		this.property = property;
@@ -75,8 +73,7 @@ public class SpellingType {
 	}
 
 	/**
-	 * @param script
-	 *            the script to set
+	 * @param script the script to set
 	 */
 	public void setScript(String script) {
 		this.script = script;

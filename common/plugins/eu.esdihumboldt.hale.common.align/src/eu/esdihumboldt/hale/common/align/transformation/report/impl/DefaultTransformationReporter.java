@@ -20,19 +20,19 @@ import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 
 /**
  * Reporter for transformation messages
+ * 
  * @author Simon Templer
  */
-public class DefaultTransformationReporter extends
-		DefaultReporter<TransformationMessage> implements TransformationReport,
-		TransformationReporter {
+public class DefaultTransformationReporter extends DefaultReporter<TransformationMessage> implements
+		TransformationReport, TransformationReporter {
 
 	/**
 	 * Create an empty report. It is set to not successful by default. But you
 	 * should call {@link #setSuccess(boolean)} nonetheless to update the
 	 * timestamp after the task has finished.
 	 * 
-	 * @param taskName the name of the task the report is related to 
-	 * @param doLog if added messages shall also be logged using {@link ALogger} 
+	 * @param taskName the name of the task the report is related to
+	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public DefaultTransformationReporter(String taskName, boolean doLog) {
 		super(taskName, TransformationMessage.class, doLog);

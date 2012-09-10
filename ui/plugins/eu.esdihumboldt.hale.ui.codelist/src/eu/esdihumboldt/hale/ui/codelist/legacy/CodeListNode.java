@@ -18,7 +18,7 @@ import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 
 /**
  * Tree node representing a code list
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -31,7 +31,7 @@ public class CodeListNode extends DefaultTreeNode {
 	 */
 	public CodeListNode(CodeList codes) {
 		super(codes.getIdentifier());
-		
+
 		for (CodeEntry entry : codes.getEntries()) {
 			addChild(new DefaultTreeNode(entry.getName()));
 		}

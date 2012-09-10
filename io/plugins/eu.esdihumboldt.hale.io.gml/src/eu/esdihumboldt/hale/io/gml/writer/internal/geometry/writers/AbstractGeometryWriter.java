@@ -34,32 +34,34 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
 
 /**
  * Abstract geometry writer implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  * @param <T> the geometry type
  */
-public abstract class AbstractGeometryWriter<T extends Geometry> 
-		extends AbstractPathMatcher implements GeometryWriter<T> {
-	
+public abstract class AbstractGeometryWriter<T extends Geometry> extends AbstractPathMatcher
+		implements GeometryWriter<T> {
+
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractGeometryWriter.class);
 
 	private final Class<T> geometryType;
-	
+
 	private final Set<QName> compatibleTypes = new HashSet<QName>();
-	
+
 	/**
 	 * The attribute type names supported for writing coordinates with
-	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String)} or
-	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, QName, String, boolean)}.
+	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String)}
+	 * or
+	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, QName, String, boolean)}
+	 * .
 	 * 
 	 * Use for validating end-points.
 	 */
-	private final static Set<String> SUPPORTED_COORDINATES_TYPES = Collections.unmodifiableSet(
-			new HashSet<String>(Arrays.asList("DirectPositionType",  //$NON-NLS-1$
+	private final static Set<String> SUPPORTED_COORDINATES_TYPES = Collections
+			.unmodifiableSet(new HashSet<String>(Arrays.asList("DirectPositionType", //$NON-NLS-1$
 					"DirectPositionListType", "CoordinatesType"))); //$NON-NLS-1$ //$NON-NLS-2$
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -77,9 +79,9 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	public Set<QName> getCompatibleTypes() {
 		return Collections.unmodifiableSet(compatibleTypes);
 	}
-	
+
 	/**
-	 * Add a compatible type. A {@link Pattern#GML_NAMESPACE_PLACEHOLDER} 
+	 * Add a compatible type. A {@link Pattern#GML_NAMESPACE_PLACEHOLDER}
 	 * namespace references the GML namespace.
 	 * 
 	 * @param typeName the type name
@@ -95,39 +97,48 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	public Class<T> getGeometryType() {
 		return geometryType;
 	}
-	
+
 	/**
 	 * Verify the verification end point. After reaching the end-point of a
-	 * verification pattern this method is called with the {@link TypeDefinition}
-	 * of the end-point to assure the needed structure is present (e.g. a
-	 * DirectPositionListType element). If no verification pattern is present
-	 * the end-point of the matched base pattern will be verified.
-	 * The default implementation checks for properties with any of the types
-	 * supported for writing coordinates.
+	 * verification pattern this method is called with the
+	 * {@link TypeDefinition} of the end-point to assure the needed structure is
+	 * present (e.g. a DirectPositionListType element). If no verification
+	 * pattern is present the end-point of the matched base pattern will be
+	 * verified. The default implementation checks for properties with any of
+	 * the types supported for writing coordinates.
+	 * 
 	 * @see #SUPPORTED_COORDINATES_TYPES
 	 * 
-	 * @param endPoint the end-point type definition 
-	 *  
+	 * @param endPoint the end-point type definition
+	 * 
 	 * @return if the end-point is valid for writing the geometry
 	 */
 	@Override
 	protected boolean verifyEndPoint(TypeDefinition endPoint) {
-		for (PropertyDefinition attribute : DefinitionUtil.getAllProperties(endPoint)) { //XXX is this enough? or must groups be handled explicitly?
-			if (SUPPORTED_COORDINATES_TYPES.contains(
-							attribute.asProperty().getPropertyType().getName().getLocalPart())) {
+		for (PropertyDefinition attribute : DefinitionUtil.getAllProperties(endPoint)) { // XXX
+																							// is
+																							// this
+																							// enough?
+																							// or
+																							// must
+																							// groups
+																							// be
+																							// handled
+																							// explicitly?
+			if (SUPPORTED_COORDINATES_TYPES.contains(attribute.asProperty().getPropertyType()
+					.getName().getLocalPart())) {
 				// a valid property was found
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
-	
 	/**
 	 * Write coordinates into a posList or coordinates property
 	 * 
-	 * @param writer the XML stream writer 
+	 * @param writer the XML stream writer
 	 * @param descendPattern the pattern to descend
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
@@ -136,83 +147,89 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	 * @param unique if the path's start element cannot be repeated
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
-	protected static void descendAndWriteCoordinates(XMLStreamWriter writer, 
-			Pattern descendPattern, Coordinate[] coordinates, 
-			TypeDefinition elementType, QName elementName, String gmlNs, boolean unique) throws XMLStreamException {
-		Descent descent = descend(writer, descendPattern, elementType, 
-				elementName, gmlNs, unique);
-		
+	protected static void descendAndWriteCoordinates(XMLStreamWriter writer,
+			Pattern descendPattern, Coordinate[] coordinates, TypeDefinition elementType,
+			QName elementName, String gmlNs, boolean unique) throws XMLStreamException {
+		Descent descent = descend(writer, descendPattern, elementType, elementName, gmlNs, unique);
+
 		// write geometry
 		writeCoordinates(writer, coordinates, descent.getPath().getLastType(), gmlNs);
-		
+
 		descent.close();
 	}
-	
+
 	/**
 	 * Write coordinates into a pos, posList or coordinates property
 	 * 
-	 * @param writer the XML stream writer 
+	 * @param writer the XML stream writer
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
 	 * @param gmlNs the GML namespace
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
-	protected static void writeCoordinates(XMLStreamWriter writer, 
-			Coordinate[] coordinates, TypeDefinition elementType, 
-			String gmlNs) throws XMLStreamException {
+	protected static void writeCoordinates(XMLStreamWriter writer, Coordinate[] coordinates,
+			TypeDefinition elementType, String gmlNs) throws XMLStreamException {
 		if (coordinates.length > 1) {
 			if (writeList(writer, coordinates, elementType, gmlNs)) {
 				return;
 			}
 		}
-		
+
 		if (writePos(writer, coordinates, elementType, gmlNs)) {
 			return;
 		}
-		
+
 		if (coordinates.length <= 1) {
 			if (writeList(writer, coordinates, elementType, gmlNs)) {
 				return;
 			}
 		}
-		
-		log.error("Unable to write coordinates to element of type " +  //$NON-NLS-1$
+
+		log.error("Unable to write coordinates to element of type " + //$NON-NLS-1$
 				elementType.getDisplayName());
 	}
-	
+
 	/**
 	 * Write coordinates into a pos property
 	 * 
-	 * @param writer the XML stream writer 
+	 * @param writer the XML stream writer
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
 	 * @param gmlNs the GML namespace
 	 * @return if writing the coordinates was successful
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
-	private static boolean writePos(XMLStreamWriter writer,
-			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
+	private static boolean writePos(XMLStreamWriter writer, Coordinate[] coordinates,
+			TypeDefinition elementType, String gmlNs) throws XMLStreamException {
 		PropertyDefinition posAttribute = null;
-		
+
 		// check for DirectPositionType
-		for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) { //XXX is this enough? or must groups be handled?
+		for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) { // XXX
+																						// is
+																						// this
+																						// enough?
+																						// or
+																						// must
+																						// groups
+																						// be
+																						// handled?
 			if (att.getPropertyType().getName().equals(new QName(gmlNs, "DirectPositionType"))) { //$NON-NLS-1$
 				posAttribute = att;
 				break;
 			}
 		}
-		
-		//TODO support for CoordType
-		
+
+		// TODO support for CoordType
+
 		if (posAttribute != null) {
-			//TODO possibly write repeated positions
-			writer.writeStartElement(posAttribute.getName().getNamespaceURI(), 
-					posAttribute.getName().getLocalPart());
-			
+			// TODO possibly write repeated positions
+			writer.writeStartElement(posAttribute.getName().getNamespaceURI(), posAttribute
+					.getName().getLocalPart());
+
 			// write coordinates separated by spaces
 			if (coordinates.length > 0) {
 				Coordinate coordinate = coordinates[0];
-				
+
 				writer.writeCharacters(String.valueOf(coordinate.x));
 				writer.writeCharacters(" "); //$NON-NLS-1$
 				writer.writeCharacters(String.valueOf(coordinate.y));
@@ -221,7 +238,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 					writer.writeCharacters(String.valueOf(coordinate.z));
 				}
 			}
-			
+
 			writer.writeEndElement();
 			return true;
 		}
@@ -233,27 +250,36 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 	/**
 	 * Write coordinates into a posList or coordinates property
 	 * 
-	 * @param writer the XML stream writer 
+	 * @param writer the XML stream writer
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
 	 * @param gmlNs the GML namespace
 	 * @return if writing the coordinates was successful
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
-	private static boolean writeList(XMLStreamWriter writer,
-			Coordinate[] coordinates, TypeDefinition elementType, String gmlNs) throws XMLStreamException {
+	private static boolean writeList(XMLStreamWriter writer, Coordinate[] coordinates,
+			TypeDefinition elementType, String gmlNs) throws XMLStreamException {
 		PropertyDefinition listAttribute = null;
 		String delimiter = " "; //$NON-NLS-1$
 		String setDelimiter = " "; //$NON-NLS-1$
-		
+
 		// check for DirectPositionListType
-		for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) { //XXX is this enough? or must groups be handled explicitly?
+		for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) { // XXX
+																						// is
+																						// this
+																						// enough?
+																						// or
+																						// must
+																						// groups
+																						// be
+																						// handled
+																						// explicitly?
 			if (att.getPropertyType().getName().equals(new QName(gmlNs, "DirectPositionListType"))) { //$NON-NLS-1$
 				listAttribute = att;
 				break;
 			}
 		}
-		
+
 		if (listAttribute == null) {
 			// check for CoordinatesType
 			for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) {
@@ -264,11 +290,11 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 				}
 			}
 		}
-		
+
 		if (listAttribute != null) {
-			writer.writeStartElement(listAttribute.getName().getNamespaceURI(), 
-					listAttribute.getName().getLocalPart());
-			
+			writer.writeStartElement(listAttribute.getName().getNamespaceURI(), listAttribute
+					.getName().getLocalPart());
+
 			boolean first = true;
 			// write coordinates separated by spaces
 			for (Coordinate coordinate : coordinates) {
@@ -278,7 +304,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 				else {
 					writer.writeCharacters(setDelimiter);
 				}
-				
+
 				writer.writeCharacters(String.valueOf(coordinate.x));
 				writer.writeCharacters(delimiter);
 				writer.writeCharacters(String.valueOf(coordinate.y));
@@ -287,7 +313,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry>
 					writer.writeCharacters(String.valueOf(coordinate.z));
 				}
 			}
-			
+
 			writer.writeEndElement();
 			return true;
 		}

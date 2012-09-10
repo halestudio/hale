@@ -22,11 +22,11 @@ import de.cs3d.util.eclipse.extension.AbstractExtension;
  * 
  * @author Kevin Mais
  */
-public class PropertyTypeExtension extends
-		AbstractExtension<PropertyType, PropertyTypeFactory> {
-	
+public class PropertyTypeExtension extends AbstractExtension<PropertyType, PropertyTypeFactory> {
+
 	/**
 	 * Default implementation class
+	 * 
 	 * @author Kevin Mais
 	 */
 	private static class DefaultFactory extends AbstractConfigurationFactory<PropertyType>
@@ -66,9 +66,9 @@ public class PropertyTypeExtension extends
 		}
 
 	}
-	
+
 	private static volatile PropertyTypeExtension instance;
-	
+
 	/**
 	 * Getter for the PropertyTypeExtension
 	 * 
@@ -81,7 +81,6 @@ public class PropertyTypeExtension extends
 		return instance;
 
 	}
-	
 
 	/**
 	 * the property type identifier
@@ -99,8 +98,7 @@ public class PropertyTypeExtension extends
 	 * @see de.cs3d.util.eclipse.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
-	protected PropertyTypeFactory createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected PropertyTypeFactory createFactory(IConfigurationElement conf) throws Exception {
 		return new DefaultFactory(conf);
 	}
 

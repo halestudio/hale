@@ -19,16 +19,18 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Abstract function wizard
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractFunctionWizard extends Wizard implements FunctionWizard {
 
 	private final Cell initCell;
-	
+
 	private final SchemaSelection initSelection;
-	
+
 	/**
 	 * Create a function wizard based on an existing cell
+	 * 
 	 * @param cell the existing cell
 	 */
 	public AbstractFunctionWizard(Cell cell) {
@@ -37,14 +39,15 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 		this.initCell = cell;
 		this.initSelection = null;
 	}
-	
+
 	/**
 	 * Create a function wizard based on a schema selection
+	 * 
 	 * @param selection the schema selection, may be <code>null</code>
 	 */
 	public AbstractFunctionWizard(SchemaSelection selection) {
 		super();
-		
+
 		this.initCell = null;
 		this.initSelection = selection;
 	}
@@ -63,7 +66,7 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 			init(initSelection);
 		}
 	}
-	
+
 	/**
 	 * @return the initCell
 	 */
@@ -80,14 +83,16 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 
 	/**
 	 * Initialize the wizard based on a schema selection.
+	 * 
 	 * @param selection the schema selection, may be <code>null</code>
 	 */
 	protected void init(SchemaSelection selection) {
 		// override me
 	}
-	
+
 	/**
 	 * Initialize the wizard based on an existing cell.
+	 * 
 	 * @param cell the cell
 	 */
 	protected void init(Cell cell) {

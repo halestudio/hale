@@ -19,11 +19,12 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TypeTransformat
 
 /**
  * Extension for {@link TypeTransformation}s
+ * 
  * @author Simon Templer
  */
-public class TypeTransformationExtension
-		extends AbstractTransformationExtension<TypeTransformation<?>, TypeTransformationFactory> {
-	
+public class TypeTransformationExtension extends
+		AbstractTransformationExtension<TypeTransformation<?>, TypeTransformationFactory> {
+
 	/**
 	 * Factory for {@link TypeTransformation}s
 	 */
@@ -41,18 +42,19 @@ public class TypeTransformationExtension
 	}
 
 	private static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.transformation";
-	
+
 	private static TypeTransformationExtension instance;
-	
+
 	/**
 	 * Get the extension instance
+	 * 
 	 * @return the extension
 	 */
 	public static TypeTransformationExtension getInstance() {
 		if (instance == null) {
 			instance = new TypeTransformationExtension();
 		}
-		
+
 		return instance;
 	}
 
@@ -67,12 +69,11 @@ public class TypeTransformationExtension
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected TypeTransformationFactory createFactory(
-			IConfigurationElement conf) throws Exception {
+	protected TypeTransformationFactory createFactory(IConfigurationElement conf) throws Exception {
 		if (conf.getName().equals("typeTransformation")) {
 			return new TypeTransformationConfiguration(conf);
 		}
-		
+
 		return null;
 	}
 

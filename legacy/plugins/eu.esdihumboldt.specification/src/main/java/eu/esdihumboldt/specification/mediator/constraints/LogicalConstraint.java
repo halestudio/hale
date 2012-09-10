@@ -14,44 +14,43 @@ package eu.esdihumboldt.specification.mediator.constraints;
 import java.util.List;
 
 /**
- * This is an interface for logical constraints, such as AND, OR, XOR and 
+ * This is an interface for logical constraints, such as AND, OR, XOR and
  * EQUALS. It can be used to test 2..* constraints according to the logical
  * operator that was specified.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public interface LogicalConstraint 
-	extends Constraint {
-	
+public interface LogicalConstraint extends Constraint {
+
 	/**
-	 * @return a List containing all {@link Constraint}s bound together by a 
-	 * {@link LogicalConstraint}.
+	 * @return a List containing all {@link Constraint}s bound together by a
+	 *         {@link LogicalConstraint}.
 	 */
 	public List<Constraint> getBoundConstraints();
-	
+
 	/**
 	 * @return the type of the logical operator binding the Constraints.
 	 */
 	public LogicalOperator getLogicalOperator();
-	
+
 	/**
 	 * This enumeration gives the types of logical operators that can be used.
 	 * In addition to those types available within the OGC Filter Encoding
-	 * specification, an exclusive or (XOR) and a equals operator (EQUALS) is 
+	 * specification, an exclusive or (XOR) and a equals operator (EQUALS) is
 	 * added.
 	 */
 	public enum LogicalOperator {
-		/**  will return true if all bound Constraints are true. */
+		/** will return true if all bound Constraints are true. */
 		AND,
-		/**  will return true if at least one bound Constraint is true. */
+		/** will return true if at least one bound Constraint is true. */
 		OR,
 		/** negates an expression. */
 		NOT,
-		/**  will return true if exactly one bound Constraint is true. */
+		/** will return true if exactly one bound Constraint is true. */
 		XOR,
-		/**  will return true if all bound Constraints return the same value. */
+		/** will return true if all bound Constraints return the same value. */
 		EQUALS
 	}
 

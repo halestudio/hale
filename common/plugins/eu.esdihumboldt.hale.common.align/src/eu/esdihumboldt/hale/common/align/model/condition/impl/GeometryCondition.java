@@ -28,18 +28,19 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
- * Type condition that checks if it's geometry and optionally for certain 
+ * Type condition that checks if it's geometry and optionally for certain
  * geometry types.
+ * 
  * @author Simon Templer
  */
 public class GeometryCondition implements TypeCondition {
-	
+
 	private final Collection<Class<? extends Geometry>> bindings;
 	private final boolean allowConversion;
 	private final boolean allowCollection;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public GeometryCondition() {
 		this(null, true, true);
@@ -47,19 +48,20 @@ public class GeometryCondition implements TypeCondition {
 
 	/**
 	 * Create a geometry condition that checks for certain geometry types.
-	 * @param bindings the allowed geometry bindings, <code>null</code>
-	 *   for any
+	 * 
+	 * @param bindings the allowed geometry bindings, <code>null</code> for any
 	 * @param allowConversion if conversion is allowed regarding the geometry
-	 *   binding check (only applicable if bindings is not <code>null</code>)
-	 * @param allowCollection if a collection of geometries is allowed
-	 *   regarding the geometry binding check (only applicable if bindings
-	 *   is not <code>null</code>)
+	 *            binding check (only applicable if bindings is not
+	 *            <code>null</code>)
+	 * @param allowCollection if a collection of geometries is allowed regarding
+	 *            the geometry binding check (only applicable if bindings is not
+	 *            <code>null</code>)
 	 */
-	public GeometryCondition(Collection<Class<? extends Geometry>> bindings, 
+	public GeometryCondition(Collection<Class<? extends Geometry>> bindings,
 			boolean allowConversion, boolean allowCollection) {
 		super();
-		this.bindings = (bindings == null) ? (null)
-				: (new HashSet<Class<? extends Geometry>>(bindings));
+		this.bindings = (bindings == null) ? (null) : (new HashSet<Class<? extends Geometry>>(
+				bindings));
 		this.allowConversion = allowConversion;
 		this.allowCollection = allowCollection;
 	}
@@ -76,22 +78,22 @@ public class GeometryCondition implements TypeCondition {
 			// whether defined in the schema or augmented
 			return false;
 		}
-		
+
 		GeometryType geometryType = entity.getDefinition().getDefinition()
 				.getConstraint(GeometryType.class);
-		
+
 		if (!geometryType.isGeometry()) {
 			// is no geometry type
 			return false;
 		}
-		
+
 		Collection<Class<? extends Geometry>> tmpBindings = bindings;
 		if (tmpBindings == null) {
 			// check only if it is a geometry
 			tmpBindings = new HashSet<Class<? extends Geometry>>();
 			tmpBindings.add(Geometry.class);
 		}
-		
+
 		// otherwise check the allowed bindings
 		boolean to = true; // default
 		switch (entity.getDefinition().getSchemaSpace()) {
@@ -102,19 +104,18 @@ public class GeometryCondition implements TypeCondition {
 			to = true;
 			break;
 		}
-		
+
 		for (Class<? extends Geometry> compatibleClass : tmpBindings) {
 			Binding binding = type.getConstraint(Binding.class);
 			boolean isCollection = Collection.class.isAssignableFrom(binding.getBinding());
-			
+
 			// check binding
-			if (BindingCondition.isCompatibleClass(geometryType.getBinding(), to, 
-					compatibleClass, allowConversion)
-					&& (!isCollection || allowCollection)) {
+			if (BindingCondition.isCompatibleClass(geometryType.getBinding(), to, compatibleClass,
+					allowConversion) && (!isCollection || allowCollection)) {
 				return true;
 			}
 		}
-		
+
 		// no check succeeded
 		return false;
 	}

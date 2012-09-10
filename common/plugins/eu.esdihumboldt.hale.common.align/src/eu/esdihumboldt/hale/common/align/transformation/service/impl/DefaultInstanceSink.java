@@ -21,11 +21,12 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Default instance sink backed by a list
+ * 
  * @author Simon Templer
  * @since 2.5.0
  */
 public class DefaultInstanceSink implements InstanceSink {
-	
+
 	private final List<Instance> instances = new ArrayList<Instance>();
 
 	/**
@@ -38,6 +39,7 @@ public class DefaultInstanceSink implements InstanceSink {
 
 	/**
 	 * Get the instances collected in the sink.
+	 * 
 	 * @return the instances
 	 */
 	public List<Instance> getInstances() {

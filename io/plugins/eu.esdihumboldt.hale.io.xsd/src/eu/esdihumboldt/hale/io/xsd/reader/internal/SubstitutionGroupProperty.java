@@ -39,38 +39,40 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
- * Group property that resolves all possible substitutions for a property
- * and offers them as a choice.
- * The property must be set using {@link #setProperty(DefaultPropertyDefinition)}-
+ * Group property that resolves all possible substitutions for a property and
+ * offers them as a choice. The property must be set using
+ * {@link #setProperty(DefaultPropertyDefinition)}-
+ * 
  * @author Simon Templer
  */
 public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 
 	private DefaultPropertyDefinition property;
-	
+
 	/**
-	 * The 
+	 * The
 	 * 
 	 * @param name the property name
 	 * @param parentGroup the parent group
 	 */
 	public SubstitutionGroupProperty(QName name, DefinitionGroup parentGroup) {
 		super(name, parentGroup, null, false);
-		
+
 		setConstraint(ChoiceFlag.ENABLED);
 	}
 
 	/**
-	 * Set the property represented by the group. The property must have been 
+	 * Set the property represented by the group. The property must have been
 	 * created with this group as parent and the {@link Cardinality} constraint
 	 * must have been already set.
+	 * 
 	 * @param property the property to set
 	 */
 	public void setProperty(DefaultPropertyDefinition property) {
 		Preconditions.checkArgument(property.getDeclaringGroup() == this);
-		
+
 		this.property = property;
-		
+
 		// apply cardinality to group
 		setConstraint(property.getConstraint(Cardinality.class));
 		// set cardinality to exactly one for the property
@@ -95,26 +97,28 @@ public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 	protected void initChildren() {
 		if (property != null) {
 			TypeDefinition propertyType = property.getPropertyType();
-			
+
 			// add property and substitutions
-				
+
 			// collect substitution types and elements
 			List<XmlElement> substitutions = collectSubstitutions(property.getName(), propertyType);
-			
+
 			if (substitutions == null || substitutions.isEmpty()) {
 				// add property (XXX even if the property type is abstract)
-				super.addChild(property); // no redeclaration necessary as this is already the declaring group
+				super.addChild(property); // no redeclaration necessary as this
+											// is already the declaring group
 			}
 			else {
 				// add property if the type is not abstract
 				if (!propertyType.getConstraint(AbstractFlag.class).isEnabled()) {
-					super.addChild(property); // no redeclaration necessary as this is already the declaring group
+					super.addChild(property); // no redeclaration necessary as
+												// this is already the declaring
+												// group
 				}
-				
+
 				// add substitutions
 				for (XmlElement substitution : substitutions) {
-					PropertyDefinition p = new SubstitutionProperty(
-							substitution, property, this);
+					PropertyDefinition p = new SubstitutionProperty(substitution, property, this);
 					super.addChild(p); // must call super add
 				}
 			}
@@ -125,7 +129,8 @@ public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 	/**
 	 * Collect all sub-types from the given type that may substitute it on
 	 * condition of the given element name.
-	 * @param elementName the element name 
+	 * 
+	 * @param elementName the element name
 	 * @param type the type to be substituted
 	 * @return the substitution types
 	 */
@@ -133,49 +138,55 @@ public class SubstitutionGroupProperty extends LazyGroupPropertyDefinition {
 		Set<QName> substitute = new HashSet<QName>();
 		substitute.add(elementName);
 		Queue<TypeDefinition> subTypes = new LinkedList<TypeDefinition>();
-		
+
 		/*
-		 * Add type itself also to list of types to be checked for substitutions.
-		 * (this is needed e.g. in CityGML 0.4.0 schema cityObjectMember
-		 * substituting featureMember)
-		 * This essentially then is only a substitution in name and not in type.
-		 * XXX if other elements, that are in no relation to the type, should
-		 * also be possible for substitution, we would need some kond of
-		 * substitution index in XmlIndex
+		 * Add type itself also to list of types to be checked for
+		 * substitutions. (this is needed e.g. in CityGML 0.4.0 schema
+		 * cityObjectMember substituting featureMember) This essentially then is
+		 * only a substitution in name and not in type. XXX if other elements,
+		 * that are in no relation to the type, should also be possible for
+		 * substitution, we would need some kond of substitution index in
+		 * XmlIndex
 		 */
 		subTypes.add(type);
-		
+
 		// add all sub-types to the queue
 		subTypes.addAll(type.getSubTypes());
-		
+
 		List<XmlElement> result = new ArrayList<XmlElement>();
-		
+
 		while (!subTypes.isEmpty()) {
 			TypeDefinition subType = subTypes.poll();
-			
+
 			// check the declared elements for the substitution group
-			Collection<? extends XmlElement> elements = subType.getConstraint(XmlElements.class).getElements();
+			Collection<? extends XmlElement> elements = subType.getConstraint(XmlElements.class)
+					.getElements();
 			Iterator<? extends XmlElement> it = elements.iterator();
 			while (it.hasNext()) {
 				XmlElement element = it.next();
 				QName subGroup = element.getSubstitutionGroup();
-				if (subGroup != null && substitute.contains(subGroup)) { // only if substitution group match
+				if (subGroup != null && substitute.contains(subGroup)) { // only
+																			// if
+																			// substitution
+																			// group
+																			// match
 					// add element name also to the name that may be substituted
 					substitute.add(element.getName());
-					if (!element.getType().getConstraint(AbstractFlag.class).isEnabled()) { 
+					if (!element.getType().getConstraint(AbstractFlag.class).isEnabled()) {
 						// only add if type is not abstract
 						result.add(element);
 					}
 				}
 			}
-			
-			//XXX what about using xsi:type?
-			//XXX we could also add elements for other sub-types then, e.g. while also adding a specific constraint
-			
+
+			// XXX what about using xsi:type?
+			// XXX we could also add elements for other sub-types then, e.g.
+			// while also adding a specific constraint
+
 			// add the sub-type's sub-types
 			subTypes.addAll(subType.getSubTypes());
 		}
-		
+
 		return result;
 	}
 

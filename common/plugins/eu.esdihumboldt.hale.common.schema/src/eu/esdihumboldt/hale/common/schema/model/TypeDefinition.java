@@ -14,9 +14,9 @@ package eu.esdihumboldt.hale.common.schema.model;
 
 import java.util.Collection;
 
-
 /**
  * Represents a type definition
+ * 
  * @author Simon Templer
  */
 public interface TypeDefinition extends Definition<TypeConstraint>, DefinitionGroup {
@@ -27,20 +27,20 @@ public interface TypeDefinition extends Definition<TypeConstraint>, DefinitionGr
 	 * @return the super type, may be <code>null</code>
 	 */
 	public TypeDefinition getSuperType();
-	
+
 	/**
 	 * Get the sub types
 	 * 
 	 * @return the list of sub types, may not be modified
 	 */
 	public Collection<? extends TypeDefinition> getSubTypes();
-	
+
 	/**
-	 * Get all children that an instance of the type may have. Usually these
-	 * are the declared children and the super type children.
+	 * Get all children that an instance of the type may have. Usually these are
+	 * the declared children and the super type children.
 	 * 
 	 * @return the child definitions
 	 */
 	public Collection<? extends ChildDefinition<?>> getChildren();
-	
+
 }

@@ -47,16 +47,17 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 
 /**
  * Label provider for mapping graphs.
+ * 
  * @author Simon Templer
  */
 public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider,
 		IEntityConnectionStyleProvider, IFigureProvider {
-	
+
 	/**
 	 * The maximum figure width
 	 */
 	public static final int MAX_FIGURE_WIDTH = 150;
-	
+
 	private final int entityBorderWidth = 1;
 	private final Color entityBorderColor;
 	private final Color entityBorderHighlightColor;
@@ -64,41 +65,41 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	private final Color propertyBackgroundColor;
 	private final Color entityHighlightColor;
 	private final Color entityForegorundColor;
-	
+
 	private final int cellBorderWidth = 1;
 	private final Color cellBorderColor;
 	private final Color cellBorderHighlightColor;
 	private final Color cellBackgroundColor;
 	private final Color cellHighlightColor;
 	private final Color cellForegroundColor;
-	
+
 	private final LabelProvider definitionLabels;
-	
+
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
-	
-	//TODO set colors for function in graph?
+
+	// TODO set colors for function in graph?
 
 	/**
 	 * Default constructor
 	 */
 	public GraphLabelProvider() {
 		super();
-		
+
 		definitionLabels = createDefinitionLabels();
-		
+
 		final Display display = Display.getCurrent();
-		
-		//XXX keep entity colors in a central place?
-		//XXX colors dependent of mapping context?
-		
+
+		// XXX keep entity colors in a central place?
+		// XXX colors dependent of mapping context?
+
 		// entity colors
 		entityBorderColor = null;
-		entityForegorundColor = null; //display.getSystemColor(SWT.COLOR_BLACK);
+		entityForegorundColor = null; // display.getSystemColor(SWT.COLOR_BLACK);
 		typeBackgroundColor = new Color(display, 190, 230, 160);
 		propertyBackgroundColor = new Color(display, 220, 250, 200);
 		entityHighlightColor = new Color(display, 250, 250, 130);
 		entityBorderHighlightColor = display.getSystemColor(SWT.COLOR_GRAY);
-		
+
 		// cell colors
 		cellBorderColor = null;
 		cellBorderHighlightColor = display.getSystemColor(SWT.COLOR_GRAY);
@@ -108,8 +109,9 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	}
 
 	/**
-	 * Create the label provider for {@link Definition}s and 
+	 * Create the label provider for {@link Definition}s and
 	 * {@link EntityDefinition}s.
+	 * 
 	 * @return the label provider
 	 */
 	protected LabelProvider createDefinitionLabels() {
@@ -124,13 +126,12 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		if (element instanceof Entity) {
 			element = ((Entity) element).getDefinition();
 		}
-		
-		if (element instanceof EntityDefinition
-				|| element instanceof Definition<?>) {
+
+		if (element instanceof EntityDefinition || element instanceof Definition<?>) {
 			// use definition image
 			return definitionLabels.getImage(element);
 		}
-		
+
 		if (element instanceof Cell) {
 			// use function image if possible
 			Cell cell = (Cell) element;
@@ -141,11 +142,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			}
 			return null;
 		}
-		
-		if(element instanceof Function){
+
+		if (element instanceof Function) {
 			return functionLabels.getImage(element);
 		}
-		
+
 		return super.getImage(element);
 	}
 
@@ -157,17 +158,17 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		if (element instanceof Entity) {
 			element = ((Entity) element).getDefinition();
 		}
-		
+
 		if (element instanceof EntityDefinition) {
 			// use definition text
 			return definitionLabels.getText(element);
 		}
-		
+
 		if (element instanceof Definition<?>) {
 			// use definition text
 			return definitionLabels.getText(element);
 		}
-		
+
 		if (element instanceof Cell) {
 			// use function name if possible
 			Cell cell = (Cell) element;
@@ -178,11 +179,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			}
 			return functionId;
 		}
-			
-		if(element instanceof Function){
+
+		if (element instanceof Function) {
 			return functionLabels.getText(element);
 		}
-		
+
 		return super.getText(element);
 	}
 
@@ -193,18 +194,18 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public void dispose() {
 		definitionLabels.dispose();
 		functionLabels.dispose();
-		
+
 		// dispose created colors
 		typeBackgroundColor.dispose();
 		propertyBackgroundColor.dispose();
 		entityHighlightColor.dispose();
 		entityHighlightColor.dispose();
-		
+
 //		cellBorderHighlightColor.dispose();
-		
+
 		super.dispose();
 	}
-	
+
 	/**
 	 * @see IEntityStyleProvider#getNodeHighlightColor(Object)
 	 */
@@ -214,11 +215,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 				|| entity instanceof Definition<?>) {
 			return entityHighlightColor;
 		}
-		
+
 		if (entity instanceof Cell || entity instanceof Function) {
 			return cellHighlightColor;
 		}
-		
+
 		return null;
 	}
 
@@ -231,11 +232,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 				|| entity instanceof Definition<?>) {
 			return entityBorderColor;
 		}
-		
+
 		if (entity instanceof Cell || entity instanceof Function) {
 			return cellBorderColor;
 		}
-		
+
 		return null;
 	}
 
@@ -248,11 +249,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 				|| entity instanceof Definition<?>) {
 			return entityBorderHighlightColor;
 		}
-		
+
 		if (entity instanceof Cell || entity instanceof Function) {
 			return cellBorderHighlightColor;
 		}
-		
+
 		return null;
 	}
 
@@ -265,11 +266,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 				|| entity instanceof Definition<?>) {
 			return entityBorderWidth;
 		}
-		
+
 		if (entity instanceof Cell || entity instanceof Function) {
 			return cellBorderWidth;
 		}
-		
+
 		return -1;
 	}
 
@@ -280,18 +281,17 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public Color getBackgroundColour(Object entity) {
 		if (entity instanceof Entity || entity instanceof EntityDefinition
 				|| entity instanceof Definition<?>) {
-			if (entity instanceof Type
-					|| entity instanceof TypeEntityDefinition
+			if (entity instanceof Type || entity instanceof TypeEntityDefinition
 					|| entity instanceof TypeDefinition) {
 				return typeBackgroundColor;
 			}
 			return propertyBackgroundColor;
 		}
-		
+
 		if (entity instanceof Cell || entity instanceof Function) {
 			return cellBackgroundColor;
 		}
-		
+
 		return null;
 	}
 
@@ -304,11 +304,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 				|| entity instanceof Definition<?>) {
 			return entityForegorundColor;
 		}
-		
+
 		if (entity instanceof Cell || entity instanceof Function) {
 			return cellForegroundColor;
 		}
-		
+
 		return null;
 	}
 
@@ -319,9 +319,10 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public IFigure getTooltip(Object entity) {
 		if (entity instanceof Cell) {
 			Cell cell = (Cell) entity;
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+			AbstractFunction<?> function = FunctionUtil.getFunction(cell
+					.getTransformationIdentifier());
 			if (function != null) {
-				CellExplanation explanation =  function.getExplanation();
+				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {
 					String text = explanation.getExplanation(cell);
 					if (text != null) {
@@ -330,7 +331,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 				}
 			}
 		}
-		
+
 		// default
 		return null;
 	}
@@ -349,7 +350,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	@Override
 	public int getConnectionStyle(Object src, Object dest) {
-		return ZestStyles.CONNECTIONS_SOLID; // | ZestStyles.CONNECTIONS_DIRECTED;
+		return ZestStyles.CONNECTIONS_SOLID; // |
+												// ZestStyles.CONNECTIONS_DIRECTED;
 	}
 
 	/**
@@ -406,11 +408,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		if (element instanceof Cell || element instanceof Function) {
 			figure = new CellFigure();
 		}
-		
+
 		if (element instanceof Entity) {
 			element = ((Entity) element).getDefinition();
 		}
-		
+
 		if (element instanceof EntityDefinition) {
 			String contextText = AlignmentUtil.getContextText((EntityDefinition) element);
 			switch (((EntityDefinition) element).getSchemaSpace()) {
@@ -426,7 +428,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		if (figure != null) {
 			figure.setMaximumWidth(MAX_FIGURE_WIDTH);
 		}
-		
+
 		return figure;
 	}
 

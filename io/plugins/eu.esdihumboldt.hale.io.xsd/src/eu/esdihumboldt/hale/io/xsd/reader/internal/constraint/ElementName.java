@@ -20,14 +20,16 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
  * Custom display name based on XML elements
+ * 
  * @author Simon Templer
  */
 public class ElementName extends DisplayName {
 
 	private final XmlElements xmlElements;
-	
+
 	/**
-	 * Create a display name constraint based on the XML elements of a type 
+	 * Create a display name constraint based on the XML elements of a type
+	 * 
 	 * @param xmlElements the XML elements
 	 */
 	public ElementName(XmlElements xmlElements) {
@@ -43,9 +45,10 @@ public class ElementName extends DisplayName {
 		if (elements != null && !elements.isEmpty()) {
 			// choose first element
 			return elements.iterator().next().getDisplayName();
-			//FIXME what to do if there are multiple elements? prefer ones that are flagged Mappable? (not done currently)
+			// FIXME what to do if there are multiple elements? prefer ones that
+			// are flagged Mappable? (not done currently)
 		}
-		
+
 		return super.getCustomName();
 	}
 

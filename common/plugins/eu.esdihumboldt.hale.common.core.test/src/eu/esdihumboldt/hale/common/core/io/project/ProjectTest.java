@@ -32,25 +32,27 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 
 /**
  * Test saving and loading a project
+ * 
  * @author Simon Templer
  */
 public class ProjectTest {
-	
+
 	/**
 	 * Temporary folder for tests
 	 */
 	@Rule
 	public TemporaryFolder tmp = new TemporaryFolder();
-	
+
 	/**
 	 * Test saving and loading an example project
+	 * 
 	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testSaveLoad() throws Exception {
-		// populate project 
+		// populate project
 		Project project = new Project();
-		
+
 		String author;
 		project.setAuthor(author = "Simon");
 		String name;
@@ -63,10 +65,10 @@ public class ProjectTest {
 		project.setHaleVersion(haleVersion = new Version("2.2.0.alpha"));
 		String desc;
 		project.setDescription(desc = "Hallo Welt!\nBist Du auch hier?\nÖhm.");
-		
+
 		IOConfiguration conf1;
 		project.getResources().add(conf1 = new IOConfiguration());
-		
+
 		String advisorId1;
 		conf1.setActionId(advisorId1 = "some advisor");
 		String providerId1;
@@ -77,23 +79,23 @@ public class ProjectTest {
 		String value2;
 		String key2;
 		conf1.getProviderConfiguration().put(key2 = "some other key", value2 = "some other value");
-		
+
 		IOConfiguration conf2;
 		project.getResources().add(conf2 = new IOConfiguration());
 		String advisorId2;
 		conf2.setActionId(advisorId2 = "a certain advisor");
 		String providerId2;
 		conf2.setProviderId(providerId2 = "a special provider");
-		
+
 		// write project
 		File projectFile = tmp.newFile("project.xml");
 		System.out.println(projectFile.getAbsolutePath());
-		
+
 		Project.save(project, new FileOutputStream(projectFile));
-		
+
 		// load project
 		Project p2 = Project.load(new FileInputStream(projectFile));
-		
+
 		// test project
 		assertEquals(author, p2.getAuthor());
 		assertEquals(name, p2.getName());
@@ -101,22 +103,22 @@ public class ProjectTest {
 		assertEquals(modified, p2.getModified());
 		assertEquals(haleVersion, p2.getHaleVersion());
 		assertEquals(desc, p2.getDescription());
-		
+
 		assertEquals(2, p2.getResources().size());
-		
+
 		Iterator<IOConfiguration> it = p2.getResources().iterator();
 		IOConfiguration c1 = it.next();
 		assertNotNull(c1);
-		
+
 		assertEquals(advisorId1, c1.getActionId());
 		assertEquals(providerId1, c1.getProviderId());
 		assertEquals(2, c1.getProviderConfiguration().size());
 		assertTrue(c1.getProviderConfiguration().get(key1).equals(value1));
 		assertTrue(c1.getProviderConfiguration().get(key2).equals(value2));
-		
+
 		IOConfiguration c2 = it.next();
 		assertNotNull(c2);
-		
+
 		assertEquals(advisorId2, c2.getActionId());
 		assertEquals(providerId2, c2.getProviderId());
 	}

@@ -17,8 +17,9 @@ import org.eclipse.swt.graphics.Image;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 
 /**
- * Label provider for functions that is compatible with 
+ * Label provider for functions that is compatible with
  * {@link FunctionWizardNode}s.
+ * 
  * @author Simon Templer
  */
 public class FunctionWizardNodeLabelProvider extends FunctionLabelProvider {
@@ -31,7 +32,7 @@ public class FunctionWizardNodeLabelProvider extends FunctionLabelProvider {
 		if (element instanceof FunctionWizardNode) {
 			element = ((FunctionWizardNode) element).getFunction();
 		}
-		
+
 		return super.getText(element);
 	}
 
@@ -43,7 +44,7 @@ public class FunctionWizardNodeLabelProvider extends FunctionLabelProvider {
 		if (element instanceof FunctionWizardNode) {
 			element = ((FunctionWizardNode) element).getFunction();
 		}
-		
+
 		return super.getImage(element);
 	}
 

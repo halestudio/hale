@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractChildDefinition;
 
 /**
  * A group of children, which may be properties or property groups
+ * 
  * @author Simon Templer
  */
 public interface DefinitionGroup {
@@ -36,11 +37,11 @@ public interface DefinitionGroup {
 	 * 
 	 * @param name the child name
 	 * 
-	 * @return the child definition or <code>null</code> if no child with
-	 *   the given name is available
+	 * @return the child definition or <code>null</code> if no child with the
+	 *         given name is available
 	 */
 	public ChildDefinition<?> getChild(QName name);
-	
+
 	/**
 	 * Add a declared child, this is called by the
 	 * {@link AbstractChildDefinition} constructor.
@@ -48,7 +49,7 @@ public interface DefinitionGroup {
 	 * @param child the child definition
 	 */
 	public void addChild(ChildDefinition<?> child);
-	
+
 	/**
 	 * Get the group identifier
 	 * 

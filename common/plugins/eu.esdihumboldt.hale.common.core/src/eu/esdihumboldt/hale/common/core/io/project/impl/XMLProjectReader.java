@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 /**
  * Reads projects from XML files
+ * 
  * @author Simon Templer
  */
 public class XMLProjectReader extends DefaultProjectReader {

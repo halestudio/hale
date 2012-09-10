@@ -16,30 +16,31 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 
 /**
  * Listener for instance services
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface InstanceServiceListener {
-	
+
 	/**
 	 * Called when a data set has changed
 	 * 
 	 * @param type the data set type
 	 */
 	public void datasetChanged(DataSet type);
-	
+
 	/**
 	 * Called when the transformation has been enabled or disabled.
+	 * 
 	 * @param enabled if the transformation is enabled now
 	 */
 	public void transformationToggled(boolean enabled);
 
 	/**
 	 * Called when a data set is about to change.
-	 *
+	 * 
 	 * @param type the data set type
 	 */
 	public void datasetAboutToChange(DataSet type);
-	
+
 }

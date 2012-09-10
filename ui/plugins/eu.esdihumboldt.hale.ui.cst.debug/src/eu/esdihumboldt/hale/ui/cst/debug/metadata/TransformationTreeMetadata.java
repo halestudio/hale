@@ -16,12 +16,14 @@ import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook.TreeState;
 
 /**
  * Transformation tree metadata constants.
+ * 
  * @author Simon Templer
  */
 public interface TransformationTreeMetadata {
-	
+
 	/**
 	 * Metadata key for the populated transformation tree of an instance.
+	 * 
 	 * @see TreeState#SOURCE_POPULATED
 	 */
 	public static final String KEY_POPULATED_TREE = "cst.ttree.populated";

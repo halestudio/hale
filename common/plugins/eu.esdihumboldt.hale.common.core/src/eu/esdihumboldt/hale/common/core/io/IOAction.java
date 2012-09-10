@@ -18,25 +18,29 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
 
 /**
  * Represents an I/O action
+ * 
  * @author Simon Templer
  */
 public interface IOAction extends Identifiable {
-	
+
 	/**
 	 * Get the I/O provider type supported by the action.
+	 * 
 	 * @return the I/O provider type
 	 */
 	public Class<? extends IOProvider> getProviderType();
-	
+
 	/**
 	 * Get the dependencies of the action.
+	 * 
 	 * @return the list of identifiers of other actions the action depends on
-	 *   for sequential execution, e.g. when loading a project
+	 *         for sequential execution, e.g. when loading a project
 	 */
 	public Set<String> getDependencies();
-	
+
 	/**
 	 * Get the action name
+	 * 
 	 * @return the name, may be <code>null</code>
 	 */
 	public String getName();

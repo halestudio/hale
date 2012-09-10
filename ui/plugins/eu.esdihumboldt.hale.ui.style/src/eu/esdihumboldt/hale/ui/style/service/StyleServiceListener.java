@@ -16,6 +16,7 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Style service listener.
+ * 
  * @author Simon Templer
  */
 public interface StyleServiceListener {
@@ -26,22 +27,22 @@ public interface StyleServiceListener {
 	 * @param styleService the style service instance
 	 */
 	public void stylesAdded(StyleService styleService);
-	
+
 	/**
 	 * Called when styles have been removed from the service
 	 * 
 	 * @param styleService the style service instance
 	 */
 	public void stylesRemoved(StyleService styleService);
-	
+
 	/**
-	 * Called when the settings have been changed (e.g. the
-	 * default background and the default styles)
+	 * Called when the settings have been changed (e.g. the default background
+	 * and the default styles)
 	 * 
 	 * @param styleService the style service instance
 	 */
 	public void styleSettingsChanged(StyleService styleService);
-	
+
 	/**
 	 * Called when the background has changed
 	 * 
@@ -49,5 +50,5 @@ public interface StyleServiceListener {
 	 * @param background the new background
 	 */
 	public void backgroundChanged(StyleService styleService, RGB background);
-	
+
 }

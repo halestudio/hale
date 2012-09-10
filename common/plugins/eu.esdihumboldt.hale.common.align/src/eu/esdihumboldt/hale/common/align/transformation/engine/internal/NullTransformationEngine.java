@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 
 /**
  * Transformation engine with no state
+ * 
  * @author Simon Templer
  */
 public final class NullTransformationEngine implements TransformationEngine {
@@ -35,5 +36,5 @@ public final class NullTransformationEngine implements TransformationEngine {
 	public void dispose() {
 		// do nothing
 	}
-	
+
 }

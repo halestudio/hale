@@ -11,37 +11,37 @@
  */
 package eu.esdihumboldt.specification.modelrepository.abstractfc;
 
-
 /**
- * This type of {@link Relation} is used to describe is-a relationships 
- * (subsumption).
- * A {@link InheritanceRelation} is identical to the ISO 19110 
+ * This type of {@link Relation} is used to describe is-a relationships
+ * (subsumption). A {@link InheritanceRelation} is identical to the ISO 19110
  * FC_InheritanceRelation.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public interface InheritanceRelation 
-	extends Relation {
+public interface InheritanceRelation extends Relation {
 
 	/**
 	 * Similar to ISO 19110 FC_InheritanceRelation.uniqueInstance.
-	 * @return true if an instance of the supertype can be an instance of at 
-	 * most one of its subtypes.
+	 * 
+	 * @return true if an instance of the supertype can be an instance of at
+	 *         most one of its subtypes.
 	 */
 	public boolean isUniqueInstance();
-	
+
 	/**
 	 * Similar to ISO 19110 FC_InheritanceRelation.subtype.
+	 * 
 	 * @return the {@link Concept} that inherits from the supertype concept.
 	 */
 	public Concept getSubtype();
-	
+
 	/**
 	 * Similar to ISO 19110 FC_InheritanceRelation.supertype.
+	 * 
 	 * @return the {@link Concept} from which the subtype inherits properties.
 	 */
 	public Concept getSupertype();
-	
+
 }

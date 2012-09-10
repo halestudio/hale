@@ -17,12 +17,14 @@ import eu.esdihumboldt.hale.common.core.report.Message;
 
 /**
  * Transformation message
+ * 
  * @author Simon Templer
  */
 public interface TransformationMessage extends Message {
-	
+
 	/**
 	 * Get the transformation cell
+	 * 
 	 * @return the cell
 	 */
 	public CellBean getCell();

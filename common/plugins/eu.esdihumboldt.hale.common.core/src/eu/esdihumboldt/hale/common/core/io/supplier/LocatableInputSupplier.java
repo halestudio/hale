@@ -16,14 +16,15 @@ import com.google.common.io.InputSupplier;
 
 /**
  * Locatable {@link InputSupplier} providing an URI as location
+ * 
  * @param <T> the input type
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
 public interface LocatableInputSupplier<T> extends InputSupplier<T>, Locatable {
 
 	// combines interfaces InputSupplier and Locatable
-	
+
 }

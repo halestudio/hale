@@ -30,15 +30,16 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtensio
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**
- * Function content provider. Expects no input and displays all 
- * available functions.
+ * Function content provider. Expects no input and displays all available
+ * functions.
+ * 
  * @author Simon Templer
  */
 public class FunctionContentProvider implements ITreeContentProvider {
-	
-	private static final Category CAT_OTHER = new Category(null, Messages.FunctionContentProvider_others, 
-			Messages.FunctionContentProvider_description);
-	
+
+	private static final Category CAT_OTHER = new Category(null,
+			Messages.FunctionContentProvider_others, Messages.FunctionContentProvider_description);
+
 	/**
 	 * @see IContentProvider#dispose()
 	 */
@@ -60,10 +61,9 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		List<Category> cats = new ArrayList<Category>(
-				CategoryExtension.getInstance().getElements());
+		List<Category> cats = new ArrayList<Category>(CategoryExtension.getInstance().getElements());
 		cats.add(CAT_OTHER);
-		
+
 		// remove categories w/o functions
 		ListIterator<Category> it = cats.listIterator();
 		while (it.hasNext()) {
@@ -71,7 +71,7 @@ public class FunctionContentProvider implements ITreeContentProvider {
 				it.remove();
 			}
 		}
-		
+
 		return cats.toArray();
 	}
 
@@ -82,16 +82,15 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof Category) {
 			Category category = (Category) parentElement;
-			
+
 			List<AbstractFunction<?>> functions = new ArrayList<AbstractFunction<?>>();
-			functions.addAll(TypeFunctionExtension.getInstance().getFunctions(
-					category.getId()));
-			functions.addAll(PropertyFunctionExtension.getInstance().getFunctions(
-					category.getId()));
-			
+			functions.addAll(TypeFunctionExtension.getInstance().getFunctions(category.getId()));
+			functions
+					.addAll(PropertyFunctionExtension.getInstance().getFunctions(category.getId()));
+
 			return functions.toArray();
 		}
-		
+
 		return null;
 	}
 
@@ -102,15 +101,15 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	public Object getParent(Object element) {
 		if (element instanceof AbstractFunction<?>) {
 			String catId = ((AbstractFunction<?>) element).getCategoryId();
-			
-			Category cat = (catId == null)?(null):(CategoryExtension.getInstance().get(catId));
+
+			Category cat = (catId == null) ? (null) : (CategoryExtension.getInstance().get(catId));
 			if (cat == null) {
 				cat = CAT_OTHER;
 			}
-			
+
 			return cat;
 		}
-		
+
 		return null;
 	}
 
@@ -121,20 +120,20 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	public boolean hasChildren(Object element) {
 		if (element instanceof Category) {
 			Category category = (Category) element;
-			
-			List<TypeFunction> typeFunctions = TypeFunctionExtension
-					.getInstance().getFunctions(category.getId());
+
+			List<TypeFunction> typeFunctions = TypeFunctionExtension.getInstance().getFunctions(
+					category.getId());
 			if (!typeFunctions.isEmpty()) {
 				return true;
 			}
 
-			List<PropertyFunction> properyFunctions = PropertyFunctionExtension
-					.getInstance().getFunctions(category.getId());
+			List<PropertyFunction> properyFunctions = PropertyFunctionExtension.getInstance()
+					.getFunctions(category.getId());
 			if (!properyFunctions.isEmpty()) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 

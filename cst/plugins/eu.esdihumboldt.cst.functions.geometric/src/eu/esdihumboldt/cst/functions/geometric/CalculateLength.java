@@ -36,8 +36,8 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
  * @author Kevin Mais
  */
 public class CalculateLength extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine>
-		implements CalculateLengthFunction {
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
+		CalculateLengthFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation#evaluate(java.lang.String,
@@ -48,12 +48,10 @@ public class CalculateLength extends
 	 *      eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
 	 */
 	@Override
-	protected Object evaluate(String transformationIdentifier,
-			TransformationEngine engine,
+	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
-			PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException, NoResultException {
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException, NoResultException {
 
 		// get input geometry
 		PropertyValue input = variables.get(null).get(0);
@@ -62,34 +60,36 @@ public class CalculateLength extends
 		// depth first traverser that on cancel continues traversal but w/o the
 		// children of the current object
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
-		
+
 		GeometryFinder geoFind = new GeometryFinder(null);
-		
+
 		traverser.traverse(inputValue, geoFind);
-		
+
 		List<GeometryProperty<?>> geoms = geoFind.getGeometries();
 
 		Geometry geom = null;
 
-		if(geoms.size() > 1) {
-			
+		if (geoms.size() > 1) {
+
 			int length = 0;
-			
-			for(GeometryProperty<?> geoProp : geoms) {
+
+			for (GeometryProperty<?> geoProp : geoms) {
 				length += geoProp.getGeometry().getLength();
 			}
-			
+
 			// TODO: warn ?!
 
 			return length;
-			
-		} else {
+
+		}
+		else {
 			geom = geoms.get(0).getGeometry();
 		}
 
 		if (geom != null) {
 			return geom.getLength();
-		} else {
+		}
+		else {
 			throw new TransformationException(
 					"Geometry for calculate length could not be retrieved.");
 		}

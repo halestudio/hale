@@ -25,13 +25,13 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
 
 /**
- * Write {@link MultiPoint}s 
- *
+ * Write {@link MultiPoint}s
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class MultiPointWriter extends AbstractGeometryWriter<MultiPoint> {
-	
+
 	private final PointWriter pointWriter = new PointWriter();
 
 	/**
@@ -39,43 +39,38 @@ public class MultiPointWriter extends AbstractGeometryWriter<MultiPoint> {
 	 */
 	public MultiPointWriter() {
 		super(MultiPoint.class);
-		
+
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
-				"MultiPointType")); //$NON-NLS-1$
-		
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "MultiPointType")); //$NON-NLS-1$
+
 		// patterns for matching inside compatible types
 		addBasePattern("*/pointMember"); //$NON-NLS-1$
-		
+
 		// verification patterns (contained Point)
 		addVerificationPattern("*/Point"); //$NON-NLS-1$
 	}
 
 	/**
-	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition, QName, String)
+	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
+	 *      QName, String)
 	 */
 	@Override
-	public void write(XMLStreamWriter writer, MultiPoint geometry,
-			TypeDefinition elementType, QName elementName, String gmlNs)
-			throws XMLStreamException {
+	public void write(XMLStreamWriter writer, MultiPoint geometry, TypeDefinition elementType,
+			QName elementName, String gmlNs) throws XMLStreamException {
 		for (int i = 0; i < geometry.getNumGeometries(); i++) {
 			if (i > 0) {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 			}
-			
-			Descent descent = descend(writer, Pattern.parse("*/Point"),  //$NON-NLS-1$
+
+			Descent descent = descend(writer, Pattern.parse("*/Point"), //$NON-NLS-1$
 					elementType, elementName, gmlNs, false);
-			
+
 			Point point = (Point) geometry.getGeometryN(i);
-			pointWriter.write(
-					writer, 
-					point, 
-					descent.getPath().getLastType(), 
-					descent.getPath().getLastElement().getName(), 
-					gmlNs);
-			
+			pointWriter.write(writer, point, descent.getPath().getLastType(), descent.getPath()
+					.getLastElement().getName(), gmlNs);
+
 			descent.close();
-			
+
 			if (i < geometry.getNumGeometries() - 1) {
 				writer.writeEndElement();
 			}

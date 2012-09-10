@@ -21,14 +21,16 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 
 /**
  * Abstract group node implementation.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractGroupNode extends AbstractTransformationNode implements GroupNode {
 
 	private final GroupNode parent;
-	
+
 	/**
 	 * Create a group node.
+	 * 
 	 * @param parent the parent node, may be <code>null</code>
 	 */
 	public AbstractGroupNode(GroupNode parent) {
@@ -39,10 +41,11 @@ public abstract class AbstractGroupNode extends AbstractTransformationNode imple
 	/**
 	 * Get the fixed target node children, i.e. those that are not represented
 	 * through an annotation.
+	 * 
 	 * @return the list of fixed child target nodes
 	 */
 	public abstract List<TargetNode> getFixedChildren();
-	
+
 	/**
 	 * @see GroupNode#getParent()
 	 */
@@ -80,5 +83,5 @@ public abstract class AbstractGroupNode extends AbstractTransformationNode imple
 		}
 		ac.add(node);
 	}
-	
+
 }

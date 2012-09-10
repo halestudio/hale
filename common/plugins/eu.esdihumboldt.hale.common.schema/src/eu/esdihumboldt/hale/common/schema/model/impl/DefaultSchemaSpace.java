@@ -30,16 +30,17 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 
 /**
  * Default {@link SchemaSpace} implementation
+ * 
  * @author Simon Templer
  */
 public class DefaultSchemaSpace implements SchemaSpace {
-	
+
 	private final Set<Schema> schemas = new HashSet<Schema>();
-	
+
 	private Collection<TypeDefinition> allTypes;
-	
+
 	private Collection<TypeDefinition> mappingRelevantTypes;
-	
+
 	/**
 	 * Adds a schema
 	 * 
@@ -56,8 +57,9 @@ public class DefaultSchemaSpace implements SchemaSpace {
 			}
 		}
 	}
-	
-	//XXX needed? will result in problems with shared types because the load order of the schemas is not documented
+
+	// XXX needed? will result in problems with shared types because the load
+	// order of the schemas is not documented
 //	/**
 //	 * Removes a schema
 //	 * 
@@ -95,7 +97,7 @@ public class DefaultSchemaSpace implements SchemaSpace {
 					return result;
 				}
 			}
-			
+
 			return null;
 		}
 	}
@@ -141,9 +143,11 @@ public class DefaultSchemaSpace implements SchemaSpace {
 				if (container != null)
 					container.toggleMappingRelevant(Collections.singletonList(type));
 				else {
-					// shouldn't happen, but to be safe toggle it in this case too
+					// shouldn't happen, but to be safe toggle it in this case
+					// too
 					Definition<TypeConstraint> def = type;
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.get(!type.getConstraint(MappingRelevantFlag.class).isEnabled()));
+					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag
+							.get(!type.getConstraint(MappingRelevantFlag.class).isEnabled()));
 				}
 				// was toggled, update own list
 				if (mappingRelevantTypes != null)

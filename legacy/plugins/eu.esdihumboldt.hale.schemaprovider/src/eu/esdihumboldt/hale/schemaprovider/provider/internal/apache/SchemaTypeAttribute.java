@@ -19,45 +19,50 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Represents the definition of an attribute
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class SchemaTypeAttribute extends AbstractElementAttribute {
-	
+
 	/**
 	 * Constructor
 	 * 
-	 * @param declaringType the declaring type, if it is <code>null</code>,
-	 *   the attribute type will not be determined
-	 * @param name the attribute name
-	 * @param element the element defining the attribute
-	 * @param attributeType the attribute type definition
+	 * @param declaringType
+	 *            the declaring type, if it is <code>null</code>, the attribute
+	 *            type will not be determined
+	 * @param name
+	 *            the attribute name
+	 * @param element
+	 *            the element defining the attribute
+	 * @param attributeType
+	 *            the attribute type definition
 	 */
 	public SchemaTypeAttribute(TypeDefinition declaringType, String name,
 			XmlSchemaElement element, TypeDefinition attributeType) {
 		super(declaringType, name, attributeType.getName(), element);
-		
+
 		if (declaringType != null) {
 			// set the declaring type
 			declaringType.addDeclaredAttribute(this);
-			
+
 			// set attribute type
 			setAttributeType(attributeType);
 		}
 	}
-	
+
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other the schema attribute to copy
+	 * @param other
+	 *            the schema attribute to copy
 	 */
 	protected SchemaTypeAttribute(SchemaTypeAttribute other) {
 		super(other);
 	}
-	
+
 	/**
 	 * @see AttributeDefinition#copyAttribute(TypeDefinition)
 	 */
@@ -67,5 +72,5 @@ public class SchemaTypeAttribute extends AbstractElementAttribute {
 		copy.setParentType(parentType);
 		return copy;
 	}
-	
+
 }

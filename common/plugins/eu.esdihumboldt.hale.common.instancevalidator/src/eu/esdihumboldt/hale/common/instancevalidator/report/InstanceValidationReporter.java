@@ -16,9 +16,10 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
 
 /**
  * {@link Reporter} with {@link InstanceValidationMessage}s.
- *
+ * 
  * @author Kai Schwierczek
  */
-public interface InstanceValidationReporter extends Reporter<InstanceValidationMessage>, InstanceValidationReport {
+public interface InstanceValidationReporter extends Reporter<InstanceValidationMessage>,
+		InstanceValidationReport {
 	// nothing to add, just for concrete type...
 }

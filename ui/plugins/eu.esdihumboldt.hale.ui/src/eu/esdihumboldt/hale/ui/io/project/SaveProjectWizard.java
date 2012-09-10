@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * Wizard for saving a project
+ * 
  * @author Simon Templer
  */
 public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
@@ -42,7 +43,7 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 	@Override
 	public void addPages() {
 		super.addPages();
-		
+
 		addPage(new SaveProjectDetailsPage());
 	}
 
@@ -52,9 +53,9 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 	@Override
 	protected void updateConfiguration(ProjectWriter provider) {
 		super.updateConfiguration(provider);
-		
+
 		// project has been set and can be adapted
-		
+
 		// populate and set the save configuration
 		IOConfiguration saveConfiguration = new IOConfiguration();
 		saveConfiguration.setActionId(ADVISOR_PROJECT_SAVE);

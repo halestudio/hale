@@ -32,13 +32,14 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class EntityDialog extends AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> {
-	
+public abstract class EntityDialog extends
+		AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> {
+
 	/**
 	 * The schema space
 	 */
 	protected final SchemaSpaceID ssid;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -46,15 +47,15 @@ public abstract class EntityDialog extends AbstractViewerSelectionDialog<EntityD
 	 * @param ssid the schema space
 	 * @param title the dialog title
 	 * @param initialSelection the entity definition to select initially (if
-	 *   possible), may be <code>null</code>
+	 *            possible), may be <code>null</code>
 	 */
 	public EntityDialog(Shell parentShell, SchemaSpaceID ssid, String title,
 			EntityDefinition initialSelection) {
 		super(parentShell, title, initialSelection);
-		
+
 		this.ssid = ssid;
 	}
-	
+
 	/**
 	 * @see AbstractViewerSelectionDialog#createViewer(Composite)
 	 */
@@ -62,17 +63,19 @@ public abstract class EntityDialog extends AbstractViewerSelectionDialog<EntityD
 	protected TreeViewer createViewer(Composite parent) {
 		// create viewer
 		SchemaPatternFilter patternFilter = new SchemaPatternFilter() {
+
 			@Override
 			protected boolean matches(Viewer viewer, Object element) {
 				boolean superMatches = super.matches(viewer, element);
 				if (!superMatches)
 					return false;
-				return acceptObject(viewer, getFilters(), ((TreePath)element).getLastSegment());
+				return acceptObject(viewer, getFilters(), ((TreePath) element).getLastSegment());
 			}
 		};
 		patternFilter.setUseEarlyReturnIfMatcherIsNull(false);
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new TreePathFilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		FilteredTree tree = new TreePathFilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new DefinitionComparator());
 		return tree.getViewer();
 	}

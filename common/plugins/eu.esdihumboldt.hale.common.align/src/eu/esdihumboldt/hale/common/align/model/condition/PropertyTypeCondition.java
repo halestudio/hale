@@ -20,16 +20,18 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Property condition wrapping a type condition and applying it to the
- * property type.
+ * Property condition wrapping a type condition and applying it to the property
+ * type.
+ * 
  * @author Simon Templer
  */
 public class PropertyTypeCondition implements PropertyCondition {
-	
+
 	private final TypeCondition typeCondition;
 
 	/**
 	 * Create a property condition based on the given type condition
+	 * 
 	 * @param typeCondition the type condition to apply to the property type
 	 */
 	public PropertyTypeCondition(TypeCondition typeCondition) {
@@ -43,8 +45,8 @@ public class PropertyTypeCondition implements PropertyCondition {
 	@Override
 	public boolean accept(Property entity) {
 		TypeDefinition propertyType = entity.getDefinition().getDefinition().getPropertyType();
-		Type type = new DefaultType(new TypeEntityDefinition(propertyType, 
-				entity.getDefinition().getSchemaSpace(), null));
+		Type type = new DefaultType(new TypeEntityDefinition(propertyType, entity.getDefinition()
+				.getSchemaSpace(), null));
 		return typeCondition.accept(type);
 	}
 

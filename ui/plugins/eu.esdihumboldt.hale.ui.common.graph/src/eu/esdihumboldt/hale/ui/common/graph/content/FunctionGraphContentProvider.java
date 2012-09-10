@@ -66,8 +66,7 @@ public class FunctionGraphContentProvider extends ArrayContentProvider implement
 
 			if (inputElement instanceof TypeFunction) {
 				for (TypeParameter type : ((TypeFunction) function).getSource()) {
-					collection
-							.add(new Pair<Object, Object>(type, function));
+					collection.add(new Pair<Object, Object>(type, function));
 				}
 				for (TypeParameter type : ((TypeFunction) function).getTarget()) {
 					collection.add(type);
@@ -75,13 +74,10 @@ public class FunctionGraphContentProvider extends ArrayContentProvider implement
 			}
 
 			if (inputElement instanceof PropertyFunction) {
-				for (PropertyParameter prop : ((PropertyFunction) function)
-						.getSource()) {
-					collection
-							.add(new Pair<Object, Object>(prop, function));
+				for (PropertyParameter prop : ((PropertyFunction) function).getSource()) {
+					collection.add(new Pair<Object, Object>(prop, function));
 				}
-				for (PropertyParameter prop : ((PropertyFunction) function)
-						.getTarget()) {
+				for (PropertyParameter prop : ((PropertyFunction) function).getTarget()) {
 					collection.add(prop);
 				}
 			}

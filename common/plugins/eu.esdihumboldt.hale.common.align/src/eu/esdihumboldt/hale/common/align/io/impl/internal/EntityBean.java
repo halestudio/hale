@@ -21,17 +21,18 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Represents an {@link Entity}
+ * 
  * @param <T> the entity definition type
  * @author Simon Templer
  */
 public abstract class EntityBean<T extends EntityDefinition> {
-	
+
 	private QName typeName;
-	
+
 	private String filter;
-	
+
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public EntityBean() {
 		super();
@@ -39,6 +40,7 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Create an entity bean with the given type name
+	 * 
 	 * @param typeName the type name
 	 * @param filter the filter to the type entity
 	 */
@@ -50,24 +52,25 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Get the entity definition
+	 * 
 	 * @param index the type index
 	 * @param schemaSpace the associated schema space
 	 * @return the entity definition
 	 */
-	protected abstract T createEntityDefinition(TypeIndex index, 
-			SchemaSpaceID schemaSpace);
-	
+	protected abstract T createEntityDefinition(TypeIndex index, SchemaSpaceID schemaSpace);
+
 	/**
 	 * Create the represented entity
+	 * 
 	 * @param types the type index
 	 * @param schemaSpace the associated schema space
 	 * @return the entity
 	 */
-	public abstract Entity createEntity(TypeIndex types, 
-			SchemaSpaceID schemaSpace);
+	public abstract Entity createEntity(TypeIndex types, SchemaSpaceID schemaSpace);
 
 	/**
 	 * Get the type filter.
+	 * 
 	 * @return the type filter
 	 */
 	public String getFilter() {
@@ -76,6 +79,7 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Set the type filter.
+	 * 
 	 * @param filter the type filter to set
 	 */
 	public void setFilter(String filter) {
@@ -84,6 +88,7 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Get the type name
+	 * 
 	 * @return the type name
 	 */
 	public QName getTypeName() {
@@ -92,6 +97,7 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Set the type name
+	 * 
 	 * @param typeName the type name to set
 	 */
 	public void setTypeName(QName typeName) {

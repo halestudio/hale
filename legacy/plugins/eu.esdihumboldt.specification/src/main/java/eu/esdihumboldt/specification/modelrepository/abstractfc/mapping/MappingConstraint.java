@@ -12,12 +12,12 @@
 package eu.esdihumboldt.specification.modelrepository.abstractfc.mapping;
 
 /**
- * A MappingConstraint is a rule that a client can specify which a 
- * mapping then has to satisfy.<br/>
+ * A MappingConstraint is a rule that a client can specify which a mapping then
+ * has to satisfy.<br/>
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface MappingConstraint {
 
@@ -27,17 +27,17 @@ public interface MappingConstraint {
 	 */
 	public enum MappingType {
 		/**
-		 * data_abstraction: this mapping type is responsible for transforming 
-		 * from the data abstraction model to the physical schema of a specific 
+		 * data_abstraction: this mapping type is responsible for transforming
+		 * from the data abstraction model to the physical schema of a specific
 		 * AccessCartridge and vice versa
 		 */
-		data_abstraction, 
+		data_abstraction,
 		/**
-		 * this mapping type is responsible for 
-		 * translating terms from one natural language, i.e. German, to another, 
-		 * i.e. English. To keep this mapping type from becoming a thesaurus 
-		 * itself, additional constraints have to be specified, i.e. the words 
-		 * to be translated or at least the identifier of a ConceptualSchema.
+		 * this mapping type is responsible for translating terms from one
+		 * natural language, i.e. German, to another, i.e. English. To keep this
+		 * mapping type from becoming a thesaurus itself, additional constraints
+		 * have to be specified, i.e. the words to be translated or at least the
+		 * identifier of a ConceptualSchema.
 		 */
 		natural_language
 	}

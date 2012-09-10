@@ -15,12 +15,12 @@ package eu.esdihumboldt.specification.cst.align.ext;
 /**
  * A named parameter of a Transformation.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface IParameter {
-	
+
 	/**
 	 * @return the name
 	 */

@@ -18,14 +18,14 @@ import java.util.Set;
 
 /**
  * Abstract {@link SchemaProvider} managing the supported schema formats
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public abstract class AbstractSchemaProvider implements SchemaProvider {
-	
+
 	private final Set<String> supportedFormats = new HashSet<String>();
 
 	/**
@@ -35,11 +35,12 @@ public abstract class AbstractSchemaProvider implements SchemaProvider {
 	public boolean supportsSchemaFormat(String schemaFormat) {
 		return supportedFormats.contains(schemaFormat.toLowerCase());
 	}
-	
+
 	/**
 	 * Add a supported format
 	 * 
-	 * @param format the supported format to add
+	 * @param format
+	 *            the supported format to add
 	 */
 	public void addSupportedFormat(String format) {
 		supportedFormats.add(format.toLowerCase());

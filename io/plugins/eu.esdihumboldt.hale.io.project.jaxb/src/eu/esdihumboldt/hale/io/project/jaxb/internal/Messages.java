@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings("all")
 public class Messages extends NLS {
+
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.io.project.jaxb.internal.messages"; //$NON-NLS-1$
 
 	public static String ProjectParser_0;
@@ -26,7 +27,7 @@ public class Messages extends NLS {
 	public static String ProjectParser_6;
 	public static String ProjectParser_8;
 	public static String ProjectParser_14;
-	
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

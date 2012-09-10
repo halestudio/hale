@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
 
 /**
  * Flags if a property is represented by a XML attribute, disabled by default
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -29,12 +30,12 @@ public final class XmlAttributeFlag extends AbstractFlagConstraint implements Pr
 	 * Enabled XML attribute flag
 	 */
 	public static final XmlAttributeFlag ENABLED = new XmlAttributeFlag(true);
-	
+
 	/**
 	 * Disabled XML attribute flag
 	 */
 	public static final XmlAttributeFlag DISABLED = new XmlAttributeFlag(false);
-	
+
 	/**
 	 * Get the XML attribute flag
 	 * 
@@ -42,12 +43,12 @@ public final class XmlAttributeFlag extends AbstractFlagConstraint implements Pr
 	 * @return the flag
 	 */
 	public static XmlAttributeFlag get(boolean isAttribute) {
-		return (isAttribute)?(ENABLED):(DISABLED);
+		return (isAttribute) ? (ENABLED) : (DISABLED);
 	}
-	
+
 	/**
-	 * Creates a default XML attribute flag, which is disabled. If possible, 
-	 * instead of creating an instance, use {@link #get(boolean)}, 
+	 * Creates a default XML attribute flag, which is disabled. If possible,
+	 * instead of creating an instance, use {@link #get(boolean)},
 	 * {@link #ENABLED} or {@link #DISABLED}.
 	 * 
 	 * @see Constraint
@@ -55,7 +56,7 @@ public final class XmlAttributeFlag extends AbstractFlagConstraint implements Pr
 	public XmlAttributeFlag() {
 		this(false);
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */

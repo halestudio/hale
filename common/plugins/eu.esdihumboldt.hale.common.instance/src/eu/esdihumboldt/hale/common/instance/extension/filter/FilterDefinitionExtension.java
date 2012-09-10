@@ -19,20 +19,23 @@ import de.cs3d.util.eclipse.extension.AbstractExtension;
 
 /**
  * Extension for {@link FilterDefinition}s.
+ * 
  * @author Simon Templer
  */
-public class FilterDefinitionExtension extends AbstractExtension<FilterDefinition<?>, FilterDefinitionFactory> {
+public class FilterDefinitionExtension extends
+		AbstractExtension<FilterDefinition<?>, FilterDefinitionFactory> {
 
 	/**
-	 * Factory for {@link FilterDefinition} based on an {@link IConfigurationElement}.
+	 * Factory for {@link FilterDefinition} based on an
+	 * {@link IConfigurationElement}.
 	 */
 	private static class ConfigurationFactory extends
-			AbstractConfigurationFactory<FilterDefinition<?>> implements
-			FilterDefinitionFactory {
+			AbstractConfigurationFactory<FilterDefinition<?>> implements FilterDefinitionFactory {
 
 		/**
 		 * Create a {@link FilterDefinition} factory based on the given
 		 * configuration element.
+		 * 
 		 * @param conf the configuration element
 		 */
 		public ConfigurationFactory(IConfigurationElement conf) {
@@ -60,7 +63,7 @@ public class FilterDefinitionExtension extends AbstractExtension<FilterDefinitio
 	 * The extension point ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.instance.filter";
-	
+
 	/**
 	 * Default constructor.
 	 */
@@ -72,9 +75,8 @@ public class FilterDefinitionExtension extends AbstractExtension<FilterDefinitio
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected FilterDefinitionFactory createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected FilterDefinitionFactory createFactory(IConfigurationElement conf) throws Exception {
 		return new ConfigurationFactory(conf);
 	}
-	
+
 }

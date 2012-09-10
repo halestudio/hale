@@ -19,35 +19,38 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.services.IDisposable;
 
 /**
- * Selection provider that wraps another selection provider and filters 
+ * Selection provider that wraps another selection provider and filters
  * selections before they are passed to an external object.
+ * 
  * @author Simon Templer
  */
 public abstract class SelectionFilter extends AbstactSelectionProvider implements IDisposable {
-	
+
 	private final ISelectionProvider selectionProvider;
 	private ISelectionChangedListener listener;
 
 	/**
 	 * Create a selection filter
+	 * 
 	 * @param selectionProvider the internal selection provider
 	 */
 	public SelectionFilter(ISelectionProvider selectionProvider) {
 		super();
 		this.selectionProvider = selectionProvider;
-		
+
 		selectionProvider.addSelectionChangedListener(listener = new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				fireSelectionChange(filter(event.getSelection()));
 			}
 		});
 	}
-	
+
 	/**
 	 * Filter a selection from the internal selection provider that will be
 	 * passed outside
+	 * 
 	 * @param selection the internal selection
 	 * @return the selection to used externally
 	 */
@@ -70,5 +73,5 @@ public abstract class SelectionFilter extends AbstactSelectionProvider implement
 			selectionProvider.removeSelectionChangedListener(listener);
 		}
 	}
-	
+
 }

@@ -33,5 +33,5 @@ public class XmlDateToTimestamp implements Converter<XmlDate, Timestamp> {
 		}
 		return new Timestamp(value.getCalendarValue().getTimeInMillis());
 	}
-	
+
 }

@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 /**
  * Instance collection that wraps an instance collection and represents a
  * selection that contains the instances matching a given {@link Filter}.
+ * 
  * @author Simon Templer
  */
 public class FilteredInstanceCollection implements InstanceCollection {
@@ -33,17 +34,17 @@ public class FilteredInstanceCollection implements InstanceCollection {
 	public class FilteredIterator implements ResourceIterator<Instance> {
 
 		private final ResourceIterator<Instance> decoratee;
-		
+
 		/**
 		 * The next matching instance
 		 */
 		private Instance preview;
-		
+
 		/**
 		 * States if the value in {@link #preview} represents a valid element
 		 */
 		private boolean previewPresent;
-		
+
 		/**
 		 * States if {@link #preview}/{@link #previewPresent} must be updated
 		 */
@@ -51,6 +52,7 @@ public class FilteredInstanceCollection implements InstanceCollection {
 
 		/**
 		 * Create a filtered resource iterator.
+		 * 
 		 * @param decoratee the original iterator
 		 */
 		public FilteredIterator(ResourceIterator<Instance> decoratee) {
@@ -60,31 +62,31 @@ public class FilteredInstanceCollection implements InstanceCollection {
 		@Override
 		public boolean hasNext() {
 			update(); // ensure previewPresent/preview are set
-			
+
 			return previewPresent;
 		}
 
 		@Override
 		public Instance next() {
 			update(); // ensure previewPresent/preview are set
-			
+
 			if (!previewPresent) {
 				throw new NoSuchElementException();
 			}
-			
+
 			updatePreview = true; // next time, update the preview
-			
+
 			return preview;
 		}
 
 		/**
-		 * Move {@link #preview} to the next match if possible, 
-		 * update {@link #previewPresent}.
+		 * Move {@link #preview} to the next match if possible, update
+		 * {@link #previewPresent}.
 		 */
 		private void update() {
 			if (updatePreview) {
 				previewPresent = false;
-				
+
 				// find first instance matching the filter
 				while (!previewPresent && decoratee.hasNext()) {
 					Instance instance = decoratee.next();
@@ -93,11 +95,11 @@ public class FilteredInstanceCollection implements InstanceCollection {
 						preview = instance;
 					}
 				}
-				
+
 				if (!previewPresent) {
 					preview = null;
 				}
-				
+
 				updatePreview = false;
 			}
 		}
@@ -116,16 +118,16 @@ public class FilteredInstanceCollection implements InstanceCollection {
 	}
 
 	private final InstanceCollection decoratee;
-	
+
 	private final Filter filter;
 
 	/**
 	 * Create a filtered instance collection.
+	 * 
 	 * @param decoratee the instance collection to perform the selection on
 	 * @param filter the filter representing the selection
 	 */
-	public FilteredInstanceCollection(InstanceCollection decoratee,
-			Filter filter) {
+	public FilteredInstanceCollection(InstanceCollection decoratee, Filter filter) {
 		super();
 		this.decoratee = decoratee;
 		this.filter = filter;

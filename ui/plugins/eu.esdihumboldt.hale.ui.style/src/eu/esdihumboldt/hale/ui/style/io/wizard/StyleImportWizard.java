@@ -17,6 +17,7 @@ import eu.esdihumboldt.hale.ui.style.io.StyleReader;
 
 /**
  * Wizard for style import.
+ * 
  * @author Simon Templer
  */
 public class StyleImportWizard extends ImportWizard<StyleReader> {

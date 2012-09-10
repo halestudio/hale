@@ -19,16 +19,17 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * A field editor for URIs. Does validation based on the URI syntax.
+ * 
  * @author Simon Templer
  */
 public class URIFieldEditor extends StringFieldEditor {
-	
+
 	/**
 	 * Default constructor
 	 */
 	public URIFieldEditor() {
 		super();
-		
+
 		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		setEmptyStringAllowed(false);
 	}
@@ -38,7 +39,7 @@ public class URIFieldEditor extends StringFieldEditor {
 	 */
 	public URIFieldEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, parent);
-		
+
 		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		setEmptyStringAllowed(false);
 	}
@@ -50,7 +51,7 @@ public class URIFieldEditor extends StringFieldEditor {
 	protected boolean checkState() {
 		// reset error message in case of an empty string
 		setErrorMessage("Please specify a valid URI");
-		
+
 		return super.checkState();
 	}
 
@@ -60,19 +61,20 @@ public class URIFieldEditor extends StringFieldEditor {
 	@Override
 	protected boolean doCheckState() {
 		final String value = getStringValue();
-		
+
 		try {
 			new URI(value);
 		} catch (Throwable e) {
 			setErrorMessage(e.getLocalizedMessage());
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Get the URI value.
+	 * 
 	 * @return the URL or <code>null</code> if the content is no valid URI.
 	 */
 	public URI getURI() {

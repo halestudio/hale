@@ -5,10 +5,11 @@ import eu.esdihumboldt.hale.ui.io.ImportWizard;
 
 /**
  * Import wizard for code lists
+ * 
  * @author Patrick Lieb
  */
 public class CodeListImportWizard extends ImportWizard<CodeListReader> {
-	
+
 	/**
 	 * Create a schema import wizard
 	 */

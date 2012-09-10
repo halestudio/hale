@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -20,20 +22,16 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Polygon;
 
-import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.PolygonToMultiLineString;
-
-import static org.junit.Assert.assertEquals;
-
 /**
  * Test {@link Polygon} to {@link MultiLineString} conversion
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @SuppressWarnings("restriction")
 public class PolygonToMultiLineStringTest extends AbstractGeometryConverterTest {
-	
+
 	/**
 	 * Test conversion with a simple box
 	 */
@@ -44,11 +42,11 @@ public class PolygonToMultiLineStringTest extends AbstractGeometryConverterTest 
 		coordinates[1] = new Coordinate(1, 0);
 		coordinates[2] = new Coordinate(1, 1);
 		coordinates[3] = new Coordinate(0, 1);
-		LinearRing shell = geomFactory.createLinearRing(coordinates );
-		Polygon poly = geomFactory.createPolygon(shell , null);
-		
+		LinearRing shell = geomFactory.createLinearRing(coordinates);
+		Polygon poly = geomFactory.createPolygon(shell, null);
+
 		PolygonToMultiLineString converter = new PolygonToMultiLineString();
-		
+
 		MultiLineString mls = converter.convert(poly);
 		assertEquals("Expecting 4 lines", 4, mls.getNumGeometries()); //$NON-NLS-1$
 		for (int i = 0; i < mls.getNumGeometries(); i++) {
@@ -62,4 +60,3 @@ public class PolygonToMultiLineStringTest extends AbstractGeometryConverterTest 
 	}
 
 }
-

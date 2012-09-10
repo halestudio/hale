@@ -24,12 +24,14 @@ import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
  * A view context menu.
+ * 
  * @author Simon Templer
  */
 public class ViewContextMenu implements IMenuListener {
-	
+
 	/**
 	 * Create a viewer context menu.
+	 * 
 	 * @param site the (view) site containing the viewer
 	 * @param selectionProvider the view selection provider
 	 * @param control the control the context menu should be associated to
@@ -41,7 +43,7 @@ public class ViewContextMenu implements IMenuListener {
 		menuManager.addMenuListener(this);
 		Menu targetMenu = menuManager.createContextMenu(control);
 		control.setMenu(targetMenu);
-		
+
 		// register context menus
 		site.registerContextMenu(menuManager, selectionProvider);
 	}
@@ -49,6 +51,7 @@ public class ViewContextMenu implements IMenuListener {
 	/**
 	 * Override to change menu contents. By default only a marker for menu
 	 * additions is part of the context menu.
+	 * 
 	 * @see IMenuListener#menuAboutToShow(IMenuManager)
 	 */
 	@Override

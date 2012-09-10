@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefinitionNameSection
 
 /**
  * Properties section with property type name
+ * 
  * @author Patrick Lieb
  */
 public class PropertyTypeNameSection extends DefinitionNameSection {
@@ -28,7 +29,7 @@ public class PropertyTypeNameSection extends DefinitionNameSection {
 	@Override
 	protected void setInput(Object input) {
 		super.setInput(input);
-		
+
 		setDefinition(((PropertyDefinition) getDefinition()).getPropertyType());
 	}
 

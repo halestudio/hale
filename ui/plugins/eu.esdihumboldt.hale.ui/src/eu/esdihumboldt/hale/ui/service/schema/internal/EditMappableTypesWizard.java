@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * @author Kai Schwierczek
  */
 public class EditMappableTypesWizard extends Wizard {
+
 	private final EditMappableTypesPage page;
 	private final SchemaSpaceID spaceID;
 
@@ -53,7 +54,8 @@ public class EditMappableTypesWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(
+				SchemaService.class);
 		schemaService.toggleMappable(spaceID, page.getSelectedTypes());
 		return true;
 	}

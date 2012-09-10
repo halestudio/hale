@@ -45,32 +45,36 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 /**
  * Dialog for selecting a {@link PropertyDefinition} with its complete property
  * path (represented in an {@link EntityDefinition}).
+ * 
  * @author Simon Templer
  */
-public class PropertyDefinitionDialog extends AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> {
-	
+public class PropertyDefinitionDialog extends
+		AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> {
+
 	private final TypeDefinition parentType;
-	
+
 	private final SchemaSpaceID ssid;
 
 	/**
-	 * Create a property entity dialog 
+	 * Create a property entity dialog
+	 * 
 	 * @param parentShell the parent shall
-	 * @param ssid the schema space used for creating {@link PropertyEntityDefinition},
-	 *   may be <code>null</code> if not needed
+	 * @param ssid the schema space used for creating
+	 *            {@link PropertyEntityDefinition}, may be <code>null</code> if
+	 *            not needed
 	 * @param parentType the parent type for the property to be selected
 	 * @param title the dialog title
 	 * @param initialSelection the entity definition to select initially (if
-	 *   possible), may be <code>null</code>
+	 *            possible), may be <code>null</code>
 	 */
 	public PropertyDefinitionDialog(Shell parentShell, SchemaSpaceID ssid,
 			TypeDefinition parentType, String title, EntityDefinition initialSelection) {
 		super(parentShell, title, initialSelection);
-		
+
 		this.ssid = ssid;
 		this.parentType = parentType;
 	}
-	
+
 	/**
 	 * @see AbstractViewerSelectionDialog#createViewer(Composite)
 	 */
@@ -78,17 +82,19 @@ public class PropertyDefinitionDialog extends AbstractViewerSelectionDialog<Enti
 	protected TreeViewer createViewer(Composite parent) {
 		// create viewer
 		SchemaPatternFilter patternFilter = new SchemaPatternFilter() {
+
 			@Override
 			protected boolean matches(Viewer viewer, Object element) {
 				boolean superMatches = super.matches(viewer, element);
 				if (!superMatches)
 					return false;
-				return acceptObject(viewer, getFilters(), ((TreePath)element).getLastSegment());
+				return acceptObject(viewer, getFilters(), ((TreePath) element).getLastSegment());
 			}
 		};
 		patternFilter.setUseEarlyReturnIfMatcherIsNull(false);
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new TreePathFilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		FilteredTree tree = new TreePathFilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new DefinitionComparator());
 		return tree.getViewer();
 	}
@@ -96,11 +102,11 @@ public class PropertyDefinitionDialog extends AbstractViewerSelectionDialog<Enti
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
-		viewer.setContentProvider(new TreePathProviderAdapter(
-				new TypePropertyContentProvider(viewer)));
-		
+		viewer.setContentProvider(new TreePathProviderAdapter(new TypePropertyContentProvider(
+				viewer)));
+
 		viewer.setInput(parentType);
-		
+
 		if (initialSelection != null) {
 			viewer.setSelection(new StructuredSelection(initialSelection));
 		}
@@ -114,11 +120,11 @@ public class PropertyDefinitionDialog extends AbstractViewerSelectionDialog<Enti
 				return (EntityDefinition) element;
 			}
 		}
-		
+
 		if (!selection.isEmpty() && selection instanceof ITreeSelection) {
-			// create property definition w/ default contexts 
+			// create property definition w/ default contexts
 			TreePath path = ((ITreeSelection) selection).getPaths()[0];
-			
+
 			// get parent type
 			TypeDefinition type = ((PropertyDefinition) path.getFirstSegment()).getParentType();
 			// determine definition path
@@ -126,10 +132,10 @@ public class PropertyDefinitionDialog extends AbstractViewerSelectionDialog<Enti
 			for (int i = 0; i < path.getSegmentCount(); i++) {
 				defPath.add(new ChildContext((ChildDefinition<?>) path.getSegment(i)));
 			}
-			//TODO check if property entity definition is applicable? 
+			// TODO check if property entity definition is applicable?
 			return new PropertyEntityDefinition(type, defPath, ssid, null);
 		}
-		
+
 		return null;
 	}
 

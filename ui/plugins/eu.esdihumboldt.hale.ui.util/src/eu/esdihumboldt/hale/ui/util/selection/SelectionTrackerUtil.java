@@ -14,30 +14,31 @@ package eu.esdihumboldt.hale.ui.util.selection;
 
 /**
  * Selection tracker utilities
+ * 
  * @author Simon Templer
  */
 public abstract class SelectionTrackerUtil {
-	
+
 	private static volatile SelectionTracker tracker = null;
 
 	/**
-	 * Get the selection tracker previously registered
-	 * using {@link #registerTracker(SelectionTracker)}
+	 * Get the selection tracker previously registered using
+	 * {@link #registerTracker(SelectionTracker)}
 	 * 
 	 * @return the registered tracker or <code>null</code>
 	 */
 	public static SelectionTracker getTracker() {
 		return tracker;
 	}
-	
+
 	/**
-	 * Register a selection tracker that can
-	 * be retrieved using {@link #getTracker()}
-	 *  
+	 * Register a selection tracker that can be retrieved using
+	 * {@link #getTracker()}
+	 * 
 	 * @param tracker the tracker to register
 	 */
 	public static void registerTracker(SelectionTracker tracker) {
 		SelectionTrackerUtil.tracker = tracker;
 	}
-	
+
 }

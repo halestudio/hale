@@ -18,14 +18,16 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 
 /**
  * Resource resolver extension.
+ * 
  * @author Simon Templer
  */
 public class ResolverExtension extends IdentifiableExtension<ResolverConfiguration> {
 
 	private static ResolverExtension instance;
-	
+
 	/**
 	 * Get the bundle host resolver extension.
+	 * 
 	 * @return the extension instance
 	 */
 	public static ResolverExtension getInstance() {

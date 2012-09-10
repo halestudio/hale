@@ -22,15 +22,14 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.capabilities.GetCapabilititiesRetriever;
 
-
 /**
  * Configuration for WFS DescribeFeature
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class WfsDescribeFeatureConfiguration extends WfsConfiguration {
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -40,23 +39,23 @@ public class WfsDescribeFeatureConfiguration extends WfsConfiguration {
 
 	/**
 	 * Get the request URL
-	 *  
-	 * @return the request URL 
+	 * 
+	 * @return the request URL
 	 * @throws IOException if getting the WFS capabilities failed
 	 */
 	public URL getRequestURL() throws IOException {
 		String capabilities = getCapabilitiesURL();
-		
+
 		// build DescribeFeatureType URL
 		DataStore data = GetCapabilititiesRetriever.getDataStore(capabilities);
-		
+
 		// collect type names
 		StringBuffer typeNames = new StringBuffer();
 		String firstType = null;
 		boolean first = true;
 		for (FeatureType type : getFeatureTypes()) {
 			String typeName = type.getName().getLocalPart();
-			
+
 			if (first) {
 				first = false;
 				firstType = typeName;
@@ -66,11 +65,13 @@ public class WfsDescribeFeatureConfiguration extends WfsConfiguration {
 			}
 			typeNames.append(typeName);
 		}
-		
+
 		// get the URL
-		//XXX replaced by code below - url_result = ((WFSDataStore) data).getDescribeFeatureTypeURL(typeNames.toString());
-		//XXX we have to trick because the geotools implementation of the WFS 1.1.0 protocol is limited to one feature type
-		//TODO better solution
+		// XXX replaced by code below - url_result = ((WFSDataStore)
+		// data).getDescribeFeatureTypeURL(typeNames.toString());
+		// XXX we have to trick because the geotools implementation of the WFS
+		// 1.1.0 protocol is limited to one feature type
+		// TODO better solution
 		if (firstType != null) {
 			String temp = ((WFSDataStore) data).getDescribeFeatureTypeURL(firstType).toString();
 			String repl = URLEncoder.encode(firstType, "UTF-8");

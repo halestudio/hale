@@ -32,28 +32,26 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class FeatureClass 
-	extends Entity {
+public class FeatureClass extends Entity {
 
 	/**
-	 * Note: Interior element omwg:classConditionType collapsed. 
-       * <xs:element ref="omwg:attributeValueCondition" minOccurs="0" maxOccurs="unbounded" />
+	 * Note: Interior element omwg:classConditionType collapsed. <xs:element
+	 * ref="omwg:attributeValueCondition" minOccurs="0" maxOccurs="unbounded" />
 	 */
 	private List<Restriction> attributeValueCondition;
 
 	/**
-	 * Note: Interior element omwg:classConditionType collapsed. 
-       * <xs:element Re="omwg:attributeTypeCondition" minOccurs="0" maxOccurs="unbounded" />
+	 * Note: Interior element omwg:classConditionType collapsed. <xs:element
+	 * Re="omwg:attributeTypeCondition" minOccurs="0" maxOccurs="unbounded" />
 	 */
 	private List<Restriction> attributeTypeCondition;
 
 	/**
-	 * Note: Interior element omwg:classConditionType collapsed. 
-       * <xs:element ref="omwg:attributeOccurenceCondition" minOccurs="0"
+	 * Note: Interior element omwg:classConditionType collapsed. <xs:element
+	 * ref="omwg:attributeOccurenceCondition" minOccurs="0"
 	 * maxOccurs="unbounded" />
 	 */
 	private List<Restriction> attributeOccurenceCondition;
-
 
 	// constructors ............................................................
 
@@ -63,14 +61,13 @@ public class FeatureClass
 	public FeatureClass(IAbout about) {
 		super(about);
 	}
-	
+
 	public String getNamespace() {
-		return this.getAbout().getAbout().substring(
-				0, (this.getAbout().getAbout().lastIndexOf("/")));
+		return this.getAbout().getAbout()
+				.substring(0, (this.getAbout().getAbout().lastIndexOf("/")));
 	}
 
 	// getters / setters .......................................................
-
 
 	/**
 	 * @return the attributeValueCondition
@@ -122,22 +119,24 @@ public class FeatureClass
 
 	@Override
 	public IEntity deepCopy() {
-		FeatureClass result = new FeatureClass(new About(this.getAbout().getAbout()));
-		
-		Transformation t = new Transformation(this.getTransformation().getService());
+		FeatureClass result = new FeatureClass(new About(this.getAbout()
+				.getAbout()));
+
+		Transformation t = new Transformation(this.getTransformation()
+				.getService());
 		List<IParameter> parameters = new ArrayList<IParameter>();
 		for (IParameter p : this.getTransformation().getParameters()) {
 			parameters.add(new Parameter(p.getName(), p.getValue()));
 		}
 		t.setParameters(parameters);
 		result.setTransformation(t);
-		
+
 		List<String> newLabels = new ArrayList<String>();
 		for (String label : this.getLabel()) {
 			newLabels.add(label);
 		}
 		result.setLabel(newLabels);
-		
+
 		return result;
 	}
 

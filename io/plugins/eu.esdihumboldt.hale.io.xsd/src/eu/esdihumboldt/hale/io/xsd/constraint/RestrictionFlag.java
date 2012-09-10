@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
 
 /**
  * Flags if a type's super type relation is a restriction, disabled by default
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -29,21 +30,23 @@ public final class RestrictionFlag extends AbstractFlagConstraint implements Typ
 	 * Enabled restriction flag
 	 */
 	public static final RestrictionFlag ENABLED = new RestrictionFlag(true);
-	
+
 	/**
 	 * Disabled restriction flag
 	 */
 	public static final RestrictionFlag DISABLED = new RestrictionFlag(false);
-	
+
 	/**
 	 * Creates a default restriction flag, which is disabled. If possible,
-	 * instead of creating an instance, use {@link #ENABLED} or {@link #DISABLED}.
+	 * instead of creating an instance, use {@link #ENABLED} or
+	 * {@link #DISABLED}.
+	 * 
 	 * @see Constraint
 	 */
 	public RestrictionFlag() {
 		this(false);
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */

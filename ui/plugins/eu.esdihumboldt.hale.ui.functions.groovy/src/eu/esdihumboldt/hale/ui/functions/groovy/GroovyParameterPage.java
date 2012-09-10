@@ -9,6 +9,7 @@ import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
  * @author Kai Schwierczek
  */
 public class GroovyParameterPage extends SourceListParameterPage {
+
 	/**
 	 * Default constructor.
 	 */

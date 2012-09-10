@@ -16,7 +16,7 @@ import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
 /**
  * WFS DescribeFeature wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -27,7 +27,7 @@ public class WfsDescribeFeatureWizard extends AbstractWfsWizard<WfsDescribeFeatu
 	 */
 	public WfsDescribeFeatureWizard(WfsDescribeFeatureConfiguration configuration) {
 		super(configuration);
-		
+
 		setWindowTitle(Messages.WfsDescribeFeatureWizard_0); //$NON-NLS-1$
 	}
 

@@ -29,35 +29,40 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Property section that shows the type structure.
+ * 
  * @author Simon Templer
  */
 public class TypeDefinitionStructure extends DefaultDefinitionSection<TypeDefinition> {
 
 	private TreeViewer tree;
-	
-	private StyledDefinitionLabelProvider definitionImages = new StyledDefinitionLabelProvider(new DefinitionLabelProvider() {
 
-		@Override
-		public String getText(Object element) {
-			if (element instanceof PropertyDefinition) {
-				return super.getText(element) + " : " + ((PropertyDefinition) element).getPropertyType().getName().getLocalPart();
-			}
-			return super.getText(element);
-		}
-		
-	});
-	
+	private StyledDefinitionLabelProvider definitionImages = new StyledDefinitionLabelProvider(
+			new DefinitionLabelProvider() {
+
+				@Override
+				public String getText(Object element) {
+					if (element instanceof PropertyDefinition) {
+						return super.getText(element)
+								+ " : "
+								+ ((PropertyDefinition) element).getPropertyType().getName()
+										.getLocalPart();
+					}
+					return super.getText(element);
+				}
+
+			});
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		
+
 		Composite page = getWidgetFactory().createComposite(parent);
 		page.setLayout(new FillLayout());
-		
+
 		tree = new TreeViewer(page);
 		tree.setContentProvider(new TypeDefinitionContentProvider(tree));
 		tree.setLabelProvider(definitionImages);
@@ -89,7 +94,7 @@ public class TypeDefinitionStructure extends DefaultDefinitionSection<TypeDefini
 	@Override
 	public void dispose() {
 		definitionImages.dispose();
-		
+
 		super.dispose();
 	}
 

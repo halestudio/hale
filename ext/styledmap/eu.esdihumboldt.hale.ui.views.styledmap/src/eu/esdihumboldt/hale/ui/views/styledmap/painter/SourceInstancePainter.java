@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
  * Painter for source instances.
+ * 
  * @author Simon Templer
  */
 public class SourceInstancePainter extends AbstractInstancePainter {
@@ -27,8 +28,8 @@ public class SourceInstancePainter extends AbstractInstancePainter {
 	 * Default constructor
 	 */
 	public SourceInstancePainter() {
-		super((InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class), DataSet.SOURCE);
+		super((InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class),
+				DataSet.SOURCE);
 	}
 
 }

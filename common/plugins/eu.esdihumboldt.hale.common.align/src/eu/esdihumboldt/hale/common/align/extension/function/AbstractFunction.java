@@ -31,45 +31,47 @@ import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 
 /**
  * {@link IConfigurationElement} based function base class
+ * 
  * @param <P> the parameter type
  * @author Simon Templer
  */
 @Immutable
 public abstract class AbstractFunction<P extends AbstractParameter> implements Function {
-	
+
 	private final ALogger log = ALoggerFactory.getLogger(AbstractFunction.class);
 
 	/**
 	 * The configuration element
 	 */
 	protected final IConfigurationElement conf;
-	
+
 	private final Set<FunctionParameter> parameters;
-	
+
 	/**
 	 * Create a function definition based on the given configuration element
+	 * 
 	 * @param conf the configuration element
 	 */
 	protected AbstractFunction(IConfigurationElement conf) {
 		super();
 		this.conf = conf;
-		
+
 		this.parameters = createParameters(conf);
 	}
 
 	private static Set<FunctionParameter> createParameters(IConfigurationElement conf) {
 		Set<FunctionParameter> parameters = new LinkedHashSet<FunctionParameter>();
-		
+
 		IConfigurationElement[] pars = conf.getChildren("functionParameter");
 		if (pars != null) {
 			for (IConfigurationElement par : pars) {
 				parameters.add(new FunctionParameter(par));
 			}
 		}
-		
+
 		return parameters;
 	}
-	
+
 	/**
 	 * @see Function#getExplanation()
 	 */
@@ -89,27 +91,30 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 
 	/**
 	 * Get the source entities
+	 * 
 	 * @return the source entities
 	 */
 	@Override
 	public abstract Set<? extends P> getSource();
-	
+
 	/**
 	 * Get the target entities
+	 * 
 	 * @return the target entities
 	 */
 	@Override
 	public abstract Set<? extends P> getTarget();
-	
+
 	/**
 	 * States if the function represents an augmentation of a target instance
 	 * instead of a transformation.
+	 * 
 	 * @return if the function is an augmentation
 	 */
 	public boolean isAugmentation() {
 		return getSource().isEmpty();
 	}
-	
+
 	/**
 	 * @see Identifiable#getId()
 	 */
@@ -171,14 +176,15 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		if (resource != null && !resource.isEmpty()) {
 			String contributor = conf.getDeclaringExtension().getContributor().getName();
 			Bundle bundle = Platform.getBundle(contributor);
-			
+
 			if (bundle != null) {
 				return bundle.getResource(resource);
 			}
 		}
-		
+
 		return null;
 	}
+
 	/**
 	 * @see Function#getHelpURL
 	 */
@@ -187,7 +193,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		String help = conf.getAttribute("help");
 		return getURL(help);
 	}
-	
+
 //	/**
 //	 * @see Function#getHelpFileID()
 //	 */
@@ -222,7 +228,8 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		if (getId() == null) {
 			if (other.getId() != null)
 				return false;
-		} else if (!getId().equals(other.getId()))
+		}
+		else if (!getId().equals(other.getId()))
 			return false;
 		return true;
 	}

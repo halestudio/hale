@@ -18,21 +18,22 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter;
 
 /**
- * Filter that lets only {@link ChildDefinition}s with a location that is not 
+ * Filter that lets only {@link ChildDefinition}s with a location that is not
  * <code>null</code> pass.
+ * 
  * @author Patrick Lieb
  */
-public class ChildDefinitionLocationFilter extends DefaultDefinitionFilter{
+public class ChildDefinitionLocationFilter extends DefaultDefinitionFilter {
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)
 	 */
 	@Override
 	public boolean isFiltered(Definition<?> input) {
-		if(input instanceof PropertyDefinition){
-			if (((PropertyDefinition)input).getParentType() == null)
+		if (input instanceof PropertyDefinition) {
+			if (((PropertyDefinition) input).getParentType() == null)
 				return true;
-			return ((PropertyDefinition)input).getParentType().getLocation() == null;
+			return ((PropertyDefinition) input).getParentType().getLocation() == null;
 		}
 		return true;
 	}

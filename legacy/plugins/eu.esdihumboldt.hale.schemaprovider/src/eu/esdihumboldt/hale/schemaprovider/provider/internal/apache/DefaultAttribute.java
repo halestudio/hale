@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.schemaprovider.provider.internal.apache;
 
-
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaUse;
 import org.opengis.feature.type.Name;
@@ -22,47 +21,51 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class DefaultAttribute extends AbstractDefaultAttribute {
-	
+
 	/**
 	 * Create a default attribute
 	 * 
-	 * @param declaringType the declaring type
-	 * @param typeName the attribute type name
-	 * @param attribute the attribute 
-	 * @param attributeType the attribute type
-	 * @param use the attribute use
+	 * @param declaringType
+	 *            the declaring type
+	 * @param typeName
+	 *            the attribute type name
+	 * @param attribute
+	 *            the attribute
+	 * @param attributeType
+	 *            the attribute type
+	 * @param use
+	 *            the attribute use
 	 */
 	public DefaultAttribute(TypeDefinition declaringType, Name typeName,
-			XmlSchemaAttribute attribute, TypeDefinition attributeType, XmlSchemaUse use) {
-		super(attribute.getName(), typeName, attributeType, getNamespace(attribute),
-				use);
-		
+			XmlSchemaAttribute attribute, TypeDefinition attributeType,
+			XmlSchemaUse use) {
+		super(attribute.getName(), typeName, attributeType,
+				getNamespace(attribute), use);
+
 		String description = AbstractElementAttribute.getDescription(attribute);
 		if (description != null) {
 			setDescription(description);
 		}
-		
+
 		if (declaringType != null) {
 			// set the declaring type
 			declaringType.addDeclaredAttribute(this);
 		}
 	}
-	
+
 	private static String getNamespace(XmlSchemaAttribute attribute) {
 		if (attribute.getQName() != null) {
 			return attribute.getQName().getNamespaceURI();
-		}
-		else if (attribute.getRefName() != null) {
+		} else if (attribute.getRefName() != null) {
 			return attribute.getRefName().getNamespaceURI();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -70,7 +73,8 @@ public class DefaultAttribute extends AbstractDefaultAttribute {
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other the attribute to copy
+	 * @param other
+	 *            the attribute to copy
 	 */
 	protected DefaultAttribute(DefaultAttribute other) {
 		super(other);

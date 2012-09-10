@@ -22,6 +22,7 @@ import java.util.LinkedList;
  * @author Kai Schwierczek
  */
 public class OrValidator implements Validator {
+
 	private LinkedList<Validator> validators = new LinkedList<Validator>();
 
 	/**
@@ -73,7 +74,8 @@ public class OrValidator implements Validator {
 			String validation = validator.validate(value);
 			if (validation != null) {
 				result.append("\n   ").append(validation.replace("\n", "\n   "));
-			} else
+			}
+			else
 				// one validator validates!
 				return null;
 		}

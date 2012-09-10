@@ -20,18 +20,20 @@ import eu.esdihumboldt.util.Pair;
 /**
  * Label provider that delegates to another label provider after extracting the
  * value from a {@link Pair}.
+ * 
  * @author Simon Templer
  */
 public class PairLabelProvider extends LabelProvider {
-	
+
 	private final boolean first;
-	
+
 	private final LabelProvider labels;
 
 	/**
 	 * Create a label provider extracting pair values to determine the label.
+	 * 
 	 * @param first if the first value in a pair shall be forwarded to the
-	 *   delegate label provider, or the second
+	 *            delegate label provider, or the second
 	 * @param labels the delegate label provider
 	 */
 	public PairLabelProvider(boolean first, LabelProvider labels) {
@@ -46,10 +48,10 @@ public class PairLabelProvider extends LabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		if (element instanceof Pair<?, ?>) {
-			Pair<?, ?> pair = (Pair<?, ?>)element;
-			return labels.getImage((first)?(pair.getFirst()):(pair.getSecond()));
+			Pair<?, ?> pair = (Pair<?, ?>) element;
+			return labels.getImage((first) ? (pair.getFirst()) : (pair.getSecond()));
 		}
-		
+
 		return labels.getImage(element);
 	}
 
@@ -59,10 +61,10 @@ public class PairLabelProvider extends LabelProvider {
 	@Override
 	public String getText(Object element) {
 		if (element instanceof Pair<?, ?>) {
-			Pair<?, ?> pair = (Pair<?, ?>)element;
-			return labels.getText((first)?(pair.getFirst()):(pair.getSecond()));
+			Pair<?, ?> pair = (Pair<?, ?>) element;
+			return labels.getText((first) ? (pair.getFirst()) : (pair.getSecond()));
 		}
-		
+
 		return super.getText(element);
 	}
 

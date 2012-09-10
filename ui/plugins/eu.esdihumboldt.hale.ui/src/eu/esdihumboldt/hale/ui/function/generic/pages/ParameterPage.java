@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
  * @author Kai Schwierczek
  */
 public interface ParameterPage extends IWizardPage {
+
 	/**
 	 * Sets the parameters this page is responsible for and their initial
 	 * values. <br>
@@ -36,7 +37,8 @@ public interface ParameterPage extends IWizardPage {
 	 * @param initialValues initial values of those parameters, may be null,
 	 *            should not be changed
 	 */
-	public void setParameter(Set<FunctionParameter> params, ListMultimap<String, String> initialValues);
+	public void setParameter(Set<FunctionParameter> params,
+			ListMultimap<String, String> initialValues);
 
 	/**
 	 * Returns the configuration of the parameters this page is responsible for. <br>

@@ -23,30 +23,32 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Properties section with nillableFlag information
+ * 
  * @author Patrick Lieb
  */
-public class PropertyTypeNillableFlagSection extends DefaultDefinitionSection<PropertyDefinition>{
-	
+public class PropertyTypeNillableFlagSection extends DefaultDefinitionSection<PropertyDefinition> {
+
 	private Text nillableflag;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "NillableFlag:", null);
 		nillableflag = getText();
 	}
-	
+
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		if(getDefinition().getConstraint(NillableFlag.class).isEnabled()){
+		if (getDefinition().getConstraint(NillableFlag.class).isEnabled()) {
 			nillableflag.setText("true");
-		} else {
+		}
+		else {
 			nillableflag.setText("false");
 		}
 	}

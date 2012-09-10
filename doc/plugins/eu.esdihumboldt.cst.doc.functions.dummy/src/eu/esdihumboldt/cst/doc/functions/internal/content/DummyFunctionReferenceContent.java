@@ -32,8 +32,7 @@ public class DummyFunctionReferenceContent implements IHelpContentProducer,
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
 	 */
 	@Override
-	public InputStream getInputStream(String pluginID, String href,
-			Locale locale) {
+	public InputStream getInputStream(String pluginID, String href, Locale locale) {
 		if (href.startsWith(FUNCTION_TOPIC_PATH)) {
 			// it's a function
 			try {

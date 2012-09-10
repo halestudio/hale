@@ -8,36 +8,34 @@ import eu.esdihumboldt.specification.mediator.constraints.portrayal.FeatureTypeS
 
 public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 	/**
-	 * A  FeatureTypeStyle contains styling information 
-	 * specific to one feature type. This is the SLD level 
-	 * that separates the 'layer' handling from the 'feature'
-	 * handling.
+	 * A FeatureTypeStyle contains styling information specific to one feature
+	 * type. This is the SLD level that separates the 'layer' handling from the
+	 * 'feature' handling.
 	 */
-	
+
 	private String name;
 	private String title;
 	private String abstractFTS;
 	private String featureTypeName;
 	private String semanticTypeIdentifier; // TODO: return correct type
-	private String rule; 					 // TODO: return correct type
+	private String rule; // TODO: return correct type
 
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 *  The unique identifier of the constraint int the database
+	 * The unique identifier of the constraint int the database
 	 */
-	
+
 	private long id;
-	
+
 	/**
 	 * The status of this constraint.
 	 */
 	private boolean satisfied = false;
-	
+
 	/**
 	 * The unique identifier in the current VM.
 	 */
@@ -48,24 +46,21 @@ public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 	 */
 	private ConstraintSource constraintSource;
 
-	
-	
 	/**
-	 * @param constraintSource the constraintSource to set
+	 * @param constraintSource
+	 *            the constraintSource to set
 	 */
 	public void setConstraintSource(ConstraintSource constraintSource) {
 		this.constraintSource = constraintSource;
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#getConstraintSource()
 	 */
 	public ConstraintSource getConstraintSource() {
 		return this.constraintSource;
 	}
-	
-	
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#isSatisfied()
 	 */
@@ -73,7 +68,7 @@ public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 		// TODO Auto-generated method stub
 		return this.satisfied;
 	}
-		
+
 	/**
 	 * @return the Uid that has been assigned to this SpatialConstraint.
 	 */
@@ -89,12 +84,13 @@ public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @param satisfied
 	 */
@@ -110,7 +106,8 @@ public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -124,7 +121,8 @@ public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title
+	 *            the title to set
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -138,7 +136,8 @@ public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 	}
 
 	/**
-	 * @param abstractFTS the abstractFTS to set
+	 * @param abstractFTS
+	 *            the abstractFTS to set
 	 */
 	public void setAbstract(String abstractFTS) {
 		this.abstractFTS = abstractFTS;
@@ -152,7 +151,8 @@ public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 	}
 
 	/**
-	 * @param featureTypeName the featureTypeName to set
+	 * @param featureTypeName
+	 *            the featureTypeName to set
 	 */
 	public void setFeatureTypeName(String featureTypeName) {
 		this.featureTypeName = featureTypeName;
@@ -166,7 +166,8 @@ public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 	}
 
 	/**
-	 * @param semanticTypeIdentifier the semanticTypeIdentifier to set
+	 * @param semanticTypeIdentifier
+	 *            the semanticTypeIdentifier to set
 	 */
 	public void setSemanticTypeIdentifier(String semanticTypeIdentifier) {
 		this.semanticTypeIdentifier = semanticTypeIdentifier;
@@ -180,10 +181,11 @@ public class FeatureTypeStyleImpl implements FeatureTypeStyle, Serializable {
 	}
 
 	/**
-	 * @param rule the rule to set
+	 * @param rule
+	 *            the rule to set
 	 */
 	public void setRule(String rule) {
 		this.rule = rule;
 	}
-	
+
 }

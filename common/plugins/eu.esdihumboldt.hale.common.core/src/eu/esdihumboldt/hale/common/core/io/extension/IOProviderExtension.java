@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
  * Extension for {@link IOProvider}s
+ * 
  * @author Simon Templer
  */
 public class IOProviderExtension extends AbstractExtension<IOProvider, IOProviderDescriptor> {
@@ -40,12 +41,12 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 	/**
 	 * {@link IOProvider} factory based on a {@link IConfigurationElement}
 	 */
-	private static class ConfigurationFactory extends
-			AbstractConfigurationFactory<IOProvider> implements
-			IOProviderDescriptor {
+	private static class ConfigurationFactory extends AbstractConfigurationFactory<IOProvider>
+			implements IOProviderDescriptor {
 
 		/**
 		 * Create the {@link IOProvider} factory
+		 * 
 		 * @param conf the configuration element
 		 */
 		protected ConfigurationFactory(IConfigurationElement conf) {
@@ -82,10 +83,10 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 		@Override
 		public Set<IContentType> getSupportedTypes() {
 			IConfigurationElement[] children = conf.getChildren("contentType");
-			
+
 			if (children != null) {
 				Set<IContentType> result = new HashSet<IContentType>();
-				
+
 				for (IConfigurationElement child : children) {
 					String id = child.getAttribute("ref");
 					IContentType ct = Platform.getContentTypeManager().getContentType(id);
@@ -97,7 +98,7 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 								"Content type with ID {0} not known by the platform", id));
 					}
 				}
-				
+
 				return result;
 			}
 			else {
@@ -120,13 +121,14 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 	 * The extension point ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.io.provider";
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(IOProviderExtension.class);
-	
+
 	private static IOProviderExtension instance;
-	
+
 	/**
 	 * Get the I/O provider extension instance
+	 * 
 	 * @return the extension instance
 	 */
 	public static IOProviderExtension getInstance() {
@@ -135,7 +137,7 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -147,8 +149,7 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected IOProviderDescriptor createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected IOProviderDescriptor createFactory(IConfigurationElement conf) throws Exception {
 		if (conf.getName().equals("provider")) {
 			return new ConfigurationFactory(conf);
 		}

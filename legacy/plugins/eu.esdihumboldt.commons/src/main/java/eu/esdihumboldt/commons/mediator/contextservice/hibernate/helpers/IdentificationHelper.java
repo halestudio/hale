@@ -10,18 +10,20 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 package eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers;
+
 import java.util.Collection;
 
 import org.geotools.metadata.iso.identification.IdentificationImpl;
 import org.opengis.util.InternationalString;
 
 /**
- * This is a a subclass of the IdentificationImpl contains id-field and no-args constractor,
- * to enable Hibernate the persisting of Identification-objects. 
+ * This is a a subclass of the IdentificationImpl contains id-field and no-args
+ * constractor, to enable Hibernate the persisting of Identification-objects.
  * 
  * 
  * @author Anna Pitaev, Logica CMG
- * @version $Id: PrototypeIdentification.java,v 1.1 2007-11-23 08:51:46 pitaeva Exp $
+ * @version $Id: PrototypeIdentification.java,v 1.1 2007-11-23 08:51:46 pitaeva
+ *          Exp $
  */
 public class IdentificationHelper {
 	/**
@@ -29,12 +31,15 @@ public class IdentificationHelper {
 	 */
 	private static final long serialVersionUID = 1L;
 	private IdentificationImpl delegate = new IdentificationImpl();
-	
+
 	private long identificationid;
+
 	/**
 	 * default constructor
 	 */
-	public IdentificationHelper() {super();}
+	public IdentificationHelper() {
+		super();
+	}
 
 	/**
 	 * @return unique identifier for the database.
@@ -45,7 +50,8 @@ public class IdentificationHelper {
 
 	/**
 	 * 
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setIdentificationID(long id) {
 		this.identificationid = id;
@@ -107,11 +113,11 @@ public class IdentificationHelper {
 	}
 
 	/**
-	 * @param delegate the delegate to set
+	 * @param delegate
+	 *            the delegate to set
 	 */
 	public void setDelegate(IdentificationImpl delegate) {
 		this.delegate = delegate;
 	}
-	
 
 }

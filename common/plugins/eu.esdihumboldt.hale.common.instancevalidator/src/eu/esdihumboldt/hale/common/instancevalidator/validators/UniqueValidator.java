@@ -26,23 +26,27 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Unique;
 
 /**
  * Validator for {@link Unique}.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class UniqueValidator implements PropertyConstraintValidator {
+
 	/**
-	 * @see PropertyConstraintValidator#validatePropertyConstraint(Object[], PropertyConstraint, PropertyDefinition, InstanceValidationContext)
+	 * @see PropertyConstraintValidator#validatePropertyConstraint(Object[],
+	 *      PropertyConstraint, PropertyDefinition, InstanceValidationContext)
 	 */
 	@Override
-	public void validatePropertyConstraint(Object[] values, PropertyConstraint constraint, PropertyDefinition property,
-			InstanceValidationContext context) throws ValidationException {
+	public void validatePropertyConstraint(Object[] values, PropertyConstraint constraint,
+			PropertyDefinition property, InstanceValidationContext context)
+			throws ValidationException {
 		Unique unique = (Unique) constraint;
 		if (unique.isEnabled() && values != null) {
 			for (Object value : values) {
 				// only check it if it isn't null
 				if (value != null) {
 					@SuppressWarnings("unchecked")
-					Map<String, Set<Object>> map = (Map<String, Set<Object>>) context.getContext(UniqueValidator.class);
+					Map<String, Set<Object>> map = (Map<String, Set<Object>>) context
+							.getContext(UniqueValidator.class);
 					if (map == null) {
 						map = new HashMap<String, Set<Object>>();
 						context.putContext(UniqueValidator.class, map);
@@ -53,9 +57,9 @@ public class UniqueValidator implements PropertyConstraintValidator {
 						map.put(unique.getIdentifier(), valueSet);
 					}
 					if (valueSet.contains(value))
-						throw new ValidationException("The property " + 
-								property.getDisplayName() + " is marked as unique but the value (" +
-								value + ") occurs multiple times.");
+						throw new ValidationException("The property " + property.getDisplayName()
+								+ " is marked as unique but the value (" + value
+								+ ") occurs multiple times.");
 					else
 						valueSet.add(value);
 				}

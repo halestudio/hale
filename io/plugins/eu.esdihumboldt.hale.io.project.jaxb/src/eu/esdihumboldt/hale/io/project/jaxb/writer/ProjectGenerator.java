@@ -20,8 +20,8 @@ import javax.xml.bind.JAXBException;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
 
 /**
- * The {@link ProjectGenerator} serializes all project info to an xml file.
- * The {@link Alignment} is saved alongside in a goml file.
+ * The {@link ProjectGenerator} serializes all project info to an xml file. The
+ * {@link Alignment} is saved alongside in a goml file.
  * 
  * @author Thorsten Reitz
  */
@@ -30,13 +30,13 @@ public class ProjectGenerator {
 //	private static final ALogger _log = ALoggerFactory.getLogger(ProjectGenerator.class);
 
 //	private final ProjectService projectService;
-	
+
 	/**
 	 * Constructor
 	 * 
 	 * @param projectService the project service
 	 */
-	public ProjectGenerator(/*ProjectService projectService*/) {
+	public ProjectGenerator(/* ProjectService projectService */) {
 		super();
 //		this.projectService = projectService;
 	}
@@ -77,9 +77,8 @@ public class ProjectGenerator {
 //		m.marshal(new JAXBElement(new QName(null, "HaleProject", "hale"), //$NON-NLS-1$ //$NON-NLS-2$
 //				HaleProject.class, hproject), new File(xmlPath));
 	}
-	
-	private HaleProject createHaleProject(String xmlPath, String name) 
-			throws JAXBException {
+
+	private HaleProject createHaleProject(String xmlPath, String name) throws JAXBException {
 //		final String basePath = FilenameUtils.getFullPath(xmlPath);
 //		
 //		// setup project and basic attributes
@@ -110,7 +109,6 @@ public class ProjectGenerator {
 		return hproject;
 	}
 
-	
 	private void createInstanceData(HaleProject hproject, String basePath) {
 //		if (projectService.getInstanceDataPath() != null) {
 //			InstanceData id = new InstanceData();
@@ -134,7 +132,7 @@ public class ProjectGenerator {
 //			hproject.setInstanceData(id);
 //		}
 	}
-	
+
 	private void createMappedSchema(HaleProject hproject, String basePath) {
 //		MappedSchema sourceschema = new MappedSchema();
 //		sourceschema.setPath(getRelativeLocation(projectService.getSourceSchemaPath(), basePath));
@@ -146,9 +144,9 @@ public class ProjectGenerator {
 //			hproject.setTargetSchema(targetschema);
 //		}
 	}
-	
+
 	private void createTaskStatus(HaleProject hproject) {
-		//XXX tasks in project deactivated for now
+		// XXX tasks in project deactivated for now
 //		TaskService taskService = 
 //			(TaskService) PlatformUI.getWorkbench().getService(
 //					TaskService.class);
@@ -168,8 +166,9 @@ public class ProjectGenerator {
 //		}
 //		hproject.setTaskStatus(taskStatus);
 	}
-	
-	private void createAlignment(HaleProject hproject, String basePath, String xmlPath) throws JAXBException {
+
+	private void createAlignment(HaleProject hproject, String basePath, String xmlPath)
+			throws JAXBException {
 //		AlignmentService alignmentService = 
 //			(AlignmentService) PlatformUI.getWorkbench().getService(
 //					AlignmentService.class);
@@ -178,7 +177,7 @@ public class ProjectGenerator {
 //		org.write(alignmentService.getAlignment(), xmlPath + ".goml"); //$NON-NLS-1$
 //		hproject.setOmlPath(getRelativeLocation(xmlPath + ".goml", basePath)); //$NON-NLS-1$
 	}
-	
+
 	private void createConfigSections(HaleProject hproject) {
 //		ConfigSchemaService config = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 //		
@@ -191,9 +190,9 @@ public class ProjectGenerator {
 //			}
 //		}
 	}
-	
+
 	private void createStyle(HaleProject hproject, String basePath, String xmlPath) {
-		//XXX style in project deactivated for now 
+		// XXX style in project deactivated for now
 //		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 //		
 //		Style style = styleService.getStyle();
@@ -224,7 +223,7 @@ public class ProjectGenerator {
 //			hproject.setStyles(styles);
 //		}
 	}
-	
+
 	/**
 	 * Get the relative location to a file
 	 * 
@@ -237,7 +236,7 @@ public class ProjectGenerator {
 		try {
 			URI fileUri = new URI(file);
 			String scheme = fileUri.getScheme();
-			
+
 			if (scheme == null) {
 				// no scheme specified
 				return getRelativePath(file, basePath);
@@ -278,5 +277,5 @@ public class ProjectGenerator {
 			return new File(file).toURI().toString();
 		}
 	}
-	
+
 }

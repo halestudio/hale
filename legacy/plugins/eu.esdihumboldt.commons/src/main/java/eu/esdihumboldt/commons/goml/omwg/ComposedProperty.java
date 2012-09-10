@@ -19,36 +19,35 @@ import eu.esdihumboldt.commons.goml.rdf.About;
 import eu.esdihumboldt.specification.cst.rdf.IAbout;
 
 /**
- * This class represents omwg:propertyConst. Used for building an expression that
- * constructs a Property based on other Properties.
+ * This class represents omwg:propertyConst. Used for building an expression
+ * that constructs a Property based on other Properties.
  * 
  * @author Thorsten Reitz, Marian de Vries
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class ComposedProperty 
-	extends Property {
+public class ComposedProperty extends Property {
 
 	/**
-	 * Indicates the (first) operator/predicate for this {@link ComposedProperty}.
+	 * Indicates the (first) operator/predicate for this
+	 * {@link ComposedProperty}.
 	 */
 	private final PropertyOperatorType operator;
 
 	/**
-	 * In case of AND and OR the operand is a collection of two or more (Composed)PropertyClasses.
-       * In case of a unary operator the operand is either: 
-       * - a collection consisting of one Property (or ComposedProperty);
-       * - a Relation (or ComposedRelation).
-       * Only one of the two is allowed - at the moment not forced, must be dealt with by application code.
+	 * In case of AND and OR the operand is a collection of two or more
+	 * (Composed)PropertyClasses. In case of a unary operator the operand is
+	 * either: - a collection consisting of one Property (or ComposedProperty);
+	 * - a Relation (or ComposedRelation). Only one of the two is allowed - at
+	 * the moment not forced, must be dealt with by application code.
 	 * 
 	 */
 	private List<Property> collection;
 	private Relation relation;
 
-	
 	// constructors ............................................................
-	
+
 	/**
 	 * @return the relation
 	 */
@@ -57,7 +56,8 @@ public class ComposedProperty
 	}
 
 	/**
-	 * @param relation the relation to set
+	 * @param relation
+	 *            the relation to set
 	 */
 	public void setRelation(Relation relation) {
 		this.relation = relation;
@@ -65,8 +65,8 @@ public class ComposedProperty
 
 	/**
 	 * Constructor
-	 
-	 * @param operator 
+	 * 
+	 * @param operator
 	 * @param about
 	 */
 	public ComposedProperty(PropertyOperatorType operator, IAbout about) {
@@ -74,33 +74,34 @@ public class ComposedProperty
 		this.operator = operator;
 		this.collection = new ArrayList<Property>();
 	}
-	
 
 	/**
-	 * Constructor 
+	 * Constructor
 	 * 
 	 * sets a default operator value as {@link PropertyOperatorType.OR}
 	 * 
-	 * @param about IAbout
+	 * @param about
+	 *            IAbout
 	 */
-	public ComposedProperty (IAbout about) {
+	public ComposedProperty(IAbout about) {
 		super(about);
-		//sets union as default operator
+		// sets union as default operator
 		this.operator = PropertyOperatorType.OR;
 		this.collection = new ArrayList<Property>();
 	}
-	
-	//FIXME
+
+	// FIXME
 	public ComposedProperty(PropertyOperatorType operator, String namespace) {
 		this(operator, new About(namespace, UUID.randomUUID().toString()));
 	}
-	//FIXME
+
+	// FIXME
 	public ComposedProperty(String namespace) {
 		this(new About(namespace, UUID.randomUUID().toString()));
 	}
 
 	// getters / setters .......................................................
-	
+
 	/**
 	 * @see eu.esdihumboldt.commons.goml.omwg.Property#getFeatureClassName()
 	 */
@@ -115,8 +116,8 @@ public class ComposedProperty
 	 */
 	@Override
 	public String getNamespace() {
-		return this.getAbout().getAbout().substring(
-				0, (this.getAbout().getAbout().lastIndexOf("/")));
+		return this.getAbout().getAbout()
+				.substring(0, (this.getAbout().getAbout().lastIndexOf("/")));
 	}
 
 	/**
@@ -127,7 +128,8 @@ public class ComposedProperty
 	}
 
 	/**
-	 * @param collection the collection to set
+	 * @param collection
+	 *            the collection to set
 	 */
 	public void setCollection(List<Property> collection) {
 		this.collection = collection;
@@ -140,14 +142,10 @@ public class ComposedProperty
 		return operator;
 	}
 
-
-
 	public enum PropertyOperatorType {
 		AND, // intersection
-		OR,  // union
-		NOT,
-		FIRST,
-		NEXT
+		OR, // union
+		NOT, FIRST, NEXT
 	}
 
 }

@@ -18,23 +18,23 @@ package eu.esdihumboldt.hale.common.align.model.functions;
  * @author Kai Schwierczek
  */
 public interface RenameFunction {
-	
+
 	/**
 	 * The rename function Id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.align.rename";
-	
+
 	/**
 	 * Name of the parameter specifying whether a structural rename should be
 	 * performed or not. Default value for the parameter is <code>false</code>.
 	 */
 	public static final String PARAMETER_STRUCTURAL_RENAME = "structuralRename";
-	
+
 	/**
 	 * Name of the parameter specifying whether for the structural rename, when
 	 * checking for structure equality, the namespaces of properties may be
 	 * ignored. Default value for the parameter is <code>false</code>.
 	 */
 	public static final String PARAMETER_IGNORE_NAMESPACES = "ignoreNamespaces";
-	
+
 }

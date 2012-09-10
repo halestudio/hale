@@ -55,50 +55,54 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * Abstract I/O wizard based on {@link IOProvider} descriptors
+ * 
  * @param <P> the {@link IOProvider} type used in the wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class IOWizard<P extends IOProvider> extends Wizard implements IPageChangingListener {
-	
+public abstract class IOWizard<P extends IOProvider> extends Wizard implements
+		IPageChangingListener {
+
 	private static final ALogger log = ALoggerFactory.getLogger(IOWizard.class);
 
-	private Set<IOWizardListener<P, ? extends IOWizard<P>>> listeners = new HashSet<IOWizardListener<P,? extends IOWizard<P>>>();
-	
+	private Set<IOWizardListener<P, ? extends IOWizard<P>>> listeners = new HashSet<IOWizardListener<P, ? extends IOWizard<P>>>();
+
 	private final Class<P> providerType;
-	
+
 	private P provider;
-	
+
 	private IOProviderDescriptor descriptor;
-	
+
 	private IOAdvisor<P> advisor;
-	
+
 	private String actionId;
-	
+
 	private IContentType contentType;
 
 	private final Multimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> configPages;
-	
+
 	private final List<IWizardPage> mainPages = new ArrayList<IWizardPage>();
-	
+
 	/**
 	 * Create an I/O wizard
+	 * 
 	 * @param providerType the I/O provider type
 	 */
 	public IOWizard(Class<P> providerType) {
 		super();
 		this.providerType = providerType;
-		
+
 		// create possible configuration pages
-		configPages = ConfigurationPageExtension.getInstance().
-				getConfigurationPages(getFactories());
-		
+		configPages = ConfigurationPageExtension.getInstance()
+				.getConfigurationPages(getFactories());
+
 		setNeedsProgressMonitor(true);
 	}
 
 	/**
 	 * Get the I/O advisor
+	 * 
 	 * @return the advisor
 	 */
 	protected IOAdvisor<P> getAdvisor() {
@@ -107,6 +111,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 
 	/**
 	 * Get the action identifier
+	 * 
 	 * @return the action ID
 	 */
 	protected String getActionId() {
@@ -115,6 +120,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 
 	/**
 	 * Set the I/O advisor
+	 * 
 	 * @param advisor the advisor to set
 	 * @param actionId the action identifier, <code>null</code> if it has none
 	 */
@@ -129,12 +135,13 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	@Override
 	public void addPages() {
 		super.addPages();
-		
+
 		// add configuration pages
-		for (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>> page : configPages.values()) {
+		for (AbstractConfigurationPage<? extends P, ? extends IOWizard<P>> page : configPages
+				.values()) {
 			addPage(page);
 		}
-		
+
 		if (getContainer() instanceof WizardDialog) {
 			((WizardDialog) getContainer()).addPageChangingListener(this);
 		}
@@ -151,15 +158,15 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 		if (getProvider() == null) {
 			return;
 		}
-		
-		if (event.getCurrentPage() instanceof IWizardPage && 
-				event.getTargetPage() == getNextPage((IWizardPage) event.getCurrentPage())) {
+
+		if (event.getCurrentPage() instanceof IWizardPage
+				&& event.getTargetPage() == getNextPage((IWizardPage) event.getCurrentPage())) {
 			// only do automatic configuration when proceeding to next page
 			if (event.getCurrentPage() instanceof IOWizardPage<?, ?>) {
 				@SuppressWarnings("unchecked")
 				IOWizardPage<P, ?> page = (IOWizardPage<P, ?>) event.getCurrentPage();
 				event.doit = validatePage(page);
-				//TODO error message?!
+				// TODO error message?!
 			}
 		}
 	}
@@ -172,7 +179,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 		if (getContainer() instanceof WizardDialog) {
 			((WizardDialog) getContainer()).removePageChangingListener(this);
 		}
-		
+
 		super.dispose();
 	}
 
@@ -185,10 +192,10 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 		if (!configPages.containsValue(page)) {
 			mainPages.add(page);
 		}
-		
+
 		super.addPage(page);
 	}
-	
+
 	/**
 	 * Get the list of configuration pages for the currently selected provider
 	 * factory <code>null</code> if there are none.
@@ -202,11 +209,10 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 
 		// get the provider id
 		String id = descriptor.getIdentifier();
-		
-		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> result = 
-			new ArrayList<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>>(
-					configPages.get(id));
-		
+
+		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> result = new ArrayList<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>>(
+				configPages.get(id));
+
 		return (result.size() > 0 ? result : null);
 	}
 
@@ -217,22 +223,22 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	public boolean canFinish() {
 		// check if main pages are complete
 		for (int i = 0; i < mainPages.size(); i++) {
-            if (!(mainPages.get(i)).isPageComplete()) {
+			if (!(mainPages.get(i)).isPageComplete()) {
 				return false;
 			}
-        }
-		
+		}
+
 		// check if configuration pages are complete
 		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> confPages = getConfigurationPages();
 		if (confPages != null) {
 			for (int i = 0; i < confPages.size(); i++) {
-	            if (!(confPages.get(i)).isPageComplete()) {
+				if (!(confPages.get(i)).isPageComplete()) {
 					return false;
 				}
-	        }
+			}
 		}
-		
-        return true;
+
+		return true;
 	}
 
 	/**
@@ -242,12 +248,12 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	public IWizardPage getNextPage(IWizardPage page) {
 		// get main index
 		int mainIndex = mainPages.indexOf(page);
-		
+
 		if (mainIndex >= 0) {
 			// current page is one of the main pages
 			if (mainIndex < mainPages.size() - 1) {
 				// next main page
-				return mainPages.get(mainIndex + 1); 
+				return mainPages.get(mainIndex + 1);
 			}
 			else {
 				// first configuration page
@@ -269,7 +275,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -283,7 +289,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 		if (confPages != null) {
 			count += confPages.size();
 		}
-		
+
 		return count;
 	}
 
@@ -294,12 +300,12 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	public IWizardPage getPreviousPage(IWizardPage page) {
 		// get main index
 		int mainIndex = mainPages.indexOf(page);
-		
+
 		if (mainIndex >= 0) {
 			// current page is one of the main pages
 			if (mainIndex > 0) {
 				// previous main page
-				return mainPages.get(mainIndex - 1); 
+				return mainPages.get(mainIndex - 1);
 			}
 		}
 		else {
@@ -318,7 +324,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -331,27 +337,29 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	}
 
 	/**
-	 * Get the available provider descriptors. 
-	 * To filter or sort them you can override this method.
+	 * Get the available provider descriptors. To filter or sort them you can
+	 * override this method.
 	 * 
 	 * @return the available provider descriptors
 	 */
 	public List<IOProviderDescriptor> getFactories() {
-		//FIXME rename method
-		return IOProviderExtension.getInstance().getFactories(new FactoryFilter<IOProvider, IOProviderDescriptor>() {
-			
-			@Override
-			public boolean acceptFactory(IOProviderDescriptor factory) {
-				// accept all factories that provide a compatible I/O provider
-				return providerType.isAssignableFrom(factory.getProviderType());
-			}
-			
-			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<IOProvider, IOProviderDescriptor> collection) {
-				return true;
-			}
-		});
+		// FIXME rename method
+		return IOProviderExtension.getInstance().getFactories(
+				new FactoryFilter<IOProvider, IOProviderDescriptor>() {
+
+					@Override
+					public boolean acceptFactory(IOProviderDescriptor factory) {
+						// accept all factories that provide a compatible I/O
+						// provider
+						return providerType.isAssignableFrom(factory.getProviderType());
+					}
+
+					@Override
+					public boolean acceptCollection(
+							ExtensionObjectFactoryCollection<IOProvider, IOProviderDescriptor> collection) {
+						return true;
+					}
+				});
 	}
 
 	/**
@@ -370,7 +378,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 			}
 			advisor.prepareProvider(provider);
 		}
-		
+
 		return provider;
 	}
 
@@ -380,8 +388,9 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	 * @param descriptor the provider factory to set
 	 */
 	public void setProviderFactory(IOProviderDescriptor descriptor) {
-		if (Objects.equal(descriptor, this.descriptor)) return;
-		
+		if (Objects.equal(descriptor, this.descriptor))
+			return;
+
 		// disable old configuration pages
 		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> pages = getConfigurationPages();
 		if (pages != null) {
@@ -389,12 +398,12 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 				page.disable();
 			}
 		}
-		
+
 		this.descriptor = descriptor;
-		
+
 		// reset provider
 		provider = null;
-		
+
 		// enable new configuration pages
 		pages = getConfigurationPages();
 		if (pages != null) {
@@ -402,12 +411,13 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 				page.enable();
 			}
 		}
-		
+
 		fireProviderFactoryChanged(descriptor);
 	}
-	
+
 	/**
 	 * Get the content type assigned to the wizard
+	 * 
 	 * @return the content type, may be <code>null</code>
 	 */
 	public IContentType getContentType() {
@@ -420,16 +430,17 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	 * @param contentType the content type to set
 	 */
 	public void setContentType(IContentType contentType) {
-		if (Objects.equal(contentType, this.contentType)) return;
-		
+		if (Objects.equal(contentType, this.contentType))
+			return;
+
 		this.contentType = contentType;
-		
+
 		fireContentTypeChanged(contentType);
 	}
 
 	/**
 	 * Get the provider descriptor assigned to the wizard. It will be
-	 * <code>null</code> if no page assigned a provider factory to the wizard 
+	 * <code>null</code> if no page assigned a provider factory to the wizard
 	 * yet.
 	 * 
 	 * @return the I/O provider factory
@@ -437,7 +448,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	public IOProviderDescriptor getProviderFactory() {
 		return descriptor;
 	}
-	
+
 	/**
 	 * @see Wizard#performFinish()
 	 * 
@@ -448,61 +459,64 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 		if (getProvider() == null) {
 			return false;
 		}
-		
+
 		// process main pages
 		for (int i = 0; i < mainPages.size(); i++) {
-			// validating is still necessary as it is not guaranteed to be up to date by handlePageChanging
+			// validating is still necessary as it is not guaranteed to be up to
+			// date by handlePageChanging
 			boolean valid = validatePage(mainPages.get(i));
 			if (!valid) {
-				//TODO error message?!
+				// TODO error message?!
 				return false;
 			}
-        }
-		
+		}
+
 		// check if configuration pages are complete
 		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> confPages = getConfigurationPages();
 		if (confPages != null) {
 			for (int i = 0; i < confPages.size(); i++) {
-				// validating is still necessary as it is not guaranteed to be up to date by handlePageChanging
+				// validating is still necessary as it is not guaranteed to be
+				// up to date by handlePageChanging
 				boolean valid = validatePage(confPages.get(i));
 				if (!valid) {
-					//TODO error message?!
+					// TODO error message?!
 					return false;
 				}
-	        }
+			}
 		}
-		
+
 		// process wizard
 		updateConfiguration(provider);
-		
+
 		// create default report
 		IOReporter defReport = provider.createReporter();
-		
+
 		// validate and execute provider
 		try {
 			IOReport report = validateAndExecute(provider, defReport);
 			// add report to report server
-			ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+			ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
+					ReportService.class);
 			repService.addReport(report);
 			// show message to user
 			if (report.isSuccess()) {
 				// no message, we rely on the report being shown/processed
-				
+
 				// let advisor handle results
 				advisor.handleResults(getProvider());
-				
+
 				// add to project service if necessary
 				if (actionId != null) {
-					//XXX instead move project resource to action?
+					// XXX instead move project resource to action?
 					ActionUI factory = ActionUIExtension.getInstance().findActionUI(actionId);
-					
+
 					if (factory.isProjectResource()) {
-						ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
-						ps.rememberIO(actionId,	
-								getProviderFactory().getIdentifier(), provider);
+						ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+								ProjectService.class);
+						ps.rememberIO(actionId, getProviderFactory().getIdentifier(), provider);
 					}
 				}
-				
+
 				return true;
 			}
 			else {
@@ -512,8 +526,9 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 			}
 		} catch (IOProviderConfigurationException e) {
 			// user feedback
-			log.userError("Validation of the provider configuration failed:\n"
-					+ e.getLocalizedMessage(), e);
+			log.userError(
+					"Validation of the provider configuration failed:\n" + e.getLocalizedMessage(),
+					e);
 			return false;
 		}
 	}
@@ -523,21 +538,22 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	 * 
 	 * @param provider the I/O provider
 	 * @param defaultReporter the default reporter that is used if the provider
-	 *   doesn't supply a report
+	 *            doesn't supply a report
 	 * @return the execution report
-	 * @throws IOProviderConfigurationException if the provider validation failed
+	 * @throws IOProviderConfigurationException if the provider validation
+	 *             failed
 	 */
 	protected IOReport validateAndExecute(final IOProvider provider,
 			final IOReporter defaultReporter) throws IOProviderConfigurationException {
 		// validate configuration
 		provider.validate();
-		
+
 		// execute provider
 		final AtomicReference<IOReport> report = new AtomicReference<IOReport>(defaultReporter);
 		defaultReporter.setSuccess(false);
 		try {
 			getContainer().run(true, provider.isCancelable(), new IRunnableWithProgress() {
-				
+
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
@@ -560,7 +576,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 		} catch (Throwable e) {
 			defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 		}
-		
+
 		return report.get();
 	}
 
@@ -568,12 +584,12 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 	 * Update the provider configuration. This will be called just before the
 	 * I/O provider is executed.
 	 * 
-	 * @param provider the I/O provider 
+	 * @param provider the I/O provider
 	 */
 	protected void updateConfiguration(P provider) {
 		// set the content type
 		provider.setContentType(getContentType());
-		
+
 		// let advisor update configuration
 		advisor.updateConfiguration(provider);
 	}
@@ -596,6 +612,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 
 	/**
 	 * Get the supported I/O provider type, usually an interface.
+	 * 
 	 * @return the supported I/O provider type
 	 */
 	public Class<P> getProviderType() {
@@ -612,7 +629,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 			listeners.add(listener);
 		}
 	}
-	
+
 	/**
 	 * Removes an {@link IOWizardListener}
 	 * 
@@ -623,7 +640,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 			listeners.remove(listener);
 		}
 	}
-	
+
 	private void fireProviderFactoryChanged(IOProviderDescriptor providerFactory) {
 		synchronized (listeners) {
 			for (IOWizardListener<P, ? extends IOWizard<P>> listener : listeners) {
@@ -631,7 +648,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 			}
 		}
 	}
-	
+
 	private void fireContentTypeChanged(IContentType contentType) {
 		synchronized (listeners) {
 			for (IOWizardListener<P, ? extends IOWizard<P>> listener : listeners) {
@@ -639,5 +656,5 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements I
 			}
 		}
 	}
-	
+
 }

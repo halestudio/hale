@@ -18,7 +18,8 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 
 /**
- * Import source based on WFS GetFeature requests. 
+ * Import source based on WFS GetFeature requests.
+ * 
  * @param <P> the supported {@link IOProvider} type
  * 
  * @author Simon Templer
@@ -30,9 +31,8 @@ public class WFSGetFeatureSource<P extends ImportProvider> extends AbstractWFSSo
 	 */
 	@Override
 	protected WfsUrlFieldEditor createWfsFieldEditor(Composite parent) {
-		String schemaNamespace = null; //FIXME needed?
-		return new WfsUrlFieldEditor("sourceWfs", "URL:", parent,
-				schemaNamespace , true);
+		String schemaNamespace = null; // FIXME needed?
+		return new WfsUrlFieldEditor("sourceWfs", "URL:", parent, schemaNamespace, true);
 	}
 
 	/**

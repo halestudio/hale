@@ -21,20 +21,23 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
  * Descriptor and factory for an {@link IOProvider}
+ * 
  * @author Simon Templer
  */
 public interface IOProviderDescriptor extends ExtensionObjectFactory<IOProvider> {
 
 	/**
 	 * Get the supported content types
+	 * 
 	 * @return the set of supported content types
 	 */
 	public Set<IContentType> getSupportedTypes();
-	
+
 	/**
 	 * Get the concrete provider type
+	 * 
 	 * @return the provider type
 	 */
 	public Class<? extends IOProvider> getProviderType();
-	
+
 }

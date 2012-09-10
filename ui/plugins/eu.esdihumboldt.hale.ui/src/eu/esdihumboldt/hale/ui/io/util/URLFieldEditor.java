@@ -18,18 +18,19 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * A field editor for URLs. Does validation based on the URL syntax
- * and available protocols.
+ * A field editor for URLs. Does validation based on the URL syntax and
+ * available protocols.
+ * 
  * @author Simon Templer
  */
 public class URLFieldEditor extends StringFieldEditor {
-	
+
 	/**
 	 * Default constructor
 	 */
 	public URLFieldEditor() {
 		super();
-		
+
 		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		setEmptyStringAllowed(false);
 	}
@@ -39,7 +40,7 @@ public class URLFieldEditor extends StringFieldEditor {
 	 */
 	public URLFieldEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, parent);
-		
+
 		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		setEmptyStringAllowed(false);
 	}
@@ -51,7 +52,7 @@ public class URLFieldEditor extends StringFieldEditor {
 	protected boolean checkState() {
 		// reset error message in case of an empty string
 		setErrorMessage("Please specify a valid URL");
-		
+
 		return super.checkState();
 	}
 
@@ -61,19 +62,20 @@ public class URLFieldEditor extends StringFieldEditor {
 	@Override
 	protected boolean doCheckState() {
 		final String value = getStringValue();
-		
+
 		try {
 			new URL(value);
 		} catch (Throwable e) {
 			setErrorMessage(e.getLocalizedMessage());
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Get the URL value.
+	 * 
 	 * @return the URL or <code>null</code> if the content is no valid URL.
 	 */
 	public URL getURL() {

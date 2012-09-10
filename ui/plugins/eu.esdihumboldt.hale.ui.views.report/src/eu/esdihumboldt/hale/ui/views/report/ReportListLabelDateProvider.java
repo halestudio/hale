@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.core.report.Report;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportListLabelDateProvider extends LabelProvider {
+
 	private SimpleDateFormat df = new SimpleDateFormat("HH:mm.ss");
 
 	/**

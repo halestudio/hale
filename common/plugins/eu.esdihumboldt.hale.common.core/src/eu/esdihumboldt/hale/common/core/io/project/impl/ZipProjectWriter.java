@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 /**
  * Writes archived projects
+ * 
  * @author Simon Templer
  */
 public class ZipProjectWriter extends DefaultProjectWriter {

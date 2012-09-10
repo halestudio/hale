@@ -18,12 +18,12 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Provides support for reading schemas
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface SchemaReader extends ImportProvider {
-	
+
 	/**
 	 * Set the shared types. Shared types may originate from schemas that were
 	 * loaded previously.
@@ -38,5 +38,5 @@ public interface SchemaReader extends ImportProvider {
 	 * @return the schema
 	 */
 	public Schema getSchema();
-	
+
 }

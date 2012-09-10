@@ -22,11 +22,14 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for the assign function.
+ * 
  * @author Simon Templer
  */
 public class AssignExplanation extends AbstractCellExplanation implements AssignFunction {
+
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
@@ -34,7 +37,7 @@ public class AssignExplanation extends AbstractCellExplanation implements Assign
 		String value = CellUtil.getFirstParameter(cell, PARAMETER_VALUE);
 
 		if (target != null && value != null) {
-			return MessageFormat.format("Assigns the value {1} to the {0} property.", 
+			return MessageFormat.format("Assigns the value {1} to the {0} property.",
 					formatEntity(target, html, true), quoteText(value, html));
 		}
 		return null;

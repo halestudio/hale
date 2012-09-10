@@ -20,13 +20,13 @@ import org.eclipse.jface.viewers.TreeNode;
 
 /**
  * Tree node that stores values for multiple columns
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: MultiColumnTreeNode.java 2510 2010-01-21 08:49:00Z stempler $ 
+ * @version $Id: MultiColumnTreeNode.java 2510 2010-01-21 08:49:00Z stempler $
  */
 public class DefaultTreeNode extends AbstractMultiColumnTreeNode {
-	
+
 	private final List<TreeNode> children = new ArrayList<TreeNode>();
 
 	/**
@@ -37,7 +37,7 @@ public class DefaultTreeNode extends AbstractMultiColumnTreeNode {
 	public DefaultTreeNode(Object... values) {
 		super(values);
 	}
-	
+
 	/**
 	 * Add a child to the node
 	 * 

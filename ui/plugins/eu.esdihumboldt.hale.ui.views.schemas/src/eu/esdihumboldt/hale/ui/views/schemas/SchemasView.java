@@ -11,7 +11,6 @@
  */
 package eu.esdihumboldt.hale.ui.views.schemas;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -78,13 +77,14 @@ import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
 /**
  * This view component handles the display of source and target schemas.
+ * 
  * @author Thorsten Reitz
  * @author Simon Templer
  */
 public class SchemasView extends PropertiesViewPart {
 
 	private static final ALogger log = ALoggerFactory.getLogger(SchemasView.class);
-	
+
 	/**
 	 * Function contribution that always uses this view's selection
 	 */
@@ -105,17 +105,18 @@ public class SchemasView extends PropertiesViewPart {
 			if (currentSelection instanceof SchemaSelection) {
 				return (SchemaSelection) currentSelection;
 			}
-			
+
 			return super.getSelection();
 		}
 
 	}
 
 	/**
-	 * Selection provider combining selections from source and target schema explorers
+	 * Selection provider combining selections from source and target schema
+	 * explorers
 	 */
 	private class SchemasSelectionProvider implements ISelectionProvider, ISelectionChangedListener {
-		
+
 		/**
 		 * The selection listeners
 		 */
@@ -128,7 +129,7 @@ public class SchemasView extends PropertiesViewPart {
 		 */
 		public SchemasSelectionProvider() {
 			super();
-			
+
 			sourceExplorer.getTreeViewer().addSelectionChangedListener(this);
 			targetExplorer.getTreeViewer().addSelectionChangedListener(this);
 		}
@@ -137,8 +138,7 @@ public class SchemasView extends PropertiesViewPart {
 		 * @see ISelectionProvider#addSelectionChangedListener(ISelectionChangedListener)
 		 */
 		@Override
-		public void addSelectionChangedListener(
-				ISelectionChangedListener listener) {
+		public void addSelectionChangedListener(ISelectionChangedListener listener) {
 			listeners.add(listener);
 		}
 
@@ -154,8 +154,7 @@ public class SchemasView extends PropertiesViewPart {
 		 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
 		 */
 		@Override
-		public void removeSelectionChangedListener(
-				ISelectionChangedListener listener) {
+		public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 			listeners.remove(listener);
 		}
 
@@ -166,72 +165,75 @@ public class SchemasView extends PropertiesViewPart {
 		public void setSelection(ISelection selection) {
 			SchemasView.this.currentSelection = selection;
 		}
-		
+
 		/**
 		 * Update the selection and fire a selection change
-		 * @param sourceFirst if the selected objects from the source shall
-		 *   be added first if the selection is a combination from source and
-		 *   target
+		 * 
+		 * @param sourceFirst if the selected objects from the source shall be
+		 *            added first if the selection is a combination from source
+		 *            and target
 		 */
 		private void updateSelection(boolean sourceFirst) {
 			lastSourceFirst = sourceFirst;
-			
+
 			// combine the selections of both viewers
-			
+
 			// source items
-			ITreeSelection sourceSelection = (ITreeSelection) sourceExplorer.getTreeViewer().getSelection();
+			ITreeSelection sourceSelection = (ITreeSelection) sourceExplorer.getTreeViewer()
+					.getSelection();
 			// target items
-			ITreeSelection targetSelection = (ITreeSelection) targetExplorer.getTreeViewer().getSelection();
+			ITreeSelection targetSelection = (ITreeSelection) targetExplorer.getTreeViewer()
+					.getSelection();
 
 			/*
-			 * XXX because there are problem with the properties view if we 
-			 * combine the objects here (multiple objects in the selection), 
-			 * we return only one of the original selections
+			 * XXX because there are problem with the properties view if we
+			 * combine the objects here (multiple objects in the selection), we
+			 * return only one of the original selections
 			 */
-			SchemaStructuredMode selectionMode = (sourceFirst)?
-					(SchemaStructuredMode.ONLY_SOURCE):
-					(SchemaStructuredMode.ONLY_TARGET);
-					
-			Collection<EntityDefinition> sourceItems = collectDefinitions(
-					sourceSelection, SchemaSpaceID.SOURCE);
-			Collection<EntityDefinition> targetItems = collectDefinitions(
-					targetSelection, SchemaSpaceID.TARGET);
-			DefaultSchemaSelection selection = new DefaultSchemaSelection(
-					sourceItems, targetItems, selectionMode);
-			
+			SchemaStructuredMode selectionMode = (sourceFirst) ? (SchemaStructuredMode.ONLY_SOURCE)
+					: (SchemaStructuredMode.ONLY_TARGET);
+
+			Collection<EntityDefinition> sourceItems = collectDefinitions(sourceSelection,
+					SchemaSpaceID.SOURCE);
+			Collection<EntityDefinition> targetItems = collectDefinitions(targetSelection,
+					SchemaSpaceID.TARGET);
+			DefaultSchemaSelection selection = new DefaultSchemaSelection(sourceItems, targetItems,
+					selectionMode);
+
 			fireSelectionChange(selection);
 		}
-		
+
 		/**
-		 * Collect {@link EntityDefinition} from a {@link TreeSelection} 
+		 * Collect {@link EntityDefinition} from a {@link TreeSelection}
 		 * containing {@link TypeDefinition}s and {@link PropertyDefinition}s
+		 * 
 		 * @param selection the tree selection
 		 * @param schemaSpace the schema space identifier
 		 * @return the collected entity definitions
 		 */
-		private Collection<EntityDefinition> collectDefinitions(
-				ITreeSelection selection, SchemaSpaceID schemaSpace) {
+		private Collection<EntityDefinition> collectDefinitions(ITreeSelection selection,
+				SchemaSpaceID schemaSpace) {
 			if (selection.isEmpty()) {
 				return Collections.emptyList();
 			}
-			
+
 			TreePath[] paths = selection.getPaths();
 			List<EntityDefinition> result = new ArrayList<EntityDefinition>(paths.length);
-			
+
 			for (TreePath path : paths) {
 				Object last = path.getLastSegment();
-				
+
 				if (last instanceof EntityDefinition) {
 					// use entity definition directly
 					result.add((EntityDefinition) last);
 				}
 				else if (last instanceof TypeDefinition) {
 					// create entity definition for type
-					result.add(new TypeEntityDefinition((TypeDefinition) last,
-							schemaSpace, null));
+					result.add(new TypeEntityDefinition((TypeDefinition) last, schemaSpace, null));
 				}
 				else if (last instanceof PropertyDefinition) {
-					// create property entity definition w/ default instance contexts 
+					// create property entity definition w/ default instance
+					// contexts
 					List<ChildContext> propertyPath = new ArrayList<ChildContext>();
 					Definition<?> element = (Definition<?>) last;
 					int index = path.getSegmentCount() - 1;
@@ -246,37 +248,36 @@ public class SchemasView extends PropertiesViewPart {
 							element = null;
 						}
 					}
-					
+
 					if (element != null) {
 						// remaining element is the type definition
-						result.add(new PropertyEntityDefinition(
-								(TypeDefinition) element, propertyPath,
-								schemaSpace, null));
+						result.add(new PropertyEntityDefinition((TypeDefinition) element,
+								propertyPath, schemaSpace, null));
 					}
 					else {
 						log.error("No parent type definition for property path found, skipping object for selection.");
 					}
 				}
 				else {
-					//XXX include GroupPropertyDefinitions also in selection?
+					// XXX include GroupPropertyDefinitions also in selection?
 					log.debug("Could determine entity definition for object, skipping object for selection.");
 				}
 			}
-			
+
 			return result;
 		}
 
 		/**
-		 * Sets the selection to the given selection and fires a selection change
+		 * Sets the selection to the given selection and fires a selection
+		 * change
 		 * 
-		 * @param selection the selection to set 
+		 * @param selection the selection to set
 		 */
 		protected void fireSelectionChange(ISelection selection) {
 			SchemasView.this.currentSelection = selection;
-			
-			SelectionChangedEvent event = 
-				new SelectionChangedEvent(this, currentSelection);
-			
+
+			SelectionChangedEvent event = new SelectionChangedEvent(this, currentSelection);
+
 			for (ISelectionChangedListener listener : listeners) {
 				listener.selectionChanged(event);
 			}
@@ -303,7 +304,7 @@ public class SchemasView extends PropertiesViewPart {
 	 * The view id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.schemas"; //$NON-NLS-1$
-	
+
 	/**
 	 * The current selection
 	 */
@@ -313,7 +314,7 @@ public class SchemasView extends PropertiesViewPart {
 	 * Viewer for the source schema
 	 */
 	private SchemaExplorer sourceExplorer;
-	
+
 	/**
 	 * Viewer for the target schema
 	 */
@@ -326,13 +327,13 @@ public class SchemasView extends PropertiesViewPart {
 	private SchemaService schemaService;
 
 	private Image functionImage;
-	
+
 	private Image augmentImage;
 
 	private SchemaServiceListener schemaListener;
 
 	private SchemasSelectionProvider selectionProvider;
-	
+
 	private EntityDefinitionServiceListener entityListener;
 
 	private AlignmentServiceListener alignmentListener;
@@ -340,9 +341,10 @@ public class SchemasView extends PropertiesViewPart {
 	private GeometrySchemaServiceListener geometryListener;
 
 	private PopulationListener populationListener;
+
 //
 //	private StyleServiceListener styleListener;
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -351,11 +353,12 @@ public class SchemasView extends PropertiesViewPart {
 		// get schema service
 		schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
 		schemaService.addSchemaServiceListener(schemaListener = new SchemaServiceListener() {
-			
+
 			@Override
 			public void schemasCleared(final SchemaSpaceID spaceID) {
 				final Display display = PlatformUI.getWorkbench().getDisplay();
 				display.syncExec(new Runnable() {
+
 					@Override
 					public void run() {
 						switch (spaceID) {
@@ -368,11 +371,12 @@ public class SchemasView extends PropertiesViewPart {
 					}
 				});
 			}
-			
+
 			@Override
 			public void schemaAdded(final SchemaSpaceID spaceID, Schema schema) {
 				final Display display = PlatformUI.getWorkbench().getDisplay();
 				display.syncExec(new Runnable() {
+
 					@Override
 					public void run() {
 						switch (spaceID) {
@@ -387,9 +391,11 @@ public class SchemasView extends PropertiesViewPart {
 			}
 
 			@Override
-			public void mappableTypesChanged(final SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+			public void mappableTypesChanged(final SchemaSpaceID spaceID,
+					Collection<? extends TypeDefinition> types) {
 				final Display display = PlatformUI.getWorkbench().getDisplay();
 				display.syncExec(new Runnable() {
+
 					@Override
 					public void run() {
 						switch (spaceID) {
@@ -403,20 +409,18 @@ public class SchemasView extends PropertiesViewPart {
 				});
 			}
 		});
-		
+
 		Composite modelComposite = new Composite(_parent, SWT.BEGINNING);
 		GridLayout layout = new GridLayout(3, false);
 		layout.verticalSpacing = 3;
 		layout.horizontalSpacing = 0;
 		modelComposite.setLayout(layout);
-		
+
 		// source schema toolbar, filter and explorer
 //		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
-		sourceExplorer = new EntitySchemaExplorer(modelComposite, "Source",
-				SchemaSpaceID.SOURCE);
-		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true));
-		
+		sourceExplorer = new EntitySchemaExplorer(modelComposite, "Source", SchemaSpaceID.SOURCE);
+		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
 		// function button
 		final Button functionButton = new Button(modelComposite, SWT.PUSH | SWT.FLAT);
 		functionImage = SchemasViewPlugin.getImageDescriptor("icons/mapping.gif").createImage(); //$NON-NLS-1$
@@ -435,7 +439,7 @@ public class SchemasView extends PropertiesViewPart {
 				// populate context menu
 				manager.add(functionContribution);
 			}
-			
+
 		});
 		final Menu functionMenu = manager.createContextMenu(functionButton);
 		functionButton.addSelectionListener(new SelectionAdapter() {
@@ -446,51 +450,52 @@ public class SchemasView extends PropertiesViewPart {
 				functionMenu.setLocation(Display.getCurrent().getCursorLocation());
 				functionMenu.setVisible(true);
 			}
-			
+
 		});
 
 		// target schema toolbar, filter and explorer
-		targetExplorer = new EntitySchemaExplorer(modelComposite, "Target",
-				SchemaSpaceID.TARGET);
-		targetExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true));
-		
+		targetExplorer = new EntitySchemaExplorer(modelComposite, "Target", SchemaSpaceID.TARGET);
+		targetExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
 		// redraw on alignment change
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		as.addListener(alignmentListener = new AlignmentServiceListener() {
-			
+
 			@Override
 			public void cellReplaced(Cell oldCell, Cell newCell) {
 				refreshInDisplayThread();
 			}
-			
+
 			@Override
 			public void cellsAdded(Iterable<Cell> cells) {
 				refreshInDisplayThread();
 			}
-			
+
 			@Override
 			public void cellRemoved(Cell cell) {
 				refreshInDisplayThread();
 			}
-			
+
 			@Override
 			public void alignmentCleared() {
 				refreshInDisplayThread();
 			}
 		});
-		
-		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+
+		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
+				PopulationService.class);
 		ps.addListener(populationListener = new PopulationListener() {
-			
+
 			@Override
 			public void populationChanged(SchemaSpaceID ssid) {
 				refreshInDisplayThread();
 			}
-			
+
 		});
-		
-		// also add the alignment listener to the style service (for refreshing icons when style changes)
+
+		// also add the alignment listener to the style service (for refreshing
+		// icons when style changes)
 //		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 //		styleService.addListener(styleListener = new StyleServiceListener() {
 //			
@@ -518,41 +523,44 @@ public class SchemasView extends PropertiesViewPart {
 //				refreshInDisplayThread();
 //			}
 //		});
-		
+
 		// listen on default geometry changes
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
+		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
+				GeometrySchemaService.class);
 		gss.addListener(geometryListener = new GeometrySchemaServiceListener() {
-			
+
 			@Override
 			public void defaultGeometryChanged(TypeDefinition type) {
 				refreshInDisplayThread();
 			}
 		});
-		
+
 		// listen on entity context changes
-		EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+		EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+				.getService(EntityDefinitionService.class);
 		eds.addListener(entityListener = new EntityDefinitionServiceListener() {
-			
+
 			@Override
 			public void contextsAdded(Iterable<EntityDefinition> contextEntities) {
-				//XXX improve?
+				// XXX improve?
 				refreshInDisplayThread();
 			}
 
 			@Override
 			public void contextRemoved(EntityDefinition contextEntity) {
-				//FIXME if the entity is a type the explorer doesn't get updated correctly -> reset input?
-				//XXX improve?
+				// FIXME if the entity is a type the explorer doesn't get
+				// updated correctly -> reset input?
+				// XXX improve?
 				refreshInDisplayThread();
 			}
-			
+
 			@Override
 			public void contextAdded(EntityDefinition contextEntity) {
-				//XXX improve?
+				// XXX improve?
 				refreshInDisplayThread();
 			}
 		});
-		
+
 		// source context menu
 		new ViewerMenu(getSite(), sourceExplorer.getTreeViewer());
 		// target context menu
@@ -561,10 +569,10 @@ public class SchemasView extends PropertiesViewPart {
 		// initialization of explorers
 		sourceExplorer.setSchema(schemaService.getSchemas(SchemaSpaceID.SOURCE));
 		targetExplorer.setSchema(schemaService.getSchemas(SchemaSpaceID.TARGET));
-		
+
 		// register selection provider
 		getSite().setSelectionProvider(selectionProvider = new SchemasSelectionProvider());
-		
+
 		// listen for selection changes and update function button
 		selectionProvider.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -573,7 +581,8 @@ public class SchemasView extends PropertiesViewPart {
 				functionButton.setEnabled(functionContribution.hasActiveFunctions());
 				if (event.getSelection() instanceof SchemaSelection) {
 					SchemaSelection selection = (SchemaSelection) event.getSelection();
-					if (selection.getSourceItems().size() == 0 && selection.getTargetItems().size() > 0) {
+					if (selection.getSourceItems().size() == 0
+							&& selection.getTargetItems().size() > 0) {
 						// augmentation
 						functionButton.setImage(augmentImage);
 					}
@@ -583,7 +592,7 @@ public class SchemasView extends PropertiesViewPart {
 					}
 				}
 			}
-			
+
 		});
 	}
 
@@ -597,7 +606,7 @@ public class SchemasView extends PropertiesViewPart {
 		else {
 			final Display display = PlatformUI.getWorkbench().getDisplay();
 			display.syncExec(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					refresh();
@@ -605,7 +614,7 @@ public class SchemasView extends PropertiesViewPart {
 			});
 		}
 	}
-	
+
 	/**
 	 * @see PropertiesViewPart#getViewContext()
 	 */
@@ -665,7 +674,7 @@ public class SchemasView extends PropertiesViewPart {
 //			tree.setSelection(new StructuredSelection(item), true);
 //		}
 //	}
-	
+
 	/**
 	 * @see WorkbenchPart#dispose()
 	 */
@@ -674,36 +683,40 @@ public class SchemasView extends PropertiesViewPart {
 		if (schemaListener != null) {
 			schemaService.removeSchemaServiceListener(schemaListener);
 		}
-		
+
 		if (alignmentListener != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			as.removeListener(alignmentListener);
 //			StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 //			styleService.removeListener(styleListener);
 		}
-		
+
 		if (entityListener != null) {
-			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+					.getService(EntityDefinitionService.class);
 			eds.removeListener(entityListener);
 		}
-		
+
 		if (geometryListener != null) {
-			GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
+			GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench()
+					.getService(GeometrySchemaService.class);
 			gss.removeListener(geometryListener);
 		}
-		
+
 		if (populationListener != null) {
-			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
+					PopulationService.class);
 			ps.removeListener(populationListener);
 		}
-		
+
 		if (functionImage != null) {
 			functionImage.dispose();
 		}
 		if (augmentImage != null) {
 			augmentImage.dispose();
 		}
-		
+
 		super.dispose();
 	}
 

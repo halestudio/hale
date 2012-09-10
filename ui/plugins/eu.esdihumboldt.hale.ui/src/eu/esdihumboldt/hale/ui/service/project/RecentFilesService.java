@@ -22,6 +22,7 @@ import org.eclipse.ui.IMemento;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface RecentFilesService {
+
 	/**
 	 * Add a file.
 	 * 
@@ -36,6 +37,7 @@ public interface RecentFilesService {
 	 * @author Kai Schwierczek
 	 */
 	interface Entry {
+
 		/**
 		 * Get the file name.
 		 * 

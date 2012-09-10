@@ -37,11 +37,10 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
  * a table
  * 
  * @author Patrick
- * @param <P>
- *            the Function parameter
+ * @param <P> the Function parameter
  */
-public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
-		extends AbstractTextSection {
+public abstract class AbstractFunctionTableSection<P extends AbstractParameter> extends
+		AbstractTextSection {
 
 	private TableViewer tableViewer;
 
@@ -58,8 +57,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 
 		Composite compparent = getWidgetFactory().createComposite(parent);
@@ -82,8 +80,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
-		TableViewerColumn nameviewercol = new TableViewerColumn(tableViewer,
-				SWT.NONE);
+		TableViewerColumn nameviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn namecol = nameviewercol.getColumn();
 		columnLayout.setColumnData(namecol, new ColumnWeightData(20));
 		namecol.setText("Name");
@@ -96,8 +93,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 
 		});
 
-		TableViewerColumn lableviewercol = new TableViewerColumn(tableViewer,
-				SWT.NONE);
+		TableViewerColumn lableviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn lablecol = lableviewercol.getColumn();
 		columnLayout.setColumnData(lablecol, new ColumnWeightData(20));
 		lablecol.setText("Lable");
@@ -110,8 +106,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 
 		});
 
-		TableViewerColumn occurenceviewercol = new TableViewerColumn(
-				tableViewer, SWT.NONE);
+		TableViewerColumn occurenceviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn occurencecol = occurenceviewercol.getColumn();
 		columnLayout.setColumnData(occurencecol, new ColumnWeightData(20));
 		occurencecol.setText("Occurence");
@@ -120,15 +115,13 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 			@Override
 			public void update(ViewerCell cell) {
 				P cellparameter = ((P) cell.getElement());
-				cell.setText(String.valueOf(cellparameter.getMinOccurrence())
-						+ ".."
+				cell.setText(String.valueOf(cellparameter.getMinOccurrence()) + ".."
 						+ (String.valueOf(cellparameter.getMaxOccurrence())));
 			}
 
 		});
 
-		TableViewerColumn descriptionviewercol = new TableViewerColumn(
-				tableViewer, SWT.NONE);
+		TableViewerColumn descriptionviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn descriptioncol = descriptionviewercol.getColumn();
 		columnLayout.setColumnData(descriptioncol, new ColumnWeightData(20));
 		descriptioncol.setText("Description");
@@ -136,8 +129,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(String.valueOf(((P) cell.getElement())
-						.getDescription()));
+				cell.setText(String.valueOf(((P) cell.getElement()).getDescription()));
 			}
 
 		});

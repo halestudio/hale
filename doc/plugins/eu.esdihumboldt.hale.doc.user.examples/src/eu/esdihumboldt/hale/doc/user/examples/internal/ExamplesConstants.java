@@ -16,38 +16,39 @@ import org.eclipse.help.ITopic;
 
 /**
  * Constants related to examples and help.
+ * 
  * @author Simon Templer
  */
 public interface ExamplesConstants {
-	
+
 	/**
 	 * The ID of this plug-in.
 	 */
 	public static final String PLUGIN_ID = "eu.esdihumboldt.hale.doc.user.examples";
-	
+
 	/**
 	 * The path referencing the plug-ins root.
 	 */
 	public static final String PLUGINS_ROOT = "PLUGINS_ROOT";
-	
+
 	/**
 	 * The pat of the overview page in this bundle.
 	 */
 	public static final String PATH_OVERVIEW = "overview.html";
-	
+
 	/**
 	 * The prefix for project pages
 	 */
 	public static final String PATH_PREFIX_PROJECT = "projects/";
-	
+
 	/**
 	 * The suffix for references to the mapping documentation
 	 */
 	public static final String PATH_SUFFIX_MAPPINGDOC = "/mapping";
-	
+
 	/**
 	 * Empty topics array
 	 */
-	public static final ITopic[] NO_TOPICS = new ITopic[]{};
+	public static final ITopic[] NO_TOPICS = new ITopic[] {};
 
 }

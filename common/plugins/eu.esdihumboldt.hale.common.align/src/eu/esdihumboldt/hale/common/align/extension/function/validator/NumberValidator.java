@@ -53,6 +53,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.Validator;
  * @author Kai Schwierczek
  */
 public class NumberValidator implements Validator {
+
 	private static final ALogger log = ALoggerFactory.getLogger(LengthValidator.class);
 
 	private BigDecimal minValue = null;

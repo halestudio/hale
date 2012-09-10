@@ -17,15 +17,16 @@ import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 
 /**
  * Provides support for validating instances
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
 public interface InstanceValidator extends ImportProvider {
-	
+
 	/**
 	 * Set the schemas to be used for validation.
+	 * 
 	 * @param schemas the validation schema locations
 	 */
 	public void setSchemas(Locatable... schemas);

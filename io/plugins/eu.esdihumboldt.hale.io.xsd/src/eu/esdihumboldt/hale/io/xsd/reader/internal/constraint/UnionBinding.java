@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 
 /**
  * Binding constraint for type unions
+ * 
  * @author Simon Templer
  */
 public class UnionBinding extends Binding {
@@ -41,28 +42,27 @@ public class UnionBinding extends Binding {
 	@Override
 	public Class<?> getBinding() {
 		Iterator<? extends TypeDefinition> it = unionTypes.iterator();
-		
+
 		if (it.hasNext()) {
 			// combine bindings from union types
 			Class<?> binding = it.next().getConstraint(Binding.class).getBinding();
-			
+
 			while (it.hasNext()) {
-				binding = findCompatibleClass(binding, 
-						it.next().getConstraint(Binding.class).getBinding());
+				binding = findCompatibleClass(binding, it.next().getConstraint(Binding.class)
+						.getBinding());
 			}
-			
+
 			return binding;
 		}
-		
+
 		return super.getBinding();
 	}
-	
-	private static Class<?> findCompatibleClass(Class<?> binding,
-			Class<?> binding2) {
+
+	private static Class<?> findCompatibleClass(Class<?> binding, Class<?> binding2) {
 		if (binding == null || binding2 == null) {
 			return Object.class;
 		}
-		
+
 		if (binding.equals(binding2)) {
 			return binding;
 		}
@@ -72,7 +72,8 @@ public class UnionBinding extends Binding {
 		else if (binding2.isAssignableFrom(binding)) {
 			return binding2;
 		}
-		// special treatment for string - if any binding is compatible to String, it is returned
+		// special treatment for string - if any binding is compatible to
+		// String, it is returned
 		else if (String.class.isAssignableFrom(binding) || String.class.isAssignableFrom(binding2)) {
 			return String.class;
 		}

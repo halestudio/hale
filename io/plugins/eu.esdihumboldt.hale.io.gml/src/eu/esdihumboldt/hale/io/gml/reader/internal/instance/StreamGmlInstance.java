@@ -17,19 +17,20 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Instance read from a XML or GML stream. Stores its index in the stream.
+ * 
  * @author Simon Templer
  */
 public class StreamGmlInstance extends DefaultInstance {
-	
+
 	private final int indexInStream;
 
 	/**
 	 * Create an instance with an associated stream index
+	 * 
 	 * @param typeDef the type definition
 	 * @param indexInStream the index of the instance in the stream
 	 */
-	public StreamGmlInstance(TypeDefinition typeDef,
-			int indexInStream) {
+	public StreamGmlInstance(TypeDefinition typeDef, int indexInStream) {
 		super(typeDef, null); // not necessary to specify a data set
 		this.indexInStream = indexInStream;
 	}

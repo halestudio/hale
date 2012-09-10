@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 
 /**
  * Mappable constraint that determines if a type is mappable using xsi:type.
+ * 
  * @author Simon Templer
  */
 public class MappableUsingXsiType extends MappableFlag {
@@ -35,7 +36,7 @@ public class MappableUsingXsiType extends MappableFlag {
 	 */
 	public MappableUsingXsiType(XmlTypeDefinition type) {
 		super();
-		
+
 		this.type = type;
 	}
 
@@ -53,15 +54,16 @@ public class MappableUsingXsiType extends MappableFlag {
 		// an associated element
 		TypeDefinition superType = type.getSuperType();
 		while (superType != null) {
-			// check elements first to prevent the mappable constraint to be determined unncessarily
-			if (!superType.getConstraint(XmlElements.class).getElements().isEmpty() && 
-					superType.getConstraint(MappableFlag.class).isEnabled()) {
+			// check elements first to prevent the mappable constraint to be
+			// determined unncessarily
+			if (!superType.getConstraint(XmlElements.class).getElements().isEmpty()
+					&& superType.getConstraint(MappableFlag.class).isEnabled()) {
 				return true;
 			}
-			
+
 			superType = superType.getSuperType();
 		}
-		
+
 		return super.isEnabled();
 	}
 

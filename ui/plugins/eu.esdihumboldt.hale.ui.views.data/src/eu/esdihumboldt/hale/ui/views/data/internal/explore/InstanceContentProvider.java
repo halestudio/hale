@@ -26,13 +26,13 @@ import com.google.common.collect.Iterables;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.data.internal.Metadata;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Content provider showing an instance property tree with all values.
- * Elements are {@link Definition}/value {@link Pair}s.
+ * Content provider showing an instance property tree with all values. Elements
+ * are {@link Definition}/value {@link Pair}s.
+ * 
  * @author Simon Templer
  */
 public class InstanceContentProvider implements ITreeContentProvider {
@@ -60,11 +60,10 @@ public class InstanceContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 
 		if (inputElement instanceof Instance) {
-			
+
 			if (!((Instance) inputElement).getMetaDataNames().isEmpty()) {
 				return new Object[] {
-						new Pair<Object, Object>(
-								((Instance) inputElement).getDefinition(),
+						new Pair<Object, Object>(((Instance) inputElement).getDefinition(),
 								inputElement),
 						(new Pair<Object, Object>(Metadata.METADATA, inputElement)) };
 			}
@@ -72,7 +71,8 @@ public class InstanceContentProvider implements ITreeContentProvider {
 			else
 				return new Object[] { new Pair<Object, Object>(
 						((Instance) inputElement).getDefinition(), inputElement) };
-		} else
+		}
+		else
 			return new Object[0];
 	}
 
@@ -81,14 +81,14 @@ public class InstanceContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		
+
 		boolean isMetaData = false;
-		
+
 		if (parentElement instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) parentElement;
 			parentElement = pair.getSecond();
-			
-			if(pair.getFirst() == Metadata.METADATA && pair.getSecond() instanceof Instance){
+
+			if (pair.getFirst() == Metadata.METADATA && pair.getSecond() instanceof Instance) {
 				isMetaData = true;
 			}
 		}
@@ -104,16 +104,16 @@ public class InstanceContentProvider implements ITreeContentProvider {
 			}
 			return children.toArray();
 		}
-		
-		if (parentElement instanceof Group && isMetaData == true){
+
+		if (parentElement instanceof Group && isMetaData == true) {
 			Instance inst = (Instance) parentElement;
 			List<Object> metachildren = new ArrayList<Object>();
-			for(String key : inst.getMetaDataNames()){
+			for (String key : inst.getMetaDataNames()) {
 				List<Object> values = inst.getMetaData(key);
-				for(Object value : values){
+				for (Object value : values) {
 					metachildren.add(new Pair<String, Object>(key, value));
 				}
-				
+
 			}
 			return metachildren.toArray();
 		}
@@ -136,18 +136,18 @@ public class InstanceContentProvider implements ITreeContentProvider {
 	public boolean hasChildren(Object element) {
 		if (element instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) element;
-			if(pair.getFirst() == Metadata.METADATA && pair.getSecond() instanceof Instance){
+			if (pair.getFirst() == Metadata.METADATA && pair.getSecond() instanceof Instance) {
 				return true;
 			}
-			
+
 			element = pair.getSecond();
 		}
-		
+
 		if (element instanceof Group) {
 			Group group = (Group) element;
 			return !Iterables.isEmpty(group.getPropertyNames());
 		}
-		
+
 		return false;
 	}
 

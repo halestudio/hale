@@ -23,15 +23,15 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Abstract {@link InstanceReader} base implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class AbstractInstanceReader extends AbstractImportProvider implements
 		InstanceReader {
-	
+
 	private TypeIndex sourceSchema;
-	
+
 	private CRSProvider defaultCRSProvider;
 
 	/**
@@ -56,7 +56,7 @@ public abstract class AbstractInstanceReader extends AbstractImportProvider impl
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		
+
 		if (sourceSchema == null) {
 			fail("No source schema given for import");
 		}
@@ -72,32 +72,31 @@ public abstract class AbstractInstanceReader extends AbstractImportProvider impl
 
 	/**
 	 * Get the CRS definition for values of the given property definition.
+	 * 
 	 * @param property the property definition
 	 * @return the CRS definition or <code>null</code> if it can't be determined
 	 */
 	protected CRSDefinition getDefaultCRS(PropertyDefinition property) {
 		CRSDefinition result = null;
-		
+
 		// first, try configuration
 		// configuration for property
 		final String pkey = PREFIX_PARAM_CRS + property.getIdentifier();
 		result = CRSDefinitionManager.getInstance().parse(getParameter(pkey));
 		// overall configuration
 		if (result == null) {
-			result = CRSDefinitionManager.getInstance().parse(getParameter(
-					PARAM_DEFAULT_CRS)); 
+			result = CRSDefinitionManager.getInstance().parse(getParameter(PARAM_DEFAULT_CRS));
 		}
-		
+
 		if (result == null && defaultCRSProvider != null) {
 			// consult default CRS provider
 			result = defaultCRSProvider.getCRS(property);
 			if (result != null) {
 				// store in configuration
-				setParameter(pkey, CRSDefinitionManager.getInstance().asString(
-						result));
+				setParameter(pkey, CRSDefinitionManager.getInstance().asString(result));
 			}
 		}
-		
+
 		return result;
 	}
 

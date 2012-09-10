@@ -14,13 +14,14 @@ package eu.esdihumboldt.util.validator;
 
 import org.apache.xmlbeans.impl.regex.RegularExpression;
 
-
 /**
- * Validator using pattern matching. Should be conform to http://www.w3.org/TR/xmlschema-2/#dt-regex.
- *
+ * Validator using pattern matching. Should be conform to
+ * http://www.w3.org/TR/xmlschema-2/#dt-regex.
+ * 
  * @author Kai Schwierczek
  */
 public class PatternValidator extends AbstractValidator {
+
 	private String pattern;
 	private RegularExpression regEx;
 

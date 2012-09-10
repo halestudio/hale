@@ -14,11 +14,13 @@ package eu.esdihumboldt.specification.specification.workflow;
 
 import eu.esdihumboldt.specification.workflow.repository.RepositoryManager;
 
-/**The workflow service is a super interface that provides methods for generation
- * management and supply of workflows and transformers using the WorkflowGenerator
- * and repository manager interfaces.
+/**
+ * The workflow service is a super interface that provides methods for
+ * generation management and supply of workflows and transformers using the
+ * WorkflowGenerator and repository manager interfaces.
+ * 
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  * @author Moses Gone
  */
 public interface WorkflowService extends WorkflowGenerator, RepositoryManager {

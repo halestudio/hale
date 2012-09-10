@@ -34,24 +34,25 @@ import eu.esdihumboldt.util.Pair;
 
 /**
  * Abstract geometry schema service implementation.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractGeometrySchemaService implements GeometrySchemaService {
 
 	private final TypeSafeListenerList<GeometrySchemaServiceListener> listeners = new TypeSafeListenerList<GeometrySchemaServiceListener>();
-	
+
 	/**
 	 * @see GeometrySchemaService#getDefaultGeometry(TypeDefinition)
 	 */
 	@Override
 	public List<QName> getDefaultGeometry(TypeDefinition type) {
 		List<QName> path = loadDefaultGeometry(type);
-		
+
 		if (path == null) {
 			path = determineDefaultGeometry(type);
 			saveDefaultGeometry(type, path);
 		}
-		
+
 		return path;
 	}
 
@@ -66,17 +67,18 @@ public abstract class AbstractGeometrySchemaService implements GeometrySchemaSer
 
 	/**
 	 * Determine the path to a geometry property to be used as default geometry
-	 * for the given type. By default the first geometry property found with
-	 * a breadth first search is used.
+	 * for the given type. By default the first geometry property found with a
+	 * breadth first search is used.
+	 * 
 	 * @param type the type definition
-	 * @return the path to the default geometry property or <code>null</code>
-	 *   if unknown
+	 * @return the path to the default geometry property or <code>null</code> if
+	 *         unknown
 	 */
 	protected List<QName> determineDefaultGeometry(TypeDefinition type) {
 		// breadth first search for geometry properties
-		Queue<Pair<List<QName>, DefinitionGroup>> groups = new LinkedList<Pair<List<QName>,DefinitionGroup>>();
+		Queue<Pair<List<QName>, DefinitionGroup>> groups = new LinkedList<Pair<List<QName>, DefinitionGroup>>();
 		groups.add(new Pair<List<QName>, DefinitionGroup>(new ArrayList<QName>(), type));
-		
+
 		List<QName> firstGeometryPath = null;
 		while (firstGeometryPath == null && !groups.isEmpty()) {
 			// for each parent group...
@@ -87,17 +89,18 @@ public abstract class AbstractGeometrySchemaService implements GeometrySchemaSer
 			// max depth for default geometries
 			if (parentPath.size() > 5)
 				continue;
-			
-			// check properties if they are geometry properties, add groups to queue
+
+			// check properties if they are geometry properties, add groups to
+			// queue
 			for (ChildDefinition<?> child : DefinitionUtil.getAllChildren(parent)) {
 				// path for child
 				List<QName> path = new ArrayList<QName>(parentPath);
 				path.add(child.getName());
-				
+
 				if (child.asProperty() != null) {
 					PropertyDefinition property = child.asProperty();
 					TypeDefinition propertyType = property.getPropertyType();
-					
+
 					// check if we found a geometry property
 					if (propertyType.getConstraint(GeometryType.class).isGeometry()) {
 						// match
@@ -118,7 +121,7 @@ public abstract class AbstractGeometrySchemaService implements GeometrySchemaSer
 				}
 			}
 		}
-		
+
 		if (firstGeometryPath != null) {
 			// a geometry property was found
 			return generalizeGeometryProperty(type, firstGeometryPath);
@@ -127,16 +130,16 @@ public abstract class AbstractGeometrySchemaService implements GeometrySchemaSer
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Generalize the path to the geometry property for the given type. This 
-	 * serves to prevent focusing on a single geometry property in a choice. 
+	 * Generalize the path to the geometry property for the given type. This
+	 * serves to prevent focusing on a single geometry property in a choice.
+	 * 
 	 * @param type the type definition
 	 * @param geometryPath the geometry path
 	 * @return the generalized geometry path
 	 */
-	private List<QName> generalizeGeometryProperty(TypeDefinition type,
-			List<QName> geometryPath) {
+	private List<QName> generalizeGeometryProperty(TypeDefinition type, List<QName> geometryPath) {
 		// collect child definitions associated to path names
 		List<ChildDefinition<?>> pathChildren = new ArrayList<ChildDefinition<?>>();
 		DefinitionGroup parent = type;
@@ -146,7 +149,7 @@ public abstract class AbstractGeometrySchemaService implements GeometrySchemaSer
 				// invalid path
 				break;
 			}
-			
+
 			pathChildren.add(child);
 			if (child.asProperty() != null) {
 				parent = child.asProperty().getPropertyType();
@@ -158,13 +161,13 @@ public abstract class AbstractGeometrySchemaService implements GeometrySchemaSer
 				throw new IllegalStateException("Invalid child definition");
 			}
 		}
-		
+
 		// traverse the list in reverse order, peeking at the previous item
 		// remove geometry properties parented by a choice
 		for (int i = pathChildren.size() - 1; i > 0; i--) {
 			// peek at the previous item
 			ChildDefinition<?> previous = pathChildren.get(i - 1);
-			if (previous.asGroup() != null 
+			if (previous.asGroup() != null
 					&& previous.asGroup().getConstraint(ChoiceFlag.class).isEnabled()) {
 				// previous item is a choice:
 				// delete the current item
@@ -173,41 +176,46 @@ public abstract class AbstractGeometrySchemaService implements GeometrySchemaSer
 			}
 			else {
 				// don't continue if the parent is not a choice
-				//XXX should it be reduced further if there are more choices along the path?
-				//XXX then we could use another approach
-				//XXX namely finding the first choice in the path and removing everything after it
+				// XXX should it be reduced further if there are more choices
+				// along the path?
+				// XXX then we could use another approach
+				// XXX namely finding the first choice in the path and removing
+				// everything after it
 				break;
 			}
 		}
-		
+
 		// create a name list from the child list
 		List<QName> names = new ArrayList<QName>(pathChildren.size());
 		for (ChildDefinition<?> child : pathChildren) {
 			names.add(child.getName());
 		}
-		
+
 		return names;
 	}
 
 	/**
 	 * Load the path of the default geometry for the given type.
+	 * 
 	 * @param type the type definition
-	 * @return the path to the default geometry property or <code>null</code>
-	 *   if unknown
+	 * @return the path to the default geometry property or <code>null</code> if
+	 *         unknown
 	 */
 	protected abstract List<QName> loadDefaultGeometry(TypeDefinition type);
-	
+
 	/**
 	 * Save the association of the given property path as the default geometry
 	 * of the given type.
+	 * 
 	 * @param type the type definition
 	 * @param path the property path
 	 */
 	protected abstract void saveDefaultGeometry(TypeDefinition type, List<QName> path);
-	
+
 	/**
-	 * Notifies the listeners that the default geometry for the given type
-	 * has changed.
+	 * Notifies the listeners that the default geometry for the given type has
+	 * changed.
+	 * 
 	 * @param type the type definition
 	 */
 	protected void notifyDefaultGeometryChanged(TypeDefinition type) {

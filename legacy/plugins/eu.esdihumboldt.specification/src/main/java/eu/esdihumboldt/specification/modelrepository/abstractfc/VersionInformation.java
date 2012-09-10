@@ -14,47 +14,49 @@ package eu.esdihumboldt.specification.modelrepository.abstractfc;
 import java.util.Date;
 
 /**
- * This interface gives access to information on the version of a resource,
- * such as an ConceptualSchema.
+ * This interface gives access to information on the version of a resource, such
+ * as an ConceptualSchema.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface VersionInformation {
 
 	/**
-	 * @return the major version number of the object to which this 
-	 * VersionInformation is bound. Objects with the same MajorVersionNumber
-	 * should be backwards- and forwards compatible.
+	 * @return the major version number of the object to which this
+	 *         VersionInformation is bound. Objects with the same
+	 *         MajorVersionNumber should be backwards- and forwards compatible.
 	 */
 	public int getMajorVersionNumber();
-	
+
 	/**
-	 * @return the minor version number of the object to which this 
-	 * VersionInformation is bound. Objects with the same MinorVersionNumber
-	 * should have an identical API, whereas objects which differ only in their
-	 * MinorVersionNumber may have differences that leave them compatible (i.e.
-	 * additional operations) 
+	 * @return the minor version number of the object to which this
+	 *         VersionInformation is bound. Objects with the same
+	 *         MinorVersionNumber should have an identical API, whereas objects
+	 *         which differ only in their MinorVersionNumber may have
+	 *         differences that leave them compatible (i.e. additional
+	 *         operations)
 	 */
 	public int getMinorVersionNumber();
-	
+
 	/**
 	 * @return a Build number that should be incremented with every even very
-	 * small change to the object to which this VersionInformation is bound.
+	 *         small change to the object to which this VersionInformation is
+	 *         bound.
 	 */
 	public int getBuildNumber();
-	
+
 	/**
-	 * @return the Date on which this Version of the object to which this 
-	 * VersionInformation is bound to was released. 
+	 * @return the Date on which this Version of the object to which this
+	 *         VersionInformation is bound to was released.
 	 */
 	public Date getVersionDate();
-	
+
 	/**
 	 * @return the Date until which the object to which this VersionInformation
-	 * is bound is valid for use. 
+	 *         is bound is valid for use.
 	 */
 	public Date getExpirationDate();
-	
+
 }

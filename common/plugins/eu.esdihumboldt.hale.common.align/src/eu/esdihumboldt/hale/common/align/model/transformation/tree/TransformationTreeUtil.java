@@ -16,12 +16,14 @@ import eu.esdihumboldt.util.IdentityWrapper;
 
 /**
  * Transformation tree utilities.
+ * 
  * @author Simon Templer
  */
 public abstract class TransformationTreeUtil {
-	
+
 	/**
 	 * Extract the definition or cell contained in a transformation node.
+	 * 
 	 * @param node the node or other kind of object
 	 * @return the contained definition, cell or the node/object itself
 	 */
@@ -29,7 +31,7 @@ public abstract class TransformationTreeUtil {
 		if (node instanceof IdentityWrapper<?>) {
 			node = ((IdentityWrapper<?>) node).getValue();
 		}
-		
+
 		if (node instanceof TransformationTree) {
 			return ((TransformationTree) node).getType();
 		}
@@ -42,7 +44,7 @@ public abstract class TransformationTreeUtil {
 		if (node instanceof SourceNode) {
 			return ((SourceNode) node).getEntityDefinition();
 		}
-		
+
 		return node;
 	}
 

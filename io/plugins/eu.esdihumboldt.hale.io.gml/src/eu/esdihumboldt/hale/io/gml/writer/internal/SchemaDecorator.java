@@ -22,14 +22,16 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Schema decorator.
+ * 
  * @author Simon Templer
  */
 public abstract class SchemaDecorator implements Schema {
 
 	private final Schema schema;
-	
+
 	/**
 	 * Create a schema decorator.
+	 * 
 	 * @param schema the decoratee
 	 */
 	public SchemaDecorator(Schema schema) {

@@ -18,7 +18,8 @@ import java.util.UUID;
 import eu.esdihumboldt.specification.mediator.context.Context;
 
 /**
- * An Organizatin Interface allows access to the all organization attributes like: 
+ * An Organizatin Interface allows access to the all organization attributes
+ * like:
  * 
  * <ul>
  * <li>Organization Name</li>
@@ -40,10 +41,10 @@ public interface Organization {
 
 	/**
 	 * 
-	 * @return the dates the trading partner organization is valid within the marketplace.
+	 * @return the dates the trading partner organization is valid within the
+	 *         marketplace.
 	 */
 	@Deprecated
-	
 	public ValidatyDates getValidatyDates();
 
 	/**
@@ -76,26 +77,33 @@ public interface Organization {
 	public Object getLanguage();
 
 	/**
-	 * @return the home-currency of the organization. 
-	 * It corresponds to the main general ledger currency of the organization.
-	 * @Deprecated too complex for the prototype needs, can be used for the Production 
+	 * @return the home-currency of the organization. It corresponds to the main
+	 *         general ledger currency of the organization.
+	 * @Deprecated too complex for the prototype needs, can be used for the
+	 *             Production
 	 */
 	@Deprecated
-	
 	public Currency getCurrency();
 
 	/**
 	 * 
 	 * The Currency identifies a currency of the organization.
-	 * @Deprecated too complex for the prototype needs, can be used for the Production 
-	 *
+	 * 
+	 * @Deprecated too complex for the prototype needs, can be used for the
+	 *             Production
+	 * 
 	 */
 	@Deprecated
 	public enum Currency {
-		/** identifies a currency using the standard set by UN/ECE Recommendation no.9 .*/
+		/**
+		 * identifies a currency using the standard set by UN/ECE Recommendation
+		 * no.9 .
+		 */
 		CurrencyCoded,
-		/** used to provide a non-standard CurrencyCode. 
-		 * This element is mandatory if the value of CurrencyCoded is 'Other'. */
+		/**
+		 * used to provide a non-standard CurrencyCode. This element is
+		 * mandatory if the value of CurrencyCoded is 'Other'.
+		 */
 		CurrencyCodedOther
 	}
 
@@ -113,17 +121,17 @@ public interface Organization {
 
 	/**
 	 * 
-	 * @return the List of addresses for this organization in descending order of priority. The 
-	 * Address on position 0 has the highest, the Address on position n-1
-	 * the lowest priority.
+	 * @return the List of addresses for this organization in descending order
+	 *         of priority. The Address on position 0 has the highest, the
+	 *         Address on position n-1 the lowest priority.
 	 */
 
 	public List<OrganizationAddress> getOrganizationAddressList();
-	
+
 	/**
-	 * @return a List of Organization Contexts, in descending order of priority. The 
-	 * Context on position 0 has the highest, the Context on position n-1
-	 * the lowest priority. 
+	 * @return a List of Organization Contexts, in descending order of priority.
+	 *         The Context on position 0 has the highest, the Context on
+	 *         position n-1 the lowest priority.
 	 * 
 	 */
 	public List<Context> getContextList();
@@ -131,18 +139,21 @@ public interface Organization {
 	/**
 	 * 
 	 * @return the List of banking details for this organization.
-	 * @Deprecated too complex for the prototype needs, can be used for the Production 
+	 * @Deprecated too complex for the prototype needs, can be used for the
+	 *             Production
 	 */
 	@Deprecated
 	public Set<BankDetail> getBankDetail();
 
 	/**
 	 * contains the banking details of the organization.
-	 * @Deprecated too complex for the prototype needs, can be used for the Production 
+	 * 
+	 * @Deprecated too complex for the prototype needs, can be used for the
+	 *             Production
 	 */
-	@Deprecated 
+	@Deprecated
 	public enum BankDetail {
-		/** holds the ISO-Code of the country.*/
+		/** holds the ISO-Code of the country. */
 		BankCountry,
 		/** the national bank key. */
 		BankKey,
@@ -150,7 +161,10 @@ public interface Organization {
 		SWIFTCode,
 		/** contains the Account number for the organization. */
 		BankAccountNumber,
-		/** contains the IBAN (International Bank Account Number) for the organization. */
+		/**
+		 * contains the IBAN (International Bank Account Number) for the
+		 * organization.
+		 */
 		InternationalBankAccountNumber,
 		/** contains the account holder for the organization. */
 		TradingPartnerAccountHolder,

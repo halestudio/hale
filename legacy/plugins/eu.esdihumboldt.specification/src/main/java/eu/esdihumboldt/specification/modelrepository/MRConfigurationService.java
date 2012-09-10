@@ -19,36 +19,38 @@ import java.util.Set;
  * This interface allows to define the configuration of a Model Repository node.
  * FIXME: The operations will be massively extended in the upcoming versions.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface MRConfigurationService {
 
 	/**
 	 * Retrieve the rights a user can have, as a map of types and rights.
 	 * 
-	 * @param username the username for which to retrieve the access rights.
+	 * @param username
+	 *            the username for which to retrieve the access rights.
 	 * @return a Map of ObjectTypes and Sets of associated ObjectRights.
 	 */
 	public Map<ObjectType, Set<ObjectRight>> getTypeUserRights(String username);
-	
+
 	/**
-	 * Retrieve the rights a user has to specific resources stored in the local 
+	 * Retrieve the rights a user has to specific resources stored in the local
 	 * node.
 	 * 
-	 * @param username the username for which to retrieve the access rights.
-	 * @return a Map of {@link URL} object identifiers and {@link Set}s of associated 
-	 * {@link ObjectRight}s.
+	 * @param username
+	 *            the username for which to retrieve the access rights.
+	 * @return a Map of {@link URL} object identifiers and {@link Set}s of
+	 *         associated {@link ObjectRight}s.
 	 */
 	public Map<URL, Set<ObjectRight>> getObjectUserRights(String username);
-	
+
 	/**
 	 * The types of objects stored in the repository.
 	 * 
-	 * @author Thorsten Reitz 
+	 * @author Thorsten Reitz
 	 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
-	 * @version $Id$ 
+	 * @version $Id$
 	 */
 	public enum ObjectType {
 		/** A Mapping. */
@@ -60,9 +62,9 @@ public interface MRConfigurationService {
 	/**
 	 * The types of rights a user can have in terms of an object type.
 	 * 
-	 * @author Thorsten Reitz 
+	 * @author Thorsten Reitz
 	 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
-	 * @version $Id$ 
+	 * @version $Id$
 	 */
 	public enum ObjectRight {
 		/** read object from repository */

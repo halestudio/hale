@@ -17,22 +17,23 @@ import java.awt.Shape;
 
 /**
  * Interface for classes defining an algorithm to compute a clipping region.
+ * 
  * @author Simon Templer
  */
 public interface Clip {
 
 	/**
 	 * Determine the clip region for painting.
+	 * 
 	 * @param viewportBounds the view-port bounds (world pixel coordinates)
-	 * @param originX the x position of the origin of the graphics to clip 
-	 *   (world pixel coordinates)
-	 * @param originY the y position of the origin of the graphics to clip 
-	 *   (world pixel coordinates)
+	 * @param originX the x position of the origin of the graphics to clip
+	 *            (world pixel coordinates)
+	 * @param originY the y position of the origin of the graphics to clip
+	 *            (world pixel coordinates)
 	 * @param width the graphics width
 	 * @param height the graphics height
 	 * @return the clip shape, or <code>null</code> if nothing should be painted
 	 */
-	public Shape getClip(Rectangle viewportBounds, int originX, int originY,
-			int width, int height);
-	
+	public Shape getClip(Rectangle viewportBounds, int originX, int originY, int width, int height);
+
 }

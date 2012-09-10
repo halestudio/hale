@@ -36,35 +36,35 @@ import org.xml.sax.SAXException;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 
 /**
  * Reads an XML based code list
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class XmlCodeList implements CodeList {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(XmlCodeList.class);
-	
-	private static final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-	
+
+	private static final DocumentBuilderFactory builderFactory = DocumentBuilderFactory
+			.newInstance();
+
 	private static final XPathFactory xpathFactory = XPathFactory.newInstance();
 
 	private static final String DEF_NS = "http://www.opengis.net/gml"; //$NON-NLS-1$
-	
+
 	private final String identifier;
-	
+
 	private String namespace;
-	
+
 	private String description;
-	
+
 	private final URI location;
-	
+
 	private final Map<String, CodeEntry> entriesByName = new LinkedHashMap<String, CodeEntry>();
-	
+
 	private final Map<String, CodeEntry> entriesByIdentifier = new LinkedHashMap<String, CodeEntry>();
 
 	/**
@@ -76,42 +76,46 @@ public class XmlCodeList implements CodeList {
 	 */
 	public XmlCodeList(InputStream in, URI location) throws Exception {
 		this.location = location;
-		
+
 		try {
 			DocumentBuilder builder = builderFactory.newDocumentBuilder();
-			
-			// don't resolve DTDs - else loading the document might fail without internet connection
+
+			// don't resolve DTDs - else loading the document might fail without
+			// internet connection
 			builder.setEntityResolver(new EntityResolver() {
-	            @Override
+
+				@Override
 				public InputSource resolveEntity(String publicId, String systemId)
-	                throws SAXException, IOException
-	            {
-	                return new InputSource(new StringReader("")); //$NON-NLS-1$
-	            }
-	        });
+						throws SAXException, IOException {
+					return new InputSource(new StringReader("")); //$NON-NLS-1$
+				}
+			});
 
 			Document doc = builder.parse(in);
-			
+
 			XPath xpath = xpathFactory.newXPath();
 			String id = null;
 			// determine identifier
 			try {
-				Node identifier = ((NodeList) xpath.evaluate("Dictionary/identifier", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
-				this.namespace = identifier.getAttributes().getNamedItem("codeSpace").getTextContent(); //$NON-NLS-1$
+				Node identifier = ((NodeList) xpath.evaluate(
+						"Dictionary/identifier", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
+				this.namespace = identifier.getAttributes()
+						.getNamedItem("codeSpace").getTextContent(); //$NON-NLS-1$
 				id = identifier.getTextContent();
 			} catch (Throwable e) {
 				// ignore
 			}
-			
+
 			if (id == null) {
 				try {
-					Node identifier = ((NodeList) xpath.evaluate("Dictionary/name", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
+					Node identifier = ((NodeList) xpath.evaluate(
+							"Dictionary/name", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
 					id = identifier.getTextContent();
 				} catch (Throwable e) {
 					// ignore
 				}
 			}
-			
+
 			if (id == null) {
 				id = location.getPath();
 				int idx = id.lastIndexOf("/"); //$NON-NLS-1$
@@ -119,23 +123,24 @@ public class XmlCodeList implements CodeList {
 					id = id.substring(idx + 1);
 				}
 			}
-			
+
 			this.identifier = id;
-			
+
 			// determine description
 			try {
-				Node description = ((NodeList) xpath.evaluate("Dictionary/description", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
+				Node description = ((NodeList) xpath.evaluate(
+						"Dictionary/description", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
 				this.description = description.getTextContent();
-			}
-			catch (Throwable e) {
+			} catch (Throwable e) {
 				// is optional
 				this.description = null;
 			}
-			
+
 			// determine entries
-			NodeList entries = (NodeList) xpath.evaluate("Dictionary/dictionaryEntry/Definition", doc, XPathConstants.NODESET); //$NON-NLS-1$
+			NodeList entries = (NodeList) xpath.evaluate(
+					"Dictionary/dictionaryEntry/Definition", doc, XPathConstants.NODESET); //$NON-NLS-1$
 			addEntries(entries);
-			
+
 			if (this.namespace == null) {
 				// use default namespace
 				this.namespace = DEF_NS;
@@ -150,15 +155,15 @@ public class XmlCodeList implements CodeList {
 		for (int i = 0; i < entries.getLength(); i++) {
 			Node node = entries.item(i);
 			NodeList children = node.getChildNodes();
-			
+
 			String description = null;
 			String identifier = null;
 			String namespace = null;
 			String name = null;
-			
+
 			for (int j = 0; j < children.getLength(); j++) {
 				Node child = children.item(j);
-				
+
 				if (child.getNodeName().endsWith("description")) { //$NON-NLS-1$
 					description = child.getTextContent();
 				}
@@ -166,7 +171,8 @@ public class XmlCodeList implements CodeList {
 						(child.getNodeName().endsWith("name") && child.getAttributes().getNamedItem("codeSpace") != null)) { //$NON-NLS-1$ //$NON-NLS-2$
 					identifier = child.getTextContent();
 					try {
-						namespace = child.getAttributes().getNamedItem("codeSpace").getTextContent(); //$NON-NLS-1$
+						namespace = child.getAttributes()
+								.getNamedItem("codeSpace").getTextContent(); //$NON-NLS-1$
 					} catch (Exception e) {
 						// optional
 					}
@@ -175,7 +181,7 @@ public class XmlCodeList implements CodeList {
 					name = child.getTextContent();
 				}
 			}
-			
+
 			if (this.namespace == null) {
 				if (namespace == null) {
 					// use a default namespace
@@ -185,11 +191,11 @@ public class XmlCodeList implements CodeList {
 					this.namespace = namespace;
 				}
 			}
-			
+
 			if (namespace == null) {
 				namespace = this.namespace;
 			}
-			
+
 			if (name != null && identifier != null) {
 				CodeEntry entry = new CodeEntry(name, description, identifier, namespace);
 				this.entriesByName.put(name, entry);
@@ -237,7 +243,7 @@ public class XmlCodeList implements CodeList {
 	public CodeEntry getEntryByName(String name) {
 		return entriesByName.get(name);
 	}
-	
+
 	/**
 	 * @see CodeList#getEntryByIdentifier(String)
 	 */
@@ -261,12 +267,9 @@ public class XmlCodeList implements CodeList {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((identifier == null) ? 0 : identifier.hashCode());
-		result = prime * result
-				+ ((location == null) ? 0 : location.hashCode());
-		result = prime * result
-				+ ((namespace == null) ? 0 : namespace.hashCode());
+		result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
 		return result;
 	}
 
@@ -285,17 +288,20 @@ public class XmlCodeList implements CodeList {
 		if (identifier == null) {
 			if (other.identifier != null)
 				return false;
-		} else if (!identifier.equals(other.identifier))
+		}
+		else if (!identifier.equals(other.identifier))
 			return false;
 		if (location == null) {
 			if (other.location != null)
 				return false;
-		} else if (!location.equals(other.location))
+		}
+		else if (!location.equals(other.location))
 			return false;
 		if (namespace == null) {
 			if (other.namespace != null)
 				return false;
-		} else if (!namespace.equals(other.namespace))
+		}
+		else if (!namespace.equals(other.namespace))
 			return false;
 		return true;
 	}

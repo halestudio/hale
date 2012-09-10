@@ -17,12 +17,14 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 
 /**
  * Factory interface for {@link ProjectFile}s
+ * 
  * @author Simon Templer
  */
 public interface ProjectFileFactory extends Identifiable {
-	
+
 	/**
 	 * Create a project file
+	 * 
 	 * @return the project file instance
 	 */
 	public ProjectFile createProjectFile();

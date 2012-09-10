@@ -16,15 +16,17 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Generator Interface for Instance Metadatas
+ * 
  * @author Sebastan Reinhardt
  */
 public interface MetadataGenerator {
 
 	/**
 	 * generates certain metadata values for an instance
+	 * 
 	 * @param inst the instance
 	 * @return an array of metadata values
 	 */
 	public Object[] generate(Instance inst);
-	
+
 }

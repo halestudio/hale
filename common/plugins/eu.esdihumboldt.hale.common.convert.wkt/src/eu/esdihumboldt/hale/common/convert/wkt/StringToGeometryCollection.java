@@ -18,10 +18,11 @@ import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverte
 
 /**
  * Converts Strings to GeometryCollections
+ * 
  * @author Kevin Mais
  */
-public class StringToGeometryCollection extends AbstractGeometryConverter<GeometryCollection>{
+public class StringToGeometryCollection extends AbstractGeometryConverter<GeometryCollection> {
 
 	// concrete typed class
-	
+
 }

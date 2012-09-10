@@ -15,55 +15,52 @@ package eu.esdihumboldt.specification.mediator.context;
 import eu.esdihumboldt.specification.mediator.constraints.MetadataConstraint;
 import eu.esdihumboldt.specification.mediator.usermanagement.Organization;
 
-
-
 /**
- * An OrganizationContext Interface is a SubInterface of the DefaultContext
- * and allows additionaly acceess to the Internal Organization Information.
- *  
+ * An OrganizationContext Interface is a SubInterface of the DefaultContext and
+ * allows additionaly acceess to the Internal Organization Information.
+ * 
  * 
  * 
  * 
  * 
  * @author Anna Pitaev, Logica CMG
- * @version $Id: OrganizationContext.java,v 1.3 2007-12-18 13:26:16 pitaeva Exp $
+ * @version $Id: OrganizationContext.java,v 1.3 2007-12-18 13:26:16 pitaeva Exp
+ *          $
  * 
  */
-public interface OrganizationContext extends Context{
-	
+public interface OrganizationContext extends Context {
+
 	/**
-	 * @return the OrganizationConstraint, which describes interanal/adress Structure
-	 * of the organization.
+	 * @return the OrganizationConstraint, which describes interanal/adress
+	 *         Structure of the organization.
 	 * 
 	 */
 	public MetadataConstraint getOrganizationConstraint();
-	
-	
+
 	/**
 	 * 
 	 * 
-	 * @return the Organization this context bolongs to. 
+	 * @return the Organization this context bolongs to.
 	 */
 	public Organization getOrganization();
-	
+
 	public void setOrganization(Organization organization);
-	
-	public void setOrganizationConstraint(MetadataConstraint organizationConstraint);
-	
+
+	public void setOrganizationConstraint(
+			MetadataConstraint organizationConstraint);
+
 	public DefaultContext getDefaultContext();
-	
-	public void setDefaultContext( DefaultContext defaultContext);
-	
+
+	public void setDefaultContext(DefaultContext defaultContext);
+
 	/**
-	 * Allows access to the ParentContext, that is a mandatory element for each OrganizationS context.
-	 * It contains all default constraints for the ChildContext.
+	 * Allows access to the ParentContext, that is a mandatory element for each
+	 * OrganizationS context. It contains all default constraints for the
+	 * ChildContext.
 	 * 
-	 * @return DefaultContext parentContext.  
+	 * @return DefaultContext parentContext.
 	 */
-	
+
 	public DefaultContext getParentContext();
-	
-	
- 
 
 }

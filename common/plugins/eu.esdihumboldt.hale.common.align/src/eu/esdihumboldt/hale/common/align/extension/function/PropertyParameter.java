@@ -26,19 +26,19 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyTypeCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.impl.BindingCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.impl.GeometryCondition;
 
 /**
- * Represents a source or target property as parameter to a 
+ * Represents a source or target property as parameter to a
  * {@link PropertyFunction}
+ * 
  * @author Simon Templer
  */
 public final class PropertyParameter extends AbstractParameter {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(PropertyParameter.class);
 
 	private final List<PropertyCondition> conditions;
@@ -48,21 +48,21 @@ public final class PropertyParameter extends AbstractParameter {
 	 */
 	public PropertyParameter(IConfigurationElement conf) {
 		super(conf);
-		
+
 		conditions = createConditions(conf);
 	}
-	
-	private static List<PropertyCondition> createConditions(
-			IConfigurationElement conf) {
+
+	private static List<PropertyCondition> createConditions(IConfigurationElement conf) {
 		List<PropertyCondition> result = new ArrayList<PropertyCondition>();
-		
+
 		IConfigurationElement[] children = conf.getChildren();
 		if (children != null) {
 			for (IConfigurationElement child : children) {
 				String name = child.getName();
 				if (name.equals("propertyCondition")) {
 					try {
-						PropertyCondition condition = (PropertyCondition) child.createExecutableExtension("class");
+						PropertyCondition condition = (PropertyCondition) child
+								.createExecutableExtension("class");
 						result.add(condition);
 					} catch (CoreException e) {
 						log.error("Error creating property condition from extension", e);
@@ -86,14 +86,13 @@ public final class PropertyParameter extends AbstractParameter {
 				}
 			}
 		}
-		
+
 		return result;
 	}
 
-	private static GeometryCondition createGeometryCondition(
-			IConfigurationElement child) {
+	private static GeometryCondition createGeometryCondition(IConfigurationElement child) {
 		Collection<Class<? extends Geometry>> bindings = null;
-		
+
 		IConfigurationElement[] types = child.getChildren("geometryType");
 		if (types != null) {
 			for (IConfigurationElement type : types) {
@@ -110,34 +109,35 @@ public final class PropertyParameter extends AbstractParameter {
 				}
 			}
 		}
-		
-		boolean allowCollection = true; //TODO configurable?
-		boolean allowConversion = true; //TODO configurable?
+
+		boolean allowCollection = true; // TODO configurable?
+		boolean allowConversion = true; // TODO configurable?
 		return new GeometryCondition(bindings, allowConversion, allowCollection);
 	}
 
-	private static BindingCondition createBindingCondition(
-			IConfigurationElement child) {
+	private static BindingCondition createBindingCondition(IConfigurationElement child) {
 		Class<?> bindingClass = ExtensionUtil.loadClass(child, "compatibleClass");
 		if (bindingClass != null) {
-			boolean allowConversion = Boolean.parseBoolean(
-					child.getAttribute("allowConversion")); // defaults to false
-			boolean allowCollection = Boolean.parseBoolean(
-					child.getAttribute("allowCollection")); // defaults to false
-			
-			return new BindingCondition(bindingClass, allowConversion, 
-					allowCollection);
+			boolean allowConversion = Boolean.parseBoolean(child.getAttribute("allowConversion")); // defaults
+																									// to
+																									// false
+			boolean allowCollection = Boolean.parseBoolean(child.getAttribute("allowCollection")); // defaults
+																									// to
+																									// false
+
+			return new BindingCondition(bindingClass, allowConversion, allowCollection);
 		}
 		else {
-			log.error("Could not load class for binding condition: " + 
-				child.getAttribute("compatibleClass"));
+			log.error("Could not load class for binding condition: "
+					+ child.getAttribute("compatibleClass"));
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Get the property conditions
+	 * 
 	 * @return the property conditions
 	 */
 	public List<PropertyCondition> getConditions() {

@@ -26,49 +26,54 @@ import eu.esdihumboldt.hale.schemaprovider.Messages;
 
 /**
  * Represents an attribute definition
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
-public abstract class AttributeDefinition extends AbstractDefinition implements 
-	Comparable<AttributeDefinition>, Definition {
-	
+public abstract class AttributeDefinition extends AbstractDefinition implements
+		Comparable<AttributeDefinition>, Definition {
+
 	private final String name;
-	
+
 	private final Name typeName;
-	
+
 	private final Name substitutionGroup;
-	
+
 	private TypeDefinition attributeType;
-	
+
 	/**
 	 * The type declaring the attribute
 	 */
 	private TypeDefinition declaringType;
-	
+
 	/**
-	 * The concrete parent type of the attribute, may be equal to {@link #declaringType}
-	 *   or a sub type
+	 * The concrete parent type of the attribute, may be equal to
+	 * {@link #declaringType} or a sub type
 	 */
 	private TypeDefinition parentType;
-	
+
 	/**
 	 * The attribute namespace
 	 */
 	private String namespace;
 
 	private final boolean isElement;
-	
+
 	/**
 	 * Create an attribute definition
 	 * 
-	 * @param name the attribute name
-	 * @param typeName the name of the attribute type
-	 * @param attributeType the corresponding attribute type, may be <code>null</code>
-	 * @param isElement if the attribute is represented by an element
-	 * @param substitutionGroup the element substitution group, may be <code>null</code>
+	 * @param name
+	 *            the attribute name
+	 * @param typeName
+	 *            the name of the attribute type
+	 * @param attributeType
+	 *            the corresponding attribute type, may be <code>null</code>
+	 * @param isElement
+	 *            if the attribute is represented by an element
+	 * @param substitutionGroup
+	 *            the element substitution group, may be <code>null</code>
 	 */
 	public AttributeDefinition(String name, Name typeName,
 			TypeDefinition attributeType, boolean isElement,
@@ -80,35 +85,40 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		this.isElement = isElement;
 		this.substitutionGroup = substitutionGroup;
 	}
-	
+
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other the attribute definition to copy
+	 * @param other
+	 *            the attribute definition to copy
 	 */
 	protected AttributeDefinition(AttributeDefinition other) {
-		this(other.getName(), other.getTypeName(), other.getAttributeType(), 
+		this(other.getName(), other.getTypeName(), other.getAttributeType(),
 				other.isElement, other.substitutionGroup);
-		
+
 		setDescription(other.getDescription());
 		setDeclaringType(other.getDeclaringType());
 		setLocation(other.getLocation());
 		setNamespace(other.getNamespace());
 	}
-	
+
 	/**
 	 * Create an attribute descriptor
 	 * 
-	 * @param resolving the types that are already in the process of creating a feature type
+	 * @param resolving
+	 *            the types that are already in the process of creating a
+	 *            feature type
 	 * 
 	 * @return the attribute descriptor
 	 */
-	public abstract AttributeDescriptor createAttributeDescriptor(Set<TypeDefinition> resolving);
+	public abstract AttributeDescriptor createAttributeDescriptor(
+			Set<TypeDefinition> resolving);
 
 	/**
 	 * Init the declaring/parent type
 	 * 
-	 * @param declaringType the declaring type
+	 * @param declaringType
+	 *            the declaring type
 	 */
 	void setDeclaringType(TypeDefinition declaringType) {
 		this.declaringType = declaringType;
@@ -136,7 +146,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		if (attributeType == null) {
 			attributeType = getDefaultAttributeType();
 		}
-		
+
 		return attributeType;
 	}
 
@@ -152,18 +162,17 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		String desc = Messages.getString("AttributeDefinition.1"); //$NON-NLS-1$
 		if (getDescription() != null) {
 			setDescription(desc + "\n\n" + getDescription()); //$NON-NLS-1$
-		}
-		else {
+		} else {
 			setDescription(desc);
 		}
-		//XXX log message?
+		// XXX log message?
 		return attributeType;
 	}
 
 	/**
 	 * Create an attribute type if none was set
 	 * 
-	 * @return the attribute type 
+	 * @return the attribute type
 	 */
 	protected AttributeType createDefaultAttributeType() {
 		AttributeTypeBuilder builder = new AttributeTypeBuilder();
@@ -181,7 +190,8 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	}
 
 	/**
-	 * @param attributeType the attributeType to set
+	 * @param attributeType
+	 *            the attributeType to set
 	 */
 	public void setAttributeType(TypeDefinition attributeType) {
 		this.attributeType = attributeType;
@@ -195,7 +205,8 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	}
 
 	/**
-	 * @param namespace the namespace to set
+	 * @param namespace
+	 *            the namespace to set
 	 */
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
@@ -248,18 +259,15 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 		if (result == 0) {
 			if (parentType == null && other.parentType == null) {
 				return 0;
-			}
-			else if (parentType == null) {
+			} else if (parentType == null) {
 				return 1;
-			}
-			else if (other.parentType == null) {
+			} else if (other.parentType == null) {
 				return -1;
-			}
-			else {
+			} else {
 				return parentType.compareTo(other.parentType);
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -270,8 +278,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	public String getIdentifier() {
 		if (parentType == null) {
 			return name;
-		}
-		else {
+		} else {
 			return parentType.getIdentifier() + "/" + name; //$NON-NLS-1$
 		}
 	}
@@ -280,7 +287,7 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @return if the attribute is nillable
 	 */
 	public abstract boolean isNillable();
-	
+
 	/**
 	 * @return the minOccurs
 	 */
@@ -290,16 +297,16 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	 * @return the maxOccurs
 	 */
 	public abstract long getMaxOccurs();
-	
+
 	/**
-	 * @return if the attribute is represented in GML/XML as an element 
+	 * @return if the attribute is represented in GML/XML as an element
 	 */
 	public boolean isElement() {
 		return isElement;
 	}
-	
+
 	/**
-	 * @return if the attribute is represented in GML/XML as an attribute 
+	 * @return if the attribute is represented in GML/XML as an attribute
 	 */
 	public boolean isAttribute() {
 		return !isElement;
@@ -311,19 +318,16 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	@Override
 	public Entity getEntity() {
 		Name parentName;
-		
+
 		Set<SchemaElement> elements = getParentType().getDeclaringElements();
 		if (elements.isEmpty()) {
 			parentName = getParentType().getName();
-		}
-		else {
+		} else {
 			parentName = elements.iterator().next().getElementName();
 		}
-		
-		return new Property(
-				new About(parentName.getNamespaceURI(), 
-						parentName.getLocalPart(),
-						name));
+
+		return new Property(new About(parentName.getNamespaceURI(),
+				parentName.getLocalPart(), name));
 	}
 
 	/**
@@ -340,9 +344,10 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	public TypeDefinition getParentType() {
 		return parentType;
 	}
-	
+
 	/**
-	 * @param parentType the parentType to set
+	 * @param parentType
+	 *            the parentType to set
 	 */
 	protected void setParentType(TypeDefinition parentType) {
 		this.parentType = parentType;
@@ -357,15 +362,16 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 
 	/**
 	 * Create a copy of the attribute definition, as the attribute of the given
-	 *   parent type
-	 *   
-	 * @param parentType the parent type, must be a sub type of the declaring type
-	 *   of the attribute
-	 *   
+	 * parent type
+	 * 
+	 * @param parentType
+	 *            the parent type, must be a sub type of the declaring type of
+	 *            the attribute
+	 * 
 	 * @return the attribute definition
 	 */
 	public abstract AttributeDefinition copyAttribute(TypeDefinition parentType);
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
@@ -373,5 +379,5 @@ public abstract class AttributeDefinition extends AbstractDefinition implements
 	public String toString() {
 		return "[attribute] " + getIdentifier(); //$NON-NLS-1$
 	}
-	
+
 }

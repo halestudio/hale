@@ -31,29 +31,30 @@ import eu.esdihumboldt.hale.common.core.report.Report;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportSummary extends AbstractReportSummary {
-	
+
 	/**
 	 * Text for success message
 	 */
 	public Text successText;
-	
+
 	/**
 	 * Text for summary
 	 */
 	public Text summaryText;
-	
+
 	/**
 	 * Text for timestamp
 	 */
 	public Text timeText;
-	
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		
+
 		// success
 		successText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
 		successText.setEditable(false);
@@ -62,16 +63,14 @@ public class ReportSummary extends AbstractReportSummary {
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		successText.setLayoutData(data);
-		
-		CLabel successLabel = getWidgetFactory()
-				.createCLabel(composite, "Success:"); //$NON-NLS-1$
+
+		CLabel successLabel = getWidgetFactory().createCLabel(composite, "Success:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(successText,
-				-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(successText, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(successText, 0, SWT.CENTER);
 		successLabel.setLayoutData(data);
-		
+
 		// summary
 		summaryText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
 		summaryText.setEditable(false);
@@ -80,16 +79,14 @@ public class ReportSummary extends AbstractReportSummary {
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(successText, ITabbedPropertyConstants.VSPACE);
 		summaryText.setLayoutData(data);
-		
-		CLabel summaryLabe = getWidgetFactory()
-				.createCLabel(composite, "Summary:"); //$NON-NLS-1$
+
+		CLabel summaryLabe = getWidgetFactory().createCLabel(composite, "Summary:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(summaryText,
-				-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(summaryText, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(summaryText, 0, SWT.CENTER);
 		summaryLabe.setLayoutData(data);
-		
+
 		// timestamp and time related stuff
 		// TODO calculate duration if possible
 		timeText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
@@ -99,24 +96,22 @@ public class ReportSummary extends AbstractReportSummary {
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(summaryText, ITabbedPropertyConstants.VSPACE);
 		timeText.setLayoutData(data);
-		
-		CLabel timeLabel = getWidgetFactory()
-				.createCLabel(composite, "Time:"); //$NON-NLS-1$
+
+		CLabel timeLabel = getWidgetFactory().createCLabel(composite, "Time:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(timeText,
-				-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(timeText, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(timeText, 0, SWT.CENTER);
-		timeLabel.setLayoutData(data);	
+		timeLabel.setLayoutData(data);
 	}
-	
+
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
-		successText.setText(report.isSuccess()+"");
+		successText.setText(report.isSuccess() + "");
 		summaryText.setText(report.getSummary());
-		timeText.setText(report.getTimestamp()+"");
+		timeText.setText(report.getTimestamp() + "");
 	}
 }

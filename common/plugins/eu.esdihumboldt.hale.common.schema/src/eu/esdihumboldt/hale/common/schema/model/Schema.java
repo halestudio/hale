@@ -15,11 +15,12 @@ package eu.esdihumboldt.hale.common.schema.model;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 
 /**
- * A schema is a set of type definitions originating from the same source.  
+ * A schema is a set of type definitions originating from the same source.
+ * 
  * @author Simon Templer
  */
 public interface Schema extends TypeIndex, Locatable {
-	
+
 	/**
 	 * Get the schema namespace
 	 * 

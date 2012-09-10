@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
  * Painter for transformed instances.
+ * 
  * @author Simon Templer
  */
 public class TransformedInstancePainter extends AbstractInstancePainter {
@@ -27,8 +28,8 @@ public class TransformedInstancePainter extends AbstractInstancePainter {
 	 * Default constructor
 	 */
 	public TransformedInstancePainter() {
-		super((InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class), DataSet.TRANSFORMED);
+		super((InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class),
+				DataSet.TRANSFORMED);
 	}
 
 }

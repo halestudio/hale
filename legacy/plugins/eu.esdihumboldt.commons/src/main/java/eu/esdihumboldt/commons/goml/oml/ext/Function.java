@@ -15,11 +15,10 @@ package eu.esdihumboldt.commons.goml.oml.ext;
 /**
  * A {@link Function} is a side-effect free type of {@link Transformation}.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public class Function 
-	extends Transformation {
+public class Function extends Transformation {
 
 }

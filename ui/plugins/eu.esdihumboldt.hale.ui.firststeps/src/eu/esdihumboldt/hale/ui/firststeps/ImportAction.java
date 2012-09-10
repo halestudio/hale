@@ -26,12 +26,14 @@ import org.eclipse.ui.cheatsheets.ICheatSheetManager;
 import eu.esdihumboldt.hale.ui.io.action.IOWizardAction;
 
 /**
- * Action to open dialogs via an actionId from within a cheatsheet or from the help. <br />
+ * Action to open dialogs via an actionId from within a cheatsheet or from the
+ * help. <br />
  * It needs one parameter, the actionId.
  * 
  * @author Kai Schwierczek
  */
 public class ImportAction extends Action implements ICheatSheetAction, ILiveHelpAction {
+
 	private String actionId;
 
 	/**
@@ -52,7 +54,7 @@ public class ImportAction extends Action implements ICheatSheetAction, ILiveHelp
 			PlatformUI.getWorkbench().getDisplay().asyncExec(this);
 			return;
 		}
-		
+
 		if (actionId == null)
 			return;
 
@@ -61,6 +63,7 @@ public class ImportAction extends Action implements ICheatSheetAction, ILiveHelp
 		IOWizardAction action = new IOWizardAction(actionId);
 		if (action.isEnabled()) {
 			action.addPropertyChangeListener(new IPropertyChangeListener() {
+
 				@Override
 				public void propertyChange(PropertyChangeEvent event) {
 					if (IAction.RESULT.equals(event.getProperty()))
@@ -68,11 +71,10 @@ public class ImportAction extends Action implements ICheatSheetAction, ILiveHelp
 				}
 			});
 			action.run();
-		} else {
-			MessageDialog.openWarning(
-					Display.getCurrent().getActiveShell(),
-					"Action disabled", action.getFactory()
-							.getDisabledReason());
+		}
+		else {
+			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Action disabled",
+					action.getFactory().getDisabledReason());
 			notifyResult(false);
 		}
 		action.dispose();

@@ -21,19 +21,18 @@ import org.opengis.feature.type.Name;
 import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
 import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
-
 /**
  * Wraps up a schema parsing result
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class SchemaResult {
-	
+
 	private final Map<Name, TypeDefinition> types;
-	
+
 	private final Map<Name, SchemaElement> elements;
 
 	private final Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups;
@@ -43,14 +42,18 @@ public class SchemaResult {
 	/**
 	 * Constructor
 	 * 
-	 * @param types the type definitions
-	 * @param elements the element definitions
-	 * @param schemaAttributes the attribute definitions
-	 * @param schemaAttributeGroups the attribute group definitions
+	 * @param types
+	 *            the type definitions
+	 * @param elements
+	 *            the element definitions
+	 * @param schemaAttributes
+	 *            the attribute definitions
+	 * @param schemaAttributeGroups
+	 *            the attribute group definitions
 	 */
 	public SchemaResult(Map<Name, TypeDefinition> types,
-			Map<Name, SchemaElement> elements, 
-			Map<Name, XmlSchemaAttribute> schemaAttributes, 
+			Map<Name, SchemaElement> elements,
+			Map<Name, XmlSchemaAttribute> schemaAttributes,
 			Map<Name, XmlSchemaAttributeGroup> schemaAttributeGroups) {
 		super();
 		this.types = types;

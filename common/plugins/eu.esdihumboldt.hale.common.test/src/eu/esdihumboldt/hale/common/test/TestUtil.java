@@ -56,28 +56,29 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  */
 @SuppressWarnings("restriction")
 public class TestUtil {
-	
+
 	/**
 	 * Loads the specified XML Schema.
 	 * 
 	 * @param location the URI specifying the location of the schema
 	 * @return the loaded schema
-	 * @throws IOProviderConfigurationException 
-	 * @throws IOException 
+	 * @throws IOProviderConfigurationException
+	 * @throws IOException
 	 */
-	public static Schema loadSchema(URI location) throws IOProviderConfigurationException, IOException {
+	public static Schema loadSchema(URI location) throws IOProviderConfigurationException,
+			IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		XmlSchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(new DefaultTypeIndex());
 		reader.setSource(input);
-		
+
 		reader.validate();
 		IOReport report = reader.execute(null);
-		
+
 		assertTrue(report.isSuccess());
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
-		
+
 		return reader.getSchema();
 	}
 
@@ -88,21 +89,24 @@ public class TestUtil {
 	 * @param sourceTypes the source type index
 	 * @param targetTypes the target type index
 	 * @return the loaded alignment
-	 * @throws IOException 
-	 * @throws MappingException 
-	 * @throws ValidationException 
-	 * @throws MarshalException 
+	 * @throws IOException
+	 * @throws MappingException
+	 * @throws ValidationException
+	 * @throws MarshalException
 	 */
-	public static Alignment loadAlignment(final URI location, Schema sourceTypes, Schema targetTypes) throws MarshalException, ValidationException, MappingException, IOException {
+	public static Alignment loadAlignment(final URI location, Schema sourceTypes, Schema targetTypes)
+			throws MarshalException, ValidationException, MappingException, IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		IOReporter report = new DefaultIOReporter(new Locatable() {
+
 			@Override
 			public URI getLocation() {
 				return location;
 			}
 		}, "Load alignment", true);
-		Alignment alignment = DefaultAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes);
+		Alignment alignment = DefaultAlignmentIO.load(input.getInput(), report, sourceTypes,
+				targetTypes);
 
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
 
@@ -110,15 +114,17 @@ public class TestUtil {
 	}
 
 	/**
-	 * Loads an instance collection from the specified XML file with the given source types.
+	 * Loads an instance collection from the specified XML file with the given
+	 * source types.
 	 * 
 	 * @param location the URI specifying the location of the xml instance file
 	 * @param types the type index
 	 * @return the loaded instance collection
-	 * @throws IOException 
-	 * @throws IOProviderConfigurationException 
+	 * @throws IOException
+	 * @throws IOProviderConfigurationException
 	 */
-	public static InstanceCollection loadInstances(URI location, Schema types) throws IOProviderConfigurationException, IOException {
+	public static InstanceCollection loadInstances(URI location, Schema types)
+			throws IOProviderConfigurationException, IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		XmlInstanceReader instanceReader = new XmlInstanceReader();
@@ -137,9 +143,16 @@ public class TestUtil {
 	 */
 	public static void startConversionService() {
 		List<String> bundlesToStart = new ArrayList<String>();
-		bundlesToStart.add("org.springframework.osgi.core"); // for osgi extensions in application context
-		bundlesToStart.add("org.springframework.osgi.extender"); // activate the extender
-		bundlesToStart.add("eu.esdihumboldt.hale.common.convert"); // activate the conversion service
+		bundlesToStart.add("org.springframework.osgi.core"); // for osgi
+																// extensions in
+																// application
+																// context
+		bundlesToStart.add("org.springframework.osgi.extender"); // activate the
+																	// extender
+		bundlesToStart.add("eu.esdihumboldt.hale.common.convert"); // activate
+																	// the
+																	// conversion
+																	// service
 
 		startService(bundlesToStart, ConversionService.class);
 	}
@@ -156,7 +169,8 @@ public class TestUtil {
 	}
 
 	/**
-	 * Start the given bundles and then check that the given service is available.
+	 * Start the given bundles and then check that the given service is
+	 * available.
 	 * 
 	 * XXX HACKHACK
 	 * 
@@ -169,7 +183,7 @@ public class TestUtil {
 		for (Bundle bundle : context.getBundles()) {
 			bundles.put(bundle.getSymbolicName(), bundle);
 		}
-		
+
 		for (String bundleName : bundlesToStart) {
 			Bundle bundle = bundles.get(bundleName);
 			assertNotNull("Bundle not found: " + bundleName, bundle);
@@ -180,12 +194,14 @@ public class TestUtil {
 			} catch (BundleException be) {
 				fail("Could not start bundle " + bundleName + ": " + be.toString());
 			}
-			// without arguments on start a postcondition is that the bundle is ACTIVE
+			// without arguments on start a postcondition is that the bundle is
+			// ACTIVE
 			assertTrue("Bundle state not ACTIVE", (bundle.getState() & Bundle.ACTIVE) != 0);
 		}
 
 		assertTrue("Service " + serviceToCheck.getSimpleName() + " not available",
 				OsgiUtils.waitUntil(new Condition() {
+
 					@Override
 					public boolean evaluate() {
 						return OsgiUtils.getService(serviceToCheck) != null;

@@ -23,18 +23,19 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Properties section with HasValueFlag information
+ * 
  * @author Patrick Lieb
  */
-public class TypeDefinitionHasValueFlagSection extends DefaultDefinitionSection<TypeDefinition>{
-	
+public class TypeDefinitionHasValueFlagSection extends DefaultDefinitionSection<TypeDefinition> {
+
 	private Text hasValueFlag;
-	
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "HasValueFlag:", null);
 		hasValueFlag = getText();
 	}
@@ -44,9 +45,10 @@ public class TypeDefinitionHasValueFlagSection extends DefaultDefinitionSection<
 	 */
 	@Override
 	public void refresh() {
-		if (getDefinition().getConstraint(HasValueFlag.class).isEnabled()){
+		if (getDefinition().getConstraint(HasValueFlag.class).isEnabled()) {
 			hasValueFlag.setText("true");
-		} else {
+		}
+		else {
 			hasValueFlag.setText("false");
 		}
 	}

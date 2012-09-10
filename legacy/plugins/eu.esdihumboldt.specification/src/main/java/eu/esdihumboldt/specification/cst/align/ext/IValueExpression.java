@@ -11,31 +11,29 @@
  */
 package eu.esdihumboldt.specification.cst.align.ext;
 
-
-
 /**
  * The superinterface for all ValueExpression.
+ * 
  * @author A. Pitaev, Logica
  */
 
 public interface IValueExpression {
-	
-	
+
 	/**
 	 * returns String values
+	 * 
 	 * @return
 	 */
-	public String getLiteral(); 
-	
-	
+	public String getLiteral();
+
 	/**
 	 * @return the min
 	 */
-	public String getMin(); 
+	public String getMin();
+
 	/**
 	 * @return the max
 	 */
-	public String getMax(); 
-	
-	
+	public String getMax();
+
 }

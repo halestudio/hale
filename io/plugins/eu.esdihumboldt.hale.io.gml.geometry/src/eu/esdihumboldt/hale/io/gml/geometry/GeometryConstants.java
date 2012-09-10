@@ -14,15 +14,16 @@ package eu.esdihumboldt.hale.io.gml.geometry;
 
 /**
  * GML and geometry related constants.
+ * 
  * @author Simon Templer
  */
 public interface GeometryConstants {
-	
+
 	/**
 	 * The GML namespace
 	 */
 	public static final String NS_GML = "http://www.opengis.net/gml";
-	
+
 	/**
 	 * The GML 3.2 namespace
 	 */

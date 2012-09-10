@@ -21,8 +21,8 @@ import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverte
  * 
  * @author Kevin Mais
  */
-public class StringToPoint extends AbstractGeometryConverter<Point>{
-	
+public class StringToPoint extends AbstractGeometryConverter<Point> {
+
 	// concrete typed class
 
 }

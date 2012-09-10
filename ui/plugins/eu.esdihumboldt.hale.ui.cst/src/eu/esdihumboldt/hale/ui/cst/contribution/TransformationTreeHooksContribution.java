@@ -28,10 +28,10 @@ import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHooks;
 
 /**
  * Contribution for transformation tree hooks.
+ * 
  * @author Simon Templer
  */
-public class TransformationTreeHooksContribution
-		extends
+public class TransformationTreeHooksContribution extends
 		SelectiveExtensionContribution<TransformationTreeHook, TransformationTreeHookFactory> {
 
 	/**
@@ -46,8 +46,8 @@ public class TransformationTreeHooksContribution
 	 * @see AbstractExtensionContribution#fillWithFactories(Menu, List, int)
 	 */
 	@Override
-	protected int fillWithFactories(Menu parent,
-			List<TransformationTreeHookFactory> factories, int index) {
+	protected int fillWithFactories(Menu parent, List<TransformationTreeHookFactory> factories,
+			int index) {
 		if (factories.isEmpty()) {
 			// add a dummy item
 			MenuItem item = new MenuItem(parent, SWT.PUSH, index++);

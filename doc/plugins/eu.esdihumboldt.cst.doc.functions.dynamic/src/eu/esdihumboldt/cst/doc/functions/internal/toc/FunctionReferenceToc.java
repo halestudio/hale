@@ -22,20 +22,21 @@ import eu.esdihumboldt.hale.doc.util.toc.OneTopicToc;
 
 /**
  * Function reference table of contents provider.
+ * 
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
 public class FunctionReferenceToc extends AbstractTocProvider implements FunctionReferenceConstants {
-	
+
 	/**
 	 * TOC contribution for the function reference.
 	 */
 	public static class FunctionTocContribution implements ITocContribution {
 
-		private static final String[] NO_DOCS = new String[]{};
+		private static final String[] NO_DOCS = new String[] {};
 
 		private final String locale;
-		
+
 		/**
 		 * @param locale the locale
 		 */
@@ -124,7 +125,7 @@ public class FunctionReferenceToc extends AbstractTocProvider implements Functio
 	 */
 	@Override
 	public ITocContribution[] getTocContributions(String locale) {
-		return new ITocContribution[]{new FunctionTocContribution(locale)};
+		return new ITocContribution[] { new FunctionTocContribution(locale) };
 	}
 
 }

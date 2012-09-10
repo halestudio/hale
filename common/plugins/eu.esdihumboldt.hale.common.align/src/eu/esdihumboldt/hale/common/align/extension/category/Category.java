@@ -12,12 +12,13 @@
 
 package eu.esdihumboldt.hale.common.align.extension.category;
 
-import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
 import net.jcip.annotations.Immutable;
+import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
 
 /**
  * Represents a function category. Usually provided through the corresponding
  * extension point.
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -26,7 +27,7 @@ public final class Category implements Identifiable {
 	private final String id;
 	private final String name;
 	private final String description;
-	
+
 	/**
 	 * Create a function category
 	 * 
@@ -40,7 +41,7 @@ public final class Category implements Identifiable {
 		this.name = name;
 		this.description = description;
 	}
-	
+
 	/**
 	 * @return the category id
 	 */
@@ -48,17 +49,19 @@ public final class Category implements Identifiable {
 	public String getId() {
 		return id;
 	}
+
 	/**
 	 * @return the category name
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @return the category description
 	 */
 	public String getDescription() {
 		return description;
 	}
-	
+
 }

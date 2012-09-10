@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
  * Extension for {@link IOAction} definitions
+ * 
  * @author Simon Templer
  */
 public class IOActionExtension extends IdentifiableExtension<IOAction> {
@@ -33,12 +34,13 @@ public class IOActionExtension extends IdentifiableExtension<IOAction> {
 	 * {@link IOAction} based on an {@link IConfigurationElement}
 	 */
 	private static class ConfigurationIOAction implements IOAction {
-		
+
 		private final IConfigurationElement conf;
 		private final String id;
 
 		/**
 		 * Create the I/O action
+		 * 
 		 * @param id the action ID
 		 * @param conf the configuration element defining the action
 		 */
@@ -70,14 +72,14 @@ public class IOActionExtension extends IdentifiableExtension<IOAction> {
 		@Override
 		public Set<String> getDependencies() {
 			IConfigurationElement[] children = conf.getChildren("dependsOn");
-			
+
 			if (children != null) {
 				Set<String> result = new HashSet<String>();
-				
+
 				for (IConfigurationElement child : children) {
 					result.add(child.getAttribute("action"));
 				}
-				
+
 				return result;
 			}
 			else {
@@ -99,11 +101,12 @@ public class IOActionExtension extends IdentifiableExtension<IOAction> {
 	 * The action extension point ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.io.action";
-	
+
 	private static IOActionExtension instance;
 
 	/**
 	 * Get the I/O action extension instance
+	 * 
 	 * @return the extension instance
 	 */
 	public static IOActionExtension getInstance() {

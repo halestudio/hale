@@ -17,13 +17,15 @@ import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook.TreeState;
 
 /**
  * Factory for {@link TransformationTreeHook}s.
+ * 
  * @author Simon Templer
  */
 public interface TransformationTreeHookFactory extends
 		ExtensionObjectFactory<TransformationTreeHook> {
-	
+
 	/**
 	 * Get the tree state associated to the hook.
+	 * 
 	 * @return the tree state
 	 */
 	public TreeState getTreeState();

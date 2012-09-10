@@ -32,24 +32,22 @@ import eu.esdihumboldt.specification.mediator.context.exceptions.UserContextNotF
  */
 
 public interface ContextService {
-	
-
 
 	/**
 	 * It allows the Interface Controller access to the Context Information. The
 	 * Context Object consists in this case of the following three components
 	 * <ul>
-	 * <li> Default Context,</li>
-	 * <li> Organization Context,</li>
-	 * <li> User Context.</li>
+	 * <li>Default Context,</li>
+	 * <li>Organization Context,</li>
+	 * <li>User Context.</li>
 	 * </ul>
 	 * 
 	 * @param contextID
-	 * 			 unique context identifier.
+	 *            unique context identifier.
 	 * @return Context context.
 	 */
-	
-//	@Transactional(readOnly=true)
+
+	// @Transactional(readOnly=true)
 	public Context getContext(UUID contextID);
 
 	/**
@@ -62,8 +60,9 @@ public interface ContextService {
 	 * @return Context context, organization context.
 	 */
 
-//	@Transactional(readOnly=true)
-	public Context getOrganizationContext(UUID contextID) throws OrganizationContextNotFoundException;
+	// @Transactional(readOnly=true)
+	public Context getOrganizationContext(UUID contextID)
+			throws OrganizationContextNotFoundException;
 
 	/**
 	 * It allows the Interface Controller access to the default part of the
@@ -75,8 +74,9 @@ public interface ContextService {
 	 * @return Context context, default context.
 	 */
 
-//	@Transactional(readOnly=true)
-	public Context getDefaultContext(UUID contextID) throws DefaultContextNotFoundException;
+	// @Transactional(readOnly=true)
+	public Context getDefaultContext(UUID contextID)
+			throws DefaultContextNotFoundException;
 
 	/**
 	 * It allows the Interface Controller access to the user part of the Context
@@ -88,19 +88,22 @@ public interface ContextService {
 	 * @return Context context, user context.
 	 */
 
-//	@Transactional(readOnly=true)
-	public Context getUserContext(UUID contextID) throws UserContextNotFoundException;
-	
+	// @Transactional(readOnly=true)
+	public Context getUserContext(UUID contextID)
+			throws UserContextNotFoundException;
+
 	/**
 	 * 
-	 * It allows  the Interface Controller access to the WebMapContext part of the Context Information.
-	 *
-	 *
-	 * @param ID unique context identifier.
+	 * It allows the Interface Controller access to the WebMapContext part of
+	 * the Context Information.
+	 * 
+	 * 
+	 * @param ID
+	 *            unique context identifier.
 	 * @return Context context, WebMapContext.
 	 */
-	
-//	@Transactional(readOnly=true)
+
+	// @Transactional(readOnly=true)
 	public String getWebMapContext(UUID contextID);
 
 	// UserManagement methods
@@ -108,12 +111,15 @@ public interface ContextService {
 	/**
 	 * It allows to the user with administrator's permission create a new
 	 * context profile.
-	 * @param context the context object to add to the Service.
+	 * 
+	 * @param context
+	 *            the context object to add to the Service.
 	 * @return the UUID that was assigned to the newly created Context.
-	 * @throws InconsistentContextConstraintException 
+	 * @throws InconsistentContextConstraintException
 	 */
-//	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public UUID putContext(Context context) throws InconsistentContextConstraintException;
+	// @Transactional(propagation=Propagation.REQUIRES_NEW)
+	public UUID putContext(Context context)
+			throws InconsistentContextConstraintException;
 
 	/**
 	 * It allows to the user with administrator's permission remove an existing
@@ -121,30 +127,28 @@ public interface ContextService {
 	 * 
 	 * @param contextID
 	 *            unique context identifier.
-	 * @return true, if delete operation was successful  
-	 *         false, else.         
+	 * @return true, if delete operation was successful false, else.
 	 */
 
-//	@Transactional(propagation=Propagation.REQUIRED)
+	// @Transactional(propagation=Propagation.REQUIRED)
 	public boolean removeContext(UUID contextID);
-	
+
 	/**
-	 * It allows to the user with the administrator's permission update an existing context profile. 
+	 * It allows to the user with the administrator's permission update an
+	 * existing context profile.
 	 * 
-	 * @param contextID 
-	 *            unique context identifier. 
+	 * @param contextID
+	 *            unique context identifier.
 	 * 
 	 * @param context
 	 *            the new context inforamtion.
-	 *            
-	 * @return true, if update operation was successful  
-	 *         false, else.         
-	 * @throws InconsistentContextConstraintException 
+	 * 
+	 * @return true, if update operation was successful false, else.
+	 * @throws InconsistentContextConstraintException
 	 */
 
-//	@Transactional(propagation=Propagation.REQUIRED)
-	public boolean updateContext(UUID contextID, Context context) throws InconsistentContextConstraintException;
-	
-	
-	
+	// @Transactional(propagation=Propagation.REQUIRED)
+	public boolean updateContext(UUID contextID, Context context)
+			throws InconsistentContextConstraintException;
+
 }

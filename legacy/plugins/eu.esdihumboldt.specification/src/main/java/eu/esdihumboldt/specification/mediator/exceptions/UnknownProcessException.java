@@ -12,39 +12,39 @@
 package eu.esdihumboldt.specification.mediator.exceptions;
 
 /**
- * This Type of Exception is mainly used by the TQM and AQM to state that a 
+ * This Type of Exception is mainly used by the TQM and AQM to state that a
  * requested process is not known.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class UnknownProcessException extends Exception {
-	
-	/** 
-	 * @param _description A meaningful description of the exception.
+
+	/**
+	 * @param _description
+	 *            A meaningful description of the exception.
 	 */
-	public UnknownProcessException(String _description)
-	{
+	public UnknownProcessException(String _description) {
 		super(_description);
 	}
-	
+
 	/**
-	 * @param _description A meaningful description of the exception.
-	 * @param _root The root cause of this Exception.
+	 * @param _description
+	 *            A meaningful description of the exception.
+	 * @param _root
+	 *            The root cause of this Exception.
 	 */
-	public UnknownProcessException(String _description, Throwable _root)
-	{
+	public UnknownProcessException(String _description, Throwable _root) {
 		super(_description, _root);
 	}
-	
+
 	/**
-	 * @param _root The root cause of this Exception.
+	 * @param _root
+	 *            The root cause of this Exception.
 	 */
-	public UnknownProcessException(Throwable _root)
-	{
+	public UnknownProcessException(Throwable _root) {
 		super(_root);
 	}
-	
 
 }

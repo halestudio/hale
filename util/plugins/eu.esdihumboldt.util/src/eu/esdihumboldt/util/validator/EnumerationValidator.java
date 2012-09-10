@@ -20,7 +20,8 @@ import java.util.Collection;
  * @author Kai Schwierczek
  */
 public class EnumerationValidator extends AbstractValidator {
-	//XXX rewrite to parameterized version?
+
+	// XXX rewrite to parameterized version?
 
 	private final Collection<String> values;
 
@@ -42,7 +43,8 @@ public class EnumerationValidator extends AbstractValidator {
 		if (values.contains(stringValue))
 			return null;
 		else
-			return "Input " + stringValue + " is not one of the allowed values (" + allowedValues() + ").";
+			return "Input " + stringValue + " is not one of the allowed values (" + allowedValues()
+					+ ").";
 	}
 
 	/**

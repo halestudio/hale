@@ -44,24 +44,24 @@ public class NotSupportedTranslator implements FunctionTranslator {
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 
 		IEntity entity1 = cell.getEntity1();
 		IEntity entity2 = cell.getEntity2();
 
 		String id = null;
 
-		if (entity1.getTransformation() != null
-				|| entity2.getTransformation() != null) {
+		if (entity1.getTransformation() != null || entity2.getTransformation() != null) {
 			if (entity1.getTransformation() != null) {
 				id = entity1.getTransformation().getService().getLocation();
-			} else {
+			}
+			else {
 				id = entity2.getTransformation().getService().getLocation();
 			}
 
 		}
-		
+
 		reporter.error(new IOMessageImpl("The function '" + id
 				+ "' is not supported in this HALE version", null));
 

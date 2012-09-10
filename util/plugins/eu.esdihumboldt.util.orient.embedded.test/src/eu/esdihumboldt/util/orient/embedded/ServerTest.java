@@ -21,12 +21,12 @@ import eu.esdihumboldt.util.orient.embedded.EmbeddedOrientDB;
 
 /**
  * Embedded OrientDB server tests
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ServerTest {
-	
+
 	/**
 	 * Test if a server instance is available
 	 */

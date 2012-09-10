@@ -18,10 +18,10 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Base implementation for {@link SchemaReader}s
+ * 
  * @author Simon Templer
  */
-public abstract class AbstractSchemaReader extends AbstractImportProvider implements
-		SchemaReader {
+public abstract class AbstractSchemaReader extends AbstractImportProvider implements SchemaReader {
 
 	private TypeIndex sharedTypes;
 

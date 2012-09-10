@@ -11,12 +11,11 @@
  */
 package eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers;
 
-
 /**
  * @author pitaeva
- *
+ * 
  */
 public class ReferencedEnvelopeImpl {
-	//TODO: add implementation stub.
+	// TODO: add implementation stub.
 
 }

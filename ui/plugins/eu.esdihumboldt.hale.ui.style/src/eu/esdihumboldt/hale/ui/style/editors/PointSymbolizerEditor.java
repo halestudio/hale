@@ -25,11 +25,11 @@ import org.geotools.styling.StyleBuilder;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class PointSymbolizerEditor implements Editor<PointSymbolizer> {
-	
+
 	private static final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private final Editor<Mark> markEditor;
-	
+
 	/**
 	 * Creates a {@link PointSymbolizer} editor
 	 * 
@@ -38,7 +38,7 @@ public class PointSymbolizerEditor implements Editor<PointSymbolizer> {
 	 */
 	public PointSymbolizerEditor(Composite parent, PointSymbolizer point) {
 		super();
-		
+
 		markEditor = new MarkEditor(parent, SLD.mark(point));
 	}
 
@@ -55,8 +55,8 @@ public class PointSymbolizerEditor implements Editor<PointSymbolizer> {
 	 */
 	@Override
 	public PointSymbolizer getValue() throws Exception {
-		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
-				null, markEditor.getValue(), null));
+		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(null,
+				markEditor.getValue(), null));
 	}
 
 	/**

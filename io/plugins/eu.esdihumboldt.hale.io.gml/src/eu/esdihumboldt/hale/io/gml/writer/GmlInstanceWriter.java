@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 
 /**
  * Writes instances to a GML FeatureCollection
+ * 
  * @author Simon Templer
  */
 public class GmlInstanceWriter extends StreamGmlWriter {

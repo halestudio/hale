@@ -30,21 +30,24 @@ import eu.esdihumboldt.hale.ui.function.generic.GenericTypeFunctionWizardFactory
 
 /**
  * {@link FunctionWizardFactory} extension
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class FunctionWizardExtension extends AbstractExtension<FunctionWizardFactory, FunctionWizardDescriptor<?>> {
-	
+public class FunctionWizardExtension extends
+		AbstractExtension<FunctionWizardFactory, FunctionWizardDescriptor<?>> {
+
 	/**
 	 * The extension point ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.function"; //$NON-NLS-1$
-	
+
 	private static FunctionWizardExtension instance;
-	
+
 	/**
 	 * Get the extension instance
-	 * @return the function wizard extension 
+	 * 
+	 * @return the function wizard extension
 	 */
 	public static FunctionWizardExtension getInstance() {
 		if (instance == null) {
@@ -52,7 +55,7 @@ public class FunctionWizardExtension extends AbstractExtension<FunctionWizardFac
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -74,56 +77,55 @@ public class FunctionWizardExtension extends AbstractExtension<FunctionWizardFac
 		else if (conf.getName().equals("propertyWizard")) { //$NON-NLS-1$
 			return new PropertyFunctionWizardDescriptorImpl(conf);
 		}
-					
+
 		return null;
 	}
 
 	/**
-	 * Get the wizard descriptor for the given function ID. If no wizard 
+	 * Get the wizard descriptor for the given function ID. If no wizard
 	 * descriptor is available for the function in the extension, a generic
 	 * wizard descriptor will be created.
+	 * 
 	 * @param functionId the function ID
 	 * @return the wizard descriptor
 	 */
 	public FunctionWizardDescriptor<?> getWizardDescriptor(final String functionId) {
 		// retrieve matching wizards from extension
 		List<FunctionWizardDescriptor<?>> factories = getFactories(new FactoryFilter<FunctionWizardFactory, FunctionWizardDescriptor<?>>() {
-			
+
 			@Override
 			public boolean acceptFactory(FunctionWizardDescriptor<?> factory) {
 				return factory.getFunctionId().equals(functionId);
 			}
-			
+
 			@Override
 			public boolean acceptCollection(
 					ExtensionObjectFactoryCollection<FunctionWizardFactory, FunctionWizardDescriptor<?>> collection) {
 				return true;
 			}
 		});
-		
+
 		if (factories != null && !factories.isEmpty()) {
 			return factories.get(0);
 		}
-		
+
 		// try to create descriptor for generic wizard
-		
+
 		// check if type function
 		TypeFunction typeFunction = TypeFunctionExtension.getInstance().get(functionId);
 		if (typeFunction != null) {
-			return new FactoryWizardDescriptor<TypeFunction>(
-					new GenericTypeFunctionWizardFactory(functionId),
-					typeFunction);
+			return new FactoryWizardDescriptor<TypeFunction>(new GenericTypeFunctionWizardFactory(
+					functionId), typeFunction);
 		}
-		
+
 		// check if property function
 		PropertyFunction propertyFunction = PropertyFunctionExtension.getInstance().get(functionId);
 		if (propertyFunction != null) {
 			return new FactoryWizardDescriptor<PropertyFunction>(
-					new GenericPropertyFunctionWizardFactory(functionId),
-					propertyFunction);
+					new GenericPropertyFunctionWizardFactory(functionId), propertyFunction);
 		}
-		
+
 		throw new IllegalArgumentException("Function with ID " + functionId + " is unknown");
 	}
-	
+
 }

@@ -19,16 +19,17 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Base class for {@link SchemaReader} configuration pages
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public abstract class SchemaReaderConfigurationPage
-		extends AbstractConfigurationPage<SchemaReader, SchemaImportWizard> {
+public abstract class SchemaReaderConfigurationPage extends
+		AbstractConfigurationPage<SchemaReader, SchemaImportWizard> {
 
 	/**
-	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String, ImageDescriptor)
+	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String,
+	 *      ImageDescriptor)
 	 */
 	protected SchemaReaderConfigurationPage(String pageName, String title,
 			ImageDescriptor titleImage) {

@@ -16,7 +16,8 @@ import net.jcip.annotations.Immutable;
 
 /**
  * An object pair
- * @param <F> the type of the first object 
+ * 
+ * @param <F> the type of the first object
  * @param <S> the type of the second object
  * @author Simon Templer
  */
@@ -24,11 +25,12 @@ import net.jcip.annotations.Immutable;
 public class Pair<F, S> {
 
 	private final F first;
-	
+
 	private final S second;
 
 	/**
 	 * Create a pair with the given objects
+	 * 
 	 * @param first the first object
 	 * @param second the second object
 	 */
@@ -40,6 +42,7 @@ public class Pair<F, S> {
 
 	/**
 	 * Get the first object
+	 * 
 	 * @return the first object
 	 */
 	public F getFirst() {
@@ -48,6 +51,7 @@ public class Pair<F, S> {
 
 	/**
 	 * Get the second object
+	 * 
 	 * @return the second object
 	 */
 	public S getSecond() {
@@ -81,14 +85,16 @@ public class Pair<F, S> {
 		if (first == null) {
 			if (other.first != null)
 				return false;
-		} else if (!first.equals(other.first))
+		}
+		else if (!first.equals(other.first))
 			return false;
 		if (second == null) {
 			if (other.second != null)
 				return false;
-		} else if (!second.equals(other.second))
+		}
+		else if (!second.equals(other.second))
 			return false;
 		return true;
 	}
-	
+
 }

@@ -22,24 +22,26 @@ import eu.esdihumboldt.hale.ui.geometry.service.impl.AbstractGeometrySchemaServi
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
- * Geometry schema service that stores the default geometry information in
- * the project.
+ * Geometry schema service that stores the default geometry information in the
+ * project.
+ * 
  * @author Simon Templer
  */
 public class ProjectGeometrySchemaService extends AbstractGeometrySchemaService {
-	
+
 	private static final String KEY_PREFIX = "defaultGeometry:";
-	
+
 	private final ProjectService projectService;
 
 	/**
-	 * Create a geometry schema service storing the default geometry 
-	 * information using the given project service.
+	 * Create a geometry schema service storing the default geometry information
+	 * using the given project service.
+	 * 
 	 * @param projectService the project service
 	 */
 	public ProjectGeometrySchemaService(ProjectService projectService) {
 		super();
-		
+
 		this.projectService = projectService;
 	}
 
@@ -50,7 +52,7 @@ public class ProjectGeometrySchemaService extends AbstractGeometrySchemaService 
 	protected List<QName> loadDefaultGeometry(TypeDefinition type) {
 		List<String> names = projectService.getConfigurationService().getList(
 				KEY_PREFIX + type.getName().toString());
-		
+
 		if (names == null) {
 			return null;
 		}
@@ -65,7 +67,8 @@ public class ProjectGeometrySchemaService extends AbstractGeometrySchemaService 
 	}
 
 	/**
-	 * @see AbstractGeometrySchemaService#saveDefaultGeometry(TypeDefinition, List)
+	 * @see AbstractGeometrySchemaService#saveDefaultGeometry(TypeDefinition,
+	 *      List)
 	 */
 	@Override
 	protected void saveDefaultGeometry(TypeDefinition type, List<QName> path) {
@@ -80,10 +83,11 @@ public class ProjectGeometrySchemaService extends AbstractGeometrySchemaService 
 				names.add(name.toString());
 			}
 		}
-		
-		//FIXME it may be a problem that setList treats an empty list and null the same
-		projectService.getConfigurationService().setList(
-				KEY_PREFIX + type.getName().toString(), names);
+
+		// FIXME it may be a problem that setList treats an empty list and null
+		// the same
+		projectService.getConfigurationService().setList(KEY_PREFIX + type.getName().toString(),
+				names);
 	}
 
 }

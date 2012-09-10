@@ -26,14 +26,14 @@ import eu.esdihumboldt.specification.mediator.usermanagement.Organization;
 import eu.esdihumboldt.specification.mediator.usermanagement.User;
 
 /**
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: UserContextImpl.java,v 1.9 2007-12-18 13:26:16 pitaeva Exp $ 
+ * @version $Id: UserContextImpl.java,v 1.9 2007-12-18 13:26:16 pitaeva Exp $
  */
 public class UserContextImpl implements UserContext {
 
 	// Attributes ..............................................................
-	
+
 	/**
 	 * 
 	 */
@@ -45,11 +45,9 @@ public class UserContextImpl implements UserContext {
 	private UUID uuid;
 	private String title;
 	private MetadataConstraint userConstraint;
-	
-	
+
 	// Constructors ............................................................
 
-	
 	/**
 	 * @return the priority
 	 */
@@ -58,7 +56,8 @@ public class UserContextImpl implements UserContext {
 	}
 
 	/**
-	 * @param priority the priority to set
+	 * @param priority
+	 *            the priority to set
 	 */
 	public void setPriority(int priority) {
 		this.priority = priority;
@@ -67,11 +66,12 @@ public class UserContextImpl implements UserContext {
 	/**
 	 * no-args constructor
 	 */
-	
-	public UserContextImpl(){}
-	
+
+	public UserContextImpl() {
+	}
+
 	/**
-	 * @param _organizationcontext 
+	 * @param _organizationcontext
 	 * @param _user
 	 * @param _languageCons
 	 * @param _metadataconstraint
@@ -82,16 +82,13 @@ public class UserContextImpl implements UserContext {
 	 * @param _spatialCons
 	 * @param _portrayalCons
 	 */
-	public UserContextImpl(
-			OrganizationContext _organizationcontext,
-			User _user
-			) {
-		
+	public UserContextImpl(OrganizationContext _organizationcontext, User _user) {
+
 		this.organizationContext = _organizationcontext;
 		this.user = _user;
 		this.uuid = UUID.randomUUID();
 	}
-	
+
 	// UserContext operations ..................................................
 
 	/**
@@ -101,7 +98,6 @@ public class UserContextImpl implements UserContext {
 		return this.organizationContext;
 	}
 
-
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.context.UserContext#getUser()
 	 */
@@ -109,19 +105,20 @@ public class UserContextImpl implements UserContext {
 		return this.user;
 	}
 
-
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.context.Context#getAllConstraints()
 	 */
 	public Map<ContextType, Set<Constraint>> getAllConstraints() {
 		Map<ContextType, Set<Constraint>> result = new HashMap<ContextType, Set<Constraint>>();
 		result.put(this.getContextType(), this.assembleConstraintSet());
-		
+
 		OrganizationContext org_context = this.getParentContext();
-		result.put(org_context.getContextType(), org_context.getAllConstraints(org_context.getContextType()));
-		
+		result.put(org_context.getContextType(),
+				org_context.getAllConstraints(org_context.getContextType()));
+
 		DefaultContext def_context = org_context.getParentContext();
-		result.put(def_context.getContextType(), def_context.getAllConstraints(def_context.getContextType()));
+		result.put(def_context.getContextType(),
+				def_context.getAllConstraints(def_context.getContextType()));
 		return result;
 	}
 
@@ -146,8 +143,9 @@ public class UserContextImpl implements UserContext {
 	 */
 	public Set<Constraint> getCombinedConstraints(ContextType type) {
 		// FIXME Thorsten Reitz This implementation is not using the CTC yet.
-		
-		Set<Constraint> result = ((DefaultContextImpl)this.organizationContext.getParentContext()).assembleConstraintSet();
+
+		Set<Constraint> result = ((DefaultContextImpl) this.organizationContext
+				.getParentContext()).assembleConstraintSet();
 
 		// get all the Constraints for the UserContext and write them to the
 		// result Set.
@@ -170,7 +168,8 @@ public class UserContextImpl implements UserContext {
 	 * @return a Set with all Constraints defined for this UserContext.
 	 */
 	protected Set<Constraint> assembleConstraintSet() {
-		Set<Constraint> result = ((DefaultContextImpl) this.organizationContext.getParentContext()).assembleConstraintSet();
+		Set<Constraint> result = ((DefaultContextImpl) this.organizationContext
+				.getParentContext()).assembleConstraintSet();
 		result.add(this.getUserConstraint());
 		return result;
 	}
@@ -178,25 +177,25 @@ public class UserContextImpl implements UserContext {
 	public MetadataConstraint getUserConstraint() {
 		return this.userConstraint;
 	}
-	
+
 	public void setUserConstraint(MetadataConstraint userConstraint) {
 		this.userConstraint = userConstraint;
 	}
+
 	/**
 	 * Set the user
+	 * 
 	 * @param user
 	 */
 	public void setUser(User user) {
 		this.user = user;
 	}
 
-	public String getTitle()
-	{
+	public String getTitle() {
 		return this.title;
 	}
-	
-	public void setTitle(String title)
-	{
+
+	public void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -216,14 +215,12 @@ public class UserContextImpl implements UserContext {
 	}
 
 	/**
-	 * @param organizationContext the organizationContext to set
+	 * @param organizationContext
+	 *            the organizationContext to set
 	 */
 	public void setOrganizationContext(OrganizationContext organizationContext) {
 		this.organizationContext = organizationContext;
 	}
-
-
-
 
 	/**
 	 * @return the uuid
@@ -233,7 +230,8 @@ public class UserContextImpl implements UserContext {
 	}
 
 	/**
-	 * @param uuid the uuid to set
+	 * @param uuid
+	 *            the uuid to set
 	 */
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
@@ -242,33 +240,34 @@ public class UserContextImpl implements UserContext {
 	public UUID getContextID() {
 		return this.uuid;
 	}
-	
-	public Organization getOrganization()
-	{
+
+	public Organization getOrganization() {
 		return this.organizationContext.getOrganization();
 	}
-	
-//	public void setOrganization(Organization organization)
-//	{
-////		this.organizationContext.setOrganization( organization );
-//	}
-//
-//	public void setOrganizationConstraint(MetadataConstraint organizationConstraint) {
-////		this.organizationContext.setOrganizationConstraint(organizationConstraint);
-//	}
-//
-//	public MetadataConstraint getOrganizationConstraint() {
-//		return this.organizationContext.getOrganizationConstraint();
-//	}
-//	
-//	public void setDefaultContext(DefaultContext defaultContext)
-//	{
-////		this.organizationContext.setDefaultContext( defaultContext);
-//	}
-//	
-//	public DefaultContext getDefaultContext()
-//	{
-//		return this.organizationContext.getDefaultContext();
-//	}
+
+	// public void setOrganization(Organization organization)
+	// {
+	// // this.organizationContext.setOrganization( organization );
+	// }
+	//
+	// public void setOrganizationConstraint(MetadataConstraint
+	// organizationConstraint) {
+	// //
+	// this.organizationContext.setOrganizationConstraint(organizationConstraint);
+	// }
+	//
+	// public MetadataConstraint getOrganizationConstraint() {
+	// return this.organizationContext.getOrganizationConstraint();
+	// }
+	//
+	// public void setDefaultContext(DefaultContext defaultContext)
+	// {
+	// // this.organizationContext.setDefaultContext( defaultContext);
+	// }
+	//
+	// public DefaultContext getDefaultContext()
+	// {
+	// return this.organizationContext.getDefaultContext();
+	// }
 
 }

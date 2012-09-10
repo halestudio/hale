@@ -28,16 +28,18 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 
 /**
  * Group implementation backed by a {@link ListMultimap}.
+ * 
  * @author Simon Templer
  */
 public class DefaultGroup implements MutableGroup {
 
 	private final ListMultimap<QName, Object> properties = ArrayListMultimap.create();
-	
+
 	private final DefinitionGroup definition;
-	
+
 	/**
 	 * Create an empty group.
+	 * 
 	 * @param definition the associated definition
 	 */
 	public DefaultGroup(DefinitionGroup definition) {
@@ -46,19 +48,19 @@ public class DefaultGroup implements MutableGroup {
 	}
 
 	/**
-	 * Copy constructor.
-	 * Creates a group based on the properties and values of the given 
-	 * group.
+	 * Copy constructor. Creates a group based on the properties and values of
+	 * the given group.
+	 * 
 	 * @param org the instance to copy
 	 */
 	public DefaultGroup(Group org) {
 		this(org.getDefinition());
-		
+
 		for (QName property : org.getPropertyNames()) {
 			setPropertyCopy(property, org.getProperty(property));
 		}
 	}
-	
+
 	/**
 	 * @see Group#getProperty(QName)
 	 */
@@ -98,9 +100,9 @@ public class DefaultGroup implements MutableGroup {
 	public void setProperty(QName propertyName, Object... values) {
 		properties.replaceValues(propertyName, Arrays.asList(values));
 	}
-		
+
 	private void setPropertyCopy(QName propertyName, Object... values) {
-		properties.replaceValues(propertyName, 
+		properties.replaceValues(propertyName,
 				Collections2.transform(Arrays.asList(values), new Function<Object, Object>() {
 
 					@Override
@@ -115,11 +117,10 @@ public class DefaultGroup implements MutableGroup {
 						if (input instanceof Group) {
 							return new DefaultGroup((Group) input);
 						}
-						
+
 						return input;
 					}
-				})
-		);
+				}));
 	}
 
 }

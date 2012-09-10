@@ -54,8 +54,8 @@ public class ClassificationMappingTranslator implements FunctionTranslator,
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
@@ -71,11 +71,11 @@ public class ClassificationMappingTranslator implements FunctionTranslator,
 			Restriction r2 = tarRest.get(i);
 
 			Joiner joiner = Joiner.on(" ").skipNulls();
-			
+
 			List<String> encodedParams = new ArrayList<String>();
-			
+
 			// first encode and add the associated value to the string list ...
-			for(IValueExpression ival : r2.getValue()) {
+			for (IValueExpression ival : r2.getValue()) {
 				String temp = null;
 				try {
 					temp = URLEncoder.encode(ival.getLiteral(), "UTF-8");
@@ -85,9 +85,9 @@ public class ClassificationMappingTranslator implements FunctionTranslator,
 				}
 				encodedParams.add(temp);
 			}
-			
+
 			// then encode and add the value expressions to the string list
-			for(IValueExpression ival : r1.getValue()) {
+			for (IValueExpression ival : r1.getValue()) {
 				String temp = null;
 				try {
 					temp = URLEncoder.encode(ival.getLiteral(), "UTF-8");
@@ -97,9 +97,9 @@ public class ClassificationMappingTranslator implements FunctionTranslator,
 				}
 				encodedParams.add(temp);
 			}
-			
+
 			String encodedParameter = joiner.join(encodedParams);
-			
+
 			newList.add(new ParameterValue(PARAMETER_CLASSIFICATIONS, encodedParameter));
 
 		}

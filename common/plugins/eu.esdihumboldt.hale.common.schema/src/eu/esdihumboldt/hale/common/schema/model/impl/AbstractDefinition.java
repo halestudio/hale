@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
 
 /**
  * Basic definition implementation to be subclassed
+ * 
  * @param <C> the supported constraint type
  * 
  * @author Simon Templer
@@ -35,17 +36,17 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 	 * The qualified definition name
 	 */
 	protected final QName name;
-	
+
 	/**
 	 * The constraints set on the definition
 	 */
 	private final Map<Class<? extends C>, C> constraints = new HashMap<Class<? extends C>, C>();
-	
+
 	/**
 	 * The definition description
 	 */
 	private String description;
-	
+
 	/**
 	 * The definition location
 	 */
@@ -59,10 +60,10 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 	 */
 	public AbstractDefinition(QName name) {
 		super();
-		
+
 		this.name = name;
 	}
-	
+
 	/**
 	 * @see Definition#getConstraint(Class)
 	 */
@@ -74,34 +75,35 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 			if (constraint != null) {
 				return (T) constraint;
 			}
-			
+
 			// support for inherited constraints
 			T inheritedConstraint = getInheritedConstraint(constraintType);
 			if (inheritedConstraint != null) {
 				constraints.put(constraintType, inheritedConstraint);
 				return inheritedConstraint;
 			}
-			
+
 			// get default constraint and remember it
 			T defConstraint = ConstraintUtil.getDefaultConstraint(constraintType, this);
 			constraints.put(constraintType, defConstraint);
 			return defConstraint;
 		}
 	}
-	
+
 	/**
 	 * Get the inherited constraint of the given constraint type.<br>
 	 * <br>
 	 * This implementation returns <code>null</code>, as inheritance is not
-	 * supported generally for definitions. 
+	 * supported generally for definitions.
+	 * 
 	 * @param constraintType the constraint type
-	 * @return the inherited constraint or <code>null</code> if there is none
-	 *   or inheritance is not allowed
+	 * @return the inherited constraint or <code>null</code> if there is none or
+	 *         inheritance is not allowed
 	 */
 	protected <T extends C> T getInheritedConstraint(Class<T> constraintType) {
 		return null;
 	}
-	
+
 	/**
 	 * Determines if the constraint with the given type is set explicitly for
 	 * the definition.
@@ -114,7 +116,7 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 			return constraints.get(constraintType) != null;
 		}
 	}
-	
+
 	/**
 	 * Set a constraint on the definition
 	 * 
@@ -128,15 +130,17 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 			constraints.put((Class<? extends C>) constraintType, constraint);
 		}
 	}
-	
+
 	/**
 	 * Set a constraint on the definition if none of the same type has been set
 	 * yet.
+	 * 
 	 * @param constraint the constraint to set
 	 */
 	@SuppressWarnings("unchecked")
 	public void setConstraintIfNotSet(C constraint) {
-		if (!hasConstraint((Class<? extends C>) ConstraintUtil.getConstraintType(constraint.getClass()))) {
+		if (!hasConstraint((Class<? extends C>) ConstraintUtil.getConstraintType(constraint
+				.getClass()))) {
 			setConstraint(constraint);
 		}
 	}
@@ -170,27 +174,29 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 	/**
 	 * Returns the local part of the qualified name. Override to change this
 	 * behavior.
+	 * 
 	 * @see Definition#getDisplayName()
 	 */
 	@Override
 	public String getDisplayName() {
-		// special treatment for DisplayName constraint (as it can't match the generic type at this point)
+		// special treatment for DisplayName constraint (as it can't match the
+		// generic type at this point)
 		String customName = null;
 		try {
 			DisplayName dn = (DisplayName) constraints.get(DisplayName.class);
 			if (dn != null) {
 				customName = dn.getCustomName();
 			}
-			// creating a default constraint is not done at this point because 
+			// creating a default constraint is not done at this point because
 			// the default behavior of DisplayName is to provide no custom name
 		} catch (Throwable e) {
 			// ignore
 		}
-		
+
 		if (customName != null) {
 			return customName;
 		}
-		
+
 		return name.getLocalPart();
 	}
 
@@ -209,7 +215,7 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 	public String getDescription() {
 		return description;
 	}
-	
+
 	/**
 	 * @see Object#hashCode()
 	 */
@@ -222,7 +228,7 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 	}
 
 	/**
-	 * Two definitions are equal if their name is equal (namespace and local 
+	 * Two definitions are equal if their name is equal (namespace and local
 	 * part)
 	 * 
 	 * @see Object#equals(Object)
@@ -239,7 +245,8 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.getNamespaceURI().equals(other.name.getNamespaceURI()))
+		}
+		else if (!name.getNamespaceURI().equals(other.name.getNamespaceURI()))
 			return false;
 		else if (!name.getLocalPart().equals(other.name.getLocalPart()))
 			return false;
@@ -255,7 +262,7 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 		if (result == 0) {
 			return name.getNamespaceURI().compareToIgnoreCase(other.getName().getNamespaceURI());
 		}
-		
+
 		return result;
 	}
 
@@ -274,5 +281,5 @@ public abstract class AbstractDefinition<C> implements Definition<C> {
 	public String toString() {
 		return getIdentifier();
 	}
-	
+
 }

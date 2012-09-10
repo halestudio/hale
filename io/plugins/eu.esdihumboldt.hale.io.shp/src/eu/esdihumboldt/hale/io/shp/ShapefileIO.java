@@ -12,23 +12,23 @@
 
 package eu.esdihumboldt.hale.io.shp;
 
-
 /**
- * Utilities and constants for Shapefile I/O 
+ * Utilities and constants for Shapefile I/O
+ * 
  * @author Simon Templer
  */
 public abstract class ShapefileIO {
-	
+
 	/**
 	 * The default shapefile namespace
 	 */
 	public static final String SHAPEFILE_NS = "http://www.esdi-humboldt.eu/hale/shp";
-	
+
 	/**
 	 * The default type name
 	 */
 	public static final String DEFAULT_TYPE_NAME = "Shapefile";
-	
+
 //	/**
 //	 * The Shapefile content type identifier 
 //	 */

@@ -18,12 +18,14 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 
 /**
  * Function wizard page interface
+ * 
  * @author Simon Templer
  */
 public interface FunctionWizardPage extends IWizardPage {
-	
+
 	/**
 	 * Configure the given cell
+	 * 
 	 * @param cell the cell
 	 */
 	public abstract void configureCell(MutableCell cell);

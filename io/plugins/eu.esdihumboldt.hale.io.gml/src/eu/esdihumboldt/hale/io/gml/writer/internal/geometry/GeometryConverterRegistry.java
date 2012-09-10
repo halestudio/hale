@@ -31,26 +31,25 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.PolygonTo
 
 /**
  * Registry for {@link GeometryConverter}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class GeometryConverterRegistry {
-	
+
 	/**
 	 * Conversion ladder - offers conversion for a geometry in the style of an
 	 * iterator. Best conversions will be served first.
 	 */
 	public class ConversionLadder implements Iterator<Geometry> {
-		
-		private final Map<Class<? extends Geometry>, Geometry> results = 
-			new HashMap<Class<? extends Geometry>, Geometry>();
-		
+
+		private final Map<Class<? extends Geometry>, Geometry> results = new HashMap<Class<? extends Geometry>, Geometry>();
+
 		private final Queue<Geometry> pendingGeometries = new LinkedList<Geometry>();
-		
-		private final Queue<GeometryConverter<?, ?>> pendingConverters = new LinkedList<GeometryConverter<?,?>>();
-		
+
+		private final Queue<GeometryConverter<?, ?>> pendingConverters = new LinkedList<GeometryConverter<?, ?>>();
+
 		private final boolean noLossOnly;
 
 		/**
@@ -61,10 +60,10 @@ public class GeometryConverterRegistry {
 		 */
 		protected ConversionLadder(Geometry geometry, boolean noLossOnly) {
 			this.noLossOnly = noLossOnly;
-			
+
 			Class<? extends Geometry> geomClass = geometry.getClass();
 			results.put(geomClass, geometry);
-			
+
 			pendingGeometries.add(geometry);
 		}
 
@@ -76,7 +75,7 @@ public class GeometryConverterRegistry {
 			if (pendingConverters.isEmpty()) {
 				prepareNext();
 			}
-			
+
 			return !pendingConverters.isEmpty();
 		}
 
@@ -88,22 +87,23 @@ public class GeometryConverterRegistry {
 			if (!pendingConverters.isEmpty()) {
 				return;
 			}
-			
+
 			Geometry geom = pendingGeometries.poll();
 			if (geom != null) {
 				// prepare best conversions reachable from geom
 				Class<? extends Geometry> geomClass = geom.getClass();
-				
+
 				// find level one converters
 				Set<GeometryConverter<?, ?>> l1 = converters.get(geomClass);
 				if (l1 != null) {
 					// sort by loss/no loss
-					List<GeometryConverter<?, ?>> noloss = new ArrayList<GeometryConverter<?,?>>();
-					List<GeometryConverter<?, ?>> loss = new ArrayList<GeometryConverter<?,?>>();
+					List<GeometryConverter<?, ?>> noloss = new ArrayList<GeometryConverter<?, ?>>();
+					List<GeometryConverter<?, ?>> loss = new ArrayList<GeometryConverter<?, ?>>();
 					for (GeometryConverter<?, ?> converter : l1) {
 						@SuppressWarnings("rawtypes")
-						GeometryConverter conv = converter; // correct source type is assured
-						
+						GeometryConverter conv = converter; // correct source
+															// type is assured
+
 						if (!ignore(converter)) {
 							if (conv.lossOnConversion(geom)) {
 								loss.add(converter);
@@ -113,9 +113,10 @@ public class GeometryConverterRegistry {
 							}
 						}
 					}
-					
-					//TODO collect converters through more levels to allow multi-level-noloss is preferred to loss? 
-					
+
+					// TODO collect converters through more levels to allow
+					// multi-level-noloss is preferred to loss?
+
 					pendingConverters.addAll(noloss);
 					if (!noLossOnly) {
 						pendingConverters.addAll(loss);
@@ -123,7 +124,7 @@ public class GeometryConverterRegistry {
 				}
 			}
 		}
-		
+
 		/**
 		 * Tells if to ignore a converter
 		 * 
@@ -142,21 +143,22 @@ public class GeometryConverterRegistry {
 		@Override
 		public synchronized Geometry next() {
 			prepareNext();
-			
+
 			@SuppressWarnings("rawtypes")
 			GeometryConverter converter = pendingConverters.poll();
-			
+
 			if (results.containsKey(converter.getTargetType())) {
-				// for any reason this was already calculated (e.g. preconversion when descending into converter levels)
+				// for any reason this was already calculated (e.g.
+				// preconversion when descending into converter levels)
 				return results.get(results.get(converter.getTargetType()));
 			}
-			
+
 			// convert
 			Geometry source = results.get(converter.getSourceType());
 			Geometry target = converter.convert(source);
 			results.put(converter.getTargetType(), target);
 			pendingGeometries.add(target);
-			
+
 			return target;
 		}
 
@@ -171,7 +173,7 @@ public class GeometryConverterRegistry {
 	}
 
 	private static final GeometryConverterRegistry INSTANCE = new GeometryConverterRegistry();
-	
+
 	/**
 	 * Get the singleton instance of the registry
 	 * 
@@ -180,21 +182,21 @@ public class GeometryConverterRegistry {
 	public static GeometryConverterRegistry getInstance() {
 		return INSTANCE;
 	}
-	
+
 	/**
 	 * Converters organized by source geometry type
 	 */
-	private final Map<Class<? extends Geometry>, Set<GeometryConverter<?, ?>>> converters = new HashMap<Class<? extends Geometry>, Set<GeometryConverter<?,?>>>();
+	private final Map<Class<? extends Geometry>, Set<GeometryConverter<?, ?>>> converters = new HashMap<Class<? extends Geometry>, Set<GeometryConverter<?, ?>>>();
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	private GeometryConverterRegistry() {
 		super();
-		
+
 		init();
 	}
-	
+
 	/**
 	 * Initialize the registry
 	 */
@@ -204,8 +206,8 @@ public class GeometryConverterRegistry {
 		registerConverter(new MultiPolygonToPolygon());
 		registerConverter(new MultiLineStringToLineString());
 		registerConverter(new MultiPointToPoint());
-		
-		//TODO other converters?
+
+		// TODO other converters?
 	}
 
 	/**
@@ -216,13 +218,13 @@ public class GeometryConverterRegistry {
 	public void registerConverter(GeometryConverter<?, ?> converter) {
 		Set<GeometryConverter<?, ?>> cs = converters.get(converter.getSourceType());
 		if (cs == null) {
-			cs = new HashSet<GeometryConverter<?,?>>();
+			cs = new HashSet<GeometryConverter<?, ?>>();
 			converters.put(converter.getSourceType(), cs);
 		}
-		
+
 		cs.add(converter);
 	}
-	
+
 	/**
 	 * Create a conversion ladder for the given geometry
 	 * 
@@ -233,7 +235,7 @@ public class GeometryConverterRegistry {
 	public ConversionLadder createLadder(Geometry geometry) {
 		return new ConversionLadder(geometry, false);
 	}
-	
+
 	/**
 	 * Create a conversion ladder for the given geometry that does only no-loss
 	 * conversions.
@@ -245,5 +247,5 @@ public class GeometryConverterRegistry {
 	public ConversionLadder createNoLossLadder(Geometry geometry) {
 		return new ConversionLadder(geometry, true);
 	}
-	
+
 }

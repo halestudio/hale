@@ -18,17 +18,18 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 /**
  * I/O advisor based on configuration in an existing {@link IOConfiguration}.
  * Subclasses should at least override {@link #handleResults(IOProvider)}.
+ * 
  * @param <T> the I/O provider type
  * 
  * @author Simon Templer
  */
 public class ConfigurationIOAdvisor<T extends IOProvider> extends AbstractIOAdvisor<T> {
-	
+
 	private IOConfiguration conf;
-	
+
 	/**
 	 * Create an I/O advisor based on I/O configurations that have to be set
-	 * using {@link #setConfiguration(IOConfiguration)} before using the 
+	 * using {@link #setConfiguration(IOConfiguration)} before using the
 	 * advisor.
 	 */
 	public ConfigurationIOAdvisor() {
@@ -37,6 +38,7 @@ public class ConfigurationIOAdvisor<T extends IOProvider> extends AbstractIOAdvi
 
 	/**
 	 * Create an I/O advisor based on the given I/O configuration.
+	 * 
 	 * @param conf the I/O configuration
 	 */
 	public ConfigurationIOAdvisor(IOConfiguration conf) {
@@ -46,6 +48,7 @@ public class ConfigurationIOAdvisor<T extends IOProvider> extends AbstractIOAdvi
 
 	/**
 	 * Set the I/O configuration to use for provider configuration.
+	 * 
 	 * @param conf the I/O configuration
 	 */
 	public void setConfiguration(IOConfiguration conf) {
@@ -58,7 +61,7 @@ public class ConfigurationIOAdvisor<T extends IOProvider> extends AbstractIOAdvi
 	@Override
 	public void prepareProvider(T provider) {
 		super.prepareProvider(provider);
-		
+
 		if (conf != null) {
 			// load the configuration from the IOConfiguration object
 			provider.loadConfiguration(conf.getProviderConfiguration());

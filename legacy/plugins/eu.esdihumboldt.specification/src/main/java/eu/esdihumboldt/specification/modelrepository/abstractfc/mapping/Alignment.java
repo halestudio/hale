@@ -19,42 +19,41 @@ import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptualSchema
 import eu.esdihumboldt.specification.modelrepository.abstractfc.SchemaElement;
 
 /**
- * An {@link Alignment} collects all {@link Mapping}s between two given 
+ * An {@link Alignment} collects all {@link Mapping}s between two given
  * {@link ConceptualSchema}s.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public interface Alignment 
-	extends SchemaElement {
-	
+public interface Alignment extends SchemaElement {
+
 	/**
 	 * @return this {@link Alignment}'s name as a String.
 	 */
 	public String getName();
 
 	/**
-	 * @return this {@link Alignment}'s {@link MetaData} structure according to 
-	 * ISO19115.
+	 * @return this {@link Alignment}'s {@link MetaData} structure according to
+	 *         ISO19115.
 	 */
 	public MetaData getMetaData();
-	
+
 	/**
-	 * @return the {@link Set} of {@link Mapping}s that have been created 
-	 * between the two {@link ConceptualSchema}s connected by this 
-	 * {@link Alignment}.
+	 * @return the {@link Set} of {@link Mapping}s that have been created
+	 *         between the two {@link ConceptualSchema}s connected by this
+	 *         {@link Alignment}.
 	 */
 	public Set<Mapping> getMappings();
-	
+
 	/**
 	 * @return the source {@link ConceptualSchema} that is being mapped.
 	 */
 	public ConceptualSchema getSourceSchema();
-	
+
 	/**
 	 * @return the target {@link ConceptualSchema} that is being mapped.
 	 */
 	public ConceptualSchema getTargetSchema();
-	
+
 }

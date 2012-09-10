@@ -24,32 +24,32 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class ComposedRelation 
-	extends Relation {
+public class ComposedRelation extends Relation {
 
 	/**
-	 * Indicates the (first) operator/predicate for this {@link ComposedRelation}.
+	 * Indicates the (first) operator/predicate for this
+	 * {@link ComposedRelation}.
 	 */
 	private RelationOperatorType operator;
 
 	/**
-	 * In case of AND and OR the operand is a collection of two or more (Composed)FeatureClasses.
-       * In case of a unary operator the operand is either: 
-       * - a collection consisting of one (Composed)FeatureClass;
-       * - a (Composed)Relation.
-       * Only one of the two is allowed - at the moment not forced, must be dealt with by application code.
-       *
+	 * In case of AND and OR the operand is a collection of two or more
+	 * (Composed)FeatureClasses. In case of a unary operator the operand is
+	 * either: - a collection consisting of one (Composed)FeatureClass; - a
+	 * (Composed)Relation. Only one of the two is allowed - at the moment not
+	 * forced, must be dealt with by application code.
+	 * 
 	 */
 	private List<FeatureClass> collection;
-	
+
 	// constructors ............................................................
-	
+
 	public ComposedRelation(IAbout about) {
 		super(about);
 	}
 
 	// getters / setters .......................................................
-	
+
 	/**
 	 * @return the collection
 	 */
@@ -58,7 +58,8 @@ public class ComposedRelation
 	}
 
 	/**
-	 * @param collection the collection to set
+	 * @param collection
+	 *            the collection to set
 	 */
 	public void setCollection(List<FeatureClass> collection) {
 		this.collection = collection;
@@ -72,7 +73,8 @@ public class ComposedRelation
 	}
 
 	/**
-	 * @param operator the operator to set
+	 * @param operator
+	 *            the operator to set
 	 */
 	public void setRelationOperatorType(RelationOperatorType operator) {
 		this.operator = operator;
@@ -80,14 +82,8 @@ public class ComposedRelation
 
 	public enum RelationOperatorType {
 		AND, // intersection
-		OR,  // union
-		NOT,
-		INVERSE,
-		SYMMETRIC,
-		TRANSITIVE,
-		REFLEXIVE,
-		FIRST,
-		NEXT
+		OR, // union
+		NOT, INVERSE, SYMMETRIC, TRANSITIVE, REFLEXIVE, FIRST, NEXT
 	}
 
 }

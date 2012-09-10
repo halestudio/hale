@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for RelationType complex type.
+ * <p>
+ * Java class for RelationType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="RelationType">
@@ -36,91 +37,77 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RelationType", propOrder = {
-    "relationComposition",
-    "domainRestriction",
-    "rangeRestriction"
-})
-public class RelationType
-    extends EntityType
-{
+@XmlType(name = "RelationType", propOrder = { "relationComposition",
+		"domainRestriction", "rangeRestriction" })
+public class RelationType extends EntityType {
 
-    protected RelationCompositionType relationComposition;
-    @XmlElement(required = true)
-    protected DomainRestrictionType domainRestriction;
-    @XmlElement(required = true)
-    protected RangeRestrictionType rangeRestriction;
+	protected RelationCompositionType relationComposition;
+	@XmlElement(required = true)
+	protected DomainRestrictionType domainRestriction;
+	@XmlElement(required = true)
+	protected RangeRestrictionType rangeRestriction;
 
-    /**
-     * Gets the value of the relationComposition property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RelationCompositionType }
-     *     
-     */
-    public RelationCompositionType getRelationComposition() {
-        return relationComposition;
-    }
+	/**
+	 * Gets the value of the relationComposition property.
+	 * 
+	 * @return possible object is {@link RelationCompositionType }
+	 * 
+	 */
+	public RelationCompositionType getRelationComposition() {
+		return relationComposition;
+	}
 
-    /**
-     * Sets the value of the relationComposition property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RelationCompositionType }
-     *     
-     */
-    public void setRelationComposition(RelationCompositionType value) {
-        this.relationComposition = value;
-    }
+	/**
+	 * Sets the value of the relationComposition property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link RelationCompositionType }
+	 * 
+	 */
+	public void setRelationComposition(RelationCompositionType value) {
+		this.relationComposition = value;
+	}
 
-    /**
-     * Gets the value of the domainRestriction property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DomainRestrictionType }
-     *     
-     */
-    public DomainRestrictionType getDomainRestriction() {
-        return domainRestriction;
-    }
+	/**
+	 * Gets the value of the domainRestriction property.
+	 * 
+	 * @return possible object is {@link DomainRestrictionType }
+	 * 
+	 */
+	public DomainRestrictionType getDomainRestriction() {
+		return domainRestriction;
+	}
 
-    /**
-     * Sets the value of the domainRestriction property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DomainRestrictionType }
-     *     
-     */
-    public void setDomainRestriction(DomainRestrictionType value) {
-        this.domainRestriction = value;
-    }
+	/**
+	 * Sets the value of the domainRestriction property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link DomainRestrictionType }
+	 * 
+	 */
+	public void setDomainRestriction(DomainRestrictionType value) {
+		this.domainRestriction = value;
+	}
 
-    /**
-     * Gets the value of the rangeRestriction property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RangeRestrictionType }
-     *     
-     */
-    public RangeRestrictionType getRangeRestriction() {
-        return rangeRestriction;
-    }
+	/**
+	 * Gets the value of the rangeRestriction property.
+	 * 
+	 * @return possible object is {@link RangeRestrictionType }
+	 * 
+	 */
+	public RangeRestrictionType getRangeRestriction() {
+		return rangeRestriction;
+	}
 
-    /**
-     * Sets the value of the rangeRestriction property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RangeRestrictionType }
-     *     
-     */
-    public void setRangeRestriction(RangeRestrictionType value) {
-        this.rangeRestriction = value;
-    }
+	/**
+	 * Sets the value of the rangeRestriction property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link RangeRestrictionType }
+	 * 
+	 */
+	public void setRangeRestriction(RangeRestrictionType value) {
+		this.rangeRestriction = value;
+	}
 
 }

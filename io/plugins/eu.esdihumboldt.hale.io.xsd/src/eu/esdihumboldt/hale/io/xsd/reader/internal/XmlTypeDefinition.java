@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
  * XML type definition
+ * 
  * @author Simon Templer
  */
 public class XmlTypeDefinition extends DefaultTypeDefinition {
@@ -45,13 +46,12 @@ public class XmlTypeDefinition extends DefaultTypeDefinition {
 				&& !getConstraint(HasValueFlag.class).isEnabled()) {
 			/*
 			 * XXX For restrictions (on complex types) assume that all
-			 * properties are redefined if needed.
-			 * FIXME is this correct?
+			 * properties are redefined if needed. FIXME is this correct?
 			 */
 			// only return declared properties
 			return getDeclaredChildren();
 		}
-		
+
 		return super.getChildren();
 	}
 
@@ -61,15 +61,16 @@ public class XmlTypeDefinition extends DefaultTypeDefinition {
 		if (desc != null && !desc.isEmpty()) {
 			return desc;
 		}
-		
-		// if no description is present, try the description of the associated element
+
+		// if no description is present, try the description of the associated
+		// element
 		XmlElements elements = getConstraint(XmlElements.class);
 		if (elements.getElements().size() == 1) {
 			// only use element description if it's unique
 			XmlElement element = elements.getElements().iterator().next();
 			return element.getDescription();
 		}
-		
+
 		return desc;
 	}
 

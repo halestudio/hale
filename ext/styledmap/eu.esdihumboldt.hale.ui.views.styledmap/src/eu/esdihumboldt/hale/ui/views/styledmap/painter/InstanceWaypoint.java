@@ -23,28 +23,29 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
- * Map way-point representing an {@link Instance}. 
+ * Map way-point representing an {@link Instance}.
+ * 
  * @author Simon Templer
  */
 public class InstanceWaypoint extends GenericWaypoint<InstanceReference, InstanceWaypoint> {
 
 	private final List<GeometryProperty<?>> geometries;
-	
+
 	private final String name;
 
 	/**
 	 * Create an instance way-point.
+	 * 
 	 * @param pos the way-point position
 	 * @param bb the bounding box
 	 * @param value the reference to the instance
 	 * @param geometries the instance geometries
 	 * @param name the instance name, <code>null</code> if unknown
 	 */
-	public InstanceWaypoint(GeoPosition pos, BoundingBox bb,
-			InstanceReference value, List<GeometryProperty<?>> geometries,
-			String name) {
+	public InstanceWaypoint(GeoPosition pos, BoundingBox bb, InstanceReference value,
+			List<GeometryProperty<?>> geometries, String name) {
 		super(pos, bb, value);
-		
+
 		this.geometries = geometries;
 		this.name = name;
 	}
@@ -68,6 +69,7 @@ public class InstanceWaypoint extends GenericWaypoint<InstanceReference, Instanc
 
 	/**
 	 * Get the instance name.
+	 * 
 	 * @return the instance name or <code>null</code> if unknown
 	 */
 	public String getName() {

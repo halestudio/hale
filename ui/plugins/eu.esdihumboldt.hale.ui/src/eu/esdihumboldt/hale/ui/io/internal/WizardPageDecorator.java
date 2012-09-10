@@ -23,14 +23,16 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Decorator for {@link WizardPage}
+ * 
  * @author Simon Templer
  */
 public abstract class WizardPageDecorator extends WizardPage {
 
 	private final WizardPage decoratee;
-	
+
 	/**
 	 * Create a decorator for the given wizard page.
+	 * 
 	 * @param decoratee the wizard page to decorate
 	 */
 	public WizardPageDecorator(WizardPage decoratee) {
@@ -207,7 +209,8 @@ public abstract class WizardPageDecorator extends WizardPage {
 	}
 
 	/**
-	 * @see org.eclipse.jface.wizard.WizardPage#setMessage(java.lang.String, int)
+	 * @see org.eclipse.jface.wizard.WizardPage#setMessage(java.lang.String,
+	 *      int)
 	 */
 	@Override
 	public void setMessage(String newMessage, int newType) {

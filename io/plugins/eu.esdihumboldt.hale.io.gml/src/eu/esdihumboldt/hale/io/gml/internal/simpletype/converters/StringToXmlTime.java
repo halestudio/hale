@@ -18,7 +18,7 @@ import org.apache.xmlbeans.XmlTime;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Convert {@link Date} to xs:time 
+ * Convert {@link Date} to xs:time
  */
 public class StringToXmlTime implements Converter<String, XmlTime> {
 
@@ -30,7 +30,7 @@ public class StringToXmlTime implements Converter<String, XmlTime> {
 		if (value == null) {
 			return null;
 		}
-		
+
 		XmlTime result = XmlTime.Factory.newInstance();
 		result.setStringValue(value);
 		return result;

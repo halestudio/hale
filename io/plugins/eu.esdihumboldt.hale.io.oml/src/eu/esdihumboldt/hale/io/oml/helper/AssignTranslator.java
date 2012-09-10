@@ -44,15 +44,16 @@ public class AssignTranslator implements FunctionTranslator, AssignFunction {
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
 		for (ParameterValue val : params) {
 			// translate "defaultValue" to "value"
 			if (val.getName().equals("defaultValue")) {
 				newList.add(new ParameterValue(PARAMETER_VALUE, val.getValue()));
-			} else {
+			}
+			else {
 				newList.add(val);
 			}
 		}

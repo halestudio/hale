@@ -22,45 +22,46 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Provides support for reading instances
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface InstanceReader extends ImportProvider {
-	
+
 	/**
 	 * The configuration parameter name for the default CRS definition.
-	 * {@link CRSDefinitionManager#parse(String)} is used to handle
-	 * any values, so {@link CRSDefinitionManager#asString(CRSDefinition)}
-	 * should be used to create them.
+	 * {@link CRSDefinitionManager#parse(String)} is used to handle any values,
+	 * so {@link CRSDefinitionManager#asString(CRSDefinition)} should be used to
+	 * create them.
 	 */
 	public static final String PARAM_DEFAULT_CRS = "defaultCRS";
-	
+
 	/**
-	 * The prefix for configuration parameter names for the default CRS 
+	 * The prefix for configuration parameter names for the default CRS
 	 * definition for a property. The configuration parameter is the prefix
 	 * concatenated with the {@link PropertyDefinition} identifier.
-	 * {@link CRSDefinitionManager#parse(String)} is used to handle
-	 * any values, so {@link CRSDefinitionManager#asString(CRSDefinition)}
-	 * should be used to create them.
+	 * {@link CRSDefinitionManager#parse(String)} is used to handle any values,
+	 * so {@link CRSDefinitionManager#asString(CRSDefinition)} should be used to
+	 * create them.
 	 */
 	public static final String PREFIX_PARAM_CRS = "defaultCRS:";
-	
+
 	/**
 	 * Set the instance source schema
 	 * 
 	 * @param sourceSchema the source schema
 	 */
 	public void setSourceSchema(TypeIndex sourceSchema);
-	
+
 	/**
-	 * Set a CRS provider that is queried if no CRS can be determined for a 
-	 * property value and no default CRS is configured for the associated 
-	 * property definition. The information obtained will be used to extend
-	 * the configuration.
+	 * Set a CRS provider that is queried if no CRS can be determined for a
+	 * property value and no default CRS is configured for the associated
+	 * property definition. The information obtained will be used to extend the
+	 * configuration.
+	 * 
 	 * @see #PARAM_DEFAULT_CRS
 	 * @see #PREFIX_PARAM_CRS
-	 *  
+	 * 
 	 * @param crsProvider the CRS provider
 	 */
 	public void setDefaultCRSProvider(CRSProvider crsProvider);
@@ -78,5 +79,5 @@ public interface InstanceReader extends ImportProvider {
 	 * @return the source schema
 	 */
 	public abstract TypeIndex getSourceSchema();
-	
+
 }

@@ -16,36 +16,39 @@ import com.google.common.collect.ListMultimap;
 
 /**
  * An alignment cell represents a mapping between two entities
+ * 
  * @author Simon Templer
  */
 public interface Cell {
-	
+
 	/**
-	 * Get the source entities.
-	 * For each the name is mapped to the entity. Multiple entities may share
-	 * the same name. The map may not be modified.
+	 * Get the source entities. For each the name is mapped to the entity.
+	 * Multiple entities may share the same name. The map may not be modified.
+	 * 
 	 * @return the source entities, may be <code>null</code>
 	 */
 	public ListMultimap<String, ? extends Entity> getSource();
-	
+
 	/**
-	 * Get the target entities.
-	 * For each the name is mapped to the entity. Multiple entities may share
-	 * the same name. The map may not be modified.
+	 * Get the target entities. For each the name is mapped to the entity.
+	 * Multiple entities may share the same name. The map may not be modified.
+	 * 
 	 * @return the target entities
 	 */
 	public ListMultimap<String, ? extends Entity> getTarget();
-	
+
 	/**
 	 * Get the transformation parameters that shall be applied to the
 	 * transformation specified by {@link #getTransformationIdentifier()}.
+	 * 
 	 * @return the transformation parameters, parameter names are mapped to
-	 *   parameter values, may be <code>null</code>
+	 *         parameter values, may be <code>null</code>
 	 */
 	public ListMultimap<String, String> getTransformationParameters();
-	
+
 	/**
 	 * Get the identifier for the transformation referenced by the cell.
+	 * 
 	 * @return the transformation identifier
 	 */
 	public String getTransformationIdentifier();

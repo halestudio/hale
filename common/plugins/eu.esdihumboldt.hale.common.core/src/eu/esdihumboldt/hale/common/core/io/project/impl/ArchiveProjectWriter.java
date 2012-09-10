@@ -38,8 +38,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
  * 
  * @author Patrick Lieb
  */
-public class ArchiveProjectWriter extends AbstractExportProvider implements
-		ProjectWriter {
+public class ArchiveProjectWriter extends AbstractExportProvider implements ProjectWriter {
 
 	private Project project;
 
@@ -93,8 +92,7 @@ public class ArchiveProjectWriter extends AbstractExportProvider implements
 		File tempDir = Files.createTempDir();
 
 		File baseFile = new File(tempDir, "project.halex");
-		LocatableOutputSupplier<FileOutputStream> out = new FileIOSupplier(
-				baseFile);
+		LocatableOutputSupplier<FileOutputStream> out = new FileIOSupplier(baseFile);
 
 		writer.setTarget(out);
 		writer.setProject(project);
@@ -157,7 +155,8 @@ public class ArchiveProjectWriter extends AbstractExportProvider implements
 			for (int i = 0; i < fileList.length; i++) {
 				if (fileList[i].isDirectory()) {
 					deleteDirectory(fileList[i]);
-				} else {
+				}
+				else {
 					fileList[i].delete();
 				}
 			}

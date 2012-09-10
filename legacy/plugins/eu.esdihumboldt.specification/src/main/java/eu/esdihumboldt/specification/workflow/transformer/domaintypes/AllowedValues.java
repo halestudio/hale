@@ -15,23 +15,23 @@ import java.util.Set;
 
 import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
-
-/**This interface defines the finite set of values and ranges allowed for the input
- * and contains ordered list of all valid values and or ranges
+/**
+ * This interface defines the finite set of values and ranges allowed for the
+ * input and contains ordered list of all valid values and or ranges
  * 
  * @author Moses Gone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @ReferenceSpecification("OGC 05-007r6:1.0.0 9.3.1")
 public interface AllowedValues extends LiteralValuesChoice {
 
- 
-    /**Retrieves the allowed values of a given parameter quantity. This can be any value- range, single
-     * any value
-     * @return A set of allowed Values of this quantity
-     */
-    public Set<LiteralValuesChoice> getValues();
- 
-}
+	/**
+	 * Retrieves the allowed values of a given parameter quantity. This can be
+	 * any value- range, single any value
+	 * 
+	 * @return A set of allowed Values of this quantity
+	 */
+	public Set<LiteralValuesChoice> getValues();
 
+}

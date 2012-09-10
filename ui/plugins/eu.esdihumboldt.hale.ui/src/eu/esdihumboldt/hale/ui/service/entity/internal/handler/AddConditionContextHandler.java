@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
  * Adds a new condition context for a selected {@link EntityDefinition}.
+ * 
  * @author Simon Templer
  */
 public class AddConditionContextHandler extends AbstractHandler {
@@ -45,20 +46,19 @@ public class AddConditionContextHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		
+
 		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
-			
+
 			if (element instanceof EntityDefinition) {
-				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+						.getService(EntityDefinitionService.class);
 				EntityDefinition entityDef = (EntityDefinition) element;
 				Filter filter = null;
 				if (entityDef.getPropertyPath().isEmpty()) {
 					// type filter
-					TypeFilterDialog tfd = new TypeFilterDialog(
-							HandlerUtil.getActiveShell(event), 
-							entityDef.getType(),
-							"Type condition",
+					TypeFilterDialog tfd = new TypeFilterDialog(HandlerUtil.getActiveShell(event),
+							entityDef.getType(), "Type condition",
 							"Define the condition for the new context");
 					if (tfd.open() == TypeFilterDialog.OK) {
 						filter = tfd.getFilter();
@@ -70,21 +70,18 @@ public class AddConditionContextHandler extends AbstractHandler {
 					if (def instanceof PropertyDefinition) {
 						TypeDefinition propertyType = ((PropertyDefinition) def).getPropertyType();
 						// create a dummy type for the filter
-						TypeDefinition dummyType = new DefaultTypeDefinition(
-								new QName("ValueFilterDummy"));
-						// with the property type being contained as value property
-						new DefaultPropertyDefinition(new QName("value"),
-								dummyType, propertyType);
+						TypeDefinition dummyType = new DefaultTypeDefinition(new QName(
+								"ValueFilterDummy"));
+						// with the property type being contained as value
+						// property
+						new DefaultPropertyDefinition(new QName("value"), dummyType, propertyType);
 						// and the parent type as parent property
-						new DefaultPropertyDefinition(new QName("parent"),
-								dummyType,
+						new DefaultPropertyDefinition(new QName("parent"), dummyType,
 								((PropertyDefinition) def).getParentType());
-						
+
 						// open the filter dialog
 						TypeFilterDialog tfd = new TypeFilterDialog(
-								HandlerUtil.getActiveShell(event), 
-								dummyType,
-								"Property condition",
+								HandlerUtil.getActiveShell(event), dummyType, "Property condition",
 								"Define the condition for the new context");
 						if (tfd.open() == TypeFilterDialog.OK) {
 							filter = tfd.getFilter();
@@ -96,7 +93,7 @@ public class AddConditionContextHandler extends AbstractHandler {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

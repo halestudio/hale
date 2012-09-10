@@ -18,10 +18,11 @@ import de.fhg.igd.osgi.util.OsgiUtils;
 
 /**
  * Field handler for {@link Class}es in an OSGi context.
+ * 
  * @author Simon Templer
  */
 public class OsgiClassFieldHandler extends GeneralizedFieldHandler {
-	
+
 	/**
 	 * @see GeneralizedFieldHandler#convertUponGet(Object)
 	 */

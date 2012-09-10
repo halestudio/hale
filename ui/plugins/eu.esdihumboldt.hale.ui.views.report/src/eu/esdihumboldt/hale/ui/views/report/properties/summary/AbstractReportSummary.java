@@ -29,32 +29,33 @@ import eu.esdihumboldt.hale.common.core.report.Report;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class AbstractReportSummary extends AbstractPropertySection {
-	
+
 	/**
 	 * Contains the report to display.
 	 */
 	public Report<?> report;
-	
+
 	/**
 	 * Composite for the tabbed property page
 	 */
 	public Composite composite;
-	
+
 	/**
 	 * Contains the formdata.
 	 */
 	public FormData data;
-	
+
 	/**
 	 * 
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 		composite = getWidgetFactory().createFlatFormComposite(parent);
 	}
-	
+
 	/**
 	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
 	 */
@@ -65,7 +66,7 @@ public class AbstractReportSummary extends AbstractPropertySection {
 			// overwrite element with first element from selection
 			report = ((IStructuredSelection) selection).getFirstElement();
 		}
-		
+
 		// set new report
 		if (report instanceof Report) {
 			this.report = (Report<?>) report;

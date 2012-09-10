@@ -18,13 +18,13 @@ import org.xml.sax.SAXParseException;
 
 /**
  * A validation report
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface Report {
-	
+
 	/**
 	 * Get if the XML document is valid
 	 * 

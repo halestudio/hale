@@ -16,14 +16,16 @@ import org.eclipse.jface.wizard.IWizardNode;
 
 /**
  * TODO Type description
+ * 
  * @author Simon Templer
  */
 public interface ExtendedWizardNode extends IWizardNode {
 
 	/**
 	 * Get the wizard description
+	 * 
 	 * @return the wizard description, may be <code>null</code>
 	 */
 	public String getDescription();
-	
+
 }

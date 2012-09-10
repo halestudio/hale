@@ -24,20 +24,21 @@ import java.util.UUID;
 
 /**
  * This interface provides a structure which holds the response of the ITF.
+ * 
  * @author Bernd Schneiders, Logica
  */
 public interface ItfResponse {
-	
+
 	/**
 	 * @return String containing a OGC WebService response (e.g. WFS response).
 	 */
 	public String getXmlResponse();
-	
+
 	/**
 	 * @return true if a request of a user is complete processed, false else.
 	 */
 	public boolean isProcessed();
-	
+
 	/**
 	 * @return the transaction identifier of a request
 	 */

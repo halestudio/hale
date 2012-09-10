@@ -19,10 +19,11 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
  * Service for tracking instance population.
+ * 
  * @author Simon Templer
  */
 public interface PopulationService {
-	
+
 	/**
 	 * Constant representing unknown population count.
 	 */
@@ -30,31 +31,35 @@ public interface PopulationService {
 
 	/**
 	 * Get the population count for the given entity.
+	 * 
 	 * @param entity the entity
 	 * @return the population count or {@link #UNKNOWN}
 	 */
 	public int getPopulation(EntityDefinition entity);
-	
+
 	/**
 	 * Add an instance to the population.
+	 * 
 	 * @param instance the instance, it has to have a valid associated data set
 	 */
 	public void addToPopulation(Instance instance);
-	
+
 	/**
 	 * Add an instance to the population, explicitly specifying the associated
 	 * data set.
+	 * 
 	 * @param instance the instance
 	 * @param dataSet the data set the instance belongs to
 	 */
 	public void addToPopulation(Instance instance, DataSet dataSet);
-	
+
 	/**
 	 * Reset the population of the given data set
+	 * 
 	 * @param dataSet the data set
 	 */
 	public void resetPopulation(DataSet dataSet);
-	
+
 //	/**
 //	 * Increase the population count for the given entity by one.
 //	 * @param entity the entity
@@ -67,21 +72,24 @@ public interface PopulationService {
 //	 * @param number the amount to increase the population count
 //	 */
 //	public void increasePopulation(EntityDefinition entity, int number);
-	
+
 	/**
 	 * Adds a listener for population events.
+	 * 
 	 * @param listener the listener
 	 */
 	public void addListener(PopulationListener listener);
-	
+
 	/**
 	 * Removes a listener for population events.
+	 * 
 	 * @param listener the listener
 	 */
 	public void removeListener(PopulationListener listener);
 
 	/**
 	 * Determines if there is any population for the given schema space.
+	 * 
 	 * @param schemaSpace the schema space
 	 * @return if there is any population for the schema space
 	 */

@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
 public abstract class AbstractStyleService implements StyleService {
 
 	private TypeSafeListenerList<StyleServiceListener> listeners = new TypeSafeListenerList<StyleServiceListener>();
-	
+
 	/**
 	 * @see StyleService#addListener(StyleServiceListener)
 	 */
@@ -42,7 +42,7 @@ public abstract class AbstractStyleService implements StyleService {
 	public void removeListener(StyleServiceListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	/**
 	 * Notify listeners that styles have been added
 	 */
@@ -51,7 +51,7 @@ public abstract class AbstractStyleService implements StyleService {
 			listener.stylesAdded(this);
 		}
 	}
-	
+
 	/**
 	 * Notify listeners that styles have been removed
 	 */
@@ -60,7 +60,7 @@ public abstract class AbstractStyleService implements StyleService {
 			listener.stylesRemoved(this);
 		}
 	}
-	
+
 	/**
 	 * Notify listeners that the settings have been changed
 	 */
@@ -69,7 +69,7 @@ public abstract class AbstractStyleService implements StyleService {
 			listener.styleSettingsChanged(this);
 		}
 	}
-	
+
 	/**
 	 * Notify listeners that the settings have been changed
 	 * 

@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 
 /**
  * Represents a XML schema attribute
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -31,7 +31,7 @@ public class XmlAttribute extends AbstractDefinition<PropertyConstraint> {
 	 * The attribute type
 	 */
 	private final TypeDefinition type;
-	
+
 	/**
 	 * Create a new schema attribute
 	 * 
@@ -40,10 +40,10 @@ public class XmlAttribute extends AbstractDefinition<PropertyConstraint> {
 	 */
 	public XmlAttribute(QName attributeName, TypeDefinition type) {
 		super(attributeName);
-		
+
 		this.type = type;
-		
-		//TODO set schema element constraint on type
+
+		// TODO set schema element constraint on type
 	}
 
 	/**

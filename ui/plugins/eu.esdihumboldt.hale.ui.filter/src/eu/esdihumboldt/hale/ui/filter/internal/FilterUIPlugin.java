@@ -29,7 +29,7 @@ public class FilterUIPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static FilterUIPlugin plugin;
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -57,7 +57,7 @@ public class FilterUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static FilterUIPlugin getDefault() {
@@ -65,14 +65,14 @@ public class FilterUIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path
+	 * 
 	 * @param path the path
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
-	
+
 }

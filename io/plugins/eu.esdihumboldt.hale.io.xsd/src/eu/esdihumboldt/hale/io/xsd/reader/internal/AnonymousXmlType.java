@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 
 /**
  * An anonymous XML type
+ * 
  * @author Simon Templer
  */
 public class AnonymousXmlType extends XmlTypeDefinition {

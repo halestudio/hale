@@ -20,10 +20,10 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class CustomDefaultAttribute extends AbstractDefaultAttribute {
@@ -31,14 +31,16 @@ public class CustomDefaultAttribute extends AbstractDefaultAttribute {
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other the other attribute
+	 * @param other
+	 *            the other attribute
 	 */
 	protected CustomDefaultAttribute(AbstractDefaultAttribute other) {
 		super(other);
 	}
 
 	/**
-	 * @see AbstractDefaultAttribute#AbstractDefaultAttribute(String, Name, TypeDefinition, String, XmlSchemaUse)
+	 * @see AbstractDefaultAttribute#AbstractDefaultAttribute(String, Name,
+	 *      TypeDefinition, String, XmlSchemaUse)
 	 */
 	public CustomDefaultAttribute(String name, Name typeName,
 			TypeDefinition attributeType, String namespace, XmlSchemaUse use) {

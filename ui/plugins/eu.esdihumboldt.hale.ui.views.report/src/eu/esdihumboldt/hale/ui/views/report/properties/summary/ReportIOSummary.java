@@ -35,38 +35,39 @@ import eu.esdihumboldt.hale.ui.util.components.URILink;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportIOSummary extends AbstractReportSummary {
-	
+
 	/**
 	 * Link to the file from {@link IOReport}
 	 */
 	private URILink link;
 	private Link displayLink;
 	private Text linktext;
-	
+
 	/**
 	 * Text for the link
 	 */
 	public Text linkText;
-	
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		
+
 		// urilink
 		link = new URILink(composite, SWT.None, null, "<A>Open Location</A>");
-		
+
 		displayLink = link.getLink();
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(composite, ITabbedPropertyConstants.VSPACE);
 		displayLink.setLayoutData(data);
 		displayLink.setBackground(getWidgetFactory().getColors().getBackground());
-		
+
 		// link label
 		CLabel linkLabel = getWidgetFactory().createCLabel(composite, "Link:"); //$NON-NLS-1$
 		data = new FormData();
@@ -86,16 +87,14 @@ public class ReportIOSummary extends AbstractReportSummary {
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		linktext.setLayoutData(data);
 
-		CLabel locationLabel = getWidgetFactory()
-				.createCLabel(composite, "Location:"); //$NON-NLS-1$
+		CLabel locationLabel = getWidgetFactory().createCLabel(composite, "Location:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(linktext,
-				-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(linktext, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(linktext, 0, SWT.CENTER);
 		locationLabel.setLayoutData(data);
 	}
-	
+
 	/**
 	 * @see AbstractPropertySection#setInput(IWorkbenchPart, ISelection)
 	 */
@@ -103,16 +102,16 @@ public class ReportIOSummary extends AbstractReportSummary {
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		super.setInput(part, selection);
 	}
-	
+
 	/**
 	 * @see AbstractPropertySection#refresh()
 	 */
 	@Override
 	public void refresh() {
 		super.refresh();
-		
-		this.link.refresh(((IOReport)report).getTarget().getLocation());
-		this.linktext.setText(((IOReport)report).getTarget().getLocation().toASCIIString());
+
+		this.link.refresh(((IOReport) report).getTarget().getLocation());
+		this.linktext.setText(((IOReport) report).getTarget().getLocation().toASCIIString());
 		this.displayLink = link.getLink();
 	}
 }

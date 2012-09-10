@@ -29,17 +29,19 @@ import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 
 /**
  * Instance sink based on a {@link LocalOrientDB}
+ * 
  * @author Simon Templer
  */
 public class OrientInstanceSink implements InstanceSink, Closeable {
 
 	private final LocalOrientDB database;
 	private DatabaseReference<ODatabaseDocumentTx> ref;
-	
+
 	private final PopulationService ps;
-	
+
 	/**
 	 * Create an instance sink based on a {@link LocalOrientDB}
+	 * 
 	 * @param database the sink database
 	 * @param lockNow if the database should be locked now
 	 */
@@ -51,10 +53,10 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 			ref = database.openWrite();
 			ref.getDatabase();
 		}
-		
+
 		ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
 	}
-	
+
 	/**
 	 * @see InstanceSink#addInstance(Instance)
 	 */
@@ -63,23 +65,22 @@ public class OrientInstanceSink implements InstanceSink, Closeable {
 		if (ref == null) {
 			ref = database.openWrite();
 		}
-		
+
 		ODatabaseDocumentTx db = ref.getDatabase();
-		
+
 		// get/create OInstance
-		OInstance conv = ((instance instanceof OInstance)?
-				((OInstance) instance):(new OInstance(instance)));
-		
+		OInstance conv = ((instance instanceof OInstance) ? ((OInstance) instance)
+				: (new OInstance(instance)));
+
 		// population count
 		/*
-		 * XXX This is done here because otherwise the whole
-		 * data set would have again to be retrieved from the
-		 * database. See PopulationServiceImpl
+		 * XXX This is done here because otherwise the whole data set would have
+		 * again to be retrieved from the database. See PopulationServiceImpl
 		 */
 		if (ps != null) {
 			ps.addToPopulation(instance, DataSet.TRANSFORMED);
 		}
-		
+
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		// configure the document
 		ODocument doc = conv.configureDocument(db);

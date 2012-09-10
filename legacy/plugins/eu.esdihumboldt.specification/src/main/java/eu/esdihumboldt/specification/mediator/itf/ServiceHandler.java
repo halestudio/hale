@@ -21,24 +21,26 @@
 package eu.esdihumboldt.specification.mediator.itf;
 
 /**
- * An implementation of this interface handles an OGC WebService request.
- * For example an Handler for WFS GetFeature or WFS GetCapabilities request.
+ * An implementation of this interface handles an OGC WebService request. For
+ * example an Handler for WFS GetFeature or WFS GetCapabilities request.
  * 
  * @author Bernd Schneiders, Logica
- *
+ * 
  */
 
 public interface ServiceHandler {
 	/**
-	 * An implementation of this interface has to implement this method
-	 * to indicate that the implementation can handle the request.
+	 * An implementation of this interface has to implement this method to
+	 * indicate that the implementation can handle the request.
+	 * 
 	 * @param request
 	 * @return true if the request can be handled, else false.
 	 */
 	Boolean canHandle(ItfRequest request);
-	
+
 	/**
 	 * This method executes a request.
+	 * 
 	 * @param request
 	 * @return ItfReponse containing the Service response (including GML data).
 	 */

@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings("all")
 public class Messages extends NLS {
+
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.ui.internal.messages"; //$NON-NLS-1$
 
 	public static String MappingExportWizard_0;
@@ -274,19 +275,19 @@ public class Messages extends NLS {
 	public static String FeatureTypesPage_2;
 	public static String FeatureTypesPage_3;
 	public static String FeatureTypesPage_4;
-	
+
 	public static String ProjectParser_0;
 	public static String ProjectParser_1;
 	public static String ProjectParser_6;
 	public static String ProjectParser_8;
 	public static String ProjectParser_14;
-	
+
 	public static String LoadInstanceDataHandler_0;
 	public static String LoadInstanceDataHandler_1;
-	
+
 	public static String NewProjectHandler_0;
 	public static String NewProjectHandler_1;
-	
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

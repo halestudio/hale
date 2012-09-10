@@ -28,19 +28,19 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 
 /**
  * Property value assignment function.
+ * 
  * @author Simon Templer
  */
 @Immutable
-public class Assign extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements AssignFunction {
-	
+public class Assign extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements AssignFunction {
+
 	@Override
-	protected Object evaluate(
-			String transformationIdentifier, TransformationEngine engine,
-			ListMultimap<String, PropertyValue> variables,
-			String resultName, PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log) 
-			throws TransformationException {
-		return getParameterChecked(PARAMETER_VALUE); 
+	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
+			ListMultimap<String, PropertyValue> variables, String resultName,
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException {
+		return getParameterChecked(PARAMETER_VALUE);
 	}
 
 }

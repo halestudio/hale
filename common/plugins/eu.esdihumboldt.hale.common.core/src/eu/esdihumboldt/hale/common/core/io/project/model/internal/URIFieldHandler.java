@@ -18,6 +18,7 @@ import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
 /**
  * Field handler for {@link URI}s
+ * 
  * @author Simon Templer
  */
 public class URIFieldHandler extends GeneralizedFieldHandler {

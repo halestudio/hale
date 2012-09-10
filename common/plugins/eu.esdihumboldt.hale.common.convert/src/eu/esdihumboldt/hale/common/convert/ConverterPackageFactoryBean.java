@@ -28,32 +28,34 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.util.reflection.ReflectionHelper;
 
-
 /**
  * Factory bean for adding a converter to a converter registry
+ * 
  * @author Simon Templer
  */
-public class ConverterPackageFactoryBean implements FactoryBean<Object>, 
-		BeanClassLoaderAware, InitializingBean {
-	
+public class ConverterPackageFactoryBean implements FactoryBean<Object>, BeanClassLoaderAware,
+		InitializingBean {
+
 	private static final ALogger log = ALoggerFactory.getLogger(ConverterPackageFactoryBean.class);
-	
+
 	private ConverterRegistry registry;
-	
+
 	private String packageName;
 
 	private ClassLoader classLoader;
-	
+
 	/**
 	 * Set the converter registry to add the converter to.
+	 * 
 	 * @param registry the converter registry
 	 */
 	public void setRegistry(ConverterRegistry registry) {
 		this.registry = registry;
 	}
-	
+
 	/**
 	 * Set the package name
+	 * 
 	 * @param packageName the package name
 	 */
 	public void setPackage(String packageName) {
@@ -87,16 +89,17 @@ public class ConverterPackageFactoryBean implements FactoryBean<Object>,
 	/**
 	 * Register all converters and converter factories in a given package with
 	 * the given registry.
+	 * 
 	 * @param registry the converter registry
 	 * @param classLoader the class loader
 	 * @param packageName the package name
 	 */
-	public static void registerConverters(ConverterRegistry registry,
-			ClassLoader classLoader, String packageName) {
+	public static void registerConverters(ConverterRegistry registry, ClassLoader classLoader,
+			String packageName) {
 		try {
-			List<Class<?>> classes = ReflectionHelper.getClassesFromPackage(
-					packageName, classLoader);
-			
+			List<Class<?>> classes = ReflectionHelper.getClassesFromPackage(packageName,
+					classLoader);
+
 			for (Class<?> clazz : classes) {
 				try {
 					if (!Modifier.isAbstract(clazz.getModifiers())) {
@@ -111,8 +114,8 @@ public class ConverterPackageFactoryBean implements FactoryBean<Object>,
 		}
 	}
 
-	private static void registerConverter(ConverterRegistry registry,
-			Class<?> clazz) throws InstantiationException, IllegalAccessException {
+	private static void registerConverter(ConverterRegistry registry, Class<?> clazz)
+			throws InstantiationException, IllegalAccessException {
 		if (Converter.class.isAssignableFrom(clazz)) {
 			Converter<?, ?> converter = (Converter<?, ?>) clazz.newInstance();
 			registry.addConverter(converter);

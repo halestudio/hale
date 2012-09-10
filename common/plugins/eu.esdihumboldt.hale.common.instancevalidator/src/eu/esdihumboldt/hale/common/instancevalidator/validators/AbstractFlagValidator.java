@@ -9,15 +9,16 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 
 /**
  * Validator for {@link AbstractFlag}.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class AbstractFlagValidator implements TypeConstraintValidator {
+
 	@Override
 	public void validateTypeConstraint(Instance instance, TypeConstraint constraint,
 			InstanceValidationContext context) throws ValidationException {
 		if (((AbstractFlag) constraint).isEnabled())
-			throw new ValidationException("The type of this instance (" +
-					instance.getDefinition().getDisplayName() + ") is abstract.");
+			throw new ValidationException("The type of this instance ("
+					+ instance.getDefinition().getDisplayName() + ") is abstract.");
 	}
 }

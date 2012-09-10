@@ -26,26 +26,28 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Tree content provider using a {@link TypeIndex} as root, or an
- * {@link Iterable} of {@link TypeDefinition}s.
- * XXX for now not lazy
+ * {@link Iterable} of {@link TypeDefinition}s. XXX for now not lazy
+ * 
  * @author Simon Templer
  */
 public class TypeIndexContentProvider implements ITreeContentProvider {
 
 	private final TreeViewer tree;
-	
+
 	/**
 	 * Create a content provider based on a {@link TypeIndex} as input.
+	 * 
 	 * @param tree the associated tree viewer
 	 */
 	public TypeIndexContentProvider(TreeViewer tree) {
 		super();
-		
+
 		this.tree = tree;
 	}
-	
+
 	/**
 	 * Get the associated tree viewer
+	 * 
 	 * @return the associated tree viewer
 	 */
 	protected TreeViewer getTree() {
@@ -83,7 +85,8 @@ public class TypeIndexContentProvider implements ITreeContentProvider {
 			return ((PropertyDefinition) parentElement).getPropertyType().getChildren().toArray();
 		}
 		else {
-			throw new IllegalArgumentException("Given element not supported in schema tree structure.");
+			throw new IllegalArgumentException(
+					"Given element not supported in schema tree structure.");
 		}
 	}
 
@@ -102,7 +105,8 @@ public class TypeIndexContentProvider implements ITreeContentProvider {
 			return !((PropertyDefinition) parentElement).getPropertyType().getChildren().isEmpty();
 		}
 		else {
-			throw new IllegalArgumentException("Given element not supported in schema tree structure.");
+			throw new IllegalArgumentException(
+					"Given element not supported in schema tree structure.");
 		}
 	}
 
@@ -128,7 +132,7 @@ public class TypeIndexContentProvider implements ITreeContentProvider {
 	@Override
 	public Object getParent(Object element) {
 		// parent can't be determined for sure, may be multiple possibilities
-		//TODO return the "primary" parent?
+		// TODO return the "primary" parent?
 		return null;
 	}
 

@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Advisor for importing source instances
+ * 
  * @author Simon Templer
  */
 public class InstanceImportAdvisor extends DefaultIOAdvisor<InstanceReader> {
@@ -36,8 +37,9 @@ public class InstanceImportAdvisor extends DefaultIOAdvisor<InstanceReader> {
 	@Override
 	public void prepareProvider(InstanceReader provider) {
 		super.prepareProvider(provider);
-		
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
 		provider.setSourceSchema(ss.getSchemas(SchemaSpaceID.SOURCE));
 	}
 
@@ -47,7 +49,7 @@ public class InstanceImportAdvisor extends DefaultIOAdvisor<InstanceReader> {
 	@Override
 	public void updateConfiguration(InstanceReader provider) {
 		super.updateConfiguration(provider);
-		
+
 		provider.setDefaultCRSProvider(new DialogCRSProvider());
 	}
 
@@ -57,9 +59,10 @@ public class InstanceImportAdvisor extends DefaultIOAdvisor<InstanceReader> {
 	@Override
 	public void handleResults(InstanceReader provider) {
 		// add instances to instance service
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		is.addSourceInstances(provider.getInstances());
-		
+
 		super.handleResults(provider);
 	}
 

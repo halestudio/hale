@@ -19,7 +19,8 @@ import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinition;
 import eu.esdihumboldt.util.definition.ObjectDefinition;
 
 /**
- * Object definition for CQL filters. 
+ * Object definition for CQL filters.
+ * 
  * @author Simon Templer
  */
 public class CQLFilterDefinition implements FilterDefinition<FilterGeoCqlImpl> {

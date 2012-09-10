@@ -19,98 +19,99 @@ import eu.esdihumboldt.specification.mediator.constraints.Constraint;
 import eu.esdihumboldt.specification.mediator.constraints.StructuralConstraint;
 
 /**
- *
+ * 
  * @author mgone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class StructuralConstraintImpl implements StructuralConstraint {
 
-    UUID uuid = UUID.randomUUID();
+	UUID uuid = UUID.randomUUID();
 
-    private boolean writeable = false;
+	private boolean writeable = false;
 
-    private List<String> list;
+	private List<String> list;
 
-    private boolean status;
+	private boolean status;
 
-    private long id;
+	private long id;
 
-    private ConstraintSource constraintSource;
+	private ConstraintSource constraintSource;
 
-    private boolean sharedConstraint= false;
+	private boolean sharedConstraint = false;
 
-    public StructuralConstraintImpl() {
-        this.status=false;
-    }
+	public StructuralConstraintImpl() {
+		this.status = false;
+	}
 
-    public StructuralConstraintImpl(List<String> schemas,
-                                    ConstraintSource context) {
-        this.list = schemas;
-        this.constraintSource = context;
-    }
+	public StructuralConstraintImpl(List<String> schemas,
+			ConstraintSource context) {
+		this.list = schemas;
+		this.constraintSource = context;
+	}
 
-    public List<String> getSupportedSchema() {
-        return this.list;
-    }
+	public List<String> getSupportedSchema() {
+		return this.list;
+	}
 
-    public boolean isSatisfied() {
-        return this.status;
-    }
+	public boolean isSatisfied() {
+		return this.status;
+	}
 
-    public ConstraintSource getConstraintSource() {
-        return this.constraintSource;
-    }
+	public ConstraintSource getConstraintSource() {
+		return this.constraintSource;
+	}
 
-    public long getId() {
-        return this.id;
-    }
+	public long getId() {
+		return this.id;
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public UUID getIdentifier() {
-        return this.uuid;
-    }
+	public UUID getIdentifier() {
+		return this.uuid;
+	}
 
-    public void setIdentifier(UUID identifier) {
-        this.uuid = identifier;
-    }
+	public void setIdentifier(UUID identifier) {
+		this.uuid = identifier;
+	}
 
-    public boolean isFinalized() {
-        return this.writeable;
-    }
+	public boolean isFinalized() {
+		return this.writeable;
+	}
 
-    public void setFinalized(boolean write) {
-        writeable = write;
-    }
+	public void setFinalized(boolean write) {
+		writeable = write;
+	}
 
+	public boolean compatible(Constraint constraint) {
+		// Checks whether the this input schema is compatible with a given set
+		// of
+		// input schema of another input or output
+		if (constraint.getClass() == this.getClass()) {
+			for (String schema : this.getSupportedSchema()) {
 
-    public boolean compatible(Constraint constraint) {
-        //Checks whether the this input schema is compatible with a given set of
-        //input schema of another input or output
-        if (constraint.getClass() == this.getClass()) {
-            for (String schema : this.getSupportedSchema()) {
+				if (((StructuralConstraintImpl) constraint)
+						.getSupportedSchema().contains(schema)) {
+					return true;
+				}
+			}
 
-                if (((StructuralConstraintImpl) constraint).getSupportedSchema().contains(
-                        schema)) {
-                    return true;
-                }
-            }
+		}
+		return false;
+	}
 
-        }
-        return false;
-    }
+	public void setSatisfied(boolean _satisfied) {
+		this.status = _satisfied;
+	}
 
-    public void setSatisfied(boolean _satisfied) {
-       this.status=_satisfied;
-    }
-    public void setShared(boolean shared){
-        this.sharedConstraint=shared;
-    }
+	public void setShared(boolean shared) {
+		this.sharedConstraint = shared;
+	}
 
-    public boolean isShared(){
-        return sharedConstraint;
-    }
+	public boolean isShared() {
+		return sharedConstraint;
+	}
 }

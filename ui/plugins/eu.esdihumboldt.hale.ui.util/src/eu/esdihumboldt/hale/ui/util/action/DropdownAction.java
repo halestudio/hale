@@ -27,21 +27,22 @@ import org.eclipse.swt.widgets.Menu;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class DropdownAction extends Action implements IMenuCreator {
-	
+
 	private final List<IContributionItem> items = new ArrayList<IContributionItem>();
-	
+
 	private Menu menu;
-	
+
 	/**
 	 * Creates a drop-down action
+	 * 
 	 * @param name the action name
 	 */
 	public DropdownAction(String name) {
 		super(name, Action.AS_DROP_DOWN_MENU);
-		
+
 		setMenuCreator(this);
 	}
-	
+
 	/**
 	 * Adds an item to the drop-down menu
 	 * 
@@ -67,10 +68,10 @@ public class DropdownAction extends Action implements IMenuCreator {
 	@Override
 	public Menu getMenu(Control parent) {
 		dispose();
-		
+
 		menu = new Menu(parent);
 		fillMenu(menu);
-		
+
 		return menu;
 	}
 
@@ -91,11 +92,11 @@ public class DropdownAction extends Action implements IMenuCreator {
 	@Override
 	public Menu getMenu(Menu parent) {
 		dispose();
-		
+
 		menu = new Menu(parent);
 		fillMenu(menu);
-		
+
 		return menu;
 	}
-	
+
 }

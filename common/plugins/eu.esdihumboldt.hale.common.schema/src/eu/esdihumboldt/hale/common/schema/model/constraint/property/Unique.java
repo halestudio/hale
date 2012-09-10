@@ -17,11 +17,12 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 
 /**
  * Specifies that a property should be unique.
- *
+ * 
  * @author Kai Schwierczek
  */
 @Constraint(mutable = false)
 public class Unique implements PropertyConstraint {
+
 	private final String identifier;
 
 	/**
@@ -33,18 +34,19 @@ public class Unique implements PropertyConstraint {
 
 	/**
 	 * Creates a unique flag with the given identifier.
-	 *
+	 * 
 	 * @param identifier the unique identifier. Unique constraints with the same
-	 *                   identifier share a unique context. <code>null</code> means
-	 *                   not unique at all.
+	 *            identifier share a unique context. <code>null</code> means not
+	 *            unique at all.
 	 */
 	public Unique(String identifier) {
 		this.identifier = identifier;
 	}
 
 	/**
-	 * Returns whether the unique constraint is enabled, the identifier is not null.
-	 *
+	 * Returns whether the unique constraint is enabled, the identifier is not
+	 * null.
+	 * 
 	 * @return whether the unique constraint is enabled
 	 */
 	public boolean isEnabled() {
@@ -53,7 +55,7 @@ public class Unique implements PropertyConstraint {
 
 	/**
 	 * Returns the unique identifer.
-	 *
+	 * 
 	 * @return the unique identifer
 	 */
 	public String getIdentifier() {

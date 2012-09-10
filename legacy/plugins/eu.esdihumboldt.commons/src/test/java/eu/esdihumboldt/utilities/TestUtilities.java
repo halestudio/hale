@@ -20,7 +20,8 @@ public class TestUtilities {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public static void printFileToConsole(File file) throws FileNotFoundException {
+	public static void printFileToConsole(File file)
+			throws FileNotFoundException {
 		BufferedReader bread = new BufferedReader(new FileReader(file));
 		String line = null;
 		LOG.trace("File " + file.getName() + " dump: ");
@@ -28,8 +29,7 @@ public class TestUtilities {
 			while ((line = bread.readLine()) != null) {
 				System.out.println(line);
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			LOG.error(e);
 		}
 	}
@@ -46,8 +46,7 @@ public class TestUtilities {
 			}
 			fis.close();
 			fos.close();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}

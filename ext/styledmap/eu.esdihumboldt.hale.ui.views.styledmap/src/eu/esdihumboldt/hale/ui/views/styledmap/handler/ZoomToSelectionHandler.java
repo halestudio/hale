@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.StyledMapView;
 
 /**
  * Zooms to selected instances.
+ * 
  * @author Simon Templer
  */
 public class ZoomToSelectionHandler extends AbstractHandler {
@@ -36,16 +37,15 @@ public class ZoomToSelectionHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IViewPart viewPart = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().findView(StyledMapView.ID);
+		IViewPart viewPart = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
+				.findView(StyledMapView.ID);
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		
-		if (viewPart instanceof MapView 
-				&& selection instanceof IStructuredSelection) {
-			StyledMapUtil.zoomToSelection(
-					((MapView) viewPart).getMapKit(),
+
+		if (viewPart instanceof MapView && selection instanceof IStructuredSelection) {
+			StyledMapUtil.zoomToSelection(((MapView) viewPart).getMapKit(),
 					(IStructuredSelection) selection);
 		}
-		
+
 		return null;
 	}
 

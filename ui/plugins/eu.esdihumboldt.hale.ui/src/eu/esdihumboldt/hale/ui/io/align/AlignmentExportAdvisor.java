@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
  * Advisor for writing the alignment service alignment
+ * 
  * @author Simon Templer
  */
 public class AlignmentExportAdvisor extends DefaultIOAdvisor<AlignmentWriter> {
@@ -32,8 +33,9 @@ public class AlignmentExportAdvisor extends DefaultIOAdvisor<AlignmentWriter> {
 	@Override
 	public void prepareProvider(AlignmentWriter provider) {
 		super.prepareProvider(provider);
-		
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		provider.setAlignment(as.getAlignment());
 	}
 

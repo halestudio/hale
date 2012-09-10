@@ -26,76 +26,79 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
 
 /**
  * Abstract report definition.
+ * 
  * @author Andreas Burchert
  * @param <T> the report type
  * @param <R> the reporter
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractReportDefinition<T extends Report<?>, R extends T> implements ReportDefinition<T> {
+public abstract class AbstractReportDefinition<T extends Report<?>, R extends T> implements
+		ReportDefinition<T> {
 
 	private static final ALogger _log = ALoggerFactory.getLogger(AbstractReportDefinition.class);
-	
+
 	private final Class<T> reportClass;
-	
+
 	private final String identifier;
-	
+
 	/**
 	 * Key for taskname
 	 */
 	public static final String KEY_REPORT_TASKNAME = "taskname";
-	
+
 	/**
 	 * Key for success
 	 */
 	public static final String KEY_REPORT_SUCCESS = "success";
-	
+
 	/**
 	 * Key for summary
 	 */
 	public static final String KEY_REPORT_SUMMARY = "summary";
-	
+
 	/**
 	 * Key for starttime
 	 */
 	public static final String KEY_REPORT_STARTTIME = "starttime";
-	
+
 	/**
 	 * Key for timestamp
 	 */
 	public static final String KEY_REPORT_TIME = "timestamp";
-	
+
 	/**
 	 * Key for messagetype
 	 */
 	public static final String KEY_REPORT_MESSAGE_TYPE = "messagetype";
-	
+
 	/**
 	 * Key for info messages
 	 */
 	public static final String KEY_REPORT_INFOS = "info";
-	
+
 	/**
 	 * Key for error messages
 	 */
 	public static final String KEY_REPORT_ERRORS = "error";
-	
+
 	/**
 	 * Key for warning messages
 	 */
 	public static final String KEY_REPORT_WARNINGS = "warning";
-	
+
 	/**
 	 * Create report definition.
+	 * 
 	 * @param reportClass the report class
 	 * @param id the identifier for the definition (without prefix)
 	 */
 	public AbstractReportDefinition(Class<T> reportClass, String id) {
 		super();
-		
+
 		this.reportClass = reportClass;
 		this.identifier = ID_PREFIX + id.toUpperCase();
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.util.definition.ObjectDefinition#getIdentifier()
 	 */
@@ -127,41 +130,44 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		} finally {
 			reader.close();
 		}
-		
+
 		R reporter = createReport(props);
 		configureReport(reporter, props);
 		return reporter;
 	}
-	
+
 	/**
 	 * Create a report from a set of properties.
+	 * 
 	 * @param props the properties
 	 * @return the report
 	 */
 	protected abstract R createReport(Properties props);
-		
+
 	/**
 	 * Configure the report.
+	 * 
 	 * @param reporter report to configure
 	 * @param props properties to set
 	 * @return the report
 	 */
 	protected abstract T configureReport(R reporter, Properties props);
-	
+
 	/**
-	 * Basic configuration that should be called from every
-	 * child class!
+	 * Basic configuration that should be called from every child class!
+	 * 
 	 * @param reporter reporter
 	 * @param props properties
-	 * @throws Exception if parsing fails 
+	 * @throws Exception if parsing fails
 	 */
-	public static void configureBasicReporter(Reporter<?> reporter, Properties props) throws Exception {
+	public static void configureBasicReporter(Reporter<?> reporter, Properties props)
+			throws Exception {
 		// set summary
 		reporter.setSummary(props.getProperty(KEY_REPORT_SUMMARY));
-		
+
 		// set success
 		reporter.setSuccess(Boolean.parseBoolean(props.getProperty(KEY_REPORT_SUCCESS)));
-		
+
 		// parse times and set them
 		reporter.setStartTime(new Date(Long.parseLong(props.getProperty(KEY_REPORT_STARTTIME))));
 		reporter.setTimestamp(new Date(Long.parseLong(props.getProperty(KEY_REPORT_TIME))));
@@ -174,7 +180,7 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 	public String asString(T report) {
 		String nl = System.getProperty("line.separator");
 		Properties props = asProperties(report);
-		
+
 		StringWriter writer = new StringWriter();
 		try {
 			props.store(writer, null);
@@ -187,14 +193,15 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 				// ignore
 			}
 		}
-		
-		return nl + writer.toString() + nl+nl;
+
+		return nl + writer.toString() + nl + nl;
 	}
 
 	/**
 	 * Get a {@link Properties} representation of the given report that can be
-	 * used to create a new report instance using 
+	 * used to create a new report instance using
 	 * {@link #createReport(Properties)}.
+	 * 
 	 * @param report the message
 	 * @return the properties representing the report
 	 */
@@ -202,21 +209,22 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		Properties props = new Properties();
 
 		props.setProperty(KEY_REPORT_TASKNAME, report.getTaskName());
-		props.setProperty(KEY_REPORT_SUCCESS, ""+report.isSuccess());
+		props.setProperty(KEY_REPORT_SUCCESS, "" + report.isSuccess());
 		props.setProperty(KEY_REPORT_SUMMARY, report.getSummary());
 
 		if (report.getTimestamp() != null) {
-			props.setProperty(KEY_REPORT_TIME, ""+report.getTimestamp().getTime());
+			props.setProperty(KEY_REPORT_TIME, "" + report.getTimestamp().getTime());
 		}
 
 		if (report.getStartTime() != null) {
-			props.setProperty(KEY_REPORT_STARTTIME, ""+report.getStartTime().getTime());
+			props.setProperty(KEY_REPORT_STARTTIME, "" + report.getStartTime().getTime());
 		}
 
 		if (report.getMessageType() != null) {
-			props.setProperty(KEY_REPORT_MESSAGE_TYPE, ""+report.getMessageType().getCanonicalName());
+			props.setProperty(KEY_REPORT_MESSAGE_TYPE, ""
+					+ report.getMessageType().getCanonicalName());
 		}
 
-		return props ;
+		return props;
 	}
 }

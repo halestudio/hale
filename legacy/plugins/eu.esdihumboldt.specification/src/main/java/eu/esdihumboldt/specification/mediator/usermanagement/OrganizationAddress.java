@@ -14,44 +14,55 @@ package eu.esdihumboldt.specification.mediator.usermanagement;
 import java.util.TimeZone;
 
 /**
- * A OrganizationAddress contains all relevant address inforamtion for an organization. 
+ * A OrganizationAddress contains all relevant address inforamtion for an
+ * organization.
  * 
  * @author Anna Pitaev, Logica CMG
- * @version $Id: OrganizationAddress.java,v 1.1 2007-10-19 10:03:07 pitaeva Exp $
+ * @version $Id: OrganizationAddress.java,v 1.1 2007-10-19 10:03:07 pitaeva Exp
+ *          $
  * 
  */
 public interface OrganizationAddress extends Address {
-	
+
 	/**
 	 * 
 	 * @return the function of the address.
-	 * @Deprecated too complex for the prototype needs, can be used for the Production 
+	 * @Deprecated too complex for the prototype needs, can be used for the
+	 *             Production
 	 */
 	@Deprecated
 	public AddressType getAddressType();
-	
+
 	/**
 	 * 
-	 * The AddressType is the container used to specify the function of an address.
-	 * @Deprecated too complex for the prototype needs, can be used for the Production 
+	 * The AddressType is the container used to specify the function of an
+	 * address.
+	 * 
+	 * @Deprecated too complex for the prototype needs, can be used for the
+	 *             Production
 	 */
 	@Deprecated
-    public enum AddressType{
-    	
-    	/** specifies the function of the address using a standard codelist. see EDIFACT 3035 (Party Function Code Qualifier) */
-    	AddressTypeCoded,
-    	/** is used to provide a non-standard AddressTypeCode. 
-    	   This element is mandatory if the value of AddressTypeCoded is 'Other'. */
-    	AddressTypeCodedOther
-    	
-    }
-    
-    /**
-     * 
-     * @return the off-set from Greenwich Mean Time 
-     * that the organization operates to.
-     *  
-     */
-    public TimeZone getTimeZone();
+	public enum AddressType {
+
+		/**
+		 * specifies the function of the address using a standard codelist. see
+		 * EDIFACT 3035 (Party Function Code Qualifier)
+		 */
+		AddressTypeCoded,
+		/**
+		 * is used to provide a non-standard AddressTypeCode. This element is
+		 * mandatory if the value of AddressTypeCoded is 'Other'.
+		 */
+		AddressTypeCodedOther
+
+	}
+
+	/**
+	 * 
+	 * @return the off-set from Greenwich Mean Time that the organization
+	 *         operates to.
+	 * 
+	 */
+	public TimeZone getTimeZone();
 
 }

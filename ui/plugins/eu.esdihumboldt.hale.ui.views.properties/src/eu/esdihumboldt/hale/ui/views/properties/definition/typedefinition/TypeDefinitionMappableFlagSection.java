@@ -23,18 +23,19 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Properties section with MappableFlag information
+ * 
  * @author Patrick Lieb
  */
-public class TypeDefinitionMappableFlagSection extends DefaultDefinitionSection<TypeDefinition>{
-	
+public class TypeDefinitionMappableFlagSection extends DefaultDefinitionSection<TypeDefinition> {
+
 	private Text mappableFlag;
-	
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "MappableFlag:", null);
 		mappableFlag = getText();
 	}
@@ -44,9 +45,10 @@ public class TypeDefinitionMappableFlagSection extends DefaultDefinitionSection<
 	 */
 	@Override
 	public void refresh() {
-		if (getDefinition().getConstraint(MappableFlag.class).isEnabled()){
+		if (getDefinition().getConstraint(MappableFlag.class).isEnabled()) {
 			mappableFlag.setText("true");
-		} else {
+		}
+		else {
 			mappableFlag.setText("false");
 		}
 	}

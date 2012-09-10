@@ -19,16 +19,18 @@ import com.google.common.io.InputSupplier;
 
 /**
  * Resolve URIs to an input supplier.
+ * 
  * @author Simon Templer
  */
 public interface ResourceResolver {
-	
+
 	/**
 	 * Resolves an URI to an input supplier.
+	 * 
 	 * @param uri the URI
 	 * @return the input supplier
 	 * @throws ResourceNotFoundException if the resource was not found by the
-	 *   resolver
+	 *             resolver
 	 */
 	public InputSupplier<? extends InputStream> resolve(URI uri) throws ResourceNotFoundException;
 

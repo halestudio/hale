@@ -20,7 +20,8 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.LayoutAugmentation;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 
 /**
- * Layout that allows all painters to be fully painted. 
+ * Layout that allows all painters to be fully painted.
+ * 
  * @author Simon Templer
  */
 public class NoLayout implements PainterLayout {

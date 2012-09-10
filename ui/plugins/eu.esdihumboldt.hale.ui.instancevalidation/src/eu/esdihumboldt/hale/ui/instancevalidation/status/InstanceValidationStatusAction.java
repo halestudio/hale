@@ -33,12 +33,13 @@ import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationSer
 import eu.esdihumboldt.hale.ui.views.report.ReportList;
 
 /**
- * Action for instance validation status. On click shows the latest report,
- * and the icon shows the current status.
- *
+ * Action for instance validation status. On click shows the latest report, and
+ * the icon shows the current status.
+ * 
  * @author Kai Schwierczek
  */
 public class InstanceValidationStatusAction extends Action {
+
 //	private Image noReportBaseImage;
 	private ImageDescriptor noReportDescriptor;
 	private ImageDescriptor reportOkDescriptor;
@@ -81,24 +82,35 @@ public class InstanceValidationStatusAction extends Action {
 	 */
 	private void createImageDescriptors() {
 		// load images
-		noReportDescriptor = InstanceValidationUIPlugin.getImageDescriptor("icons/instance_validation_disabled.gif");
-		Image noReportBaseImage = InstanceValidationUIPlugin.getDefault().getImageRegistry().get(InstanceValidationUIPlugin.IMG_INSTANCE_VALIDATION);
+		noReportDescriptor = InstanceValidationUIPlugin
+				.getImageDescriptor("icons/instance_validation_disabled.gif");
+		Image noReportBaseImage = InstanceValidationUIPlugin.getDefault().getImageRegistry()
+				.get(InstanceValidationUIPlugin.IMG_INSTANCE_VALIDATION);
 
-		reportOkDescriptor = new DecorationOverlayIcon(noReportBaseImage, InstanceValidationUIPlugin.getImageDescriptor("icons/signed_yes_ovr.gif"), IDecoration.BOTTOM_LEFT);
-		reportWarningsDescriptor = new DecorationOverlayIcon(noReportBaseImage, PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_DEC_FIELD_WARNING), IDecoration.BOTTOM_LEFT);
-		reportErrorsDescriptor = new DecorationOverlayIcon(noReportBaseImage, PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_DEC_FIELD_ERROR), IDecoration.BOTTOM_LEFT);
+		reportOkDescriptor = new DecorationOverlayIcon(noReportBaseImage,
+				InstanceValidationUIPlugin.getImageDescriptor("icons/signed_yes_ovr.gif"),
+				IDecoration.BOTTOM_LEFT);
+		reportWarningsDescriptor = new DecorationOverlayIcon(noReportBaseImage, PlatformUI
+				.getWorkbench().getSharedImages()
+				.getImageDescriptor(ISharedImages.IMG_DEC_FIELD_WARNING), IDecoration.BOTTOM_LEFT);
+		reportErrorsDescriptor = new DecorationOverlayIcon(noReportBaseImage, PlatformUI
+				.getWorkbench().getSharedImages()
+				.getImageDescriptor(ISharedImages.IMG_DEC_FIELD_ERROR), IDecoration.BOTTOM_LEFT);
 	}
 
 	/**
 	 * Registers needed listeners.
 	 */
 	private void createListeners() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		is.addListener(new InstanceServiceAdapter() {
+
 			@Override
 			public void datasetAboutToChange(DataSet type) {
 				report = null;
 				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
 					@Override
 					public void run() {
 						updateStatus();
@@ -106,13 +118,16 @@ public class InstanceValidationStatusAction extends Action {
 				});
 			}
 		});
-	
-		final InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench().getService(InstanceValidationService.class);
+
+		final InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+				.getService(InstanceValidationService.class);
 		ivs.addListener(new InstanceValidationListener() {
+
 			@Override
 			public void instancesValidated(InstanceValidationReport report) {
 				InstanceValidationStatusAction.this.report = report;
 				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
 					@Override
 					public void run() {
 						updateStatus();
@@ -135,16 +150,19 @@ public class InstanceValidationStatusAction extends Action {
 			setToolTipText("Currently there is no validation report available.");
 			setImageDescriptor(noReportDescriptor);
 			setEnabled(false);
-		} else {
+		}
+		else {
 			ImageDescriptor image;
 			String toolTip;
-			if (!report.getErrors().isEmpty()){
+			if (!report.getErrors().isEmpty()) {
 				image = reportErrorsDescriptor;
 				toolTip = "Instance validation finished with errors.";
-			} else if (!report.getWarnings().isEmpty()) {
+			}
+			else if (!report.getWarnings().isEmpty()) {
 				image = reportWarningsDescriptor;
 				toolTip = "Instance validation finished with warnings.";
-			} else {
+			}
+			else {
 				image = reportOkDescriptor;
 				toolTip = "Instance validation finished without warnings or errors.";
 			}

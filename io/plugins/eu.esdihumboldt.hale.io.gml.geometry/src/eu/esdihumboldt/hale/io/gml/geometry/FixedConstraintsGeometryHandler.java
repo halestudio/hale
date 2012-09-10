@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Base class for geometry handlers that provide fixed type constraints.
+ * 
  * @author Simon Templer
  */
 public abstract class FixedConstraintsGeometryHandler extends AbstractGeometryHandler {
@@ -33,7 +34,7 @@ public abstract class FixedConstraintsGeometryHandler extends AbstractGeometryHa
 	public Iterable<TypeConstraint> getTypeConstraints(TypeDefinition type)
 			throws GeometryNotSupportedException {
 		checkType(type);
-		
+
 		if (constraints == null) {
 			constraints = Collections.unmodifiableCollection(initConstraints());
 		}
@@ -43,7 +44,8 @@ public abstract class FixedConstraintsGeometryHandler extends AbstractGeometryHa
 	/**
 	 * Check if the given type definition is supported by the geometry handler.
 	 * This implementation assumes the type is valid. Override to change this
-	 * behavior. 
+	 * behavior.
+	 * 
 	 * @param type the type definition to check
 	 * @throws GeometryNotSupportedException if the check failed
 	 */
@@ -54,6 +56,7 @@ public abstract class FixedConstraintsGeometryHandler extends AbstractGeometryHa
 
 	/**
 	 * Create the associated type constraints.
+	 * 
 	 * @return the type constraints to set on an associated geometry type
 	 */
 	protected abstract Collection<? extends TypeConstraint> initConstraints();

@@ -22,11 +22,12 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
 
 /**
  * Decorator for {@link PropertyDefinition}s that has a changed parent type
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class RedeclareProperty extends AbstractPropertyDecorator {
-	
+
 	private final DefinitionGroup declaringGroup;
 
 	/**
@@ -34,14 +35,14 @@ public class RedeclareProperty extends AbstractPropertyDecorator {
 	 * group.
 	 * 
 	 * @param property the property to decorate
-	 * @param declaringGroup the new declaring group, may not be 
-	 *   <code>null</code>
+	 * @param declaringGroup the new declaring group, may not be
+	 *            <code>null</code>
 	 */
 	public RedeclareProperty(PropertyDefinition property, DefinitionGroup declaringGroup) {
 		super(property);
-		
+
 		Preconditions.checkNotNull(declaringGroup);
-		
+
 		this.declaringGroup = declaringGroup;
 	}
 

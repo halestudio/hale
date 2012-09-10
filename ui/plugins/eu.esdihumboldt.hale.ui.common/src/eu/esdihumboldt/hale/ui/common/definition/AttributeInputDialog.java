@@ -29,22 +29,21 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.common.Editor;
 
-
 /**
  * Attribute input dialog
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class AttributeInputDialog extends Dialog {
-	
+
 	private final PropertyDefinition definition;
-	
+
 	private final String message;
-	
+
 	private final String title;
-	
+
 	private Editor<?> editor;
 
 	private String text;
@@ -54,15 +53,15 @@ public class AttributeInputDialog extends Dialog {
 	/**
 	 * Create a new attribute input dialog
 	 * 
-	 * @param definition the attribute definition 
+	 * @param definition the attribute definition
 	 * @param parentShell the parent shell
 	 * @param title the dialog title
 	 * @param message the dialog message
 	 */
-	public AttributeInputDialog(PropertyDefinition definition, Shell parentShell,
-			String title, String message) {
+	public AttributeInputDialog(PropertyDefinition definition, Shell parentShell, String title,
+			String message) {
 		super(parentShell);
-		
+
 		this.title = title;
 		this.message = message;
 		this.definition = definition;
@@ -73,12 +72,11 @@ public class AttributeInputDialog extends Dialog {
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		Button okButton = createButton(parent, IDialogConstants.OK_ID,
-				IDialogConstants.OK_LABEL, true);
-		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
+		Button okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+				true);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 
-        okButton.setEnabled(editor.isValid());
+		okButton.setEnabled(editor.isValid());
 	}
 
 	/**
@@ -87,26 +85,27 @@ public class AttributeInputDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		// create composite
-        Composite composite = (Composite) super.createDialogArea(parent);
-        
-        // create message
-        if (message != null) {
-            Label label = new Label(composite, SWT.WRAP);
-            label.setText(message);
-            GridData data = new GridData(GridData.GRAB_HORIZONTAL
-                    | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
-                    | GridData.VERTICAL_ALIGN_CENTER);
-            data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-            label.setLayoutData(data);
-            label.setFont(parent.getFont());
-        }
-        
-        // create editor
-        AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(AttributeEditorFactory.class);
-        editor = aef.createEditor(composite, definition);
-        editor.getControl().setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
-        editor.setPropertyChangeListener(new IPropertyChangeListener() {
+		Composite composite = (Composite) super.createDialogArea(parent);
+
+		// create message
+		if (message != null) {
+			Label label = new Label(composite, SWT.WRAP);
+			label.setText(message);
+			GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
+					| GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+			data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+			label.setLayoutData(data);
+			label.setFont(parent.getFont());
+		}
+
+		// create editor
+		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
+				AttributeEditorFactory.class);
+		editor = aef.createEditor(composite, definition);
+		editor.getControl().setLayoutData(
+				new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+		editor.setPropertyChangeListener(new IPropertyChangeListener() {
+
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(Editor.IS_VALID))
@@ -114,21 +113,21 @@ public class AttributeInputDialog extends Dialog {
 			}
 		});
 
-        applyDialogFont(composite);
-        return composite;
+		applyDialogFont(composite);
+		return composite;
 	}
-	
+
 	/**
 	 * @see Window#configureShell(Shell)
 	 */
 	@Override
 	protected void configureShell(Shell shell) {
-        super.configureShell(shell);
-        if (title != null) {
+		super.configureShell(shell);
+		if (title != null) {
 			shell.setText(title);
 		}
-    }
-	
+	}
+
 	/**
 	 * @return the editor
 	 */
@@ -143,7 +142,7 @@ public class AttributeInputDialog extends Dialog {
 	protected void okPressed() {
 		value = editor.getValue();
 		text = editor.getAsText();
-		
+
 		super.okPressed();
 	}
 

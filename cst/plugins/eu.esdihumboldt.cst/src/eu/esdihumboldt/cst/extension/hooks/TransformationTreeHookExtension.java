@@ -20,9 +20,11 @@ import eu.esdihumboldt.cst.extension.hooks.internal.DefaultTreeHookFactory;
 
 /**
  * Extension for {@link TransformationTreeHook}s
+ * 
  * @author Simon Templer
  */
-public class TransformationTreeHookExtension extends AbstractExtension<TransformationTreeHook, TransformationTreeHookFactory> {
+public class TransformationTreeHookExtension extends
+		AbstractExtension<TransformationTreeHook, TransformationTreeHookFactory> {
 
 	/**
 	 * The extension ID
@@ -40,10 +42,10 @@ public class TransformationTreeHookExtension extends AbstractExtension<Transform
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected TransformationTreeHookFactory createFactory(
-			IConfigurationElement conf) throws Exception {
+	protected TransformationTreeHookFactory createFactory(IConfigurationElement conf)
+			throws Exception {
 		String hookname = conf.getName();
-		
+
 		TreeState state = null;
 		if ("minimal-tree".equals(hookname)) {
 			state = TreeState.MINIMAL;
@@ -54,7 +56,7 @@ public class TransformationTreeHookExtension extends AbstractExtension<Transform
 		if ("full-tree".equals(hookname)) {
 			state = TreeState.FULL;
 		}
-		
+
 		if (state != null) {
 			return new DefaultTreeHookFactory(conf, state);
 		}

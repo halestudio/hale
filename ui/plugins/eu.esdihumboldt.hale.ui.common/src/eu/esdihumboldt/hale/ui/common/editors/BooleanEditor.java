@@ -27,14 +27,15 @@ import eu.esdihumboldt.hale.ui.common.Editor;
 
 /**
  * Attribute editor for boolean values
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class BooleanEditor extends AbstractEditor<Boolean> {
+
 	private Boolean value;
 	private final ComboViewer combo;
-	
+
 	/**
 	 * Create a boolean attribute editor
 	 * 
@@ -42,19 +43,21 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	 */
 	public BooleanEditor(Composite parent) {
 		super();
-		
+
 		combo = new ComboViewer(parent, SWT.READ_ONLY);
 		combo.setContentProvider(ArrayContentProvider.getInstance());
 		combo.setLabelProvider(new LabelProvider());
-		combo.setInput(new Object[]{Boolean.TRUE, Boolean.FALSE});
-		
+		combo.setInput(new Object[] { Boolean.TRUE, Boolean.FALSE });
+
 		// default selection
 		combo.setSelection(new StructuredSelection(Boolean.FALSE));
 		value = Boolean.FALSE;
 		combo.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				Boolean newValue = (Boolean) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				Boolean newValue = (Boolean) ((IStructuredSelection) event.getSelection())
+						.getFirstElement();
 				fireValueChanged(VALUE, value, newValue);
 				value = newValue;
 			}
@@ -108,5 +111,5 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	public boolean isValid() {
 		return true;
 	}
-	
+
 }

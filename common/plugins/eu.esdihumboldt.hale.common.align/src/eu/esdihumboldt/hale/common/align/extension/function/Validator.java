@@ -20,6 +20,7 @@ import com.google.common.collect.ListMultimap;
  * @author Kai Schwierczek
  */
 public interface Validator {
+
 	/**
 	 * Checks whether the given value is valid.
 	 * 

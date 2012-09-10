@@ -23,16 +23,17 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Default {@link PropertyDefinition} implementation
+ * 
  * @author Simon Templer
  */
-public class DefaultPropertyDefinition extends AbstractChildDefinition<PropertyConstraint> implements
-		PropertyDefinition {
-	
+public class DefaultPropertyDefinition extends AbstractChildDefinition<PropertyConstraint>
+		implements PropertyDefinition {
+
 	/**
 	 * The type associated with the property content
 	 */
 	private final TypeDefinition propertyType;
-	
+
 	/**
 	 * Create a new property and add it to the parent group
 	 * 
@@ -40,13 +41,12 @@ public class DefaultPropertyDefinition extends AbstractChildDefinition<PropertyC
 	 * @param parentGroup the parent group
 	 * @param propertyType the property type
 	 */
-	public DefaultPropertyDefinition(QName name,
-			DefinitionGroup parentGroup,
+	public DefaultPropertyDefinition(QName name, DefinitionGroup parentGroup,
 			TypeDefinition propertyType) {
 		super(name, parentGroup);
 		this.propertyType = propertyType;
 	}
-	
+
 	/**
 	 * @see PropertyDefinition#getPropertyType()
 	 */

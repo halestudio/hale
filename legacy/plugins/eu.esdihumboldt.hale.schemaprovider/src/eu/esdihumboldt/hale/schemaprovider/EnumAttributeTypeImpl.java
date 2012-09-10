@@ -19,39 +19,42 @@ import java.util.Set;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.Name;
 
-
 /**
  * Enumeration attribute type decorator
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class EnumAttributeTypeImpl extends AbstractAttributeTypeDecorator
 		implements EnumAttributeType {
 
 	private final Set<String> allowedValues = new LinkedHashSet<String>();
-	
+
 	private final Name name;
-	
+
 	private final boolean othersAllowed;
-	
+
 	/**
 	 * Create a enumeration attribute decorator
 	 * 
-	 * @param type the attribute type
-	 * @param values the enumeration values
-	 * @param othersAllowed if other values shall be allowed
-	 * @param name the custom type name or <code>null</code>
+	 * @param type
+	 *            the attribute type
+	 * @param values
+	 *            the enumeration values
+	 * @param othersAllowed
+	 *            if other values shall be allowed
+	 * @param name
+	 *            the custom type name or <code>null</code>
 	 */
 	public EnumAttributeTypeImpl(AttributeType type, Collection<String> values,
 			boolean othersAllowed, Name name) {
 		super(type);
-		
+
 		this.name = name;
 		this.othersAllowed = othersAllowed;
-		
+
 		allowedValues.addAll(values);
 	}
 
@@ -79,7 +82,7 @@ public class EnumAttributeTypeImpl extends AbstractAttributeTypeDecorator
 		if (name != null) {
 			return name;
 		}
-		
+
 		return super.getName();
 	}
 

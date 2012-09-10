@@ -21,8 +21,9 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionContentProvider;
 
 /**
- * Function content provider that wraps {@link AbstractFunction} in 
+ * Function content provider that wraps {@link AbstractFunction} in
  * {@link FunctionWizardNode}s.
+ * 
  * @author Simon Templer
  */
 public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
@@ -31,6 +32,7 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 
 	/**
 	 * Create a new content provider
+	 * 
 	 * @param container the wizard container
 	 */
 	public FunctionWizardNodeContentProvider(IWizardContainer container) {
@@ -62,7 +64,7 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 		if (element instanceof FunctionWizardNode) {
 			element = ((FunctionWizardNode) element).getFunction();
 		}
-		
+
 		return super.getParent(element);
 	}
 
@@ -70,13 +72,12 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 		if (children == null || children.length == 0) {
 			return children;
 		}
-		
+
 		List<Object> result = new ArrayList<Object>(children.length);
-		
+
 		for (Object child : children) {
 			if (child instanceof AbstractFunction<?>) {
-				child = new FunctionWizardNode((AbstractFunction<?>) child, 
-						container);
+				child = new FunctionWizardNode((AbstractFunction<?>) child, container);
 			}
 			result.add(child);
 		}

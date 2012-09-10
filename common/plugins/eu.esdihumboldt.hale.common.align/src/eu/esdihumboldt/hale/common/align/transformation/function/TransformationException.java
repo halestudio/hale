@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.align.transformation.function;
 
 /**
  * Exception on transformation execution.
+ * 
  * @author Simon Templer
  */
 public class TransformationException extends Exception {
