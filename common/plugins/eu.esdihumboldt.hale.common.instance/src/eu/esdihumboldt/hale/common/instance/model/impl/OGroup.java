@@ -126,7 +126,7 @@ public class OGroup implements MutableGroup {
 			ODocument doc = (ODocument) document;
 			String className = null;
 			if (definition != null) {
-				className = ONameUtil.encodeName(definition.getIdentifier());
+				className = ONamespaceMap.encode(determineName(definition));
 			}
 			else if (doc.containsField(OSerializationHelper.BINARY_WRAPPER_FIELD)
 					|| doc.containsField(OSerializationHelper.FIELD_SERIALIZATION_TYPE)) {
@@ -190,6 +190,19 @@ public class OGroup implements MutableGroup {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Determine the name to use for a definition group as class name to encode.
+	 * 
+	 * @param definition the definition group
+	 * @return the name to encode as class name
+	 */
+	private static QName determineName(DefinitionGroup definition) {
+		if (definition instanceof TypeDefinition) {
+			return ((TypeDefinition) definition).getName();
+		}
+		return new QName(definition.getIdentifier());
 	}
 
 	/**
@@ -392,11 +405,8 @@ public class OGroup implements MutableGroup {
 	 * @return the name encoded as a single string
 	 */
 	protected String encodeProperty(QName propertyName) {
-		// TODO optimize encoding?
-		// map namespace to short identifier
-		propertyName = ONamespaceMap.map(propertyName);
-		// encode name
-		return ONameUtil.encodeName(propertyName.toString());
+		// encode name & map namespace
+		return ONamespaceMap.encode(propertyName);
 	}
 
 	/**
@@ -407,10 +417,8 @@ public class OGroup implements MutableGroup {
 	 */
 	protected QName decodeProperty(String encodedProperty) {
 		try {
-			// decode name
-			QName name = QName.valueOf(ONameUtil.decodeName(encodedProperty));
-			// unmap namespace
-			return ONamespaceMap.unmap(name);
+			// decode name & unmap namespace
+			return ONamespaceMap.decode(encodedProperty);
 		} catch (Throwable e) {
 			throw new RuntimeException("Could not encode property name", e);
 		}
