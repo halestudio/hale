@@ -18,14 +18,16 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 /**
  * Identifies context matches between source and target nodes in a
  * transformation tree.
+ * 
  * @author Simon Templer
  */
 public interface ContextMatcher {
-	
+
 	/**
 	 * Find the context matches in the given transformation tree and applies
 	 * {@link TransformationContext}s to the {@link SourceNode}s in the tree (if
 	 * possible)
+	 * 
 	 * @param tree the transformation tree
 	 */
 	public void findMatches(TransformationTree tree);

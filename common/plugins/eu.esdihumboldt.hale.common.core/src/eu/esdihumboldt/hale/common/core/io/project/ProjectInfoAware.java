@@ -17,14 +17,16 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 /**
  * Interface for {@link ProjectInfo} aware objects, e.g. {@link IOProvider}s
  * making use of project information.
+ * 
  * @author Simon Templer
  */
 public interface ProjectInfoAware {
-	
+
 	/**
 	 * Set information about the current project.
+	 * 
 	 * @param projectInfo the project information, may be <code>null</code> if
-	 *   no project is available
+	 *            no project is available
 	 */
 	public void setProjectInfo(ProjectInfo projectInfo);
 

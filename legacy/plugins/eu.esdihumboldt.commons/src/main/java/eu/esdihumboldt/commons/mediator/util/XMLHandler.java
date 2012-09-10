@@ -52,8 +52,8 @@ public class XMLHandler {
 	 * @throws UnmarshallException
 	 */
 	public Object unmarshall(String xmlRequestString) {
-		ByteArrayInputStream is = new ByteArrayInputStream(xmlRequestString
-				.getBytes());
+		ByteArrayInputStream is = new ByteArrayInputStream(
+				xmlRequestString.getBytes());
 
 		// unmarshall the object using JAXB this should be a message object
 		Object operationRequest = unmarshallRequest(is);

@@ -19,13 +19,13 @@ import org.eclipse.swt.graphics.Image;
 /**
  * Label provider for a column of a tree with {@link TreeNode}s or
  * {@link AbstractMultiColumnTreeNode}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
-	
+
 	/**
 	 * The index of the column
 	 */
@@ -34,11 +34,12 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	/**
 	 * Creates a new label provider for the column with the given index
 	 * 
-	 * @param columnIndex the column index (the index of the first column is zero)
+	 * @param columnIndex the column index (the index of the first column is
+	 *            zero)
 	 */
 	public MultiColumnTreeNodeLabelProvider(final int columnIndex) {
 		super();
-		
+
 		this.columnIndex = columnIndex;
 	}
 
@@ -61,7 +62,7 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 				}
 			}
 		}
-		
+
 		return getDefaultText();
 	}
 
@@ -84,7 +85,7 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 				}
 			}
 		}
-		
+
 		return getDefaultImage();
 	}
 
@@ -96,7 +97,7 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	protected String getDefaultText() {
 		return ""; //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Get the default image when no value is available
 	 * 
@@ -117,7 +118,7 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	protected String getValueText(Object value, TreeNode node) {
 		return value.toString();
 	}
-	
+
 	/**
 	 * Get the image for the given value
 	 * 
@@ -129,5 +130,5 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	protected Image getValueImage(Object value, TreeNode node) {
 		return null;
 	}
-	
+
 }

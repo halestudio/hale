@@ -19,15 +19,16 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Base class for {@link AlignmentWriter} configuration pages
- *
+ * 
  * @author Simon Templer
  * @since 2.5
  */
-public abstract class AlignmentWriterConfigurationPage
-		extends AbstractConfigurationPage<AlignmentWriter, AlignmentExportWizard> {
+public abstract class AlignmentWriterConfigurationPage extends
+		AbstractConfigurationPage<AlignmentWriter, AlignmentExportWizard> {
 
 	/**
-	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String, ImageDescriptor)
+	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String,
+	 *      ImageDescriptor)
 	 */
 	protected AlignmentWriterConfigurationPage(String pageName, String title,
 			ImageDescriptor titleImage) {

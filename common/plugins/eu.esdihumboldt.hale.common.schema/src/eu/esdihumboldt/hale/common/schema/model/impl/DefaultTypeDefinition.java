@@ -32,30 +32,32 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Default {@link TypeDefinition} implementation.
+ * 
  * @author Simon Templer
  */
-public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> implements TypeDefinition {
-	
+public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> implements
+		TypeDefinition {
+
 	/**
 	 * The definition of the super type
 	 */
 	private DefaultTypeDefinition superType;
-	
+
 	/**
 	 * The sub-types
 	 */
 	private SortedSet<DefaultTypeDefinition> subTypes;
-	
+
 	/**
 	 * The declared children
 	 */
 	private final DefinitionGroup declaredChildren = new DefaultGroup(true);
-	
+
 	/**
 	 * The list of inherited children, names mapped to child definitions
 	 */
 	private LinkedHashMap<QName, ChildDefinition<?>> inheritedChildren;
-	
+
 	/**
 	 * Create a type definition with the given name
 	 * 
@@ -72,7 +74,7 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	public String getIdentifier() {
 		return name.getNamespaceURI() + "/" + name.getLocalPart();
 	}
-	
+
 	/**
 	 * @see TypeDefinition#getDeclaredChildren()
 	 */
@@ -98,15 +100,15 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	@Override
 	public Collection<? extends ChildDefinition<?>> getChildren() {
 		Collection<ChildDefinition<?>> children = new ArrayList<ChildDefinition<?>>();
-		
+
 		initInheritedChildren();
-		
+
 		// add inherited children
 		children.addAll(inheritedChildren.values());
-		
+
 		// add declared children afterwards - correct order for output
 		children.addAll(getDeclaredChildren());
-		
+
 		return children;
 	}
 
@@ -117,25 +119,25 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	private void initInheritedChildren() {
 		if (inheritedChildren == null) {
 			inheritedChildren = new LinkedHashMap<QName, ChildDefinition<?>>();
-			
+
 			// populate inherited attributes
 			DefaultTypeDefinition parent = getSuperType();
 			LinkedList<DefaultTypeDefinition> parents = new LinkedList<DefaultTypeDefinition>();
 			while (parent != null) {
 				parents.add(parent);
-				
+
 				parent = parent.getSuperType();
 			}
-			
+
 			// add children starting from the topmost supertype
 			Iterator<DefaultTypeDefinition> it = parents.descendingIterator();
 			while (it.hasNext()) {
 				parent = it.next();
-				
+
 				for (ChildDefinition<?> parentChild : parent.getDeclaredChildren()) {
 					// create reparented copy
 					ChildDefinition<?> reparent = DefinitionUtil.reparentChild(parentChild, this);
-					
+
 					inheritedChildren.put(reparent.getName(), reparent);
 				}
 			}
@@ -146,20 +148,20 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	 * @see AbstractDefinition#getInheritedConstraint(Class)
 	 */
 	@Override
-	protected <T extends TypeConstraint> T getInheritedConstraint(
-			Class<T> constraintType) {
+	protected <T extends TypeConstraint> T getInheritedConstraint(Class<T> constraintType) {
 		TypeDefinition superType = getSuperType();
-		
+
 		if (superType != null) {
-			// get the super type constraint (this also may be an inherited constraint from its super types)
+			// get the super type constraint (this also may be an inherited
+			// constraint from its super types)
 			T superConstraint = superType.getConstraint(constraintType);
-			
+
 			if (superConstraint.isInheritable()) {
 				// if inheritance is allowed for the constraint, return it
 				return superConstraint;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -181,9 +183,9 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 		if (this.superType != null) {
 			this.superType.removeSubType(this);
 		}
-		
+
 		this.superType = superType;
-		
+
 		superType.addSubType(this);
 	}
 
@@ -209,7 +211,7 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 		if (subTypes == null) {
 			subTypes = new TreeSet<DefaultTypeDefinition>();
 		}
-		
+
 		subTypes.add(subtype);
 	}
 
@@ -235,13 +237,13 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	@Override
 	public ChildDefinition<?> getChild(QName name) {
 		ChildDefinition<?> result = declaredChildren.getChild(name);
-		
+
 		if (result == null) {
 			initInheritedChildren();
-			
+
 			result = inheritedChildren.get(name);
 		}
-		
+
 		return result;
 	}
 

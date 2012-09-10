@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.ui.views.report.properties.details.tree.ReportTreeLa
  * @author Kai Schwierczek
  */
 public class DefaultReportDetailsPage implements CustomReportDetailsPage {
+
 	private TreeViewer treeViewer;
 
 	/**
@@ -62,7 +63,8 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 		PatternFilter filter = new PatternFilter();
 
 		// create FilteredTree
-		FilteredTree filteredTree = new FilteredTree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL, filter, true);
+		FilteredTree filteredTree = new FilteredTree(parent, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL, filter, true);
 
 		treeViewer = filteredTree.getViewer();
 
@@ -77,10 +79,12 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 		Menu menu = menuMgr.createContextMenu(treeViewer.getTree());
 
 		menuMgr.addMenuListener(new IMenuListener() {
+
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 				if (treeViewer.getSelection() instanceof IStructuredSelection) {
-					IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+					IStructuredSelection selection = (IStructuredSelection) treeViewer
+							.getSelection();
 
 					Object o = selection.getFirstElement();
 
@@ -104,6 +108,7 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 
 		// open stacktrace on double click
 		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				TreeSelection o = (TreeSelection) event.getSelection();
@@ -185,10 +190,10 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 
 		@Override
 		public void run() {
-			Status status = new Status(IStatus.ERROR, "eu.esdihumboldt.hale.ui.views.report", "See details",
-					new ShowException(m.getStackTrace()));
-			StackTraceErrorDialog d = new StackTraceErrorDialog(Display.getCurrent().getActiveShell(),
-					"Message Details", m.getMessage(), status, IStatus.ERROR);
+			Status status = new Status(IStatus.ERROR, "eu.esdihumboldt.hale.ui.views.report",
+					"See details", new ShowException(m.getStackTrace()));
+			StackTraceErrorDialog d = new StackTraceErrorDialog(Display.getCurrent()
+					.getActiveShell(), "Message Details", m.getMessage(), status, IStatus.ERROR);
 			d.open();
 		}
 	}

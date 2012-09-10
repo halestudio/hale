@@ -19,32 +19,34 @@ import java.util.Set;
  * associated Concept has to implement. It is similar to ISO 19110's
  * FC_FeatureOperation.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public interface ConceptOperation 
-	extends ConceptProperty {
+public interface ConceptOperation extends ConceptProperty {
 
 	/**
 	 * Equal to ISO 19110 FC_FeatureOperation.signature and FC_FeatureOperation.
 	 * formalDefintion (the functionalLanguage is Java here).
-	 * @return the signature of this ConceptOperation, expressed as a {@link Method}
-	 * object.
+	 * 
+	 * @return the signature of this ConceptOperation, expressed as a
+	 *         {@link Method} object.
 	 */
 	public Method getSignature();
-	
+
 	/**
 	 * Equal to ISO 19110 FC_FeatureOperation.observesValuesOf
-	 * @return a Set of {@link ConceptAttribute} objects that serve as input 
-	 * for this ConceptOperation.
+	 * 
+	 * @return a Set of {@link ConceptAttribute} objects that serve as input for
+	 *         this ConceptOperation.
 	 */
 	public Set<ConceptAttribute> getInputAttributes();
-	
+
 	/**
 	 * Equal to ISO 19110 FC_FeatureOperation.affectsValuesOf
-	 * @return a Set of {@link ConceptAttribute} objects that serve as output 
-	 * targets for this ConceptOperation.
+	 * 
+	 * @return a Set of {@link ConceptAttribute} objects that serve as output
+	 *         targets for this ConceptOperation.
 	 */
 	public Set<ConceptAttribute> getOutputAttributes();
 }

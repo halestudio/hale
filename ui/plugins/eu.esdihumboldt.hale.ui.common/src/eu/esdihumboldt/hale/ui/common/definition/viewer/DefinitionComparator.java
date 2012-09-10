@@ -24,8 +24,9 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
- * Comparator for {@link Definition}s. Groups group properties and
- * normal properties.
+ * Comparator for {@link Definition}s. Groups group properties and normal
+ * properties.
+ * 
  * @author Simon Templer
  */
 public class DefinitionComparator extends ViewerComparator {
@@ -50,28 +51,28 @@ public class DefinitionComparator extends ViewerComparator {
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
 		int cat1 = category(e1);
-        int cat2 = category(e2);
+		int cat2 = category(e2);
 
-        if (cat1 != cat2) {
+		if (cat1 != cat2) {
 			return cat1 - cat2;
 		}
-    	
-        String name1 = getSortName(e1);
-        String name2 = getSortName(e2);
 
-        // use the comparator to compare the strings
-        return getComparator().compare(name1, name2);
+		String name1 = getSortName(e1);
+		String name2 = getSortName(e2);
+
+		// use the comparator to compare the strings
+		return getComparator().compare(name1, name2);
 	}
 
 	private String getSortName(Object def) {
 		if (def instanceof EntityDefinition) {
 			def = ((EntityDefinition) def).getDefinition();
 		}
-		
+
 		if (def instanceof Definition<?>) {
 			return ((Definition<?>) def).getDisplayName();
 		}
-		
+
 		return def.toString();
 	}
 
@@ -83,19 +84,20 @@ public class DefinitionComparator extends ViewerComparator {
 		if (element instanceof EntityDefinition) {
 			element = ((EntityDefinition) element).getDefinition();
 		}
-		
+
 		if (element instanceof GroupPropertyDefinition) {
 			return 0;
 		}
 		if (element instanceof PropertyDefinition) {
 			return 1;
 		}
-		//used if instances contain metadata, used in DefinitionInstanceTreeViewer
-		if (element instanceof Set){
+		// used if instances contain metadata, used in
+		// DefinitionInstanceTreeViewer
+		if (element instanceof Set) {
 			return 2;
 		}
-		
+
 		return super.category(element);
 	}
-	
+
 }

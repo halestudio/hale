@@ -17,21 +17,24 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 
 /**
  * Function wizard descriptor
+ * 
  * @param <T> the type of the function definition
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public interface FunctionWizardDescriptor<T extends AbstractFunction<?>> 
-		extends ExtensionObjectFactory<FunctionWizardFactory>, FunctionWizardFactory {
+public interface FunctionWizardDescriptor<T extends AbstractFunction<?>> extends
+		ExtensionObjectFactory<FunctionWizardFactory>, FunctionWizardFactory {
 
 	/**
 	 * Get the ID of the associated function
+	 * 
 	 * @return the function ID
 	 */
 	public String getFunctionId();
-	
+
 	/**
 	 * Get the function definition
+	 * 
 	 * @return the function definition
 	 */
 	public T getFunction();

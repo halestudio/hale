@@ -15,14 +15,13 @@ import java.io.Serializable;
 
 /**
  * A TypeKey is used to determine the properties of an object that make it
- * unique in a certain context. A TypeKey must be {@link Comparable}, since 
- * it will be used in Collections a lot.
+ * unique in a certain context. A TypeKey must be {@link Comparable}, since it
+ * will be used in Collections a lot.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public interface TypeKey 
-	extends Comparable, Serializable{
+public interface TypeKey extends Comparable, Serializable {
 
 }

@@ -26,25 +26,28 @@ import eu.esdihumboldt.util.resource.internal.ResolverExtension;
 
 /**
  * Utility methods for the resource extensions.
+ * 
  * @author Simon Templer
  */
 public abstract class Resources implements ResourcesConstants {
-	
+
 	/**
 	 * Resource type mapped to host name mapped to resource resolver
 	 */
 	private static Map<String, Multimap<String, ResourceResolver>> resolvers;
-	
+
 	/**
 	 * Try resolving an URI for a given resource type.
+	 * 
 	 * @param uri the URI to the resource
-	 * @param resourceType the resource type, <code>null</code> for any resource type
+	 * @param resourceType the resource type, <code>null</code> for any resource
+	 *            type
 	 * @return an input supplier for the resource or <code>null</code> if it was
-	 *   not found through resource resolvers
+	 *         not found through resource resolvers
 	 */
 	public static final InputSupplier<? extends InputStream> tryResolve(URI uri, String resourceType) {
 		init();
-		
+
 		if (resourceType != null) {
 			Multimap<String, ResourceResolver> typeResolvers = resolvers.get(resourceType);
 			if (typeResolvers != null) {
@@ -60,7 +63,7 @@ public abstract class Resources implements ResourcesConstants {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -73,24 +76,24 @@ public abstract class Resources implements ResourcesConstants {
 				// ignore
 			}
 		}
-		
+
 		return null;
 	}
 
 	private static synchronized void init() {
 		if (resolvers == null) {
-			resolvers = new HashMap<String, Multimap<String,ResourceResolver>>();
-			
+			resolvers = new HashMap<String, Multimap<String, ResourceResolver>>();
+
 			// register resolvers
 			for (ResolverConfiguration resolverConf : ResolverExtension.getInstance().getElements()) {
 				String resourceType = resolverConf.getResourceTypeId();
-				
+
 				Multimap<String, ResourceResolver> typeResolvers = resolvers.get(resourceType);
 				if (typeResolvers == null) {
 					typeResolvers = HashMultimap.create();
 					resolvers.put(resourceType, typeResolvers);
 				}
-				
+
 				for (String host : resolverConf.getHosts()) {
 					typeResolvers.put(host, resolverConf.getResourceResolver());
 				}

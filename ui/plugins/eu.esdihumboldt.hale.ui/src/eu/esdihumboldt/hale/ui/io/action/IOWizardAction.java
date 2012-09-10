@@ -38,20 +38,21 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
  * Action that launches an {@link IOWizard}
  */
 public class IOWizardAction extends AbstractFactoryAction<ActionUI> {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(IOWizardAction.class);
 	private IEvaluationReference evaluationReference;
-	
+
 	/**
 	 * Constructor
 	 * 
 	 * @param actionId the actionId
-	 * @throws NullPointerException if no ActionUI can be found for the given actionId
+	 * @throws NullPointerException if no ActionUI can be found for the given
+	 *             actionId
 	 */
 	public IOWizardAction(String actionId) {
 		this(ActionUIExtension.getInstance().findActionUI(actionId));
 	}
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -59,28 +60,36 @@ public class IOWizardAction extends AbstractFactoryAction<ActionUI> {
 	 */
 	public IOWizardAction(ActionUI factory) {
 		super(factory, IAction.AS_PUSH_BUTTON);
-		
+
 		Expression enabledWhen = factory.getEnabledWhen();
 		if (enabledWhen != null) {
-			IEvaluationService es = (IEvaluationService) PlatformUI.getWorkbench().getService(IEvaluationService.class);
-			evaluationReference = es.addEvaluationListener(enabledWhen, new IPropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent event) {
-					if (event.getNewValue() != null)
-						setEnabled((Boolean) event.getNewValue());
-				}
-			}, "enabled");
-			// listener should be removed when not needed, use the dispose method.
-			// AbstractExtensionContribution caches the action it is OK without using the dispose method (the action is only created once per contribution)
+			IEvaluationService es = (IEvaluationService) PlatformUI.getWorkbench().getService(
+					IEvaluationService.class);
+			evaluationReference = es.addEvaluationListener(enabledWhen,
+					new IPropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent event) {
+							if (event.getNewValue() != null)
+								setEnabled((Boolean) event.getNewValue());
+						}
+					}, "enabled");
+			// listener should be removed when not needed, use the dispose
+			// method.
+			// AbstractExtensionContribution caches the action it is OK without
+			// using the dispose method (the action is only created once per
+			// contribution)
 		}
 	}
-	
+
 	/**
-	 * Disposes this action. Should be called when the action isn't needed anymore.
+	 * Disposes this action. Should be called when the action isn't needed
+	 * anymore.
 	 */
 	public void dispose() {
 		if (evaluationReference != null) {
-			IEvaluationService es = (IEvaluationService) PlatformUI.getWorkbench().getService(IEvaluationService.class);
+			IEvaluationService es = (IEvaluationService) PlatformUI.getWorkbench().getService(
+					IEvaluationService.class);
 			es.removeEvaluationListener(evaluationReference);
 		}
 	}
@@ -94,11 +103,11 @@ public class IOWizardAction extends AbstractFactoryAction<ActionUI> {
 		try {
 			// retrieve action ID
 			final String actionId = getFactory().getActionID();
-			
+
 			// find associated advisor
 			IOAdvisor<?> advisor = IOAdvisorExtension.getInstance().findAdvisor(actionId);
 			checkState(advisor != null, "No advisor for action found");
-			
+
 			// create wizard
 			IOWizard<?> wizard = getFactory().createExtensionObject();
 			// set advisor and action ID
@@ -107,8 +116,7 @@ public class IOWizardAction extends AbstractFactoryAction<ActionUI> {
 			WizardDialog dialog = new WizardDialog(shell, wizard);
 			notifyResult(dialog.open() == Window.OK);
 		} catch (Exception e) {
-			log.error("Could not launch I/O wizard for advisor " + 
-					getFactory().getIdentifier(), e);
+			log.error("Could not launch I/O wizard for advisor " + getFactory().getIdentifier(), e);
 		}
 	}
 }

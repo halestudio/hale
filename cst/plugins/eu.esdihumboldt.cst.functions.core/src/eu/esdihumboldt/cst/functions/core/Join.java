@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler
  * @author Kai Schwierczek
  */
 public class Join extends Retype implements JoinFunction {
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation#getInstanceHandler()
 	 */

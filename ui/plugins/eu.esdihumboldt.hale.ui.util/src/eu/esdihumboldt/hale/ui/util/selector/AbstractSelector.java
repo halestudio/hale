@@ -35,11 +35,12 @@ import eu.esdihumboldt.hale.ui.util.viewer.ObjectContentProvider;
 
 /**
  * Abstract selector control based on a {@link TableViewer}.
+ * 
  * @param <T> the type of the object to be selected
  * @author Simon Templer
  */
 public abstract class AbstractSelector<T> implements ISelectionProvider {
-	
+
 	private static enum NoObject {
 		NONE;
 
@@ -47,17 +48,17 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 		public String toString() {
 			return "<Click to select>";
 		}
-		
+
 	}
-	
+
 	private final TypeSafeListenerList<ISelectionChangedListener> listeners = new TypeSafeListenerList<ISelectionChangedListener>();
-	
+
 	private final TableViewer viewer;
-	
+
 	private final Composite main;
-	
+
 	private final ViewerFilter[] filters;
-	
+
 	/**
 	 * Tracks the current input. Set by inputChanged of the content provider.
 	 */
@@ -65,19 +66,19 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 
 	/**
 	 * Create a selector.
+	 * 
 	 * @param parent the parent composite
 	 * @param labelProvider the label provider for the selector
 	 * @param filters the filters for the selector, may be <code>null</code>
 	 */
-	public AbstractSelector(Composite parent, ILabelProvider labelProvider,
-			ViewerFilter[] filters) {
+	public AbstractSelector(Composite parent, ILabelProvider labelProvider, ViewerFilter[] filters) {
 		main = new Composite(parent, SWT.NONE);
 		TableColumnLayout columnLayout = new TableColumnLayout();
 		main.setLayout(columnLayout);
-		
+
 		// entity selection combo
 		viewer = new TableViewer(main, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION | SWT.NO_SCROLL);
-		
+
 		TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
 		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
 
@@ -85,25 +86,27 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 		viewer.setLabelProvider(labelProvider);
 
 		this.filters = filters;
-		
+
 		// initial selection
 		Object select = NoObject.NONE;
 		currentInput = select;
 		viewer.setInput(select);
-		
+
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (event.getSelection().isEmpty()) {
 					return;
 				}
-				
-				AbstractViewerSelectionDialog<T, ?> dialog = createSelectionDialog(
-						Display.getCurrent().getActiveShell());
+
+				AbstractViewerSelectionDialog<T, ?> dialog = createSelectionDialog(Display
+						.getCurrent().getActiveShell());
 				dialog.setFilters(AbstractSelector.this.filters);
 				if (dialog.open() == AbstractViewerSelectionDialog.OK) {
 					T selected = dialog.getObject();
-					if ((selected == null && currentInput == null) || (selected != null && selected.equals(currentInput)))
+					if ((selected == null && currentInput == null)
+							|| (selected != null && selected.equals(currentInput)))
 						return;
 					if (selected != null) {
 						currentInput = selected;
@@ -113,12 +116,11 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 					}
 					viewer.setInput(currentInput);
 					/*
-					 * XXX Bug on Mac? - Viewer is not refreshed correctly until 
-					 * user clicks on the wizard.
-					 * Manually refreshing, layouting the parent composite or
-					 * calling forceActive/forceFocus/setActive on the Shell 
-					 * doesn't help.
-					 * XXX is this fixed with TableColumnLayout?
+					 * XXX Bug on Mac? - Viewer is not refreshed correctly until
+					 * user clicks on the wizard. Manually refreshing, layouting
+					 * the parent composite or calling
+					 * forceActive/forceFocus/setActive on the Shell doesn't
+					 * help. XXX is this fixed with TableColumnLayout?
 					 */
 				}
 				viewer.setSelection(new StructuredSelection());
@@ -126,13 +128,13 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 				// inform about the input change
 				fireSelectionChange();
 			}
-			
+
 		});
 	}
-	
+
 	/**
 	 * Determines if the given object matches the selector's filters.
-	 *
+	 * 
 	 * @param candidate the object to test
 	 * @return if the object is accepted by all filters
 	 */
@@ -164,8 +166,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 	 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
 	 */
 	@Override
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		listeners.remove(listener);
 	}
 
@@ -182,31 +183,31 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 					// valid selection
 					currentInput = selected;
 					viewer.setInput(selected);
-					
+
 					fireSelectionChange();
-					
+
 					return;
 				}
 				else {
-					//TODO user error message?
+					// TODO user error message?
 				}
 			}
 		}
-		
+
 		currentInput = NoObject.NONE;
 		viewer.setInput(NoObject.NONE);
 		viewer.setSelection(new StructuredSelection());
-		
+
 		fireSelectionChange();
 	}
-	
+
 	/**
-	 * Fires a selection change and sets the last selection to the given 
+	 * Fires a selection change and sets the last selection to the given
 	 * selection.
 	 */
 	protected void fireSelectionChange() {
 		SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
-		
+
 		for (ISelectionChangedListener listener : listeners) {
 			listener.selectionChanged(event);
 		}
@@ -214,6 +215,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 
 	/**
 	 * Create the dialog for selecting an entity.
+	 * 
 	 * @param parentShell the parent shell for the dialog
 	 * @return the entity dialog
 	 */
@@ -221,6 +223,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 
 	/**
 	 * Get the main selector control
+	 * 
 	 * @return the main control
 	 */
 	public Control getControl() {
@@ -229,6 +232,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 
 	/**
 	 * Get the selected entity definition
+	 * 
 	 * @return the selected entity definition or <code>null</code>
 	 */
 	@SuppressWarnings("unchecked")
@@ -237,12 +241,12 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 		if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
 			return null;
 		}
-		
+
 		Object element = ((IStructuredSelection) selection).getFirstElement();
 		if (element != null && element != NoObject.NONE) {
 			return (T) element;
 		}
-		
+
 		return null;
 	}
 

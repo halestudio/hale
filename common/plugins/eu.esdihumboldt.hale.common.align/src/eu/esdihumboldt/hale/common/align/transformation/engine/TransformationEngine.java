@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationF
 
 /**
  * A transformation engine used for {@link TransformationFunction} execution.
+ * 
  * @author Simon Templer
  */
 public interface TransformationEngine {
@@ -24,10 +25,10 @@ public interface TransformationEngine {
 	 * Setup the transformation engine
 	 */
 	public void setup();
-	
+
 	/**
 	 * Dispose the transformation engine
 	 */
 	public void dispose();
-	
+
 }

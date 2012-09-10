@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
  * @author Kai Schwierczek
  */
 public class EntityDefinitionServiceDecorator implements EntityDefinitionService {
+
 	/**
 	 * The decorated entity definition service.
 	 */
@@ -51,10 +52,12 @@ public class EntityDefinitionServiceDecorator implements EntityDefinitionService
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService#getTypeEntities(eu.esdihumboldt.hale.common.schema.model.TypeDefinition, eu.esdihumboldt.hale.common.schema.SchemaSpaceID)
+	 * @see eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService#getTypeEntities(eu.esdihumboldt.hale.common.schema.model.TypeDefinition,
+	 *      eu.esdihumboldt.hale.common.schema.SchemaSpaceID)
 	 */
 	@Override
-	public Collection<? extends TypeEntityDefinition> getTypeEntities(TypeDefinition type, SchemaSpaceID schemaSpace) {
+	public Collection<? extends TypeEntityDefinition> getTypeEntities(TypeDefinition type,
+			SchemaSpaceID schemaSpace) {
 		return entityDefinitionService.getTypeEntities(type, schemaSpace);
 	}
 
@@ -75,7 +78,8 @@ public class EntityDefinitionServiceDecorator implements EntityDefinitionService
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService#addIndexContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition, java.lang.Integer)
+	 * @see eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService#addIndexContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 *      java.lang.Integer)
 	 */
 	@Override
 	public EntityDefinition addIndexContext(EntityDefinition sibling, Integer index) {
@@ -83,7 +87,8 @@ public class EntityDefinitionServiceDecorator implements EntityDefinitionService
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService#addConditionContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition, eu.esdihumboldt.hale.common.instance.model.Filter)
+	 * @see eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService#addConditionContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 *      eu.esdihumboldt.hale.common.instance.model.Filter)
 	 */
 	@Override
 	public EntityDefinition addConditionContext(EntityDefinition sibling, Filter filter) {

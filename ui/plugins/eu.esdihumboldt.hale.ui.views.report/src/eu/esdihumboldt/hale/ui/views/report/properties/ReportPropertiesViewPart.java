@@ -22,24 +22,24 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class ReportPropertiesViewPart extends ViewPart
-implements ITabbedPropertySheetPageContributor {
+public abstract class ReportPropertiesViewPart extends ViewPart implements
+		ITabbedPropertySheetPageContributor {
 
 	/**
-	* @see ITabbedPropertySheetPageContributor#getContributorId()
-	*/
+	 * @see ITabbedPropertySheetPageContributor#getContributorId()
+	 */
 	@Override
 	public String getContributorId() {
 		return "eu.esdihumboldt.hale.ui.views.report.properties";
 	}
-	
+
 	/**
-	* @see WorkbenchPart#getAdapter(Class)
-	*/
+	 * @see WorkbenchPart#getAdapter(Class)
+	 */
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if (adapter == IPropertySheetPage.class)
-		    return new TabbedPropertySheetPage(this);
+			return new TabbedPropertySheetPage(this);
 		return super.getAdapter(adapter);
 	}
 

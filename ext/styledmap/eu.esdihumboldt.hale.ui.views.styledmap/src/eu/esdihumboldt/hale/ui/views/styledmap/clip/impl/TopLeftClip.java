@@ -17,6 +17,7 @@ import java.awt.Rectangle;
 
 /**
  * Diagonal clip for painting the top left area of the view-port.
+ * 
  * @author Simon Templer
  */
 public class TopLeftClip extends AbstractPolygonClip {
@@ -26,9 +27,9 @@ public class TopLeftClip extends AbstractPolygonClip {
 	 */
 	@Override
 	protected Polygon getVisiblePolygon(Rectangle viewportBounds) {
-		return new Polygon(
-				new int[]{viewportBounds.x, viewportBounds.x + viewportBounds.width, viewportBounds.x}, 
-				new int[]{viewportBounds.y, viewportBounds.y, viewportBounds.y + viewportBounds.height}, 3);
+		return new Polygon(new int[] { viewportBounds.x, viewportBounds.x + viewportBounds.width,
+				viewportBounds.x }, new int[] { viewportBounds.y, viewportBounds.y,
+				viewportBounds.y + viewportBounds.height }, 3);
 	}
 
 }

@@ -25,15 +25,16 @@ import eu.esdihumboldt.hale.ui.codelist.internal.Messages;
 
 /**
  * Allows selecting a file as source for a code list
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class FileSelector implements CodeListSelector {
+
 //	private static final ALogger log = ALoggerFactory.getLogger(FileSelector.class);
-	
+
 	private final Composite fileComposite;
-	
+
 	private final FileFieldEditor fileEditor;
 
 	/**
@@ -46,7 +47,7 @@ public class FileSelector implements CodeListSelector {
 		fileComposite.setLayout(new GridLayout(3, false));
 		fileEditor = new FileFieldEditor("file", Messages.FileSelector_1, fileComposite); //$NON-NLS-1$ //$NON-NLS-2$
 		fileEditor.setEmptyStringAllowed(false);
-		fileEditor.setFileExtensions(new String[]{"*.xml"}); //$NON-NLS-1$
+		fileEditor.setFileExtensions(new String[] { "*.xml" }); //$NON-NLS-1$
 	}
 
 	/**
@@ -73,8 +74,8 @@ public class FileSelector implements CodeListSelector {
 //			log.error("Error loading code list"); //$NON-NLS-1$
 //			return null;
 //		}
-		
-		//FIXME update
+
+		// FIXME update
 		return null;
 	}
 

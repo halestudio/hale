@@ -17,6 +17,7 @@ import eu.esdihumboldt.hale.ui.io.ImportWizard;
 
 /**
  * Wizard for opening a project
+ * 
  * @author Simon Templer
  */
 public class OpenProjectWizard extends ImportWizard<ProjectReader> {

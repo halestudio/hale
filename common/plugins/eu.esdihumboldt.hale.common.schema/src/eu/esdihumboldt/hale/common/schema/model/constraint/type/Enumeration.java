@@ -20,15 +20,17 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 
 /**
  * Constraint that holds allowed values for a type
- * @param <T> the value type 
- *  
+ * 
+ * @param <T> the value type
+ * 
  * @author Simon Templer
  */
 @Immutable
 @Constraint(mutable = false)
 public class Enumeration<T> implements TypeConstraint {
+
 	private final Collection<? extends T> values;
-	
+
 	private final boolean allowOthers;
 
 	/**
@@ -40,12 +42,12 @@ public class Enumeration<T> implements TypeConstraint {
 		values = null;
 		allowOthers = true;
 	}
-	
+
 	/**
 	 * Create a constraint that holds allowed values for a type
 	 * 
 	 * @param values the collection of allowed values, ownership of the
-	 *   collection is transferred to the constraint
+	 *            collection is transferred to the constraint
 	 * @param allowOthers if other values are allowed
 	 */
 	public Enumeration(Collection<? extends T> values, boolean allowOthers) {
@@ -56,7 +58,7 @@ public class Enumeration<T> implements TypeConstraint {
 
 	/**
 	 * @return the collection of allowed values, <code>null</code> there is no
-	 *   such restriction
+	 *         such restriction
 	 */
 	public Collection<? extends T> getValues() {
 		return values;
@@ -64,8 +66,8 @@ public class Enumeration<T> implements TypeConstraint {
 
 	/**
 	 * @return if other values than those returned by {@link #getValues()} are
-	 *   allowed for the type, should be ignored if {@link #getValues()} returns
-	 *   <code>null</code>
+	 *         allowed for the type, should be ignored if {@link #getValues()}
+	 *         returns <code>null</code>
 	 */
 	public boolean isAllowOthers() {
 		return allowOthers;

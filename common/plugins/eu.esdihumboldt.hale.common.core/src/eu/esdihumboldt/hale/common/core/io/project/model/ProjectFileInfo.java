@@ -16,16 +16,17 @@ import java.net.URI;
 
 /**
  * Object holding information about a project file stored at a given URI
+ * 
  * @author Simon Templer
  */
 public class ProjectFileInfo {
-	
+
 	private String name;
-	
+
 	private URI location;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public ProjectFileInfo() {
 		super();
@@ -33,6 +34,7 @@ public class ProjectFileInfo {
 
 	/**
 	 * Create a project file info
+	 * 
 	 * @param name the project file name
 	 * @param location the project file location
 	 */

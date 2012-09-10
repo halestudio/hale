@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 /**
  * Notification handling for {@link SchemaService}s that support
  * {@link SchemaServiceListener}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -34,15 +34,16 @@ public abstract class AbstractSchemaService implements SchemaService {
 
 	private final TypeSafeListenerList<SchemaServiceListener> listeners = new TypeSafeListenerList<SchemaServiceListener>();
 	private final ProjectService projectService;
-	
+
 	/**
 	 * Create a schema service.
+	 * 
 	 * @param projectService the project service. The schemas will be cleared
-	 *   when the project is cleaned.
+	 *            when the project is cleaned.
 	 */
 	public AbstractSchemaService(ProjectService projectService) {
 		super();
-		
+
 		this.projectService = projectService;
 		projectService.addListener(new ProjectServiceAdapter() {
 
@@ -51,7 +52,7 @@ public abstract class AbstractSchemaService implements SchemaService {
 				clearSchemas(SchemaSpaceID.TARGET);
 				clearSchemas(SchemaSpaceID.SOURCE);
 			}
-			
+
 		});
 	}
 
@@ -74,8 +75,8 @@ public abstract class AbstractSchemaService implements SchemaService {
 	/**
 	 * Called when a schema has been added to the source or target schema space.
 	 * 
-	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
-	 *   or {@link SchemaSpaceID#TARGET}
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
 	 * @param schema the schema that was added
 	 */
 	protected void notifySchemaAdded(SchemaSpaceID spaceID, Schema schema) {
@@ -83,12 +84,12 @@ public abstract class AbstractSchemaService implements SchemaService {
 			listener.schemaAdded(spaceID, schema);
 		}
 	}
-	
+
 	/**
 	 * Called when the source or target schema space have been cleared.
 	 * 
-	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
-	 *   or {@link SchemaSpaceID#TARGET}
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
 	 */
 	protected void notifySchemasCleared(SchemaSpaceID spaceID) {
 		for (SchemaServiceListener listener : listeners) {
@@ -102,7 +103,8 @@ public abstract class AbstractSchemaService implements SchemaService {
 	 * @param spaceID the schema space of the changed types
 	 * @param types the changed types
 	 */
-	protected void notifyMappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+	protected void notifyMappableTypesChanged(SchemaSpaceID spaceID,
+			Collection<? extends TypeDefinition> types) {
 		for (SchemaServiceListener listener : listeners)
 			listener.mappableTypesChanged(spaceID, types);
 	}

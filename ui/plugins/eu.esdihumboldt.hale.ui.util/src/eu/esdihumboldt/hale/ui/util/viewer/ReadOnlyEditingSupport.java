@@ -22,22 +22,21 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Provides text editors to allow copying the string values of the cells
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReadOnlyEditingSupport extends EditingSupport {
 
 	private final ILabelProvider labelProvider;
-	
+
 	/**
 	 * @param viewer the viewer
 	 * @param labelProvider the label provider
 	 */
-	public ReadOnlyEditingSupport(ColumnViewer viewer,
-			ILabelProvider labelProvider) {
+	public ReadOnlyEditingSupport(ColumnViewer viewer, ILabelProvider labelProvider) {
 		super(viewer);
-		
+
 		this.labelProvider = labelProvider;
 	}
 
@@ -55,10 +54,11 @@ public class ReadOnlyEditingSupport extends EditingSupport {
 	 */
 	@Override
 	protected CellEditor getCellEditor(Object element) {
-		TextCellEditor editor = new TextCellEditor((Composite) getViewer().getControl(), SWT.READ_ONLY);
-		
-		//editor.set
-		
+		TextCellEditor editor = new TextCellEditor((Composite) getViewer().getControl(),
+				SWT.READ_ONLY);
+
+		// editor.set
+
 		return editor;
 	}
 
@@ -67,7 +67,7 @@ public class ReadOnlyEditingSupport extends EditingSupport {
 	 */
 	@Override
 	protected Object getValue(Object element) {
-		return labelProvider.getText(element); 
+		return labelProvider.getText(element);
 	}
 
 	/**

@@ -29,25 +29,27 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
  * @author Kai Schwierczek
  */
 public interface InstanceHandler<E extends TransformationEngine> {
+
 	/**
 	 * Partition the given instances.
 	 * 
 	 * @param instances the instances
 	 * @param transformationIdentifier the transformation function identifier
-	 * @param engine the transformation engine that may be used for the
-	 *   function execution
-	 * @param transformationParameters the transformation parameters,
-	 *   may be <code>null</code> 
-	 * @param executionParameters additional parameters for the execution, 
-	 *   may be <code>null</code>
+	 * @param engine the transformation engine that may be used for the function
+	 *            execution
+	 * @param transformationParameters the transformation parameters, may be
+	 *            <code>null</code>
+	 * @param executionParameters additional parameters for the execution, may
+	 *            be <code>null</code>
 	 * @param log the transformation log to report any information about the
-	 *   execution of the transformation to
+	 *            execution of the transformation to
 	 * @return a resource iterator over partitioned instances instances
 	 * @throws TransformationException if an unrecoverable error occurs during
-	 *   transformation
+	 *             transformation
 	 */
 	public ResourceIterator<FamilyInstance> partitionInstances(InstanceCollection instances,
 			String transformationIdentifier, E engine,
-			ListMultimap<String, String> transformationParameters, 
-			Map<String, String> executionParameters, TransformationLog log) throws TransformationException;
+			ListMultimap<String, String> transformationParameters,
+			Map<String, String> executionParameters, TransformationLog log)
+			throws TransformationException;
 }

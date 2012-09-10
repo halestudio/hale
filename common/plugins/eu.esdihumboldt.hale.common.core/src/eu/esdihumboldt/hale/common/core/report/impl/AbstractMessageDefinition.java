@@ -25,35 +25,37 @@ import eu.esdihumboldt.util.definition.ObjectDefinition;
 
 /**
  * Abstract message definition
+ * 
  * @param <T> the message type
  * @author Simon Templer
  */
 public abstract class AbstractMessageDefinition<T extends Message> implements MessageDefinition<T> {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractMessageDefinition.class);
-	
+
 	private final Class<T> messageClass;
-	
+
 	private final String identifier;
-	
+
 	/**
 	 * Key for the message string
 	 */
 	public static final String KEY_MESSAGE = "message";
-	
+
 	/**
 	 * Key for the stack trace
 	 */
 	public static final String KEY_STACK_TRACE = "stack";
-	
+
 	/**
 	 * Create message definition
+	 * 
 	 * @param messageClass the message class
 	 * @param id the identifier for the definition (without prefix)
 	 */
 	public AbstractMessageDefinition(Class<T> messageClass, String id) {
 		super();
-		
+
 		this.messageClass = messageClass;
 		this.identifier = ID_PREFIX + id.toUpperCase();
 	}
@@ -89,12 +91,13 @@ public abstract class AbstractMessageDefinition<T extends Message> implements Me
 		} finally {
 			reader.close();
 		}
-		
+
 		return createMessage(props);
 	}
 
 	/**
 	 * Create a message from a set of properties
+	 * 
 	 * @param props the properties
 	 * @return the message
 	 */
@@ -107,7 +110,7 @@ public abstract class AbstractMessageDefinition<T extends Message> implements Me
 	public String asString(T message) {
 		String nl = System.getProperty("line.separator");
 		Properties props = asProperties(message);
-		
+
 		StringWriter writer = new StringWriter();
 		try {
 			props.store(writer, null);
@@ -120,28 +123,30 @@ public abstract class AbstractMessageDefinition<T extends Message> implements Me
 				// ignore
 			}
 		}
-		
-		return nl + writer.toString() + nl+nl;
+
+		return nl + writer.toString() + nl + nl;
 	}
 
 	/**
 	 * Get a {@link Properties} representation of the given message that can be
-	 * used to create a new message instance using 
+	 * used to create a new message instance using
 	 * {@link #createMessage(Properties)}.
+	 * 
 	 * @param message the message
 	 * @return the properties representing the message
 	 */
 	protected Properties asProperties(T message) {
 		Properties props = new Properties();
-		
+
 		props.setProperty(KEY_MESSAGE, message.getMessage());
-		
+
 		if (message.getStackTrace() != null) {
 			props.setProperty(KEY_STACK_TRACE, message.getStackTrace());
-		} else {
+		}
+		else {
 			props.setProperty(KEY_STACK_TRACE, "");
 		}
-		
-		return props ;
+
+		return props;
 	}
 }

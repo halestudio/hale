@@ -29,19 +29,21 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * A selection with source and target {@link EntityDefinition}s
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelection {
-	
+
 	private final Set<EntityDefinition> sourceItems = new LinkedHashSet<EntityDefinition>();
-	
+
 	private final Set<EntityDefinition> targetItems = new LinkedHashSet<EntityDefinition>();
-	
+
 	private final SchemaStructuredMode mode;
-	
+
 	/**
-	 * Defines modes specifying the behavior of the selection as {@link IStructuredSelection}
+	 * Defines modes specifying the behavior of the selection as
+	 * {@link IStructuredSelection}
 	 */
 	public enum SchemaStructuredMode {
 		/** Only source items are returned */
@@ -58,7 +60,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public DefaultSchemaSelection() {
 		this(null, null, SchemaStructuredMode.ALL);
 	}
-	
+
 	/**
 	 * Creates a selection that is initialized with the given items
 	 * 
@@ -66,22 +68,21 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	 * @param targetItems the target items
 	 * @param mode the selection structured mode
 	 */
-	public DefaultSchemaSelection(final Collection<EntityDefinition> sourceItems, 
-			final Collection<EntityDefinition> targetItems, 
-			SchemaStructuredMode mode) {
+	public DefaultSchemaSelection(final Collection<EntityDefinition> sourceItems,
+			final Collection<EntityDefinition> targetItems, SchemaStructuredMode mode) {
 		super();
-		
+
 		this.mode = mode;
-		
+
 		if (sourceItems != null) {
 			this.sourceItems.addAll(sourceItems);
 		}
-		
+
 		if (targetItems != null) {
 			this.targetItems.addAll(targetItems);
 		}
 	}
-	
+
 	/**
 	 * Adds a source item
 	 * 
@@ -90,7 +91,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public void addSourceItem(EntityDefinition item) {
 		sourceItems.add(item);
 	}
-	
+
 	/**
 	 * Adds a target item
 	 * 
@@ -99,7 +100,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public void addTargetItem(EntityDefinition item) {
 		targetItems.add(item);
 	}
-	
+
 	/**
 	 * @see SchemaSelection#getSourceItems()
 	 */
@@ -115,7 +116,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public Set<EntityDefinition> getTargetItems() {
 		return Collections.unmodifiableSet(targetItems);
 	}
-	
+
 	/**
 	 * @see SchemaSelection#getFirstSourceItem()
 	 */
@@ -123,7 +124,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public EntityDefinition getFirstSourceItem() {
 		return getFirstItem(SchemaSpaceID.SOURCE);
 	}
-	
+
 	/**
 	 * @see SchemaSelection#getFirstTargetItem()
 	 */
@@ -131,7 +132,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public EntityDefinition getFirstTargetItem() {
 		return getFirstItem(SchemaSpaceID.TARGET);
 	}
-	
+
 	/**
 	 * @see SchemaSelection#getFirstItem(SchemaSpaceID)
 	 */
@@ -156,8 +157,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	 */
 	@Override
 	public Object getFirstElement() {
-		if (!sourceItems.isEmpty() && 
-				!mode.equals(SchemaStructuredMode.ONLY_TARGET)) {
+		if (!sourceItems.isEmpty() && !mode.equals(SchemaStructuredMode.ONLY_TARGET)) {
 			return getFirstSourceItem();
 		}
 		else {
@@ -202,8 +202,8 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	 */
 	@Override
 	public List<EntityDefinition> toList() {
-		List<EntityDefinition> list = new ArrayList<EntityDefinition>(
-				sourceItems.size() + targetItems.size());
+		List<EntityDefinition> list = new ArrayList<EntityDefinition>(sourceItems.size()
+				+ targetItems.size());
 		switch (mode) {
 		case ONLY_TARGET:
 			list.addAll(targetItems);

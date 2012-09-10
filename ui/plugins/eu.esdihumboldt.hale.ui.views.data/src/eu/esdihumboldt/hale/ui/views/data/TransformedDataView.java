@@ -36,27 +36,27 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
  * Table for viewing transformed data
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class TransformedDataView extends AbstractDataView {
-	
+
 	/**
 	 * The view id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.data.transformed"; //$NON-NLS-1$
-	
+
 	private Image instanceImage;
-	
+
 	private Image sampleImage;
-	
+
 	private Image mapImage;
-	
+
 	private InstanceServiceSelector instanceSelector;
-	
+
 	private SampleTransformInstanceSelector sampleSelector;
-	
+
 	private WindowSelectionSelector mapSelector;
 
 	private Button mapButton;
@@ -67,14 +67,14 @@ public class TransformedDataView extends AbstractDataView {
 	 */
 	public TransformedDataView() {
 		super(new SampleTransformInstanceSelector(), ID + ".viewer");
-		
+
 		instanceSelector = new InstanceServiceSelector(SchemaSpaceID.TARGET);
 		// another selector based on the reference sample service
 		sampleSelector = (SampleTransformInstanceSelector) getDefaultInstanceSelector();
 		// selector base on the map selection
 		mapSelector = new WindowSelectionSelector(DataSet.TRANSFORMED);
 	}
-	
+
 	/**
 	 * @see PropertiesViewPart#getViewContext()
 	 */
@@ -110,16 +110,16 @@ public class TransformedDataView extends AbstractDataView {
 				if (instanceButton.getSelection())
 					setInstanceSelector(instanceSelector);
 			}
-			
+
 		});
 		selectorButtons.add(instanceButton);
-		
+
 		final Button sampleButton = new Button(parent, SWT.RADIO);
 		if (sampleImage == null) {
 			sampleImage = DataViewPlugin.getImageDescriptor("icons/table.gif").createImage(); //$NON-NLS-1$
 		}
 		sampleButton.setImage(sampleImage);
-		sampleButton.setSelection(true);	
+		sampleButton.setSelection(true);
 		sampleButton.setToolTipText(Messages.TransformedTableView_SynchToolTipText);
 		sampleButton.addSelectionListener(new SelectionAdapter() {
 
@@ -128,10 +128,10 @@ public class TransformedDataView extends AbstractDataView {
 				if (sampleButton.getSelection())
 					setInstanceSelector(sampleSelector);
 			}
-			
+
 		});
 		selectorButtons.add(sampleButton);
-		
+
 		mapButton = new Button(parent, SWT.RADIO);
 		if (mapImage == null) {
 			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
@@ -145,18 +145,19 @@ public class TransformedDataView extends AbstractDataView {
 				if (mapButton.getSelection())
 					setInstanceSelector(mapSelector);
 			}
-			
+
 		});
 		selectorButtons.add(mapButton);
 	}
 
 	/**
 	 * Show the given selection.
-	 *
+	 * 
 	 * @param is the selection to show
 	 */
 	public void showSelection(InstanceSelection is) {
-		// mapButton.setSelected(true) neither fires an event (at least not directly), nor deselects the other buttons
+		// mapButton.setSelected(true) neither fires an event (at least not
+		// directly), nor deselects the other buttons
 		for (Button b : selectorButtons)
 			b.setSelection(false);
 		mapButton.setSelection(true);
@@ -172,7 +173,7 @@ public class TransformedDataView extends AbstractDataView {
 		instanceImage.dispose();
 		sampleImage.dispose();
 		mapImage.dispose();
-		
+
 		super.dispose();
 	}
 

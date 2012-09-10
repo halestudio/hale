@@ -35,10 +35,11 @@ import eu.esdihumboldt.util.Pair;
 /**
  * Visitor that validates cell nodes. The tree should have already been
  * annotated with the source instance values when applying this visitor.
+ * 
  * @author Simon Templer
  */
 public class CellNodeValidator extends AbstractTargetToSourceVisitor {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(CellNodeValidator.class);
 	/**
 	 * the transformation reporter
@@ -53,7 +54,7 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 	public CellNodeValidator(TransformationReporter reporter) {
 		this.reporter = reporter;
 	}
-	
+
 	/**
 	 * @see AbstractTargetToSourceVisitor#visit(CellNode)
 	 */
@@ -61,9 +62,9 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 	public boolean visit(CellNode node) {
 		// evaluate if for the cell all needed inputs are set
 		Cell cell = node.getCell();
-		
+
 		// collect source and target nodes per entity name
-		
+
 		ListMultimap<String, Pair<SourceNode, Entity>> sources = ArrayListMultimap.create();
 		if (cell.getSource() != null) {
 			for (Entry<String, ? extends Entity> sourceEntry : cell.getSource().entries()) {
@@ -80,7 +81,7 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 				}
 			}
 		}
-		
+
 		ListMultimap<String, Pair<TargetNode, Entity>> targets = ArrayListMultimap.create();
 		for (Entry<String, ? extends Entity> targetEntry : cell.getTarget().entries()) {
 			String name = targetEntry.getKey();
@@ -93,21 +94,22 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 				log.error("Target node for entity not found.");
 			}
 		}
-		
+
 		boolean valid = validate(node, sources, targets);
-		
+
 		if (valid) {
 			processValid(cell, sources, targets);
 		}
-		
+
 		node.setValid(valid);
-		
+
 		// don't visit source nodes
 		return false;
 	}
 
 	/**
 	 * Validate a cell node.
+	 * 
 	 * @param node the cell node
 	 * @param sources the named source entities and nodes
 	 * @param targets the named target entities and nodes
@@ -126,32 +128,34 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 					return false;
 				}
 			}
-			
-			//TODO additional validation?
-			
+
+			// TODO additional validation?
+
 			return true;
 		}
 		else {
-			reporter.error(new TransformationMessageImpl(node.getCell(), "Invalid cell - function not found: " + functionId, null));
+			reporter.error(new TransformationMessageImpl(node.getCell(),
+					"Invalid cell - function not found: " + functionId, null));
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * Process a valid cell node.
+	 * 
 	 * @param cell the associated cell
 	 * @param sources the named source entities and nodes
 	 * @param targets the named target entities and nodes
 	 */
-	protected void processValid(Cell cell,
-			ListMultimap<String, Pair<SourceNode, Entity>> sources,
+	protected void processValid(Cell cell, ListMultimap<String, Pair<SourceNode, Entity>> sources,
 			ListMultimap<String, Pair<TargetNode, Entity>> targets) {
 		// override me
 	}
 
 	/**
 	 * Find the matching target node for the given entity in a cell node.
+	 * 
 	 * @param node the cell node the source node must be associated to
 	 * @param entity the entity
 	 * @return the target node or <code>null</code>
@@ -162,12 +166,13 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 				return target;
 			}
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Find the matching source node for the given entity in a cell node.
+	 * 
 	 * @param node the cell node the source node must be associated to
 	 * @param entity the entity
 	 * @return the source node or <code>null</code>

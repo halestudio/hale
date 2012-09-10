@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import java.math.BigInteger;
@@ -16,11 +15,13 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for valueConditionType complex type.
+ * <p>
+ * Java class for valueConditionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="valueConditionType">
@@ -38,62 +39,54 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "valueConditionType", propOrder = {
-    "restriction"
-})
+@XmlType(name = "valueConditionType", propOrder = { "restriction" })
 public class ValueConditionType {
 
-    @XmlElement(name = "Restriction", required = true)
-    protected RestrictionType restriction;
-    @XmlAttribute
-    protected BigInteger seq;
+	@XmlElement(name = "Restriction", required = true)
+	protected RestrictionType restriction;
+	@XmlAttribute
+	protected BigInteger seq;
 
-    /**
-     * Gets the value of the restriction property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RestrictionType }
-     *     
-     */
-    public RestrictionType getRestriction() {
-        return restriction;
-    }
+	/**
+	 * Gets the value of the restriction property.
+	 * 
+	 * @return possible object is {@link RestrictionType }
+	 * 
+	 */
+	public RestrictionType getRestriction() {
+		return restriction;
+	}
 
-    /**
-     * Sets the value of the restriction property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RestrictionType }
-     *     
-     */
-    public void setRestriction(RestrictionType value) {
-        this.restriction = value;
-    }
+	/**
+	 * Sets the value of the restriction property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link RestrictionType }
+	 * 
+	 */
+	public void setRestriction(RestrictionType value) {
+		this.restriction = value;
+	}
 
-    /**
-     * Gets the value of the seq property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getSeq() {
-        return seq;
-    }
+	/**
+	 * Gets the value of the seq property.
+	 * 
+	 * @return possible object is {@link BigInteger }
+	 * 
+	 */
+	public BigInteger getSeq() {
+		return seq;
+	}
 
-    /**
-     * Sets the value of the seq property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setSeq(BigInteger value) {
-        this.seq = value;
-    }
+	/**
+	 * Sets the value of the seq property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link BigInteger }
+	 * 
+	 */
+	public void setSeq(BigInteger value) {
+		this.seq = value;
+	}
 
 }

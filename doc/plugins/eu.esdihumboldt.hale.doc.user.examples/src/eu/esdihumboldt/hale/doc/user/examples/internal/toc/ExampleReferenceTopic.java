@@ -32,11 +32,11 @@ import eu.esdihumboldt.hale.doc.user.examples.internal.extension.ExampleProjectE
  * Table of contents for the function reference
  */
 public class ExampleReferenceTopic implements ITopic, ExamplesConstants {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ExampleReferenceTopic.class);
-	
+
 	private ITopic[] projectTopics;
-	
+
 	/**
 	 * @see IUAElement#isEnabled(IEvaluationContext)
 	 */
@@ -78,13 +78,13 @@ public class ExampleReferenceTopic implements ITopic, ExamplesConstants {
 			ATransaction trans = log.begin("Initializing example project topics");
 			try {
 				Collection<ITopic> topics = new ArrayList<ITopic>();
-				
+
 				// initialize function topics
 				for (ExampleProject project : ExampleProjectExtension.getInstance().getElements()) {
 					ITopic projectTopic = new ProjectTopic(project);
 					topics.add(projectTopic);
 				}
-				
+
 				if (topics.isEmpty()) {
 					projectTopics = NO_TOPICS;
 				}
@@ -95,7 +95,7 @@ public class ExampleReferenceTopic implements ITopic, ExamplesConstants {
 				trans.end();
 			}
 		}
-		
+
 		return projectTopics;
 	}
 

@@ -46,13 +46,14 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * @author Patrick Lieb
  */
 public class EnvelopeHandler extends FixedConstraintsGeometryHandler {
-	
+
 	private static final String ENVELOPE_TYPE = "EnvelopeType";
 
 	private static final String ENVELOPE_WITH_TIME_PERIOD_TYPE = "EnvelopeWithTimePeriodType";
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance, int)
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
+	 *      int)
 	 */
 	@Override
 	public Object createGeometry(Instance instance, int srsDimension)
@@ -61,22 +62,19 @@ public class EnvelopeHandler extends FixedConstraintsGeometryHandler {
 		MultiPoint envelope;
 		List<Point> points = new ArrayList<Point>();
 
-		Collection<Object> values = PropertyResolver.getValues(instance,
-				"coordinates", false);
+		Collection<Object> values = PropertyResolver.getValues(instance, "coordinates", false);
 		if (values != null && !values.isEmpty()) {
 			Iterator<Object> iterator = values.iterator();
 			while (iterator.hasNext()) {
 				Object value = iterator.next();
 				if (value instanceof Instance) {
 					try {
-						Coordinate[] cs = GMLGeometryUtil
-								.parseCoordinates((Instance) value);
+						Coordinate[] cs = GMLGeometryUtil.parseCoordinates((Instance) value);
 						if (cs != null && cs.length > 0) {
 							points.add(getGeometryFactory().createPoint(cs[0]));
 						}
 					} catch (ParseException e) {
-						throw new GeometryNotSupportedException(
-								"Could not parse coordinates", e);
+						throw new GeometryNotSupportedException("Could not parse coordinates", e);
 					}
 				}
 			}
@@ -89,8 +87,7 @@ public class EnvelopeHandler extends FixedConstraintsGeometryHandler {
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
-						Coordinate c = GMLGeometryUtil
-								.parseDirectPosition((Instance) value);
+						Coordinate c = GMLGeometryUtil.parseDirectPosition((Instance) value);
 						if (c != null) {
 							points.add(getGeometryFactory().createPoint(c));
 						}
@@ -114,11 +111,12 @@ public class EnvelopeHandler extends FixedConstraintsGeometryHandler {
 				}
 			}
 		}
-		
-		Coordinate[] coordinates = new Coordinate[]{points.get(0).getCoordinate(), points.get(1).getCoordinate()};
-		envelope =  getGeometryFactory().createMultiPoint(coordinates);
-		
-		if(envelope != null){
+
+		Coordinate[] coordinates = new Coordinate[] { points.get(0).getCoordinate(),
+				points.get(1).getCoordinate() };
+		envelope = getGeometryFactory().createMultiPoint(coordinates);
+
+		if (envelope != null) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
 			return new DefaultGeometryProperty<MultiPoint>(crsDef, envelope);
 		}
@@ -130,8 +128,7 @@ public class EnvelopeHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
-				2);
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
 
 		constraints.add(Binding.get(GeometryProperty.class));
 		constraints.add(GeometryType.get(Polygon.class));

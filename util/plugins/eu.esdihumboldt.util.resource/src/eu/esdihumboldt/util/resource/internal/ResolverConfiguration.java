@@ -23,28 +23,31 @@ import eu.esdihumboldt.util.resource.ResourceResolver;
 
 /**
  * A resolver and its configuration.
+ * 
  * @author Simon Templer
  */
 public class ResolverConfiguration implements Identifiable {
 
 	private final String id;
-	
+
 	private final String resourceTypeId;
-	
+
 	private final Set<String> hosts = new HashSet<String>();
-	
+
 	private final ResourceResolver resourceResolver;
-	
+
 	/**
 	 * Create a resolver configuration.
+	 * 
 	 * @param id the resolver ID
 	 * @param conf the configuration element
 	 * @throws IllegalStateException if no resolver is defined
 	 */
-	public ResolverConfiguration(String id, IConfigurationElement conf) throws IllegalStateException {
+	public ResolverConfiguration(String id, IConfigurationElement conf)
+			throws IllegalStateException {
 		this.id = id;
 		this.resourceTypeId = conf.getAttribute("resourceType");
-		
+
 		// collect host names
 		for (IConfigurationElement host : conf.getChildren("host")) {
 			String hostName = host.getAttribute("name");
@@ -52,14 +55,14 @@ public class ResolverConfiguration implements Identifiable {
 				hosts.add(hostName);
 			}
 		}
-		
+
 		ResourceResolver resolver = null;
 		// try bundle resolver
 		IConfigurationElement[] bundleResolvers = conf.getChildren("bundleResolver");
 		if (bundleResolvers.length > 0) {
 			resolver = new BundleResolver(bundleResolvers[0]);
 		}
-			
+
 		if (resolver != null) {
 			resourceResolver = resolver;
 		}

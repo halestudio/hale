@@ -19,10 +19,11 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Abstract alignment reader implementation
+ * 
  * @author Simon Templer
  */
-public abstract class AbstractAlignmentReader extends AbstractImportProvider 
-		implements AlignmentReader {
+public abstract class AbstractAlignmentReader extends AbstractImportProvider implements
+		AlignmentReader {
 
 	private TypeIndex sourceSchema;
 	private TypeIndex targetSchema;
@@ -37,6 +38,7 @@ public abstract class AbstractAlignmentReader extends AbstractImportProvider
 
 	/**
 	 * Get the source schema
+	 * 
 	 * @return the source schema
 	 */
 	public TypeIndex getSourceSchema() {
@@ -53,6 +55,7 @@ public abstract class AbstractAlignmentReader extends AbstractImportProvider
 
 	/**
 	 * Get the target schema
+	 * 
 	 * @return the target schema
 	 */
 	public TypeIndex getTargetSchema() {
@@ -65,11 +68,11 @@ public abstract class AbstractAlignmentReader extends AbstractImportProvider
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		
+
 		if (sourceSchema == null) {
 			fail("Source schema not set");
 		}
-		
+
 		if (targetSchema == null) {
 			fail("Target schema not set");
 		}

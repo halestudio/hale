@@ -18,10 +18,8 @@ import java.util.List;
  * vice versa based on the {@link ObjectDefinition}ies available for the
  * supported object type and its sub-types.
  * 
- * @param <T>
- *            the supported object type
- * @param <D>
- *            the supported definition type
+ * @param <T> the supported object type
+ * @param <D> the supported definition type
  * 
  * @author Simon Templer
  */
@@ -50,11 +48,9 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 	 * Represent the given object as a definition string, so that it can be used
 	 * to again create an object instance using {@link #parse(String)}.
 	 * 
-	 * @param <X>
-	 *            the object type, an {@link ObjectDefinition} supporting this
+	 * @param <X> the object type, an {@link ObjectDefinition} supporting this
 	 *            type must be available
-	 * @param object
-	 *            the object to create a string representation for
+	 * @param object the object to create a string representation for
 	 * @return the string representation of the object or <code>null</code> if
 	 *         no corresponding {@link ObjectDefinition} is available
 	 * 
@@ -79,8 +75,7 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 						+ ":" + ((ObjectDefinition<T>) definition).asString(object); //$NON-NLS-1$
 			}
 			// compare based on interfaces
-			else if (definition.getObjectClass().isInterface()
-					&& compare(object, definition)) {
+			else if (definition.getObjectClass().isInterface() && compare(object, definition)) {
 				return definition.getIdentifier()
 						+ ":" + ((ObjectDefinition<T>) definition).asString(object); //$NON-NLS-1$
 			}
@@ -92,10 +87,8 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 	/**
 	 * Compares two objects based on there implemented interfaces.
 	 * 
-	 * @param object
-	 *            object to check
-	 * @param definition
-	 *            definition to check on
+	 * @param object object to check
+	 * @param definition definition to check on
 	 * @return true if they implemented the same interfaces
 	 */
 	private boolean compare(T object, D definition) {
@@ -116,7 +109,7 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 			// create a copy of the definition list to ensure we are dealing
 			// with the same instances
 			List<D> list = new ArrayList<D>(getDefinitions());
-			
+
 			// result list
 			ArrayList<D> result = new ArrayList<D>(list.size());
 
@@ -132,8 +125,7 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 							continue;
 
 						// check if it's super class
-						if (def.getObjectClass().isAssignableFrom(
-								d.getObjectClass())) {
+						if (def.getObjectClass().isAssignableFrom(d.getObjectClass())) {
 							isSuper = true;
 							break;
 						}
@@ -160,8 +152,7 @@ public abstract class AbstractObjectFactory<T, D extends ObjectDefinition<? exte
 	/**
 	 * Parse the given definition string and create a CRS definition instance.
 	 * 
-	 * @param value
-	 *            the definition string to parse
+	 * @param value the definition string to parse
 	 * @return the CRS definition instance or <code>null</code>
 	 */
 	public T parse(String value) {

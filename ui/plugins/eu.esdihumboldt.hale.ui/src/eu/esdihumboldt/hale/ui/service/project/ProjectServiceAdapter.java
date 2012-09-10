@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 
 /**
  * Adapter for {@link ProjectServiceListener}s
+ * 
  * @author Simon Templer
  */
 public class ProjectServiceAdapter implements ProjectServiceListener {
@@ -26,8 +27,7 @@ public class ProjectServiceAdapter implements ProjectServiceListener {
 	 * @see ProjectServiceListener#beforeSave(ProjectService, Map)
 	 */
 	@Override
-	public void beforeSave(ProjectService projectService,
-			Map<String, ProjectFile> projectFiles) {
+	public void beforeSave(ProjectService projectService, Map<String, ProjectFile> projectFiles) {
 		// override me
 	}
 
@@ -35,8 +35,7 @@ public class ProjectServiceAdapter implements ProjectServiceListener {
 	 * @see ProjectServiceListener#afterLoad(ProjectService, Map)
 	 */
 	@Override
-	public void afterLoad(ProjectService projectService,
-			Map<String, ProjectFile> projectFiles) {
+	public void afterLoad(ProjectService projectService, Map<String, ProjectFile> projectFiles) {
 		// override me
 	}
 

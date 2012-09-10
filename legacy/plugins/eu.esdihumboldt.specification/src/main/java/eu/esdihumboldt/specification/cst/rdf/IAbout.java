@@ -17,14 +17,15 @@ import java.util.UUID;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 
 /**
- * A {@link IAbout} contains the identifier for OML objects such as {@link IEntity}s.
+ * A {@link IAbout} contains the identifier for OML objects such as
+ * {@link IEntity}s.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface IAbout {
-	
+
 	/**
 	 * @return the uid
 	 */

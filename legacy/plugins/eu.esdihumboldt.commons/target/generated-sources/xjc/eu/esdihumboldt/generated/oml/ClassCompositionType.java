@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for ClassCompositionType complex type.
+ * <p>
+ * Java class for ClassCompositionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ClassCompositionType">
@@ -38,89 +39,77 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ClassCompositionType", propOrder = {
-    "operator",
-    "collection",
-    "featureClass"
-})
+@XmlType(name = "ClassCompositionType", propOrder = { "operator", "collection",
+		"featureClass" })
 public class ClassCompositionType {
 
-    @XmlElement(required = true)
-    protected ClassOperatorType operator;
-    protected ClassCollectionType collection;
-    @XmlElement(name = "FeatureClass")
-    protected ClassType featureClass;
+	@XmlElement(required = true)
+	protected ClassOperatorType operator;
+	protected ClassCollectionType collection;
+	@XmlElement(name = "FeatureClass")
+	protected ClassType featureClass;
 
-    /**
-     * Gets the value of the operator property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ClassOperatorType }
-     *     
-     */
-    public ClassOperatorType getOperator() {
-        return operator;
-    }
+	/**
+	 * Gets the value of the operator property.
+	 * 
+	 * @return possible object is {@link ClassOperatorType }
+	 * 
+	 */
+	public ClassOperatorType getOperator() {
+		return operator;
+	}
 
-    /**
-     * Sets the value of the operator property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ClassOperatorType }
-     *     
-     */
-    public void setOperator(ClassOperatorType value) {
-        this.operator = value;
-    }
+	/**
+	 * Sets the value of the operator property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ClassOperatorType }
+	 * 
+	 */
+	public void setOperator(ClassOperatorType value) {
+		this.operator = value;
+	}
 
-    /**
-     * Gets the value of the collection property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ClassCollectionType }
-     *     
-     */
-    public ClassCollectionType getCollection() {
-        return collection;
-    }
+	/**
+	 * Gets the value of the collection property.
+	 * 
+	 * @return possible object is {@link ClassCollectionType }
+	 * 
+	 */
+	public ClassCollectionType getCollection() {
+		return collection;
+	}
 
-    /**
-     * Sets the value of the collection property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ClassCollectionType }
-     *     
-     */
-    public void setCollection(ClassCollectionType value) {
-        this.collection = value;
-    }
+	/**
+	 * Sets the value of the collection property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ClassCollectionType }
+	 * 
+	 */
+	public void setCollection(ClassCollectionType value) {
+		this.collection = value;
+	}
 
-    /**
-     * Gets the value of the featureClass property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ClassType }
-     *     
-     */
-    public ClassType getFeatureClass() {
-        return featureClass;
-    }
+	/**
+	 * Gets the value of the featureClass property.
+	 * 
+	 * @return possible object is {@link ClassType }
+	 * 
+	 */
+	public ClassType getFeatureClass() {
+		return featureClass;
+	}
 
-    /**
-     * Sets the value of the featureClass property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ClassType }
-     *     
-     */
-    public void setFeatureClass(ClassType value) {
-        this.featureClass = value;
-    }
+	/**
+	 * Sets the value of the featureClass property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ClassType }
+	 * 
+	 */
+	public void setFeatureClass(ClassType value) {
+		this.featureClass = value;
+	}
 
 }

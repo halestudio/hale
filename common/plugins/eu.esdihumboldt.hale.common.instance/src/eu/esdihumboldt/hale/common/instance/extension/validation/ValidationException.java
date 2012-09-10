@@ -14,10 +14,11 @@ package eu.esdihumboldt.hale.common.instance.extension.validation;
 
 /**
  * Exception for validatable constraints.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class ValidationException extends Exception {
+
 	private static final long serialVersionUID = 5262806141462302316L;
 
 	/**

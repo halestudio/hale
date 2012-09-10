@@ -19,7 +19,7 @@ import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**
- * Interface for {@link ImportSource} factories provided by the 
+ * Interface for {@link ImportSource} factories provided by the
  * {@link ImportSourceExtension}.
  * 
  * @author Simon Templer
@@ -28,21 +28,24 @@ public interface ImportSourceFactory extends ExtensionObjectFactory<ImportSource
 
 	/**
 	 * Get the I/O provider factory type supported by the import source.
+	 * 
 	 * @return the I/O provider factory type
 	 */
 	public Class<? extends ImportProvider> getProviderType();
-	
+
 	/**
 	 * Get the source description.
+	 * 
 	 * @return the description or <code>null</code>
 	 */
 	public String getDescription();
-	
+
 	/**
 	 * Get the content type supported by the source. If <code>null</code> any
 	 * content type is supported.
+	 * 
 	 * @return the supported content type or <code>null</code>
 	 */
 	public IContentType getContentType();
-	
+
 }

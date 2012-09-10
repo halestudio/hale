@@ -29,13 +29,16 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.util.StructuredEquals;
 
 /**
- * Key that uses {@link StructuredEquals#deepIterableEquals(Object, Object)}
- * in {@link #equals(Object)} to compare the internal objects.
+ * Key that uses {@link StructuredEquals#deepIterableEquals(Object, Object)} in
+ * {@link #equals(Object)} to compare the internal objects.
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class DeepIterableKey {
+
 	private static final StructuredEquals se = new StructuredEquals() {
+
 		@Override
 		protected Iterable<?> asIterable(Object object) {
 			if (object instanceof Group) {
@@ -46,6 +49,7 @@ public class DeepIterableKey {
 					objects.add(((Instance) o).getValue());
 				List<QName> propertyNames = Lists.newArrayList(o.getPropertyNames());
 				Collections.sort(propertyNames, new Comparator<QName>() {
+
 					@Override
 					public int compare(QName o1, QName o2) {
 						return o1.toString().compareTo(o2.toString());
@@ -63,7 +67,8 @@ public class DeepIterableKey {
 	private final Object key;
 
 	/**
-	 * Create a 
+	 * Create a
+	 * 
 	 * @param key the key object
 	 */
 	public DeepIterableKey(Object key) {

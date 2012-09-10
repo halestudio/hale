@@ -27,10 +27,11 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Decorate a given instance with family function.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class FamilyInstanceImpl implements FamilyInstance {
+
 	private final Instance instance;
 	private Collection<FamilyInstance> children;
 

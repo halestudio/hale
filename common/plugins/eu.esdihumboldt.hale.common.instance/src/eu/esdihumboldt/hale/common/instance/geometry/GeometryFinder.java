@@ -41,8 +41,7 @@ public class GeometryFinder implements InstanceTraversalCallback {
 	 * Constructor for GeometryFinder with the
 	 * CoordinateReferenceSystemDefinition
 	 * 
-	 * @param crsDef
-	 *            The coordinate reference system definition
+	 * @param crsDef The coordinate reference system definition
 	 */
 	public GeometryFinder(CRSDefinition crsDef) {
 		defaultCrsDef = crsDef;
@@ -89,8 +88,7 @@ public class GeometryFinder implements InstanceTraversalCallback {
 			return false;
 		}
 		if (value instanceof Geometry) {
-			geometries.add(new DefaultGeometryProperty<Geometry>(defaultCrsDef,
-					(Geometry) value));
+			geometries.add(new DefaultGeometryProperty<Geometry>(defaultCrsDef, (Geometry) value));
 			// stop traversion afterwards, as there will be only parts of the
 			// geometry as children
 			return false;

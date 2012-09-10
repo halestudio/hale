@@ -30,10 +30,11 @@ import de.cs3d.util.logging.ALoggerFactory;
 
 /**
  * Shows the properties view
+ * 
  * @author Simon Templer
  */
 public class OpenPropertiesHandler extends AbstractHandler {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(OpenPropertiesHandler.class);
 
 	/**
@@ -43,36 +44,37 @@ public class OpenPropertiesHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
 			// unpin the property sheet if possible
-			IViewReference ref = HandlerUtil.getActiveWorkbenchWindow(event)
-					.getActivePage().findViewReference(IPageLayout.ID_PROP_SHEET);
+			IViewReference ref = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
+					.findViewReference(IPageLayout.ID_PROP_SHEET);
 			if (ref != null) {
 				IViewPart part = ref.getView(false);
 				if (part instanceof PropertySheet) {
 					PropertySheet sheet = (PropertySheet) part;
 					if (sheet.isPinned()) {
 						sheet.setPinned(false);
-						
+
 						IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
-						
+
 						/*
 						 * Feign the part has been activated (cause else the
 						 * PropertySheet will only take a selection from the
-						 * last part it was displaying properties about) 
+						 * last part it was displaying properties about)
 						 */
 						sheet.partActivated(activePart);
-						
+
 						// get the current selection
-						ISelection sel = HandlerUtil.getActivePart(event).getSite().getSelectionProvider().getSelection();
-						
+						ISelection sel = HandlerUtil.getActivePart(event).getSite()
+								.getSelectionProvider().getSelection();
+
 						// Update the properties view with the current selection
 						sheet.selectionChanged(activePart, sel);
 					}
 				}
 			}
-			
+
 			// show the view
 			HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-				.showView(IPageLayout.ID_PROP_SHEET);
+					.showView(IPageLayout.ID_PROP_SHEET);
 		} catch (PartInitException e) {
 			log.error("Error opening properties view", e);
 		}

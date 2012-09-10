@@ -48,23 +48,24 @@ import eu.esdihumboldt.hale.ui.io.source.internal.ImportSourceFactory;
 
 /**
  * Wizard page that allows selecting a source file or provider
+ * 
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public class ImportSelectSourcePage<P extends ImportProvider, 
-	W extends ImportWizard<P>> extends IOWizardPage<P, W> {
-	
+public class ImportSelectSourcePage<P extends ImportProvider, W extends ImportWizard<P>> extends
+		IOWizardPage<P, W> {
+
 	/**
 	 * Import source page
 	 */
 	public class SourcePage extends WizardPageDecorator implements SourceConfiguration<P> {
 
 		private final ImportSource<P> importSource;
-		
+
 		private final int index;
 
 		private IOProviderDescriptor factory;
@@ -85,19 +86,19 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		 * @param importSource the corresponding import source
 		 * @param parent the parent composite
 		 * @param initialContentType the content type the import source page
-		 *   should be initialized with, may be <code>null</code>
+		 *            should be initialized with, may be <code>null</code>
 		 */
 		public SourcePage(ImportSource<P> importSource, Composite parent,
 				IContentType initialContentType) {
 			super(ImportSelectSourcePage.this);
-			
+
 			this.importSource = importSource;
-			
+
 			sources.add(this);
 			index = sources.size() - 1;
-			
+
 			setContentType(initialContentType);
-			
+
 			importSource.setPage(this);
 			importSource.setConfiguration(this);
 			importSource.createControls(parent);
@@ -118,20 +119,20 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		public void activate() {
 			getWizard().setContentType(contentType);
 			getWizard().setProviderFactory(factory);
-			
+
 			super.setMessage(message, messageType);
 			super.setErrorMessage(errorMessage);
 			super.setPageComplete(complete);
-			
+
 			importSource.onActivate();
 		}
-		
+
 		private boolean isActive() {
 			synchronized (ImportSelectSourcePage.this) {
 				return index == activeIndex;
 			}
 		}
-		
+
 		/**
 		 * @see SourceConfiguration#getFactories()
 		 */
@@ -146,7 +147,7 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		@Override
 		public void setProviderFactory(IOProviderDescriptor factory) {
 			this.factory = factory;
-						
+
 			if (isActive()) {
 				getWizard().setProviderFactory(factory);
 			}
@@ -166,7 +167,7 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		@Override
 		public void setContentType(IContentType contentType) {
 			this.contentType = contentType;
-			
+
 			if (isActive()) {
 				getWizard().setContentType(contentType);
 			}
@@ -210,7 +211,7 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		@Override
 		public void setErrorMessage(String newMessage) {
 			this.errorMessage = newMessage;
-			
+
 			if (isActive()) {
 				super.setErrorMessage(newMessage);
 			}
@@ -223,7 +224,7 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		public void setMessage(String newMessage, int newType) {
 			this.message = newMessage;
 			this.messageType = newType;
-			
+
 			if (isActive()) {
 				super.setMessage(newMessage, newType);
 			}
@@ -235,7 +236,7 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		@Override
 		public void setPageComplete(boolean complete) {
 			this.complete = complete;
-			
+
 			if (isActive()) {
 				super.setPageComplete(complete);
 			}
@@ -247,7 +248,7 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		@Override
 		public void setMessage(String newMessage) {
 			this.message = newMessage;
-			
+
 			if (isActive()) {
 				super.setMessage(newMessage);
 			}
@@ -284,13 +285,13 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		}
 
 	}
-	
+
 	private final List<SourcePage> sources = new ArrayList<SourcePage>();
-	
+
 	private int activeIndex = 0;
-	
+
 	private final Set<Image> images = new HashSet<Image>();
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -311,52 +312,53 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		for (IOProviderDescriptor factory : factories) {
 			supportedTypes.addAll(factory.getSupportedTypes());
 		}
-		
+
 		// get compatible sources
-		List<ImportSourceFactory> availableSources = ImportSourceExtension.getInstance().getFactories(new FactoryFilter<ImportSource<?>, ImportSourceFactory>() {
-			
-			@Override
-			public boolean acceptFactory(ImportSourceFactory factory) {
-				// check provider factory compatibility
-				boolean providerMatch = factory.getProviderType().isAssignableFrom(getWizard().getProviderType());
-				if (!providerMatch) {
-					return false;
-				}
-				
-				// check content type compatibility
-				IContentType ct = factory.getContentType();
-				if (ct == null) {
-					return true; // any content type supported
-				}
-				else {
-					// stated type must be present
-					return supportedTypes.contains(ct);
-				}
-			}
-			
-			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<ImportSource<?>, ImportSourceFactory> collection) {
-				return false;
-			}
-		});
-		
+		List<ImportSourceFactory> availableSources = ImportSourceExtension.getInstance()
+				.getFactories(new FactoryFilter<ImportSource<?>, ImportSourceFactory>() {
+
+					@Override
+					public boolean acceptFactory(ImportSourceFactory factory) {
+						// check provider factory compatibility
+						boolean providerMatch = factory.getProviderType().isAssignableFrom(
+								getWizard().getProviderType());
+						if (!providerMatch) {
+							return false;
+						}
+
+						// check content type compatibility
+						IContentType ct = factory.getContentType();
+						if (ct == null) {
+							return true; // any content type supported
+						}
+						else {
+							// stated type must be present
+							return supportedTypes.contains(ct);
+						}
+					}
+
+					@Override
+					public boolean acceptCollection(
+							ExtensionObjectFactoryCollection<ImportSource<?>, ImportSourceFactory> collection) {
+						return false;
+					}
+				});
+
 		if (availableSources == null || availableSources.isEmpty()) {
 			Label label = new Label(page, SWT.NONE);
 			label.setText("No import source available.");
 		}
 		else if (availableSources.size() == 1) {
 			// add source directly
-			createSource(availableSources.iterator().next(), page,
-					supportedTypes);
-			
+			createSource(availableSources.iterator().next(), page, supportedTypes);
+
 			setActiveSource(0);
 		}
 		else {
 			// add tab for each source
 			page.setLayout(new FillLayout());
 			final TabFolder tabs = new TabFolder(page, SWT.NONE);
-			
+
 			for (ImportSourceFactory sourceFactory : availableSources) {
 				TabItem item = new TabItem(tabs, SWT.NONE);
 				item.setText(MessageFormat.format("From {0}", sourceFactory.getDisplayName()));
@@ -365,40 +367,42 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 				if (iconURL != null) {
 					Image image = ImageDescriptor.createFromURL(iconURL).createImage();
 					if (image != null) {
-						images.add(image); // remember for disposal 
+						images.add(image); // remember for disposal
 						item.setImage(image);
 					}
 				}
 				// tooltip
 				item.setToolTipText(sourceFactory.getDescription());
-				
+
 				// content
 				Composite wrapper = new Composite(tabs, SWT.NONE);
-				wrapper.setLayout(GridLayoutFactory.swtDefaults().create()); // for minimum margin
+				wrapper.setLayout(GridLayoutFactory.swtDefaults().create()); // for
+																				// minimum
+																				// margin
 				Composite content = new Composite(wrapper, SWT.NONE);
-				content.setLayoutData(GridDataFactory.fillDefaults().
-						grab(true, true).create());
-				
+				content.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+
 				createSource(sourceFactory, content, supportedTypes);
-				
+
 				item.setControl(wrapper);
 			}
-			
+
 			tabs.addSelectionListener(new SelectionAdapter() {
 
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					setActiveSource(tabs.getSelectionIndex());
 				}
-				
+
 			});
-			
+
 			setActiveSource(0);
 		}
 	}
-	
+
 	/**
 	 * Set the active source.
+	 * 
 	 * @param selectionIndex the index of the source to be activated
 	 */
 	private void setActiveSource(int selectionIndex) {
@@ -407,9 +411,10 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 			getActiveSource().activate();
 		}
 	}
-	
+
 	/**
 	 * Get the active source or <code>null</code>.
+	 * 
 	 * @return the active source
 	 */
 	private SourcePage getActiveSource() {
@@ -426,27 +431,29 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 	 * 
 	 * @param sourceFactory the {@link ImportSource} factory
 	 * @param parent the parent composite, a custom layout may be assigned by
-	 *   implementors
+	 *            implementors
 	 * @param supportedTypes the set of supported content types
 	 */
 	@SuppressWarnings("unchecked")
-	private void createSource(ImportSourceFactory sourceFactory,
-			Composite parent, Set<IContentType> supportedTypes) {
+	private void createSource(ImportSourceFactory sourceFactory, Composite parent,
+			Set<IContentType> supportedTypes) {
 		ImportSource<?> source;
 		try {
 			source = sourceFactory.createExtensionObject();
 		} catch (Exception e) {
-			throw new RuntimeException(MessageFormat.format(
-					"Could not create import source {0}", 
+			throw new RuntimeException(MessageFormat.format("Could not create import source {0}",
 					sourceFactory.getIdentifier()), e);
 		}
-		
+
 		// determine initial content type
 		IContentType initialContentType = sourceFactory.getContentType();
 		assert supportedTypes.contains(initialContentType);
-		
-		ImportSource<P> compatibleSource = ((ImportSource<P>) source); //XXX alternative to casting?
-		
+
+		ImportSource<P> compatibleSource = ((ImportSource<P>) source); // XXX
+																		// alternative
+																		// to
+																		// casting?
+
 		// create the source page
 		new SourcePage(compatibleSource, parent, initialContentType);
 	}
@@ -460,7 +467,7 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		if (source != null) {
 			return source.getImportSource().updateConfiguration(provider);
 		}
-		
+
 		return false;
 	}
 
@@ -472,11 +479,11 @@ public class ImportSelectSourcePage<P extends ImportProvider,
 		for (Image image : images) {
 			image.dispose();
 		}
-		
+
 		for (SourcePage source : sources) {
 			source.dispose();
 		}
-		
+
 		super.dispose();
 	}
 

@@ -17,6 +17,7 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
 /**
  * Figure representing a cell.
+ * 
  * @author Simon Templer
  */
 public class CellFigure extends CustomShapeLabel {

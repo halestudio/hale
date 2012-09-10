@@ -18,10 +18,10 @@ import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
 
 /**
  * Factory for {@link CodeDefinition}s
+ * 
  * @author Simon Templer
  */
-public class WKTDefinitionFactory implements
-		CRSDefinitionFactory<WKTDefinition> {
+public class WKTDefinitionFactory implements CRSDefinitionFactory<WKTDefinition> {
 
 	/**
 	 * @see CRSDefinitionFactory#getIdentifier()

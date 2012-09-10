@@ -27,27 +27,28 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 
 /**
  * Provides UI variables related to the {@link AlignmentService}
- *
+ * 
  * @author Simon Templer
  * @since 2.5
  */
 public class AlignmentServiceSource extends AbstractSourceProvider {
 
 	/**
-	 * The name of the variable which value is <code>true</code> if there
-	 * are cells present in the alignment service
+	 * The name of the variable which value is <code>true</code> if there are
+	 * cells present in the alignment service
 	 */
 	public static final String HAS_CELLS = "hale.alignment.has_cells";
-	
+
 	private AlignmentServiceListener alignmentListener;
-	
+
 	/**
 	 * Default constructor
 	 */
 	public AlignmentServiceSource() {
 		super();
-		
-		final AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+
+		final AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 			@Override
@@ -78,7 +79,8 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public void dispose() {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		as.removeListener(alignmentListener);
 	}
 
@@ -87,11 +89,12 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public Map<String, Object> getCurrentState() {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(HAS_CELLS, hasCells(as));
-		
+
 		return result;
 	}
 
@@ -104,8 +107,7 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[]{
-				HAS_CELLS};
+		return new String[] { HAS_CELLS };
 	}
 
 }

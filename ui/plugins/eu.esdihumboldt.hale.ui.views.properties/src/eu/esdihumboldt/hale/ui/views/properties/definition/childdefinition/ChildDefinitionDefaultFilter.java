@@ -20,9 +20,10 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilt
 /**
  * Filter that lets only {@link ChildDefinition}s with a ParentType that is
  * defined pass.
+ * 
  * @author Patrick Lieb
  */
-public class ChildDefinitionDefaultFilter extends DefaultDefinitionFilter{
+public class ChildDefinitionDefaultFilter extends DefaultDefinitionFilter {
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilter#isFiltered(eu.esdihumboldt.hale.common.schema.model.Definition)

@@ -24,30 +24,30 @@ import eu.esdihumboldt.specification.modelrepository.abstractfc.AccessConstraint
 /**
  * Explanation of this Type.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: DefaultAccessConstraint.java,v 1.4 2007-12-06 13:20:24 pitaeva Exp $ 
+ * @version $Id: DefaultAccessConstraint.java,v 1.4 2007-12-06 13:20:24 pitaeva
+ *          Exp $
  */
-public class DefaultAccessConstraint 
-	implements AccessConstraint, Serializable {
-	
+public class DefaultAccessConstraint implements AccessConstraint, Serializable {
+
 	// Fields ..................................................................
-	
+
 	private long id;
-	private UUID uid; 
-	
+	private UUID uid;
+
 	private boolean hasAcessRightRead;
 	private boolean hasAcessRightWrite;
 	private boolean hasAcessRightUse;
 	private boolean hasAcessRightDelete;
-	
+
 	private Identifier partyIdentifier;
 	private Set<IdentifierHelper> dbPartyIdentifier;
-	
+
 	private String usageInformation;
 
 	// Constructors ............................................................
-	
+
 	/**
 	 * Protected no-args Constructor for Hibernate etc.
 	 */
@@ -55,7 +55,7 @@ public class DefaultAccessConstraint
 		super();
 		this.uid = UUID.randomUUID();
 	}
-	
+
 	/**
 	 * Default Constructor.
 	 * 
@@ -63,7 +63,8 @@ public class DefaultAccessConstraint
 	 * @param hasAcessRightWrite
 	 * @param hasAcessRightUse
 	 * @param hasAcessRightDelete
-	 * @param partyIdentifier if null, the constraint will be in effect globally.
+	 * @param partyIdentifier
+	 *            if null, the constraint will be in effect globally.
 	 */
 	public DefaultAccessConstraint(boolean hasAcessRightRead,
 			boolean hasAcessRightWrite, boolean hasAcessRightUse,
@@ -75,7 +76,7 @@ public class DefaultAccessConstraint
 		this.hasAcessRightDelete = hasAcessRightDelete;
 		this.partyIdentifier = partyIdentifier;
 	}
-	
+
 	// AccessConstraint Operations .............................................
 
 	/**
@@ -83,10 +84,18 @@ public class DefaultAccessConstraint
 	 */
 	public Set<AccessRightType> getAccessRightTypes() {
 		Set<AccessRightType> result = new HashSet<AccessRightType>();
-		if (this.hasAcessRightRead) {result.add(AccessRightType.Read);}
-		if (this.hasAcessRightWrite) {result.add(AccessRightType.Write);}
-		if (this.hasAcessRightUse) {result.add(AccessRightType.Use);}
-		if (this.hasAcessRightDelete) {result.add(AccessRightType.Delete);}
+		if (this.hasAcessRightRead) {
+			result.add(AccessRightType.Read);
+		}
+		if (this.hasAcessRightWrite) {
+			result.add(AccessRightType.Write);
+		}
+		if (this.hasAcessRightUse) {
+			result.add(AccessRightType.Use);
+		}
+		if (this.hasAcessRightDelete) {
+			result.add(AccessRightType.Delete);
+		}
 		return result;
 	}
 
@@ -103,9 +112,9 @@ public class DefaultAccessConstraint
 	public String getUsageInformation() {
 		return this.usageInformation;
 	}
-	
+
 	// DefaultAccessConstraint Operations ......................................
-	
+
 	/**
 	 * @return the uid
 	 */
@@ -121,7 +130,8 @@ public class DefaultAccessConstraint
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -135,7 +145,8 @@ public class DefaultAccessConstraint
 	}
 
 	/**
-	 * @param hasAcessRightRead the hasAcessRightRead to set
+	 * @param hasAcessRightRead
+	 *            the hasAcessRightRead to set
 	 */
 	public void setHasAcessRightRead(boolean hasAcessRightRead) {
 		this.hasAcessRightRead = hasAcessRightRead;
@@ -149,7 +160,8 @@ public class DefaultAccessConstraint
 	}
 
 	/**
-	 * @param hasAcessRightWrite the hasAcessRightWrite to set
+	 * @param hasAcessRightWrite
+	 *            the hasAcessRightWrite to set
 	 */
 	public void setHasAcessRightWrite(boolean hasAcessRightWrite) {
 		this.hasAcessRightWrite = hasAcessRightWrite;
@@ -163,7 +175,8 @@ public class DefaultAccessConstraint
 	}
 
 	/**
-	 * @param hasAcessRightUse the hasAcessRightUse to set
+	 * @param hasAcessRightUse
+	 *            the hasAcessRightUse to set
 	 */
 	public void setHasAcessRightUse(boolean hasAcessRightUse) {
 		this.hasAcessRightUse = hasAcessRightUse;
@@ -177,28 +190,32 @@ public class DefaultAccessConstraint
 	}
 
 	/**
-	 * @param hasAcessRightDelete the hasAcessRightDelete to set
+	 * @param hasAcessRightDelete
+	 *            the hasAcessRightDelete to set
 	 */
 	public void setHasAcessRightDelete(boolean hasAcessRightDelete) {
 		this.hasAcessRightDelete = hasAcessRightDelete;
 	}
 
 	/**
-	 * @param uid the uid to set
+	 * @param uid
+	 *            the uid to set
 	 */
 	private void setUid(UUID uid) {
 		this.uid = uid;
 	}
 
 	/**
-	 * @param partyIdentifier the partyIdentifier to set
+	 * @param partyIdentifier
+	 *            the partyIdentifier to set
 	 */
 	public void setPartyIdentifier(Identifier partyIdentifier) {
 		this.partyIdentifier = partyIdentifier;
 	}
 
 	/**
-	 * @param usageInformation the usageInformation to set
+	 * @param usageInformation
+	 *            the usageInformation to set
 	 */
 	public void setUsageInformation(String usageInformation) {
 		this.usageInformation = usageInformation;
@@ -212,10 +229,11 @@ public class DefaultAccessConstraint
 	}
 
 	/**
-	 * @param dbPartyIdentifier the dbPartyIdentifier to set
+	 * @param dbPartyIdentifier
+	 *            the dbPartyIdentifier to set
 	 */
 	public void setDbPartyIdentifier(Set<IdentifierHelper> dbPartyIdentifier) {
 		this.dbPartyIdentifier = dbPartyIdentifier;
 	}
-	
+
 }

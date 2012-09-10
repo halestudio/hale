@@ -50,6 +50,7 @@ import eu.esdihumboldt.hale.ui.service.schema.util.NSTypeTreeContentProvider;
  * @author Kai Schwierczek
  */
 public class EditMappableTypesPage extends WizardPage {
+
 	private final TypeIndex typeIndex;
 	private final SchemaSpaceID spaceID;
 	private final Set<TypeDefinition> changedTypes = new HashSet<TypeDefinition>();
@@ -57,7 +58,7 @@ public class EditMappableTypesPage extends WizardPage {
 	private CheckboxTreeViewer viewer;
 	private NSTypeTreeContentProvider contentProvider;
 	private ICheckStateProvider checkStateProvider;
-	
+
 	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider() {
 
 //		@Override
@@ -72,10 +73,11 @@ public class EditMappableTypesPage extends WizardPage {
 		@Override
 		public Image getImage(Object element) {
 			if (element instanceof String)
-				return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+				return PlatformUI.getWorkbench().getSharedImages()
+						.getImage(ISharedImages.IMG_OBJ_FOLDER);
 			return super.getImage(element);
 		}
-		
+
 	};
 
 	/**
@@ -103,8 +105,9 @@ public class EditMappableTypesPage extends WizardPage {
 		// create filtered tree
 		PatternFilter patternFilter = new PatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new FilteredTree(parent, SWT.BORDER | SWT.CHECK | SWT.H_SCROLL | SWT.V_SCROLL,
-				patternFilter, true) {
+		FilteredTree tree = new FilteredTree(parent, SWT.BORDER | SWT.CHECK | SWT.H_SCROLL
+				| SWT.V_SCROLL, patternFilter, true) {
+
 			@Override
 			protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
 				return new CheckboxTreeViewer(parent, style);
@@ -117,6 +120,7 @@ public class EditMappableTypesPage extends WizardPage {
 		viewer.setContentProvider(contentProvider);
 		viewer.setComparator(new DefinitionComparator());
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -133,6 +137,7 @@ public class EditMappableTypesPage extends WizardPage {
 		viewer.setLabelProvider(definitionLabels);
 		// because elements filtered by FilteredTree lose their checked state:
 		checkStateProvider = new ICheckStateProvider() {
+
 			@Override
 			public boolean isGrayed(Object element) {
 				if (element instanceof String) {
@@ -158,13 +163,14 @@ public class EditMappableTypesPage extends WizardPage {
 						if (isChecked(child))
 							return true;
 					return false;
-				}				
-				return ((TypeDefinition) element).getConstraint(MappingRelevantFlag.class).isEnabled() != changedTypes
-								.contains(element);
+				}
+				return ((TypeDefinition) element).getConstraint(MappingRelevantFlag.class)
+						.isEnabled() != changedTypes.contains(element);
 			}
 		};
 		viewer.setCheckStateProvider(checkStateProvider);
 		viewer.addCheckStateListener(new ICheckStateListener() {
+
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getElement() instanceof String) {
@@ -175,20 +181,24 @@ public class EditMappableTypesPage extends WizardPage {
 							viewer.setChecked(child, event.getChecked());
 							checkStateOfTypeChanged((TypeDefinition) child, event.getChecked());
 						}
-					// only two levels, no need to update any parents or children's children
-				} else
+					// only two levels, no need to update any parents or
+					// children's children
+				}
+				else
 					checkStateOfTypeChanged((TypeDefinition) event.getElement(), event.getChecked());
 			}
 		});
 
 		// filter types which are used in the current alignment
 		viewer.addFilter(new ViewerFilter() {
+
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				if (element instanceof String)
 					return true;
 				TypeDefinition type = (TypeDefinition) element;
-				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+						AlignmentService.class);
 				if (as.getAlignment().getCells(type, spaceID).size() > 0)
 					return false;
 				return true;
@@ -228,8 +238,8 @@ public class EditMappableTypesPage extends WizardPage {
 	@Override
 	public void dispose() {
 		definitionLabels.dispose();
-		
+
 		super.dispose();
 	}
-	
+
 }

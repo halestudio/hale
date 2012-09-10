@@ -30,12 +30,12 @@ import eu.esdihumboldt.hale.ui.util.proxy.ProxySettings;
 
 /**
  * A preference page for the proxy connection
+ * 
  * @author Michel Kraemer
  */
-public class ProxyPreferencePage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
-	
+public class ProxyPreferencePage extends FieldEditorPreferencePage implements
+		IWorkbenchPreferencePage {
+
 //	private static final ALogger _log = ALoggerFactory.getLogger(ProxyPreferencePage.class);
 
 	/**
@@ -46,33 +46,31 @@ public class ProxyPreferencePage
 		setPreferenceStore(UIUtilitiesPlugin.getDefault().getPreferenceStore());
 		setDescription(Messages.ProxyPreferencePage_0); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * @see FieldEditorPreferencePage#createFieldEditors()
 	 */
 	@Override
 	protected void createFieldEditors() {
 		// proxy host
-		addField(new StringFieldEditor(
-				PreferenceConstants.CONNECTION_PROXY_HOST, Messages.ProxyPreferencePage_1, //$NON-NLS-1$
+		addField(new StringFieldEditor(PreferenceConstants.CONNECTION_PROXY_HOST,
+				Messages.ProxyPreferencePage_1, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// proxy port
-		addField(new IntegerFieldEditor(
-				PreferenceConstants.CONNECTION_PROXY_PORT, Messages.ProxyPreferencePage_2, //$NON-NLS-1$
+		addField(new IntegerFieldEditor(PreferenceConstants.CONNECTION_PROXY_PORT,
+				Messages.ProxyPreferencePage_2, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// proxy user name
-		addField(new StringFieldEditor(
-				PreferenceConstants.CONNECTION_PROXY_USER, Messages.ProxyPreferencePage_5, //$NON-NLS-1$
+		addField(new StringFieldEditor(PreferenceConstants.CONNECTION_PROXY_USER,
+				Messages.ProxyPreferencePage_5, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// proxy password
-		addField(new PasswordFieldEditor(
-				PreferenceConstants.SECURE_NODE_NAME, 
-				PreferenceConstants.CONNECTION_PROXY_PASSWORD,
-				Messages.ProxyPreferencePage_6, //$NON-NLS-1$
+		addField(new PasswordFieldEditor(PreferenceConstants.SECURE_NODE_NAME,
+				PreferenceConstants.CONNECTION_PROXY_PASSWORD, Messages.ProxyPreferencePage_6, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// non proxy hosts
-		addField(new StringFieldEditor(
-				PreferenceConstants.CONNECTION_NON_PROXY_HOSTS, Messages.ProxyPreferencePage_3, //$NON-NLS-1$
+		addField(new StringFieldEditor(PreferenceConstants.CONNECTION_NON_PROXY_HOSTS,
+				Messages.ProxyPreferencePage_3, //$NON-NLS-1$
 				getFieldEditorParent()));
 		// placeholder
 		Composite ph = new Composite(getFieldEditorParent(), SWT.NONE);
@@ -82,7 +80,7 @@ public class ProxyPreferencePage
 		info.setText(Messages.ProxyPreferencePage_4); //$NON-NLS-1$
 		info.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
 	}
-	
+
 	/**
 	 * @see FieldEditorPreferencePage#performOk()
 	 */
@@ -92,9 +90,9 @@ public class ProxyPreferencePage
 		if (!result) {
 			return false;
 		}
-		
+
 		ProxySettings.applyCurrentSettings();
-		
+
 		return true;
 	}
 
@@ -103,6 +101,6 @@ public class ProxyPreferencePage
 	 */
 	@Override
 	public void init(IWorkbench workbench) {
-		//nothing to do here
+		// nothing to do here
 	}
 }

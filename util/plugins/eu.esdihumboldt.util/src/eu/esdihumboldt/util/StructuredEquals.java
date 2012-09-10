@@ -23,8 +23,8 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 
 /**
- * StructuredEquals provides methods for equals and hashCode implementations
- * for complex structures.
+ * StructuredEquals provides methods for equals and hashCode implementations for
+ * complex structures.
  * 
  * @author Simon Templer
  */
@@ -32,8 +32,9 @@ public class StructuredEquals {
 
 	/**
 	 * Determines if the given objects are equal, in turn descending into
-	 * {@link Iterable}s and arrays and checking if the elements are equal
-	 * (in order).
+	 * {@link Iterable}s and arrays and checking if the elements are equal (in
+	 * order).
+	 * 
 	 * @param o1 the first object
 	 * @param o2 the second object
 	 * @return if both objects are equal
@@ -43,11 +44,12 @@ public class StructuredEquals {
 		if (o1 == o2) {
 			return true;
 		}
-		
+
 		Iterable<?> iterable1 = asIterable(o1);
 		Iterable<?> iterable2 = asIterable(o2);
 		if (iterable1 != null && iterable2 != null) {
-			if (Iterables.size(iterable1) == Iterables.size(iterable2)) { // size check
+			if (Iterables.size(iterable1) == Iterables.size(iterable2)) { // size
+																			// check
 				Iterator<?> it1 = iterable1.iterator();
 				Iterator<?> it2 = iterable2.iterator();
 				while (it1.hasNext() || it2.hasNext()) {
@@ -59,20 +61,21 @@ public class StructuredEquals {
 						return false;
 					}
 				}
-				
+
 				return true;
 			}
-			
+
 			return false;
 		}
 		else {
 			return Objects.equal(o1, o2);
 		}
 	}
-	
+
 	/**
 	 * Get the hash code for all contained objects, descending into
 	 * {@link Iterable}s and arrays.
+	 * 
 	 * @param object the object to determine the hash code from
 	 * @return the hash code
 	 * @see #deepIterableEquals(Object, Object)
@@ -80,10 +83,11 @@ public class StructuredEquals {
 	public int deepIterableHashCode(Object object) {
 		return Arrays.hashCode(collectObjects(object).toArray());
 	}
-	
+
 	/**
 	 * Collect all objects contained in an {@link Iterable} or array and in
 	 * their elements.
+	 * 
 	 * @param object the object to collect objects on
 	 * @return the collected objects
 	 */
@@ -102,8 +106,8 @@ public class StructuredEquals {
 	}
 
 	/**
-	 * Returns an iterable for the given objects contents, or null
-	 * if it does not contain anything that needs to be compared.
+	 * Returns an iterable for the given objects contents, or null if it does
+	 * not contain anything that needs to be compared.
 	 * 
 	 * @param object the object in question
 	 * @return an iterable for the given object

@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.ui.views.report.properties.details.ReportDetailsPage
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportTreeContentProvider implements ITreeContentProvider {
-	
+
 	/**
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 	 */
@@ -38,7 +38,8 @@ public class ReportTreeContentProvider implements ITreeContentProvider {
 	}
 
 	/**
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+	 *      java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -53,7 +54,7 @@ public class ReportTreeContentProvider implements ITreeContentProvider {
 		if (inputElement instanceof Collection<?>) {
 			return ((Collection<?>) inputElement).toArray();
 		}
-		
+
 		return new Object[0];
 	}
 
@@ -63,9 +64,9 @@ public class ReportTreeContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof Collection<?>) {
-			return ((Collection<?>)parentElement).toArray();
+			return ((Collection<?>) parentElement).toArray();
 		}
-		
+
 		return new Object[0];
 	}
 
@@ -85,11 +86,11 @@ public class ReportTreeContentProvider implements ITreeContentProvider {
 		if (element instanceof Report<?>) {
 			return true;
 		}
-		
-		if (element instanceof Collection<?> && ((Collection<?>)element).size() > 0) {
+
+		if (element instanceof Collection<?> && ((Collection<?>) element).size() > 0) {
 			return true;
-		} 
-		
+		}
+
 		return false;
 	}
 }

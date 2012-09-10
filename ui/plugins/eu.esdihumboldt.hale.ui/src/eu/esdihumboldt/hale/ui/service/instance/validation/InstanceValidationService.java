@@ -14,39 +14,40 @@ package eu.esdihumboldt.hale.ui.service.instance.validation;
 
 /**
  * Service that listens to the instance service and validates instances.
- *
+ * 
  * @author Kai Schwierczek
  */
 public interface InstanceValidationService {
+
 	/**
 	 * Adds a listener.
-	 *
+	 * 
 	 * @param listener the listener to add
 	 */
 	public void addListener(InstanceValidationListener listener);
 
 	/**
 	 * Removes a listener.
-	 *
+	 * 
 	 * @param listener the listener to remove
 	 */
 	public void removeListener(InstanceValidationListener listener);
 
 	/**
-	 * Returns whether the automatic instance validation after each transformation
-	 * is enabled.
-	 *
-	 * @return whether the automatic instance validation after each transformation
-	 * 	       is enabled
+	 * Returns whether the automatic instance validation after each
+	 * transformation is enabled.
+	 * 
+	 * @return whether the automatic instance validation after each
+	 *         transformation is enabled
 	 */
 	public boolean isValidationEnabled();
 
 	/**
 	 * Set whether the automatic instance validation after each transformation
 	 * is enabled.
-	 *
-	 * @param enable whether the automatic instance validation after each transformation
-	 * 	             is enabled
+	 * 
+	 * @param enable whether the automatic instance validation after each
+	 *            transformation is enabled
 	 */
 	public void setValidationEnabled(boolean enable);
 }

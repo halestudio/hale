@@ -25,23 +25,26 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
 /**
  * Default instance collection implementation backed by a collection.
+ * 
  * @author Simon Templer
  */
 public class DefaultInstanceCollection implements InstanceCollection {
 
 	private final List<Instance> collection;
-	
+
 	/**
-	 * Create an instance collection backed 
+	 * Create an instance collection backed
+	 * 
 	 * @param collection the instance collection
 	 */
 	public DefaultInstanceCollection(Collection<? extends Instance> collection) {
 		super();
 		this.collection = new ArrayList<Instance>(collection);
 	}
-	
+
 	/**
 	 * Adds an instance to the collection
+	 * 
 	 * @param instance the instance to add
 	 */
 	public void add(Instance instance) {
@@ -104,7 +107,7 @@ public class DefaultInstanceCollection implements InstanceCollection {
 		if (reference instanceof PseudoInstanceReference) {
 			return ((PseudoInstanceReference) reference).getInstance();
 		}
-		
+
 		return null;
 	}
 

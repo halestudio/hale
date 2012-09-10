@@ -39,14 +39,14 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Form for creating a CQL filter based on a feature type
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class FeatureFilterForm extends Composite {
-	
+
 	private static ALogger _log = ALoggerFactory.getLogger(FeatureFilterForm.class);
 
 	private Label featureTypeLabel;
@@ -69,7 +69,7 @@ public class FeatureFilterForm extends Composite {
 	private Text selectedOperator;
 	private Text selectedGeomProperty;
 	private Combo geomProperties;
-	
+
 	/**
 	 * Create a new feature filter form from a type definition
 	 * 
@@ -80,7 +80,7 @@ public class FeatureFilterForm extends Composite {
 	public FeatureFilterForm(TypeDefinition definition, Composite parent, int style) {
 		this(definition.getFeatureType(), definition, parent, style);
 	}
-	
+
 	/**
 	 * Create a new feature filter form from a feature type
 	 * 
@@ -96,24 +96,26 @@ public class FeatureFilterForm extends Composite {
 	 * Create a new feature filter form
 	 * 
 	 * @param featureType the feature type
-	 * @param definition the corresponding type definition, may be <code>null</code>
+	 * @param definition the corresponding type definition, may be
+	 *            <code>null</code>
 	 * @param parent the parent composite
 	 * @param style the composite style
 	 */
-	private FeatureFilterForm(FeatureType featureType, TypeDefinition definition, Composite parent, int style) {
+	private FeatureFilterForm(FeatureType featureType, TypeDefinition definition, Composite parent,
+			int style) {
 		super(parent, style);
-		
+
 //		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(DefinitionLabelFactory.class);
-		
+
 		SortedSet<String> attributeNames = new TreeSet<String>();
 		Collection<PropertyDescriptor> properties = featureType.getDescriptors();
 		if (properties != null) {
 			for (PropertyDescriptor property : properties) {
 				String name = property.getName().getLocalPart();
-	            attributeNames.add(name);
+				attributeNames.add(name);
 			}
 		}
-		
+
 		// create layout
 		GridLayout gl = new GridLayout();
 		gl.marginLeft = 0;
@@ -121,19 +123,18 @@ public class FeatureFilterForm extends Composite {
 		gl.marginRight = 70;
 		gl.numColumns = 5;
 		setLayout(gl);
-		
+
 		// Feature Type area
 		featureTypeLabel = new Label(this, SWT.TITLE);
-		featureTypeLabel.setLayoutData(new GridData(
-				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
+		featureTypeLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
+				| GridData.HORIZONTAL_ALIGN_FILL));
 		FontData labelFontData = parent.getFont().getFontData()[0];
 		labelFontData.setStyle(SWT.BOLD);
 
-		featureTypeLabel.setFont(new Font(parent.getDisplay(),
-				labelFontData));
+		featureTypeLabel.setFont(new Font(parent.getDisplay(), labelFontData));
 
 		featureTypeLabel.setText("FeatureType: "); //$NON-NLS-1$
-		
+
 		Control featureyTypeName;
 		if (definition != null) {
 //			featureyTypeName = dlf.createLabel(this, definition, false);
@@ -148,17 +149,16 @@ public class FeatureFilterForm extends Composite {
 			featureyTypeName = featureTypeEditor;
 		}
 		featureyTypeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
-		
+
 		GridData gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalSpan = 4;
 
 		extentLabel = new Label(this, SWT.TITLE);
-		extentLabel.setLayoutData(new GridData(
-				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
-		extentLabel.setSize(this
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		extentLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
+				| GridData.HORIZONTAL_ALIGN_FILL));
+		extentLabel.setSize(this.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		labelFontData = parent.getFont().getFontData()[0];
 		labelFontData.setStyle(SWT.BOLD);
 		extentLabel.setFont(new Font(parent.getDisplay(), labelFontData));
@@ -172,7 +172,7 @@ public class FeatureFilterForm extends Composite {
 		gd.horizontalSpan = 1;
 		gd.grabExcessHorizontalSpace = true;
 		extentXmin.setLayoutData(gd);
-		
+
 		extentYmin = new Text(this, SWT.BORDER);
 		extentYmin.setText("Y_MIN"); //$NON-NLS-1$
 		gd = new GridData();
@@ -196,30 +196,31 @@ public class FeatureFilterForm extends Composite {
 		gd.horizontalSpan = 1;
 		gd.grabExcessHorizontalSpace = true;
 		extentYmax.setLayoutData(gd);
-		
-    	final Label placeHolder = new Label(this, SWT.TITLE);
+
+		final Label placeHolder = new Label(this, SWT.TITLE);
 		placeHolder.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
 				| GridData.HORIZONTAL_ALIGN_FILL));
-		
-		//combo for the geometry:attributes
+
+		// combo for the geometry:attributes
 		geomProperties = new Combo(this, SWT.NULL);
 		selectedGeomProperty = new Text(geomProperties, SWT.NULL);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
-		//gd.grabExcessHorizontalSpace = true;
+		// gd.grabExcessHorizontalSpace = true;
 		gd.horizontalSpan = 2;
 		this.geomProperties.setLayoutData(gd);
 		this.geomProperties.setText("select geometry property"); //$NON-NLS-1$
 		// read attributes from the schema service
 		for (String name : attributeNames) {
-			//TODO determine geometry property types
+			// TODO determine geometry property types
 			PropertyDescriptor property = featureType.getDescriptor(name);
-			if (property != null && Geometry.class.isAssignableFrom(property.getType().getBinding())) {
+			if (property != null
+					&& Geometry.class.isAssignableFrom(property.getType().getBinding())) {
 				geomProperties.add(name);
 			}
-			else if (name.contains("geom")) {	 //$NON-NLS-1$
-            	geomProperties.add(name);
-            }
+			else if (name.contains("geom")) { //$NON-NLS-1$
+				geomProperties.add(name);
+			}
 		}
 		// add listener to select attribute
 		geomProperties.addListener(SWT.Selection, new Listener() {
@@ -230,29 +231,26 @@ public class FeatureFilterForm extends Composite {
 				_log.debug("Selected Property: " //$NON-NLS-1$
 						+ geomProperties.getItem(selectionIndex));
 
-				selectedGeomProperty.setText(geomProperties
-						.getItem(selectionIndex));
+				selectedGeomProperty.setText(geomProperties.getItem(selectionIndex));
 
 			}
 
 		});
-		
-		
+
 		extentSRS = new Text(this, SWT.BORDER);
 		extentSRS.setText("SRS"); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.horizontalSpan = 2;
 		extentSRS.setLayoutData(gd);
-		
+
 		// by properties
 		propertyLabel = new Label(this, SWT.TITLE);
-		propertyLabel.setLayoutData(new GridData(
-				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
+		propertyLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
+				| GridData.HORIZONTAL_ALIGN_FILL));
 		labelFontData = parent.getFont().getFontData()[0];
 		labelFontData.setStyle(SWT.BOLD);
-		propertyLabel
-				.setFont(new Font(parent.getDisplay(), labelFontData));
+		propertyLabel.setFont(new Font(parent.getDisplay(), labelFontData));
 		propertyLabel.setText("By Property: "); //$NON-NLS-1$
 		final Combo attributesCombo = new Combo(this, SWT.NULL);
 		selectedAttribute = new Text(attributesCombo, SWT.NULL);
@@ -274,21 +272,19 @@ public class FeatureFilterForm extends Composite {
 				_log.debug("Selected Property: " //$NON-NLS-1$
 						+ attributesCombo.getItem(selectionIndex));
 
-				selectedAttribute.setText(attributesCombo
-						.getItem(selectionIndex));
+				selectedAttribute.setText(attributesCombo.getItem(selectionIndex));
 
 			}
 
 		});
-		
+
 		// operators
 		operatorsLabel = new Label(this, SWT.TITLE);
-		operatorsLabel.setLayoutData(new GridData(
-				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
+		operatorsLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
+				| GridData.HORIZONTAL_ALIGN_FILL));
 		labelFontData = parent.getFont().getFontData()[0];
 		labelFontData.setStyle(SWT.BOLD);
-		operatorsLabel
-				.setFont(new Font(parent.getDisplay(), labelFontData));
+		operatorsLabel.setFont(new Font(parent.getDisplay(), labelFontData));
 		operatorsLabel.setText("OperatorType: "); //$NON-NLS-1$
 		final Combo operatorsCombo = new Combo(this, SWT.NULL);
 		selectedOperator = new Text(operatorsCombo, SWT.NULL);
@@ -311,37 +307,35 @@ public class FeatureFilterForm extends Composite {
 			public void handleEvent(Event event) {
 				// dispose attributevalue field and its label
 				disposeValueFields();
-				
+
 				int selectionIndex = operatorsCombo.getSelectionIndex();
 				_log.debug("Selected Operator: " //$NON-NLS-1$
 						+ operatorsCombo.getItem(selectionIndex));
-				selectedOperator
-						.setText(operatorsCombo.getItem(selectionIndex));
-				switch (CQLOperators.valueOf(operatorsCombo
-						.getItem(selectionIndex))) {
+				selectedOperator.setText(operatorsCombo.getItem(selectionIndex));
+				switch (CQLOperators.valueOf(operatorsCombo.getItem(selectionIndex))) {
 				case PropertyIsNull:
 					// IS NUL: no comparison value needed
 					break;
 
 				case PropertyIsBetween:
 					blankLabel = new Label(FeatureFilterForm.this, SWT.TITLE);
-					/*beginLabel = new Label(composite, SWT.TITLE);
-					beginLabel.setLayoutData(new GridData(
-							GridData.VERTICAL_ALIGN_FILL
-									| GridData.HORIZONTAL_ALIGN_FILL));
-					beginLabel.setSize(composite.computeSize(
-							SWT.DEFAULT, SWT.DEFAULT));
-					FontData labelFontData = composite.getParent().getFont()
-							.getFontData()[0];
-					labelFontData.setStyle(SWT.BOLD);
-
-					beginLabel.setFont(new Font(composite.getParent()
-							.getDisplay(), labelFontData));
-
-					beginLabel.setText("Origin Value: ");
-					// this.featureTypeEditor = new Text(composite,SWT.BORDER |
-					// SWT.WRAP| SWT.MULTI |SWT.V_SCROLL );
-*/					intervallBegin = new Text(FeatureFilterForm.this, SWT.BORDER);
+					/*
+					 * beginLabel = new Label(composite, SWT.TITLE);
+					 * beginLabel.setLayoutData(new GridData(
+					 * GridData.VERTICAL_ALIGN_FILL |
+					 * GridData.HORIZONTAL_ALIGN_FILL));
+					 * beginLabel.setSize(composite.computeSize( SWT.DEFAULT,
+					 * SWT.DEFAULT)); FontData labelFontData =
+					 * composite.getParent().getFont() .getFontData()[0];
+					 * labelFontData.setStyle(SWT.BOLD);
+					 * 
+					 * beginLabel.setFont(new Font(composite.getParent()
+					 * .getDisplay(), labelFontData));
+					 * 
+					 * beginLabel.setText("Origin Value: "); //
+					 * this.featureTypeEditor = new Text(composite,SWT.BORDER |
+					 * // SWT.WRAP| SWT.MULTI |SWT.V_SCROLL );
+					 */intervallBegin = new Text(FeatureFilterForm.this, SWT.BORDER);
 
 					// TODO replace it with the selected source FeatureType
 					// value
@@ -355,23 +349,23 @@ public class FeatureFilterForm extends Composite {
 					 */
 					gd.horizontalSpan = 2;
 					intervallBegin.setLayoutData(gd);
-				/*	endLabel = new Label(composite, SWT.TITLE);
-					endLabel.setLayoutData(new GridData(
-							GridData.VERTICAL_ALIGN_FILL
-									| GridData.HORIZONTAL_ALIGN_FILL));
-					endLabel.setSize(composite.computeSize(
-							SWT.DEFAULT, SWT.DEFAULT));
-					labelFontData = composite.getParent().getFont()
-							.getFontData()[0];
-					labelFontData.setStyle(SWT.BOLD);
-
-					endLabel.setFont(new Font(composite.getParent()
-							.getDisplay(), labelFontData));
-
-					endLabel.setText("End Value: ");
-					// this.featureTypeEditor = new Text(composite,SWT.BORDER |
-					// SWT.WRAP| SWT.MULTI |SWT.V_SCROLL );
-*/					intervallEnd = new Text(FeatureFilterForm.this, SWT.BORDER);
+					/*
+					 * endLabel = new Label(composite, SWT.TITLE);
+					 * endLabel.setLayoutData(new GridData(
+					 * GridData.VERTICAL_ALIGN_FILL |
+					 * GridData.HORIZONTAL_ALIGN_FILL));
+					 * endLabel.setSize(composite.computeSize( SWT.DEFAULT,
+					 * SWT.DEFAULT)); labelFontData =
+					 * composite.getParent().getFont() .getFontData()[0];
+					 * labelFontData.setStyle(SWT.BOLD);
+					 * 
+					 * endLabel.setFont(new Font(composite.getParent()
+					 * .getDisplay(), labelFontData));
+					 * 
+					 * endLabel.setText("End Value: "); //
+					 * this.featureTypeEditor = new Text(composite,SWT.BORDER |
+					 * // SWT.WRAP| SWT.MULTI |SWT.V_SCROLL );
+					 */intervallEnd = new Text(FeatureFilterForm.this, SWT.BORDER);
 
 					// TODO replace it with the selected source FeatureType
 					// value
@@ -388,9 +382,8 @@ public class FeatureFilterForm extends Composite {
 					break;
 				default:
 					comparisonValueLabel = new Label(FeatureFilterForm.this, SWT.TITLE);
-					comparisonValueLabel.setLayoutData(new GridData(
-							GridData.VERTICAL_ALIGN_FILL
-									| GridData.HORIZONTAL_ALIGN_FILL));
+					comparisonValueLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL
+							| GridData.HORIZONTAL_ALIGN_FILL));
 					FontData labelFontData = FeatureFilterForm.this.getParent().getFont()
 							.getFontData()[0];
 					labelFontData.setStyle(SWT.BOLD);
@@ -416,7 +409,7 @@ public class FeatureFilterForm extends Composite {
 					gd.horizontalSpan = 4;
 					attributeValue.setLayoutData(gd);
 				}
-				
+
 				FeatureFilterForm.this.layout(true, true);
 			}
 
@@ -424,48 +417,52 @@ public class FeatureFilterForm extends Composite {
 			 * disposed all comparison fields.
 			 */
 			private void disposeValueFields() {
-				if (attributeValue != null)attributeValue.dispose();
-				if (comparisonValueLabel != null)comparisonValueLabel.dispose();
-				if (intervallBegin != null)intervallBegin.dispose();
-				if (intervallEnd != null) intervallEnd.dispose();
-				if (beginLabel != null) beginLabel.dispose();
-				if (endLabel != null) endLabel.dispose();
-				if (blankLabel != null) blankLabel.dispose();
-				
+				if (attributeValue != null)
+					attributeValue.dispose();
+				if (comparisonValueLabel != null)
+					comparisonValueLabel.dispose();
+				if (intervallBegin != null)
+					intervallBegin.dispose();
+				if (intervallEnd != null)
+					intervallEnd.dispose();
+				if (beginLabel != null)
+					beginLabel.dispose();
+				if (endLabel != null)
+					endLabel.dispose();
+				if (blankLabel != null)
+					blankLabel.dispose();
+
 			}
 
 		});
 
 	}
-	
+
 	/**
 	 * 
 	 * @return CQL expression based on the pageinput.
 	 */
 	public String buildCQL() {
 		String CQLexpression = ""; //$NON-NLS-1$
-		
-		//1. Bild CQL using BBOX
-		
+
+		// 1. Bild CQL using BBOX
+
 		CQLexpression = buildBBOX();
-		
+
 		if (!CQLexpression.equals("")) //$NON-NLS-1$
-			CQLexpression+= " AND "; //$NON-NLS-1$
-		//2. build using property, comparison operator and comparison value
+			CQLexpression += " AND "; //$NON-NLS-1$
+		// 2. build using property, comparison operator and comparison value
 
 		// get attribute name - String between ::
 		String fullPropertyName = selectedAttribute.getText();
 		int firstIndexOfColon = fullPropertyName.indexOf(":"); //$NON-NLS-1$
 		// String attributeValue = attributeValue.getText();
-		String propertyLocalName = fullPropertyName
-				.substring(firstIndexOfColon + 1);
+		String propertyLocalName = fullPropertyName.substring(firstIndexOfColon + 1);
 		// if
 		// ((selectedOperator.getText()).equals(CQLOperators.PropertyIsLike.name()))
 		// attributeValue = "'" + attributeValue + "'";
-		CQLexpression = propertyLocalName
-				+ " " //$NON-NLS-1$
-				+ getCQLOperator(CQLOperators.valueOf(selectedOperator
-						.getText()));
+		CQLexpression = propertyLocalName + " " //$NON-NLS-1$
+				+ getCQLOperator(CQLOperators.valueOf(selectedOperator.getText()));
 		_log.debug("CQL Expression " + CQLexpression); //$NON-NLS-1$
 
 		return CQLexpression;
@@ -477,9 +474,9 @@ public class FeatureFilterForm extends Composite {
 	 * @return the bounding box string
 	 */
 	private String buildBBOX() {
-		String BBOXCQL = "BBOX(" + selectedGeomProperty.getText() + "," + extentXmin.getText()+ "," + extentYmin.getText()+"," + extentXmax.getText()+  ","+ extentYmax.getText(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-		//SRS Attribute is optional
-	    if (!extentSRS.getText().equals("")) BBOXCQL = BBOXCQL + ","+ extentSRS.getText(); //$NON-NLS-1$ //$NON-NLS-2$
+		String BBOXCQL = "BBOX(" + selectedGeomProperty.getText() + "," + extentXmin.getText() + "," + extentYmin.getText() + "," + extentXmax.getText() + "," + extentYmax.getText(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+		// SRS Attribute is optional
+		if (!extentSRS.getText().equals(""))BBOXCQL = BBOXCQL + "," + extentSRS.getText(); //$NON-NLS-1$ //$NON-NLS-2$
 		BBOXCQL += ")"; //$NON-NLS-1$
 		return BBOXCQL;
 	}

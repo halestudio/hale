@@ -27,24 +27,23 @@ import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.WfsGetFeatureWizard;
 
 /**
  * This editor can be used to select a valid {@link URL} for a WFS to retrieve
- * schema information from. It delegates all details to the 
+ * schema information from. It delegates all details to the
  * {@link WfsDescribeFeatureWizard} and {@link WfsGetFeatureWizard}.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @author Jan Kolar
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @partner 02 / Intergraph CS
  */
-public class WfsUrlFieldEditor 
-	extends StringButtonFieldEditor {
-	
+public class WfsUrlFieldEditor extends StringButtonFieldEditor {
+
 	private final static ALogger _log = ALoggerFactory.getLogger(WfsUrlFieldEditor.class);
-	
+
 	private boolean _getFeatures = false;
-	
+
 	private final String schemaNamespace;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -52,16 +51,15 @@ public class WfsUrlFieldEditor
 	 * @param labelText the label text
 	 * @param parent the parent composite
 	 */
-	public WfsUrlFieldEditor(String name, String labelText,
-            Composite parent) {
+	public WfsUrlFieldEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, parent);
-		
+
 		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		setEmptyStringAllowed(false);
-		
+
 		this.schemaNamespace = null;
 	}
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -69,18 +67,20 @@ public class WfsUrlFieldEditor
 	 * @param labelText the label text
 	 * @param parent the parent composite
 	 * @param schemaNamespace the schema namespace, may be <code>null</code>
-	 * @param getFeatures if the editor is for a GetFeature request instead of a DescribeFeature request
+	 * @param getFeatures if the editor is for a GetFeature request instead of a
+	 *            DescribeFeature request
 	 */
-	public WfsUrlFieldEditor(String name, String labelText,Composite parent,String schemaNamespace, boolean getFeatures) {
+	public WfsUrlFieldEditor(String name, String labelText, Composite parent,
+			String schemaNamespace, boolean getFeatures) {
 		super(name, labelText, parent);
 		this._getFeatures = getFeatures;
-		
+
 		setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		setEmptyStringAllowed(false);
-		
+
 		this.schemaNamespace = schemaNamespace;
 	}
-	
+
 	/**
 	 * @see StringFieldEditor#checkState()
 	 */
@@ -88,7 +88,7 @@ public class WfsUrlFieldEditor
 	protected boolean checkState() {
 		// reset error message in case of an empty string
 		setErrorMessage("Please specify a valid URL");
-		
+
 		return super.checkState();
 	}
 
@@ -98,7 +98,7 @@ public class WfsUrlFieldEditor
 	@Override
 	protected String changePressed() {
 		URL result = null;
-		
+
 		if (!this._getFeatures) {
 			WfsDescribeFeatureConfiguration conf = new WfsDescribeFeatureConfiguration();
 			WfsDescribeFeatureWizard describeFeatureWizard = new WfsDescribeFeatureWizard(conf);
@@ -131,26 +131,27 @@ public class WfsUrlFieldEditor
 			return null; //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * @see StringFieldEditor#doCheckState()
 	 */
 	@Override
 	protected boolean doCheckState() {
 		final String value = getStringValue();
-		
+
 		try {
 			new URL(value);
 		} catch (Throwable e) {
 			setErrorMessage(e.getLocalizedMessage());
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Get the URL value.
+	 * 
 	 * @return the URL or <code>null</code> if the content is no valid URL.
 	 */
 	public URL getURL() {

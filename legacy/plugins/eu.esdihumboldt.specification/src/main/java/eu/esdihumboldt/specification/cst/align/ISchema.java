@@ -19,9 +19,9 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
 /**
  * This interface provides operations which return metadata on a schema.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface ISchema {
 
@@ -34,12 +34,12 @@ public interface ISchema {
 	 * @return the formalism
 	 */
 	public IFormalism getFormalism();
-	
+
 	/**
 	 * @return the about
 	 */
 	public IAbout getAbout();
-	
+
 	/**
 	 * @return the labels
 	 */

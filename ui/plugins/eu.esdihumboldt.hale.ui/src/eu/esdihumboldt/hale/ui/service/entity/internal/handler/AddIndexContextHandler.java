@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
  * Adds a new index context for a selected {@link EntityDefinition}.
+ * 
  * @author Simon Templer
  */
 public class AddIndexContextHandler extends AbstractHandler {
@@ -36,17 +37,18 @@ public class AddIndexContextHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		
+
 		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
-			
+
 			if (element instanceof EntityDefinition) {
-				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-				//TODO configure index
+				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+						.getService(EntityDefinitionService.class);
+				// TODO configure index
 				eds.addIndexContext((EntityDefinition) element, null);
 			}
 		}
-		
+
 		return null;
 	}
 

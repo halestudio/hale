@@ -51,26 +51,27 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
  * Write geometries for a GML document.
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Geometry>> {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(StreamGeometryWriter.class);
-	
+
 	/**
 	 * Get a geometry writer instance with a default configuration.
-	 * @param gmlNs the GML namespace 
+	 * 
+	 * @param gmlNs the GML namespace
 	 * @param simplifyGeometry if geometries should be simplified before writing
-	 *   them if possible (e.g. a MultiGeometry with only one geometry is
-	 *   reduced to the contained geometry)
+	 *            them if possible (e.g. a MultiGeometry with only one geometry
+	 *            is reduced to the contained geometry)
 	 * @return the geometry writer
 	 */
-	public static StreamGeometryWriter getDefaultInstance(String gmlNs, 
-			boolean simplifyGeometry) {
+	public static StreamGeometryWriter getDefaultInstance(String gmlNs, boolean simplifyGeometry) {
 		StreamGeometryWriter sgm = new StreamGeometryWriter(gmlNs, simplifyGeometry);
-		
-		//TODO configure
+
+		// TODO configure
 		sgm.registerGeometryWriter(new CurveWriter());
 		sgm.registerGeometryWriter(new PointWriter());
 		sgm.registerGeometryWriter(new PolygonWriter());
@@ -80,48 +81,46 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		sgm.registerGeometryWriter(new MultiLineStringWriter());
 		sgm.registerGeometryWriter(new LegacyPolygonWriter());
 		sgm.registerGeometryWriter(new LegacyMultiPolygonWriter());
-		
+
 		return sgm;
 	}
-	
+
 	/**
 	 * The GML namespace
 	 */
 	private final String gmlNs;
-	
+
 	/**
 	 * Geometry types mapped to compatible writers
 	 */
-	private final Map<Class<? extends Geometry>, Set<GeometryWriter<?>>> geometryWriters =
-		new HashMap<Class<? extends Geometry>, Set<GeometryWriter<?>>>();
-	
+	private final Map<Class<? extends Geometry>, Set<GeometryWriter<?>>> geometryWriters = new HashMap<Class<? extends Geometry>, Set<GeometryWriter<?>>>();
+
 	/**
 	 * Types mapped to geometry types mapped to matched definition paths
 	 */
-	//XXX stored paths instead per attribute definition?
-	private final Map<TypeDefinition, Map<Class<? extends Geometry>, DefinitionPath>> storedPaths = 
-		new HashMap<TypeDefinition, Map<Class<? extends Geometry>,DefinitionPath>>();
+	// XXX stored paths instead per attribute definition?
+	private final Map<TypeDefinition, Map<Class<? extends Geometry>, DefinitionPath>> storedPaths = new HashMap<TypeDefinition, Map<Class<? extends Geometry>, DefinitionPath>>();
 
-	private final boolean simplifyGeometry; 
+	private final boolean simplifyGeometry;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param gmlNs the GML namespace
 	 * @param simplifyGeometry if geometries should be simplified before writing
-	 *   them if possible (e.g. a MultiGeometry with only one geometry is
-	 *   reduced to the contained geometry) 
+	 *            them if possible (e.g. a MultiGeometry with only one geometry
+	 *            is reduced to the contained geometry)
 	 */
 	public StreamGeometryWriter(String gmlNs, boolean simplifyGeometry) {
 		super();
-		
+
 		this.gmlNs = gmlNs;
 		this.simplifyGeometry = simplifyGeometry;
 	}
-	
+
 	/**
 	 * Register a geometry writer
-	 *  
+	 * 
 	 * @param writer the geometry writer
 	 */
 	public void registerGeometryWriter(GeometryWriter<?> writer) {
@@ -131,7 +130,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			writers = new HashSet<GeometryWriter<?>>();
 			geometryWriters.put(geomType, writers);
 		}
-		
+
 		writers.add(writer);
 	}
 
@@ -141,46 +140,48 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param writer the XML stream writer
 	 * @param geometry the geometry
 	 * @param property the geometry property
-	 * @param srsName the SRS name of a common SRS for the whole 
-	 *   document, may be <code>null</code>
+	 * @param srsName the SRS name of a common SRS for the whole document, may
+	 *            be <code>null</code>
 	 * @throws XMLStreamException if any error occurs writing the geometry
 	 */
-	public void write(XMLStreamWriter writer, Geometry geometry,
-			PropertyDefinition property, String srsName) throws XMLStreamException {
+	public void write(XMLStreamWriter writer, Geometry geometry, PropertyDefinition property,
+			String srsName) throws XMLStreamException {
 		// write eventual required id
 		GmlWriterUtil.writeRequiredID(writer, property.getPropertyType(), null, false);
-		
+
 		// write any srsName attribute on the parent element
 		writeSrsName(writer, property.getPropertyType(), geometry, srsName);
-		
+
 		if (simplifyGeometry) {
 			// if geometry collection containing only one geometry,
-			// reduce to internal geometry 
-			if (geometry instanceof GeometryCollection && ((GeometryCollection) geometry).getNumGeometries() == 1) {
+			// reduce to internal geometry
+			if (geometry instanceof GeometryCollection
+					&& ((GeometryCollection) geometry).getNumGeometries() == 1) {
 				geometry = geometry.getGeometryN(0);
 			}
 		}
-		
+
 		Class<? extends Geometry> geomType = geometry.getClass();
-		
+
 		// remember if we already found a solution to this problem
 		DefinitionPath path = restoreCandidate(property.getPropertyType(), geomType);
-		
+
 		if (path == null) {
 			// find candidates
 			List<DefinitionPath> candidates = findCandidates(property, geomType);
-			
+
 			// if no candidate found, try with compatible geometries
 			Class<? extends Geometry> originalType = geomType;
 			Geometry originalGeometry = geometry;
-			ConversionLadder ladder = GeometryConverterRegistry.getInstance().createLadder(geometry);
+			ConversionLadder ladder = GeometryConverterRegistry.getInstance()
+					.createLadder(geometry);
 			while (candidates.isEmpty() && ladder.hasNext()) {
 				geometry = ladder.next();
 				geomType = geometry.getClass();
-				
-				log.info("Possible structure for writing " + originalType.getSimpleName() +  //$NON-NLS-1$
+
+				log.info("Possible structure for writing " + originalType.getSimpleName() + //$NON-NLS-1$
 						" not found, trying " + geomType.getSimpleName() + " instead"); //$NON-NLS-1$ //$NON-NLS-2$
-				
+
 				DefinitionPath candPath = restoreCandidate(property.getPropertyType(), geomType);
 				if (candPath != null) {
 					// use stored candidate
@@ -190,28 +191,28 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 					candidates = findCandidates(property, geomType);
 				}
 			}
-			
+
 			for (DefinitionPath candidate : candidates) {
 				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-			
+
 			if (candidates.isEmpty()) {
-				log.error("No geometry structure match for " +  //$NON-NLS-1$
+				log.error("No geometry structure match for " + //$NON-NLS-1$
 						originalType.getSimpleName() + " found, writing WKT " + //$NON-NLS-1$
 						"representation instead"); //$NON-NLS-1$
-				
+
 				writer.writeCharacters(originalGeometry.toText());
 				return;
 			}
-			
+
 			// determine preferred candidate
-			//XXX for now: first one
+			// XXX for now: first one
 			path = candidates.get(0);
-			
+
 			// remember for later
 			storeCandidate(property.getPropertyType(), geomType, path);
 		}
-		
+
 		// write geometry
 		writeGeometry(writer, geometry, path, srsName);
 	}
@@ -219,7 +220,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	/**
 	 * Find candidates for a possible path to use for writing the geometry
 	 * 
-	 * @param property the start property 
+	 * @param property the start property
 	 * @param geomType the geometry type
 	 * 
 	 * @return the path candidates
@@ -231,10 +232,9 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			// if no writer is present, we can cancel right here
 			return new ArrayList<DefinitionPath>();
 		}
-		
+
 		long max = property.getConstraint(Cardinality.class).getMaxOccurs();
-		return super.findCandidates(property.getPropertyType(),
-				property.getName(), 
+		return super.findCandidates(property.getPropertyType(), property.getName(),
 				max != Cardinality.UNBOUNDED && max <= 1, geomType);
 	}
 
@@ -244,21 +244,21 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param writer the XML stream writer
 	 * @param geometry the geometry
 	 * @param path the definition path to use
-	 * @param srsName the SRS name of a common SRS for the whole 
-	 *   document, may be <code>null</code>
+	 * @param srsName the SRS name of a common SRS for the whole document, may
+	 *            be <code>null</code>
 	 * @throws XMLStreamException if writing the geometry fails
 	 */
 	@SuppressWarnings("unchecked")
-	private void writeGeometry(XMLStreamWriter writer, Geometry geometry,
-			DefinitionPath path, String srsName) throws XMLStreamException {
+	private void writeGeometry(XMLStreamWriter writer, Geometry geometry, DefinitionPath path,
+			String srsName) throws XMLStreamException {
 		@SuppressWarnings("rawtypes")
 		GeometryWriter geomWriter = path.getGeometryWriter();
-		
+
 		QName name = path.getLastName();
-		
+
 		if (path.isEmpty()) {
 			// directly write geometry
-			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs); 
+			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs);
 		}
 		else {
 			for (PathElement step : path.getSteps()) {
@@ -272,13 +272,13 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 					writeSrsName(writer, step.getType(), geometry, srsName);
 				}
 			}
-			
+
 			// write geometry
 			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs);
-			
+
 			for (int i = 0; i < path.getSteps().size(); i++) {
 				PathElement step = path.getSteps().get(path.getSteps().size() - 1 - i);
-				
+
 				if (!step.isTransient()) {
 					// end elements
 					writer.writeEndElement();
@@ -296,24 +296,43 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param srsName the common SRS name, may be <code>null</code>
 	 * @throws XMLStreamException if writing the SRS name fails
 	 */
-	private void writeSrsName(XMLStreamWriter writer, TypeDefinition type,
-			Geometry geometry, String srsName) throws XMLStreamException {
-		//TODO can SRS be extracted from geometry?
-		
+	private void writeSrsName(XMLStreamWriter writer, TypeDefinition type, Geometry geometry,
+			String srsName) throws XMLStreamException {
+		// TODO can SRS be extracted from geometry?
+
 		if (srsName != null) {
 			PropertyDefinition srsAtt = null;
-			for (ChildDefinition<?> att : DefinitionUtil.getAllProperties(type)) { //XXX is this enough? or should groups be handled explicitly?
+			for (ChildDefinition<?> att : DefinitionUtil.getAllProperties(type)) { // XXX
+																					// is
+																					// this
+																					// enough?
+																					// or
+																					// should
+																					// groups
+																					// be
+																					// handled
+																					// explicitly?
 				if (att.asProperty() != null
-						&& att.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled() // if we write an attribute, it must be an attribute ;)
+						&& att.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled() // if
+																								// we
+																								// write
+																								// an
+																								// attribute,
+																								// it
+																								// must
+																								// be
+																								// an
+																								// attribute
+																								// ;)
 						&& att.getName().getLocalPart().equals("srsName") //TODO improve condition? //$NON-NLS-1$
-						&& (att.getName().getNamespaceURI() == null || 
-								att.getName().getNamespaceURI().equals(gmlNs) || 
-								att.getName().getNamespaceURI().isEmpty())) {
+						&& (att.getName().getNamespaceURI() == null
+								|| att.getName().getNamespaceURI().equals(gmlNs) || att.getName()
+								.getNamespaceURI().isEmpty())) {
 					srsAtt = att.asProperty();
 					break;
 				}
 			}
-			
+
 			if (srsAtt != null) {
 				GmlWriterUtil.writeAttribute(writer, srsName, srsAtt);
 			}
@@ -327,8 +346,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param geomType the geometry type
 	 * @param path the definition path
 	 */
-	private void storeCandidate(TypeDefinition type,
-			Class<? extends Geometry> geomType, DefinitionPath path) {
+	private void storeCandidate(TypeDefinition type, Class<? extends Geometry> geomType,
+			DefinitionPath path) {
 		Map<Class<? extends Geometry>, DefinitionPath> paths = storedPaths.get(type);
 		if (paths == null) {
 			paths = new HashMap<Class<? extends Geometry>, DefinitionPath>();
@@ -336,17 +355,16 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		}
 		paths.put(geomType, path);
 	}
-	
+
 	/**
 	 * Restore the candidate matching the given types
 	 * 
 	 * @param type the attribute type definition
 	 * @param geomType the geometry type
 	 * 
-	 * @return a previously found path or <code>null</code> 
+	 * @return a previously found path or <code>null</code>
 	 */
-	private DefinitionPath restoreCandidate(TypeDefinition type,
-			Class<? extends Geometry> geomType) {
+	private DefinitionPath restoreCandidate(TypeDefinition type, Class<? extends Geometry> geomType) {
 		Map<Class<? extends Geometry>, DefinitionPath> paths = storedPaths.get(type);
 		if (paths != null) {
 			return paths.get(geomType);
@@ -356,18 +374,18 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 
 	/**
 	 * Determines if a type definition is compatible to a geometry type
-	 *  
+	 * 
 	 * @param type the type definition
 	 * @param geomType the geometry type
 	 * @param path the current definition path
 	 * 
 	 * @return the (eventually updated) definition path if a match is found,
-	 * otherwise <code>null</code>
+	 *         otherwise <code>null</code>
 	 */
 	@Override
-	protected DefinitionPath matchPath(TypeDefinition type, 
-			Class<? extends Geometry> geomType, DefinitionPath path) {
-		
+	protected DefinitionPath matchPath(TypeDefinition type, Class<? extends Geometry> geomType,
+			DefinitionPath path) {
+
 		// check compatibility list
 		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
 		if (writers != null) {
@@ -379,15 +397,15 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 						// check type name
 						compatible = true;
 					}
-					
+
 					if (!compatible && type.getName().getNamespaceURI().equals(gmlNs)) {
 						// check GML type name
-						compatible = names.contains(new QName(
-								Pattern.GML_NAMESPACE_PLACEHOLDER, 
+						compatible = names.contains(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER,
 								type.getName().getLocalPart()));
-						// the GML_NAMESPACE_PLACEHOLDER namespace references the GML namespace
+						// the GML_NAMESPACE_PLACEHOLDER namespace references
+						// the GML namespace
 					}
-					
+
 					if (compatible) {
 						// check structure / match writer
 						DefinitionPath candidate = writer.match(type, path, gmlNs);
@@ -400,12 +418,13 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				}
 			}
 		}
-		
+
 		// fall back to binding test
-		// check for equality because we don't want a match for the property types
+		// check for equality because we don't want a match for the property
+		// types
 		Class<? extends Geometry> geomBinding = type.getConstraint(GeometryType.class).getBinding();
 		boolean compatible = geomType.equals(geomBinding);
-		
+
 		if (compatible) {
 			// check structure / match writers
 			if (writers != null) {
@@ -419,7 +438,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

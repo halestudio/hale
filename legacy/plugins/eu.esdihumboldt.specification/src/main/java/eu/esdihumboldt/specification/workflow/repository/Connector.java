@@ -21,55 +21,61 @@ import eu.esdihumboldt.specification.workflow.transformer.inputoutputs.ProcessIn
 import eu.esdihumboldt.specification.workflow.transformer.inputoutputs.ProcessOutput;
 
 /**
- *This is an interface that defines the connectors used to connect two transfomers
- * It has method that retrieves information on the connection between Transformers
+ * This is an interface that defines the connectors used to connect two
+ * transfomers It has method that retrieves information on the connection
+ * between Transformers
+ * 
  * @author mgone
  */
 public interface Connector {
 
-    /**
-     *
-     * @return The target of the source transformer
-     */
-    public ProcessInput getTarget();
+	/**
+	 * 
+	 * @return The target of the source transformer
+	 */
+	public ProcessInput getTarget();
 
-    /**
-     *
-     * @return the origin of the connection
-     */
-    public ProcessOutput getSource();
+	/**
+	 * 
+	 * @return the origin of the connection
+	 */
+	public ProcessOutput getSource();
 
-    /**
-     * Sets the constraints for this connection
-     * @param constraint A logical constraint that combines all the Constraints restricting
-     * this connection
-     */
-    public void setConnectionConstraints(Set<Constraint> constraint);
+	/**
+	 * Sets the constraints for this connection
+	 * 
+	 * @param constraint
+	 *            A logical constraint that combines all the Constraints
+	 *            restricting this connection
+	 */
+	public void setConnectionConstraints(Set<Constraint> constraint);
 
-    /**
-     *
-     * @return a unique identifier for this connector
-     */
-    public UUID getConnectorId();
+	/**
+	 * 
+	 * @return a unique identifier for this connector
+	 */
+	public UUID getConnectorId();
 
-    /**
-     * This method gives a description of the connector
-     * @return
-     */
-    public Description getConnectorDescription();
+	/**
+	 * This method gives a description of the connector
+	 * 
+	 * @return
+	 */
+	public Description getConnectorDescription();
 
-    /**
-     * This method gives sets a description of the connector
-     * @param _connectorDescription A brief description of the connector
+	/**
+	 * This method gives sets a description of the connector
+	 * 
+	 * @param _connectorDescription
+	 *            A brief description of the connector
+	 */
+	public void setConnectorDescription(Description _connectorDescription);
 
-     */
-    public void setConnectorDescription(Description _connectorDescription);
-
-    /**
-     * Sets the constraints for this connection
-     * @return A set of constraints  that restricts this link
-     */
-    public Set<Constraint> getConnectionConstraints();
-
+	/**
+	 * Sets the constraints for this connection
+	 * 
+	 * @return A set of constraints that restricts this link
+	 */
+	public Set<Constraint> getConnectionConstraints();
 
 }

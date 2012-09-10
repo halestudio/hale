@@ -32,11 +32,11 @@ import eu.esdihumboldt.hale.ui.function.extension.ParameterEditorFactory;
  * 
  * @author Simon Templer
  */
-public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<EditorFactory> implements
-		ParameterEditorFactory {
-	
+public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<EditorFactory>
+		implements ParameterEditorFactory {
+
 	private static final ALogger _log = ALoggerFactory.getLogger(ParameterEditorFactoryImpl.class);
-	
+
 	private FunctionParameter associatedFunctionParameter;
 
 	/**
@@ -56,7 +56,7 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 		if (conf.getAttribute("priority") == null)
 			return 0;
 		try {
-			return - Integer.parseInt(conf.getAttribute("priority")); // negate
+			return -Integer.parseInt(conf.getAttribute("priority")); // negate
 		} catch (NumberFormatException nfe) {
 			_log.warn("priority not a valid integer", nfe);
 			return 0;
@@ -110,7 +110,8 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 	public FunctionParameter getAssociatedParameter() {
 		if (associatedFunctionParameter == null) {
 			// get defined parameters
-			Set<FunctionParameter> definedParameters = FunctionUtil.getFunction(getFunctionId()).getDefinedParameters();
+			Set<FunctionParameter> definedParameters = FunctionUtil.getFunction(getFunctionId())
+					.getDefinedParameters();
 			// search for defined parameter, add it to associated params
 			// XXX throw some exception if param name is not defined?
 			String name = getParameterName();
@@ -124,5 +125,5 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 
 		return associatedFunctionParameter;
 	}
-	
+
 }

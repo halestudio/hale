@@ -11,62 +11,59 @@
  */
 package eu.esdihumboldt.commons.mediator.usermanagement.impl;
 
-
-
 import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.RemoteOWS.Service;
-
-
 
 public class RemoteOWSServiceFieldHandler extends GeneralizedFieldHandler {
 
 	/**
 	 * Default Constructor
 	 */
-	public RemoteOWSServiceFieldHandler(){
+	public RemoteOWSServiceFieldHandler() {
 		super();
-	}
-	/**
-     * This method is used to convert the value when the
-     * getValue method is called. The getValue method will
-     * obtain the actual field value from given 'parent' object.
-     * This convert method is then invoked with the field's
-     * value. The value returned from this method will be
-     * the actual value returned by getValue method.
-     *
-     * @param should be a MetadataType object
-     * @return String of MetadataType
-     */
-	@Override
-	public Object convertUponGet(Object service) {	
-		
-		return (service == null) ? null : ((Service)service).toString();
-	}
-	
-	/**
-     * This method is used to convert the value when the
-     * setValue method is called. The setValue method will
-     * call this method to obtain the converted value.
-     * The converted value will then be used as the value to
-     * set for the field.
-     *
-     * @param String representation of ConstraintSource
-     * @return ConstraintSource
-     */
-	@Override
-	public Object convertUponSet(Object stringService) {
-		return (stringService == null)? null : Service.valueOf((String)stringService);
 	}
 
 	/**
-     * Returns the class type for the field that this
-     * GeneralizedFieldHandler converts to and from. This
-     * should be the type that is used in the
-     * object model.
-     *
-     * @return String.class
-     */
+	 * This method is used to convert the value when the getValue method is
+	 * called. The getValue method will obtain the actual field value from given
+	 * 'parent' object. This convert method is then invoked with the field's
+	 * value. The value returned from this method will be the actual value
+	 * returned by getValue method.
+	 * 
+	 * @param should
+	 *            be a MetadataType object
+	 * @return String of MetadataType
+	 */
+	@Override
+	public Object convertUponGet(Object service) {
+
+		return (service == null) ? null : ((Service) service).toString();
+	}
+
+	/**
+	 * This method is used to convert the value when the setValue method is
+	 * called. The setValue method will call this method to obtain the converted
+	 * value. The converted value will then be used as the value to set for the
+	 * field.
+	 * 
+	 * @param String
+	 *            representation of ConstraintSource
+	 * @return ConstraintSource
+	 */
+	@Override
+	public Object convertUponSet(Object stringService) {
+		return (stringService == null) ? null : Service
+				.valueOf((String) stringService);
+	}
+
+	/**
+	 * Returns the class type for the field that this GeneralizedFieldHandler
+	 * converts to and from. This should be the type that is used in the object
+	 * model.
+	 * 
+	 * @return String.class
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class getFieldType() {
@@ -74,7 +71,3 @@ public class RemoteOWSServiceFieldHandler extends GeneralizedFieldHandler {
 	}
 
 }
-
-
-
-

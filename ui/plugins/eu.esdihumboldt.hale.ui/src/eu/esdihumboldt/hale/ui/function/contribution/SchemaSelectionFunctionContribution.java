@@ -35,23 +35,24 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
  * Function wizard contribution based on {@link SchemaSelection}
+ * 
  * @author Simon Templer
  */
-public class SchemaSelectionFunctionContribution extends
-		AbstractFunctionWizardContribution {
-	
-	private static final ALogger log = ALoggerFactory.getLogger(SchemaSelectionFunctionContribution.class);
+public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardContribution {
+
+	private static final ALogger log = ALoggerFactory
+			.getLogger(SchemaSelectionFunctionContribution.class);
 
 	/**
-	 * @see AbstractFunctionWizardContribution#createWizardAction(FunctionWizardDescriptor, AlignmentService)
+	 * @see AbstractFunctionWizardContribution#createWizardAction(FunctionWizardDescriptor,
+	 *      AlignmentService)
 	 */
 	@Override
-	protected AbstractWizardAction<?> createWizardAction(
-			FunctionWizardDescriptor<?> descriptor,
+	protected AbstractWizardAction<?> createWizardAction(FunctionWizardDescriptor<?> descriptor,
 			AlignmentService alignmentService) {
 		return new SchemaSelectionWizardAction(this, descriptor, alignmentService);
 	}
-	
+
 	/**
 	 * @see AbstractFunctionWizardContribution#isActive(FunctionWizardDescriptor)
 	 */
@@ -75,27 +76,29 @@ public class SchemaSelectionFunctionContribution extends
 	}
 
 	/**
-	 * Test if the given function definition matches the given selection 
+	 * Test if the given function definition matches the given selection
+	 * 
 	 * @param function the function definition
 	 * @param selection the schema selection
 	 * @return <code>true</code> if the definition matches the selection,
-	 *   <code>false</code> otherwise 
+	 *         <code>false</code> otherwise
 	 */
-	private boolean matchPropertyFunction(PropertyFunction function,
-			SchemaSelection selection) {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		
+	private boolean matchPropertyFunction(PropertyFunction function, SchemaSelection selection) {
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+
 		if (!AlignmentUtil.hasTypeRelation(as.getAlignment())) {
-			// don't allow creating property relations if there are no type relations present
+			// don't allow creating property relations if there are no type
+			// relations present
 			return false;
 		}
-		
+
 		if (selection == null || selection.isEmpty()) {
 			// for no selection always allow creating a new cell if there are
 			// type relations present
 			return true;
 		}
-		
+
 		// check types
 		Set<EntityDefinition> sourceItems = selection.getSourceItems();
 		if (!checkType(sourceItems, PropertyEntityDefinition.class)) {
@@ -105,9 +108,9 @@ public class SchemaSelectionFunctionContribution extends
 		if (!checkType(targetItems, PropertyEntityDefinition.class)) {
 			return false;
 		}
-		
-		//TODO check if properties have the same parent type? what about joins?
-		
+
+		// TODO check if properties have the same parent type? what about joins?
+
 		// check counts
 		if (!checkCount(sourceItems.size(), function.getSource(), false)) {
 			return false;
@@ -115,18 +118,19 @@ public class SchemaSelectionFunctionContribution extends
 		if (!checkCount(targetItems.size(), function.getTarget(), true)) {
 			return false;
 		}
-		
-		//TODO other checks?
-		
+
+		// TODO other checks?
+
 		return true;
 	}
 
 	/**
-	 * Test if the given function definition matches the given selection 
+	 * Test if the given function definition matches the given selection
+	 * 
 	 * @param function the function definition
 	 * @param selection the schema selection
 	 * @return <code>true</code> if the definition matches the selection,
-	 *   <code>false</code> otherwise 
+	 *         <code>false</code> otherwise
 	 */
 	private boolean matchTypeFunction(TypeFunction function, SchemaSelection selection) {
 		// check types
@@ -138,7 +142,7 @@ public class SchemaSelectionFunctionContribution extends
 		if (!checkType(targetItems, TypeEntityDefinition.class)) {
 			return false;
 		}
-		
+
 		// check counts
 		if (!checkCount(sourceItems.size(), function.getSource(), true)) {
 			return false;
@@ -146,43 +150,43 @@ public class SchemaSelectionFunctionContribution extends
 		if (!checkCount(targetItems.size(), function.getTarget(), false)) {
 			return false;
 		}
-		
-		//TODO other checks?
-		
+
+		// TODO other checks?
+
 		return true;
 	}
 
 	/**
-	 * Checks if each item is of the given type 
+	 * Checks if each item is of the given type
+	 * 
 	 * @param items the items
 	 * @param type the type
 	 * @return <code>true</code> if all items are of the given type
 	 */
-	private static boolean checkType(Iterable<?> items,
-			Class<?> type) {
+	private static boolean checkType(Iterable<?> items, Class<?> type) {
 		for (Object item : items) {
 			if (!type.isAssignableFrom(item.getClass())) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
-	 * Checks if the given entity count is compatible with the given set of 
+	 * Checks if the given entity count is compatible with the given set of
 	 * entity definitions
+	 * 
 	 * @param count the entity count
 	 * @param entities the entity definitions
 	 * @param isTarget if the entities are target entities
 	 * @return if then entity count is compatible with the definitions
 	 */
-	private static boolean checkCount(int count,
-			Set<? extends AbstractParameter> entities,
+	private static boolean checkCount(int count, Set<? extends AbstractParameter> entities,
 			boolean isTarget) {
 		int min = 0;
 		int max = 0;
-		
+
 		for (AbstractParameter param : entities) {
 			min += param.getMinOccurrence();
 			if (max != AbstractParameter.UNBOUNDED) {
@@ -195,39 +199,40 @@ public class SchemaSelectionFunctionContribution extends
 				}
 			}
 		}
-		
+
 		// check minimum
 		if (count < min) {
 			return false;
 		}
-		
+
 		if (max == 0 && !isTarget) {
 			// allow augmentations
 			return true;
 		}
-		
+
 		// check maximum
 		if (max != AbstractParameter.UNBOUNDED && count > max) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	/**
 	 * Get the schema selection
+	 * 
 	 * @return the schema selection to use
 	 */
 	public SchemaSelection getSelection() {
 //		ISelectionService selectionService = PlatformUI.getWorkbench()
 //			.getActiveWorkbenchWindow().getSelectionService();
 //		ISelection selection = selectionService.getSelection();
-		
+
 //		if (selection instanceof SchemaSelection) {
 //			return (SchemaSelection) selection;
 //		}
 //		else {
-			return SchemaSelectionHelper.getSchemaSelection();
+		return SchemaSelectionHelper.getSchemaSelection();
 //		}
 	}
 

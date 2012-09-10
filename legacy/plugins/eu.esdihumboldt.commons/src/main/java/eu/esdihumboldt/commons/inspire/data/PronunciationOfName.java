@@ -19,37 +19,54 @@ import java.net.URI;
  * 
  * @author Jose Ignacio Gisbert
  * @partner 02 / ETRA Research and Development
- * @version $Id$ 
+ * @version $Id$
  */
 
-public class PronunciationOfName implements Cloneable{
-	private URI pronunciationSoundLink=null;
-	private String pronunciationIPA=null;
-	
-	public PronunciationOfName(){}
-	
-	public URI getPronunciationSoundLink(){return pronunciationSoundLink;}
-	public void setPronunciationSoundLink(URI ur){pronunciationSoundLink=ur;}
-	
-	public String getPronunciationIPA(){return pronunciationIPA;}
-	public void setPronunciationIPA(String p){pronunciationIPA=p;}
-	
-    public Object clone() throws CloneNotSupportedException {return super.clone();}
-    
-	public boolean equals(PronunciationOfName target)
-	{
-		if (target==null)
+public class PronunciationOfName implements Cloneable {
+	private URI pronunciationSoundLink = null;
+	private String pronunciationIPA = null;
+
+	public PronunciationOfName() {
+	}
+
+	public URI getPronunciationSoundLink() {
+		return pronunciationSoundLink;
+	}
+
+	public void setPronunciationSoundLink(URI ur) {
+		pronunciationSoundLink = ur;
+	}
+
+	public String getPronunciationIPA() {
+		return pronunciationIPA;
+	}
+
+	public void setPronunciationIPA(String p) {
+		pronunciationIPA = p;
+	}
+
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+
+	public boolean equals(PronunciationOfName target) {
+		if (target == null)
 			return false;
-		if (pronunciationSoundLink!=null && pronunciationSoundLink.equals(target.getPronunciationSoundLink())==false)
+		if (pronunciationSoundLink != null
+				&& pronunciationSoundLink.equals(target
+						.getPronunciationSoundLink()) == false)
 			return false;
-		else if(pronunciationSoundLink==null && target.getPronunciationSoundLink()!=null)
+		else if (pronunciationSoundLink == null
+				&& target.getPronunciationSoundLink() != null)
 			return false;
-		
-		if (pronunciationIPA!=null && pronunciationIPA.equals(target.getPronunciationIPA())==false)
+
+		if (pronunciationIPA != null
+				&& pronunciationIPA.equals(target.getPronunciationIPA()) == false)
 			return false;
-		else if(pronunciationIPA==null && target.getPronunciationIPA()!=null)
+		else if (pronunciationIPA == null
+				&& target.getPronunciationIPA() != null)
 			return false;
-				
+
 		return true;
 	}
 }

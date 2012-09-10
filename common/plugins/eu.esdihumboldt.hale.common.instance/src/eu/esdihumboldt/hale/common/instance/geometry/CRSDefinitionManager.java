@@ -17,19 +17,19 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.util.definition.AbstractObjectFactory;
 
 /**
- * Provides support for converting {@link CRSDefinition} to string and vice 
+ * Provides support for converting {@link CRSDefinition} to string and vice
  * versa based on the {@link CRSDefinitionFactory}ies available as OSGi
  * services.
- *    
+ * 
  * @author Simon Templer
  */
-public class CRSDefinitionManager extends AbstractObjectFactory<CRSDefinition,
-		CRSDefinitionFactory<?>> {
-	
+public class CRSDefinitionManager extends
+		AbstractObjectFactory<CRSDefinition, CRSDefinitionFactory<?>> {
+
 	private CRSDefinitionManager() {
 		super();
 	}
-	
+
 	/**
 	 * Get the CRS definition manager instance
 	 * 
@@ -39,10 +39,10 @@ public class CRSDefinitionManager extends AbstractObjectFactory<CRSDefinition,
 		if (instance == null) {
 			instance = new CRSDefinitionManager();
 		}
-		
+
 		return instance;
 	}
-	
+
 	private static CRSDefinitionManager instance;
 
 	/**
@@ -56,5 +56,5 @@ public class CRSDefinitionManager extends AbstractObjectFactory<CRSDefinition,
 		}
 		return result;
 	}
-	
+
 }

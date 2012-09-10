@@ -80,10 +80,9 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 							.getValue()).getGeometry();
 				}
 			}
-			
+
 			// to parse inner linear rings
-			values = PropertyResolver.getValues(instance,
-					"innerBoundaryIs.LinearRing", false);
+			values = PropertyResolver.getValues(instance, "innerBoundaryIs.LinearRing", false);
 			if (values != null && !values.isEmpty()) {
 				iterator = values.iterator();
 				List<LinearRing> innerRings = new ArrayList<LinearRing>();
@@ -92,22 +91,20 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 					if (value instanceof Instance) {
 						// innerRings have to be a
 						// DefaultGeometryProperty<LinearRing> instances
-						innerRings
-								.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-										.getValue()).getGeometry());
+						innerRings.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
+								.getValue()).getGeometry());
 					}
 				}
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 			}
-			
+
 			polygon = getGeometryFactory().createPolygon(outerRing, holes);
 		}
 
 		// for use with GML 3, 3.1 and 3.2
 		// to parse inner linear rings
 		if (polygon == null) {
-			values = PropertyResolver.getValues(instance,
-					"interior.LinearRing", false);
+			values = PropertyResolver.getValues(instance, "interior.LinearRing", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
 				List<LinearRing> innerRings = new ArrayList<LinearRing>();
@@ -116,17 +113,15 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 					if (value instanceof Instance) {
 						// innerRings have to be a
 						// DefaultGeometryProperty<LinearRing> instances
-						innerRings
-								.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-										.getValue()).getGeometry());
+						innerRings.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
+								.getValue()).getGeometry());
 					}
 				}
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 			}
 
 			// to parse outer linear rings
-			values = PropertyResolver.getValues(instance,
-					"exterior.LinearRing", false);
+			values = PropertyResolver.getValues(instance, "exterior.LinearRing", false);
 			LinearRing outerRing = null;
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
@@ -147,8 +142,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 		// normal rings should automatically be handled with generic geometry
 		// handler
 		if (polygon == null) {
-			values = PropertyResolver.getValues(instance, "exterior.Ring",
-					false);
+			values = PropertyResolver.getValues(instance, "exterior.Ring", false);
 			if (values != null && !values.isEmpty()) {
 				GenericGeometryHandler handler = new GenericGeometryHandler();
 				return handler.createGeometry(instance, srsDimension);
@@ -167,8 +161,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
-				2);
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
 
 		constraints.add(Binding.get(GeometryProperty.class));
 		constraints.add(GeometryType.get(Polygon.class));

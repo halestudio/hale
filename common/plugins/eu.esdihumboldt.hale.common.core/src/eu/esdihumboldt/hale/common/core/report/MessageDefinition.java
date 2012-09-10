@@ -18,17 +18,18 @@ import eu.esdihumboldt.util.definition.ObjectDefinition;
  * Message definition interface. String representations of {@link Message} are
  * explicitly allowed to span multiple lines. Identifiers must begin with the
  * {@link #ID_PREFIX}.
+ * 
  * @param <T> the message type
  * @author Simon Templer
  * @since 2.5
  */
 public interface MessageDefinition<T extends Message> extends ObjectDefinition<T> {
-	
+
 	/**
 	 * The common ID prefix for all message definitions
 	 */
 	public static final String ID_PREFIX = "!MSG_";
 
 	// concrete typed interface
-	
+
 }

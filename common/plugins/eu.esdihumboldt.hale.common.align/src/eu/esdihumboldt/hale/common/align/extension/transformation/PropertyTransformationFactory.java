@@ -16,11 +16,12 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransfo
 
 /**
  * Factory for {@link PropertyTransformation}s
+ * 
  * @author Simon Templer
  */
 public interface PropertyTransformationFactory extends
 		TransformationFactory<PropertyTransformation<?>> {
-	
+
 	// concrete typed interface
 
 }

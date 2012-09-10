@@ -19,35 +19,39 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Callback for {@link InstanceTraverser}s.
+ * 
  * @author Simon Templer
  */
 public interface InstanceTraversalCallback {
-	
+
 	/**
 	 * Visit an instance.
+	 * 
 	 * @param instance the instance
-	 * @param name the property name the instance is a value of, 
-	 *   <code>null</code> if it is the traversal root
+	 * @param name the property name the instance is a value of,
+	 *            <code>null</code> if it is the traversal root
 	 * @return if traversal shall be continued
 	 */
 	public boolean visit(Instance instance, QName name);
-	
+
 	/**
 	 * Visit a group that is not an {@link Instance}.
+	 * 
 	 * @param group the group
-	 * @param name the property name the group is a value of, 
-	 *   <code>null</code> if it is the traversal root
+	 * @param name the property name the group is a value of, <code>null</code>
+	 *            if it is the traversal root
 	 * @return if traversal shall be continued
 	 */
 	public boolean visit(Group group, QName name);
-	
+
 	/**
 	 * Visit a value that is neither {@link Instance} nor {@link Group}.
+	 * 
 	 * @param value the value
-	 * @param name the property name the object is a value of, 
-	 *   <code>null</code> if it is the traversal root
+	 * @param name the property name the object is a value of, <code>null</code>
+	 *            if it is the traversal root
 	 * @return if traversal shall be continued
 	 */
 	public boolean visit(Object value, QName name);
-	
+
 }

@@ -17,17 +17,18 @@ import eu.esdihumboldt.hale.ui.io.ImportWizard;
 
 /**
  * Wizard for importing instances
+ * 
  * @author Simon Templer
  * @since 2.5
  */
 public class InstanceImportWizard extends ImportWizard<InstanceReader> {
-	
+
 	/**
 	 * Create an instance import wizard
 	 */
 	public InstanceImportWizard() {
 		super(InstanceReader.class);
-		
+
 		setWindowTitle("Import instances");
 	}
 

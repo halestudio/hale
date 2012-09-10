@@ -19,24 +19,23 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverter;
 
 /**
  * Converts a {@link GeometryCollection} to a single {@link Geometry}.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  * @param <C> the geometry collection type
- * @param <T> the geometry type contained in the collection 
+ * @param <T> the geometry type contained in the collection
  */
-public abstract class AbstractGeometryCollectionConverter<C extends GeometryCollection, T extends Geometry> extends
-		AbstractGeometryConverter<C, T> {
+public abstract class AbstractGeometryCollectionConverter<C extends GeometryCollection, T extends Geometry>
+		extends AbstractGeometryConverter<C, T> {
 
 	/**
 	 * Constructor
 	 * 
-	 * @param sourceType the geometry collection type 
+	 * @param sourceType the geometry collection type
 	 * @param targetType the geometry type contained in the collection
 	 */
-	public AbstractGeometryCollectionConverter(Class<C> sourceType,
-			Class<T> targetType) {
+	public AbstractGeometryCollectionConverter(Class<C> sourceType, Class<T> targetType) {
 		super(sourceType, targetType);
 	}
 
@@ -60,7 +59,6 @@ public abstract class AbstractGeometryCollectionConverter<C extends GeometryColl
 	 * @return the empty geometry
 	 */
 	protected abstract T createEmptyGeometry();
-
 
 	/**
 	 * @see GeometryConverter#lossOnConversion(Geometry)

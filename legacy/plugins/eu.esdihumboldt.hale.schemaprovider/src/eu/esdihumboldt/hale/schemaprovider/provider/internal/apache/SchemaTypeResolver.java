@@ -20,26 +20,29 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Combines the information for resolving types
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class SchemaTypeResolver {
-	
+
 	private Map<Name, TypeDefinition> types;
-	
+
 	private Map<Name, TypeDefinition> importedTypes;
-	
+
 	private String schemaLocation;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param types the type definitions
-	 * @param importedTypes the imported type definitions
-	 * @param schemaLocation the schema location
+	 * @param types
+	 *            the type definitions
+	 * @param importedTypes
+	 *            the imported type definitions
+	 * @param schemaLocation
+	 *            the schema location
 	 */
 	public SchemaTypeResolver(Map<Name, TypeDefinition> types,
 			Map<Name, TypeDefinition> importedTypes, String schemaLocation) {
@@ -69,13 +72,14 @@ public class SchemaTypeResolver {
 	public String getSchemaLocation() {
 		return schemaLocation;
 	}
-	
+
 	/**
 	 * Resolve a type by the given name
 	 * 
-	 * @param name the type name
+	 * @param name
+	 *            the type name
 	 * @return the type definition or <code>null</code> if the corresponding
-	 *   type was not found
+	 *         type was not found
 	 */
 	public TypeDefinition getSchemaType(Name name) {
 		TypeDefinition type = types.get(name);

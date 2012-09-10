@@ -22,105 +22,131 @@ import eu.esdihumboldt.specification.mediator.usermanagement.exceptions.Organiza
 import eu.esdihumboldt.specification.mediator.usermanagement.exceptions.UserNotFoundException;
 
 /**
- * A UserAdministration Interface contains methods to create, edit and remove: 
+ * A UserAdministration Interface contains methods to create, edit and remove:
  * <ul>
  * <li>the User,</li>
  * <li>the Organization.</li>
  * </ul>
  * 
  * @author Anna Pitaev, Logica CMG
- * @version $Id: UserManagementService.java,v 1.5 2007-11-14 10:32:37 jamess Exp $
+ * @version $Id: UserManagementService.java,v 1.5 2007-11-14 10:32:37 jamess Exp
+ *          $
  * 
  */
 public interface UserManagementService {
-	
+
 	/**
 	 * Creates a new User.
-	 * @param user the User-Object, that contains all user-specific informationen for the new user.
+	 * 
+	 * @param user
+	 *            the User-Object, that contains all user-specific informationen
+	 *            for the new user.
 	 * @return the unique identifier for the new user Object.
-	 * @throws InconsistentUserConstraintException 
+	 * @throws InconsistentUserConstraintException
 	 */
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public UUID createUser(User user) throws InconsistentUserConstraintException ;
-	
-	/**
-	 * Edit and Store the user-specific informations. 
-	 *
-	 * @param uuid the inique identifier for the user-object, that should be changed. 
-	 * @param  user User-Object, that contains the new informationen for this user.
-	 * @throws UserNotFoundException 
-	 * @throws InconsistentUserConstraintException 
-	 */
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public boolean updateUser(UUID id, User user) throws UserNotFoundException, InconsistentUserConstraintException;
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public UUID createUser(User user)
+			throws InconsistentUserConstraintException;
 
-	
-	
 	/**
-	 * Removes the User-Object from the system.
-	 * The User-Object could be deleted, if (and only if)
-	 * the List of his contexts in the system is empty.
+	 * Edit and Store the user-specific informations.
 	 * 
-	 * 
-	 * @param uuid the unique identifier for the user, that should be deleted.
-	 * @return true, if the delete operation was successful,
-	 *         false, else.
-	 * @throws UserNotFoundException 
+	 * @param uuid
+	 *            the inique identifier for the user-object, that should be
+	 *            changed.
+	 * @param user
+	 *            User-Object, that contains the new informationen for this
+	 *            user.
+	 * @throws UserNotFoundException
+	 * @throws InconsistentUserConstraintException
 	 */
-	@Transactional(propagation=Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean updateUser(UUID id, User user) throws UserNotFoundException,
+			InconsistentUserConstraintException;
+
+	/**
+	 * Removes the User-Object from the system. The User-Object could be
+	 * deleted, if (and only if) the List of his contexts in the system is
+	 * empty.
+	 * 
+	 * 
+	 * @param uuid
+	 *            the unique identifier for the user, that should be deleted.
+	 * @return true, if the delete operation was successful, false, else.
+	 * @throws UserNotFoundException
+	 */
+	@Transactional(propagation = Propagation.REQUIRED)
 	public boolean removeUser(UUID uuid) throws UserNotFoundException;
-	
+
 	/**
 	 * Creates a new Organization.
-	 * @param organization the Organization-Object, that contains all organization-specific informationen for the new organization.
+	 * 
+	 * @param organization
+	 *            the Organization-Object, that contains all
+	 *            organization-specific informationen for the new organization.
 	 * @return the unique identifier for the new organization Object.
-	 * @throws InconsistentOrganizationConstraintException 
+	 * @throws InconsistentOrganizationConstraintException
 	 */
-	@Transactional(propagation=Propagation.REQUIRED,rollbackFor=InconsistentOrganizationConstraintException.class)
-	public UUID createOrganization(Organization organization)throws InconsistentOrganizationConstraintException;
-	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = InconsistentOrganizationConstraintException.class)
+	public UUID createOrganization(Organization organization)
+			throws InconsistentOrganizationConstraintException;
+
 	/**
-	 * Edit and Store the organization-specific informations. 
-	 *
-	 * @param uuid the inique identifier for the organization-object, that should be changed. 
-	 * @param organization Organization-Object, that contains the new informationen for this organization.
-	 * @throws OrganizationNotFoundException 
-	 * @throws InconsistentOrganizationConstraintException 
+	 * Edit and Store the organization-specific informations.
+	 * 
+	 * @param uuid
+	 *            the inique identifier for the organization-object, that should
+	 *            be changed.
+	 * @param organization
+	 *            Organization-Object, that contains the new informationen for
+	 *            this organization.
+	 * @throws OrganizationNotFoundException
+	 * @throws InconsistentOrganizationConstraintException
 	 */
-	@Transactional(propagation=Propagation.REQUIRED)
-	public boolean updateOrganization(UUID id, Organization organization) throws OrganizationNotFoundException, InconsistentOrganizationConstraintException ;
-	
-	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public boolean updateOrganization(UUID id, Organization organization)
+			throws OrganizationNotFoundException,
+			InconsistentOrganizationConstraintException;
+
 	/**
-	 * Removes the Organization-Object from the system.
-	 * An Organization could be deleted from the system, if(and only if)
-	 * its user list is empty and there are no other references to this organization in the system. 
+	 * Removes the Organization-Object from the system. An Organization could be
+	 * deleted from the system, if(and only if) its user list is empty and there
+	 * are no other references to this organization in the system.
 	 * 
 	 * 
-	 * @param uuid the unique identifier for the organization, that should be deleted.
-	 * @return true, if the delete operation was successful,
-	 *         false, else.
-	 * @throws OrganizationNotFoundException 
+	 * @param uuid
+	 *            the unique identifier for the organization, that should be
+	 *            deleted.
+	 * @return true, if the delete operation was successful, false, else.
+	 * @throws OrganizationNotFoundException
 	 */
-	@Transactional(propagation=Propagation.REQUIRED)
-	public boolean removeOrganization(UUID uuid)throws OrganizationNotFoundException;
-	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public boolean removeOrganization(UUID uuid)
+			throws OrganizationNotFoundException;
+
 	/**
-	 * This methods should be used by ContextClient to simplify UpdateUser-operation.
-	 * @param uuid unique identifier of the user.
+	 * This methods should be used by ContextClient to simplify
+	 * UpdateUser-operation.
+	 * 
+	 * @param uuid
+	 *            unique identifier of the user.
 	 * @return user data.
 	 * @throws UserNotFoundException
 	 */
-	@Transactional(readOnly=true)
-	public User getUserData(UUID uuid)throws UserNotFoundException;
-	
+	@Transactional(readOnly = true)
+	public User getUserData(UUID uuid) throws UserNotFoundException;
+
 	/**
-	 * This method should be used by ContextClient to simplify UpdateOrganization-operation.
-	 * @param uuid unique identifier of the organization.
+	 * This method should be used by ContextClient to simplify
+	 * UpdateOrganization-operation.
+	 * 
+	 * @param uuid
+	 *            unique identifier of the organization.
 	 * @return organization data.
 	 * @throws OrganizationNotFoundException
 	 */
-	@Transactional(readOnly=true)
-	public Organization getOrganization(UUID uuid)throws OrganizationNotFoundException;
+	@Transactional(readOnly = true)
+	public Organization getOrganization(UUID uuid)
+			throws OrganizationNotFoundException;
 
 }

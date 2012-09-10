@@ -15,13 +15,12 @@ package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
-
 /**
- * Abstract WFS wizard 
- *
+ * Abstract WFS wizard
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  * @param <T> the WFS configuration type
  */
 public abstract class AbstractWfsWizard<T extends WfsConfiguration> extends Wizard {
@@ -30,17 +29,17 @@ public abstract class AbstractWfsWizard<T extends WfsConfiguration> extends Wiza
 	 * The WFS configuration
 	 */
 	protected final T configuration;
-	
+
 	/**
 	 * The capabilities page
 	 */
 	private CapabilitiesPage capabilities;
-	
+
 	/**
 	 * The types page
 	 */
 	private AbstractTypesPage<? super T> types;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -48,7 +47,7 @@ public abstract class AbstractWfsWizard<T extends WfsConfiguration> extends Wiza
 	 */
 	public AbstractWfsWizard(T configuration) {
 		this.configuration = configuration;
-		
+
 		setNeedsProgressMonitor(true);
 	}
 
@@ -73,13 +72,13 @@ public abstract class AbstractWfsWizard<T extends WfsConfiguration> extends Wiza
 				return false;
 			}
 		}
-		
+
 		boolean success = configuration.validateSettings();
-		
+
 		if (success) {
 			capabilities.updateRecent();
 		}
-		
+
 		return success;
 	}
 
@@ -96,5 +95,5 @@ public abstract class AbstractWfsWizard<T extends WfsConfiguration> extends Wiza
 	public AbstractTypesPage<? super T> getTypes() {
 		return types;
 	}
-	
+
 }

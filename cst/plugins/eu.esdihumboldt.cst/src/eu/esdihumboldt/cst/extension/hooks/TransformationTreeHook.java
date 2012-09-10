@@ -17,15 +17,16 @@ import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
 /**
  * Transformation tree hook, called in preparation of property transformation.
+ * 
  * @author Simon Templer
  */
 public interface TransformationTreeHook {
-	
+
 	/**
 	 * Classification of transformation tree states.
 	 */
 	public enum TreeState {
-		
+
 		/**
 		 * Minimal tree derived from the alignment.
 		 */
@@ -40,16 +41,18 @@ public interface TransformationTreeHook {
 		FULL;
 
 	}
-	
+
 	/**
 	 * Process the given transformation tree, called before property
-	 * transformation of an instance. Hooks should either be stateless or 
-	 * thread safe.
+	 * transformation of an instance. Hooks should either be stateless or thread
+	 * safe.
+	 * 
 	 * @param tree the transformation tree
 	 * @param state the tree state
 	 * @param target the target instance
 	 */
 	public void processTransformationTree(TransformationTree tree, TreeState state,
-			MutableInstance target); //XXX expose target instance for this method? or only metadata?!
+			MutableInstance target); // XXX expose target instance for this
+										// method? or only metadata?!
 
 }

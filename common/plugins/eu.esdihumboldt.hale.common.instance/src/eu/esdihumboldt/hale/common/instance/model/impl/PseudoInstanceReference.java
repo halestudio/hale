@@ -19,14 +19,16 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 /**
  * An instance reference that contains the instance. Two pseudo references are
  * equal if the the contained instance object is the same.
+ * 
  * @author Simon Templer
  */
 public class PseudoInstanceReference implements InstanceReference {
 
 	private final Instance instance;
-	
+
 	/**
 	 * Create a pseudo instance reference.
+	 * 
 	 * @param instance the instance
 	 */
 	public PseudoInstanceReference(Instance instance) {

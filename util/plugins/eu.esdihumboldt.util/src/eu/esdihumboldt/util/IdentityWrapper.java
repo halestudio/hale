@@ -15,8 +15,9 @@ package eu.esdihumboldt.util;
 import net.jcip.annotations.Immutable;
 
 /**
- * Class that defines its {@link #equals(Object)} and {@link #hashCode()}
- * based on the contained values identity.
+ * Class that defines its {@link #equals(Object)} and {@link #hashCode()} based
+ * on the contained values identity.
+ * 
  * @param <T> the value type
  * @author Simon Templer
  */
@@ -27,9 +28,10 @@ public class IdentityWrapper<T> {
 
 	/**
 	 * Create a wrapper for the given value.
+	 * 
 	 * @param value the value to wrap, if the value is an
-	 *   {@link IdentityWrapper}, its value will be extracted and used as the
-	 *   value to wrap
+	 *            {@link IdentityWrapper}, its value will be extracted and used
+	 *            as the value to wrap
 	 */
 	@SuppressWarnings("unchecked")
 	public IdentityWrapper(T value) {
@@ -44,6 +46,7 @@ public class IdentityWrapper<T> {
 
 	/**
 	 * Get the contained value.
+	 * 
 	 * @return the value
 	 */
 	public T getValue() {
@@ -62,5 +65,5 @@ public class IdentityWrapper<T> {
 		}
 		return false;
 	}
-	
+
 }

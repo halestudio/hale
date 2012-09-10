@@ -18,62 +18,70 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 
 /**
- * The {@link AlignmentService} provides access to the currently loaded 
+ * The {@link AlignmentService} provides access to the currently loaded
  * alignment.
  * 
  * @author Thorsten Reitz
  * @author Simon Templer
  */
 public interface AlignmentService {
-	
+
 	/**
 	 * Get the current alignment
-	 * @return the entire {@link Alignment} as currently represented in the 
-	 *   Alignment Model.
+	 * 
+	 * @return the entire {@link Alignment} as currently represented in the
+	 *         Alignment Model.
 	 */
 	public Alignment getAlignment();
-	
+
 	/**
 	 * Adds the cells contained in the given alignment to the current alignment.
 	 * If cells with the same entities and transformations already exist they
 	 * will be replaced.
+	 * 
 	 * @param alignment the alignment to add
 	 */
 	public void addOrUpdateAlignment(MutableAlignment alignment);
-	
+
 	/**
 	 * Adds the given cell to the current alignment.
+	 * 
 	 * @param cell the cell to add
 	 */
 	public void addCell(MutableCell cell);
-	
+
 	/**
 	 * Replace a cell with a new cell.
+	 * 
 	 * @param oldCell the old cell that should be removed from the alignment
 	 * @param newCell the new cell that should be added to the alignment
 	 */
 	public void replaceCell(Cell oldCell, MutableCell newCell);
-	
+
 	/**
 	 * Removes the given cell
+	 * 
 	 * @param cell the cell to remove
 	 */
 	public void removeCell(Cell cell);
-	
+
 	/**
-	 * Invoke this operation if you want to clear out all alignments stored. 
-	 * This method is required when one wants to start working on a new alignment.
+	 * Invoke this operation if you want to clear out all alignments stored.
+	 * This method is required when one wants to start working on a new
+	 * alignment.
 	 */
 	public void clean();
-	
+
 	/**
 	 * Adds a listener to the service
+	 * 
 	 * @param listener the listener to add
 	 */
 	public void addListener(AlignmentServiceListener listener);
-	
+
 	/**
 	 * Removes a listener to the service
+	 * 
 	 * @param listener the listener to remove
 	 */
 	public void removeListener(AlignmentServiceListener listener);

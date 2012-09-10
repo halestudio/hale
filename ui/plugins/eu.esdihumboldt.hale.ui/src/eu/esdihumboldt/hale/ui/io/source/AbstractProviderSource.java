@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**
  * Abstract {@link ImportSource} implementation offering provider selection.
+ * 
  * @param <P> the supported {@link IOProvider} type
  * 
  * @author Simon Templer
@@ -44,14 +45,14 @@ import eu.esdihumboldt.hale.ui.io.ImportSource;
 public abstract class AbstractProviderSource<P extends ImportProvider> extends AbstractSource<P> {
 
 	private ComboViewer providers;
-	
+
 	/**
-	 * Create the provider selector combo viewer. Once created it can be 
+	 * Create the provider selector combo viewer. Once created it can be
 	 * retrieved using {@link #getProviders()}. This should be called in
 	 * {@link #createControls(Composite)}.
 	 * 
 	 * @param parent the parent composite
-	 * @return the created combo viewer 
+	 * @return the created combo viewer
 	 */
 	protected ComboViewer createProviders(Composite parent) {
 		// create provider combo
@@ -66,23 +67,24 @@ public abstract class AbstractProviderSource<P extends ImportProvider> extends A
 				}
 				return super.getText(element);
 			}
-			
+
 		});
-		
+
 		// process selection changes
 		providers.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				onProviderSelectionChanged(event);
 			}
 		});
-		
+
 		return providers;
 	}
-	
+
 	/**
 	 * Called when the provider selection changes.
+	 * 
 	 * @param event the selection changed event
 	 */
 	protected void onProviderSelectionChanged(SelectionChangedEvent event) {
@@ -91,29 +93,31 @@ public abstract class AbstractProviderSource<P extends ImportProvider> extends A
 
 	/**
 	 * Get the provider selector combo viewer.
+	 * 
 	 * @return the combo viewer with the I/O providers
 	 */
 	protected ComboViewer getProviders() {
 		return providers;
 	}
-	
+
 	/**
-	 * Update the provider selector when the content type has changed. This
-	 * is based on the content type stored in the source configuration.
+	 * Update the provider selector when the content type has changed. This is
+	 * based on the content type stored in the source configuration.
 	 */
 	protected void updateProvider() {
 		IContentType contentType = getConfiguration().getContentType();
-		if (contentType  != null) {
+		if (contentType != null) {
 			IOProviderDescriptor lastSelected = null;
 			ISelection provSel = providers.getSelection();
 			if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-				lastSelected = (IOProviderDescriptor) ((IStructuredSelection) provSel).getFirstElement();
+				lastSelected = (IOProviderDescriptor) ((IStructuredSelection) provSel)
+						.getFirstElement();
 			}
-			
-			List<IOProviderDescriptor> supported = HaleIO.filterFactories(
-					getConfiguration().getFactories(), contentType);
+
+			List<IOProviderDescriptor> supported = HaleIO.filterFactories(getConfiguration()
+					.getFactories(), contentType);
 			providers.setInput(supported);
-			
+
 			if (lastSelected != null && supported.contains(lastSelected)) {
 				// reuse old selection
 				providers.setSelection(new StructuredSelection(lastSelected), true);
@@ -122,42 +126,45 @@ public abstract class AbstractProviderSource<P extends ImportProvider> extends A
 				// select first provider
 				providers.setSelection(new StructuredSelection(supported.get(0)), true);
 			}
-			
+
 			providers.getControl().setEnabled(supported.size() > 1);
 		}
 		else {
 			providers.setInput(null);
 			providers.getControl().setEnabled(false);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Update the page state. This includes setting a provider factory on the
 	 * wizard if applicable and setting the complete state of the page.<br>
 	 * <br>
-	 * This should be called in {@link #createControls(Composite)} to
-	 * initialize the page state. 
+	 * This should be called in {@link #createControls(Composite)} to initialize
+	 * the page state.
+	 * 
 	 * @param updateContentType if <code>true</code> the content type and the
-	 *   supported providers will be updated before updating the page state
+	 *            supported providers will be updated before updating the page
+	 *            state
 	 */
 	protected void updateState(boolean updateContentType) {
 		if (updateContentType) {
 			updateContentType();
 		}
-		
+
 		// update provider factory
 		ISelection provSel = providers.getSelection();
 		if (!provSel.isEmpty() && provSel instanceof IStructuredSelection) {
-			getConfiguration().setProviderFactory((IOProviderDescriptor) ((IStructuredSelection) provSel).getFirstElement());
+			getConfiguration().setProviderFactory(
+					(IOProviderDescriptor) ((IStructuredSelection) provSel).getFirstElement());
 		}
 		else {
 			getConfiguration().setProviderFactory(null);
 		}
-		
-		getPage().setPageComplete(isValidSource() &&
-				getConfiguration().getContentType() != null &&
-				getConfiguration().getProviderFactory() != null);
+
+		getPage().setPageComplete(
+				isValidSource() && getConfiguration().getContentType() != null
+						&& getConfiguration().getProviderFactory() != null);
 	}
 
 	/**
@@ -171,9 +178,9 @@ public abstract class AbstractProviderSource<P extends ImportProvider> extends A
 		// update provider selector
 		updateProvider();
 	}
-	
+
 	/**
-	 * Configures the provider with the input supplier obtained using 
+	 * Configures the provider with the input supplier obtained using
 	 * {@link #getSource()} as source.
 	 * 
 	 * @see AbstractSource#updateConfiguration(ImportProvider)
@@ -185,30 +192,31 @@ public abstract class AbstractProviderSource<P extends ImportProvider> extends A
 		if (!ok) {
 			return ok;
 		}
-		
+
 		LocatableInputSupplier<? extends InputStream> source = getSource();
 		if (source != null) {
 			provider.setSource(source);
 			return true;
 		}
-		
+
 		return false;
 	}
 
-
 	/**
 	 * Get the source to configure the import provider with.
-	 * @return the input supplier as source for the import provider or 
-	 *   <code>null</code> if no valid source can be created
-	 *   
+	 * 
+	 * @return the input supplier as source for the import provider or
+	 *         <code>null</code> if no valid source can be created
+	 * 
 	 * @see #isValidSource()
 	 */
 	protected abstract LocatableInputSupplier<? extends InputStream> getSource();
 
 	/**
-	 * Determines if the current page state will result in a valid source
-	 * for the import provider. Used among others to determine the complete
-	 * state of the wizard page. 
+	 * Determines if the current page state will result in a valid source for
+	 * the import provider. Used among others to determine the complete state of
+	 * the wizard page.
+	 * 
 	 * @return if the source is valid
 	 * 
 	 * @see #getSource()

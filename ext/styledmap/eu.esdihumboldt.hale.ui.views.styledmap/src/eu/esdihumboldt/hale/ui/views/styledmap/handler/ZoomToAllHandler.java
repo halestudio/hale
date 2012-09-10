@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.StyledMapView;
 
 /**
  * Zooms to all instances present in the map.
+ * 
  * @author Simon Templer
  */
 public class ZoomToAllHandler extends AbstractHandler {
@@ -34,12 +35,13 @@ public class ZoomToAllHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IViewPart viewPart = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().findView(StyledMapView.ID);
-		
+		IViewPart viewPart = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
+				.findView(StyledMapView.ID);
+
 		if (viewPart instanceof MapView) {
 			StyledMapUtil.zoomToAll(((MapView) viewPart).getMapKit());
 		}
-		
+
 		return null;
 	}
 

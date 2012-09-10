@@ -18,14 +18,16 @@ import org.eclipse.core.runtime.ProgressMonitorWrapper;
 /**
  * Custom progress monitor. Wraps a given progress monitor and states if
  * {@link #done()} was called.
+ * 
  * @author Simon Templer
  */
 public class StatesIfDoneProgressMonitor extends ProgressMonitorWrapper {
 
 	private boolean done;
-	
+
 	/**
 	 * Create a custom progress monitor.
+	 * 
 	 * @param monitor the progress monitor to wrap
 	 */
 	public StatesIfDoneProgressMonitor(IProgressMonitor monitor) {
@@ -34,6 +36,7 @@ public class StatesIfDoneProgressMonitor extends ProgressMonitorWrapper {
 
 	/**
 	 * If {@link #done()} has been called on the monitor.
+	 * 
 	 * @return the done
 	 */
 	public boolean isDone() {
@@ -46,7 +49,7 @@ public class StatesIfDoneProgressMonitor extends ProgressMonitorWrapper {
 	@Override
 	public void done() {
 		super.done();
-		
+
 		done = true;
 	}
 

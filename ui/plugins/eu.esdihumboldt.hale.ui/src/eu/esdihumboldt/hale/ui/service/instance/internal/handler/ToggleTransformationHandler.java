@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
  * Handler that toggles the transformation of the {@link InstanceService}.
+ * 
  * @author Simon Templer
  */
 public class ToggleTransformationHandler extends AbstractHandler implements IElementUpdater {
@@ -35,9 +36,10 @@ public class ToggleTransformationHandler extends AbstractHandler implements IEle
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		is.setTransformationEnabled(!is.isTransformationEnabled());
-		
+
 		return null;
 	}
 
@@ -46,12 +48,14 @@ public class ToggleTransformationHandler extends AbstractHandler implements IEle
 	 */
 	@Override
 	public void updateElement(UIElement element, @SuppressWarnings("rawtypes") Map parameters) {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		boolean enabled = is.isTransformationEnabled();
-		
+
 		if (enabled) {
 			element.setText("Disable transformation");
-			//XXX for checked toolbar buttons always the hover icon is shown , for menus never a hover icon is shown
+			// XXX for checked toolbar buttons always the hover icon is shown ,
+			// for menus never a hover icon is shown
 //			element.setHoverIcon(CommonSharedImages.getImageRegistry().getDescriptor(CommonSharedImages.IMG_STOP));
 //			element.setIcon(CommonSharedImages.getImageRegistry().getDescriptor(CommonSharedImages.IMG_PLAY));
 		}

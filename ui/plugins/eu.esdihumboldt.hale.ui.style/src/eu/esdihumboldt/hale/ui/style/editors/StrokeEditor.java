@@ -38,19 +38,19 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class StrokeEditor implements Editor<Stroke> {
-	
+
 	private final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private boolean changed = false;
-	
+
 	private Composite page;
-	
+
 	private final Editor<RGB> color;
-	
+
 	private final Spinner width;
-	
+
 	private final Spinner opacity;
-	
+
 	private final SelectionListener changeListener = new SelectionAdapter() {
 
 		/**
@@ -61,41 +61,42 @@ public class StrokeEditor implements Editor<Stroke> {
 			changed = true;
 		}
 	};
-	
+
 	/**
 	 * Creates a {@link Stroke} editor
-	 *  
+	 * 
 	 * @param parent the parent composite
 	 * @param stroke the initial stroke
 	 */
 	public StrokeEditor(Composite parent, Stroke stroke) {
 		super();
-		
+
 		page = new Composite(parent, SWT.NONE);
-		
+
 		GridLayout layout = new GridLayout(2, false);
 		page.setLayout(layout);
-		
+
 		GridData caption = new GridData(SWT.END, SWT.CENTER, false, false);
 		GridData editor = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
-		
+
 		// color editor
 		Label label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
 		label.setText(Messages.StrokeEditor_ColorLabel);
-		
+
 		Color strokeColor = SLD.color(stroke);
-		color = new ColorEditor(page, new RGB(strokeColor.getRed(), strokeColor.getGreen(), strokeColor.getBlue()));
+		color = new ColorEditor(page, new RGB(strokeColor.getRed(), strokeColor.getGreen(),
+				strokeColor.getBlue()));
 		color.getControl().setLayoutData(editor);
-		
+
 		// width spinner
 		caption = new GridData(SWT.END, SWT.CENTER, false, false);
 		editor = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
-		
+
 		label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
 		label.setText(Messages.StrokeEditor_WidthLabel);
-		
+
 		width = new Spinner(page, SWT.BORDER);
 		width.setLayoutData(editor);
 		width.setDigits(2);
@@ -109,19 +110,19 @@ public class StrokeEditor implements Editor<Stroke> {
 			width.setSelection(100);
 		}
 		width.addSelectionListener(changeListener);
-		
+
 		// opacity spinner
 		caption = new GridData(SWT.END, SWT.CENTER, false, false);
 		editor = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
-		
+
 		label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
 		label.setText(Messages.StrokeEditor_OpacityLabel);
-		
+
 		Composite opc = new Composite(page, SWT.NONE);
 		opc.setLayoutData(editor);
 		opc.setLayout(new RowLayout(SWT.HORIZONTAL));
-		
+
 		opacity = new Spinner(opc, SWT.BORDER);
 		opacity.setMinimum(0);
 		opacity.setMaximum(100);
@@ -133,7 +134,7 @@ public class StrokeEditor implements Editor<Stroke> {
 			opacity.setSelection(100);
 		}
 		opacity.addSelectionListener(changeListener);
-		
+
 		label = new Label(opc, SWT.NONE);
 		label.setText("%"); //$NON-NLS-1$
 	}
@@ -186,13 +187,13 @@ public class StrokeEditor implements Editor<Stroke> {
 	public void setValue(Stroke stroke) {
 		Color strokeColor = SLD.color(stroke);
 		color.setValue(new RGB(strokeColor.getRed(), strokeColor.getGreen(), strokeColor.getBlue()));
-		
+
 		try {
 			width.setSelection(Math.round(Float.parseFloat(stroke.getWidth().toString()) * 100.0f));
 		} catch (Exception e) {
 			width.setSelection(100);
 		}
-		
+
 		try {
 			opacity.setSelection(Math.round(Float.parseFloat(stroke.getOpacity().toString()) * 100.0f));
 		} catch (Exception e) {

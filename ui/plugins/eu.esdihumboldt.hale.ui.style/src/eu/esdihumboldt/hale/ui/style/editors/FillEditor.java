@@ -39,17 +39,17 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class FillEditor implements Editor<Fill> {
-	
+
 	private final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private boolean changed = false;
-	
+
 	private Composite page;
-	
+
 	private final Editor<RGB> color;
-	
+
 	private final Spinner opacity;
-	
+
 	private final SelectionListener changeListener = new SelectionAdapter() {
 
 		/**
@@ -60,45 +60,46 @@ public class FillEditor implements Editor<Fill> {
 			changed = true;
 		}
 	};
-	
+
 	/**
 	 * Creates a {@link Fill} editor
-	 *  
+	 * 
 	 * @param parent the parent composite
 	 * @param fill the initial fill
 	 */
 	public FillEditor(Composite parent, Fill fill) {
 		super();
-		
+
 		page = new Composite(parent, SWT.NONE);
-		
+
 		GridLayout layout = new GridLayout(2, false);
 		page.setLayout(layout);
-		
+
 		GridData caption = new GridData(SWT.END, SWT.CENTER, false, false);
 		GridData editor = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
-		
+
 		// color editor
 		Label label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
 		label.setText(Messages.FillEditor_ColorLabelText);
-		
+
 		Color fillColor = SLD.color(fill);
-		color = new ColorEditor(page, new RGB(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue()));
+		color = new ColorEditor(page, new RGB(fillColor.getRed(), fillColor.getGreen(),
+				fillColor.getBlue()));
 		color.getControl().setLayoutData(editor);
-		
+
 		// opacity spinner
 		caption = new GridData(SWT.END, SWT.CENTER, false, false);
 		editor = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
-		
+
 		label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
 		label.setText(Messages.FillEditor_OpacityText);
-		
+
 		Composite opc = new Composite(page, SWT.NONE);
 		opc.setLayoutData(editor);
 		opc.setLayout(new RowLayout(SWT.HORIZONTAL));
-		
+
 		opacity = new Spinner(opc, SWT.BORDER);
 		opacity.setMinimum(0);
 		opacity.setMaximum(100);
@@ -110,7 +111,7 @@ public class FillEditor implements Editor<Fill> {
 			opacity.setSelection(100);
 		}
 		opacity.addSelectionListener(changeListener);
-		
+
 		label = new Label(opc, SWT.NONE);
 		label.setText("%"); //$NON-NLS-1$
 	}
@@ -154,7 +155,7 @@ public class FillEditor implements Editor<Fill> {
 	public void setValue(Fill fill) {
 		Color fillColor = SLD.color(fill);
 		color.setValue(new RGB(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue()));
-		
+
 		try {
 			opacity.setSelection(Math.round(Float.parseFloat(fill.getOpacity().toString()) * 100.0f));
 		} catch (Exception e) {

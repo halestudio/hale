@@ -23,12 +23,11 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * 
  * @author Thorsten Reitz
  * @deprecated use {@link org.eclipse.ui.internal.handlers.QuitHandler} instead
- *   (or the respective command)
+ *             (or the respective command)
  */
 @SuppressWarnings("restriction")
 @Deprecated
-public class ExitHandler 
-	extends AbstractHandler implements IHandler {
+public class ExitHandler extends AbstractHandler implements IHandler {
 
 	/**
 	 * @see IHandler#execute(ExecutionEvent)

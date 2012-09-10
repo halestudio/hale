@@ -19,12 +19,12 @@ import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 
 /**
  * Tree node representing a search path
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SearchPathNode extends DefaultTreeNode {
-	
+
 	private final String searchPath;
 
 	/**
@@ -34,25 +34,25 @@ public class SearchPathNode extends DefaultTreeNode {
 	 */
 	public SearchPathNode(String searchPath) {
 		super(searchPath);
-		
+
 		this.searchPath = searchPath;
-		
+
 		// try to load path code lists
 		File fPath = new File(searchPath);
-		
+
 		File[] candidates = fPath.listFiles(new FilenameFilter() {
-			
+
 			@Override
 			public boolean accept(File dir, String name) {
 				return name.toLowerCase().endsWith(".xml"); //$NON-NLS-1$
 			}
 		});
-		
+
 		if (candidates == null) {
 //			log.warn("No potential code list files found in " + searchPath);
 		}
 		else {
-			//FIXME disabled
+			// FIXME disabled
 //			for (File candidate : candidates) {
 //				try {
 //					CodeList codeList = new XmlCodeList(new FileInputStream(candidate), candidate.toURI());
@@ -78,8 +78,7 @@ public class SearchPathNode extends DefaultTreeNode {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((searchPath == null) ? 0 : searchPath.hashCode());
+		result = prime * result + ((searchPath == null) ? 0 : searchPath.hashCode());
 		return result;
 	}
 
@@ -98,7 +97,8 @@ public class SearchPathNode extends DefaultTreeNode {
 		if (searchPath == null) {
 			if (other.searchPath != null)
 				return false;
-		} else if (!searchPath.equals(other.searchPath))
+		}
+		else if (!searchPath.equals(other.searchPath))
 			return false;
 		return true;
 	}

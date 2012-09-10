@@ -30,10 +30,6 @@ import org.geotools.renderer.style.GraphicStyle2D;
 import org.geotools.renderer.style.MarkStyle2D;
 import org.geotools.renderer.style.SLDStyleFactory;
 import org.geotools.renderer.style.Style2D;
-import org.geotools.styling.ColorReplacement;
-import org.geotools.styling.ColorReplacementImpl;
-import org.geotools.styling.ExternalGraphic;
-import org.geotools.styling.ExternalGraphicImpl;
 import org.geotools.styling.Fill;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.Mark;
@@ -73,11 +69,12 @@ import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSConverter;
 
 /**
  * Instance marker support styles provided through the {@link StyleService}.
+ * 
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
 public class StyledInstanceMarker extends InstanceMarker {
-	
+
 	private boolean styleInitialized = false;
 	private volatile Color styleFillColor;
 	private volatile Color styleStrokeColor;
@@ -85,14 +82,15 @@ public class StyledInstanceMarker extends InstanceMarker {
 	private boolean hasFill = true;
 	private PointSymbolizer pointSymbolizer;
 	private static final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	/**
 	 * The way-point the marker is associated with
 	 */
 	private final InstanceWaypoint wp;
-	
+
 	/**
 	 * Create a instance marker supporting styles.
+	 * 
 	 * @param wp the way-point the marker is associated with
 	 */
 	public StyledInstanceMarker(InstanceWaypoint wp) {
@@ -101,6 +99,7 @@ public class StyledInstanceMarker extends InstanceMarker {
 
 	/**
 	 * Initialize the style information.
+	 * 
 	 * @param context the context
 	 */
 	private synchronized void initStyle(InstanceWaypoint context) {
@@ -110,28 +109,30 @@ public class StyledInstanceMarker extends InstanceMarker {
 		else {
 			styleInitialized = true;
 		}
-		
-		//check if there is a Rule from the Rulestyle-Page and apply to the instancemarker on the map
-		//performs a special task if the found symbolizer is a point symbolizer
+
+		// check if there is a Rule from the Rulestyle-Page and apply to the
+		// instancemarker on the map
+		// performs a special task if the found symbolizer is a point symbolizer
 		Rule honoredRule = honorRules(context);
 		pointSymbolizer = null;
-		for (Symbolizer sym : honoredRule.symbolizers()){
-			if (sym instanceof PointSymbolizer){
+		for (Symbolizer sym : honoredRule.symbolizers()) {
+			if (sym instanceof PointSymbolizer) {
 				pointSymbolizer = (PointSymbolizer) sym;
 				break;
 			}
 		}
-		
+
 		fillStyle(honoredRule, context);
-		strokeStyle(honoredRule, context);	
+		strokeStyle(honoredRule, context);
 
 	}
-	
+
 	/**
 	 * Checks if there is a rule for the certain Instance
+	 * 
 	 * @param context the context
-	 * @return a certain style rule for the instance, else-rule if nothing found or null
-	 * 	       if there is no else-rule
+	 * @return a certain style rule for the instance, else-rule if nothing found
+	 *         or null if there is no else-rule
 	 */
 	private Rule honorRules(InstanceWaypoint context) {
 		Style style = getStyle(context);
@@ -150,8 +151,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 
 		// if rule exists
 		InstanceReference ir = context.getValue();
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench()
-				.getService(InstanceService.class);
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		Instance inst = is.getInstance(ir);
 
 		for (int i = 0; i < rules.length; i++) {
@@ -183,37 +184,39 @@ public class StyledInstanceMarker extends InstanceMarker {
 		// return null if no rule was found
 		return null;
 	}
-	
+
 	/**
 	 * Sorts an array of rules, so the else-filter-rules are at the end
+	 * 
 	 * @param rules an array of Rules
 	 * @return a new array of Rules with sorted elements
 	 */
-	private Rule[] sortRules(Rule[] rules){
-		
+	private Rule[] sortRules(Rule[] rules) {
+
 		ArrayList<Rule> temp = new ArrayList<Rule>();
-		
-		for(int i = 0; i < rules.length; i++){
-			
-			if(!rules[i].isElseFilter()){
+
+		for (int i = 0; i < rules.length; i++) {
+
+			if (!rules[i].isElseFilter()) {
 				temp.add(rules[i]);
 			}
 		}
-		
-		for(int i = 0; i < rules.length; i++){
-			
-			if(rules[i].isElseFilter()){
+
+		for (int i = 0; i < rules.length; i++) {
+
+			if (rules[i].isElseFilter()) {
 				temp.add(rules[i]);
 			}
-			
+
 		}
-		
-		Rule[] newRules = new Rule[temp.size()];		
+
+		Rule[] newRules = new Rule[temp.size()];
 		return temp.toArray(newRules);
 	}
-	
+
 	/**
 	 * Retrieves the fill for the map marker.
+	 * 
 	 * @param rule a certain rule to apply, may be <code>null</code>
 	 * @param context the InstanceWayPoint, which gets marked
 	 */
@@ -222,11 +225,11 @@ public class StyledInstanceMarker extends InstanceMarker {
 		Fill fill = null;
 
 		// try the Symbolizers from the Rule
-		for (int i = 0; rule != null && fill == null
-				&& i < rule.getSymbolizers().length; i++) {
+		for (int i = 0; rule != null && fill == null && i < rule.getSymbolizers().length; i++) {
 			if (rule.getSymbolizers()[i] instanceof PolygonSymbolizer) {
 				fill = SLD.fill((PolygonSymbolizer) rule.getSymbolizers()[i]);
-			} else if (rule.getSymbolizers()[i] instanceof PointSymbolizer) {
+			}
+			else if (rule.getSymbolizers()[i] instanceof PointSymbolizer) {
 				fill = SLD.fill((PointSymbolizer) rule.getSymbolizers()[i]);
 			}
 		}
@@ -236,10 +239,10 @@ public class StyledInstanceMarker extends InstanceMarker {
 			Color sldColor = SLD.color(fill);
 			double opacity = SLD.opacity(fill);
 			if (sldColor != null) {
-				styleFillColor = new Color(sldColor.getRed(),
-						sldColor.getGreen(), sldColor.getBlue(),
-						(int) (opacity * 255));
-			} else {
+				styleFillColor = new Color(sldColor.getRed(), sldColor.getGreen(),
+						sldColor.getBlue(), (int) (opacity * 255));
+			}
+			else {
 				styleFillColor = super.getPaintColor(context);
 			}
 			hasFill = true;
@@ -250,37 +253,38 @@ public class StyledInstanceMarker extends InstanceMarker {
 			hasFill = false;
 		}
 	}
-		
+
 	/**
 	 * retrieves the stroke for the map marker
+	 * 
 	 * @param rule a certain rule to apply, maybe null
 	 * @param context the InstanceWayPoint, wich gets marked
 	 */
-	private synchronized void strokeStyle(Rule rule, InstanceWaypoint context){	
-		
+	private synchronized void strokeStyle(Rule rule, InstanceWaypoint context) {
+
 		// retrieve stroke
 		Stroke stroke = null;
-		
-		//try the Symbolizers from the Rule
 
-		for(int i = 0; rule != null && stroke == null && i < rule.getSymbolizers().length; i++){
-			if (rule.getSymbolizers()[i] instanceof LineSymbolizer){
-				stroke = SLD.stroke((LineSymbolizer)rule.getSymbolizers()[i]);				
-				}
-			else if (rule.getSymbolizers()[i] instanceof PolygonSymbolizer){
-				stroke = SLD.stroke((PolygonSymbolizer)rule.getSymbolizers()[i]);				
-				}
-			else if (rule.getSymbolizers()[i] instanceof PointSymbolizer){
-				stroke = SLD.stroke((PointSymbolizer)rule.getSymbolizers()[i]);				
-				}
+		// try the Symbolizers from the Rule
+
+		for (int i = 0; rule != null && stroke == null && i < rule.getSymbolizers().length; i++) {
+			if (rule.getSymbolizers()[i] instanceof LineSymbolizer) {
+				stroke = SLD.stroke((LineSymbolizer) rule.getSymbolizers()[i]);
 			}
-		
-	
-		//if we have a stroke now
+			else if (rule.getSymbolizers()[i] instanceof PolygonSymbolizer) {
+				stroke = SLD.stroke((PolygonSymbolizer) rule.getSymbolizers()[i]);
+			}
+			else if (rule.getSymbolizers()[i] instanceof PointSymbolizer) {
+				stroke = SLD.stroke((PointSymbolizer) rule.getSymbolizers()[i]);
+			}
+		}
+
+		// if we have a stroke now
 		if (stroke != null) {
-			//XXX is there any Geotools stroke to AWT stroke lib/code somewhere?!
-			//XXX have a look at the renderer code (StreamingRenderer)
-			
+			// XXX is there any Geotools stroke to AWT stroke lib/code
+			// somewhere?!
+			// XXX have a look at the renderer code (StreamingRenderer)
+
 			// stroke color
 			Color sldColor = SLD.color(stroke);
 			double opacity = SLD.opacity(stroke);
@@ -289,18 +293,18 @@ public class StyledInstanceMarker extends InstanceMarker {
 				opacity = StyleHelper.DEFAULT_FILL_OPACITY;
 			}
 			if (sldColor != null) {
-				styleStrokeColor = new Color(sldColor.getRed(), sldColor.getGreen(), 
+				styleStrokeColor = new Color(sldColor.getRed(), sldColor.getGreen(),
 						sldColor.getBlue(), (int) (opacity * 255));
 			}
 			else {
 				styleStrokeColor = super.getBorderColor(context);
 			}
-			
+
 			// stroke width
 			int strokeWidth = SLD.width(stroke);
 			if (strokeWidth == SLD.NOTFOUND) {
 				// fall back to default width
-				strokeWidth = StylePreferences.getDefaultWidth(); 
+				strokeWidth = StylePreferences.getDefaultWidth();
 			}
 			styleStroke = new BasicStroke(strokeWidth);
 		}
@@ -309,7 +313,6 @@ public class StyledInstanceMarker extends InstanceMarker {
 			styleStrokeColor = null;
 		}
 	}
-	
 
 	/**
 	 * Reset the marker style
@@ -325,12 +328,12 @@ public class StyledInstanceMarker extends InstanceMarker {
 	@Override
 	protected Color getPaintColor(InstanceWaypoint context) {
 		initStyle(context);
-		
+
 		if (styleFillColor == null || context.isSelected()) {
 			// for selection don't use style
 			return super.getPaintColor(context);
 		}
-		
+
 		return styleFillColor;
 	}
 
@@ -340,23 +343,24 @@ public class StyledInstanceMarker extends InstanceMarker {
 	@Override
 	protected Color getBorderColor(InstanceWaypoint context) {
 		initStyle(context);
-		
+
 		if (styleStrokeColor == null || context.isSelected()) {
 			return super.getBorderColor(context);
 		}
-		
+
 		return styleStrokeColor;
 	}
-	
+
 	/**
 	 * Get the stroke for drawing lines.
+	 * 
 	 * @param context the context
 	 * @return the stroke
 	 */
 	@Override
 	protected java.awt.Stroke getLineStroke(InstanceWaypoint context) {
 		initStyle(context);
-		
+
 		if (styleStroke != null && !context.isSelected()) {
 			return styleStroke;
 		}
@@ -371,12 +375,12 @@ public class StyledInstanceMarker extends InstanceMarker {
 	@Override
 	protected boolean applyFill(Graphics2D g, InstanceWaypoint context) {
 		initStyle(context);
-		
+
 		if (hasFill) {
 			g.setPaint(getPaintColor(context));
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -386,22 +390,24 @@ public class StyledInstanceMarker extends InstanceMarker {
 	@Override
 	protected boolean applyStroke(Graphics2D g, InstanceWaypoint context) {
 		initStyle(context);
-		
+
 		return super.applyStroke(g, context);
 	}
-	
+
 	/**
 	 * Get the style for a given way-point.
+	 * 
 	 * @param context the way-point
 	 * @return the style
 	 */
 	private Style getStyle(InstanceWaypoint context) {
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
+
 		InstanceReference ref = context.getValue();
 		Instance instance = is.getInstance(ref);
-		
+
 		return ss.getStyle(instance.getDefinition(), ref.getDataSet());
 	}
 
@@ -419,6 +425,7 @@ public class StyledInstanceMarker extends InstanceMarker {
 
 	/**
 	 * Determines if the associated way-point represents a single point.
+	 * 
 	 * @return if the way-point represents a single point
 	 */
 	private boolean representsSinglePoint() {
@@ -430,9 +437,10 @@ public class StyledInstanceMarker extends InstanceMarker {
 					// a point was already found before
 					return false;
 				}
-				
-				if (geom.getGeometry() instanceof Point ||
-						(geom.getGeometry() instanceof MultiPoint && geom.getGeometry().getNumGeometries() == 1)) {
+
+				if (geom.getGeometry() instanceof Point
+						|| (geom.getGeometry() instanceof MultiPoint && geom.getGeometry()
+								.getNumGeometries() == 1)) {
 					// a single point found
 					pointFound = true;
 				}
@@ -446,33 +454,31 @@ public class StyledInstanceMarker extends InstanceMarker {
 	}
 
 	/**
-	 * @see InstanceMarker#paintPoint(Point, Graphics2D, CRSDefinition, InstanceWaypoint, PixelConverter, int, CoordinateReferenceSystem, boolean)
+	 * @see InstanceMarker#paintPoint(Point, Graphics2D, CRSDefinition,
+	 *      InstanceWaypoint, PixelConverter, int, CoordinateReferenceSystem,
+	 *      boolean)
 	 */
 	@Override
-	protected Area paintPoint(Point geometry, Graphics2D g,
-			CRSDefinition crsDefinition, InstanceWaypoint context,
-			PixelConverter converter, int zoom,
+	protected Area paintPoint(Point geometry, Graphics2D g, CRSDefinition crsDefinition,
+			InstanceWaypoint context, PixelConverter converter, int zoom,
 			CoordinateReferenceSystem mapCRS, boolean calculateArea) {
 		initStyle(context);
 		Area area = null;
 		try {
 			if (pointSymbolizer == null
-					|| (SLD.mark(pointSymbolizer) == null 
-					&& pointSymbolizer.getGraphic().graphicalSymbols().isEmpty())) { 
+					|| (SLD.mark(pointSymbolizer) == null && pointSymbolizer.getGraphic()
+							.graphicalSymbols().isEmpty())) {
 				// only marks supported for now
 				// if there is no specialized PointSymbolizer, fall back to a
 				// generic
-				return super.paintFallback(g, context, converter, zoom, null,
-						calculateArea);
+				return super.paintFallback(g, context, converter, zoom, null, calculateArea);
 			}
 
 			// get CRS converter
-			CRSConverter conv = CRSConverter.getConverter(
-					crsDefinition.getCRS(), mapCRS);
+			CRSConverter conv = CRSConverter.getConverter(crsDefinition.getCRS(), mapCRS);
 
 			// manually convert to map CRS
-			Point3D mapPoint = conv
-					.convert(geometry.getX(), geometry.getY(), 0);
+			Point3D mapPoint = conv.convert(geometry.getX(), geometry.getY(), 0);
 
 			GeoPosition pos = new GeoPosition(mapPoint.getX(), mapPoint.getY(),
 					converter.getMapEpsg());
@@ -509,21 +515,23 @@ public class StyledInstanceMarker extends InstanceMarker {
 			area = getArea(point, style2d, lites);
 			// actually paint
 			ssp.paint(g, lites, style2d, 1);
-			
-			//used to draw selection if a graphic style is used (external graphic)
-			if(context.isSelected() && style2d instanceof GraphicStyle2D){
-				 GraphicStyle2D gs2d = (GraphicStyle2D) style2d;
-				 
-				 //get minX and minY for the drawn rectangle arround the image
-				int minX = (int) point.getX() -  gs2d.getImage().getWidth() / 2;
-	            int minY = (int) point.getY() -  gs2d.getImage().getHeight() / 2;
-	            
-	            //apply the specification of the selection rectangle
-	            applyFill(g, context);
-	            applyStroke(g, context);
-	            //draw the selection rectangle
-				g.drawRect(minX-1 , minY-1, gs2d.getImage().getWidth()+1, gs2d.getImage().getHeight()+1);
-				
+
+			// used to draw selection if a graphic style is used (external
+			// graphic)
+			if (context.isSelected() && style2d instanceof GraphicStyle2D) {
+				GraphicStyle2D gs2d = (GraphicStyle2D) style2d;
+
+				// get minX and minY for the drawn rectangle arround the image
+				int minX = (int) point.getX() - gs2d.getImage().getWidth() / 2;
+				int minY = (int) point.getY() - gs2d.getImage().getHeight() / 2;
+
+				// apply the specification of the selection rectangle
+				applyFill(g, context);
+				applyStroke(g, context);
+				// draw the selection rectangle
+				g.drawRect(minX - 1, minY - 1, gs2d.getImage().getWidth() + 1, gs2d.getImage()
+						.getHeight() + 1);
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -532,23 +540,26 @@ public class StyledInstanceMarker extends InstanceMarker {
 		return area;
 
 	}
-	
+
 	/**
 	 * Creates a certain Point Symbolizer if the waypoint is selected
-	 * @param symbolizer a symbolizer which is used to create the selection symbolizer
+	 * 
+	 * @param symbolizer a symbolizer which is used to create the selection
+	 *            symbolizer
 	 * @return returns the selection symbolizer
 	 */
-	private PointSymbolizer getSelectionSymbolizer(PointSymbolizer symbolizer){
-		//XXX only works with marks and external graphics right now
-		Mark mark = SLD.mark(symbolizer);	
-		if(mark != null){
-		Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(), 
-				styleBuilder.createFill(StylePreferences.getSelectionColor(), StyleHelper.DEFAULT_FILL_OPACITY), 
-				styleBuilder.createStroke(StylePreferences.getSelectionColor(), StylePreferences.getSelectionWidth()));
-		
-		// create new symbolizer
-		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
-				null, mutiMark, null));
+	private PointSymbolizer getSelectionSymbolizer(PointSymbolizer symbolizer) {
+		// XXX only works with marks and external graphics right now
+		Mark mark = SLD.mark(symbolizer);
+		if (mark != null) {
+			Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(), styleBuilder
+					.createFill(StylePreferences.getSelectionColor(),
+							StyleHelper.DEFAULT_FILL_OPACITY), styleBuilder.createStroke(
+					StylePreferences.getSelectionColor(), StylePreferences.getSelectionWidth()));
+
+			// create new symbolizer
+			return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(null, mutiMark,
+					null));
 		}
 
 		else {
@@ -559,14 +570,15 @@ public class StyledInstanceMarker extends InstanceMarker {
 
 	/**
 	 * Returns the area of the drawn object
-	 * @param point 
+	 * 
+	 * @param point
 	 * @param style the Style2D object
 	 * @param shape the Light Shape
 	 * @param g the Graphics2d Object
 	 * @return the area, which should equal the space of the drawn object
 	 */
 	private Area getArea(Point2D point, Style2D style, LiteShape2 shape) {
-		//if it is a mark style
+		// if it is a mark style
 		if (style instanceof MarkStyle2D) {
 			PathIterator citer = getPathIterator(shape);
 
@@ -576,40 +588,37 @@ public class StyledInstanceMarker extends InstanceMarker {
 			Shape transformedShape;
 			while (!(citer.isDone())) {
 				citer.currentSegment(coords);
-				transformedShape = ms2d.getTransformedShape(coords[0],
-						coords[1]);
+				transformedShape = ms2d.getTransformedShape(coords[0], coords[1]);
 				if (transformedShape != null) {
-					java.awt.geom.Area areatemp = new java.awt.geom.Area(
-							transformedShape);
+					java.awt.geom.Area areatemp = new java.awt.geom.Area(transformedShape);
 					Rectangle rec = areatemp.getBounds();
-					AdvancedBoxArea area = new AdvancedBoxArea(areatemp, rec.x,
-							rec.y, rec.x + rec.width, rec.y + rec.height);
-					
+					AdvancedBoxArea area = new AdvancedBoxArea(areatemp, rec.x, rec.y, rec.x
+							+ rec.width, rec.y + rec.height);
+
 					return area;
 				}
 			}
 		}
-		//if it is an external graphic style
+		// if it is an external graphic style
 		else if (style instanceof GraphicStyle2D) {
-            GraphicStyle2D gs2d = (GraphicStyle2D) style;
-            
-            int minX = (int) point.getX() -  gs2d.getImage().getWidth() / 2;
-            int minY = (int) point.getY() -  gs2d.getImage().getHeight() / 2;
-            int maxX = (int) point.getX() +  gs2d.getImage().getWidth() / 2;
-            int maxY = (int) point.getX() +  gs2d.getImage().getHeight() / 2;
-                            
-            BoxArea area = new BoxArea(minX, minY, maxX, maxY);
-           return area;  
-		}  
-		
+			GraphicStyle2D gs2d = (GraphicStyle2D) style;
+
+			int minX = (int) point.getX() - gs2d.getImage().getWidth() / 2;
+			int minY = (int) point.getY() - gs2d.getImage().getHeight() / 2;
+			int maxX = (int) point.getX() + gs2d.getImage().getWidth() / 2;
+			int maxY = (int) point.getX() + gs2d.getImage().getHeight() / 2;
+
+			BoxArea area = new BoxArea(minX, minY, maxX, maxY);
+			return area;
+		}
+
 		return null;
 	}
-		
+
 	/**
 	 * Returns a path iterator.
 	 * 
-	 * @param shape
-	 *            a shape to determine the iterator
+	 * @param shape a shape to determine the iterator
 	 * @return the path iterator
 	 */
 	private PathIterator getPathIterator(final LiteShape2 shape) {
@@ -625,9 +634,9 @@ public class StyledInstanceMarker extends InstanceMarker {
 			gc = shape.getGeometry().getFactory().createGeometryCollection(gs);
 		}
 		AffineTransform IDENTITY_TRANSFORM = new AffineTransform();
-		GeomCollectionIterator citer = new GeomCollectionIterator(gc,
-				IDENTITY_TRANSFORM, false, 1.0);
+		GeomCollectionIterator citer = new GeomCollectionIterator(gc, IDENTITY_TRANSFORM, false,
+				1.0);
 		return citer;
 	}
-		
+
 }

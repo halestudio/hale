@@ -34,9 +34,11 @@ import groovy.lang.MissingPropertyException;
 
 /**
  * Property transformation based on a Groovy script.
+ * 
  * @author Simon Templer
  */
-public class GroovyTransformation extends AbstractSingleTargetPropertyTransformation<TransformationEngine> {
+public class GroovyTransformation extends
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> {
 
 	/**
 	 * Name for the parameter containing the groovy script.
@@ -49,18 +51,18 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 	public static final String ENTITY_VARIABLE = "var";
 
 	/**
-	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String, TransformationEngine, ListMultimap, String, PropertyEntityDefinition, Map, TransformationLog)
+	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
+	 *      TransformationEngine, ListMultimap, String,
+	 *      PropertyEntityDefinition, Map, TransformationLog)
 	 */
 	@Override
-	protected Object evaluate(String transformationIdentifier,
-			TransformationEngine engine,
+	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
-			PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException, NoResultException {
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException, NoResultException {
 		// get the mathematical expression
 		String script = getParameterChecked(PARAMETER_SCRIPT);
-		
+
 		Binding binding = new Binding() {
 
 			@Override
@@ -72,16 +74,17 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 					return null;
 				}
 			}
-			
+
 		};
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);
 		for (PropertyValue var : vars) {
 			// add the variable to the environment
-			
+
 			// determine the variable value
 			Object value = var.getValue();
 			if (value instanceof Instance) {
-				value = ((Instance) value).getValue(); //XXX check if there are any properties?
+				value = ((Instance) value).getValue(); // XXX check if there are
+														// any properties?
 			}
 			if (value instanceof Number) {
 				// use numbers as is
@@ -90,16 +93,17 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 				// try conversion to String as default
 				value = var.getValueAs(String.class);
 			}
-			
+
 			// determine the variable name
 			String name = var.getProperty().getDefinition().getName().getLocalPart();
-			
-			// add with short name, but ensure no variable with only a short name is overridden
+
+			// add with short name, but ensure no variable with only a short
+			// name is overridden
 			if (binding.getVariables().get(name) == null
 					|| var.getProperty().getPropertyPath().size() == 1) {
 				binding.setVariable(name, value);
 			}
-			
+
 			// add with long name if applicable
 			if (var.getProperty().getPropertyPath().size() > 1) {
 				List<String> names = new ArrayList<String>();
@@ -118,7 +122,7 @@ public class GroovyTransformation extends AbstractSingleTargetPropertyTransforma
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the cell script", e);
 		}
-		
+
 		if (result == null) {
 			throw new NoResultException();
 		}

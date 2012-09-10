@@ -19,12 +19,13 @@ import org.eclipse.jface.viewers.ViewerFilter;
 
 /**
  * Action that enables/disables a filter on a viewer.
+ * 
  * @author Simon Templer
  */
 public class FilterAction extends Action {
-	
+
 	private final StructuredViewer viewer;
-	
+
 	private final ViewerFilter filter;
 
 	private final String activateMessage;
@@ -35,6 +36,7 @@ public class FilterAction extends Action {
 
 	/**
 	 * Create a filter action. Initially, the filter is disabled.
+	 * 
 	 * @param activateMessage the message to show for activating the filer
 	 * @param deactivateMessage the message to show for deactivating the filer
 	 * @param imageDesc the image descriptor
@@ -42,19 +44,19 @@ public class FilterAction extends Action {
 	 * @param filter the filter
 	 * @param initiallyChecked if the action should be initially checked
 	 * @param inverse if the mode is inverse - meaning if the action is checked,
-	 *   the filter is disabled
+	 *            the filter is disabled
 	 */
-	public FilterAction(String activateMessage, String deactivateMessage, 
+	public FilterAction(String activateMessage, String deactivateMessage,
 			ImageDescriptor imageDesc, StructuredViewer viewer, ViewerFilter filter,
 			boolean initiallyChecked, boolean inverse) {
 		super(activateMessage, AS_CHECK_BOX);
 		this.viewer = viewer;
 		this.filter = filter;
 		this.inverse = inverse;
-		
+
 		this.activateMessage = activateMessage;
 		this.deactivateMessage = deactivateMessage;
-		
+
 		setImageDescriptor(imageDesc);
 		setChecked(initiallyChecked);
 		run();
@@ -69,18 +71,18 @@ public class FilterAction extends Action {
 		if (inverse) {
 			active = !active;
 		}
-		
-		String text = (active)?(deactivateMessage):(activateMessage);
+
+		String text = (active) ? (deactivateMessage) : (activateMessage);
 		setToolTipText(text);
 		setText(text);
-		
+
 		if (active) {
 			viewer.addFilter(filter);
 		}
 		else {
 			viewer.removeFilter(filter);
 		}
-		
+
 		viewer.refresh();
 	}
 

@@ -23,11 +23,11 @@ import org.geotools.styling.StyleBuilder;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class LineSymbolizerEditor implements Editor<LineSymbolizer> {
-	
+
 	private final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private final StrokeEditor strokeEditor;
-	
+
 	/**
 	 * Creates a {@link LineSymbolizer} editor
 	 * 
@@ -36,7 +36,7 @@ public class LineSymbolizerEditor implements Editor<LineSymbolizer> {
 	 */
 	public LineSymbolizerEditor(Composite parent, LineSymbolizer line) {
 		super();
-		
+
 		strokeEditor = new StrokeEditor(parent, line.getStroke());
 	}
 

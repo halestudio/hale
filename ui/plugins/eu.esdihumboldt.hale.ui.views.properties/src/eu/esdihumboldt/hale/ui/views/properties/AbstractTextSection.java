@@ -38,21 +38,15 @@ public abstract class AbstractTextSection extends AbstractSingleObjectSection {
 	 * 
 	 * @see AbstractPropertySection#createControls(Composite,TabbedPropertySheetPage)
 	 * 
-	 * @param parent
-	 *            the parent composite for the section
-	 * @param aTabbedPropertySheetPage
-	 *            the tabbed property sheet page
-	 * @param title
-	 *            the title for the property
-	 * @param title2
-	 *            the title for the second property (could be null)
+	 * @param parent the parent composite for the section
+	 * @param aTabbedPropertySheetPage the tabbed property sheet page
+	 * @param title the title for the property
+	 * @param title2 the title for the second property (could be null)
 	 */
 	protected void abstractCreateControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage, String title,
-			String title2) {
+			TabbedPropertySheetPage aTabbedPropertySheetPage, String title, String title2) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-				.createFlatFormComposite(parent);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
 
 		text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
@@ -63,8 +57,7 @@ public abstract class AbstractTextSection extends AbstractSingleObjectSection {
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		text.setLayoutData(data);
 
-		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite,
-				title); //$NON-NLS-1$
+		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite, title); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(text, 10);

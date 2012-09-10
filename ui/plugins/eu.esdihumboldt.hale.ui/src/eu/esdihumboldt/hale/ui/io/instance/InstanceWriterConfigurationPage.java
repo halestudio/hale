@@ -19,17 +19,17 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Base class for {@link InstanceWriter} configuration pages
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public abstract class InstanceWriterConfigurationPage
-		extends AbstractConfigurationPage<InstanceWriter, 
-		InstanceExportWizard> {
+public abstract class InstanceWriterConfigurationPage extends
+		AbstractConfigurationPage<InstanceWriter, InstanceExportWizard> {
 
 	/**
-	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String, ImageDescriptor)
+	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String,
+	 *      ImageDescriptor)
 	 */
 	protected InstanceWriterConfigurationPage(String pageName, String title,
 			ImageDescriptor titleImage) {

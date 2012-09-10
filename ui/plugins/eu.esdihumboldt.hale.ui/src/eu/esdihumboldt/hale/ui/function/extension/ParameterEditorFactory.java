@@ -22,14 +22,14 @@ import eu.esdihumboldt.hale.ui.common.EditorFactory;
  * @author Simon Templer
  */
 public interface ParameterEditorFactory extends ExtensionObjectFactory<EditorFactory> {
-	
+
 	/**
 	 * Get the ID of the associated function.
 	 * 
 	 * @return the function ID
 	 */
 	public String getFunctionId();
-	
+
 	/**
 	 * Get the name of the associated parameter.
 	 * 

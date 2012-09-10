@@ -28,8 +28,7 @@ public class StretchedHexagon extends AbstractPolygonPainter {
 	/**
 	 * Creates a stretched hexagon shape.
 	 * 
-	 * @param inset
-	 *            the horizontal inset in pixels
+	 * @param inset the horizontal inset in pixels
 	 */
 	public StretchedHexagon(int inset) {
 		super();

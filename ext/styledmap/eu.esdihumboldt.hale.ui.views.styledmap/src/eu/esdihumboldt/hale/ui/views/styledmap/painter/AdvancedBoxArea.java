@@ -16,14 +16,15 @@ import de.fhg.igd.mapviewer.marker.area.Area;
 import de.fhg.igd.mapviewer.marker.area.BoxArea;
 
 /**
- * Create a box area where an AWT area provides a more accurate 
+ * Create a box area where an AWT area provides a more accurate
  * {@link #contains(int, int)}.
+ * 
  * @author Sebastian Reinhardt
  */
 public class AdvancedBoxArea extends BoxArea {
 
 	private final java.awt.geom.Area area;
-	
+
 	/**
 	 * @param minX the minimum x value of the area
 	 * @param minY the minimum y value of the area
@@ -37,7 +38,6 @@ public class AdvancedBoxArea extends BoxArea {
 
 	}
 
-	
 	/**
 	 * @see Area#contains(int, int)
 	 */

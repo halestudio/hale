@@ -26,29 +26,31 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Entity definition for a type
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class TypeEntityDefinition implements EntityDefinition {
-	
+
 	private final SchemaSpaceID schemaSpace;
-	
+
 	private final TypeDefinition typeDefinition;
-	
+
 	private final Filter filter;
 
 	/**
 	 * Create an entity definition for the given type
+	 * 
 	 * @param typeDefinition the type definition
 	 * @param schemaSpace the schema space identifier
 	 * @param filter the entity filter, may be <code>null</code>
 	 */
-	public TypeEntityDefinition(TypeDefinition typeDefinition, 
-			SchemaSpaceID schemaSpace, Filter filter) {
+	public TypeEntityDefinition(TypeDefinition typeDefinition, SchemaSpaceID schemaSpace,
+			Filter filter) {
 		super();
-		
+
 		checkNotNull(typeDefinition, "Null type definition not allowed for type entity definition");
-		
+
 		this.typeDefinition = typeDefinition;
 		this.schemaSpace = schemaSpace;
 		this.filter = filter;
@@ -102,10 +104,8 @@ public class TypeEntityDefinition implements EntityDefinition {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
-		result = prime * result
-				+ ((schemaSpace == null) ? 0 : schemaSpace.hashCode());
-		result = prime * result
-				+ ((typeDefinition == null) ? 0 : typeDefinition.hashCode());
+		result = prime * result + ((schemaSpace == null) ? 0 : schemaSpace.hashCode());
+		result = prime * result + ((typeDefinition == null) ? 0 : typeDefinition.hashCode());
 		return result;
 	}
 
@@ -124,14 +124,16 @@ public class TypeEntityDefinition implements EntityDefinition {
 		if (filter == null) {
 			if (other.filter != null)
 				return false;
-		} else if (!filter.equals(other.filter))
+		}
+		else if (!filter.equals(other.filter))
 			return false;
 		if (schemaSpace != other.schemaSpace)
 			return false;
 		if (typeDefinition == null) {
 			if (other.typeDefinition != null)
 				return false;
-		} else if (!typeDefinition.equals(other.typeDefinition))
+		}
+		else if (!typeDefinition.equals(other.typeDefinition))
 			return false;
 		return true;
 	}

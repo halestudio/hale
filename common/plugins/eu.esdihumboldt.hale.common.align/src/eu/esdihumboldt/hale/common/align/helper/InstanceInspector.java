@@ -12,14 +12,14 @@
 
 package eu.esdihumboldt.hale.common.align.helper;
 
-
 /**
  * Inspector for instances
+ * 
  * @author Simon Templer
  * @since 2.5
  */
 public abstract class InstanceInspector {
-	
+
 //	/**
 //	 * Get the property values specified by the property entity definition for
 //	 * the given instance. 

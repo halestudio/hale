@@ -32,13 +32,13 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * An IIntroAction, ILiveHelpAction and ICheatSheetAction to open a project. <br>
- * Parameters are <code>closeIntro</code> (or param1 in case of a cheatsheet/live help),
- * <code>path</code> (param2), <code>type</code> (param3) and
- * <code>bundle</code> (param4). All are optional. <br>
+ * Parameters are <code>closeIntro</code> (or param1 in case of a
+ * cheatsheet/live help), <code>path</code> (param2), <code>type</code> (param3)
+ * and <code>bundle</code> (param4). All are optional. <br>
  * Parameters for live help are to be separated by "||".<br>
  * <br>
- * If <code>closeIntro</code> is set to "true" an opened intro is closed when the action
- * is run.<br>
+ * If <code>closeIntro</code> is set to "true" an opened intro is closed when
+ * the action is run.<br>
  * <br>
  * If <code>path</code> is specified the given path gets opened instead of
  * showing a dialog to choose the project. <br>
@@ -52,7 +52,9 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  * 
  * @author Kai Schwierczek
  */
-public class LoadProjectAction extends Action implements IIntroAction, ICheatSheetAction, ILiveHelpAction {
+public class LoadProjectAction extends Action implements IIntroAction, ICheatSheetAction,
+		ILiveHelpAction {
+
 	/**
 	 * Value for type parameter, specifying that the path is a file path.
 	 */
@@ -62,7 +64,8 @@ public class LoadProjectAction extends Action implements IIntroAction, ICheatShe
 	 */
 	public static final String TYPE_URI = "uri";
 	/**
-	 * Value for type parameter, specifying that the path is a bundle internal path.
+	 * Value for type parameter, specifying that the path is a bundle internal
+	 * path.
 	 */
 	public static final String TYPE_BUNDLE = "bundle";
 
@@ -92,7 +95,8 @@ public class LoadProjectAction extends Action implements IIntroAction, ICheatShe
 		}
 
 		// executes event with last configuration
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 		// load a given file or show open project dialog
 		if (path != null) {
 			if (TYPE_FILE.equalsIgnoreCase(type) || type == null)
@@ -105,7 +109,8 @@ public class LoadProjectAction extends Action implements IIntroAction, ICheatShe
 				} catch (URISyntaxException e) {
 					throw new IllegalArgumentException(e);
 				}
-		} else
+		}
+		else
 			ps.open();
 	}
 

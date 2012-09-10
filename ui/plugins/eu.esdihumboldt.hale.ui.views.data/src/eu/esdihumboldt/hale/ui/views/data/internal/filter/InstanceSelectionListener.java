@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface InstanceSelectionListener {
-	
+
 	/**
 	 * Called when the selection changed
 	 * 
@@ -30,5 +30,5 @@ public interface InstanceSelectionListener {
 	 * @param selection the selected features
 	 */
 	public void selectionChanged(TypeDefinition type, Iterable<Instance> selection);
-	
+
 }

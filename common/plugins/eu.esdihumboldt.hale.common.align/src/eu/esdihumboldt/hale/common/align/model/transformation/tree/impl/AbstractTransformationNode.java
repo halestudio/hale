@@ -19,10 +19,11 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 
 /**
  * Abstract transformation node implementation.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractTransformationNode implements TransformationNode {
-	
+
 	private Map<String, Object> annotations;
 
 	/**

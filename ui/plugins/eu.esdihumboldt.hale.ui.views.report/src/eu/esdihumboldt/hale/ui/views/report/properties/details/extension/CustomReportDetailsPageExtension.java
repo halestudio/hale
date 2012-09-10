@@ -25,12 +25,14 @@ import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
  * Extension for {@link CustomReportDetailsPage}s.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class CustomReportDetailsPageExtension extends
 		AbstractExtension<CustomReportDetailsPage, CustomReportDetailsPageFactory> {
-	private static final ALogger log = ALoggerFactory.getLogger(CustomReportDetailsPageExtension.class);
+
+	private static final ALogger log = ALoggerFactory
+			.getLogger(CustomReportDetailsPageExtension.class);
 
 	/**
 	 * The extension point ID.
@@ -41,8 +43,8 @@ public class CustomReportDetailsPageExtension extends
 
 	/**
 	 * Get the extension instance.
-	 *
-	 * @return the custom report details page extension 
+	 * 
+	 * @return the custom report details page extension
 	 */
 	public static CustomReportDetailsPageExtension getInstance() {
 		if (instance == null) {
@@ -62,21 +64,26 @@ public class CustomReportDetailsPageExtension extends
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected CustomReportDetailsPageFactory createFactory(IConfigurationElement conf) throws Exception {
+	protected CustomReportDetailsPageFactory createFactory(IConfigurationElement conf)
+			throws Exception {
 		return new CustomReportDetailsPageFactory(conf);
 	}
 
 	/**
 	 * Returns the registered detail page for the given report type.<br>
 	 * It searches for registered pages for the specified type or any of its
-	 * super types/interfaces. If there are multiple matches a random one is returned.<br>
+	 * super types/interfaces. If there are multiple matches a random one is
+	 * returned.<br>
 	 * If no matching type is registered at all, <code>null</code> is returned.
-	 *
+	 * 
 	 * @param reportType the type in question
-	 * @return a registered {@link CustomReportDetailsPage} for the given type or <code>null</code> if there is none
+	 * @return a registered {@link CustomReportDetailsPage} for the given type
+	 *         or <code>null</code> if there is none
 	 */
-	public CustomReportDetailsPage getDetailPage(@SuppressWarnings("rawtypes") final Class<? extends Report> reportType) {
+	public CustomReportDetailsPage getDetailPage(
+			@SuppressWarnings("rawtypes") final Class<? extends Report> reportType) {
 		List<CustomReportDetailsPageFactory> factories = getFactories(new FactoryFilter<CustomReportDetailsPage, CustomReportDetailsPageFactory>() {
+
 			@Override
 			public boolean acceptFactory(CustomReportDetailsPageFactory factory) {
 				return factory.getReportType().isAssignableFrom(reportType);

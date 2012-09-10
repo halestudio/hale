@@ -25,7 +25,7 @@ import eu.esdihumboldt.specification.cst.align.IEntity;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class EntityHelper {
-	
+
 	/**
 	 * Get a short name for the given entity
 	 * 
@@ -36,23 +36,23 @@ public abstract class EntityHelper {
 		if (entity.equals(Entity.NULL_ENTITY)) {
 			return "None"; //$NON-NLS-1$
 		}
-		
+
 		if (entity instanceof ComposedProperty) {
 			ComposedProperty cp = (ComposedProperty) entity;
 			Iterator<Property> it = cp.getCollection().iterator();
 			StringBuffer result = new StringBuffer();
 			while (it.hasNext()) {
 				result.append(getShortName(it.next()));
-				
+
 				if (it.hasNext()) {
 					result.append(" & "); //$NON-NLS-1$
 				}
 			}
-			
+
 			return result.toString();
 		}
-		
-		if (entity.getAbout() != null && entity.getAbout().getAbout() != null ) {
+
+		if (entity.getAbout() != null && entity.getAbout().getAbout() != null) {
 			String label = entity.getAbout().getAbout();
 			String[] nameparts = label.split("\\/"); //$NON-NLS-1$
 			if (entity instanceof Property && nameparts.length >= 2) {
@@ -62,10 +62,10 @@ public abstract class EntityHelper {
 				return nameparts[nameparts.length - 1];
 			}
 		}
-		
+
 		return "unnamed"; //$NON-NLS-1$
 	}
-	
+
 //	/**
 //	 * Get the identifier for the given entity, as in {@link Definition#getIdentifier()}
 //	 * 

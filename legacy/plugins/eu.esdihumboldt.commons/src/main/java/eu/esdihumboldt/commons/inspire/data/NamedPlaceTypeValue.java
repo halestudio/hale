@@ -17,19 +17,11 @@ package eu.esdihumboldt.commons.inspire.data;
  * 
  * @author Ana Belen Anton
  * @partner 02 / ETRA Research and Development
- * @version $Id$ 
+ * @version $Id$
  */
 
 public enum NamedPlaceTypeValue {
 
-	 administrativeUnit,
-	 building,
-	 hydrography,
-	 landcover,
-	 landform,
-	 populatedPlace,
-	 protectedSite,
-	 transportNetwork,
-	 other;
-	 
+	administrativeUnit, building, hydrography, landcover, landform, populatedPlace, protectedSite, transportNetwork, other;
+
 }

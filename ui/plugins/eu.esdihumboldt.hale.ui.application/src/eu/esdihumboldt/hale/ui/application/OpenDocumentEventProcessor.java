@@ -25,13 +25,14 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * Processes {@link SWT#OpenDocument} events
+ * 
  * @author Simon Templer
  * @see "http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.isv/guide/product_open_file.htm"
  */
 public class OpenDocumentEventProcessor implements Listener {
 
 	private final List<String> filesToOpen = new ArrayList<String>(1);
-	
+
 	/**
 	 * @see Listener#handleEvent(Event)
 	 */
@@ -49,27 +50,28 @@ public class OpenDocumentEventProcessor implements Listener {
 	 */
 	public void openFiles() {
 		// project service is needed
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 		if (ps == null) {
 			return;
 		}
-		
+
 		String[] filePaths;
 
 		synchronized (filesToOpen) {
 			if (filesToOpen.isEmpty())
 				return;
-			filePaths = filesToOpen.toArray(
-				new String[filesToOpen.size()]);
+			filePaths = filesToOpen.toArray(new String[filesToOpen.size()]);
 			filesToOpen.clear();
 		}
-		
+
 		// open files
-		
-		// currently only projects are supported and one project will override another, so just take the last file
+
+		// currently only projects are supported and one project will override
+		// another, so just take the last file
 		String path = filePaths[filePaths.length - 1];
 		File file = new File(path);
-		
+
 		ps.load(file.toURI());
 	}
 

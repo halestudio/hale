@@ -16,6 +16,7 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Style service listener adapter
+ * 
  * @author Simon Templer
  */
 public class StyleServiceAdapter implements StyleServiceListener {

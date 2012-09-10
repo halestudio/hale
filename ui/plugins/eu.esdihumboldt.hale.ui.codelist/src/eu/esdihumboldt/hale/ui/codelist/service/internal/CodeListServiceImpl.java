@@ -19,7 +19,6 @@ import java.util.Map;
 
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
-
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -27,12 +26,13 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 
 /**
  * Code list service.
- *
+ * 
  * @author Kai Schwierczek
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class CodeListServiceImpl implements CodeListService {
+
 	/**
 	 * The associated project service.
 	 */
@@ -43,10 +43,10 @@ public class CodeListServiceImpl implements CodeListService {
 	protected final IConfigurationService configurationService;
 
 	/**
-	 * Constructs this code list service with the given project service.
-	 * It will listen to cleans on the project service to clear all code lists.
-	 * Also it will get/set code list assignments of the current project.
-	 *
+	 * Constructs this code list service with the given project service. It will
+	 * listen to cleans on the project service to clear all code lists. Also it
+	 * will get/set code list assignments of the current project.
+	 * 
 	 * @param projectService the project service
 	 */
 	public CodeListServiceImpl(ProjectService projectService) {
@@ -54,6 +54,7 @@ public class CodeListServiceImpl implements CodeListService {
 		configurationService = new NamespaceConfigurationServiceDecorator(
 				projectService.getConfigurationService(), "codelist", ":");
 		projectService.addListener(new ProjectServiceAdapter() {
+
 			@Override
 			public void onClean() {
 				codelists.clear();
@@ -87,12 +88,12 @@ public class CodeListServiceImpl implements CodeListService {
 	 * @see CodeListService#assignAttributeCodeList(String, CodeList)
 	 */
 	@Override
-	public void assignAttributeCodeList(String attributeIdentifier,
-			CodeList code) {
+	public void assignAttributeCodeList(String attributeIdentifier, CodeList code) {
 		if (code == null)
 			configurationService.set(attributeIdentifier, null);
 		else
-			configurationService.set(attributeIdentifier, code.getNamespace() + "/" + code.getIdentifier());
+			configurationService.set(attributeIdentifier,
+					code.getNamespace() + "/" + code.getIdentifier());
 	}
 
 	/**

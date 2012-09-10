@@ -13,35 +13,32 @@ package eu.esdihumboldt.specification.cst.align.ext;
 
 import java.util.List;
 
-
 /**
  * The superinterface for all ValueClasses.
- *  
- *  @author A. Pitaev, Logica
+ * 
+ * @author A. Pitaev, Logica
  */
 
 public interface IValueClass {
-	
+
 	/**
 	 * returns a list of the ValueExpressions
 	 */
 	public List<IValueExpression> getValue();
-	
+
 	/**
-	 *  return a class/attribute in case of reference
+	 * return a class/attribute in case of reference
+	 * 
 	 * @return
 	 */
 	public String getResource();
-	
-	 /**
-     * Gets the value of the about property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAbout(); 
-	      
+
+	/**
+	 * Gets the value of the about property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getAbout();
 
 }

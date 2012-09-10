@@ -16,7 +16,7 @@ import eu.esdihumboldt.hale.io.gml.ui.internal.Messages;
 
 /**
  * WFS GetFeature wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -27,7 +27,7 @@ public class WfsGetFeatureWizard extends AbstractWfsWizard<WfsGetFeatureConfigur
 	 */
 	public WfsGetFeatureWizard(WfsGetFeatureConfiguration configuration) {
 		super(configuration);
-		
+
 		setWindowTitle(Messages.WfsGetFeatureWizard_0); //$NON-NLS-1$
 	}
 
@@ -37,7 +37,7 @@ public class WfsGetFeatureWizard extends AbstractWfsWizard<WfsGetFeatureConfigur
 	@Override
 	public void addPages() {
 		super.addPages();
-		
+
 		addPage(new FilterPage(configuration, getTypes()));
 	}
 

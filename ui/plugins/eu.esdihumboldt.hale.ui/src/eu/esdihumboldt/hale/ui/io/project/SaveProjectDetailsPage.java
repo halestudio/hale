@@ -35,12 +35,12 @@ import eu.esdihumboldt.hale.ui.io.IOWizardPage;
 
 /**
  * Wizard page that allows changing project name and author.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, SaveProjectWizard> {
-	
+
 	private StringFieldEditor name;
 	private StringFieldEditor author;
 	private Text description;
@@ -60,30 +60,32 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, SaveProj
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(2, false));
-		
+
 		// name
 		name = new StringFieldEditor("name", "Project name:", page);
 		name.setEmptyStringAllowed(false);
 		name.setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		name.setErrorMessage("The project name must be specified.");
 		name.setPage(this);
-		
+
 		// author
 		author = new StringFieldEditor("author", "Project author:", page);
 		author.setEmptyStringAllowed(false);
 		author.setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		author.setPage(this);
-		
+
 		// description
 		Label descLabel = new Label(page, SWT.NONE);
 		descLabel.setText("Description:");
-		descLabel.setLayoutData(GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.BEGINNING).create());
-		
+		descLabel.setLayoutData(GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.BEGINNING)
+				.create());
+
 		description = new Text(page, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 		description.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
-		
+
 		// listen for state changes on field editors
-		IPropertyChangeListener stateListener =  new IPropertyChangeListener() {
+		IPropertyChangeListener stateListener = new IPropertyChangeListener() {
+
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(StringFieldEditor.IS_VALID)) {
@@ -93,12 +95,12 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, SaveProj
 		};
 		name.setPropertyChangeListener(stateListener);
 		author.setPropertyChangeListener(stateListener);
-		
+
 		// listen for provider changes
 		getWizard().addIOWizardListener(new IOWizardListener<ProjectWriter, SaveProjectWizard>() {
+
 			@Override
-			public void providerDescriptorChanged(
-					IOProviderDescriptor providerFactory) {
+			public void providerDescriptorChanged(IOProviderDescriptor providerFactory) {
 				// update fields as the provider will have changed
 				updateFields();
 			}
@@ -108,18 +110,18 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, SaveProj
 				// ignore
 			}
 		});
-		
+
 		updateState();
 		updateFields();
 	}
-	
+
 	/**
 	 * @see DialogPage#setVisible(boolean)
 	 */
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		
+
 		name.setFocus();
 		if (!name.isValid()) {
 			name.showErrorMessage();
@@ -132,7 +134,7 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, SaveProj
 			ProjectInfo p = writer.getProject();
 			name.setStringValue(p.getName());
 			author.setStringValue(p.getAuthor());
-			description.setText((p.getDescription() == null)?(""):(p.getDescription()));
+			description.setText((p.getDescription() == null) ? ("") : (p.getDescription()));
 		}
 		else {
 			name.setStringValue("");
@@ -140,7 +142,7 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, SaveProj
 			description.setText("");
 		}
 	}
-	
+
 	private void updateState() {
 		setPageComplete(name.isValid() && author.isValid());
 	}
@@ -151,16 +153,16 @@ public class SaveProjectDetailsPage extends IOWizardPage<ProjectWriter, SaveProj
 	@Override
 	public boolean updateConfiguration(ProjectWriter provider) {
 		Project p = provider.getProject();
-		
+
 		if (p != null) {
 			p.setName(name.getStringValue());
 			p.setAuthor(author.getStringValue());
-			p.setDescription((description.getText().isEmpty())?(null):(description.getText()));
-			
+			p.setDescription((description.getText().isEmpty()) ? (null) : (description.getText()));
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 }

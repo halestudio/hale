@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.ui.util.ExceptionHelper;
  * @author Michel Krämer
  */
 public class ShowHandbookHandler extends AbstractHandler implements IHandler {
-	
+
 	/**
 	 * The name of the PDF file to open
 	 */
@@ -61,7 +61,7 @@ public class ShowHandbookHandler extends AbstractHandler implements IHandler {
 		if (pdfFile.exists()) {
 			FileUtils.deleteQuietly(pdfFile);
 		}
-		
+
 		pdfFile.deleteOnExit();
 
 		URL pdfUrl = this.getClass().getResource("/documentation/" + PDFFILE); //$NON-NLS-1$

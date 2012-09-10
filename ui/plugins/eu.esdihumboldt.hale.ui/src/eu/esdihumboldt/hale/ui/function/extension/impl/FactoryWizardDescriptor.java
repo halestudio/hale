@@ -24,19 +24,22 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Function wizard descriptor based on a {@link FunctionWizardFactory} instance.
+ * 
  * @param <T> the function type
  * @author Simon Templer
  */
-public class FactoryWizardDescriptor<T extends AbstractFunction<?>> extends AbstractObjectFactory<FunctionWizardFactory> implements FunctionWizardDescriptor<T> {
+public class FactoryWizardDescriptor<T extends AbstractFunction<?>> extends
+		AbstractObjectFactory<FunctionWizardFactory> implements FunctionWizardDescriptor<T> {
 
 	private static final String IDENTIFIER_PREFIX = "GENERIC_";
-	
+
 	private final FunctionWizardFactory factory;
-	
+
 	private final T function;
-	
+
 	/**
 	 * Create a function wizard descriptor based on the given factory.
+	 * 
 	 * @param factory the function wizard factory
 	 * @param function the associated function
 	 */

@@ -19,17 +19,18 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterLayo
 
 /**
  * Service factory for the {@link PainterLayoutService}.
+ * 
  * @author Simon Templer
  */
 public class PainterLayoutServiceFactory extends AbstractServiceFactory {
 
 	@Override
-	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
-			IServiceLocator locator) {
+	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface,
+			IServiceLocator parentLocator, IServiceLocator locator) {
 		if (PainterLayoutService.class.equals(serviceInterface)) {
 			return new PainterLayoutManager();
 		}
-		
+
 		return null;
 	}
 

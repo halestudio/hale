@@ -40,37 +40,38 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Instance collection based on a {@link LocalOrientDB}
+ * 
  * @author Simon Templer
  */
 public class BrowseOrientInstanceCollection implements InstanceCollection {
-	
+
 	private class OrientInstanceIterator implements ResourceIterator<Instance> {
 
 		private DatabaseReference<ODatabaseDocumentTx> ref;
-		
+
 		private Map<String, TypeDefinition> classTypes;
-		
+
 		private Queue<String> classQueue;
-		
+
 		private String currentClass;
-		
+
 		private ORecordIteratorClass<ODocument> currentIterator;
-		
+
 		private DatabaseHandle handle;
-		
+
 		private boolean allowUpdate = true;
-		
+
 		/**
 		 * @see Iterator#hasNext()
 		 */
 		@Override
 		public boolean hasNext() {
 			update();
-			
+
 			if (currentClass == null || currentIterator == null) {
 				return false;
 			}
-			
+
 			return true;
 //			return currentIterator.hasNext(); XXX Bug in OrientDB 1.0rc8: hasNext will move to the next element
 		}
@@ -85,14 +86,14 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 					classTypes.put(className, type);
 					classQueue.add(className);
 				}
-				
+
 				ref = database.openRead();
 				handle = new DatabaseHandle(ref.getDatabase());
 				if (!classQueue.isEmpty()) {
 					currentClass = classQueue.poll();
-					if (ref.getDatabase().getMetadata().getSchema().getClass(currentClass) != null &&
-							ref.getDatabase().countClass(currentClass) > 0) {
-						//XXX set a fetch plan?
+					if (ref.getDatabase().getMetadata().getSchema().getClass(currentClass) != null
+							&& ref.getDatabase().countClass(currentClass) > 0) {
+						// XXX set a fetch plan?
 						currentIterator = ref.getDatabase().browseClass(currentClass);
 					}
 					else {
@@ -100,23 +101,25 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 					}
 				}
 			}
-			
+
 			// make sure the database is associated to the current thread
 			ODatabaseRecordThreadLocal.INSTANCE.set(ref.getDatabase());
-			
+
 			if (!allowUpdate) {
 				return;
 			}
 			else {
-				allowUpdate = false; // ensure that hasNext is only called once per next on the current iterator (due to the OrientDB bug)
+				allowUpdate = false; // ensure that hasNext is only called once
+										// per next on the current iterator (due
+										// to the OrientDB bug)
 			}
-			
+
 			// update class if needed
 			while (currentClass != null && (currentIterator == null || !currentIterator.hasNext())) {
 				currentClass = classQueue.poll();
-				if (ref.getDatabase().getMetadata().getSchema().getClass(currentClass) != null &&
-						ref.getDatabase().countClass(currentClass) > 0) {
-					//XXX set a fetch plan?
+				if (ref.getDatabase().getMetadata().getSchema().getClass(currentClass) != null
+						&& ref.getDatabase().countClass(currentClass) > 0) {
+					// XXX set a fetch plan?
 					currentIterator = ref.getDatabase().browseClass(currentClass);
 					currentIterator.setFetchPlan("*:0");
 				}
@@ -134,16 +137,16 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 			if (hasNext()) {
 				ODocument doc = currentIterator.next();
 				allowUpdate = true; // allow updating in hasNext
-				Instance instance = new OInstance(doc, getCurrentType(), 
-						ref.getDatabase(), dataSet);
+				Instance instance = new OInstance(doc, getCurrentType(), ref.getDatabase(), dataSet);
 				handle.addReference(instance);
 				return instance;
 			}
 			else {
-				throw new IllegalStateException("No more instances available, you should have checked hasNext().");
+				throw new IllegalStateException(
+						"No more instances available, you should have checked hasNext().");
 			}
 		}
-		
+
 		private TypeDefinition getCurrentType() {
 			return classTypes.get(currentClass);
 		}
@@ -164,27 +167,28 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 			if (ref != null) {
 				// connection is closed in DatabaseHandle
 				ref.dispose(false);
-				// try closing the database handle (e.g. if no objects were added)
+				// try closing the database handle (e.g. if no objects were
+				// added)
 				handle.tryClose();
 			}
-	
+
 		}
 	}
 
 	private final LocalOrientDB database;
-	
+
 	private final TypeIndex types;
-	
+
 	private final DataSet dataSet;
-	
+
 	/**
 	 * Create an instance collection based on the given database
+	 * 
 	 * @param database the database
 	 * @param types the type index
 	 * @param dataSet the data set the instances are associated to
 	 */
-	public BrowseOrientInstanceCollection(LocalOrientDB database,
-			TypeIndex types, DataSet dataSet) {
+	public BrowseOrientInstanceCollection(LocalOrientDB database, TypeIndex types, DataSet dataSet) {
 		super();
 		this.database = database;
 		this.types = types;
@@ -227,21 +231,22 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		} finally {
 			ref.dispose();
 		}
-		
+
 		return size;
 	}
 
 	/**
 	 * Get the main class names
+	 * 
 	 * @return the main class names
 	 */
 	private Collection<String> getMainClassNames() {
 		Collection<String> classes = new ArrayList<String>();
-		
+
 		for (TypeDefinition type : types.getMappingRelevantTypes()) {
 			classes.add(ONameUtil.encodeName(type.getIdentifier()));
 		}
-		
+
 		return classes;
 	}
 
@@ -252,7 +257,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	public boolean isEmpty() {
 		DatabaseReference<ODatabaseDocumentTx> ref = database.openRead();
 		ODatabaseDocumentTx db = ref.getDatabase();
-		// make sure the database is associated to the current thread XXX not sure if this is necessary
+		// make sure the database is associated to the current thread XXX not
+		// sure if this is necessary
 		ODatabaseRecordThreadLocal.INSTANCE.set(db);
 		try {
 			Collection<String> classes = getMainClassNames();
@@ -278,8 +284,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	public InstanceCollection select(Filter filter) {
 		/*
 		 * FIXME optimize for cases where there is filtering based on a type?
-		 * Those instances where another type is concerned would not have to 
-		 * be browsed/created
+		 * Those instances where another type is concerned would not have to be
+		 * browsed/created
 		 */
 		return new FilteredInstanceCollection(this, filter);
 	}
@@ -298,7 +304,7 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	@Override
 	public Instance getInstance(InstanceReference reference) {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
-		
+
 		return ref.load(database);
 	}
 

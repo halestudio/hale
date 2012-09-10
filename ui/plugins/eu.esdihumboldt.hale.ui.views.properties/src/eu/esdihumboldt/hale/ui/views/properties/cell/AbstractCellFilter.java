@@ -19,16 +19,17 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 
 /**
  * The default filter for all filters
+ * 
  * @author Patrick Lieb
  */
-public abstract class AbstractCellFilter implements IFilter{
-	
+public abstract class AbstractCellFilter implements IFilter {
+
 	/**
-	 * Determine if a cell is invalid and thus should be rejected by the
-	 * filter.
+	 * Determine if a cell is invalid and thus should be rejected by the filter.
+	 * 
 	 * @param input the cell
-	 * @return <code>true</code> if the cell should be rejected by the
-	 *   filter, <code>false</code> otherwise
+	 * @return <code>true</code> if the cell should be rejected by the filter,
+	 *         <code>false</code> otherwise
 	 */
 	public abstract boolean isFiltered(Cell input);
 
@@ -38,11 +39,11 @@ public abstract class AbstractCellFilter implements IFilter{
 	@Override
 	public boolean select(Object input) {
 		input = TransformationTreeUtil.extractObject(input);
-		
+
 		if (input instanceof Cell) {
 			return !isFiltered((Cell) input);
 		}
-		
+
 		return false;
 	}
 }

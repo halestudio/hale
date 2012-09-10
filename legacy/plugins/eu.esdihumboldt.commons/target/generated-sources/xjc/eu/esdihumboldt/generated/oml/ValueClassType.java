@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import java.util.ArrayList;
@@ -18,11 +17,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for ValueClassType complex type.
+ * <p>
+ * Java class for ValueClassType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ValueClassType">
@@ -41,95 +42,88 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ValueClassType", namespace = "http://www.esdi-humboldt.eu/goml", propOrder = {
-    "value"
-})
+@XmlType(name = "ValueClassType", namespace = "http://www.esdi-humboldt.eu/goml", propOrder = { "value" })
 public class ValueClassType {
 
-    @XmlElement(namespace = "http://www.omwg.org/TR/d7/ontology/alignment")
-    protected List<ValueExprType> value;
-    @XmlAttribute(namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-    @XmlSchemaType(name = "anyURI")
-    protected String resource;
-    @XmlAttribute(namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-    @XmlSchemaType(name = "anyURI")
-    protected String about;
+	@XmlElement(namespace = "http://www.omwg.org/TR/d7/ontology/alignment")
+	protected List<ValueExprType> value;
+	@XmlAttribute(namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+	@XmlSchemaType(name = "anyURI")
+	protected String resource;
+	@XmlAttribute(namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+	@XmlSchemaType(name = "anyURI")
+	protected String about;
 
-    /**
-     * Gets the value of the value property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the value property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getValue().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ValueExprType }
-     * 
-     * 
-     */
-    public List<ValueExprType> getValue() {
-        if (value == null) {
-            value = new ArrayList<ValueExprType>();
-        }
-        return this.value;
-    }
+	/**
+	 * Gets the value of the value property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the value property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getValue().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link ValueExprType }
+	 * 
+	 * 
+	 */
+	public List<ValueExprType> getValue() {
+		if (value == null) {
+			value = new ArrayList<ValueExprType>();
+		}
+		return this.value;
+	}
 
-    /**
-     * Gets the value of the resource property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getResource() {
-        return resource;
-    }
+	/**
+	 * Gets the value of the resource property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getResource() {
+		return resource;
+	}
 
-    /**
-     * Sets the value of the resource property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setResource(String value) {
-        this.resource = value;
-    }
+	/**
+	 * Sets the value of the resource property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setResource(String value) {
+		this.resource = value;
+	}
 
-    /**
-     * Gets the value of the about property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAbout() {
-        return about;
-    }
+	/**
+	 * Gets the value of the about property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getAbout() {
+		return about;
+	}
 
-    /**
-     * Sets the value of the about property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAbout(String value) {
-        this.about = value;
-    }
+	/**
+	 * Sets the value of the about property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setAbout(String value) {
+		this.about = value;
+	}
 
 }

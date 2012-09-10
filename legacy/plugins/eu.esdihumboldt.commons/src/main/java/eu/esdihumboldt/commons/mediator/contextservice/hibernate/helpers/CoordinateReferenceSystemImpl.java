@@ -10,7 +10,6 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 
-
 package eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers;
 
 import java.util.Collection;
@@ -23,47 +22,47 @@ import org.opengis.referencing.cs.CoordinateSystem;
 import org.opengis.util.InternationalString;
 
 /**
- *
+ * 
  * @author mgone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class CoordinateReferenceSystemImpl implements CoordinateReferenceSystem {
 
-    public CoordinateSystem getCoordinateSystem() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public CoordinateSystem getCoordinateSystem() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public Extent getDomainOfValidity() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public Extent getDomainOfValidity() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public Extent getValidArea() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public Extent getValidArea() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public InternationalString getScope() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public InternationalString getScope() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public ReferenceIdentifier getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public ReferenceIdentifier getName() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public Collection getAlias() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public Collection getAlias() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public Set getIdentifiers() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public Set getIdentifiers() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public InternationalString getRemarks() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public InternationalString getRemarks() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public String toWKT() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public String toWKT() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
 }

@@ -22,9 +22,11 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for the rename function.
+ * 
  * @author Simon Templer
  */
 public class RenameExplanation extends AbstractCellExplanation implements RenameFunction {
+
 	/**
 	 * @see AbstractCellExplanation#getExplanation(Cell, boolean)
 	 */
@@ -32,7 +34,7 @@ public class RenameExplanation extends AbstractCellExplanation implements Rename
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		
+
 		if (source != null && target != null) {
 			String text;
 			if (hasIndexCondition(source))
@@ -43,9 +45,10 @@ public class RenameExplanation extends AbstractCellExplanation implements Rename
 			String structuralRename = CellUtil.getFirstParameter(cell, PARAMETER_STRUCTURAL_RENAME);
 			if (Boolean.parseBoolean(structuralRename))
 				text += " Furthermore child properties get added, too, if the property names match.";
-			return MessageFormat.format(text, formatEntity(source, html, true), formatEntity(target, html, true));
+			return MessageFormat.format(text, formatEntity(source, html, true),
+					formatEntity(target, html, true));
 		}
-		
+
 		return null;
 	}
 }

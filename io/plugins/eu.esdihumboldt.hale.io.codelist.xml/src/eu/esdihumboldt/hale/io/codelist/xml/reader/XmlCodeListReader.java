@@ -28,11 +28,11 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
 /**
  * Reads a code list based on XML
+ * 
  * @author Patrick Lieb
  */
-public class XmlCodeListReader extends AbstractImportProvider implements
-		CodeListReader {
-	
+public class XmlCodeListReader extends AbstractImportProvider implements CodeListReader {
+
 	private CodeList codelist;
 
 	/**
@@ -40,7 +40,7 @@ public class XmlCodeListReader extends AbstractImportProvider implements
 	 */
 	@Override
 	public boolean isCancelable() {
-	
+
 		return false;
 	}
 
@@ -49,7 +49,7 @@ public class XmlCodeListReader extends AbstractImportProvider implements
 	 */
 	@Override
 	public CodeList getCodeList() {
-		
+
 		return codelist;
 	}
 
@@ -65,8 +65,7 @@ public class XmlCodeListReader extends AbstractImportProvider implements
 			URI loc = getSource().getLocation();
 			codelist = new XmlCodeList(in, loc);
 			progress.setCurrentTask("Code list loaded.");
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		reporter.setSuccess(true);

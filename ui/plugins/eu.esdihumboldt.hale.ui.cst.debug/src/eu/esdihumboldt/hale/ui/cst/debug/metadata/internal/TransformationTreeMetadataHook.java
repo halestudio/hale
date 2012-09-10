@@ -20,24 +20,29 @@ import eu.esdihumboldt.hale.ui.cst.debug.metadata.TransformationTreeMetadata;
 /**
  * Transformation tree hook storing the transformation tree in the instance
  * metadata.
+ * 
  * @author Simon Templer
  */
 public class TransformationTreeMetadataHook implements TransformationTreeHook,
 		TransformationTreeMetadata {
 
 	/**
-	 * @see TransformationTreeHook#processTransformationTree(TransformationTree, TreeState, MutableInstance)
+	 * @see TransformationTreeHook#processTransformationTree(TransformationTree,
+	 *      TreeState, MutableInstance)
 	 */
 	@Override
-	public void processTransformationTree(TransformationTree tree,
-			TreeState state, MutableInstance target) {
-		if (state == TreeState.SOURCE_POPULATED) { //TODO key per state - for now only support this state 
-			//TODO get "serializable tree"
-			// suggestion: write dot export based on a transformation tree visitor
-			
-			//TODO store tree as metadata
+	public void processTransformationTree(TransformationTree tree, TreeState state,
+			MutableInstance target) {
+		if (state == TreeState.SOURCE_POPULATED) { // TODO key per state - for
+													// now only support this
+													// state
+			// TODO get "serializable tree"
+			// suggestion: write dot export based on a transformation tree
+			// visitor
+
+			// TODO store tree as metadata
 //			target.setMetaData(KEY_POPULATED_TREE, treeVal);
-			//XXX dummy
+			// XXX dummy
 			target.setMetaData(KEY_POPULATED_TREE, "TODO");
 		}
 	}

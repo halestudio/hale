@@ -24,32 +24,31 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
-
 /**
  * Properties section with description
+ * 
  * @author Simon Templer
  */
 public class DefinitionDescriptionSection extends DefaultDefinitionSection<Definition<?>> {
 
 	private Text descriptionText;
-	
+
 	private CLabel namespaceLabel;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-				.createFlatFormComposite(parent);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
-		
+
 		descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
 				SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 		descriptionText.setEditable(false);
-		//TODO improve layout
+		// TODO improve layout
 		data = new FormData();
 		data.width = 100;
 		data.height = 100;
@@ -59,12 +58,10 @@ public class DefinitionDescriptionSection extends DefaultDefinitionSection<Defin
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		descriptionText.setLayoutData(data);
 
-		namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, "Description:"); //$NON-NLS-1$
+		namespaceLabel = getWidgetFactory().createCLabel(composite, "Description:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(descriptionText,
-				-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(descriptionText, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(descriptionText, 0, SWT.TOP);
 		namespaceLabel.setLayoutData(data);
 	}
@@ -88,11 +85,11 @@ public class DefinitionDescriptionSection extends DefaultDefinitionSection<Defin
 		}
 		descriptionText.setText(desc);
 	}
-	
+
 	/**
 	 * @return the descriptionText
 	 */
-	public Text getDescription(){
+	public Text getDescription() {
 		return descriptionText;
 	}
 }

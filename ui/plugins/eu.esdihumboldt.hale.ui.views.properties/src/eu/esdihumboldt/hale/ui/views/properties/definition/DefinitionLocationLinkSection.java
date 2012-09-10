@@ -30,47 +30,46 @@ import eu.esdihumboldt.hale.ui.util.components.URILink;
 
 /**
  * Properties section with a link to open the location in editor or browser
+ * 
  * @author Patrick Lieb
  */
-public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Definition<?>>{
-	
+public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Definition<?>> {
+
 	private URILink location;
-	
+
 	private Link link;
-	
+
 	private Text linktext;
-	
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-				.createFlatFormComposite(parent);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		location = new URILink(composite, 0, null, "<A>Open Location</A>");
-		
+
 		link = location.getLink();
-		
+
 		FormData data;
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		link.setLayoutData(data);
-		
+
 		link.setBackground(getWidgetFactory().getColors().getBackground());
-		
-		CLabel namespaceLabel = getWidgetFactory()
-		.createCLabel(composite, "Location:"); //$NON-NLS-1$
+
+		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite, "Location:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(link,15);
+		data.right = new FormAttachment(link, 15);
 		data.top = new FormAttachment(link, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
-		
+
 		linktext = getWidgetFactory().createText(composite, "");
 		linktext.setEditable(false);
 
@@ -83,23 +82,22 @@ public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Defi
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		linktext.setLayoutData(data);
 
-		namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, ""); //$NON-NLS-1$
+		namespaceLabel = getWidgetFactory().createCLabel(composite, ""); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(linktext,
-				-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(linktext, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(linktext, 0, SWT.TOP);
 		namespaceLabel.setLayoutData(data);
 	}
-	
+
 	@Override
-	public void refresh(){
+	public void refresh() {
 		URI loc = getDefinition().getLocation();
-		if(loc == null){
+		if (loc == null) {
 			location.setText("no Link available");
 			linktext.setText("location not set");
-		} else {
+		}
+		else {
 			location.refresh(loc);
 			linktext.setText(loc.toASCIIString());
 		}

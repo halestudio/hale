@@ -20,7 +20,7 @@ import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 
 /**
  * Default {@link IOMessage} implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 public class IOMessageImpl extends MessageImpl implements IOMessage {
 
 	private final int column;
-	
+
 	private final int lineNumber;
 
 	/**
@@ -50,13 +50,12 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 	 * @param lineNumber the line number in the file, <code>-1</code> for none
 	 * @param column the column in the line, <code>-1</code> for none
 	 */
-	public IOMessageImpl(String message, Throwable throwable, int lineNumber,
-			int column) {
+	public IOMessageImpl(String message, Throwable throwable, int lineNumber, int column) {
 		super(message, throwable);
 		this.column = column;
 		this.lineNumber = lineNumber;
 	}
-	
+
 	/**
 	 * Create a new message
 	 * 
@@ -72,7 +71,7 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 		this.column = column;
 		this.lineNumber = lineNumber;
 	}
-	
+
 	/**
 	 * Create a new message and format it using {@link MessageFormat}
 	 * 
@@ -82,8 +81,8 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 	 * @param column the column in the line, <code>-1</code> for none
 	 * @param arguments the arguments for the message format
 	 */
-	public IOMessageImpl(String pattern, Throwable throwable, int lineNumber,
-			int column, Object... arguments) {
+	public IOMessageImpl(String pattern, Throwable throwable, int lineNumber, int column,
+			Object... arguments) {
 		super(MessageFormat.format(pattern, arguments), throwable);
 		this.column = column;
 		this.lineNumber = lineNumber;
@@ -109,8 +108,10 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 	public String getFormattedMessage() {
 		if (getLineNumber() <= 0) {
 			return this.getMessage();
-		} else {
-			return String.format("%s, on line %d, column %d", getMessage(), getLineNumber(), getColumn());
+		}
+		else {
+			return String.format("%s, on line %d, column %d", getMessage(), getLineNumber(),
+					getColumn());
 		}
 	}
 }

@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 /**
  * XML property definition that doesn't know its property type on construction
  * time.
+ * 
  * @author Simon Templer
  */
 public abstract class LazyPropertyDefinition extends DefaultPropertyDefinition {
@@ -30,12 +31,12 @@ public abstract class LazyPropertyDefinition extends DefaultPropertyDefinition {
 	 * The XML index that can be used to resolve needed objects
 	 */
 	protected final XmlIndex index;
-	
+
 	/**
 	 * The resolved property type (if resolved yet)
 	 */
 	private TypeDefinition resolvedType;
-	
+
 	/**
 	 * Create a lazy property definiton
 	 * 
@@ -43,10 +44,9 @@ public abstract class LazyPropertyDefinition extends DefaultPropertyDefinition {
 	 * @param declaringType the declaring type
 	 * @param index the XML index
 	 */
-	public LazyPropertyDefinition(QName name,
-			DefinitionGroup declaringType, XmlIndex index) {
+	public LazyPropertyDefinition(QName name, DefinitionGroup declaringType, XmlIndex index) {
 		super(name, declaringType, null);
-		
+
 		this.index = index;
 	}
 
@@ -58,10 +58,10 @@ public abstract class LazyPropertyDefinition extends DefaultPropertyDefinition {
 		if (resolvedType != null) {
 			return resolvedType;
 		}
-		
+
 		// resolve type
 		resolvedType = resolvePropertyType(index);
-		
+
 		return resolvedType;
 	}
 

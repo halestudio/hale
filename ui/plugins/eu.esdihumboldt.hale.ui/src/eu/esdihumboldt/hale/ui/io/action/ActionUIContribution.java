@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.io.action;
 
-
 import org.eclipse.jface.action.IAction;
 
 import de.cs3d.ui.util.eclipse.extension.AbstractExtensionContribution;
@@ -22,11 +21,12 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * Contribution for launching {@link IOWizard}s based on an {@link IOAdvisor}
+ * 
  * @author Simon Templer
  */
 public class ActionUIContribution extends
 		AbstractExtensionContribution<IOWizard<?>, ActionUI, ActionUIExtension> {
-	
+
 	/**
 	 * @see AbstractExtensionContribution#allowConfiguration()
 	 */
@@ -48,8 +48,10 @@ public class ActionUIContribution extends
 	 */
 	@Override
 	protected IAction createFactoryAction(ActionUI factory) {
-		// The dispose method of this IOWizardAction is never automatically called.
-		// That's okay, since the action is only created once so the evaluation listener 
+		// The dispose method of this IOWizardAction is never automatically
+		// called.
+		// That's okay, since the action is only created once so the evaluation
+		// listener
 		// mustn't be removed.
 		return new IOWizardAction(factory);
 	}

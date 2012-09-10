@@ -36,15 +36,16 @@ import org.xml.sax.InputSource;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 
-
 /**
  * Represents a project.
+ * 
  * @author Simon Templer
  */
 public class Project implements ProjectInfo {
-	
+
 	/**
 	 * Load a project from an input stream.
+	 * 
 	 * @param in the input stream
 	 * @return the project
 	 * 
@@ -52,11 +53,11 @@ public class Project implements ProjectInfo {
 	 * @throws MarshalException if the project could not be read
 	 * @throws ValidationException if the input stream did not provide valid XML
 	 */
-	public static Project load(InputStream in) throws MappingException, MarshalException, ValidationException {
+	public static Project load(InputStream in) throws MappingException, MarshalException,
+			ValidationException {
 		Mapping mapping = new Mapping(Project.class.getClassLoader());
-		mapping.loadMapping(new InputSource(
-				Project.class.getResourceAsStream("Project.xml")));
-		        
+		mapping.loadMapping(new InputSource(Project.class.getResourceAsStream("Project.xml")));
+
 		XMLContext context = new XMLContext();
 		context.addMapping(mapping);
 
@@ -71,23 +72,30 @@ public class Project implements ProjectInfo {
 			}
 		}
 	}
-	
+
 	/**
 	 * Save a project to an output stream.
+	 * 
 	 * @param project the project to save
 	 * @param out the output stream
 	 * @throws MappingException if the mapping could not be loaded
-	 * @throws ValidationException if the mapping is no valid XML 
-	 * @throws MarshalException if the project could not be marshaled 
-	 * @throws IOException if the output could not be written 
+	 * @throws ValidationException if the mapping is no valid XML
+	 * @throws MarshalException if the project could not be marshaled
+	 * @throws IOException if the output could not be written
 	 */
-	public static void save(ProjectInfo project, OutputStream out) throws MappingException, MarshalException, ValidationException, IOException {
+	public static void save(ProjectInfo project, OutputStream out) throws MappingException,
+			MarshalException, ValidationException, IOException {
 		Mapping mapping = new Mapping(Project.class.getClassLoader());
-		mapping.loadMapping(new InputSource(
-				Project.class.getResourceAsStream("Project.xml")));
-		        
+		mapping.loadMapping(new InputSource(Project.class.getResourceAsStream("Project.xml")));
+
 		XMLContext context = new XMLContext();
-		context.setProperty("org.exolab.castor.indent", true); // enable indentation for marshaling as project files should be very small
+		context.setProperty("org.exolab.castor.indent", true); // enable
+																// indentation
+																// for
+																// marshaling as
+																// project files
+																// should be
+																// very small
 		context.addMapping(mapping);
 		Marshaller marshaller = context.createMarshaller();
 //		marshaller.setEncoding("UTF-8"); XXX not possible using the XMLContext but UTF-8 seems to be default, see http://jira.codehaus.org/browse/CASTOR-2846
@@ -103,44 +111,44 @@ public class Project implements ProjectInfo {
 			}
 		}
 	}
-	
+
 	/**
 	 * The project name
 	 */
 	private String name;
-	
+
 	/**
 	 * The project author
 	 */
 	private String author;
-	
+
 	/**
 	 * The HALE version
 	 */
 	private Version haleVersion;
-	
+
 	/**
 	 * The date the project was created
 	 */
 	private Date created;
-	
+
 	/**
 	 * The date the project was modified
 	 */
 	private Date modified;
-	
+
 	/**
 	 * A project description
 	 */
 	private String description;
-	
+
 	/**
 	 * The configuration the project was saved with
 	 */
 	private IOConfiguration saveConfiguration;
-	
+
 	/**
-	 * I/O configurations 
+	 * I/O configurations
 	 */
 	private final List<IOConfiguration> resources = new ArrayList<IOConfiguration>();
 
@@ -153,7 +161,7 @@ public class Project implements ProjectInfo {
 	 * Project file locations
 	 */
 	private final List<ProjectFileInfo> projectFiles = new ArrayList<ProjectFileInfo>();
-	
+
 	/**
 	 * @return the configurations
 	 */
@@ -273,10 +281,10 @@ public class Project implements ProjectInfo {
 	}
 
 	/**
-	 * @return the list of external project file locations 
+	 * @return the list of external project file locations
 	 */
 	public List<ProjectFileInfo> getProjectFiles() {
 		return projectFiles;
 	}
-	
+
 }

@@ -19,12 +19,13 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 
 /**
  * CRS definition based on a code
+ * 
  * @author Simon Templer
  */
 public class CodeDefinition implements CRSDefinition {
 
 	private static final long serialVersionUID = -7637649402983702957L;
-	
+
 	private final String code;
 	private CoordinateReferenceSystem crs;
 
@@ -51,7 +52,7 @@ public class CodeDefinition implements CRSDefinition {
 				throw new IllegalStateException("Invalid CRS code", e);
 			}
 		}
-		
+
 		return crs;
 	}
 
@@ -90,7 +91,8 @@ public class CodeDefinition implements CRSDefinition {
 		if (code == null) {
 			if (other.code != null)
 				return false;
-		} else if (!code.equals(other.code))
+		}
+		else if (!code.equals(other.code))
 			return false;
 		return true;
 	}

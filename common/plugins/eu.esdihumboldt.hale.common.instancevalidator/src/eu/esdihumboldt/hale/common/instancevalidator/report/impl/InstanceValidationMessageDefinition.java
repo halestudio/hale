@@ -24,10 +24,12 @@ import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMe
 
 /**
  * Definition for {@link InstanceValidationMessage}s.
- *
+ * 
  * @author Kai Schwierczek
  */
-public class InstanceValidationMessageDefinition extends AbstractMessageDefinition<InstanceValidationMessage>  {
+public class InstanceValidationMessageDefinition extends
+		AbstractMessageDefinition<InstanceValidationMessage> {
+
 	/**
 	 * Key for category string.
 	 */

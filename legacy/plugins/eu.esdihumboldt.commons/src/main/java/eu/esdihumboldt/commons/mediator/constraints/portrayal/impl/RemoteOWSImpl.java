@@ -31,20 +31,20 @@ public class RemoteOWSImpl implements RemoteOWS, Serializable {
 	private Service service;
 
 	private OnlineResource onlineResource;
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 *  The unique identifier of the constraint int the database
+	 * The unique identifier of the constraint int the database
 	 */
-	
+
 	private long id;
-	
+
 	/**
 	 * The status of this constraint.
 	 */
 	private boolean satisfied = false;
-	
+
 	/**
 	 * The unique identifier in the current VM.
 	 */
@@ -55,24 +55,21 @@ public class RemoteOWSImpl implements RemoteOWS, Serializable {
 	 */
 	private ConstraintSource constraintSource;
 
-	
-	
 	/**
-	 * @param constraintSource the constraintSource to set
+	 * @param constraintSource
+	 *            the constraintSource to set
 	 */
 	public void setConstraintSource(ConstraintSource constraintSource) {
 		this.constraintSource = constraintSource;
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#getConstraintSource()
 	 */
 	public ConstraintSource getConstraintSource() {
 		return this.constraintSource;
 	}
-	
-	
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#isSatisfied()
 	 */
@@ -80,7 +77,7 @@ public class RemoteOWSImpl implements RemoteOWS, Serializable {
 		// TODO Auto-generated method stub
 		return this.satisfied;
 	}
-		
+
 	/**
 	 * @return the Uid that has been assigned to this SpatialConstraint.
 	 */
@@ -96,12 +93,13 @@ public class RemoteOWSImpl implements RemoteOWS, Serializable {
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @param satisfied
 	 */
@@ -117,7 +115,8 @@ public class RemoteOWSImpl implements RemoteOWS, Serializable {
 	}
 
 	/**
-	 * @param service the service to set
+	 * @param service
+	 *            the service to set
 	 */
 	public void setService(Service service) {
 		this.service = service;
@@ -131,7 +130,8 @@ public class RemoteOWSImpl implements RemoteOWS, Serializable {
 	}
 
 	/**
-	 * @param onlineResource the onlineResource to set
+	 * @param onlineResource
+	 *            the onlineResource to set
 	 */
 	public void setOnlineResource(OnlineResource onlineResource) {
 		this.onlineResource = onlineResource;

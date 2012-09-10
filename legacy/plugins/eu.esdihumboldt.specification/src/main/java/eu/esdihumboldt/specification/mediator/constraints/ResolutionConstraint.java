@@ -14,36 +14,29 @@ package eu.esdihumboldt.specification.mediator.constraints;
 import org.opengis.metadata.identification.Resolution;
 
 /**
- * A ResolutionConstraint allows definition of the Ground Sample distance to 
- * use and the definition of the size in which an actual map product is to be 
- * put out.
- * FIXME: maybe refactor the latter to another class in portrayal.*
+ * A ResolutionConstraint allows definition of the Ground Sample distance to use
+ * and the definition of the size in which an actual map product is to be put
+ * out. FIXME: maybe refactor the latter to another class in portrayal.*
  * 
  * @author Anna Pitaev, Logica CMG
  * @version $Id$
  */
-public interface ResolutionConstraint 
-	extends Constraint {
-	
+public interface ResolutionConstraint extends Constraint {
+
 	/**
-	 * @return the Resolution Object, that is defined by ISO 19115 (Ground 
-	 * Sample distance)
+	 * @return the Resolution Object, that is defined by ISO 19115 (Ground
+	 *         Sample distance)
 	 */
 	public Resolution getResolution();
-	
+
 	/**
 	 * @return the height in pixels of the map.
 	 */
 	public int getWindowHeight();
-	
+
 	/**
 	 * @return the width in pixels of the map.
 	 */
 	public int getWindowWidth();
-	
-	
-	
-  }
-	
-	
 
+}

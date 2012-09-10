@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
  * Advisor for source schema import
+ * 
  * @author Simon Templer
  */
 public class SourceSchemaImportAdvisor extends SchemaImportAdvisor {

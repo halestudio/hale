@@ -23,12 +23,13 @@ import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyContentProvider.
 
 /**
  * Label provider for type hierarchies
+ * 
  * @author Simon Templer
  */
 public class TypeHierarchyLabelProvider extends DefinitionLabelProvider implements IColorProvider {
 
 	private Color mainColor;
-	
+
 	/**
 	 * @see DefinitionLabelProvider#getText(Object)
 	 */
@@ -37,13 +38,13 @@ public class TypeHierarchyLabelProvider extends DefinitionLabelProvider implemen
 		if (element instanceof ParentPath) {
 			element = ((ParentPath) element).getHead();
 		}
-		
+
 		if (element instanceof TypeDefinition) {
 			// return the local name of the type instead of the display name
 			// XXX as it may be masked by an XML element name
 			return ((TypeDefinition) element).getName().getLocalPart();
 		}
-		
+
 		return super.getText(element);
 	}
 
@@ -95,7 +96,7 @@ public class TypeHierarchyLabelProvider extends DefinitionLabelProvider implemen
 		if (mainColor != null) {
 			mainColor.dispose();
 		}
-		
+
 		super.dispose();
 	}
 

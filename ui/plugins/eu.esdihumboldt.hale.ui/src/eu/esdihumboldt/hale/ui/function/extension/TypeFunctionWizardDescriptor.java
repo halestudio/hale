@@ -16,10 +16,11 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 
 /**
  * TODO Type description
+ * 
  * @author Simon Templer
  */
 public interface TypeFunctionWizardDescriptor extends FunctionWizardDescriptor<TypeFunction> {
 
 	// concrete typed interface
-	
+
 }

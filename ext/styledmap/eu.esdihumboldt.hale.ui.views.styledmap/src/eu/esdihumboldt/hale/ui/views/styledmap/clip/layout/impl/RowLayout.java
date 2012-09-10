@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterProx
 
 /**
  * Layout that organizes painters in horizontal rows.
+ * 
  * @author Simon Templer
  */
 public class RowLayout implements PainterLayout {
@@ -34,11 +35,12 @@ public class RowLayout implements PainterLayout {
 	 * Row layout augmentation
 	 */
 	public static class RowAugmentation extends AbstractDefaultAugmentation {
-		
+
 		private final int count;
 
 		/**
 		 * Create a row layout augmentation.
+		 * 
 		 * @param count the row count
 		 */
 		public RowAugmentation(int count) {
@@ -46,29 +48,27 @@ public class RowLayout implements PainterLayout {
 		}
 
 		@Override
-		public void doPaint(Graphics2D g, JXMapViewer map,
-				List<PainterProxy> painters, int width, int height) {
+		public void doPaint(Graphics2D g, JXMapViewer map, List<PainterProxy> painters, int width,
+				int height) {
 			// between each pair of rows...
 			for (int i = 1; i < count; i++) {
 				int y = (int) (i * height / (float) count);
-				
+
 				// ..draw the name of the top painter
 				if (i - 1 < painters.size()) {
 					String name = painters.get(i - 1).getName();
-					drawText(g, name, 
-							DEFAULT_MARGIN, 
-							y - DEFAULT_MARGIN);
+					drawText(g, name, DEFAULT_MARGIN, y - DEFAULT_MARGIN);
 				}
-				
+
 				// ...draw a line
 				drawSplitLine(g, 0, y, width, y);
-				
+
 				// ..draw the name of the bottom painter
 				if (i < painters.size()) {
 					String name = painters.get(i).getName();
-					drawText(g, name, 
-								width - DEFAULT_MARGIN - g.getFontMetrics().stringWidth(name), 
-								y + DEFAULT_MARGIN + g.getFontMetrics().getAscent());
+					drawText(g, name,
+							width - DEFAULT_MARGIN - g.getFontMetrics().stringWidth(name), y
+									+ DEFAULT_MARGIN + g.getFontMetrics().getAscent());
 				}
 			}
 		}
@@ -82,14 +82,14 @@ public class RowLayout implements PainterLayout {
 	public List<Clip> createClips(int count) {
 		List<Clip> clips = new ArrayList<Clip>(count);
 		float fCount = count;
-		
+
 		for (int i = 0; i < count; i++) {
 			float start = i / fCount;
 			float end = (i + 1) / fCount;
-			
+
 			clips.add(new HorizontalClip(start, end));
 		}
-		
+
 		return clips;
 	}
 

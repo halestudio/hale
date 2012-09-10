@@ -18,10 +18,11 @@ import eu.esdihumboldt.hale.common.core.report.Message;
 
 /**
  * Object definition for {@link MessageImpl}
+ * 
  * @author Simon Templer
  */
 public class MessageImplDefinition extends AbstractMessageDefinition<Message> {
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -34,9 +35,7 @@ public class MessageImplDefinition extends AbstractMessageDefinition<Message> {
 	 */
 	@Override
 	protected MessageImpl createMessage(Properties props) {
-		return new MessageImpl(
-				props.getProperty(KEY_MESSAGE), 
-				null, 
+		return new MessageImpl(props.getProperty(KEY_MESSAGE), null,
 				props.getProperty(KEY_STACK_TRACE));
 	}
 }

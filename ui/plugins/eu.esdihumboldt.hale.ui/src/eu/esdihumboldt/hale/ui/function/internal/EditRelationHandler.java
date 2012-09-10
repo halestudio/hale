@@ -44,10 +44,11 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
  * Handler for editing an existing {@link Cell}.
+ * 
  * @author Simon Templer
  */
 public class EditRelationHandler extends AbstractHandler {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(EditRelationHandler.class);
 
 	/**
@@ -56,38 +57,43 @@ public class EditRelationHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		
+
 		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
 			Object selected = ((IStructuredSelection) selection).getFirstElement();
 			if (selected instanceof Cell) {
 				final Cell originalCell = (Cell) selected;
-				
+
 				FunctionWizard wizard = null;
-				List<FunctionWizardDescriptor<?>> factories = FunctionWizardExtension.getInstance().getFactories(new FactoryFilter<FunctionWizardFactory, FunctionWizardDescriptor<?>>() {
-					
-					@Override
-					public boolean acceptFactory(FunctionWizardDescriptor<?> factory) {
-						return factory.getFunctionId().equals(originalCell.getTransformationIdentifier());
-					}
-					
-					@Override
-					public boolean acceptCollection(
-							ExtensionObjectFactoryCollection<FunctionWizardFactory, FunctionWizardDescriptor<?>> collection) {
-						return true;
-					}
-				});
-				
+				List<FunctionWizardDescriptor<?>> factories = FunctionWizardExtension
+						.getInstance()
+						.getFactories(
+								new FactoryFilter<FunctionWizardFactory, FunctionWizardDescriptor<?>>() {
+
+									@Override
+									public boolean acceptFactory(FunctionWizardDescriptor<?> factory) {
+										return factory.getFunctionId().equals(
+												originalCell.getTransformationIdentifier());
+									}
+
+									@Override
+									public boolean acceptCollection(
+											ExtensionObjectFactoryCollection<FunctionWizardFactory, FunctionWizardDescriptor<?>> collection) {
+										return true;
+									}
+								});
+
 				if (!factories.isEmpty()) {
 					// create registered wizard
 					FunctionWizardDescriptor<?> fwd = factories.get(0);
 					wizard = fwd.createEditWizard(originalCell);
 				}
-				
+
 				if (wizard == null) {
-					AbstractFunction<?> function = FunctionUtil.getFunction(originalCell.getTransformationIdentifier());
+					AbstractFunction<?> function = FunctionUtil.getFunction(originalCell
+							.getTransformationIdentifier());
 					if (function == null) {
 						log.userError(MessageFormat.format(
-								"Function with identifier ''{0}'' is unknown.", 
+								"Function with identifier ''{0}'' is unknown.",
 								originalCell.getTransformationIdentifier()));
 						return null;
 					}
@@ -99,24 +105,24 @@ public class EditRelationHandler extends AbstractHandler {
 						wizard = new GenericPropertyFunctionWizard(originalCell);
 					}
 				}
-				
+
 				// initialize wizard
 				wizard.init();
-				
-				WizardDialog dialog = new WizardDialog(
-						HandlerUtil.getActiveShell(event), wizard);
-					
+
+				WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveShell(event), wizard);
+
 				if (dialog.open() == WizardDialog.OK) {
 					MutableCell cell = wizard.getResult();
-					
-					AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+
+					AlignmentService alignmentService = (AlignmentService) PlatformUI
+							.getWorkbench().getService(AlignmentService.class);
 					// remove the original cell
 					// and add the new cell
 					alignmentService.replaceCell(originalCell, cell);
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

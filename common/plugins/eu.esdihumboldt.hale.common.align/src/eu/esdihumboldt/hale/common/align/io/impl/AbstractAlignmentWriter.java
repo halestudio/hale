@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
 
 /**
  * Abstract alignment writer implementation
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractAlignmentWriter extends AbstractExportProvider implements
@@ -36,6 +37,7 @@ public abstract class AbstractAlignmentWriter extends AbstractExportProvider imp
 
 	/**
 	 * Get the alignment
+	 * 
 	 * @return the alignment to write
 	 */
 	protected Alignment getAlignment() {
@@ -48,7 +50,7 @@ public abstract class AbstractAlignmentWriter extends AbstractExportProvider imp
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		
+
 		if (alignment == null) {
 			fail("Alignment to write not set");
 		}

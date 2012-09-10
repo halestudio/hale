@@ -18,31 +18,30 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-
 /**
  * Converts strings to geometries
  * 
  * @author Kevin Mais
  * @param <T> Geometry Type to convert to
  */
-public abstract class AbstractGeometryConverter<T extends Geometry> implements Converter<String, T>{
-	
+public abstract class AbstractGeometryConverter<T extends Geometry> implements Converter<String, T> {
+
 	private static WKTReader reader;
 
 	/**
 	 * @return the reader
 	 */
 	public static WKTReader getReader() {
-		if(reader == null) {
+		if (reader == null) {
 			reader = new WKTReader();
 		}
 		return reader;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public T convert(String string) {
-		if(string == null || string.isEmpty()) {
+		if (string == null || string.isEmpty()) {
 			return null;
 		}
 		T result;

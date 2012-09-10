@@ -34,10 +34,11 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
  * Decorator that adds undo/redo support to an alignment service.
+ * 
  * @author Simon Templer
  */
 public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
-	
+
 	/**
 	 * Operation that replaces a cell in the alignment.
 	 */
@@ -48,12 +49,13 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 
 		/**
 		 * Create an operation that replaces a cell in the alignment.
+		 * 
 		 * @param oldCell the cell to replace
 		 * @param newCell the new cell to add
 		 */
 		public ReplaceOperation(MutableCell oldCell, MutableCell newCell) {
 			super("Replace an alignment cell");
-			
+
 			this.oldCell = oldCell;
 			this.newCell = newCell;
 		}
@@ -62,8 +64,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#execute(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus execute(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.replaceCell(oldCell, newCell);
 			return Status.OK_STATUS;
 		}
@@ -72,8 +73,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#redo(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus redo(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			return execute(monitor, info);
 		}
 
@@ -81,8 +81,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#undo(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus undo(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.replaceCell(newCell, oldCell);
 			return Status.OK_STATUS;
 		}
@@ -90,20 +89,21 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	}
 
 	/**
-	 * Operation that cleans the alignment. 
+	 * Operation that cleans the alignment.
 	 */
 	public class CleanOperation extends AbstractOperation {
 
 		private MutableAlignment alignment;
-		
+
 		/**
 		 * Create an operation that cleans the alignment.
+		 * 
 		 * @param currentAlignment the current alignment, that is to be restored
-		 *   on undo 
+		 *            on undo
 		 */
 		public CleanOperation(MutableAlignment currentAlignment) {
 			super("Clean the alignment");
-			
+
 			this.alignment = currentAlignment;
 		}
 
@@ -111,8 +111,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#execute(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus execute(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.clean();
 			return Status.OK_STATUS;
 		}
@@ -121,8 +120,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#redo(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus redo(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			return execute(monitor, info);
 		}
 
@@ -130,8 +128,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#undo(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus undo(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.addOrUpdateAlignment(alignment);
 			return Status.OK_STATUS;
 		}
@@ -144,14 +141,16 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	public class RemoveCellOperation extends AbstractOperation {
 
 		private final MutableCell cell;
-		
+
 		/**
-		 * Create an operation removing the given cell from the alignment service.
+		 * Create an operation removing the given cell from the alignment
+		 * service.
+		 * 
 		 * @param cell the cell
 		 */
 		public RemoveCellOperation(MutableCell cell) {
 			super("Remove alignment cell");
-			
+
 			this.cell = cell;
 		}
 
@@ -159,8 +158,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#execute(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus execute(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.removeCell(cell);
 			return Status.OK_STATUS;
 		}
@@ -169,8 +167,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#redo(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus redo(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			return execute(monitor, info);
 		}
 
@@ -178,8 +175,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#undo(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus undo(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.addCell(cell);
 			return Status.OK_STATUS;
 		}
@@ -187,7 +183,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	}
 
 	/**
-	 * Operation that adds a cell to the alignment service. 
+	 * Operation that adds a cell to the alignment service.
 	 */
 	@Immutable
 	public class AddCellOperation extends AbstractOperation {
@@ -196,11 +192,12 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 
 		/**
 		 * Create an operation adding the given cell to the alignment service.
+		 * 
 		 * @param cell the cell
 		 */
 		public AddCellOperation(MutableCell cell) {
 			super("Add alignment cell");
-			
+
 			this.cell = cell;
 		}
 
@@ -208,8 +205,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#execute(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus execute(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.addCell(cell);
 			return Status.OK_STATUS;
 		}
@@ -218,8 +214,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#redo(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus redo(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			return execute(monitor, info);
 		}
 
@@ -227,31 +222,34 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 * @see AbstractOperation#undo(IProgressMonitor, IAdaptable)
 		 */
 		@Override
-		public IStatus undo(IProgressMonitor monitor, IAdaptable info)
-				throws ExecutionException {
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 			alignmentService.removeCell(cell);
 			return Status.OK_STATUS;
 		}
 
 	}
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(AlignmentServiceUndoSupport.class);
 
 	/**
 	 * Create undo/redo support for the given alignment service.
+	 * 
 	 * @param alignmentService the alignment service
 	 */
 	public AlignmentServiceUndoSupport(AlignmentService alignmentService) {
 		super(alignmentService);
 	}
-	
+
 	/**
 	 * Execute an operation.
+	 * 
 	 * @param operation the operation to execute
 	 */
 	protected void executeOperation(IUndoableOperation operation) {
-		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench().getOperationSupport();
-		// service is workbench wide, so the operation should also be workbench wide
+		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench()
+				.getOperationSupport();
+		// service is workbench wide, so the operation should also be workbench
+		// wide
 		operation.addContext(operationSupport.getUndoContext());
 //		operation.addContext(new ObjectUndoContext(alignmentService, "Alignment service"));
 		try {
@@ -267,7 +265,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	 */
 	@Override
 	public synchronized void addOrUpdateAlignment(MutableAlignment alignment) {
-		//TODO implement undo support?
+		// TODO implement undo support?
 		super.addOrUpdateAlignment(alignment);
 	}
 
@@ -279,7 +277,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		if (cell == null) {
 			return;
 		}
-		
+
 		IUndoableOperation operation = new AddCellOperation(cell);
 		executeOperation(operation);
 	}
@@ -292,15 +290,15 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		if (cell == null) {
 			return;
 		}
-		
+
 		boolean contains = getAlignment().getCells().contains(cell);
 		if (contains && cell instanceof MutableCell) {
 			/*
 			 * Cell must be contained in the current alignment, else the redo
 			 * would do something unexpected (readding a cell that was not
-			 * previously there). 
+			 * previously there).
 			 * 
-			 * Also, as long as there is no copy constructor in DefaultCell, 
+			 * Also, as long as there is no copy constructor in DefaultCell,
 			 * undo only for removing MutableCells supported.
 			 */
 			IUndoableOperation operation = new RemoveCellOperation((MutableCell) cell);
@@ -316,18 +314,18 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	 */
 	@Override
 	public synchronized void clean() {
-		//XXX problem: what about cleans that should not be undone? e.g. when the schemas have changed
-		//XXX -> currently on project clean the workbench history is reset
+		// XXX problem: what about cleans that should not be undone? e.g. when
+		// the schemas have changed
+		// XXX -> currently on project clean the workbench history is reset
 		Alignment alignment = getAlignment();
 		if (alignment.getCells().isEmpty()) {
 			return;
 		}
-		
+
 		if (alignment instanceof MutableAlignment) {
 			/*
-			 * As long as there is no copy constructor in DefaultAlignment, 
-			 * undo only supported if the current alignment is a 
-			 * MutableAlignment.
+			 * As long as there is no copy constructor in DefaultAlignment, undo
+			 * only supported if the current alignment is a MutableAlignment.
 			 */
 			IUndoableOperation operation = new CleanOperation((MutableAlignment) alignment);
 			executeOperation(operation);
@@ -347,20 +345,21 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 				boolean contains = getAlignment().getCells().contains(oldCell);
 				if (!contains) {
 					/*
-					 * Cell must be contained in the current alignment, else the redo
-					 * would do something unexpected (readding a cell that was not
-					 * previously there). 
+					 * Cell must be contained in the current alignment, else the
+					 * redo would do something unexpected (readding a cell that
+					 * was not previously there).
 					 */
 					addCell(newCell);
 				}
 				else {
 					if (oldCell instanceof MutableCell) {
 						/*
-						 * As long as there is no copy constructor in DefaultCell, 
-						 * undo only supported for MutableCells to be replaced.
+						 * As long as there is no copy constructor in
+						 * DefaultCell, undo only supported for MutableCells to
+						 * be replaced.
 						 */
-						IUndoableOperation operation = new ReplaceOperation(
-								(MutableCell) oldCell, newCell);
+						IUndoableOperation operation = new ReplaceOperation((MutableCell) oldCell,
+								newCell);
 						executeOperation(operation);
 					}
 					else {

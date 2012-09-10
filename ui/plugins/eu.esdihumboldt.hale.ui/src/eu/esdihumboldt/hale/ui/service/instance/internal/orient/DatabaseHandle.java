@@ -19,16 +19,17 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 /**
  * Database handle that manages objects referencing the database object. It will
  * release the connection when all those objects have been garbage collected.
+ * 
  * @author Simon Templer
  */
 public class DatabaseHandle {
 
 	private final ODatabaseDocumentTx database;
-	
+
 	private long count = 0;
-	
+
 	private final FinalizableReferenceQueue referenceQueue = new FinalizableReferenceQueue();
-	
+
 	/**
 	 * Create a database handle
 	 * 
@@ -36,12 +37,13 @@ public class DatabaseHandle {
 	 */
 	public DatabaseHandle(ODatabaseDocumentTx database) {
 		super();
-		
+
 		this.database = database;
 	}
-	
+
 	/**
-	 * Add an object that references the database connection 
+	 * Add an object that references the database connection
+	 * 
 	 * @param object the object referencing the database
 	 */
 	public synchronized void addReference(Object object) {
@@ -54,12 +56,12 @@ public class DatabaseHandle {
 			}
 		};
 	}
-	
+
 	private synchronized void removeReference() {
 		count--;
 		tryClose();
 	}
-	
+
 	/**
 	 * Try closing the database connection
 	 */

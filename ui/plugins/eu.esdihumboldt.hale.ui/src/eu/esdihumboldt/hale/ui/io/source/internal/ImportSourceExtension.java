@@ -30,18 +30,21 @@ import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**
  * {@link ImportSource} extension
+ * 
  * @author Simon Templer
  */
 public class ImportSourceExtension extends AbstractExtension<ImportSource<?>, ImportSourceFactory> {
-	
+
 	/**
-	 * Factory for {@link ImportSource}s based on a {@link IConfigurationElement}
+	 * Factory for {@link ImportSource}s based on a
+	 * {@link IConfigurationElement}
 	 */
 	private static class ConfigurationFactory extends AbstractConfigurationFactory<ImportSource<?>>
 			implements ImportSourceFactory {
 
 		/**
 		 * Create a factory based on the given configuration element
+		 * 
 		 * @param conf the configuration
 		 */
 		protected ConfigurationFactory(IConfigurationElement conf) {
@@ -92,7 +95,7 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?>, Im
 		@Override
 		public int getPriority() {
 			try {
-			return Integer.parseInt(conf.getAttribute("priority"));
+				return Integer.parseInt(conf.getAttribute("priority"));
 			} catch (NumberFormatException e) {
 				return 0;
 			}
@@ -134,11 +137,12 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?>, Im
 	 * The extension point ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.io.source";
-	
+
 	private static ImportSourceExtension instance;
-	
+
 	/**
 	 * Get the extension instance
+	 * 
 	 * @return the instance
 	 */
 	public static ImportSourceExtension getInstance() {
@@ -147,7 +151,7 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?>, Im
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -159,12 +163,11 @@ public class ImportSourceExtension extends AbstractExtension<ImportSource<?>, Im
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected ImportSourceFactory createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected ImportSourceFactory createFactory(IConfigurationElement conf) throws Exception {
 		if (conf.getName().equals("source")) {
 			return new ConfigurationFactory(conf);
 		}
-		
+
 		return null;
 	}
 

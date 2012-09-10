@@ -19,10 +19,11 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
  * Property that represents a substitution in an XML element substitution group.
+ * 
  * @author Simon Templer
  */
 public class SubstitutionProperty extends DefaultPropertyDefinition {
-	
+
 	private final DefaultPropertyDefinition originialProperty;
 
 	/**
@@ -32,11 +33,10 @@ public class SubstitutionProperty extends DefaultPropertyDefinition {
 	 * @param originialProperty the original property that is substituted
 	 * @param substitutionGroup the parent group
 	 */
-	public SubstitutionProperty(XmlElement substitution, 
-			DefaultPropertyDefinition originialProperty, 
-			SubstitutionGroupProperty substitutionGroup) {
+	public SubstitutionProperty(XmlElement substitution,
+			DefaultPropertyDefinition originialProperty, SubstitutionGroupProperty substitutionGroup) {
 		super(substitution.getName(), substitutionGroup, substitution.getType());
-		
+
 		this.originialProperty = originialProperty;
 	}
 
@@ -44,8 +44,7 @@ public class SubstitutionProperty extends DefaultPropertyDefinition {
 	 * @see AbstractDefinition#getConstraint(Class)
 	 */
 	@Override
-	public <T extends PropertyConstraint> T getConstraint(
-			Class<T> constraintType) {
+	public <T extends PropertyConstraint> T getConstraint(Class<T> constraintType) {
 		// return the constraints of the original property if possible
 		if (originialProperty.hasConstraint(constraintType)) {
 			return originialProperty.getConstraint(constraintType);

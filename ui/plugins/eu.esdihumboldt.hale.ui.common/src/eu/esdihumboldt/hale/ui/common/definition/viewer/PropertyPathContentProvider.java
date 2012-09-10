@@ -32,16 +32,18 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Content provider that shows properties of an input type definition or for
- * types contained in a type index and provides the properties as 
+ * types contained in a type index and provides the properties as
  * {@link EntityDefinition} with the full property path and default contexts.
+ * 
  * @author Simon Templer
  */
 public class PropertyPathContentProvider implements ITreeContentProvider {
 
 	private final SchemaSpaceID schemaSpace;
-	
+
 	/**
 	 * Create property path content provider.
+	 * 
 	 * @param schemaSpace the schema space
 	 */
 	public PropertyPathContentProvider(SchemaSpaceID schemaSpace) {
@@ -61,7 +63,8 @@ public class PropertyPathContentProvider implements ITreeContentProvider {
 			return ((TypeIndex) inputElement).getMappingRelevantTypes().toArray();
 		}
 		else {
-			throw new IllegalArgumentException("Content provider only applicable for type definitions.");
+			throw new IllegalArgumentException(
+					"Content provider only applicable for type definitions.");
 		}
 	}
 
@@ -71,22 +74,24 @@ public class PropertyPathContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof TypeDefinition) {
-			return getEntityChildren(new TypeEntityDefinition(
-					(TypeDefinition) parentElement, schemaSpace, null)).toArray();
+			return getEntityChildren(
+					new TypeEntityDefinition((TypeDefinition) parentElement, schemaSpace, null))
+					.toArray();
 		}
 		if (parentElement instanceof EntityDefinition) {
 			return getEntityChildren((EntityDefinition) parentElement).toArray();
 		}
 		else {
-			throw new IllegalArgumentException("Given element not supported in schema tree structure.");
+			throw new IllegalArgumentException(
+					"Given element not supported in schema tree structure.");
 		}
 	}
 
 	private Collection<EntityDefinition> getEntityChildren(EntityDefinition entity) {
 		List<ChildContext> path = entity.getPropertyPath();
-		
+
 		Collection<? extends ChildDefinition<?>> children;
-		
+
 		if (path == null || path.isEmpty()) {
 			// entity is a type, children are the type children
 			children = entity.getType().getChildren();
@@ -104,34 +109,32 @@ public class PropertyPathContentProvider implements ITreeContentProvider {
 				throw new IllegalStateException("Illegal child definition type encountered");
 			}
 		}
-		
+
 		if (children == null || children.isEmpty()) {
 			return Collections.emptyList();
 		}
-		
+
 		Collection<EntityDefinition> result = new ArrayList<EntityDefinition>(children.size());
 		for (ChildDefinition<?> child : children) {
 			// add default child entity definition to result
 			ChildContext context = new ChildContext(child);
-			EntityDefinition defaultEntity = AlignmentUtil.createEntity(
-					entity.getType(), 
-					createPath(entity.getPropertyPath(), context), 
-					entity.getSchemaSpace(), 
+			EntityDefinition defaultEntity = AlignmentUtil.createEntity(entity.getType(),
+					createPath(entity.getPropertyPath(), context), entity.getSchemaSpace(),
 					entity.getFilter());
 			result.add(defaultEntity);
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Create a property path
+	 * 
 	 * @param parentPath the parent path
 	 * @param context the child context
 	 * @return the property path including the child context
 	 */
-	private static List<ChildContext> createPath(List<ChildContext> parentPath,
-			ChildContext context) {
+	private static List<ChildContext> createPath(List<ChildContext> parentPath, ChildContext context) {
 		if (parentPath == null || parentPath.isEmpty()) {
 			return Collections.singletonList(context);
 		}
@@ -151,12 +154,12 @@ public class PropertyPathContentProvider implements ITreeContentProvider {
 			return !((TypeDefinition) parentElement).getChildren().isEmpty();
 		}
 		if (parentElement instanceof EntityDefinition) {
-			Collection<? extends EntityDefinition> children = 
-					getEntityChildren((EntityDefinition) parentElement);
+			Collection<? extends EntityDefinition> children = getEntityChildren((EntityDefinition) parentElement);
 			return !children.isEmpty();
 		}
 		else {
-			throw new IllegalArgumentException("Given element not supported in schema tree structure.");
+			throw new IllegalArgumentException(
+					"Given element not supported in schema tree structure.");
 		}
 	}
 
@@ -186,5 +189,5 @@ public class PropertyPathContentProvider implements ITreeContentProvider {
 		}
 		return null;
 	}
-	
+
 }

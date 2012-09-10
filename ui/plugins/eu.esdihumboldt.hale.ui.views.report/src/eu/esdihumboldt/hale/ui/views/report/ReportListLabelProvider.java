@@ -31,7 +31,8 @@ import eu.esdihumboldt.hale.common.core.report.ReportSession;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportListLabelProvider extends LabelProvider  {
+public class ReportListLabelProvider extends LabelProvider {
+
 	private Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
 	private SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
 
@@ -53,20 +54,24 @@ public class ReportListLabelProvider extends LabelProvider  {
 	public Image getImage(Object element) {
 		if (element instanceof ReportSession) {
 			String img = "icons/compressed_folder_obj.gif";
-			
+
 			return getImage(img);
-		} else if (element instanceof Report<?>) {
+		}
+		else if (element instanceof Report<?>) {
 			// get the right image
 			Report<?> report = (Report<?>) element;
-			
+
 			String img = "icons/signed_yes.gif";
 			if (!report.isSuccess()) {
 				img = "icons/error.gif";
-			} else if (report.getWarnings().size() > 0 && report.getErrors().size() > 0) {
+			}
+			else if (report.getWarnings().size() > 0 && report.getErrors().size() > 0) {
 				img = "icons/errorwarning_tab.gif";
-			} else if (report.getErrors().size() > 0) {
+			}
+			else if (report.getErrors().size() > 0) {
 				img = "icons/error_log.gif";
-			} else if (report.getWarnings().size() > 0) {
+			}
+			else if (report.getWarnings().size() > 0) {
 				img = "icons/warning.gif";
 			}
 
@@ -83,13 +88,13 @@ public class ReportListLabelProvider extends LabelProvider  {
 		if (element instanceof Report<?>) {
 			return ((Report<?>) element).getTaskName();
 		}
-		else if(element instanceof ReportSession) {
-			return  df.format(new Date(((ReportSession) element).getId()));
+		else if (element instanceof ReportSession) {
+			return df.format(new Date(((ReportSession) element).getId()));
 		}
-		
+
 		return "Unhandled type";
 	}
-	
+
 	/**
 	 * Get an Image from cache or resource.
 	 * 
@@ -100,11 +105,12 @@ public class ReportListLabelProvider extends LabelProvider  {
 	protected Image getImage(String img) {
 		ImageDescriptor descriptor = null;
 
-		descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
+		descriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
+				"eu.esdihumboldt.hale.ui.views.report", img);
 		if (descriptor == null) {
 			return null;
 		}
-		
+
 		Image image = imageCache.get(descriptor);
 		if (image == null) {
 			image = descriptor.createImage();

@@ -14,18 +14,18 @@ package eu.esdihumboldt.hale.schemaprovider.model;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public abstract class AbstractDefinition implements Definition {
 
 	private String description = null;
-	
+
 	private String location = null;
-	
+
 	/**
 	 * @see Definition#getDescription()
 	 */
@@ -35,12 +35,13 @@ public abstract class AbstractDefinition implements Definition {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	/**
 	 * @see Definition#getLocation()
 	 */
@@ -50,7 +51,8 @@ public abstract class AbstractDefinition implements Definition {
 	}
 
 	/**
-	 * @param location the location to set
+	 * @param location
+	 *            the location to set
 	 */
 	public void setLocation(String location) {
 		this.location = location;

@@ -50,30 +50,32 @@ import eu.esdihumboldt.hale.io.shp.ShapefileIO;
 
 /**
  * TODO Type description
+ * 
  * @author Simon Templer
  */
 public class ShapesInstanceCollection implements InstanceCollection {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ShapesInstanceCollection.class);
-	
+
 	/**
 	 * Iterates through a shape data store
 	 */
 	private class ShapesIterator implements ResourceIterator<Instance> {
-		
+
 		private final Iterator<Name> nameIterator;
-		
+
 		private TypeDefinition currentType;
-		
+
 		private SimpleFeatureIterator currentIterator;
 
 		/**
 		 * Create a new iterator on the data store.
-		 * @throws IOException if reading the data store fails 
+		 * 
+		 * @throws IOException if reading the data store fails
 		 */
 		public ShapesIterator() throws IOException {
 			super();
-			
+
 			nameIterator = store.getNames().iterator();
 		}
 
@@ -83,7 +85,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		@Override
 		public boolean hasNext() {
 			proceedToNext();
-			
+
 			if (currentIterator != null && currentIterator.hasNext()) {
 				return true;
 			}
@@ -98,18 +100,18 @@ public class ShapesInstanceCollection implements InstanceCollection {
 				if (currentIterator != null) {
 					currentIterator.close();
 				}
-				
+
 				Name name = nameIterator.next();
 				try {
 					currentIterator = store.getFeatureSource(name).getFeatures().features();
-					
+
 					QName typeName = new QName(ShapefileIO.SHAPEFILE_NS, name.getLocalPart());
 					currentType = typeIndex.getType(typeName);
-					
+
 					if (currentType == null) {
 						proceedToNext();
-						log.error("Could not find type " + 
-								typeName + " in source schema, corresponding instances are not created.");
+						log.error("Could not find type " + typeName
+								+ " in source schema, corresponding instances are not created.");
 					}
 				} catch (IOException e) {
 					log.error("Error accessing feature source " + name, e);
@@ -123,24 +125,24 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		@Override
 		public Instance next() {
 			proceedToNext();
-			
+
 			if (currentType == null) {
 				throw new IllegalStateException();
 			}
-			
+
 			SimpleFeature feature = currentIterator.next();
-			
+
 			Instance instance = createInstance(currentType, feature);
 			if (instance != null) {
 				return instance;
 			}
 			else {
-				log.error("Could not create a data instance from a feature of type " + 
-						currentType.getName());
+				log.error("Could not create a data instance from a feature of type "
+						+ currentType.getName());
 				throw new IllegalStateException();
 			}
 		}
-		
+
 		/**
 		 * Create an instance from a given feature
 		 * 
@@ -150,36 +152,37 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		 */
 		private Instance createInstance(TypeDefinition type, SimpleFeature feature) {
 			MutableInstance instance = new DefaultInstance(type, null);
-			
+
 			for (Property property : feature.getProperties()) {
 				Object value = property.getValue();
-				QName propertyName = new QName(property.getName().getNamespaceURI(), 
-						property.getName().getLocalPart());
-				
+				QName propertyName = new QName(property.getName().getNamespaceURI(), property
+						.getName().getLocalPart());
+
 				// wrap geometry
 				if (value instanceof Geometry) {
 					// try to determine CRS
 					CoordinateReferenceSystem crs = null;
-					
+
 					// try user data of geometry
 					Object userData = ((Geometry) value).getUserData();
 					if (userData instanceof CoordinateReferenceSystem) {
 						crs = (CoordinateReferenceSystem) userData;
 					}
-					
+
 					if (crs == null) {
 						// try CRS associated to geometry descriptor
-						AttributeDescriptor pd = feature.getFeatureType().getDescriptor(property.getName());
+						AttributeDescriptor pd = feature.getFeatureType().getDescriptor(
+								property.getName());
 						if (pd != null && pd instanceof GeometryDescriptor) {
 							crs = ((GeometryDescriptor) pd).getCoordinateReferenceSystem();
 						}
 					}
-					
+
 					if (crs == null) {
 						// try CRS associated to feature type
 						crs = feature.getFeatureType().getCoordinateReferenceSystem();
 					}
-					
+
 					CRSDefinition crsDef;
 					if (crs != null) {
 						crsDef = CRSDefinitionUtil.createDefinition(crs);
@@ -188,7 +191,8 @@ public class ShapesInstanceCollection implements InstanceCollection {
 						// fallback to provider configuration
 						ChildDefinition<?> child = type.getChild(propertyName);
 						if (child != null && child.asProperty() != null) {
-							//TODO ask CRS provider (but settings can't be stored in InstanceReader configuration!)
+							// TODO ask CRS provider (but settings can't be
+							// stored in InstanceReader configuration!)
 //							crsDef = getDefaultCRS(child.asProperty());
 							crsDef = null;
 						}
@@ -198,11 +202,11 @@ public class ShapesInstanceCollection implements InstanceCollection {
 					}
 					value = new DefaultGeometryProperty<Geometry>(crsDef, (Geometry) value);
 				}
-				
-				//TODO safe add? in respect to binding, existence of property
+
+				// TODO safe add? in respect to binding, existence of property
 				instance.addProperty(propertyName, value);
 			}
-			
+
 			return instance;
 		}
 
@@ -231,6 +235,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 
 	/**
 	 * Data store for accessing simple features (from a Shapefile).
+	 * 
 	 * @param store the data store
 	 * @param typeIndex the type index
 	 */
@@ -244,7 +249,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceReference getReference(Instance instance) {
-		//TODO data store based instance reference?
+		// TODO data store based instance reference?
 		return new PseudoInstanceReference(instance);
 	}
 
@@ -253,11 +258,11 @@ public class ShapesInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public Instance getInstance(InstanceReference reference) {
-		//TODO data store based instance reference?
+		// TODO data store based instance reference?
 		if (reference instanceof PseudoInstanceReference) {
 			return ((PseudoInstanceReference) reference).getInstance();
 		}
-		
+
 		return null;
 	}
 
@@ -307,7 +312,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
-		//TODO allow applying filter on data source level?
+		// TODO allow applying filter on data source level?
 		return new FilteredInstanceCollection(this, filter);
 	}
 

@@ -20,16 +20,17 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 /**
  * Object holding all information necessary to reproduce an {@link IOProvider}
  * execution, e.g. when loading a project.
+ * 
  * @author Simon Templer
  */
 public class IOConfiguration {
-	
+
 	private String actionId;
-	
+
 	private String providerId;
-	
+
 	private final Map<String, String> providerConfiguration = new HashMap<String, String>();
-	
+
 	/**
 	 * @return the action ID
 	 */

@@ -23,30 +23,29 @@ import org.opengis.feature.type.FeatureType;
 
 import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.capabilities.GetCapabilititiesRetriever;
 
-
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @param <T> the WFS configuration type
  */
 public abstract class AbstractTypesPage<T extends WfsConfiguration> extends AbstractWfsPage<T> {
-	
+
 	private final CapabilitiesPage capsPage;
-	
+
 	private String lastUrl = null;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param configuration the WFS configuration 
+	 * @param configuration the WFS configuration
 	 * @param capsPage the capabilities page
 	 * @param pageName the page name
 	 */
 	public AbstractTypesPage(T configuration, CapabilitiesPage capsPage, String pageName) {
 		super(configuration, pageName);
-		
+
 		this.capsPage = capsPage;
 	}
 
@@ -56,26 +55,27 @@ public abstract class AbstractTypesPage<T extends WfsConfiguration> extends Abst
 	@Override
 	protected void onShowPage() {
 		final String url = capsPage.getCapabilitiesURL();
-		
+
 		if (lastUrl == null || !lastUrl.equals(url)) {
 			final Display display = Display.getCurrent();
-			
+
 			try {
 				getContainer().run(true, true, new IRunnableWithProgress() {
-					
+
 					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
 							InterruptedException {
 						try {
-							final List<FeatureType> types = GetCapabilititiesRetriever.readFeatureTypes(url, monitor);
+							final List<FeatureType> types = GetCapabilititiesRetriever
+									.readFeatureTypes(url, monitor);
 							display.asyncExec(new Runnable() {
-								
+
 								@Override
 								public void run() {
 									update(types);
 									lastUrl = url;
 								}
-								
+
 							});
 						} catch (IOException e) {
 							setErrorMessage("Error getting feature types: " + e.getLocalizedMessage()); //$NON-NLS-1$
@@ -87,14 +87,14 @@ public abstract class AbstractTypesPage<T extends WfsConfiguration> extends Abst
 			}
 		}
 	}
-	
+
 	/**
 	 * @see AbstractWfsPage#updateConfiguration(WfsConfiguration)
 	 */
 	@Override
 	public boolean updateConfiguration(WfsConfiguration configuration) {
 		List<FeatureType> selection = getSelection();
-		
+
 		if (selection == null || selection.isEmpty()) {
 			return false;
 		}

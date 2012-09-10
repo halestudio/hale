@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionFilt
 
 /**
  * Filter that only accepts type definitions with childrens.
+ * 
  * @author Simon Templer
  */
 public class TypeDefinitionStructureFilter extends DefaultDefinitionFilter {

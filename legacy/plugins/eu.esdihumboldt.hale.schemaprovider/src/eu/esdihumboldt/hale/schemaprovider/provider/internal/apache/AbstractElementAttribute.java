@@ -36,61 +36,66 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * Attribute represented as element in XML
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public abstract class AbstractElementAttribute extends AttributeDefinition {
 
-	private static final Logger log = Logger.getLogger(AbstractElementAttribute.class);
-	
+	private static final Logger log = Logger
+			.getLogger(AbstractElementAttribute.class);
+
 	private final boolean nillable;
-	
+
 	private long minOccurs;
-	
+
 	private final long maxOccurs;
-	
+
 	/**
 	 * Constructor
 	 * 
-	 * @param declaringType the declaring type, if it is <code>null</code>,
-	 *   the attribute type will not be determined
-	 * @param name the attribute name
-	 * @param typeName the name of the attribute type
-	 * @param element the element defining the attribute
+	 * @param declaringType
+	 *            the declaring type, if it is <code>null</code>, the attribute
+	 *            type will not be determined
+	 * @param name
+	 *            the attribute name
+	 * @param typeName
+	 *            the name of the attribute type
+	 * @param element
+	 *            the element defining the attribute
 	 */
-	public AbstractElementAttribute(TypeDefinition declaringType, String name, Name typeName,
-			XmlSchemaElement element) {
-		super(name, typeName, null, true, 
-				((element.getSubstitutionGroup() == null)?(null):(new NameImpl(
-						element.getSubstitutionGroup().getNamespaceURI(), 
-						element.getSubstitutionGroup().getLocalPart()))));
-		
-		nillable = element.isNillable(); //XXX correct?
-		minOccurs = element.getMinOccurs(); //XXX correct?
-		maxOccurs = element.getMaxOccurs(); //XXX correct?
+	public AbstractElementAttribute(TypeDefinition declaringType, String name,
+			Name typeName, XmlSchemaElement element) {
+		super(name, typeName, null, true,
+				((element.getSubstitutionGroup() == null) ? (null)
+						: (new NameImpl(element.getSubstitutionGroup()
+								.getNamespaceURI(), element
+								.getSubstitutionGroup().getLocalPart()))));
+
+		nillable = element.isNillable(); // XXX correct?
+		minOccurs = element.getMinOccurs(); // XXX correct?
+		maxOccurs = element.getMaxOccurs(); // XXX correct?
 		setNamespace(getNamespace(element));
-		
+
 		String description = getDescription(element);
 		if (description != null) {
 			setDescription(description);
 		}
-		
+
 		if (declaringType != null) {
 			// set the declaring type
 			declaringType.addDeclaredAttribute(this);
 		}
 	}
-	
+
 	private String getNamespace(XmlSchemaElement element) {
 		if (element.getQName() != null) {
 			return element.getQName().getNamespaceURI();
 		} else if (element.getRefName() != null) {
 			return element.getRefName().getNamespaceURI();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -98,49 +103,58 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other the attribute to copy
+	 * @param other
+	 *            the attribute to copy
 	 */
 	protected AbstractElementAttribute(AbstractElementAttribute other) {
 		super(other);
-		
+
 		nillable = other.isNillable();
 		minOccurs = other.getMinOccurs();
 		maxOccurs = other.getMaxOccurs();
 	}
-	
+
 	/**
 	 * Check if the given type definition should be set as the attribute type
 	 * 
-	 * @param typeDef the type definition
+	 * @param typeDef
+	 *            the type definition
 	 * 
 	 * @return the type definition that shall be set as the attribute type
 	 */
 	protected TypeDefinition checkAttributeType(TypeDefinition typeDef) {
 		// inspire geometry attributes
-		if (getName().equalsIgnoreCase("geometry") && typeDef != null &&  //$NON-NLS-1$
-				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
+		if (getName().equalsIgnoreCase("geometry") && typeDef != null && //$NON-NLS-1$
+				!Geometry.class.isAssignableFrom(typeDef.getType(null)
+						.getBinding())) {
 			return createDefaultGeometryType(typeDef);
 		}
 		// geometry property types
-//		else if (typeDef != null && typeDef.getName().getLocalPart().equals("GeometryPropertyType") &&
-//				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
-//			return createDefaultGeometryType(typeDef);
-//		}
+		// else if (typeDef != null &&
+		// typeDef.getName().getLocalPart().equals("GeometryPropertyType") &&
+		// !Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding()))
+		// {
+		// return createDefaultGeometryType(typeDef);
+		// }
 		// geometric primitive property types
-		else if (typeDef != null && typeDef.getName().getLocalPart().equals("GeometricPrimitivePropertyType") && //$NON-NLS-1$
-				!Geometry.class.isAssignableFrom(typeDef.getType(null).getBinding())) {
+		else if (typeDef != null
+				&& typeDef.getName().getLocalPart()
+						.equals("GeometricPrimitivePropertyType") && //$NON-NLS-1$
+				!Geometry.class.isAssignableFrom(typeDef.getType(null)
+						.getBinding())) {
 			return createDefaultGeometryType(typeDef);
 		}
-		
+
 		// default: leave type untouched
 		return typeDef;
 	}
-	
+
 	private TypeDefinition createDefaultGeometryType(TypeDefinition typeDef) {
 		// create an attribute type with a geometry binding
 		AttributeType attributeType = createDefaultGeometryAttributeType(getTypeName());
-		
-		TypeDefinition result = new TypeDefinition(getTypeName(), attributeType, typeDef.getSuperType());
+
+		TypeDefinition result = new TypeDefinition(getTypeName(),
+				attributeType, typeDef.getSuperType());
 		result.setDescription(typeDef.getDescription());
 		result.setLocation(typeDef.getLocation());
 		return result;
@@ -149,7 +163,8 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	/**
 	 * Create a default attribute type with a geometry binding
 	 * 
-	 * @param name the type name
+	 * @param name
+	 *            the type name
 	 * 
 	 * @return the attribute type
 	 */
@@ -165,12 +180,14 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	/**
 	 * Get the documentation from an annotated XML object
 	 * 
-	 * @param element the annotated element
+	 * @param element
+	 *            the annotated element
 	 * @return the description or <code>null</code>
 	 */
 	public static String getDescription(XmlSchemaAnnotated element) {
 		if (element.getAnnotation() != null) {
-			XmlSchemaObjectCollection annotationItems = element.getAnnotation().getItems();
+			XmlSchemaObjectCollection annotationItems = element.getAnnotation()
+					.getItems();
 			StringBuffer desc = new StringBuffer();
 			for (int i = 0; i < annotationItems.getCount(); i++) {
 				XmlSchemaObject item = annotationItems.getItem(i);
@@ -184,13 +201,13 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 					}
 				}
 			}
-			
+
 			String description = desc.toString();
 			if (!description.isEmpty()) {
 				return description;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -198,32 +215,37 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	 * @see AttributeDefinition#createAttributeDescriptor(Set)
 	 */
 	@Override
-	public AttributeDescriptor createAttributeDescriptor(Set<TypeDefinition> resolving) {
+	public AttributeDescriptor createAttributeDescriptor(
+			Set<TypeDefinition> resolving) {
 		TypeDefinition attType = getAttributeType();
 		if (attType != null) {
 			if (resolving != null && resolving.contains(attType)) {
 				log.warn("Cycle detected, skipping creation of attribute descriptor " //$NON-NLS-1$
-						+ getName() + ":" + attType.getDisplayName() + " in " + getDeclaringType().getDisplayName()); //$NON-NLS-1$ //$NON-NLS-2$
+						+ getName()
+						+ ":" + attType.getDisplayName() + " in " + getDeclaringType().getDisplayName()); //$NON-NLS-1$ //$NON-NLS-2$
 				return null;
-			}
-			else {
+			} else {
 				AttributeType type = attType.getType(resolving);
 				if (type != null) {
-					//Name parentName = getDeclaringType().getName();
-					return new AttributeDescriptorImpl(
-							type,
-							new NameImpl(null, getName()), // must be null namespace because otherwise the StreamingRenderer and some other Geotools components choke on it
-							(int) minOccurs,
-							(int) maxOccurs,
-							true, // always nillable, else creating the features fails
-							null); 
-				}
-				else {
+					// Name parentName = getDeclaringType().getName();
+					return new AttributeDescriptorImpl(type, new NameImpl(null,
+							getName()), // must be null namespace because
+										// otherwise the StreamingRenderer and
+										// some other Geotools components choke
+										// on it
+							(int) minOccurs, (int) maxOccurs, true, // always
+																	// nillable,
+																	// else
+																	// creating
+																	// the
+																	// features
+																	// fails
+							null);
+				} else {
 					return null;
 				}
 			}
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -253,7 +275,8 @@ public abstract class AbstractElementAttribute extends AttributeDefinition {
 	}
 
 	/**
-	 * @param minOccurs the minOccurs to set
+	 * @param minOccurs
+	 *            the minOccurs to set
 	 */
 	public void setMinOccurs(long minOccurs) {
 		this.minOccurs = minOccurs;

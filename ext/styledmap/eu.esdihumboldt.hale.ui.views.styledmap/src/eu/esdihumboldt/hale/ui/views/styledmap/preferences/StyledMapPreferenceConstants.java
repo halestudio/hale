@@ -12,13 +12,13 @@
 
 package eu.esdihumboldt.hale.ui.views.styledmap.preferences;
 
-
 /**
  * Preference constants for the styled map view.
+ * 
  * @author Simon Templer
  */
 public interface StyledMapPreferenceConstants {
-	
+
 	/**
 	 * The current map layout.
 	 */

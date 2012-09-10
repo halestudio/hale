@@ -32,9 +32,9 @@ import eu.esdihumboldt.hale.ui.util.proxy.ProxySettings;
  * @author Simon Templer
  */
 public class Application implements IApplication {
-	
+
 	private static ALogger _log = ALoggerFactory.getLogger(Application.class);
-	
+
 	/**
 	 * @see IApplication#start(IApplicationContext)
 	 */
@@ -42,43 +42,41 @@ public class Application implements IApplication {
 	public Object start(IApplicationContext context) {
 		// install SLF4J JUL bridge
 		SLF4JBridgeHandler.install();
-		
+
 		WKTPreferencesCRSFactory.install();
-		
+
 		// init HSQL database
 		try {
 			CRS.decode("EPSG:4326"); //$NON-NLS-1$
 		} catch (Exception e) {
 			_log.error("Error while initializing epsg database", e); //$NON-NLS-1$
 		}
-		
+
 		// find base path of the application.
 //		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
 //		String location_path = location.getPath().replace(" ", "+"); //$NON-NLS-1$ //$NON-NLS-2$
 //		location_path = location_path.replace("bin/", ""); //$NON-NLS-1$ //$NON-NLS-2$
 //		_log.debug(location_path);
 //		Application.basepath = location_path;
-		
+
 		// read and set proxy settings
-		try {	        
+		try {
 			ProxySettings.install();
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			_log.warn("Setting the Proxy configuration failed: " + ex.getMessage()); //$NON-NLS-1$
 		}
-		
+
 		// initialize UI
 		Display display = PlatformUI.createDisplay();
-		
+
 		// register listener for OpenDoc events
-		OpenDocumentEventProcessor openDocProcessor = 
-			new OpenDocumentEventProcessor();
+		OpenDocumentEventProcessor openDocProcessor = new OpenDocumentEventProcessor();
 		display.addListener(SWT.OpenDocument, openDocProcessor);
-		
+
 		// run application
 		try {
-			int returnCode = PlatformUI.createAndRunWorkbench(
-					display, new ApplicationWorkbenchAdvisor(openDocProcessor));
+			int returnCode = PlatformUI.createAndRunWorkbench(display,
+					new ApplicationWorkbenchAdvisor(openDocProcessor));
 			if (returnCode == PlatformUI.RETURN_RESTART) {
 				return IApplication.EXIT_RESTART;
 			}
@@ -86,7 +84,7 @@ public class Application implements IApplication {
 		} finally {
 			display.dispose();
 		}
-		
+
 	}
 
 	/**
@@ -99,6 +97,7 @@ public class Application implements IApplication {
 			return;
 		final Display display = workbench.getDisplay();
 		display.syncExec(new Runnable() {
+
 			@Override
 			public void run() {
 				if (!display.isDisposed())
@@ -106,5 +105,5 @@ public class Application implements IApplication {
 			}
 		});
 	}
-	
+
 }

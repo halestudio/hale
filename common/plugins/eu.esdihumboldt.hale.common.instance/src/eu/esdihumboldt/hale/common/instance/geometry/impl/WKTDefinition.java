@@ -19,12 +19,13 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 
 /**
  * CRS definition based on WKT
+ * 
  * @author Simon Templer
  */
 public class WKTDefinition implements CRSDefinition {
 
 	private static final long serialVersionUID = -201452960771910038L;
-	
+
 	private final String wkt;
 	private CoordinateReferenceSystem crs;
 
@@ -51,7 +52,7 @@ public class WKTDefinition implements CRSDefinition {
 				throw new IllegalStateException("Invalid WKT for defining a CRS", e);
 			}
 		}
-		
+
 		return crs;
 	}
 
@@ -90,7 +91,8 @@ public class WKTDefinition implements CRSDefinition {
 		if (wkt == null) {
 			if (other.wkt != null)
 				return false;
-		} else if (!wkt.equals(other.wkt))
+		}
+		else if (!wkt.equals(other.wkt))
 			return false;
 		return true;
 	}

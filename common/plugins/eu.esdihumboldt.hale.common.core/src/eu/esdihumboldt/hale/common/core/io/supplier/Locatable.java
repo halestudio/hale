@@ -16,13 +16,13 @@ import java.net.URI;
 
 /**
  * Objects locatable through an URI
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
 public interface Locatable {
-	
+
 	/**
 	 * Get the location
 	 * 

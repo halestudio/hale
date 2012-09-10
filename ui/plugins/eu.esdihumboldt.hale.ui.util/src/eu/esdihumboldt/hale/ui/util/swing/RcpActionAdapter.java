@@ -28,22 +28,20 @@ import de.cs3d.util.logging.ALoggerFactory;
 /**
  * This class provides a SWT Adapter for Swing Actions.
  * 
- * @author Simon Templer, Thorsten Reitz 
+ * @author Simon Templer, Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class RcpActionAdapter 
-	extends Action 
-	implements PropertyChangeListener {
-	
+public class RcpActionAdapter extends Action implements PropertyChangeListener {
+
 	private static final ALogger _log = ALoggerFactory.getLogger(RcpActionAdapter.class);
 
 	private final javax.swing.Action action;
-	
+
 	/**
 	 * The display
 	 */
 	protected final Display display;
-	
+
 	/**
 	 * Creates an ActionAdapter
 	 * 
@@ -52,7 +50,7 @@ public class RcpActionAdapter
 	public RcpActionAdapter(final javax.swing.Action action) {
 		this(action, Action.AS_PUSH_BUTTON);
 	}
-	
+
 	/**
 	 * Creates an ActionAdapter
 	 * 
@@ -63,38 +61,40 @@ public class RcpActionAdapter
 	 */
 	public RcpActionAdapter(final javax.swing.Action action, int style) {
 		super(null, style);
-		
+
 		if (action == null)
 			throw new IllegalArgumentException();
-		
+
 		this.action = action;
-		
+
 		this.display = Display.getCurrent();
 		if (this.display == null)
 			throw new IllegalArgumentException("ActionAdapter has to be created in display thread"); //$NON-NLS-1$
-		
+
 		action.addPropertyChangeListener(this);
-		
+
 		loadImage();
 	}
-	
+
 	/**
 	 * Set the actions icon as {@link ImageDescriptor} if possible
 	 */
 	private void loadImage() {
 		Object icon = action.getValue(javax.swing.Action.SMALL_ICON);
-		
+
 		if (icon instanceof ImageIcon) {
 			try {
-				setImageDescriptor(ImageDescriptor.createFromImageData(
-						SwingRcpUtilities.convertToSWT((ImageIcon) icon)));
+				setImageDescriptor(ImageDescriptor.createFromImageData(SwingRcpUtilities
+						.convertToSWT((ImageIcon) icon)));
 			} catch (Exception e) {
 				_log.warn("Error converting action icon", e); //$NON-NLS-1$
 			}
 		}
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.action.Action#getDescription()
 	 */
 	@Override
@@ -102,7 +102,9 @@ public class RcpActionAdapter
 		return (String) action.getValue(javax.swing.Action.LONG_DESCRIPTION);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.action.Action#getText()
 	 */
 	@Override
@@ -114,7 +116,9 @@ public class RcpActionAdapter
 			return text.toString();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.action.Action#getToolTipText()
 	 */
 	@Override
@@ -122,7 +126,9 @@ public class RcpActionAdapter
 		return (String) action.getValue(javax.swing.Action.SHORT_DESCRIPTION);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.action.Action#isEnabled()
 	 */
 	@Override
@@ -130,66 +136,74 @@ public class RcpActionAdapter
 		return action.isEnabled();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.action.Action#setEnabled(boolean)
 	 */
 	@Override
 	public void setEnabled(final boolean enabled) {
 		final boolean old = isEnabled();
-		
+
 		action.setEnabled(enabled);
-		
+
 		display.asyncExec(new Runnable() {
 
 			@Override
 			public void run() {
 				firePropertyChange("enabled", old, enabled); //$NON-NLS-1$
 			}
-			
+
 		});
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.action.Action#setText(java.lang.String)
 	 */
 	@Override
 	public void setText(final String text) {
 		if (action != null) {
 			final String old = getText();
-			
+
 			action.putValue(javax.swing.Action.NAME, text);
-			
+
 			display.asyncExec(new Runnable() {
 
 				@Override
 				public void run() {
 					firePropertyChange("text", old, text); //$NON-NLS-1$
 				}
-				
+
 			});
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.action.Action#setToolTipText(java.lang.String)
 	 */
 	@Override
 	public void setToolTipText(final String toolTipText) {
 		final String old = getToolTipText();
-		
+
 		action.putValue(javax.swing.Action.SHORT_DESCRIPTION, toolTipText);
-		
+
 		display.asyncExec(new Runnable() {
 
 			@Override
 			public void run() {
 				firePropertyChange(Action.TOOL_TIP_TEXT, old, toolTipText);
 			}
-			
+
 		});
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.action.Action#run()
 	 */
 	@Override
@@ -199,20 +213,22 @@ public class RcpActionAdapter
 
 			/*
 			 * (non-Javadoc)
+			 * 
 			 * @see java.lang.Runnable#run()
 			 */
 			@Override
 			public void run() {
-				action.actionPerformed(new ActionEvent(this, 
-						ActionEvent.ACTION_PERFORMED, null));
+				action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
 			}
-			
+
 		});
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
+	 * PropertyChangeEvent)
 	 */
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
@@ -223,12 +239,10 @@ public class RcpActionAdapter
 
 				@Override
 				public void run() {
-					firePropertyChange(Action.ENABLED, evt.getOldValue(), 
-							evt.getNewValue());
+					firePropertyChange(Action.ENABLED, evt.getOldValue(), evt.getNewValue());
 				}
-				
+
 			});
 	}
 
-	
 }

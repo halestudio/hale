@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterProx
 
 /**
  * {@link PainterLayout} extension.
+ * 
  * @author Simon Templer
  */
 public class PainterLayoutExtension extends AbstractExtension<PainterLayout, PainterLayoutFactory> {
@@ -41,8 +42,9 @@ public class PainterLayoutExtension extends AbstractExtension<PainterLayout, Pai
 			AbstractConfigurationFactory<PainterLayout> implements PainterLayoutFactory {
 
 		/**
-		 * Create a {@link PainterLayout} factory based on the given 
+		 * Create a {@link PainterLayout} factory based on the given
 		 * configuration element.
+		 * 
 		 * @param conf the configuration element
 		 */
 		protected ConfigurationPainterLayoutFactory(IConfigurationElement conf) {
@@ -104,7 +106,7 @@ public class PainterLayoutExtension extends AbstractExtension<PainterLayout, Pai
 		@Override
 		public int getPriority() {
 			String order = conf.getAttribute("order");
-			
+
 			if (order != null) {
 				try {
 					return Integer.parseInt(order);
@@ -112,7 +114,7 @@ public class PainterLayoutExtension extends AbstractExtension<PainterLayout, Pai
 					// ignore, use default
 				}
 			}
-			
+
 			return super.getPriority();
 		}
 
@@ -134,8 +136,7 @@ public class PainterLayoutExtension extends AbstractExtension<PainterLayout, Pai
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected PainterLayoutFactory createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected PainterLayoutFactory createFactory(IConfigurationElement conf) throws Exception {
 		return new ConfigurationPainterLayoutFactory(conf);
 	}
 

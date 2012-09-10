@@ -26,9 +26,9 @@ import eu.esdihumboldt.hale.io.csv.PropertyType;
  * @author Kevin Mais
  */
 public abstract class AbstractPropertyType implements PropertyType {
-	
+
 	private DefaultTypeDefinition td;
-	
+
 	/**
 	 * Default Constructor
 	 * 
@@ -36,7 +36,7 @@ public abstract class AbstractPropertyType implements PropertyType {
 	 */
 	public AbstractPropertyType(Class<?> binding) {
 		this.td = new DefaultTypeDefinition(new QName(binding.getName()));
-		
+
 		td.setConstraint(HasValueFlag.ENABLED);
 		td.setConstraint(Binding.get(binding));
 	}

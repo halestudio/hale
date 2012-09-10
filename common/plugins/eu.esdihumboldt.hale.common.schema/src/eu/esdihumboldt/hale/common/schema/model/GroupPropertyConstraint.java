@@ -14,10 +14,11 @@ package eu.esdihumboldt.hale.common.schema.model;
 
 /**
  * Marks constraints for group definitions
+ * 
  * @author Simon Templer
  */
 public interface GroupPropertyConstraint {
-	
+
 	// marker interface
 
 }

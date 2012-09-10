@@ -53,9 +53,9 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * 
  * @author Kai Schwierczek
  */
-public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
-		ParameterPage {
-	
+public abstract class SourceListParameterPage extends
+		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
+
 	private String initialValue = "";
 	private Text textField;
 	private TableViewer varTable;
@@ -76,22 +76,23 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	}
 
 	/**
-	 * Should return the parameter which should be configured using all source properties.
+	 * Should return the parameter which should be configured using all source
+	 * properties.
 	 * 
 	 * @return the parameter name
 	 */
-	protected abstract String getParameterName() ;
+	protected abstract String getParameterName();
 
 	/**
 	 * Should return the name of the source property which should be used.
 	 * 
 	 * @return the source property name
 	 */
-	protected abstract String getSourcePropertyName() ;
+	protected abstract String getSourcePropertyName();
 
 	/**
-	 * Subclasses can override this method to specify, that the text field should have 
-	 * multiple lines. By default it is not.
+	 * Subclasses can override this method to specify, that the text field
+	 * should have multiple lines. By default it is not.
 	 * 
 	 * @return true if the text field should have multiple lines.
 	 */
@@ -100,7 +101,8 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	}
 
 	/**
-	 * Subclasses can configure the text field to for example add some validation mechanism.
+	 * Subclasses can configure the text field to for example add some
+	 * validation mechanism.
 	 * 
 	 * @param textField the text field to configure
 	 */
@@ -124,7 +126,8 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 			}
 			String longName = Joiner.on('.').join(names);
 			return longName;
-		} else
+		}
+		else
 			return variable.getDefinition().getDisplayName();
 	}
 
@@ -141,7 +144,8 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	 * @see ParameterPage#setParameter(Set, ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params, ListMultimap<String, String> initialValues) {
+	public void setParameter(Set<FunctionParameter> params,
+			ListMultimap<String, String> initialValues) {
 		for (FunctionParameter param : params) {
 			if (param.getName().equals(getParameterName())) {
 				String description = param.getDescription();
@@ -155,7 +159,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 				break;
 			}
 		}
-		
+
 		if (initialValues != null) {
 			List<String> initialData = initialValues.get(getParameterName());
 			if (initialData.size() > 0)
@@ -201,7 +205,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(GridLayoutFactory.swtDefaults().create());
-		
+
 		// input field
 		int lineStyle = useMultilineInput() ? SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL : SWT.SINGLE;
 		textField = new Text(page, lineStyle | SWT.BORDER);
@@ -227,6 +231,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
 		varTable.setContentProvider(ArrayContentProvider.getInstance());
 		varTable.setLabelProvider(new DefinitionLabelProvider(true, true) {
+
 			/**
 			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getText(java.lang.Object)
 			 */
@@ -236,6 +241,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 			}
 		});
 		varTable.getTable().addMouseListener(new MouseAdapter() {
+
 			/**
 			 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
 			 */

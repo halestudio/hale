@@ -16,7 +16,7 @@ import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
  * {@link Report} with {@link InstanceValidationMessage}s.
- *
+ * 
  * @author Kai Schwierczek
  */
 public interface InstanceValidationReport extends Report<InstanceValidationMessage> {

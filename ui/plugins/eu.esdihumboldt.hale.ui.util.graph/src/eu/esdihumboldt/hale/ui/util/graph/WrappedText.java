@@ -21,28 +21,30 @@ import org.eclipse.draw2d.text.TextFlow;
 /**
  * Figure that displays text and word-wraps it if the figure would exceed a
  * maximum width.
+ * 
  * @author Simon Templer
  */
 public class WrappedText extends Figure {
 
 	private final int maxWidth;
-	
+
 	private final FlowPage page;
 
 	/**
-	 * Create a wrapped text figure. 
+	 * Create a wrapped text figure.
+	 * 
 	 * @param text the text to display
 	 * @param maxWidth the maximum width
 	 */
 	public WrappedText(String text, int maxWidth) {
 		super();
 		this.maxWidth = maxWidth;
-		
+
 		setLayoutManager(new StackLayout());
-		
+
 		page = new FlowPage();
 		add(page);
-		
+
 		TextFlow flow = new TextFlow(text);
 		page.add(flow);
 	}
@@ -58,5 +60,5 @@ public class WrappedText extends Figure {
 		}
 		return size;
 	}
-	
+
 }

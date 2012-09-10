@@ -16,6 +16,7 @@ import org.springframework.core.convert.ConversionException;
 
 /**
  * Exception that should be thrown when the conversion service is not available.
+ * 
  * @author Simon Templer
  */
 public class ConversionServiceNotAvailableException extends ConversionException {
@@ -28,12 +29,11 @@ public class ConversionServiceNotAvailableException extends ConversionException 
 	public ConversionServiceNotAvailableException() {
 		this("Conversion service not available");
 	}
-	
+
 	/**
 	 * @see ConversionException#ConversionException(String, Throwable)
 	 */
-	public ConversionServiceNotAvailableException(String message,
-			Throwable cause) {
+	public ConversionServiceNotAvailableException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

@@ -11,6 +11,7 @@
  */
 
 package eu.esdihumboldt.hale.ui.views.report.properties.details;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -33,13 +34,15 @@ import eu.esdihumboldt.hale.ui.views.report.properties.details.extension.CustomR
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class ReportDetailsPage extends AbstractPropertySection {
+
 	private CustomReportDetailsPage page;
 	private Report<?> report;
 	private Composite parent;
 	private Control control;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
 	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
@@ -52,13 +55,14 @@ public abstract class ReportDetailsPage extends AbstractPropertySection {
 
 	/**
 	 * Set the currently selected report to the given report.
-	 *
+	 * 
 	 * @param report the now selected report
 	 */
 	protected void setReport(Report<?> report) {
 		if (report != this.report) {
 			if (this.report == null || report.getClass() != this.report.getClass()) {
-				CustomReportDetailsPage customPage = CustomReportDetailsPageExtension.getInstance().getDetailPage(report.getClass());
+				CustomReportDetailsPage customPage = CustomReportDetailsPageExtension.getInstance()
+						.getDetailPage(report.getClass());
 				if (customPage == null)
 					customPage = new DefaultReportDetailsPage();
 				if (page == null || page.getClass() != customPage.getClass()) {
@@ -75,7 +79,7 @@ public abstract class ReportDetailsPage extends AbstractPropertySection {
 
 	/**
 	 * Set the input to the page for the given {@link MessageType}.
-	 *
+	 * 
 	 * @param type the type to set the input to
 	 */
 	protected void setInputFor(CustomReportDetailsPage.MessageType type) {

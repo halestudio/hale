@@ -24,14 +24,15 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
- * Transformation engine manager. Holds transformation engine instances during
- * a transformation process.
+ * Transformation engine manager. Holds transformation engine instances during a
+ * transformation process.
+ * 
  * @author Simon Templer
  */
 public class EngineManager {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(EngineManager.class);
-	
+
 	private final Map<String, TransformationEngine> engines = new HashMap<String, TransformationEngine>();
 
 	/**
@@ -49,23 +50,22 @@ public class EngineManager {
 
 	/**
 	 * Get the transformation engine with the given ID
+	 * 
 	 * @param engineId the transformation engine ID
 	 * @param log the transformation log to report any errors to
 	 * @return the transformation engine or <code>null</code> if none with the
-	 *   given ID was found or the creation failed 
+	 *         given ID was found or the creation failed
 	 */
-	public synchronized TransformationEngine get(String engineId,
-			TransformationLog log) {
+	public synchronized TransformationEngine get(String engineId, TransformationLog log) {
 		TransformationEngine engine = engines.get(engineId);
-		
+
 		if (engine == null) {
 			EngineExtension ee = EngineExtension.getInstance();
 			EngineFactory engineFactory = ee.getFactory(engineId);
-			
+
 			if (engineFactory == null) {
 				log.error(log.createMessage(MessageFormat.format(
-						"Transformation engine with ID {0} not found.", 
-						engineId), null));
+						"Transformation engine with ID {0} not found.", engineId), null));
 			}
 			else {
 				try {
@@ -73,12 +73,11 @@ public class EngineManager {
 					tmp.setup();
 					engine = tmp;
 				} catch (Exception e) {
-					log.error(log.createMessage(
-							"Could not create transformation engine", e));
+					log.error(log.createMessage("Could not create transformation engine", e));
 				}
 			}
 		}
-		
+
 		return engine;
 	}
 

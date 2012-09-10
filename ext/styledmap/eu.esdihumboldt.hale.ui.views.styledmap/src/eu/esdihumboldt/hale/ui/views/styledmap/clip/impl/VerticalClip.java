@@ -19,53 +19,54 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
 
 /**
  * Displays a vertical column of the view-port.
+ * 
  * @author Simon Templer
  */
 public class VerticalClip implements Clip {
-	
+
 	private float left;
 	private float right;
 
 	/**
 	 * Create clip displaying a vertical column.
-	 * @param left the beginning of the column, value between 0 and 1, relative 
-	 *   to the view-port width
-	 * @param right the end of the column, value between 0 and 1, relative to 
-	 *   the view-port width
+	 * 
+	 * @param left the beginning of the column, value between 0 and 1, relative
+	 *            to the view-port width
+	 * @param right the end of the column, value between 0 and 1, relative to
+	 *            the view-port width
 	 */
 	public VerticalClip(float left, float right) {
 		super();
-		this.left = (left <= right)?(left):(right);
-		this.right = (left <= right)?(right):(left);
+		this.left = (left <= right) ? (left) : (right);
+		this.right = (left <= right) ? (right) : (left);
 	}
 
 	/**
 	 * @see Clip#getClip(Rectangle, int, int, int, int)
 	 */
 	@Override
-	public Shape getClip(Rectangle viewportBounds, int originX, int originY,
-			int width, int height) {
+	public Shape getClip(Rectangle viewportBounds, int originX, int originY, int width, int height) {
 		// column left and right in world pixel coordinates
 		int colLeft = (int) (viewportBounds.x + left * viewportBounds.width);
 		int colRight = (int) (viewportBounds.x + right * viewportBounds.width);
-		
+
 		// column left and right in local coordinates
 		colLeft -= originX;
 		colRight -= originX;
-		
+
 		if (colRight < 0) {
 			// tile is after column, paint nothing
 			return null;
 		}
-		
+
 		if (colLeft >= height) {
 			// tile is before column, paint nothing
 			return null;
 		}
-		
+
 		int x1 = Math.max(0, colLeft);
 		int x2 = Math.min(height, colRight);
-		
+
 		return new Rectangle(x1, 0, x2 - x1, height);
 	}
 

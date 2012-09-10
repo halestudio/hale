@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * Handler that saves a project
+ * 
  * @author Simon Templer
  */
 public class SaveProjectHandler extends AbstractHandler {
@@ -31,9 +32,10 @@ public class SaveProjectHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 		ps.save();
-		
+
 		return null;
 	}
 

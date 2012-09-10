@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Entity page for types
+ * 
  * @author Simon Templer
  */
 public class TypeEntitiesPage extends EntitiesPage<TypeFunction, TypeParameter, TypeField> {
@@ -39,11 +40,12 @@ public class TypeEntitiesPage extends EntitiesPage<TypeFunction, TypeParameter, 
 	}
 
 	/**
-	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID, Composite, Set, Cell)
+	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID,
+	 *      Composite, Set, Cell)
 	 */
 	@Override
-	protected TypeField createField(TypeParameter field, SchemaSpaceID ssid,
-			Composite parent, Set<EntityDefinition> candidates, Cell initialCell) {
+	protected TypeField createField(TypeParameter field, SchemaSpaceID ssid, Composite parent,
+			Set<EntityDefinition> candidates, Cell initialCell) {
 		return new TypeField(field, ssid, parent, candidates, initialCell);
 	}
 

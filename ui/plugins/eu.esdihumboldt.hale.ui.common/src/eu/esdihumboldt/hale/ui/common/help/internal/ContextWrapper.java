@@ -24,22 +24,23 @@ import org.eclipse.help.IHelpResource;
 
 /**
  * Context that wraps a given context and provides additional topics.
+ * 
  * @author Simon Templer
  */
 public class ContextWrapper implements IContext3 {
 
 	private final IContext context;
 	private final IHelpResource[] topics;
-	
+
 	/**
 	 * Create a wrapper for the given context.
+	 * 
 	 * @param context the wrapped context
 	 * @param additionalTopics the additional topics
 	 */
-	public ContextWrapper(IContext context,
-			Collection<IHelpResource> additionalTopics) {
+	public ContextWrapper(IContext context, Collection<IHelpResource> additionalTopics) {
 		this.context = context;
-		
+
 		List<IHelpResource> topics = new ArrayList<IHelpResource>();
 		for (IHelpResource topic : context.getRelatedTopics()) {
 			topics.add(topic);
@@ -47,7 +48,7 @@ public class ContextWrapper implements IContext3 {
 		topics.addAll(additionalTopics);
 		this.topics = topics.toArray(new IHelpResource[topics.size()]);
 	}
-	
+
 	/**
 	 * @see IContext3#getRelatedCommands()
 	 */
@@ -78,7 +79,7 @@ public class ContextWrapper implements IContext3 {
 		if (context instanceof IContext2) {
 			return ((IContext2) context).getStyledText();
 		}
-		return getText(); //XXX the right thing to return?
+		return getText(); // XXX the right thing to return?
 	}
 
 	/**

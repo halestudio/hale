@@ -19,13 +19,14 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * The schema service is used internally to provide access to the currently 
+ * The schema service is used internally to provide access to the currently
  * loaded schemas.
  * 
  * @author Thorsten Reitz
  * @author Simon Templer
  */
 public interface SchemaService {
+
 	/**
 	 * The action id used for reading source schemas.
 	 */
@@ -34,40 +35,40 @@ public interface SchemaService {
 	 * The action id used for reading target schemas.
 	 */
 	public static final String ACTION_READ_TARGET = "eu.esdihumboldt.hale.io.schema.read.target";
-	
+
 	/**
 	 * Get the source or target schema space.
 	 * 
-	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
-	 *   or {@link SchemaSpaceID#TARGET}
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
 	 * @return the schema space
 	 */
 	public SchemaSpace getSchemas(SchemaSpaceID spaceID);
-	
+
 	/**
 	 * Add a schema to the source or target schema space.
 	 * 
 	 * @param schema the schema to add
-	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
-	 *   or {@link SchemaSpaceID#TARGET}
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
 	 */
 	public void addSchema(Schema schema, SchemaSpaceID spaceID);
-	
+
 	/**
 	 * Removes all schemas from the source or target schema space.
 	 * 
-	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
-	 *   or {@link SchemaSpaceID#TARGET}
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
 	 */
 	public void clearSchemas(SchemaSpaceID spaceID);
-	
+
 	/**
 	 * Adds a listener for schema service events
 	 * 
 	 * @param listener the listener to add
 	 */
-	public void addSchemaServiceListener(SchemaServiceListener listener); 
-	
+	public void addSchemaServiceListener(SchemaServiceListener listener);
+
 	/**
 	 * Removes a listener for schema service events
 	 * 
@@ -89,8 +90,8 @@ public interface SchemaService {
 	 * @param spaceID the schema space to edit
 	 */
 	public void editMappableTypes(SchemaSpaceID spaceID);
-	
-	//XXX something like this should be handled in the schema space / schema
+
+	// XXX something like this should be handled in the schema space / schema
 //	/**
 //	 * Get the type or element definition identified by the given name
 //	 * 

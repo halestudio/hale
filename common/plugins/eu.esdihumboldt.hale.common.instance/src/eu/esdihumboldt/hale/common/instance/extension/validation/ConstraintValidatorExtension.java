@@ -28,9 +28,12 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 
 /**
  * Extension for constraint validators.
+ * 
  * @author Kai Schwierczek
  */
-public class ConstraintValidatorExtension extends AbstractExtension<ConstraintValidator, ConstraintValidatorFactory> {
+public class ConstraintValidatorExtension extends
+		AbstractExtension<ConstraintValidator, ConstraintValidatorFactory> {
+
 	private static final ALogger log = ALoggerFactory.getLogger(ConstraintValidatorExtension.class);
 
 	/**
@@ -46,8 +49,8 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 
 	/**
 	 * Get the extension instance
-	 *
-	 * @return the constraint validator extension 
+	 * 
+	 * @return the constraint validator extension
 	 */
 	public static ConstraintValidatorExtension getInstance() {
 		if (instance == null) {
@@ -65,19 +68,16 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 
 		// Build maps
 		List<ConstraintValidatorFactory> factories = getFactories();
-		Map<Class<TypeConstraint>, TypeConstraintValidator> typeValidators =
-				new HashMap<Class<TypeConstraint>, TypeConstraintValidator>();
-		Map<Class<PropertyConstraint>, PropertyConstraintValidator> propertyValidators =
-				new HashMap<Class<PropertyConstraint>, PropertyConstraintValidator>();
-		Map<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator> groupPropertyValidators =
-				new HashMap<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator>();
+		Map<Class<TypeConstraint>, TypeConstraintValidator> typeValidators = new HashMap<Class<TypeConstraint>, TypeConstraintValidator>();
+		Map<Class<PropertyConstraint>, PropertyConstraintValidator> propertyValidators = new HashMap<Class<PropertyConstraint>, PropertyConstraintValidator>();
+		Map<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator> groupPropertyValidators = new HashMap<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator>();
 
 		for (ConstraintValidatorFactory factory : factories) {
 			Class<?> clazz = factory.getConstraintClass();
 			if (factory.isTypeConstraintValidator()) {
 				if (typeValidators.containsKey(clazz))
-					log.warn("Multiple type validators for " + clazz +
-							" declared. This is not supported.");
+					log.warn("Multiple type validators for " + clazz
+							+ " declared. This is not supported.");
 				else
 					try {
 						typeValidators.put((Class<TypeConstraint>) clazz,
@@ -85,10 +85,11 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 					} catch (Exception e) {
 						log.warn("Exception creating type constraint validator", e);
 					}
-			} else if (factory.isPropertyConstraintValidator()) {
+			}
+			else if (factory.isPropertyConstraintValidator()) {
 				if (propertyValidators.containsKey(clazz))
-					log.warn("Multiple property validators for " + clazz +
-							" declared. This is not supported.");
+					log.warn("Multiple property validators for " + clazz
+							+ " declared. This is not supported.");
 				else
 					try {
 						propertyValidators.put((Class<PropertyConstraint>) clazz,
@@ -96,10 +97,11 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 					} catch (Exception e) {
 						log.warn("Exception creating property constraint validator", e);
 					}
-			} else if (factory.isGroupPropertyConstraintValidator()) {
+			}
+			else if (factory.isGroupPropertyConstraintValidator()) {
 				if (groupPropertyValidators.containsKey(clazz))
-					log.warn("Multiple group property validators for " + clazz +
-							" declared. This is not supported.");
+					log.warn("Multiple group property validators for " + clazz
+							+ " declared. This is not supported.");
 				else
 					try {
 						groupPropertyValidators.put((Class<GroupPropertyConstraint>) clazz,
@@ -125,7 +127,7 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 
 	/**
 	 * Returns a map with all registered {@link TypeConstraintValidator}.
-	 *
+	 * 
 	 * @return a map with all registered {@link TypeConstraintValidator}
 	 */
 	public Map<Class<TypeConstraint>, TypeConstraintValidator> getTypeConstraintValidators() {
@@ -134,7 +136,7 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 
 	/**
 	 * Returns a map with all registered {@link PropertyConstraintValidator}.
-	 *
+	 * 
 	 * @return a map with all registered {@link PropertyConstraintValidator}
 	 */
 	public Map<Class<PropertyConstraint>, PropertyConstraintValidator> getPropertyConstraintValidators() {
@@ -142,9 +144,11 @@ public class ConstraintValidatorExtension extends AbstractExtension<ConstraintVa
 	}
 
 	/**
-	 * Returns a map with all registered {@link GroupPropertyConstraintValidator}.
-	 *
-	 * @return a map with all registered {@link GroupPropertyConstraintValidator}
+	 * Returns a map with all registered
+	 * {@link GroupPropertyConstraintValidator}.
+	 * 
+	 * @return a map with all registered
+	 *         {@link GroupPropertyConstraintValidator}
 	 */
 	public Map<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator> getGroupPropertyConstraintValidators() {
 		return groupPropertyValidators;

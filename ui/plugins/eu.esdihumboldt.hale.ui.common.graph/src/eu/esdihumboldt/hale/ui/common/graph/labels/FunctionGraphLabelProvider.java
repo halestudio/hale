@@ -40,7 +40,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	private final Color targetbackgroundcolor;
 
 	private final Color sourcebackgroundcolor;
-	
+
 	private final ResourceManager resourceManager = new ResourceManager();
 
 	private boolean showAll;
@@ -48,8 +48,8 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	/**
 	 * Default constructor
 	 * 
-	 * @param showAll
-	 *            true if additional information (tooltips, etc.) should be shown
+	 * @param showAll true if additional information (tooltips, etc.) should be
+	 *            shown
 	 */
 	public FunctionGraphLabelProvider(boolean showAll) {
 		final Display display = Display.getCurrent();
@@ -103,7 +103,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	@Override
 	public IFigure getFigure(Object element) {
 		CustomShapeFigure figure = null;
-		
+
 		if (element instanceof AbstractParameter) {
 			figure = new ParameterFigure(new FingerPost(10, SWT.LEFT),
 					getOccurenceString((AbstractParameter) element),
@@ -113,7 +113,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 			if (element instanceof Pair<?, ?>) {
 				element = ((Pair<?, ?>) element).getFirst();
 			}
-	
+
 			if (element instanceof PropertyFunction) {
 				figure = new FunctionFigure(resourceManager,
 						((PropertyFunction) element).getDefinedParameters(), showAll);
@@ -128,7 +128,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 						((AbstractParameter) element).getDescription(), showAll);
 			}
 		}
-		
+
 		if (figure != null) {
 			figure.setMaximumWidth(MAX_FIGURE_WIDTH);
 			return figure;
@@ -176,13 +176,15 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 
 		if (parameter.getMinOccurrence() == -1) {
 			min = "n";
-		} else {
+		}
+		else {
 			min = String.valueOf(parameter.getMinOccurrence());
 		}
 
 		if (parameter.getMaxOccurrence() == -1) {
 			max = "n";
-		} else {
+		}
+		else {
 			max = String.valueOf(parameter.getMaxOccurrence());
 		}
 

@@ -21,19 +21,18 @@ import eu.esdihumboldt.specification.cst.align.IEntity;
 import eu.esdihumboldt.specification.cst.rdf.IAbout;
 
 /**
- * A {@link Cell} contains a mapping between two Entities, such as {@link FeatureClass}es
- * or {@link Property} objects.
+ * A {@link Cell} contains a mapping between two Entities, such as
+ * {@link FeatureClass}es or {@link Property} objects.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public class Cell 
-	implements ICell {
+public class Cell implements ICell {
 
 	/**
-	 * Annotation label(s)
-	 * TODO check whether this and the IAbout aren't in conflict.
+	 * Annotation label(s) TODO check whether this and the IAbout aren't in
+	 * conflict.
 	 */
 	private List<String> label;
 
@@ -41,33 +40,32 @@ public class Cell
 	 * The first {@link Entity} mapped by this {@link Cell}.
 	 */
 	private IEntity entity1;
-	
+
 	/**
 	 * The second {@link Entity} mapped by this {@link Cell}.
 	 */
 	private IEntity entity2;
-	
+
 	/**
-	 * The mapping/relation type between the two {@link Entity} objects.
-	 * TODO replace by an extensible construct, maybe including the MDL.
-	 * Note: MDL should go to schema of its own.
+	 * The mapping/relation type between the two {@link Entity} objects. TODO
+	 * replace by an extensible construct, maybe including the MDL. Note: MDL
+	 * should go to schema of its own.
 	 */
 	private RelationType relation;
-	
+
 	/**
 	 * The confidence as a numerical value of the correctness of this mapping
 	 * TODO replace by MDL elements.
 	 */
 	private double measure;
-	
+
 	/**
 	 * Identifier of this {@link Cell} (optional).
 	 */
 	private IAbout about;
-	
-	
+
 	// getters/setters .........................................................
-	
+
 	public void setEntity1(IEntity entity1) {
 		this.entity1 = entity1;
 	}
@@ -75,7 +73,7 @@ public class Cell
 	public IEntity getEntity1() {
 		return entity1;
 	}
-	
+
 	public void setEntity2(IEntity entity2) {
 		this.entity2 = entity2;
 	}
@@ -83,7 +81,7 @@ public class Cell
 	public IEntity getEntity2() {
 		return entity2;
 	}
-	
+
 	/**
 	 * @return the relation
 	 */
@@ -92,7 +90,8 @@ public class Cell
 	}
 
 	/**
-	 * @param relation the relation to set
+	 * @param relation
+	 *            the relation to set
 	 */
 	public void setRelation(RelationType relation) {
 		this.relation = relation;
@@ -106,7 +105,8 @@ public class Cell
 	}
 
 	/**
-	 * @param measure the measure to set
+	 * @param measure
+	 *            the measure to set
 	 */
 	public void setMeasure(double measure) {
 		this.measure = measure;
@@ -120,7 +120,8 @@ public class Cell
 	}
 
 	/**
-	 * @param about the about to set
+	 * @param about
+	 *            the about to set
 	 */
 	public void setAbout(IAbout about) {
 		this.about = about;
@@ -134,7 +135,8 @@ public class Cell
 	}
 
 	/**
-	 * @param label the label(s) to set
+	 * @param label
+	 *            the label(s) to set
 	 */
 	public void setLabel(List<String> label) {
 		this.label = label;
@@ -143,19 +145,19 @@ public class Cell
 	public ICell deepCopy() {
 		Cell result = new Cell();
 		result.setAbout(new About(this.getAbout().getAbout()));
-		
-		result.setEntity1(((Entity)this.getEntity1()).deepCopy());
-		result.setEntity2(((Entity)this.getEntity2()).deepCopy());
-		
+
+		result.setEntity1(((Entity) this.getEntity1()).deepCopy());
+		result.setEntity2(((Entity) this.getEntity2()).deepCopy());
+
 		List<String> newLabels = new ArrayList<String>();
 		for (String label : this.getLabel()) {
 			newLabels.add(label);
 		}
 		result.setLabel(newLabels);
-	
+
 		result.setMeasure(this.getMeasure());
 		result.setRelation(this.getRelation()); // not yet deep
-		
+
 		return result;
 	}
 

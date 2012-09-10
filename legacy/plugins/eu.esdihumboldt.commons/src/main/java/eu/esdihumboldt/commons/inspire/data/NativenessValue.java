@@ -17,12 +17,11 @@ package eu.esdihumboldt.commons.inspire.data;
  * 
  * @author Ana Belen Anton
  * @partner 02 / ETRA Research and Development
- * @version $Id$ 
+ * @version $Id$
  */
 
 public enum NativenessValue {
-	
-	endonym,
-	exonym;
+
+	endonym, exonym;
 
 }

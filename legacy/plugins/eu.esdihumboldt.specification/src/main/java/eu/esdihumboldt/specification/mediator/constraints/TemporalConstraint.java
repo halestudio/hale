@@ -18,44 +18,46 @@ import eu.esdihumboldt.specification.mediator.constraints.temporal.TimePoint.Tem
  * A TemporalConstraint is a special metadata constraint used to express a
  * temporal boundary for the geoinformation to be used. It is defined as an
  * interface of its own because of the high complexity involved with temporal
- * operations. The GeoAPI temporal expression possibilities are integrated as 
+ * operations. The GeoAPI temporal expression possibilities are integrated as
  * just another dimension, not taking into account several points specific to
  * temporal attributes.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface TemporalConstraint extends Constraint {
 
 	/**
-	 * @return the TemporalPrimitive describing the TimeSpans or TimePoints 
-	 * of this constraint.
+	 * @return the TemporalPrimitive describing the TimeSpans or TimePoints of
+	 *         this constraint.
 	 */
 	public TemporalPrimitive getT0();
-	
+
 	/**
-	 * This operation can be used to find out whether a time series is being 
+	 * This operation can be used to find out whether a time series is being
 	 * requested.
-	 * @param tg the TemporalGranularity in which the interval step size is
-	 * to be expressed. Example 1 day, 2 hours...
-	 * @return 0 if no time series was requested, otherwise the step size 
-	 * between snapshots in the given TemporalGranularity
+	 * 
+	 * @param tg
+	 *            the TemporalGranularity in which the interval step size is to
+	 *            be expressed. Example 1 day, 2 hours...
+	 * @return 0 if no time series was requested, otherwise the step size
+	 *         between snapshots in the given TemporalGranularity
 	 */
 	public double getInterval(TemporalGranularity tg);
-	
+
 	/**
-	 * @return the RelationType that this Constraint represents. To express 
-	 * combinations of RelationTypes, use multiple TemporalConstraint combined 
-	 * by LogicalConstraints. 
+	 * @return the RelationType that this Constraint represents. To express
+	 *         combinations of RelationTypes, use multiple TemporalConstraint
+	 *         combined by LogicalConstraints.
 	 */
 	public RelationType getRelationType();
-	
+
 	/**
 	 * The RelationType defines what kind of temporal relation objects need to
-	 * fulfill to satisfy this criterion. It corresponds to 
-	 * ISO 19136:relativePosition. In all {@link RelationType}s, A corresponds
-	 * to the value contained with this {@link Constraint}, B corresponds to the
+	 * fulfill to satisfy this criterion. It corresponds to ISO
+	 * 19136:relativePosition. In all {@link RelationType}s, A corresponds to
+	 * the value contained with this {@link Constraint}, B corresponds to the
 	 * value contained in the candidate dataset.
 	 */
 	public enum RelationType {
@@ -81,10 +83,10 @@ public interface TemporalConstraint extends Constraint {
 		OverlappedBy,
 		/** A starts when B ends. */
 		MetBy,
-		/** B and A start at the same time (FIXME - cross-check)  */
+		/** B and A start at the same time (FIXME - cross-check) */
 		BegunBy,
 		/** B and A end at the same time (FIXME - cross-check) */
 		EndedBy
 	}
-	
+
 }

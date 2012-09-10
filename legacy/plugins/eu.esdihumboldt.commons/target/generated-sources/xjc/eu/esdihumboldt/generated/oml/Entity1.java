@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.JAXBElement;
@@ -15,11 +14,13 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for anonymous complex type.
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -36,49 +37,46 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "entity"
-})
+@XmlType(name = "", propOrder = { "entity" })
 @XmlRootElement(name = "entity1")
 public class Entity1 {
 
-    @XmlElementRef(name = "_Entity", namespace = "http://www.omwg.org/TR/d7/ontology/alignment", type = JAXBElement.class)
-    protected JAXBElement<? extends EntityType> entity;
+	@XmlElementRef(name = "_Entity", namespace = "http://www.omwg.org/TR/d7/ontology/alignment", type = JAXBElement.class)
+	protected JAXBElement<? extends EntityType> entity;
 
-    /**
-     * Gets the value of the entity property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link RelationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link PropertyType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link EntityType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link InstanceType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ClassType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ClassType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link PropertyQualifierType }{@code >}
-     *     
-     */
-    public JAXBElement<? extends EntityType> getEntity() {
-        return entity;
-    }
+	/**
+	 * Gets the value of the entity property.
+	 * 
+	 * @return possible object is {@link JAXBElement }{@code <}
+	 *         {@link RelationType }{@code >} {@link JAXBElement }{@code <}
+	 *         {@link PropertyType }{@code >} {@link JAXBElement }{@code <}
+	 *         {@link EntityType }{@code >} {@link JAXBElement }{@code <}
+	 *         {@link InstanceType }{@code >} {@link JAXBElement }{@code <}
+	 *         {@link ClassType }{@code >} {@link JAXBElement }{@code <}
+	 *         {@link ClassType }{@code >} {@link JAXBElement }{@code <}
+	 *         {@link PropertyQualifierType }{@code >}
+	 * 
+	 */
+	public JAXBElement<? extends EntityType> getEntity() {
+		return entity;
+	}
 
-    /**
-     * Sets the value of the entity property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link RelationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link PropertyType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link EntityType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link InstanceType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ClassType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ClassType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link PropertyQualifierType }{@code >}
-     *     
-     */
-    public void setEntity(JAXBElement<? extends EntityType> value) {
-        this.entity = ((JAXBElement<? extends EntityType> ) value);
-    }
+	/**
+	 * Sets the value of the entity property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link JAXBElement }{@code <}
+	 *            {@link RelationType }{@code >} {@link JAXBElement }{@code <}
+	 *            {@link PropertyType }{@code >} {@link JAXBElement }{@code <}
+	 *            {@link EntityType }{@code >} {@link JAXBElement }{@code <}
+	 *            {@link InstanceType }{@code >} {@link JAXBElement }{@code <}
+	 *            {@link ClassType }{@code >} {@link JAXBElement }{@code <}
+	 *            {@link ClassType }{@code >} {@link JAXBElement }{@code <}
+	 *            {@link PropertyQualifierType }{@code >}
+	 * 
+	 */
+	public void setEntity(JAXBElement<? extends EntityType> value) {
+		this.entity = ((JAXBElement<? extends EntityType>) value);
+	}
 
 }

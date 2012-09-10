@@ -21,19 +21,21 @@ import de.cs3d.util.logging.ALoggerFactory;
 
 /**
  * Daemon thread that keeps an associated display.
+ * 
  * @author Simon Templer
  */
 public class DisplayThread extends Thread {
-	
+
 	// static
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(DisplayThread.class);
-	
+
 	private static DisplayThread instance;
-	
+
 	/**
-	 * Get the display thread instance. On the first call the thread will
-	 * be created and started, and a display created.
+	 * Get the display thread instance. On the first call the thread will be
+	 * created and started, and a display created.
+	 * 
 	 * @return the display thread
 	 */
 	public static DisplayThread getInstance() {
@@ -43,19 +45,19 @@ public class DisplayThread extends Thread {
 		}
 		return instance;
 	}
-	
+
 	// non-static
-	
+
 	private final AtomicBoolean canceled = new AtomicBoolean(false);
-	
+
 	private final AtomicReference<Display> display = new AtomicReference<Display>();
-	
+
 	/**
 	 * Default constructor
 	 */
 	protected DisplayThread() {
 		super("dedicated-display"); //$NON-NLS-1$
-		
+
 		// this is a daemon thread
 		setDaemon(true);
 	}
@@ -68,12 +70,12 @@ public class DisplayThread extends Thread {
 		if (display.get() == null) {
 			// initially create the display
 			display.set(new Display());
-			
+
 			log.info("Created display for dedicated display thread");
 		}
-		
+
 		while (!canceled.get()) {
-			//XXX loop ok like this?!
+			// XXX loop ok like this?!
 			if (!display.get().readAndDispatch()) {
 				try {
 					sleep(100);
@@ -83,7 +85,7 @@ public class DisplayThread extends Thread {
 			}
 		}
 	}
-	
+
 	/**
 	 * @return the display
 	 */

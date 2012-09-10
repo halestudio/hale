@@ -23,10 +23,10 @@ import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHooks;
 /**
  * {@link TransformationTreeHooks} implementation based on an
  * {@link IPreferenceStore}.
+ * 
  * @author Simon Templer
  */
-public class PreferencesTransformationTreeHooks
-		extends
+public class PreferencesTransformationTreeHooks extends
 		PreferencesSelectiveExtension<TransformationTreeHook, TransformationTreeHookFactory>
 		implements TransformationTreeHooks, CSTPreferencesConstants {
 
@@ -34,9 +34,8 @@ public class PreferencesTransformationTreeHooks
 	 * Default constructor
 	 */
 	public PreferencesTransformationTreeHooks() {
-		super(new TransformationTreeHookExtension(), 
-				CSTUIPlugin.getDefault().getPreferenceStore(), 
+		super(new TransformationTreeHookExtension(), CSTUIPlugin.getDefault().getPreferenceStore(),
 				PREF_ACTIVE_TREE_HOOKS);
 	}
-	
+
 }

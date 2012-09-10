@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Instance factory based on {@link DefaultInstance}
+ * 
  * @author Simon Templer
  */
 public class DefaultInstanceFactory implements InstanceFactory {
@@ -27,7 +28,8 @@ public class DefaultInstanceFactory implements InstanceFactory {
 	 */
 	@Override
 	public MutableInstance createInstance(TypeDefinition type) {
-		return new DefaultInstance(type, null); // initially no data set associated
+		return new DefaultInstance(type, null); // initially no data set
+												// associated
 	}
 
 }

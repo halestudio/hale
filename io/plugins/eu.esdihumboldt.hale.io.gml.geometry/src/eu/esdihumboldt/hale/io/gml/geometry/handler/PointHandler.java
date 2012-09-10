@@ -56,20 +56,17 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 		Point point = null;
 
 		// Point is either defined by a CoordinatesType named coordinates
-		Collection<Object> values = PropertyResolver.getValues(instance,
-				"coordinates", false);
+		Collection<Object> values = PropertyResolver.getValues(instance, "coordinates", false);
 		if (values != null && !values.isEmpty()) {
 			Object value = values.iterator().next();
 			if (value instanceof Instance) {
 				try {
-					Coordinate[] cs = GMLGeometryUtil
-							.parseCoordinates((Instance) value);
+					Coordinate[] cs = GMLGeometryUtil.parseCoordinates((Instance) value);
 					if (cs != null && cs.length > 0) {
 						point = getGeometryFactory().createPoint(cs[0]);
 					}
 				} catch (ParseException e) {
-					throw new GeometryNotSupportedException(
-							"Could not parse coordinates", e);
+					throw new GeometryNotSupportedException("Could not parse coordinates", e);
 				}
 			}
 		}
@@ -80,8 +77,7 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 			if (values != null && !values.isEmpty()) {
 				Object value = values.iterator().next();
 				if (value instanceof Instance) {
-					Coordinate c = GMLGeometryUtil
-							.parseDirectPosition((Instance) value);
+					Coordinate c = GMLGeometryUtil.parseDirectPosition((Instance) value);
 					if (c != null) {
 						point = getGeometryFactory().createPoint(c);
 					}
@@ -116,8 +112,7 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
-				2);
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
 
 		// contains one point
 		constraints.add(Binding.get(GeometryProperty.class));

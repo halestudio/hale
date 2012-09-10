@@ -34,11 +34,13 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Label provider for instances values in a tree based on a 
+ * Label provider for instances values in a tree based on a
  * {@link InstanceContentProvider}.
+ * 
  * @author Simon Templer
  */
 public class InstanceValueLabelProvider extends StyledCellLabelProvider {
+
 	private static final int MAX_STRING_LENGTH = 200;
 
 	/**
@@ -51,12 +53,13 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		Definition<?> definition = null;
 
 		Object value = ((Pair<?, ?>) element).getSecond();
-		if(((Pair<?, ?>) element).getFirst() instanceof Definition)
+		if (((Pair<?, ?>) element).getFirst() instanceof Definition)
 			definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
 
 		InstanceValidationReport report = null;
 		if (definition instanceof ChildDefinition<?>)
-			report = InstanceValidator.validate(value, (ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
+			report = InstanceValidator.validate(value,
+					(ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
 		else if (definition instanceof TypeDefinition)
 			report = InstanceValidator.validate((Instance) value);
 
@@ -76,14 +79,14 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 			if (value instanceof Instance) {
 				value = ((Instance) value).getValue();
 			}
-			//TODO some kind of conversion?
+			// TODO some kind of conversion?
 			String stringValue = value.toString();
 			/*
 			 * Values that are very large, e.g. string representations of very
-			 * complex geometries lead to StyledCellLabelProvider.updateTextLayout
-			 * taking a very long time, rendering the application unresponsive
-			 * when the data views are displayed.
-			 * As such, we reduce the string to a maximum size.
+			 * complex geometries lead to
+			 * StyledCellLabelProvider.updateTextLayout taking a very long time,
+			 * rendering the application unresponsive when the data views are
+			 * displayed. As such, we reduce the string to a maximum size.
 			 */
 			if (stringValue.length() > MAX_STRING_LENGTH) {
 				stringValue = stringValue.substring(0, MAX_STRING_LENGTH) + "...";
@@ -96,7 +99,8 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		cell.setStyleRanges(styledString.getStyleRanges());
 
 		if (report != null && !report.getWarnings().isEmpty())
-			cell.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK));
+			cell.setImage(PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_WARN_TSK));
 
 		super.update(cell);
 	}
@@ -110,11 +114,12 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 
 		Object value = ((Pair<?, ?>) element).getSecond();
 		Definition<?> definition = null;
-		if(((Pair<?, ?>) element).getFirst() instanceof Definition)
+		if (((Pair<?, ?>) element).getFirst() instanceof Definition)
 			definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
 
 		if (definition instanceof ChildDefinition<?>)
-			report = InstanceValidator.validate(value, (ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
+			report = InstanceValidator.validate(value,
+					(ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
 		else if (definition instanceof TypeDefinition)
 			report = InstanceValidator.validate((Instance) value);
 		else

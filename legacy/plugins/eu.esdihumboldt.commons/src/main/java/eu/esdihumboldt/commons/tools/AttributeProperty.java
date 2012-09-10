@@ -28,18 +28,18 @@ import org.opengis.feature.type.PropertyType;
 /**
  * Hides attribute setting/getting behind {@link Property} facade, uses user
  * data to store value.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class AttributeProperty implements Property {
-	
+
 	/**
 	 * Default property descriptor for attributes.
 	 * 
 	 * XXX for now always a string, at this point we don't have access to the
-	 *   corresponding attribute definition 
+	 * corresponding attribute definition
 	 */
 	private class AttributePropertyDescriptor extends PropertyDescriptorImpl {
 
@@ -51,28 +51,30 @@ public class AttributeProperty implements Property {
 		}
 
 	}
-	
+
 	/**
 	 * Feature user data property name for XML attributes
 	 */
 	public static final String XML_ATTRIBUTES = "XmlAttributes";
-	
+
 	private final Property parent;
-	
+
 	private final String propertyName;
-	
+
 	private final PropertyDescriptor descriptor;
 
 	/**
 	 * Create an attribute property
 	 * 
-	 * @param parent the parent object
-	 * @param propertyName the property name
+	 * @param parent
+	 *            the parent object
+	 * @param propertyName
+	 *            the property name
 	 */
 	public AttributeProperty(Property parent, String propertyName) {
 		this.parent = parent;
 		this.propertyName = propertyName;
-		
+
 		this.descriptor = new AttributePropertyDescriptor();
 	}
 
@@ -105,9 +107,10 @@ public class AttributeProperty implements Property {
 	 */
 	@Override
 	public Map<Object, Object> getUserData() {
-		throw new UnsupportedOperationException("Attribute property doesn't support user data");
+		throw new UnsupportedOperationException(
+				"Attribute property doesn't support user data");
 	}
-	
+
 	/**
 	 * Get the key in the attribute map
 	 * 
@@ -123,16 +126,16 @@ public class AttributeProperty implements Property {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getValue() {
-		Map<String, String> attributes = (Map<String, String>) parent.getUserData().get(XML_ATTRIBUTES);
-		
+		Map<String, String> attributes = (Map<String, String>) parent
+				.getUserData().get(XML_ATTRIBUTES);
+
 		if (attributes != null) {
 			return attributes.get(getKey());
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * @see Property#isNillable()
 	 */
@@ -147,19 +150,21 @@ public class AttributeProperty implements Property {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(Object newValue) {
-		Map<String, String> attributes = (Map<String, String>) parent.getUserData().get(XML_ATTRIBUTES);
+		Map<String, String> attributes = (Map<String, String>) parent
+				.getUserData().get(XML_ATTRIBUTES);
 		if (attributes == null) {
 			attributes = new HashMap<String, String>();
 			parent.getUserData().put(XML_ATTRIBUTES, attributes);
 		}
-		
+
 		attributes.put(getKey(), newValue.toString());
 	}
 
 	/**
 	 * Get the existing attributes
 	 * 
-	 * @param parent the parent of the attribute properties
+	 * @param parent
+	 *            the parent of the attribute properties
 	 * 
 	 * @return the existing attribute properties
 	 */
@@ -167,15 +172,16 @@ public class AttributeProperty implements Property {
 	public static Collection<? extends Property> getAttributeProperties(
 			Property parent) {
 		Collection<Property> result = new ArrayList<Property>();
-		
+
 		Object attributes = parent.getUserData().get(XML_ATTRIBUTES);
 		if (attributes instanceof Map<?, ?>) {
 			Map<String, String> attMap = (Map<String, String>) attributes;
 			for (String attributeName : attMap.keySet()) {
-				result.add(new AttributeProperty(parent, attributeName.substring(1, attributeName.length() - 1)));
+				result.add(new AttributeProperty(parent, attributeName
+						.substring(1, attributeName.length() - 1)));
 			}
 		}
-		
+
 		return result;
 	}
 

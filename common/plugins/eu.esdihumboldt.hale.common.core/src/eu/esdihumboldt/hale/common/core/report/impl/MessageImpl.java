@@ -19,25 +19,26 @@ import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.core.report.Message;
 
 /**
- * Default message implementation 
- *
+ * Default message implementation
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
 @Immutable
 public class MessageImpl implements Message {
-	
+
 	/**
 	 * Get the stack trace from a given throwable
-	 * @param throwable the throwable, may be <code>null</code> 
+	 * 
+	 * @param throwable the throwable, may be <code>null</code>
 	 * @return the stack trace or <code>null</code>
 	 */
 	private static String getStackTrace(Throwable throwable) {
 		if (throwable == null) {
 			return null;
 		}
-		
+
 		StringWriter writer = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(writer);
 		try {
@@ -45,14 +46,14 @@ public class MessageImpl implements Message {
 		} finally {
 			printWriter.close();
 		}
-		
+
 		return writer.toString();
 	}
 
 	private final String message;
-	
+
 	private final String stackTrace;
-	
+
 	private final Throwable throwable;
 
 	/**
@@ -64,7 +65,7 @@ public class MessageImpl implements Message {
 	public MessageImpl(String message, Throwable throwable) {
 		this(message, throwable, getStackTrace(throwable));
 	}
-	
+
 	/**
 	 * Create a new message
 	 * 

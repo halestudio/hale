@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.ui.views.properties.cell.AbstractCellFilter;
 
 /**
  * Filter for cell explanation section.
+ * 
  * @author Simon Templer
  */
 public class HtmlExplanationCellFilter extends AbstractCellFilter {
@@ -28,7 +29,7 @@ public class HtmlExplanationCellFilter extends AbstractCellFilter {
 	public boolean isFiltered(Cell cell) {
 		AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
 		if (function != null) {
-			CellExplanation explanation =  function.getExplanation();
+			CellExplanation explanation = function.getExplanation();
 			if (explanation != null) {
 				String text = explanation.getExplanationAsHtml(cell);
 				if (text != null) {
@@ -40,7 +41,7 @@ public class HtmlExplanationCellFilter extends AbstractCellFilter {
 				}
 			}
 		}
-		
+
 		return true;
 	}
 

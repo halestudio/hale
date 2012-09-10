@@ -1,4 +1,3 @@
-
 package eu.esdihumboldt.hale.ui.service.schema.handler;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -16,12 +15,14 @@ import eu.esdihumboldt.hale.ui.service.schema.internal.EditMappableTypesWizard;
  * @author Kai Schwierczek
  */
 public class EditMappableSourceTypesHandler extends AbstractHandler {
+
 	/**
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(
+				SchemaService.class);
 		schemaService.editMappableTypes(SchemaSpaceID.SOURCE);
 		return null;
 	}

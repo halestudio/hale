@@ -18,47 +18,47 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
 
 /**
  * Detailed about that states namespace, feature class and (nested) properties
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface IDetailedAbout extends IAbout {
-	
+
 	/**
 	 * The main delimiter in the about string, e.g between namespace and feature
 	 * class
 	 */
 	public static final char MAIN_DELIMITER = '/';
-	
+
 	/**
 	 * The property delimiter in the about string
 	 */
 	public static final char PROPERTY_DELIMITER = ';';
-	
+
 	/**
 	 * Get the namespace
 	 * 
 	 * @return the namespace
 	 */
 	public String getNamespace();
-	
+
 	/**
 	 * Get the feature class name
 	 * 
 	 * @return the feature class name
 	 */
 	public String getFeatureClass();
-	
+
 	/**
 	 * Get the list of property names identifying a (nested) property. The first
 	 * property name specifies a property of the feature class identified by
 	 * {@link #getFeatureClass()}, the second property name specifies a property
-	 * of that property and so on.   
+	 * of that property and so on.
 	 * 
 	 * @return the list of property names, may be <code>null</code> if no
-	 *   property is identified by this {@link IAbout}
+	 *         property is identified by this {@link IAbout}
 	 */
 	public List<String> getProperties();
-	
+
 }

@@ -16,11 +16,12 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 
 /**
  * TODO Type description
+ * 
  * @author Simon Templer
  */
 public interface PropertyFunctionWizardDescriptor extends
 		FunctionWizardDescriptor<PropertyFunction> {
-	
+
 	// concrete typed interface
 
 }

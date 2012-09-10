@@ -11,34 +11,33 @@
  */
 package eu.esdihumboldt.specification.workflow.transformer.inputoutputs;
 
-
-
 import java.io.Serializable;
 
-
-/**This interface defines the Units of measure supported for an input or output of
- * a process. A specific input or output of a WPS instance will always have just
- * one measure type (length, area, speed, weight etc)
+/**
+ * This interface defines the Units of measure supported for an input or output
+ * of a process. A specific input or output of a WPS instance will always have
+ * just one measure type (length, area, speed, weight etc)
  * 
  * @author Moses Gone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 
-public interface MeasureUnit  extends Serializable{
+public interface MeasureUnit extends Serializable {
 
-    /** Reference to default unit of measure
-     * 
-     * @return A unit of measure as a string eg KM, M or Miles
-     */
-    public String getUnitOfMeasure();
+	/**
+	 * Reference to default unit of measure
+	 * 
+	 * @return A unit of measure as a string eg KM, M or Miles
+	 */
+	public String getUnitOfMeasure();
 
-
-    /**Sets the Unit of measure of this numerical output (or input)
-     * 
-     * @param uom The unit of meaure
-     */
-    public void setUnitOfMeasure(String uom);
+	/**
+	 * Sets the Unit of measure of this numerical output (or input)
+	 * 
+	 * @param uom
+	 *            The unit of meaure
+	 */
+	public void setUnitOfMeasure(String uom);
 
 }
-

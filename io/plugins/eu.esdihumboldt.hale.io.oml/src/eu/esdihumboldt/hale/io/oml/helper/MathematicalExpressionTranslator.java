@@ -47,16 +47,16 @@ public class MathematicalExpressionTranslator implements FunctionTranslator,
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
 		for (ParameterValue val : params) {
 			// translate "math_expression" to "expression"
 			if (val.getName().equals("math_expression")) {
-				newList.add(new ParameterValue(PARAMETER_EXPRESSION, val
-						.getValue()));
-			} else {
+				newList.add(new ParameterValue(PARAMETER_EXPRESSION, val.getValue()));
+			}
+			else {
 				newList.add(val);
 			}
 		}

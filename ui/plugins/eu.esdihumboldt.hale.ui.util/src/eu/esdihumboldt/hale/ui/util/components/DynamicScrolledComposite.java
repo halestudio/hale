@@ -20,11 +20,14 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * ScrolledComposite that sets sizes for the content Control. <br>
- * Behaves exactly like the default ScrolledComposite, but if expandHorizontal/expandVertical is disabled it sets the contents size to its preferred size in that direction.
+ * Behaves exactly like the default ScrolledComposite, but if
+ * expandHorizontal/expandVertical is disabled it sets the contents size to its
+ * preferred size in that direction.
  * 
  * @author Kai Schwierczek
  */
 public class DynamicScrolledComposite extends ScrolledComposite {
+
 	/**
 	 * @see ScrolledComposite#ScrolledComposite(Composite, int)
 	 */

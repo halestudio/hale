@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.ui.io.ImportSource;
 
 /**
  * Abstract {@link ImportSource} implementation
+ * 
  * @param <P> the supported {@link IOProvider} type
  * 
  * @author Simon Templer
@@ -74,7 +75,7 @@ public abstract class AbstractSource<P extends ImportProvider> implements Import
 	 * {@inheritDoc}<br>
 	 * <br>
 	 * The default implementation does nothing, override to to react on
-	 * activation of the source page. 
+	 * activation of the source page.
 	 */
 	@Override
 	public void onActivate() {

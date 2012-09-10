@@ -23,44 +23,44 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 
 /**
- * Subclass of basic label provider {@link DefinitionLabelProvider}, 
- * which can handel instance metadatas
+ * Subclass of basic label provider {@link DefinitionLabelProvider}, which can
+ * handel instance metadatas
+ * 
  * @author Sebastian Reinhardt
  */
 public class DefinitionMetaCompareLabelProvider extends DefinitionLabelProvider {
 
-	
-	
 	/**
 	 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getText(java.lang.Object)
 	 */
 	@Override
 	public String getText(Object element) {
-		if(element instanceof Set<?>){
+		if (element instanceof Set<?>) {
 			return Messages.InstanceContentProvider_metadata;
 		}
-		if(element instanceof String){
-			//get the correct label from the extension point
+		if (element instanceof String) {
+			// get the correct label from the extension point
 			MetadataInfo meta = MetadataInfoExtension.getInstance().get((String) element);
-			if(meta != null){
-				return meta.getLabel();			
+			if (meta != null) {
+				return meta.getLabel();
 			}
-			else return super.getText(element);
+			else
+				return super.getText(element);
 		}
-		else return super.getText(element);
+		else
+			return super.getText(element);
 	}
-
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getImage(java.lang.Object)
 	 */
 	@Override
-	public Image getImage(Object element){
-		if (element instanceof Set<?>){
+	public Image getImage(Object element) {
+		if (element instanceof Set<?>) {
 			return CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_META);
 		}
-		
+
 		return super.getImage(element);
 	}
-	
+
 }

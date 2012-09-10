@@ -19,10 +19,11 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransfo
 
 /**
  * Extension for {@link PropertyTransformation}s
+ * 
  * @author Simon Templer
  */
-public class PropertyTransformationExtension
-		extends AbstractTransformationExtension<PropertyTransformation<?>, PropertyTransformationFactory> {
+public class PropertyTransformationExtension extends
+		AbstractTransformationExtension<PropertyTransformation<?>, PropertyTransformationFactory> {
 
 	/**
 	 * Factory for {@link PropertyTransformation}s that are defined directly
@@ -41,18 +42,19 @@ public class PropertyTransformationExtension
 	}
 
 	private static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.transformation";
-	
+
 	private static PropertyTransformationExtension instance;
-	
+
 	/**
 	 * Get the extension instance
+	 * 
 	 * @return the extension
 	 */
 	public static PropertyTransformationExtension getInstance() {
 		if (instance == null) {
 			instance = new PropertyTransformationExtension();
 		}
-		
+
 		return instance;
 	}
 
@@ -67,12 +69,12 @@ public class PropertyTransformationExtension
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected PropertyTransformationFactory createFactory(
-			IConfigurationElement conf) throws Exception {
+	protected PropertyTransformationFactory createFactory(IConfigurationElement conf)
+			throws Exception {
 		if (conf.getName().equals("propertyTransformation")) {
 			return new PropertyTransformationConfiguration(conf);
 		}
-		
+
 		return null;
 	}
 

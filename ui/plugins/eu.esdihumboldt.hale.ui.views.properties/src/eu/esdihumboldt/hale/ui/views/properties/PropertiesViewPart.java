@@ -27,10 +27,12 @@ import eu.esdihumboldt.hale.ui.HaleUI;
 /**
  * View part that provides support for association with the properties view
  * based on the property contributor that has support for {@link Definition}s.
+ * 
  * @author Simon Templer
  */
-public abstract class PropertiesViewPart extends ViewPart
-		implements ITabbedPropertySheetPageContributor {
+public abstract class PropertiesViewPart extends ViewPart implements
+		ITabbedPropertySheetPageContributor {
+
 	/**
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -41,8 +43,9 @@ public abstract class PropertiesViewPart extends ViewPart
 	}
 
 	/**
-	 * Since createPartControl does an important job this is used for subclasses.
-	 *
+	 * Since createPartControl does an important job this is used for
+	 * subclasses.
+	 * 
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 * @param parent the parent control
 	 */
@@ -62,18 +65,17 @@ public abstract class PropertiesViewPart extends ViewPart
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if (adapter.equals(IPropertySheetPage.class)) {
-            return new TabbedPropertySheetPage(this);
+			return new TabbedPropertySheetPage(this);
 		}
 		if (adapter.equals(IContextProvider.class)) {
-			return new HALEContextProvider(
-					getSite().getSelectionProvider(),
-					getViewContext());
+			return new HALEContextProvider(getSite().getSelectionProvider(), getViewContext());
 		}
-        return super.getAdapter(adapter);
+		return super.getAdapter(adapter);
 	}
 
 	/**
 	 * Get the view's dynamic help context identifier.
+	 * 
 	 * @return the context id or <code>null</code>
 	 */
 	protected String getViewContext() {

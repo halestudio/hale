@@ -21,26 +21,26 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.ui.common.Editor;
 
-
 /**
  * Simple attribute editor for string values.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class StringEditor extends AbstractEditor<String> {
-	
+
 	private final Text text;
 
 	/**
 	 * Create a string attribute editor.
+	 * 
 	 * @param parent the parent composite
 	 */
 	public StringEditor(Composite parent) {
 		text = new Text(parent, SWT.BORDER | SWT.SINGLE);
-		
+
 		text.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				fireValueChanged(VALUE, null, text.getText());
@@ -48,7 +48,7 @@ public class StringEditor extends AbstractEditor<String> {
 
 		});
 	}
-	
+
 	/**
 	 * @see Editor#getAsText()
 	 */

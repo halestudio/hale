@@ -17,6 +17,7 @@ import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
  * @author Kai Schwierczek
  */
 public class MathExpressionParameterPage extends SourceListParameterPage {
+
 	private Environment environment = new Environment();
 	private Text textField;
 
@@ -56,6 +57,7 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 		super.configure(textField);
 		this.textField = textField;
 		textField.addModifyListener(new ModifyListener() {
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				try {

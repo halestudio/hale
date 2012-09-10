@@ -13,23 +13,23 @@
 package eu.esdihumboldt.specification.workflow.exceptions;
 
 /**
- *
+ * 
  * @author mgone
  */
-public class InconsistentWorkflowException extends Exception{
+public class InconsistentWorkflowException extends Exception {
 
-    private static final long serialVersionUID = 5710590479640849683L;
+	private static final long serialVersionUID = 5710590479640849683L;
 
-    public InconsistentWorkflowException(Throwable cause){
-        super(cause);
-    }
+	public InconsistentWorkflowException(Throwable cause) {
+		super(cause);
+	}
 
-    public InconsistentWorkflowException(String message, Throwable cause){
-        super(message, cause);
-    }
+	public InconsistentWorkflowException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public InconsistentWorkflowException(String message){
-        super(message);
-    }
+	public InconsistentWorkflowException(String message) {
+		super(message);
+	}
 
 }

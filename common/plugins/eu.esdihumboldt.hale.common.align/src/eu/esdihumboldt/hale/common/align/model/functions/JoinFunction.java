@@ -18,11 +18,12 @@ package eu.esdihumboldt.hale.common.align.model.functions;
  * @author Kai Schwierczek
  */
 public interface JoinFunction {
+
 	/**
 	 * Name of the parameter specifying the join function.
 	 */
 	public static final String PARAMETER_JOIN = "join";
-	
+
 	/**
 	 * the join function Id
 	 */

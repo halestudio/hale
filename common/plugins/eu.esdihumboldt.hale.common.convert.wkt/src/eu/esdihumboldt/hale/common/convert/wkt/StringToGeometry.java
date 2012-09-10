@@ -18,10 +18,11 @@ import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverte
 
 /**
  * Converts Strings to Geometries
+ * 
  * @author Kevin Mais
  */
 public class StringToGeometry extends AbstractGeometryConverter<Geometry> {
 
 	// concrete typed class
-	
+
 }

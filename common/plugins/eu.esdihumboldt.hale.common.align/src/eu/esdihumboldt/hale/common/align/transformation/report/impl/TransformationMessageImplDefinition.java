@@ -31,17 +31,19 @@ import eu.esdihumboldt.hale.common.core.report.impl.AbstractMessageDefinition;
 
 /**
  * Object definition for {@link TransformationMessageImpl}
+ * 
  * @author Simon Templer
  */
-public class TransformationMessageImplDefinition extends AbstractMessageDefinition<TransformationMessage> {
+public class TransformationMessageImplDefinition extends
+		AbstractMessageDefinition<TransformationMessage> {
 
 	private static final ALogger _log = ALoggerFactory.getLogger(TransformationMessage.class);
-	
+
 	/**
 	 * Key for the cell
 	 */
 	public static final String KEY_CELL = "cell";
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -55,62 +57,69 @@ public class TransformationMessageImplDefinition extends AbstractMessageDefiniti
 	@Override
 	protected TransformationMessageImpl createMessage(Properties props) {
 		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
-		mapping.loadMapping(new InputSource(
-				AlignmentBean.class.getResourceAsStream("AlignmentBean.xml")));
-		        
+		mapping.loadMapping(new InputSource(AlignmentBean.class
+				.getResourceAsStream("AlignmentBean.xml")));
+
 		XMLContext context = new XMLContext();
 		CellBean bean;
 		try {
 			context.addMapping(mapping);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			bean = (CellBean) unmarshaller.unmarshal(new StringReader(props.getProperty(KEY_CELL)));
-			
-			TransformationMessageImpl message =  new TransformationMessageImpl(bean,
-					props.getProperty(KEY_MESSAGE),
-					null,
-					props.getProperty(KEY_STACK_TRACE));
-			
+
+			TransformationMessageImpl message = new TransformationMessageImpl(bean,
+					props.getProperty(KEY_MESSAGE), null, props.getProperty(KEY_STACK_TRACE));
+
 			return message;
 		} catch (Exception e) {
 			_log.error("Could not recover saved cell.", e.getCause());
 		}
-		
+
 		// if the message could not be recovered
 		return null;
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.report.impl.AbstractMessageDefinition#asProperties(eu.esdihumboldt.hale.common.core.report.Message)
 	 */
 	@Override
 	protected Properties asProperties(TransformationMessage message) {
 		Properties props = super.asProperties(message);
-		
+
 		if (message.getCell() != null) {
 			CellBean bean = message.getCell();
-			
+
 			Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
-			mapping.loadMapping(new InputSource(
-					AlignmentBean.class.getResourceAsStream("AlignmentBean.xml")));
-			        
+			mapping.loadMapping(new InputSource(AlignmentBean.class
+					.getResourceAsStream("AlignmentBean.xml")));
+
 			XMLContext context = new XMLContext();
-			context.setProperty("org.exolab.castor.indent", true); // enable indentation for marshaling as project files should be very small
-			
+			context.setProperty("org.exolab.castor.indent", true); // enable
+																	// indentation
+																	// for
+																	// marshaling
+																	// as
+																	// project
+																	// files
+																	// should be
+																	// very
+																	// small
+
 			StringWriter writer = new StringWriter();
 			try {
 				context.addMapping(mapping);
 				Marshaller marshaller = context.createMarshaller();
-				
+
 				marshaller.setWriter(writer);
 				marshaller.marshal(bean);
-				
+
 				props.setProperty(KEY_CELL, writer.toString());
 			} catch (Exception e) {
 				_log.error("Could not save cell.", e.getCause());
 			}
 		}
-		
+
 		return props;
-		
+
 	}
 }

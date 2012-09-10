@@ -15,17 +15,18 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
- * This utility class can be used to transform an Exception to an Alert that is 
+ * This utility class can be used to transform an Exception to an Alert that is
  * displayed to the use.
  * 
  * @author Michel Kraemer, Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class ExceptionHelper {
 
 	/**
 	 * Handles exceptions and displays an error dialog
+	 * 
 	 * @param message the message displayed in the error dialog
 	 * @param pluginId the identifier of the relevant plugin
 	 * @param t the exception
@@ -35,7 +36,6 @@ public class ExceptionHelper {
 			message = t.getMessage();
 		}
 		Status status = new Status(Status.ERROR, pluginId, message, t);
-		StatusManager.getManager().handle(status,
-				StatusManager.LOG | StatusManager.BLOCK);
+		StatusManager.getManager().handle(status, StatusManager.LOG | StatusManager.BLOCK);
 	}
 }

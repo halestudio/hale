@@ -14,7 +14,7 @@ package eu.esdihumboldt.hale.common.instance.extension.validation;
 
 /**
  * Marker interface for constraint validators.
- *
+ * 
  * @author Kai Schwierczek
  */
 public interface ConstraintValidator {

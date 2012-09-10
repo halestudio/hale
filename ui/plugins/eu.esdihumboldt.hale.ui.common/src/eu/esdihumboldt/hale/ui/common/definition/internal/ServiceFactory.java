@@ -19,22 +19,23 @@ import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 
 /**
  * Service factory for table view related services
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ServiceFactory extends AbstractServiceFactory {
 
 	/**
-	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
+	 * @see AbstractServiceFactory#create(Class, IServiceLocator,
+	 *      IServiceLocator)
 	 */
 	@Override
-	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
-			IServiceLocator locator) {
+	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface,
+			IServiceLocator parentLocator, IServiceLocator locator) {
 		if (serviceInterface.equals(DefinitionLabelFactory.class)) {
 			return new DefaultDefinitionLabelFactory();
 		}
-		
+
 		return null;
 	}
 

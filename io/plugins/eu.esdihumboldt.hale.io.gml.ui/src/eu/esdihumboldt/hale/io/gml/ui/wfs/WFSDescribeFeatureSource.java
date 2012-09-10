@@ -18,7 +18,8 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 
 /**
- * Import source based on WFS DescribeFeatureType requests. 
+ * Import source based on WFS DescribeFeatureType requests.
+ * 
  * @param <P> the supported {@link IOProvider} type
  * 
  * @author Simon Templer

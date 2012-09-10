@@ -17,22 +17,24 @@ import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptualSchema
 
 /**
  * Name: eu.esdihumboldt.modelrepository.abstractfc / ModelTaxonomy <br/>
- * Purpose: The InformationModels are structured according to a simple taxonomy 
+ * Purpose: The InformationModels are structured according to a simple taxonomy
  * in the prototype.<br/>
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface ModelTaxonomy {
 
 	/**
-	 * Retrieve ConceptualSchema(s) chained to a specific ModelTaxonomyNode in 
+	 * Retrieve ConceptualSchema(s) chained to a specific ModelTaxonomyNode in
 	 * the ModelTaxonomy.
 	 * 
-	 * @param _node a ModelTaxonomyNode out of this Service's ModelTaxonomy.
+	 * @param _node
+	 *            a ModelTaxonomyNode out of this Service's ModelTaxonomy.
 	 * @return a List of InformationModels directly attached to the given node.
 	 */
-	public List<ConceptualSchema> getInformationModelsUnderNode(ModelTaxonomyNode _node);
-	
+	public List<ConceptualSchema> getInformationModelsUnderNode(
+			ModelTaxonomyNode _node);
+
 }

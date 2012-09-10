@@ -21,16 +21,16 @@ import eu.esdihumboldt.hale.io.xsd.internal.Messages;
 
 /**
  * Decorator for URI resolvers that supports a {@link ProgressIndicator}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ProgressURIResolver implements CollectionURIResolver {
-	
+
 	private final URIResolver decoratee;
-	
+
 	private final ProgressIndicator progress;
-	
+
 	private String collectionBaseURI;
 
 	/**
@@ -75,13 +75,12 @@ public class ProgressURIResolver implements CollectionURIResolver {
 	 * @see URIResolver#resolveEntity(String, String, String)
 	 */
 	@Override
-	public InputSource resolveEntity(String targetNamespace,
-			String schemaLocation, String baseUri) {
+	public InputSource resolveEntity(String targetNamespace, String schemaLocation, String baseUri) {
 		InputSource is = decoratee.resolveEntity(targetNamespace, schemaLocation, baseUri);
-		
+
 		String url = is.getSystemId();
-		progress.setCurrentTask(Messages.getString("ProgressURIResolver.0") + ((url == null)?(schemaLocation):(url))); //$NON-NLS-1$
-		
+		progress.setCurrentTask(Messages.getString("ProgressURIResolver.0") + ((url == null) ? (schemaLocation) : (url))); //$NON-NLS-1$
+
 		return is;
 	}
 

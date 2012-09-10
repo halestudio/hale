@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.ui.style.service.StyleService;
 
 /**
  * Save the styles present in the {@link StyleService}.
+ * 
  * @author Simon Templer
  */
 public class SaveStyle extends DefaultIOAdvisor<StyleWriter> {
@@ -32,9 +33,9 @@ public class SaveStyle extends DefaultIOAdvisor<StyleWriter> {
 	@Override
 	public void prepareProvider(StyleWriter provider) {
 		super.prepareProvider(provider);
-		
+
 		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
-		
+
 		provider.setStyle(ss.getStyle());
 	}
 

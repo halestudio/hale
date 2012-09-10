@@ -11,17 +11,18 @@
  */
 
 package eu.esdihumboldt.cst.functions.inspire;
+
 /**
  * Constants for the geographical name function
  * 
  * @author Kevin Mais
- *
+ * 
  */
 @SuppressWarnings("javadoc")
 public interface GeographicalNameFunction {
 
 	public static final String ID = "eu.esdihumboldt.cst.functions.inspire.geographicalname";
-	
+
 	public static final String PROPERTY_TEXT = "text"; //$NON-NLS-1$
 	public static final String PROPERTY_SCRIPT = "script"; //$NON-NLS-1$
 	public static final String PROPERTY_TRANSLITERATION = "transliterationScheme"; //$NON-NLS-1$
@@ -33,7 +34,7 @@ public interface GeographicalNameFunction {
 	public static final String PROPERTY_PRONUNCIATIONSOUNDLINK = "pronunciationSoundLink"; //$NON-NLS-1$
 	public static final String PROPERTY_GRAMMA_GENDER = "grammaticalGender"; //$NON-NLS-1$
 	public static final String PROPERTY_GRAMMA_NUMBER = "grammaticalNumber"; //$NON-NLS-1$
-	
+
 	public static final String INSPIRE_IDENTIFIER_PREFIX = "urn:x-inspire:object:id"; //$NON-NLS-1$
-	
+
 }

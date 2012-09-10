@@ -32,16 +32,17 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
  * Test the iterator provided through browseClass.
+ * 
  * @author Simon Templer
  */
 public class BrowseClassIterateTest {
 
 	private static final String TEST_DB = "local:"
-			+ new File(new File(System.getProperty("java.io.tmpdir")),
-					"testDB_" + UUID.randomUUID().toString()).getAbsolutePath();
+			+ new File(new File(System.getProperty("java.io.tmpdir")), "testDB_"
+					+ UUID.randomUUID().toString()).getAbsolutePath();
 
 	private ODatabaseDocumentTx db;
-	
+
 //	private static OServer server;
 
 	/**
@@ -67,7 +68,8 @@ public class BrowseClassIterateTest {
 	/**
 	 * Test if multiple hasNext calls before next change the behavior
 	 */
-	@Ignore // Bug in OrientDB 1.0rc8!
+	@Ignore
+	// Bug in OrientDB 1.0rc8!
 	@Test
 	public void testHasNext() {
 		createMiaAndTim();
@@ -87,11 +89,12 @@ public class BrowseClassIterateTest {
 
 		assertFalse(it.hasNext());
 	}
-	
+
 	/**
 	 * Test if multiple hasNext calls before next change the behavior
 	 */
-	@Ignore // Bug in OrientDB 1.0rc8!
+	@Ignore
+	// Bug in OrientDB 1.0rc8!
 	@Test
 	public void testHasNext2() {
 		createMiaAndTim();
@@ -101,14 +104,14 @@ public class BrowseClassIterateTest {
 		// call hasNext only once
 		it.hasNext();
 		ODocument var1 = it.next();
-		
+
 		it = getDb().browseClass("Person");
-		
+
 		// call hasNext twice
 		it.hasNext();
 		it.hasNext();
 		ODocument var2 = it.next();
-		
+
 		assertEquals(var1, var2);
 	}
 
@@ -119,22 +122,21 @@ public class BrowseClassIterateTest {
 		ODocument docMia = new ODocument("Person");
 		docMia.field("name", "Mia");
 		docMia.field("surname", "Serenade");
-		docMia.field("city", new ODocument("City").field("name", "Tokio")
-				.field("country", "Japan"));
+		docMia.field("city", new ODocument("City").field("name", "Tokio").field("country", "Japan"));
 		docMia.save();
 
 		ODocument docTim = new ODocument("Person");
 		docTim.field("name", "Tim");
 		docTim.field("surname", "Takati");
-		docTim.field("city", new ODocument("City").field("name", "Los Angeles")
-				.field("country", "USA"));
+		docTim.field("city",
+				new ODocument("City").field("name", "Los Angeles").field("country", "USA"));
 		docTim.save();
 
 		// XXX what is the difference between class and cluster?
 		assertEquals(2, getDb().countClass("Person")); // schema?
 		assertEquals(2, getDb().countClusterElements("Person")); // schema-less?
 	}
-	
+
 	/**
 	 * Get the database
 	 * 
@@ -146,12 +148,13 @@ public class BrowseClassIterateTest {
 
 	/**
 	 * Initialize the server
+	 * 
 	 * @throws Exception if creating the DB server fails
 	 */
 	@BeforeClass
 	public static void initServer() throws Exception {
 //		server = EmbeddedOrientDB.getServer();
-		
+
 //		server = OServerMain.create();
 //		server.startup("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
 //		   + "<orient-server>"
@@ -176,7 +179,7 @@ public class BrowseClassIterateTest {
 //		   + "</properties>" 
 //		   + "</orient-server>");
 	}
-	
+
 	/**
 	 * Create the test database
 	 */

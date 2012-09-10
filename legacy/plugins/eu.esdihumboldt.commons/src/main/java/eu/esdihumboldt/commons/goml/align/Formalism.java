@@ -17,26 +17,25 @@ import java.net.URI;
 import eu.esdihumboldt.specification.cst.align.IFormalism;
 
 /**
- * A {@link Formalism} identifies the formal language or structure used to 
+ * A {@link Formalism} identifies the formal language or structure used to
  * express a {@link Schema}.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public class Formalism 
-	implements IFormalism {
+public class Formalism implements IFormalism {
 
 	/**
 	 * The name of this {@link Formalism}.
 	 */
 	private String name;
-	
+
 	/**
 	 * The {@link URI} identifying this {@link Formalism}.
 	 */
 	private URI location;
-	
+
 	// constructors ............................................................
 
 	/**
@@ -48,7 +47,7 @@ public class Formalism
 		this.name = name;
 		this.location = location;
 	}
-	
+
 	// getters / setters .......................................................
 
 	/**
@@ -59,7 +58,8 @@ public class Formalism
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -73,10 +73,11 @@ public class Formalism
 	}
 
 	/**
-	 * @param location the location to set
+	 * @param location
+	 *            the location to set
 	 */
 	public void setLocation(URI location) {
 		this.location = location;
 	}
-	
+
 }

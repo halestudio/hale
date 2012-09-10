@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 
 /**
  * Default instance selection implementation.
+ * 
  * @author Simon Templer
  */
 public class DefaultInstanceSelection extends StructuredSelection implements InstanceSelection {

@@ -28,12 +28,14 @@ import eu.esdihumboldt.util.io.PathUpdate;
  * Updates locations in a project's I/O configurations that are not accessible,
  * e.g. because the project file has been moved. The updater allows correcting
  * paths to files that reside relative to the project.
+ * 
  * @author Simon Templer
  */
 public class LocationUpdater {
-	
+
 	/**
-	 * Update locations in the given project. 
+	 * Update locations in the given project.
+	 * 
 	 * @param project the project object
 	 * @param newProjectLoc the new project location
 	 */
@@ -43,7 +45,8 @@ public class LocationUpdater {
 		if (saveconfig == null)
 			return;
 
-		URI targetLoc = URI.create(saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET));
+		URI targetLoc = URI.create(saveconfig.getProviderConfiguration().get(
+				ExportProvider.PARAM_TARGET));
 		if (!targetLoc.equals(newProjectLoc)) {
 			PathUpdate update = new PathUpdate(targetLoc, newProjectLoc);
 
@@ -65,7 +68,7 @@ public class LocationUpdater {
 					}
 				}
 			}
-			
+
 			// update project file infos
 			for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
 				URI location = fileInfo.getLocation();
@@ -74,8 +77,8 @@ public class LocationUpdater {
 					fileInfo.setLocation(location);
 					/*
 					 * For this the fallback method is not called intentionally,
-					 * as in the project service, this update has no effect,
-					 * as the project files are laready loaded in the
+					 * as in the project service, this update has no effect, as
+					 * the project files are laready loaded in the
 					 * DefaultProjectReader.
 					 */
 				}
@@ -84,9 +87,10 @@ public class LocationUpdater {
 	}
 
 	/**
-	 * Update the path to a resource if automatic update fails.
-	 * The default implementation returns <code>null</code>, which means
-	 * the location is not updated.
+	 * Update the path to a resource if automatic update fails. The default
+	 * implementation returns <code>null</code>, which means the location is not
+	 * updated.
+	 * 
 	 * @param oldLocation the old resource location
 	 * @return the replacement resource location or <code>null</code>
 	 */

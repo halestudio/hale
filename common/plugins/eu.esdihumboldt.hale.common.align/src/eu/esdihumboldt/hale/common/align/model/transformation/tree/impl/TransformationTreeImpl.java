@@ -41,32 +41,34 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Default {@link TransformationTree} implementation
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class TransformationTreeImpl extends AbstractGroupNode implements TransformationTree {
-	
+
 	private final TypeDefinition type;
 	private final SourceNodeFactory sourceNodes;
 	private final List<TargetNode> children;
 
 	/**
 	 * Create a transformation tree
+	 * 
 	 * @param type the type definition serving as root
 	 * @param alignment the alignment holding the cells
 	 */
 	public TransformationTreeImpl(TypeDefinition type, Alignment alignment) {
 		super(null);
 		this.type = type;
-		
+
 		sourceNodes = new SourceNodeFactory();
-		
-		// dummy target type entity (there may not be any contexts associated to target types)
-		TypeEntityDefinition targetType = new TypeEntityDefinition(type, 
-				SchemaSpaceID.TARGET, null);
-		
+
+		// dummy target type entity (there may not be any contexts associated to
+		// target types)
+		TypeEntityDefinition targetType = new TypeEntityDefinition(type, SchemaSpaceID.TARGET, null);
+
 		Collection<? extends Cell> cells = alignment.getPropertyCells(null, targetType);
-		
+
 		// partition cells by child
 		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
 		for (Cell cell : cells) {
@@ -76,25 +78,26 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 					List<ChildContext> path = target.getDefinition().getPropertyPath();
 					if (path != null && !path.isEmpty()) {
 						// store cell with child
-						childCells.put(AlignmentUtil.deriveEntity(
-								target.getDefinition(), 1), node);
+						childCells.put(AlignmentUtil.deriveEntity(target.getDefinition(), 1), node);
 					}
 				}
 				else {
-					// now, that's bad - obviously a cell with targets in more than one type!
+					// now, that's bad - obviously a cell with targets in more
+					// than one type!
 					throw new IllegalStateException();
 				}
 			}
 		}
-		
+
 		// create child cells
 		List<TargetNode> childList = new ArrayList<TargetNode>();
-		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap().entrySet()) {
-			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), 
-					childEntry.getValue(), type, 1, this);
+		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap()
+				.entrySet()) {
+			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), childEntry.getValue(),
+					type, 1, this);
 			childList.add(childNode);
 		}
-		
+
 		children = Collections.unmodifiableList(childList);
 	}
 
@@ -106,8 +109,7 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 		if (visitor.visit(this)) {
 			if (visitor.isFromTargetToSource()) {
 				// visit children
-				for (TargetNode child : getChildren(
-						visitor.includeAnnotatedNodes())) {
+				for (TargetNode child : getChildren(visitor.includeAnnotatedNodes())) {
 					child.accept(visitor);
 				}
 			}

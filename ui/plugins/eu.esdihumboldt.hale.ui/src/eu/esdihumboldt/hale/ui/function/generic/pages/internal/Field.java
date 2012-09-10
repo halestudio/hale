@@ -43,82 +43,95 @@ import eu.esdihumboldt.hale.ui.function.common.EntitySelector;
 
 /**
  * Represents named entities in a function
+ * 
  * @param <S> the entity selector type
  * @param <F> the field type
  * @author Simon Templer
  */
-public abstract class Field<F extends AbstractParameter, S extends EntitySelector<F>> extends Observable {
+public abstract class Field<F extends AbstractParameter, S extends EntitySelector<F>> extends
+		Observable {
 
 	private final F definition;
 	private final SchemaSpaceID ssid;
-	
+
 	private final List<S> selectors = new ArrayList<S>();
 	private final Composite selectorContainer;
 	private final ISelectionChangedListener selectionChangedListener;
-	
+
 	private boolean valid = false;
 
 	/**
 	 * Create a field
+	 * 
 	 * @param definition the field definition
 	 * @param ssid the schema space
 	 * @param parent the parent composite
 	 * @param candidates the entity candidates
 	 * @param initialCell the initial cell
 	 */
-	public Field(F definition, SchemaSpaceID ssid, 
-			final Composite parent, Set<EntityDefinition> candidates,
-			Cell initialCell) {
+	public Field(F definition, SchemaSpaceID ssid, final Composite parent,
+			Set<EntityDefinition> candidates, Cell initialCell) {
 		super();
-		
+
 		this.definition = definition;
 		this.ssid = ssid;
-		
+
 		ControlDecoration descriptionDecoration = null;
-		
+
 		// field name
 		if (!definition.getDisplayName().isEmpty()) {
 			Label name = new Label(parent, SWT.NONE);
 			name.setText(definition.getDisplayName());
 			name.setLayoutData(GridDataFactory.swtDefaults().create());
-			
+
 			if (definition.getDescription() != null) {
 				// add decoration
-				descriptionDecoration = new ControlDecoration(name,
-						SWT.RIGHT, parent);
+				descriptionDecoration = new ControlDecoration(name, SWT.RIGHT, parent);
 			}
 		}
-		
+
 		selectorContainer = new Composite(parent, SWT.NONE);
 		selectorContainer.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
-		// left margin 6 pixels for ControlDecorations to have place within this component
-		// so they're not drawn outside of the ScrolledComposite in case it's present.
-		selectorContainer.setLayout(GridLayoutFactory.fillDefaults().extendedMargins(6, 0, 0, 0).create());
+		// left margin 6 pixels for ControlDecorations to have place within this
+		// component
+		// so they're not drawn outside of the ScrolledComposite in case it's
+		// present.
+		selectorContainer.setLayout(GridLayoutFactory.fillDefaults().extendedMargins(6, 0, 0, 0)
+				.create());
 
 		selectionChangedListener = new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				int changedIndex = selectors.indexOf(event.getSelectionProvider());
 				S changedSelector = selectors.get(changedIndex);
 
 				// add/remove selector
-				// check whether all selectors are valid (so must the changed one be)
+				// check whether all selectors are valid (so must the changed
+				// one be)
 				if (countValidEntities() == selectors.size()) {
-					// maybe last invalid entity was set, check whether to add another one
+					// maybe last invalid entity was set, check whether to add
+					// another one
 					if (Field.this.definition.getMaxOccurrence() != selectors.size()) {
-						S newSelector = createEntitySelector(Field.this.ssid, Field.this.definition, selectorContainer);
+						S newSelector = createEntitySelector(Field.this.ssid,
+								Field.this.definition, selectorContainer);
 						newSelector.getControl().setLayoutData(
-								GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).create());
+								GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
+										.grab(true, false).create());
 						addSelector(newSelector);
 
-						// layout new selector in scrolled pane 
+						// layout new selector in scrolled pane
 						selectorContainer.getParent().getParent().layout();
 					}
-				} else {
-					// check whether a field was set to None and remove the field if it isn't the last one and minOccurrence is still met
+				}
+				else {
+					// check whether a field was set to None and remove the
+					// field if it isn't the last one and minOccurrence is still
+					// met
 					if (event.getSelection().isEmpty() && changedIndex != selectors.size() - 1
 							&& Field.this.definition.getMinOccurrence() < selectors.size()) {
-						// check whether first selector will be removed and it had the fields description
+						// check whether first selector will be removed and it
+						// had the fields description
 						boolean createDescriptionDecoration = changedIndex == 0
 								&& Field.this.definition.getDisplayName().isEmpty()
 								&& !Field.this.definition.getDescription().isEmpty();
@@ -126,28 +139,31 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 
 						// add new description decoration if necessary
 						if (createDescriptionDecoration) {
-							ControlDecoration descriptionDecoration = new ControlDecoration(selectors.get(0)
-									.getControl(), SWT.RIGHT | SWT.TOP, parent);
-							descriptionDecoration.setDescriptionText(Field.this.definition.getDescription());
-							FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-									FieldDecorationRegistry.DEC_INFORMATION);
+							ControlDecoration descriptionDecoration = new ControlDecoration(
+									selectors.get(0).getControl(), SWT.RIGHT | SWT.TOP, parent);
+							descriptionDecoration.setDescriptionText(Field.this.definition
+									.getDescription());
+							FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+									.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 							descriptionDecoration.setImage(fieldDecoration.getImage());
 							descriptionDecoration.setMarginWidth(2);
 						}
 
-						// necessary layout call for control decoration to appear at the correct place
+						// necessary layout call for control decoration to
+						// appear at the correct place
 						selectorContainer.getParent().getParent().layout();
 
 						// add mandatory decoration to next selector if needed
 						if (changedIndex < Field.this.definition.getMinOccurrence()) {
-							S newMandatorySelector = selectors.get(Field.this.definition.getMinOccurrence() - 1);
+							S newMandatorySelector = selectors.get(Field.this.definition
+									.getMinOccurrence() - 1);
 
-							ControlDecoration mandatory = new ControlDecoration(newMandatorySelector.getControl(),
-									SWT.LEFT | SWT.TOP, parent);
-							FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-									FieldDecorationRegistry.DEC_REQUIRED);
-							mandatory.setImage(CommonSharedImages.getImageRegistry()
-									.get(CommonSharedImages.IMG_DECORATION_MANDATORY));
+							ControlDecoration mandatory = new ControlDecoration(
+									newMandatorySelector.getControl(), SWT.LEFT | SWT.TOP, parent);
+							FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+									.getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+							mandatory.setImage(CommonSharedImages.getImageRegistry().get(
+									CommonSharedImages.IMG_DECORATION_MANDATORY));
 							mandatory.setDescriptionText(fieldDecoration.getDescription());
 						}
 					}
@@ -160,9 +176,9 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 
 		// determine number of contained fields and the corresponding values
 		int initialFieldCount = definition.getMinOccurrence();
-		
-		//TODO determine filters from definition
-		
+
+		// TODO determine filters from definition
+
 		List<EntityDefinition> fieldValues = new ArrayList<EntityDefinition>();
 		if (initialCell != null) {
 			// entities from cell
@@ -175,7 +191,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 				break;
 			case TARGET:
 				if (initialCell.getTarget() != null) {
-					entities= initialCell.getTarget().get(definition.getName());
+					entities = initialCell.getTarget().get(definition.getName());
 				}
 				break;
 			default:
@@ -183,33 +199,39 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 			}
 			if (entities != null) {
 				for (Entity entity : entities) {
-					fieldValues.add(entity.getDefinition()); //FIXME what about the information in the entity?!
+					fieldValues.add(entity.getDefinition()); // FIXME what about
+																// the
+																// information
+																// in the
+																// entity?!
 				}
 			}
-		} else if (candidates != null && !candidates.isEmpty()) {
+		}
+		else if (candidates != null && !candidates.isEmpty()) {
 			// populate from candidates
-			LinkedHashSet<EntityDefinition> rotatingCandidates = new LinkedHashSet<EntityDefinition>(candidates);
+			LinkedHashSet<EntityDefinition> rotatingCandidates = new LinkedHashSet<EntityDefinition>(
+					candidates);
 
 			// try to add candidates for each required entity
 			int limit = Math.max(initialFieldCount, candidates.size());
 			for (int i = 0; i < limit; i++) {
 				boolean found = false;
 				for (EntityDefinition candidate : rotatingCandidates) {
-					//XXX checked against filters later, because here filters aren't present yet.
-					//if (true) {
+					// XXX checked against filters later, because here filters
+					// aren't present yet.
+					// if (true) {
 					fieldValues.add(candidate);
 					rotatingCandidates.remove(candidate);
 					rotatingCandidates.add(candidate);
 					found = true;
 					break;
-					//}
+					// }
 				}
 				if (!found) {
 					fieldValues.add(null);
 				}
 			}
 		}
-
 
 		// adapt initialFieldCount if needed (and possible)
 		if (fieldValues.size() >= initialFieldCount) {
@@ -223,10 +245,12 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 		for (int num = 0; num < initialFieldCount; num++) {
 			// create entity selector
 			S selector = createEntitySelector(ssid, definition, selectorContainer);
-			selector.getControl().setLayoutData(GridDataFactory.swtDefaults().
-					align(SWT.FILL, SWT.CENTER).grab(true, false).create());
+			selector.getControl().setLayoutData(
+					GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+							.create());
 
-			// do initial selection (before adding it to not trigger selection event)
+			// do initial selection (before adding it to not trigger selection
+			// event)
 			EntityDefinition value = (num < fieldValues.size()) ? (fieldValues.get(num)) : (null);
 			if (value == null || !selector.accepts(value))
 				selector.setSelection(new StructuredSelection());
@@ -238,24 +262,25 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 
 			// add decorations
 			if (num < definition.getMinOccurrence()) {
-				ControlDecoration mandatory = new ControlDecoration(
-						selector.getControl(), SWT.LEFT | SWT.TOP, parent);
+				ControlDecoration mandatory = new ControlDecoration(selector.getControl(), SWT.LEFT
+						| SWT.TOP, parent);
 				FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
 						.getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
-				mandatory.setImage(CommonSharedImages.getImageRegistry()
-						.get(CommonSharedImages.IMG_DECORATION_MANDATORY));
+				mandatory.setImage(CommonSharedImages.getImageRegistry().get(
+						CommonSharedImages.IMG_DECORATION_MANDATORY));
 				mandatory.setDescriptionText(fieldDecoration.getDescription());
 			}
 
 			if (descriptionDecoration == null && definition.getDescription() != null)
-				descriptionDecoration = new ControlDecoration(selector.getControl(), SWT.RIGHT | SWT.TOP, parent);
+				descriptionDecoration = new ControlDecoration(selector.getControl(), SWT.RIGHT
+						| SWT.TOP, parent);
 		}
 
 		// setup description decoration
 		if (descriptionDecoration != null) {
 			descriptionDecoration.setDescriptionText(definition.getDescription());
-			FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-					FieldDecorationRegistry.DEC_INFORMATION);
+			FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 			descriptionDecoration.setImage(fieldDecoration.getImage());
 			descriptionDecoration.setMarginWidth(2);
 		}
@@ -265,16 +290,17 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 
 	/**
 	 * Create an entity selector
+	 * 
 	 * @param ssid the schema space
 	 * @param field the field definition
 	 * @param parent the parent composite
 	 * @return the entity selector
 	 */
-	protected abstract S createEntitySelector(SchemaSpaceID ssid,
-			F field, Composite parent);
-	
+	protected abstract S createEntitySelector(SchemaSpaceID ssid, F field, Composite parent);
+
 	/**
 	 * Get the selectors associated with the field
+	 * 
 	 * @return the selectors
 	 */
 	protected List<S> getSelectors() {
@@ -283,15 +309,17 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 
 	/**
 	 * Add a selector
+	 * 
 	 * @param selector the entity selector to add
 	 */
 	protected void addSelector(S selector) {
 		selectors.add(selector);
 		selector.addSelectionChangedListener(selectionChangedListener);
 	}
-	
+
 	/**
 	 * Remove a selector
+	 * 
 	 * @param selector the entity selector to remove
 	 */
 	protected void removeSelector(S selector) {
@@ -302,12 +330,13 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 
 	/**
 	 * Get the schema space
+	 * 
 	 * @return the schema space
 	 */
 	public SchemaSpaceID getSchemaSpace() {
 		return ssid;
 	}
-	
+
 	/**
 	 * Counts valid entities.
 	 * 
@@ -316,17 +345,17 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 	private int countValidEntities() {
 		int validCount = 0;
 		for (EntitySelector<F> selector : selectors) {
-			if (!selector.getSelection().isEmpty()) //TODO improve condition
+			if (!selector.getSelection().isEmpty()) // TODO improve condition
 				validCount++;
 		}
 		return validCount;
 	}
-	
+
 	/**
 	 * Updates the valid state
 	 */
 	private void updateState() {
-		boolean newValid = countValidEntities() >= definition.getMinOccurrence();		
+		boolean newValid = countValidEntities() >= definition.getMinOccurrence();
 		boolean change = newValid != valid;
 		valid = newValid;
 		if (change) {
@@ -334,9 +363,10 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 			notifyObservers();
 		}
 	}
-	
+
 	/**
 	 * Determines if the field is valid in its current configuration
+	 * 
 	 * @return if the field is valid
 	 */
 	public boolean isValid() {
@@ -345,6 +375,7 @@ public abstract class Field<F extends AbstractParameter, S extends EntitySelecto
 
 	/**
 	 * Fill the given map with the field's entities
+	 * 
 	 * @param target the map to add the entities to
 	 */
 	public void fillEntities(ListMultimap<String, Entity> target) {

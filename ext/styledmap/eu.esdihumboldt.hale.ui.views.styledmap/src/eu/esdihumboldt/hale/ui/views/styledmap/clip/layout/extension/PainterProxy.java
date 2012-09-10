@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.ClipPainter;
 
 /**
  * Proxy for a painter that is to be layouted.
+ * 
  * @author Simon Templer
  */
 public interface PainterProxy extends ClipPainter {
@@ -24,16 +25,17 @@ public interface PainterProxy extends ClipPainter {
 	 * Enable the painter.
 	 */
 	public void enable();
-	
+
 	/**
 	 * Disable the painter.
 	 */
 	public void disable();
-	
+
 	/**
 	 * Get the painter name.
+	 * 
 	 * @return the painter name, <code>null</code> if not known
 	 */
 	public String getName();
-	
+
 }

@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 
 /**
  * Location updater that asks the user if updating a path fails.
+ * 
  * @author Simon Templer
  */
 public class UILocationUpdater extends LocationUpdater {
@@ -39,17 +40,18 @@ public class UILocationUpdater extends LocationUpdater {
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 		final AtomicReference<URI> result = new AtomicReference<URI>();
 		display.syncExec(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				String uriString = oldLocation.toString();
-				MessageDialog.openWarning(display.getActiveShell(), "Loading Error", "Can't find " + uriString);
+				MessageDialog.openWarning(display.getActiveShell(), "Loading Error", "Can't find "
+						+ uriString);
 
 				String target = uriString.substring(uriString.lastIndexOf("/") + 1);
 				String extension = "*" + uriString.substring(uriString.lastIndexOf("."));
 				String[] extensions = new String[] { extension };
-				FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN
-						| SWT.SHEET);
+				FileDialog filedialog = new FileDialog(Display.getCurrent().getActiveShell(),
+						SWT.OPEN | SWT.SHEET);
 				filedialog.setFilterExtensions(extensions);
 				filedialog.setFileName(target);
 
@@ -61,7 +63,7 @@ public class UILocationUpdater extends LocationUpdater {
 				}
 			}
 		});
-		
+
 		return result.get();
 	}
 

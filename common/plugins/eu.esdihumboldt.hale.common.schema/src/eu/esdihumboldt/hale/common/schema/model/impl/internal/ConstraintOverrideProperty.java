@@ -20,11 +20,12 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
 
 /**
  * Decorator for {@link PropertyDefinition}s that overrides given constraints.
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class ConstraintOverrideProperty extends AbstractPropertyDecorator {
-	
+
 	private final AbstractDefinition<PropertyConstraint> constraints;
 
 	/**
@@ -34,14 +35,14 @@ public class ConstraintOverrideProperty extends AbstractPropertyDecorator {
 	 * @param property the property to decorate
 	 * @param constraints the overriding constraints
 	 */
-	public ConstraintOverrideProperty(PropertyDefinition property, 
+	public ConstraintOverrideProperty(PropertyDefinition property,
 			PropertyConstraint... constraints) {
 		super(property);
-		
+
 		this.constraints = new AbstractDefinition<PropertyConstraint>(property.getName()) {
 			// empty implementation
 		};
-		
+
 		// add constraints
 		for (PropertyConstraint constraint : constraints) {
 			this.constraints.setConstraint(constraint);
@@ -52,13 +53,12 @@ public class ConstraintOverrideProperty extends AbstractPropertyDecorator {
 	 * @see AbstractPropertyDecorator#getConstraint(Class)
 	 */
 	@Override
-	public <T extends PropertyConstraint> T getConstraint(
-			Class<T> constraintType) {
+	public <T extends PropertyConstraint> T getConstraint(Class<T> constraintType) {
 		// return overriding constraint if present
 		if (constraints.hasConstraint(constraintType)) {
 			return constraints.getConstraint(constraintType);
 		}
-		
+
 		return super.getConstraint(constraintType);
 	}
 

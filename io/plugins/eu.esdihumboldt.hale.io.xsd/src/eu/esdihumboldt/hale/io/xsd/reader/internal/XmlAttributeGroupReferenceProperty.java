@@ -22,14 +22,15 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 
 /**
  * Group property referencing a XML attribute group
+ * 
  * @author Simon Templer
  */
 public class XmlAttributeGroupReferenceProperty extends LazyGroupPropertyDefinition {
 
 	private final QName groupName;
-	
+
 	private XmlAttributeGroup referencedGroup;
-	
+
 	/**
 	 * Create a property that references a XML attribute group
 	 * 
@@ -39,26 +40,25 @@ public class XmlAttributeGroupReferenceProperty extends LazyGroupPropertyDefinit
 	 * @param groupName the attribute group name
 	 * @param allowFlatten if the group may be replaced by its children
 	 */
-	public XmlAttributeGroupReferenceProperty(QName name,
-			DefinitionGroup declaringType, XmlIndex index,
-			QName groupName, boolean allowFlatten) {
+	public XmlAttributeGroupReferenceProperty(QName name, DefinitionGroup declaringType,
+			XmlIndex index, QName groupName, boolean allowFlatten) {
 		super(name, declaringType, index, allowFlatten);
-		
+
 		this.groupName = groupName;
 	}
-	
+
 	/**
 	 * @see LazyGroupPropertyDefinition#initChildren()
 	 */
 	@Override
 	protected void initChildren() {
 		XmlAttributeGroup group = resolveAttributeGroup();
-		
+
 		if (group == null) {
-			throw new IllegalStateException("Referenced attribute group could not be found: " + 
-					groupName.toString());
+			throw new IllegalStateException("Referenced attribute group could not be found: "
+					+ groupName.toString());
 		}
-		
+
 		// redeclare children
 		for (ChildDefinition<?> child : group.getDeclaredChildren()) {
 			ChildDefinition<?> redeclaredChild = DefinitionUtil.redeclareChild(child, this);
@@ -70,7 +70,7 @@ public class XmlAttributeGroupReferenceProperty extends LazyGroupPropertyDefinit
 		if (referencedGroup == null) {
 			referencedGroup = index.getAttributeGroups().get(groupName);
 		}
-		
+
 		return referencedGroup;
 	}
 

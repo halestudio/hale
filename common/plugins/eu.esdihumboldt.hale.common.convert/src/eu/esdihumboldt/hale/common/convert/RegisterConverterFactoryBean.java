@@ -18,46 +18,50 @@ import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.core.convert.converter.GenericConverter;
 
-
 /**
  * Factory bean for adding a converter to a converter registry
+ * 
  * @author Simon Templer
  */
 public class RegisterConverterFactoryBean extends MethodInvokingFactoryBean {
-	
+
 	/**
 	 * Set the converter registry to add the converter to.
+	 * 
 	 * @param registry the converter registry
 	 */
 	public void setRegistry(ConverterRegistry registry) {
 		setTargetObject(registry);
 	}
-	
+
 	/**
 	 * Add a plain converter to the registry.
+	 * 
 	 * @param converter the converter
 	 */
 	public void setConverter(Converter<?, ?> converter) {
 		setTargetMethod("addConverter");
-		setArguments(new Object[]{converter});
+		setArguments(new Object[] { converter });
 	}
 
 	/**
 	 * Add a generic converter to the registry.
+	 * 
 	 * @param converter the generic converter
 	 */
 	public void setGenericConverter(GenericConverter converter) {
 		setTargetMethod("addConverter");
-		setArguments(new Object[]{converter});
+		setArguments(new Object[] { converter });
 	}
 
 	/**
 	 * Add a ranged converter factory to the registry.
+	 * 
 	 * @param converterFactory the converter factory
 	 */
 	public void setConverterFactory(ConverterFactory<?, ?> converterFactory) {
 		setTargetMethod("addConverterFactory");
-		setArguments(new Object[]{converterFactory});
+		setArguments(new Object[] { converterFactory });
 	}
 
 }

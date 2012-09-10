@@ -18,6 +18,7 @@ package eu.esdihumboldt.util.validator;
  * @author Kai Schwierczek
  */
 public interface Validator {
+
 	/**
 	 * Checks whether the given value is valid.
 	 * 

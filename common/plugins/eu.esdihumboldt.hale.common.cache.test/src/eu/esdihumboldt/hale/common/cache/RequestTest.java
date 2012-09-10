@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.common.cache;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,6 +23,7 @@ import org.junit.Test;
 
 /**
  * Tests for cached requests
+ * 
  * @author Andreas Burchert
  */
 public class RequestTest {
@@ -32,17 +33,19 @@ public class RequestTest {
 	 */
 	@Test
 	public void testRequest() {
-		//FIXME activate cache?
+		// FIXME activate cache?
 		try {
 			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
 			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
 			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
 			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
-			Request.getInstance().get(new URI("http://www.fraunhofer.de/rss/presse.jsp?et_cid=2&et_lid=2"));
-			
+			Request.getInstance().get(
+					new URI("http://www.fraunhofer.de/rss/presse.jsp?et_cid=2&et_lid=2"));
+
 			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
 			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
-			Request.getInstance().get(new URI("http://www.fraunhofer.de/rss/presse.jsp?et_cid=2&et_lid=2"));
+			Request.getInstance().get(
+					new URI("http://www.fraunhofer.de/rss/presse.jsp?et_cid=2&et_lid=2"));
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 			assertTrue(false);
@@ -57,8 +60,8 @@ public class RequestTest {
 			assertTrue(false);
 		}
 		assertTrue(true);
-		//FIXME any better way to check the test results?
-		
+		// FIXME any better way to check the test results?
+
 		CacheManager.getInstance().shutdown();
 	}
 }

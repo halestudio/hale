@@ -48,9 +48,8 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 	public void init() {
 		super.init();
 
-		Coordinate[] coordinates = new Coordinate[] {
-				new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
-				new Coordinate(0.01, -3.2) };
+		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
+				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
 		LineString linestring1 = geomFactory.createLineString(coordinates);
 
 		LineString[] lines = new LineString[] { linestring1 };
@@ -60,15 +59,13 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test orientable curve geometries read from a GML 3.2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testorientableCurveGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/curve/sample-orientablecurve-gml32.xml")
-						.toURI());
+				getClass().getResource("/data/curve/sample-orientablecurve-gml32.xml").toURI());
 
 		// twelve instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -83,8 +80,7 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkOrientableCurvePropertyInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 

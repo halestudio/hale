@@ -23,6 +23,7 @@ import org.osgi.framework.BundleContext;
  * @author Kai Schwierczek
  */
 public class InstanceValidationUIPlugin extends AbstractUIPlugin {
+
 	/**
 	 * The plug-in ID
 	 */
@@ -35,7 +36,7 @@ public class InstanceValidationUIPlugin extends AbstractUIPlugin {
 	 * Key for shared instance validation image.
 	 */
 	public static final String IMG_INSTANCE_VALIDATION = "IMG_INSTANCE_VALIDATION";
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -63,7 +64,7 @@ public class InstanceValidationUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static InstanceValidationUIPlugin getDefault() {
@@ -71,9 +72,9 @@ public class InstanceValidationUIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path
+	 * 
 	 * @param path the path
 	 * @return the image descriptor
 	 */

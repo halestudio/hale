@@ -42,57 +42,57 @@ import eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceImpl;
 
 /**
  * Factory for HALE services
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class HaleServiceFactory extends AbstractServiceFactory {
 
 	/**
-	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
+	 * @see AbstractServiceFactory#create(Class, IServiceLocator,
+	 *      IServiceLocator)
 	 */
 	@Override
-	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
-			IServiceLocator locator) {
+	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface,
+			IServiceLocator parentLocator, IServiceLocator locator) {
 		if (ReportService.class.equals(serviceInterface)) {
 			return new ReportServiceImpl();
 		}
-		
+
 		if (InstanceService.class.equals(serviceInterface)) {
 			return OrientInstanceService.getInstance(
 					(SchemaService) locator.getService(SchemaService.class),
 					(ProjectService) locator.getService(ProjectService.class),
 					(AlignmentService) locator.getService(AlignmentService.class));
 		}
-		
+
 		if (AlignmentService.class.equals(serviceInterface)) {
 			return new AlignmentServiceUndoSupport(new AlignmentServiceImpl(
 					(ProjectService) locator.getService(ProjectService.class)));
 		}
-		
+
 		if (ProjectService.class.equals(serviceInterface)) {
 			return new ProjectServiceImpl();
 		}
-		
+
 		if (RecentFilesService.class.equals(serviceInterface)) {
 			return new RecentFilesServiceImpl();
 		}
-		
+
 		if (SchemaService.class.equals(serviceInterface)) {
-			return new SchemaServiceImpl(
-					(ProjectService) locator.getService(ProjectService.class));
+			return new SchemaServiceImpl((ProjectService) locator.getService(ProjectService.class));
 		}
-		
+
 		if (EntityDefinitionService.class.equals(serviceInterface)) {
 			return new EntityDefinitionServiceUndoSupport(new EntityDefinitionServiceImpl(
 					(AlignmentService) locator.getService(AlignmentService.class),
 					(ProjectService) locator.getService(ProjectService.class)));
 		}
-		
+
 		if (InstanceSampleService.class.equals(serviceInterface)) {
 			return new InstanceSampleServiceImpl();
 		}
-		
+
 		if (GeometrySchemaService.class.equals(serviceInterface)) {
 			return new ProjectGeometrySchemaService(
 					(ProjectService) locator.getService(ProjectService.class));
@@ -101,13 +101,13 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (InstanceValidationService.class.equals(serviceInterface))
 			return new InstanceValidationServiceImpl(
 					(InstanceService) locator.getService(InstanceService.class),
-					(ReportService) locator.getService(ReportService.class)); 
-		
+					(ReportService) locator.getService(ReportService.class));
+
 		if (PopulationService.class.equals(serviceInterface)) {
 			return new PopulationServiceImpl(
 					(InstanceService) locator.getService(InstanceService.class));
 		}
-		
+
 		return null;
 	}
 

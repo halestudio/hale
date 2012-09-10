@@ -33,20 +33,21 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * Service that listens to the instance service and validates instances.
- *
+ * 
  * @author Kai Schwierczek
  */
-public class InstanceValidationServiceImpl extends InstanceServiceAdapter implements InstanceValidationService {
+public class InstanceValidationServiceImpl extends InstanceServiceAdapter implements
+		InstanceValidationService {
+
 	private final InstanceService instanceService;
 	private final ReportService reportService;
 	private InstanceValidationJob validationJob;
 	private boolean liveValidation = true; // TODO store somewhere? project?
-	private final TypeSafeListenerList<InstanceValidationListener> listeners =
-			new TypeSafeListenerList<InstanceValidationListener>();
+	private final TypeSafeListenerList<InstanceValidationListener> listeners = new TypeSafeListenerList<InstanceValidationListener>();
 
 	/**
 	 * Creates the instance validation service.
-	 *
+	 * 
 	 * @param instanceService the instance service to use
 	 * @param reportService the report service to use
 	 */
@@ -57,8 +58,6 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 
 		instanceService.addListener(this);
 	}
-
-	
 
 	/**
 	 * @see InstanceServiceListener#datasetChanged(DataSet)
@@ -74,6 +73,7 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 			validationJob = new InstanceValidationJob(instances);
 			validationJob.schedule();
 			validationJob.addJobChangeListener(new JobChangeAdapter() {
+
 				@Override
 				public void done(IJobChangeEvent event) {
 					validationJob = null;
@@ -95,15 +95,16 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 
 	/**
 	 * A Job that runs the instance validation.
-	 *
+	 * 
 	 * @author Kai Schwierczek
 	 */
 	private class InstanceValidationJob extends Job {
+
 		InstanceCollection instances;
 
 		/**
 		 * Default constructor.
-		 *
+		 * 
 		 * @param instances the instances to validate
 		 */
 		public InstanceValidationJob(InstanceCollection instances) {
@@ -116,12 +117,14 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 		 */
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			InstanceValidationReport report = InstanceValidator.validateInstances(instances, monitor);
+			InstanceValidationReport report = InstanceValidator.validateInstances(instances,
+					monitor);
 			if (!monitor.isCanceled()) {
 				reportService.addReport(report);
 				for (InstanceValidationListener listener : listeners)
 					listener.instancesValidated(report);
-			} else
+			}
+			else
 				return Status.CANCEL_STATUS;
 			monitor.done();
 
@@ -145,8 +148,6 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 		listeners.remove(listener);
 	}
 
-
-
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService#isValidationEnabled()
 	 */
@@ -154,8 +155,6 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 	public boolean isValidationEnabled() {
 		return liveValidation;
 	}
-
-
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService#setValidationEnabled(boolean)

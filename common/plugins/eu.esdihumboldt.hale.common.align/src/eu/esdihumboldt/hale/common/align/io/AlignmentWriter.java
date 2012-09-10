@@ -17,12 +17,14 @@ import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 
 /**
  * Provides support for writing alignments
+ * 
  * @author Simon Templer
  */
 public interface AlignmentWriter extends ExportProvider {
-	
+
 	/**
 	 * Set the alignment to write
+	 * 
 	 * @param alignment the alignment
 	 */
 	public void setAlignment(Alignment alignment);

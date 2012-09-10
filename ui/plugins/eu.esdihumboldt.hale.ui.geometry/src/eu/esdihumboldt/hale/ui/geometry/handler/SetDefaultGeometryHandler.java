@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 
 /**
  * Set a property as the default geometry.
+ * 
  * @author Simon Templer
  */
 public class SetDefaultGeometryHandler extends AbstractHandler {
@@ -42,9 +43,9 @@ public class SetDefaultGeometryHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		
+
 		/*
-		 * Set the defaut geometry to the first valid child entity definition 
+		 * Set the defaut geometry to the first valid child entity definition
 		 * from the selection (for the type the entity definition is associated
 		 * to)
 		 */
@@ -54,20 +55,22 @@ public class SetDefaultGeometryHandler extends AbstractHandler {
 					EntityDefinition def = (EntityDefinition) element;
 					if (!def.getPropertyPath().isEmpty()) {
 						// path must not be empty
-						//XXX is this true? we could set the default geometry to the type to use all geometries
+						// XXX is this true? we could set the default geometry
+						// to the type to use all geometries
 
 						List<QName> path = new ArrayList<QName>(def.getPropertyPath().size());
 						for (ChildContext child : def.getPropertyPath()) {
 							path.add(child.getChild().getName());
 						}
-						
-						GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
+
+						GeometrySchemaService gss = (GeometrySchemaService) PlatformUI
+								.getWorkbench().getService(GeometrySchemaService.class);
 						gss.setDefaultGeometry(def.getType(), path);
 					}
 				}
 			}
 		}
-		
+
 		// otherwise does nothing
 		return null;
 	}

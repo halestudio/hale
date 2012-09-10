@@ -24,23 +24,24 @@ import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHookFactory;
 /**
  * Default {@link TransformationTreeHook} factory based on a configuration
  * element.
+ * 
  * @author Simon Templer
  */
-public class DefaultTreeHookFactory extends
-		AbstractConfigurationFactory<TransformationTreeHook> implements
-		TransformationTreeHookFactory {
+public class DefaultTreeHookFactory extends AbstractConfigurationFactory<TransformationTreeHook>
+		implements TransformationTreeHookFactory {
 
 	private final TreeState state;
 
 	/**
 	 * Create a {@link TransformationTreeHook} factory from the given
 	 * configuration element.
+	 * 
 	 * @param conf the configuration element
 	 * @param state the associated tree state
 	 */
 	public DefaultTreeHookFactory(IConfigurationElement conf, TreeState state) {
 		super(conf, "hook");
-		
+
 		this.state = state;
 	}
 

@@ -49,7 +49,7 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		if (treeObserver != null) {
 			treeObserver.stop();
 		}
-		
+
 		if (context != null) {
 			treeObserver = new TreeLayoutObserver(context, null);
 		}
@@ -73,8 +73,7 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		int line = 1;
 		List<TreeNode> children = new ArrayList<TreeNode>();
 		int count = superRoot.getChildren().size();
-		for (Iterator<TreeNode> iterator = superRoot.getChildren().iterator(); iterator
-				.hasNext();) {
+		for (Iterator<TreeNode> iterator = superRoot.getChildren().iterator(); iterator.hasNext();) {
 
 			TreeNode rootInfo = iterator.next();
 			computePosition(rootInfo, count, line, 0);
@@ -97,8 +96,8 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		}
 	}
 
-	private void computePosition(TreeNode entityInfo, double numberOfNodes,
-			double currentNode, double currentColumn) {
+	private void computePosition(TreeNode entityInfo, double numberOfNodes, double currentNode,
+			double currentColumn) {
 
 		double x = ((currentColumn + 1) / 8) * bounds.width;
 		double y = currentNode / (numberOfNodes + 1) * bounds.height;

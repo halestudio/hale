@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * @author Kai Schwierczek
  */
 public class ParameterPageExtension extends AbstractExtension<ParameterPage, ParameterPageFactory> {
+
 	private static ParameterPageExtension instance;
 
 	/**
@@ -50,7 +51,8 @@ public class ParameterPageExtension extends AbstractExtension<ParameterPage, Par
 	 */
 	@Override
 	protected ParameterPageFactory createFactory(IConfigurationElement conf) throws Exception {
-		if (conf.getName().equals("propertyParameterPage") || conf.getName().equals("typeParameterPage"))
+		if (conf.getName().equals("propertyParameterPage")
+				|| conf.getName().equals("typeParameterPage"))
 			return new ParameterPageFactoryImpl(conf);
 
 		return null;

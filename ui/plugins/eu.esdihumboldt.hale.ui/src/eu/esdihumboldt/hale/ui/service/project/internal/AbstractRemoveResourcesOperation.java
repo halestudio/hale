@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  * @author Kai Schwierczek
  */
 public abstract class AbstractRemoveResourcesOperation extends AbstractOperation {
+
 	private final String actionId;
 	private List<IOConfiguration> removedResources;
 
@@ -46,11 +47,13 @@ public abstract class AbstractRemoveResourcesOperation extends AbstractOperation
 	}
 
 	/**
-	 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+	 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
+	 *      org.eclipse.core.runtime.IAdaptable)
 	 */
 	@Override
 	public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 		removedResources = ps.removeResources(actionId);
 		return Status.OK_STATUS;
 	}
@@ -58,7 +61,8 @@ public abstract class AbstractRemoveResourcesOperation extends AbstractOperation
 	/**
 	 * This implementation simply calls execute (thus final).
 	 * 
-	 * @see org.eclipse.core.commands.operations.AbstractOperation#redo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+	 * @see org.eclipse.core.commands.operations.AbstractOperation#redo(org.eclipse.core.runtime.IProgressMonitor,
+	 *      org.eclipse.core.runtime.IAdaptable)
 	 */
 	@Override
 	public final IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -66,11 +70,13 @@ public abstract class AbstractRemoveResourcesOperation extends AbstractOperation
 	}
 
 	/**
-	 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+	 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor,
+	 *      org.eclipse.core.runtime.IAdaptable)
 	 */
 	@Override
 	public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 		for (IOConfiguration conf : removedResources) {
 			ps.executeAndRemember(conf);
 		}

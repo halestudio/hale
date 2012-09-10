@@ -27,29 +27,29 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
  * Abstract {@link InstanceWriter} base implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
 public abstract class AbstractInstanceWriter extends AbstractExportProvider implements
 		InstanceWriter {
-	
+
 //	private String commonSRSName;
-	
+
 	private InstanceCollection instances;
-	
+
 	private SchemaSpace targetSchema;
 
 	/**
 	 * @see AbstractExportProvider#validate()
 	 * 
-	 * Additionally checks for instances
+	 *      Additionally checks for instances
 	 */
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		
+
 		if (instances == null || instances.isEmpty()) {
 			fail("No instances for export given");
 		}
@@ -73,7 +73,7 @@ public abstract class AbstractInstanceWriter extends AbstractExportProvider impl
 	@Override
 	public List<? extends Locatable> getValidationSchemas() {
 		Preconditions.checkState(targetSchema != null);
-		
+
 		List<Locatable> result = new ArrayList<Locatable>();
 		Iterables.addAll(result, targetSchema.getSchemas());
 		return result;

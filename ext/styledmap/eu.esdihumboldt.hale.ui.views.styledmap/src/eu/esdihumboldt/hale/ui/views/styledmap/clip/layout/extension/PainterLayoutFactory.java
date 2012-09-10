@@ -19,15 +19,16 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
 
 /**
  * Interface for {@link PainterLayout} factories
+ * 
  * @author Simon Templer
  */
-public interface PainterLayoutFactory extends
-		ExtensionObjectFactory<PainterLayout> {
+public interface PainterLayoutFactory extends ExtensionObjectFactory<PainterLayout> {
 
 	/**
 	 * Get the painters to be layouted.
+	 * 
 	 * @return a list with a proxy for each painter
 	 */
 	public List<PainterProxy> getPaintersToLayout();
-	
+
 }

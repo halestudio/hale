@@ -21,25 +21,25 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * Properties section with definition name
+ * 
  * @author Simon Templer
  */
 public class DefinitionNameSection extends DefaultDefinitionSection<Definition<?>> {
 
 	private Text namespaceText;
-	
+
 	private Text localNameText;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "Namespace:", "Local name:");
 		namespaceText = getText();
 		localNameText = getText2();
 	}
-
 
 	/**
 	 * @see AbstractPropertySection#refresh()
@@ -49,18 +49,18 @@ public class DefinitionNameSection extends DefaultDefinitionSection<Definition<?
 		namespaceText.setText(getDefinition().getName().getNamespaceURI());
 		localNameText.setText(getDefinition().getName().getLocalPart());
 	}
-	
+
 	/**
 	 * @return the namespaceText
 	 */
-	public Text getNamespace(){
+	public Text getNamespace() {
 		return namespaceText;
 	}
-	
+
 	/**
 	 * @return the localNameText
 	 */
-	public Text getLocalName(){
+	public Text getLocalName() {
 		return localNameText;
 	}
 }

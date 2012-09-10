@@ -22,16 +22,17 @@ import eu.esdihumboldt.hale.ui.util.wizard.MultiWizard;
 
 /**
  * Wizard for creating a new relation.
+ * 
  * @author Simon Templer
  */
 public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public NewRelationWizard() {
 		super();
-		
+
 		setWindowTitle("New relation");
 	}
 
@@ -49,23 +50,25 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 	@Override
 	public boolean performFinish() {
 		// performFinish of the function wizard was called first
-		
+
 		FunctionWizard functionWizard = getSelectionPage().getFunctionWizard();
-		
+
 		if (functionWizard == null) {
 			return false;
 		}
-		
+
 		MutableCell cell = functionWizard.getResult();
 		if (cell != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			as.addCell(cell);
 		}
-		
+
 		// save page configuration
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 		getSelectionPage().store(ps.getConfigurationService());
-		
+
 		return true;
 	}
 

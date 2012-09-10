@@ -34,12 +34,13 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 
 /**
  * Test for reading composite curve geometries
+ * 
  * @author Patrick Lieb
  */
 public class CompositeCurveGeometryTest extends AbstractHandlerTest {
-	
+
 	private MultiLineString reference;
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
 	 */
@@ -47,20 +48,18 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 	public void init() {
 		super.init();
 
-		Coordinate[] coordinates = new Coordinate[] {
-				new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
-				new Coordinate(0.01, -3.2) };
+		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
+				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
 		LineString linestring1 = geomFactory.createLineString(coordinates);
 
 		LineString[] lines = new LineString[] { linestring1 };
 		reference = geomFactory.createMultiLineString(lines);
 	}
-	
+
 	/**
 	 * Test composite curve geometries read from a GML 3.2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testCompositeCurveGml32() throws Exception {
@@ -81,8 +80,7 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkCompositeCurvePropertyInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 

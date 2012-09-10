@@ -19,17 +19,19 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 /**
  * {@link ResourceIterator} adapter for a normal iterator that can perform a
  * conversion from the iterator elements to a target element type.
+ * 
  * @param <S> the source object type served by the wrapped iterator
  * @param <T> the object type served by the resource iterator
  * @author Simon Templer
  */
 public abstract class GenericResourceIteratorAdapter<S, T> implements ResourceIterator<T> {
-	
+
 	private Iterator<S> iterator;
 
 	/**
 	 * Create a {@link ResourceIterator} adapter for the given iterator.
-	 * @param iterator the iterator to adapt 
+	 * 
+	 * @param iterator the iterator to adapt
 	 */
 	public GenericResourceIteratorAdapter(Iterator<S> iterator) {
 		super();
@@ -54,6 +56,7 @@ public abstract class GenericResourceIteratorAdapter<S, T> implements ResourceIt
 
 	/**
 	 * Convert an object before it is returned by {@link #next()}.
+	 * 
 	 * @param next the object to convert
 	 * @return the converted object
 	 */

@@ -19,27 +19,32 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationF
 
 /**
  * Factory for {@link TransformationFunction}s
- * @param <T> the concrete transformation function type 
+ * 
+ * @param <T> the concrete transformation function type
  * 
  * @author Simon Templer
  */
-public interface TransformationFactory<T extends TransformationFunction<?>> extends ExtensionObjectFactory<T> {
-	
+public interface TransformationFactory<T extends TransformationFunction<?>> extends
+		ExtensionObjectFactory<T> {
+
 	/**
 	 * Get the identifier of the engine the transformation must be executed
 	 * with.
+	 * 
 	 * @return the engine ID or <code>null</code>
 	 */
 	public String getEngineId();
-	
+
 	/**
 	 * Get the identifier of the function the transformation implements.
+	 * 
 	 * @return the ID of the associated function
 	 */
 	public String getFunctionId();
-	
+
 	/**
 	 * Get the execution parameters for the transformation
+	 * 
 	 * @return the defined execution parameters
 	 */
 	public Map<String, String> getExecutionParameters();

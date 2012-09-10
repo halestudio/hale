@@ -29,7 +29,7 @@ public class CodeListUIPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static CodeListUIPlugin plugin;
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -57,7 +57,7 @@ public class CodeListUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static CodeListUIPlugin getDefault() {
@@ -65,9 +65,9 @@ public class CodeListUIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path
+	 * 
 	 * @param path the path
 	 * @return the image descriptor
 	 */

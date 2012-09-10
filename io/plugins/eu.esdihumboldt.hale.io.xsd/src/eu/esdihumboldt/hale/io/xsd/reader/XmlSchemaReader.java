@@ -111,21 +111,20 @@ import eu.esdihumboldt.util.Identifiers;
 import gnu.trove.TObjectIntHashMap;
 
 /**
- * The main functionality of this class is to load an XML schema file (XSD)
- * and create a schema with {@link TypeDefinition}s. This implementation
- * is based on the Apache XmlSchema library 
- * ({@link "http://ws.apache.org/commons/XmlSchema/"}).
+ * The main functionality of this class is to load an XML schema file (XSD) and
+ * create a schema with {@link TypeDefinition}s. This implementation is based on
+ * the Apache XmlSchema library (
+ * {@link "http://ws.apache.org/commons/XmlSchema/"}).
  * 
- * It is necessary use this library instead of the GeoTools XML schema loader, 
+ * It is necessary use this library instead of the GeoTools XML schema loader,
  * because the GeoTools version cannot handle GML 3.2 based files.
  * 
  * @author Simon Templer
  * @author Bernd Schneiders
  * @author Thorsten Reitz
  */
-public class XmlSchemaReader 
-	extends AbstractSchemaReader {
-	
+public class XmlSchemaReader extends AbstractSchemaReader {
+
 	/**
 	 * The display name constraint for choices
 	 */
@@ -135,28 +134,28 @@ public class XmlSchemaReader
 	 * The log
 	 */
 	private static ALogger _log = ALoggerFactory.getLogger(XmlSchemaReader.class);
-	
+
 	/**
 	 * The XML definition index
 	 */
 	private XmlIndex index;
-	
+
 	/**
-	 * Holds the number of created groups for a parent. The parent identifier is 
-	 * mapped to the number of groups. 
+	 * Holds the number of created groups for a parent. The parent identifier is
+	 * mapped to the number of groups.
 	 */
 	private TObjectIntHashMap<String> groupCounter;
-	
+
 	/**
 	 * The current reporter
 	 */
 	private IOReporter reporter;
-	
+
 	/**
 	 * The generated namespace prefixes
 	 */
 	private Identifiers<String> namespaceGeneratedPrefixes = new Identifiers<String>("ns", true, 1);
-	
+
 	/**
 	 * @see SchemaReader#getSchema()
 	 */
@@ -179,7 +178,7 @@ public class XmlSchemaReader
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		
+
 		if (getSharedTypes() != null) {
 			for (TypeDefinition type : getSharedTypes().getTypes()) {
 				if (type instanceof XmlTypeDefinition) {
@@ -197,32 +196,40 @@ public class XmlSchemaReader
 			throws IOProviderConfigurationException, IOException {
 		progress.begin(Messages.getString("ApacheSchemaProvider.21"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
 		this.reporter = reporter;
-		
-		//XXX cache should be used through supplier mechanism
+
+		// XXX cache should be used through supplier mechanism
 //		try {
 //			is = Request.getInstance().get(location);
 //		} catch (Exception e) {
 //			is = locationURL.openStream();
 //		}
-		
+
 		XmlSchema xmlSchema = null;
 		XmlSchemaCollection schemaCol = new XmlSchemaCollection();
 		// Check if the file is located on web
 		URI location = getSource().getLocation();
 		if (location.getHost() == null) {
-			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
+			schemaCol
+					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
 			schemaCol.setBaseUri(findBaseUri(location));
-		} else if (location.getScheme().equals("bundleresource")) { //$NON-NLS-1$
-			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
+		}
+		else if (location.getScheme().equals("bundleresource")) { //$NON-NLS-1$
+			schemaCol
+					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
 			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
 		else {
 //			URIResolver resolver = schemaCol.getSchemaResolver();
 //			schemaCol.setSchemaResolver(new ProgressURIResolver((resolver == null)?(new DefaultURIResolver()):(resolver), progress));
-			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress)); //XXX ok using this resolver?
+			schemaCol
+					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress)); // XXX
+																										// ok
+																										// using
+																										// this
+																										// resolver?
 			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
-		
+
 		InputStream is = getSource().getInput();
 		StreamSource ss = new StreamSource(is);
 		ss.setSystemId(location.toString());
@@ -233,23 +240,23 @@ public class XmlSchemaReader
 		if (namespace == null) {
 			namespace = XMLConstants.NULL_NS_URI;
 		}
-		
+
 		xmlSchema.setSourceURI(location.toString());
-		
+
 		// create index
 		index = new XmlIndex(namespace, location);
-		
+
 		// add namespace prefixes
-		//XXX instead done for each schema
+		// XXX instead done for each schema
 //		NamespacePrefixList namespaces = xmlSchema.getNamespaceContext();
 //		Map<String, String> prefixes = index.getPrefixes();
 //		for (String prefix : namespaces.getDeclaredPrefixes()) {
 //			prefixes.put(namespaces.getNamespaceURI(prefix), prefix);
 //		}
-		
+
 		// create group counter
 		groupCounter = new TObjectIntHashMap<String>();
-		
+
 		Set<String> imports = new HashSet<String>();
 		imports.add(location.toString());
 
@@ -257,141 +264,152 @@ public class XmlSchemaReader
 		try {
 			is = XmlSchemaReader.class.getResourceAsStream("/schemas/XMLSchema.xsd");
 			ss = new StreamSource(is);
-			schemaCol.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
-			schemaCol.setBaseUri(findBaseUri(XmlSchemaReader.class.getResource("/schemas/XMLSchema.xsd").toURI()) + "/");
+			schemaCol
+					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
+			schemaCol.setBaseUri(findBaseUri(XmlSchemaReader.class.getResource(
+					"/schemas/XMLSchema.xsd").toURI())
+					+ "/");
 			XmlSchema xsSchema = schemaCol.read(ss, null);
 			is.close();
 			xsSchema.setSourceURI("http://www.w3.org/2001/XMLSchema.xsd");
 			XmlSchemaImport xmlSchemaImport = new XmlSchemaImport();
 			xmlSchemaImport.setSchema(xsSchema);
-	
+
 			// add it to includes as XmlSchemaImport (not XmlSchemaInclude!)
 			xmlSchema.getIncludes().add(xmlSchemaImport);
 		} catch (Exception e) {
 			_log.error("Exception while loading XML Schema schema", e);
 		}
-		
+
 		loadSchema(location.toString(), xmlSchema, imports, progress, true);
-		
+
 		groupCounter.clear();
-		
+
 		reporter.setSuccess(true);
 		return reporter;
 	}
-	
+
 	/**
 	 * Load the feature types defined by the given schema
 	 * 
-	 * @param schemaLocation the schema location 
+	 * @param schemaLocation the schema location
 	 * @param xmlSchema the schema
-	 * @param imports the imports/includes that were already
-	 *   loaded or where loading has been started
+	 * @param imports the imports/includes that were already loaded or where
+	 *            loading has been started
 	 * @param progress the progress indicator
 	 * @param mainSchema states if this is a main schema and therefore elements
-	 *   declared here should be flagged mappable
+	 *            declared here should be flagged mappable
 	 */
-	protected void loadSchema(String schemaLocation, XmlSchema xmlSchema, 
-			Set<String> imports, ProgressIndicator progress, boolean mainSchema) {
+	protected void loadSchema(String schemaLocation, XmlSchema xmlSchema, Set<String> imports,
+			ProgressIndicator progress, boolean mainSchema) {
 		String namespace = xmlSchema.getTargetNamespace();
 		if (namespace == null) {
 			namespace = XMLConstants.NULL_NS_URI;
 		}
-		
+
 		// add namespace prefixes
 		NamespacePrefixList namespaces = xmlSchema.getNamespaceContext();
 		addPrefixes(namespaces, namespace, mainSchema);
-	
+
 		// the schema items
 		XmlSchemaObjectCollection items = xmlSchema.getItems();
-		
+
 		// go through all schema items
 		for (int i = 0; i < items.getCount(); i++) {
 			XmlSchemaObject item = items.getItem(i);
-			
+
 			if (item instanceof XmlSchemaElement) {
 				// global element declaration
 				XmlSchemaElement element = (XmlSchemaElement) item;
 				// determine type
 				XmlTypeDefinition elementType = null;
-				
+
 				if (element.getSchemaTypeName() != null) {
 					// reference to type
 					elementType = index.getOrCreateType(element.getSchemaTypeName());
 				}
 				else if (element.getSchemaType() != null) {
-					// element has internal type definition, generate anonymous type name
-					QName typeName = new QName(element.getQName().getNamespaceURI(),
-							element.getQName().getLocalPart() + "_AnonymousType"); //$NON-NLS-1$
+					// element has internal type definition, generate anonymous
+					// type name
+					QName typeName = new QName(element.getQName().getNamespaceURI(), element
+							.getQName().getLocalPart() + "_AnonymousType"); //$NON-NLS-1$
 					// create type
-					elementType = createType(element.getSchemaType(), typeName,
-							schemaLocation, namespace, mainSchema);
+					elementType = createType(element.getSchemaType(), typeName, schemaLocation,
+							namespace, mainSchema);
 				}
 				else if (element.getQName() != null) {
 					// element with no type
 					elementType = index.getOrCreateType(XmlTypeUtil.NAME_ANY_TYPE);
 				}
-				//XXX what about element.getRefName()? 
-				
+				// XXX what about element.getRefName()?
+
 				if (elementType != null) {
 					// the element name
-					QName elementName = new QName(namespace, element.getName()); //XXX use element QName instead?
+					QName elementName = new QName(namespace, element.getName()); // XXX
+																					// use
+																					// element
+																					// QName
+																					// instead?
 					// the substitution group
 					QName subGroup = element.getSubstitutionGroup();
-					//TODO do we also need an index for substitutions?
-					
+					// TODO do we also need an index for substitutions?
+
 					// create schema element
-					XmlElement schemaElement = new XmlElement(elementName, 
-							elementType, subGroup);
-					
+					XmlElement schemaElement = new XmlElement(elementName, elementType, subGroup);
+
 					// set metadata
 					setMetadata(schemaElement, element, schemaLocation);
-					
+
 					// extend XmlElements constraint
 					XmlElements xmlElements = elementType.getConstraint(XmlElements.class);
 					xmlElements.addElement(schemaElement);
 					// set custom display name
 					elementType.setConstraint(new ElementName(xmlElements));
-					
+
 					// set Mappable constraint (e.g. Mappable)
-					// for types with an associated element it can be determined on the spot if it is mappable
+					// for types with an associated element it can be determined
+					// on the spot if it is mappable
 					elementType.setConstraint(MappingRelevantFlag.get(mainSchema));
-					//XXX needed? may result in conflicts when defining mappable types manually XXX the element is also marked with the Mappable constraint, to help with cases where multiple elements are defined for one
+					// XXX needed? may result in conflicts when defining
+					// mappable types manually XXX the element is also marked
+					// with the Mappable constraint, to help with cases where
+					// multiple elements are defined for one
 //					schemaElement.setConstraint(MappableFlag.get(mainSchema));
-					
+
 					// store element in index
 					index.getElements().put(elementName, schemaElement);
-				} else {
+				}
+				else {
 					reporter.error(new IOMessageImpl(MessageFormat.format(
-							"No type for element {0} found.", element.getName()), 
-							null, element.getLineNumber(), element.getLinePosition()));
+							"No type for element {0} found.", element.getName()), null, element
+							.getLineNumber(), element.getLinePosition()));
 				}
 			}
 			else if (item instanceof XmlSchemaType) {
 				// complex or simple type
-				createType((XmlSchemaType) item, null, schemaLocation,
-						namespace, mainSchema);
+				createType((XmlSchemaType) item, null, schemaLocation, namespace, mainSchema);
 			}
 			else if (item instanceof XmlSchemaAttribute) {
 				// schema attribute that might be referenced somewhere
 				XmlSchemaAttribute att = (XmlSchemaAttribute) item;
 				if (att.getQName() != null) {
-					XmlTypeDefinition type = getAttributeType(att, null, 
-							schemaLocation);
+					XmlTypeDefinition type = getAttributeType(att, null, schemaLocation);
 					if (type == null) {
-						//XXX if this occurs we might need a attribute referencing attribute
-						reporter.error(new IOMessageImpl("Could not determine attribute type", 
+						// XXX if this occurs we might need a attribute
+						// referencing attribute
+						reporter.error(new IOMessageImpl("Could not determine attribute type",
 								null, att.getLineNumber(), att.getLinePosition()));
 					}
 					else {
 						XmlAttribute attribute = new XmlAttribute(att.getQName(), type);
-						
+
 						index.getAttributes().put(attribute.getName(), attribute);
 					}
 				}
 				else {
 					reporter.warn(new IOMessageImpl(MessageFormat.format(
-							"Attribute could not be processed: {0}", att.getName()), 
-							null, att.getLineNumber(), att.getLinePosition()));
+							"Attribute could not be processed: {0}", att.getName()), null, att
+							.getLineNumber(), att.getLinePosition()));
 				}
 			}
 			else if (item instanceof XmlSchemaAttributeGroup) {
@@ -403,9 +421,8 @@ public class XmlSchemaReader
 					index.getAttributeGroups().put(attributeGroup.getName(), attGroup);
 				}
 				else {
-					reporter.warn(new IOMessageImpl(
-							"Attribute group could not be processed", 
-							null, attributeGroup.getLineNumber(), attributeGroup.getLinePosition()));
+					reporter.warn(new IOMessageImpl("Attribute group could not be processed", null,
+							attributeGroup.getLineNumber(), attributeGroup.getLinePosition()));
 				}
 			}
 			else if (item instanceof XmlSchemaGroup) {
@@ -413,13 +430,12 @@ public class XmlSchemaReader
 				XmlSchemaGroup schemaGroup = (XmlSchemaGroup) item;
 				if (schemaGroup.getName() != null) {
 					XmlGroup group = new XmlGroup(true);
-					createPropertiesFromParticle(group, schemaGroup.getParticle(), 
-							schemaLocation, namespace, false);
+					createPropertiesFromParticle(group, schemaGroup.getParticle(), schemaLocation,
+							namespace, false);
 					index.getGroups().put(schemaGroup.getName(), group);
 				}
 				else {
-					reporter.warn(new IOMessageImpl(
-							"Group could not be processed", null, 
+					reporter.warn(new IOMessageImpl("Group could not be processed", null,
 							schemaGroup.getLineNumber(), schemaGroup.getLinePosition()));
 				}
 			}
@@ -430,59 +446,71 @@ public class XmlSchemaReader
 				// notations are ignored
 			}
 			else {
-				reporter.error(new IOMessageImpl(
-						"Unrecognized global definition: " + item.getClass().getSimpleName(), 
-						null, item.getLineNumber(), item.getLinePosition()));
+				reporter.error(new IOMessageImpl("Unrecognized global definition: "
+						+ item.getClass().getSimpleName(), null, item.getLineNumber(), item
+						.getLinePosition()));
 			}
 		}
-		
+
 		// Set of include locations
 		Set<String> includes = new HashSet<String>();
-		
+
 		// handle imports
 		XmlSchemaObjectCollection externalItems = xmlSchema.getIncludes();
 		if (externalItems.getCount() > 0) {
 			_log.info("Loading includes and imports for schema at " + schemaLocation); //$NON-NLS-1$
 		}
-		
+
 		for (int i = 0; i < externalItems.getCount(); i++) {
 			try {
 				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
 				XmlSchema importedSchema = imp.getSchema();
 				String location = importedSchema.getSourceURI();
-				if (!(imports.contains(location))) { // only add schemas that were not already added
-					imports.add(location); // place a marker in the map to prevent loading the location in the call to loadSchema 
-					loadSchema(location, importedSchema, imports, progress,
-							mainSchema && imp instanceof XmlSchemaInclude); // is part of main schema if it's a main schema include
+				if (!(imports.contains(location))) { // only add schemas that
+														// were not already
+														// added
+					imports.add(location); // place a marker in the map to
+											// prevent loading the location in
+											// the call to loadSchema
+					loadSchema(location, importedSchema, imports, progress, mainSchema
+							&& imp instanceof XmlSchemaInclude); // is part of
+																	// main
+																	// schema if
+																	// it's a
+																	// main
+																	// schema
+																	// include
 				}
 				if (imp instanceof XmlSchemaInclude) {
 					includes.add(location);
 				}
 			} catch (Throwable e) {
-				reporter.error(new IOMessageImpl("Error adding imported schema from " + 
-						schemaLocation, e)); //$NON-NLS-1$
+				reporter.error(new IOMessageImpl("Error adding imported schema from "
+						+ schemaLocation, e)); //$NON-NLS-1$
 			}
 		}
-		
+
 		_log.info("Creating types for schema at " + schemaLocation); //$NON-NLS-1$
-		
+
 		progress.setCurrentTask(MessageFormat.format(
 				Messages.getString("ApacheSchemaProvider.33"), namespace)); //$NON-NLS-1$
 	}
 
 	/**
 	 * Add namespace prefixes from a schema to the XmlIndex.
+	 * 
 	 * @param namespaces the namespace prefixes defined in the (single) schema
 	 * @param defaultNamespace the default namespace of the schema
 	 * @param mainSchema specifies if the schema is the main schema
 	 */
 	private void addPrefixes(NamespacePrefixList namespaces, String defaultNamespace,
 			boolean mainSchema) {
-		Map<String, String> prefixes = index.getPrefixes(); // namespaces mapped to prefixes
+		Map<String, String> prefixes = index.getPrefixes(); // namespaces mapped
+															// to prefixes
 		Set<String> orphanedNamespaces = new HashSet<String>();
 		for (String prefix : namespaces.getDeclaredPrefixes()) {
 			String ns = namespaces.getNamespaceURI(prefix);
-			
+
 			if (!prefixes.containsKey(ns)) {
 				// prefix for namespace is not yet included
 				if (prefixes.containsValue(prefix)) {
@@ -497,15 +525,23 @@ public class XmlSchemaReader
 		}
 		// handle orphaned namespaces
 		for (String ns : orphanedNamespaces) {
-			if (!XMLConstants.XML_NS_URI.equals(ns)) { // exclude XML namespace, its prefix is fixed
+			if (!XMLConstants.XML_NS_URI.equals(ns)) { // exclude XML namespace,
+														// its prefix is fixed
 				String prefix = namespaceGeneratedPrefixes.getId(ns);
 				prefixes.put(ns, prefix);
 			}
 		}
 		// special handling of default namespace (add it if not known)
-		if (!mainSchema && !prefixes.containsKey(defaultNamespace) 
-				&& !XMLConstants.XML_NS_URI.equals(defaultNamespace)) { // exclude XML namespace, its prefix is fixed
-			// generate a namespace prefix for imported schemas that might have none
+		if (!mainSchema && !prefixes.containsKey(defaultNamespace)
+				&& !XMLConstants.XML_NS_URI.equals(defaultNamespace)) { // exclude
+																		// XML
+																		// namespace,
+																		// its
+																		// prefix
+																		// is
+																		// fixed
+			// generate a namespace prefix for imported schemas that might have
+			// none
 			String prefix = namespaceGeneratedPrefixes.getId(defaultNamespace);
 			prefixes.put(defaultNamespace, prefix);
 		}
@@ -517,12 +553,12 @@ public class XmlSchemaReader
 	 * index.
 	 * 
 	 * @param schemaType the schema type
-	 * @param typeName the type name to use for the type, <code>null</code>
-	 *   if the name of the schema type shall be used
+	 * @param typeName the type name to use for the type, <code>null</code> if
+	 *            the name of the schema type shall be used
 	 * @param schemaLocation the schema location
 	 * @param schemaNamespace the schema namespace
 	 * @param mainSchema if the type definition is a global definition in a main
-	 *   schema
+	 *            schema
 	 * @return the created type
 	 */
 	private XmlTypeDefinition createType(XmlSchemaType schemaType, QName typeName,
@@ -530,77 +566,77 @@ public class XmlSchemaReader
 		if (typeName == null) {
 			typeName = schemaType.getQName();
 		}
-		
+
 		// get type definition from index
 		XmlTypeDefinition type = index.getOrCreateType(typeName);
-		
+
 		if (schemaType instanceof XmlSchemaSimpleType) {
 			// attribute type from simple schema types
-			configureSimpleType(type, (XmlSchemaSimpleType) schemaType,
-					schemaLocation);
+			configureSimpleType(type, (XmlSchemaSimpleType) schemaType, schemaLocation);
 		}
 		else if (schemaType instanceof XmlSchemaComplexType) {
 			XmlSchemaComplexType complexType = (XmlSchemaComplexType) schemaType;
-			
+
 			// determine the super type name
 			QName superTypeName = getSuperTypeName(complexType);
-			
+
 			// determine if the super type relation is a restriction
 			boolean isRestriction = isRestriction(complexType);
-			type.setConstraint((isRestriction)?(RestrictionFlag.ENABLED):(RestrictionFlag.DISABLED));
-			
+			type.setConstraint((isRestriction) ? (RestrictionFlag.ENABLED)
+					: (RestrictionFlag.DISABLED));
+
 			if (superTypeName != null) {
 				// get super type from index
 				XmlTypeDefinition superType = index.getOrCreateType(superTypeName);
 				type.setSuperType(superType);
-				
-				//XXX reuse the super type's attribute type where appropriate?
+
+				// XXX reuse the super type's attribute type where appropriate?
 			}
-			
+
 			// set mappable constraint
 			// don't override mappable explicitly set to false
 			type.setConstraintIfNotSet(new MappableUsingXsiType(type));
-			
+
 			// set type metadata and constraints
 			setMetadataAndConstraints(type, complexType, schemaLocation);
-			
-			// determine the defined properties and add them to the declaring type
+
+			// determine the defined properties and add them to the declaring
+			// type
 			createProperties(type, complexType, schemaLocation, schemaNamespace);
 		}
 		else {
-			reporter.error(new IOMessageImpl("Unrecognized schema type: " + 
-					schemaType.getClass().getSimpleName(), null,
-					schemaType.getLineNumber(), schemaType.getLinePosition()));
+			reporter.error(new IOMessageImpl("Unrecognized schema type: "
+					+ schemaType.getClass().getSimpleName(), null, schemaType.getLineNumber(),
+					schemaType.getLinePosition()));
 		}
-		
+
 		return type;
 	}
 
 	/**
-	 * Configure a type definition for a simple type 
+	 * Configure a type definition for a simple type
 	 * 
 	 * @param type the type definition
 	 * @param schemaType the schema simple type
 	 * @param schemaLocation the schema location
 	 */
-	private void configureSimpleType(XmlTypeDefinition type,
-			XmlSchemaSimpleType schemaType, String schemaLocation) {
+	private void configureSimpleType(XmlTypeDefinition type, XmlSchemaSimpleType schemaType,
+			String schemaLocation) {
 		XmlTypeUtil.configureSimpleType(type, schemaType, index, reporter);
-		
+
 		// set metadata
 		setMetadata(type, schemaType, schemaLocation);
 	}
 
-	private static URI createLocationURI(String schemaLocation,
-			XmlSchemaObject schemaObject) {
+	private static URI createLocationURI(String schemaLocation, XmlSchemaObject schemaObject) {
 		if (schemaLocation == null) {
 			return null;
 		}
-		
-		//XXX improve
+
+		// XXX improve
 		try {
-			return new URI(schemaLocation + "#" + schemaObject.getLineNumber() + 
-					":" + schemaObject.getLinePosition());
+			return new URI(schemaLocation + "#" + schemaObject.getLineNumber() + ":"
+					+ schemaObject.getLinePosition());
 		} catch (URISyntaxException e) {
 			// ignore
 			return null;
@@ -624,47 +660,48 @@ public class XmlSchemaReader
 	 * @param schemaNamespace the schema namespace
 	 * @param forceGroup force creating a group (e.g. if the parent is a choice)
 	 */
-	private void createPropertiesFromParticle(DefinitionGroup declaringGroup, 
-			XmlSchemaParticle particle, String schemaLocation, 
-			String schemaNamespace, boolean forceGroup) {
+	private void createPropertiesFromParticle(DefinitionGroup declaringGroup,
+			XmlSchemaParticle particle, String schemaLocation, String schemaNamespace,
+			boolean forceGroup) {
 		// particle:
 		if (particle instanceof XmlSchemaSequence) {
 			// <sequence>
-			XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
-			
-			// create group only if necessary (sequences that appear exactly once will result in no group if not forced)
+			XmlSchemaSequence sequence = (XmlSchemaSequence) particle;
+
+			// create group only if necessary (sequences that appear exactly
+			// once will result in no group if not forced)
 			if (forceGroup || sequence.getMinOccurs() != 1 || sequence.getMaxOccurs() != 1) {
 				// create a sequence group
 				QName sequenceName = createGroupName(declaringGroup, "sequence");
 				DefaultGroupPropertyDefinition sequenceGroup = new DefaultGroupPropertyDefinition(
 						sequenceName, declaringGroup, false);
 				// set cardinality
-				long max = (sequence.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(sequence.getMaxOccurs());
-				sequenceGroup.setConstraint(Cardinality.get(
-						sequence.getMinOccurs(), max ));
+				long max = (sequence.getMaxOccurs() == Long.MAX_VALUE) ? (Cardinality.UNBOUNDED)
+						: (sequence.getMaxOccurs());
+				sequenceGroup.setConstraint(Cardinality.get(sequence.getMinOccurs(), max));
 				// set choice constraint (no choice)
 				sequenceGroup.setConstraint(ChoiceFlag.DISABLED);
 				// set metadata
 				setMetadata(sequenceGroup, sequence, schemaLocation);
-				
+
 				// use group as parent
 				declaringGroup = sequenceGroup;
 			}
-			
+
 			for (int j = 0; j < sequence.getItems().getCount(); j++) {
 				XmlSchemaObject object = sequence.getItems().getItem(j);
 				if (object instanceof XmlSchemaElement) {
 					// <element>
-					createPropertyFromElement((XmlSchemaElement) object, 
-							declaringGroup, schemaLocation, schemaNamespace);
+					createPropertyFromElement((XmlSchemaElement) object, declaringGroup,
+							schemaLocation, schemaNamespace);
 					// </element>
 				}
 				else if (object instanceof XmlSchemaParticle) {
 					// contained particles, e.g. a choice
-					// content doesn't need to be grouped, it can be decided in the method
-					createPropertiesFromParticle(declaringGroup, 
-							(XmlSchemaParticle) object, schemaLocation,
-							schemaNamespace, false);
+					// content doesn't need to be grouped, it can be decided in
+					// the method
+					createPropertiesFromParticle(declaringGroup, (XmlSchemaParticle) object,
+							schemaLocation, schemaNamespace, false);
 				}
 			}
 			// </sequence>
@@ -672,36 +709,36 @@ public class XmlSchemaReader
 		else if (particle instanceof XmlSchemaChoice) {
 			// <choice>
 			XmlSchemaChoice choice = (XmlSchemaChoice) particle;
-			
+
 			// create a choice group
 			QName choiceName = createGroupName(declaringGroup, "choice");
 			DefaultGroupPropertyDefinition choiceGroup = new DefaultGroupPropertyDefinition(
-					choiceName, declaringGroup, false); // no flatten allowed because of choice
+					choiceName, declaringGroup, false); // no flatten allowed
+														// because of choice
 			// set custom display name
 			choiceGroup.setConstraint(DISPLAYNAME_CHOICE);
 			// set cardinality
-			long max = (choice.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(choice.getMaxOccurs());
-			choiceGroup.setConstraint(Cardinality.get(
-					choice.getMinOccurs(), max ));
+			long max = (choice.getMaxOccurs() == Long.MAX_VALUE) ? (Cardinality.UNBOUNDED)
+					: (choice.getMaxOccurs());
+			choiceGroup.setConstraint(Cardinality.get(choice.getMinOccurs(), max));
 			// set choice constraint
 			choiceGroup.setConstraint(ChoiceFlag.ENABLED);
 			// set metadata
 			setMetadata(choiceGroup, choice, schemaLocation);
-			
+
 			// create properties with choiceGroup as parent
 			for (int j = 0; j < choice.getItems().getCount(); j++) {
 				XmlSchemaObject object = choice.getItems().getItem(j);
 				if (object instanceof XmlSchemaElement) {
 					// <element>
-					createPropertyFromElement((XmlSchemaElement) object, 
-							choiceGroup, schemaLocation, schemaNamespace);
+					createPropertyFromElement((XmlSchemaElement) object, choiceGroup,
+							schemaLocation, schemaNamespace);
 				}
 				else if (object instanceof XmlSchemaParticle) {
 					// contained particles, e.g. a choice or sequence
 					// inside a choice they must form a group
-					createPropertiesFromParticle(choiceGroup, 
-							(XmlSchemaParticle) object, schemaLocation,
-							schemaNamespace, true);
+					createPropertiesFromParticle(choiceGroup, (XmlSchemaParticle) object,
+							schemaLocation, schemaNamespace, true);
 				}
 			}
 			// </choice>
@@ -709,31 +746,42 @@ public class XmlSchemaReader
 		else if (particle instanceof XmlSchemaGroupRef) {
 			// <group ref="..." />
 			XmlSchemaGroupRef groupRef = (XmlSchemaGroupRef) particle;
-			
+
 			QName groupName = groupRef.getRefName();
-			
-			long max = (groupRef.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(groupRef.getMaxOccurs());
+
+			long max = (groupRef.getMaxOccurs() == Long.MAX_VALUE) ? (Cardinality.UNBOUNDED)
+					: (groupRef.getMaxOccurs());
 			long min = groupRef.getMinOccurs();
-			
-			XmlGroupReferenceProperty property = new XmlGroupReferenceProperty(
-					groupName, declaringGroup, index, groupName, 
-					!forceGroup && min == 1 && max ==1); // only allow flatten if group is not forced and appears exactly once 
-			
+
+			XmlGroupReferenceProperty property = new XmlGroupReferenceProperty(groupName,
+					declaringGroup, index, groupName, !forceGroup && min == 1 && max == 1); // only
+																							// allow
+																							// flatten
+																							// if
+																							// group
+																							// is
+																							// not
+																							// forced
+																							// and
+																							// appears
+																							// exactly
+																							// once
+
 			// set cardinality constraint
 			property.setConstraint(Cardinality.get(min, max));
-			
+
 			// set metadata
 			setMetadata(property, groupRef, schemaLocation);
 		}
 		else if (particle instanceof XmlSchemaAny) {
-			//XXX ignore for now
-			reporter.warn(new IOMessageImpl("Particle that allows any element is not supported.", null, 
-					particle.getLineNumber(), particle.getLinePosition()));
+			// XXX ignore for now
+			reporter.warn(new IOMessageImpl("Particle that allows any element is not supported.",
+					null, particle.getLineNumber(), particle.getLinePosition()));
 		}
 		else {
-			reporter.error(new IOMessageImpl("Unrecognized particle: " +
-					particle.getClass().getSimpleName(), null, 
-					particle.getLineNumber(), particle.getLinePosition()));
+			reporter.error(new IOMessageImpl("Unrecognized particle: "
+					+ particle.getClass().getSimpleName(), null, particle.getLineNumber(), particle
+					.getLinePosition()));
 		}
 	}
 
@@ -761,226 +809,235 @@ public class XmlSchemaReader
 	 * @param schemaLocation the schema location
 	 * @param schemaNamespace the schema namespace
 	 */
-	private void createPropertyFromElement(XmlSchemaElement element, 
+	private void createPropertyFromElement(XmlSchemaElement element,
 			DefinitionGroup declaringGroup, String schemaLocation, String schemaNamespace) {
 		if (element.getSchemaTypeName() != null) {
 			// element referencing a type
 			// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
 			QName elementName = element.getQName();
-			
-			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(
-					new QName(elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), //TODO improve naming? 
+
+			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(new QName(
+					elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), // TODO
+																									// improve
+																									// naming?
 					declaringGroup);
-			
-			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					elementName, substitutionGroup, 
-					index.getOrCreateType(element.getSchemaTypeName()));
-			
+
+			DefaultPropertyDefinition property = new DefaultPropertyDefinition(elementName,
+					substitutionGroup, index.getOrCreateType(element.getSchemaTypeName()));
+
 			// set metadata and constraints
 			setMetadataAndConstraints(property, element, schemaLocation);
-			
+
 			substitutionGroup.setProperty(property);
 		}
 		else if (element.getRefName() != null) {
 			// references another element
 			// <element ref="REF_NAME" />
 			QName elementName = element.getRefName();
-			
-			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(
-					new QName(elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), //TODO improve naming? 
+
+			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(new QName(
+					elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), // TODO
+																									// improve
+																									// naming?
 					declaringGroup);
-			
-			XmlElementReferenceProperty property = new XmlElementReferenceProperty(
-					elementName, substitutionGroup, index, elementName);
-			
-			// set metadata and constraints FIXME can the constraints be set at this point? or must the property determine them from the SchemaElement?
+
+			XmlElementReferenceProperty property = new XmlElementReferenceProperty(elementName,
+					substitutionGroup, index, elementName);
+
+			// set metadata and constraints FIXME can the constraints be set at
+			// this point? or must the property determine them from the
+			// SchemaElement?
 			setMetadataAndConstraints(property, element, schemaLocation);
-			
+
 			substitutionGroup.setProperty(property);
 		}
 		else if (element.getSchemaType() != null) {
-			// element w/o type name or reference but an internal type definition
+			// element w/o type name or reference but an internal type
+			// definition
 			if (element.getSchemaType() instanceof XmlSchemaComplexType) {
 				// <element ...>
-				//   <complexType>
+				// <complexType>
 				XmlSchemaComplexType complexType = (XmlSchemaComplexType) element.getSchemaType();
 				XmlSchemaContentModel model = complexType.getContentModel();
 				XmlSchemaParticle particle = complexType.getParticle();
 				if (model != null) {
 					XmlSchemaContent content = model.getContent();
-					
+
 					QName superTypeName = null;
-					if (content instanceof XmlSchemaComplexContentExtension || 
-							content instanceof XmlSchemaComplexContentRestriction) {
+					if (content instanceof XmlSchemaComplexContentExtension
+							|| content instanceof XmlSchemaComplexContentRestriction) {
 						// <complexContent>
-						//   <extension base="..."> / <restriction ...>
+						// <extension base="..."> / <restriction ...>
 						String nameExt;
 						if (content instanceof XmlSchemaComplexContentExtension) {
-							superTypeName = ((XmlSchemaComplexContentExtension) content).getBaseTypeName();
+							superTypeName = ((XmlSchemaComplexContentExtension) content)
+									.getBaseTypeName();
 							nameExt = "Extension"; //$NON-NLS-1$
 						}
 						else {
-							superTypeName = ((XmlSchemaComplexContentRestriction) content).getBaseTypeName();
+							superTypeName = ((XmlSchemaComplexContentRestriction) content)
+									.getBaseTypeName();
 							nameExt = "Restriction"; //$NON-NLS-1$
 						}
-						
+
 						if (superTypeName != null) {
 							// try to get the type definition of the super type
 							XmlTypeDefinition superType = index.getOrCreateType(superTypeName);
-							
-							// create an anonymous type that extends the super type
-							QName anonymousName = new QName(
-									getTypeIdentifier(declaringGroup) + "/" + element.getName(), 
-									superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
-							
+
+							// create an anonymous type that extends the super
+							// type
+							QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
+									+ element.getName(), superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
+
 							AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 							anonymousType.setSuperType(superType);
-							
+
 							// set metadata and constraints
 							setMetadataAndConstraints(anonymousType, complexType, schemaLocation);
-							
+
 							// add properties to the anonymous type
-							createProperties(anonymousType, complexType,
-									schemaLocation, schemaNamespace);
-							
+							createProperties(anonymousType, complexType, schemaLocation,
+									schemaNamespace);
+
 							// create a property with the anonymous type
 							DefaultPropertyDefinition property = new DefaultPropertyDefinition(
 									element.getQName(), declaringGroup, anonymousType);
-							
+
 							// set metadata and constraints
 							setMetadataAndConstraints(property, element, schemaLocation);
 						}
 						else {
 							reporter.error(new IOMessageImpl(
-									"Could not determine super type for complex content", 
-									null, content.getLineNumber(), content.getLinePosition()));
+									"Could not determine super type for complex content", null,
+									content.getLineNumber(), content.getLinePosition()));
 						}
-						
-						//   </extension> / </restriction>
+
+						// </extension> / </restriction>
 						// </complexContent>
-					} else if (content instanceof XmlSchemaSimpleContentExtension
-							|| content instanceof XmlSchemaSimpleContentRestriction) { 
+					}
+					else if (content instanceof XmlSchemaSimpleContentExtension
+							|| content instanceof XmlSchemaSimpleContentRestriction) {
 						// <simpleContent>
-						//   <extension base="..."> / <restriction ...>
+						// <extension base="..."> / <restriction ...>
 						String nameExt;
 						if (content instanceof XmlSchemaSimpleContentExtension) {
-							superTypeName = ((XmlSchemaSimpleContentExtension) content).getBaseTypeName();
+							superTypeName = ((XmlSchemaSimpleContentExtension) content)
+									.getBaseTypeName();
 							nameExt = "Extension"; //$NON-NLS-1$
 						}
 						else {
-							superTypeName = ((XmlSchemaSimpleContentRestriction) content).getBaseTypeName();
+							superTypeName = ((XmlSchemaSimpleContentRestriction) content)
+									.getBaseTypeName();
 							nameExt = "Restriction"; //$NON-NLS-1$
 						}
-						
+
 						if (superTypeName != null) {
 							// try to get the type definition of the super type
 							XmlTypeDefinition superType = index.getOrCreateType(superTypeName);
-							
-							// create an anonymous type that extends the super type
-							QName anonymousName = new QName(
-									getTypeIdentifier(declaringGroup) + "/" + element.getName(), 
-									superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
-							
+
+							// create an anonymous type that extends the super
+							// type
+							QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
+									+ element.getName(), superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
+
 							AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 							anonymousType.setSuperType(superType);
-							
+
 							// set metadata and constraints
 							setMetadata(anonymousType, complexType, schemaLocation);
 							anonymousType.setConstraint(HasValueFlag.ENABLED);
 							// set no binding, inherit it from the super type
-							//XXX is this ok? 
-							
+							// XXX is this ok?
+
 							// add properties to the anonymous type
-							createProperties(anonymousType, complexType,
-									schemaLocation, schemaNamespace);
-							
+							createProperties(anonymousType, complexType, schemaLocation,
+									schemaNamespace);
+
 							// create a property with the anonymous type
 							DefaultPropertyDefinition property = new DefaultPropertyDefinition(
 									element.getQName(), declaringGroup, anonymousType);
-							
+
 							// set metadata and constraints
 							setMetadataAndConstraints(property, element, schemaLocation);
 						}
 						else {
 							reporter.error(new IOMessageImpl(
-									"Could not determine super type for simple content", 
-									null, content.getLineNumber(), content.getLinePosition()));
+									"Could not determine super type for simple content", null,
+									content.getLineNumber(), content.getLinePosition()));
 						}
-						
-						//   </extension>
+
+						// </extension>
 						// </simpleContent>
 					}
-				} else if (particle != null) {
-					// this where we get when there is an anonymous complex type as property type
+				}
+				else if (particle != null) {
+					// this where we get when there is an anonymous complex type
+					// as property type
 					// create an anonymous type
-					QName anonymousName = new QName(
-							getTypeIdentifier(declaringGroup) + "/" + element.getName(), 
-							"AnonymousType");
-					
+					QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
+							+ element.getName(), "AnonymousType");
+
 					// create anonymous type with no super type
 					AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
-					
+
 					// set metadata and constraints
 					setMetadataAndConstraints(anonymousType, complexType, schemaLocation);
-					
+
 					// add properties to the anonymous type
-					createProperties(anonymousType, complexType,
-							schemaLocation, schemaNamespace);
-					
+					createProperties(anonymousType, complexType, schemaLocation, schemaNamespace);
+
 					// create a property with the anonymous type
 					DefaultPropertyDefinition property = new DefaultPropertyDefinition(
 							element.getQName(), declaringGroup, anonymousType);
-					
+
 					// set metadata and constraints
 					setMetadataAndConstraints(property, element, schemaLocation);
 				}
-				//   </complexType>
+				// </complexType>
 				// </element>
 			}
 			else if (element.getSchemaType() instanceof XmlSchemaSimpleType) {
 				// simple schema type
 				XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType) element.getSchemaType();
-				
+
 				// create an anonymous type
-				QName anonymousName = new QName(
-						getTypeIdentifier(declaringGroup) + "/" + element.getName(), 
-						"AnonymousType"); //$NON-NLS-1$
-				
+				QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
+						+ element.getName(), "AnonymousType"); //$NON-NLS-1$
+
 				AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
-				
+
 				configureSimpleType(anonymousType, simpleType, schemaLocation);
-				
+
 				// create a property with the anonymous type
 				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
 						element.getQName(), declaringGroup, anonymousType);
-				
+
 				// set metadata and constraints
 				setMetadataAndConstraints(property, element, schemaLocation);
 			}
 		}
 		else {
 			// <element name="..." />
-			
+
 			// no type defined
-			reporter.warn(new IOMessageImpl(
-					"Element definition without an associated type: {0}", null, 
-					element.getLineNumber(), element.getLinePosition(),
-					element.getQName()));
-			
+			reporter.warn(new IOMessageImpl("Element definition without an associated type: {0}",
+					null, element.getLineNumber(), element.getLinePosition(), element.getQName()));
+
 			// assuming xsd:anyType as default type
 			QName elementName = element.getQName();
-			
-			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(
-					new QName(elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), //TODO improve naming? 
+
+			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(new QName(
+					elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), // TODO
+																									// improve
+																									// naming?
 					declaringGroup);
-			
-			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					elementName, substitutionGroup, 
-					index.getOrCreateType(XmlTypeUtil.NAME_ANY_TYPE));
-			
+
+			DefaultPropertyDefinition property = new DefaultPropertyDefinition(elementName,
+					substitutionGroup, index.getOrCreateType(XmlTypeUtil.NAME_ANY_TYPE));
+
 			// set metadata and constraints
 			setMetadataAndConstraints(property, element, schemaLocation);
-			
+
 			substitutionGroup.setProperty(property);
 		}
 	}
@@ -993,7 +1050,7 @@ public class XmlSchemaReader
 	 * @param group the group
 	 * @return the type identifier
 	 * @throws IllegalArgumentException if the group is neither a type nor a
-	 *   child definition
+	 *             child definition
 	 */
 	private static String getTypeIdentifier(DefinitionGroup group) throws IllegalArgumentException {
 		if (group instanceof TypeDefinition) {
@@ -1002,7 +1059,7 @@ public class XmlSchemaReader
 		else if (group instanceof ChildDefinition<?>) {
 			return ((ChildDefinition<?>) group).getParentType().getIdentifier();
 		}
-		
+
 		return null;
 	}
 
@@ -1015,13 +1072,14 @@ public class XmlSchemaReader
 	 */
 	private void setMetadataAndConstraints(XmlTypeDefinition type,
 			XmlSchemaComplexType complexType, String schemaLocation) {
-		//TODO type constraints!
+		// TODO type constraints!
 		type.setConstraint(AbstractFlag.get(complexType.isAbstract()));
-		
-		// hasValue and binding and all other inheritable constrains from super type
+
+		// hasValue and binding and all other inheritable constrains from super
+		// type
 		// override constraints for special types
 		XmlTypeUtil.setSpecialBinding(type);
-		
+
 		// set metadata
 		setMetadata(type, complexType, schemaLocation);
 	}
@@ -1033,10 +1091,10 @@ public class XmlSchemaReader
 	 * @param annotated the XML annotated object
 	 * @param schemaLocation the schema location
 	 */
-	public static void setMetadata(AbstractDefinition<?> definition,
-			XmlSchemaAnnotated annotated, String schemaLocation) {
+	public static void setMetadata(AbstractDefinition<?> definition, XmlSchemaAnnotated annotated,
+			String schemaLocation) {
 		definition.setDescription(XMLSchemaIO.getDescription(annotated));
-		
+
 		definition.setLocation(createLocationURI(schemaLocation, annotated));
 	}
 
@@ -1053,10 +1111,10 @@ public class XmlSchemaReader
 
 		// set constraints
 		property.setConstraint(NillableFlag.get(element.isNillable()));
-		long max = (element.getMaxOccurs() == Long.MAX_VALUE)?(Cardinality.UNBOUNDED):(element.getMaxOccurs());
-		property.setConstraint(Cardinality.get(
-				element.getMinOccurs(), max ));
-		
+		long max = (element.getMaxOccurs() == Long.MAX_VALUE) ? (Cardinality.UNBOUNDED) : (element
+				.getMaxOccurs());
+		property.setConstraint(Cardinality.get(element.getMinOccurs(), max));
+
 		// set metadata
 		setMetadata(property, element, schemaLocation);
 	}
@@ -1069,11 +1127,11 @@ public class XmlSchemaReader
 	 */
 	private QName getSuperTypeName(XmlSchemaComplexType item) {
 		QName qname = null;
-		
+
 		XmlSchemaContentModel model = item.getContentModel();
-		if (model != null ) {
+		if (model != null) {
 			XmlSchemaContent content = model.getContent();
-			
+
 			if (content instanceof XmlSchemaComplexContentExtension) {
 				qname = ((XmlSchemaComplexContentExtension) content).getBaseTypeName();
 			}
@@ -1087,10 +1145,10 @@ public class XmlSchemaReader
 				qname = ((XmlSchemaSimpleContentRestriction) content).getBaseTypeName();
 			}
 		}
-		
+
 		return qname;
 	}
-	
+
 	/**
 	 * Determines if the super type relation of the given item is a restriction
 	 * 
@@ -1100,94 +1158,95 @@ public class XmlSchemaReader
 	 */
 	private boolean isRestriction(XmlSchemaComplexType item) {
 		XmlSchemaContentModel model = item.getContentModel();
-		if (model != null ) {
+		if (model != null) {
 			XmlSchemaContent content = model.getContent();
-			if (content instanceof XmlSchemaComplexContentRestriction || content instanceof XmlSchemaSimpleContentRestriction) {
+			if (content instanceof XmlSchemaComplexContentRestriction
+					|| content instanceof XmlSchemaSimpleContentRestriction) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * Create the properties for the given complex type
 	 * 
-	 * @param typeDef the definition of the declaring type 
+	 * @param typeDef the definition of the declaring type
 	 * @param item the complex type item
 	 * @param schemaLocation the schema location
 	 * @param schemaNamespace the scheme namspace
 	 */
-	private void createProperties(XmlTypeDefinition typeDef, 
-			XmlSchemaComplexType item, String schemaLocation, String schemaNamespace) {
+	private void createProperties(XmlTypeDefinition typeDef, XmlSchemaComplexType item,
+			String schemaLocation, String schemaNamespace) {
 		// item:
 		// <complexType ...>
 		XmlSchemaContentModel model = item.getContentModel();
-		if (model != null ) {
+		if (model != null) {
 			XmlSchemaContent content = model.getContent();
 
 			if (content instanceof XmlSchemaComplexContentExtension) {
 				// <complexContent>
-				//   <extension base="...">
+				// <extension base="...">
 				XmlSchemaComplexContentExtension extension = (XmlSchemaComplexContentExtension) content;
 				// particle (e.g. sequence)
 				if (extension.getParticle() != null) {
 					XmlSchemaParticle particle = extension.getParticle();
-					createPropertiesFromParticle(typeDef, particle, 
-							schemaLocation, schemaNamespace, false);
+					createPropertiesFromParticle(typeDef, particle, schemaLocation,
+							schemaNamespace, false);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
 				if (attributeCollection != null) {
-					createAttributesFromCollection(attributeCollection, typeDef, 
-							null, schemaLocation, schemaNamespace);
+					createAttributesFromCollection(attributeCollection, typeDef, null,
+							schemaLocation, schemaNamespace);
 				}
-				//   </extension>
+				// </extension>
 				// </complexContent>
 			}
 			else if (content instanceof XmlSchemaComplexContentRestriction) {
 				// <complexContent>
-				//   <restriction base="...">
+				// <restriction base="...">
 				XmlSchemaComplexContentRestriction restriction = (XmlSchemaComplexContentRestriction) content;
 				// particle (e.g. sequence)
 				if (restriction.getParticle() != null) {
 					XmlSchemaParticle particle = restriction.getParticle();
-					createPropertiesFromParticle(typeDef, particle, 
-							schemaLocation, schemaNamespace, false);
+					createPropertiesFromParticle(typeDef, particle, schemaLocation,
+							schemaNamespace, false);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
 				if (attributeCollection != null) {
-					createAttributesFromCollection(attributeCollection, typeDef, 
-							null, schemaLocation, schemaNamespace);
+					createAttributesFromCollection(attributeCollection, typeDef, null,
+							schemaLocation, schemaNamespace);
 				}
-				//   </restriction>
+				// </restriction>
 				// </complexContent>
 			}
 			else if (content instanceof XmlSchemaSimpleContentExtension) {
 				// <simpleContent>
-				//   <extension base="...">
+				// <extension base="...">
 				XmlSchemaSimpleContentExtension extension = (XmlSchemaSimpleContentExtension) content;
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
 				if (attributeCollection != null) {
-					createAttributesFromCollection(attributeCollection, typeDef, 
-							null, schemaLocation, schemaNamespace);
+					createAttributesFromCollection(attributeCollection, typeDef, null,
+							schemaLocation, schemaNamespace);
 				}
-				//   </extension>
+				// </extension>
 				// </simpleContent>
 			}
 			else if (content instanceof XmlSchemaSimpleContentRestriction) {
 				// <simpleContent>
-				//   <restriction base="...">
+				// <restriction base="...">
 				XmlSchemaSimpleContentRestriction restriction = (XmlSchemaSimpleContentRestriction) content;
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
 				if (attributeCollection != null) {
-					createAttributesFromCollection(attributeCollection, typeDef, 
-							null, schemaLocation, schemaNamespace);
+					createAttributesFromCollection(attributeCollection, typeDef, null,
+							schemaLocation, schemaNamespace);
 				}
-				//   </restriction>
+				// </restriction>
 				// </simpleContent>
 			}
 		}
@@ -1197,105 +1256,99 @@ public class XmlSchemaReader
 			// particle (e.g. sequence)
 			if (item.getParticle() != null) {
 				XmlSchemaParticle particle = complexType.getParticle();
-				createPropertiesFromParticle(typeDef, particle, schemaLocation,
-						schemaNamespace, false);
+				createPropertiesFromParticle(typeDef, particle, schemaLocation, schemaNamespace,
+						false);
 			}
 			// attributes
 			XmlSchemaObjectCollection attributeCollection = complexType.getAttributes();
 			if (attributeCollection != null) {
-				createAttributesFromCollection(attributeCollection, typeDef, 
-						null, schemaLocation, schemaNamespace);
+				createAttributesFromCollection(attributeCollection, typeDef, null, schemaLocation,
+						schemaNamespace);
 			}
 		}
-		
+
 		// </complexType>
 	}
-	
-	private void createAttributesFromCollection(
-			XmlSchemaObjectCollection attributeCollection, DefinitionGroup declaringType,
-			String indexPrefix, String schemaLocation, String schemaNamespace) {
+
+	private void createAttributesFromCollection(XmlSchemaObjectCollection attributeCollection,
+			DefinitionGroup declaringType, String indexPrefix, String schemaLocation,
+			String schemaNamespace) {
 		if (indexPrefix == null) {
 			indexPrefix = ""; //$NON-NLS-1$
 		}
-		
+
 		for (int index = 0; index < attributeCollection.getCount(); index++) {
 			XmlSchemaObject object = attributeCollection.getItem(index);
 			if (object instanceof XmlSchemaAttribute) {
 				// <attribute ... />
 				XmlSchemaAttribute attribute = (XmlSchemaAttribute) object;
-				
-				createAttribute(attribute, declaringType, schemaLocation,
-						schemaNamespace);
+
+				createAttribute(attribute, declaringType, schemaLocation, schemaNamespace);
 			}
 			else if (object instanceof XmlSchemaAttributeGroup) {
 				XmlSchemaAttributeGroup group = (XmlSchemaAttributeGroup) object;
-				
-				createAttributes(group, declaringType, indexPrefix + index,
-						schemaLocation, schemaNamespace);
+
+				createAttributes(group, declaringType, indexPrefix + index, schemaLocation,
+						schemaNamespace);
 			}
 			else if (object instanceof XmlSchemaAttributeGroupRef) {
 				XmlSchemaAttributeGroupRef groupRef = (XmlSchemaAttributeGroupRef) object;
-				
+
 				if (groupRef.getRefName() != null) {
 					QName groupName = groupRef.getRefName();
-					//XXX extend group name with namespace?
+					// XXX extend group name with namespace?
 					XmlAttributeGroupReferenceProperty property = new XmlAttributeGroupReferenceProperty(
 							groupName, declaringType, this.index, groupName, true);
-					//TODO add constraints?
-					
+					// TODO add constraints?
+
 					// set metadata
 					setMetadata(property, groupRef, schemaLocation);
 				}
 				else {
-					reporter.error(new IOMessageImpl(
-							"Unrecognized attribute group reference", null,
-							object.getLineNumber(), object.getLinePosition()));
+					reporter.error(new IOMessageImpl("Unrecognized attribute group reference",
+							null, object.getLineNumber(), object.getLinePosition()));
 				}
 			}
 		}
 	}
 
-	private void createAttributes(XmlSchemaAttributeGroup group, 
-			DefinitionGroup declaringType, String index, String schemaLocation, 
-			String schemaNamespace) {
-		createAttributesFromCollection(group.getAttributes(), 
-				declaringType, index + "_", schemaLocation, schemaNamespace); //$NON-NLS-1$
+	private void createAttributes(XmlSchemaAttributeGroup group, DefinitionGroup declaringType,
+			String index, String schemaLocation, String schemaNamespace) {
+		createAttributesFromCollection(group.getAttributes(), declaringType,
+				index + "_", schemaLocation, schemaNamespace); //$NON-NLS-1$
 	}
 
-	private void createAttribute(XmlSchemaAttribute attribute, 
-			DefinitionGroup declaringGroup, String schemaLocation,
-			String schemaNamespace) {
+	private void createAttribute(XmlSchemaAttribute attribute, DefinitionGroup declaringGroup,
+			String schemaLocation, String schemaNamespace) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
 			// resolve type by name
 			XmlTypeDefinition type = this.index.getOrCreateType(typeName);
-			
+
 			// create property
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					determineAttributeName(attribute, schemaNamespace), 
-					declaringGroup, type);
-			
+					determineAttributeName(attribute, schemaNamespace), declaringGroup, type);
+
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);
 		}
 		else if (attribute.getSchemaType() != null) {
 			XmlSchemaSimpleType simpleType = attribute.getSchemaType();
-			
+
 			// create an anonymous type
-			QName anonymousName = new QName(
-					getTypeIdentifier(declaringGroup) + "/" + attribute.getName(), 
-					"AnonymousType"); //$NON-NLS-1$
-			
+			QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
+					+ attribute.getName(), "AnonymousType"); //$NON-NLS-1$
+
 			AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
-			
+
 			configureSimpleType(anonymousType, simpleType, schemaLocation);
-			
+
 			// create property
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-					determineAttributeName(attribute, schemaNamespace), 
-					declaringGroup, anonymousType);
-			
+					determineAttributeName(attribute, schemaNamespace), declaringGroup,
+					anonymousType);
+
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);
 		}
@@ -1303,36 +1356,35 @@ public class XmlSchemaReader
 			// <attribute ref="REF_NAME" />
 			// reference to a named attribute
 			QName attName = attribute.getRefName();
-			
-			XmlAttributeReferenceProperty property = new XmlAttributeReferenceProperty(
-					attName, declaringGroup, this.index, 
-					attName);
-			
+
+			XmlAttributeReferenceProperty property = new XmlAttributeReferenceProperty(attName,
+					declaringGroup, this.index, attName);
+
 			// set metadata and constraints
 			setMetadataAndConstraints(property, attribute, schemaLocation);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Determine the qualified attribute name for a XML Schema attribute.
+	 * 
 	 * @param attribute the XML Schema attribute
 	 * @param schemaNamespace the schema namespace
 	 * @return the qualified name of the attribute
 	 */
-	private QName determineAttributeName(XmlSchemaAttribute attribute,
-			String schemaNamespace) {
-		if (attribute.getForm().getValue().equals(XmlSchemaForm.QUALIFIED) &&
-				(attribute.getQName().getNamespaceURI() == null
-				|| attribute.getQName().getNamespaceURI().equals(XMLConstants.NULL_NS_URI))) {
+	private QName determineAttributeName(XmlSchemaAttribute attribute, String schemaNamespace) {
+		if (attribute.getForm().getValue().equals(XmlSchemaForm.QUALIFIED)
+				&& (attribute.getQName().getNamespaceURI() == null || attribute.getQName()
+						.getNamespaceURI().equals(XMLConstants.NULL_NS_URI))) {
 			/*
 			 * It seems in this case the namespace is not included in
-			 * attribute.getQName(). Is this a bug in the schema parser?
-			 * As a workaround we provide the namespace.
+			 * attribute.getQName(). Is this a bug in the schema parser? As a
+			 * workaround we provide the namespace.
 			 */
 			return new QName(schemaNamespace, attribute.getQName().getLocalPart());
 		}
-			
+
 		return attribute.getQName();
 	}
 
@@ -1344,8 +1396,8 @@ public class XmlSchemaReader
 	 * @param schemaLocation the schema location
 	 * @return the type definition or <code>null</code>
 	 */
-	private XmlTypeDefinition getAttributeType(XmlSchemaAttribute attribute, 
-			String index, String schemaLocation) {
+	private XmlTypeDefinition getAttributeType(XmlSchemaAttribute attribute, String index,
+			String schemaLocation) {
 		// create attributes
 		QName typeName = attribute.getSchemaTypeName();
 		if (typeName != null) {
@@ -1354,15 +1406,15 @@ public class XmlSchemaReader
 		}
 		else if (attribute.getSchemaType() != null) {
 			XmlSchemaSimpleType simpleType = attribute.getSchemaType();
-			
+
 			// create an anonymous type
-			QName anonymousName = new QName(attribute.getQName().getNamespaceURI() +
-					"/" + attribute.getName(), "AnonymousType"); //$NON-NLS-1$
-			
+			QName anonymousName = new QName(attribute.getQName().getNamespaceURI()
+					+ "/" + attribute.getName(), "AnonymousType"); //$NON-NLS-1$
+
 			AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
-			
+
 			configureSimpleType(anonymousType, simpleType, schemaLocation);
-			
+
 			return anonymousType;
 		}
 		else if (attribute.getRefName() != null) {
@@ -1371,7 +1423,7 @@ public class XmlSchemaReader
 			// can't create type
 			return null;
 		}
-		
+
 		return null;
 	}
 
@@ -1388,15 +1440,17 @@ public class XmlSchemaReader
 
 		// set constraints
 		property.setConstraint(XmlAttributeFlag.ENABLED);
-		
+
 		if (attribute.getUse() != null) {
-			long maxOccurs = (attribute.getUse().getValue().equals(Constants.BlockConstants.PROHIBITED))?(0):(1);
-			long minOccurs = (attribute.getUse().getValue().equals(Constants.BlockConstants.REQUIRED))?(1):(0);
+			long maxOccurs = (attribute.getUse().getValue()
+					.equals(Constants.BlockConstants.PROHIBITED)) ? (0) : (1);
+			long minOccurs = (attribute.getUse().getValue()
+					.equals(Constants.BlockConstants.REQUIRED)) ? (1) : (0);
 			property.setConstraint(Cardinality.get(minOccurs, maxOccurs));
 		}
-		
+
 		property.setConstraint(NillableFlag.DISABLED);
-		
+
 		// set metadata
 		setMetadata(property, attribute, schemaLocation);
 	}

@@ -19,12 +19,12 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
 /**
  * A {@link ICell} contains a mapping between two {@link IEntity}s.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface ICell {
-	
+
 	/**
 	 * @return the first {@link IEntity} of the {@link ICell}.
 	 */
@@ -34,7 +34,7 @@ public interface ICell {
 	 * @return the second {@link IEntity} of the {@link ICell}.
 	 */
 	public IEntity getEntity2();
-	
+
 	/**
 	 * @return the relation
 	 */
@@ -49,25 +49,25 @@ public interface ICell {
 	 * @return the about
 	 */
 	public IAbout getAbout();
-	
-	
+
 	/**
-	 * Returns a list of labels of the cell. The first label is 
-	 * currently used to retrieve the operation name which 
-	 * indicates the transformer.
+	 * Returns a list of labels of the cell. The first label is currently used
+	 * to retrieve the operation name which indicates the transformer.
+	 * 
 	 * @return List of labels.
 	 */
 	public List<String> getLabel();
 
-
 	public enum RelationType {
-		Equivalence,
-		Subsumes,
-		SubsumedBy,
-		InstanceOf,
-		HasInstance,
-		Disjoint,
-		PartOf, // TODO, might have to go elsewhere. added by MdV
+		Equivalence, Subsumes, SubsumedBy, InstanceOf, HasInstance, Disjoint, PartOf, // TODO,
+																						// might
+																						// have
+																						// to
+																						// go
+																						// elsewhere.
+																						// added
+																						// by
+																						// MdV
 		Extra, // TODO, might have to go elsewhere. added by MdV
 		Missing // TODO, might have to go elsewhere. added by MdV
 	}

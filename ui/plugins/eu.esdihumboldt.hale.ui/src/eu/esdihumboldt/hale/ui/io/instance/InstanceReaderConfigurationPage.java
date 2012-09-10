@@ -19,17 +19,17 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Base class for {@link InstanceReader} configuration pages
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public abstract class InstanceReaderConfigurationPage
-		extends AbstractConfigurationPage<InstanceReader, 
-		InstanceImportWizard> {
+public abstract class InstanceReaderConfigurationPage extends
+		AbstractConfigurationPage<InstanceReader, InstanceImportWizard> {
 
 	/**
-	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String, ImageDescriptor)
+	 * @see AbstractConfigurationPage#AbstractConfigurationPage(String, String,
+	 *      ImageDescriptor)
 	 */
 	protected InstanceReaderConfigurationPage(String pageName, String title,
 			ImageDescriptor titleImage) {

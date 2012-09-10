@@ -32,49 +32,54 @@ import eu.esdihumboldt.hale.ui.geometry.service.GeometrySchemaService;
 
 /**
  * Definition/Instance related geometry utilities.
+ * 
  * @author Simon Templer
  */
 public abstract class DefaultGeometryUtil {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(DefaultGeometryUtil.class);
-	
+
 	/**
 	 * Get the default geometry of an instance.
+	 * 
 	 * @param instance the instance
 	 * @return the default geometries or an empty collection if there is none
 	 */
 	public static Collection<GeometryProperty<?>> getDefaultGeometries(Instance instance) {
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
-		
+		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
+				GeometrySchemaService.class);
+
 		if (gss == null) {
 			throw new IllegalStateException("No geometry schema service available");
 		}
-		
+
 		List<QName> path = gss.getDefaultGeometry(instance.getDefinition());
-		
+
 		return GeometryUtil.getGeometries(instance, path);
 	}
 
 	/**
 	 * Determines if the given entity definition is a default geometry property.
+	 * 
 	 * @param entityDef the entity definition
 	 * @return if the entity definition represents a default geometry property
 	 */
 	public static boolean isDefaultGeometry(EntityDefinition entityDef) {
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
-		
+		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
+				GeometrySchemaService.class);
+
 		if (gss == null) {
 			log.error("No geometry schema service available");
 			return false;
 		}
-		
+
 		List<QName> defPath = gss.getDefaultGeometry(entityDef.getType());
 		if (defPath != null) {
 			// match path against entity definition path
 			List<ChildContext> entPath = entityDef.getPropertyPath();
 			if (defPath.size() == entPath.size()) {
 				// match only possible if path length is equal
-				
+
 				// compare path elements
 				for (int i = 0; i < defPath.size(); i++) {
 					if (!Objects.equal(defPath.get(i), entPath.get(i).getChild().getName())) {
@@ -82,11 +87,11 @@ public abstract class DefaultGeometryUtil {
 						return false;
 					}
 				}
-				
+
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 

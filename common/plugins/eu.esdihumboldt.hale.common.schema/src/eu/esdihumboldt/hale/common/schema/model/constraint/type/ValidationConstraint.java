@@ -29,6 +29,7 @@ import eu.esdihumboldt.util.validator.Validator;
  */
 @Constraint(mutable = false)
 public class ValidationConstraint implements TypeConstraint {
+
 	private Validator validator;
 	private final TypeDefinition type;
 	private boolean init = false;
@@ -60,7 +61,8 @@ public class ValidationConstraint implements TypeConstraint {
 	public Validator getValidator() {
 		if (type != null && type.getSuperType() != null && !init) {
 			init = true;
-			Validator parentValidator = type.getSuperType().getConstraint(ValidationConstraint.class).getValidator();
+			Validator parentValidator = type.getSuperType()
+					.getConstraint(ValidationConstraint.class).getValidator();
 			if (!parentValidator.isAlwaysTrue()) {
 				ArrayList<Validator> validators = new ArrayList<Validator>(2);
 				validators.add(parentValidator);

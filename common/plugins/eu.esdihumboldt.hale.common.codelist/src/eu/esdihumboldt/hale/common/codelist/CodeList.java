@@ -17,10 +17,10 @@ import java.util.Collection;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface CodeList {
 
@@ -30,11 +30,11 @@ public interface CodeList {
 	public static class CodeEntry {
 
 		private final String name;
-		
+
 		private final String description;
-		
+
 		private final String identifier;
-		
+
 		private final String namespace;
 
 		/**
@@ -45,8 +45,7 @@ public interface CodeList {
 		 * @param identifier the identifier
 		 * @param namespace the namespace
 		 */
-		public CodeEntry(String name, String description, String identifier,
-				String namespace) {
+		public CodeEntry(String name, String description, String identifier, String namespace) {
 			super();
 			this.name = name;
 			this.description = description;
@@ -81,31 +80,31 @@ public interface CodeList {
 		public String getNamespace() {
 			return namespace;
 		}
-		
+
 	}
 
 	/**
 	 * Get the code list entries
 	 * 
-	 * @return the code list entries, changes to the returned collection will not
-	 *   be reflected in the code list
+	 * @return the code list entries, changes to the returned collection will
+	 *         not be reflected in the code list
 	 */
 	public Collection<CodeEntry> getEntries();
-	
+
 	/**
 	 * Get the namespace
 	 * 
 	 * @return the namespace
 	 */
 	public String getNamespace();
-	
+
 	/**
 	 * Get the identifier
 	 * 
 	 * @return the identifier
 	 */
 	public String getIdentifier();
-	
+
 	/**
 	 * Get the description
 	 * 
@@ -121,7 +120,7 @@ public interface CodeList {
 	 * @return the entry or <code>null</code>
 	 */
 	public CodeEntry getEntryByName(String name);
-	
+
 	/**
 	 * Get the entry with the given identifier
 	 * 
@@ -130,12 +129,12 @@ public interface CodeList {
 	 * @return the entry or <code>null</code>
 	 */
 	public CodeEntry getEntryByIdentifier(String identifier);
-	
+
 	/**
 	 * Get the code list location
 	 * 
 	 * @return the code list location
 	 */
 	public URI getLocation();
-	
+
 }

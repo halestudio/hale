@@ -5,7 +5,6 @@
 // Generated on: 2009.01.07 at 01:07:31 PM CET 
 //
 
-
 package eu.esdihumboldt.commons.mediator.transformer;
 
 import java.util.ArrayList;
@@ -16,11 +15,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for Workflow complex type.
+ * <p>
+ * Java class for Workflow complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="Workflow">
@@ -37,41 +38,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Workflow", propOrder = {
-    "transformer"
-})
+@XmlType(name = "Workflow", propOrder = { "transformer" })
 public class Workflow {
 
-    @XmlElement(name = "Transformer", required = true)
-    protected List<Transformer> transformer;
+	@XmlElement(name = "Transformer", required = true)
+	protected List<Transformer> transformer;
 
-    /**
-     * Gets the value of the transformer property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the transformer property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getTransformer().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Transformer }
-     * 
-     * 
-     */
-    public List<Transformer> getTransformer() {
-        if (transformer == null) {
-            transformer = new ArrayList<Transformer>();
-        }
-        return this.transformer;
-    }
+	/**
+	 * Gets the value of the transformer property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the transformer property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getTransformer().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link Transformer }
+	 * 
+	 * 
+	 */
+	public List<Transformer> getTransformer() {
+		if (transformer == null) {
+			transformer = new ArrayList<Transformer>();
+		}
+		return this.transformer;
+	}
 
 }

@@ -14,13 +14,15 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 
 /**
  * Validator for {@link ChoiceFlag}.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class ChoiceFlagValidator implements GroupPropertyConstraintValidator {
+
 	@Override
-	public void validateGroupPropertyConstraint(Object[] values, GroupPropertyConstraint constraint,
-			GroupPropertyDefinition property, InstanceValidationContext context) throws ValidationException {
+	public void validateGroupPropertyConstraint(Object[] values,
+			GroupPropertyConstraint constraint, GroupPropertyDefinition property,
+			InstanceValidationContext context) throws ValidationException {
 		if (((ChoiceFlag) constraint).isEnabled() && values != null) {
 			for (Object value : values) {
 				if (value instanceof Group) {

@@ -15,15 +15,16 @@ package eu.esdihumboldt.hale.common.instance.extension.validation;
 import java.util.Hashtable;
 import java.util.Map;
 
-
 /**
  * Context for instance validation.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class InstanceValidationContext {
+
 	// XXX The context could be extended to provide another context map
-	// for every instance. The current map is a context for a whole validation run.
+	// for every instance. The current map is a context for a whole validation
+	// run.
 
 	private final Map<Class<? extends ConstraintValidator>, Object> contextMap;
 
@@ -36,7 +37,7 @@ public class InstanceValidationContext {
 
 	/**
 	 * Returns the object associated with the given validator class.
-	 *
+	 * 
 	 * @param validatorClass the validator class
 	 * @return the associated object or <code>null</code> if none was set
 	 */
@@ -45,21 +46,25 @@ public class InstanceValidationContext {
 	}
 
 	/**
-	 * Returns true, if and only if there is a context object present for the given validator class.
-	 *
+	 * Returns true, if and only if there is a context object present for the
+	 * given validator class.
+	 * 
 	 * @param validatorClass the validator class
-	 * @return true, if and only if there is a context object present for the given validator class
+	 * @return true, if and only if there is a context object present for the
+	 *         given validator class
 	 */
 	public boolean containsContext(Class<? extends ConstraintValidator> validatorClass) {
 		return contextMap.containsKey(validatorClass);
 	}
 
 	/**
-	 * Sets the given object as the context object for the given validator class.<br>
+	 * Sets the given object as the context object for the given validator
+	 * class.<br>
 	 * The object may not be <code>null</code>.
-	 *
+	 * 
 	 * @param validatorClass the validator class
-	 * @param contextObject the new associated object, may not be <code>null</code>
+	 * @param contextObject the new associated object, may not be
+	 *            <code>null</code>
 	 */
 	public void putContext(Class<? extends ConstraintValidator> validatorClass, Object contextObject) {
 		contextMap.put(validatorClass, contextObject);

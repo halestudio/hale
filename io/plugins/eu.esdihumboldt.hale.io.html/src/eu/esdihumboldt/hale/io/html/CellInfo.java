@@ -26,28 +26,25 @@ import eu.esdihumboldt.util.Identifiers;
 public class CellInfo implements ICellInfo {
 
 	private final Cell cell;
-	
+
 	/**
 	 * the sub directory where the files will be created
 	 */
 	protected final String subDir;
-	
+
 	/**
 	 * the cell identifier
 	 */
 	protected final Identifiers<Cell> cellIds;
-	
+
 	private CellExplanation cellExpl;
 
 	/**
 	 * Constructor for a cell info
 	 * 
-	 * @param cell
-	 *            a cell the created cell info is associated with
-	 * @param cellIds
-	 *            the cell identifier
-	 * @param subDir
-	 *            the sub directory where files will be created
+	 * @param cell a cell the created cell info is associated with
+	 * @param cellIds the cell identifier
+	 * @param subDir the sub directory where files will be created
 	 */
 	public CellInfo(Cell cell, Identifiers<Cell> cellIds, String subDir) {
 		this.cell = cell;
@@ -62,15 +59,16 @@ public class CellInfo implements ICellInfo {
 	public String getExplanation() {
 		if (cellExpl == null) {
 			// determine cell explanation
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+			AbstractFunction<?> function = FunctionUtil.getFunction(cell
+					.getTransformationIdentifier());
 			if (function != null) {
 				cellExpl = function.getExplanation();
-				if(cellExpl == null) {
+				if (cellExpl == null) {
 					return null;
 				}
 			}
 		}
-		
+
 		return cellExpl.getExplanation(cell);
 	}
 
@@ -81,18 +79,19 @@ public class CellInfo implements ICellInfo {
 	public String getExplanationAsHtml() {
 		if (cellExpl == null) {
 			// determine cell explanation
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+			AbstractFunction<?> function = FunctionUtil.getFunction(cell
+					.getTransformationIdentifier());
 			if (function != null) {
 				cellExpl = function.getExplanation();
-				if(cellExpl == null) {
+				if (cellExpl == null) {
 					return null;
 				}
 			}
 		}
-		
+
 		return cellExpl.getExplanationAsHtml(cell);
 	}
-	
+
 	/**
 	 * @see ICellInfo#getImageLocation()
 	 */

@@ -23,15 +23,15 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Abstract WFS wizard page
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @param <T> the WFS configuration type
  */
 public abstract class AbstractWfsPage<T extends WfsConfiguration> extends WizardPage {
-	
+
 	private final T configuration;
-	
+
 	private Object currentPage = null;
 
 	/**
@@ -45,7 +45,7 @@ public abstract class AbstractWfsPage<T extends WfsConfiguration> extends Wizard
 	public AbstractWfsPage(T configuration, String pageName, String title,
 			ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
-		
+
 		this.configuration = configuration;
 	}
 
@@ -57,10 +57,10 @@ public abstract class AbstractWfsPage<T extends WfsConfiguration> extends Wizard
 	 */
 	public AbstractWfsPage(T configuration, String pageName) {
 		super(pageName);
-		
+
 		this.configuration = configuration;
 	}
-	
+
 	/**
 	 * Get the WMS configuration
 	 * 
@@ -69,7 +69,7 @@ public abstract class AbstractWfsPage<T extends WfsConfiguration> extends Wizard
 	public T getConfiguration() {
 		return configuration;
 	}
-	
+
 	/**
 	 * Update the WMS configuration
 	 * 
@@ -77,17 +77,17 @@ public abstract class AbstractWfsPage<T extends WfsConfiguration> extends Wizard
 	 * @return if the page is valid
 	 */
 	public abstract boolean updateConfiguration(T configuration);
-	
+
 	/**
 	 * @see IDialogPage#createControl(Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
 		IWizardContainer container = getContainer();
-		
+
 		if (container instanceof IPageChangeProvider) {
 			((IPageChangeProvider) container).addPageChangedListener(new IPageChangedListener() {
-				
+
 				@Override
 				public void pageChanged(PageChangedEvent event) {
 					if (currentPage == AbstractWfsPage.this) {
@@ -100,7 +100,7 @@ public abstract class AbstractWfsPage<T extends WfsConfiguration> extends Wizard
 				}
 			});
 		}
-		
+
 		createContent(parent);
 	}
 
@@ -110,7 +110,7 @@ public abstract class AbstractWfsPage<T extends WfsConfiguration> extends Wizard
 	protected void onShowPage() {
 		// do nothing
 	}
-	
+
 	/**
 	 * Called when this page is hidden
 	 */

@@ -17,21 +17,23 @@ import eu.esdihumboldt.specification.dataaccess.exceptions.AccessException;
  * This interface represents the boundary between the Request broker pipe and
  * concrete upstream data sources.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface DataAccessService {
 
 	/**
 	 * This operation executes an {@link AccessRequest}.
 	 * 
-	 * @param request the AccessRequest to be executed by the {@link DataAccessService}.
+	 * @param request
+	 *            the AccessRequest to be executed by the
+	 *            {@link DataAccessService}.
 	 * @return the AccessResponse returned by the created AccessCartridge.
-	 * @throws AccessException if the request has irrevocably failed
+	 * @throws AccessException
+	 *             if the request has irrevocably failed
 	 */
-	public AccessResponse runRequest(AccessRequest request) 
-		throws AccessException;
-	
-	
+	public AccessResponse runRequest(AccessRequest request)
+			throws AccessException;
+
 }

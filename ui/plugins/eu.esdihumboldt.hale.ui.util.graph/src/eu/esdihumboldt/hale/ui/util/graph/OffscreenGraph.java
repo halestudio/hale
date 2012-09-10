@@ -47,11 +47,12 @@ import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 
 /**
  * Renders a graph to an image.
+ * 
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
 public abstract class OffscreenGraph {
-	
+
 	private final Graph graph;
 	private Shell shell;
 	private Composite composite;
@@ -65,6 +66,7 @@ public abstract class OffscreenGraph {
 
 	/**
 	 * Create an off-screen graph.
+	 * 
 	 * @param width the graph width
 	 * @param height the graph height
 	 */
@@ -72,34 +74,35 @@ public abstract class OffscreenGraph {
 		shell = new Shell();
 		shell.setSize(width, height);
 		shell.setLayout(new FillLayout());
-		
-	    composite = new Composite(shell, SWT.NONE);
-	    composite.setLayout(new FillLayout());
+
+		composite = new Composite(shell, SWT.NONE);
+		composite.setLayout(new FillLayout());
 		composite.setVisible(true);
-		
-		//Workaround to draw in background -->
+
+		// Workaround to draw in background -->
 		graph = new Graph(composite, SWT.NONE);
 		GraphViewer viewer = new GraphViewer(graph);
-		
+
 		configureViewer(viewer);
-		
+
 		if (graph.getLayoutAlgorithm() == null) {
 			graph.setLayoutAlgorithm(new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT), true);
 		}
 		graph.setBounds(0, 0, width, height);
 		graph.getViewport().setBounds(new Rectangle(0, 0, width, height));
 		shell.setVisible(false);
-		
+
 		Object input = viewer.getInput();
-		// re-setting the input seems to be needed for the tree layout to place the nodes correctly
-		viewer.setInput(input); 
-		
+		// re-setting the input seems to be needed for the tree layout to place
+		// the nodes correctly
+		viewer.setInput(input);
+
 		graph.applyLayoutNow();
-		
+
 		IFigure root = graph.getRootLayer();
 		root.getUpdateManager().performUpdate();
 	}
-	
+
 	/**
 	 * Resize the off-screen graph.
 	 * 
@@ -111,15 +114,16 @@ public abstract class OffscreenGraph {
 
 		graph.setBounds(0, 0, width, height);
 		graph.getViewport().setBounds(new Rectangle(0, 0, width, height));
-		
+
 		graph.applyLayoutNow();
-		
+
 		IFigure root = graph.getRootLayer();
 		root.getUpdateManager().performUpdate();
 	}
-	
+
 	/**
 	 * Dispose the off-screen graph shell.
+	 * 
 	 * @see Shell#dispose()
 	 */
 	public void dispose() {
@@ -130,107 +134,107 @@ public abstract class OffscreenGraph {
 
 	/**
 	 * Configure the viewer.
+	 * 
 	 * @param viewer the graph viewer
 	 */
 	protected abstract void configureViewer(GraphViewer viewer);
-	
+
 	/**
 	 * Save the graph as image to an output stream.
+	 * 
 	 * @param out the output stream to write the image to
-	 * @param format the informal name of the  image format, if <code>null</code>
-	 *   defaults to <code>png</code> 
+	 * @param format the informal name of the image format, if <code>null</code>
+	 *            defaults to <code>png</code>
 	 * @throws IOException if writing the image fails
-	 *   
+	 * 
 	 * @see ImageIO#write(java.awt.image.RenderedImage, String, OutputStream)
 	 */
 	public void saveImage(OutputStream out, String format) throws IOException {
 		saveImage(graph.getRootLayer(), out, format);
 	}
-	
+
 	/**
 	 * Save the graph as Scalable Vector Graphics to an output stream.
+	 * 
 	 * @param out the output stream to write the SVG DOM to
 	 * @throws IOException if writing to the output stream fails
 	 * @throws TransformerFactoryConfigurationError if creating the transformer
-	 *   fails
+	 *             fails
 	 * @throws TransformerException if writing the document fails
 	 */
-	public void saveSVG(OutputStream out) throws IOException,
-			TransformerFactoryConfigurationError, TransformerException {
+	public void saveSVG(OutputStream out) throws IOException, TransformerFactoryConfigurationError,
+			TransformerException {
 		saveSVG(graph.getRootLayer(), out);
 	}
-	
+
 	/**
 	 * Save a figure as image to an output stream.
-	 * @param root the figure to draw 
+	 * 
+	 * @param root the figure to draw
 	 * @param out the output stream to write the image to
-	 * @param format the informal name of the  image format, if <code>null</code>
-	 *   defaults to <code>png</code> 
+	 * @param format the informal name of the image format, if <code>null</code>
+	 *            defaults to <code>png</code>
 	 * @throws IOException if writing the image fails
-	 *   
+	 * 
 	 * @see ImageIO#write(java.awt.image.RenderedImage, String, OutputStream)
 	 */
 	public static void saveImage(IFigure root, OutputStream out, String format) throws IOException {
 		if (format == null) {
 			format = "png";
 		}
-		
-		Image drawImage = new Image(Display.getCurrent(), root.getSize().width, 
+
+		Image drawImage = new Image(Display.getCurrent(), root.getSize().width,
 				root.getSize().height);
 		final GC gc = new GC(drawImage);
-		SWTGraphics graphics = new SWTGraphics(gc); 
+		SWTGraphics graphics = new SWTGraphics(gc);
 		try {
 			gc.setAntialias(SWT.ON);
 			gc.setInterpolation(SWT.HIGH);
-			
+
 			// paint the graph to an image
 			root.paint(graphics);
-			BufferedImage bufferedImage = SwingRcpUtilities
-					.convertToAWT(drawImage.getImageData());
+			BufferedImage bufferedImage = SwingRcpUtilities.convertToAWT(drawImage.getImageData());
 			ImageIO.write(bufferedImage, format, out);
-		}
-		finally {
+		} finally {
 			gc.dispose();
 			drawImage.dispose();
 			out.close();
 		}
 	}
-	
+
 	/**
 	 * Save a figure as Scalable Vector Graphics to an output stream.
+	 * 
 	 * @param root the figure to draw
 	 * @param out the output stream to write the SVG DOM to
 	 * @throws IOException if writing to the output stream fails
 	 * @throws TransformerFactoryConfigurationError if creating the transformer
-	 *   fails
+	 *             fails
 	 * @throws TransformerException if writing the document fails
 	 */
-	public static void saveSVG(IFigure root, OutputStream out)
-			throws IOException, TransformerFactoryConfigurationError,
-			TransformerException {
+	public static void saveSVG(IFigure root, OutputStream out) throws IOException,
+			TransformerFactoryConfigurationError, TransformerException {
 		Rectangle viewBox = root.getBounds().getCopy();
 		GraphicsSVG graphics = GraphicsSVG.getInstance(viewBox);
-		
+
 		// paint figure
 		try {
 			root.paint(graphics);
-			
+
 			Element svgRoot = graphics.getRoot();
-			
+
 			// Define the view box
-			svgRoot.setAttributeNS(null,
-				"viewBox", String.valueOf(viewBox.x) + " " + //$NON-NLS-1$ //$NON-NLS-2$
+			svgRoot.setAttributeNS(null, "viewBox", String.valueOf(viewBox.x) + " " + //$NON-NLS-1$ //$NON-NLS-2$
 					String.valueOf(viewBox.y) + " " + //$NON-NLS-1$
 					String.valueOf(viewBox.width) + " " + //$NON-NLS-1$
 					String.valueOf(viewBox.height));
-	
+
 			// Write the document to the stream
-			Transformer transformer = TransformerFactory.newInstance()
-				.newTransformer();
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8"); //$NON-NLS-1$
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-	
+
 			DOMSource source = new DOMSource(svgRoot);
 			StreamResult result = new StreamResult(out);
 			transformer.transform(source, result);
@@ -242,7 +246,7 @@ public abstract class OffscreenGraph {
 
 	/**
 	 * Save a graph in the dot format to an output stream.
-	 *  
+	 * 
 	 * @param graph the graph
 	 * @param out the output stream
 	 * @throws IOException if writing to the output stream fails

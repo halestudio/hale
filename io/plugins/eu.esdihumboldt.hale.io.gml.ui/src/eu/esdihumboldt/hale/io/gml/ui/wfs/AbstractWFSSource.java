@@ -34,7 +34,8 @@ import eu.esdihumboldt.hale.ui.io.source.AbstractProviderSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
 
 /**
- * Abstract base implementation for import sources based on WFS 
+ * Abstract base implementation for import sources based on WFS
+ * 
  * @param <P> the supported {@link IOProvider} type
  * 
  * @author Simon Templer
@@ -42,26 +43,27 @@ import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
 public abstract class AbstractWFSSource<P extends ImportProvider> extends AbstractProviderSource<P> {
 
 	private WfsUrlFieldEditor sourceURL;
-	
+
 	/**
 	 * @see ImportSource#createControls(Composite)
 	 */
 	@Override
 	public void createControls(Composite parent) {
 		parent.setLayout(new GridLayout(3, false));
-		
+
 		// caption
 		new Label(parent, SWT.NONE); // placeholder
-		
+
 		Label caption = new Label(parent, SWT.NONE);
 		caption.setText(getCaption());
 		caption.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 2, 1));
-		
+
 		// source file
-		sourceURL = createWfsFieldEditor(parent); 
+		sourceURL = createWfsFieldEditor(parent);
 		sourceURL.setPage(getPage());
-		
+
 		sourceURL.setPropertyChangeListener(new IPropertyChangeListener() {
+
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
@@ -72,13 +74,13 @@ public abstract class AbstractWFSSource<P extends ImportProvider> extends Abstra
 				}
 			}
 		});
-		
+
 		// provider selection
-		
+
 		// label
 		Label providerLabel = new Label(parent, SWT.NONE);
 		providerLabel.setText("Import as");
-		
+
 		// create provider combo
 		ComboViewer providers = createProviders(parent);
 		providers.getControl().setLayoutData(
@@ -90,12 +92,14 @@ public abstract class AbstractWFSSource<P extends ImportProvider> extends Abstra
 
 	/**
 	 * Get the caption for the source page
+	 * 
 	 * @return the caption
 	 */
 	protected abstract String getCaption();
 
 	/**
 	 * Create the WFS field editor to use in the page.
+	 * 
 	 * @param parent the parent composite
 	 * @return the WFS field editor
 	 */

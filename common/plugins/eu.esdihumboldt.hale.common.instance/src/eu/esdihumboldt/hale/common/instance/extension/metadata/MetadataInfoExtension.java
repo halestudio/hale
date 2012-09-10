@@ -13,28 +13,27 @@
 package eu.esdihumboldt.hale.common.instance.extension.metadata;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
-
 /**
  * Extension point for metadatas
+ * 
  * @author Sebastian Reinhardt
  */
 public class MetadataInfoExtension extends IdentifiableExtension<MetadataInfo> {
 
-
 	private static final ALogger log = ALoggerFactory.getLogger(MetadataInfoExtension.class);
-	
+
 	private static MetadataInfoExtension instance;
-	
+
 	/**
 	 * Extension point ID
 	 */
 	private static final String EXTENSION_ID = "eu.esdihumboldt.hale.instance.metadata";
 
-	
 	/**
 	 * Default constructor
 	 */
@@ -42,20 +41,19 @@ public class MetadataInfoExtension extends IdentifiableExtension<MetadataInfo> {
 		super(EXTENSION_ID);
 	}
 
-
 	/**
-	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension#create(java.lang.String, org.eclipse.core.runtime.IConfigurationElement)
+	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension#create(java.lang.String,
+	 *      org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
 	protected MetadataInfo create(String key, IConfigurationElement conf) {
 		try {
-		return new MetadataInfo(key, conf);
+			return new MetadataInfo(key, conf);
 		} catch (Exception e) {
 			log.error("Error initializing metadata", e);
 			return null;
 		}
 	}
-
 
 	/**
 	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension#getIdAttributeName()
@@ -64,9 +62,10 @@ public class MetadataInfoExtension extends IdentifiableExtension<MetadataInfo> {
 	protected String getIdAttributeName() {
 		return "key";
 	}
-	
+
 	/**
 	 * Get the extension instance.
+	 * 
 	 * @return the extension instance
 	 */
 	public static MetadataInfoExtension getInstance() {

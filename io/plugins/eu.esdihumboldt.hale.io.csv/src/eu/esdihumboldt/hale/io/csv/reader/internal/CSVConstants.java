@@ -18,22 +18,22 @@ package eu.esdihumboldt.hale.io.csv.reader.internal;
  * @author Kevin Mais
  */
 public interface CSVConstants {
-	
+
 	/**
 	 * Name of the parameter specifying the separating sign
 	 */
 	public static final String PARAM_SEPARATOR = "separator";
-	
+
 	/**
 	 * Name of the parameter specifying the quote sing
 	 */
 	public static final String PARAM_QUOTE = "quote";
-	
+
 	/**
 	 * Name of the parameter specifying the escape sign
 	 */
 	public static final String PARAM_ESCAPE = "escape";
-	
+
 	/**
 	 * The separating sign for the CSV file to be read (can be '\t' or ',' or
 	 * ' ')
@@ -42,19 +42,19 @@ public interface CSVConstants {
 
 	/**
 	 * The quote sign for the CSV file to be read
-	 */	
+	 */
 	public static final char DEFAULT_QUOTE = '\"';
-	
+
 	/**
 	 * The escape sign for the CSV file to be read
-	 */	
+	 */
 	public static final char DEFAULT_ESCAPE = '\\';
-	
+
 	/**
 	 * Name of the parameter specifying the type name
 	 */
 	public static String PARAM_TYPENAME = "typename";
-	
+
 	/**
 	 * Name of the parameter specifying the geometry/coordinate system
 	 */

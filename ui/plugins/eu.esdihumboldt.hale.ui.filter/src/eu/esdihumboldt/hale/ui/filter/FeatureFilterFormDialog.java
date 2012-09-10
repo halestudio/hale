@@ -32,13 +32,13 @@ import eu.esdihumboldt.hale.ui.filter.internal.Messages;
  */
 @Deprecated
 public class FeatureFilterFormDialog extends TitleAreaDialog {
-	
+
 	private final FeatureType featureType;
-	
+
 	private FeatureFilterForm form;
 
 	private String filterExpression;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -47,20 +47,20 @@ public class FeatureFilterFormDialog extends TitleAreaDialog {
 	 */
 	public FeatureFilterFormDialog(Shell parentShell, FeatureType featureType) {
 		super(parentShell);
-		
+
 		this.featureType = featureType;
 	}
-	
+
 	/**
 	 * @see TitleAreaDialog#createContents(Composite)
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
-		
+
 		setTitle(Messages.FeatureFilterFormDialog_0); //$NON-NLS-1$
-		//setMessage("");
-		
+		// setMessage("");
+
 		return control;
 	}
 
@@ -70,7 +70,7 @@ public class FeatureFilterFormDialog extends TitleAreaDialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		
+
 		newShell.setText(Messages.FeatureFilterFormDialog_1); //$NON-NLS-1$
 	}
 
@@ -82,17 +82,17 @@ public class FeatureFilterFormDialog extends TitleAreaDialog {
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		page.setLayoutData(data);
-		
+
 		page.setLayout(new GridLayout(1, false));
-		
+
 		form = new FeatureFilterForm(featureType, page, SWT.NONE);
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.heightHint = 200;
 		form.setLayoutData(gd);
-		
+
 		return page;
 	}
-	
+
 	/**
 	 * Get the filter expression
 	 * 
@@ -108,7 +108,7 @@ public class FeatureFilterFormDialog extends TitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		filterExpression = form.buildCQL();
-		
+
 		super.okPressed();
 	}
 
@@ -118,7 +118,7 @@ public class FeatureFilterFormDialog extends TitleAreaDialog {
 	@Override
 	protected void cancelPressed() {
 		filterExpression = null;
-		
+
 		super.cancelPressed();
 	}
 

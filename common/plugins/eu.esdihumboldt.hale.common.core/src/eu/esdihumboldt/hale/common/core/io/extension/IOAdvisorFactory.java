@@ -17,12 +17,14 @@ import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 
 /**
  * Factory for {@link IOAdvisor}s
+ * 
  * @author Simon Templer
  */
 public interface IOAdvisorFactory extends ExtensionObjectFactory<IOAdvisor<?>> {
-	
+
 	/**
 	 * Get the identifier of the action the advisor is associated with
+	 * 
 	 * @return the associated action ID
 	 */
 	public String getActionID();

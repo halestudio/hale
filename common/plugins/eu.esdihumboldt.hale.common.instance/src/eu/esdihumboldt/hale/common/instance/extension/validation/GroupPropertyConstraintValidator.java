@@ -17,14 +17,15 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 
 /**
  * Validates group property constraints.
- *
+ * 
  * @author Kai Schwierczek
  */
 public interface GroupPropertyConstraintValidator extends ConstraintValidator {
+
 	/**
-	 * Validate <code>values</code> against <code>constraint</code>.
-	 * The constraint and the values belong to <code>property</code>.
-	 *
+	 * Validate <code>values</code> against <code>constraint</code>. The
+	 * constraint and the values belong to <code>property</code>.
+	 * 
 	 * @param values the values to validate, may be <code>null</code>
 	 * @param constraint the constraint to validate
 	 * @param property the property the values and the constraint belong to

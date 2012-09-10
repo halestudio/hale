@@ -10,6 +10,7 @@
  * (c) the HUMBOLDT Consortium, 2007 to 2010.
  */
 package eu.esdihumboldt.specification.mediator.constraints.portrayal;
+
 /**
  * A NamedStyle is used to refer to a style that has a name in a WMS.
  * 
@@ -20,16 +21,12 @@ package eu.esdihumboldt.specification.mediator.constraints.portrayal;
  * 
  */
 public interface NamedStyle {
-	
+
 	/**
 	 * 
 	 * @return a unique StyleName.
 	 * 
 	 */
 	public String getName();
-	
-	
-	
-	
 
 }

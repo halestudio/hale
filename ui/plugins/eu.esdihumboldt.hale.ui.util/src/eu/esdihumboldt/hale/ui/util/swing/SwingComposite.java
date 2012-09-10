@@ -25,13 +25,13 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Composite embedding a AWT/Swing components
  * 
- * @author Simon Templer, Thorsten Reitz 
+ * @author Simon Templer, Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SwingComposite extends Composite {
 
-private final Frame frame;
-	
+	private final Frame frame;
+
 	private final JApplet embedded;
 
 	/**
@@ -41,24 +41,25 @@ private final Frame frame;
 	 */
 	public SwingComposite(Composite parent) {
 		super(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
-		
+
 		SwingRcpUtilities.setup();
-		
+
 		final Rectangle parentBounds = parent.getBounds();
-        parentBounds.x = parentBounds.y = 0;
-        setBounds(parentBounds);
-        
+		parentBounds.x = parentBounds.y = 0;
+		setBounds(parentBounds);
+
 		frame = SWT_AWT.new_Frame(this);
 		final Rectangle bounds = getBounds();
-        frame.setBounds(0, 0, bounds.width, bounds.height);
-        frame.setLayout(new BorderLayout());
-        
-        // need a heavyweight component inside the frame, preferably a JRootPane -> use JApplet container
-        embedded = new JApplet(); 
-        
-        frame.add(embedded);
+		frame.setBounds(0, 0, bounds.width, bounds.height);
+		frame.setLayout(new BorderLayout());
+
+		// need a heavyweight component inside the frame, preferably a JRootPane
+		// -> use JApplet container
+		embedded = new JApplet();
+
+		frame.add(embedded);
 	}
-	
+
 	/**
 	 * Gets the content pane. Add your Swing components to the content pane.
 	 * 
@@ -67,5 +68,5 @@ private final Frame frame;
 	public Container getContentPane() {
 		return embedded.getContentPane();
 	}
-	
+
 }

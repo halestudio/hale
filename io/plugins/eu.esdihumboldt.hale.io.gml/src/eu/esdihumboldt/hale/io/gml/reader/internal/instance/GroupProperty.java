@@ -16,12 +16,13 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 
 /**
  * Represents a property at the end of a group path
+ * 
  * @author Simon Templer
  */
 public class GroupProperty {
-	
+
 	private final PropertyDefinition property;
-	
+
 	private final GroupPath path;
 
 	/**

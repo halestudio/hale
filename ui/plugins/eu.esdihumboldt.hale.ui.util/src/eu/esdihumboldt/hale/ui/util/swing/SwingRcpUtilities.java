@@ -31,11 +31,11 @@ import de.cs3d.util.logging.ALoggerFactory;
 /**
  * Utilities for working with Swing and SWT
  * 
- * @author Simon Templer, Thorsten Reitz  
+ * @author Simon Templer, Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SwingRcpUtilities {
-	
+
 	private static final ALogger _log = ALoggerFactory.getLogger(SwingRcpUtilities.class);
 
 	/**
@@ -58,10 +58,12 @@ public class SwingRcpUtilities {
 
 			// setup look and feel
 			setupLookAndFeel();
-			
+
 			// initialize MutableGui context
-			// FIXME: check requirement on MutableGui or alternative solution (using GeoTools map component!)
-			// GuiConfiguration.setCustomConfiguration(new RCPGuiConfiguration());
+			// FIXME: check requirement on MutableGui or alternative solution
+			// (using GeoTools map component!)
+			// GuiConfiguration.setCustomConfiguration(new
+			// RCPGuiConfiguration());
 
 			initialized = true;
 		}
@@ -73,8 +75,7 @@ public class SwingRcpUtilities {
 	public static void setupLookAndFeel() {
 		if (!lafInitialized) {
 			try {
-				UIManager.setLookAndFeel(UIManager
-						.getSystemLookAndFeelClassName());
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} catch (Exception e) {
 				_log.error("Error setting system look and feel", e); //$NON-NLS-1$
 			}
@@ -88,29 +89,27 @@ public class SwingRcpUtilities {
 	 * 
 	 * {@link "http://dev.eclipse.org/viewcvs/index.cgi/org.eclipse.swt.snippets/src/org/eclipse/swt/snippets/Snippet156.java?view=co"}
 	 * 
-	 * @param data
-	 *            the SWT {@link ImageData}
+	 * @param data the SWT {@link ImageData}
 	 * @return the AWT {@link BufferedImage}
 	 */
 	public static BufferedImage convertToAWT(ImageData data) {
 		ColorModel colorModel = null;
 		PaletteData palette = data.palette;
 		if (palette.isDirect) {
-			colorModel = new DirectColorModel(data.depth, palette.redMask,
-					palette.greenMask, palette.blueMask);
+			colorModel = new DirectColorModel(data.depth, palette.redMask, palette.greenMask,
+					palette.blueMask);
 			BufferedImage bufferedImage = new BufferedImage(colorModel,
-					colorModel.createCompatibleWritableRaster(data.width,
-							data.height), false, null);
+					colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
 			for (int y = 0; y < data.height; y++) {
 				for (int x = 0; x < data.width; x++) {
 					int pixel = data.getPixel(x, y);
 					RGB rgb = palette.getRGB(pixel);
-					bufferedImage.setRGB(x, y, rgb.red << 16 | rgb.green << 8
-							| rgb.blue);
+					bufferedImage.setRGB(x, y, rgb.red << 16 | rgb.green << 8 | rgb.blue);
 				}
 			}
 			return bufferedImage;
-		} else {
+		}
+		else {
 			RGB[] rgbs = palette.getRGBs();
 			byte[] red = new byte[rgbs.length];
 			byte[] green = new byte[rgbs.length];
@@ -122,15 +121,14 @@ public class SwingRcpUtilities {
 				blue[i] = (byte) rgb.blue;
 			}
 			if (data.transparentPixel != -1) {
-				colorModel = new IndexColorModel(data.depth, rgbs.length, red,
-						green, blue, data.transparentPixel);
-			} else {
-				colorModel = new IndexColorModel(data.depth, rgbs.length, red,
-						green, blue);
+				colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue,
+						data.transparentPixel);
+			}
+			else {
+				colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue);
 			}
 			BufferedImage bufferedImage = new BufferedImage(colorModel,
-					colorModel.createCompatibleWritableRaster(data.width,
-							data.height), false, null);
+					colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
 			WritableRaster raster = bufferedImage.getRaster();
 			int[] pixelArray = new int[1];
 			for (int y = 0; y < data.height; y++) {
@@ -149,33 +147,30 @@ public class SwingRcpUtilities {
 	 * 
 	 * {@link "http://dev.eclipse.org/viewcvs/index.cgi/org.eclipse.swt.snippets/src/org/eclipse/swt/snippets/Snippet156.java?view=co"}
 	 * 
-	 * @param bufferedImage
-	 *            the AWT {@link BufferedImage}
+	 * @param bufferedImage the AWT {@link BufferedImage}
 	 * @return the SWT {@link ImageData}
 	 */
 	public static ImageData convertToSWT(BufferedImage bufferedImage) {
 		if (bufferedImage.getColorModel() instanceof DirectColorModel) {
-			DirectColorModel colorModel = (DirectColorModel) bufferedImage
-					.getColorModel();
+			DirectColorModel colorModel = (DirectColorModel) bufferedImage.getColorModel();
 			PaletteData palette = new PaletteData(colorModel.getRedMask(),
 					colorModel.getGreenMask(), colorModel.getBlueMask());
-			ImageData data = new ImageData(bufferedImage.getWidth(),
-					bufferedImage.getHeight(), colorModel.getPixelSize(),
-					palette);
+			ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(),
+					colorModel.getPixelSize(), palette);
 			for (int y = 0; y < data.height; y++) {
 				for (int x = 0; x < data.width; x++) {
 					int rgb = bufferedImage.getRGB(x, y);
-					int pixel = palette.getPixel(new RGB((rgb >> 16) & 0xFF,
-							(rgb >> 8) & 0xFF, rgb & 0xFF));
+					int pixel = palette.getPixel(new RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF,
+							rgb & 0xFF));
 					data.setPixel(x, y, pixel);
 					// also set the alpha value (ST)
 					data.setAlpha(x, y, colorModel.getAlpha(rgb));
 				}
 			}
 			return data;
-		} else if (bufferedImage.getColorModel() instanceof IndexColorModel) {
-			IndexColorModel colorModel = (IndexColorModel) bufferedImage
-					.getColorModel();
+		}
+		else if (bufferedImage.getColorModel() instanceof IndexColorModel) {
+			IndexColorModel colorModel = (IndexColorModel) bufferedImage.getColorModel();
 			int size = colorModel.getMapSize();
 			byte[] reds = new byte[size];
 			byte[] greens = new byte[size];
@@ -185,13 +180,11 @@ public class SwingRcpUtilities {
 			colorModel.getBlues(blues);
 			RGB[] rgbs = new RGB[size];
 			for (int i = 0; i < rgbs.length; i++) {
-				rgbs[i] = new RGB(reds[i] & 0xFF, greens[i] & 0xFF,
-						blues[i] & 0xFF);
+				rgbs[i] = new RGB(reds[i] & 0xFF, greens[i] & 0xFF, blues[i] & 0xFF);
 			}
 			PaletteData palette = new PaletteData(rgbs);
-			ImageData data = new ImageData(bufferedImage.getWidth(),
-					bufferedImage.getHeight(), colorModel.getPixelSize(),
-					palette);
+			ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(),
+					colorModel.getPixelSize(), palette);
 			data.transparentPixel = colorModel.getTransparentPixel();
 			WritableRaster raster = bufferedImage.getRaster();
 			int[] pixelArray = new int[1];
@@ -216,17 +209,16 @@ public class SwingRcpUtilities {
 	 * @return the SWT {@link ImageData}
 	 */
 	public static ImageData convertToSWT(ImageIcon icon) {
-		BufferedImage img = new BufferedImage(icon.getIconWidth(), icon
-				.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+		BufferedImage img = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(),
+				BufferedImage.TYPE_INT_RGB);
 
 		img.getGraphics().setColor(Color.WHITE);
-		img.getGraphics().fillRect(0, 0, icon.getIconWidth(),
-				icon.getIconHeight());
+		img.getGraphics().fillRect(0, 0, icon.getIconWidth(), icon.getIconHeight());
 		img.getGraphics().drawImage(icon.getImage(), 0, 0, null);
 
 		return convertToSWT(img);
 	}
-	
+
 	/**
 	 * Convert a {@link RGB} to an AWT color
 	 * 
@@ -237,5 +229,5 @@ public class SwingRcpUtilities {
 	public static Color convertToColor(RGB rgb) {
 		return new Color(rgb.red, rgb.green, rgb.blue);
 	}
-	
+
 }

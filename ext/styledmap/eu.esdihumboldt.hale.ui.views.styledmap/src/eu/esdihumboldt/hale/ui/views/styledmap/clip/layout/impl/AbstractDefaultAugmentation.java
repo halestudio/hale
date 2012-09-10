@@ -25,42 +25,45 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterProx
 
 /**
  * Base class for layout augmentations.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractDefaultAugmentation implements LayoutAugmentation {
-	
+
 	/**
 	 * Default margin in pixels
 	 */
 	public static final int DEFAULT_MARGIN = 5;
-	
+
 	/**
 	 * @see LayoutAugmentation#paint(Graphics2D, JXMapViewer, List, int, int)
 	 */
 	@Override
-	public final void paint(Graphics2D g, JXMapViewer map,
-			List<PainterProxy> painters, int width, int height) {
+	public final void paint(Graphics2D g, JXMapViewer map, List<PainterProxy> painters, int width,
+			int height) {
 		Font orgFont = g.getFont();
 		g.setFont(getFont(orgFont));
-		
+
 		doPaint(g, map, painters, width, height);
-		
+
 		g.setFont(orgFont);
 	}
-	
+
 	/**
 	 * Paint the layout augmentation.
+	 * 
 	 * @param g the graphics to paint on
 	 * @param map the corresponding map viewer
 	 * @param painters the list of layouted painters
 	 * @param width the width of the paint area
 	 * @param height the height of the paint area
 	 */
-	protected abstract void doPaint(Graphics2D g, JXMapViewer map,
-			List<PainterProxy> painters, int width, int height);
+	protected abstract void doPaint(Graphics2D g, JXMapViewer map, List<PainterProxy> painters,
+			int width, int height);
 
 	/**
 	 * Get the font to use for augmentation text.
+	 * 
 	 * @param originalFont the original font applied to the graphics
 	 * @return the font to use for the augmentation
 	 */
@@ -70,6 +73,7 @@ public abstract class AbstractDefaultAugmentation implements LayoutAugmentation 
 
 	/**
 	 * Draw a text.
+	 * 
 	 * @param g the graphics context
 	 * @param text the text to draw
 	 * @param x the x coordinate where the text should be rendered
@@ -82,14 +86,15 @@ public abstract class AbstractDefaultAugmentation implements LayoutAugmentation 
 			g.drawString(text, x - 1, y + 1);
 			g.drawString(text, x + 1, y - 1);
 			g.drawString(text, x + 1, y + 1);
-			
+
 			g.setColor(Color.BLACK);
 			g.drawString(text, x, y);
 		}
 	}
-	
+
 	/**
 	 * Draw a split line.
+	 * 
 	 * @param g the graphics context
 	 * @param x1 the x coordinate of the line start point
 	 * @param y1 the y coordinate of the line start point

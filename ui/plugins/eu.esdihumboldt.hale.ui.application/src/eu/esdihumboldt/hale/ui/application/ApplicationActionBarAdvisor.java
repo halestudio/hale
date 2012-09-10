@@ -52,12 +52,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	@Override
 	protected void makeActions(IWorkbenchWindow window) {
 		super.makeActions(window);
-		
+
 		register(undoAction = ActionFactory.UNDO.create(window));
 		register(redoAction = ActionFactory.REDO.create(window));
 		register(introAction = ActionFactory.INTRO.create(window));
 		register(savePerspectiveAction = ActionFactory.SAVE_PERSPECTIVE.create(window));
-		
+
 		viewsShortList = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
 	}
 
@@ -66,35 +66,37 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	 */
 	@Override
 	protected void fillMenuBar(IMenuManager menuBar) {
-		menuBar.add(new GroupMarker(
-				IWorkbenchActionConstants.MB_ADDITIONS));
-		
+		menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+
 		// edit menu
 		IMenuManager menu = new MenuManager("Edit", IWorkbenchActionConstants.M_EDIT);
-        menu.add(new GroupMarker(IWorkbenchActionConstants.EDIT_START));
+		menu.add(new GroupMarker(IWorkbenchActionConstants.EDIT_START));
 
-        menu.add(undoAction);
-        menu.add(redoAction);
-        menu.add(new GroupMarker(IWorkbenchActionConstants.UNDO_EXT));
-        menu.add(new Separator());
-        
-        menuBar.add(menu);
-        
+		menu.add(undoAction);
+		menu.add(redoAction);
+		menu.add(new GroupMarker(IWorkbenchActionConstants.UNDO_EXT));
+		menu.add(new Separator());
+
+		menuBar.add(menu);
+
 		// window menu
-		IMenuManager windowMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_1, IWorkbenchActionConstants.M_WINDOW); //$NON-NLS-1$
-		IMenuManager viewMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_3, "view"); //$NON-NLS-1$
+		IMenuManager windowMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_1,
+				IWorkbenchActionConstants.M_WINDOW); //$NON-NLS-1$
+		IMenuManager viewMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_3,
+				"view"); //$NON-NLS-1$
 		windowMenu.add(viewMenu);
 		viewMenu.add(viewsShortList);
-		
+
 		windowMenu.add(savePerspectiveAction);
 
 		menuBar.add(windowMenu);
-		
+
 		// help menu
-		IMenuManager helpMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_2, IWorkbenchActionConstants.M_HELP); //$NON-NLS-1$ //$NON-NLS-2$
+		IMenuManager helpMenu = new MenuManager(Messages.ApplicationWorkbenchWindowAdvisor_2,
+				IWorkbenchActionConstants.M_HELP); //$NON-NLS-1$ //$NON-NLS-2$
 		helpMenu.add(introAction);
-		
+
 		menuBar.add(helpMenu);
 	}
-	
+
 }

@@ -81,90 +81,96 @@ public interface GroundingCatalogue {
 	 * @return password of the Grounding Catalogue.
 	 */
 	String getPassword();
-	
+
 	/**
 	 * @return the date of the last successful harvest of metadata
 	 */
 	Date getLastHarvestSuccess();
 
 	/**
-	 * @param serviceType -
-	 *            the Service Type of the Grounding Catalogue. It is usually
+	 * @param serviceType
+	 *            - the Service Type of the Grounding Catalogue. It is usually
 	 *            CSW.
 	 * @throws InconsistentGroundingCatalogueException
 	 *             if the Service Type is missing or is not valid.
 	 */
-	void setServiceType(String serviceType) throws InconsistentGroundingCatalogueException;
+	void setServiceType(String serviceType)
+			throws InconsistentGroundingCatalogueException;
 
 	/**
-	 * @param version -
-	 *            the Version of the Grounding Catalogue. It is usually 2.0.1 or
-	 *            2.0.2.
+	 * @param version
+	 *            - the Version of the Grounding Catalogue. It is usually 2.0.1
+	 *            or 2.0.2.
 	 * @throws InconsistentGroundingCatalogueException
 	 *             if the Version is missing or is not valid.
 	 */
-	void setVersion(String version) throws InconsistentGroundingCatalogueException;
+	void setVersion(String version)
+			throws InconsistentGroundingCatalogueException;
 
 	/**
-	 * @param host -
-	 *            the host name of the Grounding Catalogue.
+	 * @param host
+	 *            - the host name of the Grounding Catalogue.
 	 * @throws InconsistentGroundingCatalogueException
 	 *             if the host name is missing or is not valid.
 	 */
 	void setHost(String host) throws InconsistentGroundingCatalogueException;
 
 	/**
-	 * @param port -
-	 *            the port of the Grounding Catalogue.
+	 * @param port
+	 *            - the port of the Grounding Catalogue.
 	 * @throws InconsistentGroundingCatalogueException
 	 *             if the port is missing or is not valid.
 	 */
 	void setPort(Integer port) throws InconsistentGroundingCatalogueException;
 
 	/**
-	 * @param address -
-	 *            the address of the Grounding Catalogue.
+	 * @param address
+	 *            - the address of the Grounding Catalogue.
 	 * @throws InconsistentGroundingCatalogueException
 	 *             if the address is missing or is not valid.
 	 */
-	void setAddress(String address) throws InconsistentGroundingCatalogueException;
+	void setAddress(String address)
+			throws InconsistentGroundingCatalogueException;
 
 	/**
-	 * @param method -
-	 *            the method to connect to the Grounding Catalogue.
+	 * @param method
+	 *            - the method to connect to the Grounding Catalogue.
 	 * @throws InconsistentGroundingCatalogueException
 	 *             if the method is missing or is not valid.
 	 */
-	void setMethod(Method method) throws InconsistentGroundingCatalogueException;
+	void setMethod(Method method)
+			throws InconsistentGroundingCatalogueException;
 
 	/**
-	 * @param useSoap -
-	 *            true, if the Grounding Catalogue uses SOAP.
+	 * @param useSoap
+	 *            - true, if the Grounding Catalogue uses SOAP.
 	 * @throws InconsistentGroundingCatalogueException
 	 *             if SOAP with Get is used.
 	 */
-	void setSoapUsed(boolean useSoap) throws InconsistentGroundingCatalogueException;
+	void setSoapUsed(boolean useSoap)
+			throws InconsistentGroundingCatalogueException;
 
 	/**
-	 * @param username -
-	 *            the username of the Grounding Catalogue.
+	 * @param username
+	 *            - the username of the Grounding Catalogue.
 	 */
 	void setUsername(String username);
 
 	/**
-	 * @param password -
-	 *            the password of the Grounding Catalogue.
+	 * @param password
+	 *            - the password of the Grounding Catalogue.
 	 */
 	void setPassword(String password);
 
 	/**
-	 * @param loginAddress -
-	 *            the login address of the Grounding Catalogue.
+	 * @param loginAddress
+	 *            - the login address of the Grounding Catalogue.
 	 */
 	void setLoginAddress(String loginAddress);
-	
+
 	/**
-	 * @param date the date of the last successful harvest request
+	 * @param date
+	 *            the date of the last successful harvest request
 	 */
 	void setLastHarvestSuccess(Date date);
 
@@ -176,7 +182,6 @@ public interface GroundingCatalogue {
 	 * @return true, if equal
 	 */
 	boolean equals(Object o);
-
 
 	enum Method {
 		GET, POST;

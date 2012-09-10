@@ -14,12 +14,12 @@ package eu.esdihumboldt.hale.ui.util.viewer;
 
 /**
  * Tooltip provider interface
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public interface TipProvider {
-	
+
 	/**
 	 * Get the tool tip for the given element
 	 * 

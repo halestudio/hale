@@ -23,18 +23,19 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Properties section with AbstractFlag information
+ * 
  * @author Patrick Lieb
  */
-public class TypeDefinitionAbstractFlagSection extends DefaultDefinitionSection<TypeDefinition>{
-	
+public class TypeDefinitionAbstractFlagSection extends DefaultDefinitionSection<TypeDefinition> {
+
 	private Text abstractFlag;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "AbstractFlag:", null);
 		abstractFlag = getText();
 	}
@@ -44,9 +45,10 @@ public class TypeDefinitionAbstractFlagSection extends DefaultDefinitionSection<
 	 */
 	@Override
 	public void refresh() {
-		if (getDefinition().getConstraint(AbstractFlag.class).isEnabled()){
+		if (getDefinition().getConstraint(AbstractFlag.class).isEnabled()) {
 			abstractFlag.setText("true");
-		} else {
+		}
+		else {
 			abstractFlag.setText("false");
 		}
 	}

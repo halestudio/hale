@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
  * @author Kai Schwierczek
  */
 public class RecentFilesContentProvider implements IIntroContentProvider {
+
 	private boolean disposed = false;
 
 	/**
@@ -47,7 +48,7 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 	public void init(IIntroContentProviderSite site) {
 		// site isn't needed or directly react to changes in recent entries?
 		// -> somehow add listener to recent entries, reflow after changes,
-		//    remove listener in dispose ?
+		// remove listener in dispose ?
 	}
 
 	/**
@@ -77,13 +78,14 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 				out.print("closeIntro=true&path="); //$NON-NLS-1$
 				out.print(entry.getFile());
 				out.print("\">"); //$NON-NLS-1$
-				out.print(RecentFilesMenu.shorten(entry.getFile(), MAX_LENGTH, new File(entry.getFile()).getName()
-						.length()));
+				out.print(RecentFilesMenu.shorten(entry.getFile(), MAX_LENGTH,
+						new File(entry.getFile()).getName().length()));
 				out.print("</a>"); //$NON-NLS-1$
 				out.print("</li>"); //$NON-NLS-1$
 			}
 			out.print("</ul>"); //$NON-NLS-1$
-		} else {
+		}
+		else {
 			out.print("<p class=\"status-text\">"); //$NON-NLS-1$
 			out.print("No recently opened projects.");
 			out.print("</p>"); //$NON-NLS-1$
@@ -106,6 +108,7 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 
 		FormText formText = toolkit.createFormText(parent, true);
 		formText.addHyperlinkListener(new HyperlinkAdapter() {
+
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				new LoadProjectAction().execute(true, (String) e.getHref());
@@ -127,12 +130,13 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 				buffer.append("<a href=\""); //$NON-NLS-1$
 				buffer.append(entry.getFile());
 				buffer.append("\">"); //$NON-NLS-1$
-				buffer.append(RecentFilesMenu.shorten(entry.getFile(), MAX_LENGTH, new File(entry.getFile()).getName()
-						.length()));
+				buffer.append(RecentFilesMenu.shorten(entry.getFile(), MAX_LENGTH,
+						new File(entry.getFile()).getName().length()));
 				buffer.append("</a>"); //$NON-NLS-1$
 				buffer.append("</li>"); //$NON-NLS-1$
 			}
-		} else {
+		}
+		else {
 			buffer.append("<p>"); //$NON-NLS-1$
 			buffer.append("No recently opened projects.");
 			buffer.append("</p>"); //$NON-NLS-1$
@@ -146,7 +150,8 @@ public class RecentFilesContentProvider implements IIntroContentProvider {
 	}
 
 	private RecentFilesService.Entry[] getRecentFiles() {
-		RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(RecentFilesService.class);
+		RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(
+				RecentFilesService.class);
 		RecentFilesService.Entry[] entries = rfs.getRecentFiles();
 		if (entries == null)
 			entries = new RecentFilesService.Entry[0];

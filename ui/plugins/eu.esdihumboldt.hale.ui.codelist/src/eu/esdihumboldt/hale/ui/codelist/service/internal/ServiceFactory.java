@@ -20,20 +20,22 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
  * Service factory for code list service.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ServiceFactory extends AbstractServiceFactory {
 
 	/**
-	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
+	 * @see AbstractServiceFactory#create(Class, IServiceLocator,
+	 *      IServiceLocator)
 	 */
 	@Override
-	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
-			IServiceLocator locator) {
+	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface,
+			IServiceLocator parentLocator, IServiceLocator locator) {
 		if (serviceInterface.equals(CodeListService.class)) {
-			return new CodeListServiceImpl((ProjectService) locator.getService(ProjectService.class));
+			return new CodeListServiceImpl(
+					(ProjectService) locator.getService(ProjectService.class));
 		}
 		return null;
 	}

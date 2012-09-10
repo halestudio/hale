@@ -18,13 +18,15 @@ import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 
 /**
  * TODO Type description
+ * 
  * @author Simon Templer
  */
 public interface ConfigurationPageFactory extends
 		ExtensionObjectFactory<AbstractConfigurationPage<?, ?>> {
-	
+
 	/**
 	 * Get the identifiers of the supported providers
+	 * 
 	 * @return the set of supported provider identifiers
 	 */
 	public Set<String> getSupportedProviderIDs();

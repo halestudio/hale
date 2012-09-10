@@ -30,8 +30,7 @@ import eu.esdihumboldt.hale.ui.views.properties.function.DefaultFunctionSection;
  * 
  * @author Patrick Lieb
  */
-public class AbstractFunctionDescriptionSection extends
-		DefaultFunctionSection<AbstractFunction<?>> {
+public class AbstractFunctionDescriptionSection extends DefaultFunctionSection<AbstractFunction<?>> {
 
 	private Text description;
 
@@ -42,11 +41,9 @@ public class AbstractFunctionDescriptionSection extends
 	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-				.createFlatFormComposite(parent);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
 
 		description = getWidgetFactory().createText(composite, "",
@@ -65,8 +62,7 @@ public class AbstractFunctionDescriptionSection extends
 		label = getWidgetFactory().createCLabel(composite, "Description:");
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(description,
-				-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(description, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(description, 0, SWT.TOP);
 		label.setLayoutData(data);
 	}

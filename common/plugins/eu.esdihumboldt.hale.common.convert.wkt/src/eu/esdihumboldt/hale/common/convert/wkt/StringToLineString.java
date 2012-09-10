@@ -18,10 +18,11 @@ import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverte
 
 /**
  * Converts Strings to LineString
+ * 
  * @author Kevin Mais
  */
-public class StringToLineString extends AbstractGeometryConverter<LineString>{
-	
+public class StringToLineString extends AbstractGeometryConverter<LineString> {
+
 	// concrete typed class
 
 }

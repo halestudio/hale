@@ -21,23 +21,26 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for the retype function.
- *
+ * 
  * @author Simon Templer
  */
 public class RetypeExplanation extends AbstractCellExplanation {
+
 	private static final String EXPLANATION_PATTERN = "Creates a {1} instance for each {0} instance in the source data set.";
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		
+
 		if (source != null && target != null)
-			return MessageFormat.format(EXPLANATION_PATTERN, formatEntity(source, html, true), formatEntity(target, html, true));
-		
+			return MessageFormat.format(EXPLANATION_PATTERN, formatEntity(source, html, true),
+					formatEntity(target, html, true));
+
 		return null;
 	}
 }

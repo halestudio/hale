@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationF
 
 /**
  * Base class for transformation function factories
+ * 
  * @param <T> the transformation function type
  * 
  * @author Simon Templer
@@ -38,29 +39,27 @@ public abstract class AbstractTransformationFactory<T extends TransformationFunc
 	private final Map<String, String> parameters;
 
 	/**
-	 * Create a transformation function factory based on the given 
-	 * configuration element.
+	 * Create a transformation function factory based on the given configuration
+	 * element.
+	 * 
 	 * @param conf the configuration element
 	 */
 	protected AbstractTransformationFactory(IConfigurationElement conf) {
 		super(conf, "class");
-		
+
 		parameters = createExecutionParameters(conf);
 	}
 
-	private static Map<String, String> createExecutionParameters(
-			IConfigurationElement conf) {
+	private static Map<String, String> createExecutionParameters(IConfigurationElement conf) {
 		Map<String, String> result = new LinkedHashMap<String, String>();
-		
+
 		IConfigurationElement[] params = conf.getChildren("executionParameter");
 		if (params != null) {
 			for (IConfigurationElement param : params) {
-				result.put(
-						param.getAttribute("key"), 
-						param.getAttribute("value"));
+				result.put(param.getAttribute("key"), param.getAttribute("value"));
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -85,7 +84,7 @@ public abstract class AbstractTransformationFactory<T extends TransformationFunc
 	 */
 	@Override
 	public String getDisplayName() {
-		//TODO instead return function name?
+		// TODO instead return function name?
 		return getIdentifier();
 	}
 

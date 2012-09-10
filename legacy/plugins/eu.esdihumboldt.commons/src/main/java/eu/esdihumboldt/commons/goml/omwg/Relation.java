@@ -27,8 +27,7 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class Relation 
-	extends Entity {
+public class Relation extends Entity {
 
 	/**
 	 * <xs:element ref="omwg:domainRestriction" minOccurs="0"
@@ -47,13 +46,13 @@ public class Relation
 	public Relation(IAbout about) {
 		super(about);
 	}
-	
-    // FIXME copied from Entity, might not be applicable
+
+	// FIXME copied from Entity, might not be applicable
 	public String getNamespace() {
-		return this.getAbout().getAbout().substring(
-				0, (this.getAbout().getAbout().lastIndexOf("/")));
+		return this.getAbout().getAbout()
+				.substring(0, (this.getAbout().getAbout().lastIndexOf("/")));
 	}
-	
+
 	// getters / setters .......................................................
 
 	/**
@@ -64,7 +63,8 @@ public class Relation
 	}
 
 	/**
-	 * @param domainRestriction the domainRestriction to set
+	 * @param domainRestriction
+	 *            the domainRestriction to set
 	 */
 	public void setDomainRestriction(List<FeatureClass> domainRestriction) {
 		this.domainRestriction = domainRestriction;
@@ -78,7 +78,8 @@ public class Relation
 	}
 
 	/**
-	 * @param rangeRestriction the rangeRestriction to set
+	 * @param rangeRestriction
+	 *            the rangeRestriction to set
 	 */
 	public void setRangeRestriction(List<FeatureClass> rangeRestriction) {
 		this.rangeRestriction = rangeRestriction;
@@ -89,7 +90,5 @@ public class Relation
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
 
 }

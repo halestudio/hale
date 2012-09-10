@@ -20,27 +20,27 @@ import eu.esdihumboldt.specification.cst.rdf.IResource;
 /**
  * The superinterface for all transformations.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface ITransformation {
-	
+
 	/**
 	 * @return a List of Parameters that this Transformation accepts.
 	 */
 	public List<IParameter> getParameters();
-	
+
 	/**
 	 * @return the URI grounding this Transformation.
 	 */
 	public IResource getService();
-	
+
 	/**
 	 * @return the label of this Transformation.
 	 */
 	public String getLabel();
-	
+
 	/**
 	 * @return the identifying metadata of this Transformation.
 	 */

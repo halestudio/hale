@@ -21,34 +21,37 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 
 /**
  * Common interface for all transformation functions
+ * 
  * @param <E> the transformation engine type
  * 
  * @author Simon Templer
  */
 public interface TransformationFunction<E extends TransformationEngine> {
-	
+
 	/**
 	 * Sets the parameters for the transformation.
+	 * 
 	 * @param parameters the transformation parameters
 	 */
 	public void setParameters(ListMultimap<String, String> parameters);
-	
+
 	/**
 	 * Execute the function as configured.
+	 * 
 	 * @param transformationIdentifier the transformation function identifier
-	 * @param engine the transformation engine that may be used for the
-	 *   function execution
-	 * @param executionParameters additional parameters for the execution, 
-	 *   may be <code>null</code>
+	 * @param engine the transformation engine that may be used for the function
+	 *            execution
+	 * @param executionParameters additional parameters for the execution, may
+	 *            be <code>null</code>
 	 * @param log the transformation log to report any information about the
-	 *   execution of the transformation to
+	 *            execution of the transformation to
 	 * @throws TransformationException if an unrecoverable error occurs during
-	 *   transformation
+	 *             transformation
 	 */
 	public void execute(String transformationIdentifier, E engine,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException;
-	
-	//TODO reset method? or something like it
-	
+
+	// TODO reset method? or something like it
+
 }

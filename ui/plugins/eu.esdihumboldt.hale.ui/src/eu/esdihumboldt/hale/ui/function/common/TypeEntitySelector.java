@@ -31,27 +31,29 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
 /**
  * Entity selector for {@link Type} entities
+ * 
  * @author Simon Templer
  */
 public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 
 	/**
 	 * Create an entity selector for {@link Type} entities
+	 * 
 	 * @param ssid the schema space
 	 * @param field the field definition, may be <code>null</code>
 	 * @param parent the parent composite
 	 */
-	public TypeEntitySelector(SchemaSpaceID ssid, TypeParameter field,
-			Composite parent) {
+	public TypeEntitySelector(SchemaSpaceID ssid, TypeParameter field, Composite parent) {
 		super(ssid, field, parent, createFilters(field));
 	}
 
 	/**
-	 * @see EntitySelector#createEntityDialog(Shell, SchemaSpaceID, AbstractParameter)
+	 * @see EntitySelector#createEntityDialog(Shell, SchemaSpaceID,
+	 *      AbstractParameter)
 	 */
 	@Override
-	protected EntityDialog createEntityDialog(Shell parentShell,
-			SchemaSpaceID ssid, TypeParameter field) {
+	protected EntityDialog createEntityDialog(Shell parentShell, SchemaSpaceID ssid,
+			TypeParameter field) {
 		String title;
 		switch (ssid) {
 		case SOURCE:
@@ -62,8 +64,7 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 			title = "Select target type";
 			break;
 		}
-		return new TypeEntityDialog(parentShell, ssid, title,
-				getSelectedObject());
+		return new TypeEntityDialog(parentShell, ssid, title, getSelectedObject());
 	}
 
 	/**
@@ -73,10 +74,10 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 	protected Entity createEntity(EntityDefinition element) {
 		if (element instanceof TypeEntityDefinition) {
 			Type type = new DefaultType((TypeEntityDefinition) element);
-			//TODO configure entity?
+			// TODO configure entity?
 			return type;
 		}
-		
+
 		throw new IllegalArgumentException("Entity must be a type");
 	}
 
@@ -84,22 +85,24 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 		if (field == null) {
 			return null;
 		}
-		
+
 		List<TypeCondition> conditions = field.getConditions();
-		
+
 		if (conditions == null)
 			return new ViewerFilter[0];
 
 		ViewerFilter[] filters = new ViewerFilter[conditions.size()];
 		int i = 0;
 		for (final TypeCondition condition : conditions) {
-			filters[i] = new ViewerFilter() {				
+			filters[i] = new ViewerFilter() {
+
 				@Override
 				public boolean select(Viewer viewer, Object parentElement, Object element) {
 					if (element instanceof TypeEntityDefinition) {
 						Type property = new DefaultType((TypeEntityDefinition) element);
 						return condition.accept(property);
-					} else
+					}
+					else
 						return false;
 				}
 			};

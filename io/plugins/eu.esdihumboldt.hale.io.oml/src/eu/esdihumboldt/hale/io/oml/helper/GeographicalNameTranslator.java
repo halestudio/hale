@@ -31,8 +31,7 @@ import eu.esdihumboldt.specification.cst.align.ext.IParameter;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class GeographicalNameTranslator implements FunctionTranslator,
-		GeographicalNameFunction {
+public class GeographicalNameTranslator implements FunctionTranslator, GeographicalNameFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -49,12 +48,12 @@ public class GeographicalNameTranslator implements FunctionTranslator,
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
-		
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
+
 		// create the new parameter list
 		List<ParameterValue> newParams = new ArrayList<ParameterValue>();
-		
+
 		IEntity source = cell.getEntity1();
 		if (source instanceof ComposedProperty) {
 			ComposedProperty cp = (ComposedProperty) source;
@@ -65,12 +64,10 @@ public class GeographicalNameTranslator implements FunctionTranslator,
 			if (coll instanceof ComposedProperty) {
 				ComposedProperty comProp = (ComposedProperty) coll;
 				// parameters defined by the parameter page
-				List<IParameter> pageParams = comProp.getTransformation()
-						.getParameters();
+				List<IParameter> pageParams = comProp.getTransformation().getParameters();
 				// add each parameter defined by the parameter page
 				for (IParameter p : pageParams) {
-					newParams
-							.add(new ParameterValue(p.getName(), p.getValue()));
+					newParams.add(new ParameterValue(p.getName(), p.getValue()));
 				}
 				// the collection of the collection contains the parameters
 				// defined for the spellings
@@ -78,11 +75,9 @@ public class GeographicalNameTranslator implements FunctionTranslator,
 				for (Property prop : props) {
 					// each property has a list of 3 parameters (text, script,
 					// transliterationScheme)
-					List<IParameter> spellingParams = prop.getTransformation()
-							.getParameters();
+					List<IParameter> spellingParams = prop.getTransformation().getParameters();
 					for (IParameter p : spellingParams) {
-						newParams.add(new ParameterValue(p.getName(), p
-								.getValue()));
+						newParams.add(new ParameterValue(p.getName(), p.getValue()));
 					}
 				}
 			}

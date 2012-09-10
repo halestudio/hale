@@ -33,7 +33,7 @@ public interface FunctionTranslator {
 	 * @return the transformation ID
 	 */
 	public String getTransformationId();
-	
+
 	/**
 	 * Returns the list with the translated parameters
 	 * 
@@ -43,6 +43,7 @@ public interface FunctionTranslator {
 	 * @param cell the initially cell
 	 * @return the post-translation parameters
 	 */
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean, IOReporter reporter, ICell cell);
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell);
 
 }

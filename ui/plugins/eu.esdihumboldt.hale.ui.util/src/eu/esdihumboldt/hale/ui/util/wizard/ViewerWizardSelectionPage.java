@@ -35,6 +35,7 @@ import eu.esdihumboldt.util.Pair;
 
 /**
  * Wizard selection page based on a structured viewer.
+ * 
  * @author Simon Templer
  */
 public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
@@ -58,156 +59,164 @@ public abstract class ViewerWizardSelectionPage extends WizardSelectionPage {
 		// create composite for page.
 		Composite outerContainer = new Composite(parent, SWT.NONE);
 		outerContainer.setLayout(new GridLayout());
-		outerContainer.setLayoutData(GridDataFactory.fillDefaults()
-				.grab(true, true).create());
+		outerContainer.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		outerContainer.setFont(font);
 
 		Pair<StructuredViewer, Control> viewerControl = createViewer(outerContainer);
 		viewer = viewerControl.getFirst();
-		viewerControl.getSecond().setLayoutData(GridDataFactory.fillDefaults()
-				.grab(true, true).create());
-		
+		viewerControl.getSecond().setLayoutData(
+				GridDataFactory.fillDefaults().grab(true, true).create());
+
 		// wire viewer
-		viewer.addSelectionChangedListener(new ISelectionChangedListener(){
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				viewerSelectionChanged(event.getSelection());    	       			
+				viewerSelectionChanged(event.getSelection());
 			}
 		});
-		viewer.addDoubleClickListener(new IDoubleClickListener(){
-	    	@Override
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
-	    		doubleClicked(event);
-	    	}
-	    });
+				doubleClicked(event);
+			}
+		});
 
 		Dialog.applyDialogFont(outerContainer);
 
 		// apply the initial selection
 		viewerSelectionChanged(viewer.getSelection());
-		
+
 		setControl(outerContainer);
 	}
-	
+
 	/**
 	 * Called when the viewer selection has changed.
+	 * 
 	 * @param selection the current selection
 	 */
-	protected void viewerSelectionChanged(ISelection selection){
-        setErrorMessage(null);
-        IStructuredSelection ss = (IStructuredSelection) selection;
-        Object sel = ss.getFirstElement();
-        if (sel instanceof IWizardNode){
-	        IWizardNode currentWizardSelection = (IWizardNode) sel;        
-	        updateSelectedNode(currentWizardSelection);
-        } else {
+	protected void viewerSelectionChanged(ISelection selection) {
+		setErrorMessage(null);
+		IStructuredSelection ss = (IStructuredSelection) selection;
+		Object sel = ss.getFirstElement();
+		if (sel instanceof IWizardNode) {
+			IWizardNode currentWizardSelection = (IWizardNode) sel;
+			updateSelectedNode(currentWizardSelection);
+		}
+		else {
 			updateSelectedNode(null);
 		}
-    }
-	
+	}
+
 	/**
 	 * Update the selected node
+	 * 
 	 * @param wizardNode the selected wizard node
 	 */
-    private void updateSelectedNode(IWizardNode wizardNode){
-        setErrorMessage(null);
-        if (wizardNode == null) {
-        	updateMessage();
-            setSelectedNode(null);
-            return;
-        }
+	private void updateSelectedNode(IWizardNode wizardNode) {
+		setErrorMessage(null);
+		if (wizardNode == null) {
+			updateMessage();
+			setSelectedNode(null);
+			return;
+		}
 
-        // set the message based on the wizard description
-        if (wizardNode instanceof ExtendedWizardNode) {
-        	setMessage(((ExtendedWizardNode) wizardNode).getDescription(), 
-        			INFORMATION); 
-        }
-        else {
-        	setMessage(null);
-        }
-        
-        // set the selected node
-        setSelectedNode(wizardNode);
-    }
-    
-    /**
+		// set the message based on the wizard description
+		if (wizardNode instanceof ExtendedWizardNode) {
+			setMessage(((ExtendedWizardNode) wizardNode).getDescription(), INFORMATION);
+		}
+		else {
+			setMessage(null);
+		}
+
+		// set the selected node
+		setSelectedNode(wizardNode);
+	}
+
+	/**
 	 * @see WizardSelectionPage#setSelectedNode(IWizardNode)
 	 */
 	@Override
 	protected void setSelectedNode(IWizardNode node) {
 		if (node != null) {
 			String message = acceptWizard(node);
-			
+
 			if (message != null) {
 				// display warning message
-	        	setMessage(message, WARNING);
-	        	// disable next
-	        	super.setSelectedNode(null);
-	        	return;
+				setMessage(message, WARNING);
+				// disable next
+				super.setSelectedNode(null);
+				return;
 			}
 		}
-		
+
 		super.setSelectedNode(node);
 	}
 
 	/**
-     * Accepts or doesn't accept a wizard node as a valid selection.
+	 * Accepts or doesn't accept a wizard node as a valid selection.
+	 * 
 	 * @param wizardNode the wizard node
-	 * @return <code>null</code> if the node is accepted or a reason
-	 * why it is not accepted.
+	 * @return <code>null</code> if the node is accepted or a reason why it is
+	 *         not accepted.
 	 */
 	protected String acceptWizard(IWizardNode wizardNode) {
 		return null;
 	}
 
 	/**
-     * Update the selected node based on the viewer selection.
-     */
-    protected void updateMessage(){
-    	if (viewer != null){
-    		ISelection selection = viewer.getSelection();
-            IStructuredSelection ss = (IStructuredSelection) selection;
-            Object sel = ss.getFirstElement();
-            if (sel instanceof IWizardNode){
-               	updateSelectedNode((IWizardNode)sel);
-            }
-            else{
-            	setSelectedNode(null);
-            }
-    	} else {
+	 * Update the selected node based on the viewer selection.
+	 */
+	protected void updateMessage() {
+		if (viewer != null) {
+			ISelection selection = viewer.getSelection();
+			IStructuredSelection ss = (IStructuredSelection) selection;
+			Object sel = ss.getFirstElement();
+			if (sel instanceof IWizardNode) {
+				updateSelectedNode((IWizardNode) sel);
+			}
+			else {
+				setSelectedNode(null);
+			}
+		}
+		else {
 			setMessage(null);
 		}
-    }
-	
-    /**
-     * Called when a double click in the viewer occurs.
-     * @param event the double click event
-     */
-	protected void doubleClicked(DoubleClickEvent event){
-    	ISelection selection = event.getViewer().getSelection();
-	    IStructuredSelection ss = (IStructuredSelection) selection;
-    	viewerSelectionChanged(ss);
-		
+	}
+
+	/**
+	 * Called when a double click in the viewer occurs.
+	 * 
+	 * @param event the double click event
+	 */
+	protected void doubleClicked(DoubleClickEvent event) {
+		ISelection selection = event.getViewer().getSelection();
+		IStructuredSelection ss = (IStructuredSelection) selection;
+		viewerSelectionChanged(ss);
+
 		Object element = ss.getFirstElement();
 		if (element instanceof IWizardNode) {
 			if (canFlipToNextPage()) {
 				getContainer().showPage(getNextPage());
 				return;
 			}
-		} else if (event.getViewer() instanceof TreeViewer) {
+		}
+		else if (event.getViewer() instanceof TreeViewer) {
 			TreeViewer viewer = (TreeViewer) event.getViewer();
 			viewer.setExpandedState(element, !viewer.getExpandedState(element));
 		}
-        getContainer().showPage(getNextPage());   			
-    }
+		getContainer().showPage(getNextPage());
+	}
 
 	/**
-	 * Create the structured viewer and set it up with label and content 
+	 * Create the structured viewer and set it up with label and content
 	 * providers as well as the input. The viewer must provide
 	 * {@link IStructuredSelection}s with {@link IWizardNode}s.
+	 * 
 	 * @param parent the parent composite
 	 * @return the viewer paired with the main control that should fill the
-	 * parent composite
+	 *         parent composite
 	 */
 	protected abstract Pair<StructuredViewer, Control> createViewer(Composite parent);
 

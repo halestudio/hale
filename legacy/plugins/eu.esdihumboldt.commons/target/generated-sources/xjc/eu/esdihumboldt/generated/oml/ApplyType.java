@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,11 +14,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for ApplyType complex type.
+ * <p>
+ * Java class for ApplyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ApplyType">
@@ -37,63 +38,55 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ApplyType", propOrder = {
-    "value"
-})
+@XmlType(name = "ApplyType", propOrder = { "value" })
 public class ApplyType {
 
-    @XmlElement(required = true)
-    protected ValueExprType value;
-    @XmlAttribute
-    @XmlSchemaType(name = "anyURI")
-    protected String operation;
+	@XmlElement(required = true)
+	protected ValueExprType value;
+	@XmlAttribute
+	@XmlSchemaType(name = "anyURI")
+	protected String operation;
 
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ValueExprType }
-     *     
-     */
-    public ValueExprType getValue() {
-        return value;
-    }
+	/**
+	 * Gets the value of the value property.
+	 * 
+	 * @return possible object is {@link ValueExprType }
+	 * 
+	 */
+	public ValueExprType getValue() {
+		return value;
+	}
 
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ValueExprType }
-     *     
-     */
-    public void setValue(ValueExprType value) {
-        this.value = value;
-    }
+	/**
+	 * Sets the value of the value property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ValueExprType }
+	 * 
+	 */
+	public void setValue(ValueExprType value) {
+		this.value = value;
+	}
 
-    /**
-     * Gets the value of the operation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getOperation() {
-        return operation;
-    }
+	/**
+	 * Gets the value of the operation property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getOperation() {
+		return operation;
+	}
 
-    /**
-     * Sets the value of the operation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setOperation(String value) {
-        this.operation = value;
-    }
+	/**
+	 * Sets the value of the operation property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setOperation(String value) {
+		this.operation = value;
+	}
 
 }

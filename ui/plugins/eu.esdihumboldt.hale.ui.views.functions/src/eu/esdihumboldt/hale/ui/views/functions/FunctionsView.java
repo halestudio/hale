@@ -23,17 +23,18 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
  * Functions view
+ * 
  * @author Simon Templer
  */
 public class FunctionsView extends PropertiesViewPart {
-	
+
 	/**
 	 * The view ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.functions";
 
 	private TreeViewer viewer;
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -42,15 +43,15 @@ public class FunctionsView extends PropertiesViewPart {
 		viewer = new TreeViewer(parent);
 		viewer.setLabelProvider(new FunctionLabelProvider());
 		viewer.setContentProvider(new FunctionContentProvider());
-		
+
 		// no input needed, but we have to set something
 		viewer.setInput(Boolean.TRUE);
-		
+
 		new ViewerMenu(getSite(), viewer);
 
 		getSite().setSelectionProvider(viewer);
 	}
-	
+
 	/**
 	 * @see PropertiesViewPart#getViewContext()
 	 */

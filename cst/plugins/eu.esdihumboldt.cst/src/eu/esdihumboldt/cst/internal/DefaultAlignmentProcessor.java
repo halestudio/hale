@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.common.align.transformation.service.AlignmentProcess
 
 /**
  * TODO Type description
+ * 
  * @author Simon Templer
  */
 public class DefaultAlignmentProcessor implements AlignmentProcessor {

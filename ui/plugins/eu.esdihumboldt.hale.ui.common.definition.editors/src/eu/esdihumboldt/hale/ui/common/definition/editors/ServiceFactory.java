@@ -19,16 +19,18 @@ import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 
 /**
  * Service factory for the attribute editor factory.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class ServiceFactory extends AbstractServiceFactory {
+
 	/**
-	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
+	 * @see AbstractServiceFactory#create(Class, IServiceLocator,
+	 *      IServiceLocator)
 	 */
 	@Override
-	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
-			IServiceLocator locator) {
+	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface,
+			IServiceLocator parentLocator, IServiceLocator locator) {
 		if (serviceInterface.equals(AttributeEditorFactory.class)) {
 			return new DefaultAttributeEditorFactory();
 		}

@@ -21,26 +21,27 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.AbstractPolygonPainter;
 
 /**
  * Transformation node shape
+ * 
  * @author Simon Templer
  */
 public class TransformationNodeShape extends AbstractPolygonPainter {
 
 	private final int extWidth;
-	
+
 	private final int style;
 
 	private final Insets insets;
-	
+
 	/**
 	 * @param extWidth the extension width
-	 * @param style the shape style, i.e. where the extension is added, 
-	 *   {@link SWT#LEFT}, {@link SWT#RIGHT} or {@link SWT#NONE}
+	 * @param style the shape style, i.e. where the extension is added,
+	 *            {@link SWT#LEFT}, {@link SWT#RIGHT} or {@link SWT#NONE}
 	 */
 	public TransformationNodeShape(int extWidth, int style) {
 		super();
 		this.extWidth = extWidth;
 		this.style = style;
-		
+
 		if (style == 0) {
 			insets = new Insets();
 		}
@@ -68,22 +69,22 @@ public class TransformationNodeShape extends AbstractPolygonPainter {
 		if (style == 0) {
 			// just a rectangle
 			int[] points = new int[8];
-			
+
 			points[0] = bounds.x;
 			points[1] = bounds.y + lineWidth - 1;
-			
+
 			points[2] = bounds.right() - 1;
 			points[3] = bounds.y + lineWidth - 1;
-			
+
 			points[4] = bounds.right() - 1;
 			points[5] = bounds.bottom() - 1;
 
 			points[6] = bounds.x;
 			points[7] = bounds.bottom() - 1;
-			
+
 			return points;
 		}
-		
+
 		int[] points = new int[10];
 
 		if ((style & SWT.LEFT) == SWT.LEFT) {
@@ -101,7 +102,8 @@ public class TransformationNodeShape extends AbstractPolygonPainter {
 
 			points[8] = bounds.x;
 			points[9] = bounds.bottom() - 1;
-		} else {
+		}
+		else {
 			points[0] = bounds.x;
 			points[1] = bounds.y + lineWidth - 1;
 

@@ -26,23 +26,26 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * @author Kai Schwierczek
  */
 public class GroovyExplanation extends AbstractCellExplanation {
+
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script (be sure to include a return statement):\n"
 			+ "{1}\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn't set.";
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String script = CellUtil.getFirstParameter(cell, GroovyTransformation.PARAMETER_SCRIPT);
-		List<? extends Entity> sources = (cell.getSource() == null)?(null):(cell.getSource().get(GroovyTransformation.ENTITY_VARIABLE));
+		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
+				.get(GroovyTransformation.ENTITY_VARIABLE));
 
 		if (target != null && script != null) {
 			if (html)
 				script = "<pre>" + script + "</pre>";
-			String explanation = MessageFormat.format(EXPLANATION_PATTERN, formatEntity(target, html, true),
-					script);
+			String explanation = MessageFormat.format(EXPLANATION_PATTERN,
+					formatEntity(target, html, true), script);
 			if (html)
 				explanation = explanation.replaceAll("\n", "<br />");
 			if (html && sources != null) {
@@ -50,7 +53,8 @@ public class GroovyExplanation extends AbstractCellExplanation {
 				sb.append("<br /><br />Replacement table:<br />");
 				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
 				for (Entity entity : sources)
-					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>", getEntityNameWithoutCondition(entity).replace('.', '_'),
+					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
+							getEntityNameWithoutCondition(entity).replace('.', '_'),
 							formatEntity(entity, true, false)));
 				sb.append("</table>");
 				explanation += sb.toString();

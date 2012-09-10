@@ -17,11 +17,12 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
  * Interface for {@link IOProviderDescriptor} factories
+ * 
  * @author Simon Templer
  */
 public interface IOProviderFactory extends
 		ExtensionObjectFactoryCollection<IOProvider, IOProviderDescriptor> {
-	
+
 	// concrete typed interface
 
 }

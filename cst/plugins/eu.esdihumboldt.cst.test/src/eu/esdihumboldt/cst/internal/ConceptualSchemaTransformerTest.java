@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.common.test.TestUtil;
 
 /**
  * Tests for the CST's alignment processor implementation
+ * 
  * @author Simon Templer
  */
 public class ConceptualSchemaTransformerTest {
@@ -57,51 +58,43 @@ public class ConceptualSchemaTransformerTest {
 		TestUtil.startConversionService();
 		TestUtil.startInstanceFactory();
 	}
-	
+
 	/**
-	 * Test based on a very simple mapping with a retype and renames. 
+	 * Test based on a very simple mapping with a retype and renames.
 	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testSimpleRename() throws Exception {
-		test("/testdata/simplerename/t1.xsd",
-				"/testdata/simplerename/t2.xsd",
+		test("/testdata/simplerename/t1.xsd", "/testdata/simplerename/t2.xsd",
 				"/testdata/simplerename/t1t2.halex.alignment.xml",
-				"/testdata/simplerename/instance1.xml",
-				"/testdata/simplerename/instance2.xml");
+				"/testdata/simplerename/instance1.xml", "/testdata/simplerename/instance2.xml");
 	}
-
-	
 
 	/**
 	 * Test based on a simple mapping with a retype and renames, where high
-	 * cardinalities are allowed. 
+	 * cardinalities are allowed.
 	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testCardinalityRename() throws Exception {
-		test("/testdata/cardrename/t1.xsd",
-				"/testdata/cardrename/t2.xsd",
+		test("/testdata/cardrename/t1.xsd", "/testdata/cardrename/t2.xsd",
 				"/testdata/cardrename/t1t2.halex.alignment.xml",
-				"/testdata/cardrename/instance1.xml",
-				"/testdata/cardrename/instance2.xml");
+				"/testdata/cardrename/instance1.xml", "/testdata/cardrename/instance2.xml");
 	}
 
 	/**
-	 * Test based on a simple mapping with a retype, rename and assign, duplicated
-	 * targets should also get the assigned values.
+	 * Test based on a simple mapping with a retype, rename and assign,
+	 * duplicated targets should also get the assigned values.
 	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testDupeAssign() throws Exception {
-		test("/testdata/dupeassign/t1.xsd",
-				"/testdata/dupeassign/t2.xsd",
+		test("/testdata/dupeassign/t1.xsd", "/testdata/dupeassign/t2.xsd",
 				"/testdata/dupeassign/t1t2.halex.alignment.xml",
-				"/testdata/dupeassign/instance1.xml",
-				"/testdata/dupeassign/instance2.xml");
+				"/testdata/dupeassign/instance1.xml", "/testdata/dupeassign/instance2.xml");
 	}
 
 	/**
@@ -111,79 +104,71 @@ public class ConceptualSchemaTransformerTest {
 	 */
 	@Test
 	public void testPropertyJoin() throws Exception {
-		test("/testdata/propjoin/t1.xsd",
-				"/testdata/propjoin/t2.xsd",
-				"/testdata/propjoin/t1t2.halex.alignment.xml",
-				"/testdata/propjoin/instance1.xml",
+		test("/testdata/propjoin/t1.xsd", "/testdata/propjoin/t2.xsd",
+				"/testdata/propjoin/t1t2.halex.alignment.xml", "/testdata/propjoin/instance1.xml",
 				"/testdata/propjoin/instance2.xml");
 	}
 
 	/**
-	 * Test based on a retype and a formatted string with several inputs
-	 * where one input exists several times, whereas the others only exist
-	 * once. So those should be used all the times.
+	 * Test based on a retype and a formatted string with several inputs where
+	 * one input exists several times, whereas the others only exist once. So
+	 * those should be used all the times.
 	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testSimpleMerge() throws Exception {
-		test("/testdata/simplemerge/t1.xsd",
-				"/testdata/simplemerge/t2.xsd",
+		test("/testdata/simplemerge/t1.xsd", "/testdata/simplemerge/t2.xsd",
 				"/testdata/simplemerge/t1t2.halex.alignment.xml",
-				"/testdata/simplemerge/instance1.xml",
-				"/testdata/simplemerge/instance2.xml");
+				"/testdata/simplemerge/instance1.xml", "/testdata/simplemerge/instance2.xml");
 	}
 
 	/**
-	 * Test based on a retype and a formatted string with several inputs
-	 * where each input exists several times, so they should be combined accordingly.
-	 *
+	 * Test based on a retype and a formatted string with several inputs where
+	 * each input exists several times, so they should be combined accordingly.
+	 * 
 	 * If some inputs exist more often than others there is no way to decide
-	 * which of the others to use, so none should be used, so formatted string will
-	 * not produce a value.
+	 * which of the others to use, so none should be used, so formatted string
+	 * will not produce a value.
 	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testCardinalityMerge() throws Exception {
-		test("/testdata/cardmerge/t1.xsd",
-				"/testdata/cardmerge/t2.xsd",
+		test("/testdata/cardmerge/t1.xsd", "/testdata/cardmerge/t2.xsd",
 				"/testdata/cardmerge/t1t2.halex.alignment.xml",
-				"/testdata/cardmerge/instance1_1.xml",
-				"/testdata/cardmerge/instance2_1.xml");
+				"/testdata/cardmerge/instance1_1.xml", "/testdata/cardmerge/instance2_1.xml");
 
-		test("/testdata/cardmerge/t1.xsd",
-				"/testdata/cardmerge/t2.xsd",
+		test("/testdata/cardmerge/t1.xsd", "/testdata/cardmerge/t2.xsd",
 				"/testdata/cardmerge/t1t2.halex.alignment.xml",
-				"/testdata/cardmerge/instance1_2.xml",
-				"/testdata/cardmerge/instance2_2.xml");
+				"/testdata/cardmerge/instance1_2.xml", "/testdata/cardmerge/instance2_2.xml");
 	}
-	
+
 	/**
-	 * Test where multiple properties from the source type are mapped to
-	 * a sub property of a single property of the target type.
+	 * Test where multiple properties from the source type are mapped to a sub
+	 * property of a single property of the target type.
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Ignore
 	@Test
 	public void testPropertyMerge() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/propmerge/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/propmerge/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/propmerge/t1t2.halex.alignment.xml").toURI());
-		
+		Alignment alignment = loadAlignment(getClass().getResource("/testdata/propmerge/t1.xsd")
+				.toURI(), getClass().getResource("/testdata/propmerge/t2.xsd").toURI(), getClass()
+				.getResource("/testdata/propmerge/t1t2.halex.alignment.xml").toURI());
+
 		assertNotNull(alignment);
 		assertEquals(5, alignment.getCells().size());
-		
+
 //		Transformation transformation = processor.process(alignment);
 //		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
+
+		// TODO check transformation instructions
 	}
-	
+
 	/**
-	 * Test where multiple properties from a simple source type are mapped to
-	 * a complex property structure including a choice in the target type.
+	 * Test where multiple properties from a simple source type are mapped to a
+	 * complex property structure including a choice in the target type.
 	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
@@ -191,209 +176,204 @@ public class ConceptualSchemaTransformerTest {
 	@Test
 	public void testChoice() throws Exception {
 		fail("What should happen?");
-		// TODO what is expected here? That any of the two choice properties is used?
-		// Currently expected result contains both choice properties, which is the result of the transform, too.
-		test("/testdata/choice/t1.xsd",
-				"/testdata/choice/t2.xsd",
-				"/testdata/choice/t1t2.halex.alignment.xml",
-				"/testdata/choice/instance1.xml",
+		// TODO what is expected here? That any of the two choice properties is
+		// used?
+		// Currently expected result contains both choice properties, which is
+		// the result of the transform, too.
+		test("/testdata/choice/t1.xsd", "/testdata/choice/t2.xsd",
+				"/testdata/choice/t1t2.halex.alignment.xml", "/testdata/choice/instance1.xml",
 				"/testdata/choice/instance2.xml");
 	}
 
 	/**
 	 * Test where a type with complex properties is mapped to itself, switching
 	 * certain attributes.
-	 *
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testSimpleComplex() throws Exception {
-		test("/testdata/simplecomplex/t2.xsd",
-				"/testdata/simplecomplex/t2.xsd",
+		test("/testdata/simplecomplex/t2.xsd", "/testdata/simplecomplex/t2.xsd",
 				"/testdata/simplecomplex/t2t2.halex.alignment.xml",
 				"/testdata/simplecomplex/instance2.xml",
 				"/testdata/simplecomplex/instance2_result.xml");
 	}
 
 	/**
-	 * Test where elements with a high cardinality are mapped to
-	 * an element which may only occur once within an element that
-	 * allows a high cardinality.
-	 * The elements should be grouped together to fill the target
+	 * Test where elements with a high cardinality are mapped to an element
+	 * which may only occur once within an element that allows a high
+	 * cardinality. The elements should be grouped together to fill the target
 	 * element.
-	 *
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
 	public void testCardinalityMove() throws Exception {
-		test("/testdata/cardmove/t1.xsd",
-				"/testdata/cardmove/t2.xsd",
-				"/testdata/cardmove/t1t2.halex.alignment.xml",
-				"/testdata/cardmove/instance1.xml",
+		test("/testdata/cardmove/t1.xsd", "/testdata/cardmove/t2.xsd",
+				"/testdata/cardmove/t1t2.halex.alignment.xml", "/testdata/cardmove/instance1.xml",
 				"/testdata/cardmove/instance2.xml");
 	}
 
 	/**
-	 * Test where multiple properties from a simple source type are mapped to
-	 * a complex property structure in the target type.
+	 * Test where multiple properties from a simple source type are mapped to a
+	 * complex property structure in the target type.
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Ignore
 	@Test
 	public void testPropertiesMix() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/propmix/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/propmix/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/propmix/t1t2.halex.alignment.xml").toURI());
-		
+		Alignment alignment = loadAlignment(getClass().getResource("/testdata/propmix/t1.xsd")
+				.toURI(), getClass().getResource("/testdata/propmix/t2.xsd").toURI(), getClass()
+				.getResource("/testdata/propmix/t1t2.halex.alignment.xml").toURI());
+
 		assertNotNull(alignment);
 		assertEquals(7, alignment.getCells().size());
-		
+
 //		Transformation transformation = processor.process(alignment);
 //		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
+
+		// TODO check transformation instructions
 	}
-	
+
 	/**
 	 * Test where a complex property structure from a source type is mapped to
 	 * multiple properties in a simple target type.
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Ignore
 	@Test
 	public void testPropertiesUnMix() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/propmix/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/propmix/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/propmix/t2t1.halex.alignment.xml").toURI());
-		
+		Alignment alignment = loadAlignment(getClass().getResource("/testdata/propmix/t2.xsd")
+				.toURI(), getClass().getResource("/testdata/propmix/t1.xsd").toURI(), getClass()
+				.getResource("/testdata/propmix/t2t1.halex.alignment.xml").toURI());
+
 		assertNotNull(alignment);
 		assertEquals(7, alignment.getCells().size());
-		
+
 //		Transformation transformation = processor.process(alignment);
 //		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
+
+		// TODO check transformation instructions
 	}
-	
+
 	/**
-	 * Test where multiple properties from a simple source type are mapped to
-	 * a complex property structure in the target type. In this case there
-	 * are no facts that the decision which way to group the source properties
-	 * to an address can be based on.
+	 * Test where multiple properties from a simple source type are mapped to a
+	 * complex property structure in the target type. In this case there are no
+	 * facts that the decision which way to group the source properties to an
+	 * address can be based on.
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Ignore
 	@Test
 	public void testPropertiesMix2() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/propmix2/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/propmix2/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/propmix2/t1t2.halex.alignment.xml").toURI());
-		
+		Alignment alignment = loadAlignment(getClass().getResource("/testdata/propmix2/t1.xsd")
+				.toURI(), getClass().getResource("/testdata/propmix2/t2.xsd").toURI(), getClass()
+				.getResource("/testdata/propmix2/t1t2.halex.alignment.xml").toURI());
+
 		assertNotNull(alignment);
 		assertEquals(9, alignment.getCells().size());
-		
+
 //		Transformation transformation = processor.process(alignment);
 //		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
+
+		// TODO check transformation instructions
 	}
-	
+
 	/**
-	 * Test where multiple properties from a simple source type are mapped to
-	 * a complex property structure including a repeatable group in the target 
-	 * type. In this case there are no facts that the decision which way to 
+	 * Test where multiple properties from a simple source type are mapped to a
+	 * complex property structure including a repeatable group in the target
+	 * type. In this case there are no facts that the decision which way to
 	 * group the source properties to an address can be based on.
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Ignore
 	@Test
 	public void testGroup() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/group/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/group/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/group/t1t2.halex.alignment.xml").toURI());
-		
+		Alignment alignment = loadAlignment(getClass().getResource("/testdata/group/t1.xsd")
+				.toURI(), getClass().getResource("/testdata/group/t2.xsd").toURI(), getClass()
+				.getResource("/testdata/group/t1t2.halex.alignment.xml").toURI());
+
 		assertNotNull(alignment);
 		assertEquals(9, alignment.getCells().size());
-		
+
 //		Transformation transformation = processor.process(alignment);
 //		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
+
+		// TODO check transformation instructions
 	}
-	
+
 	/**
-	 * Test where properties from a simple source type are mapped to
-	 * to complex properties in that target type, with some of the needed 
-	 * information being given only implicit through the corresponding
-	 * source property.
+	 * Test where properties from a simple source type are mapped to to complex
+	 * properties in that target type, with some of the needed information being
+	 * given only implicit through the corresponding source property.
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Ignore
 	@Test
 	public void testImplicitAssign() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/impassign/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/impassign/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/impassign/t1t2.halex.alignment.xml").toURI());
-		
+		Alignment alignment = loadAlignment(getClass().getResource("/testdata/impassign/t1.xsd")
+				.toURI(), getClass().getResource("/testdata/impassign/t2.xsd").toURI(), getClass()
+				.getResource("/testdata/impassign/t1t2.halex.alignment.xml").toURI());
+
 		assertNotNull(alignment);
 		/*
-		 * FIXME the alignment is still missing the assignments for the language 
-		 * values, which must be in correspondence with the related source property
+		 * FIXME the alignment is still missing the assignments for the language
+		 * values, which must be in correspondence with the related source
+		 * property
 		 */
 		assertEquals(5, alignment.getCells().size());
-		
+
 //		Transformation transformation = processor.process(alignment);
 //		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
+
+		// TODO check transformation instructions
 	}
-	
+
 	/**
-	 * Test where properties from a simple source type are mapped to
-	 * to a complex property with simple content and attributes.
+	 * Test where properties from a simple source type are mapped to to a
+	 * complex property with simple content and attributes.
+	 * 
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Ignore
 	@Test
 	public void testSimpleContentAttribute() throws Exception {
-		Alignment alignment = loadAlignment(
-				getClass().getResource("/testdata/simpleatt/t1.xsd").toURI(), 
-				getClass().getResource("/testdata/simpleatt/t2.xsd").toURI(), 
-				getClass().getResource("/testdata/simpleatt/t1t2.halex.alignment.xml").toURI());
-		
+		Alignment alignment = loadAlignment(getClass().getResource("/testdata/simpleatt/t1.xsd")
+				.toURI(), getClass().getResource("/testdata/simpleatt/t2.xsd").toURI(), getClass()
+				.getResource("/testdata/simpleatt/t1t2.halex.alignment.xml").toURI());
+
 		assertNotNull(alignment);
 		assertEquals(7, alignment.getCells().size());
-		
+
 //		Transformation transformation = processor.process(alignment);
 //		assertNotNull(transformation);
-		
-		//TODO check transformation instructions
+
+		// TODO check transformation instructions
 	}
-	
-	
-	
-	private Alignment loadAlignment(URI sourceSchemaLocation, 
-			URI targetSchemaLocation, final URI alignmentLocation) throws IOProviderConfigurationException, IOException, MarshalException, ValidationException, MappingException {
+
+	private Alignment loadAlignment(URI sourceSchemaLocation, URI targetSchemaLocation,
+			final URI alignmentLocation) throws IOProviderConfigurationException, IOException,
+			MarshalException, ValidationException, MappingException {
 		// load source schema
 		Schema source = TestUtil.loadSchema(sourceSchemaLocation);
-		
+
 		// load target schema
 		Schema target = TestUtil.loadSchema(targetSchemaLocation);
 
 		// load alignment
 		Alignment result = TestUtil.loadAlignment(alignmentLocation, source, target);
-		
+
 		return result;
 	}
 
 	/**
-	 * Tests that the ConceptualSchemaTransformer transforms the source instances
-	 * to the given target instances.
+	 * Tests that the ConceptualSchemaTransformer transforms the source
+	 * instances to the given target instances.
 	 * 
 	 * @param sourceSchemaLocation location of the source schema
 	 * @param targetSchemaLocation location of the target schema
@@ -403,13 +383,16 @@ public class ConceptualSchemaTransformerTest {
 	 * @throws Exception if any exception (mostly IO) occurs
 	 */
 	private void test(String sourceSchemaLocation, String targetSchemaLocation,
-			String alignmentLocation, String sourceDataLocation,
-			String targetDataLocation) throws Exception {
+			String alignmentLocation, String sourceDataLocation, String targetDataLocation)
+			throws Exception {
 		Schema sourceSchema = TestUtil.loadSchema(toLocalURI(sourceSchemaLocation));
 		Schema targetSchema = TestUtil.loadSchema(toLocalURI(targetSchemaLocation));
-		Alignment alignment = TestUtil.loadAlignment(toLocalURI(alignmentLocation), sourceSchema, targetSchema);
-		InstanceCollection sourceData = TestUtil.loadInstances(toLocalURI(sourceDataLocation), sourceSchema);
-		InstanceCollection targetData = TestUtil.loadInstances(toLocalURI(targetDataLocation), targetSchema);
+		Alignment alignment = TestUtil.loadAlignment(toLocalURI(alignmentLocation), sourceSchema,
+				targetSchema);
+		InstanceCollection sourceData = TestUtil.loadInstances(toLocalURI(sourceDataLocation),
+				sourceSchema);
+		InstanceCollection targetData = TestUtil.loadInstances(toLocalURI(targetDataLocation),
+				targetSchema);
 
 		List<Instance> transformedData = transformData(alignment, sourceData);
 
@@ -447,8 +430,9 @@ public class ConceptualSchemaTransformerTest {
 						found = true;
 					}
 				}
-				assertTrue("Could not find matching instance for: \n" +
-						InstanceUtil.instanceToString(targetInstance), found);
+				assertTrue(
+						"Could not find matching instance for: \n"
+								+ InstanceUtil.instanceToString(targetInstance), found);
 			}
 		} finally {
 			targetIter.close();
@@ -459,7 +443,7 @@ public class ConceptualSchemaTransformerTest {
 	/**
 	 * Returns an URI for the given location: <br>
 	 * <code>getClass().getResource(location).toURI()</code>
-	 *
+	 * 
 	 * @param location the location
 	 * @return an uri for the location
 	 * @throws URISyntaxException if toURI throws an exception

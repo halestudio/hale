@@ -21,19 +21,19 @@ import eu.esdihumboldt.hale.ui.views.styledmap.preferences.StyledMapPreferenceCo
 
 /**
  * Simon Templer
+ * 
  * @author Simon Templer
  */
-public class PainterLayoutManager extends PreferencesExclusiveExtension<PainterLayout, PainterLayoutFactory>
-		implements PainterLayoutService {
+public class PainterLayoutManager extends
+		PreferencesExclusiveExtension<PainterLayout, PainterLayoutFactory> implements
+		PainterLayoutService {
 
 	/**
 	 * Default constructor.
 	 */
 	public PainterLayoutManager() {
-		super(
-			new PainterLayoutExtension(), 
-			StyledMapBundle.getDefault().getPreferenceStore(), 
-			StyledMapPreferenceConstants.CURRENT_MAP_LAYOUT);
+		super(new PainterLayoutExtension(), StyledMapBundle.getDefault().getPreferenceStore(),
+				StyledMapPreferenceConstants.CURRENT_MAP_LAYOUT);
 	}
 
 	/**

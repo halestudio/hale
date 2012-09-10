@@ -146,7 +146,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	private final ProjectConfigurationService configurationService = new ProjectConfigurationService();
 
 	private boolean changed = false;
-	
+
 	private final UILocationUpdater updater = new UILocationUpdater();
 
 	/**
@@ -160,6 +160,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 		// create advisors
 		openProjectAdvisor = new AbstractIOAdvisor<ProjectReader>() {
+
 			@Override
 			public void updateConfiguration(ProjectReader provider) {
 				super.updateConfiguration(provider);
@@ -180,14 +181,16 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					if ("file".equalsIgnoreCase(provider.getSource().getLocation().getScheme()))
 						projectFile = new File(provider.getSource().getLocation());
 					changed = false;
-					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(
-							RecentFilesService.class);
+					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench()
+							.getService(RecentFilesService.class);
 					if (projectFile != null)
 						rfs.add(projectFile.getAbsolutePath(), main.getName());
 					// XXX safe history in case of non-file loaded projects?
-					// possibly always safe URI raw paths (and show the history with decoded paths and removed file:/ in case of files)?
-					//else
-					//	rfs.add(provider.getSource().getLocation().getRawPath(), main.getName());
+					// possibly always safe URI raw paths (and show the history
+					// with decoded paths and removed file:/ in case of files)?
+					// else
+					// rfs.add(provider.getSource().getLocation().getRawPath(),
+					// main.getName());
 				}
 
 				updateWindowTitle();
@@ -204,11 +207,13 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				notifyAfterLoad(projectFiles);
 				// apply remaining project files
 				for (ProjectFile file : projectFiles.values()) {
-					//XXX do this in a Job or something?
+					// XXX do this in a Job or something?
 					file.apply();
 				}
-				// reset changed to false if it was altered through the project files being applied
-				//FIXME this is ugly XXX what if there actually is a real resulting change?
+				// reset changed to false if it was altered through the project
+				// files being applied
+				// FIXME this is ugly XXX what if there actually is a real
+				// resulting change?
 				synchronized (ProjectServiceImpl.this) {
 					changed = false;
 				}
@@ -230,7 +235,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				provider.getProject().setModified(new Date());
 				provider.getProject().setHaleVersion(haleVersion);
 				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles();
-				notifyBeforeSave(projectFiles); // get additional files from listeners
+				notifyBeforeSave(projectFiles); // get additional files from
+												// listeners
 				provider.setProjectFiles(projectFiles);
 			}
 
@@ -239,8 +245,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				synchronized (ProjectServiceImpl.this) {
 					projectFile = new File(provider.getTarget().getLocation());
 					changed = false;
-					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(
-							RecentFilesService.class);
+					RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench()
+							.getService(RecentFilesService.class);
 					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
 				}
 
@@ -274,7 +280,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * @param configurations the I/O configurations
 	 */
 	private void executeConfigurations(final List<IOConfiguration> configurations) {
-		//TODO sort by dependencies
+		// TODO sort by dependencies
 		for (IOConfiguration conf : configurations) {
 			executeConfiguration(conf);
 		}
@@ -288,14 +294,16 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	private void executeConfiguration(IOConfiguration conf) {
 		// get provider ...
 		IOProvider provider = null;
-		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(conf.getProviderId());
+		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
+				conf.getProviderId());
 		if (descriptor != null) {
 			try {
 				provider = descriptor.createExtensionObject();
 			} catch (Exception e) {
-				log.error(MessageFormat.format(
-						"Could not execute I/O configuration, provider with ID {0} could not be created.",
-						conf.getProviderId()), e);
+				log.error(
+						MessageFormat
+								.format("Could not execute I/O configuration, provider with ID {0} could not be created.",
+										conf.getProviderId()), e);
 				return;
 			}
 
@@ -320,21 +328,26 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				try {
 					advisor = advisors.get(0).createExtensionObject();
 				} catch (Exception e) {
-					log.error(MessageFormat.format(
-							"Could not execute I/O configuration, advisor with ID {0} could not be created.", advisors
-									.get(0).getIdentifier()), e);
+					log.error(
+							MessageFormat
+									.format("Could not execute I/O configuration, advisor with ID {0} could not be created.",
+											advisors.get(0).getIdentifier()), e);
 					return;
 				}
 				// configure settings
 				provider.loadConfiguration(conf.getProviderConfiguration());
 				// execute provider
 				executeProvider(provider, advisor);
-			} else {
-				log.error(MessageFormat.format("Could not execute I/O configuration, no advisor for action {0} found.",
+			}
+			else {
+				log.error(MessageFormat.format(
+						"Could not execute I/O configuration, no advisor for action {0} found.",
 						actionId));
 			}
-		} else {
-			log.error(MessageFormat.format("Could not execute I/O configuration, provider with ID {0} not found.",
+		}
+		else {
+			log.error(MessageFormat.format(
+					"Could not execute I/O configuration, provider with ID {0} not found.",
 					conf.getProviderId()));
 		}
 	}
@@ -345,12 +358,14 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * @param provider the I/O provider
 	 * @param advisor the I/O advisor
 	 */
-	private void executeProvider(final IOProvider provider, @SuppressWarnings("rawtypes") final IOAdvisor advisor) {
+	private void executeProvider(final IOProvider provider,
+			@SuppressWarnings("rawtypes") final IOAdvisor advisor) {
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
 				IOReporter reporter = provider.createReporter();
 				ATransaction trans = log.begin(reporter.getTaskName());
 				try {
@@ -362,7 +377,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					IOReport report = provider.execute(new ProgressMonitorIndicator(monitor));
 
 					// publish report
-					ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+					ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(
+							ReportService.class);
 					rs.addReport(report);
 
 					// handle results
@@ -391,15 +407,18 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		if (!changeCheck()) {
 			return;
 		}
-		
+
 		// reset current session descriptor
-		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
+				ReportService.class);
 		repService.updateCurrentSessionDescription();
-		
+
 		// clean
 		final IRunnableWithProgress op = new IRunnableWithProgress() {
+
 			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
 				ATransaction trans = log.begin("Clean project");
 
 				monitor.beginTask("Clean project", IProgressMonitor.UNKNOWN);
@@ -412,14 +431,16 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					updateWindowTitle();
 					notifyClean();
 
-					// schemas aren't valid anymore, clear property resolver cache
+					// schemas aren't valid anymore, clear property resolver
+					// cache
 					PropertyResolver.clearCache();
 				} finally {
 					monitor.done();
 					trans.end();
 				}
 
-				// clean workbench history AFTER other cleans since they can create operations
+				// clean workbench history AFTER other cleans since they can
+				// create operations
 				IWorkbenchOperationSupport os = PlatformUI.getWorkbench().getOperationSupport();
 				os.getOperationHistory().dispose(os.getUndoContext(), true, true, false);
 
@@ -443,16 +464,20 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 */
 	@Override
 	public void load(URI uri) {
-		// no change check as this is done by clean before a new project is loaded
-		
-		// use I/O provider and content type mechanisms to enable loading of a project file
-		ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class, new DefaultInputSupplier(uri), uri.getPath());
+		// no change check as this is done by clean before a new project is
+		// loaded
+
+		// use I/O provider and content type mechanisms to enable loading of a
+		// project file
+		ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class, new DefaultInputSupplier(
+				uri), uri.getPath());
 		if (reader != null) {
 			// configure reader
 			reader.setSource(new DefaultInputSupplier(uri));
 
 			executeProvider(reader, openProjectAdvisor);
-		} else {
+		}
+		else {
 			log.userError("The project format is not supported.");
 		}
 	}
@@ -468,9 +493,13 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				// init appTitle
 				if (appTitle == null) {
 					if (PlatformUI.getWorkbench().getWorkbenchWindowCount() > 0) {
-						appTitle = PlatformUI.getWorkbench()./*getWorkbenchWindows()[0]*/getActiveWorkbenchWindow()
+						appTitle = PlatformUI.getWorkbench()./*
+															 * getWorkbenchWindows(
+															 * )[0]
+															 */getActiveWorkbenchWindow()
 								.getShell().getText();
-					} else {
+					}
+					else {
 						return;
 					}
 				}
@@ -478,10 +507,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				String title;
 				if (projectFile == null) {
 					title = appTitle;
-				} else {
+				}
+				else {
 					String pn = getProjectInfo().getName();
-					title = appTitle + " - " + ((pn == null || pn.isEmpty()) ? ("Unnamed") : (pn)) + " - "
-							+ projectFile;
+					title = appTitle + " - " + ((pn == null || pn.isEmpty()) ? ("Unnamed") : (pn))
+							+ " - " + projectFile;
 				}
 
 				if (changed) {
@@ -508,7 +538,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 
 		if (projectFile != null) {
-			Collection<IOProviderDescriptor> providers = HaleIO.getProviderFactories(ProjectWriter.class);
+			Collection<IOProviderDescriptor> providers = HaleIO
+					.getProviderFactories(ProjectWriter.class);
 
 			// use configuration from previous save if possible
 			if (saveConfig != null) {
@@ -527,28 +558,34 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				if (writer != null) {
 					// configure provider
 					writer.loadConfiguration(saveConfig.getProviderConfiguration());
-					// overwrite target with projectFile (as it may have been moved externally)
+					// overwrite target with projectFile (as it may have been
+					// moved externally)
 					writer.setTarget(new FileIOSupplier(projectFile));
 
 					executeProvider(writer, saveProjectAdvisor);
-				} else {
-					log.error("The project cannot be saved because the format is not available.");
-					// use save as instead
-					saveAs();
 				}
-			} else {
-				// use I/O provider and content type mechanisms to try saving the project file
-				ProjectWriter writer = HaleIO.findIOProvider(ProjectWriter.class, new FileIOSupplier(projectFile),
-						projectFile.getAbsolutePath());
-				if (writer != null) {
-					executeProvider(writer, saveProjectAdvisor);
-				} else {
+				else {
 					log.error("The project cannot be saved because the format is not available.");
 					// use save as instead
 					saveAs();
 				}
 			}
-		} else {
+			else {
+				// use I/O provider and content type mechanisms to try saving
+				// the project file
+				ProjectWriter writer = HaleIO.findIOProvider(ProjectWriter.class,
+						new FileIOSupplier(projectFile), projectFile.getAbsolutePath());
+				if (writer != null) {
+					executeProvider(writer, saveProjectAdvisor);
+				}
+				else {
+					log.error("The project cannot be saved because the format is not available.");
+					// use save as instead
+					saveAs();
+				}
+			}
+		}
+		else {
 			saveAs();
 		}
 	}
@@ -567,6 +604,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	@Override
 	public void saveAs() {
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
 			@Override
 			public void run() {
 				SaveProjectWizard wizard = new SaveProjectWizard();
@@ -584,10 +622,12 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 */
 	@Override
 	public void open() {
-		// no change check as this is done by clean before a new project is loaded
-		
+		// no change check as this is done by clean before a new project is
+		// loaded
+
 		// open
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
 			@Override
 			public void run() {
 				OpenProjectWizard wizard = new OpenProjectWizard();
@@ -602,20 +642,22 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	/**
 	 * Check if there are changes and offer the user to save the project.
+	 * 
 	 * @return if the caller should continue
 	 */
 	private boolean changeCheck() {
 		if (!isChanged()) {
 			return true;
 		}
-		
+
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 		final AtomicBoolean returnValue = new AtomicBoolean();
 		display.syncExec(new Runnable() {
+
 			@Override
 			public void run() {
-				MessageBox mb = new MessageBox(display.getActiveShell(), 
-						SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+				MessageBox mb = new MessageBox(display.getActiveShell(), SWT.YES | SWT.NO
+						| SWT.CANCEL | SWT.ICON_QUESTION);
 				mb.setMessage("Save changes to the current project?"); //$NON-NLS-1$
 				mb.setText("Unsaved changes"); //$NON-NLS-1$
 				int result = mb.open();
@@ -625,7 +667,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				else if (result == SWT.YES) {
 					// try saving project
 					save();
-					
+
 					if (isChanged()) {
 						returnValue.set(false);
 					}
@@ -693,7 +735,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		List<IOConfiguration> removedResources = new LinkedList<IOConfiguration>();
 		synchronized (this) {
 			Iterator<IOConfiguration> iter = main.getResources().iterator();
-			while(iter.hasNext()) {
+			while (iter.hasNext()) {
 				IOConfiguration conf = iter.next();
 				if (conf.getActionId().equals(actionId)) {
 					iter.remove();

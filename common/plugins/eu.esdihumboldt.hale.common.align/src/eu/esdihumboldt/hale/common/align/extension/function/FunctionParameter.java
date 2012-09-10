@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.common.align.extension.function;
 
+import net.jcip.annotations.Immutable;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
@@ -21,8 +23,6 @@ import com.google.common.collect.ListMultimap;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
-import net.jcip.annotations.Immutable;
-
 /**
  * Definition of a function parameter.
  * 
@@ -30,6 +30,7 @@ import net.jcip.annotations.Immutable;
  */
 @Immutable
 public final class FunctionParameter extends AbstractParameter {
+
 	private static final ALogger log = ALoggerFactory.getLogger(FunctionParameter.class);
 
 	private final Validator validator;
@@ -48,7 +49,8 @@ public final class FunctionParameter extends AbstractParameter {
 		IConfigurationElement[] validatorElement = conf.getChildren("validator");
 		if (validatorElement.length > 0) {
 			try {
-				Validator validator = (Validator) validatorElement[0].createExecutableExtension("class");
+				Validator validator = (Validator) validatorElement[0]
+						.createExecutableExtension("class");
 				ListMultimap<String, String> parameters = ArrayListMultimap.create();
 				for (IConfigurationElement parameter : validatorElement[0].getChildren("parameter"))
 					parameters.put(parameter.getAttribute("name"), parameter.getAttribute("value"));

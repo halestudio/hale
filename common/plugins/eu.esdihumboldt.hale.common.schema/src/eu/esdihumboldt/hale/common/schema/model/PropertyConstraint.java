@@ -14,10 +14,11 @@ package eu.esdihumboldt.hale.common.schema.model;
 
 /**
  * Marks constraints for {@link PropertyDefinition}s
+ * 
  * @author Simon Templer
  */
 public interface PropertyConstraint {
-	
+
 	// marker interface
 
 }

@@ -19,91 +19,83 @@ import eu.esdihumboldt.commons.goml.align.Entity;
 import eu.esdihumboldt.specification.cst.align.IEntity;
 import eu.esdihumboldt.specification.cst.rdf.IAbout;
 
-
 /**
- * A {@link PropertyQualifier} can be used to specifiy mappings between
- *    xml attributes 
- *    (while {@link Property} is for 'normal' properties, in case of xml: xml elements).
+ * A {@link PropertyQualifier} can be used to specifiy mappings between xml
+ * attributes (while {@link Property} is for 'normal' properties, in case of
+ * xml: xml elements).
  * 
  * @author Marian de Vries
  * @partner 08 / Delft University of Technology
- * @version $Id$ 
+ * @version $Id$
  */
 
+public class PropertyQualifier extends Entity {
 
-public class PropertyQualifier
-    extends Entity
-{
+	// private List<DomainRestriction> domainRestriction;
+	private List<Property> domainRestriction;
 
-    //private List<DomainRestriction> domainRestriction;
-    private List<Property> domainRestriction;
+	private List<String> typeCondition;
 
-    private List<String> typeCondition;
+	// private List<ValueCondition> valueCondition;
+	private List<Restriction> valueCondition;
 
-    //private List<ValueCondition> valueCondition;
-    private List<Restriction> valueCondition;
+	// constructors ............................................................
 
-
-    // constructors ............................................................
-
-    /**
-    * @param label
-    */
-    public PropertyQualifier(IAbout about) {
-	 super(about);
-    }
-    
-    // FIXME copied from Entity, might not be applicable
-	public String getNamespace() {
-		return this.getAbout().getAbout().substring(
-				0, (this.getAbout().getAbout().lastIndexOf("/")));
+	/**
+	 * @param label
+	 */
+	public PropertyQualifier(IAbout about) {
+		super(about);
 	}
 
+	// FIXME copied from Entity, might not be applicable
+	public String getNamespace() {
+		return this.getAbout().getAbout()
+				.substring(0, (this.getAbout().getAbout().lastIndexOf("/")));
+	}
 
-    // getters / setters .......................................................
+	// getters / setters .......................................................
 
-    /**
-     * Gets the value of the domainRestriction property.
-     * 
-     * Objects of the following type(s) are allowed in the list
-     * {@link Property }
-     * 
-     */
-    public List<Property> getDomainRestriction() {
-        if (domainRestriction == null) {
-            domainRestriction = new ArrayList<Property>();
-        }
-        return this.domainRestriction;
-    }
+	/**
+	 * Gets the value of the domainRestriction property.
+	 * 
+	 * Objects of the following type(s) are allowed in the list {@link Property }
+	 * 
+	 */
+	public List<Property> getDomainRestriction() {
+		if (domainRestriction == null) {
+			domainRestriction = new ArrayList<Property>();
+		}
+		return this.domainRestriction;
+	}
 
-    /**
-     * Gets the value of the typeCondition property.
-     * 
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     */
-    public List<String> getTypeCondition() {
-        if (typeCondition == null) {
-            typeCondition = new ArrayList<String>();
-        }
-        return this.typeCondition;
-    }
+	/**
+	 * Gets the value of the typeCondition property.
+	 * 
+	 * Objects of the following type(s) are allowed in the list {@link String }
+	 * 
+	 */
+	public List<String> getTypeCondition() {
+		if (typeCondition == null) {
+			typeCondition = new ArrayList<String>();
+		}
+		return this.typeCondition;
+	}
 
-    /**
-     * Gets the value of the valueCondition property.
-     * 
-     * Objects of the following type(s) are allowed in the list
-     * {@link Restriction }
-     * 
-     * 
-     */
-    public List<Restriction> getValueCondition() {
-        if (valueCondition == null) {
-            valueCondition = new ArrayList<Restriction>();
-        }
-        return this.valueCondition;
-    }
+	/**
+	 * Gets the value of the valueCondition property.
+	 * 
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link Restriction }
+	 * 
+	 * 
+	 */
+	public List<Restriction> getValueCondition() {
+		if (valueCondition == null) {
+			valueCondition = new ArrayList<Restriction>();
+		}
+		return this.valueCondition;
+	}
 
 	@Override
 	public IEntity deepCopy() {

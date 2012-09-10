@@ -7,3 +7,4 @@
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://www.omwg.org/TR/d7/ontology/alignment", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package eu.esdihumboldt.generated.oml;
+

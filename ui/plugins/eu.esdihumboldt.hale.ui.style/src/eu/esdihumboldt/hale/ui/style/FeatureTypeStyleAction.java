@@ -23,32 +23,34 @@ import eu.esdihumboldt.hale.ui.style.dialog.FeatureStyleDialog;
 
 /**
  * Action that opens a style editor for a certain type.
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class FeatureTypeStyleAction extends Action {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(FeatureTypeStyleAction.class);
-	
+
 	private static DefinitionImages images;
-	
+
 	private final TypeDefinition type;
-	
+
 	private final DataSet dataSet;
-	
+
 	/**
 	 * Creates an action for editing a feature type style.
+	 * 
 	 * @param type the type definition
 	 * @param dataSet the type data set
 	 */
 	public FeatureTypeStyleAction(final TypeDefinition type, DataSet dataSet) {
 		super(type.getName().getLocalPart());
-		
+
 		this.type = type;
 		this.dataSet = dataSet;
-		
+
 		init();
-		
+
 		setImageDescriptor(ImageDescriptor.createFromImage(images.getImage(type)));
 	}
 

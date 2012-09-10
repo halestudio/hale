@@ -19,14 +19,15 @@ import de.cs3d.util.eclipse.extension.ExtensionUtil;
 
 /**
  * Factory for constraint validators.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class ConstraintValidatorFactory extends AbstractConfigurationFactory<ConstraintValidator> {
+
 	/**
 	 * Create a {@link ConstraintValidator} factory based on the given
 	 * configuration element.
-	 *
+	 * 
 	 * @param conf the configuration element
 	 */
 	public ConstraintValidatorFactory(IConfigurationElement conf) {
@@ -59,8 +60,9 @@ public class ConstraintValidatorFactory extends AbstractConfigurationFactory<Con
 
 	/**
 	 * Checks whether this factory belongs to a type constraint.
-	 *
-	 * @return true, if this factory belongs to a type constraint, false otherwise
+	 * 
+	 * @return true, if this factory belongs to a type constraint, false
+	 *         otherwise
 	 */
 	public boolean isTypeConstraintValidator() {
 		return conf.getName().equals("typeConstraintValidator");
@@ -68,8 +70,9 @@ public class ConstraintValidatorFactory extends AbstractConfigurationFactory<Con
 
 	/**
 	 * Checks whether this factory belongs to a property constraint.
-	 *
-	 * @return true, if this factory belongs to a property constraint, false otherwise
+	 * 
+	 * @return true, if this factory belongs to a property constraint, false
+	 *         otherwise
 	 */
 	public boolean isPropertyConstraintValidator() {
 		return conf.getName().equals("propertyConstraintValidator");
@@ -77,8 +80,9 @@ public class ConstraintValidatorFactory extends AbstractConfigurationFactory<Con
 
 	/**
 	 * Checks whether this factory belongs to a group property constraint.
-	 *
-	 * @return true, if this factory belongs to a group property constraint, false otherwise
+	 * 
+	 * @return true, if this factory belongs to a group property constraint,
+	 *         false otherwise
 	 */
 	public boolean isGroupPropertyConstraintValidator() {
 		return conf.getName().equals("groupPropertyConstraintValidator");
@@ -86,7 +90,7 @@ public class ConstraintValidatorFactory extends AbstractConfigurationFactory<Con
 
 	/**
 	 * Get the class of the associated constraint.
-	 *
+	 * 
 	 * @return the class of the associated constraint.
 	 */
 	public Class<?> getConstraintClass() {

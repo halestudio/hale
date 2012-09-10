@@ -17,14 +17,16 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Resource bundle activator
+ * 
  * @author Simon Templer
  */
 public class ResourceBundle implements BundleActivator {
-	
+
 	private static BundleContext context;
-	
+
 	/**
 	 * Get the bundle context.
+	 * 
 	 * @return the bundle context or <code>null</code> if it was not started
 	 */
 	public static BundleContext getBundleContext() {

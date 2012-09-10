@@ -21,13 +21,14 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationF
 
 /**
  * Abstract extension for transformation functions
- * @param <T> the transformation type 
+ * 
+ * @param <T> the transformation type
  * @param <F> the transformation factory type
  * 
  * @author Simon Templer
  */
 public abstract class AbstractTransformationExtension<T extends TransformationFunction<?>, F extends TransformationFactory<T>>
-	extends AbstractExtension<T, F> {
+		extends AbstractExtension<T, F> {
 
 	/**
 	 * @see AbstractExtension#AbstractExtension(String)
@@ -35,9 +36,10 @@ public abstract class AbstractTransformationExtension<T extends TransformationFu
 	public AbstractTransformationExtension(String extensionPointID) {
 		super(extensionPointID);
 	}
-	
+
 	/**
 	 * Get all transformations for a function
+	 * 
 	 * @param functionId the function ID
 	 * @return the transformations matching the function
 	 */
@@ -50,11 +52,10 @@ public abstract class AbstractTransformationExtension<T extends TransformationFu
 			}
 
 			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<T, F> collection) {
+			public boolean acceptCollection(ExtensionObjectFactoryCollection<T, F> collection) {
 				return true;
 			}
-			
+
 		});
 	}
 

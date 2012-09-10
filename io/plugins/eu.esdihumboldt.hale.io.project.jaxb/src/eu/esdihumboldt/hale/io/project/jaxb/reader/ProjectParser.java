@@ -65,8 +65,7 @@ import eu.esdihumboldt.hale.ui.style.io.StyleReader;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class ProjectParser extends AbstractImportProvider implements
-		ProjectReader {
+public class ProjectParser extends AbstractImportProvider implements ProjectReader {
 
 	private static ALogger log = ALoggerFactory.getLogger(ProjectParser.class);
 
@@ -138,8 +137,8 @@ public class ProjectParser extends AbstractImportProvider implements
 			} catch (IllegalArgumentException e) {
 				file = null;
 			}
-			String basePath = (file == null) ? (new File(".").getAbsolutePath())
-					: (FilenameUtils.getFullPath(file.getAbsolutePath()));
+			String basePath = (file == null) ? (new File(".").getAbsolutePath()) : (FilenameUtils
+					.getFullPath(file.getAbsolutePath()));
 
 			// Unmarshal the project file
 			JAXBContext jc;
@@ -148,12 +147,11 @@ public class ProjectParser extends AbstractImportProvider implements
 				jc = JAXBContext.newInstance(PROJECT_CONTEXT);
 				Unmarshaller u = jc.createUnmarshaller();
 				u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
-				root = u.unmarshal(new StreamSource(getSource().getInput()),
-						HaleProject.class);
+				root = u.unmarshal(new StreamSource(getSource().getInput()), HaleProject.class);
 			} catch (JAXBException e) {
 				reporter.error(new IOMessageImpl(
-						"Unmarshalling the HaleProject from the given resource failed: {0}",
-						e, -1, -1, getSource().getLocation()));
+						"Unmarshalling the HaleProject from the given resource failed: {0}", e, -1,
+						-1, getSource().getLocation()));
 				reporter.setSuccess(false);
 				return reporter;
 			}
@@ -218,21 +216,19 @@ public class ProjectParser extends AbstractImportProvider implements
 			for (ConfigData data : section.getData()) {
 				// TODO check if this is compatible with
 				// NamespaceConfigurationItem
-				project.getProperties().put(prefix + "/" + data.getKey(),
-						data.getValue());
+				project.getProperties().put(prefix + "/" + data.getKey(), data.getValue());
 			}
 		}
 	}
 
 	private void loadSchemas(HaleProject haleProject, String basePath) {
-		
+
 		String msgCT = "Could not load schema at {0}, the content type could not be identified.";
 		String msgIO = "Could not load schema at {0}, no matching I/O provider could be found.";
-		
+
 		if (haleProject.getSourceSchema() != null
 				&& haleProject.getSourceSchema().getPath() != null) {
-			URI source = getLocation(haleProject.getSourceSchema().getPath(),
-					basePath);
+			URI source = getLocation(haleProject.getSourceSchema().getPath(), basePath);
 
 			// configure for source schema
 //			IOConfiguration conf = new IOConfiguration();
@@ -243,8 +239,7 @@ public class ProjectParser extends AbstractImportProvider implements
 
 		if (haleProject.getTargetSchema() != null
 				&& haleProject.getTargetSchema().getPath() != null) {
-			URI source = getLocation(haleProject.getTargetSchema().getPath(),
-					basePath);
+			URI source = getLocation(haleProject.getTargetSchema().getPath(), basePath);
 
 			// configure for target schema
 //			IOConfiguration conf = new IOConfiguration();
@@ -258,7 +253,7 @@ public class ProjectParser extends AbstractImportProvider implements
 	private void loadSchema(IOConfiguration conf, URI source) {
 		// populate IOConfiguration
 		// advisor ID must be already set
-		
+
 		// find provider
 		File file;
 		try {
@@ -266,32 +261,28 @@ public class ProjectParser extends AbstractImportProvider implements
 		} catch (IllegalArgumentException e) {
 			file = null;
 		}
-		IContentType ct = HaleIO.findContentType(SchemaReader.class,
-				new DefaultInputSupplier(source), (file == null) ? (null)
-						: (file.getAbsolutePath()));
+		IContentType ct = HaleIO.findContentType(SchemaReader.class, new DefaultInputSupplier(
+				source), (file == null) ? (null) : (file.getAbsolutePath()));
 		if (ct == null) {
 			report.error(new IOMessageImpl(
 					"Could not load schema at {0}, the content type could not be identified.",
 					null, -1, -1, source));
 			return;
 		}
-		IOProviderDescriptor srf = HaleIO.findIOProviderFactory(
-				SchemaReader.class, ct, null);
+		IOProviderDescriptor srf = HaleIO.findIOProviderFactory(SchemaReader.class, ct, null);
 		if (srf == null) {
 			report.error(new IOMessageImpl(
-					"Could not load schema at {0}, no matching I/O provider could be found.",
-					null, -1, -1, source));
+					"Could not load schema at {0}, no matching I/O provider could be found.", null,
+					-1, -1, source));
 			return;
 		}
 		conf.setProviderId(srf.getIdentifier());
 
 		// provider configuration
 		// source
-		conf.getProviderConfiguration().put(
-				AbstractImportProvider.PARAM_SOURCE, source.toString());
+		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE, source.toString());
 		// content type
-		conf.getProviderConfiguration().put(
-				AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
+		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
 
 		// no dependencies needed
 
@@ -304,14 +295,12 @@ public class ProjectParser extends AbstractImportProvider implements
 			// URI source = new
 			// URI(URLDecoder.decode(project.getInstanceData().getPath(),
 			// "UTF-8"));
-			URI source = getLocation(haleProject.getInstanceData().getPath(),
-					basePath);
+			URI source = getLocation(haleProject.getInstanceData().getPath(), basePath);
 
 			String msgCT = "Could not load instance data at {0}, the content type could not be identified.";
 			String msgIO = "Could not load instance data at {0}, no matching I/O provider could be found.";
 
-			load(source, InstanceIO.ACTION_LOAD_SOURCE_DATA, msgCT, msgIO,
-					InstanceReader.class);
+			load(source, InstanceIO.ACTION_LOAD_SOURCE_DATA, msgCT, msgIO, InstanceReader.class);
 
 			// not needed as the new XML/GML parser doesn't differentiate
 			// between GML versions
@@ -378,15 +367,14 @@ public class ProjectParser extends AbstractImportProvider implements
 	}
 
 	private void loadAlignment(HaleProject haleProject, String basePath) {
-		if (haleProject.getOmlPath() != null
-				&& !haleProject.getOmlPath().isEmpty()) {
+		if (haleProject.getOmlPath() != null && !haleProject.getOmlPath().isEmpty()) {
 			URI omlPath = getLocation(haleProject.getOmlPath(), basePath);
 			// XXX how to handle project files?
 			// TODO create OML Alignment ProjectFile
-			
+
 			String msgCT = "Could not load mapping data at {0}, the content type could not be identified.";
 			String msgIO = "Could not load mapping data at {0}, no matching I/O provider could be found.";
-			
+
 			load(omlPath, AlignmentIO.ACTION_LOAD_ALIGNMENT, msgCT, msgIO, AlignmentReader.class);
 
 			// try {
@@ -428,15 +416,15 @@ public class ProjectParser extends AbstractImportProvider implements
 		if (haleProject.getStyles() != null) {
 			String path = haleProject.getStyles().getPath();
 			URI stylesLoc = getLocation(path, basePath);
-			
+
 			String msgCT = "Could not load style data at {0}, the content type could not be identified.";
 			String msgIO = "Could not load style data at {0}, no matching I/O provider could be found.";
-			
+
 			// TODO: change to static final string in the right style class
 			String ACTION_LOAD_STYLE = "eu.esdihumboldt.hale.ui.style.load";
-			
+
 			// TODO create SLD Style ProjectFile
-			
+
 			load(stylesLoc, ACTION_LOAD_STYLE, msgCT, msgIO, StyleReader.class);
 
 			// //styleService.clearStyles();
@@ -507,10 +495,8 @@ public class ProjectParser extends AbstractImportProvider implements
 	/**
 	 * Get the location
 	 * 
-	 * @param file
-	 *            the file path/URI
-	 * @param basePath
-	 *            the possible base path
+	 * @param file the file path/URI
+	 * @param basePath the possible base path
 	 * 
 	 * @return the file location
 	 */
@@ -522,7 +508,8 @@ public class ProjectParser extends AbstractImportProvider implements
 			if (scheme == null) {
 				// no scheme specified
 				return getFileLocation(file, basePath);
-			} else {
+			}
+			else {
 				return fileUri;
 			}
 		} catch (Exception e) {
@@ -534,10 +521,8 @@ public class ProjectParser extends AbstractImportProvider implements
 	/**
 	 * Get the file location
 	 * 
-	 * @param file
-	 *            the file path (absolute or relative)
-	 * @param basePath
-	 *            the possible base path
+	 * @param file the file path (absolute or relative)
+	 * @param basePath the possible base path
 	 * 
 	 * @return the file location
 	 */
@@ -545,15 +530,15 @@ public class ProjectParser extends AbstractImportProvider implements
 		File f = new File(file);
 		if (f.exists()) {
 			return f.toURI();
-		} else {
+		}
+		else {
 			File bf = new File(FilenameUtils.concat(basePath, file));
 			return bf.toURI();
 		}
 	}
 
-	private void load(URI source, String actionId, String msgCT, String msgIO,
-			Class clazz) {
-		
+	private void load(URI source, String actionId, String msgCT, String msgIO, Class clazz) {
+
 		// create IOConfiguration for source data
 		IOConfiguration conf = new IOConfiguration();
 		// populate IOConfiguration
@@ -567,15 +552,13 @@ public class ProjectParser extends AbstractImportProvider implements
 		} catch (IllegalArgumentException e) {
 			file = null;
 		}
-		IContentType ct = HaleIO.findContentType(clazz,
-				new DefaultInputSupplier(source), (file == null) ? (null)
-						: (file.getAbsolutePath()));
+		IContentType ct = HaleIO.findContentType(clazz, new DefaultInputSupplier(source),
+				(file == null) ? (null) : (file.getAbsolutePath()));
 		if (ct == null) {
 			report.error(new IOMessageImpl(msgCT, null, -1, -1, source));
 			return;
 		}
-		IOProviderDescriptor srf = HaleIO
-				.findIOProviderFactory(clazz, ct, null);
+		IOProviderDescriptor srf = HaleIO.findIOProviderFactory(clazz, ct, null);
 		if (srf == null) {
 			report.error(new IOMessageImpl(msgIO, null, -1, -1, source));
 			return;
@@ -584,11 +567,9 @@ public class ProjectParser extends AbstractImportProvider implements
 
 		// provider configuration
 		// source
-		conf.getProviderConfiguration().put(
-				AbstractImportProvider.PARAM_SOURCE, source.toString());
+		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE, source.toString());
 		// content type
-		conf.getProviderConfiguration().put(
-				AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
+		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
 
 		// no dependencies needed
 

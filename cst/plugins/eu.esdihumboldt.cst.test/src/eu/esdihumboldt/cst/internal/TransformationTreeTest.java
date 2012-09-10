@@ -12,15 +12,15 @@
 
 package eu.esdihumboldt.cst.internal;
 
-
 /**
  * Tests for the transformation tree
  * 
  * @author Kai Schwierczek
  */
 public abstract class TransformationTreeTest {
-	
-	//XXX commented out as not used, to remove zest dependencies for this bundle
+
+	// XXX commented out as not used, to remove zest dependencies for this
+	// bundle
 //	/**
 //	 * NOT TESTED!
 //	 * 

@@ -14,9 +14,10 @@ package eu.esdihumboldt.specification.workflow.transformer.domaintypes;
 
 import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
-/**In interface that is used to represent the attibute of a certain literal
+/**
+ * In interface that is used to represent the attibute of a certain literal
  * parameter to indicate that any value is allowed for this input
- *
+ * 
  * @author Moses Gone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$
@@ -24,6 +25,6 @@ import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 @ReferenceSpecification("OGC 05-007r6:1.0.0 9.3.1")
 public interface DefaultValue extends LiteralValuesChoice {
 
-    public String getValue();
+	public String getValue();
 
 }

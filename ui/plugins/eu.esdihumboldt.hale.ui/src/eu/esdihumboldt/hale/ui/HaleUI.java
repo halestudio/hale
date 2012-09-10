@@ -22,18 +22,20 @@ import org.eclipse.ui.operations.UndoRedoActionGroup;
 
 /**
  * Hale UI utility methods.
+ * 
  * @author Simon Templer
  */
 public abstract class HaleUI {
 
 	/**
 	 * Register a view site for undo/redo in workbench context.
+	 * 
 	 * @param site the view site
 	 */
 	public static void registerWorkbenchUndoRedo(IViewSite site) {
-		IUndoContext undoContext = site.getWorkbenchWindow().getWorkbench().getOperationSupport().getUndoContext();
-		UndoRedoActionGroup undoRedoActionGroup = new UndoRedoActionGroup(
-				site, undoContext, true);
+		IUndoContext undoContext = site.getWorkbenchWindow().getWorkbench().getOperationSupport()
+				.getUndoContext();
+		UndoRedoActionGroup undoRedoActionGroup = new UndoRedoActionGroup(site, undoContext, true);
 		IActionBars actionBars = site.getActionBars();
 		undoRedoActionGroup.fillActionBars(actionBars);
 	}
@@ -42,6 +44,7 @@ public abstract class HaleUI {
 	 * Wait for a finished flag being set to <code>true</code> by another
 	 * thread. If the current thread is the display thread, display events will
 	 * still be processed.
+	 * 
 	 * @param finishedFlag the finished flag
 	 */
 	public static void waitFor(AtomicBoolean finishedFlag) {
@@ -65,5 +68,5 @@ public abstract class HaleUI {
 			}
 		}
 	}
-	
+
 }

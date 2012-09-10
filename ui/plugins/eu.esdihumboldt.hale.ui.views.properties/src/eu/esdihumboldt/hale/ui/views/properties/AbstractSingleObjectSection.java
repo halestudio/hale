@@ -21,6 +21,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 /**
  * Abstract section for properties views displaying information on a single
  * object.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractSingleObjectSection extends AbstractPropertySection {
@@ -38,8 +39,9 @@ public abstract class AbstractSingleObjectSection extends AbstractPropertySectio
 
 	/**
 	 * Set the input object.
+	 * 
 	 * @param input the object to display properties on
 	 */
 	protected abstract void setInput(Object input);
-	
+
 }

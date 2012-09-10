@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Composite;
  * File field editor that opens a save instead of an open dialog
  */
 public class OpenFileFieldEditor extends ExtendedFileFieldEditor {
-	
+
 	private static final int OPEN_STYLE = SWT.OPEN | SWT.SHEET;
 
 	/**
@@ -33,18 +33,18 @@ public class OpenFileFieldEditor extends ExtendedFileFieldEditor {
 	/**
 	 * @see FileFieldEditor#FileFieldEditor(String, String, boolean, Composite)
 	 */
-	public OpenFileFieldEditor(String name, String labelText,
-			boolean enforceAbsolute, Composite parent) {
+	public OpenFileFieldEditor(String name, String labelText, boolean enforceAbsolute,
+			Composite parent) {
 		super(name, labelText, enforceAbsolute, parent, OPEN_STYLE);
 	}
 
 	/**
-	 * @see FileFieldEditor#FileFieldEditor(String, String, boolean, int, Composite)
+	 * @see FileFieldEditor#FileFieldEditor(String, String, boolean, int,
+	 *      Composite)
 	 */
-	public OpenFileFieldEditor(String name, String labelText,
-			boolean enforceAbsolute, int validationStrategy, Composite parent) {
-		super(name, labelText, enforceAbsolute, validationStrategy, parent,
-				OPEN_STYLE);
+	public OpenFileFieldEditor(String name, String labelText, boolean enforceAbsolute,
+			int validationStrategy, Composite parent) {
+		super(name, labelText, enforceAbsolute, validationStrategy, parent, OPEN_STYLE);
 	}
 
 	/**

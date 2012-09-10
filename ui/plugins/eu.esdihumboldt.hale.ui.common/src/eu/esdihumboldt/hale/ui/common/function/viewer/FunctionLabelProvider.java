@@ -28,12 +28,13 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 
 /**
  * Function label provider
+ * 
  * @author Simon Templer
  */
 public class FunctionLabelProvider extends LabelProvider {
-	
+
 	private final Map<String, Image> urlImages = new HashMap<String, Image>();
-	
+
 	/**
 	 * @see LabelProvider#getText(Object)
 	 */
@@ -45,7 +46,7 @@ public class FunctionLabelProvider extends LabelProvider {
 		if (element instanceof AbstractFunction) {
 			return ((AbstractFunction<?>) element).getDisplayName();
 		}
-		
+
 		return super.getText(element);
 	}
 
@@ -55,17 +56,17 @@ public class FunctionLabelProvider extends LabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		if (element instanceof Category) {
-			return PlatformUI.getWorkbench().getSharedImages().getImage(
-					ISharedImages.IMG_OBJ_FOLDER);
+			return PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJ_FOLDER);
 		}
-		
+
 		// get image based on getIconURL in AbstractFunction (and cache them)
 		if (element instanceof AbstractFunction) {
 			URL iconUrl = ((AbstractFunction<?>) element).getIconURL();
 			String iconString = iconUrl.toString();
-			
+
 			Image image = urlImages.get(iconString);
-			
+
 			if (image == null) {
 				try {
 					image = ImageDescriptor.createFromURL(iconUrl).createImage();
@@ -76,10 +77,10 @@ public class FunctionLabelProvider extends LabelProvider {
 					// ignore
 				}
 			}
-			
+
 			return image;
 		}
-		
+
 		return super.getImage(element);
 	}
 
@@ -93,7 +94,7 @@ public class FunctionLabelProvider extends LabelProvider {
 			image.dispose();
 		}
 		urlImages.clear();
-		
+
 		super.dispose();
 	}
 

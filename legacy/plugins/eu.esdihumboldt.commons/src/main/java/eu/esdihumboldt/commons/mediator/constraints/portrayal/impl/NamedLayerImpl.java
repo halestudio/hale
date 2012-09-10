@@ -20,13 +20,9 @@ import eu.esdihumboldt.specification.mediator.constraints.portrayal.NamedLayer;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.NamedStyle;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.UserStyle;
 
-
-
-
-
 /**
  * A NamedLayer describes a layer of data that has a name advertised by a WMS.
- *
+ * 
  * 
  * 
  * @author Anna Pitaev, Logica CMG
@@ -34,32 +30,31 @@ import eu.esdihumboldt.specification.mediator.constraints.portrayal.UserStyle;
  * 
  */
 public class NamedLayerImpl implements NamedLayer, Serializable {
-	
 
 	private String name;
-	
+
 	private Set<UserStyle> userStyle;
 
 	private Set<NamedStyle> namedStyle;
-	
+
 	private LayerFeatureConstraintImpl layerFeatureConstraint;
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 *  The unique identifier of the constraint int the database
+	 * The unique identifier of the constraint int the database
 	 */
-	
+
 	private long id;
-	
+
 	/**
 	 * The status of this constraint.
 	 */
 	private boolean satisfied = false;
-	
+
 	/**
 	 * The unique identifier in the current VM.
 	 */
@@ -70,24 +65,21 @@ public class NamedLayerImpl implements NamedLayer, Serializable {
 	 */
 	private ConstraintSource constraintSource;
 
-	
-	
 	/**
-	 * @param constraintSource the constraintSource to set
+	 * @param constraintSource
+	 *            the constraintSource to set
 	 */
 	public void setConstraintSource(ConstraintSource constraintSource) {
 		this.constraintSource = constraintSource;
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#getConstraintSource()
 	 */
 	public ConstraintSource getConstraintSource() {
 		return this.constraintSource;
 	}
-	
-	
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#isSatisfied()
 	 */
@@ -95,7 +87,7 @@ public class NamedLayerImpl implements NamedLayer, Serializable {
 		// TODO Auto-generated method stub
 		return this.satisfied;
 	}
-		
+
 	/**
 	 * @return the Uid that has been assigned to this SpatialConstraint.
 	 */
@@ -111,21 +103,19 @@ public class NamedLayerImpl implements NamedLayer, Serializable {
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @param satisfied
 	 */
 	public void setSatisfied(boolean satisfied) {
 		this.satisfied = satisfied;
 	}
-
-	
-	
 
 	/**
 	 * @return the name
@@ -135,7 +125,8 @@ public class NamedLayerImpl implements NamedLayer, Serializable {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -149,7 +140,8 @@ public class NamedLayerImpl implements NamedLayer, Serializable {
 	}
 
 	/**
-	 * @param userSyle the userSyle to set
+	 * @param userSyle
+	 *            the userSyle to set
 	 */
 	public void setUserStyle(Set<UserStyle> userSyle) {
 		this.userStyle = userSyle;
@@ -163,7 +155,8 @@ public class NamedLayerImpl implements NamedLayer, Serializable {
 	}
 
 	/**
-	 * @param namedStyle the namedStyle to set
+	 * @param namedStyle
+	 *            the namedStyle to set
 	 */
 	public void setNamedStyle(Set<NamedStyle> namedStyle) {
 		this.namedStyle = namedStyle;
@@ -177,13 +170,12 @@ public class NamedLayerImpl implements NamedLayer, Serializable {
 	}
 
 	/**
-	 * @param layerFeatureConstraint the layerFeatureConstraint to set
+	 * @param layerFeatureConstraint
+	 *            the layerFeatureConstraint to set
 	 */
 	public void setLayerFeatureConstraint(
 			LayerFeatureConstraintImpl layerFeatureConstraint) {
 		this.layerFeatureConstraint = layerFeatureConstraint;
-	} 
-	
-	
+	}
 
 }

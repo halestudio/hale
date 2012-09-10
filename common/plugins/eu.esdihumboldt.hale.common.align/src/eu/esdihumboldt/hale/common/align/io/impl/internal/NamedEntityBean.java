@@ -18,16 +18,17 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 
 /**
  * A name associated with an entity bean
+ * 
  * @author Simon Templer
  */
 public class NamedEntityBean {
-	
+
 	private String name;
-	
+
 	private EntityBean<?> entity;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public NamedEntityBean() {
 		super();
@@ -35,12 +36,13 @@ public class NamedEntityBean {
 
 	/**
 	 * Create a named entity bean and initialize it using the given entity
+	 * 
 	 * @param name the entity name
 	 * @param entity the entity
 	 */
 	public NamedEntityBean(String name, Entity entity) {
 		this.name = name;
-		
+
 		if (entity instanceof Type) {
 			this.entity = new TypeBean((Type) entity);
 		}
@@ -48,13 +50,14 @@ public class NamedEntityBean {
 			this.entity = new PropertyBean((Property) entity);
 		}
 		else {
-			throw new IllegalArgumentException("Unsupported entity type: " + 
-					entity.getClass().getSimpleName());
+			throw new IllegalArgumentException("Unsupported entity type: "
+					+ entity.getClass().getSimpleName());
 		}
 	}
 
 	/**
 	 * Get the entity name
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -63,6 +66,7 @@ public class NamedEntityBean {
 
 	/**
 	 * Set the entity name
+	 * 
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
@@ -71,6 +75,7 @@ public class NamedEntityBean {
 
 	/**
 	 * Get the entity bean
+	 * 
 	 * @return the entity
 	 */
 	public EntityBean<?> getEntity() {
@@ -79,6 +84,7 @@ public class NamedEntityBean {
 
 	/**
 	 * Set the entity bean
+	 * 
 	 * @param entity the entity to set
 	 */
 	public void setEntity(EntityBean<?> entity) {

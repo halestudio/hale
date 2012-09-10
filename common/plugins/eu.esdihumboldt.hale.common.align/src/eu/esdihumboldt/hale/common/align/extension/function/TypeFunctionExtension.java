@@ -18,27 +18,28 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 
 /**
  * Extension for {@link TypeFunction}s
+ * 
  * @author Simon Templer
  */
-public class TypeFunctionExtension extends
-		AbstractFunctionExtension<TypeFunction> {
+public class TypeFunctionExtension extends AbstractFunctionExtension<TypeFunction> {
 
 	/**
 	 * Property function extension point
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.function";
-	
+
 	private static TypeFunctionExtension instance;
-	
+
 	/**
 	 * Get the extension instance
+	 * 
 	 * @return the extension
 	 */
 	public static TypeFunctionExtension getInstance() {
 		if (instance == null) {
 			instance = new TypeFunctionExtension();
 		}
-		
+
 		return instance;
 	}
 
@@ -61,12 +62,11 @@ public class TypeFunctionExtension extends
 	 * @see AbstractFunctionExtension#doCreate(String, IConfigurationElement)
 	 */
 	@Override
-	protected TypeFunction doCreate(String elementId,
-			IConfigurationElement element) {
+	protected TypeFunction doCreate(String elementId, IConfigurationElement element) {
 		if (element.getName().equals("typeFunction")) {
 			return new TypeFunction(element);
 		}
-		
+
 		return null;
 	}
 

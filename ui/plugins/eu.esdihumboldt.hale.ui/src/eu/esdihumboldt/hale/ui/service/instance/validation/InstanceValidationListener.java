@@ -16,13 +16,14 @@ import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationRe
 
 /**
  * Listener for instance validation.
- *
+ * 
  * @author Kai Schwierczek
  */
 public interface InstanceValidationListener {
+
 	/**
 	 * Called, when instance validation ran.
-	 *
+	 * 
 	 * @param report the resulting report
 	 */
 	public void instancesValidated(InstanceValidationReport report);

@@ -22,16 +22,18 @@ import eu.esdihumboldt.hale.common.convert.ConversionServiceNotAvailableExceptio
 
 /**
  * Default {@link PropertyValue} implementation.
+ * 
  * @author Simon Templer
  */
 public class PropertyValueImpl implements PropertyValue {
-	
+
 	private final Object value;
-	
+
 	private final PropertyEntityDefinition property;
-	
+
 	/**
 	 * Create a property value associated with its definition
+	 * 
 	 * @param value the property value
 	 * @param property the property entity definition
 	 */
@@ -48,7 +50,7 @@ public class PropertyValueImpl implements PropertyValue {
 	public Object getValue() {
 		return value;
 	}
-	
+
 	/**
 	 * @see PropertyValue#getValueAs(Class)
 	 */
@@ -58,11 +60,11 @@ public class PropertyValueImpl implements PropertyValue {
 		if (value == null) {
 			return null;
 		}
-		
+
 		if (type.isAssignableFrom(value.getClass())) {
 			return (T) value;
 		}
-		
+
 		ConversionService cs = OsgiUtils.getService(ConversionService.class);
 		if (cs == null) {
 			throw new ConversionServiceNotAvailableException();

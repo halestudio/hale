@@ -18,10 +18,11 @@ import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverte
 
 /**
  * Converts Strings to MultiPolygons
+ * 
  * @author Kevin Mais
  */
-public class StringToMultipolygon extends AbstractGeometryConverter<MultiPolygon>{
+public class StringToMultipolygon extends AbstractGeometryConverter<MultiPolygon> {
 
 	// concrete typed class
-	
+
 }

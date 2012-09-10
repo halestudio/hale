@@ -17,6 +17,7 @@ import java.io.OutputStream;
 
 /**
  * Decorator for an {@link OutputStream}
+ * 
  * @author Simon Templer
  */
 public class OutputStreamDecorator extends OutputStream {
@@ -25,6 +26,7 @@ public class OutputStreamDecorator extends OutputStream {
 
 	/**
 	 * Creates a decorator for an output stream
+	 * 
 	 * @param out the output stream
 	 */
 	public OutputStreamDecorator(OutputStream out) {

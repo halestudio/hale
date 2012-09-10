@@ -23,10 +23,11 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 /**
  * Finds a CRS definition in a GML instance. The first valid definition found
  * will be stored, traversal in this case is aborted.
+ * 
  * @author Simon Templer
  */
 public class CRSFinder implements InstanceTraversalCallback {
-	
+
 	/**
 	 * A CRS definition if found
 	 */
@@ -55,32 +56,33 @@ public class CRSFinder implements InstanceTraversalCallback {
 	public boolean visit(Object value, QName name) {
 		if (value != null && name != null && name.getLocalPart().equals("srsName")) {
 			String candidate = value.toString();
-			
+
 			// EPSG:(:)xxx style codes
 			if (checkCode(candidate, "EPSG:")) {
 				// if definition is set, abort the traversal
 				return false;
 			}
-			
+
 			// urn:ogc:def:crs:EPSG:(:)xxx style code
 			if (checkCode(candidate, "urn:ogc:def:crs:EPSG:")) {
 				// if definition is set, abort the traversal
 				return false;
 			}
-			
+
 			// urn:x-ogc:def:crs:EPSG:(:)xxx style code
 			if (checkCode(candidate, "urn:x-ogc:def:crs:EPSG:")) {
 				// if definition is set, abort the traversal
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Check a candidate for a CRS code. Set {@link #definition} to the
 	 * corresponding {@link CRSDefinition} if it represents a CRS.
+	 * 
 	 * @param candidate the CRS code candidate
 	 * @param prefix the expected code prefix
 	 * @return if {@link #definition} was set
@@ -89,32 +91,33 @@ public class CRSFinder implements InstanceTraversalCallback {
 		if (candidate.length() > prefix.length()) {
 			String authPart = candidate.substring(0, prefix.length());
 			String codePart = candidate.substring(prefix.length());
-			
+
 			try {
 				// ignore anything before the last colon
 				int colonIndex = codePart.lastIndexOf(':');
 				if (colonIndex >= 0) {
 					codePart = codePart.substring(colonIndex + 1);
 				}
-				
+
 				// check if codePart represents an integer
 				Integer.parseInt(codePart);
-				
+
 				if (authPart.equalsIgnoreCase(prefix)) {
 					definition = new CodeDefinition("EPSG:" + codePart, null);
-					//XXX check if valid through getCRS()?
+					// XXX check if valid through getCRS()?
 					return true;
 				}
 			} catch (NumberFormatException e) {
 				// invalid
 			}
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * Get the CRS definition found during traversal.
+	 * 
 	 * @return the definition the CRS definition or <code>null</code>
 	 */
 	public CRSDefinition getDefinition() {

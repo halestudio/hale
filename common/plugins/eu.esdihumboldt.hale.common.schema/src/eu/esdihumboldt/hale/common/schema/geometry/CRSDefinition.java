@@ -18,10 +18,11 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Represents a CRS definition using WKT or a CODE
+ * 
  * @author Simon Templer
  */
 public interface CRSDefinition extends Serializable {
-	
+
 	/**
 	 * Get the coordinate reference system
 	 * 

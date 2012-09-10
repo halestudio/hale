@@ -12,29 +12,29 @@
 
 package eu.esdihumboldt.hale.common.instance.model;
 
-
 /**
- * Filter for {@link Instance}s.
- * Filter implementations should reimplement {@link #equals(Object)} and 
- * {@link #hashCode()}.
+ * Filter for {@link Instance}s. Filter implementations should reimplement
+ * {@link #equals(Object)} and {@link #hashCode()}.
+ * 
  * @author Sebastian Reinhardt
  * @author Simon Templer
  */
 public interface Filter {
-	
+
 	/**
 	 * Determines if an instance matches the filter.
+	 * 
 	 * @param instance the instance to check the filter against
 	 * @return <code>true</code> if the given instance matches the filter,
-	 *   <code>false</code> otherwise
+	 *         <code>false</code> otherwise
 	 */
 	public boolean match(Instance instance);
-	
+
 	/*
 	 * XXX it might be a good option to include the information about valid
 	 * instance types in the filter interface, as this would allow an easier
 	 * optimization for filtering instance collections based on types!
 	 */
 //	public Set<TypeDefinition> getAllowedTypes();
-	
+
 }

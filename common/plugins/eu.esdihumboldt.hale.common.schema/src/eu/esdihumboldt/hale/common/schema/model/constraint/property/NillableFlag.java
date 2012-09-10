@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
 
 /**
  * Flags if a property is nillable, disabled by default
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -29,12 +30,12 @@ public class NillableFlag extends AbstractFlagConstraint implements PropertyCons
 	 * Enabled nillable flag
 	 */
 	public static final NillableFlag ENABLED = new NillableFlag(true);
-	
+
 	/**
 	 * Disabled nillable flag
 	 */
 	public static final NillableFlag DISABLED = new NillableFlag(false);
-	
+
 	/**
 	 * Get the nillable flag
 	 * 
@@ -42,12 +43,12 @@ public class NillableFlag extends AbstractFlagConstraint implements PropertyCons
 	 * @return the flag
 	 */
 	public static NillableFlag get(boolean isNillable) {
-		return (isNillable)?(ENABLED):(DISABLED);
+		return (isNillable) ? (ENABLED) : (DISABLED);
 	}
-	
+
 	/**
 	 * Creates a default nillable flag, which is disabled. If possible, instead
-	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
+	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or
 	 * {@link #DISABLED}.
 	 * 
 	 * @see Cardinality
@@ -55,7 +56,7 @@ public class NillableFlag extends AbstractFlagConstraint implements PropertyCons
 	public NillableFlag() {
 		this(false);
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */

@@ -23,26 +23,29 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
  * Explanation for merge function cells.
+ * 
  * @author Simon Templer
  */
 public class MergeExplanation extends AbstractCellExplanation implements MergeFunction {
+
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		
-		List<String> properties = (cell.getTransformationParameters() == null)?(null):(cell.getTransformationParameters().get(PARAMETER_PROPERTY)); 
-		
-		if (source != null && target != null && properties != null 
-				&& !properties.isEmpty()) {
+
+		List<String> properties = (cell.getTransformationParameters() == null) ? (null) : (cell
+				.getTransformationParameters().get(PARAMETER_PROPERTY));
+
+		if (source != null && target != null && properties != null && !properties.isEmpty()) {
 			StringBuffer propertiesString = new StringBuffer();
 			for (int i = 0; i < properties.size(); i++) {
 				propertiesString.append(quoteText(properties.get(i), html));
-				
+
 				if (i == properties.size() - 2) {
 					propertiesString.append(" and ");
 				}
@@ -52,13 +55,13 @@ public class MergeExplanation extends AbstractCellExplanation implements MergeFu
 			}
 
 			// XXX additional properties and auto detect of equal properties
-			
-			return MessageFormat.format("Merges different instances of the type {0} based on its properties {2} being equal. The values of these properties are merged into one, while the values of the other properties will be available in the target instance of type {1} as separate values for each source instance.",
-					formatEntity(source, html, true),
-					formatEntity(target, html, true),
-					propertiesString);
+
+			return MessageFormat
+					.format("Merges different instances of the type {0} based on its properties {2} being equal. The values of these properties are merged into one, while the values of the other properties will be available in the target instance of type {1} as separate values for each source instance.",
+							formatEntity(source, html, true), formatEntity(target, html, true),
+							propertiesString);
 		}
-		
+
 		return null;
 	}
 

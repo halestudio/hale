@@ -23,21 +23,21 @@ import eu.esdihumboldt.util.resource.Resources;
 
 /**
  * Default I/O supplier based on an URI
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
 public class DefaultInputSupplier implements LocatableInputSupplier<InputStream> {
 
 	/**
-	 * Name of the scheme where resolving locally through {@link Resources} 
-	 * is preferred. 
+	 * Name of the scheme where resolving locally through {@link Resources} is
+	 * preferred.
 	 */
 	public static final String SCHEME_LOCAL = "resource";
-	
+
 	private final URI location;
-	
+
 	/**
 	 * Create a default I/O supplier based on the given URI
 	 * 
@@ -56,7 +56,8 @@ public class DefaultInputSupplier implements LocatableInputSupplier<InputStream>
 		// try resolving using resources
 		boolean triedLocal = false;
 		if (location.getScheme().equals(SCHEME_LOCAL)) { // prefer local
-			InputSupplier<? extends InputStream> localSupplier = Resources.tryResolve(location, null);
+			InputSupplier<? extends InputStream> localSupplier = Resources.tryResolve(location,
+					null);
 			if (localSupplier != null) {
 				try {
 					triedLocal = true;
@@ -66,7 +67,7 @@ public class DefaultInputSupplier implements LocatableInputSupplier<InputStream>
 				}
 			}
 		}
-		
+
 		try {
 			return Request.getInstance().get(location);
 		} catch (Exception e) {
@@ -75,7 +76,8 @@ public class DefaultInputSupplier implements LocatableInputSupplier<InputStream>
 			} catch (IOException ioe) {
 				// try to resolve locally
 				if (!triedLocal) {
-					InputSupplier<? extends InputStream> localSupplier = Resources.tryResolve(location, null);
+					InputSupplier<? extends InputStream> localSupplier = Resources.tryResolve(
+							location, null);
 					if (localSupplier != null) {
 						return localSupplier.getInput();
 					}

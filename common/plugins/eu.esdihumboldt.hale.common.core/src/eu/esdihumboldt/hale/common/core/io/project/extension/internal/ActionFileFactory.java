@@ -25,14 +25,16 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 
 /**
  * Factory for I/O action related project files
+ * 
  * @author Simon Templer
  */
 public class ActionFileFactory implements ProjectFileFactory {
 
 	private final IConfigurationElement conf;
-	
+
 	/**
 	 * Create a factory based on the given configuration
+	 * 
 	 * @param element the configuration element
 	 */
 	public ActionFileFactory(IConfigurationElement element) {
@@ -61,9 +63,9 @@ public class ActionFileFactory implements ProjectFileFactory {
 			loadProviderId = load[0].getAttribute("provider");
 			addParameters(loadParameters, load[0]);
 		}
-		
+
 		checkNotNull(loadActionId, "Action ID for loading the project file not specified");
-		
+
 		String saveActionId = null;
 		String saveProviderId = null;
 		Map<String, String> saveParameters = new HashMap<String, String>();
@@ -73,20 +75,17 @@ public class ActionFileFactory implements ProjectFileFactory {
 			saveProviderId = save[0].getAttribute("provider");
 			addParameters(saveParameters, save[0]);
 		}
-		
+
 		checkNotNull(saveActionId, "Action ID for saving the project file not specified");
-		
-		return new ActionProjectFile(loadActionId, loadProviderId, loadParameters,
-				saveActionId, saveProviderId, saveParameters);
+
+		return new ActionProjectFile(loadActionId, loadProviderId, loadParameters, saveActionId,
+				saveProviderId, saveParameters);
 	}
 
-	private void addParameters(Map<String, String> parameterMap,
-			IConfigurationElement conf) {
+	private void addParameters(Map<String, String> parameterMap, IConfigurationElement conf) {
 		IConfigurationElement[] parameters = conf.getChildren("parameter");
 		for (IConfigurationElement parameter : parameters) {
-			parameterMap.put(
-					parameter.getAttribute("name"), 
-					parameter.getAttribute("value"));
+			parameterMap.put(parameter.getAttribute("name"), parameter.getAttribute("value"));
 		}
 	}
 

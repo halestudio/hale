@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
  * Default implementation of a {@link GeometryProperty}
+ * 
  * @param <T> the geometry type
  * 
  * @author Simon Templer
@@ -28,17 +29,17 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 public class DefaultGeometryProperty<T extends Geometry> implements GeometryProperty<T> {
 
 	private static final long serialVersionUID = 9160846585636648227L;
-	
+
 	private CRSDefinition crsDef;
 	private T geometry;
-	
-	//FIXME use custom mechanism for serialization? e.g. WKB for geometries
+
+	// FIXME use custom mechanism for serialization? e.g. WKB for geometries
 
 	/**
 	 * Create a geometry property
 	 * 
-	 * @param crsDef the definition of the coordinate reference system, may be 
-	 *   <code>null</code>
+	 * @param crsDef the definition of the coordinate reference system, may be
+	 *            <code>null</code>
 	 * @param geometry the geometry
 	 */
 	public DefaultGeometryProperty(CRSDefinition crsDef, T geometry) {
@@ -81,7 +82,7 @@ public class DefaultGeometryProperty<T extends Geometry> implements GeometryProp
 				return "{CRS=" + ident + "} " + geometry.toString();
 			}
 		}
-		
+
 		return geometry.toString();
 	}
 

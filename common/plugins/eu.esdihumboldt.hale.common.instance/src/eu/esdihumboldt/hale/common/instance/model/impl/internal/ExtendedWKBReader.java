@@ -67,8 +67,7 @@ public class ExtendedWKBReader {
 	 * Converts a hexadecimal string to a byte array. The hexadecimal digit
 	 * symbols are case-insensitive.
 	 * 
-	 * @param hex
-	 *            a string containing hex digits
+	 * @param hex a string containing hex digits
 	 * @return an array of bytes with the value of the hex string
 	 */
 	public static byte[] hexToBytes(String hex) {
@@ -91,8 +90,7 @@ public class ExtendedWKBReader {
 	private static int hexToInt(char hex) {
 		int nib = Character.digit(hex, 16);
 		if (nib < 0)
-			throw new IllegalArgumentException("Invalid hex digit: '" + hex
-					+ "'");
+			throw new IllegalArgumentException("Invalid hex digit: '" + hex + "'");
 		return nib;
 	}
 
@@ -119,8 +117,7 @@ public class ExtendedWKBReader {
 	/**
 	 * Create an extended WKB reader with the given geometry factory.
 	 * 
-	 * @param geometryFactory
-	 *            the geometry factory
+	 * @param geometryFactory the geometry factory
 	 */
 	public ExtendedWKBReader(GeometryFactory geometryFactory) {
 		this.factory = geometryFactory;
@@ -131,11 +128,9 @@ public class ExtendedWKBReader {
 	/**
 	 * Reads a single {@link Geometry} in WKB format from a byte array.
 	 * 
-	 * @param bytes
-	 *            the byte array to read from
+	 * @param bytes the byte array to read from
 	 * @return the geometry read
-	 * @throws ParseException
-	 *             if the WKB is ill-formed
+	 * @throws ParseException if the WKB is ill-formed
 	 */
 	public Geometry read(byte[] bytes) throws ParseException {
 		// possibly reuse the ByteArrayInStream?
@@ -143,21 +138,17 @@ public class ExtendedWKBReader {
 		try {
 			return read(new ByteArrayInStream(bytes));
 		} catch (IOException ex) {
-			throw new RuntimeException("Unexpected IOException caught: "
-					+ ex.getMessage());
+			throw new RuntimeException("Unexpected IOException caught: " + ex.getMessage());
 		}
 	}
 
 	/**
 	 * Reads a {@link Geometry} in binary WKB format from an {@link InStream}.
 	 * 
-	 * @param is
-	 *            the stream to read from
+	 * @param is the stream to read from
 	 * @return the Geometry read
-	 * @throws IOException
-	 *             if the underlying stream creates an error
-	 * @throws ParseException
-	 *             if the WKB is ill-formed
+	 * @throws IOException if the underlying stream creates an error
+	 * @throws ParseException if the WKB is ill-formed
 	 */
 	public Geometry read(InStream is) throws IOException, ParseException {
 		dis.setInStream(is);
@@ -227,10 +218,8 @@ public class ExtendedWKBReader {
 	/**
 	 * Sets the SRID, if it was specified in the WKB
 	 * 
-	 * @param g
-	 *            the geometry to update
-	 * @param SRID
-	 *            the SRID value
+	 * @param g the geometry to update
+	 * @param SRID the SRID value
 	 * @return the geometry with an updated SRID value, if required
 	 */
 	private Geometry setSRID(Geometry g, int SRID) {
@@ -282,15 +271,13 @@ public class ExtendedWKBReader {
 		return factory.createMultiPoint(geoms);
 	}
 
-	private MultiLineString readMultiLineString() throws IOException,
-			ParseException {
+	private MultiLineString readMultiLineString() throws IOException, ParseException {
 		int numGeom = dis.readInt();
 		LineString[] geoms = new LineString[numGeom];
 		for (int i = 0; i < numGeom; i++) {
 			Geometry g = readGeometry();
 			if (!(g instanceof LineString))
-				throw new ParseException(INVALID_GEOM_TYPE_MSG
-						+ "MultiLineString");
+				throw new ParseException(INVALID_GEOM_TYPE_MSG + "MultiLineString");
 			geoms[i] = (LineString) g;
 		}
 		return factory.createMultiLineString(geoms);
@@ -308,8 +295,7 @@ public class ExtendedWKBReader {
 		return factory.createMultiPolygon(geoms);
 	}
 
-	private GeometryCollection readGeometryCollection() throws IOException,
-			ParseException {
+	private GeometryCollection readGeometryCollection() throws IOException, ParseException {
 		int numGeom = dis.readInt();
 		Geometry[] geoms = new Geometry[numGeom];
 		for (int i = 0; i < numGeom; i++) {
@@ -318,8 +304,7 @@ public class ExtendedWKBReader {
 		return factory.createGeometryCollection(geoms);
 	}
 
-	private CoordinateSequence readCoordinateSequence(int size)
-			throws IOException {
+	private CoordinateSequence readCoordinateSequence(int size) throws IOException {
 		CoordinateSequence seq = csFactory.create(size, inputDimension);
 		int targetDim = seq.getDimension();
 		if (targetDim > inputDimension)
@@ -333,8 +318,7 @@ public class ExtendedWKBReader {
 		return seq;
 	}
 
-	private CoordinateSequence readCoordinateSequenceRing(int size)
-			throws IOException {
+	private CoordinateSequence readCoordinateSequenceRing(int size) throws IOException {
 		CoordinateSequence seq = readCoordinateSequence(size);
 		if (!isRepairRings)
 			return seq;
@@ -347,14 +331,14 @@ public class ExtendedWKBReader {
 	 * Reads a coordinate value with the specified dimensionality. Makes the X
 	 * and Y ordinates precise according to the precision model in use.
 	 * 
-	 * @throws IOException
-	 *             if an error occurs reading the coordinate
+	 * @throws IOException if an error occurs reading the coordinate
 	 */
 	private void readCoordinate() throws IOException {
 		for (int i = 0; i < inputDimension; i++) {
 			if (i <= 1) {
 				ordValues[i] = precisionModel.makePrecise(dis.readDouble());
-			} else {
+			}
+			else {
 				ordValues[i] = dis.readDouble();
 			}
 

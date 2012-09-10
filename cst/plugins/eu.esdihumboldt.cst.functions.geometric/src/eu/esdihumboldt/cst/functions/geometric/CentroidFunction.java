@@ -23,5 +23,5 @@ public interface CentroidFunction {
 	 * the centroid function ID
 	 */
 	public static final String ID = "eu.esdihumboldt.cst.functions.geometric.centroid";
-	
+
 }

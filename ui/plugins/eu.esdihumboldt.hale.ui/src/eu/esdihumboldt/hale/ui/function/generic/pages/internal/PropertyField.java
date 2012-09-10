@@ -27,14 +27,16 @@ import eu.esdihumboldt.hale.ui.function.common.PropertyEntitySelector;
 
 /**
  * Represents named property entities in a function
+ * 
  * @author Simon Templer
  */
 public class PropertyField extends Field<PropertyParameter, PropertyEntitySelector> {
-	
+
 	private TypeEntityDefinition parentType;
 
 	/**
 	 * Create a property field
+	 * 
 	 * @param definition the field definition
 	 * @param ssid the schema space
 	 * @param parent the parent composite
@@ -42,22 +44,22 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	 * @param initialCell the initial cell
 	 * @param parentType the parent type of the properties
 	 */
-	public PropertyField(PropertyParameter definition, SchemaSpaceID ssid,
-			Composite parent, Set<EntityDefinition> candidates, Cell initialCell,
-			TypeEntityDefinition parentType) {
+	public PropertyField(PropertyParameter definition, SchemaSpaceID ssid, Composite parent,
+			Set<EntityDefinition> candidates, Cell initialCell, TypeEntityDefinition parentType) {
 		super(definition, ssid, parent, candidates, initialCell);
-		
+
 		// set the parent type on all added selectors
 		setParentType(parentType);
 	}
 
 	/**
 	 * Set the parent type
+	 * 
 	 * @param parentType the parentType to set
 	 */
 	public void setParentType(TypeEntityDefinition parentType) {
 		this.parentType = parentType;
-		
+
 		// set the parent type on the selectors
 		for (PropertyEntitySelector selector : getSelectors()) {
 			selector.setParentType(parentType);
@@ -65,10 +67,11 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	}
 
 	/**
-	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter, Composite)
+	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter,
+	 *      Composite)
 	 */
 	@Override
-	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid, 
+	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid,
 			PropertyParameter field, Composite parent) {
 		return new PropertyEntitySelector(ssid, field, parent, parentType);
 	}

@@ -5,7 +5,6 @@
 // Generated on: 2009.01.07 at 01:07:31 PM CET 
 //
 
-
 package eu.esdihumboldt.commons.mediator.transformer;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for ComplexDataInput complex type.
+ * <p>
+ * Java class for ComplexDataInput complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ComplexDataInput">
@@ -36,92 +37,78 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ComplexDataInput", propOrder = {
-    "featureName",
-    "groundingURI",
-    "filterEncoding"
-})
-public class ComplexDataInput
-    extends DataInput
-{
+@XmlType(name = "ComplexDataInput", propOrder = { "featureName",
+		"groundingURI", "filterEncoding" })
+public class ComplexDataInput extends DataInput {
 
-    @XmlElement(required = true)
-    protected String featureName;
-    @XmlElement(required = true)
-    protected String groundingURI;
-    @XmlElement(required = true)
-    protected String filterEncoding;
+	@XmlElement(required = true)
+	protected String featureName;
+	@XmlElement(required = true)
+	protected String groundingURI;
+	@XmlElement(required = true)
+	protected String filterEncoding;
 
-    /**
-     * Gets the value of the featureName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFeatureName() {
-        return featureName;
-    }
+	/**
+	 * Gets the value of the featureName property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getFeatureName() {
+		return featureName;
+	}
 
-    /**
-     * Sets the value of the featureName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFeatureName(String value) {
-        this.featureName = value;
-    }
+	/**
+	 * Sets the value of the featureName property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setFeatureName(String value) {
+		this.featureName = value;
+	}
 
-    /**
-     * Gets the value of the groundingURI property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getGroundingURI() {
-        return groundingURI;
-    }
+	/**
+	 * Gets the value of the groundingURI property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getGroundingURI() {
+		return groundingURI;
+	}
 
-    /**
-     * Sets the value of the groundingURI property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setGroundingURI(String value) {
-        this.groundingURI = value;
-    }
+	/**
+	 * Sets the value of the groundingURI property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setGroundingURI(String value) {
+		this.groundingURI = value;
+	}
 
-    /**
-     * Gets the value of the filterEncoding property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFilterEncoding() {
-        return filterEncoding;
-    }
+	/**
+	 * Gets the value of the filterEncoding property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getFilterEncoding() {
+		return filterEncoding;
+	}
 
-    /**
-     * Sets the value of the filterEncoding property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFilterEncoding(String value) {
-        this.filterEncoding = value;
-    }
+	/**
+	 * Sets the value of the filterEncoding property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setFilterEncoding(String value) {
+		this.filterEncoding = value;
+	}
 
 }

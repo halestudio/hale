@@ -22,12 +22,13 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 /**
  * I/O configuration based advisor for loading schemas, that collects loaded
  * schemas in a {@link SchemaSpace}.
+ * 
  * @author Simon Templer
  */
 public class LoadSchemaAdvisor extends ConfigurationIOAdvisor<SchemaReader> {
 
 	private final DefaultSchemaSpace schemaSpace = new DefaultSchemaSpace();
-	
+
 	/**
 	 * @see AbstractIOAdvisor#handleResults(IOProvider)
 	 */
@@ -38,6 +39,7 @@ public class LoadSchemaAdvisor extends ConfigurationIOAdvisor<SchemaReader> {
 
 	/**
 	 * Get the schema space with the schemas loaded using this advisor.
+	 * 
 	 * @return the schema space with the collected schemas
 	 */
 	public SchemaSpace getSchemaSpace() {

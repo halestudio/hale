@@ -21,40 +21,46 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class ElementReferenceAttribute extends AbstractElementAttribute {
-	
+
 	private final SchemaElement reference;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param declaringType the declaring type
-	 * @param name the element name
-	 * @param typeName the type name
-	 * @param element the XML element
-	 * @param reference the reference to the schema element
+	 * @param declaringType
+	 *            the declaring type
+	 * @param name
+	 *            the element name
+	 * @param typeName
+	 *            the type name
+	 * @param element
+	 *            the XML element
+	 * @param reference
+	 *            the reference to the schema element
 	 */
 	public ElementReferenceAttribute(TypeDefinition declaringType, String name,
 			Name typeName, XmlSchemaElement element, SchemaElement reference) {
 		super(declaringType, name, typeName, element);
-		
+
 		this.reference = reference;
 	}
 
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other the attribute top copy
+	 * @param other
+	 *            the attribute top copy
 	 */
 	protected ElementReferenceAttribute(ElementReferenceAttribute other) {
 		super(other);
-		
+
 		reference = other.reference;
 	}
 
@@ -65,7 +71,7 @@ public class ElementReferenceAttribute extends AbstractElementAttribute {
 	protected TypeDefinition getDefaultAttributeType() {
 		return reference.getType();
 	}
-	
+
 	/**
 	 * @see AttributeDefinition#copyAttribute(TypeDefinition)
 	 */

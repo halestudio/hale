@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 
 /**
  * Utility methods related to {@link CRSDefinition}s
+ * 
  * @author Simon Templer
  */
 public abstract class CRSDefinitionUtil {
@@ -48,7 +49,7 @@ public abstract class CRSDefinitionUtil {
 				}
 			}
 		}
-		
+
 		// use WKT
 		return new WKTDefinition(crs.toWKT(), crs);
 	}

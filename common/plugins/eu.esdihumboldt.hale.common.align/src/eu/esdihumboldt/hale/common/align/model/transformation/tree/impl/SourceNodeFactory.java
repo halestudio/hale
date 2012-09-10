@@ -20,18 +20,20 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 
 /**
  * Factory for creating {@link SourceNode}s.
+ * 
  * @author Simon Templer
  */
 public class SourceNodeFactory {
-	
+
 	private Map<EntityDefinition, SourceNode> nodes = new HashMap<EntityDefinition, SourceNode>();
-	
+
 	/**
-	 * Get or create source node for the given entity definition.
-	 * Source nodes created from this factory are ensured to exist only once 
-	 * for the same entity definition.
-	 * @param entityDefinition the entity definition the source node is 
-	 *   associated to
+	 * Get or create source node for the given entity definition. Source nodes
+	 * created from this factory are ensured to exist only once for the same
+	 * entity definition.
+	 * 
+	 * @param entityDefinition the entity definition the source node is
+	 *            associated to
 	 * @return the source node
 	 */
 	public SourceNode getSourceNode(EntityDefinition entityDefinition) {
@@ -40,12 +42,13 @@ public class SourceNodeFactory {
 			node = new SourceNodeImpl(entityDefinition, this);
 			nodes.put(entityDefinition, node);
 		}
-		
+
 		return node;
 	}
-	
+
 	/**
-	 * Get the existing source node associated to the given entity definition. 
+	 * Get the existing source node associated to the given entity definition.
+	 * 
 	 * @param entityDefinition the entity definition
 	 * @return the source node or <code>null</code>
 	 */
@@ -55,6 +58,7 @@ public class SourceNodeFactory {
 
 	/**
 	 * Get the existing source nodes.
+	 * 
 	 * @return the source nodes
 	 */
 	public Iterable<SourceNode> getNodes() {

@@ -16,33 +16,35 @@ import java.util.Set;
 import org.opengis.metadata.Identifier;
 
 /**
- * An AccessConstraint explains what access right a party has. A party in this 
+ * An AccessConstraint explains what access right a party has. A party in this
  * context can be either an individual or a organization or everybody.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface AccessConstraint {
-	
+
 	/**
 	 * @return the Identifier for the Party that has the AccessConstraint. If
-	 * this value is null, the {@link AccessConstraint} is valid globally.
+	 *         this value is null, the {@link AccessConstraint} is valid
+	 *         globally.
 	 */
 	public Identifier getPartyIdentifier();
-	
+
 	/**
-	 * @return a Set of AccessRightTypes that the party has to the object
-	 * to which this AccessConstraint is bound. 
+	 * @return a Set of AccessRightTypes that the party has to the object to
+	 *         which this AccessConstraint is bound.
 	 */
 	public Set<AccessRightType> getAccessRightTypes();
-	
+
 	/**
 	 * @return a String with information on the License or Limitations applying
-	 * to the usage of the object to which this AccessConstraint is bound.
+	 *         to the usage of the object to which this AccessConstraint is
+	 *         bound.
 	 */
 	public String getUsageInformation();
-	
+
 	/**
 	 * This enumeration describes the Access Right Types currently required.
 	 */
@@ -50,11 +52,11 @@ public interface AccessConstraint {
 		/** The Party is allowed to read the model. */
 		Read,
 		/** The Party is allowed to use the model. */
-		Use, 
+		Use,
 		/** The Party is allowed to write to the model. */
 		Write,
 		/** The Party is allowed to delete the model. */
 		Delete
 	}
-	
+
 }

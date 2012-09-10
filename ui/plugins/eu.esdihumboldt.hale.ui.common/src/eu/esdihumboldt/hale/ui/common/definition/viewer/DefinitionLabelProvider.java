@@ -26,43 +26,46 @@ import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 
 /**
  * Basic label provider for {@link Definition}s and {@link EntityDefinition}s
+ * 
  * @author Simon Templer
  */
 public class DefinitionLabelProvider extends LabelProvider {
-	
+
 	private final DefinitionImages images = new DefinitionImages();
-	
+
 	private final boolean longNames;
-	
+
 	/**
-	 * Create a label provider that will use short names for 
-	 * {@link EntityDefinition}s. 
+	 * Create a label provider that will use short names for
+	 * {@link EntityDefinition}s.
 	 */
 	public DefinitionLabelProvider() {
 		this(false);
 	}
-	
+
 	/**
-	 * Create a label provider for {@link Definition}s and 
+	 * Create a label provider for {@link Definition}s and
 	 * {@link EntityDefinition}.
-	 * @param longNames if for {@link EntityDefinition}s long names shall
-	 *   be used
+	 * 
+	 * @param longNames if for {@link EntityDefinition}s long names shall be
+	 *            used
 	 */
 	public DefinitionLabelProvider(boolean longNames) {
 		this(longNames, false);
 	}
 
 	/**
-	 * Create a label provider for {@link Definition}s and 
+	 * Create a label provider for {@link Definition}s and
 	 * {@link EntityDefinition}.
-	 * @param longNames if for {@link EntityDefinition}s long names shall
-	 *   be used
-	 * @param suppressMandatory if the mandatory overlay for properties shall
-	 *   be suppressed (defaults to <code>false</code>)
+	 * 
+	 * @param longNames if for {@link EntityDefinition}s long names shall be
+	 *            used
+	 * @param suppressMandatory if the mandatory overlay for properties shall be
+	 *            suppressed (defaults to <code>false</code>)
 	 */
 	public DefinitionLabelProvider(boolean longNames, boolean suppressMandatory) {
 		super();
-		
+
 		this.longNames = longNames;
 		images.setSuppressMandatory(suppressMandatory);
 	}
@@ -75,13 +78,13 @@ public class DefinitionLabelProvider extends LabelProvider {
 		if (element instanceof EntityDefinition) {
 			EntityDefinition entityDef = (EntityDefinition) element;
 			element = entityDef.getDefinition();
-			
+
 			List<ChildContext> path = entityDef.getPropertyPath();
 			if (path != null && !path.isEmpty()) {
 				if (!longNames) {
 					path = Collections.singletonList(path.get(path.size() - 1));
 				}
-				
+
 				StringBuffer name = new StringBuffer();
 				boolean first = true;
 				for (ChildContext context : path) {
@@ -92,8 +95,7 @@ public class DefinitionLabelProvider extends LabelProvider {
 						name.append('.');
 					}
 					boolean defContext = context.getContextName() == null
-							&& context.getIndex() == null
-							&& context.getCondition() == null;
+							&& context.getIndex() == null && context.getCondition() == null;
 					if (!defContext) {
 						name.append('(');
 					}
@@ -110,16 +112,17 @@ public class DefinitionLabelProvider extends LabelProvider {
 				}
 			}
 		}
-		
+
 		if (element instanceof Definition<?>) {
 			return ((Definition<?>) element).getDisplayName();
 		}
-		
+
 		return super.getText(element);
 	}
-	
+
 	/**
 	 * Returns an adjusted image depending on the type of the object passed in.
+	 * 
 	 * @return an Image
 	 */
 	@Override
@@ -127,11 +130,11 @@ public class DefinitionLabelProvider extends LabelProvider {
 		if (element instanceof EntityDefinition) {
 			return images.getImage((EntityDefinition) element);
 		}
-		
+
 		if (element instanceof Definition<?>) {
 			return images.getImage((Definition<?>) element);
 		}
-		
+
 		return super.getImage(element);
 	}
 
@@ -141,7 +144,7 @@ public class DefinitionLabelProvider extends LabelProvider {
 	@Override
 	public void dispose() {
 		images.dispose();
-		
+
 		super.dispose();
 	}
 

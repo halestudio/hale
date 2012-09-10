@@ -26,8 +26,7 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class CalculateLengthTranslator implements FunctionTranslator,
-		CalculateLengthFunction {
+public class CalculateLengthTranslator implements FunctionTranslator, CalculateLengthFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -38,11 +37,14 @@ public class CalculateLengthTranslator implements FunctionTranslator,
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List, eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean, eu.esdihumboldt.hale.common.core.io.report.IOReporter, eu.esdihumboldt.specification.cst.align.ICell)
+	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
+	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
+	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 		return params;
 	}
 

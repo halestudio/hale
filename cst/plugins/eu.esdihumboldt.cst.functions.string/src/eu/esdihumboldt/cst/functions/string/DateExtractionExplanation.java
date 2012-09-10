@@ -25,21 +25,24 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * @author Kai Schwierczek
  */
 public class DateExtractionExplanation extends AbstractCellExplanation {
+
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String format = CellUtil.getFirstParameter(cell, DateExtraction.PARAMETER_DATE_FORMAT);
-		
+
 		if (target != null && format != null) {
-			return MessageFormat.format("Populates the {1} property with a date created by parsing the {0} property using the format {2}.", 
-					formatEntity(source, html, true), 
-					formatEntity(target, html, true), quoteText(format, html));
+			return MessageFormat
+					.format("Populates the {1} property with a date created by parsing the {0} property using the format {2}.",
+							formatEntity(source, html, true), formatEntity(target, html, true),
+							quoteText(format, html));
 		}
-		
+
 		return null;
 	}
 }

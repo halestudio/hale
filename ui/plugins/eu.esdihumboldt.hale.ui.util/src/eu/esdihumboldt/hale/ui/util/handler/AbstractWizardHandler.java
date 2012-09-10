@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Shows a wizard
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractWizardHandler extends AbstractHandler {
@@ -36,12 +37,13 @@ public abstract class AbstractWizardHandler extends AbstractHandler {
 		Shell shell = Display.getCurrent().getActiveShell();
 		WizardDialog dialog = new WizardDialog(shell, wizard);
 		dialog.open();
-		
+
 		return null;
 	}
 
 	/**
 	 * Create the wizard
+	 * 
 	 * @return the wizard instance
 	 */
 	protected abstract IWizard createWizard();

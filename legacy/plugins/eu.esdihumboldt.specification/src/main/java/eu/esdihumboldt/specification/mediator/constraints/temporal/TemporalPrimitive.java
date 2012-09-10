@@ -12,68 +12,81 @@
 package eu.esdihumboldt.specification.mediator.constraints.temporal;
 
 /**
- * A TemporalPrimitive describes a single time value. It may
- * consist of a TimeStamp or TimeSpan.
+ * A TemporalPrimitive describes a single time value. It may consist of a
+ * TimeStamp or TimeSpan.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface TemporalPrimitive {
 
 	/**
-     * This method returns the TemporalGranularity of the complex value.
-     * @return the TemporalGranularity of the contained TimePoint or TimeSpan.
-     */
-    public TimePoint.TemporalGranularity getGranularity();
+	 * This method returns the TemporalGranularity of the complex value.
+	 * 
+	 * @return the TemporalGranularity of the contained TimePoint or TimeSpan.
+	 */
+	public TimePoint.TemporalGranularity getGranularity();
 
-    /**
-     * This method compares the given TemporalPrimitive with this instance to 
-     * find out which one is older.
-     * @param tp the value to compare.
-     * @return true if this instance is older, otherwise false.
-     */
-    public boolean before(TemporalPrimitive tp);
+	/**
+	 * This method compares the given TemporalPrimitive with this instance to
+	 * find out which one is older.
+	 * 
+	 * @param tp
+	 *            the value to compare.
+	 * @return true if this instance is older, otherwise false.
+	 */
+	public boolean before(TemporalPrimitive tp);
 
-    /**
-     * This method compares the given TemporalPrimitive with this instance to 
-     * find out whether they touch each other.
-     * @param tp the value to compare.
-     * @return true if the values touch each other, otherwise false.
-     */
-    public boolean touch(TemporalPrimitive tp);
+	/**
+	 * This method compares the given TemporalPrimitive with this instance to
+	 * find out whether they touch each other.
+	 * 
+	 * @param tp
+	 *            the value to compare.
+	 * @return true if the values touch each other, otherwise false.
+	 */
+	public boolean touch(TemporalPrimitive tp);
 
-    /**
-     * This method compares the given TemporalPrimitive with this instance to find out
-     * whether they intersect each other
-     * @param tp the value to compare.
-     * @return true if the values intersect, otherwise false.
-     */
-    public boolean intersects(TemporalPrimitive tp);
+	/**
+	 * This method compares the given TemporalPrimitive with this instance to
+	 * find out whether they intersect each other
+	 * 
+	 * @param tp
+	 *            the value to compare.
+	 * @return true if the values intersect, otherwise false.
+	 */
+	public boolean intersects(TemporalPrimitive tp);
 
-    /**
-     * This method compares the given TemporalPrimitive with this instance to find out
-     * whether they have the same start value.
-     * @param tp the value to compare.
-     * @return true if they have the same start value, otherwise false.
-     */
-    public boolean startsWith(TemporalPrimitive tp);
+	/**
+	 * This method compares the given TemporalPrimitive with this instance to
+	 * find out whether they have the same start value.
+	 * 
+	 * @param tp
+	 *            the value to compare.
+	 * @return true if they have the same start value, otherwise false.
+	 */
+	public boolean startsWith(TemporalPrimitive tp);
 
-    /**
-     * This method compares the given TemporalPrimitive with this instance to find out
-     * whether they have the same end value
-     * @param tp the value to compare.
-     * @return true if they have the same end value, otherwise false.
-     */
-    public boolean endsWith(TemporalPrimitive tp);
+	/**
+	 * This method compares the given TemporalPrimitive with this instance to
+	 * find out whether they have the same end value
+	 * 
+	 * @param tp
+	 *            the value to compare.
+	 * @return true if they have the same end value, otherwise false.
+	 */
+	public boolean endsWith(TemporalPrimitive tp);
 
-    /**
-     * This method compares the given TemporalPrimitive with this instance to find out
-     * whether this instance is enclosed by the given value
-     * @param tp the value to compare.
-     * @return true if this instance is enclosed by the given value,
-     * otherwise false.
-     */
-    public boolean enclosedBy(TemporalPrimitive tp);
-	
+	/**
+	 * This method compares the given TemporalPrimitive with this instance to
+	 * find out whether this instance is enclosed by the given value
+	 * 
+	 * @param tp
+	 *            the value to compare.
+	 * @return true if this instance is enclosed by the given value, otherwise
+	 *         false.
+	 */
+	public boolean enclosedBy(TemporalPrimitive tp);
+
 }

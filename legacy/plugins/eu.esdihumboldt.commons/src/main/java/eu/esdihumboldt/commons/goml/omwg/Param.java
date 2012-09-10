@@ -15,26 +15,25 @@ package eu.esdihumboldt.commons.goml.omwg;
 /**
  * This class represents <xs:complexType name="ParamType" >.
  * 
- * @author Marian de Vries 
+ * @author Marian de Vries
  * @partner 08 / Delft Universtiy of Technology
- * @version $Id$ 
+ * @version $Id$
  */
 public class Param {
 
 	/**
 	 * the name of this {@link Param}.
 	 */
-    private String name;
+	private String name;
 
-    /**
-     * TODO: Check whether {@link Param} value should be typed stronger.
-     */
-    private String value;
+	/**
+	 * TODO: Check whether {@link Param} value should be typed stronger.
+	 */
+	private String value;
 
-    
-    // constuctors .............................................................
-    
-    /**
+	// constuctors .............................................................
+
+	/**
 	 * @param name
 	 * @param value
 	 */
@@ -45,7 +44,7 @@ public class Param {
 	}
 
 	// getters / setters .......................................................
-    
+
 	/**
 	 * @return the name
 	 */
@@ -54,7 +53,8 @@ public class Param {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -68,12 +68,11 @@ public class Param {
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param value
+	 *            the value to set
 	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
-    
-    
 }

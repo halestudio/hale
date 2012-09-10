@@ -39,7 +39,9 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * 
  * @author Kai Schwierczek
  */
-public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
+public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
+		implements ParameterPage {
+
 	private HashMap<FunctionParameter, Boolean> selected;
 
 	/**
@@ -64,7 +66,8 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params, ListMultimap<String, String> initialValues) {
+	public void setParameter(Set<FunctionParameter> params,
+			ListMultimap<String, String> initialValues) {
 		selected = new HashMap<FunctionParameter, Boolean>((int) (params.size() * 1.4));
 		for (FunctionParameter param : params) {
 			if (initialValues != null && !initialValues.get(param.getName()).isEmpty())
@@ -106,6 +109,7 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 			Button checkbox = new Button(group, SWT.CHECK);
 			checkbox.setSelection(selected.get(fp));
 			checkbox.addSelectionListener(new SelectionAdapter() {
+
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					selected.put(fp, !((Boolean) selected.get(fp)));

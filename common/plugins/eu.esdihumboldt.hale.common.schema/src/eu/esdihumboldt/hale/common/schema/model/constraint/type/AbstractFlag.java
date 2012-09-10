@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
 
 /**
  * Flags if a type is abstract, disabled by default
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -29,12 +30,12 @@ public class AbstractFlag extends AbstractFlagConstraint implements TypeConstrai
 	 * Enabled abstract flag
 	 */
 	public static final AbstractFlag ENABLED = new AbstractFlag(true);
-	
+
 	/**
 	 * Disabled abstract flag
 	 */
 	public static final AbstractFlag DISABLED = new AbstractFlag(false);
-	
+
 	/**
 	 * Get the abstract flag
 	 * 
@@ -42,12 +43,12 @@ public class AbstractFlag extends AbstractFlagConstraint implements TypeConstrai
 	 * @return the flag
 	 */
 	public static AbstractFlag get(boolean isAbstract) {
-		return (isAbstract)?(ENABLED):(DISABLED);
+		return (isAbstract) ? (ENABLED) : (DISABLED);
 	}
-	
+
 	/**
 	 * Creates a default abstract flag, which is disabled. If possible, instead
-	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
+	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or
 	 * {@link #DISABLED}.
 	 * 
 	 * @see Constraint
@@ -55,14 +56,14 @@ public class AbstractFlag extends AbstractFlagConstraint implements TypeConstrai
 	public AbstractFlag() {
 		this(false);
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */
 	private AbstractFlag(boolean enabled) {
 		super(enabled);
 	}
-	
+
 	/**
 	 * @see TypeConstraint#isInheritable()
 	 */

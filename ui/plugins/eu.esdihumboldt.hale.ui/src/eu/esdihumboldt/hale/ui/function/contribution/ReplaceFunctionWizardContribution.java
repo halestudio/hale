@@ -29,39 +29,41 @@ import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
 /**
  * Contribution item offering possibilities to replace an existing cell with
  * another function.
+ * 
  * @author Simon Templer
  */
-public class ReplaceFunctionWizardContribution extends
-		SchemaSelectionFunctionContribution {
-	
+public class ReplaceFunctionWizardContribution extends SchemaSelectionFunctionContribution {
+
 	private final Cell originalCell;
 
 	/**
 	 * Constructor
-	 * @param originalCell the original cell 
+	 * 
+	 * @param originalCell the original cell
 	 */
 	public ReplaceFunctionWizardContribution(Cell originalCell) {
 		super();
-		
+
 		this.originalCell = originalCell;
 	}
-	
+
 	/**
 	 * Default constructor. Uses the first cell in the current
 	 * {@link IStructuredSelection}.
 	 */
 	public ReplaceFunctionWizardContribution() {
-		this(null); 
+		this(null);
 	}
-	
+
 	/**
-	 * @see SchemaSelectionFunctionContribution#createWizardAction(FunctionWizardDescriptor, AlignmentService)
+	 * @see SchemaSelectionFunctionContribution#createWizardAction(FunctionWizardDescriptor,
+	 *      AlignmentService)
 	 */
 	@Override
-	protected AbstractWizardAction<?> createWizardAction(
-			FunctionWizardDescriptor<?> descriptor,
+	protected AbstractWizardAction<?> createWizardAction(FunctionWizardDescriptor<?> descriptor,
 			AlignmentService alignmentService) {
-		return new ReplaceFunctionWizardAction(this, getOriginalCell(), descriptor, alignmentService);
+		return new ReplaceFunctionWizardAction(this, getOriginalCell(), descriptor,
+				alignmentService);
 	}
 
 	/**
@@ -70,24 +72,24 @@ public class ReplaceFunctionWizardContribution extends
 	@Override
 	public SchemaSelection getSelection() {
 		// derive a schema selection from the cell
-		
+
 		DefaultSchemaSelection sel = new DefaultSchemaSelection();
 		Cell orgCell = getOriginalCell();
-		
+
 		if (orgCell != null) {
 			if (orgCell.getSource() != null) {
 				for (Entity source : getOriginalCell().getSource().values()) {
 					sel.addSourceItem(source.getDefinition());
 				}
 			}
-			
+
 			if (orgCell.getTarget() != null) {
 				for (Entity target : getOriginalCell().getTarget().values()) {
 					sel.addTargetItem(target.getDefinition());
 				}
 			}
 		}
-		
+
 		return sel;
 	}
 
@@ -109,7 +111,8 @@ public class ReplaceFunctionWizardContribution extends
 	 */
 	@Override
 	public void fill(ToolBar parent, int index) {
-		if (getOriginalCell() == null) return;
+		if (getOriginalCell() == null)
+			return;
 		super.fill(parent, index);
 	}
 
@@ -118,21 +121,24 @@ public class ReplaceFunctionWizardContribution extends
 	 */
 	@Override
 	public void fill(Menu menu, int index) {
-		if (getOriginalCell() == null) return;
+		if (getOriginalCell() == null)
+			return;
 		super.fill(menu, index);
 	}
 
 	/**
 	 * Get the cell
+	 * 
 	 * @return the cell
 	 */
 	public Cell getOriginalCell() {
 		if (this.originalCell != null) {
 			return originalCell;
 		}
-		
+
 		// retrieve first selected cell
-		IStructuredSelection sel = SelectionTrackerUtil.getTracker().getSelection(IStructuredSelection.class);
+		IStructuredSelection sel = SelectionTrackerUtil.getTracker().getSelection(
+				IStructuredSelection.class);
 		for (Object object : sel.toList()) {
 			if (object instanceof Cell) {
 				return (Cell) object;

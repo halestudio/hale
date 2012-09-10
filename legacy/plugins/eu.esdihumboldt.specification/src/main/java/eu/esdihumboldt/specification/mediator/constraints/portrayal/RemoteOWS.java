@@ -24,32 +24,31 @@ public interface RemoteOWS {
 
 	/**
 	 * 
-	 * @return a Service Component of RemoteOWS. 
+	 * @return a Service Component of RemoteOWS.
 	 */
 	public Service getService();
-	
+
 	/**
 	 * 
 	 * @return an OnlineResource of RemoteOWS.
 	 */
 	public OnlineResource getOnlineResource();
-	
+
 	/**
 	 * 
-	 * A Service refers to the type of a remote OWS server. 
+	 * A Service refers to the type of a remote OWS server.
 	 */
-	public enum Service{
-		WFS,
-		WCS
+	public enum Service {
+		WFS, WCS
 	}
-	
+
 	/**
 	 * 
 	 * An OnlineResource is typically used to refer to an HTTP URL.
-	 *
+	 * 
 	 */
-	public enum OnlineResource{
+	public enum OnlineResource {
 		URL
 	}
-	
+
 }

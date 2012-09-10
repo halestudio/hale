@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 
 /**
  * Base implementation for {@link PopulationService}s.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractPopulationService implements PopulationService {
@@ -40,9 +41,10 @@ public abstract class AbstractPopulationService implements PopulationService {
 	public void removeListener(PopulationListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	/**
 	 * Called when the population for a schema space has changed.
+	 * 
 	 * @param ssid the schema space
 	 */
 	protected void firePopulationChanged(SchemaSpaceID ssid) {
@@ -50,5 +52,5 @@ public abstract class AbstractPopulationService implements PopulationService {
 			listener.populationChanged(ssid);
 		}
 	}
-	
+
 }

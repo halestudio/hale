@@ -24,32 +24,32 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
  * @partner 08 / Delft University of Technology
  * @version $Id$
  */
-public class ComposedFeatureClass 
-	extends FeatureClass {
+public class ComposedFeatureClass extends FeatureClass {
 
 	/**
-	 * Indicates the (first) operator/predicate for this {@link ComposedFeatureClass}.
+	 * Indicates the (first) operator/predicate for this
+	 * {@link ComposedFeatureClass}.
 	 */
 	private ClassOperatorType operator;
 
 	/**
-	 * In case of AND and OR the operand is a collection of two or more (Composed)FeatureClasses.
-       * In case of a unary operator the collection consists of just one (Composed)FeatureClass.
-       * Not strong-typed, this constraint must be dealt with by application code.
+	 * In case of AND and OR the operand is a collection of two or more
+	 * (Composed)FeatureClasses. In case of a unary operator the collection
+	 * consists of just one (Composed)FeatureClass. Not strong-typed, this
+	 * constraint must be dealt with by application code.
 	 * 
 	 */
 	private List<FeatureClass> collection;
-	
-	
+
 	// constructors ............................................................
-	
+
 	public ComposedFeatureClass(IAbout about) {
 		super(about);
 		// TODO Auto-generated constructor stub
 	}
 
 	// getters / setters .......................................................
-	
+
 	/**
 	 * @return the collection
 	 */
@@ -58,7 +58,8 @@ public class ComposedFeatureClass
 	}
 
 	/**
-	 * @param collection the collection to set
+	 * @param collection
+	 *            the collection to set
 	 */
 	public void setCollection(List<FeatureClass> collection) {
 		this.collection = collection;
@@ -72,7 +73,8 @@ public class ComposedFeatureClass
 	}
 
 	/**
-	 * @param operator the operator to set
+	 * @param operator
+	 *            the operator to set
 	 */
 	public void setClassOperatorType(ClassOperatorType operator) {
 		this.operator = operator;
@@ -80,7 +82,7 @@ public class ComposedFeatureClass
 
 	public enum ClassOperatorType {
 		AND, // intersection
-		OR,  // union
+		OR, // union
 		NOT
 	}
 

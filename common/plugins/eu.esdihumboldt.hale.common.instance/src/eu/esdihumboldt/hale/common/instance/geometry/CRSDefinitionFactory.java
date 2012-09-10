@@ -15,13 +15,13 @@ import eu.esdihumboldt.util.definition.ObjectDefinition;
 /**
  * Provides support for creating a {@link CRSDefinition} from a definition
  * string and vice versa.
+ * 
  * @param <T> the CRS definition type
  * 
  * @author Simon Templer
  */
-public interface CRSDefinitionFactory<T extends CRSDefinition> extends 
-		ObjectDefinition<T> {
-	
+public interface CRSDefinitionFactory<T extends CRSDefinition> extends ObjectDefinition<T> {
+
 	// concrete typed interface
 
 }

@@ -16,11 +16,11 @@ import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 
 /**
  * Factory interface for {@link FilterDefinition}s.
+ * 
  * @author Simon Templer
  */
-public interface FilterDefinitionFactory extends
-		ExtensionObjectFactory<FilterDefinition<?>> {
+public interface FilterDefinitionFactory extends ExtensionObjectFactory<FilterDefinition<?>> {
 
 	// concrete typed interface
-	
+
 }

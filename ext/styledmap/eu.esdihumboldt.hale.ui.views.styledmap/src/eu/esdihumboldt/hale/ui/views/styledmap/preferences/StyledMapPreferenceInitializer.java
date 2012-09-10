@@ -19,10 +19,12 @@ import eu.esdihumboldt.hale.ui.views.styledmap.internal.StyledMapBundle;
 
 /**
  * Preference initializer for the styled map view.
+ * 
  * @author Simon Templer
  */
-public class StyledMapPreferenceInitializer extends AbstractPreferenceInitializer implements StyledMapPreferenceConstants {
-	
+public class StyledMapPreferenceInitializer extends AbstractPreferenceInitializer implements
+		StyledMapPreferenceConstants {
+
 	private static final String DEFAULT_MAP_LAYOUT = "eu.esdihumboldt.hale.ui.views.styledmap.default";
 
 	/**
@@ -31,7 +33,7 @@ public class StyledMapPreferenceInitializer extends AbstractPreferenceInitialize
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = StyledMapBundle.getDefault().getPreferenceStore();
-		
+
 		store.setDefault(CURRENT_MAP_LAYOUT, DEFAULT_MAP_LAYOUT);
 	}
 

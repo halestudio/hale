@@ -20,26 +20,25 @@ import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 
 /**
- * Specifies a Java binding for a type value, default binding is 
- * {@link Object}.<br>
+ * Specifies a Java binding for a type value, default binding is {@link Object}.<br>
  * <br>
- * The binding is usually only relevant when the {@link HasValueFlag} is enabled 
+ * The binding is usually only relevant when the {@link HasValueFlag} is enabled
  * for a type.
  * 
  * @see HasValueFlag
- *  
+ * 
  * @author Simon Templer
  */
 @Immutable
 @Constraint(mutable = false)
 public class Binding implements TypeConstraint {
-	
+
 	/**
 	 * Binding singletons, binding class mapped to the corresponding binding
 	 * constraint.
 	 */
 	private static final Map<Class<?>, Binding> singletons = new HashMap<Class<?>, Binding>();
-	
+
 	/**
 	 * Get the binding constraint with the given Java binding
 	 * 
@@ -63,7 +62,7 @@ public class Binding implements TypeConstraint {
 	/**
 	 * Creates a default binding constraint with {@link Object} binding.
 	 * 
-	 * @see Constraint 
+	 * @see Constraint
 	 */
 	public Binding() {
 		this(Object.class);
@@ -71,14 +70,15 @@ public class Binding implements TypeConstraint {
 
 	/**
 	 * Creates a constraint with the given binding
+	 * 
 	 * @param binding the Java binding
 	 */
 	private Binding(Class<?> binding) {
 		super();
-		
+
 		this.binding = binding;
 	}
-	
+
 	/**
 	 * Get the Java binding of the type
 	 * 
@@ -87,7 +87,7 @@ public class Binding implements TypeConstraint {
 	public Class<?> getBinding() {
 		return binding;
 	}
-	
+
 	/**
 	 * @see TypeConstraint#isInheritable()
 	 */
@@ -96,5 +96,5 @@ public class Binding implements TypeConstraint {
 		// inherit unless overridden
 		return true;
 	}
-	
+
 }

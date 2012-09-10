@@ -18,14 +18,16 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
 /**
  * {@link ResourceIterator} adapter for a normal iterator
+ * 
  * @param <T> the object type
  * @author Simon Templer
  */
 public class ResourceIteratorAdapter<T> extends GenericResourceIteratorAdapter<T, T> {
-	
+
 	/**
 	 * Create a {@link ResourceIterator} adapter for the given iterator.
-	 * @param iterator the iterator to adapt 
+	 * 
+	 * @param iterator the iterator to adapt
 	 */
 	public ResourceIteratorAdapter(Iterator<T> iterator) {
 		super(iterator);

@@ -45,9 +45,8 @@ import eu.esdihumboldt.hale.ui.functions.inspire.internal.Messages;
  * 
  * @author Kevin Mais
  */
-public class IdentifierParameterPage extends
-		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
-		ParameterPage, IdentifierFunction {
+public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
+		implements ParameterPage, IdentifierFunction {
 
 	Text countryCode = null;
 
@@ -79,34 +78,32 @@ public class IdentifierParameterPage extends
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, String> initialValues) {
 
-			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0);
-			initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME)
-					.get(0);
-			initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0);
-			initialVersion = initialValues.get(VERSION).get(0);
-			initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0);
+		initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0);
+		initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME).get(0);
+		initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0);
+		initialVersion = initialValues.get(VERSION).get(0);
+		initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0);
 
-		}
-
+	}
 
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
-		
+
 		configuration.put(COUNTRY_PARAMETER_NAME, countryCode.getText());
 		configuration.put(DATA_PROVIDER_PARAMETER_NAME, providerName.getText());
 		configuration.put(PRODUCT_PARAMETER_NAME, productName.getText());
 		configuration.put(VERSION, version.getText());
 		configuration.put(VERSION_NIL_REASON, nilEditor.getAsText());
-		
+
 		return configuration;
 	}
 
 	@Override
 	protected void createContent(Composite parent) {
-		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI
-				.getWorkbench().getService(AttributeEditorFactory.class);
-		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI
-				.getWorkbench().getService(DefinitionLabelFactory.class);
+		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
+				AttributeEditorFactory.class);
+		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(
+				DefinitionLabelFactory.class);
 
 		// create a composite to hold the widgets
 		Composite page = new Composite(parent, SWT.NULL);
@@ -121,16 +118,15 @@ public class IdentifierParameterPage extends
 
 		// identifier type
 		TypeDefinition identifierType = null;
-		Definition<?> def = getWizard().getUnfinishedCell().getTarget()
-				.get(null).get(0).getDefinition().getDefinition();
+		Definition<?> def = getWizard().getUnfinishedCell().getTarget().get(null).get(0)
+				.getDefinition().getDefinition();
 
 		if (def instanceof PropertyDefinition) {
-			TypeDefinition typeDef = ((PropertyDefinition) def)
-					.getPropertyType();
+			TypeDefinition typeDef = ((PropertyDefinition) def).getPropertyType();
 			for (ChildDefinition<?> child : typeDef.getChildren()) {
 				if (child.asProperty() != null
-						&& child.asProperty().getPropertyType().getName()
-								.getLocalPart().equals("IdentifierType")) {
+						&& child.asProperty().getPropertyType().getName().getLocalPart()
+								.equals("IdentifierType")) {
 					identifierType = child.asProperty().getPropertyType();
 				}
 			}
@@ -155,8 +151,7 @@ public class IdentifierParameterPage extends
 			}
 			if (propDef != null) {
 				Control nsLabel = dlf.createLabel(nsGroup, propDef, false);
-				nsLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
-						false));
+				nsLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
 				Label nsDesc = new Label(nsGroup, SWT.NONE);
 				nsDesc.setText(Messages.IdentifierFunctionWizardPage_4);
@@ -171,32 +166,27 @@ public class IdentifierParameterPage extends
 		this.countryCode = new Text(nsGroup, SWT.BORDER);
 		this.countryCode.setText(initialCountry); //$NON-NLS-1$
 		this.countryCode.setEnabled(true);
-		this.countryCode.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false));
+		this.countryCode.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// Provider name
 		Label providerLabel = new Label(nsGroup, SWT.NONE);
-		providerLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
-				false));
+		providerLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		providerLabel.setText(Messages.IdentifierFunctionWizardPage_7);
 
 		this.providerName = new Text(nsGroup, SWT.BORDER);
 		this.providerName.setText(initialProvider); //$NON-NLS-1$
 		this.providerName.setEnabled(true);
-		this.providerName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-				true, false));
+		this.providerName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// Product name
 		Label productLabel = new Label(nsGroup, SWT.NONE);
-		productLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
-				false));
+		productLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		productLabel.setText(Messages.IdentifierFunctionWizardPage_9);
 
 		this.productName = new Text(nsGroup, SWT.BORDER);
 		this.productName.setText(initialProduct); //$NON-NLS-1$
 		this.productName.setEnabled(true);
-		this.productName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false));
+		this.productName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// Local ID group
 		Group idGroup = new Group(page, SWT.NONE);
@@ -225,9 +215,9 @@ public class IdentifierParameterPage extends
 			((Label) idLabel).setText("localId"); //$NON-NLS-1$
 		}
 		idLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		Control localId = dlf.createLabel(idGroup, getWizard()
-				.getUnfinishedCell().getSource().get(null).get(0)
-				.getDefinition().getDefinition(), true);
+		Control localId = dlf.createLabel(idGroup,
+				getWizard().getUnfinishedCell().getSource().get(null).get(0).getDefinition()
+						.getDefinition(), true);
 		localId.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// Version group
@@ -254,17 +244,14 @@ public class IdentifierParameterPage extends
 		}
 		if (versionLabel == null) {
 			versionLabel = new Label(versGroup, SWT.NONE);
-			((Label) versionLabel)
-					.setText(Messages.IdentifierFunctionWizardPage_16);
+			((Label) versionLabel).setText(Messages.IdentifierFunctionWizardPage_16);
 		}
-		versionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
-				false));
+		versionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
 		this.version = new Text(versGroup, SWT.BORDER);
 		this.version.setText(initialVersion); //$NON-NLS-1$
 		this.version.setEnabled(true);
-		this.version.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false));
+		this.version.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// version nil reason
 		if (identifierType != null) {
@@ -278,10 +265,8 @@ public class IdentifierParameterPage extends
 				}
 			}
 			if (propDef != null) {
-				for (ChildDefinition<?> child : propDef.getPropertyType()
-						.getChildren()) {
-					String namespace = child.getName().getNamespaceURI()
-							.toString();
+				for (ChildDefinition<?> child : propDef.getPropertyType().getChildren()) {
+					String namespace = child.getName().getNamespaceURI().toString();
 					if (namespace.equals("nilReason")) {
 						if (child.asProperty() != null) {
 							propDef = child.asProperty();
@@ -293,8 +278,7 @@ public class IdentifierParameterPage extends
 			if (propDef != null) {
 				// label
 				Control nilLabel = dlf.createLabel(versGroup, def, false);
-				nilLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
-						false));
+				nilLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
 				// editor
 				nilEditor = aef.createEditor(versGroup, propDef);
@@ -304,7 +288,7 @@ public class IdentifierParameterPage extends
 			}
 
 		}
-		
+
 		setPageComplete(true);
 
 	}

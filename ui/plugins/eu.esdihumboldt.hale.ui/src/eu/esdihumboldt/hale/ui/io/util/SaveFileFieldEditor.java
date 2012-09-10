@@ -21,24 +21,25 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * File field editor that opens a save instead of an open dialog
+ * 
  * @since 2.2
  */
 public class SaveFileFieldEditor extends ExtendedFileFieldEditor {
-	
+
 	private static final int SAVE_STYLE = SWT.SAVE | SWT.SHEET;
-	
+
 	/**
-     * Indicates whether the path must be absolute;
-     * <code>false</code> by default.
-     */
-    private boolean enforceAbsolute = false;
+	 * Indicates whether the path must be absolute; <code>false</code> by
+	 * default.
+	 */
+	private boolean enforceAbsolute = false;
 
 	/**
 	 * Default constructor
 	 */
 	protected SaveFileFieldEditor() {
 		super(SAVE_STYLE);
-		
+
 		init();
 	}
 
@@ -50,25 +51,25 @@ public class SaveFileFieldEditor extends ExtendedFileFieldEditor {
 	/**
 	 * @see FileFieldEditor#FileFieldEditor(String, String, boolean, Composite)
 	 */
-	public SaveFileFieldEditor(String name, String labelText,
-			boolean enforceAbsolute, Composite parent) {
+	public SaveFileFieldEditor(String name, String labelText, boolean enforceAbsolute,
+			Composite parent) {
 		super(name, labelText, enforceAbsolute, parent, SAVE_STYLE);
-		
+
 		this.enforceAbsolute = enforceAbsolute;
-		
+
 		init();
 	}
 
 	/**
-	 * @see FileFieldEditor#FileFieldEditor(String, String, boolean, int, Composite)
+	 * @see FileFieldEditor#FileFieldEditor(String, String, boolean, int,
+	 *      Composite)
 	 */
-	public SaveFileFieldEditor(String name, String labelText,
-			boolean enforceAbsolute, int validationStrategy, Composite parent) {
-		super(name, labelText, enforceAbsolute, validationStrategy, parent,
-				SAVE_STYLE);
-		
+	public SaveFileFieldEditor(String name, String labelText, boolean enforceAbsolute,
+			int validationStrategy, Composite parent) {
+		super(name, labelText, enforceAbsolute, validationStrategy, parent, SAVE_STYLE);
+
 		this.enforceAbsolute = enforceAbsolute;
-		
+
 		init();
 	}
 
@@ -77,7 +78,7 @@ public class SaveFileFieldEditor extends ExtendedFileFieldEditor {
 	 */
 	public SaveFileFieldEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, parent, SAVE_STYLE);
-		
+
 		init();
 	}
 
@@ -88,36 +89,38 @@ public class SaveFileFieldEditor extends ExtendedFileFieldEditor {
 	protected boolean checkState() {
 		String msg = null;
 
-        String path = getTextControl().getText();
-        if (path != null) {
+		String path = getTextControl().getText();
+		if (path != null) {
 			path = path.trim();
-		} else {
+		}
+		else {
 			path = "";//$NON-NLS-1$
 		}
-        if (path.length() == 0) {
-            if (!isEmptyStringAllowed()) {
+		if (path.length() == 0) {
+			if (!isEmptyStringAllowed()) {
 				msg = getErrorMessage();
 			}
-        } else {
-            File file = new File(path);
-            if (isValid(file)) {
-                if (enforceAbsolute && !file.isAbsolute()) {
-					msg = JFaceResources
-                            .getString("FileFieldEditor.errorMessage2");//$NON-NLS-1$
+		}
+		else {
+			File file = new File(path);
+			if (isValid(file)) {
+				if (enforceAbsolute && !file.isAbsolute()) {
+					msg = JFaceResources.getString("FileFieldEditor.errorMessage2");//$NON-NLS-1$
 				}
-            } else {
-                msg = getErrorMessage();
-            }
-        }
+			}
+			else {
+				msg = getErrorMessage();
+			}
+		}
 
-        if (msg != null) { // error
-            showErrorMessage(msg);
-            return false;
-        }
+		if (msg != null) { // error
+			showErrorMessage(msg);
+			return false;
+		}
 
-        // OK!
-        clearErrorMessage();
-        return true;
+		// OK!
+		clearErrorMessage();
+		return true;
 	}
 
 	/**
@@ -132,21 +135,21 @@ public class SaveFileFieldEditor extends ExtendedFileFieldEditor {
 				// file is a directory
 				return false;
 			}
-			
+
 			// some parent must be a directory
 			File parent = file.getParentFile();
 			while (parent != null) {
 				if (parent.isDirectory()) {
 					return true;
 				}
-				
+
 				parent = parent.getParentFile();
 			}
-			
+
 			return false;
 		}
 		else {
-			// no validation for files that are not absolute 
+			// no validation for files that are not absolute
 			return true;
 		}
 	}

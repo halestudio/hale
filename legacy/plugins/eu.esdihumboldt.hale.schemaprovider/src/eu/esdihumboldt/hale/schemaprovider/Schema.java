@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class Schema {
@@ -37,34 +37,34 @@ public class Schema {
 	/**
 	 * Empty schema instance
 	 */
-	public static final Schema EMPTY_SCHEMA =
-		new Schema(new HashMap<String, SchemaElement>(), "", null, null); //$NON-NLS-1$
-	
+	public static final Schema EMPTY_SCHEMA = new Schema(
+			new HashMap<String, SchemaElement>(), "", null, null); //$NON-NLS-1$
+
 	/**
 	 * The schema elements
 	 */
 	private final Map<String, SchemaElement> elements;
-	
+
 	/**
 	 * All schema elements (including imports etc.)
 	 */
 	private Map<Name, SchemaElement> allElements;
-	
+
 	/**
 	 * All type definitions (including imports etc.)
 	 */
 	private Map<Name, TypeDefinition> allTypes;
-	
+
 	/**
 	 * Maps namespaces to prefixes
 	 */
 	private final Map<String, String> prefixes;
-	
+
 	/**
 	 * The namespace
 	 */
 	private final String namespace;
-	
+
 	/**
 	 * The schema location
 	 */
@@ -73,10 +73,14 @@ public class Schema {
 	/**
 	 * Constructor
 	 * 
-	 * @param elements the type definitions
-	 * @param namespace the namespace
-	 * @param location the location
-	 * @param prefixes maps namespaces to prefixes, may be <code>null</code>
+	 * @param elements
+	 *            the type definitions
+	 * @param namespace
+	 *            the namespace
+	 * @param location
+	 *            the location
+	 * @param prefixes
+	 *            maps namespaces to prefixes, may be <code>null</code>
 	 */
 	public Schema(Map<String, SchemaElement> elements, String namespace,
 			URL location, Map<String, String> prefixes) {
@@ -93,10 +97,10 @@ public class Schema {
 	public Map<String, SchemaElement> getElements() {
 		return elements;
 	}
-	
+
 	/**
-	 * Return all types that might be used as mapping target or source. 
-	 * Definitions are mapped to feature types. Definitions can be 
+	 * Return all types that might be used as mapping target or source.
+	 * Definitions are mapped to feature types. Definitions can be
 	 * {@link SchemaElement}s or {@link TypeDefinition}s
 	 * 
 	 * @return all types that might be used as mapping target or source
@@ -108,24 +112,24 @@ public class Schema {
 			if (se.getFeatureType() != null) {
 				types.put(se, se.getFeatureType());
 			}
-			
+
 			// ...and all their subtypes without element declarations
 			Queue<TypeDefinition> test = new LinkedList<TypeDefinition>();
 			test.addAll(se.getType().getSubTypes());
 			while (!test.isEmpty()) {
 				TypeDefinition subtype = test.poll();
-				
+
 				if (subtype.getDeclaringElements().isEmpty()) {
 					FeatureType ft = subtype.getFeatureType();
 					if (ft != null) {
 						types.put(subtype, ft);
 					}
 				}
-				
+
 				test.addAll(subtype.getSubTypes());
 			}
 		}
-		
+
 		return types;
 	}
 
@@ -158,7 +162,8 @@ public class Schema {
 	}
 
 	/**
-	 * @param allElements the allElements to set
+	 * @param allElements
+	 *            the allElements to set
 	 */
 	public void setAllElements(Map<Name, SchemaElement> allElements) {
 		this.allElements = allElements;
@@ -172,7 +177,8 @@ public class Schema {
 	}
 
 	/**
-	 * @param allTypes the allTypes to set
+	 * @param allTypes
+	 *            the allTypes to set
 	 */
 	public void setAllTypes(Map<Name, TypeDefinition> allTypes) {
 		this.allTypes = allTypes;

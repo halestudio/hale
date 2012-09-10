@@ -20,10 +20,10 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 
 /**
  * TODO Type description
+ * 
  * @author Simon Templer
  */
-public abstract class AbstractTransformationNodeVisitor implements
-		TransformationNodeVisitor {
+public abstract class AbstractTransformationNodeVisitor implements TransformationNodeVisitor {
 
 	/**
 	 * @see TransformationNodeVisitor#visit(TransformationTree)

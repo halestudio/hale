@@ -36,11 +36,10 @@ import eu.esdihumboldt.hale.io.xml.validator.Validator;
  * @version $Id$
  */
 public class XercesValidator implements Validator {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(XercesValidator.class);
 
-	private static void setFeature(SAXParser parser, String feature,
-			boolean setting) {
+	private static void setFeature(SAXParser parser, String feature, boolean setting) {
 
 		try {
 			parser.setFeature(feature, setting);
@@ -64,21 +63,22 @@ public class XercesValidator implements Validator {
 
 		setFeature(parser, "http://xml.org/sax/features/validation", true); //$NON-NLS-1$
 		setFeature(parser, "http://apache.org/xml/features/validation/schema", true); //$NON-NLS-1$
-		
+
 		parser.setErrorHandler(new ReportErrorHandler(report) {
 
 			@Override
 			public void error(SAXParseException e) throws SAXException {
-				//XXX this error occurs even if the element is present
-				if (e.getMessage().equals("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.")){ //$NON-NLS-1$
+				// XXX this error occurs even if the element is present
+				if (e.getMessage()
+						.equals("cvc-elt.1: Cannot find the declaration of element 'gml:FeatureCollection'.")) { //$NON-NLS-1$
 					return;
 				}
-				
+
 				super.error(e);
 			}
-			
+
 		});
-		
+
 		ATransaction trans = log.begin("Validating XML file"); //$NON-NLS-1$
 		try {
 			parser.parse(new InputSource(xml));

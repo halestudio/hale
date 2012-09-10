@@ -14,78 +14,89 @@ package eu.esdihumboldt.commons.goml.oml.ext;
 
 import eu.esdihumboldt.specification.cst.align.ext.IValueExpression;
 
-
 /**
- * A {@link ValueExpression} is used to deal with literal values and ranges. It 
- * represents the goml:ValueExprType.
- * FIXME not clear yet how to deal with other kinds of 'value'
+ * A {@link ValueExpression} is used to deal with literal values and ranges. It
+ * represents the goml:ValueExprType. FIXME not clear yet how to deal with other
+ * kinds of 'value'
  * 
- * @author Marian de Vries 
+ * @author Marian de Vries
  * @partner 08 / Delft University of Technology
- * @version $Id$ 
+ * @version $Id$
  */
-public class ValueExpression implements IValueExpression{
+public class ValueExpression implements IValueExpression {
 
-    private String literal;
-    private String min;
-    private String max;
-    private Function apply;
-    
-    // constructors ............................................................
-    
-    /**
+	private String literal;
+	private String min;
+	private String max;
+	private Function apply;
+
+	// constructors ............................................................
+
+	/**
 	 * @param literal
 	 */
 	public ValueExpression(String literal) {
 		super();
 		this.literal = literal;
 	}
+
 	// getters / setters .......................................................
-    
+
 	/**
 	 * @return the literal value represented by this {@link ValueExpression}.
 	 */
 	public String getLiteral() {
 		return literal;
 	}
+
 	/**
-	 * @param literal the literal to set
+	 * @param literal
+	 *            the literal to set
 	 */
 	public void setLiteral(String literal) {
 		this.literal = literal;
 	}
+
 	/**
 	 * @return the min
 	 */
 	public String getMin() {
 		return min;
 	}
+
 	/**
-	 * @param min the min to set
+	 * @param min
+	 *            the min to set
 	 */
 	public void setMin(String min) {
 		this.min = min;
 	}
+
 	/**
 	 * @return the max
 	 */
 	public String getMax() {
 		return max;
 	}
+
 	/**
-	 * @param max the max to set
+	 * @param max
+	 *            the max to set
 	 */
 	public void setMax(String max) {
 		this.max = max;
 	}
+
 	/**
 	 * @return the apply
 	 */
 	public Function getApply() {
 		return apply;
 	}
+
 	/**
-	 * @param apply the apply to set
+	 * @param apply
+	 *            the apply to set
 	 */
 	public void setApply(Function apply) {
 		this.apply = apply;
@@ -93,8 +104,8 @@ public class ValueExpression implements IValueExpression{
 
 	@Override
 	public String toString() {
-		return "ValueExpression [apply=" + apply + ", literal=" + literal + ", max=" + max + ", min=" + min + "]";
+		return "ValueExpression [apply=" + apply + ", literal=" + literal
+				+ ", max=" + max + ", min=" + min + "]";
 	}
 
-	
 }

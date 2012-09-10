@@ -20,27 +20,27 @@ import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptProperty;
 /**
  * A standard implementation of the ConceptProperty, which is Serializable.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: PrototypeFeatureProperty.java,v 1.4 2007-12-06 13:20:25 pitaeva Exp $ 
+ * @version $Id: PrototypeFeatureProperty.java,v 1.4 2007-12-06 13:20:25 pitaeva
+ *          Exp $
  */
-public class PrototypeFeatureProperty 
-	implements ConceptProperty, Serializable {
-	
+public class PrototypeFeatureProperty implements ConceptProperty, Serializable {
+
 	// Fields ..................................................................
-	
-	private long id; 
-	
+
+	private long id;
+
 	private UUID uid;
-	
+
 	private Cardinality cardinality;
-	
+
 	private String definition;
-	
+
 	private String localName;
 
 	// Constructors ............................................................
-	
+
 	/**
 	 * Protected no-args Constructor for Hibernate etc.
 	 */
@@ -48,15 +48,17 @@ public class PrototypeFeatureProperty
 		super();
 		this.uid = UUID.randomUUID();
 	}
-	
+
 	/**
 	 * Default Constructor.
 	 * 
-	 * @param cardinality the {@link Cardinality} that this 
-	 * {@link ConceptProperty} has in relation to the {@link Concept} it is 
-	 * associated to.
-	 * @param definition {@link ConceptProperty#getDefinition()}
-	 * @param localName {@link ConceptProperty#getLocalName()}
+	 * @param cardinality
+	 *            the {@link Cardinality} that this {@link ConceptProperty} has
+	 *            in relation to the {@link Concept} it is associated to.
+	 * @param definition
+	 *            {@link ConceptProperty#getDefinition()}
+	 * @param localName
+	 *            {@link ConceptProperty#getLocalName()}
 	 */
 	protected PrototypeFeatureProperty(Cardinality cardinality,
 			String definition, String localName) {
@@ -68,7 +70,7 @@ public class PrototypeFeatureProperty
 	}
 
 	// ConceptProperty operations ..............................................
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptProperty#getCardinality()
 	 */
@@ -89,9 +91,9 @@ public class PrototypeFeatureProperty
 	public String getLocalName() {
 		return this.localName;
 	}
-	
+
 	// PrototypeFeatureProperty operations .....................................
-	
+
 	/**
 	 * @return the uid
 	 */
@@ -107,14 +109,16 @@ public class PrototypeFeatureProperty
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @param uid the uid to set
+	 * @param uid
+	 *            the uid to set
 	 */
 	@SuppressWarnings("unused")
 	private void setUid(UUID uid) {
@@ -122,24 +126,27 @@ public class PrototypeFeatureProperty
 	}
 
 	/**
-	 * @param cardinality the cardinality to set
+	 * @param cardinality
+	 *            the cardinality to set
 	 */
 	public void setCardinality(Cardinality cardinality) {
 		this.cardinality = cardinality;
 	}
 
 	/**
-	 * @param definition the definition to set
+	 * @param definition
+	 *            the definition to set
 	 */
 	public void setDefinition(String definition) {
 		this.definition = definition;
 	}
 
 	/**
-	 * @param localName the localName to set
+	 * @param localName
+	 *            the localName to set
 	 */
 	public void setLocalName(String localName) {
 		this.localName = localName;
 	}
-	
+
 }

@@ -40,25 +40,26 @@ import eu.esdihumboldt.hale.ui.util.wizard.ViewerWizardSelectionPage;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Wizard selection page based on {@link ActionUI}s 
+ * Wizard selection page based on {@link ActionUI}s
+ * 
  * @author Simon Templer
  */
 public class ActionUIWizardPage extends ViewerWizardSelectionPage {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ActionUIWizardPage.class);
 
 	private final FactoryFilter<IOWizard<?>, ActionUI> filter;
-	
+
 	/**
-	 * Create a page that allows selection of an {@link ActionUI} wizard 
+	 * Create a page that allows selection of an {@link ActionUI} wizard
+	 * 
 	 * @param filter the filter to apply to the action UI extension
 	 * @param title the page title
 	 */
-	public ActionUIWizardPage(FactoryFilter<IOWizard<?>, ActionUI> filter, 
-			String title) {
+	public ActionUIWizardPage(FactoryFilter<IOWizard<?>, ActionUI> filter, String title) {
 		super("actionSelect");
 		this.filter = filter;
-		
+
 		setTitle(title);
 	}
 
@@ -68,7 +69,7 @@ public class ActionUIWizardPage extends ViewerWizardSelectionPage {
 	@Override
 	protected Pair<StructuredViewer, Control> createViewer(Composite parent) {
 		ListViewer viewer = new ListViewer(parent);
-		
+
 		viewer.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -76,7 +77,7 @@ public class ActionUIWizardPage extends ViewerWizardSelectionPage {
 				if (element instanceof ActionUIWizardNode) {
 					return ((ActionUIWizardNode) element).getImage();
 				}
-				
+
 				return super.getImage(element);
 			}
 
@@ -85,21 +86,21 @@ public class ActionUIWizardPage extends ViewerWizardSelectionPage {
 				if (element instanceof ActionUIWizardNode) {
 					return ((ActionUIWizardNode) element).getActionUI().getDisplayName();
 				}
-				
+
 				return super.getText(element);
 			}
-			
+
 		});
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
-		
+
 		List<ActionUI> list = ActionUIExtension.getInstance().getFactories(filter);
-		
+
 		List<ActionUIWizardNode> nodes = new ArrayList<ActionUIWizardNode>();
 		for (ActionUI action : list) {
 			nodes.add(new ActionUIWizardNode(action, getContainer()));
 		}
 		viewer.setInput(nodes);
-		
+
 		return new Pair<StructuredViewer, Control>(viewer, viewer.getControl());
 	}
 
@@ -114,8 +115,9 @@ public class ActionUIWizardPage extends ViewerWizardSelectionPage {
 			if (enabledWhen == null) {
 				return null;
 			}
-			
-			IEvaluationService ies = (IEvaluationService) PlatformUI.getWorkbench().getService(IEvaluationService.class);
+
+			IEvaluationService ies = (IEvaluationService) PlatformUI.getWorkbench().getService(
+					IEvaluationService.class);
 			try {
 				EvaluationResult evalResult = enabledWhen.evaluate(ies.getCurrentState());
 				if (evalResult == EvaluationResult.FALSE) {
@@ -127,10 +129,10 @@ public class ActionUIWizardPage extends ViewerWizardSelectionPage {
 			} catch (CoreException e) {
 				String message = "Could not evaluate enabledWhen expression";
 				log.error(message, e);
-				return message ;
+				return message;
 			}
 		}
-		
+
 		return super.acceptWizard(wizardNode);
 	}
 

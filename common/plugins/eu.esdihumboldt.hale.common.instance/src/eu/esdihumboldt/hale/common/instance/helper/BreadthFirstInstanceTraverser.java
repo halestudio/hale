@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Instance traverser that traverses the model breadth first.
+ * 
  * @author Simon Templer
  * @deprecated This is not breath first!
  */
@@ -33,21 +34,20 @@ public class BreadthFirstInstanceTraverser implements InstanceTraverser {
 		return traverse(instance, callback, null);
 	}
 
-	private boolean traverse(Instance instance,
-			InstanceTraversalCallback callback, QName name) {
+	private boolean traverse(Instance instance, InstanceTraversalCallback callback, QName name) {
 		if (callback.visit(instance, name)) {
 			// traverse value (if applicable)
 			Object value = instance.getValue();
 			if (value != null) {
-				 if (!traverse(value, callback, name)) {
-					 return false;
-				 }
+				if (!traverse(value, callback, name)) {
+					return false;
+				}
 			}
-			
+
 			// traverse children
 			return traverseChildren(instance, callback);
 		}
-		
+
 		return false;
 	}
 
@@ -59,18 +59,18 @@ public class BreadthFirstInstanceTraverser implements InstanceTraverser {
 		return traverse(group, callback, null);
 	}
 
-	private boolean traverse(Group group, InstanceTraversalCallback callback,
-			QName name) {
+	private boolean traverse(Group group, InstanceTraversalCallback callback, QName name) {
 		if (callback.visit(group, name)) {
 			// traverse children
 			return traverseChildren(group, callback);
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * Traverse the children of a given group.
+	 * 
 	 * @param group the group
 	 * @param callback the traversal callback
 	 * @return if traversal shall be continued
@@ -86,7 +86,7 @@ public class BreadthFirstInstanceTraverser implements InstanceTraverser {
 				}
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -98,15 +98,14 @@ public class BreadthFirstInstanceTraverser implements InstanceTraverser {
 		return traverse(value, callback, null);
 	}
 
-	private boolean traverse(Object value, InstanceTraversalCallback callback,
-			QName name) {
+	private boolean traverse(Object value, InstanceTraversalCallback callback, QName name) {
 		if (value instanceof Instance) {
 			return traverse((Instance) value, callback, name);
 		}
 		if (value instanceof Group) {
 			return traverse((Group) value, callback, name);
 		}
-		
+
 		return callback.visit(value, name);
 	}
 

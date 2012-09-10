@@ -30,14 +30,15 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 
 /**
- * Label provider for use with a property contributor. Supports 
+ * Label provider for use with a property contributor. Supports
  * {@link IStructuredSelection} as input elements.
+ * 
  * @author Simon Templer
  */
 public class PropertiesLabelProvider extends LabelProvider {
-	
+
 	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider(true);
-	
+
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
 	/**
@@ -48,29 +49,30 @@ public class PropertiesLabelProvider extends LabelProvider {
 		if (element instanceof IStructuredSelection) {
 			element = ((IStructuredSelection) element).getFirstElement();
 		}
-		
+
 		element = TransformationTreeUtil.extractObject(element);
-		
+
 		if (element instanceof Entity) {
 			element = ((Entity) element).getDefinition();
 		}
-		
+
 		if (element instanceof EntityDefinition || element instanceof Definition<?>) {
 			return definitionLabels.getImage(element);
 		}
-		
+
 		if (element instanceof Cell) {
 			Cell cell = (Cell) element;
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+			AbstractFunction<?> function = FunctionUtil.getFunction(cell
+					.getTransformationIdentifier());
 			if (function != null) {
 				element = function;
 			}
 		}
-		
-		if (element instanceof Function){
+
+		if (element instanceof Function) {
 			return functionLabels.getImage(element);
 		}
-		
+
 		return super.getImage(element);
 	}
 
@@ -82,37 +84,36 @@ public class PropertiesLabelProvider extends LabelProvider {
 		if (element instanceof IStructuredSelection) {
 			element = ((IStructuredSelection) element).getFirstElement();
 		}
-		
+
 		element = TransformationTreeUtil.extractObject(element);
-		
+
 		if (element instanceof Entity) {
 			element = ((Entity) element).getDefinition();
 		}
-		
-		if ((element instanceof EntityDefinition && ((EntityDefinition) element)
-				.getDefinition() instanceof TypeDefinition)
+
+		if ((element instanceof EntityDefinition && ((EntityDefinition) element).getDefinition() instanceof TypeDefinition)
 				|| element instanceof TypeDefinition) {
 			if (element instanceof EntityDefinition) {
 				element = ((EntityDefinition) element).getDefinition();
 			}
-			
+
 			// return the local name of the type instead of the display name
 			// XXX as it may be masked by an XML element name
 			return ((TypeDefinition) element).getName().getLocalPart();
 		}
-		
+
 		if (element instanceof EntityDefinition || element instanceof Definition<?>) {
 			return definitionLabels.getText(element);
 		}
-		
-		if (element instanceof Function){
+
+		if (element instanceof Function) {
 			return functionLabels.getText(element);
 		}
-		
+
 		if (element instanceof Cell) {
 			return CellUtil.getCellDescription((Cell) element);
 		}
-		 
+
 		return super.getText(element);
 	}
 

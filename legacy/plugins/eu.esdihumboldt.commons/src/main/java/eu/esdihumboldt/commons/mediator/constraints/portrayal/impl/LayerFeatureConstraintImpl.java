@@ -20,33 +20,36 @@ import eu.esdihumboldt.specification.mediator.constraints.portrayal.FeatureTypeC
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.LayerFeatureConstraint;
 
 /**
- * A LayerFeatureConstraint defines what feature and feature types are referenced in a layer.
+ * A LayerFeatureConstraint defines what feature and feature types are
+ * referenced in a layer.
  * 
  * 
  * @author Anna Pitaev, Logica CMG
- * @version $Id: LayerFeatureConstraint.java,v 1.2 2007-11-06 09:32:37 pitaeva Exp $
+ * @version $Id: LayerFeatureConstraint.java,v 1.2 2007-11-06 09:32:37 pitaeva
+ *          Exp $
  * 
  */
-public class LayerFeatureConstraintImpl implements LayerFeatureConstraint, Serializable {
-	
+public class LayerFeatureConstraintImpl implements LayerFeatureConstraint,
+		Serializable {
+
 	private Set<FeatureTypeConstraint> featureTypeConstraint;
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 *  The unique identifier of the constraint int the database
+	 * The unique identifier of the constraint int the database
 	 */
-	
+
 	private long id;
-	
+
 	/**
 	 * The status of this constraint.
 	 */
 	private boolean satisfied = false;
-	
+
 	/**
 	 * The unique identifier in the current VM.
 	 */
@@ -57,24 +60,21 @@ public class LayerFeatureConstraintImpl implements LayerFeatureConstraint, Seria
 	 */
 	private ConstraintSource constraintSource;
 
-	
-	
 	/**
-	 * @param constraintSource the constraintSource to set
+	 * @param constraintSource
+	 *            the constraintSource to set
 	 */
 	public void setConstraintSource(ConstraintSource constraintSource) {
 		this.constraintSource = constraintSource;
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#getConstraintSource()
 	 */
 	public ConstraintSource getConstraintSource() {
 		return this.constraintSource;
 	}
-	
-	
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#isSatisfied()
 	 */
@@ -82,7 +82,7 @@ public class LayerFeatureConstraintImpl implements LayerFeatureConstraint, Seria
 		// TODO Auto-generated method stub
 		return this.satisfied;
 	}
-		
+
 	/**
 	 * @return the Uid that has been assigned to this SpatialConstraint.
 	 */
@@ -98,12 +98,13 @@ public class LayerFeatureConstraintImpl implements LayerFeatureConstraint, Seria
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @param satisfied
 	 */
@@ -115,11 +116,12 @@ public class LayerFeatureConstraintImpl implements LayerFeatureConstraint, Seria
 	 * @return the featureTypeConstraint
 	 */
 	public Set<FeatureTypeConstraint> getFeatureTypeConstraint() {
- 		return this.featureTypeConstraint;
+		return this.featureTypeConstraint;
 	}
 
 	/**
-	 * @param featureTypeConstraint the featureTypeConstraint to set
+	 * @param featureTypeConstraint
+	 *            the featureTypeConstraint to set
 	 */
 	public void setFeatureTypeConstraint(
 			Set<FeatureTypeConstraint> featureTypeConstraint) {

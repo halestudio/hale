@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Sink for instances
+ * 
  * @author Simon Templer
  * @since 2.5.0
  */
@@ -23,6 +24,7 @@ public interface InstanceSink {
 
 	/**
 	 * Adds an instance to the sink
+	 * 
 	 * @param instance the instance to add
 	 */
 	public void addInstance(Instance instance);

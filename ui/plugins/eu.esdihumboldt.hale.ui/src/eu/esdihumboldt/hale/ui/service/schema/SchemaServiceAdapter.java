@@ -18,10 +18,9 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
-
 /**
  * Schema service listener adapter
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -44,10 +43,12 @@ public class SchemaServiceAdapter implements SchemaServiceListener {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#mappableTypesChanged(eu.esdihumboldt.hale.common.schema.SchemaSpaceID, java.util.Collection)
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#mappableTypesChanged(eu.esdihumboldt.hale.common.schema.SchemaSpaceID,
+	 *      java.util.Collection)
 	 */
 	@Override
-	public void mappableTypesChanged(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+	public void mappableTypesChanged(SchemaSpaceID spaceID,
+			Collection<? extends TypeDefinition> types) {
 		// override me
 	}
 }

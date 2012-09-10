@@ -27,41 +27,42 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 /**
  * Notification handling for {@link InstanceService}s that support
  * {@link InstanceServiceListener}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class AbstractInstanceService implements InstanceService {
-	
+
 	private TypeSafeListenerList<InstanceServiceListener> listeners = new TypeSafeListenerList<InstanceServiceListener>();
-	
+
 	private final AlignmentService alignmentService;
 	private final ProjectService projectService;
-	
-	private boolean liveTransform = true; //TODO where to store the configuration? project?
-	
+
+	private boolean liveTransform = true; // TODO where to store the
+											// configuration? project?
+
 	/**
 	 * Create an instance service.
+	 * 
 	 * @param projectService the project service. The instances will be cleared
-	 *   when the project is cleaned.
+	 *            when the project is cleaned.
 	 * @param alignmentService the alignment service
 	 */
-	public AbstractInstanceService(ProjectService projectService,
-			AlignmentService alignmentService) {
+	public AbstractInstanceService(ProjectService projectService, AlignmentService alignmentService) {
 		super();
-		
+
 		this.alignmentService = alignmentService;
 		this.projectService = projectService;
-		
+
 		projectService.addListener(new ProjectServiceAdapter() {
-			
+
 			@Override
 			public void onClean() {
 				clearInstances();
 			}
-			
+
 		});
-		
+
 		alignmentService.addListener(new AlignmentServiceAdapter() {
 
 			@Override
@@ -75,7 +76,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 				 * TODO analyze cell if it is a type or property mapping
 				 * property mapping: retransform based on related type mappings
 				 * type mapping: removed transformed instances based on type
-				 *   mapping
+				 * mapping
 				 */
 				retransform();
 			}
@@ -83,8 +84,8 @@ public abstract class AbstractInstanceService implements InstanceService {
 			@Override
 			public void cellReplaced(Cell oldCell, Cell newCell) {
 				/*
-				 * TODO only retransform with relevant cells (i.e. create a 
-				 * view on the alignment) 
+				 * TODO only retransform with relevant cells (i.e. create a view
+				 * on the alignment)
 				 */
 				retransform();
 			}
@@ -92,8 +93,8 @@ public abstract class AbstractInstanceService implements InstanceService {
 			@Override
 			public void cellsAdded(Iterable<Cell> cells) {
 				/*
-				 * TODO only retransform with relevant cells (i.e. create a 
-				 * view on the alignment) 
+				 * TODO only retransform with relevant cells (i.e. create a view
+				 * on the alignment)
 				 */
 				retransform();
 			}
@@ -106,7 +107,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 	@Override
 	public void setTransformationEnabled(boolean enabled) {
 		if (enabled != liveTransform) {
-			liveTransform = enabled; //XXX use a lock for liveTransform?
+			liveTransform = enabled; // XXX use a lock for liveTransform?
 			if (enabled) {
 				retransform();
 			}
@@ -126,15 +127,15 @@ public abstract class AbstractInstanceService implements InstanceService {
 	}
 
 	/**
-	 * Retransform all instances. Decides if a transformation should be done
-	 * or not.
+	 * Retransform all instances. Decides if a transformation should be done or
+	 * not.
 	 */
 	protected final void retransform() {
 		if (isTransformationEnabled()) {
 			doRetransform();
 		}
 	}
-	
+
 	/**
 	 * Retransform all instances.
 	 */
@@ -165,9 +166,10 @@ public abstract class AbstractInstanceService implements InstanceService {
 	protected ProjectService getProjectService() {
 		return projectService;
 	}
-	
+
 	/**
 	 * Called when the transformation has been enabled or disabled.
+	 * 
 	 * @param enabled if the transformation is enabled now
 	 */
 	public void notifyTransformationToggled(boolean enabled) {
@@ -179,14 +181,16 @@ public abstract class AbstractInstanceService implements InstanceService {
 	/**
 	 * Notify listeners that a data set has changed
 	 * 
-	 * @param type the data set type, <code>null</code> if both sets have changed
+	 * @param type the data set type, <code>null</code> if both sets have
+	 *            changed
 	 */
 	protected void notifyDatasetChanged(DataSet type) {
 		for (InstanceServiceListener listener : listeners) {
 			if (type == null) {
 				listener.datasetChanged(DataSet.SOURCE);
 				listener.datasetChanged(DataSet.TRANSFORMED);
-			} else {
+			}
+			else {
 				listener.datasetChanged(type);
 			}
 		}
@@ -202,12 +206,13 @@ public abstract class AbstractInstanceService implements InstanceService {
 			if (type == null) {
 				listener.datasetAboutToChange(DataSet.SOURCE);
 				listener.datasetAboutToChange(DataSet.TRANSFORMED);
-			} else {
+			}
+			else {
 				listener.datasetAboutToChange(type);
 			}
 		}
 	}
-	
+
 //	/**
 //	 * Notify listeners that the CRS has changed
 //	 * 

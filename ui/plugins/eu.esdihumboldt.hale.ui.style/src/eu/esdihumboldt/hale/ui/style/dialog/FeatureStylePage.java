@@ -21,7 +21,7 @@ import org.geotools.styling.Style;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class FeatureStylePage extends DialogPage {
-	
+
 	private final FeatureStyleDialog parent;
 
 	/**
@@ -32,7 +32,7 @@ public abstract class FeatureStylePage extends DialogPage {
 	 */
 	public FeatureStylePage(FeatureStyleDialog parent, String title) {
 		super(title);
-		
+
 		this.parent = parent;
 	}
 
@@ -42,15 +42,15 @@ public abstract class FeatureStylePage extends DialogPage {
 	public FeatureStyleDialog getParent() {
 		return parent;
 	}
-	
+
 	/**
 	 * Get the edited style
-	 * @param force if a style shall be returned even if there
-	 *   were no changes
+	 * 
+	 * @param force if a style shall be returned even if there were no changes
 	 * 
 	 * @return the style (or null if the parent style shall be used)
 	 * @throws Exception if the style could not be retrieved
 	 */
 	public abstract Style getStyle(boolean force) throws Exception;
-	
+
 }

@@ -14,13 +14,13 @@ package eu.esdihumboldt.hale.common.instance.model;
 
 import java.util.Collection;
 
-
 /**
  * FamilyInstance is an Instance with functionality to add child instance links.
  * 
  * @author Kai Schwierczek
  */
 public interface FamilyInstance extends Instance {
+
 	/**
 	 * Returns the child instances.
 	 * 

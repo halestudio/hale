@@ -18,6 +18,7 @@ import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
 
 /**
  * Show the {@link SelectExportWizard}
+ * 
  * @author Simon Templer
  */
 public class SelectExportHandler extends AbstractWizardHandler {

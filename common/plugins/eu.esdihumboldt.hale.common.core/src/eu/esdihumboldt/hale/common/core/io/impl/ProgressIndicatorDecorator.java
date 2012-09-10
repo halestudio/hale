@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 
 /**
  * Progress indicator decorator
+ * 
  * @author Simon Templer
  */
 public abstract class ProgressIndicatorDecorator implements ProgressIndicator {
@@ -24,6 +25,7 @@ public abstract class ProgressIndicatorDecorator implements ProgressIndicator {
 
 	/**
 	 * Create a progress indicator decorator
+	 * 
 	 * @param decoratee the decoratee
 	 */
 	public ProgressIndicatorDecorator(ProgressIndicator decoratee) {
@@ -32,7 +34,8 @@ public abstract class ProgressIndicatorDecorator implements ProgressIndicator {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.ProgressIndicator#begin(java.lang.String, int)
+	 * @see eu.esdihumboldt.hale.common.core.io.ProgressIndicator#begin(java.lang.String,
+	 *      int)
 	 */
 	@Override
 	public void begin(String taskName, int totalWork) {

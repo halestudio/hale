@@ -32,5 +32,5 @@ public class XmlTimeToDate implements Converter<XmlTime, Date> {
 		}
 		return value.getGDateValue().getDate();
 	}
-	
+
 }

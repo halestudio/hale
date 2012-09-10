@@ -17,30 +17,31 @@ import java.util.Map;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 
 /**
- * Listens for {@link ProjectService} events, e.g. the loading and saving of a 
+ * Listens for {@link ProjectService} events, e.g. the loading and saving of a
  * project.
+ * 
  * @author Simon Templer
  */
 public interface ProjectServiceListener {
-	
+
 	/**
 	 * Called before a project is saved.
+	 * 
 	 * @param projectService the calling project service
 	 * @param projectFiles the map of additional project files, listeners may
-	 *   add additional files to the map
+	 *            add additional files to the map
 	 */
-	public void beforeSave(ProjectService projectService, 
-			Map<String, ProjectFile> projectFiles);
-	
+	public void beforeSave(ProjectService projectService, Map<String, ProjectFile> projectFiles);
+
 	/**
 	 * Called after a project was loaded.
+	 * 
 	 * @param projectService the calling project service
 	 * @param projectFiles the additional project files that were loaded,
-	 *   listeners may use them to update their state
+	 *            listeners may use them to update their state
 	 */
-	public void afterLoad(ProjectService projectService,
-			Map<String, ProjectFile> projectFiles);
-	
+	public void afterLoad(ProjectService projectService, Map<String, ProjectFile> projectFiles);
+
 	/**
 	 * Called when the project is cleaned.
 	 */

@@ -31,40 +31,42 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.filter.TypeFilterField.FilterType;
 
 /**
- * Dialog for configuring a CQL type filter. 
+ * Dialog for configuring a CQL type filter.
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class TypeFilterDialog extends TitleAreaDialog {
-	
+
 	private final TypeDefinition type;
-	
+
 	private TypeFilterField filterField;
 
 	private Filter filter;
-	
+
 	private String title;
-	
+
 	private String message;
-	
+
 	/**
 	 * Constructor.
+	 * 
 	 * @param parentShell the parent shell
 	 * @param type the type definition
 	 * @param title the dialog title, <code>null</code> for a default title
-	 * @param message the dialog message, <code>null</code> for a default message
+	 * @param message the dialog message, <code>null</code> for a default
+	 *            message
 	 */
-	public TypeFilterDialog(Shell parentShell, TypeDefinition type, 
-			String title, String message) {
+	public TypeFilterDialog(Shell parentShell, TypeDefinition type, String title, String message) {
 		super(parentShell);
-		
+
 		this.type = type;
-		this.title = (title == null)?("Type filter"):(title);
-		this.message = (message == null)?("Define the filter to apply"):(message);
-		
+		this.title = (title == null) ? ("Type filter") : (title);
+		this.message = (message == null) ? ("Define the filter to apply") : (message);
+
 		setHelpAvailable(true);
 	}
-	
+
 	/**
 	 * @see Dialog#isResizable()
 	 */
@@ -80,10 +82,10 @@ public class TypeFilterDialog extends TitleAreaDialog {
 	@Override
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
-		
+
 		setTitle(title); //$NON-NLS-1$
 		setMessage(message);
-		
+
 		return control;
 	}
 
@@ -93,7 +95,7 @@ public class TypeFilterDialog extends TitleAreaDialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		
+
 		newShell.setText(title); //$NON-NLS-1$
 	}
 
@@ -105,19 +107,19 @@ public class TypeFilterDialog extends TitleAreaDialog {
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		page.setLayoutData(data);
-		
+
 		page.setLayout(new GridLayout(1, false));
-		
+
 		Label filterLabel = new Label(page, SWT.NONE);
 		filterLabel.setText("Filter");
-		
-		filterField = new TypeFilterField(type, page, SWT.NONE, null, 
-				FilterType.CQL); //TODO configurable?
-		filterField.setLayoutData(GridDataFactory.swtDefaults()
-				.align(SWT.FILL, SWT.BEGINNING).grab(true, false).create());
-		
+
+		filterField = new TypeFilterField(type, page, SWT.NONE, null, FilterType.CQL); // TODO
+																						// configurable?
+		filterField.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING)
+				.grab(true, false).create());
+
 		filterField.addListener(new PropertyChangeListener() {
-			
+
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(TypeFilterField.PROPERTY_VALID)) {
@@ -125,17 +127,17 @@ public class TypeFilterDialog extends TitleAreaDialog {
 				}
 			}
 		});
-		
+
 		return page;
 	}
-	
+
 	/**
 	 * @see Dialog#createButtonsForButtonBar(Composite)
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
-		
+
 		getButton(OK).setEnabled(filterField.isValid());
 	}
 
@@ -165,7 +167,7 @@ public class TypeFilterDialog extends TitleAreaDialog {
 	@Override
 	protected void cancelPressed() {
 		filter = null;
-		
+
 		super.cancelPressed();
 	}
 

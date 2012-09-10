@@ -18,35 +18,39 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 /**
  * Traverser for instances. Uses an {@link InstanceTraversalCallback} for
  * visiting the model objects.
+ * 
  * @author Simon Templer
  */
 public interface InstanceTraverser {
-	
+
 	/**
 	 * Traverse the given instance.
+	 * 
 	 * @param instance the instance
 	 * @param callback the traversal callback
 	 * @return if traversal shall be continued, can be safely ignored if called
-	 *   from outside the traverser
+	 *         from outside the traverser
 	 */
 	public boolean traverse(Instance instance, InstanceTraversalCallback callback);
-	
+
 	/**
 	 * Traverse the given group.
+	 * 
 	 * @param group the group
 	 * @param callback the traversal callback
 	 * @return if traversal shall be continued, can be safely ignored if called
-	 *   from outside the traverser
+	 *         from outside the traverser
 	 */
 	public boolean traverse(Group group, InstanceTraversalCallback callback);
-	
+
 	/**
 	 * Traverse the given value.
+	 * 
 	 * @param value the value, if a {@link Group} or {@link Instance} the call
-	 *   must be handed over to the respective traverse methods
+	 *            must be handed over to the respective traverse methods
 	 * @param callback the traversal callback
 	 * @return if traversal shall be continued, can be safely ignored if called
-	 *   from outside the traverser
+	 *         from outside the traverser
 	 */
 	public boolean traverse(Object value, InstanceTraversalCallback callback);
 

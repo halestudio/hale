@@ -41,8 +41,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class TypeSelectionPage extends InstanceReaderConfigurationPage
-		implements CSVConstants {
+public class TypeSelectionPage extends InstanceReaderConfigurationPage implements CSVConstants {
 
 	private TypeDefinitionSelector sel;
 	private Button button;
@@ -89,27 +88,25 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type:");
 
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		sel = new TypeDefinitionSelector(page, 
-				"Select the corresponding schema type", 
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
+		sel = new TypeDefinitionSelector(page, "Select the corresponding schema type",
 				ss.getSchemas(SchemaSpaceID.SOURCE), null);
 		sel.getControl().setLayoutData(
-				GridDataFactory.fillDefaults().grab(true, false).span(1, 1)
-						.create());
-		sel.addSelectionChangedListener(
-				new ISelectionChangedListener() {
+				GridDataFactory.fillDefaults().grab(true, false).span(1, 1).create());
+		sel.addSelectionChangedListener(new ISelectionChangedListener() {
 
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						setPageComplete(!(event.getSelection().isEmpty()));
-						if (sel.getSelectedObject() != null) {
-							TypeDefinition type = sel.getSelectedObject();
-							CSVConfiguration conf = type.getConstraint(CSVConfiguration.class);
-							Boolean skip = conf.skipFirst();
-							button.setSelection(skip);
-						}
-					}
-				});
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				setPageComplete(!(event.getSelection().isEmpty()));
+				if (sel.getSelectedObject() != null) {
+					TypeDefinition type = sel.getSelectedObject();
+					CSVConfiguration conf = type.getConstraint(CSVConfiguration.class);
+					Boolean skip = conf.skipFirst();
+					button.setSelection(skip);
+				}
+			}
+		});
 
 		button = new Button(page, SWT.CHECK);
 		button.setText("Skip first line");
@@ -132,7 +129,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 			QName name = sel.getSelectedObject().getName();
 			String param_name = name.toString();
 			provider.setParameter(CSVConstants.PARAM_TYPENAME, param_name);
-		} else {
+		}
+		else {
 			return false;
 		}
 

@@ -20,8 +20,7 @@ import eu.esdihumboldt.hale.ui.views.properties.function.FunctionGraphSection;
  * 
  * @author Patrick Lieb
  */
-public class PropertyFunctionGraphSection extends
-		FunctionGraphSection<PropertyFunction> {
+public class PropertyFunctionGraphSection extends FunctionGraphSection<PropertyFunction> {
 
 	// specifies the function type only
 }

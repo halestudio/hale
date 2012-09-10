@@ -25,17 +25,18 @@ import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
 import eu.esdihumboldt.hale.ui.common.help.SelectionContextProvider;
 
 /**
- * Selection context provider for selection containing objects from the HALE 
+ * Selection context provider for selection containing objects from the HALE
  * models, e.g. the schema, instance and alignment models.
+ * 
  * @author Simon Templer
  */
 public class HALEContextProvider extends SelectionContextProvider {
 
 	/**
-	 * @see SelectionContextProvider#SelectionContextProvider(ISelectionProvider, String)
+	 * @see SelectionContextProvider#SelectionContextProvider(ISelectionProvider,
+	 *      String)
 	 */
-	public HALEContextProvider(ISelectionProvider selectionProvider,
-			String defaultContextId) {
+	public HALEContextProvider(ISelectionProvider selectionProvider, String defaultContextId) {
 		super(selectionProvider, defaultContextId);
 	}
 
@@ -45,24 +46,24 @@ public class HALEContextProvider extends SelectionContextProvider {
 	@Override
 	protected String getContextId(Object object) {
 		object = extractObject(object);
-		
+
 		if (object instanceof Cell) {
 			Cell cell = (Cell) object;
-			return FunctionReferenceConstants.PLUGIN_ID + "." + 
-					ONameUtil.encodeName(cell.getTransformationIdentifier());
+			return FunctionReferenceConstants.PLUGIN_ID + "."
+					+ ONameUtil.encodeName(cell.getTransformationIdentifier());
 		}
-		
+
 		if (object instanceof AbstractFunction<?>) {
 			AbstractFunction<?> function = (AbstractFunction<?>) object;
-			return FunctionReferenceConstants.PLUGIN_ID + "." + 
-					ONameUtil.encodeName(function.getId());
+			return FunctionReferenceConstants.PLUGIN_ID + "."
+					+ ONameUtil.encodeName(function.getId());
 		}
-		
-		//TODO for other kinds of selection
-		
+
+		// TODO for other kinds of selection
+
 		return null;
 	}
-	
+
 	private Object extractObject(Object node) {
 		if (node instanceof TransformationTree) {
 			return ((TransformationTree) node).getType();
@@ -76,7 +77,7 @@ public class HALEContextProvider extends SelectionContextProvider {
 		if (node instanceof SourceNode) {
 			return ((SourceNode) node).getDefinition();
 		}
-		
+
 		return node;
 	}
 

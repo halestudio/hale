@@ -63,8 +63,9 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * 
  * @author Kai Schwierczek
  */
-public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
-		ParameterPage {
+public class ClassificationMappingParameterPage extends
+		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
+
 	private final Map<String, Set<String>> classifications = new TreeMap<String, Set<String>>();
 
 	private Composite notClassifiedActionComposite;
@@ -106,8 +107,10 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
 		Cell unfinishedCell = getWizard().getUnfinishedCell();
-		sourceProperty = (PropertyDefinition) unfinishedCell.getSource().values().iterator().next().getDefinition().getDefinition();
-		targetProperty = (PropertyDefinition) unfinishedCell.getTarget().values().iterator().next().getDefinition().getDefinition();
+		sourceProperty = (PropertyDefinition) unfinishedCell.getSource().values().iterator().next()
+				.getDefinition().getDefinition();
+		targetProperty = (PropertyDefinition) unfinishedCell.getTarget().values().iterator().next()
+				.getDefinition().getDefinition();
 		if (fixedValueText == null || fixedValueText.getText() != null)
 			setPageComplete(true);
 	}
@@ -117,7 +120,8 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params, ListMultimap<String, String> initialValues) {
+	public void setParameter(Set<FunctionParameter> params,
+			ListMultimap<String, String> initialValues) {
 		// this page is only for parameter classificationMapping, ignore params
 		if (initialValues == null)
 			return;
@@ -126,7 +130,7 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 		for (String s : mappings) {
 			String[] splitted = s.split(" ");
 			try {
-				for (int i = 0;  i < splitted.length; i++)
+				for (int i = 0; i < splitted.length; i++)
 					splitted[i] = URLDecoder.decode(splitted[i], "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				// UTF-8 should be everywhere
@@ -160,7 +164,9 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 			configuration.put(PARAMETER_CLASSIFICATIONS, buffer.toString());
 		}
 
-		switch (notClassifiedActionOptions.indexOf(((IStructuredSelection) notClassifiedActionViewer.getSelection()).getFirstElement())) {
+		switch (notClassifiedActionOptions
+				.indexOf(((IStructuredSelection) notClassifiedActionViewer.getSelection())
+						.getFirstElement())) {
 		case 1:
 			notClassifiedAction = "source";
 			break;
@@ -185,34 +191,43 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 
 		// not classified action
 		notClassifiedActionComposite = new Composite(page, SWT.NONE);
-		notClassifiedActionComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 4, 1));
-		notClassifiedActionComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(4).margins(0, 0).create());
+		notClassifiedActionComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true,
+				false, 4, 1));
+		notClassifiedActionComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(4)
+				.margins(0, 0).create());
 
 		Label notClassifiedActionLabel = new Label(notClassifiedActionComposite, SWT.NONE);
 		notClassifiedActionLabel.setText("For unmapped source values");
 		notClassifiedActionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
-		notClassifiedActionViewer = new ComboViewer(notClassifiedActionComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
-		notClassifiedActionViewer.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		notClassifiedActionViewer = new ComboViewer(notClassifiedActionComposite, SWT.DROP_DOWN
+				| SWT.READ_ONLY);
+		notClassifiedActionViewer.getControl().setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		notClassifiedActionViewer.setContentProvider(ArrayContentProvider.getInstance());
-		
+
 		notClassifiedActionViewer.setInput(notClassifiedActionOptions);
 		notClassifiedActionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				if (notClassifiedActionOptions.indexOf(((IStructuredSelection) event.getSelection()).getFirstElement()) == 2)
+				if (notClassifiedActionOptions.indexOf(((IStructuredSelection) event.getSelection())
+						.getFirstElement()) == 2)
 					createFixedValueInputButton(null);
 				else
 					removeFixedValueInputButton();
 			}
 		});
 
-		notClassifiedActionViewer.setSelection(new StructuredSelection(notClassifiedActionOptions.get(0)));
+		notClassifiedActionViewer.setSelection(new StructuredSelection(notClassifiedActionOptions
+				.get(0)));
 		if (notClassifiedAction != null) {
 			if (notClassifiedAction.equals("source"))
-				notClassifiedActionViewer.setSelection(new StructuredSelection(notClassifiedActionOptions.get(1)));
+				notClassifiedActionViewer.setSelection(new StructuredSelection(
+						notClassifiedActionOptions.get(1)));
 			else if (notClassifiedAction.startsWith("fixed:")) {
-				notClassifiedActionViewer.setSelection(new StructuredSelection(notClassifiedActionOptions.get(2)));
+				notClassifiedActionViewer.setSelection(new StructuredSelection(
+						notClassifiedActionOptions.get(2)));
 				createFixedValueInputButton(notClassifiedAction.substring(6));
 			}
 		}
@@ -235,10 +250,12 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 		addButton.setToolTipText("Add classification value");
 		addButton.setEnabled(true);
 		addButton.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, 
-						Display.getCurrent().getActiveShell(), "Add classification", "Enter new classification value");
+				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, Display
+						.getCurrent().getActiveShell(), "Add classification",
+						"Enter new classification value");
 				if (dialog.open() == AttributeInputDialog.OK) {
 					String newClass = dialog.getValueAsText();
 					if (newClass != null) {
@@ -250,18 +267,21 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 
 		// remove target value
 		final Button removeButton = new Button(page, SWT.PUSH);
-		removeButton.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_REMOVE));
+		removeButton.setImage(CommonSharedImages.getImageRegistry().get(
+				CommonSharedImages.IMG_REMOVE));
 		removeButton.setEnabled(false);
 		removeButton.setToolTipText("Remove currently selected classification");
 		removeButton.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement().toString();
+				String selectedClass = ((IStructuredSelection) classes.getSelection())
+						.getFirstElement().toString();
 
-				if (MessageDialog.openQuestion(
-						Display.getCurrent().getActiveShell(), 
-						"Remove classification", 
-						MessageFormat.format("Do you really want to remove the classification for \"{0}\"?", selectedClass))) {
+				if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(),
+						"Remove classification", MessageFormat.format(
+								"Do you really want to remove the classification for \"{0}\"?",
+								selectedClass))) {
 					removeClassification(selectedClass);
 				}
 			}
@@ -273,8 +293,8 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 		sourceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false, 1, 2));
 
 		// list
-		org.eclipse.swt.widgets.List list = new org.eclipse.swt.widgets.List(page, SWT.MULTI | SWT.V_SCROLL
-				| SWT.H_SCROLL | SWT.BORDER);
+		org.eclipse.swt.widgets.List list = new org.eclipse.swt.widgets.List(page, SWT.MULTI
+				| SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		values = new ListViewer(list);
 		values.setContentProvider(new ArrayContentProvider());
@@ -290,12 +310,15 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 		valueAdd.setEnabled(false);
 		valueAdd.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		valueAdd.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement().toString();
+				String selectedClass = ((IStructuredSelection) classes.getSelection())
+						.getFirstElement().toString();
 
-				AttributeInputDialog dialog = new AttributeInputDialog(sourceProperty, 
-						Display.getCurrent().getActiveShell(), "Add value", MessageFormat.format("Enter a new value that is classified as \"{0}\"", selectedClass));
+				AttributeInputDialog dialog = new AttributeInputDialog(sourceProperty, Display
+						.getCurrent().getActiveShell(), "Add value", MessageFormat.format(
+						"Enter a new value that is classified as \"{0}\"", selectedClass));
 
 				if (dialog.open() == Dialog.OK) {
 					String newValue = dialog.getValueAsText();
@@ -306,26 +329,31 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 		});
 
 		final Button valueRemove = new Button(listControls, SWT.PUSH);
-		valueRemove.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_REMOVE));
+		valueRemove.setImage(CommonSharedImages.getImageRegistry().get(
+				CommonSharedImages.IMG_REMOVE));
 		valueRemove.setText("Remove value");
 		valueRemove.setEnabled(false);
 		valueRemove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		valueRemove.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				removeValue(((IStructuredSelection) values.getSelection()).getFirstElement().toString());
+				removeValue(((IStructuredSelection) values.getSelection()).getFirstElement()
+						.toString());
 			}
 		});
 
 		// combo selection change
 		classes.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				boolean empty = event.getSelection().isEmpty();
-				removeButton.setEnabled(!empty); // !fixedClassifications && 
+				removeButton.setEnabled(!empty); // !fixedClassifications &&
 				valueAdd.setEnabled(!empty);
 				if (!empty) {
-					String className = ((IStructuredSelection) event.getSelection()).getFirstElement().toString();
+					String className = ((IStructuredSelection) event.getSelection())
+							.getFirstElement().toString();
 					Set<String> valueSet = classifications.get(className);
 					values.setInput(valueSet);
 					values.setSelection(StructuredSelection.EMPTY);
@@ -335,6 +363,7 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 
 		// list selection change
 		values.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				boolean empty = event.getSelection().isEmpty();
@@ -360,17 +389,21 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 		fixedValueInputButton.setText("Select");
 		fixedValueInputButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		fixedValueInputButton.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, 
-						Display.getCurrent().getActiveShell(), "Set default value", "This value will be assigned to targets when the source value is not mapped");
+				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, Display
+						.getCurrent().getActiveShell(), "Set default value",
+						"This value will be assigned to targets when the source value is not mapped");
 				if (initialValue != null)
 					dialog.getEditor().setAsText(initialValue);
 
 				if (dialog.open() == Dialog.OK) {
 					if (fixedValueText == null) {
-						fixedValueText = new Text(notClassifiedActionComposite, SWT.READ_ONLY | SWT.BORDER);
-						fixedValueText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+						fixedValueText = new Text(notClassifiedActionComposite, SWT.READ_ONLY
+								| SWT.BORDER);
+						fixedValueText
+								.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 						notClassifiedActionComposite.layout();
 					}
 					fixedValueText.setText(dialog.getValueAsText());
@@ -384,7 +417,8 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 	}
 
 	/**
-	 * Removes the button for opening the fixed value editor in case it is present.
+	 * Removes the button for opening the fixed value editor in case it is
+	 * present.
 	 */
 	private void removeFixedValueInputButton() {
 		if (fixedValueInputButton != null) {
@@ -418,7 +452,8 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 	 * @param selectedValue the value to remove
 	 */
 	private void removeValue(String selectedValue) {
-		String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement().toString();
+		String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement()
+				.toString();
 
 		Set<String> valueSet = classifications.get(selectedClass);
 		if (valueSet != null && valueSet.contains(selectedValue)) {
@@ -433,15 +468,19 @@ public class ClassificationMappingParameterPage extends HaleWizardPage<AbstractG
 	 * @param newValue the value to add
 	 */
 	private void addValue(String newValue) {
-		String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement().toString();
+		String selectedClass = ((IStructuredSelection) classes.getSelection()).getFirstElement()
+				.toString();
 
 		// check for value in other classification
 		final String oldClass = getClassification(newValue);
-		if (oldClass == null || 
-				MessageDialog.openConfirm(
-					Display.getCurrent().getActiveShell(),
-					"Duplicate value",
-					MessageFormat.format("The value was already classified as \"{0}\", the old classification will be replaced.", oldClass))) {
+		if (oldClass == null
+				|| MessageDialog
+						.openConfirm(
+								Display.getCurrent().getActiveShell(),
+								"Duplicate value",
+								MessageFormat
+										.format("The value was already classified as \"{0}\", the old classification will be replaced.",
+												oldClass))) {
 
 			// add value
 			Set<String> valueSet = classifications.get(selectedClass);

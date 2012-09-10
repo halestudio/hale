@@ -16,11 +16,12 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
- * Preference initializer for keys defined in {@link CSTPreferencesConstants}. 
+ * Preference initializer for keys defined in {@link CSTPreferencesConstants}.
+ * 
  * @author Simon Templer
  */
-public class CSTPreferencesInitializer extends AbstractPreferenceInitializer
-		implements CSTPreferencesConstants {
+public class CSTPreferencesInitializer extends AbstractPreferenceInitializer implements
+		CSTPreferencesConstants {
 
 	/**
 	 * @see AbstractPreferenceInitializer#initializeDefaultPreferences()
@@ -28,8 +29,9 @@ public class CSTPreferencesInitializer extends AbstractPreferenceInitializer
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = CSTUIPlugin.getDefault().getPreferenceStore();
-		
-		store.setDefault(PREF_ACTIVE_TREE_HOOKS, ""); // by default none selected
+
+		store.setDefault(PREF_ACTIVE_TREE_HOOKS, ""); // by default none
+														// selected
 	}
 
 }

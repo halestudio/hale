@@ -29,15 +29,16 @@ import eu.esdihumboldt.hale.ui.views.data.internal.compare.DefinitionInstanceTre
 
 /**
  * TODO Type description
+ * 
  * @author Simon Templer
  */
-public class InstanceViewController extends PreferencesExclusiveExtension<InstanceViewer, InstanceViewFactory> {
+public class InstanceViewController extends
+		PreferencesExclusiveExtension<InstanceViewer, InstanceViewFactory> {
 
 	/**
 	 * Factory for default instance view
 	 */
-	private static class DefaultViewFactory extends
-			AbstractObjectFactory<InstanceViewer> implements
+	private static class DefaultViewFactory extends AbstractObjectFactory<InstanceViewer> implements
 			InstanceViewFactory {
 
 		/**
@@ -85,11 +86,12 @@ public class InstanceViewController extends PreferencesExclusiveExtension<Instan
 	/**
 	 * Default factory based on a configuration element.
 	 */
-	private static class ConfigurationViewFactory extends AbstractConfigurationFactory<InstanceViewer>
-			implements InstanceViewFactory {
+	private static class ConfigurationViewFactory extends
+			AbstractConfigurationFactory<InstanceViewer> implements InstanceViewFactory {
 
 		/**
-		 * Create an instance view factory based on a configuration element. 
+		 * Create an instance view factory based on a configuration element.
+		 * 
 		 * @param conf the configuration element
 		 */
 		protected ConfigurationViewFactory(IConfigurationElement conf) {
@@ -134,13 +136,14 @@ public class InstanceViewController extends PreferencesExclusiveExtension<Instan
 	 * The extension ID
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.ui.views.data";
-	
+
 	/**
 	 * {@link InstanceViewer} extension
 	 */
-	public static class InstanceViewExtension extends AbstractExtension<InstanceViewer, InstanceViewFactory>
-			implements ObjectExtension<InstanceViewer, InstanceViewFactory> {
-		
+	public static class InstanceViewExtension extends
+			AbstractExtension<InstanceViewer, InstanceViewFactory> implements
+			ObjectExtension<InstanceViewer, InstanceViewFactory> {
+
 		/**
 		 * Default constructor
 		 */
@@ -152,12 +155,11 @@ public class InstanceViewController extends PreferencesExclusiveExtension<Instan
 		 * @see AbstractExtension#createFactory(IConfigurationElement)
 		 */
 		@Override
-		protected InstanceViewFactory createFactory(IConfigurationElement conf)
-				throws Exception {
+		protected InstanceViewFactory createFactory(IConfigurationElement conf) throws Exception {
 			if (conf.getName().equals("instanceView")) {
 				return new ConfigurationViewFactory(conf);
 			}
-			
+
 			return null;
 		}
 
@@ -165,11 +167,11 @@ public class InstanceViewController extends PreferencesExclusiveExtension<Instan
 
 	/**
 	 * Create an instance view controller.
+	 * 
 	 * @param preferences the preference store
 	 * @param preferenceKey the preference key to use for storing the setting
 	 */
-	public InstanceViewController(
-			IPreferenceStore preferences, String preferenceKey) {
+	public InstanceViewController(IPreferenceStore preferences, String preferenceKey) {
 		super(new InstanceViewExtension(), preferences, preferenceKey);
 	}
 

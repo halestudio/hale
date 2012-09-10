@@ -18,10 +18,9 @@ import org.eclipse.swt.widgets.Control;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
-
 /**
  * {@link Instance} selector interface.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -41,16 +40,15 @@ public interface InstanceSelector {
 	 * 
 	 * @param listener the listener to remove
 	 */
-	public abstract void removeSelectionListener(
-			InstanceSelectionListener listener);
-	
+	public abstract void removeSelectionListener(InstanceSelectionListener listener);
+
 	/**
 	 * Create the selector control. The control must be disposed before creating
 	 * another one. When the control is disposed, the listeners will be reset
 	 * 
 	 * @param parent the parent composite
 	 * 
-	 * @return the feature selector control 
+	 * @return the feature selector control
 	 */
 	public Control createControl(Composite parent);
 

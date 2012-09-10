@@ -21,14 +21,13 @@ import eu.esdihumboldt.specification.cst.align.ISchema;
 import eu.esdihumboldt.specification.cst.align.ext.IValueClass;
 import eu.esdihumboldt.specification.cst.rdf.IAbout;
 
-
 /**
  * The {@link Alignment} is the main document containing all mappings and
  * transformations between two schemas.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class Alignment implements IAlignment {
 
@@ -36,54 +35,57 @@ public class Alignment implements IAlignment {
 	 * Information on the first {@link Schema} being mapped.
 	 */
 	private ISchema schema1;
-	
+
 	/**
 	 * Information on the second {@link Schema} being mapped.
 	 */
 	private ISchema schema2;
-	
+
 	/**
-	 * A {@link List} of all the mappings defined as part of this 
+	 * A {@link List} of all the mappings defined as part of this
 	 * {@link Alignment}.
 	 */
 	private List<ICell> map;
-	
+
 	/**
 	 * TODO add description
 	 */
 	private String level;
-	
+
 	/**
 	 * Identifier of this {@link Alignment}.
 	 */
 	private IAbout about;
-	
+
 	/**
-	 * A {@link List} of all values classes (attribute values grouped into categories for efficient re-use)
+	 * A {@link List} of all values classes (attribute values grouped into
+	 * categories for efficient re-use)
 	 */
-	
+
 	private List<IValueClass> valueClasses;
-	
+
 	public Alignment deepCopy() {
 		Alignment result = new Alignment();
 		result.setAbout(new About(this.getAbout().getAbout()));
 		result.setLevel(this.getLevel());
-		Schema schema1 = new Schema(this.level, (Formalism) this.getSchema1().getFormalism());
+		Schema schema1 = new Schema(this.level, (Formalism) this.getSchema1()
+				.getFormalism());
 		schema1.setAbout(new About(this.getSchema1().getAbout().getAbout()));
 		result.setSchema1(schema1);
-		
-		Schema schema2 = new Schema(this.level, (Formalism) this.getSchema2().getFormalism());
+
+		Schema schema2 = new Schema(this.level, (Formalism) this.getSchema2()
+				.getFormalism());
 		schema2.setAbout(new About(this.getSchema2().getAbout().getAbout()));
 		result.setSchema2(schema2);
-		
+
 		List<ICell> cells = new ArrayList<ICell>();
 		for (ICell cell : this.getMap()) {
-			cells.add(((Cell)cell).deepCopy());
+			cells.add(((Cell) cell).deepCopy());
 		}
 		result.setMap(cells);
 		return result;
 	}
-	
+
 	// getters / setters .......................................................
 
 	/**
@@ -94,7 +96,8 @@ public class Alignment implements IAlignment {
 	}
 
 	/**
-	 * @param schema1 the schema1 to set
+	 * @param schema1
+	 *            the schema1 to set
 	 */
 	public void setSchema1(ISchema schema1) {
 		this.schema1 = schema1;
@@ -108,7 +111,8 @@ public class Alignment implements IAlignment {
 	}
 
 	/**
-	 * @param schema2 the schema2 to set
+	 * @param schema2
+	 *            the schema2 to set
 	 */
 	public void setSchema2(ISchema schema2) {
 		this.schema2 = schema2;
@@ -125,7 +129,8 @@ public class Alignment implements IAlignment {
 	}
 
 	/**
-	 * @param map the map to set
+	 * @param map
+	 *            the map to set
 	 */
 	public void setMap(List<ICell> map) {
 		this.map = map;
@@ -139,7 +144,8 @@ public class Alignment implements IAlignment {
 	}
 
 	/**
-	 * @param level the level to set
+	 * @param level
+	 *            the level to set
 	 */
 	public void setLevel(String level) {
 		this.level = level;
@@ -153,26 +159,29 @@ public class Alignment implements IAlignment {
 	}
 
 	/**
-	 * @param about the about to set
+	 * @param about
+	 *            the about to set
 	 */
 	public void setAbout(IAbout about) {
 		this.about = about;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see eu.esdihumboldt.cst.align.IAlignment#getValueClasses()
 	 */
 	public List<IValueClass> getValueClasses() {
 		return this.valueClasses;
 	}
-	
+
 	/*
 	 * 
-	 * @param list of value class 
+	 * @param list of value class
 	 */
-	public void setValueClass(List<IValueClass> valueClass){
+	public void setValueClass(List<IValueClass> valueClass) {
 		this.valueClasses = valueClass;
-		
+
 	}
- 
+
 }

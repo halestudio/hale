@@ -23,20 +23,21 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Properties section with cardinality information
+ * 
  * @author Patrick Lieb
  */
-public class PropertyTypeCardinalitySection extends DefaultDefinitionSection<PropertyDefinition>{
-	
+public class PropertyTypeCardinalitySection extends DefaultDefinitionSection<PropertyDefinition> {
+
 	private Text min;
-	
+
 	private Text max;
-	
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "Minimum:", "Maximum:");
 		min = getText();
 		max = getText2();
@@ -51,12 +52,14 @@ public class PropertyTypeCardinalitySection extends DefaultDefinitionSection<Pro
 		long maxlong = getDefinition().getConstraint(Cardinality.class).getMaxOccurs();
 		if (minlong == Cardinality.UNBOUNDED) {
 			min.setText("unbounded");
-		} else {
+		}
+		else {
 			min.setText(String.valueOf(minlong));
 		}
 		if (maxlong == Cardinality.UNBOUNDED) {
 			max.setText("unbounded");
-		} else {
+		}
+		else {
 			max.setText(String.valueOf(maxlong));
 		}
 	}

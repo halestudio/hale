@@ -12,7 +12,6 @@
 
 package eu.esdihumboldt.hale.ui.functions.inspire.internal;
 
-
 /**
  * Constants for the geographical name page
  * 

@@ -11,22 +11,21 @@
  */
 package eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers;
 
-
 import org.geotools.metadata.iso.citation.ResponsiblePartyImpl;
 import org.opengis.metadata.citation.Contact;
 import org.opengis.metadata.citation.Role;
 import org.opengis.util.InternationalString;
 
 /**
- * This is a a subclass of the ResponsiblePartyImpl contains id-field and no-args constractor,
- * to enable Hibernate the persisting of Citation-objects. 
+ * This is a a subclass of the ResponsiblePartyImpl contains id-field and
+ * no-args constractor, to enable Hibernate the persisting of Citation-objects.
  * 
  * 
  * @author Anna Pitaev, Logica CMG
  * @version $Id: ResponsibleParty.java,v 1.2 2007-11-15 13:32:09 pitaeva Exp $
  */
 public class ResponsiblePartyHelper {
-	
+
 	/**
 	 * 
 	 */
@@ -43,7 +42,8 @@ public class ResponsiblePartyHelper {
 
 	/**
 	 * 
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -129,11 +129,11 @@ public class ResponsiblePartyHelper {
 	}
 
 	/**
-	 * @param delegate the delegate to set
+	 * @param delegate
+	 *            the delegate to set
 	 */
 	public void setDelegate(ResponsiblePartyImpl delegate) {
 		this.delegate = delegate;
 	}
-	
 
 }

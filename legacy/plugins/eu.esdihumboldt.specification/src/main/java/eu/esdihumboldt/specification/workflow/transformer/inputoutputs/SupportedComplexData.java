@@ -11,44 +11,47 @@
  */
 package eu.esdihumboldt.specification.workflow.transformer.inputoutputs;
 
-
 import java.net.URI;
 
 import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
 
-/**This interface describe complex data structure used to represent an input or
+/**
+ * This interface describe complex data structure used to represent an input or
  * output
  * 
  * @author Moses Gone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @ReferenceSpecification("OGC 05-007r6:1.0.0 9.3")
-public interface SupportedComplexData  {
+public interface SupportedComplexData {
 
-    /**Reference to default Format for process input or output
-     * 
-     * @return
-     */
-    public String getDefaultFormat();
+	/**
+	 * Reference to default Format for process input or output
+	 * 
+	 * @return
+	 */
+	public String getDefaultFormat();
 
-    /**Reference to default encoding for process input or output
-     * 
-     * @return
-     */
-    public URI getDefaultEncoding();
+	/**
+	 * Reference to default encoding for process input or output
+	 * 
+	 * @return
+	 */
+	public URI getDefaultEncoding();
 
-    /**reference to default XML Schema Document for process input or output
-     * 
-     * @return
-     */
-    public URI getDefaultSchema();
+	/**
+	 * reference to default XML Schema Document for process input or output
+	 * 
+	 * @return
+	 */
+	public URI getDefaultSchema();
 
-    /**Combination of format, encoding, and/or schema supported by process input
-     * or output.
-     * 
-     * @return a Complex Data 
-     */
-    public InputOutput getComplexData();
+	/**
+	 * Combination of format, encoding, and/or schema supported by process input
+	 * or output.
+	 * 
+	 * @return a Complex Data
+	 */
+	public InputOutput getComplexData();
 }
-

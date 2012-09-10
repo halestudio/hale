@@ -21,16 +21,17 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 
 /**
  * Enumeration constraint for type unions
+ * 
  * @author Simon Templer
  */
 public class UnionEnumeration extends Enumeration<Object> {
 
 	private Collection<? extends TypeDefinition> unionTypes;
-	
+
 	private boolean initialized = false;
-	
+
 	private Set<Object> values = null;
-	
+
 	private boolean allowOthers = false;
 
 	/**
@@ -41,18 +42,18 @@ public class UnionEnumeration extends Enumeration<Object> {
 	public UnionEnumeration(Collection<? extends TypeDefinition> unionTypes) {
 		this.unionTypes = unionTypes;
 	}
-	
+
 	private void init() {
 		if (!initialized) {
 			values = null;
 			allowOthers = false;
-			
+
 			for (TypeDefinition type : unionTypes) {
 				Enumeration<?> enumeration = type.getConstraint(Enumeration.class);
 				if (enumeration.getValues() == null || enumeration.isAllowOthers()) {
 					allowOthers = true;
 				}
-				
+
 				if (enumeration.getValues() != null) {
 					// collect allowed values
 					if (values == null) {
@@ -61,11 +62,11 @@ public class UnionEnumeration extends Enumeration<Object> {
 					values.addAll(enumeration.getValues());
 				}
 			}
-			
+
 			if (values == null) {
 				allowOthers = true;
 			}
-			
+
 			initialized = true;
 		}
 	}
@@ -76,7 +77,7 @@ public class UnionEnumeration extends Enumeration<Object> {
 	@Override
 	public Collection<? extends Object> getValues() {
 		init();
-		
+
 		return values;
 	}
 
@@ -86,7 +87,7 @@ public class UnionEnumeration extends Enumeration<Object> {
 	@Override
 	public boolean isAllowOthers() {
 		init();
-		
+
 		return allowOthers;
 	}
 

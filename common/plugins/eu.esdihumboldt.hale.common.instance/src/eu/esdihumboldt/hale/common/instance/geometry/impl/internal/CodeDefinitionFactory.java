@@ -17,10 +17,10 @@ import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 
 /**
  * Factory for {@link CodeDefinition}s
+ * 
  * @author Simon Templer
  */
-public class CodeDefinitionFactory implements
-		CRSDefinitionFactory<CodeDefinition> {
+public class CodeDefinitionFactory implements CRSDefinitionFactory<CodeDefinition> {
 
 	/**
 	 * @see CRSDefinitionFactory#getIdentifier()

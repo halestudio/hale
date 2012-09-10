@@ -20,24 +20,25 @@ import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 
 /**
  * Abstract import wizard
+ * 
  * @param <P> the {@link IOProvider} type used in the wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
 public abstract class ImportWizard<P extends ImportProvider> extends IOWizard<P> {
-	
+
 	private ImportSelectSourcePage<P, ? extends ImportWizard<P>> selectSourcePage;
-	
+
 	/**
 	 * @see IOWizard#IOWizard(Class)
 	 */
 	public ImportWizard(Class<P> providerType) {
 		super(providerType);
-		
+
 		setWindowTitle("Import wizard");
-		
+
 		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(
 				HALEUIPlugin.PLUGIN_ID, "/icons/banner/import_wiz.png"));
 	}
@@ -48,7 +49,7 @@ public abstract class ImportWizard<P extends ImportProvider> extends IOWizard<P>
 	@Override
 	public void addPages() {
 		super.addPages();
-		
+
 		addPage(selectSourcePage = new ImportSelectSourcePage<P, ImportWizard<P>>());
 	}
 

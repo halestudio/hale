@@ -16,12 +16,11 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 
 /**
  * Adapter for alignment service listeners
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AlignmentServiceAdapter implements
-		AlignmentServiceListener {
+public abstract class AlignmentServiceAdapter implements AlignmentServiceListener {
 
 	/**
 	 * @see AlignmentServiceListener#alignmentCleared()

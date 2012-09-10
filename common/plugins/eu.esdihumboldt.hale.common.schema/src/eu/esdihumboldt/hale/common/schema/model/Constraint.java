@@ -23,11 +23,11 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.ConstraintUtil;
  * Marks constraint types.<br>
  * <br>
  * Types using this annotation must have a default constructor or a constructor
- * that takes a {@link Definition} as an argument that will create
- * the constraint with its default settings as this will be used when a
- * constraint of that type is requested for a definition where it does not
- * exist. If both a default and a {@link Definition} constructor are available
- * the constructor that takes a definition is preferred if possible.
+ * that takes a {@link Definition} as an argument that will create the
+ * constraint with its default settings as this will be used when a constraint
+ * of that type is requested for a definition where it does not exist. If both a
+ * default and a {@link Definition} constructor are available the constructor
+ * that takes a definition is preferred if possible.
  * 
  * @see Definition#getConstraint(Class)
  * @see ConstraintUtil#getDefaultConstraint(Class, Definition)
@@ -37,15 +37,16 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.ConstraintUtil;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Constraint {
-	
+
 	/**
 	 * States if the default constraint is mutable. If possible the default
-	 * constraint should not be mutable if it is based on the default 
-	 * constructor, as {@link ConstraintUtil#getDefaultConstraint(Class, Definition)}
-	 * will only be able to cache it in this case.
+	 * constraint should not be mutable if it is based on the default
+	 * constructor, as
+	 * {@link ConstraintUtil#getDefaultConstraint(Class, Definition)} will only
+	 * be able to cache it in this case.
 	 * 
-	 * @return if the default constraint is mutable, 
-	 *   <code>true</code> by default
+	 * @return if the default constraint is mutable, <code>true</code> by
+	 *         default
 	 */
 	boolean mutable() default true;
 

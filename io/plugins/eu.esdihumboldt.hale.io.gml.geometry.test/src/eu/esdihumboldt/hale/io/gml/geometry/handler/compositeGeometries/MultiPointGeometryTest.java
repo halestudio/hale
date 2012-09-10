@@ -46,8 +46,7 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 
 		Coordinate[] coordinates = new Coordinate[] {
 				new Coordinate(-39799.68820381, 273207.53980172),
-				new Coordinate(-39841.185, 273182.863),
-				new Coordinate(-39882.89, 273153.86) };
+				new Coordinate(-39841.185, 273182.863), new Coordinate(-39882.89, 273153.86) };
 
 		reference = geomFactory.createMultiPoint(coordinates);
 	}
@@ -55,15 +54,13 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test multi point geometries read from a GML 2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiPointGml2() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
-				getClass().getResource("/data/point/sample-multipoint-gml2.xml")
-						.toURI());
+				getClass().getResource("/data/point/sample-multipoint-gml2.xml").toURI());
 
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -93,15 +90,13 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test multi point geometries read from a GML 3 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiPointGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/point/sample-multipoint-gml3.xml")
-						.toURI());
+				getClass().getResource("/data/point/sample-multipoint-gml3.xml").toURI());
 
 		// four instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -138,15 +133,13 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test multi point geometries read from a GML 31 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiPointGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/point/sample-multipoint-gml31.xml")
-						.toURI());
+				getClass().getResource("/data/point/sample-multipoint-gml31.xml").toURI());
 
 		// four instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -182,15 +175,13 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test multi point geometries read from a GML 32 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiPointGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/point/sample-multipoint-gml32.xml")
-						.toURI());
+				getClass().getResource("/data/point/sample-multipoint-gml32.xml").toURI());
 
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -218,8 +209,7 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkMultiPointPropertyInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 
@@ -235,8 +225,7 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 		for (Object instance : ((Collection<?>) geomInstance.getValue())) {
 			assertTrue(instance instanceof GeometryProperty<?>);
 			@SuppressWarnings("unchecked")
-			MultiPoint multipoint = ((GeometryProperty<MultiPoint>) instance)
-					.getGeometry();
+			MultiPoint multipoint = ((GeometryProperty<MultiPoint>) instance).getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
 					multipoint.equalsExact(reference));
 		}

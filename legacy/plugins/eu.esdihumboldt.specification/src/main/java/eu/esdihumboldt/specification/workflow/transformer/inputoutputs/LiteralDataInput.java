@@ -18,10 +18,9 @@ import eu.esdihumboldt.specification.annotations.spec.ReferenceSpecification;
  * 
  * @author Moses Gone
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @ReferenceSpecification("OGC 05-007r7:1.0.0 9.3.1")
-public interface LiteralDataInput  extends ProcessInput, LiteralData{
+public interface LiteralDataInput extends ProcessInput, LiteralData {
 
 }
-

@@ -17,30 +17,31 @@ import eu.esdihumboldt.specification.dataaccess.DataAccessService;
 import eu.esdihumboldt.specification.dataaccess.abstractionmodel.AbstractedDataSet;
 
 /**
- * The MediatorResponse is the container- and interface-neutral structure 
+ * The MediatorResponse is the container- and interface-neutral structure
  * representing the result of a MediatorComplexRequest.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface MediatorResponse {
 
 	/**
-	 * @return the {@link UUID} uniquely identifying this {@link MediatorResponse}.
+	 * @return the {@link UUID} uniquely identifying this
+	 *         {@link MediatorResponse}.
 	 */
 	public UUID getIdentifier();
-	
+
 	/**
 	 * @return the UUID that identified the {@link MediatorComplexRequest} that
-	 * led to the creation of this {@link MediatorResponse}.
+	 *         led to the creation of this {@link MediatorResponse}.
 	 */
 	public UUID getRequestIdentifier();
-	
+
 	/**
 	 * @return the {@link AbstractedDataSet} that has been returned from the
-	 * {@link DataAccessService}.
+	 *         {@link DataAccessService}.
 	 */
 	public AbstractedDataSet getResponseDataset();
-	
+
 }

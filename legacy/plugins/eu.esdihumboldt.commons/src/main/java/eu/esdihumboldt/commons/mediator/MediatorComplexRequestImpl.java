@@ -20,12 +20,12 @@ public class MediatorComplexRequestImpl implements MediatorComplexRequest {
 	private Map<TypeKey, Constraint> constraints;
 	private UUID identifier;
 	private Concept taskConcept;
-	
+
 	public MediatorComplexRequestImpl() {
-            
+
 		constraints = new TreeMap<TypeKey, Constraint>();
 	}
-	
+
 	public Constraint getConstraint(TypeKey key) {
 		return constraints.get(key);
 	}
@@ -33,23 +33,22 @@ public class MediatorComplexRequestImpl implements MediatorComplexRequest {
 	public Map<TypeKey, Constraint> getConstraints() {
 		return constraints;
 	}
-	
 
 	public Map<TypeKey, Constraint> getConstraints(ConstraintSource type) {
-		
-		HashMap<TypeKey, Constraint> map = new HashMap<TypeKey,Constraint>();
-		
+
+		HashMap<TypeKey, Constraint> map = new HashMap<TypeKey, Constraint>();
+
 		// Get all TypeKey used
 		Set<TypeKey> keys = constraints.keySet();
-	
+
 		// Find all Constraints with ConstraintSource equals to given type
-		for (TypeKey key : keys ) {
+		for (TypeKey key : keys) {
 			Constraint c = this.constraints.get(key);
 			if (c.getConstraintSource() == type) {
-                map.put(key, c);
-            }
+				map.put(key, c);
+			}
 		}
-		
+
 		return map;
 	}
 
@@ -71,14 +70,16 @@ public class MediatorComplexRequestImpl implements MediatorComplexRequest {
 	}
 
 	/**
-	 * @param context the context to set
+	 * @param context
+	 *            the context to set
 	 */
 	public void setContext(Context context) {
 		this.context = context;
 	}
 
 	/**
-	 * @param constraints the constraints to set
+	 * @param constraints
+	 *            the constraints to set
 	 */
 	public void setConstraints(Map<TypeKey, Constraint> constraints) {
 		this.constraints = constraints;

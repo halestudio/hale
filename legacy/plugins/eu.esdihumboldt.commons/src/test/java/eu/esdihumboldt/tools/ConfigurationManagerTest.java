@@ -20,28 +20,34 @@ import eu.esdihumboldt.commons.tools.ConfigurationManager;
 
 /**
  * An Junittest for ConfigurationManager
- *
+ * 
  * @author Anna Pitaev
  * @partner 04 / Logica
- * @version $Id$ 
+ * @version $Id$
  */
 public class ConfigurationManagerTest {
 
 	/**
-	 * Test method for {@link eu.esdihumboldt.commons.tools.ConfigurationManager#getComponentProperty(java.lang.String)}.
+	 * Test method for
+	 * {@link eu.esdihumboldt.commons.tools.ConfigurationManager#getComponentProperty(java.lang.String)}
+	 * .
 	 */
 	@Test
 	public void testGetComponentProperty() {
-		String stackSize = ConfigurationManager.getComponentProperty("composedPropertyStackSize");
+		String stackSize = ConfigurationManager
+				.getComponentProperty("composedPropertyStackSize");
 		assertEquals("4", stackSize);
 	}
 
 	/**
-	 * Test method for {@link eu.esdihumboldt.commons.tools.ConfigurationManager#getSystemProperty(java.lang.String)}.
+	 * Test method for
+	 * {@link eu.esdihumboldt.commons.tools.ConfigurationManager#getSystemProperty(java.lang.String)}
+	 * .
 	 */
 	@Test
 	public void testGetSystemProperty() {
-		String log4jproperties = ConfigurationManager.getSystemProperty("log4jproperties");
+		String log4jproperties = ConfigurationManager
+				.getSystemProperty("log4jproperties");
 		assertEquals("log4j.xml", log4jproperties);
 	}
 

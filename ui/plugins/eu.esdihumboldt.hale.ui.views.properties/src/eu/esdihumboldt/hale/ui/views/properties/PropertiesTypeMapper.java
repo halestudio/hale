@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 
 /**
  * Type mapper for objects containing definitions
+ * 
  * @author Simon Templer
  */
 public class PropertiesTypeMapper extends AbstractTypeMapper {
@@ -30,11 +31,11 @@ public class PropertiesTypeMapper extends AbstractTypeMapper {
 	@Override
 	public Class<?> mapType(Object object) {
 		object = TransformationTreeUtil.extractObject(object);
-		
+
 		if (object instanceof EntityDefinition) {
 			return ((EntityDefinition) object).getDefinition().getClass();
 		}
-		
+
 		return super.mapType(object);
 	}
 

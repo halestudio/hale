@@ -50,38 +50,30 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
  */
 public abstract class StreamGmlHelper {
 
-	private static final ALogger log = ALoggerFactory
-			.getLogger(StreamGmlHelper.class);
+	private static final ALogger log = ALoggerFactory.getLogger(StreamGmlHelper.class);
 
 	/**
 	 * Parses an instance with the given type from the given XML stream reader.
 	 * 
-	 * @param reader
-	 *            the XML stream reader, the current event must be the start
+	 * @param reader the XML stream reader, the current event must be the start
 	 *            element of the instance
-	 * @param type
-	 *            the definition of the instance type
-	 * @param indexInStream
-	 *            the index of the instance in the stream or <code>null</code>
-	 * @param strict
-	 *            if associating elements with properties should be done
+	 * @param type the definition of the instance type
+	 * @param indexInStream the index of the instance in the stream or
+	 *            <code>null</code>
+	 * @param strict if associating elements with properties should be done
 	 *            strictly according to the schema, otherwise a fall-back is
 	 *            used trying to populate values also on invalid property paths
-	 * @param srsDimension
-	 *            the dimension of the instance or <code>null</code>
+	 * @param srsDimension the dimension of the instance or <code>null</code>
 	 * @return the parsed instance
-	 * @throws XMLStreamException
-	 *             if parsing the instance failed
+	 * @throws XMLStreamException if parsing the instance failed
 	 */
-	public static Instance parseInstance(XMLStreamReader reader,
-			TypeDefinition type, Integer indexInStream, boolean strict,
-			Integer srsDimension) throws XMLStreamException {
+	public static Instance parseInstance(XMLStreamReader reader, TypeDefinition type,
+			Integer indexInStream, boolean strict, Integer srsDimension) throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
-		
-		if (srsDimension == null){
-			String dim = reader.getAttributeValue(null,
-					"srsDimension");
-			if(dim != null)
+
+		if (srsDimension == null) {
+			String dim = reader.getAttributeValue(null, "srsDimension");
+			if (dim != null)
 				srsDimension = Integer.parseInt(dim);
 		}
 
@@ -89,12 +81,13 @@ public abstract class StreamGmlHelper {
 		if (indexInStream == null) {
 			instance = new OInstance(type, null); // not necessary to associate
 													// data set
-		} else {
+		}
+		else {
 			instance = new StreamGmlInstance(type, indexInStream);
 		}
 
 		// instance properties
-			parseProperties(reader, instance, strict, srsDimension);
+		parseProperties(reader, instance, strict, srsDimension);
 
 		// instance value
 		if (type.getConstraint(HasValueFlag.class).isEnabled()) {
@@ -111,8 +104,7 @@ public abstract class StreamGmlHelper {
 		// augmented value XXX should this be an else if?
 		if (type.getConstraint(AugmentedValueFlag.class).isEnabled()) {
 			// add geometry as a GeometryProperty value where applicable
-			GeometryFactory geomFactory = type
-					.getConstraint(GeometryFactory.class);
+			GeometryFactory geomFactory = type.getConstraint(GeometryFactory.class);
 			Object geomValue;
 
 			// the default value for the srsDimension
@@ -136,22 +128,16 @@ public abstract class StreamGmlHelper {
 	 * Populates an instance or group with its properties based on the given XML
 	 * stream reader.
 	 * 
-	 * @param reader
-	 *            the XML stream reader
-	 * @param group
-	 *            the group to populate with properties
-	 * @param strict
-	 *            if associating elements with properties should be done
+	 * @param reader the XML stream reader
+	 * @param group the group to populate with properties
+	 * @param strict if associating elements with properties should be done
 	 *            strictly according to the schema, otherwise a fall-back is
 	 *            used trying to populate values also on invalid property paths
-	 * @param srsDimension
-	 *            the dimension of the instance or <code>null</code>
-	 * @throws XMLStreamException
-	 *             if parsing the properties failed
+	 * @param srsDimension the dimension of the instance or <code>null</code>
+	 * @throws XMLStreamException if parsing the properties failed
 	 */
-	private static void parseProperties(XMLStreamReader reader,
-			MutableGroup group, boolean strict, Integer srsDimension)
-			throws XMLStreamException {
+	private static void parseProperties(XMLStreamReader reader, MutableGroup group, boolean strict,
+			Integer srsDimension) throws XMLStreamException {
 		final MutableGroup topGroup = group;
 
 		// attributes (usually only present in Instances)
@@ -162,17 +148,15 @@ public abstract class StreamGmlHelper {
 			// for group support there would have to be some other kind of
 			// handling than for elements, cause order doesn't matter for
 			// attributes
-			ChildDefinition<?> child = group.getDefinition().getChild(
-					propertyName);
+			ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
 			if (child != null && child.asProperty() != null) {
 				// add property value
-				addSimpleProperty(group, child.asProperty(),
-						reader.getAttributeValue(i));
-			} else {
-				log.warn(MessageFormat
-						.format("No property ''{0}'' found in type ''{1}'', value is ignored",
-								propertyName, group.getDefinition()
-										.getIdentifier()));
+				addSimpleProperty(group, child.asProperty(), reader.getAttributeValue(i));
+			}
+			else {
+				log.warn(MessageFormat.format(
+						"No property ''{0}'' found in type ''{1}'', value is ignored",
+						propertyName, group.getDefinition().getIdentifier()));
 			}
 		}
 
@@ -188,8 +172,8 @@ public abstract class StreamGmlHelper {
 				case XMLStreamConstants.START_ELEMENT:
 					// determine property definition, allow fall-back to
 					// non-strict mode
-					GroupProperty gp = GroupUtil.determineProperty(groups,
-							reader.getName(), !strict);
+					GroupProperty gp = GroupUtil.determineProperty(groups, reader.getName(),
+							!strict);
 					if (gp != null) {
 						// update the stack from the path
 						groups = gp.getPath().getAllGroups(strict);
@@ -202,20 +186,20 @@ public abstract class StreamGmlHelper {
 							// use an instance as value
 							group.addProperty(
 									property.getName(),
-									parseInstance(reader,
-											property.getPropertyType(), null,
-											strict, srsDimension));
-						} else {
+									parseInstance(reader, property.getPropertyType(), null, strict,
+											srsDimension));
+						}
+						else {
 							if (hasAttributes(property.getPropertyType())) {
 								// no elements but attributes
 								// use an instance as value, it will be assigned
 								// an instance value if possible
 								group.addProperty(
 										property.getName(),
-										parseInstance(reader,
-												property.getPropertyType(),
-												null, strict, srsDimension));
-							} else {
+										parseInstance(reader, property.getPropertyType(), null,
+												strict, srsDimension));
+							}
+							else {
 								// no elements and no attributes
 								// use simple value
 								String value = reader.getElementText();
@@ -224,12 +208,11 @@ public abstract class StreamGmlHelper {
 								}
 							}
 						}
-					} else {
-						log.warn(MessageFormat
-								.format("No property ''{0}'' found in type ''{1}'', value is ignored",
-										reader.getLocalName(), topGroup
-												.getDefinition()
-												.getIdentifier()));
+					}
+					else {
+						log.warn(MessageFormat.format(
+								"No property ''{0}'' found in type ''{1}'', value is ignored",
+								reader.getLocalName(), topGroup.getDefinition().getIdentifier()));
 					}
 
 					if (reader.getEventType() != XMLStreamConstants.END_ELEMENT) {
@@ -251,40 +234,39 @@ public abstract class StreamGmlHelper {
 	 * Determines if the given type has properties that are represented as XML
 	 * elements.
 	 * 
-	 * @param group
-	 *            the type definition
+	 * @param group the type definition
 	 * @return if the type is a complex type
 	 */
 	static boolean hasElements(DefinitionGroup group) {
-		return hasElementsOrAttributes(group, false,
-				new HashSet<DefinitionGroup>());
+		return hasElementsOrAttributes(group, false, new HashSet<DefinitionGroup>());
 	}
 
-	private static boolean hasElementsOrAttributes(DefinitionGroup group,
-			boolean attributes, Set<DefinitionGroup> tested) {
+	private static boolean hasElementsOrAttributes(DefinitionGroup group, boolean attributes,
+			Set<DefinitionGroup> tested) {
 		if (tested.contains(group)) {
 			// prevent cycles
 			return false;
-		} else {
+		}
+		else {
 			tested.add(group);
 		}
 
-		Collection<? extends ChildDefinition<?>> children = DefinitionUtil
-				.getAllChildren(group);
+		Collection<? extends ChildDefinition<?>> children = DefinitionUtil.getAllChildren(group);
 
 		for (ChildDefinition<?> child : children) {
 			if (child.asProperty() != null) {
-				if (child.asProperty().getConstraint(XmlAttributeFlag.class)
-						.isEnabled()) {
+				if (child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
 					if (attributes) {
 						return true;
 					}
-				} else {
+				}
+				else {
 					if (!attributes) {
 						return true;
 					}
 				}
-			} else if (child.asGroup() != null) {
+			}
+			else if (child.asGroup() != null) {
 				if (hasElementsOrAttributes(child.asGroup(), attributes, tested)) {
 					return true;
 				}
@@ -298,28 +280,23 @@ public abstract class StreamGmlHelper {
 	 * Determines if the given type has properties that are represented as XML
 	 * attributes.
 	 * 
-	 * @param group
-	 *            the type definition
+	 * @param group the type definition
 	 * @return if the type has at least one XML attribute property
 	 */
 	static boolean hasAttributes(DefinitionGroup group) {
-		return hasElementsOrAttributes(group, true,
-				new HashSet<DefinitionGroup>());
+		return hasElementsOrAttributes(group, true, new HashSet<DefinitionGroup>());
 	}
 
 	/**
 	 * Adds a property value to the given instance. The property value will be
 	 * converted appropriately.
 	 * 
-	 * @param group
-	 *            the instance
-	 * @param property
-	 *            the property
-	 * @param value
-	 *            the property value as specified in the XML
+	 * @param group the instance
+	 * @param property the property
+	 * @param value the property value as specified in the XML
 	 */
-	private static void addSimpleProperty(MutableGroup group,
-			PropertyDefinition property, String value) {
+	private static void addSimpleProperty(MutableGroup group, PropertyDefinition property,
+			String value) {
 		Object val = convertSimple(property.getPropertyType(), value);
 		group.addProperty(property.getName(), val);
 	}
@@ -328,10 +305,8 @@ public abstract class StreamGmlHelper {
 	 * Convert a string value from a XML simple type to the binding defined by
 	 * the given type.
 	 * 
-	 * @param type
-	 *            the type associated with the value
-	 * @param value
-	 *            the value
+	 * @param type the type associated with the value
+	 * @param value the value
 	 * @return the converted object
 	 */
 	private static Object convertSimple(TypeDefinition type, String value) {

@@ -18,12 +18,14 @@ import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 
 /**
  * Provides support for reading styles.
+ * 
  * @author Simon Templer
  */
 public interface StyleReader extends ImportProvider {
-	
+
 	/**
 	 * Get the styles that have been read.
+	 * 
 	 * @return the styles
 	 */
 	public Style[] getStyles();

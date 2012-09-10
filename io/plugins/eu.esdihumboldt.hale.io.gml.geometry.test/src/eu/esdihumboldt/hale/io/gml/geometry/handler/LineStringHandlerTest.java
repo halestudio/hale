@@ -47,21 +47,21 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 
 		Coordinate[] coordinates = new Coordinate[] {
 				new Coordinate(-39799.68820381, 273207.53980172),
-				new Coordinate(-39841.185, 273182.863),
-				new Coordinate(-39882.89, 273153.86) };
+				new Coordinate(-39841.185, 273182.863), new Coordinate(-39882.89, 273153.86) };
 		reference = geomFactory.createLineString(coordinates);
 	}
 
 	/**
 	 * Test linestring geometries read from a GML 2 file
+	 * 
 	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testLineStringGml2() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(), 
+				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
 				getClass().getResource("/data/linestring/sample-linestring-gml2.xml").toURI());
-		
+
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
@@ -69,12 +69,12 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 2. LineStringProperty with LineString defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 3. LineStringProperty with LineString defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
@@ -83,17 +83,18 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			it.close();
 		}
 	}
-	
+
 	/**
 	 * Test linestring geometries read from a GML 3 file
+	 * 
 	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testLineStringGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-		getClass().getResource("/data/gml/geom-gml3.xsd").toURI(), 
-		getClass().getResource("/data/linestring/sample-linestring-gml3.xml").toURI());
-		
+				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
+				getClass().getResource("/data/linestring/sample-linestring-gml3.xml").toURI());
+
 		// five instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
@@ -101,22 +102,22 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 2. LineStringProperty with LineString defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 3. GeometryProperty with LineString defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkGeometryPropertyInstance(instance);
-			
+
 			// 4. LineStringProperty with LineString defined through pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-						
+
 			// 5. LineStringProperty with LineString defined through pointRep
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
@@ -125,17 +126,18 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			it.close();
 		}
 	}
-	
+
 	/**
 	 * Test linestring geometries read from a GML 3.1 file
+	 * 
 	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testLineStringGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-		getClass().getResource("/data/gml/geom-gml31.xsd").toURI(), 
-		getClass().getResource("/data/linestring/sample-linestring-gml31.xml").toURI());
-		
+				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
+				getClass().getResource("/data/linestring/sample-linestring-gml31.xml").toURI());
+
 		// five instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
@@ -143,27 +145,28 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 2. LineStringProperty with LineString defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 3. LineStringProperty with LineString defined through pos
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 4. LineStringProperty with LineString defined through pointRep
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-						
-			// 5. LineStringProperty with LineString defined through pointProperty
+
+			// 5. LineStringProperty with LineString defined through
+			// pointProperty
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 6. LineStringProperty with LineString defined through posList
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
@@ -172,17 +175,18 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			it.close();
 		}
 	}
-	
+
 	/**
 	 * Test linestring geometries read from a GML 3.2 file
+	 * 
 	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testLineStringGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-		getClass().getResource("/data/gml/geom-gml32.xsd").toURI(), 
-		getClass().getResource("/data/linestring/sample-linestring-gml32.xml").toURI());
-		
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/linestring/sample-linestring-gml32.xml").toURI());
+
 		// five instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
@@ -190,22 +194,23 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 2. LineStringProperty with LineString defined through pos
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
+
 			// 3. LineStringProperty with LineString defined through pointRep
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-			
-			// 4. LineStringProperty with LineString defined through pointProperty
+
+			// 4. LineStringProperty with LineString defined through
+			// pointProperty
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkLineStringPropertyInstance(instance);
-						
+
 			// 5. LineStringProperty with LineString defined through posList
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
@@ -214,38 +219,38 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			it.close();
 		}
 	}
-	
+
 	private void checkGeometryPropertyInstance(Instance instance) {
 		Collection<Object> geomVals = PropertyResolver.getValues(instance, "LineString", false);
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.size());
-		
+
 		Object geom = geomVals.iterator().next();
 		assertTrue(geom instanceof Instance);
-		
+
 		Instance geomInstance = (Instance) geom;
 		checkGeomInstance(geomInstance);
 	}
-	
+
 	private void checkLineStringPropertyInstance(Instance instance) {
-		Object[] geomVals = instance.getProperty(
-				new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
-		
+
 		Object geom = geomVals[0];
 		assertTrue(geom instanceof Instance);
-		
+
 		Instance geomInstance = (Instance) geom;
 		checkGeomInstance(geomInstance);
 	}
-	
+
 	private void checkGeomInstance(Instance geomInstance) {
 		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
-		
+
 		@SuppressWarnings("unchecked")
-		LineString linestring = ((GeometryProperty<LineString>) geomInstance.getValue()).getGeometry();
-		assertTrue("Read geometry does not match the reference geometry", 
+		LineString linestring = ((GeometryProperty<LineString>) geomInstance.getValue())
+				.getGeometry();
+		assertTrue("Read geometry does not match the reference geometry",
 				linestring.equalsExact(reference));
 	}
 }

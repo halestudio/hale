@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.views.data.internal;
 
 /**
  * Enumeration for meta datas
+ * 
  * @author Sebastian Reinhardt
  */
 public enum Metadata {
@@ -22,5 +23,5 @@ public enum Metadata {
 	 * enum for metadata identification
 	 */
 	METADATA;
-	
+
 }

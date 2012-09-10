@@ -19,12 +19,13 @@ import org.eclipse.swt.graphics.Point;
 
 /**
  * Abstract wizard node implementation.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractWizardNode implements ExtendedWizardNode {
-	
+
 	private IWizard wizard;
-	
+
 	private final IWizardContainer container;
 
 	/**
@@ -61,17 +62,19 @@ public abstract class AbstractWizardNode implements ExtendedWizardNode {
 	public IWizard getWizard() {
 		if (wizard == null) {
 			wizard = createWizard();
-			
+
 			// first time setup
-			//XXX provide wrapped container? - IPageChangeProvider, IWizardContainer
+			// XXX provide wrapped container? - IPageChangeProvider,
+			// IWizardContainer
 			wizard.setContainer(container);
 		}
-		
+
 		return wizard;
 	}
 
 	/**
 	 * Create the wizard represented by the node
+	 * 
 	 * @return the wizard
 	 */
 	protected abstract IWizard createWizard();

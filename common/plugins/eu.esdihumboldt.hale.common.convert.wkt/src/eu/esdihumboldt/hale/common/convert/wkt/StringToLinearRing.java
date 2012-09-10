@@ -18,10 +18,11 @@ import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverte
 
 /**
  * Converts Strings to LinearRings
+ * 
  * @author Kevin Mais
  */
-public class StringToLinearRing extends AbstractGeometryConverter<LinearRing>{
-	
+public class StringToLinearRing extends AbstractGeometryConverter<LinearRing> {
+
 	// concrete typed class
 
 }

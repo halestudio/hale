@@ -19,13 +19,15 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 
 /**
  * Transformation service
+ * 
  * @author Simon Templer
  * @since 2.5
  */
 public interface TransformationService {
-	
+
 	/**
 	 * Transform a set of source instances according to the given alignment.
+	 * 
 	 * @param alignment the alignment
 	 * @param source the source instances
 	 * @param target the transformed instance sink
@@ -34,9 +36,10 @@ public interface TransformationService {
 	 */
 	public TransformationReport transform(Alignment alignment, InstanceCollection source,
 			InstanceSink target, ProgressIndicator progressIndicator);
-	
+
 	/**
 	 * States if the execution of the transformation is cancelable.
+	 * 
 	 * @return if the transformation can be canceled
 	 */
 	public boolean isCancelable();

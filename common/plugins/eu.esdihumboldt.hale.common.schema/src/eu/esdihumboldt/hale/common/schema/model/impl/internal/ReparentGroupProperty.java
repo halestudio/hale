@@ -23,11 +23,12 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
 
 /**
  * Decorator for {@link GroupPropertyDefinition}s that has a changed parent type
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class ReparentGroupProperty extends AbstractGroupPropertyDecorator {
-	
+
 	private final TypeDefinition parent;
 
 	/**
@@ -38,9 +39,9 @@ public class ReparentGroupProperty extends AbstractGroupPropertyDecorator {
 	 */
 	public ReparentGroupProperty(GroupPropertyDefinition propertyGroup, TypeDefinition newParent) {
 		super(propertyGroup);
-		
+
 		Preconditions.checkNotNull(newParent);
-		
+
 		this.parent = newParent;
 	}
 

@@ -38,15 +38,18 @@ public interface GC_Manager {
 	 * It adds a Grounding Catalogue to the IGS. In order to it is available for
 	 * the user.
 	 * 
-	 * @param gc -
-	 *            {@link GroundingCatalogue} to be added
-	 * @throws GroundingCatalogueRepositoryException if an error in  the repository occurs
+	 * @param gc
+	 *            - {@link GroundingCatalogue} to be added
+	 * @throws GroundingCatalogueRepositoryException
+	 *             if an error in the repository occurs
 	 * @throws InconsistentGroundingCatalogueException
 	 *             if the {@link GroundingCatalogue} to be added is not valid.
-	 * @throws GroundingCatalogueNotFoundException 
+	 * @throws GroundingCatalogueNotFoundException
 	 */
-	void addGroundingCatalogue(GroundingCatalogue gc) throws GroundingCatalogueRepositoryException,
-			InconsistentGroundingCatalogueException, GroundingCatalogueNotFoundException;
+	void addGroundingCatalogue(GroundingCatalogue gc)
+			throws GroundingCatalogueRepositoryException,
+			InconsistentGroundingCatalogueException,
+			GroundingCatalogueNotFoundException;
 
 	/**
 	 * It retrieves a list of Grounding Catalogues which were configured
@@ -55,24 +58,32 @@ public interface GC_Manager {
 	 * @return a List of {@link GroundingCatalogue} which were available in the
 	 *         repository. Returns an empty list, if no GroundingCatalogue is
 	 *         available.
-	 * @throws InconsistentGroundingCatalogueException if reading a GC is erroneous
-	 * @throws GroundingCatalogueRepositoryException if an error in  the repository occurs
+	 * @throws InconsistentGroundingCatalogueException
+	 *             if reading a GC is erroneous
+	 * @throws GroundingCatalogueRepositoryException
+	 *             if an error in the repository occurs
 	 */
-	List<GroundingCatalogue> getAllGroundingCatalogues() throws InconsistentGroundingCatalogueException,
+	List<GroundingCatalogue> getAllGroundingCatalogues()
+			throws InconsistentGroundingCatalogueException,
 			GroundingCatalogueRepositoryException;
 
 	/**
 	 * It removes a Grounding Catalogue from the IGS. In order to it is not
 	 * available for the user.
 	 * 
-	 * @param gc -
-	 *            {@link GroundingCatalogue} to be removed
-	 * @throws GroundingCatalogueNotFoundException if a GC is not found in the repository
-	 * @throws GroundingCatalogueRepositoryException if an error in the repository occurs
-	 * @throws InconsistentGroundingCatalogueException if a GC is inconsistent
-	 *             if the {@link GroundingCatalogue} to be removed is not valid.
+	 * @param gc
+	 *            - {@link GroundingCatalogue} to be removed
+	 * @throws GroundingCatalogueNotFoundException
+	 *             if a GC is not found in the repository
+	 * @throws GroundingCatalogueRepositoryException
+	 *             if an error in the repository occurs
+	 * @throws InconsistentGroundingCatalogueException
+	 *             if a GC is inconsistent if the {@link GroundingCatalogue} to
+	 *             be removed is not valid.
 	 */
-	void removeGroundingCatalogue(GroundingCatalogue gc) throws InconsistentGroundingCatalogueException,
-			GroundingCatalogueNotFoundException, GroundingCatalogueRepositoryException;
-	
+	void removeGroundingCatalogue(GroundingCatalogue gc)
+			throws InconsistentGroundingCatalogueException,
+			GroundingCatalogueNotFoundException,
+			GroundingCatalogueRepositoryException;
+
 }

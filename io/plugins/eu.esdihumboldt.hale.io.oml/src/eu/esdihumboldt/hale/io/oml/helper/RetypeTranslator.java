@@ -45,16 +45,14 @@ public class RetypeTranslator implements FunctionTranslator, RetypeFunction {
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 		for (ParameterValue val : params) {
 			if (val.getName().equals("split") && val.getValue() != null) {
-				reporter.error(new IOMessageImpl(
-						"The 'split' value has been removed.", null));
+				reporter.error(new IOMessageImpl("The 'split' value has been removed.", null));
 			}
 			if (val.getName().equals("merge") && val.getValue() != null) {
-				reporter.error(new IOMessageImpl(
-						"The 'merge' value has been removed.", null));
+				reporter.error(new IOMessageImpl("The 'merge' value has been removed.", null));
 			}
 		}
 		// the retype function has no parameters, so just return an empty list

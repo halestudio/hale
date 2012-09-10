@@ -17,8 +17,9 @@ import java.util.Iterator;
 
 /**
  * Extends the iterator interface with a possibility to dispose the iterator.
+ * 
  * @param <T> the type of objects that can be iterated over
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -30,5 +31,5 @@ public interface ResourceIterator<T> extends Iterator<T>, Closeable {
 	 */
 	@Override
 	public void close();
-	
+
 }

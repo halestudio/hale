@@ -37,29 +37,26 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class MarkEditor implements Editor<Mark> {
-	
+
 	/**
 	 * Mark names for {@link Mark} creation
 	 */
-	private static final String[] MARKS = new String[]{
-		StyleBuilder.MARK_X, StyleBuilder.MARK_ARROW,
-		StyleBuilder.MARK_CIRCLE, StyleBuilder.MARK_CROSS,
-		StyleBuilder.MARK_SQUARE, StyleBuilder.MARK_STAR,
-		StyleBuilder.MARK_TRIANGLE
-	};
-	
+	private static final String[] MARKS = new String[] { StyleBuilder.MARK_X,
+			StyleBuilder.MARK_ARROW, StyleBuilder.MARK_CIRCLE, StyleBuilder.MARK_CROSS,
+			StyleBuilder.MARK_SQUARE, StyleBuilder.MARK_STAR, StyleBuilder.MARK_TRIANGLE };
+
 	private static final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private final Composite page;
-	
+
 	private final StrokeEditor strokeEditor;
-	
+
 	private final FillEditor fillEditor;
-	
+
 	private final ComboViewer markView;
-	
+
 	private boolean changed = false;
-	
+
 	/**
 	 * Creates a {@link Mark} editor
 	 * 
@@ -70,40 +67,40 @@ public class MarkEditor implements Editor<Mark> {
 		if (mark == null) {
 			mark = styleBuilder.createMark(StyleBuilder.MARK_SQUARE);
 		}
-		
+
 		page = new Composite(parent, SWT.NONE);
-		
+
 		RowLayout layout = new RowLayout(SWT.VERTICAL);
 		page.setLayout(layout);
-		
+
 		// mark
 		Composite markComp = new Composite(page, SWT.NONE);
 		markComp.setLayout(new GridLayout(2, false));
-		
+
 		Label markLabel = new Label(markComp, SWT.NONE);
 		markLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		markLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		markLabel.setText(Messages.MarkEditor_MarkLabel);
-		
+
 		Combo markCombo = new Combo(markComp, SWT.READ_ONLY);
 		markCombo.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		markView = new ComboViewer(markCombo);
 		markView.add(MARKS);
 		markView.setSelection(new StructuredSelection(mark.getWellKnownName().toString()));
 		markView.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				changed = true;
 			}
 		});
-		
+
 		// stroke
 		Label strokeLabel = new Label(page, SWT.NONE);
 		strokeLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		strokeLabel.setText(Messages.MarkEditor_StrokeLabel);
 		strokeEditor = new StrokeEditor(page, mark.getStroke());
-		
+
 		// fill
 		Label fillLabel = new Label(page, SWT.NONE);
 		fillLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
@@ -124,8 +121,9 @@ public class MarkEditor implements Editor<Mark> {
 	 */
 	@Override
 	public Mark getValue() {
-		String markName = (String) ((IStructuredSelection) markView.getSelection()).getFirstElement();
-		
+		String markName = (String) ((IStructuredSelection) markView.getSelection())
+				.getFirstElement();
+
 		return styleBuilder.createMark(markName, fillEditor.getValue(), strokeEditor.getValue());
 	}
 
@@ -134,7 +132,7 @@ public class MarkEditor implements Editor<Mark> {
 	 */
 	@Override
 	public boolean isChanged() {
-		return changed || strokeEditor.isChanged() || fillEditor.isChanged(); 
+		return changed || strokeEditor.isChanged() || fillEditor.isChanged();
 	}
 
 	/**
@@ -145,7 +143,7 @@ public class MarkEditor implements Editor<Mark> {
 		if (mark == null) {
 			mark = styleBuilder.createMark(StyleBuilder.MARK_SQUARE);
 		}
-		
+
 		markView.setSelection(new StructuredSelection(mark.getWellKnownName().toString()));
 		strokeEditor.setValue(mark.getStroke());
 		fillEditor.setValue(mark.getFill());

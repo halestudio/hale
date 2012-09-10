@@ -28,23 +28,24 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Properties section with XmlAttributeFlag
+ * 
  * @author Patrick Lieb
  */
-public class PropertyTypeXmlAttributeFlagSection extends DefaultDefinitionSection<PropertyDefinition> {
-	
+public class PropertyTypeXmlAttributeFlagSection extends
+		DefaultDefinitionSection<PropertyDefinition> {
+
 	private Text xmlattributeflag;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-		.createFlatFormComposite(parent);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
-		
+
 		xmlattributeflag = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
 		xmlattributeflag.setEditable(false);
 		data = new FormData();
@@ -52,15 +53,14 @@ public class PropertyTypeXmlAttributeFlagSection extends DefaultDefinitionSectio
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		xmlattributeflag.setLayoutData(data);
-		
-		CLabel namespaceLabel = getWidgetFactory()
-		.createCLabel(composite, "XML-Attribute-Flag:"); //$NON-NLS-1$
+
+		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite, "XML-Attribute-Flag:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(xmlattributeflag, 10);
 		data.top = new FormAttachment(xmlattributeflag, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
-		
+
 	}
 
 	/**
@@ -68,9 +68,10 @@ public class PropertyTypeXmlAttributeFlagSection extends DefaultDefinitionSectio
 	 */
 	@Override
 	public void refresh() {
-		if (getDefinition().getConstraint(XmlAttributeFlag.class).isEnabled()){
+		if (getDefinition().getConstraint(XmlAttributeFlag.class).isEnabled()) {
 			xmlattributeflag.setText("true");
-		} else {
+		}
+		else {
 			xmlattributeflag.setText("false");
 		}
 	}

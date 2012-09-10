@@ -29,8 +29,7 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class OrdinatesToPointTranslator implements FunctionTranslator,
-		OrdinatesToPointFunction {
+public class OrdinatesToPointTranslator implements FunctionTranslator, OrdinatesToPointFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -47,11 +46,10 @@ public class OrdinatesToPointTranslator implements FunctionTranslator,
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 
-		reporter.warn(new IOMessageImpl(
-				"Behavior of this function has changed.", null));
+		reporter.warn(new IOMessageImpl("Behavior of this function has changed.", null));
 
 		List<NamedEntityBean> src = cellBean.getSource();
 

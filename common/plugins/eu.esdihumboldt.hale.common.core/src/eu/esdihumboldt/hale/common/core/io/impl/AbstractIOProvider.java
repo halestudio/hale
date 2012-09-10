@@ -30,35 +30,35 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 
 /**
- * Abstract base class for implementing {@link IOProvider}s 
- *
+ * Abstract base class for implementing {@link IOProvider}s
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
 public abstract class AbstractIOProvider implements IOProvider {
-	
+
 	/**
 	 * The configuration parameters
 	 */
 	private final Map<String, String> parameters = new HashMap<String, String>();
-	
+
 	/**
 	 * The supported configuration parameter names
 	 */
 	private final Set<String> supported = new HashSet<String>();
-	
+
 	/**
 	 * The content type
 	 */
 	private IContentType contentType = null;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	protected AbstractIOProvider() {
 		super();
-		
+
 		addSupportedParameter(PARAM_CONTENT_TYPE);
 	}
 
@@ -66,9 +66,10 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 * @see IOProvider#execute(ProgressIndicator)
 	 */
 	@Override
-	public IOReport execute(ProgressIndicator progress)
-			throws IOProviderConfigurationException, IOException {
-		return execute((progress == null)?(new LogProgressIndicator()):(progress), createReporter());
+	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException,
+			IOException {
+		return execute((progress == null) ? (new LogProgressIndicator()) : (progress),
+				createReporter());
 	}
 
 	/**
@@ -77,17 +78,17 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 * @param progress the progress indicator
 	 * @param reporter the reporter to use for the execution report
 	 * @return the execution report
-	 *  
+	 * 
 	 * @throws IOProviderConfigurationException if the I/O provider was not
-	 *   configured properly 
+	 *             configured properly
 	 * @throws IOException if an I/O operation fails
 	 */
-	protected abstract IOReport execute(ProgressIndicator progress,
-			IOReporter reporter) throws IOProviderConfigurationException,
-			IOException;
-	
+	protected abstract IOReport execute(ProgressIndicator progress, IOReporter reporter)
+			throws IOProviderConfigurationException, IOException;
+
 	/**
 	 * Get the content type name.
+	 * 
 	 * @return the content type name
 	 */
 	protected String getTypeName() {
@@ -95,12 +96,13 @@ public abstract class AbstractIOProvider implements IOProvider {
 		if (ct != null) {
 			return ct.getName();
 		}
-		
+
 		return getDefaultTypeName();
 	}
 
 	/**
 	 * Get the default type name if no content type is provided
+	 * 
 	 * @return the default content type
 	 */
 	protected abstract String getDefaultTypeName();
@@ -110,12 +112,13 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 */
 	@Override
 	public void validate() throws IOProviderConfigurationException {
-		//TODO check parameters?
+		// TODO check parameters?
 	}
-	
+
 	/**
 	 * Uses {@link #setParameter(String, String)} to load the configuration. For
-	 * changing the behavior please override {@link #setParameter(String, String)}
+	 * changing the behavior please override
+	 * {@link #setParameter(String, String)}
 	 * 
 	 * @see IOProvider#loadConfiguration(Map)
 	 */
@@ -127,9 +130,9 @@ public abstract class AbstractIOProvider implements IOProvider {
 	}
 
 	/**
-	 * Stores all parameters that were set using {@link #setParameter(String, String)}
-	 * in the configuration. For changing the behavior please override this
-	 * method.
+	 * Stores all parameters that were set using
+	 * {@link #setParameter(String, String)} in the configuration. For changing
+	 * the behavior please override this method.
 	 * 
 	 * @see IOProvider#storeConfiguration(Map)
 	 */
@@ -139,7 +142,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 		if (contentType != null) {
 			configuration.put(PARAM_CONTENT_TYPE, contentType.getId());
 		}
-		
+
 		// store generic parameters
 		configuration.putAll(parameters);
 	}
@@ -163,7 +166,7 @@ public abstract class AbstractIOProvider implements IOProvider {
 	protected void addSupportedParameter(String name) {
 		supported.add(name);
 	}
-	
+
 	/**
 	 * @see IOProvider#getParameter(String)
 	 */

@@ -17,11 +17,12 @@ import eu.esdihumboldt.util.definition.ObjectDefinition;
 
 /**
  * Definition for a certain type of {@link Filter}s.
+ * 
  * @author Simon Templer
  * @param <F> the filter type
  */
 public interface FilterDefinition<F extends Filter> extends ObjectDefinition<F> {
 
 	// concrete typed interface
-	
+
 }

@@ -66,10 +66,8 @@ public class OInstance extends OGroup implements MutableInstance {
 	/**
 	 * Creates an empty instance associated with the given type.
 	 * 
-	 * @param typeDef
-	 *            the definition of the instance's type
-	 * @param dataSet
-	 *            the data set the instance is associated to
+	 * @param typeDef the definition of the instance's type
+	 * @param dataSet the data set the instance is associated to
 	 */
 	public OInstance(TypeDefinition typeDef, DataSet dataSet) {
 		super(typeDef);
@@ -80,17 +78,12 @@ public class OInstance extends OGroup implements MutableInstance {
 	/**
 	 * Creates an instance based on the given document.
 	 * 
-	 * @param document
-	 *            the document
-	 * @param typeDef
-	 *            the definition of the instance's type
-	 * @param db
-	 *            the database
-	 * @param dataSet
-	 *            the data set the instance is associated to
+	 * @param document the document
+	 * @param typeDef the definition of the instance's type
+	 * @param db the database
+	 * @param dataSet the data set the instance is associated to
 	 */
-	public OInstance(ODocument document, TypeDefinition typeDef,
-			ODatabaseRecord db, DataSet dataSet) {
+	public OInstance(ODocument document, TypeDefinition typeDef, ODatabaseRecord db, DataSet dataSet) {
 		super(document, typeDef, db);
 
 		this.dataSet = dataSet;
@@ -100,16 +93,15 @@ public class OInstance extends OGroup implements MutableInstance {
 	 * Copy constructor. Creates an instance based on the properties and values
 	 * of the given instance.
 	 * 
-	 * @param org
-	 *            the instance to copy
+	 * @param org the instance to copy
 	 */
 	public OInstance(Instance org) {
 		super(org);
 
 		setValue(org.getValue());
 		setDataSet(org.getDataSet());
-		
-		for(String key : org.getMetaDataNames()){
+
+		for (String key : org.getMetaDataNames()) {
 			setMetaData(key, org.getMetaData(key).toArray());
 		}
 	}
@@ -140,7 +132,8 @@ public class OInstance extends OGroup implements MutableInstance {
 		Collection<String> superFields = super.getSpecialFieldNames();
 		if (superFields.isEmpty()) {
 			return SPECIAL_FIELDS;
-		} else {
+		}
+		else {
 			Set<String> result = new HashSet<String>(superFields);
 			result.addAll(SPECIAL_FIELDS);
 			return result;
@@ -173,7 +166,7 @@ public class OInstance extends OGroup implements MutableInstance {
 		associatedDbWithThread();
 
 		ODocument datafield = (ODocument) document.field(FIELD_METADATA);
-		
+
 		if (datafield == null) {
 			return Collections.emptyList();
 		}
@@ -194,66 +187,67 @@ public class OInstance extends OGroup implements MutableInstance {
 	@Override
 	public void putMetaData(String key, Object obj) {
 
-		Preconditions.checkArgument(!(obj instanceof ODocument
-				|| obj instanceof Instance || obj instanceof Group));
+		Preconditions
+				.checkArgument(!(obj instanceof ODocument || obj instanceof Instance || obj instanceof Group));
 
 		ODocument metaData;
 
 		if (document.field(FIELD_METADATA) == null) {
 			metaData = new ODocument();
 			document.field(FIELD_METADATA, metaData);
-		} else {
+		}
+		else {
 			metaData = (ODocument) document.field(FIELD_METADATA);
 		}
 
 		addProperty(new QName(key), obj, metaData);
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaDataNames()
 	 */
 	@Override
-	public Set<String> getMetaDataNames(){
+	public Set<String> getMetaDataNames() {
 		associatedDbWithThread();
-		
+
 		ODocument datafield = (ODocument) document.field(FIELD_METADATA);
-		
-		if(datafield == null 
-				//|| datafield.isEmpty()
-				){
+
+		if (datafield == null
+		// || datafield.isEmpty()
+		) {
 			return Collections.emptySet();
 		}
-		
+
 		Iterable<QName> it = getPropertyNames(datafield);
-		
+
 		Set<String> keys = new HashSet<String>();
 		for (QName field : it) {
 			keys.add(field.getLocalPart());
-			
+
 		}
 		return keys;
-			
+
 	}
-	
+
 	/**
-	 * {@inheritDoc}
-	 * The parameter values may not contain an ODocument
+	 * {@inheritDoc} The parameter values may not contain an ODocument
 	 */
 	@Override
-	public void setMetaData(String key, Object... values){
-		
-		for(Object value : values){
-			Preconditions.checkArgument(!(value instanceof ODocument
-					|| value instanceof Instance || value instanceof Group));
+	public void setMetaData(String key, Object... values) {
+
+		for (Object value : values) {
+			Preconditions
+					.checkArgument(!(value instanceof ODocument || value instanceof Instance || value instanceof Group));
 		}
-		
+
 		ODocument metaData;
 		if (document.field(FIELD_METADATA) == null) {
 			metaData = new ODocument();
 			document.field(FIELD_METADATA, metaData);
-		} 
-		else metaData = ((ODocument) document.field(FIELD_METADATA));
-		
+		}
+		else
+			metaData = ((ODocument) document.field(FIELD_METADATA));
+
 		setPropertyInternal(metaData, new QName(key), values);
 	}
 

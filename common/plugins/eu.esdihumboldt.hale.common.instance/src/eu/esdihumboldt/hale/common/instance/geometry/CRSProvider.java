@@ -18,16 +18,17 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 /**
  * Interface for classes that provide CRS definitions based on
  * {@link PropertyDefinition}s.
- *  
+ * 
  * @author Simon Templer
  */
 public interface CRSProvider {
 
 	/**
 	 * Get the CRS definition for values of the given property definition.
+	 * 
 	 * @param property the property definition
 	 * @return the CRS definition or <code>null</code> if it can't be determined
 	 */
 	public CRSDefinition getCRS(PropertyDefinition property);
-	
+
 }

@@ -21,15 +21,16 @@ import org.w3c.dom.NodeList;
 
 /**
  * Utilities and constants for XML schemas
+ * 
  * @author Simon Templer
  */
 public abstract class XMLSchemaIO {
-	
+
 //	/**
 //	 * The XML schema content type ID
 //	 */
 //	public static final ContentType XSD_CT = ContentType.getContentType("XSD");
-	
+
 	/**
 	 * Get the documentation from an annotated XML object
 	 * 
@@ -52,13 +53,13 @@ public abstract class XMLSchemaIO {
 					}
 				}
 			}
-			
+
 			String description = desc.toString();
 			if (!description.isEmpty()) {
 				return description;
 			}
 		}
-		
+
 		return null;
 	}
 

@@ -18,7 +18,7 @@ import java.net.URI;
  * 
  * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface SchemaElement {
 
@@ -26,5 +26,5 @@ public interface SchemaElement {
 	 * @return the URI identifying the {@link SchemaElement}.
 	 */
 	public URI getIdentifier();
-	
+
 }

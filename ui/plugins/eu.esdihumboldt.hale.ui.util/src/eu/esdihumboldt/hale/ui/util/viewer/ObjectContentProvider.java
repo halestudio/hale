@@ -18,14 +18,16 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Content provider that uses the input as single element.
+ * 
  * @author Simon Templer
  */
 public class ObjectContentProvider implements IStructuredContentProvider {
 
 	private static ObjectContentProvider instance;
-	
+
 	/**
 	 * Get the content provider instance
+	 * 
 	 * @return the content provider instance
 	 */
 	public static ObjectContentProvider getInstance() {
@@ -34,7 +36,7 @@ public class ObjectContentProvider implements IStructuredContentProvider {
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -67,7 +69,7 @@ public class ObjectContentProvider implements IStructuredContentProvider {
 			return new Object[0];
 		}
 		else {
-			return new Object[]{inputElement};
+			return new Object[] { inputElement };
 		}
 	}
 

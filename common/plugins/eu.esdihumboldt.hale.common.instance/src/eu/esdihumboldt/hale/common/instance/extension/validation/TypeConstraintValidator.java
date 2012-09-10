@@ -17,18 +17,19 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 
 /**
  * Validates type constraints.
- *
+ * 
  * @author Kai Schwierczek
  */
 public interface TypeConstraintValidator extends ConstraintValidator {
+
 	/**
 	 * Validate <code>instance</code> against <code>constraint</code>.
-	 *
+	 * 
 	 * @param instance the instance to validate
 	 * @param constraint the constraint to validate
 	 * @param context the validation context
 	 * @throws ValidationException if the validation fails
 	 */
-	public void validateTypeConstraint(Instance instance,
-			TypeConstraint constraint, InstanceValidationContext context) throws ValidationException;
+	public void validateTypeConstraint(Instance instance, TypeConstraint constraint,
+			InstanceValidationContext context) throws ValidationException;
 }

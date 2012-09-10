@@ -21,10 +21,11 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener;
 
 /**
  * Abstract base implementation for project services
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractProjectService implements ProjectService {
-	
+
 	private final TypeSafeListenerList<ProjectServiceListener> listeners = new TypeSafeListenerList<ProjectServiceListener>();
 
 	/**
@@ -42,29 +43,31 @@ public abstract class AbstractProjectService implements ProjectService {
 	public void removeListener(ProjectServiceListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	/**
 	 * Call before a project is saved.
+	 * 
 	 * @param projectFiles the map of additional project files, listeners may
-	 *   add additional files to the map
+	 *            add additional files to the map
 	 */
 	protected void notifyBeforeSave(Map<String, ProjectFile> projectFiles) {
 		for (ProjectServiceListener listener : listeners) {
 			listener.beforeSave(this, projectFiles);
 		}
 	}
-	
+
 	/**
 	 * Call after a project was loaded.
+	 * 
 	 * @param projectFiles the additional project files that were loaded,
-	 *   listeners may use them to update their state
+	 *            listeners may use them to update their state
 	 */
 	protected void notifyAfterLoad(Map<String, ProjectFile> projectFiles) {
 		for (ProjectServiceListener listener : listeners) {
 			listener.afterLoad(this, projectFiles);
 		}
 	}
-	
+
 	/**
 	 * Call when the project is cleaned.
 	 */
@@ -73,5 +76,5 @@ public abstract class AbstractProjectService implements ProjectService {
 			listener.onClean();
 		}
 	}
-	
+
 }

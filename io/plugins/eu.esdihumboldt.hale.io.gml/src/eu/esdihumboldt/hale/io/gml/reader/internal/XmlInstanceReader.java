@@ -12,9 +12,9 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal;
 
-
 /**
  * Factory for XML instance readers
+ * 
  * @author Simon Templer
  */
 public class XmlInstanceReader extends StreamGmlReader {

@@ -22,14 +22,16 @@ import com.google.common.base.Objects;
 
 /**
  * Wraps a topic in an {@link IToc}
+ * 
  * @author Simon Templer
  */
 public class OneTopicToc implements IToc {
-	
+
 	private final ITopic topic;
 
 	/**
 	 * Create a TOC wrapping a topic.
+	 * 
 	 * @param topic the topic
 	 */
 	public OneTopicToc(ITopic topic) {
@@ -75,7 +77,7 @@ public class OneTopicToc implements IToc {
 	 */
 	@Override
 	public ITopic[] getTopics() {
-		return new ITopic[]{topic};
+		return new ITopic[] { topic };
 	}
 
 	/**
@@ -86,7 +88,7 @@ public class OneTopicToc implements IToc {
 		if (Objects.equal(topic.getHref(), href)) {
 			return topic;
 		}
-		
+
 		return null;
 	}
 

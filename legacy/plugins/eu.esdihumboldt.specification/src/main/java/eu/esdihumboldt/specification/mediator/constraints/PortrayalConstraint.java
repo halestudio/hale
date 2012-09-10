@@ -18,7 +18,8 @@ import eu.esdihumboldt.specification.mediator.constraints.portrayal.NamedLayer;
 import eu.esdihumboldt.specification.mediator.constraints.portrayal.UserLayer;
 
 /**
- * A PortrayalConstraint Interface allows access to the Style Inforamtion details like:
+ * A PortrayalConstraint Interface allows access to the Style Inforamtion
+ * details like:
  * <ul>
  * <li>NamedStyleDescription,</li>
  * <li>UserStyleDescription.</li>
@@ -31,53 +32,47 @@ import eu.esdihumboldt.specification.mediator.constraints.portrayal.UserLayer;
  * @version $Id$
  * 
  */
-public interface PortrayalConstraint extends Constraint{
-	
+public interface PortrayalConstraint extends Constraint {
+
 	/**
-	 * Allows access to the styles structure, 
-	 * if the StyledLayerDescriptor not used.
+	 * Allows access to the styles structure, if the StyledLayerDescriptor not
+	 * used.
 	 * 
 	 * 
 	 * @return List of named styles.
 	 * 
 	 */
 	public List<org.opengis.style.Style> getStyle();
-	
-	
-	
-	
+
 	/**
 	 * 
 	 * @return the Name, that is an optional element of the SLD.
 	 */
 	public String getName();
-	
+
 	/**
 	 * 
-	 * @return the Title, that is an optional element of the SLD. 
+	 * @return the Title, that is an optional element of the SLD.
 	 */
 	public String getTitle();
-	
+
 	/**
 	 * 
-	 * @return the Abstract, that is an optional element of the SLD. 
+	 * @return the Abstract, that is an optional element of the SLD.
 	 */
 	public String getAbstract();
-	
+
 	/**
 	 * 
 	 * @return the List of the NamedLayer, defined for this SLD.
 	 */
-	 
-	 public Set<NamedLayer> getNamedLayer();
-	
+
+	public Set<NamedLayer> getNamedLayer();
+
 	/**
 	 * 
 	 * @return the List of the UserLayer, defined for this SLD.
 	 */
 	public Set<UserLayer> getUserLayer();
-	
-	
-	
-	
+
 }

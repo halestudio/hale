@@ -12,28 +12,26 @@
 package eu.esdihumboldt.specification.mediator.constraints;
 
 /**
- * A ServiceConstraint describes the most important parameters which define
- * the OGC service which provides the geoinformation to be used. 
- * These parameters are the serviceType (e.g."WMS") 
- * and the serviceVersion (e.g."1.1.1").
+ * A ServiceConstraint describes the most important parameters which define the
+ * OGC service which provides the geoinformation to be used. These parameters
+ * are the serviceType (e.g."WMS") and the serviceVersion (e.g."1.1.1").
  * 
- * @author Ana Belen Anton     
- * @partner 02 / ETRA Research and Development    
- * @version Framework v1.0  
+ * @author Ana Belen Anton
+ * @partner 02 / ETRA Research and Development
+ * @version Framework v1.0
  */
 public interface ServiceConstraint extends Constraint {
-		
+
 	/**
-	 * This operation is used to return the alphanumeric value identifying 
-	 * the OGC service (e.g."WMS").
+	 * This operation is used to return the alphanumeric value identifying the
+	 * OGC service (e.g."WMS").
 	 */
 	public String getServiceType();
-	
+
 	/**
-	 * This operation is used to return the alphanumeric value identifying 
-	 * the OGC service version (e.g."1.1.0").
+	 * This operation is used to return the alphanumeric value identifying the
+	 * OGC service version (e.g."1.1.0").
 	 */
 	public String getServiceVersion();
-	
-	
+
 }

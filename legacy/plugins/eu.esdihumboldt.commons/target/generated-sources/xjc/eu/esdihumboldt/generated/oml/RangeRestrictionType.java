@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for rangeRestrictionType complex type.
+ * <p>
+ * Java class for rangeRestrictionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="rangeRestrictionType">
@@ -34,36 +35,31 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "rangeRestrictionType", propOrder = {
-    "clazz"
-})
+@XmlType(name = "rangeRestrictionType", propOrder = { "clazz" })
 public class RangeRestrictionType {
 
-    @XmlElement(name = "Class", required = true)
-    protected ClassType clazz;
+	@XmlElement(name = "Class", required = true)
+	protected ClassType clazz;
 
-    /**
-     * Gets the value of the clazz property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ClassType }
-     *     
-     */
-    public ClassType getClazz() {
-        return clazz;
-    }
+	/**
+	 * Gets the value of the clazz property.
+	 * 
+	 * @return possible object is {@link ClassType }
+	 * 
+	 */
+	public ClassType getClazz() {
+		return clazz;
+	}
 
-    /**
-     * Sets the value of the clazz property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ClassType }
-     *     
-     */
-    public void setClazz(ClassType value) {
-        this.clazz = value;
-    }
+	/**
+	 * Sets the value of the clazz property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ClassType }
+	 * 
+	 */
+	public void setClazz(ClassType value) {
+		this.clazz = value;
+	}
 
 }

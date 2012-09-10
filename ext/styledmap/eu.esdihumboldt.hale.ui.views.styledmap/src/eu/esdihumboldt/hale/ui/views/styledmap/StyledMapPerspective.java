@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.ui.views.data.TransformedDataView;
 
 /**
  * Styled map perspective.
+ * 
  * @author Simon Templer
  */
 public class StyledMapPerspective implements IPerspectiveFactory {
@@ -32,20 +33,19 @@ public class StyledMapPerspective implements IPerspectiveFactory {
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
 		// top
-		IFolderLayout top = layout.createFolder(
-				"top", IPageLayout.TOP, 0.7f, editorArea);
+		IFolderLayout top = layout.createFolder("top", IPageLayout.TOP, 0.7f, editorArea);
 		top.addView(StyledMapView.ID);
 
 		// bottom left
-		IFolderLayout bottomLeft = layout.createFolder("bottomLeft",
-				IPageLayout.BOTTOM, 0.7f, editorArea);
+		IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.7f,
+				editorArea);
 		bottomLeft.addView(SourceDataView.ID);
 
 		// bottom right
-		IFolderLayout bottomRight = layout.createFolder(
-				"bottomRight", IPageLayout.RIGHT, 0.5f, "bottomLeft");
+		IFolderLayout bottomRight = layout.createFolder("bottomRight", IPageLayout.RIGHT, 0.5f,
+				"bottomLeft");
 		bottomRight.addView(TransformedDataView.ID);
-		
+
 		layout.setEditorAreaVisible(false);
 	}
 

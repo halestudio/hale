@@ -17,26 +17,30 @@ import org.opengis.feature.type.Name;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class AnonymousType extends TypeDefinition {
-	
+
 	/**
 	 * Create an anonymous type
 	 * 
-	 * @param name the type name
-	 * @param type the attribute type
-	 * @param superType the super type
-	 * @param location the location of the anonymous type definition
+	 * @param name
+	 *            the type name
+	 * @param type
+	 *            the attribute type
+	 * @param superType
+	 *            the super type
+	 * @param location
+	 *            the location of the anonymous type definition
 	 */
-	public AnonymousType(Name name, AttributeType type, TypeDefinition superType,
-			String location) {
+	public AnonymousType(Name name, AttributeType type,
+			TypeDefinition superType, String location) {
 		super(name, type, superType);
-		
+
 		setLocation(location);
 	}
 
@@ -47,8 +51,7 @@ public class AnonymousType extends TypeDefinition {
 	public String getDisplayName() {
 		if (getSuperType() == null) {
 			return "?"; //$NON-NLS-1$
-		}
-		else {
+		} else {
 			return "? extends " + getSuperType().getDisplayName(); //$NON-NLS-1$
 		}
 	}

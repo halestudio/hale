@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterProx
 /**
  * Diagonal layout that splits the view-port in top-left and bottom-right.
  * Supports only two painters, for additional painters no clip is provided.
+ * 
  * @author Simon Templer
  */
 public class DiagonalUpLayout implements PainterLayout {
@@ -49,10 +50,10 @@ public class DiagonalUpLayout implements PainterLayout {
 	@Override
 	public LayoutAugmentation getAugmentation(int count) {
 		return new AbstractDefaultAugmentation() {
-			
+
 			@Override
-			protected void doPaint(Graphics2D g, JXMapViewer map,
-					List<PainterProxy> painters, int width, int height) {
+			protected void doPaint(Graphics2D g, JXMapViewer map, List<PainterProxy> painters,
+					int width, int height) {
 				drawSplitLine(g, 0, height, width, 0);
 			}
 		};

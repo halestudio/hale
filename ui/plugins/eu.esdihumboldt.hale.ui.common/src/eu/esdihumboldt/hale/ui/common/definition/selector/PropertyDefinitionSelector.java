@@ -28,14 +28,15 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
- * Entity selector for {@link PropertyDefinition}s with complete property
- * paths (represented in an {@link EntityDefinition}).
+ * Entity selector for {@link PropertyDefinition}s with complete property paths
+ * (represented in an {@link EntityDefinition}).
+ * 
  * @author Simon Templer
  */
 public class PropertyDefinitionSelector extends AbstractSelector<EntityDefinition> {
 
 	private TypeDefinition parentType;
-	
+
 	private final SchemaSpaceID ssid;
 
 	/**
@@ -45,8 +46,8 @@ public class PropertyDefinitionSelector extends AbstractSelector<EntityDefinitio
 	 * @param parent the parent composite
 	 * @param parentType the parent type
 	 */
-	public PropertyDefinitionSelector(Composite parent,
-			TypeDefinition parentType, SchemaSpaceID ssid) {
+	public PropertyDefinitionSelector(Composite parent, TypeDefinition parentType,
+			SchemaSpaceID ssid) {
 		super(parent, new DefinitionLabelProvider(false, true), null);
 
 		this.parentType = parentType;
@@ -59,9 +60,9 @@ public class PropertyDefinitionSelector extends AbstractSelector<EntityDefinitio
 	 * @param parentType the parentType to set
 	 */
 	public void setParentType(TypeDefinition parentType) {
-		boolean forceUpdate = this.parentType != null && 
-				!Objects.equal(this.parentType, parentType);
-		
+		boolean forceUpdate = this.parentType != null
+				&& !Objects.equal(this.parentType, parentType);
+
 		this.parentType = parentType;
 		// reset candidates?? refresh viewer?
 		if (forceUpdate) {
@@ -77,7 +78,7 @@ public class PropertyDefinitionSelector extends AbstractSelector<EntityDefinitio
 	protected AbstractViewerSelectionDialog<EntityDefinition, ?> createSelectionDialog(
 			Shell parentShell) {
 		String title;
-		if(ssid == null){
+		if (ssid == null) {
 			title = "Select property";
 		}
 		else {
@@ -92,7 +93,8 @@ public class PropertyDefinitionSelector extends AbstractSelector<EntityDefinitio
 				title = "Select property";
 			}
 		}
-		return new PropertyDefinitionDialog(parentShell, ssid, parentType, title, getSelectedObject());
+		return new PropertyDefinitionDialog(parentShell, ssid, parentType, title,
+				getSelectedObject());
 	}
-	
+
 }

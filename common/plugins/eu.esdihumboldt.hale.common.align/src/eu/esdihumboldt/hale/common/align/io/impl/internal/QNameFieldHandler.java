@@ -18,10 +18,11 @@ import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
 /**
  * Field handler for {@link QName}s.
+ * 
  * @author Simon Templer
  */
 public class QNameFieldHandler extends GeneralizedFieldHandler {
-	
+
 	/**
 	 * @see GeneralizedFieldHandler#convertUponGet(Object)
 	 */

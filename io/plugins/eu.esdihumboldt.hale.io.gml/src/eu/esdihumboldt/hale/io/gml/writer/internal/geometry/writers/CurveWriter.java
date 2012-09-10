@@ -25,42 +25,40 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
 
 /**
  * {@link MultiLineString} writer
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class CurveWriter extends
-		AbstractGeometryWriter<MultiLineString> {
+public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
 
 	/**
 	 * Default constructor
 	 */
 	public CurveWriter() {
 		super(MultiLineString.class);
-		
+
 		// compatible types to serve as entry point
-		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, 
-				"CurveType")); //$NON-NLS-1$
-		
+		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "CurveType")); //$NON-NLS-1$
+
 		// patterns for matching inside compatible types
 		addBasePattern("**/LineStringSegment"); //$NON-NLS-1$
 	}
 
 	/**
-	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition, QName, String)
+	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
+	 *      QName, String)
 	 */
 	@Override
-	public void write(XMLStreamWriter writer, MultiLineString geometry,
-			TypeDefinition elementType, QName elementName, String gmlNs) 
-			throws XMLStreamException {
+	public void write(XMLStreamWriter writer, MultiLineString geometry, TypeDefinition elementType,
+			QName elementName, String gmlNs) throws XMLStreamException {
 		for (int i = 0; i < geometry.getNumGeometries(); i++) {
 			if (i > 0) {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 			}
-			
+
 			LineString line = (LineString) geometry.getGeometryN(i);
 			writeCoordinates(writer, line.getCoordinates(), elementType, gmlNs);
-			
+
 			if (i < geometry.getNumGeometries() - 1) {
 				writer.writeEndElement();
 			}

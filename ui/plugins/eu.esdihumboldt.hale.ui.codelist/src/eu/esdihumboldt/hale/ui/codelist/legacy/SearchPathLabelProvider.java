@@ -21,12 +21,12 @@ import eu.esdihumboldt.hale.ui.util.tree.MultiColumnTreeNodeLabelProvider;
 
 /**
  * Label provider for {@link SearchPathNode}s and {@link CodeListNode}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SearchPathLabelProvider extends MultiColumnTreeNodeLabelProvider {
-	
+
 	private final Image searchpath_img;
 	private final Image codelist_img;
 	private final Image value_img;
@@ -36,13 +36,10 @@ public class SearchPathLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	 */
 	public SearchPathLabelProvider() {
 		super(0);
-		
-		searchpath_img = CodeListUIPlugin.getImageDescriptor(
-				"/icons/open.gif").createImage(); //$NON-NLS-1$
-		codelist_img = CodeListUIPlugin.getImageDescriptor(
-				"/icons/attribute.gif").createImage(); //$NON-NLS-1$
-		value_img = CodeListUIPlugin.getImageDescriptor(
-				"/icons/ok.gif").createImage(); //$NON-NLS-1$
+
+		searchpath_img = CodeListUIPlugin.getImageDescriptor("/icons/open.gif").createImage(); //$NON-NLS-1$
+		codelist_img = CodeListUIPlugin.getImageDescriptor("/icons/attribute.gif").createImage(); //$NON-NLS-1$
+		value_img = CodeListUIPlugin.getImageDescriptor("/icons/ok.gif").createImage(); //$NON-NLS-1$
 	}
 
 	/**
@@ -77,7 +74,7 @@ public class SearchPathLabelProvider extends MultiColumnTreeNodeLabelProvider {
 		searchpath_img.dispose();
 		codelist_img.dispose();
 		value_img.dispose();
-		
+
 		super.dispose();
 	}
 

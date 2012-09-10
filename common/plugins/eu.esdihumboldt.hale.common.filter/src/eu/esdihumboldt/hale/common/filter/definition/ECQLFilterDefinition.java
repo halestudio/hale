@@ -19,7 +19,8 @@ import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinition;
 import eu.esdihumboldt.util.definition.ObjectDefinition;
 
 /**
- * Object definition for ECQL filters. 
+ * Object definition for ECQL filters.
+ * 
  * @author Simon Templer
  */
 public class ECQLFilterDefinition implements FilterDefinition<FilterGeoECqlImpl> {

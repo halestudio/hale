@@ -27,9 +27,11 @@ import eu.esdihumboldt.hale.doc.util.context.SingleTopicContext;
 
 /**
  * Provides contexts related to functions
+ * 
  * @author Simon Templer
  */
-public class FunctionContextProvider extends AbstractContextProvider implements FunctionReferenceConstants {
+public class FunctionContextProvider extends AbstractContextProvider implements
+		FunctionReferenceConstants {
 
 	/**
 	 * Context function topic
@@ -48,8 +50,7 @@ public class FunctionContextProvider extends AbstractContextProvider implements 
 		 */
 		@Override
 		public String getLabel() {
-			return MessageFormat.format(
-					"{0} (Function Reference)", super.getLabel());
+			return MessageFormat.format("{0} (Function Reference)", super.getLabel());
 		}
 
 	}
@@ -68,11 +69,11 @@ public class FunctionContextProvider extends AbstractContextProvider implements 
 	public IContext getContext(String contextId, String locale) {
 		// It is not possible to use dots (.) in the context id to identify the
 		// function, because it will be treated as part of the bundle name. So
-		// the function identifier is encoded using ONameUtil 
+		// the function identifier is encoded using ONameUtil
 		int index = contextId.lastIndexOf('.');
 		String pluginId = contextId.substring(0, index);
 		String shortContextId = contextId.substring(index + 1);
-		
+
 		if (pluginId.equals(PLUGIN_ID)) {
 			try {
 				String functionId = ONameUtil.decodeName(shortContextId);
@@ -83,16 +84,21 @@ public class FunctionContextProvider extends AbstractContextProvider implements 
 					if (description == null) {
 						description = function.getDisplayName();
 					}
-					return new SingleTopicContext(
-							function.getDisplayName(),
-							description, //XXX add more info to context (e.g. title?)  
+					return new SingleTopicContext(function.getDisplayName(), description, // XXX
+																							// add
+																							// more
+																							// info
+																							// to
+																							// context
+																							// (e.g.
+																							// title?)
 							topic);
 				}
 			} catch (DecoderException e) {
 				// no valid function ID
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -102,7 +108,7 @@ public class FunctionContextProvider extends AbstractContextProvider implements 
 	@Override
 	public String[] getPlugins() {
 		// provides only contexts for this bundle
-		return new String[]{PLUGIN_ID};
+		return new String[] { PLUGIN_ID };
 	}
 
 }

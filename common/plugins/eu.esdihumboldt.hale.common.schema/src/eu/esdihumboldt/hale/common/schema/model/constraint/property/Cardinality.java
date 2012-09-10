@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 /**
  * Specifies the cardinality for a property, default is for a property to occur
  * exactly once.
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -30,34 +31,37 @@ public class Cardinality implements GroupPropertyConstraint, PropertyConstraint 
 	 * Value for unrestricted {@link #maxOccurs}
 	 */
 	public static final long UNBOUNDED = -1;
-	
+
 	/**
 	 * Cardinality constraint for properties that occur exactly once (one)
 	 */
 	public static final Cardinality CC_EXACTLY_ONCE = new Cardinality(1, 1);
-	
+
 	/**
-	 * Cardinality constraint for properties that occur once or not at all (zero to one)
+	 * Cardinality constraint for properties that occur once or not at all (zero
+	 * to one)
 	 */
 	public static final Cardinality CC_OPTIONAL = new Cardinality(0, 1);
-	
+
 	/**
-	 * Cardinality constraint for properties that occur at least once (one to infinity)
+	 * Cardinality constraint for properties that occur at least once (one to
+	 * infinity)
 	 */
 	public static final Cardinality CC_AT_LEAST_ONCE = new Cardinality(1, UNBOUNDED);
-	
+
 	/**
-	 * Cardinality constraint for properties that occur in any number (zero to infinity)
+	 * Cardinality constraint for properties that occur in any number (zero to
+	 * infinity)
 	 */
 	public static final Cardinality CC_ANY_NUMBER = new Cardinality(0, UNBOUNDED);
-	
+
 	/**
 	 * Get the cardinality constraint with the given occurrences
 	 * 
 	 * @param minOccurs the number of minimum occurrences of a property, may not
-	 *   be negative
+	 *            be negative
 	 * @param maxOccurs the number of maximum occurrences of a property,
-	 *   {@value #UNBOUNDED} for an infinite maximum occurrence
+	 *            {@value #UNBOUNDED} for an infinite maximum occurrence
 	 * @return the cardinality constraint
 	 */
 	public static Cardinality get(long minOccurs, long maxOccurs) {
@@ -76,9 +80,9 @@ public class Cardinality implements GroupPropertyConstraint, PropertyConstraint 
 			}
 			else if (maxOccurs == UNBOUNDED) {
 				return CC_AT_LEAST_ONCE;
-			} 
+			}
 		}
-		
+
 		return new Cardinality(minOccurs, maxOccurs);
 	}
 
@@ -86,12 +90,12 @@ public class Cardinality implements GroupPropertyConstraint, PropertyConstraint 
 	 * The number of minimum occurrences of a property
 	 */
 	private final long minOccurs;
-	
+
 	/**
 	 * The number of maximum occurrences of a property
 	 */
 	private final long maxOccurs;
-	
+
 	/**
 	 * Creates a default cardinality constraint with {@link #minOccurs} and
 	 * {@link #maxOccurs} one.<br>
@@ -102,7 +106,7 @@ public class Cardinality implements GroupPropertyConstraint, PropertyConstraint 
 	public Cardinality() {
 		this(1, 1);
 	}
-	
+
 	/**
 	 * Create a cardinality constraint.<br>
 	 * <br>
@@ -110,9 +114,9 @@ public class Cardinality implements GroupPropertyConstraint, PropertyConstraint 
 	 * {@link #get(long, long)} if possible.
 	 * 
 	 * @param minOccurs the number of minimum occurrences of a property, may not
-	 *   be negative
+	 *            be negative
 	 * @param maxOccurs the number of maximum occurrences of a property,
-	 *   {@value #UNBOUNDED} for an infinite maximum occurrence
+	 *            {@value #UNBOUNDED} for an infinite maximum occurrence
 	 */
 	private Cardinality(long minOccurs, long maxOccurs) {
 		super();

@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Advisor for storing an alignment in the alignment service
+ * 
  * @author Simon Templer
  */
 public class AlignmentImportAdvisor extends DefaultIOAdvisor<AlignmentReader> {
@@ -34,8 +35,9 @@ public class AlignmentImportAdvisor extends DefaultIOAdvisor<AlignmentReader> {
 	@Override
 	public void prepareProvider(AlignmentReader provider) {
 		super.prepareProvider(provider);
-		
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
 		provider.setSourceSchema(ss.getSchemas(SchemaSpaceID.SOURCE));
 		provider.setTargetSchema(ss.getSchemas(SchemaSpaceID.TARGET));
 	}
@@ -46,10 +48,11 @@ public class AlignmentImportAdvisor extends DefaultIOAdvisor<AlignmentReader> {
 	@Override
 	public void handleResults(AlignmentReader provider) {
 		super.handleResults(provider);
-		
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		//XXX clear old mapping?
-		//FIXME merging alignments not supported yet
+
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+		// XXX clear old mapping?
+		// FIXME merging alignments not supported yet
 		as.addOrUpdateAlignment(provider.getAlignment());
 	}
 

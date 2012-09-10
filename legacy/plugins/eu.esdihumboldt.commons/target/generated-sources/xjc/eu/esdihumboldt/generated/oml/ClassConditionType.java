@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for ClassConditionType complex type.
+ * <p>
+ * Java class for ClassConditionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ClassConditionType">
@@ -34,36 +35,31 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ClassConditionType", propOrder = {
-    "restriction"
-})
+@XmlType(name = "ClassConditionType", propOrder = { "restriction" })
 public class ClassConditionType {
 
-    @XmlElement(name = "Restriction", required = true)
-    protected RestrictionType restriction;
+	@XmlElement(name = "Restriction", required = true)
+	protected RestrictionType restriction;
 
-    /**
-     * Gets the value of the restriction property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RestrictionType }
-     *     
-     */
-    public RestrictionType getRestriction() {
-        return restriction;
-    }
+	/**
+	 * Gets the value of the restriction property.
+	 * 
+	 * @return possible object is {@link RestrictionType }
+	 * 
+	 */
+	public RestrictionType getRestriction() {
+		return restriction;
+	}
 
-    /**
-     * Sets the value of the restriction property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RestrictionType }
-     *     
-     */
-    public void setRestriction(RestrictionType value) {
-        this.restriction = value;
-    }
+	/**
+	 * Sets the value of the restriction property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link RestrictionType }
+	 * 
+	 */
+	public void setRestriction(RestrictionType value) {
+		this.restriction = value;
+	}
 
 }

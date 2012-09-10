@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 
 /**
  * Resets a nodes in a transformation tree.
+ * 
  * @author Simon Templer
  */
 public class ResetVisitor extends AbstractTargetToSourceVisitor {
@@ -65,7 +66,8 @@ public class ResetVisitor extends AbstractTargetToSourceVisitor {
 	 */
 	@Override
 	public boolean includeAnnotatedNodes() {
-		// annotated nodes are removed on reset and thus don't have to be reset themselves
+		// annotated nodes are removed on reset and thus don't have to be reset
+		// themselves
 		return false;
 	}
 

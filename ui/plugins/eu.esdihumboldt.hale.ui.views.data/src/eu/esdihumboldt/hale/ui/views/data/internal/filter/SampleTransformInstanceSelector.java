@@ -62,64 +62,69 @@ import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 
 /**
  * Instance selector based on a transformation sample
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SampleTransformInstanceSelector implements InstanceSelector {
-	
+
 	/**
 	 * Instance selector control
 	 */
 	private class InstanceSelectorControl extends Composite {
-		
+
 		private final ComboViewer typesCombo;
-		
-		private final ListMultimap<TypeDefinition, Instance> instanceMap = ArrayListMultimap.create();
-		
+
+		private final ListMultimap<TypeDefinition, Instance> instanceMap = ArrayListMultimap
+				.create();
+
 		private TypeDefinition selectedType;
 
 		private final Observer referenceListener;
 
 		private AlignmentServiceAdapter alignmentListener;
-		
+
 		/**
 		 * @see Composite#Composite(Composite, int)
 		 */
 		public InstanceSelectorControl(Composite parent, int style) {
 			super(parent, style);
-			
+
 			setLayout(new GridLayout(1, false));
-			
+
 			// feature type selector
 			typesCombo = new ComboViewer(this, SWT.READ_ONLY);
 			typesCombo.setContentProvider(ArrayContentProvider.getInstance());
 			typesCombo.setComparator(new DefinitionComparator());
 			typesCombo.setLabelProvider(new DefinitionLabelProvider());
 			typesCombo.addSelectionChangedListener(new ISelectionChangedListener() {
-				
+
 				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					updateSelection();
 				}
-				
+
 			});
-			typesCombo.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-					
+			typesCombo.getControl().setLayoutData(
+					new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+
 			updateFeatureTypesSelection();
-			
+
 			// service listeners
-			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
+			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench()
+					.getService(InstanceSampleService.class);
 			rss.addObserver(referenceListener = new Observer() {
-				
+
 				@Override
 				public void update(Observable arg0, Object arg1) {
 					updateInDisplayThread();
 				}
 			});
-			
-			AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+
+			AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			alService.addListener(alignmentListener = new AlignmentServiceAdapter() {
+
 				@Override
 				public void alignmentCleared() {
 					updateInDisplayThread();
@@ -141,7 +146,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 			});
 		}
-		
+
 		private void updateInDisplayThread() {
 			if (Display.getCurrent() != null) {
 				updateFeatureTypesSelection();
@@ -149,7 +154,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 			else {
 				final Display display = PlatformUI.getWorkbench().getDisplay();
 				display.syncExec(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						updateFeatureTypesSelection();
@@ -163,74 +168,78 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 		 */
 		protected void updateFeatureTypesSelection() {
 			instanceMap.clear();
-			
+
 			final AtomicBoolean finished = new AtomicBoolean(false);
 			Job job = new Job("Transform samples") {
-				
+
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
-						final InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
-						final AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-						final TransformationService cst = OsgiUtils.getService(TransformationService.class);
-						
+						final InstanceSampleService rss = (InstanceSampleService) PlatformUI
+								.getWorkbench().getService(InstanceSampleService.class);
+						final AlignmentService alService = (AlignmentService) PlatformUI
+								.getWorkbench().getService(AlignmentService.class);
+						final TransformationService cst = OsgiUtils
+								.getService(TransformationService.class);
+
 						// get reference instances
 						Collection<Instance> reference = rss.getReferenceInstances();
-						
+
 						if (reference != null && !reference.isEmpty()) {
 							// create an instance collection
 							InstanceCollection instances = new DefaultInstanceCollection(reference);
-							
+
 							DefaultInstanceSink target = new DefaultInstanceSink();
-							
+
 							// transform features
-							TransformationReport report = cst.transform(
-									alService.getAlignment(), // Alignment
-									instances,
-									target,
-									new ProgressMonitorIndicator(monitor));
-							
+							TransformationReport report = cst.transform(alService.getAlignment(), // Alignment
+									instances, target, new ProgressMonitorIndicator(monitor));
+
 							if (!report.isSuccess()) {
-								//TODO log message
+								// TODO log message
 							}
-							
-							//Sort target instances by comparing meta data IDs of the source 
-							//instances with the SourcesIDs of the target instances
-							ArrayList<Instance> targetSorted = new ArrayList<Instance>();				
+
+							// Sort target instances by comparing meta data IDs
+							// of the source
+							// instances with the SourcesIDs of the target
+							// instances
+							ArrayList<Instance> targetSorted = new ArrayList<Instance>();
 							ResourceIterator<Instance> it = instances.iterator();
-							try{
-							while(it.hasNext()){
-								Instance inst = it.next();
-								for(Instance instance : target.getInstances()){
-									if (InstanceMetadata.getID(inst).equals(InstanceMetadata.getSourceID(instance))){
-										targetSorted.add(instance);
-									}						
-								}	
-							}
-							}finally{
+							try {
+								while (it.hasNext()) {
+									Instance inst = it.next();
+									for (Instance instance : target.getInstances()) {
+										if (InstanceMetadata.getID(inst).equals(
+												InstanceMetadata.getSourceID(instance))) {
+											targetSorted.add(instance);
+										}
+									}
+								}
+							} finally {
 								it.close();
 							}
-							
-							//check if there are target instances without a matched source id
-							for(Instance instance : target.getInstances()){
-								if (!targetSorted.contains(instance)){
+
+							// check if there are target instances without a
+							// matched source id
+							for (Instance instance : target.getInstances()) {
+								if (!targetSorted.contains(instance)) {
 									targetSorted.add(instance);
 								}
 							}
-							
+
 							// determine types
 							for (Instance instance : targetSorted) {
 								instanceMap.put(instance.getDefinition(), instance);
 							}
 						}
-					
+
 						return Status.OK_STATUS;
 					} finally {
 						finished.set(true);
 					}
 				}
 			};
-			
+
 			job.schedule();
 			if (Display.getCurrent() != null) {
 				while (!finished.get()) {
@@ -248,10 +257,10 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 			} catch (InterruptedException e) {
 				// ignore
 			}
-			
+
 			Collection<TypeDefinition> selectableTypes = instanceMap.keySet();
 			typesCombo.setInput(selectableTypes);
-			
+
 			if (!selectableTypes.isEmpty()) {
 				typesCombo.setSelection(new StructuredSelection(selectableTypes.iterator().next()));
 				typesCombo.getControl().setEnabled(true);
@@ -259,9 +268,9 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 			else {
 				typesCombo.getControl().setEnabled(false);
 			}
-			
+
 			layout(true, true);
-			
+
 			updateSelection();
 		}
 
@@ -270,19 +279,20 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 		 */
 		protected void updateSelection() {
 			if (!typesCombo.getSelection().isEmpty()) {
-				TypeDefinition featureType = (TypeDefinition) ((IStructuredSelection) typesCombo.getSelection()).getFirstElement();
-				
+				TypeDefinition featureType = (TypeDefinition) ((IStructuredSelection) typesCombo
+						.getSelection()).getFirstElement();
+
 				selectedType = featureType;
-			}	
+			}
 			else {
 				selectedType = null;
 			}
-			
+
 			for (InstanceSelectionListener listener : listeners) {
 				listener.selectionChanged(selectedType, getSelection());
 			}
 		}
-		
+
 		/**
 		 * Get the currently selected features
 		 * 
@@ -296,36 +306,38 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				return instanceMap.get(selectedType);
 			}
 		}
-		
+
 		/**
 		 * @see Widget#dispose()
 		 */
 		@Override
 		public void dispose() {
-			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
+			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench()
+					.getService(InstanceSampleService.class);
 			rss.deleteObserver(referenceListener);
-			
-			AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+
+			AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			alService.removeListener(alignmentListener);
-			
+
 			listeners.clear();
-			
+
 			super.dispose();
 		}
 
 	}
 
 	private final Set<InstanceSelectionListener> listeners = new HashSet<InstanceSelectionListener>();
-	
+
 	private InstanceSelectorControl current;
-	
+
 	/**
 	 * @see InstanceSelector#addSelectionListener(InstanceSelectionListener)
 	 */
 	@Override
 	public void addSelectionListener(InstanceSelectionListener listener) {
 		listeners.add(listener);
-		
+
 		if (current != null && !current.isDisposed()) {
 			listener.selectionChanged(current.selectedType, current.getSelection());
 		}

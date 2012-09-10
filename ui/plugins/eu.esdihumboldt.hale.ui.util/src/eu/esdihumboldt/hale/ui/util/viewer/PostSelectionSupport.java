@@ -20,15 +20,16 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 /**
  * Selection provider that adds support for post selection events to a wrapped
  * selection provider.
+ * 
  * @author Simon Templer
  */
-public class PostSelectionSupport implements IPostSelectionProvider,
-		ISelectionProvider {
+public class PostSelectionSupport implements IPostSelectionProvider, ISelectionProvider {
 
 	private final ISelectionProvider selectionProvider;
-	
+
 	/**
 	 * Create post selection support for the given selection provider
+	 * 
 	 * @param selectionProvider the selection provider
 	 */
 	public PostSelectionSupport(ISelectionProvider selectionProvider) {
@@ -37,22 +38,24 @@ public class PostSelectionSupport implements IPostSelectionProvider,
 	}
 
 	/**
-	 * Delegates to {@link #addSelectionChangedListener(ISelectionChangedListener)}
+	 * Delegates to
+	 * {@link #addSelectionChangedListener(ISelectionChangedListener)}
+	 * 
 	 * @see IPostSelectionProvider#addPostSelectionChangedListener(ISelectionChangedListener)
 	 */
 	@Override
-	public void addPostSelectionChangedListener(
-			ISelectionChangedListener listener) {
+	public void addPostSelectionChangedListener(ISelectionChangedListener listener) {
 		addSelectionChangedListener(listener);
 	}
 
 	/**
-	 * Delegates to {@link #removeSelectionChangedListener(ISelectionChangedListener)}
+	 * Delegates to
+	 * {@link #removeSelectionChangedListener(ISelectionChangedListener)}
+	 * 
 	 * @see IPostSelectionProvider#removePostSelectionChangedListener(ISelectionChangedListener)
 	 */
 	@Override
-	public void removePostSelectionChangedListener(
-			ISelectionChangedListener listener) {
+	public void removePostSelectionChangedListener(ISelectionChangedListener listener) {
 		removeSelectionChangedListener(listener);
 	}
 
@@ -76,8 +79,7 @@ public class PostSelectionSupport implements IPostSelectionProvider,
 	 * @see ISelectionProvider#removeSelectionChangedListener(ISelectionChangedListener)
 	 */
 	@Override
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		selectionProvider.removeSelectionChangedListener(listener);
 	}
 

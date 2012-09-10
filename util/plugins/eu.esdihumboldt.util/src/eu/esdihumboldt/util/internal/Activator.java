@@ -20,10 +20,11 @@ import eu.esdihumboldt.util.reflection.ReflectionHelper;
 
 /**
  * Bundle activator
+ * 
  * @author Simon Templer
  */
 public class Activator implements BundleActivator {
-	
+
 	private static BundleContext context;
 
 	/**
@@ -32,8 +33,8 @@ public class Activator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		Activator.context = context;
-		
-		//register the OSGi package resolver on activation
+
+		// register the OSGi package resolver on activation
 		ReflectionHelper.setPackageResolver(new OSGIPackageResolver());
 	}
 
@@ -44,9 +45,10 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext context) throws Exception {
 		// do nothing
 	}
-	
+
 	/**
 	 * Get the bundle context.
+	 * 
 	 * @return the bundle context
 	 */
 	public static BundleContext getContext() {

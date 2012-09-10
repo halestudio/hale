@@ -21,14 +21,13 @@ import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 
 /**
  * Default I/O report implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public class DefaultIOReporter extends DefaultReporter<IOMessage> implements
-		IOReporter {
-	
+public class DefaultIOReporter extends DefaultReporter<IOMessage> implements IOReporter {
+
 	private final Locatable target;
 
 	/**
@@ -44,7 +43,7 @@ public class DefaultIOReporter extends DefaultReporter<IOMessage> implements
 	 */
 	public DefaultIOReporter(Locatable target, String taskName, boolean doLog) {
 		super(taskName, IOMessage.class, doLog);
-		
+
 		this.target = target;
 	}
 

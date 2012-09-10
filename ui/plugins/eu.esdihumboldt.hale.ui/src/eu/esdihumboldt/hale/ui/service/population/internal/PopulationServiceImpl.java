@@ -32,16 +32,18 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 
 /**
  * Service that stores information about population count.
+ * 
  * @author Simon Templer
  */
 public class PopulationServiceImpl extends AbstractPopulationService {
-	
+
 	private final Map<EntityDefinition, Integer> sourcePopulation = new HashMap<EntityDefinition, Integer>();
-	
+
 	private final Map<EntityDefinition, Integer> targetPopulation = new HashMap<EntityDefinition, Integer>();
-	
+
 	/**
 	 * Create a population service instance.
+	 * 
 	 * @param instanceService the instance service
 	 */
 	public PopulationServiceImpl(final InstanceService instanceService) {
@@ -58,19 +60,19 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 				default:
 					ssid = SchemaSpaceID.SOURCE;
 				}
-				
+
 				// two possibilities
-				
+
 				// 1 - data was added
 				/*
 				 * XXX this is currently handled in StoreInstancesJob and
-				 * OrientInstanceSink, to prevent reading the whole data
-				 * again from the database, just for determining the population.
-				 * (If this would be done, it could be for instance in a job)
-				 * An event is fired nonetheless at this point, to trigger
-				 * an update.
+				 * OrientInstanceSink, to prevent reading the whole data again
+				 * from the database, just for determining the population. (If
+				 * this would be done, it could be for instance in a job) An
+				 * event is fired nonetheless at this point, to trigger an
+				 * update.
 				 */
-				
+
 				// 2 - data was cleared
 				// purge the corresponding population
 				InstanceCollection instances = instanceService.getInstances(type);
@@ -86,13 +88,13 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 						}
 					}
 				}
-				
+
 				firePopulationChanged(ssid);
 			}
-			
+
 		});
 	}
-	
+
 	/**
 	 * @see PopulationService#getPopulation(EntityDefinition)
 	 */
@@ -153,14 +155,15 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			default:
 				schemaSpace = SchemaSpaceID.SOURCE;
 			}
-		} else {
+		}
+		else {
 			throw new IllegalArgumentException("Invalid data set specified.");
 		}
-		
+
 		// count type
-		EntityDefinition def = new TypeEntityDefinition(instance.getDefinition(), schemaSpace, null); 
+		EntityDefinition def = new TypeEntityDefinition(instance.getDefinition(), schemaSpace, null);
 		increase(def);
-		
+
 		addToPopulation(instance, def);
 	}
 
@@ -178,31 +181,32 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		default:
 			schemaSpace = SchemaSpaceID.SOURCE;
 		}
-		
+
 		synchronized (this) {
 			Map<EntityDefinition, Integer> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
 					: (sourcePopulation);
 			population.clear();
 		}
-		
-		//XXX rely on dataSetChanged events for update
+
+		// XXX rely on dataSetChanged events for update
 	}
 
 	/**
 	 * Count the population for the properties of the given group.
+	 * 
 	 * @param group the group
 	 * @param groupDef the group entity definition
 	 */
 	private void addToPopulation(Group group, EntityDefinition groupDef) {
 		for (QName propertyName : group.getPropertyNames()) {
 			EntityDefinition propertyDef = AlignmentUtil.getChild(groupDef, propertyName);
-			
-			//XXX two options to count population
+
+			// XXX two options to count population
 			// per parent
 			increase(propertyDef);
 			// or per value
 			// ...
-			
+
 			Object[] values = group.getProperty(propertyName);
 			for (Object value : values) {
 				if (value instanceof Group) {
@@ -214,13 +218,14 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 
 	/**
 	 * Increase the counter for the given entity.
+	 * 
 	 * @param entity the entity
 	 */
 	private void increase(EntityDefinition entity) {
 		synchronized (this) {
 			Map<EntityDefinition, Integer> population = (entity.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
 					: (sourcePopulation);
-			
+
 			Integer count = population.get(entity);
 			if (count == null) {
 				count = 1;

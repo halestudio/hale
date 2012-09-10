@@ -14,32 +14,32 @@ package eu.esdihumboldt.hale.common.schema.model.impl;
 
 import java.net.URI;
 
-
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 
 /**
  * Default {@link Schema} implemenation
+ * 
  * @author Simon Templer
  */
 public class DefaultSchema extends DefaultTypeIndex implements Schema {
-	
+
 	private final String namespace;
-	
+
 	private final URI location;
 
 	/**
 	 * Create a schema
 	 * 
 	 * @param namespace the schema namespace
-	 * @param location the schema location 
+	 * @param location the schema location
 	 */
 	public DefaultSchema(String namespace, URI location) {
 		super();
 		this.namespace = namespace;
 		this.location = location;
 	}
-	
+
 	/**
 	 * @see Locatable#getLocation()
 	 */

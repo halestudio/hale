@@ -14,9 +14,9 @@ package eu.esdihumboldt.specification.dataaccess.abstractionmodel;
 /**
  * Describe the purpose of this Type here.
  * 
- * @author Administrator 
+ * @author Administrator
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface AbstractionModel {
 

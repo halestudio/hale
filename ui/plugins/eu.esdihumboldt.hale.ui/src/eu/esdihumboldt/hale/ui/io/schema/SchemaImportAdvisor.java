@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Advisor for schema import to the {@link SchemaService}
+ * 
  * @author Simon Templer
  * @since 2.5
  */
@@ -33,8 +34,9 @@ public class SchemaImportAdvisor extends DefaultIOAdvisor<SchemaReader> {
 
 	/**
 	 * Create a schema import advisor
-	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
-	 *   or {@link SchemaSpaceID#TARGET}
+	 * 
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
 	 */
 	public SchemaImportAdvisor(SchemaSpaceID spaceID) {
 		super();
@@ -47,9 +49,10 @@ public class SchemaImportAdvisor extends DefaultIOAdvisor<SchemaReader> {
 	@Override
 	public void prepareProvider(SchemaReader provider) {
 		super.prepareProvider(provider);
-		
+
 		// set shared types XXX this is not fixed yet
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
 		provider.setSharedTypes(ss.getSchemas(spaceID));
 	}
 
@@ -60,15 +63,17 @@ public class SchemaImportAdvisor extends DefaultIOAdvisor<SchemaReader> {
 	public void handleResults(SchemaReader provider) {
 		// add loaded schema to schema space
 		Schema schema = provider.getSchema();
-		
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
 		ss.addSchema(schema, spaceID);
-		
+
 		if (ss.getSchemas(spaceID).getMappingRelevantTypes().isEmpty()) {
-			// if no types are present after loading, open editor for mapping relevant types
+			// if no types are present after loading, open editor for mapping
+			// relevant types
 			ss.editMappableTypes(spaceID);
 		}
-		
+
 		super.handleResults(provider);
 	}
 

@@ -35,31 +35,31 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 
-
 /**
  * Hale I/O utilities
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
 public abstract class HaleIO {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(HaleIO.class);
-	
+
 	/**
 	 * Filter I/O provider factories by content type
+	 * 
 	 * @param factories the I/O provider factories
 	 * @param contentType the content type factories must support
-	 * @return provider factories that support the given content type 
+	 * @return provider factories that support the given content type
 	 */
 	public static List<IOProviderDescriptor> filterFactories(
 			Collection<IOProviderDescriptor> factories, IContentType contentType) {
 		List<IOProviderDescriptor> result = new ArrayList<IOProviderDescriptor>();
-		
+
 		for (IOProviderDescriptor factory : factories) {
 			Set<IContentType> supportedTypes = factory.getSupportedTypes();
-			
+
 			// check if contentType is supported
 			for (IContentType test : supportedTypes) {
 				if (isCompatibleContentType(test, contentType)) {
@@ -68,30 +68,30 @@ public abstract class HaleIO {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Find the content types that match the given file name and/or input.
 	 * 
-	 * NOTE: The implementation should try to restrict the result to one 
-	 * content type and only use the input supplier if absolutely needed.
+	 * NOTE: The implementation should try to restrict the result to one content
+	 * type and only use the input supplier if absolutely needed.
 	 * 
-	 * @param types the types to match 
+	 * @param types the types to match
 	 * @param in the input supplier to use for testing, may be <code>null</code>
-	 *   if the file name is not <code>null</code>
+	 *            if the file name is not <code>null</code>
 	 * @param filename the file name, may be <code>null</code> if the input
-	 *   supplier is not <code>null</code>
+	 *            supplier is not <code>null</code>
 	 * @return the matched content types
 	 */
-	public static List<IContentType> findContentTypesFor(Collection<IContentType> types, 
+	public static List<IContentType> findContentTypesFor(Collection<IContentType> types,
 			InputSupplier<? extends InputStream> in, String filename) {
-		Preconditions.checkArgument(filename != null || in != null, 
+		Preconditions.checkArgument(filename != null || in != null,
 				"At least one of input supplier and file name must not be null");
-		
+
 		List<IContentType> results = new ArrayList<IContentType>();
-		
+
 		if (filename != null) {
 			// test file extension
 			for (IContentType type : types) {
@@ -110,29 +110,30 @@ public abstract class HaleIO {
 				}
 			}
 		}
-		
+
 		if ((results.isEmpty() || results.size() > 1) && in != null) {
 			IContentTypeManager ctm = Platform.getContentTypeManager();
 			try {
 				InputStream is = in.getInput();
 				IContentType[] candidates = ctm.findContentTypesFor(is, filename);
-				
+
 				for (IContentType candidate : candidates) {
 					if (types.contains(candidate)) {
 						results.add(candidate);
 					}
 				}
-				
+
 				is.close();
 			} catch (IOException e) {
 				log.warn("Could not read input to determine content type", e);
 			}
-			
+
 			// only use the testers if
 			// - we have no results from the filename match
-			// - we have more than one result from the filename match (as we might have to restrict the result)
+			// - we have more than one result from the filename match (as we
+			// might have to restrict the result)
 			// - the input supplier is set
-			
+
 			// build a map to commit to DependencyOrderedList
 //			Map<ContentType, Set<ContentType>> map = new HashMap<ContentType, Set<ContentType>>();
 //			
@@ -182,56 +183,58 @@ public abstract class HaleIO {
 //				}
 //			}
 		}
-		
+
 		return results;
 	}
-	
+
 	/**
 	 * Get the I/O provider factories of a certain type
-	 *
+	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @return the factories currently registered in the system
 	 */
-	public static <P extends IOProvider> Collection<IOProviderDescriptor> 
-			getProviderFactories(final Class<P> providerType) {
-		return IOProviderExtension.getInstance().getFactories(new FactoryFilter<IOProvider, IOProviderDescriptor>() {
-			
-			@Override
-			public boolean acceptFactory(IOProviderDescriptor descriptor) {
-				return providerType.isAssignableFrom(descriptor.getProviderType());
-			}
-			
-			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<IOProvider, IOProviderDescriptor> collection) {
-				return true;
-			}
-		});
+	public static <P extends IOProvider> Collection<IOProviderDescriptor> getProviderFactories(
+			final Class<P> providerType) {
+		return IOProviderExtension.getInstance().getFactories(
+				new FactoryFilter<IOProvider, IOProviderDescriptor>() {
+
+					@Override
+					public boolean acceptFactory(IOProviderDescriptor descriptor) {
+						return providerType.isAssignableFrom(descriptor.getProviderType());
+					}
+
+					@Override
+					public boolean acceptCollection(
+							ExtensionObjectFactoryCollection<IOProvider, IOProviderDescriptor> collection) {
+						return true;
+					}
+				});
 	}
-	
+
 	/**
 	 * Find an I/O provider factory
+	 * 
 	 * @param <P> the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
-	 * @param contentType the content type the provider must match, may be 
-	 *   <code>null</code> if providerId is set
+	 * @param contentType the content type the provider must match, may be
+	 *            <code>null</code> if providerId is set
 	 * @param providerId the id of the provider to use, may be <code>null</code>
-	 *   if contentType is set
-	 * @return the I/O provider factory or <code>null</code> if no matching 
-	 *   I/O provider factory is found
+	 *            if contentType is set
+	 * @return the I/O provider factory or <code>null</code> if no matching I/O
+	 *         provider factory is found
 	 */
 	public static <P extends IOProvider> IOProviderDescriptor findIOProviderFactory(
 			Class<P> providerType, IContentType contentType, String providerId) {
 		Preconditions.checkArgument(contentType != null || providerId != null);
-		
+
 		Collection<IOProviderDescriptor> factories = getProviderFactories(providerType);
 		if (contentType != null) {
 			factories = filterFactories(factories, contentType);
 		}
-		
+
 		IOProviderDescriptor result = null;
-		
+
 		if (providerId != null) {
 			for (IOProviderDescriptor factory : factories) {
 				if (factory.getIdentifier().equals(providerId)) {
@@ -241,111 +244,113 @@ public abstract class HaleIO {
 			}
 		}
 		else {
-			//TODO choose priority based?
+			// TODO choose priority based?
 			if (!factories.isEmpty()) {
 				result = factories.iterator().next();
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Creates an I/O provider instance
+	 * 
 	 * @param <P> the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
-	 * @param contentType the content type the provider must match, may be 
-	 *   <code>null</code> if providerId is set
+	 * @param contentType the content type the provider must match, may be
+	 *            <code>null</code> if providerId is set
 	 * @param providerId the id of the provider to use, may be <code>null</code>
-	 *   if contentType is set
-	 * @return the I/O provider preconfigured with the content type if it was 
-	 *   given or <code>null</code> if no matching I/O provider is found
+	 *            if contentType is set
+	 * @return the I/O provider preconfigured with the content type if it was
+	 *         given or <code>null</code> if no matching I/O provider is found
 	 */
 	@SuppressWarnings("unchecked")
-	public static <P extends IOProvider> P createIOProvider(
-			Class<P> providerType, IContentType contentType, String providerId) {
+	public static <P extends IOProvider> P createIOProvider(Class<P> providerType,
+			IContentType contentType, String providerId) {
 		IOProviderDescriptor factory = findIOProviderFactory(providerType, contentType, providerId);
 		P result;
 		try {
-			result = (P) ((factory == null)?(null):(factory.createExtensionObject()));
+			result = (P) ((factory == null) ? (null) : (factory.createExtensionObject()));
 		} catch (Exception e) {
 			throw new RuntimeException("Could not create I/O provider", e);
 		}
-		
+
 		if (result != null && contentType != null) {
 			result.setContentType(contentType);
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Find the content type for the given input
+	 * 
 	 * @param <P> the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param in the input supplier to use for testing, may be <code>null</code>
-	 *   if the file name is not <code>null</code>
+	 *            if the file name is not <code>null</code>
 	 * @param filename the file name, may be <code>null</code> if the input
-	 *   supplier is not <code>null</code>
-	 * @return the content type or <code>null</code> if no matching content type 
-	 *   is found
+	 *            supplier is not <code>null</code>
+	 * @return the content type or <code>null</code> if no matching content type
+	 *         is found
 	 */
-	public static <P extends IOProvider> IContentType findContentType(
-			Class<P> providerType, InputSupplier<? extends InputStream> in, String filename) {
+	public static <P extends IOProvider> IContentType findContentType(Class<P> providerType,
+			InputSupplier<? extends InputStream> in, String filename) {
 		Collection<IOProviderDescriptor> providers = getProviderFactories(providerType);
-		
+
 		// collect supported content types
 		Set<IContentType> supportedTypes = new HashSet<IContentType>();
 		for (IOProviderDescriptor factory : providers) {
 			supportedTypes.addAll(factory.getSupportedTypes());
 		}
-		
+
 		// find matching content type
 		List<IContentType> types = findContentTypesFor(supportedTypes, in, filename);
-		
+
 		if (types == null || types.isEmpty()) {
 			return null;
 		}
-		
-		//TODO choose?
+
+		// TODO choose?
 		return types.iterator().next();
 	}
-	
+
 	/**
 	 * Find an I/O provider instance for the given input
+	 * 
 	 * @param <P> the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param in the input supplier to use for testing, may be <code>null</code>
-	 *   if the file name is not <code>null</code>
+	 *            if the file name is not <code>null</code>
 	 * @param filename the file name, may be <code>null</code> if the input
-	 *   supplier is not <code>null</code>
-	 * @return the I/O provider or <code>null</code> if no matching I/O provider 
-	 *   is found
+	 *            supplier is not <code>null</code>
+	 * @return the I/O provider or <code>null</code> if no matching I/O provider
+	 *         is found
 	 */
-	public static <P extends IOProvider> P findIOProvider(
-			Class<P> providerType, InputSupplier<? extends InputStream> in, String filename) {
+	public static <P extends IOProvider> P findIOProvider(Class<P> providerType,
+			InputSupplier<? extends InputStream> in, String filename) {
 		IContentType contentType = findContentType(providerType, in, filename);
 		if (contentType == null) {
 			return null;
 		}
-		
+
 		return HaleIO.createIOProvider(providerType, contentType, null);
 	}
-	
+
 	/**
-	 * Test if the given value content type is compatible with the given 
-	 * parent content type
+	 * Test if the given value content type is compatible with the given parent
+	 * content type
 	 * 
 	 * @param parentType the parent content type
 	 * @param valueType the value content type
-	 * @return if the value content type is compatible with the parent content 
-	 *   type
+	 * @return if the value content type is compatible with the parent content
+	 *         type
 	 */
-	public static boolean isCompatibleContentType(IContentType parentType,
-			IContentType valueType) {
+	public static boolean isCompatibleContentType(IContentType parentType, IContentType valueType) {
 		return valueType.isKindOf(parentType);
 	}
 
@@ -416,5 +421,5 @@ public abstract class HaleIO {
 //			return exts.toArray(new String[exts.size()]);
 //		}
 //	}
-	
+
 }

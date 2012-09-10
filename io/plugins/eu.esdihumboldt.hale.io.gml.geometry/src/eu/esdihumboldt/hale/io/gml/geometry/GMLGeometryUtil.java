@@ -39,53 +39,54 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 
 /**
  * Utility methods for reading GML geometries from an {@link Instance} model.
+ * 
  * @author Simon Templer
  */
 public abstract class GMLGeometryUtil {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(GMLGeometryUtil.class);
-	
+
 	/**
 	 * Parse coordinates from a GML CoordinatesType instance.
+	 * 
 	 * @param coordinates the coordinates instance
-	 * @return the coordinates or <code>null</code> if the instances contains
-	 *   no coordinates
+	 * @return the coordinates or <code>null</code> if the instances contains no
+	 *         coordinates
 	 * @throws ParseException if parsing the coordinates fails
 	 */
 	public static Coordinate[] parseCoordinates(Instance coordinates) throws ParseException {
-		//XXX should the type be checked to match CoordinatesType?
-		
+		// XXX should the type be checked to match CoordinatesType?
+
 		Object value = coordinates.getValue();
-		
+
 		if (value != null) {
 			try {
 				String coordinatesString = ConversionUtil.getAs(value, String.class);
 				if (coordinatesString.isEmpty()) {
 					return null;
 				}
-				
+
 				// determine symbols
 				String decimal = getCoordinatesDecimal(coordinates);
 				String cs = getCoordinateSeparator(coordinates);
 				String ts = getTupleSeparator(coordinates);
-				
+
 				Splitter coordinateSplitter = Splitter.on(cs).trimResults();
 				Splitter tupleSplitter = Splitter.on(ts).trimResults();
 				NumberFormat format = NumberFormat.getInstance(Locale.US);
 				if (format instanceof DecimalFormat) {
-					DecimalFormat decFormat = ((DecimalFormat) format); 
+					DecimalFormat decFormat = ((DecimalFormat) format);
 					DecimalFormatSymbols symbols = decFormat.getDecimalFormatSymbols();
 					symbols.setDecimalSeparator(decimal.charAt(0));
 					decFormat.setDecimalFormatSymbols(symbols);
 				}
-				
+
 				List<Coordinate> coordList = new ArrayList<Coordinate>();
-				
+
 				// split into tuples
 				Iterable<String> tuples = tupleSplitter.split(coordinatesString.trim());
 				for (String tuple : tuples) {
-					Coordinate coord = parseTuple(tuple, 
-							coordinateSplitter, format);
+					Coordinate coord = parseTuple(tuple, coordinateSplitter, format);
 					if (coord != null) {
 						coordList.add(coord);
 					}
@@ -95,34 +96,35 @@ public abstract class GMLGeometryUtil {
 				log.error("Error parsing geometry coordinates", e);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Parse a tuple in a GML CoordinatesType string.
+	 * 
 	 * @param tuple the tuple
 	 * @param coordinateSplitter the coordinate splitter
 	 * @param format the number format
 	 * @return the coordinate or <code>null</code>
-	 * @throws ParseException if parsing the coordinates fails 
+	 * @throws ParseException if parsing the coordinates fails
 	 */
-	private static Coordinate parseTuple(String tuple, 
-			Splitter coordinateSplitter, NumberFormat format) throws ParseException {
+	private static Coordinate parseTuple(String tuple, Splitter coordinateSplitter,
+			NumberFormat format) throws ParseException {
 		if (tuple == null || tuple.isEmpty()) {
 			return null;
 		}
-		
+
 		double x = Double.NaN;
 		double y = Double.NaN;
 		double z = Double.NaN;
-		
+
 		Iterable<String> coordinates = coordinateSplitter.split(tuple);
 		Iterator<String> itCoordinates = coordinates.iterator();
 		int index = 0;
 		while (index <= 2 && itCoordinates.hasNext()) {
 			String coord = itCoordinates.next();
-			
+
 			// parse coordinate value
 			Number value = format.parse(coord);
 			switch (index) {
@@ -136,60 +138,76 @@ public abstract class GMLGeometryUtil {
 				z = value.doubleValue();
 				break;
 			}
-			
+
 			index++;
 		}
-		
+
 		return new Coordinate(x, y, z);
 	}
 
 	private static String getTupleSeparator(Instance coordinates) {
-		return getAttributeValue(coordinates, new QName("ts"), 
-				" "); // default separator within a tuple is a space
+		return getAttributeValue(coordinates, new QName("ts"), " "); // default
+																		// separator
+																		// within
+																		// a
+																		// tuple
+																		// is a
+																		// space
 	}
 
 	private static String getCoordinateSeparator(Instance coordinates) {
-		return getAttributeValue(coordinates, new QName("cs"), 
-				","); // default separator within a tuple is a comma
+		return getAttributeValue(coordinates, new QName("cs"), ","); // default
+																		// separator
+																		// within
+																		// a
+																		// tuple
+																		// is a
+																		// comma
 	}
 
 	private static String getCoordinatesDecimal(Instance coordinates) {
-		return getAttributeValue(coordinates, new QName("decimal"), 
-				"."); // default decimal point is a dot
+		return getAttributeValue(coordinates, new QName("decimal"), "."); // default
+																			// decimal
+																			// point
+																			// is
+																			// a
+																			// dot
 	}
 
-	private static String getAttributeValue(Instance coordinates, QName propertyName,
-			String def) {
+	private static String getAttributeValue(Instance coordinates, QName propertyName, String def) {
 		Object[] values = coordinates.getProperty(propertyName);
-		
+
 		if (values != null && values.length > 0) {
 			Object value = values[0];
 			try {
 				String decimal = ConversionUtil.getAs(value, String.class);
-				if (decimal != null && !decimal.isEmpty()) { // don't accept empty values
+				if (decimal != null && !decimal.isEmpty()) { // don't accept
+																// empty values
 					return decimal;
 				}
 			} catch (ConversionException e) {
 				// ignore, just use the default then
 			}
 		}
-			
-		return def; 
+
+		return def;
 	}
 
 	/**
 	 * Parse a coordinate from a GML DirectPositionType instance.
+	 * 
 	 * @param directPosition the direct position instance
-	 * @return the coordinate or <code>null</code> if the instance contains
-	 *   not direct position
-	 * @throws GeometryNotSupportedException if no valid coordinate could be 
-	 *   created from the direct position
+	 * @return the coordinate or <code>null</code> if the instance contains not
+	 *         direct position
+	 * @throws GeometryNotSupportedException if no valid coordinate could be
+	 *             created from the direct position
 	 */
-	public static Coordinate parseDirectPosition(Instance directPosition) throws GeometryNotSupportedException {
-		//XXX should the type be checked to match CoordinatesType?
-		
+	public static Coordinate parseDirectPosition(Instance directPosition)
+			throws GeometryNotSupportedException {
+		// XXX should the type be checked to match CoordinatesType?
+
 		Object value = directPosition.getValue();
-		
+
 		if (value != null) {
 			// binding for DirectPositionType is Collection/Double
 			try {
@@ -202,127 +220,129 @@ public abstract class GMLGeometryUtil {
 				}
 				else {
 					throw new GeometryNotSupportedException(
-							"DirectPosition with invalid number of coordinates: "
-									+ values.size());
+							"DirectPosition with invalid number of coordinates: " + values.size());
 				}
 			} catch (ConversionException e) {
 				throw new GeometryNotSupportedException(e);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Parse a coordinate from a GML PosList instance.
+	 * 
 	 * @param posList the PosList instance
 	 * @param srsDimension the Dimension of the instance
-	 * @return the array of the coordinates or <code>null</code> if the instance contains
-	 *   not a PosList
-	 * @throws GeometryNotSupportedException if no valid coordinate could be 
-	 *   created from the PosList
+	 * @return the array of the coordinates or <code>null</code> if the instance
+	 *         contains not a PosList
+	 * @throws GeometryNotSupportedException if no valid coordinate could be
+	 *             created from the PosList
 	 */
-	public static Coordinate[] parsePosList(Instance posList, int srsDimension) throws GeometryNotSupportedException {
-		
+	public static Coordinate[] parsePosList(Instance posList, int srsDimension)
+			throws GeometryNotSupportedException {
+
 		Object value = posList.getValue();
 		Coordinate[] coordinates = null;
-		
+
 		// XXX Coordinate support only 2D and 3D coordinates
-		
-		if (value != null){
+
+		if (value != null) {
 			try {
 				List<Double> values = ConversionUtil.getAsList(value, Double.class, true);
 				List<Coordinate> cs = new ArrayList<Coordinate>();
-				
+
 				// validate dimension
 				if (values.size() % srsDimension != 0) {
 					// try alternative dimension
-					int alternative = (srsDimension == 2)?(3):(2);
-					
+					int alternative = (srsDimension == 2) ? (3) : (2);
+
 					if (values.size() % alternative != 0) {
 						// still not valid
 						throw new GeometryNotSupportedException(
 								"Value count in posList not compatible to given dimension.");
 					}
 					else {
-						log.debug("Assuming "
-								+ alternative
+						log.debug("Assuming " + alternative
 								+ "-dimensional coordinates, as value count doesn't match "
 								+ srsDimension + " dimensions.");
 						srsDimension = alternative;
 					}
 				}
-				
-				if(srsDimension == 2){
-					for(int i = 0; i < values.size(); i++){
+
+				if (srsDimension == 2) {
+					for (int i = 0; i < values.size(); i++) {
 						cs.add(new Coordinate(values.get(i), values.get(++i)));
 					}
-					coordinates = cs.toArray(new Coordinate[values.size()/2]);
+					coordinates = cs.toArray(new Coordinate[values.size() / 2]);
 				}
-				else if(srsDimension == 3){
-					for(int i = 0; i < values.size(); i++){
+				else if (srsDimension == 3) {
+					for (int i = 0; i < values.size(); i++) {
 						cs.add(new Coordinate(values.get(i), values.get(++i), values.get(++i)));
 					}
-					coordinates = cs.toArray(new Coordinate[values.size()/3]);
+					coordinates = cs.toArray(new Coordinate[values.size() / 3]);
 				}
 				else {
 					throw new GeometryNotSupportedException(
-							"DirectPosition with invalid number of coordinates: "
-									+ values.size());
+							"DirectPosition with invalid number of coordinates: " + values.size());
 				}
-				
+
 			} catch (ConversionException e) {
 				throw new GeometryNotSupportedException(e);
 			}
 		}
-		
+
 		return coordinates;
 	}
-	
+
 	/**
 	 * Parse a coordinate from a GML CoordType instance.
+	 * 
 	 * @param instance the coord instance
 	 * @return the coordinate
-	 * @throws GeometryNotSupportedException if a valid coordinate can't be created 
+	 * @throws GeometryNotSupportedException if a valid coordinate can't be
+	 *             created
 	 */
 	public static Coordinate parseCoord(Instance instance) throws GeometryNotSupportedException {
 		double x = Double.NaN;
 		double y = Double.NaN;
 		double z = Double.NaN;
-		
+
 		Collection<Object> values = PropertyResolver.getValues(instance, "X", false);
 		if (values == null || values.isEmpty()) {
 			throw new GeometryNotSupportedException("Missing X coordinate");
 		}
 		x = ConversionUtil.getAs(values.iterator().next(), Double.class);
-		
+
 		values = PropertyResolver.getValues(instance, "Y", false);
 		if (values == null || values.isEmpty()) {
 			throw new GeometryNotSupportedException("Missing Y coordinate");
 		}
 		y = ConversionUtil.getAs(values.iterator().next(), Double.class);
-		
+
 		values = PropertyResolver.getValues(instance, "Z", false);
 		if (values != null && !values.isEmpty()) {
 			z = ConversionUtil.getAs(values.iterator().next(), Double.class);
 		}
-		
+
 		return new Coordinate(x, y, z);
 	}
-	
+
 	/**
 	 * Find the CRS definition to be associated with the geometry contained in
 	 * the given instance.
+	 * 
 	 * @param instance the given instance
-	 * @return the CRS definition or <code>null</code> if none could be 
-	 * identified
+	 * @return the CRS definition or <code>null</code> if none could be
+	 *         identified
 	 */
 	public static CRSDefinition findCRS(Instance instance) {
 		BreadthFirstInstanceTraverser traverser = new BreadthFirstInstanceTraverser();
-		
+
 		CRSFinder finder = new CRSFinder();
 		traverser.traverse(instance, finder);
-		
+
 		return finder.getDefinition();
 	}
 

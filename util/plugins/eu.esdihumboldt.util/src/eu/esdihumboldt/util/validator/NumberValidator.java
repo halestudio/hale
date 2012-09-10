@@ -22,11 +22,13 @@ import org.springframework.core.convert.ConversionException;
  * @author Kai Schwierczek
  */
 public class NumberValidator extends AbstractValidator {
+
 	private Type type;
 	private BigDecimal value;
 
 	/**
-	 * Construct a validator that checks the value of the input to match the given type and value.
+	 * Construct a validator that checks the value of the input to match the
+	 * given type and value.
 	 * 
 	 * @param type the condition to check for
 	 * @param value the value to check for
@@ -55,22 +57,26 @@ public class NumberValidator extends AbstractValidator {
 			if (bdValue.compareTo(this.value) < 0)
 				return null;
 			else
-				return "Input must at most be " + this.value + " (exclusive), but is " + bdValue + ".";
+				return "Input must at most be " + this.value + " (exclusive), but is " + bdValue
+						+ ".";
 		case MAXINCLUSIVE:
 			if (bdValue.compareTo(this.value) <= 0)
 				return null;
 			else
-				return "Input must at most be " + this.value + " (inclusive), but is " + bdValue + ".";
+				return "Input must at most be " + this.value + " (inclusive), but is " + bdValue
+						+ ".";
 		case MINEXCLUSIVE:
 			if (bdValue.compareTo(this.value) > 0)
 				return null;
 			else
-				return "Input must at least be " + this.value + " (exclusive), but is " + bdValue + ".";
+				return "Input must at least be " + this.value + " (exclusive), but is " + bdValue
+						+ ".";
 		case MININCLUSIVE:
 			if (bdValue.compareTo(this.value) >= 0)
 				return null;
 			else
-				return "Input must at least be " + this.value + " (inclusive), but is " + bdValue + ".";
+				return "Input must at least be " + this.value + " (inclusive), but is " + bdValue
+						+ ".";
 		default:
 			return null; // all types checked, doesn't happen
 		}

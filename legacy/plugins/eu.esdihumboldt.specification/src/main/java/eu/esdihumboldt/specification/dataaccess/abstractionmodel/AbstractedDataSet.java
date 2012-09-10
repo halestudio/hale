@@ -16,28 +16,27 @@ import java.util.List;
 import org.opengis.metadata.MetaData;
 
 /**
- * This interface describes a collection of (spatial) objects that have been 
- * retrieved from the Data Access Component Framework or that have to be put 
- * there. It is called "Abstracted" because it does not directly reflect a 
- * single encoding or schema, but can instead be used to described data coming 
+ * This interface describes a collection of (spatial) objects that have been
+ * retrieved from the Data Access Component Framework or that have to be put
+ * there. It is called "Abstracted" because it does not directly reflect a
+ * single encoding or schema, but can instead be used to described data coming
  * from all kinds of data sources.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public interface AbstractedDataSet 
-	extends DAMObject {
+public interface AbstractedDataSet extends DAMObject {
 
 	/**
-	 * @return a List of the {@link BasicElement} that make up this 
-	 * {@link AbstractedDataSet}.
+	 * @return a List of the {@link BasicElement} that make up this
+	 *         {@link AbstractedDataSet}.
 	 */
 	public List<BasicElement> getElements();
-	
+
 	/**
 	 * @return the {@link MetaData} describing the source and quality of this
-	 * {@link AbstractedDataSet}.
+	 *         {@link AbstractedDataSet}.
 	 */
 	public MetaData getMetadata();
 }

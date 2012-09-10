@@ -19,14 +19,16 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
 
 /**
  * Clip algorithm that forbids drawing.
+ * 
  * @author Simon Templer
  */
 public class Hide implements Clip {
-	
+
 	private static Hide instance;
-	
+
 	/**
 	 * Get the {@link Hide} instance.
+	 * 
 	 * @return the instance
 	 */
 	public static Hide getInstance() {
@@ -37,7 +39,7 @@ public class Hide implements Clip {
 	}
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	private Hide() {
 		super();
@@ -47,8 +49,7 @@ public class Hide implements Clip {
 	 * @see Clip#getClip(Rectangle, int, int, int, int)
 	 */
 	@Override
-	public Shape getClip(Rectangle viewportBounds, int originX, int originY,
-			int width, int height) {
+	public Shape getClip(Rectangle viewportBounds, int originX, int originY, int width, int height) {
 		// nothing should be painted
 		return null;
 	}

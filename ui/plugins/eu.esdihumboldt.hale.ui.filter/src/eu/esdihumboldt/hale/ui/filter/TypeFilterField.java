@@ -48,22 +48,25 @@ import eu.esdihumboldt.hale.ui.filter.internal.Messages;
 
 /**
  * Field for editing a type filter.
+ * 
  * @author Simon Templer
  * @author Sebastian Reinhardt
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class TypeFilterField extends Composite {
-	
+
 	/**
-	 * Property name of the filter property (as used in {@link PropertyChangeEvent}s)
+	 * Property name of the filter property (as used in
+	 * {@link PropertyChangeEvent}s)
 	 */
 	public static final String PROPERTY_FILTER = "filter";
-	
+
 	/**
-	 * Property name of the valid property (as used in {@link PropertyChangeEvent}s)
+	 * Property name of the valid property (as used in
+	 * {@link PropertyChangeEvent}s)
 	 */
 	public static final String PROPERTY_VALID = "valid";
-	
+
 	/**
 	 * The supported filter types.
 	 */
@@ -73,25 +76,25 @@ public class TypeFilterField extends Composite {
 		/** Extended CQL filter */
 		ECQL
 	}
-	
+
 	private final Text filterText;
-	//private final Button openForm;
+	// private final Button openForm;
 	private final Button insertVar;
 	private final Button clearFilter;
 	private final ControlDecoration decoration;
-	
+
 	private TypeDefinition type;
 	private final SchemaSpaceID ssid;
-	
+
 	private final FilterType filterType;
-	
+
 	private boolean valid = false;
 	private Filter filter;
-	
+
 	private final Image insertVarImage;
 	private final Image openFormImage;
 	private final Image clearFilterImage;
-	
+
 	private final Set<PropertyChangeListener> listeners = new HashSet<PropertyChangeListener>();
 
 	/**
@@ -103,49 +106,48 @@ public class TypeFilterField extends Composite {
 	 * @param ssid the schema space, may be <code>null</code>
 	 * @param filterType the filter type
 	 */
-	public TypeFilterField(TypeDefinition type, Composite parent, int style, 
-			SchemaSpaceID ssid, FilterType filterType) {
+	public TypeFilterField(TypeDefinition type, Composite parent, int style, SchemaSpaceID ssid,
+			FilterType filterType) {
 		super(parent, style);
-		
+
 		this.type = type;
 		this.ssid = ssid;
 		this.filterType = filterType;
-		
+
 		GridLayout layout = new GridLayout(4, false);
 		layout.horizontalSpacing = 2;
 		layout.verticalSpacing = 0;
-		
+
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
 		setLayout(layout);
-		
+
 		// images
 		insertVarImage = FilterUIPlugin.getImageDescriptor("icons/insert.gif").createImage(); //$NON-NLS-1$
 		openFormImage = FilterUIPlugin.getImageDescriptor("icons/form.gif").createImage(); //$NON-NLS-1$
-		
+
 		clearFilterImage = CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_REMOVE);
-		
+
 		// create components
-		
+
 		Composite filterComp = new Composite(this, SWT.NONE);
 		filterComp.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
 		filterComp.setLayout(GridLayoutFactory.fillDefaults().extendedMargins(0, 6, 0, 0).create());
-		
+
 		// text field
 		filterText = new Text(filterComp, SWT.SINGLE | SWT.BORDER);
-		filterText.setLayoutData(GridDataFactory.fillDefaults()
-				.grab(true, true).create());
+		filterText.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		filterText.setToolTipText(Messages.FeatureFilterField_3); //$NON-NLS-1$
 		filterText.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				updateFilter();
 			}
-			
+
 		});
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(filterText,
-				"eu.esdihumboldt.hale.doc.user.filter_field");
+		PlatformUI.getWorkbench().getHelpSystem()
+				.setHelp(filterText, "eu.esdihumboldt.hale.doc.user.filter_field");
 
 		decoration = new ControlDecoration(filterText, SWT.RIGHT | SWT.TOP);
 		showDefaultDecoration();
@@ -164,9 +166,9 @@ public class TypeFilterField extends Composite {
 				clearFilter.setEnabled(false);
 				updateFilter();
 			}
-			
+
 		});
-		
+
 		// insert variable
 		insertVar = new Button(this, SWT.PUSH);
 		insertVar.setImage(insertVarImage);
@@ -176,26 +178,29 @@ public class TypeFilterField extends Composite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				PropertyDefinitionDialog dialog = new PropertyDefinitionDialog(
-						Display.getCurrent().getActiveShell(),
-						TypeFilterField.this.ssid, 
-						TypeFilterField.this.type,
+				PropertyDefinitionDialog dialog = new PropertyDefinitionDialog(Display.getCurrent()
+						.getActiveShell(), TypeFilterField.this.ssid, TypeFilterField.this.type,
 						Messages.FeatureFilterField_7, null);
-				
+
 				if (dialog.open() == PropertyDefinitionDialog.OK && dialog.getObject() != null
 						&& dialog.getObject().getType().getName().toString().length() >= 1) {
 					String var = "";
-					for(int i = 0; i< dialog.getObject().getPropertyPath().size(); i++) {
-					if(i == 0) var = var.concat(dialog.getObject().getPropertyPath().get(i).getChild().getName().getLocalPart().toString());
-					else var = var.concat("." + dialog.getObject().getPropertyPath().get(i).getChild().getName().getLocalPart().toString());
+					for (int i = 0; i < dialog.getObject().getPropertyPath().size(); i++) {
+						if (i == 0)
+							var = var.concat(dialog.getObject().getPropertyPath().get(i).getChild()
+									.getName().getLocalPart().toString());
+						else
+							var = var.concat("."
+									+ dialog.getObject().getPropertyPath().get(i).getChild()
+											.getName().getLocalPart().toString());
 					}
 					filterText.insert(var);
 					filterText.setFocus();
 				}
 			}
-			
+
 		});
-		
+
 		// open form
 //		openForm = new Button(this, SWT.PUSH);
 //		
@@ -217,10 +222,10 @@ public class TypeFilterField extends Composite {
 //		});
 //		
 //		setType(type);
-		
+
 		updateFilter();
 	}
-	
+
 	/**
 	 * Update the filter and valid properties.
 	 */
@@ -228,9 +233,9 @@ public class TypeFilterField extends Composite {
 		Filter lastFilter = filter;
 		boolean lastValid = valid;
 		String filterString = filterText.getText();
-		
-		boolean filterPresent = filterString != null && !filterString.isEmpty(); 
-		if (filterPresent){
+
+		boolean filterPresent = filterString != null && !filterString.isEmpty();
+		if (filterPresent) {
 			clearFilter.setEnabled(true);
 			try {
 				switch (filterType) {
@@ -248,21 +253,20 @@ public class TypeFilterField extends Composite {
 			} catch (Throwable e) {
 				// show error decoration
 				decoration.setImage(FieldDecorationRegistry.getDefault()
-						.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
-						.getImage());
+						.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage());
 				decoration.setDescriptionText(e.getMessage());
 				decoration.show();
 				// mark as invalid
 				valid = false;
 			}
 		}
-		else{
+		else {
 			clearFilter.setEnabled(false);
 			filter = null;
 			valid = false;
 			showDefaultDecoration();
 		}
-		
+
 		// fire events
 		if (lastValid != valid) {
 			notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALID, lastValid, valid));
@@ -272,34 +276,37 @@ public class TypeFilterField extends Composite {
 
 	/**
 	 * Set the feature type
-	 *  
+	 * 
 	 * @param type the feature type
 	 */
 	public void setType(TypeDefinition type) {
 		this.type = type;
-		
-	//	openForm.setEnabled(type != null);
+
+		// openForm.setEnabled(type != null);
 		insertVar.setEnabled(type != null);
 	}
-	
+
 	/**
 	 * Get the filter expression.
+	 * 
 	 * @return the filter expression
 	 */
 	public String getFilterExpression() {
 		return filterText.getText();
 	}
-	
+
 	/**
 	 * Get the filter.
+	 * 
 	 * @return the filter or <code>null</code>
 	 */
 	public Filter getFilter() {
 		return filter;
 	}
-	
+
 	/**
-	 * States if the current filter expression is valid and 
+	 * States if the current filter expression is valid and
+	 * 
 	 * @return the valid
 	 */
 	public boolean isValid() {
@@ -308,11 +315,12 @@ public class TypeFilterField extends Composite {
 
 	/**
 	 * Set the filter expression.
+	 * 
 	 * @param filterExpression the filter expression
 	 */
 	public void setFilterExpression(String filterExpression) {
 		filterText.setText(filterExpression);
-		
+
 		updateFilter();
 	}
 
@@ -323,14 +331,14 @@ public class TypeFilterField extends Composite {
 	public void dispose() {
 		openFormImage.dispose();
 		insertVarImage.dispose();
-		
+
 		super.dispose();
 	}
-	
+
 	/**
 	 * Add a filter listener
 	 * 
-	 * @param listener the filter listener 
+	 * @param listener the filter listener
 	 */
 	public void addListener(PropertyChangeListener listener) {
 		listeners.add(listener);
@@ -339,14 +347,15 @@ public class TypeFilterField extends Composite {
 	/**
 	 * Remove a filter listener
 	 * 
-	 * @param listener the filter listener 
+	 * @param listener the filter listener
 	 */
 	public void removeListener(PropertyChangeListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	/**
 	 * Notify the listeners of a property change.
+	 * 
 	 * @param evt the property change event
 	 */
 	protected void notifyListeners(PropertyChangeEvent evt) {
@@ -381,12 +390,12 @@ public class TypeFilterField extends Composite {
 //			decoration.show();
 //		}
 //	}
-	
-	private void showDefaultDecoration(){
-		 decoration.setImage(FieldDecorationRegistry.getDefault()
-	                .getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
-		 decoration.setDescriptionText("for Example: \"id\" = '1'");
-		 decoration.show();
+
+	private void showDefaultDecoration() {
+		decoration.setImage(FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+		decoration.setDescriptionText("for Example: \"id\" = '1'");
+		decoration.show();
 	}
-	
+
 }

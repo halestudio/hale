@@ -46,10 +46,11 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 
 /**
  * Project file based on an I/O action
+ * 
  * @author Simon Templer
  */
 public class ActionProjectFile implements ProjectFile {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ActionProjectFile.class);
 
 	private final Map<String, String> saveParameters;
@@ -58,25 +59,25 @@ public class ActionProjectFile implements ProjectFile {
 	private final String loadProviderId;
 	private final String loadActionId;
 	private final String saveActionId;
-	
+
 	private File applyFile;
 
 	/**
 	 * Create a project file based on an I/O action
+	 * 
 	 * @param loadActionId the action identifier for loading the file
 	 * @param loadProviderId the provider identifier to use for loading the
-	 *   file, may be <code>null</code> to use auto-detection
+	 *            file, may be <code>null</code> to use auto-detection
 	 * @param loadParameters the parameters for the I/O provider used for
-	 *   loading the file
+	 *            loading the file
 	 * @param saveActionId the action identifier for saving the file
-	 * @param saveProviderId the provider identifier to use for saving the
-	 *   file
-	 * @param saveParameters the parameters for the I/O provider used for
-	 *   saving the file
+	 * @param saveProviderId the provider identifier to use for saving the file
+	 * @param saveParameters the parameters for the I/O provider used for saving
+	 *            the file
 	 */
 	public ActionProjectFile(String loadActionId, String loadProviderId,
-			Map<String, String> loadParameters, String saveActionId,
-			String saveProviderId, Map<String, String> saveParameters) {
+			Map<String, String> loadParameters, String saveActionId, String saveProviderId,
+			Map<String, String> saveParameters) {
 		this.loadActionId = loadActionId;
 		this.loadProviderId = loadProviderId;
 		this.loadParameters = loadParameters;
@@ -93,7 +94,7 @@ public class ActionProjectFile implements ProjectFile {
 		if (applyFile != null && !applyFile.delete()) {
 			applyFile.deleteOnExit();
 		}
-		
+
 		// direct the stream to a temporary file
 		File tmpFile = File.createTempFile("project-file", null);
 		OutputStream out = new FileOutputStream(tmpFile);
@@ -104,10 +105,10 @@ public class ActionProjectFile implements ProjectFile {
 			out.close();
 			in.close();
 		}
-		
+
 		applyFile = tmpFile;
 	}
-	
+
 	/**
 	 * @see ProjectFile#apply()
 	 */
@@ -117,47 +118,49 @@ public class ActionProjectFile implements ProjectFile {
 		if (applyFile == null) {
 			return;
 		}
-		
+
 		try {
 			// load the temporary file using an ImportProvider
 			LocatableInputSupplier<? extends InputStream> tmpIn = new FileIOSupplier(applyFile);
-			
+
 			// get the action
 			IOAction action = IOActionExtension.getInstance().get(loadActionId);
-			checkState(ImportProvider.class.isAssignableFrom(action.getProviderType()), 
+			checkState(ImportProvider.class.isAssignableFrom(action.getProviderType()),
 					"Load action not compatible to ImportProvider");
 			// try specified provider
 			ImportProvider provider = null;
 			if (loadProviderId != null) {
 				try {
-					provider = (ImportProvider) HaleIO.createIOProvider(
-							action.getProviderType(), null, loadProviderId);
+					provider = (ImportProvider) HaleIO.createIOProvider(action.getProviderType(),
+							null, loadProviderId);
 				} catch (Exception e) {
 					// ignore
-					log.error("Could not get specified import provider, trying auto-detection instead", e);
+					log.error(
+							"Could not get specified import provider, trying auto-detection instead",
+							e);
 				}
 			}
 			// find provider if necessary
 			if (provider == null) {
-				provider = (ImportProvider) HaleIO.findIOProvider(
-						action.getProviderType(), tmpIn, null);
+				provider = (ImportProvider) HaleIO.findIOProvider(action.getProviderType(), tmpIn,
+						null);
 			}
-			
+
 			if (provider == null) {
 				throw new IllegalStateException("No provider for loading project file found");
 			}
-			
+
 			// find advisor
 			@SuppressWarnings("rawtypes")
 			IOAdvisor advisor = IOAdvisorExtension.getInstance().findAdvisor(loadActionId);
 			checkState(advisor != null, "No advisor for loading project file found");
-			
+
 			// configure provider
 			// set given parameters
 			setParameters(provider, loadParameters);
 			// set source
 			provider.setSource(tmpIn);
-			
+
 			// execute the provider
 			executeProvider(provider, advisor);
 		} finally {
@@ -168,8 +171,7 @@ public class ActionProjectFile implements ProjectFile {
 		}
 	}
 
-	private void setParameters(IOProvider provider,
-			Map<String, String> parameters) {
+	private void setParameters(IOProvider provider, Map<String, String> parameters) {
 		for (Entry<String, String> entry : parameters.entrySet()) {
 			provider.setParameter(entry.getKey(), entry.getValue());
 		}
@@ -182,10 +184,10 @@ public class ActionProjectFile implements ProjectFile {
 			// use advisor to configure provider
 			advisor.prepareProvider(provider);
 			advisor.updateConfiguration(provider);
-			
+
 			// execute
 			IOReport report = provider.execute(new LogProgressIndicator());
-			
+
 			// handle results
 			if (report.isSuccess()) {
 				advisor.handleResults(provider);
@@ -216,27 +218,27 @@ public class ActionProjectFile implements ProjectFile {
 	public void store(final OutputStream out) throws Exception {
 		// get the action
 		IOAction action = IOActionExtension.getInstance().get(saveActionId);
-		checkState(ExportProvider.class.isAssignableFrom(action.getProviderType()), 
+		checkState(ExportProvider.class.isAssignableFrom(action.getProviderType()),
 				"Save action not compatible to ExportProvider");
 		// get specified provider
 		ExportProvider provider = (ExportProvider) HaleIO.createIOProvider(
 				action.getProviderType(), null, saveProviderId);
-		
+
 		if (provider == null) {
 			throw new IllegalStateException("No provider for saving project file found");
 		}
-		
+
 		// find advisor
 		@SuppressWarnings("rawtypes")
 		IOAdvisor advisor = IOAdvisorExtension.getInstance().findAdvisor(saveActionId);
 		checkState(advisor != null, "No advisor for saving project file found");
-		
+
 		// configure provider
 		// set given parameters
 		setParameters(provider, saveParameters);
 		// set target
 		provider.setTarget(new LocatableOutputSupplier<OutputStream>() {
-			
+
 			private boolean first = true;
 
 			@Override
@@ -253,7 +255,7 @@ public class ActionProjectFile implements ProjectFile {
 				return null;
 			}
 		});
-		
+
 		// execute the provider
 		executeProvider(provider, advisor);
 	}

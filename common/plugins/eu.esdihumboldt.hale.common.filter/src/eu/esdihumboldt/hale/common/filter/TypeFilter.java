@@ -18,16 +18,18 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Filter that matches instances with a certain associated type.
+ * 
  * @author Simon Templer
  */
 public class TypeFilter implements Filter {
-	
+
 	private final TypeDefinition type;
 
 	/**
 	 * Create a filter matching instances associated with the given type.
+	 * 
 	 * @param type the type definition to match, if <code>null</code> any type
-	 *   associated with an instance will be a match
+	 *            associated with an instance will be a match
 	 */
 	public TypeFilter(TypeDefinition type) {
 		super();
@@ -73,7 +75,8 @@ public class TypeFilter implements Filter {
 		if (type == null) {
 			if (other.type != null)
 				return false;
-		} else if (!type.equals(other.type))
+		}
+		else if (!type.equals(other.type))
 			return false;
 		return true;
 	}

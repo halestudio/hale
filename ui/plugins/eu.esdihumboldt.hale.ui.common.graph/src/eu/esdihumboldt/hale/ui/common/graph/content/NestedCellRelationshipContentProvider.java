@@ -28,29 +28,30 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Graph entity relationship content provider that models entities and cells as 
- * nodes. Property entites are contained in type entities. Supports an 
- * {@link Alignment}, a {@link Cell} or an {@link Iterable} of {@link Cell}s as 
+ * Graph entity relationship content provider that models entities and cells as
+ * nodes. Property entites are contained in type entities. Supports an
+ * {@link Alignment}, a {@link Cell} or an {@link Iterable} of {@link Cell}s as
  * input.
+ * 
  * @author Simon Templer
  */
-public class NestedCellRelationshipContentProvider extends
-		CellRelationshipContentProvider implements INestedContentProvider {
+public class NestedCellRelationshipContentProvider extends CellRelationshipContentProvider
+		implements INestedContentProvider {
 
 	private Multimap<Type, Property> entityMap = HashMultimap.create();
-	
+
 	/**
 	 * @see CellRelationshipContentProvider#getElements(Object)
 	 */
 	@Override
 	public Object[] getElements(Object input) {
 		List<Object> elements = new ArrayList<Object>();
-		
+
 		entityMap.clear();
-		
+
 		Multimap<TypeDefinition, Type> types = HashMultimap.create();
 		Collection<Property> properties = new ArrayList<Property>();
-		
+
 		for (Object element : super.getElements(input)) {
 			if (element instanceof Type) {
 				Type type = (Type) element;
@@ -64,7 +65,7 @@ public class NestedCellRelationshipContentProvider extends
 				elements.add(element);
 			}
 		}
-		
+
 		// assign properties to corresponding parents
 		for (Property property : properties) {
 			// find association through type definition
@@ -74,7 +75,7 @@ public class NestedCellRelationshipContentProvider extends
 				entityMap.put(type, property);
 			}
 		}
-		
+
 		return elements.toArray();
 	}
 
@@ -100,7 +101,7 @@ public class NestedCellRelationshipContentProvider extends
 		if (element instanceof Type) {
 			return entityMap.get((Type) element).toArray();
 		}
-		
+
 		return null;
 	}
 

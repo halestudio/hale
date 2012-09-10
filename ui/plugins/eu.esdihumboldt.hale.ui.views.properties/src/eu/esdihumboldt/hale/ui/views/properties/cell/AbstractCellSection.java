@@ -18,13 +18,13 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractSingleObjectSection;
 
 /**
  * Cell section base class.
+ * 
  * @author Simon Templer
  */
-public abstract class AbstractCellSection extends
-		AbstractSingleObjectSection {
+public abstract class AbstractCellSection extends AbstractSingleObjectSection {
 
 	private Cell cell;
-	
+
 	/**
 	 * @see AbstractSingleObjectSection#setInput(Object)
 	 */
@@ -39,6 +39,7 @@ public abstract class AbstractCellSection extends
 
 	/**
 	 * Set the input cell.
+	 * 
 	 * @param input the cell
 	 */
 	private void setCell(Cell input) {
@@ -47,6 +48,7 @@ public abstract class AbstractCellSection extends
 
 	/**
 	 * Get the current cell.
+	 * 
 	 * @return the cell
 	 */
 	public Cell getCell() {

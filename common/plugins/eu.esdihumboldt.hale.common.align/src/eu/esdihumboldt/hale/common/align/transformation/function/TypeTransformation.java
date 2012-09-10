@@ -23,23 +23,27 @@ import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 
 /**
  * Transformation function between source and target types.
+ * 
  * @param <E> the transformation engine type
  * 
  * @author Simon Templer
  */
-public interface TypeTransformation<E extends TransformationEngine> extends TransformationFunction<E> {
-	
+public interface TypeTransformation<E extends TransformationEngine> extends
+		TransformationFunction<E> {
+
 	/**
 	 * Set the property transformer to publish the source/target instance pairs
-	 * to. Type transformations have no result, instead they must publish the 
+	 * to. Type transformations have no result, instead they must publish the
 	 * instance pairs created during
-	 * {@link #execute(String, TransformationEngine, java.util.Map, TransformationLog)}ion 
-	 * to the property transformer using
-	 * {@link PropertyTransformer#publish(FamilyInstance, MutableInstance, TransformationLog)}.
+	 * {@link #execute(String, TransformationEngine, java.util.Map, TransformationLog)}
+	 * ion to the property transformer using
+	 * {@link PropertyTransformer#publish(FamilyInstance, MutableInstance, TransformationLog)}
+	 * .
+	 * 
 	 * @param propertyTransformer the property transformer
 	 */
 	public void setPropertyTransformer(PropertyTransformer propertyTransformer);
-	
+
 	/**
 	 * Set the target types.
 	 * 

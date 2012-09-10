@@ -20,15 +20,16 @@ import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationRe
 
 /**
  * Reporter for instance validation messages.
- *
+ * 
  * @author Kai Schwierczek
  */
-public class DefaultInstanceValidationReporter extends DefaultReporter<InstanceValidationMessage> 
+public class DefaultInstanceValidationReporter extends DefaultReporter<InstanceValidationMessage>
 		implements InstanceValidationReport, InstanceValidationReporter {
+
 	/**
-	 * Create an empty report. You should always call {@link #setSuccess(boolean)} at least once
-	 * on a report.
-	 *
+	 * Create an empty report. You should always call
+	 * {@link #setSuccess(boolean)} at least once on a report.
+	 * 
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public DefaultInstanceValidationReporter(boolean doLog) {

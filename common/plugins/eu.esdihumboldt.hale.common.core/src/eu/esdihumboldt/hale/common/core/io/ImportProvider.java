@@ -18,25 +18,25 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
  * Base interface for import providers
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2  
+ * @since 2.2
  */
 public interface ImportProvider extends IOProvider {
-	
+
 	/**
 	 * The configuration parameter name for the source URI
 	 */
 	public static final String PARAM_SOURCE = "source";
-	
+
 	/**
 	 * Set the import source
 	 * 
 	 * @param source the source input supplier
 	 */
 	public void setSource(LocatableInputSupplier<? extends InputStream> source);
-	
+
 	/**
 	 * Get the import source
 	 * 

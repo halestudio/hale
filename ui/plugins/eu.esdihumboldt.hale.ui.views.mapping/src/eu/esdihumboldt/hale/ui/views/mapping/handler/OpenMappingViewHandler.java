@@ -25,10 +25,11 @@ import eu.esdihumboldt.hale.ui.views.mapping.MappingView;
 
 /**
  * Shows the mapping view
+ * 
  * @author Simon Templer
  */
 public class OpenMappingViewHandler extends AbstractHandler {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(OpenMappingViewHandler.class);
 
 	/**
@@ -37,8 +38,7 @@ public class OpenMappingViewHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
-			HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-					.showView(MappingView.ID);
+			HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().showView(MappingView.ID);
 		} catch (PartInitException e) {
 			log.error("Error opening mapping view", e);
 		}

@@ -13,8 +13,10 @@
 package eu.esdihumboldt.hale.common.align.transformation.function.impl;
 
 /**
- * Exception that is thrown by a {@link AbstractSingleTargetPropertyTransformation}
- * if no result can be determined for a transformation. 
+ * Exception that is thrown by a
+ * {@link AbstractSingleTargetPropertyTransformation} if no result can be
+ * determined for a transformation.
+ * 
  * @author Simon Templer
  */
 public class NoResultException extends Exception {

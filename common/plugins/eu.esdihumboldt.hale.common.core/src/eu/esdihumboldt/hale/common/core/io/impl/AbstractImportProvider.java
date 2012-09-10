@@ -27,14 +27,13 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
  * Abstract {@link ImportProvider} implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
-public abstract class AbstractImportProvider extends AbstractIOProvider implements
-		ImportProvider {
-	
+public abstract class AbstractImportProvider extends AbstractIOProvider implements ImportProvider {
+
 	/**
 	 * The source
 	 */
@@ -45,7 +44,7 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	 */
 	public AbstractImportProvider() {
 		super();
-		
+
 		addSupportedParameter(PARAM_SOURCE);
 	}
 
@@ -71,7 +70,7 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		
+
 		if (source == null) {
 			fail("No source specified");
 		}
@@ -89,7 +88,7 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 				configuration.put(PARAM_SOURCE, location.toString());
 			}
 		}
-		
+
 		super.storeConfiguration(configuration);
 	}
 
@@ -105,14 +104,14 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 			super.setParameter(name, value);
 		}
 	}
-	
+
 	/**
 	 * @see IOProvider#createReporter()
 	 */
 	@Override
 	public IOReporter createReporter() {
-		return new DefaultIOReporter(getSource(), MessageFormat.format(
-				"{0} import", getTypeName()), true);
+		return new DefaultIOReporter(getSource(),
+				MessageFormat.format("{0} import", getTypeName()), true);
 	}
 
 }

@@ -27,30 +27,30 @@ import eu.esdihumboldt.specification.mediator.constraints.portrayal.NamedStyle;
  * 
  */
 public class NamedStyleImpl implements NamedStyle, Serializable {
-	
+
 	/**
 	 * 
 	 * @return a unique StyleName.
 	 * 
 	 */
 	private String name;
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 *  The unique identifier of the constraint int the database
+	 * The unique identifier of the constraint int the database
 	 */
-	
+
 	private long id;
-	
+
 	/**
 	 * The status of this constraint.
 	 */
 	private boolean satisfied = false;
-	
+
 	/**
 	 * The unique identifier in the current VM.
 	 */
@@ -61,24 +61,21 @@ public class NamedStyleImpl implements NamedStyle, Serializable {
 	 */
 	private ConstraintSource constraintSource;
 
-	
-	
 	/**
-	 * @param constraintSource the constraintSource to set
+	 * @param constraintSource
+	 *            the constraintSource to set
 	 */
 	public void setConstraintSource(ConstraintSource constraintSource) {
 		this.constraintSource = constraintSource;
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#getConstraintSource()
 	 */
 	public ConstraintSource getConstraintSource() {
 		return this.constraintSource;
 	}
-	
-	
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#isSatisfied()
 	 */
@@ -86,7 +83,7 @@ public class NamedStyleImpl implements NamedStyle, Serializable {
 		// TODO Auto-generated method stub
 		return this.satisfied;
 	}
-		
+
 	/**
 	 * @return the Uid that has been assigned to this SpatialConstraint.
 	 */
@@ -102,12 +99,13 @@ public class NamedStyleImpl implements NamedStyle, Serializable {
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @param satisfied
 	 */
@@ -123,12 +121,11 @@ public class NamedStyleImpl implements NamedStyle, Serializable {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
 
 }

@@ -18,6 +18,7 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 
 /**
  * Resource type extension
+ * 
  * @author Simon Templer
  */
 public class ResourceTypeExtension extends IdentifiableExtension<ResourceType> {
@@ -26,11 +27,12 @@ public class ResourceTypeExtension extends IdentifiableExtension<ResourceType> {
 	 * The resource extension point ID
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.util.resource";
-	
+
 	private static ResourceTypeExtension instance;
-	
+
 	/**
 	 * Get the resource type extension.
+	 * 
 	 * @return the extension instance
 	 */
 	public static ResourceTypeExtension getInstance() {

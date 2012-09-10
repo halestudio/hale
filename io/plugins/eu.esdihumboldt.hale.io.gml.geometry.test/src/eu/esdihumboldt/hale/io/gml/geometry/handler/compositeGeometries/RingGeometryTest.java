@@ -45,9 +45,8 @@ public class RingGeometryTest extends AbstractHandlerTest {
 	public void init() {
 		super.init();
 
-		Coordinate[] coordinates = new Coordinate[] {
-				new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
-				new Coordinate(0.01, -3.2) };
+		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
+				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
 		LineString linestring = geomFactory.createLineString(coordinates);
 
 		LineString[] lines = new LineString[] { linestring };
@@ -57,8 +56,7 @@ public class RingGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test ring geometries read from a GML 2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testRingGml31() throws Exception {
@@ -79,8 +77,7 @@ public class RingGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkRingPropertyInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 

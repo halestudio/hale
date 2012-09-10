@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  */
 public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<ParameterPage> implements
 		ParameterPageFactory {
+
 	private Set<FunctionParameter> associatedFunctionParameters;
 	private static final ALogger _log = ALoggerFactory.getLogger(ParameterPageFactoryImpl.class);
 
@@ -100,7 +101,8 @@ public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<Param
 		if (associatedFunctionParameters == null) {
 			Set<FunctionParameter> params = new HashSet<FunctionParameter>();
 			// get defined parameters
-			Set<FunctionParameter> definedParameters = FunctionUtil.getFunction(getFunctionId()).getDefinedParameters();
+			Set<FunctionParameter> definedParameters = FunctionUtil.getFunction(getFunctionId())
+					.getDefinedParameters();
 			// walk over conf parameters
 			IConfigurationElement[] parameterElements = conf.getChildren("parameter");
 			for (IConfigurationElement parameterElement : parameterElements) {

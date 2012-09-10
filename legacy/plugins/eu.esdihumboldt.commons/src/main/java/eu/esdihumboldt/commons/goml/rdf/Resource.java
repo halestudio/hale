@@ -17,15 +17,14 @@ import eu.esdihumboldt.specification.cst.rdf.IResource;
 /**
  * Simple implementation of {@link IResource}.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public class Resource 
-	implements IResource {
-	
+public class Resource implements IResource {
+
 	private String location;
-	
+
 	// constructors ............................................................
 
 	/**
@@ -35,13 +34,13 @@ public class Resource
 		super();
 		this.location = location;
 	}
-	
+
 	// getters / setters .......................................................
 
 	public String toString() {
 		return this.location.toString();
 	}
-	
+
 	/**
 	 * @return the location
 	 */
@@ -50,12 +49,11 @@ public class Resource
 	}
 
 	/**
-	 * @param location the location to set
+	 * @param location
+	 *            the location to set
 	 */
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	
-	
 
 }

@@ -25,8 +25,7 @@ import eu.esdihumboldt.hale.ui.views.properties.function.DefaultFunctionSection;
  * 
  * @author Patrick Lieb
  */
-public class AbstractFunctionIdSection extends
-		DefaultFunctionSection<AbstractFunction<?>> {
+public class AbstractFunctionIdSection extends DefaultFunctionSection<AbstractFunction<?>> {
 
 	private Text id;
 
@@ -35,8 +34,7 @@ public class AbstractFunctionIdSection extends
 	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "ID:", null);
 		id = getText();
 	}

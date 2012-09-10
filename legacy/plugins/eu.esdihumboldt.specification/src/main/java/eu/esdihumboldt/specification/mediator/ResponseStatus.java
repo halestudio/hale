@@ -14,31 +14,31 @@ package eu.esdihumboldt.specification.mediator;
 import eu.esdihumboldt.specification.dataaccess.AccessResponse;
 
 /**
- * This enumeration collects status types an {@link AccessResponse} or 
+ * This enumeration collects status types an {@link AccessResponse} or
  * {@link MediatorResponse} can have.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public enum ResponseStatus {
 
 	/**
 	 * unknown: the default state.
 	 */
-	unknown, 
+	unknown,
 	/**
-	 * pending: is sent when the request was sent successfully, but 
-	 * execution is done in an asnychronous matter.
+	 * pending: is sent when the request was sent successfully, but execution is
+	 * done in an asnychronous matter.
 	 */
-	pending, 
+	pending,
 	/**
 	 * completed: the request was fulfilled successfully.
 	 */
-	completed, 
+	completed,
 	/**
-	 * even though no exception was sent, the service was not 
-	 * able to conduct the requested operation.
+	 * even though no exception was sent, the service was not able to conduct
+	 * the requested operation.
 	 */
 	failed
 }

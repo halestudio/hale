@@ -14,7 +14,8 @@ package eu.esdihumboldt.specification.mediator.constraints.portrayal;
 import java.util.Set;
 
 /**
- * A UserStyle allows user-defined styling and is semantically equivalent to a WMS named style.
+ * A UserStyle allows user-defined styling and is semantically equivalent to a
+ * WMS named style.
  * 
  * 
  * @author Anna Pitaev, Logica CMG
@@ -22,39 +23,37 @@ import java.util.Set;
  * 
  */
 public interface UserStyle {
-	
+
 	/**
 	 * 
 	 * @return a unique StyleName.
 	 * 
 	 */
 	public String getName();
-	
+
 	/**
 	 * 
 	 * @return a Title-Element for this style.
 	 */
 	public String getTitle();
-	
-	
+
 	/**
 	 * 
 	 * @return an Abstract-Element for this Style.
 	 * 
 	 */
 	public String getAbstract();
-	
+
 	/**
 	 * 
-	 * @return true, if this Style set als default Style,
-	 *         false, else.   
+	 * @return true, if this Style set als default Style, false, else.
 	 */
 	public boolean getDefault();
-	
+
 	/**
 	 * 
 	 * @return a List of FeatureTypeStyle, defined for this UserStyle.
 	 */
-	
+
 	public Set<FeatureTypeStyle> getFeatureTypeStyle();
 }

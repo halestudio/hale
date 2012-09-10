@@ -18,27 +18,28 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 
 /**
  * Extension for {@link PropertyFunction}s
+ * 
  * @author Simon Templer
  */
-public class PropertyFunctionExtension extends
-		AbstractFunctionExtension<PropertyFunction> {
+public class PropertyFunctionExtension extends AbstractFunctionExtension<PropertyFunction> {
 
 	/**
 	 * Property function extension point
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.align.function";
-	
+
 	private static PropertyFunctionExtension instance;
-	
+
 	/**
 	 * Get the extension instance
+	 * 
 	 * @return the extension
 	 */
 	public static PropertyFunctionExtension getInstance() {
 		if (instance == null) {
 			instance = new PropertyFunctionExtension();
 		}
-		
+
 		return instance;
 	}
 
@@ -61,12 +62,11 @@ public class PropertyFunctionExtension extends
 	 * @see AbstractFunctionExtension#doCreate(String, IConfigurationElement)
 	 */
 	@Override
-	protected PropertyFunction doCreate(String elementId,
-			IConfigurationElement element) {
+	protected PropertyFunction doCreate(String elementId, IConfigurationElement element) {
 		if (element.getName().equals("propertyFunction")) {
 			return new PropertyFunction(element);
 		}
-		
+
 		return null;
 	}
 

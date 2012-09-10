@@ -24,61 +24,66 @@ import eu.esdihumboldt.commons.goml.rdf.About;
 
 /**
  * Schema element
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
-public class SchemaElement extends AbstractDefinition implements Comparable<SchemaElement> {
+public class SchemaElement extends AbstractDefinition implements
+		Comparable<SchemaElement> {
 
 	/**
 	 * The element name
 	 */
 	private final Name elementName;
-	
+
 	/**
 	 * The type name
 	 */
 	private final Name typeName;
-	
+
 	/**
 	 * The substitution group
 	 */
 	private final Name substitutionGroup;
-	
+
 	/**
 	 * The element type
 	 */
 	private TypeDefinition type;
-	
+
 	/**
 	 * The attribute/feature type
 	 */
 	private AttributeType attributeType;
-	
+
 	/**
 	 * Create a schema element
 	 * 
-	 * @param elementName the element name
-	 * @param typeName the type name
-	 * @param type the corresponding type definition, may be <code>null</code>
-	 *   for later assignment
-	 * @param substitutionGroup the substitution group element name, may be 
-	 *   <code>null</code>
+	 * @param elementName
+	 *            the element name
+	 * @param typeName
+	 *            the type name
+	 * @param type
+	 *            the corresponding type definition, may be <code>null</code>
+	 *            for later assignment
+	 * @param substitutionGroup
+	 *            the substitution group element name, may be <code>null</code>
 	 */
 	public SchemaElement(Name elementName, Name typeName, TypeDefinition type,
 			Name substitutionGroup) {
 		this.elementName = elementName;
 		this.typeName = typeName;
 		this.substitutionGroup = substitutionGroup;
-		
+
 		setType(type);
 	}
-	
+
 	/**
-	 * @param resolving the types that are already in the process of creating a
-	 *   feature type, may be <code>null</code>
+	 * @param resolving
+	 *            the types that are already in the process of creating a
+	 *            feature type, may be <code>null</code>
 	 * 
 	 * @return the attribute type
 	 */
@@ -87,30 +92,28 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 			if (type == null) {
 				throw new IllegalStateException("May not be called yet"); //$NON-NLS-1$
 			}
-			
+
 			if (!type.isAttributeTypeSet()) {
 				attributeType = type.createFeatureType(elementName, resolving);
-			}
-			else {
+			} else {
 				attributeType = type.getType(resolving);
 			}
 		}
-		
+
 		return attributeType;
 	}
-	
+
 	/**
 	 * Get the feature type if available
 	 * 
 	 * @return the feature type or <code>null</code> if no type could be
-	 *   determined or the type is not a feature type
+	 *         determined or the type is not a feature type
 	 */
 	public FeatureType getFeatureType() {
 		AttributeType type = getAttributeType(null);
 		if (type != null && type instanceof FeatureType) {
 			return (FeatureType) type;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -123,15 +126,16 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	}
 
 	/**
-	 * @param type the type to set
+	 * @param type
+	 *            the type to set
 	 */
 	public void setType(TypeDefinition type) {
 		if (this.type != null) {
 			this.type.removeDeclaringElement(this);
 		}
-		
+
 		this.type = type;
-		
+
 		if (type != null) {
 			type.addDeclaringElement(this);
 		}
@@ -164,9 +168,8 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	 */
 	@Override
 	public Entity getEntity() {
-		return new FeatureClass(
-				new About(elementName.getNamespaceURI(), 
-						elementName.getLocalPart()));
+		return new FeatureClass(new About(elementName.getNamespaceURI(),
+				elementName.getLocalPart()));
 	}
 
 	/**
@@ -176,7 +179,7 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	public String getIdentifier() {
 		return elementName.getNamespaceURI() + "/" + elementName.getLocalPart(); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * @return the substitutionGroup
 	 */
@@ -189,11 +192,13 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 	 */
 	@Override
 	public int compareTo(SchemaElement other) {
-		int result = elementName.getLocalPart().compareToIgnoreCase(other.elementName.getLocalPart());
+		int result = elementName.getLocalPart().compareToIgnoreCase(
+				other.elementName.getLocalPart());
 		if (result == 0) {
-			return elementName.getNamespaceURI().compareToIgnoreCase(other.elementName.getNamespaceURI());
+			return elementName.getNamespaceURI().compareToIgnoreCase(
+					other.elementName.getNamespaceURI());
 		}
-		
+
 		return result;
 	}
 
@@ -243,5 +248,5 @@ public class SchemaElement extends AbstractDefinition implements Comparable<Sche
 			return false;
 		return true;
 	}
-	
+
 }

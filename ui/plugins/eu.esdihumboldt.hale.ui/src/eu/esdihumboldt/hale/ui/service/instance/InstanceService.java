@@ -23,67 +23,73 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 /**
  * The {@link InstanceService} provides {@link Instance}s from different data
  * sets, e.g. the {@link DataSet#SOURCE} and {@link DataSet#TRANSFORMED} data
- * sets.
- * It also triggers the transformation of the source to the target data set.
+ * sets. It also triggers the transformation of the source to the target data
+ * set.
  * 
  * @author Thorsten Reitz
  * @author Simon Templer
  */
 public interface InstanceService extends InstanceResolver {
+
 	/**
 	 * The action id used for reading source data.
 	 */
 	public static final String ACTION_READ_SOURCEDATA = "eu.esdihumboldt.hale.io.instance.read.source";
-	
+
 	/**
 	 * Get the instances from the given data set
+	 * 
 	 * @param dataset the data set
 	 * @return the instance collection
 	 */
 	public InstanceCollection getInstances(DataSet dataset);
-	
+
 	/**
 	 * Get the types for which instances are present in the given data set
+	 * 
 	 * @param dataset the data set
 	 * @return the set of types for which instances are present
 	 */
 	public Set<TypeDefinition> getInstanceTypes(DataSet dataset);
-	
+
 	/**
 	 * Add instances to the {@link DataSet#SOURCE} data set
+	 * 
 	 * @param sourceInstances the instances to add
 	 */
 	public void addSourceInstances(InstanceCollection sourceInstances);
-	
+
 	/**
 	 * Set if live transformation of source data is enabled.
+	 * 
 	 * @param enabled if transformation is enabled
 	 */
 	public void setTransformationEnabled(boolean enabled);
-	
+
 	/**
 	 * Get if live transformation of source data is enabled.
+	 * 
 	 * @return if live transformation is enabled
 	 */
 	public boolean isTransformationEnabled();
-	
+
 	/**
 	 * This will remove all instances from the service.
 	 */
 	public void clearInstances();
-	
+
 	/**
 	 * Adds an instance service listener
 	 * 
 	 * @param listener the listener to add
 	 */
 	public void addListener(InstanceServiceListener listener);
-	
+
 	/**
 	 * Removes an instance service listener
 	 * 
 	 * @param listener the listener to remove
 	 */
 	public void removeListener(InstanceServiceListener listener);
-	
+
 }

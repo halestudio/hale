@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings("all")
 public class Messages extends NLS {
+
 	private static final String BUNDLE_NAME = "eu.esdihumboldt.hale.ui.views.report.internal.messages"; //$NON-NLS-1$
 
 	public static String ReportContentProvider_0;

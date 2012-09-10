@@ -22,16 +22,17 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
 
 /**
  * Property section with unique information.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class PropertyUniqueSection extends DefaultDefinitionSection<PropertyDefinition> {
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		abstractCreateControls(parent, aTabbedPropertySheetPage, "UniqueGroup:", null);
 	}
 

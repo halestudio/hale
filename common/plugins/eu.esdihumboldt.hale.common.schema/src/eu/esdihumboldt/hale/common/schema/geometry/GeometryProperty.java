@@ -20,22 +20,23 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 
 /**
  * {@link Binding} for geometry properties.
+ * 
  * @param <T> the concrete geometry type
  * 
  * @author Simon Templer
  * @since 2.2
  */
 public interface GeometryProperty<T extends Geometry> extends Serializable {
-	
+
 	/**
-	 * Get the definition of the coordinate reference system associated with
-	 * the geometry.
+	 * Get the definition of the coordinate reference system associated with the
+	 * geometry.
 	 * 
-	 * @return the definition of the coordinate reference system or 
-	 *   <code>null</code>
+	 * @return the definition of the coordinate reference system or
+	 *         <code>null</code>
 	 */
 	public CRSDefinition getCRSDefinition();
-	
+
 	/**
 	 * Get the geometry.
 	 * 

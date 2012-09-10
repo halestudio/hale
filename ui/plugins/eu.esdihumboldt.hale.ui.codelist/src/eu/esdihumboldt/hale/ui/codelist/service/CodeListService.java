@@ -19,10 +19,10 @@ import eu.esdihumboldt.hale.common.codelist.CodeList;
 /**
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface CodeListService {
-	
+
 	/**
 	 * Tries to find the code list with the given namespace and identifier.
 	 * 
@@ -35,7 +35,7 @@ public interface CodeListService {
 	/**
 	 * Tries to find a code list associated to the attribute referenced by the
 	 * given identifier.
-	 *
+	 * 
 	 * @param attributeIdentifier the attribute identifier
 	 * @return the code list or <code>null</code>
 	 */
@@ -43,13 +43,13 @@ public interface CodeListService {
 
 	/**
 	 * Assign a code list for an attribute.
-	 *
+	 * 
 	 * @param attributeIdentifier the attribute identifier
-	 * @param code the code list to assign or <code>null</code> if the 
-	 *             assignment shall be deleted
+	 * @param code the code list to assign or <code>null</code> if the
+	 *            assignment shall be deleted
 	 */
-	public void assignAttributeCodeList(String attributeIdentifier,
-			CodeList code);
+	public void assignAttributeCodeList(String attributeIdentifier, CodeList code);
+
 //	
 //	/**
 //	 * Inform the service that the search path has changed
@@ -58,12 +58,14 @@ public interface CodeListService {
 
 	/**
 	 * Get the code lists.
+	 * 
 	 * @return the code lists
 	 */
 	public List<CodeList> getCodeLists();
 
 	/**
 	 * Add a code list to the service.
+	 * 
 	 * @param code the code list to add
 	 */
 	public void addCodeList(CodeList code);

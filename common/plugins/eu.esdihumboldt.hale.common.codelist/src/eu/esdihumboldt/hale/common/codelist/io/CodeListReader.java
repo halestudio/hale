@@ -17,10 +17,11 @@ import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 
 /**
  * Reads a code list
+ * 
  * @author Patrick Lieb
  */
 public interface CodeListReader extends ImportProvider {
-	
+
 	/**
 	 * @return the imported CodeList
 	 */

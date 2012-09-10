@@ -21,50 +21,59 @@ import eu.esdihumboldt.hale.schemaprovider.model.TypeDefinition;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @Deprecated
 public class DefaultResolveAttribute extends DefaultAttribute {
-	
+
 	/**
 	 * Create a default attribute
 	 * 
-	 * @param declaringType the declaring type
-	 * @param typeName the attribute type name
-	 * @param attribute the attribute 
-	 * @param schemaTypes the schema types 
-	 * @param use the attribute use
+	 * @param declaringType
+	 *            the declaring type
+	 * @param typeName
+	 *            the attribute type name
+	 * @param attribute
+	 *            the attribute
+	 * @param schemaTypes
+	 *            the schema types
+	 * @param use
+	 *            the attribute use
 	 */
 	public DefaultResolveAttribute(TypeDefinition declaringType, Name typeName,
-			XmlSchemaAttribute attribute, SchemaTypeResolver schemaTypes, XmlSchemaUse use) {
+			XmlSchemaAttribute attribute, SchemaTypeResolver schemaTypes,
+			XmlSchemaUse use) {
 		super(declaringType, typeName, attribute, null, use);
-		
+
 		if (declaringType != null) {
 			// determine the attribute type
 			determineAttributeType(schemaTypes);
 		}
 	}
-	
+
 	/**
 	 * Copy constructor
 	 * 
-	 * @param other the attribute top copy
+	 * @param other
+	 *            the attribute top copy
 	 */
 	protected DefaultResolveAttribute(DefaultResolveAttribute other) {
 		super(other);
 	}
-	
+
 	/**
 	 * Tries to determine the attribute type
 	 * 
-	 * @param schemaTypes the schema types 
+	 * @param schemaTypes
+	 *            the schema types
 	 */
 	protected void determineAttributeType(SchemaTypeResolver schemaTypes) {
-		TypeDefinition typeDef = TypeUtil.resolveAttributeType(getTypeName(), schemaTypes);
-		
+		TypeDefinition typeDef = TypeUtil.resolveAttributeType(getTypeName(),
+				schemaTypes);
+
 		setAttributeType(typeDef);
 	}
 
@@ -77,5 +86,5 @@ public class DefaultResolveAttribute extends DefaultAttribute {
 		copy.setParentType(parentType);
 		return copy;
 	}
-	
+
 }

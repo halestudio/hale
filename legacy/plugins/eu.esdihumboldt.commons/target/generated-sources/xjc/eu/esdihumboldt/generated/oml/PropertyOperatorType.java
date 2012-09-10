@@ -5,18 +5,20 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for PropertyOperatorType.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for PropertyOperatorType.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="PropertyOperatorType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -35,19 +37,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum PropertyOperatorType {
 
-    INTERSECTION,
-    UNION,
-    UNION_DUPLICATES,
-    COMPLEMENT,
-    FIRST,
-    NEXT;
+	INTERSECTION, UNION, UNION_DUPLICATES, COMPLEMENT, FIRST, NEXT;
 
-    public String value() {
-        return name();
-    }
+	public String value() {
+		return name();
+	}
 
-    public static PropertyOperatorType fromValue(String v) {
-        return valueOf(v);
-    }
+	public static PropertyOperatorType fromValue(String v) {
+		return valueOf(v);
+	}
 
 }

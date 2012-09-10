@@ -21,12 +21,12 @@ import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 
 /**
  * Reference data sample service implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class InstanceSampleServiceImpl extends Observable implements InstanceSampleService {
-	
+
 	private Collection<Instance> sample = new ArrayList<Instance>();
 
 	/**
@@ -43,7 +43,7 @@ public class InstanceSampleServiceImpl extends Observable implements InstanceSam
 	@Override
 	public void setReferenceInstances(Collection<Instance> instances) {
 		this.sample = instances;
-		
+
 		setChanged();
 		notifyObservers();
 	}

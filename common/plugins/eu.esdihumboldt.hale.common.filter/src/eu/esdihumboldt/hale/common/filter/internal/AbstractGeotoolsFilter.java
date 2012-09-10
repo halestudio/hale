@@ -21,14 +21,15 @@ import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
- * Geotools based filter. Two filters are seen as equal if they are based on
- * the same filter expression.
+ * Geotools based filter. Two filters are seen as equal if they are based on the
+ * same filter expression.
+ * 
  * @author Sebastian Reinhardt
  * @author Simon Templer
  */
 public abstract class AbstractGeotoolsFilter implements
 		eu.esdihumboldt.hale.common.instance.model.Filter {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractGeotoolsFilter.class);
 
 	private final String filterTerm;
@@ -36,6 +37,7 @@ public abstract class AbstractGeotoolsFilter implements
 
 	/**
 	 * Create a Geotools based filter.
+	 * 
 	 * @param filterTerm the filter expression
 	 * @throws CQLException if parsing the filter expression fails
 	 */
@@ -50,6 +52,7 @@ public abstract class AbstractGeotoolsFilter implements
 
 	/**
 	 * Create the fitler from the filter term.
+	 * 
 	 * @param filterTerm the filter term
 	 * @return the filter
 	 * @throws CQLException if an error occurs on filter creation
@@ -58,7 +61,8 @@ public abstract class AbstractGeotoolsFilter implements
 
 	@Override
 	public boolean match(Instance instance) {
-		PropertyResolver.isLastQueryPathUnique(); // reset the information on the last query
+		PropertyResolver.isLastQueryPathUnique(); // reset the information on
+													// the last query
 		try {
 			return internFilter.evaluate(instance);
 		} finally {
@@ -67,9 +71,10 @@ public abstract class AbstractGeotoolsFilter implements
 			}
 		}
 	}
-	
+
 	/**
 	 * Get the ECQL expression the filter is based on.
+	 * 
 	 * @return the ECQL expression
 	 */
 	public String getFilterTerm() {
@@ -83,8 +88,7 @@ public abstract class AbstractGeotoolsFilter implements
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((filterTerm == null) ? 0 : filterTerm.hashCode());
+		result = prime * result + ((filterTerm == null) ? 0 : filterTerm.hashCode());
 		return result;
 	}
 
@@ -103,7 +107,8 @@ public abstract class AbstractGeotoolsFilter implements
 		if (filterTerm == null) {
 			if (other.filterTerm != null)
 				return false;
-		} else if (!filterTerm.equals(other.filterTerm))
+		}
+		else if (!filterTerm.equals(other.filterTerm))
 			return false;
 		return true;
 	}

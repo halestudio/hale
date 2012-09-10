@@ -16,13 +16,13 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
 
 /**
  * Reporter for I/O providers
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
 public interface IOReporter extends Reporter<IOMessage>, IOReport {
 
 	// combined interface
-	
+
 }

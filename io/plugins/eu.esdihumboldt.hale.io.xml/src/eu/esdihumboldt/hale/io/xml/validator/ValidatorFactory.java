@@ -19,14 +19,14 @@ import eu.esdihumboldt.hale.io.xml.validator.internal.XercesValidator;
 
 /**
  * Factory for {@link Validator}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ValidatorFactory {
-	
+
 	private static ValidatorFactory instance;
-	
+
 	/**
 	 * Get the factory instance
 	 * 
@@ -38,26 +38,28 @@ public class ValidatorFactory {
 		}
 		return instance;
 	}
-	 
+
 	/**
 	 * Default constructor
 	 */
 	private ValidatorFactory() {
 		super();
 	}
-	
+
 	/**
 	 * Create a validator that relies on the schema locations specified in the
 	 * file.
+	 * 
 	 * @return the validator
 	 */
 	public Validator createValidator() {
 		return new XercesValidator();
 	}
-	
+
 	/**
 	 * Create a validator that relies on the given schema for validation.
-	 * @param schemaLocations the schemas 
+	 * 
+	 * @param schemaLocations the schemas
 	 * @return the validator
 	 */
 	public Validator createValidator(URI... schemaLocations) {

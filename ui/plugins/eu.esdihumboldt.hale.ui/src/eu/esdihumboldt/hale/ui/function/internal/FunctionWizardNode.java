@@ -31,21 +31,22 @@ import eu.esdihumboldt.hale.ui.util.wizard.ExtendedWizardNode;
 
 /**
  * Wizard node for a function.
+ * 
  * @author Simon Templer
  */
 public class FunctionWizardNode extends AbstractWizardNode {
 
 	private final AbstractFunction<?> function;
-	
+
 	/**
 	 * Create a wizard node
+	 * 
 	 * @param function the function
 	 * @param container the wizard container
 	 */
-	public FunctionWizardNode(AbstractFunction<?> function,
-			IWizardContainer container) {
+	public FunctionWizardNode(AbstractFunction<?> function, IWizardContainer container) {
 		super(container);
-		
+
 		this.function = function;
 	}
 
@@ -63,26 +64,28 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	@Override
 	protected FunctionWizard createWizard() {
 		FunctionWizard result = null;
-		List<FunctionWizardDescriptor<?>> factories = FunctionWizardExtension.getInstance().getFactories(new FactoryFilter<FunctionWizardFactory, FunctionWizardDescriptor<?>>() {
-			
-			@Override
-			public boolean acceptFactory(FunctionWizardDescriptor<?> factory) {
-				return factory.getFunctionId().equals(function.getId());
-			}
-			
-			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<FunctionWizardFactory, FunctionWizardDescriptor<?>> collection) {
-				return true;
-			}
-		});
-		
+		List<FunctionWizardDescriptor<?>> factories = FunctionWizardExtension.getInstance()
+				.getFactories(
+						new FactoryFilter<FunctionWizardFactory, FunctionWizardDescriptor<?>>() {
+
+							@Override
+							public boolean acceptFactory(FunctionWizardDescriptor<?> factory) {
+								return factory.getFunctionId().equals(function.getId());
+							}
+
+							@Override
+							public boolean acceptCollection(
+									ExtensionObjectFactoryCollection<FunctionWizardFactory, FunctionWizardDescriptor<?>> collection) {
+								return true;
+							}
+						});
+
 		if (!factories.isEmpty()) {
 			// create registered wizard
 			FunctionWizardDescriptor<?> fwd = factories.get(0);
 			result = fwd.createNewWizard(null);
 		}
-		
+
 		if (result == null) {
 			// create generic wizard
 			if (function instanceof TypeFunction) {
@@ -92,10 +95,10 @@ public class FunctionWizardNode extends AbstractWizardNode {
 				result = new GenericPropertyFunctionWizard(null, function.getId());
 			}
 		}
-		
+
 		// initialize wizard
 		result.init();
-		
+
 		return result;
 	}
 
@@ -121,8 +124,7 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((function == null) ? 0 : function.hashCode());
+		result = prime * result + ((function == null) ? 0 : function.hashCode());
 		return result;
 	}
 
@@ -141,7 +143,8 @@ public class FunctionWizardNode extends AbstractWizardNode {
 		if (function == null) {
 			if (other.function != null)
 				return false;
-		} else if (!function.equals(other.function))
+		}
+		else if (!function.equals(other.function))
 			return false;
 		return true;
 	}

@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 
 /**
  * Writes instances to a XML file
+ * 
  * @author Simon Templer
  */
 public class XmlInstanceWriter extends StreamGmlWriter {

@@ -52,10 +52,11 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * @param <P> the field definition type
  * @author Simon Templer
  */
-public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter, T extends AbstractFunction<P>> extends
-		AbstractFunctionWizard {
+public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter, T extends AbstractFunction<P>>
+		extends AbstractFunctionWizard {
 
-	private static final ALogger log = ALoggerFactory.getLogger(AbstractGenericFunctionWizard.class);
+	private static final ALogger log = ALoggerFactory
+			.getLogger(AbstractGenericFunctionWizard.class);
 
 	private final String functionId;
 	private MutableCell resultCell;
@@ -97,7 +98,8 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 
 		// create the entities page
 		// it is needed for creating a new cell to allow assigning the entities
-		// and when editing a cell to populate its copy with the same configuration
+		// and when editing a cell to populate its copy with the same
+		// configuration
 		entitiesPage = createEntitiesPage(getInitSelection(), getInitCell());
 
 		// create parameter pages
@@ -134,7 +136,8 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	 * @param initCell the initial cell, may be <code>null</code>
 	 * @return the entities page
 	 */
-	protected abstract EntitiesPage<T, P, ?> createEntitiesPage(SchemaSelection initSelection, Cell initCell);
+	protected abstract EntitiesPage<T, P, ?> createEntitiesPage(SchemaSelection initSelection,
+			Cell initCell);
 
 	/**
 	 * Create the page for configuring the function parameters.
@@ -154,8 +157,9 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 		if (initialValues != null)
 			initialValues = Multimaps.unmodifiableListMultimap(initialValues);
 		// get available parameter pages
-		List<ParameterPageFactory> paramPageFactories = ParameterPageExtension.getInstance().getFactories(
-				new FactoryFilter<ParameterPage, ParameterPageFactory>() {
+		List<ParameterPageFactory> paramPageFactories = ParameterPageExtension.getInstance()
+				.getFactories(new FactoryFilter<ParameterPage, ParameterPageFactory>() {
+
 					@Override
 					public boolean acceptFactory(ParameterPageFactory factory) {
 						return factory.getFunctionId().equals(getFunctionId());
@@ -178,7 +182,9 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 				try {
 					paramPage = paramPageFactory.createExtensionObject();
 				} catch (Exception e) {
-					log.error("Could not creating parameter page " + paramPageFactory.getIdentifier(), e);
+					log.error(
+							"Could not creating parameter page " + paramPageFactory.getIdentifier(),
+							e);
 					continue;
 				}
 				functionParameters.removeAll(pageFunctionParameters);
@@ -255,7 +261,8 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	}
 
 	/**
-	 * Returns the cell that would be created if the wizard would be finished now.
+	 * Returns the cell that would be created if the wizard would be finished
+	 * now.
 	 * 
 	 * @return the cell
 	 */

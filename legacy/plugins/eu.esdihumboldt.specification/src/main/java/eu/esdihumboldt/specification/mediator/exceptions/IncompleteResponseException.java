@@ -12,41 +12,44 @@
 package eu.esdihumboldt.specification.mediator.exceptions;
 
 /**
- * This exception is thrown when the (Sorted) Set of Responses 
+ * This exception is thrown when the (Sorted) Set of Responses
  * HarmonizationResponses is not completed correctly.
  * 
- * @author Guillermo Schwartz, Logica CMG 
- * @version $Id$ 
+ * @author Guillermo Schwartz, Logica CMG
+ * @version $Id$
  */
 public class IncompleteResponseException extends Exception {
 
 	/**
-	 * This constructor of the exception provides 
-	 * @param _description - - A meaningful description of the exception.
+	 * This constructor of the exception provides
+	 * 
+	 * @param _description
+	 *            - - A meaningful description of the exception.
 	 */
-	public IncompleteResponseException(String _description)
-	{
+	public IncompleteResponseException(String _description) {
 		super(_description);
 	}
-	
+
 	/**
-	 * This constructor of the exception provides 
-	 * @param _description --A meaningful description of the exception.
-	 * @param _root - - The root cause of this Exception.
+	 * This constructor of the exception provides
+	 * 
+	 * @param _description
+	 *            --A meaningful description of the exception.
+	 * @param _root
+	 *            - - The root cause of this Exception.
 	 */
-	public IncompleteResponseException(String _description, Throwable _root)
-	{
+	public IncompleteResponseException(String _description, Throwable _root) {
 		super(_description, _root);
 	}
-	
+
 	/**
-	 * This constructor of the exception provides 
-	 * @param _root  - - The root cause of this Exception.
+	 * This constructor of the exception provides
+	 * 
+	 * @param _root
+	 *            - - The root cause of this Exception.
 	 */
-	public IncompleteResponseException(Throwable _root)
-	{
+	public IncompleteResponseException(Throwable _root) {
 		super(_root);
 	}
-	
 
 }

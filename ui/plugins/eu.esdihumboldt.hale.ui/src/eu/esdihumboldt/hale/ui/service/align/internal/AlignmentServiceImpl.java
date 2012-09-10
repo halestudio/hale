@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
  * Default {@link AlignmentService} implementation
  * 
  * @author Thorsten Reitz
- * @author Simon Templer 
+ * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class AlignmentServiceImpl extends AbstractAlignmentService {
@@ -40,22 +40,23 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 
 	/**
 	 * Default constructor
-	 * @param projectService the project service 
+	 * 
+	 * @param projectService the project service
 	 */
 	public AlignmentServiceImpl(final ProjectService projectService) {
 		super();
-		
+
 		alignment = new DefaultAlignment();
-		
+
 		projectService.addListener(new ProjectServiceAdapter() {
 
 			@Override
 			public void onClean() {
 				clean();
 			}
-			
+
 		});
-		
+
 		// inform project service on alignment changes
 		addListener(new AlignmentServiceAdapter() {
 
@@ -115,14 +116,13 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 		notifyAlignmentCleared();
 	}
 
-	
 	/**
 	 * @see AlignmentService#addOrUpdateAlignment(MutableAlignment)
 	 */
 	@Override
 	public void addOrUpdateAlignment(MutableAlignment alignment) {
 		Collection<Cell> added = new ArrayList<Cell>();
-		
+
 		// add cells
 		synchronized (this) {
 			for (MutableCell cell : alignment.getCells()) {
@@ -130,7 +130,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 				added.add(cell);
 			}
 		}
-		
+
 		if (!added.isEmpty()) {
 			notifyCellsAdded(added);
 		}

@@ -12,9 +12,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Java class for TransformerDataInput complex type.
+ * <p>
+ * Java class for TransformerDataInput complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="TransformerDataInput">
@@ -31,35 +34,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TransformerDataInput", propOrder = {
-    "previousTransformerID"
-})
+@XmlType(name = "TransformerDataInput", propOrder = { "previousTransformerID" })
 public class TransformerDataInput extends DataInput {
 
-    @XmlElement(required = true)
-    protected String previousTransformerID;
+	@XmlElement(required = true)
+	protected String previousTransformerID;
 
-    /**
-     * Gets the value of the previousTransformerID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPreviousTransformerID() {
-        return previousTransformerID;
-    }
+	/**
+	 * Gets the value of the previousTransformerID property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPreviousTransformerID() {
+		return previousTransformerID;
+	}
 
-    /**
-     * Sets the value of the previousTransformerID property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPreviousTransformerID(String value) {
-        this.previousTransformerID = value;
-    }
+	/**
+	 * Sets the value of the previousTransformerID property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPreviousTransformerID(String value) {
+		this.previousTransformerID = value;
+	}
 }

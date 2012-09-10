@@ -22,9 +22,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.Symbolizer;
 
-
 import eu.esdihumboldt.hale.ui.style.editors.PointGraphicEditor;
-import eu.esdihumboldt.hale.ui.style.editors.PointSymbolizerEditor;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
 
 /**
@@ -34,11 +32,11 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SimpleGraphicStylePage extends FeatureStylePage {
-	
+
 	private final StyleBuilder styleBuilder = new StyleBuilder();
-	
-	private  PointGraphicEditor graphEditor;
-	
+
+	private PointGraphicEditor graphEditor;
+
 	/**
 	 * @param parent the parent dialog
 	 */
@@ -60,7 +58,7 @@ public class SimpleGraphicStylePage extends FeatureStylePage {
 				return null;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -74,7 +72,7 @@ public class SimpleGraphicStylePage extends FeatureStylePage {
 
 		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 		page.setLayout(layout);
-		
+
 		Style style = getParent().getStyle();
 		PointSymbolizer point = null;
 		try {
@@ -85,17 +83,16 @@ public class SimpleGraphicStylePage extends FeatureStylePage {
 					break;
 				}
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			// ignore
 		}
-		
+
 		if (point == null) {
 			point = styleBuilder.createPointSymbolizer();
 		}
-		
+
 		graphEditor = new PointGraphicEditor(page, point);
-		
+
 		setControl(page);
 	}
 

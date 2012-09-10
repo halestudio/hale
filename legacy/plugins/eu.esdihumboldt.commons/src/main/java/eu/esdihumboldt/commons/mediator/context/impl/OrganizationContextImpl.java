@@ -26,12 +26,13 @@ import eu.esdihumboldt.specification.mediator.usermanagement.Organization;
 import eu.esdihumboldt.specification.util.ConstraintTypeKey;
 
 /**
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: OrganizationContextImpl.java,v 1.10 2007-12-18 13:26:16 pitaeva Exp $ 
+ * @version $Id: OrganizationContextImpl.java,v 1.10 2007-12-18 13:26:16 pitaeva
+ *          Exp $
  */
-public class OrganizationContextImpl implements OrganizationContext  {
-	
+public class OrganizationContextImpl implements OrganizationContext {
+
 	/**
 	 * 
 	 */
@@ -48,9 +49,10 @@ public class OrganizationContextImpl implements OrganizationContext  {
 	/**
 	 * no-args constructor
 	 */
-	
-	public OrganizationContextImpl(){}
-	
+
+	public OrganizationContextImpl() {
+	}
+
 	/**
 	 * 
 	 * @param _organization
@@ -63,13 +65,12 @@ public class OrganizationContextImpl implements OrganizationContext  {
 	 * @param _temporalCons
 	 * @param _spatialCons
 	 * @param _portrayalCons
-	 * @param _organizationConstraint 
+	 * @param _organizationConstraint
 	 */
-	public OrganizationContextImpl(
-			Organization _organization,
+	public OrganizationContextImpl(Organization _organization,
 			DefaultContext _defaultContext,
 			MetadataConstraint _organizationConstraint) {
-		
+
 		this.organization = _organization;
 		this.defaultContext = _defaultContext;
 		this.organizationConstraint = _organizationConstraint;
@@ -94,15 +95,16 @@ public class OrganizationContextImpl implements OrganizationContext  {
 	 * @see eu.esdihumboldt.specification.mediator.context.Context#getAllConstraints()
 	 */
 	public Map<ContextType, Set<Constraint>> getAllConstraints() {
-		//A mapping of all constraints for a given context type
+		// A mapping of all constraints for a given context type
 		Map<ContextType, Set<Constraint>> result = new HashMap<ContextType, Set<Constraint>>();
-		
-		//Mapping the constraints to organization context type
+
+		// Mapping the constraints to organization context type
 		result.put(this.getContextType(), this.assembleConstraintSet());
-		
-		//Mapping the constraints to default context type
+
+		// Mapping the constraints to default context type
 		DefaultContext def_context = this.getParentContext();
-		result.put(def_context.getContextType(), def_context.getAllConstraints(def_context.getContextType()));
+		result.put(def_context.getContextType(),
+				def_context.getAllConstraints(def_context.getContextType()));
 		return result;
 	}
 
@@ -116,7 +118,7 @@ public class OrganizationContextImpl implements OrganizationContext  {
 			throw new RuntimeException("Wrong ContextType (" + _type
 					+ ") presented to Organization Context!");
 		}
-	
+
 	}
 
 	/**
@@ -124,30 +126,33 @@ public class OrganizationContextImpl implements OrganizationContext  {
 	 */
 	public Set<Constraint> getCombinedConstraints(ContextType type) {
 		Map<ConstraintTypeKey, Constraint> combinedconstraints = new HashMap<ConstraintTypeKey, Constraint>();
-		
+
 		// get all the Constraints for the DefaultContext and write them to the
 		// result Set.
-		Map<ContextType, Set<Constraint>> all_constraints = this.getAllConstraints();
+		Map<ContextType, Set<Constraint>> all_constraints = this
+				.getAllConstraints();
 
-		Set<Constraint> def_context_constraints = all_constraints.get(Context.ContextType.Default);
+		Set<Constraint> def_context_constraints = all_constraints
+				.get(Context.ContextType.Default);
 		for (Constraint this_constraint : def_context_constraints) {
-			combinedconstraints.put(new ConstraintTypeKey(this_constraint), 
+			combinedconstraints.put(new ConstraintTypeKey(this_constraint),
 					this_constraint);
 		}
 
 		// get all the Constraints for the OrganisationContext and write them to
 		// the result Set.
-		Set<Constraint> org_context_constraints = all_constraints.get(Context.ContextType.Organisation);
+		Set<Constraint> org_context_constraints = all_constraints
+				.get(Context.ContextType.Organisation);
 		for (Constraint this_constraint : org_context_constraints) {
-			combinedconstraints.put(new ConstraintTypeKey(this_constraint), 
+			combinedconstraints.put(new ConstraintTypeKey(this_constraint),
 					this_constraint);
 		}
 
 		return new HashSet<Constraint>(combinedconstraints.values());
-		
+
 	}
 
-	/** 
+	/**
 	 * @see eu.esdihumboldt.specification.mediator.context.Context#getContextType()
 	 */
 	public ContextType getContextType() {
@@ -160,31 +165,29 @@ public class OrganizationContextImpl implements OrganizationContext  {
 	public MetadataConstraint getOrganizationConstraint() {
 		return this.organizationConstraint;
 	}
-	
+
 	protected Set<Constraint> assembleConstraintSet() {
-		Set<Constraint> result = ((DefaultContextImpl) defaultContext).assembleConstraintSet();
+		Set<Constraint> result = ((DefaultContextImpl) defaultContext)
+				.assembleConstraintSet();
 		result.add(this.organizationConstraint);
 		return result;
 	}
 
-	
-	public String getTitle()
-	{
+	public String getTitle() {
 		return this.title;
 	}
-	
-	public void setTitle(String title)
-	{
+
+	public void setTitle(String title) {
 		this.title = title;
 	}
-
 
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * @param defaultContext the defaultContext to set
+	 * @param defaultContext
+	 *            the defaultContext to set
 	 */
 	public void setDefaultContext(DefaultContext defaultContext) {
 		this.defaultContext = defaultContext;
@@ -209,7 +212,8 @@ public class OrganizationContextImpl implements OrganizationContext  {
 	}
 
 	/**
-	 * @param priority priority for this context in the organization context list.
+	 * @param priority
+	 *            priority for this context in the organization context list.
 	 */
 	public void setPriority(int priority) {
 		this.priority = priority;
@@ -220,15 +224,17 @@ public class OrganizationContextImpl implements OrganizationContext  {
 	}
 
 	/**
-	 * @param organizationConstraint the organizationConstraint to set
+	 * @param organizationConstraint
+	 *            the organizationConstraint to set
 	 */
-	public void setOrganizationConstraint(MetadataConstraint organizationConstraint) {
+	public void setOrganizationConstraint(
+			MetadataConstraint organizationConstraint) {
 		this.organizationConstraint = organizationConstraint;
 	}
 
 	public UUID getContextID() {
-		
-		return  this.uuid;
+
+		return this.uuid;
 	}
 
 	/**
@@ -239,7 +245,8 @@ public class OrganizationContextImpl implements OrganizationContext  {
 	}
 
 	/**
-	 * @param uuid the uuid to set
+	 * @param uuid
+	 *            the uuid to set
 	 */
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;

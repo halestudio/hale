@@ -13,21 +13,21 @@
 package eu.esdihumboldt.specification.workflow.exceptions;
 
 /**
- *
+ * 
  * @author mgone
  */
-public class WorkflowExpansionException extends Exception{
+public class WorkflowExpansionException extends Exception {
 
-    public WorkflowExpansionException(Throwable cause){
-        super(cause);
-    }
+	public WorkflowExpansionException(Throwable cause) {
+		super(cause);
+	}
 
-    public WorkflowExpansionException(String message, Throwable cause){
-        super(message, cause);
-    }
+	public WorkflowExpansionException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public WorkflowExpansionException(String message){
-        super(message);
-    }
+	public WorkflowExpansionException(String message) {
+		super(message);
+	}
 
 }

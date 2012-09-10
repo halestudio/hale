@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Sebastian Reinhardt
  */
 public class QueryDefinitionIndex {
+
 	private TypeDefinition def;
 	private DataSet dataSet;
 	private String query;
@@ -94,19 +95,22 @@ public class QueryDefinitionIndex {
 		if (def == null) {
 			if (other.def != null)
 				return false;
-		} else if (!def.equals(other.def))
+		}
+		else if (!def.equals(other.def))
 			return false;
 
 		if (dataSet == null) {
 			if (other.dataSet != null)
 				return false;
-		} else if (!dataSet.equals(other.dataSet))
+		}
+		else if (!dataSet.equals(other.dataSet))
 			return false;
 
 		if (query == null) {
 			if (other.query != null)
 				return false;
-		} else if (!query.equals(other.query))
+		}
+		else if (!query.equals(other.query))
 			return false;
 		return true;
 	}

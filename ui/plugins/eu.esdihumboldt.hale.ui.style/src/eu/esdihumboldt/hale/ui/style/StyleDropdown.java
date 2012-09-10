@@ -26,18 +26,17 @@ import eu.esdihumboldt.hale.ui.util.action.DropdownAction;
  */
 @Deprecated
 public class StyleDropdown extends DropdownAction {
-	
+
 	/**
 	 * Creates a style drop-down
 	 */
 	public StyleDropdown() {
 		super(Messages.StyleDropdown_SuperTitle);
-		
-		setImageDescriptor(InstanceStylePlugin.getImageDescriptor(
-				"/icons/styles.gif")); //$NON-NLS-1$
-		
+
+		setImageDescriptor(InstanceStylePlugin.getImageDescriptor("/icons/styles.gif")); //$NON-NLS-1$
+
 		addItem(new ActionContributionItem(new DatasetStyleDropdown(DataSet.SOURCE)));
 		addItem(new ActionContributionItem(new DatasetStyleDropdown(DataSet.TRANSFORMED)));
 	}
-	
+
 }

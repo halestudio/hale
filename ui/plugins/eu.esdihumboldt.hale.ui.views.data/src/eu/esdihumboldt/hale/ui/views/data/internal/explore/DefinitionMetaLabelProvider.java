@@ -24,22 +24,22 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
 import eu.esdihumboldt.hale.ui.views.data.internal.Metadata;
 
-
 /**
- * Extends the {@link DefinitionLabelProvider} to support an image associated with meta data
+ * Extends the {@link DefinitionLabelProvider} to support an image associated
+ * with meta data
+ * 
  * @author Sebastian Reinhardt
  */
 public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 
-
-
 	/**
-	 * Create a label provider for {@link Definition}s and 
+	 * Create a label provider for {@link Definition}s and
 	 * {@link EntityDefinition}, which supports Images for Meta Data
-	 * @param longNames if for {@link EntityDefinition}s long names shall
-	 *   be used
-	 * @param suppressMandatory if the mandatory overlay for properties shall
-	 *   be suppressed (defaults to <code>false</code>)
+	 * 
+	 * @param longNames if for {@link EntityDefinition}s long names shall be
+	 *            used
+	 * @param suppressMandatory if the mandatory overlay for properties shall be
+	 *            suppressed (defaults to <code>false</code>)
 	 */
 	public DefinitionMetaLabelProvider(boolean longNames, boolean suppressMandatory) {
 		super(longNames, suppressMandatory);
@@ -50,39 +50,38 @@ public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 	 */
 	@Override
 	public String getText(Object element) {
-		
-			if(element == Metadata.METADATA){
-				return Messages.InstanceContentProvider_metadata;
+
+		if (element == Metadata.METADATA) {
+			return Messages.InstanceContentProvider_metadata;
+		}
+		if (element instanceof String) {
+			// get the correct label from the extension point
+			MetadataInfo meta = MetadataInfoExtension.getInstance().get((String) element);
+			if (meta != null) {
+				return meta.getLabel();
 			}
-			if(element instanceof String){
-				//get the correct label from the extension point
-				MetadataInfo meta = MetadataInfoExtension.getInstance().get((String) element);
-				if(meta != null){
-					return meta.getLabel();			
-				}
-				else return super.getText(element);
-			}
-		
-			else{
+			else
 				return super.getText(element);
-			}
-			
-		
-		
+		}
+
+		else {
+			return super.getText(element);
+		}
+
 	}
-	
-	
+
 	/**
 	 * Returns an adjusted image depending on the type of the object passed in.
+	 * 
 	 * @return an Image
 	 */
 	@Override
-	public Image getImage(Object element){
-		if (element == Metadata.METADATA){
+	public Image getImage(Object element) {
+		if (element == Metadata.METADATA) {
 			return CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_META);
 		}
-		
+
 		return super.getImage(element);
 	}
-	
+
 }

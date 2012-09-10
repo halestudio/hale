@@ -21,12 +21,14 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 
 /**
  * Extension for {@link ProjectFile}s
+ * 
  * @author Simon Templer
  */
 public class ProjectFileExtension extends IdentifiableExtension<ProjectFileFactory> {
 
 	/**
 	 * Get the extension instance
+	 * 
 	 * @return the project file extension
 	 */
 	public static ProjectFileExtension getInstance() {
@@ -35,12 +37,12 @@ public class ProjectFileExtension extends IdentifiableExtension<ProjectFileFacto
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * The project extension point ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.io.project";
-	
+
 	private static ProjectFileExtension instance;
 
 	/**
@@ -62,8 +64,7 @@ public class ProjectFileExtension extends IdentifiableExtension<ProjectFileFacto
 	 * @see IdentifiableExtension#create(String, IConfigurationElement)
 	 */
 	@Override
-	protected ProjectFileFactory create(String elementId,
-			IConfigurationElement element) {
+	protected ProjectFileFactory create(String elementId, IConfigurationElement element) {
 		if (element.getName().equals("action-file")) {
 			return new ActionFileFactory(element);
 		}

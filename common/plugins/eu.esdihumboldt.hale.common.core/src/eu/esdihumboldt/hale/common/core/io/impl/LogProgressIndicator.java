@@ -20,19 +20,20 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 
 /**
  * Progress indicator that writes to the console
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
 public class LogProgressIndicator implements ProgressIndicator {
-	
-	private static final ALogger log = ALoggerFactory.getMaskingLogger(LogProgressIndicator.class, null);
-	
+
+	private static final ALogger log = ALoggerFactory.getMaskingLogger(LogProgressIndicator.class,
+			null);
+
 	private String currentTask = null; //$NON-NLS-1$
-	
+
 	private int totalWork = UNKNOWN;
-	
+
 	private int worked = 0;
 
 	private String mainTaskName;
@@ -57,8 +58,9 @@ public class LogProgressIndicator implements ProgressIndicator {
 
 	private void trigger() {
 		if (totalWork > 0 && totalWork != UNKNOWN) {
-			log.info(MessageFormat.format((currentTask == null)?("{0} - {1,number,percent}"):("{0} - {1,number,percent} - {2}"), 
-					mainTaskName, (float) worked / (float) totalWork), currentTask); 
+			log.info(MessageFormat.format((currentTask == null) ? ("{0} - {1,number,percent}")
+					: ("{0} - {1,number,percent} - {2}"), mainTaskName, (float) worked
+					/ (float) totalWork), currentTask);
 		}
 		else {
 			log.info(currentTask);

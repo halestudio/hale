@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.Validator;
  * @author Kai Schwierczek
  */
 public class EnumerationValidator implements Validator {
+
 	private List<String> values;
 
 	/**

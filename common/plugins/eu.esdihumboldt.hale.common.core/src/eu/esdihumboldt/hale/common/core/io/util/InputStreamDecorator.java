@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 /**
  * Decorator on an {@link InputStream}
+ * 
  * @author Simon Templer
  */
 public class InputStreamDecorator extends InputStream {
@@ -25,6 +26,7 @@ public class InputStreamDecorator extends InputStream {
 
 	/**
 	 * Creates a decorator for the given input stream
+	 * 
 	 * @param in the input stream to decorate
 	 */
 	public InputStreamDecorator(InputStream in) {

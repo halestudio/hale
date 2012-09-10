@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Selector for type definitions.
+ * 
  * @author Simon Templer
  */
 public class TypeDefinitionSelector extends AbstractSelector<TypeDefinition> {
@@ -33,13 +34,14 @@ public class TypeDefinitionSelector extends AbstractSelector<TypeDefinition> {
 
 	/**
 	 * Create a type definition selector.
+	 * 
 	 * @param parent the parent composite
 	 * @param dialogTitle the title for the selection dialog
 	 * @param typeIndex the types to choose from
 	 * @param filters the view filters or <code>null</code>
 	 */
-	public TypeDefinitionSelector(Composite parent, String dialogTitle, 
-			TypeIndex typeIndex, ViewerFilter[] filters) {
+	public TypeDefinitionSelector(Composite parent, String dialogTitle, TypeIndex typeIndex,
+			ViewerFilter[] filters) {
 		super(parent, new DefinitionLabelProvider(), filters);
 		this.dialogTitle = dialogTitle;
 		this.typeIndex = typeIndex;
@@ -51,8 +53,7 @@ public class TypeDefinitionSelector extends AbstractSelector<TypeDefinition> {
 	@Override
 	protected AbstractViewerSelectionDialog<TypeDefinition, ?> createSelectionDialog(
 			Shell parentShell) {
-		return new TypeDefinitionDialog(parentShell, dialogTitle, 
-				getSelectedObject(), typeIndex);
+		return new TypeDefinitionDialog(parentShell, dialogTitle, getSelectedObject(), typeIndex);
 	}
 
 }

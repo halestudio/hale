@@ -16,10 +16,12 @@ import de.cs3d.util.eclipse.extension.selective.SelectiveExtension;
 
 /**
  * {@link TransformationTreeHook}s service interface.
+ * 
  * @author Simon Templer
  */
-public interface TransformationTreeHooks extends SelectiveExtension<TransformationTreeHook, TransformationTreeHookFactory> {
+public interface TransformationTreeHooks extends
+		SelectiveExtension<TransformationTreeHook, TransformationTreeHookFactory> {
 
 	// marker interface
-	
+
 }

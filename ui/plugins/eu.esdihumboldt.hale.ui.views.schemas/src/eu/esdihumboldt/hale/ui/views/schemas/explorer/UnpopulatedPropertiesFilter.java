@@ -23,18 +23,19 @@ import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 /**
  * Filter that hides unpopulated properties (Only works for
  * {@link EntityDefinition} elements).
+ * 
  * @author Simon Templer
  */
 public class UnpopulatedPropertiesFilter extends ViewerFilter {
 
 	private final PopulationService ps;
-	
+
 	/**
 	 * Default constructor
 	 */
 	public UnpopulatedPropertiesFilter() {
 		super();
-		
+
 		ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
 	}
 
@@ -47,17 +48,24 @@ public class UnpopulatedPropertiesFilter extends ViewerFilter {
 			if (element instanceof TreePath) {
 				element = ((TreePath) element).getLastSegment();
 			}
-			
+
 			if (element instanceof EntityDefinition) {
 				EntityDefinition entityDef = (EntityDefinition) element;
-				
-				if (!entityDef.getPropertyPath().isEmpty() // only filter properties 
-						&& ps.hasPopulation(entityDef.getSchemaSpace())) { // only filter if there is a population
+
+				if (!entityDef.getPropertyPath().isEmpty() // only filter
+															// properties
+						&& ps.hasPopulation(entityDef.getSchemaSpace())) { // only
+																			// filter
+																			// if
+																			// there
+																			// is
+																			// a
+																			// population
 					return ps.getPopulation(entityDef) != 0;
 				}
 			}
 		}
-			
+
 		return true;
 	}
 

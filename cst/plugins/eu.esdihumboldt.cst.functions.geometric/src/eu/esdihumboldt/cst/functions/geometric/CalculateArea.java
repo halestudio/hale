@@ -35,8 +35,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
  * 
  * @author Kevin Mais
  */
-public class CalculateArea extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine>
+public class CalculateArea extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
 		implements CalculateAreaFunction {
 
 	/**
@@ -48,12 +47,10 @@ public class CalculateArea extends
 	 *      eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
 	 */
 	@Override
-	protected Object evaluate(String transformationIdentifier,
-			TransformationEngine engine,
+	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
-			PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException, NoResultException {
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException, NoResultException {
 
 		// get input geometry
 		PropertyValue input = variables.get(null).get(0);
@@ -83,15 +80,16 @@ public class CalculateArea extends
 
 			return area;
 
-		} else {
+		}
+		else {
 			geom = geoms.get(0).getGeometry();
 		}
 
 		if (geom != null) {
 			return geom.getArea();
-		} else {
-			throw new TransformationException(
-					"Geometry for calculate area could not be retrieved.");
+		}
+		else {
+			throw new TransformationException("Geometry for calculate area could not be retrieved.");
 		}
 
 	}

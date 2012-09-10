@@ -44,19 +44,18 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 	 * 
 	 * This method is intended to be overrided by a derived class.
 	 * 
-	 * @param namespaceUri
-	 *            The namespace URI for which the prefix needs to be found.
-	 *            Never be null. "" is used to denote the default namespace.
-	 * @param suggestion
-	 *            When the content tree has a suggestion for the prefix to the
-	 *            given namespaceUri, that suggestion is passed as a parameter.
-	 *            Typicall this value comes from the QName.getPrefix to show the
-	 *            preference of the content tree. This parameter may be null,
-	 *            and this parameter may represent an already occupied prefix.
-	 * @param requirePrefix
-	 *            If this method is expected to return non-empty prefix. When
-	 *            this flag is true, it means that the given namespace URI
-	 *            cannot be set as the default namespace.
+	 * @param namespaceUri The namespace URI for which the prefix needs to be
+	 *            found. Never be null. "" is used to denote the default
+	 *            namespace.
+	 * @param suggestion When the content tree has a suggestion for the prefix
+	 *            to the given namespaceUri, that suggestion is passed as a
+	 *            parameter. Typicall this value comes from the QName.getPrefix
+	 *            to show the preference of the content tree. This parameter may
+	 *            be null, and this parameter may represent an already occupied
+	 *            prefix.
+	 * @param requirePrefix If this method is expected to return non-empty
+	 *            prefix. When this flag is true, it means that the given
+	 *            namespace URI cannot be set as the default namespace.
 	 * 
 	 * @return null if there's no prefered prefix for the namespace URI. In this
 	 *         case, the system will generate a prefix for you.
@@ -71,8 +70,7 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 	 *         If this method returns "" when requirePrefix=true, the return
 	 *         value will be ignored and the system will generate one.
 	 */
-	public String getPreferredPrefix(String namespaceUri, String suggestion,
-			boolean requirePrefix) {
+	public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
 		// I want this namespace to be mapped to "wps"
 		if ("http://www.opengis.net/wps/1.0.0".equals(namespaceUri))
 			return "wps";
@@ -92,18 +90,22 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 		// I want the namespace to be mapped to "gml".
 		if ("http://www.opengis.net/sld/".equals(namespaceUri))
 			return "sld";
-        	
-		
-		//map omwg
-		if ("http://www.omwg.org/TR/d7/ontology/alignment".equals(namespaceUri)) return "omwg";
-		//map align
-		if ("http://knowledgeweb.semanticweb.org/heterogeneity/alignment".equals(namespaceUri)) return "align";
-		//map goml
-		if ("http://www.esdi-humboldt.eu/goml".equals(namespaceUri)) return "goml";
-		//map rdf 
-		if ("http://www.w3.org/1999/02/22-rdf-syntax-ns#".equals(namespaceUri)) return "rdf";
-		//map xsi   
-		if ("http://www.w3.org/2001/XMLSchema-instance".equals(namespaceUri)) return "xsi";
+
+		// map omwg
+		if ("http://www.omwg.org/TR/d7/ontology/alignment".equals(namespaceUri))
+			return "omwg";
+		// map align
+		if ("http://knowledgeweb.semanticweb.org/heterogeneity/alignment".equals(namespaceUri))
+			return "align";
+		// map goml
+		if ("http://www.esdi-humboldt.eu/goml".equals(namespaceUri))
+			return "goml";
+		// map rdf
+		if ("http://www.w3.org/1999/02/22-rdf-syntax-ns#".equals(namespaceUri))
+			return "rdf";
+		// map xsi
+		if ("http://www.w3.org/2001/XMLSchema-instance".equals(namespaceUri))
+			return "xsi";
 
 		// otherwise I don't care. Just use the default suggestion, whatever it
 		// may be.
@@ -162,6 +164,8 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 	 */
 	public String[] getPreDeclaredNamespaceUris() {
 		return new String[] { "http://www.w3.org/2001/XMLSchema-instance",
-				"http://www.opengis.net/gml/", "http://www.omwg.org/TR/d7/ontology/alignment", "http://www.esdi-humboldt.eu/goml", "http://www.w3.org/1999/02/22-rdf-syntax-ns#","http://www.w3.org/2001/XMLSchema-instance" };
+				"http://www.opengis.net/gml/", "http://www.omwg.org/TR/d7/ontology/alignment",
+				"http://www.esdi-humboldt.eu/goml", "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+				"http://www.w3.org/2001/XMLSchema-instance" };
 	}
 }

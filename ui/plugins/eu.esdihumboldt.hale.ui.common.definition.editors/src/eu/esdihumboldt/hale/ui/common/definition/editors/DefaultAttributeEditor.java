@@ -67,6 +67,7 @@ import eu.esdihumboldt.util.validator.Validator;
  * @author Kai Schwierczek
  */
 public class DefaultAttributeEditor extends AbstractEditor<Object> {
+
 	// XXX generic version instead?
 
 	private final PropertyDefinition property;
@@ -105,7 +106,8 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 
 		codeListNamespace = property.getParentType().getName().getNamespaceURI();
 		String propertyName = property.getName().getLocalPart();
-		codeListName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1) + "Value"; //$NON-NLS-1$	
+		codeListName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1)
+				+ "Value"; //$NON-NLS-1$	
 
 		// add enumeration info
 		if (enumeration.getValues() != null) {
@@ -118,20 +120,25 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 						cs.convert(stringValue, binding);
 						enumerationValues.add(stringValue);
 					} catch (ConversionException ce) {
-						// value is either not convertable to string or the string value
+						// value is either not convertable to string or the
+						// string value
 						// is not convertable to the target binding.
 					}
 				}
-		} else
+		}
+		else
 			enumerationValues = null;
 
 		composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).create());
 
-		viewer = new ComboViewer(composite, (otherValuesAllowed ? SWT.NONE : SWT.READ_ONLY) | SWT.BORDER);
-		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().indent(5, 0).grab(true, false).create());
+		viewer = new ComboViewer(composite, (otherValuesAllowed ? SWT.NONE : SWT.READ_ONLY)
+				| SWT.BORDER);
+		viewer.getControl().setLayoutData(
+				GridDataFactory.fillDefaults().indent(5, 0).grab(true, false).create());
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewer.setLabelProvider(new LabelProvider() {
+
 			@Override
 			public String getText(Object element) {
 				// XXX show more information out of the CodeEntry?
@@ -142,6 +149,7 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 			}
 		});
 		viewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
@@ -149,7 +157,8 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 					Object selected = ((IStructuredSelection) selection).getFirstElement();
 					if (selected instanceof CodeEntry) {
 						CodeEntry entry = (CodeEntry) selected;
-						viewer.getCombo().setToolTipText(entry.getName() + ":\n\n" + entry.getDescription()); //$NON-NLS-1$
+						viewer.getCombo().setToolTipText(
+								entry.getName() + ":\n\n" + entry.getDescription()); //$NON-NLS-1$
 						return;
 					}
 				}
@@ -171,13 +180,15 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 		decoration.hide();
 
 		viewer.getCombo().addModifyListener(new ModifyListener() {
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				String oldValue = stringValue;
 				String newValue = viewer.getCombo().getText();
 				if (viewer.getSelection() != null && !viewer.getSelection().isEmpty()
 						&& viewer.getSelection() instanceof IStructuredSelection) {
-					Object selection = ((IStructuredSelection) viewer.getSelection()).getFirstElement();
+					Object selection = ((IStructuredSelection) viewer.getSelection())
+							.getFirstElement();
 					if (selection instanceof CodeEntry)
 						newValue = ((CodeEntry) selection).getIdentifier();
 				}
@@ -190,23 +201,25 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 			viewer.setSelection(new StructuredSelection(values.iterator().next()));
 
 		// add code list selection button
-		final Image assignImage = 
-				CodeListUIPlugin.getImageDescriptor("icons/assign_codelist.gif").createImage(); //$NON-NLS-1$
-		
+		final Image assignImage = CodeListUIPlugin
+				.getImageDescriptor("icons/assign_codelist.gif").createImage(); //$NON-NLS-1$
+
 		Button assign = new Button(composite, SWT.PUSH);
 		assign.setImage(assignImage);
 		assign.setToolTipText("Assign a code list"); //$NON-NLS-1$
 		assign.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final Display display = Display.getCurrent();
-				CodeListSelectionDialog dialog = new CodeListSelectionDialog(display.getActiveShell(), codeList,
-						MessageFormat.format("Please select a code list to assign to {0}", 
-								DefaultAttributeEditor.this.property.getDisplayName()));
+				CodeListSelectionDialog dialog = new CodeListSelectionDialog(display
+						.getActiveShell(), codeList, MessageFormat.format(
+						"Please select a code list to assign to {0}",
+						DefaultAttributeEditor.this.property.getDisplayName()));
 				if (dialog.open() == CodeListSelectionDialog.OK) {
 					CodeList newCodeList = dialog.getCodeList();
-					CodeListService codeListService = 
-							(CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
+					CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench()
+							.getService(CodeListService.class);
 
 					codeListService.assignAttributeCodeList(
 							DefaultAttributeEditor.this.property.getIdentifier(), newCodeList);
@@ -217,6 +230,7 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 		});
 
 		composite.addDisposeListener(new DisposeListener() {
+
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				assignImage.dispose();
@@ -225,7 +239,6 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 
 		// add code list info
 		updateCodeList();
-
 
 		// info on what inputs are valid
 		StringBuilder infoText = new StringBuilder();
@@ -238,7 +251,7 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 				infoText.append('\n');
 			infoText.append(validator.getDescription());
 		}
-		
+
 		if (infoText.length() > 0) {
 			Label inputInfo = new Label(composite, SWT.NONE);
 			inputInfo.setLayoutData(GridDataFactory.fillDefaults().span(2, 1).create());
@@ -252,7 +265,8 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 		if (enumerationValues != null)
 			values.addAll(enumerationValues);
 
-		CodeListService clService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
+		CodeListService clService = (CodeListService) PlatformUI.getWorkbench().getService(
+				CodeListService.class);
 		codeList = clService.findCodeListByAttribute(property.getIdentifier());
 		if (codeList == null)
 			codeList = clService.findCodeListByIdentifier(codeListNamespace, codeListName);
@@ -302,7 +316,8 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 			// for example boolean converter returns null for empty string...
 			objectValue = cs.convert(stringValue, binding);
 			if (objectValue == null)
-				validationResult = stringValue + " cannot be converted to " + binding.getSimpleName();
+				validationResult = stringValue + " cannot be converted to "
+						+ binding.getSimpleName();
 		} catch (ConversionException ce) {
 			objectValue = null;
 			validationResult = stringValue + " cannot be converted to " + binding.getSimpleName();
@@ -316,7 +331,8 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 		if (validationResult != null) {
 			decoration.setDescriptionText(validationResult);
 			decoration.show();
-		} else
+		}
+		else
 			decoration.hide();
 	}
 
@@ -354,7 +370,8 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 	 */
 	@Override
 	public void setAsText(String text) {
-		// Simply set as string IF other values are allowed. Check against enumeration otherwise.
+		// Simply set as string IF other values are allowed. Check against
+		// enumeration otherwise.
 		if (otherValuesAllowed || values.contains(text))
 			viewer.getCombo().setText(text);
 	}
@@ -370,7 +387,8 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 			// return converted value, as that SHOULD be XML conform
 			// in contrast to input value where the converter maybe allows more.
 			return cs.convert(objectValue, String.class);
-		} else
+		}
+		else
 			throw new IllegalStateException();
 	}
 

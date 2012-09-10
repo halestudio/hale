@@ -73,8 +73,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
-				3);
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(3);
 
 		// binding is collection, as we can't be sure that all contained
 		// geometries share the same CRS
@@ -96,38 +95,33 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 		CRSDefinition defaultCrsDef = GMLGeometryUtil.findCRS(instance);
-		
+
 		// depth first traverser that on cancel continues traversal but w/o the
 		// children of the current object
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
-		
+
 		GeometryFinder geoFind = new GeometryFinder(defaultCrsDef);
-		
+
 		traverser.traverse(instance, geoFind);
-		
+
 		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef);
 	}
 
 	/**
 	 * Create a geometry value from a given instance.
 	 * 
-	 * @param instance
-	 *            the instance
-	 * @param childGeometries
-	 *            the child geometries found in the instance
-	 * @param defaultCrs
-	 *            the definition of the default CRS for this instance
+	 * @param instance the instance
+	 * @param childGeometries the child geometries found in the instance
+	 * @param defaultCrs the definition of the default CRS for this instance
 	 * @return the geometry value derived from the instance, the return type
 	 *         should match the {@link Binding} created in
 	 *         {@link #getTypeConstraints(TypeDefinition)}.
-	 * @throws GeometryNotSupportedException
-	 *             if the type definition doesn't represent a geometry type
-	 *             supported by the handler
+	 * @throws GeometryNotSupportedException if the type definition doesn't
+	 *             represent a geometry type supported by the handler
 	 */
 	@SuppressWarnings("unused")
-	protected Object createGeometry(Instance instance,
-			List<GeometryProperty<?>> childGeometries, CRSDefinition defaultCrs)
-			throws GeometryNotSupportedException {
+	protected Object createGeometry(Instance instance, List<GeometryProperty<?>> childGeometries,
+			CRSDefinition defaultCrs) throws GeometryNotSupportedException {
 
 		List<Geometry> geomList = new ArrayList<Geometry>();
 
@@ -137,27 +131,28 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 
 		for (GeometryProperty<?> geomProp : childGeometries) {
 			if (geomProp.getGeometry() instanceof GeometryCollection) {
-				GeometryCollection geomCollection = (GeometryCollection) geomProp
-						.getGeometry();
+				GeometryCollection geomCollection = (GeometryCollection) geomProp.getGeometry();
 				for (int i = 0; i < geomCollection.getNumGeometries(); i++) {
 					// find the common geometry class
-					Class<? extends Geometry> geometryType = geomCollection
-							.getGeometryN(i).getClass();
+					Class<? extends Geometry> geometryType = geomCollection.getGeometryN(i)
+							.getClass();
 					if (commonGeomType == null) {
 						commonGeomType = geometryType;
-					} else if (!commonGeomType.equals(geometryType)) {
+					}
+					else if (!commonGeomType.equals(geometryType)) {
 						// TODO determine common type in inheritance?
 						commonGeomType = Geometry.class;
 					}
 					geomList.add(geomCollection.getGeometryN(i));
 				}
-			} else {
+			}
+			else {
 				// find the common geometry class
-				Class<? extends Geometry> geometryType = geomProp.getGeometry()
-						.getClass();
+				Class<? extends Geometry> geometryType = geomProp.getGeometry().getClass();
 				if (commonGeomType == null) {
 					commonGeomType = geometryType;
-				} else if (!commonGeomType.equals(geometryType)) {
+				}
+				else if (!commonGeomType.equals(geometryType)) {
 					// TODO determine common type in inheritance?
 					commonGeomType = Geometry.class;
 				}
@@ -175,14 +170,16 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 					polygons[i] = (Polygon) geomList.get(i);
 				}
 				geom = getGeometryFactory().createMultiPolygon(polygons);
-			} else if (commonGeomType.equals(LineString.class)) {
+			}
+			else if (commonGeomType.equals(LineString.class)) {
 				// create a MultiLineString
 				LineString[] lines = new LineString[geomList.size()];
 				for (int i = 0; i < geomList.size(); i++) {
 					lines[i] = (LineString) geomList.get(i);
 				}
 				geom = getGeometryFactory().createMultiLineString(lines);
-			} else if (commonGeomType.equals(Point.class)) {
+			}
+			else if (commonGeomType.equals(Point.class)) {
 				// create a MultiPoint
 				Point[] points = new Point[geomList.size()];
 				for (int i = 0; i < geomList.size(); i++) {
@@ -193,8 +190,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 			if (geom != null) {
 				// returned combined property
 				return Collections
-						.singleton(new DefaultGeometryProperty<Geometry>(
-								defaultCrs, geom));
+						.singleton(new DefaultGeometryProperty<Geometry>(defaultCrs, geom));
 			}
 		}
 

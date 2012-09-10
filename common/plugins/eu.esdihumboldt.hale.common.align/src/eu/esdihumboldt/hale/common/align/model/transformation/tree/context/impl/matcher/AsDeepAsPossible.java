@@ -27,18 +27,19 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 
 /**
- * Simple context matching strategy that looks for connected 
+ * Simple context matching strategy that looks for connected
+ * 
  * @author Simon Templer
  */
 public class AsDeepAsPossible implements ContextMatcher {
 
 	/**
 	 * Builds a stack of target node candidates that while traversing the
-	 * transformation tree, assigning the last candidate to source nodes
-	 * as a transformation context.
+	 * transformation tree, assigning the last candidate to source nodes as a
+	 * transformation context.
 	 */
 	private static class ContextVisitor extends AbstractTargetToSourceVisitor {
-		
+
 		private final Stack<TargetNode> candidates = new Stack<TargetNode>();
 
 		@Override
@@ -60,7 +61,8 @@ public class AsDeepAsPossible implements ContextMatcher {
 		public boolean visit(SourceNode source) {
 			if (!candidates.isEmpty()) {
 				// TODO do not always override the context information!
-				// Each path leading to this source can have different candidates.
+				// Each path leading to this source can have different
+				// candidates.
 				// A per cell or per target of cell basis is needed?
 				source.setContext(new TargetContext(new HashSet<TargetNode>(candidates)));
 			}
@@ -68,8 +70,9 @@ public class AsDeepAsPossible implements ContextMatcher {
 		}
 
 		/**
-		 * Determines if a target node is a candidate for a context match.
-		 * For this the cardinality of the corresponding definition is checked.
+		 * Determines if a target node is a candidate for a context match. For
+		 * this the cardinality of the corresponding definition is checked.
+		 * 
 		 * @param target the target node to check
 		 * @return if the target node is a candidate for a context match
 		 */
@@ -89,7 +92,8 @@ public class AsDeepAsPossible implements ContextMatcher {
 		@Override
 		public boolean includeAnnotatedNodes() {
 			// if there are any, just deal with them also
-			// though in reality, annotated nodes only should be there AFTER context matching
+			// though in reality, annotated nodes only should be there AFTER
+			// context matching
 			return true;
 		}
 

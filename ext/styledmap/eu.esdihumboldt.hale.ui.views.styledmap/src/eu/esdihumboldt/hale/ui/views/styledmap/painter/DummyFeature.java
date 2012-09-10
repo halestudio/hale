@@ -27,7 +27,9 @@ import org.opengis.filter.identity.FeatureId;
 import org.opengis.geometry.BoundingBox;
 
 /**
- * An empty Dummy class used to trick geotools Stylefactory wich only works with SimpleFeatures
+ * An empty Dummy class used to trick geotools Stylefactory wich only works with
+ * SimpleFeatures
+ * 
  * @author Sebastian Reinhardt
  */
 public class DummyFeature implements SimpleFeature {
@@ -65,7 +67,7 @@ public class DummyFeature implements SimpleFeature {
 	@Override
 	public void setDefaultGeometryProperty(GeometryAttribute arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -128,7 +130,7 @@ public class DummyFeature implements SimpleFeature {
 	@Override
 	public void setValue(Collection<Property> arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -137,7 +139,7 @@ public class DummyFeature implements SimpleFeature {
 	@Override
 	public void validate() throws IllegalAttributeException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -182,7 +184,7 @@ public class DummyFeature implements SimpleFeature {
 	@Override
 	public void setValue(Object arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -267,31 +269,33 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#setAttribute(java.lang.String, java.lang.Object)
+	 * @see org.opengis.feature.simple.SimpleFeature#setAttribute(java.lang.String,
+	 *      java.lang.Object)
 	 */
 	@Override
 	public void setAttribute(String arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#setAttribute(org.opengis.feature.type.Name, java.lang.Object)
+	 * @see org.opengis.feature.simple.SimpleFeature#setAttribute(org.opengis.feature.type.Name,
+	 *      java.lang.Object)
 	 */
 	@Override
 	public void setAttribute(Name arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#setAttribute(int, java.lang.Object)
+	 * @see org.opengis.feature.simple.SimpleFeature#setAttribute(int,
+	 *      java.lang.Object)
 	 */
 	@Override
-	public void setAttribute(int arg0, Object arg1)
-			throws IndexOutOfBoundsException {
+	public void setAttribute(int arg0, Object arg1) throws IndexOutOfBoundsException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -300,7 +304,7 @@ public class DummyFeature implements SimpleFeature {
 	@Override
 	public void setAttributes(List<Object> arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -309,7 +313,7 @@ public class DummyFeature implements SimpleFeature {
 	@Override
 	public void setAttributes(Object[] arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -318,7 +322,7 @@ public class DummyFeature implements SimpleFeature {
 	@Override
 	public void setDefaultGeometry(Object arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

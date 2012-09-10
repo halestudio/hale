@@ -27,16 +27,17 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
- * Filtered tree that supports a {@link ITreePathContentProvider} and
- * a {@link TreePathPatternFilter}
+ * Filtered tree that supports a {@link ITreePathContentProvider} and a
+ * {@link TreePathPatternFilter}
+ * 
  * @author Simon Templer
  */
 public class TreePathFilteredTree extends FilteredTree {
-	
+
 	/**
 	 * Tree viewer that calls filters with {@link TreePath}s as elements
 	 */
-	public static class TreePathTreeViewer extends /*Notifying*/TreeViewer {
+	public static class TreePathTreeViewer extends /* Notifying */TreeViewer {
 
 		/**
 		 * @see TreeViewer#TreeViewer(Composite, int)
@@ -51,19 +52,19 @@ public class TreePathFilteredTree extends FilteredTree {
 		@Override
 		protected Object[] getFilteredChildren(Object parent) {
 			Object[] elements = getRawChildren(parent);
-			
+
 			if (parent != null && !(parent instanceof TreePath)) {
 				// root element
 				parent = TreePath.EMPTY;
 			}
-			
+
 			TreePath parentPath = (TreePath) parent;
-			
+
 			// create tree paths from elements
 			List<TreePath> paths = getPathsForElements(parentPath, elements);
-			
+
 			List<ViewerFilter> filters = Arrays.asList(getFilters());
-			if (filters  != null) {
+			if (filters != null) {
 				for (Iterator<ViewerFilter> iter = filters.iterator(); iter.hasNext();) {
 					ViewerFilter f = iter.next();
 					// call filter with TreePath objects
@@ -74,12 +75,12 @@ public class TreePathFilteredTree extends FilteredTree {
 					}
 				}
 			}
-			
+
 			List<Object> result = new ArrayList<Object>();
 			for (TreePath path : paths) {
 				result.add(path.getLastSegment());
 			}
-			
+
 			return result.toArray();
 		}
 
@@ -88,8 +89,8 @@ public class TreePathFilteredTree extends FilteredTree {
 	/**
 	 * @see FilteredTree#FilteredTree(Composite, int, PatternFilter, boolean)
 	 */
-	public TreePathFilteredTree(Composite parent, int treeStyle,
-			PatternFilter filter, boolean useNewLook) {
+	public TreePathFilteredTree(Composite parent, int treeStyle, PatternFilter filter,
+			boolean useNewLook) {
 		super(parent, treeStyle, filter, useNewLook);
 	}
 
@@ -100,15 +101,15 @@ public class TreePathFilteredTree extends FilteredTree {
 	protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
 		return new TreePathTreeViewer(parent, style);
 	}
-	
+
 	/**
 	 * Get the tree paths for the given objects with the given parent path.
+	 * 
 	 * @param parentPath the parent path for each object
 	 * @param elements the objects
 	 * @return the list of tree paths
 	 */
-	public static List<TreePath> getPathsForElements(TreePath parentPath,
-			Object[] elements) {
+	public static List<TreePath> getPathsForElements(TreePath parentPath, Object[] elements) {
 		List<TreePath> paths = new ArrayList<TreePath>();
 		// create tree paths from elements
 		List<Object> parentSegments = new ArrayList<Object>();
@@ -120,7 +121,7 @@ public class TreePathFilteredTree extends FilteredTree {
 		for (Object element : elements) {
 			TreePath path;
 			if (parentPath == null) {
-				path = new TreePath(new Object[]{element});
+				path = new TreePath(new Object[] { element });
 			}
 			else {
 				parentSegments.add(element);

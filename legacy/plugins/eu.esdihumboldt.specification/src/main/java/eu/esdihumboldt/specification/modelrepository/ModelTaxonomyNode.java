@@ -17,27 +17,28 @@ import eu.esdihumboldt.specification.modelrepository.abstractfc.ConceptualSchema
 
 /**
  * Name: eu.esdihumboldt.modelrepository.abstractfc / ModelTaxonomyNode<br/>
- * Purpose: A node in the ModelTaxonomy. The general rule should be that the 
- * ModelTaxonomyNode represent the inner nodes, while InformationModels are the 
+ * Purpose: A node in the ModelTaxonomy. The general rule should be that the
+ * ModelTaxonomyNode represent the inner nodes, while InformationModels are the
  * leaf nodes and the ModelTaxonomy represents the root node.<br/>
  * 
- * The graph produced with these ModelTaxonomyNodes is directed, acyclic and 
+ * The graph produced with these ModelTaxonomyNodes is directed, acyclic and
  * monotonous, i.e. a Tree.
  * 
- * @author Thorsten Reitz  
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface ModelTaxonomyNode {
-	
+
 	/**
-	 * @return all children ModelTaxonomyNodes attached to this ModelTaxonomyNode.
+	 * @return all children ModelTaxonomyNodes attached to this
+	 *         ModelTaxonomyNode.
 	 */
 	public List<ModelTaxonomyNode> getChildren();
-	
+
 	/**
 	 * @return all InformationModels attached to this ModelTaxonomyNode.
 	 */
 	public List<ConceptualSchema> getInformationModels();
-	
+
 }

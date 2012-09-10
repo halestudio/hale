@@ -27,32 +27,36 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Entity selector
+ * 
  * @param <F> the field type
  * @author Simon Templer
  */
-public abstract class EntitySelector<F extends AbstractParameter> extends AbstractSelector<EntityDefinition> {
-	
+public abstract class EntitySelector<F extends AbstractParameter> extends
+		AbstractSelector<EntityDefinition> {
+
 	private final F field;
-	
+
 	private final SchemaSpaceID ssid;
-	
+
 	/**
 	 * Create an entity selector.
+	 * 
 	 * @param ssid the schema space
 	 * @param field the field definition, may be <code>null</code>
 	 * @param parent the parent composite
-	 * @param filters the viewer filters 
+	 * @param filters the viewer filters
 	 */
-	public EntitySelector(final SchemaSpaceID ssid,	F field, Composite parent, 
+	public EntitySelector(final SchemaSpaceID ssid, F field, Composite parent,
 			ViewerFilter[] filters) {
-		super(parent, new StyledDefinitionLabelProvider(
-				new DefinitionLabelProvider(true, true), true), filters);
+		super(parent, new StyledDefinitionLabelProvider(new DefinitionLabelProvider(true, true),
+				true), filters);
 		this.field = field;
 		this.ssid = ssid;
 	}
-	
+
 	/**
 	 * Get the field definition associated with the selector.
+	 * 
 	 * @return the field definition
 	 */
 	public F getField() {
@@ -70,30 +74,33 @@ public abstract class EntitySelector<F extends AbstractParameter> extends Abstra
 
 	/**
 	 * Create the dialog for selecting an entity.
+	 * 
 	 * @param parentShell the parent shell for the dialog
 	 * @param ssid the schema space
 	 * @param field the field definition
 	 * @return the entity dialog
 	 */
-	protected abstract EntityDialog createEntityDialog(Shell parentShell, 
-			SchemaSpaceID ssid, F field);
+	protected abstract EntityDialog createEntityDialog(Shell parentShell, SchemaSpaceID ssid,
+			F field);
 
 	/**
 	 * Get the selected entity
+	 * 
 	 * @return the selected entity or <code>null</code>
 	 */
 	public Entity getEntity() {
 		EntityDefinition def = getSelectedObject();
-		
+
 		if (def != null) {
 			return createEntity(def);
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Create an entity for the given entity definition
+	 * 
 	 * @param element the entity definition
 	 * @return the entity
 	 */

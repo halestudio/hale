@@ -16,6 +16,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 
 /**
  * Represents a type in a mapping cell
+ * 
  * @author Simon Templer
  */
 public interface Type extends Entity {
@@ -25,9 +26,9 @@ public interface Type extends Entity {
 	 */
 	@Override
 	public TypeEntityDefinition getDefinition();
-	
-	//TODO type filter/restriction stuff
-	
-	//TODO associated properties?
+
+	// TODO type filter/restriction stuff
+
+	// TODO associated properties?
 
 }

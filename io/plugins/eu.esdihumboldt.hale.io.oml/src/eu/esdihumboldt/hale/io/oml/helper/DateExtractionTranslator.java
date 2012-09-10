@@ -28,8 +28,7 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class DateExtractionTranslator implements FunctionTranslator,
-		DateExtractionFunction {
+public class DateExtractionTranslator implements FunctionTranslator, DateExtractionFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -46,22 +45,21 @@ public class DateExtractionTranslator implements FunctionTranslator,
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
 		for (ParameterValue val : params) {
-			if (val.getName().equals("dateFormatTarget")
-					&& val.getValue() != null) {
+			if (val.getName().equals("dateFormatTarget") && val.getValue() != null) {
 				reporter.warn(new IOMessageImpl(
 						"The 'dateFormatTarget' value has been removed, your result could be different.",
 						null));
 			}
 			// translate "dateFormatSource" to "dateFormat"
 			if (val.getName().equals("dateFormatSource")) {
-				newList.add(new ParameterValue(PARAMETER_DATE_FORMAT, val
-						.getValue()));
-			} else {
+				newList.add(new ParameterValue(PARAMETER_DATE_FORMAT, val.getValue()));
+			}
+			else {
 				newList.add(val);
 			}
 		}

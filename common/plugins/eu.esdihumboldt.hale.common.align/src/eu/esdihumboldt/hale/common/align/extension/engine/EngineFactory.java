@@ -17,14 +17,16 @@ import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEng
 
 /**
  * Factory for {@link TransformationEngine}s
+ * 
  * @author Simon Templer
  */
 public interface EngineFactory extends ExtensionObjectFactory<TransformationEngine> {
 
 	/**
 	 * Get the engine description
+	 * 
 	 * @return the description
 	 */
 	public String getDescription();
-	
+
 }

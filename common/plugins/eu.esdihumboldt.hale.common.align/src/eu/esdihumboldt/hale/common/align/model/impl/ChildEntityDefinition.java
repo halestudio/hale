@@ -25,31 +25,32 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Entity definition for a property or group property
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class ChildEntityDefinition implements EntityDefinition {
 
 	private final TypeDefinition type;
-	
+
 	private final Filter filter;
-	
+
 	private final List<ChildContext> path;
-	
+
 	private final SchemaSpaceID schemaSpace;
-	
+
 	/**
 	 * Create an entity definition specified by the given child path.
+	 * 
 	 * @param type the topmost parent of the property
 	 * @param path the child path down from the type
 	 * @param schemaSpace the schema space identifier
 	 * @param filter the entity filter on the type, may be <code>null</code>
 	 */
-	public ChildEntityDefinition(TypeDefinition type,
-			List<ChildContext> path, SchemaSpaceID schemaSpace,
-			Filter filter) {
+	public ChildEntityDefinition(TypeDefinition type, List<ChildContext> path,
+			SchemaSpaceID schemaSpace, Filter filter) {
 		super();
-		
+
 		this.type = type;
 		this.path = Collections.unmodifiableList(path);
 		this.schemaSpace = schemaSpace;
@@ -69,7 +70,7 @@ public class ChildEntityDefinition implements EntityDefinition {
 	 */
 	@Override
 	public ChildDefinition<?> getDefinition() {
-		return path.get(path.size() -1).getChild();
+		return path.get(path.size() - 1).getChild();
 	}
 
 	/**
@@ -105,8 +106,7 @@ public class ChildEntityDefinition implements EntityDefinition {
 		int result = 1;
 		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
 		result = prime * result + ((path == null) ? 0 : path.hashCode());
-		result = prime * result
-				+ ((schemaSpace == null) ? 0 : schemaSpace.hashCode());
+		result = prime * result + ((schemaSpace == null) ? 0 : schemaSpace.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -126,19 +126,22 @@ public class ChildEntityDefinition implements EntityDefinition {
 		if (filter == null) {
 			if (other.filter != null)
 				return false;
-		} else if (!filter.equals(other.filter))
+		}
+		else if (!filter.equals(other.filter))
 			return false;
 		if (path == null) {
 			if (other.path != null)
 				return false;
-		} else if (!path.equals(other.path))
+		}
+		else if (!path.equals(other.path))
 			return false;
 		if (schemaSpace != other.schemaSpace)
 			return false;
 		if (type == null) {
 			if (other.type != null)
 				return false;
-		} else if (!type.equals(other.type))
+		}
+		else if (!type.equals(other.type))
 			return false;
 		return true;
 	}

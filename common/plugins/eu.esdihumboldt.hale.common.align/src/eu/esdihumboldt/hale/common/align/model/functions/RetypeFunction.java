@@ -23,5 +23,5 @@ public interface RetypeFunction {
 	 * The retype function Id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.align.retype";
-	
+
 }

@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 
 /**
  * Default {@link TypeIndex} implementation
+ * 
  * @author Simon Templer
  */
 public class DefaultTypeIndex implements TypeIndex {
@@ -47,9 +48,10 @@ public class DefaultTypeIndex implements TypeIndex {
 			types.put(type.getName(), type);
 
 			// check mappable flag, too for consistency
-			if (mappingRelevantTypes != null && type.getConstraint(MappingRelevantFlag.class).isEnabled()
+			if (mappingRelevantTypes != null
+					&& type.getConstraint(MappingRelevantFlag.class).isEnabled()
 					&& type.getConstraint(MappableFlag.class).isEnabled())
-				mappingRelevantTypes.add(type); 
+				mappingRelevantTypes.add(type);
 		}
 	}
 
@@ -104,11 +106,14 @@ public class DefaultTypeIndex implements TypeIndex {
 				if (type.getConstraint(MappingRelevantFlag.class).isEnabled()) {
 					if (mappingRelevantTypes != null)
 						mappingRelevantTypes.remove(type);
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.DISABLED);
-				} else {
+					((AbstractDefinition<TypeConstraint>) def)
+							.setConstraint(MappingRelevantFlag.DISABLED);
+				}
+				else {
 					if (mappingRelevantTypes != null)
 						mappingRelevantTypes.add(type);
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.ENABLED);
+					((AbstractDefinition<TypeConstraint>) def)
+							.setConstraint(MappingRelevantFlag.ENABLED);
 				}
 			}
 		}

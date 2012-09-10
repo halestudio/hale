@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.ui.function.generic.GenericPropertyFunctionWizardFac
 
 /**
  * Property function wizard descriptor
+ * 
  * @author Simon Templer
  */
 public class PropertyFunctionWizardDescriptorImpl extends

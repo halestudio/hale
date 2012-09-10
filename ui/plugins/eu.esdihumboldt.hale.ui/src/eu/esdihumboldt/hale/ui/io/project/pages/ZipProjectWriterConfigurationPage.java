@@ -27,19 +27,20 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
 /**
  * Configuration page for the {@link ZipProjectWriter}
+ * 
  * @author Simon Templer
  */
 public class ZipProjectWriterConfigurationPage extends
 		AbstractConfigurationPage<DefaultProjectWriter, IOWizard<DefaultProjectWriter>> {
 
 	private Button checkSeparateFiles;
-	
+
 	/**
 	 * Default constructor
 	 */
 	public ZipProjectWriterConfigurationPage() {
 		super("zipWriter");
-		
+
 		setTitle("Project file");
 		setDescription("Project file settings");
 	}
@@ -75,11 +76,12 @@ public class ZipProjectWriterConfigurationPage extends
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(1, false));
-		
+
 		checkSeparateFiles = new Button(page, SWT.CHECK);
 		checkSeparateFiles.setSelection(false); // default
-		checkSeparateFiles.setText("Place alignment next to the project file instead of inside the project archive");
-		
+		checkSeparateFiles
+				.setText("Place alignment next to the project file instead of inside the project archive");
+
 		setPageComplete(true);
 	}
 

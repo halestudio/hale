@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
  * Adds a new named instance context for a selected {@link EntityDefinition}.
+ * 
  * @author Simon Templer
  */
 public class AddNamedContextHandler extends AbstractHandler {
@@ -36,16 +37,17 @@ public class AddNamedContextHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		
+
 		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
-			
+
 			if (element instanceof EntityDefinition) {
-				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+						.getService(EntityDefinitionService.class);
 				eds.addNamedContext((EntityDefinition) element);
 			}
 		}
-		
+
 		return null;
 	}
 

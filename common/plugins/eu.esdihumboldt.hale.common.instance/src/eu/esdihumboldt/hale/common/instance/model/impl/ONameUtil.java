@@ -22,10 +22,11 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
  * Utilities for name encoding and decoding
+ * 
  * @author Simon Templer
  */
 public class ONameUtil {
-	
+
 	/**
 	 * BitSet of safe characters for names in {@link ODocument}s.
 	 */
@@ -47,9 +48,11 @@ public class ONameUtil {
 		// special chars
 		// none, as _ is not added because it is used for the encoding
 	}
-	
+
 	/**
-	 * Encode text to a string that is a valid name for {@link ODocument} fields.
+	 * Encode text to a string that is a valid name for {@link ODocument}
+	 * fields.
+	 * 
 	 * @param text the text to encode
 	 * @return the encoded name
 	 */
@@ -57,13 +60,15 @@ public class ONameUtil {
 		if (text == null) {
 			return null;
 		}
-		
-		return new String(URLCodec.encodeUrl(ONAME, text.getBytes(Charsets.UTF_8)), 
+
+		return new String(URLCodec.encodeUrl(ONAME, text.getBytes(Charsets.UTF_8)),
 				Charsets.US_ASCII).replace('%', '_');
 	}
-	
+
 	/**
-	 * Decode a name for {@link ODocument} fields to its original string representation.
+	 * Decode a name for {@link ODocument} fields to its original string
+	 * representation.
+	 * 
 	 * @param name the name to decode
 	 * @return the decoded text
 	 * @throws DecoderException if decoding the string fails
@@ -71,9 +76,9 @@ public class ONameUtil {
 	public static String decodeName(String name) throws DecoderException {
 		if (name == null) {
 			return null;
-			}
-		return new String(URLCodec.decodeUrl(name.replace('_', '%').
-				getBytes(Charsets.US_ASCII)), Charsets.UTF_8);
+		}
+		return new String(URLCodec.decodeUrl(name.replace('_', '%').getBytes(Charsets.US_ASCII)),
+				Charsets.UTF_8);
 	}
 
 }

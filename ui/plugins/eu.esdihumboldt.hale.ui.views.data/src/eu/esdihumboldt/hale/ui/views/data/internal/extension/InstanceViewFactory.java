@@ -17,10 +17,11 @@ import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
 
 /**
  * {@link InstanceViewer} interface.
+ * 
  * @author Simon Templer
  */
 public interface InstanceViewFactory extends ExtensionObjectFactory<InstanceViewer> {
 
 	// concrete typed interface
-	
+
 }

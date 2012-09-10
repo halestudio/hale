@@ -14,11 +14,11 @@ package eu.esdihumboldt.specification.mediator.usermanagement;
 import java.util.UUID;
 
 /**
- * A Role represents the role that the actual user has
- * within the HUMBOLDT system, not his role to the outside world.
- * It is therefore only of concern when internal permissions are checked.
+ * A Role represents the role that the actual user has within the HUMBOLDT
+ * system, not his role to the outside world. It is therefore only of concern
+ * when internal permissions are checked.
  * 
- 
+ * 
  * 
  * @author Anna Pitaev, Logica CMG
  * @version $Id: Role.java,v 1.3 2007-10-24 13:42:53 pitaeva Exp $
@@ -29,12 +29,12 @@ public interface Role {
 	/**
 	 * 
 	 * @return the role of the user.
-    */
+	 */
 	public String getRoleName();
-	
-	  /**
-	   * 
-	   * @return an uniquie identification assigned to the user role.
-	   */
-	  public UUID getRoleID();
+
+	/**
+	 * 
+	 * @return an uniquie identification assigned to the user role.
+	 */
+	public UUID getRoleID();
 }

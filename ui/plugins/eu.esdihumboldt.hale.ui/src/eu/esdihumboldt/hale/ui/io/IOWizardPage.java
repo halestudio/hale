@@ -19,21 +19,21 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
 
 /**
  * Abstract I/O wizard page
+ * 
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public abstract class IOWizardPage<P extends IOProvider,
-	W extends IOWizard<P>> extends HaleWizardPage<W> {
-	
+public abstract class IOWizardPage<P extends IOProvider, W extends IOWizard<P>> extends
+		HaleWizardPage<W> {
+
 	/**
 	 * @see HaleWizardPage#HaleWizardPage(String, String, ImageDescriptor)
 	 */
-	protected IOWizardPage(String pageName, String title,
-			ImageDescriptor titleImage) {
+	protected IOWizardPage(String pageName, String title, ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
 	}
 
@@ -43,7 +43,7 @@ public abstract class IOWizardPage<P extends IOProvider,
 	protected IOWizardPage(String pageName) {
 		super(pageName);
 	}
-	
+
 	/**
 	 * Update the configuration (of the I/O provider)
 	 * 
@@ -51,5 +51,5 @@ public abstract class IOWizardPage<P extends IOProvider,
 	 * @return if the page is valid and updating the provider was successful
 	 */
 	public abstract boolean updateConfiguration(P provider);
-	
+
 }

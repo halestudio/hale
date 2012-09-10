@@ -17,6 +17,7 @@ import eu.esdihumboldt.hale.ui.io.ImportWizard;
 
 /**
  * Wizard for importing source or target schemas
+ * 
  * @author Simon Templer
  * @since 2.5
  */

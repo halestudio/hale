@@ -30,12 +30,13 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
  * Tree content provider using a {@link TypeIndex} as root
+ * 
  * @author Simon Templer
  */
 public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 
 	private final TreeViewer tree;
-	
+
 	/**
 	 * The entity definition service instance
 	 */
@@ -45,25 +46,26 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	 * The identifier of the schema space associated to the entities
 	 */
 	protected final SchemaSpaceID schemaSpace;
-	
+
 	/**
 	 * Create a content provider based on a {@link TypeIndex} as input.
+	 * 
 	 * @param tree the associated tree viewer
 	 * @param entityDefinitionService the entity definition service
 	 * @param schemaSpace the associated schema space
 	 */
 	public EntityTypeIndexContentProvider(TreeViewer tree,
-			EntityDefinitionService entityDefinitionService,
-			SchemaSpaceID schemaSpace) {
+			EntityDefinitionService entityDefinitionService, SchemaSpaceID schemaSpace) {
 		super();
-		
+
 		this.tree = tree;
 		this.entityDefinitionService = entityDefinitionService;
 		this.schemaSpace = schemaSpace;
 	}
-	
+
 	/**
 	 * Get the associated tree viewer
+	 * 
 	 * @return the associated tree viewer
 	 */
 	protected TreeViewer getTree() {
@@ -93,12 +95,13 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof EntityDefinition) {
-			Collection<? extends EntityDefinition> children = 
-					entityDefinitionService.getChildren((EntityDefinition) parentElement);
+			Collection<? extends EntityDefinition> children = entityDefinitionService
+					.getChildren((EntityDefinition) parentElement);
 			return children.toArray();
 		}
 		else {
-			throw new IllegalArgumentException("Given element not supported in schema tree structure.");
+			throw new IllegalArgumentException(
+					"Given element not supported in schema tree structure.");
 		}
 	}
 
@@ -108,12 +111,13 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	@Override
 	public boolean hasChildren(Object parentElement) {
 		if (parentElement instanceof EntityDefinition) {
-			Collection<? extends EntityDefinition> children = 
-					entityDefinitionService.getChildren((EntityDefinition) parentElement);
+			Collection<? extends EntityDefinition> children = entityDefinitionService
+					.getChildren((EntityDefinition) parentElement);
 			return !children.isEmpty();
 		}
 		else {
-			throw new IllegalArgumentException("Given element not supported in schema tree structure.");
+			throw new IllegalArgumentException(
+					"Given element not supported in schema tree structure.");
 		}
 	}
 

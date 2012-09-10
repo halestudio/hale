@@ -19,7 +19,7 @@ import de.cs3d.util.eclipse.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
- * Interface for {@link IOWizard} factories provided by the 
+ * Interface for {@link IOWizard} factories provided by the
  * {@link ActionUIExtension}.
  * 
  * @author Simon Templer
@@ -28,33 +28,37 @@ public interface ActionUI extends ExtensionObjectFactory<IOWizard<?>> {
 
 	/**
 	 * Get the identifier of the associated action
+	 * 
 	 * @return the associated action ID
 	 */
 	public String getActionID();
-	
+
 	/**
-	 * States if I/O operations based on this advisor represent project 
-	 * resources and thus shall be remembered, i.e. the configuration stored 
-	 * in the project. If stored in a project the resource will be loaded again 
+	 * States if I/O operations based on this advisor represent project
+	 * resources and thus shall be remembered, i.e. the configuration stored in
+	 * the project. If stored in a project the resource will be loaded again
 	 * when the project is loaded.
+	 * 
 	 * @return if operations based on this advisor shall be remembered
 	 */
 	public boolean isProjectResource();
-	
+
 	/**
-	 * Get the expression that specifies whether the command to show the
-	 * I/O wizard for the advisor should be enabled.
+	 * Get the expression that specifies whether the command to show the I/O
+	 * wizard for the advisor should be enabled.
+	 * 
 	 * @see IEvaluationService
 	 * @return the expression or <code>null</code> if the command should always
-	 *   be enabled 
+	 *         be enabled
 	 */
 	public Expression getEnabledWhen();
-	
+
 	/**
 	 * Get the reason why the action is disabled in a human understandable way.
 	 * May for instance state what the user must do to enable the action.
+	 * 
 	 * @return the reason message
 	 */
 	public String getDisabledReason();
-	
+
 }

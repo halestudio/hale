@@ -19,21 +19,22 @@ import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionMan
 
 /**
  * Bean representing a {@link ChildContext}. Instead of the child definition it
- * contains its name. 
+ * contains its name.
+ * 
  * @author Simon Templer
  */
 public class ChildContextBean {
-	
+
 	private Integer contextName;
-	
+
 	private Integer contextIndex;
-	
+
 	private String conditionFilter;
-	
+
 	private QName childName;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public ChildContextBean() {
 		super();
@@ -41,24 +42,26 @@ public class ChildContextBean {
 
 	/**
 	 * Create a child context bean from the given child context
+	 * 
 	 * @param context the child context
 	 */
 	public ChildContextBean(ChildContext context) {
-		this(context.getContextName(), context.getIndex(), (context
-				.getCondition() == null) ? (null) : (FilterDefinitionManager
-				.getInstance().asString(context.getCondition().getFilter())),
-				context.getChild().getName());
+		this(context.getContextName(), context.getIndex(),
+				(context.getCondition() == null) ? (null) : (FilterDefinitionManager.getInstance()
+						.asString(context.getCondition().getFilter())), context.getChild()
+						.getName());
 	}
 
 	/**
 	 * Create a child context bean with the given content
+	 * 
 	 * @param contextName the instance context name
 	 * @param contextIndex the context index
 	 * @param conditionFilter the condition filter
 	 * @param childName the child definition name
 	 */
-	public ChildContextBean(Integer contextName, Integer contextIndex,
-			String conditionFilter, QName childName) {
+	public ChildContextBean(Integer contextName, Integer contextIndex, String conditionFilter,
+			QName childName) {
 		super();
 		this.contextName = contextName;
 		this.childName = childName;

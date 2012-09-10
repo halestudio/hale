@@ -39,25 +39,27 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
 /**
  * Dialog for selecting a {@link PropertyEntityDefinition}.
+ * 
  * @author Simon Templer
  */
 public class PropertyEntityDialog extends EntityDialog {
-	
+
 	private final TypeEntityDefinition parentType;
 
 	/**
-	 * Create a property entity dialog 
+	 * Create a property entity dialog
+	 * 
 	 * @param parentShell the parent shall
 	 * @param ssid the schema space
 	 * @param parentType the parent type for the property to be selected
 	 * @param title the dialog title
 	 * @param initialSelection the entity definition to select initially (if
-	 *   possible), may be <code>null</code>
+	 *            possible), may be <code>null</code>
 	 */
 	public PropertyEntityDialog(Shell parentShell, SchemaSpaceID ssid,
 			TypeEntityDefinition parentType, String title, EntityDefinition initialSelection) {
 		super(parentShell, ssid, title, initialSelection);
-		
+
 		this.parentType = parentType;
 	}
 
@@ -67,12 +69,13 @@ public class PropertyEntityDialog extends EntityDialog {
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
-		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-		viewer.setContentProvider(new TreePathProviderAdapter(new EntityTypePropertyContentProvider(
-				viewer, entityDefinitionService, ssid)));
-		
+		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI
+				.getWorkbench().getService(EntityDefinitionService.class);
+		viewer.setContentProvider(new TreePathProviderAdapter(
+				new EntityTypePropertyContentProvider(viewer, entityDefinitionService, ssid)));
+
 		viewer.setInput(parentType);
-		
+
 		if (initialSelection != null) {
 			viewer.setSelection(new StructuredSelection(initialSelection));
 		}
@@ -89,11 +92,11 @@ public class PropertyEntityDialog extends EntityDialog {
 				return (EntityDefinition) element;
 			}
 		}
-		
+
 		if (!selection.isEmpty() && selection instanceof ITreeSelection) {
-			// create property definition w/ default contexts 
+			// create property definition w/ default contexts
 			TreePath path = ((ITreeSelection) selection).getPaths()[0];
-			
+
 			// get parent type
 			TypeDefinition type = ((PropertyDefinition) path.getFirstSegment()).getParentType();
 			// determine definition path
@@ -101,10 +104,10 @@ public class PropertyEntityDialog extends EntityDialog {
 			for (int i = 0; i < path.getSegmentCount(); i++) {
 				defPath.add(new ChildContext((ChildDefinition<?>) path.getSegment(i)));
 			}
-			//TODO check if property entity definition is applicable? 
+			// TODO check if property entity definition is applicable?
 			return new PropertyEntityDefinition(type, defPath, ssid, parentType.getFilter());
 		}
-		
+
 		return null;
 	}
 

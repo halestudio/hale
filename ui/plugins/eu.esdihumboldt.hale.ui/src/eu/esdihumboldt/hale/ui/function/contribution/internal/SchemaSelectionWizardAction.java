@@ -20,20 +20,20 @@ import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
-
 /**
  * Action for creating a function wizard based on a {@link SchemaSelection}
+ * 
  * @author Simon Templer
  */
-public class SchemaSelectionWizardAction extends AbstractWizardAction<SchemaSelectionFunctionContribution> {
+public class SchemaSelectionWizardAction extends
+		AbstractWizardAction<SchemaSelectionFunctionContribution> {
 
 	/**
-	 * @see AbstractWizardAction#AbstractWizardAction(AbstractFunctionWizardContribution, FunctionWizardDescriptor, AlignmentService)
+	 * @see AbstractWizardAction#AbstractWizardAction(AbstractFunctionWizardContribution,
+	 *      FunctionWizardDescriptor, AlignmentService)
 	 */
-	public SchemaSelectionWizardAction(
-			SchemaSelectionFunctionContribution functionContribution,
-			FunctionWizardDescriptor<?> descriptor,
-			AlignmentService alignmentService) {
+	public SchemaSelectionWizardAction(SchemaSelectionFunctionContribution functionContribution,
+			FunctionWizardDescriptor<?> descriptor, AlignmentService alignmentService) {
 		super(functionContribution, descriptor, alignmentService);
 	}
 

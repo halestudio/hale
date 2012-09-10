@@ -21,11 +21,13 @@ import org.eclipse.swt.widgets.ToolBar;
 
 /**
  * Contribution item only delegating it's work to an
- * {@link ActionContributionItem} with the {@link InstanceValidationStatusAction}.
- *
+ * {@link ActionContributionItem} with the
+ * {@link InstanceValidationStatusAction}.
+ * 
  * @author Kai Schwierczek
  */
 public class InstanceValidationStatusContributionItem extends ContributionItem {
+
 	InstanceValidationStatusAction action;
 	ActionContributionItem actionContribution;
 
@@ -39,7 +41,7 @@ public class InstanceValidationStatusContributionItem extends ContributionItem {
 
 	/**
 	 * Constructor with specified id.
-	 *
+	 * 
 	 * @param id the contribution item identifier, or <code>null</code>
 	 */
 	public InstanceValidationStatusContributionItem(String id) {
@@ -54,8 +56,8 @@ public class InstanceValidationStatusContributionItem extends ContributionItem {
 	}
 
 	/**
-	 * Create the action contribution item, with the action for the
-	 * instance validation status.
+	 * Create the action contribution item, with the action for the instance
+	 * validation status.
 	 */
 	private void createActionContributionItem() {
 		action = new InstanceValidationStatusAction();

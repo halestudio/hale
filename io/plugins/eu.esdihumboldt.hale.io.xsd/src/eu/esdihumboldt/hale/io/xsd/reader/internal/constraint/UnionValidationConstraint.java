@@ -26,6 +26,7 @@ import eu.esdihumboldt.util.validator.Validator;
  * @author Kai Schwierczek
  */
 public class UnionValidationConstraint extends ValidationConstraint {
+
 	private Collection<? extends TypeDefinition> unionTypes;
 	private boolean initialized = false;
 	private Validator validator;

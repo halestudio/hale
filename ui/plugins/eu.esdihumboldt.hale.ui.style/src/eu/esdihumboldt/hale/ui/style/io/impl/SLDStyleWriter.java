@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
  * Writes styles to SLD.
+ * 
  * @author Simon Templer
  */
 public class SLDStyleWriter extends AbstractStyleWriter {
@@ -46,10 +47,10 @@ public class SLDStyleWriter extends AbstractStyleWriter {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Save styles to SLD", ProgressIndicator.UNKNOWN);
-		
+
 		SLDTransformer trans = new SLDTransformer();
 		trans.setIndentation(2);
-		
+
 		OutputStream out = getTarget().getOutput();
 		try {
 			trans.transform(getStyle(), out);
@@ -61,7 +62,7 @@ public class SLDStyleWriter extends AbstractStyleWriter {
 			out.close();
 			progress.end();
 		}
-		
+
 		return reporter;
 	}
 

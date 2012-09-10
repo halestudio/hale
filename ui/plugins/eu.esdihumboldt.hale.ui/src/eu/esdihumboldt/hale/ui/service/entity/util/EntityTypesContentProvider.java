@@ -20,23 +20,24 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
- * Tree content provider using a {@link TypeIndex} as root, only displaying
- * type entity definitions and not their children.
+ * Tree content provider using a {@link TypeIndex} as root, only displaying type
+ * entity definitions and not their children.
+ * 
  * @author Simon Templer
  */
 public class EntityTypesContentProvider extends EntityTypeIndexContentProvider {
 
-	private static final Object[] EMPTY = new Object[]{};
+	private static final Object[] EMPTY = new Object[] {};
 
 	/**
 	 * Create a content provider.
+	 * 
 	 * @param tree the tree viewer
 	 * @param entityDefinitionService the entity definition service
 	 * @param schemaSpace the schema space
 	 */
 	public EntityTypesContentProvider(TreeViewer tree,
-			EntityDefinitionService entityDefinitionService,
-			SchemaSpaceID schemaSpace) {
+			EntityDefinitionService entityDefinitionService, SchemaSpaceID schemaSpace) {
 		super(tree, entityDefinitionService, schemaSpace);
 	}
 

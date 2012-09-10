@@ -28,8 +28,7 @@ import eu.esdihumboldt.specification.cst.align.ICell;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class NetworkExpansionTranslator implements FunctionTranslator,
-		NetworkExpansionFunction {
+public class NetworkExpansionTranslator implements FunctionTranslator, NetworkExpansionFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -46,21 +45,20 @@ public class NetworkExpansionTranslator implements FunctionTranslator,
 	 *      eu.esdihumboldt.specification.cst.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
 		List<ParameterValue> newList = new ArrayList<ParameterValue>();
 
 		for (ParameterValue val : params) {
 			if (val.getName().equals("CAPSSTYLE") && val.getValue() != null) {
-				reporter.warn(new IOMessageImpl(
-						"The 'CAPSSTYLE' value has been removed.", null));
+				reporter.warn(new IOMessageImpl("The 'CAPSSTYLE' value has been removed.", null));
 			}
 
 			// translate "BUFFERWIDTH" to "bufferWidth"
 			if (val.getName().equals("BUFFERWIDTH")) {
-				newList.add(new ParameterValue(PARAMETER_BUFFER_WIDTH, val
-						.getValue()));
-			} else {
+				newList.add(new ParameterValue(PARAMETER_BUFFER_WIDTH, val.getValue()));
+			}
+			else {
 				newList.add(val);
 			}
 		}

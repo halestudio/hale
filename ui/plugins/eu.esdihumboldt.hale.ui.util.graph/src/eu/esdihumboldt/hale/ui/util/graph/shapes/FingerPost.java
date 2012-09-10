@@ -31,10 +31,8 @@ public class FingerPost extends AbstractPolygonPainter {
 	/**
 	 * Create a fingerpost shape painter.
 	 * 
-	 * @param tipSize
-	 *            the finger tip size
-	 * @param style
-	 *            the shape style, either pointing {@link SWT#LEFT} or
+	 * @param tipSize the finger tip size
+	 * @param style the shape style, either pointing {@link SWT#LEFT} or
 	 *            {@link SWT#RIGHT}
 	 */
 	public FingerPost(int tipSize, int style) {
@@ -45,7 +43,8 @@ public class FingerPost extends AbstractPolygonPainter {
 
 		if (left) {
 			insets = new Insets(0, tipSize, 0, 0);
-		} else {
+		}
+		else {
 			insets = new Insets(0, 0, 0, tipSize);
 		}
 	}
@@ -74,7 +73,8 @@ public class FingerPost extends AbstractPolygonPainter {
 
 			points[8] = bounds.x + tipSize;
 			points[9] = bounds.bottom() - 1;
-		} else {
+		}
+		else {
 			points[0] = bounds.x;
 			points[1] = bounds.y + lineWidth - 1;
 

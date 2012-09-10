@@ -28,14 +28,13 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 
 /**
  * Abstract {@link ExportProvider} implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
-public abstract class AbstractExportProvider extends AbstractIOProvider implements
-		ExportProvider {
-	
+public abstract class AbstractExportProvider extends AbstractIOProvider implements ExportProvider {
+
 	private LocatableOutputSupplier<? extends OutputStream> target;
 
 	/**
@@ -60,12 +59,12 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		
+
 		if (target == null) {
 			fail("No target specified");
 		}
 	}
-	
+
 	/**
 	 * @see AbstractIOProvider#storeConfiguration(Map)
 	 */
@@ -78,7 +77,7 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 				configuration.put(PARAM_TARGET, location.toString());
 			}
 		}
-		
+
 		super.storeConfiguration(configuration);
 	}
 
@@ -93,7 +92,7 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 				setTarget(new FileIOSupplier(file));
 			} catch (IllegalArgumentException e) {
 				// ignore, can't set target
-				//XXX extend with support for other URIs?
+				// XXX extend with support for other URIs?
 			}
 		}
 		else {
@@ -106,8 +105,8 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	 */
 	@Override
 	public IOReporter createReporter() {
-		return new DefaultIOReporter(getTarget(), MessageFormat.format(
-				"{0} export", getTypeName()), true);
+		return new DefaultIOReporter(getTarget(),
+				MessageFormat.format("{0} export", getTypeName()), true);
 	}
-	
+
 }

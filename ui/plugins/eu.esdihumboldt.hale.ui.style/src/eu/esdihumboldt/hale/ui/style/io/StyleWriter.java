@@ -18,14 +18,16 @@ import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 
 /**
  * Provides support for writing styles.
+ * 
  * @author Simon Templer
  */
 public interface StyleWriter extends ExportProvider {
 
 	/**
 	 * Set the style to write.
+	 * 
 	 * @param style the style to write
 	 */
 	public void setStyle(Style style);
-	
+
 }

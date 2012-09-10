@@ -46,8 +46,7 @@ import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class CSVSchemaReader extends AbstractSchemaReader implements
-		CSVConstants {
+public class CSVSchemaReader extends AbstractSchemaReader implements CSVConstants {
 
 	/**
 	 * The first line of the CSV file
@@ -88,8 +87,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		if (getParameter(PARAM_TYPENAME) == null
-				|| getParameter(PARAM_TYPENAME) == "") {
+		if (getParameter(PARAM_TYPENAME) == null || getParameter(PARAM_TYPENAME) == "") {
 			fail("No Typename specified");
 		}
 	}
@@ -113,15 +111,15 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 
 			// create type definition
 			String typename;
-			if(getParameter(PARAM_TYPENAME) != null && !getParameter(PARAM_TYPENAME).isEmpty()) {
+			if (getParameter(PARAM_TYPENAME) != null && !getParameter(PARAM_TYPENAME).isEmpty()) {
 				typename = getParameter(PARAM_TYPENAME);
-			} else {
+			}
+			else {
 				reporter.setSuccess(false);
 				reporter.error(new IOMessageImpl("No Typename was set", null));
 				return reporter;
 			}
-			DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(
-					typename));
+			DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(typename));
 
 			// constraints on main type
 			type.setConstraint(MappingRelevantFlag.ENABLED);
@@ -131,25 +129,26 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 
 			// set metadata for main type
 			type.setLocation(getSource().getLocation());
-			
+
 			StringBuffer defaultPropertyTypeBuffer = new StringBuffer();
 			String[] comboSelections;
-			if(getParameter(PARAM_PROPERTYTYPE) == null || getParameter(PARAM_PROPERTYTYPE) == "") {
+			if (getParameter(PARAM_PROPERTYTYPE) == null || getParameter(PARAM_PROPERTYTYPE) == "") {
 				for (int i = 0; i < firstLine.length; i++) {
 					defaultPropertyTypeBuffer.append("java.lang.String");
 					defaultPropertyTypeBuffer.append(",");
 				}
 				defaultPropertyTypeBuffer.deleteCharAt(defaultPropertyTypeBuffer.lastIndexOf(","));
-			String combs = defaultPropertyTypeBuffer.toString();
-			comboSelections = combs.split(",");
-			} else {
-			comboSelections = getParameter(PARAM_PROPERTYTYPE).split(
-					",");
+				String combs = defaultPropertyTypeBuffer.toString();
+				comboSelections = combs.split(",");
+			}
+			else {
+				comboSelections = getParameter(PARAM_PROPERTYTYPE).split(",");
 			}
 			String[] properties;
 			if (getParameter(PARAM_PROPERTY) == null) {
 				properties = firstLine;
-			} else {
+			}
+			else {
 				properties = getParameter(PARAM_PROPERTY).split(",");
 			}
 			// fails if there are less or more property names or property types
@@ -160,16 +159,20 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 			}
 			for (int i = 0; i < comboSelections.length; i++) {
 				PropertyType propertyType;
-				propertyType = PropertyTypeExtension.getInstance().getFactory(
-						comboSelections[i]).createExtensionObject();
+				propertyType = PropertyTypeExtension.getInstance().getFactory(comboSelections[i])
+						.createExtensionObject();
 
-				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-						new QName(properties[i]), type,
-						propertyType.getTypeDefinition());
+				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
+						properties[i]), type, propertyType.getTypeDefinition());
 
 				// set constraints on property
 //				property.setConstraint(NillableFlag.DISABLED); // nillable
-				property.setConstraint(NillableFlag.ENABLED); // nillable FIXME should be configurable per field (see also CSVInstanceReader)
+				property.setConstraint(NillableFlag.ENABLED); // nillable FIXME
+																// should be
+																// configurable
+																// per field
+																// (see also
+																// CSVInstanceReader)
 				property.setConstraint(Cardinality.CC_EXACTLY_ONCE); // cardinality
 
 				// set metadata for property
@@ -178,8 +181,8 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 
 			boolean skip = Arrays.equals(properties, firstLine);
 
-			type.setConstraint(new CSVConfiguration(CSVUtil.getSep(this),
-					CSVUtil.getQuote(this), CSVUtil.getEscape(this), skip));
+			type.setConstraint(new CSVConfiguration(CSVUtil.getSep(this), CSVUtil.getQuote(this),
+					CSVUtil.getEscape(this), skip));
 
 			schema.addType(type);
 
@@ -191,7 +194,7 @@ public class CSVSchemaReader extends AbstractSchemaReader implements
 		reporter.setSuccess(true);
 		return reporter;
 	}
-	
+
 	/**
 	 * @see AbstractIOProvider#getDefaultTypeName()
 	 */

@@ -32,8 +32,7 @@ public class TypeDefinitionEnumerationFilter extends DefaultDefinitionFilter {
 	public boolean isFiltered(Definition<?> input) {
 		if (input instanceof TypeDefinition) {
 			TypeDefinition type = ((TypeDefinition) input);
-			return type.getConstraint(Enumeration.class)
-					.getValues() == null;
+			return type.getConstraint(Enumeration.class).getValues() == null;
 		}
 		return true;
 	}

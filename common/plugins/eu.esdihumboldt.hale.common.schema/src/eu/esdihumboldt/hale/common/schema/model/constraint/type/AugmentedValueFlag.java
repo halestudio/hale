@@ -18,11 +18,10 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
 
 /**
- * Flags if an augmented value is present for a type, meaning a value that
- * is not defined through the schema, but associated additionally to an
- * instance. Disabled by default. Should never be enabled when 
- * {@link HasValueFlag} is enabled, meaning there is a value defined through
- * the schema.<br>
+ * Flags if an augmented value is present for a type, meaning a value that is
+ * not defined through the schema, but associated additionally to an instance.
+ * Disabled by default. Should never be enabled when {@link HasValueFlag} is
+ * enabled, meaning there is a value defined through the schema.<br>
  * <br>
  * The {@link Binding} constraint defines the Java binding for the value.
  * 
@@ -39,12 +38,12 @@ public class AugmentedValueFlag extends AbstractFlagConstraint implements TypeCo
 	 * Enabled augmented value flag
 	 */
 	public static final AugmentedValueFlag ENABLED = new AugmentedValueFlag(true);
-	
+
 	/**
 	 * Disabled augmented value flag
 	 */
 	public static final AugmentedValueFlag DISABLED = new AugmentedValueFlag(false);
-	
+
 	/**
 	 * Get the augmented value flag
 	 * 
@@ -52,25 +51,27 @@ public class AugmentedValueFlag extends AbstractFlagConstraint implements TypeCo
 	 * @return the flag
 	 */
 	public static AugmentedValueFlag get(boolean augmentedValue) {
-		return (augmentedValue)?(ENABLED):(DISABLED);
+		return (augmentedValue) ? (ENABLED) : (DISABLED);
 	}
-	
+
 	/**
-	 * Creates a default augmented value flag, which is disabled. If possible, 
-	 * instead of creating an instance, use {@link #ENABLED} or {@link #DISABLED}.
+	 * Creates a default augmented value flag, which is disabled. If possible,
+	 * instead of creating an instance, use {@link #ENABLED} or
+	 * {@link #DISABLED}.
+	 * 
 	 * @see Constraint
 	 */
 	public AugmentedValueFlag() {
 		this(false);
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */
 	private AugmentedValueFlag(boolean enabled) {
 		super(enabled);
 	}
-	
+
 	/**
 	 * @see TypeConstraint#isInheritable()
 	 */

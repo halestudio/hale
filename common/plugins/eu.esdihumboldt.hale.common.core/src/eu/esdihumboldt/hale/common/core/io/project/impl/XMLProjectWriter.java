@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 /**
  * Writes projects to XML files
+ * 
  * @author Simon Templer
  */
 public class XMLProjectWriter extends DefaultProjectWriter {

@@ -20,41 +20,43 @@ import eu.esdihumboldt.specification.modelrepository.abstractfc.VersionInformati
 /**
  * A Default implementation of the {@link VersionInformation} interface.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: DefaultVersionInformation.java,v 1.4 2007-12-06 13:20:25 pitaeva Exp $ 
+ * @version $Id: DefaultVersionInformation.java,v 1.4 2007-12-06 13:20:25
+ *          pitaeva Exp $
  */
-public class DefaultVersionInformation 
-	implements VersionInformation, Serializable {
-	
+public class DefaultVersionInformation implements VersionInformation,
+		Serializable {
+
 	// Fields ..................................................................
-	
+
 	private long id;
 	private UUID uid;
-	
+
 	private int majorVersionNumber;
-	
+
 	private int minorVersionNumber;
-	
+
 	private int buildNumber;
-	
+
 	private Date expirationDate;
-	
+
 	private Date versionDate;
 
 	// Constructors ............................................................
-	
+
 	/**
 	 * protected no-args constructor.
 	 */
-	public DefaultVersionInformation () {
+	public DefaultVersionInformation() {
 		this.uid = UUID.randomUUID();
-		
+
 	}
 
 	/**
-	 * The default constructor, containing just version numbers, but no date 
+	 * The default constructor, containing just version numbers, but no date
 	 * information.
+	 * 
 	 * @param majorVersionNumber
 	 * @param minorVersionNumber
 	 * @param buildNumber
@@ -68,9 +70,10 @@ public class DefaultVersionInformation
 		this.uid = UUID.randomUUID();
 
 	}
-	
+
 	/**
 	 * Full constructor.
+	 * 
 	 * @param majorVersionNumber
 	 * @param minorVersionNumber
 	 * @param buildNumber
@@ -78,7 +81,7 @@ public class DefaultVersionInformation
 	 * @param expirationDate
 	 */
 	public DefaultVersionInformation(int majorVersionNumber,
-			int minorVersionNumber, int buildNumber, Date versionDate, 
+			int minorVersionNumber, int buildNumber, Date versionDate,
 			Date expirationDate) {
 		this(majorVersionNumber, minorVersionNumber, buildNumber);
 		this.versionDate = versionDate;
@@ -86,7 +89,7 @@ public class DefaultVersionInformation
 		this.uid = UUID.randomUUID();
 
 	}
-	
+
 	// VersionInformation operations ...........................................
 
 	/**
@@ -125,7 +128,7 @@ public class DefaultVersionInformation
 	}
 
 	// DefaultVersionInformation operations ....................................
-	
+
 	/**
 	 * @return the uid
 	 */
@@ -141,54 +144,61 @@ public class DefaultVersionInformation
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @param uid the uid to set
+	 * @param uid
+	 *            the uid to set
 	 */
-	
+
 	@SuppressWarnings("unused")
 	private void setUid(UUID uid) {
 		this.uid = uid;
 	}
 
 	/**
-	 * @param majorVersionNumber the majorVersionNumber to set
+	 * @param majorVersionNumber
+	 *            the majorVersionNumber to set
 	 */
 	public void setMajorVersionNumber(int majorVersionNumber) {
 		this.majorVersionNumber = majorVersionNumber;
 	}
 
 	/**
-	 * @param minorVersionNumber the minorVersionNumber to set
+	 * @param minorVersionNumber
+	 *            the minorVersionNumber to set
 	 */
 	public void setMinorVersionNumber(int minorVersionNumber) {
 		this.minorVersionNumber = minorVersionNumber;
 	}
 
 	/**
-	 * @param buildNumber the buildNumber to set
+	 * @param buildNumber
+	 *            the buildNumber to set
 	 */
 	public void setBuildNumber(int buildNumber) {
 		this.buildNumber = buildNumber;
 	}
 
 	/**
-	 * @param expirationDate the expirationDate to set
+	 * @param expirationDate
+	 *            the expirationDate to set
 	 */
 	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
 	}
 
 	/**
-	 * @param versionDate the versionDate to set
+	 * @param versionDate
+	 *            the versionDate to set
 	 */
 	public void setVersionDate(Date versionDate) {
 		this.versionDate = versionDate;
 	}
-	
+
 }

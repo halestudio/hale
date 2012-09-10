@@ -17,7 +17,7 @@ import java.util.UUID;
 import eu.esdihumboldt.specification.mediator.context.Context;
 
 /**
- * A User Interface allows access to the user's attributes like: 
+ * A User Interface allows access to the user's attributes like:
  * <ul>
  * <li>User Name</li>
  * <li>User Address,</li>
@@ -29,51 +29,49 @@ import eu.esdihumboldt.specification.mediator.context.Context;
  * 
  */
 public interface User {
-	
+
 	/**
 	 * 
-	 * @return a unigue user identifier within the HUMBOLD System. 
+	 * @return a unigue user identifier within the HUMBOLD System.
 	 */
 	UUID getUserID();
-	
+
 	/**
-	 * @return a List of User Contexts, in descending order of priority. The 
-	 * Context on position 0 has the highest, the Context on position n-1
-	 * the lowest priority. 
+	 * @return a List of User Contexts, in descending order of priority. The
+	 *         Context on position 0 has the highest, the Context on position
+	 *         n-1 the lowest priority.
 	 * 
 	 */
 	public List<Context> getContextList();
-	
+
 	/**
 	 * 
 	 * @return the user role within the HUMBOLDT System.
 	 */
 
 	public Role getInternalRole();
-	
+
 	/**
 	 * 
 	 * @return a Organization Reference for this user.
 	 * 
 	 */
 	public UUID getOrganizationID();
-	
+
 	/**
 	 * 
-	 * @return a PersonProfile for this user. 
+	 * @return a PersonProfile for this user.
 	 * 
 	 */
-	
+
 	public PersonProfile getPersonProfile();
-	
+
 	/**
 	 * 
-	 * @return  a period in which the user is valid.
-	 * @Deprecated too complex for the prototype needs, can be used for the Production 
+	 * @return a period in which the user is valid.
+	 * @Deprecated too complex for the prototype needs, can be used for the
+	 *             Production
 	 */
 	@Deprecated
 	public ValidatyDates getValidityDates();
 }
-
-
-

@@ -26,50 +26,48 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
 
 /**
  * Writes {@link MultiLineString} in gml:MultiLineStringTypes
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class MultiLineStringWriter extends
-		AbstractGeometryWriter<MultiLineString> {
+public class MultiLineStringWriter extends AbstractGeometryWriter<MultiLineString> {
 
 	/**
 	 * Default constructor
 	 */
 	public MultiLineStringWriter() {
 		super(MultiLineString.class);
-		
+
 		// compatible types to serve as entry point
 		addCompatibleType(new QName("http://www.opengis.net/gml", "MultiLineStringType")); // restrict to "old" gml namespace (is depreceated since 3.0) -> use Curve instead in GML 3.2 //$NON-NLS-1$ //$NON-NLS-2$
-		
+
 		// patterns for matching inside compatible types
 		addBasePattern("*/lineStringMember"); //$NON-NLS-1$
-		
+
 		// verification patterns
 		addVerificationPattern("*/LineString"); //$NON-NLS-1$
 	}
 
 	/**
-	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition, QName, String)
+	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
+	 *      QName, String)
 	 */
 	@Override
-	public void write(XMLStreamWriter writer, MultiLineString geometry,
-			TypeDefinition elementType, QName elementName, String gmlNs)
-			throws XMLStreamException {
+	public void write(XMLStreamWriter writer, MultiLineString geometry, TypeDefinition elementType,
+			QName elementName, String gmlNs) throws XMLStreamException {
 		for (int i = 0; i < geometry.getNumGeometries(); i++) {
 			if (i > 0) {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 			}
-			
-			Descent descent = descend(writer, Pattern.parse("*/LineString"),  //$NON-NLS-1$
+
+			Descent descent = descend(writer, Pattern.parse("*/LineString"), //$NON-NLS-1$
 					elementType, elementName, gmlNs, false);
-			
+
 			LineString line = (LineString) geometry.getGeometryN(i);
-			writeCoordinates(writer, line.getCoordinates(), 
-					descent.getPath().getLastType(), gmlNs);
-			
+			writeCoordinates(writer, line.getCoordinates(), descent.getPath().getLastType(), gmlNs);
+
 			descent.close();
-			
+
 			if (i < geometry.getNumGeometries() - 1) {
 				writer.writeEndElement();
 			}

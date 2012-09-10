@@ -40,6 +40,7 @@ import eu.esdihumboldt.util.Pair;
 
 /**
  * Page for creating a new relation
+ * 
  * @author Simon Templer
  */
 public class NewRelationPage extends ViewerWizardSelectionPage {
@@ -50,13 +51,13 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 	protected static final String CONF_LAST_SELECTED_FUNCTION = "eu.esdihumboldt.hale.ui.function.new_relation.last_function";
 
 	private TreeViewer viewer;
-	
+
 	/**
 	 * @param title the page title
 	 */
 	protected NewRelationPage(String title) {
 		super("newRelation");
-		
+
 		setTitle(title);
 	}
 
@@ -67,21 +68,23 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 	protected Pair<StructuredViewer, Control> createViewer(Composite parent) {
 		PatternFilter filter = new PatternFilter();
 		filter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.BORDER
-				| SWT.H_SCROLL | SWT.V_SCROLL, filter , true);
-		
+		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL
+				| SWT.V_SCROLL, filter, true);
+
 		viewer = tree.getViewer();
 		viewer.setContentProvider(new FunctionWizardNodeContentProvider(getContainer()));
 		viewer.setLabelProvider(new FunctionWizardNodeLabelProvider());
 		// no input needed, but we have to set something
 		viewer.setInput(Boolean.TRUE);
-		
+
 		// set viewer filter
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		if (!AlignmentUtil.hasTypeRelation(as.getAlignment())) {
-			// if there are no type relations, don't allow creating a property relation
+			// if there are no type relations, don't allow creating a property
+			// relation
 			viewer.addFilter(new ViewerFilter() {
-				
+
 				@Override
 				public boolean select(Viewer viewer, Object parentElement, Object element) {
 					if (element instanceof FunctionWizardNode) {
@@ -91,25 +94,27 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 							return false;
 						}
 					}
-					
+
 					return true;
 				}
 			});
 		}
-		
+
 		// set focus on viewer control to prevent odd behavior
 		viewer.getControl().setFocus();
-		
+
 		// load page configuration
-		//XXX would be better if called from outside
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		// XXX would be better if called from outside
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 		restore(ps.getConfigurationService());
-		
+
 		return new Pair<StructuredViewer, Control>(viewer, tree);
 	}
 
 	/**
 	 * Get the current function wizard
+	 * 
 	 * @return the function wizard or <code>null</code>
 	 */
 	public FunctionWizard getFunctionWizard() {
@@ -117,19 +122,20 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 		if (node instanceof FunctionWizardNode) {
 			return ((FunctionWizardNode) node).getWizard();
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Store the configuration to a configuration service
+	 * 
 	 * @param configurationService the configuration service
 	 */
 	public void store(IConfigurationService configurationService) {
 		if (viewer != null) {
 			// store selected function ID
 			ISelection selection = viewer.getSelection();
-			
+
 			if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 				Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
 				if (selectedObject instanceof FunctionWizardNode) {
@@ -139,28 +145,28 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 				}
 			}
 		}
-		
+
 		configurationService.set(CONF_LAST_SELECTED_FUNCTION, null);
 	}
 
 	/**
 	 * Load the configuration from a configuration service
+	 * 
 	 * @param configurationService the configuration service
 	 */
 	public void restore(IConfigurationService configurationService) {
 		if (viewer != null) {
 			String functionId = configurationService.get(CONF_LAST_SELECTED_FUNCTION);
-			
+
 			if (functionId != null) {
 				// create function wizard node and select it
 				AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
 				if (function != null) {
-					FunctionWizardNode node = new FunctionWizardNode(
-							function, getContainer());
+					FunctionWizardNode node = new FunctionWizardNode(function, getContainer());
 					viewer.setSelection(new StructuredSelection(node), true);
 				}
 			}
 		}
 	}
-	
+
 }

@@ -17,16 +17,18 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 
 /**
  * Instance reference based on an integer index.
+ * 
  * @author Simon Templer
  */
 public class IndexInstanceReference implements InstanceReference {
 
 	private final DataSet dataSet;
-	
+
 	private final int index;
 
 	/**
 	 * Create a reference for an instance, using the given index
+	 * 
 	 * @param dataSet the instance data set
 	 * @param index the instance index
 	 */

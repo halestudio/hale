@@ -14,8 +14,8 @@ package eu.esdihumboldt.commons.mediator.contextservice.hibernate.helpers;
 import org.geotools.metadata.iso.IdentifierImpl;
 
 /**
- * This is a a subclass of the IdentifierImpl contains id-field and no-args constractor,
- * to enable Hibernate the persisting of the Identifier-objects. 
+ * This is a a subclass of the IdentifierImpl contains id-field and no-args
+ * constractor, to enable Hibernate the persisting of the Identifier-objects.
  * 
  * 
  * @author Anna Pitaev, Logica CMG
@@ -26,9 +26,9 @@ public class IdentifierHelper {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private IdentifierImpl delegate = new IdentifierImpl();
-	
+
 	/** unique identifier in the database */
 	private long id;
 
@@ -42,7 +42,8 @@ public class IdentifierHelper {
 
 	/**
 	 * 
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -88,12 +89,11 @@ public class IdentifierHelper {
 	}
 
 	/**
-	 * @param delegate the delegate to set
+	 * @param delegate
+	 *            the delegate to set
 	 */
 	public void setDelegate(IdentifierImpl delegate) {
 		this.delegate = delegate;
 	}
 
 }
-
-

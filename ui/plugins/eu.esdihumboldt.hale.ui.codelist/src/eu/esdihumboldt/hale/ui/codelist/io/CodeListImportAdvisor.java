@@ -11,6 +11,7 @@ import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 
 /**
  * Import advisor for code lists
+ * 
  * @author Patrick Lieb
  */
 public class CodeListImportAdvisor extends DefaultIOAdvisor<CodeListReader> {
@@ -21,10 +22,11 @@ public class CodeListImportAdvisor extends DefaultIOAdvisor<CodeListReader> {
 	@Override
 	public void handleResults(CodeListReader provider) {
 		CodeList code = provider.getCodeList();
-		
-		CodeListService cs = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
+
+		CodeListService cs = (CodeListService) PlatformUI.getWorkbench().getService(
+				CodeListService.class);
 		cs.addCodeList(code);
-		
+
 		super.handleResults(provider);
 	}
 

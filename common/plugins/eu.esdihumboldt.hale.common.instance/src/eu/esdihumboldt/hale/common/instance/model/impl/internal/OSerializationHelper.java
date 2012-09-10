@@ -41,12 +41,13 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.util.Identifiers;
 
 /**
- * Serialization helper for storing values not support by OrientDB.
- * Serializes geometries as WKB and holds a runtime cache for CRSs.
+ * Serialization helper for storing values not support by OrientDB. Serializes
+ * geometries as WKB and holds a runtime cache for CRSs.
+ * 
  * @author Simon Templer
  */
 public abstract class OSerializationHelper {
-	
+
 	/**
 	 * Store information on how to convert a value back to its original form.
 	 */
@@ -57,6 +58,7 @@ public abstract class OSerializationHelper {
 
 		/**
 		 * Create a convert proxy
+		 * 
 		 * @param cs the conversion service to use
 		 * @param original the original type
 		 */
@@ -64,9 +66,10 @@ public abstract class OSerializationHelper {
 			this.cs = cs;
 			this.original = original;
 		}
-		
+
 		/**
 		 * Convert the string to its original form.
+		 * 
 		 * @param value the string value
 		 * @return the converted value
 		 */
@@ -81,8 +84,7 @@ public abstract class OSerializationHelper {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result
-					+ ((original == null) ? 0 : original.hashCode());
+			result = prime * result + ((original == null) ? 0 : original.hashCode());
 			return result;
 		}
 
@@ -101,7 +103,8 @@ public abstract class OSerializationHelper {
 			if (original == null) {
 				if (other.original != null)
 					return false;
-			} else if (!original.equals(other.original))
+			}
+			else if (!original.equals(other.original))
 				return false;
 			return true;
 		}
@@ -112,59 +115,59 @@ public abstract class OSerializationHelper {
 	 * Cache for resolved classes for deserialization
 	 */
 	private static final LinkedHashMap<String, Class<?>> resolved = new LinkedHashMap<String, Class<?>>();
-	
+
 	/**
 	 * Field specifying the serialization type
 	 */
 	public static final String FIELD_SERIALIZATION_TYPE = "___st___";
-	
+
 	/**
 	 * Java object serialization (Swiss army knife)
 	 */
 	private static final int SERIALIZATION_TYPE_JAVA = 0;
-	
+
 	/**
 	 * Converted value
 	 */
 	private static final int SERIALIZATION_TYPE_STRING = 1;
-	
+
 	/**
 	 * WKB geometry
 	 */
 	private static final int SERIALIZATION_TYPE_GEOM = 2;
-	
+
 	/**
 	 * Geometry property (WKB + optional CRS ID)
 	 */
 	private static final int SERIALIZATION_TYPE_GEOM_PROP = 3;
-	
+
 	/**
 	 * Field specifying the CRS ID
 	 */
 	public static final String FIELD_CRS_ID = "___crs___";
-	
+
 	/**
 	 * Field specifying the converter ID
 	 */
 	public static final String FIELD_CONVERT_ID = "___cnv___";
-	
+
 	/**
 	 * Field specifying the string value
 	 */
 	public static final String FIELD_STRING_VALUE = "___str___";
-	
+
 	/**
 	 * Runtime identifiers for CRSs
 	 */
-	private static final Identifiers<CRSDefinition> CRS_IDS = new Identifiers<CRSDefinition>(
-			"crs", true);
-	
+	private static final Identifiers<CRSDefinition> CRS_IDS = new Identifiers<CRSDefinition>("crs",
+			true);
+
 	/**
 	 * Runtime identifiers for {@link ConvertProxy}s
 	 */
 	private static final Identifiers<ConvertProxy> CONVERTER_IDS = new Identifiers<ConvertProxy>(
 			"cnv", true);
-	
+
 	/**
 	 * String conversion white list
 	 */
@@ -173,31 +176,31 @@ public abstract class OSerializationHelper {
 		CONV_WHITE_LIST.add(BigInteger.class);
 		CONV_WHITE_LIST.add(URI.class);
 	}
-	
+
 	/**
-	 * Prepare a value not supported as field in OrientDB so it can be stored
-	 * in the database. 
+	 * Prepare a value not supported as field in OrientDB so it can be stored in
+	 * the database.
+	 * 
 	 * @param value the value to serialize
 	 * @return the document wrapping the value
 	 */
 	public static ODocument serialize(Object value) {
 		/*
-		 * As collections of ORecordBytes are not supported (or rather 
-		 * of records that are no documents, see embeddedCollectionToStream
-		 * in ORecordSerializerCSVAbstract ~578) they are wrapped in a
-		 * document.
+		 * As collections of ORecordBytes are not supported (or rather of
+		 * records that are no documents, see embeddedCollectionToStream in
+		 * ORecordSerializerCSVAbstract ~578) they are wrapped in a document.
 		 */
 		ODocument doc = new ODocument();
-		
+
 		// try conversion to string first
 		final ConversionService cs = OsgiUtils.getService(ConversionService.class);
 		if (cs != null) {
 			// check if conversion allowed and possible
-			if (CONV_WHITE_LIST.contains(value.getClass()) &&
-					cs.canConvert(value.getClass(), String.class) &&
-					cs.canConvert(String.class, value.getClass())) {
+			if (CONV_WHITE_LIST.contains(value.getClass())
+					&& cs.canConvert(value.getClass(), String.class)
+					&& cs.canConvert(String.class, value.getClass())) {
 				String stringValue = cs.convert(value, String.class);
-				
+
 				ConvertProxy convert = new ConvertProxy(cs, value.getClass());
 				doc.field(FIELD_CONVERT_ID, CONVERTER_IDS.getId(convert));
 				doc.field(FIELD_SERIALIZATION_TYPE, SERIALIZATION_TYPE_STRING);
@@ -205,32 +208,32 @@ public abstract class OSerializationHelper {
 				return doc;
 			}
 		}
-		
+
 		ORecordBytes record = new ORecordBytes();
 		int serType = SERIALIZATION_TYPE_JAVA;
-		
+
 		if (value instanceof GeometryProperty<?>) {
 			GeometryProperty<?> geomProp = (GeometryProperty<?>) value;
-			
+
 			// store (runtime) CRS ID (XXX OK as storage is temporary)
 			doc.field(FIELD_CRS_ID, CRS_IDS.getId(geomProp.getCRSDefinition()));
-			
+
 			// extract geometry
 			value = geomProp.getGeometry();
-			
+
 			serType = SERIALIZATION_TYPE_GEOM_PROP;
 		}
-		
+
 		if (value instanceof Geometry) {
 			// serialize geometry as WKB
 			Geometry geom = (Geometry) value;
-			
+
 			Coordinate sample = geom.getCoordinate();
-			int dimension = (sample != null && !Double.isNaN(sample.z))?(3):(2);
-			
+			int dimension = (sample != null && !Double.isNaN(sample.z)) ? (3) : (2);
+
 			WKBWriter writer = new ExtendedWKBWriter(dimension);
 			record.fromStream(writer.write(geom));
-			
+
 			if (serType != SERIALIZATION_TYPE_GEOM_PROP) {
 				serType = SERIALIZATION_TYPE_GEOM;
 			}
@@ -259,28 +262,29 @@ public abstract class OSerializationHelper {
 
 	/**
 	 * Deserialize a serialized value wrapped in the given document.
+	 * 
 	 * @param doc the document
 	 * @return the deserialized value
 	 */
 	public static Object deserialize(ODocument doc) {
 		int serType = doc.field(FIELD_SERIALIZATION_TYPE);
-		
+
 		switch (serType) {
 		case SERIALIZATION_TYPE_STRING:
 			// convert a string value back to its original form
-			
+
 			Object val = doc.field(FIELD_STRING_VALUE);
-			String stringVal = (val == null)?(null):(val.toString());
+			String stringVal = (val == null) ? (null) : (val.toString());
 			ConvertProxy cp = CONVERTER_IDS.getObject((String) doc.field(FIELD_CONVERT_ID));
 			if (cp != null) {
 				return cp.convert(stringVal);
 			}
 			return stringVal;
 		}
-		
+
 		ORecordBytes record = (ORecordBytes) doc.field(OGroup.BINARY_WRAPPER_FIELD);
 		Object result;
-		
+
 		switch (serType) {
 		case SERIALIZATION_TYPE_GEOM:
 		case SERIALIZATION_TYPE_GEOM_PROP:
@@ -296,23 +300,23 @@ public abstract class OSerializationHelper {
 			ByteArrayInputStream bytes = new ByteArrayInputStream(record.toStream());
 			try {
 				ObjectInputStream in = new ObjectInputStream(bytes) {
-					
+
 					@Override
-					protected Class<?> resolveClass(ObjectStreamClass desc)
-							throws IOException, ClassNotFoundException {
+					protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
+							ClassNotFoundException {
 						Class<?> result = resolved.get(desc.getName());
 						if (result == null) {
 							result = OsgiUtils.loadClass(desc.getName(), null);
-							
+
 							if (resolved.size() > 200) {
 								resolved.entrySet().iterator().remove();
 							}
-							
+
 							resolved.put(desc.getName(), result);
 						}
 						if (result == null) {
-							throw new IllegalStateException("Class " +
-									desc.getName() + " not found");
+							throw new IllegalStateException("Class " + desc.getName()
+									+ " not found");
 						}
 						return result;
 					}
@@ -323,23 +327,23 @@ public abstract class OSerializationHelper {
 			}
 			break;
 		}
-		
+
 		if (serType == SERIALIZATION_TYPE_GEOM_PROP) {
 			// wrap geometry in geometry property
-			
+
 			// determine CRS
 			CRSDefinition crs = null;
 			Object crsId = doc.field(FIELD_CRS_ID);
 			if (crsId != null) {
 				crs = CRS_IDS.getObject(crsId.toString());
 			}
-			
+
 			// create geometry property
-			GeometryProperty<Geometry> prop = new DefaultGeometryProperty<Geometry>(
-					crs, (Geometry) result);
+			GeometryProperty<Geometry> prop = new DefaultGeometryProperty<Geometry>(crs,
+					(Geometry) result);
 			return prop;
 		}
-		
+
 		return result;
 	}
 

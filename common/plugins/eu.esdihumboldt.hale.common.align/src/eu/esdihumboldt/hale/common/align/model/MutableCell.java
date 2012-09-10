@@ -14,15 +14,16 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import com.google.common.collect.ListMultimap;
 
-
 /**
  * Mutable {@link Cell} which is used where changes to the cell are allowed.
+ * 
  * @author Simon Templer
  */
 public interface MutableCell extends Cell {
 
 	/**
 	 * Set the identifier for the transformation referenced by the cell.
+	 * 
 	 * @param transformation the transformation identifier
 	 */
 	public void setTransformationIdentifier(String transformation);
@@ -30,8 +31,7 @@ public interface MutableCell extends Cell {
 	/**
 	 * @param parameters the parameters to set
 	 */
-	public void setTransformationParameters(
-			ListMultimap<String, String> parameters);
+	public void setTransformationParameters(ListMultimap<String, String> parameters);
 
 	/**
 	 * @param source the source to set

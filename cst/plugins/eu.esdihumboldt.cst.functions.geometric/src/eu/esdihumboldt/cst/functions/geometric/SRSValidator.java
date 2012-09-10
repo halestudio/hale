@@ -18,8 +18,9 @@ import eu.esdihumboldt.hale.common.align.extension.function.Validator;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 
 /**
- * Validator for the referenceSystem parameter of the ordinates to point function.
- *
+ * Validator for the referenceSystem parameter of the ordinates to point
+ * function.
+ * 
  * @author Kai Schwierczek
  */
 public class SRSValidator implements Validator {

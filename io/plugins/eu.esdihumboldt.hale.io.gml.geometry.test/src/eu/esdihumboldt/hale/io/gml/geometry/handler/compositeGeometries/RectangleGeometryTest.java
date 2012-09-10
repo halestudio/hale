@@ -49,32 +49,27 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 	public void init() {
 		super.init();
 
-		Coordinate[] coordinates = new Coordinate[] {
-				new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
-				new Coordinate(0.01, -3.2), new Coordinate(-3.33, -3.2),
-				new Coordinate(0.01, 3.2) };
+		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
+				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2),
+				new Coordinate(-3.33, -3.2), new Coordinate(0.01, 3.2) };
 
 		LinearRing linearRing = geomFactory.createLinearRing(coordinates);
 		referencePolygon = geomFactory.createPolygon(linearRing, null);
 
-		LineString[] lineStrings = new LineString[] { geomFactory
-				.createLineString(coordinates) };
-		referenceMultiLineString = geomFactory
-				.createMultiLineString(lineStrings);
+		LineString[] lineStrings = new LineString[] { geomFactory.createLineString(coordinates) };
+		referenceMultiLineString = geomFactory.createMultiLineString(lineStrings);
 	}
 
 	/**
 	 * Test rectangle geometries read from a GML 3.2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testRectangleGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/sample-rectangle-gml32.xml")
-						.toURI());
+				getClass().getResource("/data/sample-rectangle-gml32.xml").toURI());
 
 		// two instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -94,8 +89,7 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkRectanglePropertyWithLinearRingInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 
@@ -105,15 +99,13 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 		Instance geomInstance = (Instance) geom;
 		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
 		@SuppressWarnings("unchecked")
-		Polygon polygon = ((GeometryProperty<Polygon>) geomInstance.getValue())
-				.getGeometry();
+		Polygon polygon = ((GeometryProperty<Polygon>) geomInstance.getValue()).getGeometry();
 		assertTrue("Read geometry does not match the reference geometry",
 				polygon.equalsExact(referencePolygon));
 	}
 
 	private void checkRectanglePropertyWithRingInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 

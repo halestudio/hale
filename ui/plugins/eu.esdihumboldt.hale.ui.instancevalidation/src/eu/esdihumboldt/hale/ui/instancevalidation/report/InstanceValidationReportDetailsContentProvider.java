@@ -39,10 +39,11 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Content provider for the instance validation report details page.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class InstanceValidationReportDetailsContentProvider implements ITreePathContentProvider {
+
 	/**
 	 * Maximum number of messages shown for one path/category.
 	 */
@@ -71,7 +72,8 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 		messages.clear();
 		limitedPaths.clear();
 		if (newInput instanceof Collection<?>) {
-			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
+					SchemaService.class);
 			TreePath emptyPath = new TreePath(new Object[0]);
 			for (Object o : (Collection<?>) newInput) {
 				if (o instanceof InstanceValidationMessage) {
@@ -82,11 +84,12 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 						childCache.put(emptyPath, baseTypes);
 					}
 					// XXX maybe expand messages with SSID?
-					TypeDefinition typeDef = ss.getSchemas(SchemaSpaceID.TARGET).getType(message.getType());
+					TypeDefinition typeDef = ss.getSchemas(SchemaSpaceID.TARGET).getType(
+							message.getType());
 					// use typeDef if available, QName otherwise
 					Object use = typeDef == null ? message.getType() : typeDef;
 					baseTypes.add(use);
-					messages.put(new TreePath(new Object[] {use}), message);
+					messages.put(new TreePath(new Object[] { use }), message);
 				}
 			}
 		}
@@ -124,28 +127,33 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 						Object child = name;
 						Object parent = parentPath.getLastSegment();
 						if (parent instanceof Definition<?>) {
-							ChildDefinition<?> childDef = DefinitionUtil.getChild((Definition<?>) parent, name);
+							ChildDefinition<?> childDef = DefinitionUtil.getChild(
+									(Definition<?>) parent, name);
 							if (childDef != null)
 								child = childDef;
 						}
 						children.add(child);
 						messages.put(parentPath.createChildPath(child), message);
-					} else if (message.getPath().size() == parentPath.getSegmentCount() - 1) {
+					}
+					else if (message.getPath().size() == parentPath.getSegmentCount() - 1) {
 						// path done, go by category
 						String category = message.getCategory();
 						children.add(category);
 						messages.put(parentPath.createChildPath(category), message);
-					} else {
+					}
+					else {
 						// all done, add as child
 						if (messageCount < LIMIT) {
 							children.add(message);
 							messageCount++;
-						} else {
+						}
+						else {
 							limitedPaths.add(parentPath);
 						}
 					}
 				}
-			} else
+			}
+			else
 				children = Collections.emptySet();
 
 			childCache.put(parentPath, children);
@@ -156,7 +164,7 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 
 	/**
 	 * Returns the number of messages that are children of the given path.
-	 *
+	 * 
 	 * @param path the path
 	 * @return the number of messages that are children of the given path
 	 */
@@ -165,11 +173,13 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 	}
 
 	/**
-	 * Returns whether the given path has more instances available than those which are shown.
-	 *
+	 * Returns whether the given path has more instances available than those
+	 * which are shown.
+	 * 
 	 * @see #LIMIT
 	 * @param path the path
-	 * @return whether the given path has more instances available than those which are shown
+	 * @return whether the given path has more instances available than those
+	 *         which are shown
 	 */
 	public boolean isLimited(TreePath path) {
 		getChildren(path); // get children so limitedPaths is updated
@@ -178,7 +188,7 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 
 	/**
 	 * Returns all messages that are children of the given path.
-	 *
+	 * 
 	 * @param path the path
 	 * @return all messages that are children of the given path
 	 */

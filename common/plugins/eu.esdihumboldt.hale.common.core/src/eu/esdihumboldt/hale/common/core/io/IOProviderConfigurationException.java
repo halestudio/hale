@@ -15,7 +15,7 @@ package eu.esdihumboldt.hale.common.core.io;
 /**
  * Exception that is thrown when an I/O provider has not been configured
  * properly
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2

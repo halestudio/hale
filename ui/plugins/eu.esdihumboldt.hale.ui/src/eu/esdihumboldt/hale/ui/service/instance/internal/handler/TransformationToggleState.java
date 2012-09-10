@@ -22,27 +22,30 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
 /**
  * Command state that represents if the {@link InstanceService} transformation
  * is enabled.
+ * 
  * @author Simon Templer
  */
 public class TransformationToggleState extends State {
 
 	private final InstanceServiceListener instanceListener;
-	
+
 	/**
 	 * Default constructor
 	 */
 	public TransformationToggleState() {
 		super();
-		
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		is.addListener(instanceListener = new InstanceServiceAdapter() {
 
 			@Override
 			public void transformationToggled(boolean enabled) {
-				// when the transformation is toggled through any means, update the state
+				// when the transformation is toggled through any means, update
+				// the state
 				setValue(enabled);
 			}
-			
+
 		});
 		setValue(is.isTransformationEnabled());
 	}
@@ -52,7 +55,8 @@ public class TransformationToggleState extends State {
 	 */
 	@Override
 	public void dispose() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		is.removeListener(instanceListener);
 	}
 

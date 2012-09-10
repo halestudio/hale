@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.ui.function.common.TypeEntitySelector;
 
 /**
  * Represents named type entities in a function
+ * 
  * @author Simon Templer
  */
 public class TypeField extends Field<TypeParameter, TypeEntitySelector> {
@@ -32,17 +33,18 @@ public class TypeField extends Field<TypeParameter, TypeEntitySelector> {
 	/**
 	 * @see Field#Field(AbstractParameter, SchemaSpaceID, Composite, Set, Cell)
 	 */
-	public TypeField(TypeParameter definition, SchemaSpaceID ssid,
-			Composite parent, Set<EntityDefinition> candidates, Cell initialCell) {
+	public TypeField(TypeParameter definition, SchemaSpaceID ssid, Composite parent,
+			Set<EntityDefinition> candidates, Cell initialCell) {
 		super(definition, ssid, parent, candidates, initialCell);
 	}
 
 	/**
-	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter, Composite)
+	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter,
+	 *      Composite)
 	 */
 	@Override
-	protected TypeEntitySelector createEntitySelector(SchemaSpaceID ssid,
-			TypeParameter field, Composite parent) {
+	protected TypeEntitySelector createEntitySelector(SchemaSpaceID ssid, TypeParameter field,
+			Composite parent) {
 		return new TypeEntitySelector(ssid, field, parent);
 	}
 

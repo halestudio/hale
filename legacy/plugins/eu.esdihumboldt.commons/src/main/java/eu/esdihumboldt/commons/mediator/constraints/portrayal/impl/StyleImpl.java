@@ -15,23 +15,23 @@ import eu.esdihumboldt.specification.mediator.constraints.SpatialConstraint;
 public class StyleImpl implements Style {
 
 	private String name;
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 *  The unique identifier of the constraint int the database
+	 * The unique identifier of the constraint int the database
 	 */
-	
+
 	private long id;
-	
+
 	/**
 	 * The status of this constraint.
 	 */
 	private boolean satisfied = false;
-	
+
 	/**
 	 * The unique identifier in the current VM.
 	 */
@@ -42,24 +42,21 @@ public class StyleImpl implements Style {
 	 */
 	private ConstraintSource constraintSource;
 
-	
-	
 	/**
-	 * @param constraintSource the constraintSource to set
+	 * @param constraintSource
+	 *            the constraintSource to set
 	 */
 	public void setConstraintSource(ConstraintSource constraintSource) {
 		this.constraintSource = constraintSource;
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#getConstraintSource()
 	 */
 	public ConstraintSource getConstraintSource() {
 		return this.constraintSource;
 	}
-	
-	
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.mediator.constraints.Constraint#isSatisfied()
 	 */
@@ -67,7 +64,7 @@ public class StyleImpl implements Style {
 		// TODO Auto-generated method stub
 		return this.satisfied;
 	}
-		
+
 	/**
 	 * @return the Uid that has been assigned to this SpatialConstraint.
 	 */
@@ -83,12 +80,13 @@ public class StyleImpl implements Style {
 	}
 
 	/**
-	 * @param id unique identifier for the database.
+	 * @param id
+	 *            unique identifier for the database.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @param satisfied
 	 */
@@ -96,17 +94,16 @@ public class StyleImpl implements Style {
 		this.satisfied = satisfied;
 	}
 
-	
 	public InternationalString getAbstract() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String getName() {		
+	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name) {		
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -117,7 +114,7 @@ public class StyleImpl implements Style {
 
 	public void accept(StyleVisitor arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public List<? extends FeatureTypeStyle> featureTypeStyles() {
@@ -141,7 +138,8 @@ public class StyleImpl implements Style {
 	}
 
 	/**
-	 * @see org.opengis.style.Style#accept(org.opengis.style.StyleVisitor, java.lang.Object)
+	 * @see org.opengis.style.Style#accept(org.opengis.style.StyleVisitor,
+	 *      java.lang.Object)
 	 */
 	@Override
 	public Object accept(StyleVisitor visitor, Object arg) {

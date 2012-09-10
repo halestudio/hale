@@ -17,13 +17,10 @@ package eu.esdihumboldt.commons.inspire.data;
  * 
  * @author Ana Belen Anton
  * @partner 02 / ETRA Research and Development
- * @version $Id$ 
+ * @version $Id$
  */
 
 public enum NameStatusValue {
 
-	 official,
-	 standardised,
-	 historical,
-	 other;	 
+	official, standardised, historical, other;
 }

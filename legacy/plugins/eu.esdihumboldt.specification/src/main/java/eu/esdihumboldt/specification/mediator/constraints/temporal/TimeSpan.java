@@ -12,13 +12,13 @@
 package eu.esdihumboldt.specification.mediator.constraints.temporal;
 
 /**
- * A TimeSpan has a  defined start and end, and is continuous in between.
- * An implementation should make sure that both TimePoints have the same 
+ * A TimeSpan has a defined start and end, and is continuous in between. An
+ * implementation should make sure that both TimePoints have the same
  * TemporalGranularity and the same Temporal Reference System.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface TimeSpan extends TemporalPrimitive {
 
@@ -26,10 +26,10 @@ public interface TimeSpan extends TemporalPrimitive {
 	 * @return the TimePoint representing the begin of this Timespan.
 	 */
 	public TimePoint getT0();
-	
+
 	/**
 	 * @return the TimePoint representing the end of this Timespan.
 	 */
 	public TimePoint getT1();
-	
+
 }

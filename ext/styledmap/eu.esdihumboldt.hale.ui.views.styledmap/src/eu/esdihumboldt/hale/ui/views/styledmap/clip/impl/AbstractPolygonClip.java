@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
 
 /**
  * Base class for clip's based on a polygon defined on the view-port.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractPolygonClip implements Clip {
@@ -29,15 +30,14 @@ public abstract class AbstractPolygonClip implements Clip {
 	 * @see Clip#getClip(Rectangle, int, int, int, int)
 	 */
 	@Override
-	public Shape getClip(Rectangle viewportBounds, int originX, int originY,
-			int width, int height) {
+	public Shape getClip(Rectangle viewportBounds, int originX, int originY, int width, int height) {
 		// visible area in world pixel coordinates
 		Polygon visible = getVisiblePolygon(viewportBounds);
 		// visible area in local pixel coordinates
-		visible.translate(-originX, - originY);
+		visible.translate(-originX, -originY);
 		// tile area
 		Rectangle tileRect = new Rectangle(0, 0, width, height);
-		
+
 		if (visible.contains(tileRect)) {
 			// contained whole
 			return tileRect;
@@ -50,7 +50,7 @@ public abstract class AbstractPolygonClip implements Clip {
 			// intersection
 			Area visibleArea = new Area(visible);
 			Area tileArea = new Area(tileRect);
-			
+
 			visibleArea.intersect(tileArea);
 			return visibleArea;
 		}
@@ -58,6 +58,7 @@ public abstract class AbstractPolygonClip implements Clip {
 
 	/**
 	 * Get the visible area.
+	 * 
 	 * @param viewportBounds the view-port bounds
 	 * @return the visible area in world pixel coordinates
 	 */

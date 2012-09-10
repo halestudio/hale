@@ -25,11 +25,13 @@ import com.vividsolutions.jts.io.WKBConstants;
 import com.vividsolutions.jts.io.WKBWriter;
 
 /**
- * WKB writer that differentiates between {@link LinearRing} and {@link LineString}.
+ * WKB writer that differentiates between {@link LinearRing} and
+ * {@link LineString}.
+ * 
  * @author Simon Templer
  */
 public class ExtendedWKBWriter extends WKBWriter {
-	
+
 	/**
 	 * Value for LinearRing geometry type
 	 */
@@ -59,20 +61,19 @@ public class ExtendedWKBWriter extends WKBWriter {
 	public void write(Geometry geom, OutStream os) throws IOException {
 		if (geom instanceof LinearRing) {
 			writeLinearRing((LinearRing) geom, os);
-		} else {
+		}
+		else {
 			super.write(geom, os);
 		}
 	}
 
-	private void writeLinearRing(LinearRing ring, OutStream os)
-			throws IOException {
+	private void writeLinearRing(LinearRing ring, OutStream os) throws IOException {
 		writeByteOrder(os);
 		writeGeometryType(wkbLinearRing, ring, os);
 		writeCoordinateSequence(ring.getCoordinateSequence(), true, os);
 	}
 
-	private void writeGeometryType(int geometryType, Geometry g, OutStream os)
-			throws IOException {
+	private void writeGeometryType(int geometryType, Geometry g, OutStream os) throws IOException {
 		int flag3D = (outputDimension == 3) ? 0x80000000 : 0;
 		int typeInt = geometryType | flag3D;
 		typeInt |= includeSRID ? 0x20000000 : 0;
@@ -90,8 +91,8 @@ public class ExtendedWKBWriter extends WKBWriter {
 		os.write(buf, 1);
 	}
 
-	private void writeCoordinateSequence(CoordinateSequence seq,
-			boolean writeSize, OutStream os) throws IOException {
+	private void writeCoordinateSequence(CoordinateSequence seq, boolean writeSize, OutStream os)
+			throws IOException {
 		if (writeSize)
 			writeInt(seq.size(), os);
 

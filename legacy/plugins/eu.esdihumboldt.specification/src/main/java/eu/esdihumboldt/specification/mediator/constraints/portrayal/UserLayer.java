@@ -23,31 +23,30 @@ import java.util.Set;
  * 
  */
 public interface UserLayer {
-	
+
 	/**
 	 * 
 	 * @return Layer Name.
 	 */
 	public String getName();
-	
+
 	/**
 	 * 
 	 * @return a List of User Defined Styles.
 	 */
 	public Set<UserStyle> getUserStyle();
-	
+
 	/**
 	 * 
 	 * @return a LayerFeatureConstraint.
 	 */
-	public LayerFeatureConstraint getLayerFeatureConstraint(); 
-	
+	public LayerFeatureConstraint getLayerFeatureConstraint();
+
 	/**
 	 * 
 	 * @return a RemoteOWS.
 	 */
-	
+
 	public RemoteOWS getRemoteOWS();
-	
 
 }

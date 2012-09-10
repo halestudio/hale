@@ -22,9 +22,11 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * Generic type function wizard
+ * 
  * @author Simon Templer
  */
-public class GenericTypeFunctionWizard extends AbstractGenericFunctionWizard<TypeParameter, TypeFunction> {
+public class GenericTypeFunctionWizard extends
+		AbstractGenericFunctionWizard<TypeParameter, TypeFunction> {
 
 	/**
 	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(Cell)
@@ -34,10 +36,10 @@ public class GenericTypeFunctionWizard extends AbstractGenericFunctionWizard<Typ
 	}
 
 	/**
-	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(SchemaSelection, String)
+	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(SchemaSelection,
+	 *      String)
 	 */
-	public GenericTypeFunctionWizard(SchemaSelection selection,
-			String functionId) {
+	public GenericTypeFunctionWizard(SchemaSelection selection, String functionId) {
 		super(selection, functionId);
 	}
 
@@ -51,7 +53,8 @@ public class GenericTypeFunctionWizard extends AbstractGenericFunctionWizard<Typ
 	}
 
 	/**
-	 * @see AbstractGenericFunctionWizard#createEntitiesPage(SchemaSelection, Cell)
+	 * @see AbstractGenericFunctionWizard#createEntitiesPage(SchemaSelection,
+	 *      Cell)
 	 */
 	@Override
 	protected EntitiesPage<TypeFunction, TypeParameter, ?> createEntitiesPage(

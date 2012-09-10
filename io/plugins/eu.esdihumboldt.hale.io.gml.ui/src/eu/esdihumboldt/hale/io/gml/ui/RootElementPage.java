@@ -46,8 +46,8 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceWriterConfigurationPage;
 
 /**
- * Configuration page for setting an XML root element 
- *
+ * Configuration page for setting an XML root element
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -62,7 +62,7 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	 */
 	public RootElementPage() {
 		super("xml.rootElement");
-		
+
 		setTitle("XML root element");
 		setDescription("Please select the root element to use in the XML file");
 	}
@@ -73,22 +73,23 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	@Override
 	public boolean updateConfiguration(InstanceWriter provider) {
 		ISelection sel = list.getSelection();
-		
+
 		if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
 			Object selected = ((IStructuredSelection) sel).getFirstElement();
-			
+
 			if (selected instanceof XmlElement) {
 				QName name = ((XmlElement) selected).getName();
-				
-				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, name.getNamespaceURI());
+
+				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE,
+						name.getNamespaceURI());
 				provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME, name.getLocalPart());
 				return true;
 			}
 		}
-		
+
 		provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAMESPACE, null);
 		provider.setParameter(StreamGmlWriter.PARAM_ROOT_ELEMENT_NAME, null);
-		
+
 		return false;
 	}
 
@@ -98,22 +99,21 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(1, false));
-		
+
 		// add filter text
 		filterText = new Text(page, SWT.SINGLE | SWT.BORDER);
-        filterText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-        filterText.setText(""); //$NON-NLS-1$
-        
+		filterText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		filterText.setText(""); //$NON-NLS-1$
+
 		// add filtered list
-		list = new ListViewer(page, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | 
-				SWT.H_SCROLL);
+		list = new ListViewer(page, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		list.setLabelProvider(new LabelProvider() {
 
 			@Override
 			public String getText(Object element) {
 				if (element instanceof XmlElement) {
 					QName name = ((XmlElement) element).getName();
-					
+
 					return name.getLocalPart() + " (" + name.getNamespaceURI() + ")";
 				}
 				if (element instanceof Definition) {
@@ -121,27 +121,27 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 				}
 				return super.getText(element);
 			}
-			
+
 		});
 		list.setContentProvider(ArrayContentProvider.getInstance());
 		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1);
 		layoutData.widthHint = SWT.DEFAULT;
 		layoutData.heightHint = 8 * list.getList().getItemHeight();
 		list.getControl().setLayoutData(layoutData);
-		
-        // page status update
-        list.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
+		// page status update
+		list.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
 				setPageComplete(!selection.isEmpty());
 			}
 		});
-		
+
 		// search filter & update
 		list.addFilter(new ViewerFilter() {
-			
+
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				String filter = filterText.getText();
@@ -149,39 +149,39 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 				if (filter == null || filter.isEmpty()) {
 					return true;
 				}
-				
+
 				if (element instanceof Definition) {
 					Definition<?> def = (Definition<?>) element;
 					filter = filter.toLowerCase();
-					
+
 					if (def.getDisplayName().toLowerCase().contains(filter)) {
 						return true;
 					}
 				}
-				
+
 				return false;
 			}
 		});
 		list.setComparator(new ViewerComparator());
 		filterText.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				// refilter
 				list.refresh();
 			}
 		});
-		
+
 		updateList();
 	}
-	
+
 	/**
 	 * @see DialogPage#setVisible(boolean)
 	 */
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		
+
 		filterText.setFocus();
 	}
 
@@ -204,13 +204,14 @@ public class RootElementPage extends InstanceWriterConfigurationPage {
 	private void updateList() {
 		if (list != null // during enable if content not yet created
 				&& getWizard().getProvider() != null) {
-			//TODO instead of showing all elemets allow filtering for elements that can hold the type in some form?
+			// TODO instead of showing all elemets allow filtering for elements
+			// that can hold the type in some form?
 			SchemaSpace schemas = getWizard().getProvider().getTargetSchema();
 			XmlIndex index = StreamGmlWriter.getXMLIndex(schemas);
-			//FIXME use filtered table for selection?
+			// FIXME use filtered table for selection?
 			list.setInput(index.getElements().values());
 			setPageComplete(!list.getSelection().isEmpty());
 		}
 	}
-	
+
 }

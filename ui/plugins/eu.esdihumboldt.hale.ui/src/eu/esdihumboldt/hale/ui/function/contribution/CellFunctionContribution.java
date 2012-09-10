@@ -20,29 +20,30 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
  * Function wizard contribution based on a {@link Cell}
+ * 
  * @author Simon Templer
  */
-public class CellFunctionContribution extends
-		AbstractFunctionWizardContribution {
-	
+public class CellFunctionContribution extends AbstractFunctionWizardContribution {
+
 	private final Cell cell;
 
 	/**
 	 * Constructor
-	 * @param cell the cell 
+	 * 
+	 * @param cell the cell
 	 */
 	public CellFunctionContribution(Cell cell) {
 		super();
-		
+
 		this.cell = cell;
 	}
 
 	/**
-	 * @see AbstractFunctionWizardContribution#createWizardAction(FunctionWizardDescriptor, AlignmentService)
+	 * @see AbstractFunctionWizardContribution#createWizardAction(FunctionWizardDescriptor,
+	 *      AlignmentService)
 	 */
 	@Override
-	protected AbstractWizardAction<?> createWizardAction(
-			FunctionWizardDescriptor<?> descriptor,
+	protected AbstractWizardAction<?> createWizardAction(FunctionWizardDescriptor<?> descriptor,
 			AlignmentService alignmentService) {
 		return new CellWizardAction(this, cell, descriptor, alignmentService);
 	}
@@ -55,9 +56,10 @@ public class CellFunctionContribution extends
 		// function id must match cell transformation
 		return descriptor.getFunctionId().equals(getCell().getTransformationIdentifier());
 	}
-	
+
 	/**
 	 * Get the cell
+	 * 
 	 * @return the cell
 	 */
 	public Cell getCell() {

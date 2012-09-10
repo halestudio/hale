@@ -14,10 +14,11 @@ package eu.esdihumboldt.util.resource;
 
 /**
  * Resources constants.
+ * 
  * @author Simon Templer
  */
 public interface ResourcesConstants {
-	
+
 	/**
 	 * ID of the predefined XML Schema resource type
 	 */

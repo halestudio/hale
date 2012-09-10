@@ -42,44 +42,44 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * Report service implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
 public class ReportServiceImpl implements ReportService {
-	
-	private final TypeSafeListenerList<ReportListener<?, ?>> listeners = new TypeSafeListenerList<ReportListener<?,?>>();
+
+	private final TypeSafeListenerList<ReportListener<?, ?>> listeners = new TypeSafeListenerList<ReportListener<?, ?>>();
 
 	/**
 	 * Map containing {@link ReportSession}s.
 	 */
 	private final Map<Long, ReportSession> reps = new HashMap<Long, ReportSession>();
-	
+
 	/**
 	 * Contains the current session description.
 	 */
 	private long description = 0;
-	
+
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportService.class);
-	
+
 	private ReportSession getCurrentSession() {
 		// check if a current session exists
 		if (this.getCurrentSessionDescription() == 0) {
 			this.updateCurrentSessionDescription();
 		}
-		
+
 		long time = this.description;
-		
+
 		ReportSession session = reps.get(time);
 		if (session == null) {
 			session = new ReportSession(time);
 			reps.put(time, session);
 		}
-		
+
 		return session;
 	}
-	
+
 	/**
 	 * @see ReportService#addReport(Report)
 	 */
@@ -91,7 +91,7 @@ public class ReportServiceImpl implements ReportService {
 
 		// open ReportList
 		openView();
-		
+
 		// notify listeners
 		notifyReportAdded(report.getClass(), report.getMessageType(), report);
 	}
@@ -107,16 +107,16 @@ public class ReportServiceImpl implements ReportService {
 	 * @param report the report
 	 */
 	@SuppressWarnings("unchecked")
-	protected <M extends Message, R extends Report<M>> void notifyReportAdded(Class<? extends R> reportType,
-			Class<M> messageType, R report) {
+	protected <M extends Message, R extends Report<M>> void notifyReportAdded(
+			Class<? extends R> reportType, Class<M> messageType, R report) {
 		for (ReportListener<?, ?> listener : listeners) {
-			if (listener.getReportType().isAssignableFrom(reportType) &&
-					listener.getMessageType().isAssignableFrom(messageType)) {
+			if (listener.getReportType().isAssignableFrom(reportType)
+					&& listener.getMessageType().isAssignableFrom(messageType)) {
 				((ReportListener<R, M>) listener).reportAdded(report);
 			}
 		}
 	}
-	
+
 	/**
 	 * Notify listeners that all reports have been deleted
 	 */
@@ -125,12 +125,13 @@ public class ReportServiceImpl implements ReportService {
 			listener.reportsDeleted();
 		}
 	}
-	
+
 	/**
 	 * Open the ReportList view.
 	 */
 	private void openView() {
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
 			@Override
 			public void run() {
 				try {
@@ -140,15 +141,17 @@ public class ReportServiceImpl implements ReportService {
 					if (window == null) {
 						if (windows.length > 0) {
 							window = windows[0];
-						} else {
-							/* we have no active window and no other window...
+						}
+						else {
+							/*
+							 * we have no active window and no other window...
 							 * so we better exit here
 							 */
 							_log.error("Could not open report view! No window available.");
 							return;
 						}
 					}
-					
+
 					IWorkbenchPage page = window.getActivePage();
 					page.showView("eu.esdihumboldt.hale.ui.views.report.ReportList");
 				} catch (Exception e) {
@@ -169,7 +172,7 @@ public class ReportServiceImpl implements ReportService {
 			Class<? extends Message> messageType) {
 		return this.getCurrentSession().getReports(messageType);
 	}
-	
+
 	/**
 	 * Get all reports.
 	 * 
@@ -203,21 +206,21 @@ public class ReportServiceImpl implements ReportService {
 	public void deleteAllReports() {
 		// clear the list
 		this.reps.clear();
-		
+
 		// clear storage folder
-		File folder = new File(Platform.getLocation().toString()+"/reports/");
+		File folder = new File(Platform.getLocation().toString() + "/reports/");
 		if (folder.exists()) {
 			for (File f : folder.listFiles()) {
 				if (!f.delete()) {
-					_log.error("Could not delete file: "+f.toString());
+					_log.error("Could not delete file: " + f.toString());
 				}
 			}
-			
+
 			if (!folder.delete()) {
 				_log.error("Could not delete saved reports.");
 			}
 		}
-		
+
 		// notify listeners
 		this.notifyReportsDeleted();
 	}
@@ -228,7 +231,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public boolean saveCurrentReports(File file) throws IOException {
 		ReportWriter rw = new ReportWriter();
-		
+
 		return rw.writeAll(file, this.getCurrentReports());
 	}
 
@@ -238,14 +241,14 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public void loadReportsOnStartup() {
 		// folder where the reports shall be stored
-		File folder = new File(Platform.getLocation().toString()+"/reports/");
-		
+		File folder = new File(Platform.getLocation().toString() + "/reports/");
+
 		// create a ReportReader
 		ReportReader rr = new ReportReader();
-		
+
 		// read all sessions from log folder
 		List<ReportSession> list = rr.readDirectory(folder);
-		
+
 		// add them to internal storage
 		for (ReportSession s : list) {
 			this.reps.put(s.getId(), s);
@@ -258,21 +261,22 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public void saveReportsOnShutdown() {
 		// folder where the reports shall be stored
-		File folder = new File(Platform.getLocation().toString()+"/reports/");
-		
+		File folder = new File(Platform.getLocation().toString() + "/reports/");
+
 		if (!folder.exists() && !folder.mkdirs()) {
 			// folder does not exist and we cannot create it...
 			_log.error("Folder for reports does not exist and cannot be created!");
 			return;
 		}
-		
+
 		// create a ReportWriter
 		ReportWriter rw = new ReportWriter();
 
 		// iterate through all sessions
 		for (ReportSession s : this.reps.values()) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_mm");
-			File file = new File(folder.getPath()+"/"+df.format(new Date(s.getId()))+"-"+s.getId()+".log");
+			File file = new File(folder.getPath() + "/" + df.format(new Date(s.getId())) + "-"
+					+ s.getId() + ".log");
 			try {
 				rw.writeAll(file, s.getAllReports());
 			} catch (IOException e) {
@@ -297,14 +301,14 @@ public class ReportServiceImpl implements ReportService {
 	public void loadReport(File file) throws org.eclipse.jface.bindings.keys.ParseException {
 		// create a ReportReader
 		ReportReader rr = new ReportReader();
-		
+
 		// read all sessions from log folder
 		ReportSession s = rr.readFile(file);
-		
+
 		if (s == null) {
 			throw new org.eclipse.jface.bindings.keys.ParseException("Log could not be read.");
 		}
-		
+
 		// add them to internal storage
 		this.reps.put(s.getId(), s);
 	}
@@ -323,7 +327,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public void updateCurrentSessionDescription() {
 		// only update if the time differs for 5000ms
-		if (this.description+5000 < System.currentTimeMillis()) {
+		if (this.description + 5000 < System.currentTimeMillis()) {
 			this.description = System.currentTimeMillis();
 		}
 	}

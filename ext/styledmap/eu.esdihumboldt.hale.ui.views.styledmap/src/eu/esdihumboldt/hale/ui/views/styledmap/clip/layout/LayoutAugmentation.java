@@ -20,21 +20,23 @@ import org.jdesktop.swingx.mapviewer.JXMapViewer;
 import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.extension.PainterProxy;
 
 /**
- * Paints an augmentation over a map layouted with the corresponding 
+ * Paints an augmentation over a map layouted with the corresponding
  * {@link PainterLayout}.
+ * 
  * @author Simon Templer
  */
 public interface LayoutAugmentation {
 
 	/**
 	 * Paint the layout augmentation.
+	 * 
 	 * @param g the graphics to paint on
 	 * @param map the corresponding map viewer
 	 * @param painters the list of layouted painters
 	 * @param width the width of the paint area
 	 * @param height the height of the paint area
 	 */
-	public void paint(Graphics2D g, JXMapViewer map, List<PainterProxy> painters, 
-			int width, int height);
-	
+	public void paint(Graphics2D g, JXMapViewer map, List<PainterProxy> painters, int width,
+			int height);
+
 }

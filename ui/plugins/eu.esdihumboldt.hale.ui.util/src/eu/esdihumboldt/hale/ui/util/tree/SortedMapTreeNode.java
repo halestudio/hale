@@ -22,12 +22,13 @@ import org.eclipse.jface.viewers.TreeNode;
  * 
  * @param <T> the key type
  * @param <N> the node type
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public class SortedMapTreeNode<T extends Comparable<?>, N extends TreeNode> extends MapTreeNode<T, N> {
+public class SortedMapTreeNode<T extends Comparable<?>, N extends TreeNode> extends
+		MapTreeNode<T, N> {
 
 	/**
 	 * @see MapTreeNode#MapTreeNode(Object...)

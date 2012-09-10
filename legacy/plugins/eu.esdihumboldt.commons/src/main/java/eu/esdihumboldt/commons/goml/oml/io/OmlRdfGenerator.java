@@ -89,34 +89,29 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
  */
 public class OmlRdfGenerator {
 
-	
 	/**
 	 * property stack size parameter name
 	 */
-	public static final String PROPERTY_STACK_SIZE = "composedPropertyStackSize"; 
-	
+	public static final String PROPERTY_STACK_SIZE = "composedPropertyStackSize";
+
 	/**
-	 * stack for property invocation
-	 * value = 0, property parent element is cell
-	 * value >0 and value < @link{propertyStackSize}, property parent element is ComposedProperty
+	 * stack for property invocation value = 0, property parent element is cell
+	 * value >0 and value < @link{propertyStackSize}, property parent element is
+	 * ComposedProperty
 	 */
-//	private int propertyStack;
-	
-	
-	
+	// private int propertyStack;
+
 	/**
 	 * max size of the property stack
 	 */
-	
-//	private static final int propertyStackSize = new Integer(ConfigurationManager.getComponentProperty(PROPERTY_STACK_SIZE)).intValue();
 
-	
+	// private static final int propertyStackSize = new
+	// Integer(ConfigurationManager.getComponentProperty(PROPERTY_STACK_SIZE)).intValue();
+
 	/**
 	 * Constant defines the path to the alignment jaxb context
 	 */
 	private static final String ALIGNMENT_CONTEXT = "eu.esdihumboldt.generated.oml";
-	
-	
 
 	/**
 	 * Stores alignment to xml
@@ -134,38 +129,39 @@ public class OmlRdfGenerator {
 		// 2. marshall AlignmentType to xml
 		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT);
 		Marshaller m = jc.createMarshaller();
-		
+
 		configurePrefixMapper(m);
 
 		// make the output indented. It looks nicer on screen.
 		// this is a JAXB standard property, so it should work with any JAXB
 		// impl.
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd");
-		
+		m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
+				"http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd");
 
-		m.marshal(new JAXBElement(new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment", "Alignment", "align"),
-				AlignmentType.class, aType), new File(xmlPath));
-		/*try {
-			URLConnection connection = new URL("file", null, xmlPath).openConnection();
-			connection.setDoOutput(true);
-			
-			m.marshal(new JAXBElement(new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment", "Alignment", "align"),
-					AlignmentType.class, aType), connection.getOutputStream());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		m.marshal(new JAXBElement(new QName(
+				"http://knowledgeweb.semanticweb.org/heterogeneity/alignment",
+				"Alignment", "align"), AlignmentType.class, aType), new File(
+				xmlPath));
+		/*
+		 * try { URLConnection connection = new URL("file", null,
+		 * xmlPath).openConnection(); connection.setDoOutput(true);
+		 * 
+		 * m.marshal(new JAXBElement(new
+		 * QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment",
+		 * "Alignment", "align"), AlignmentType.class, aType),
+		 * connection.getOutputStream()); } catch (MalformedURLException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); } catch
+		 * (IOException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
 	}
-	
+
 	protected void configurePrefixMapper(Marshaller m) {
 		try {
 			m.setProperty("com.sun.xml.bind.namespacePrefixMapper",
 					new NamespacePrefixMapperImpl());
-			
+
 		} catch (PropertyException e) {
 			// if the JAXB provider doesn't recognize the prefix mapper,
 			// it will throw this exception. Since being unable to specify
@@ -185,57 +181,60 @@ public class OmlRdfGenerator {
 	private AlignmentType getAlignment(IAlignment alignment) {
 		AlignmentType aType = new AlignmentType();
 		// 1. set about,level, ontology1,2
-		if (alignment!=null){
-		if (alignment.getAbout()!= null) aType.setAbout(alignment.getAbout().getAbout());
-		if (alignment.getLevel() != null){
-			aType.setLevel(alignment.getLevel());
+		if (alignment != null) {
+			if (alignment.getAbout() != null)
+				aType.setAbout(alignment.getAbout().getAbout());
+			if (alignment.getLevel() != null) {
+				aType.setLevel(alignment.getLevel());
+			}
+			if (alignment.getSchema1() != null) {
+				aType.setOnto1(getOnto1(alignment.getSchema1()));
+			}
+			if (alignment.getSchema2() != null) {
+				aType.setOnto2(getOnto2(alignment.getSchema2()));
+			}
+			// 2. add map of cells
+			if (alignment.getMap() != null) {
+				aType.getMap().addAll(getMaps(alignment.getMap()));
+			}
+			// 3. add valueClass
+			if (alignment.getValueClasses() != null) {
+				aType.getValueClass().addAll(
+						getValueClasses(alignment.getValueClasses()));
+			}
 		}
-		if (alignment.getSchema1() != null) {
-			aType.setOnto1(getOnto1(alignment.getSchema1()));
-		}
-		if (alignment.getSchema2() != null){
-			aType.setOnto2(getOnto2(alignment.getSchema2()));
-		}
-		// 2. add map of cells
-		if (alignment.getMap() != null) {
-			aType.getMap().addAll(getMaps(alignment.getMap()));
-		}
-        //3. add valueClass
-		if (alignment.getValueClasses() != null){
-			aType.getValueClass().addAll(getValueClasses(alignment.getValueClasses()));
-		}
-		}
-		
+
 		return aType;
 	}
 
 	/**
-	 * Converts from list of the OML Classes
-	 * to the list of the JAXB generated classes
+	 * Converts from list of the OML Classes to the list of the JAXB generated
+	 * classes
+	 * 
 	 * @param valueClasses
 	 * @return
 	 */
-	private List<ValueClassType> getValueClasses(
-			List<IValueClass> valueClasses) {
-		
+	private List<ValueClassType> getValueClasses(List<IValueClass> valueClasses) {
+
 		List<ValueClassType> vcTypes = new ArrayList<ValueClassType>();
-		if (valueClasses!=null){
-		ValueClassType vcType = new ValueClassType();
-		IValueClass vClass;
-		Iterator<IValueClass> iterator = valueClasses.iterator();
-		while(iterator.hasNext()){
-			vClass = (IValueClass)iterator.next();
-			if (vClass.getAbout() != null) {
-				vcType.setAbout(vClass.getAbout());
+		if (valueClasses != null) {
+			ValueClassType vcType = new ValueClassType();
+			IValueClass vClass;
+			Iterator<IValueClass> iterator = valueClasses.iterator();
+			while (iterator.hasNext()) {
+				vClass = (IValueClass) iterator.next();
+				if (vClass.getAbout() != null) {
+					vcType.setAbout(vClass.getAbout());
+				}
+				if (vClass.getResource() != null) {
+					vcType.setResource(vClass.getResource());
+				}
+				if (vClass.getValue() != null) {
+					vcType.getValue().addAll(
+							getValueExpressionTypes(vClass.getValue()));
+				}
+				vcTypes.add(vcType);
 			}
-			if (vClass.getResource() != null) {
-				vcType.setResource(vClass.getResource());
-			}
-			if (vClass.getValue() != null) {
-				vcType.getValue().addAll(getValueExpressionTypes(vClass.getValue()));
-			}
-			vcTypes.add(vcType);
-		}
 		}
 		return vcTypes;
 	}
@@ -276,13 +275,13 @@ public class OmlRdfGenerator {
 			IAbout about = schema.getAbout();
 			if (about != null)
 				oType.setAbout(about.getAbout());
-			if (schema.getLocation() != null){
+			if (schema.getLocation() != null) {
 				oType.setLocation(schema.getLocation());
 			}
 			if (schema.getFormalism() != null) {
 				oType.setFormalism(getFormalism(schema.getFormalism()));
 			}
-			if (schema.getLabels() != null){
+			if (schema.getLabels() != null) {
 				oType.getLabel().addAll(schema.getLabels());
 			}
 		}
@@ -313,7 +312,7 @@ public class OmlRdfGenerator {
 			if (formalism.getName() != null) {
 				fType.setName(formalism.getName());
 			}
-			if (formalism.getLocation() != null){
+			if (formalism.getLocation() != null) {
 				fType.setUri(formalism.getLocation().toString());
 			}
 		}
@@ -334,12 +333,12 @@ public class OmlRdfGenerator {
 
 		while (iterator.hasNext()) {
 			cell = (ICell) iterator.next();
-			if (cell != null){
+			if (cell != null) {
 				jMap = new Map();
 				jMap.setCell(getCellType(cell));
 				maps.add(jMap);
 			}
-		
+
 		}
 		return maps;
 	}
@@ -356,21 +355,21 @@ public class OmlRdfGenerator {
 			IAbout about = cell.getAbout();
 			if (about != null)
 				cType.setAbout(about.getAbout());
-			//keep Measure optional
-			if (cell.getMeasure() != 0){
+			// keep Measure optional
+			if (cell.getMeasure() != 0) {
 				cType.setMeasure(new Float(cell.getMeasure()));
 			}
 			if (cell.getRelation() != null) {
 				cType.setRelation(getRelation(cell.getRelation()));
 			}
-			if (cell.getEntity1() != null){
+			if (cell.getEntity1() != null) {
 				cType.setEntity1(getEntity1(cell.getEntity1()));
 			}
-			if (cell.getEntity2() != null){
+			if (cell.getEntity2() != null) {
 				cType.setEntity2(getEntity2(cell.getEntity2()));
 			}
 			if (cell.getLabel() != null) {
-				cType.getLabel().addAll(((Cell)cell).getLabel());
+				cType.getLabel().addAll(((Cell) cell).getLabel());
 			}
 		}
 		return cType;
@@ -382,15 +381,13 @@ public class OmlRdfGenerator {
 	 * @param measure
 	 * @return
 	 */
-	/*private Float getMeasure(double measure) {
-		//TODO changed structure of the Measure element in the schema
-		
-		Measure jMeasure = new Measure();
-		jMeasure.setDatatype("xsd:float");
-		jMeasure.setValue(new Double(measure).floatValue());
-		return jMeasure;
-	}
-*/
+	/*
+	 * private Float getMeasure(double measure) { //TODO changed structure of
+	 * the Measure element in the schema
+	 * 
+	 * Measure jMeasure = new Measure(); jMeasure.setDatatype("xsd:float");
+	 * jMeasure.setValue(new Double(measure).floatValue()); return jMeasure; }
+	 */
 	/**
 	 * converts from RelationType to RelationEnumType
 	 * 
@@ -460,16 +457,19 @@ public class OmlRdfGenerator {
 				// instantiate as PropertyType
 				Property property = (Property) entity;
 				PropertyType pType = getPropertyType(property);
-				eType = new JAXBElement<PropertyType>(new QName("http://www.omwg.org/TR/d7/ontology/alignment","Property"),
-						PropertyType.class, pType);
+				eType = new JAXBElement<PropertyType>(new QName(
+						"http://www.omwg.org/TR/d7/ontology/alignment",
+						"Property"), PropertyType.class, pType);
 
 			} else if (entity instanceof FeatureClass) {
 				// instantiate as ClassType
 				FeatureClass feature = (FeatureClass) entity;
 				ClassType cType = getClassType(feature);
 
-				eType = new JAXBElement<ClassType>(new QName("http://www.omwg.org/TR/d7/ontology/alignment", "Class"),
-						ClassType.class, cType);
+				eType = new JAXBElement<ClassType>(
+						new QName(
+								"http://www.omwg.org/TR/d7/ontology/alignment",
+								"Class"), ClassType.class, cType);
 			} else if (entity instanceof Relation) {
 				// instantiate as RelationType
 				// TODO add implementation, for the next release
@@ -493,7 +493,7 @@ public class OmlRdfGenerator {
 		IAbout about = null;
 		if (feature != null) {
 			if (feature.getAbout() != null) {
-				 about = feature.getAbout();
+				about = feature.getAbout();
 			}
 			if (feature.getLabel() != null) {
 				cType.getLabel().addAll(feature.getLabel());
@@ -506,15 +506,16 @@ public class OmlRdfGenerator {
 			}
 			if (feature.getAttributeTypeCondition() != null) {
 				cType.getAttributeTypeCondition().addAll(
-					getConditions(feature.getAttributeTypeCondition()));
+						getConditions(feature.getAttributeTypeCondition()));
 			}
 			if (feature.getAttributeValueCondition() != null) {
 				cType.getAttributeValueCondition().addAll(
-					getConditions(feature.getAttributeValueCondition()));
+						getConditions(feature.getAttributeValueCondition()));
 			}
 			if (feature.getAttributeOccurenceCondition() != null) {
-				cType.getAttributeOccurenceCondition().addAll(
-					getConditions(feature.getAttributeOccurenceCondition()));
+				cType.getAttributeOccurenceCondition()
+						.addAll(getConditions(feature
+								.getAttributeOccurenceCondition()));
 			}
 		}
 		return cType;
@@ -542,7 +543,7 @@ public class OmlRdfGenerator {
 					condition.setRestriction(getRestrictionType(restriction));
 					conditions.add(condition);
 				}
-				
+
 			}
 			return conditions;
 		}
@@ -561,23 +562,24 @@ public class OmlRdfGenerator {
 			if (restriction.getComparator() != null) {
 				rType.setComparator(getComparator(restriction.getComparator()));
 			}
-			if (restriction.getCqlStr() != null){
+			if (restriction.getCqlStr() != null) {
 				rType.setCqlStr(restriction.getCqlStr());
 			}
-            //TODO: clear with MdV 
-			//			rType.setOnAttribute(getOnAttributeType(restriction
-			//					.getOnAttribute()));
+			// TODO: clear with MdV
+			// rType.setOnAttribute(getOnAttributeType(restriction
+			// .getOnAttribute()));
 
 			// if a list of value expressions for this restriction is empty
 			// use ValueClass
 			List<IValueExpression> values = restriction.getValue();
 			if (values != null && values.size() > 0) {
-				if (getValueClass(values)!=null){
+				if (getValueClass(values) != null) {
 					rType.setValueClass(getValueClass(values));
 				}
 			} else {
-				if (getValueClass(restriction.getValueClass())!=null){
-					rType.setValueClass(getValueClass(restriction.getValueClass()));
+				if (getValueClass(restriction.getValueClass()) != null) {
+					rType.setValueClass(getValueClass(restriction
+							.getValueClass()));
 				}
 			}
 		}
@@ -586,21 +588,23 @@ public class OmlRdfGenerator {
 
 	/**
 	 * Converts from the OML ValueClass to the Jaxb ValueClassType
+	 * 
 	 * @param valueClass
 	 * @return
 	 */
 	private ValueClassType getValueClass(ValueClass valueClass) {
-		
+
 		if (valueClass != null) {
-			ValueClassType	vcType = new ValueClassType();
-			if (valueClass.getAbout() != null){
+			ValueClassType vcType = new ValueClassType();
+			if (valueClass.getAbout() != null) {
 				vcType.setAbout(valueClass.getAbout());
 			}
 			if (valueClass.getResource() != null) {
 				vcType.setResource(valueClass.getResource());
 			}
 			if (getJAXBValueExpressions(valueClass.getValue()) != null) {
-				vcType.getValue().addAll(getJAXBValueExpressions(valueClass.getValue()));
+				vcType.getValue().addAll(
+						getJAXBValueExpressions(valueClass.getValue()));
 			}
 			return vcType;
 		}
@@ -609,16 +613,17 @@ public class OmlRdfGenerator {
 
 	private Collection<? extends ValueExprType> getJAXBValueExpressions(
 			List<IValueExpression> value) {
-		List<ValueExprType> vExpressions = new ArrayList<ValueExprType>(value.size());
+		List<ValueExprType> vExpressions = new ArrayList<ValueExprType>(
+				value.size());
 		Iterator<?> iterator = value.iterator();
 		ValueExprType veType;
-		while(iterator.hasNext()){
-			ValueExpression ve = (ValueExpression)iterator.next();
+		while (iterator.hasNext()) {
+			ValueExpression ve = (ValueExpression) iterator.next();
 			veType = new ValueExprType();
 			if (ve.getLiteral() != null) {
 				veType.setLiteral(ve.getLiteral());
 			}
-			if (ve.getMax() != null){
+			if (ve.getMax() != null) {
 				veType.setMax(ve.getMax());
 			}
 			if (ve.getMin() != null) {
@@ -640,9 +645,9 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private ValueClassType getValueClass(List<IValueExpression> value) {
-		
+
 		if (getJAXBValueExpressions(value) != null) {
-			ValueClassType vcType  = new ValueClassType();
+			ValueClassType vcType = new ValueClassType();
 			vcType.getValue().addAll(getJAXBValueExpressions(value));
 			return vcType;
 		}
@@ -656,8 +661,10 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private OnAttributeType getOnAttributeType(Property onAttribute) {
-		// uses property as onAttribute until we have the implementation for the realation 
-		//TODO clear the need of the about attribute fot the onAttribute-element 
+		// uses property as onAttribute until we have the implementation for the
+		// realation
+		// TODO clear the need of the about attribute fot the
+		// onAttribute-element
 		OnAttributeType oaType = new OnAttributeType();
 		oaType.setProperty(getPropertyType(onAttribute));
 		return oaType;
@@ -703,10 +710,11 @@ public class OmlRdfGenerator {
 				return ComparatorEnumType.ONE_OF;
 			else if (comparator.equals(ComparatorType.STARTS_WITH))
 				return ComparatorEnumType.STARTS_WITH;
-			
-			else  if (comparator.equals(ComparatorType.OTHERWISE))return ComparatorEnumType.OTHERWISE;
+
+			else if (comparator.equals(ComparatorType.OTHERWISE))
+				return ComparatorEnumType.OTHERWISE;
 		}
-		
+
 		return null;
 	}
 
@@ -719,15 +727,17 @@ public class OmlRdfGenerator {
 	private FunctionType getTransf(ITransformation transformation) {
 		FunctionType fType = new FunctionType();
 		if (transformation != null) {
-			
-			if(transformation.getService()!=null){
+
+			if (transformation.getService() != null) {
 				fType.setResource(transformation.getService().getLocation());
 			}
-			/*//Uli will provide us with examples
-			fType.setResource(transformation.getLabel());*/
+			/*
+			 * //Uli will provide us with examples
+			 * fType.setResource(transformation.getLabel());
+			 */
 			if (transformation.getParameters() != null) {
 				fType.getParam().addAll(
-					getParameters(transformation.getParameters()));
+						getParameters(transformation.getParameters()));
 			}
 		}
 		return fType;
@@ -770,7 +780,7 @@ public class OmlRdfGenerator {
 			if (param.getName() != null) {
 				pType.setName(param.getName());
 			}
-			if (param.getValue() != null){
+			if (param.getValue() != null) {
 				pType.getValue().add(param.getValue());
 			}
 		}
@@ -790,29 +800,37 @@ public class OmlRdfGenerator {
 			if (about != null)
 				pType.setAbout(about.getAbout());
 			if (property instanceof ComposedProperty
-					/*&& this.propertyStack < propertyStackSize*/) {
-//				this.propertyStack++;
-				// in case it is a composed property add the property composition
+			/* && this.propertyStack < propertyStackSize */) {
+				// this.propertyStack++;
+				// in case it is a composed property add the property
+				// composition
 				// element
 				PropertyCompositionType propCompType = new PropertyCompositionType();
 				// set Relation
-				propCompType.setRelation(getRelation(((ComposedProperty) property).getRelation()));
+				propCompType
+						.setRelation(getRelation(((ComposedProperty) property)
+								.getRelation()));
 				// set property collection or single property
-				if (((ComposedProperty) property).getCollection().size()> 1){
-				//set collection
-				propCompType.setCollection(getPropertyCollection(((ComposedProperty) property).getCollection()));
+				if (((ComposedProperty) property).getCollection().size() > 1) {
+					// set collection
+					propCompType
+							.setCollection(getPropertyCollection(((ComposedProperty) property)
+									.getCollection()));
+				} else if (((ComposedProperty) property).getCollection().size() == 1) {
+					// set single property
+					propCompType
+							.setProperty(getPropertyType(((ComposedProperty) property)
+									.getCollection().get(0)));
 				}
-				else if (((ComposedProperty) property).getCollection().size() == 1){
-				//set single property
-				propCompType.setProperty(getPropertyType(((ComposedProperty)property).getCollection().get(0)));
-				}
-				
+
 				// set PropertyOperatorType
-				propCompType.setOperator(getOperatorType(((ComposedProperty) property).getPropertyOperatorType()));
+				propCompType
+						.setOperator(getOperatorType(((ComposedProperty) property)
+								.getPropertyOperatorType()));
 				pType.setPropertyComposition(propCompType);
 			}
-			
-			if (property.getTransformation() != null){
+
+			if (property.getTransformation() != null) {
 				pType.setTransf(getTransf(property.getTransformation()));
 			}
 			if (property.getDomainRestriction() != null) {
@@ -835,95 +853,108 @@ public class OmlRdfGenerator {
 		return pType;
 	}
 
-
 	/**
-	 * Converts propertyOperator instance 
-	 * from the OML enum
-	 * to the JAXB-based enum
+	 * Converts propertyOperator instance from the OML enum to the JAXB-based
+	 * enum
 	 * 
 	 * @param propertyOperatorType
 	 * @return
 	 */
 	private PropertyOperatorType getOperatorType(
 			eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType propertyOperatorType) {
-	    if(propertyOperatorType!= null){
-	    	//TODO clear mapping
-	    	if (propertyOperatorType.equals(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.AND)) return PropertyOperatorType.INTERSECTION;
-	    	if((propertyOperatorType.equals(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.OR))) return PropertyOperatorType.UNION;
-	    	if((propertyOperatorType.equals(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST))) return PropertyOperatorType.FIRST;
-	    	if((propertyOperatorType.equals(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.NEXT))) return PropertyOperatorType.NEXT;
-	    }
+		if (propertyOperatorType != null) {
+			// TODO clear mapping
+			if (propertyOperatorType
+					.equals(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.AND))
+				return PropertyOperatorType.INTERSECTION;
+			if ((propertyOperatorType
+					.equals(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.OR)))
+				return PropertyOperatorType.UNION;
+			if ((propertyOperatorType
+					.equals(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST)))
+				return PropertyOperatorType.FIRST;
+			if ((propertyOperatorType
+					.equals(eu.esdihumboldt.commons.goml.omwg.ComposedProperty.PropertyOperatorType.NEXT)))
+				return PropertyOperatorType.NEXT;
+		}
 		return null;
 	}
 
 	/**
-	 * Translate the list of the OML Properties
-	 * To the Jaxb-based PropertyCollectionType
+	 * Translate the list of the OML Properties To the Jaxb-based
+	 * PropertyCollectionType
+	 * 
 	 * @param collection
 	 * @return
 	 */
 	private PropertyCollectionType getPropertyCollection(
 			List<Property> collection) {
-	PropertyCollectionType propCollectionType = new PropertyCollectionType();
-	if(collection!=null){
-		Iterator<?> iterator = collection.iterator();
-		while(iterator.hasNext()){
-			//get property from a list
-			Property property = (Property)iterator.next();
-			//convert property to the property type
-			//TODO could be the circular dependencies in case of ComposedProperty
-			PropertyType pType = getPropertyType(property);
-			//add to the collection
-			Item item = new Item();
-			item.setProperty(pType);
-			propCollectionType.getItem().add(item);
+		PropertyCollectionType propCollectionType = new PropertyCollectionType();
+		if (collection != null) {
+			Iterator<?> iterator = collection.iterator();
+			while (iterator.hasNext()) {
+				// get property from a list
+				Property property = (Property) iterator.next();
+				// convert property to the property type
+				// TODO could be the circular dependencies in case of
+				// ComposedProperty
+				PropertyType pType = getPropertyType(property);
+				// add to the collection
+				Item item = new Item();
+				item.setProperty(pType);
+				propCollectionType.getItem().add(item);
+			}
+
 		}
-			
-	}
 		return propCollectionType;
 	}
 
 	/**
-	 * Translate the list of the OML Relation
-	 * To the Jaxb-based RelationType
+	 * Translate the list of the OML Relation To the Jaxb-based RelationType
+	 * 
 	 * @param relation
 	 * @return
 	 */
 	private eu.esdihumboldt.generated.oml.RelationType getRelation(
 			Relation relation) {
 		eu.esdihumboldt.generated.oml.RelationType relType = new eu.esdihumboldt.generated.oml.RelationType();
-		if (relation!=null){
-			//TODO clear with MdV
-			if (relation.getDomainRestriction()!= null && relation.getDomainRestriction().get(0) != null) {
-				relType.setDomainRestriction(getDomainRestrictionType(relation.getDomainRestriction().get(0)));
+		if (relation != null) {
+			// TODO clear with MdV
+			if (relation.getDomainRestriction() != null
+					&& relation.getDomainRestriction().get(0) != null) {
+				relType.setDomainRestriction(getDomainRestrictionType(relation
+						.getDomainRestriction().get(0)));
 			}
-			//TODO clear with MdV
+			// TODO clear with MdV
 			relType.setPipe(null);
-			if (relation.getAbout()!=null){
+			if (relation.getAbout() != null) {
 				relType.setAbout(relation.getAbout().getAbout());
 			}
-			//TODO clear with MdV
+			// TODO clear with MdV
 			relType.setRelationComposition(null);
-			if (relation.getRangeRestriction()!= null && relation.getRangeRestriction().get(0) != null){
-				relType.setRangeRestriction(getRangeRestrictionType(relation.getRangeRestriction().get(0)));
+			if (relation.getRangeRestriction() != null
+					&& relation.getRangeRestriction().get(0) != null) {
+				relType.setRangeRestriction(getRangeRestrictionType(relation
+						.getRangeRestriction().get(0)));
 			}
-			if (relation.getTransformation()!= null){
+			if (relation.getTransformation() != null) {
 				relType.setTransf(getTransf(relation.getTransformation()));
 			}
-			//set label list
+			// set label list
 			List<String> labels = relation.getLabel();
-			if (labels!= null){
-				if (labels.size()>0)relType.getLabel().addAll(labels);
+			if (labels != null) {
+				if (labels.size() > 0)
+					relType.getLabel().addAll(labels);
 			}
-			
+
 		}
-			
+
 		return relType;
 	}
 
 	/**
-	 * Translates from OML FeatureClass
-	 * To the schema based FeatureClass
+	 * Translates from OML FeatureClass To the schema based FeatureClass
+	 * 
 	 * @param featureClass
 	 * @return
 	 */
@@ -969,7 +1000,7 @@ public class OmlRdfGenerator {
 	private ValueConditionType getValueConditionType(Restriction restriction) {
 		ValueConditionType vcType = new ValueConditionType();
 		vcType.setRestriction(getRestrictionType(restriction));
-		if (restriction.getSeq() != null){
+		if (restriction.getSeq() != null) {
 			vcType.setSeq(restriction.getSeq());
 		}
 		return vcType;
@@ -985,12 +1016,12 @@ public class OmlRdfGenerator {
 			Restriction restriction) {
 		PropValueRestrictionType pvrType = new PropValueRestrictionType();
 		if (restriction != null) {
-			if (restriction.getComparator() != null){
-			pvrType.setComparator(getComparator(restriction.getComparator()));
+			if (restriction.getComparator() != null) {
+				pvrType.setComparator(getComparator(restriction.getComparator()));
 			}
 			if (restriction.getValue() != null) {
 				pvrType.getValue().addAll(
-					getValueExpressionTypes(restriction.getValue()));
+						getValueExpressionTypes(restriction.getValue()));
 			}
 		}
 		return pvrType;
@@ -1005,8 +1036,8 @@ public class OmlRdfGenerator {
 	private Collection<? extends ValueExprType> getValueExpressionTypes(
 			List<IValueExpression> values) {
 		if (values != null) {
-			ArrayList<ValueExprType> veTypes = new ArrayList<ValueExprType>(values
-					.size());
+			ArrayList<ValueExprType> veTypes = new ArrayList<ValueExprType>(
+					values.size());
 			ValueExprType veType;
 			ValueExpression expression;
 			Iterator<?> iterator = values.iterator();
@@ -1029,16 +1060,16 @@ public class OmlRdfGenerator {
 	private ValueExprType getValueExprType(ValueExpression expression) {
 		ValueExprType veType = new ValueExprType();
 		if (expression != null) {
-			if (expression.getApply() != null){
+			if (expression.getApply() != null) {
 				veType.setApply(getApplayType(expression.getApply()));
 			}
-			if (expression.getLiteral() != null){
+			if (expression.getLiteral() != null) {
 				veType.setLiteral(expression.getLiteral());
 			}
-			if (expression.getMax() != null){
+			if (expression.getMax() != null) {
 				veType.setMax(expression.getMax());
 			}
-			if (expression.getMin() != null){
+			if (expression.getMin() != null) {
 				veType.setMin(expression.getMin());
 			}
 		}
@@ -1052,10 +1083,10 @@ public class OmlRdfGenerator {
 	 * @return
 	 */
 	private ApplyType getApplayType(Function function) {
-		//ApplyType aType = new ApplyType();
+		// ApplyType aType = new ApplyType();
 		// TODO implement it for the next release, in case we have some examples
 		// aType.setOperation(function.getService().toString());
-		//aType.setValue(null);
+		// aType.setValue(null);
 
 		return null;
 	}
@@ -1094,7 +1125,7 @@ public class OmlRdfGenerator {
 	 */
 	private DomainRestrictionType getDomainRestrictionType(FeatureClass feature) {
 		DomainRestrictionType drType = new DomainRestrictionType();
-		//set one  property in case of the PropertyQualifier only
+		// set one property in case of the PropertyQualifier only
 		drType.setClazz(getClassType(feature));
 		return drType;
 	}

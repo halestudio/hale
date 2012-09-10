@@ -29,18 +29,22 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSi
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
- * Classification mapping function to map values of an attribute to a 
- * different classification system.
+ * Classification mapping function to map values of an attribute to a different
+ * classification system.
  * 
  * @author Kai Schwierczek
  */
-public class ClassificationMapping extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements ClassificationMappingFunction {
+public class ClassificationMapping extends
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
+		ClassificationMappingFunction {
+
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
-			ListMultimap<String, PropertyValue> variables, String resultName, PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log) throws TransformationException {
+			ListMultimap<String, PropertyValue> variables, String resultName,
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException {
 		checkParameter(PARAMETER_CLASSIFICATIONS, 1);
-		
+
 		List<String> mappings = getParameters().get(PARAMETER_CLASSIFICATIONS);
 		String source = variables.values().iterator().next().getValueAs(String.class);
 		try {
@@ -53,8 +57,8 @@ public class ClassificationMapping extends AbstractSingleTargetPropertyTransform
 		}
 
 		String notClassifiedAction = USE_NULL_ACTION;
-		if (getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION) != null &&
-				!getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).isEmpty()) {
+		if (getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION) != null
+				&& !getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).isEmpty()) {
 			notClassifiedAction = getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).get(0);
 		}
 
@@ -62,7 +66,8 @@ public class ClassificationMapping extends AbstractSingleTargetPropertyTransform
 			return source;
 		else if (notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX))
 			return notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1);
-		else // USE_NULL_ACTION or null or something unknown
+		else
+			// USE_NULL_ACTION or null or something unknown
 			return null;
 	}
 }

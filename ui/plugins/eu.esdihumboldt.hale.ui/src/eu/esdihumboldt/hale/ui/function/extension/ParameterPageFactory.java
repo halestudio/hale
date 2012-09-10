@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * @author Kai Schwierczek
  */
 public interface ParameterPageFactory extends ExtensionObjectFactory<ParameterPage> {
+
 	/**
 	 * Get the ID of the associated function.
 	 * 

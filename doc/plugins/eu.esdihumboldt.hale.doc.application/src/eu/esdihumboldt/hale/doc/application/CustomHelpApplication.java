@@ -19,8 +19,9 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.help.internal.base.HelpApplication;
 
 /**
- * Extends the {@link HelpApplication} to deal with the issue that starting
- * the application fails because the platform location does not exits.
+ * Extends the {@link HelpApplication} to deal with the issue that starting the
+ * application fails because the platform location does not exits.
+ * 
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
@@ -30,12 +31,12 @@ public class CustomHelpApplication extends HelpApplication {
 	 * @see HelpApplication#start(IApplicationContext)
 	 */
 	@Override
-	public synchronized Object start(IApplicationContext context)
-			throws Exception {
-		// ensure that the directory where the .connection file is placed is created
+	public synchronized Object start(IApplicationContext context) throws Exception {
+		// ensure that the directory where the .connection file is placed is
+		// created
 		File metadata = new File(Platform.getLocation().toFile(), ".metadata/"); //$NON-NLS-1$
 		metadata.mkdirs();
-		
+
 		return super.start(context);
 	}
 

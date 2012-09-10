@@ -13,20 +13,20 @@
 package eu.esdihumboldt.specification.workflow.exceptions;
 
 /**
- *
+ * 
  * @author mgone
  */
-public class IncompatibleTransformersException extends Exception{
+public class IncompatibleTransformersException extends Exception {
 
-    public IncompatibleTransformersException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public IncompatibleTransformersException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public IncompatibleTransformersException(String message) {
-        super(message);
-    }
+	public IncompatibleTransformersException(String message) {
+		super(message);
+	}
 
-    public IncompatibleTransformersException() {
-    }
+	public IncompatibleTransformersException() {
+	}
 
 }

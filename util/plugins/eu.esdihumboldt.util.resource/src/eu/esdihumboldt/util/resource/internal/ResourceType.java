@@ -14,15 +14,15 @@ package eu.esdihumboldt.util.resource.internal;
 
 import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
 
-
 /**
  * Represents a resource type.
+ * 
  * @author Simon Templer
  */
 public class ResourceType implements Identifiable {
-	
+
 	private final String id;
-	
+
 	private final String name;
 
 	/**
@@ -46,10 +46,11 @@ public class ResourceType implements Identifiable {
 	/**
 	 * Get the resource type name. If no name was explicitly specified the name
 	 * is equal to the resource type ID.
+	 * 
 	 * @return the resource type name
 	 */
 	public String getName() {
-		return (name != null)?(name):(id);
+		return (name != null) ? (name) : (id);
 	}
 
 }

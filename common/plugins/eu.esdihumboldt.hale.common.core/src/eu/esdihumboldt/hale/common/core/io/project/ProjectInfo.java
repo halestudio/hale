@@ -18,6 +18,7 @@ import org.osgi.framework.Version;
 
 /**
  * General information on a project
+ * 
  * @author Simon Templer
  * @since 2.5
  */
@@ -25,6 +26,7 @@ public interface ProjectInfo {
 
 	/**
 	 * Get the project name
+	 * 
 	 * @return the project name, may be <code>null</code> if not set
 	 */
 	public String getName();

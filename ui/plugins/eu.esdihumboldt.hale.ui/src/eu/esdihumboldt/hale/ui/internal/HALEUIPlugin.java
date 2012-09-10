@@ -31,9 +31,10 @@ public class HALEUIPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static HALEUIPlugin plugin;
-	
-	private ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
-	
+
+	private ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
+			ReportService.class);
+
 	/**
 	 * Default constructor
 	 */
@@ -49,7 +50,7 @@ public class HALEUIPlugin extends AbstractUIPlugin {
 		// start plugin
 		super.start(context);
 		plugin = this;
-		
+
 		// reload reports
 		this.repService.loadReportsOnStartup();
 	}
@@ -61,13 +62,13 @@ public class HALEUIPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		// save reports
 		this.repService.saveReportsOnShutdown();
-		
+
 		// remove temporary databases
 		OrientInstanceService ois = OrientInstanceService.getExistingInstance();
 		if (ois != null) {
 			ois.dispose();
 		}
-		
+
 		// shutdown plugin
 		plugin = null;
 		super.stop(context);
@@ -75,7 +76,7 @@ public class HALEUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static HALEUIPlugin getDefault() {
@@ -83,14 +84,14 @@ public class HALEUIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path
+	 * 
 	 * @param path the path
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
-	
+
 }

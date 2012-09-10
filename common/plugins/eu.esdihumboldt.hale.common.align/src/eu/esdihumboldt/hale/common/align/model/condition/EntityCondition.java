@@ -16,18 +16,20 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 
 /**
  * Condition an {@link Entity} may fulfill
+ * 
  * @param <T> the entity type
  * 
  * @author Simon Templer
- * @since 2.5 
+ * @since 2.5
  */
 public interface EntityCondition<T extends Entity> {
 
 	/**
 	 * Determines if the given entity matches the constraint
+	 * 
 	 * @param entity the entity
 	 * @return if the entity matches the constraint
 	 */
 	public boolean accept(T entity);
-	
+
 }

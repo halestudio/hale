@@ -128,10 +128,12 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 						try {
 							project = Project.load(new EntryInputStream(zip));
 						} catch (Exception e) {
-							// fail if main project file cannot be loaded 
-							throw new IOProviderConfigurationException("Source is no valid project archive", e);
+							// fail if main project file cannot be loaded
+							throw new IOProviderConfigurationException(
+									"Source is no valid project archive", e);
 						}
-					} else {
+					}
+					else {
 						ProjectFile file = projectFiles.get(name);
 
 						if (file != null) {
@@ -139,7 +141,7 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 								file.load(new EntryInputStream(zip));
 							} catch (Exception e) {
 								reporter.error(new IOMessageImpl(
-										"Error while loading project file {0}, file will be reset.", 
+										"Error while loading project file {0}, file will be reset.",
 										e, -1, -1, name));
 								// reset file
 								file.reset();
@@ -150,26 +152,28 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 			} finally {
 				zip.close();
 			}
-		} else {
+		}
+		else {
 			// read from XML
 			try {
 				project = Project.load(in);
 			} catch (Exception e) {
-				// fail if main project file cannot be loaded 
+				// fail if main project file cannot be loaded
 				throw new IOProviderConfigurationException("Source is no valid project file", e);
 			} finally {
 				in.close();
 			}
 		}
 
-		PathUpdate update = new PathUpdate(URI.create(project.getSaveConfiguration().getProviderConfiguration()
-				.get(ExportProvider.PARAM_TARGET)), getSource().getLocation());
+		PathUpdate update = new PathUpdate(URI.create(project.getSaveConfiguration()
+				.getProviderConfiguration().get(ExportProvider.PARAM_TARGET)), getSource()
+				.getLocation());
 
 		// check if there are any external project files listed
 		if (projectFiles != null) { // only if project files set at all
 			for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
 				ProjectFile projectFile = projectFiles.get(fileInfo.getName());
-	
+
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
 					if (!IOUtils.testStream(fileInfo.getLocation(), false))
@@ -188,15 +192,18 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 					} catch (Exception e) {
 						log.debug("Loading project file failed", e);
 					}
-	
+
 					if (!fileSuccess) {
-						reporter.error(new IOMessageImpl("Error while loading project file {0}, file will be reset.", 
-								null, -1, -1, fileInfo.getName()));
+						reporter.error(new IOMessageImpl(
+								"Error while loading project file {0}, file will be reset.", null,
+								-1, -1, fileInfo.getName()));
 						projectFile.reset();
 					}
-				} else {
-					reporter.info(new IOMessageImpl("No handler for external project file {0} found.", 
-							null, -1, -1, fileInfo.getName()));
+				}
+				else {
+					reporter.info(new IOMessageImpl(
+							"No handler for external project file {0} found.", null, -1, -1,
+							fileInfo.getName()));
 				}
 			}
 		}
@@ -238,7 +245,7 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 	 */
 	@Override
 	public boolean isCancelable() {
-		//TODO change?
+		// TODO change?
 		return false;
 	}
 

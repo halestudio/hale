@@ -5,7 +5,6 @@
 // Generated on: 2010.08.16 at 11:40:47 AM MESZ 
 //
 
-
 package eu.esdihumboldt.generated.oml;
 
 import java.util.ArrayList;
@@ -15,11 +14,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for PropertyType complex type.
+ * <p>
+ * Java class for PropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="PropertyType">
@@ -39,130 +40,123 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PropertyType", propOrder = {
-    "propertyComposition",
-    "domainRestriction",
-    "typeCondition",
-    "valueCondition"
-})
-public class PropertyType
-    extends EntityType
-{
+@XmlType(name = "PropertyType", propOrder = { "propertyComposition",
+		"domainRestriction", "typeCondition", "valueCondition" })
+public class PropertyType extends EntityType {
 
-    protected PropertyCompositionType propertyComposition;
-    protected List<DomainRestrictionType> domainRestriction;
-    protected List<String> typeCondition;
-    protected List<ValueConditionType> valueCondition;
+	protected PropertyCompositionType propertyComposition;
+	protected List<DomainRestrictionType> domainRestriction;
+	protected List<String> typeCondition;
+	protected List<ValueConditionType> valueCondition;
 
-    /**
-     * Gets the value of the propertyComposition property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PropertyCompositionType }
-     *     
-     */
-    public PropertyCompositionType getPropertyComposition() {
-        return propertyComposition;
-    }
+	/**
+	 * Gets the value of the propertyComposition property.
+	 * 
+	 * @return possible object is {@link PropertyCompositionType }
+	 * 
+	 */
+	public PropertyCompositionType getPropertyComposition() {
+		return propertyComposition;
+	}
 
-    /**
-     * Sets the value of the propertyComposition property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PropertyCompositionType }
-     *     
-     */
-    public void setPropertyComposition(PropertyCompositionType value) {
-        this.propertyComposition = value;
-    }
+	/**
+	 * Sets the value of the propertyComposition property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link PropertyCompositionType }
+	 * 
+	 */
+	public void setPropertyComposition(PropertyCompositionType value) {
+		this.propertyComposition = value;
+	}
 
-    /**
-     * Gets the value of the domainRestriction property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the domainRestriction property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDomainRestriction().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DomainRestrictionType }
-     * 
-     * 
-     */
-    public List<DomainRestrictionType> getDomainRestriction() {
-        if (domainRestriction == null) {
-            domainRestriction = new ArrayList<DomainRestrictionType>();
-        }
-        return this.domainRestriction;
-    }
+	/**
+	 * Gets the value of the domainRestriction property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the domainRestriction property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getDomainRestriction().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link DomainRestrictionType }
+	 * 
+	 * 
+	 */
+	public List<DomainRestrictionType> getDomainRestriction() {
+		if (domainRestriction == null) {
+			domainRestriction = new ArrayList<DomainRestrictionType>();
+		}
+		return this.domainRestriction;
+	}
 
-    /**
-     * Gets the value of the typeCondition property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the typeCondition property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getTypeCondition().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
-     */
-    public List<String> getTypeCondition() {
-        if (typeCondition == null) {
-            typeCondition = new ArrayList<String>();
-        }
-        return this.typeCondition;
-    }
+	/**
+	 * Gets the value of the typeCondition property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the typeCondition property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getTypeCondition().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link String }
+	 * 
+	 * 
+	 */
+	public List<String> getTypeCondition() {
+		if (typeCondition == null) {
+			typeCondition = new ArrayList<String>();
+		}
+		return this.typeCondition;
+	}
 
-    /**
-     * Gets the value of the valueCondition property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the valueCondition property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getValueCondition().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ValueConditionType }
-     * 
-     * 
-     */
-    public List<ValueConditionType> getValueCondition() {
-        if (valueCondition == null) {
-            valueCondition = new ArrayList<ValueConditionType>();
-        }
-        return this.valueCondition;
-    }
+	/**
+	 * Gets the value of the valueCondition property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the valueCondition property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getValueCondition().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link ValueConditionType }
+	 * 
+	 * 
+	 */
+	public List<ValueConditionType> getValueCondition() {
+		if (valueCondition == null) {
+			valueCondition = new ArrayList<ValueConditionType>();
+		}
+		return this.valueCondition;
+	}
 
 }

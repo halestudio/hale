@@ -25,13 +25,13 @@ import org.eclipse.jface.viewers.TreeNode;
  * 
  * @param <T> the key type
  * @param <N> the node type
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id: MultiColumnTreeNode.java 2510 2010-01-21 08:49:00Z stempler $ 
+ * @version $Id: MultiColumnTreeNode.java 2510 2010-01-21 08:49:00Z stempler $
  */
 public class MapTreeNode<T, N extends TreeNode> extends AbstractMultiColumnTreeNode {
-	
+
 	private final Map<T, N> children;
 
 	/**
@@ -41,10 +41,10 @@ public class MapTreeNode<T, N extends TreeNode> extends AbstractMultiColumnTreeN
 	 */
 	public MapTreeNode(Object... values) {
 		super(values);
-		
+
 		children = createMap();
 	}
-	
+
 	/**
 	 * Create the map that is used to manage the children
 	 * 
@@ -57,14 +57,14 @@ public class MapTreeNode<T, N extends TreeNode> extends AbstractMultiColumnTreeN
 	/**
 	 * Add a child to the node
 	 * 
-	 * @param key the key 
+	 * @param key the key
 	 * @param child the child node
 	 */
 	public void addChild(T key, N child) {
 		children.put(key, child);
 		child.setParent(this);
 	}
-	
+
 	/**
 	 * Get the child with the given key
 	 * 
@@ -75,7 +75,7 @@ public class MapTreeNode<T, N extends TreeNode> extends AbstractMultiColumnTreeN
 	public N getChild(T key) {
 		return children.get(key);
 	}
-	
+
 	/**
 	 * Remove the child node with the given key
 	 * 
@@ -115,7 +115,7 @@ public class MapTreeNode<T, N extends TreeNode> extends AbstractMultiColumnTreeN
 				key = entry.getKey();
 			}
 		}
-		
+
 		if (key != null) {
 			children.remove(key);
 		}

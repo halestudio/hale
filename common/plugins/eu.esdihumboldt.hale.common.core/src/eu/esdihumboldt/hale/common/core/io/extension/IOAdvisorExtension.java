@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 
 /**
  * Extension for {@link IOAdvisor}s
+ * 
  * @author Simon Templer
  */
 public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdvisorFactory> {
@@ -36,11 +37,12 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 	/**
 	 * Factory for {@link IOAdvisor} based on an {@link IConfigurationElement}
 	 */
-	private static class ConfigurationFactory extends
-			AbstractConfigurationFactory<IOAdvisor<?>> implements IOAdvisorFactory {
+	private static class ConfigurationFactory extends AbstractConfigurationFactory<IOAdvisor<?>>
+			implements IOAdvisorFactory {
 
 		/**
 		 * Create an {@link IOAdvisor} factory basd on the given configuration
+		 * 
 		 * @param conf the configuration element
 		 */
 		protected ConfigurationFactory(IConfigurationElement conf) {
@@ -60,7 +62,7 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		 */
 		@Override
 		public String getDisplayName() {
-			//XXX instead return action name?
+			// XXX instead return action name?
 			return getIdentifier();
 		}
 
@@ -81,13 +83,14 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		}
 
 	}
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(IOAdvisorExtension.class);
-	
+
 	private static IOAdvisorExtension instance;
-	
+
 	/**
 	 * Get the I/O advisor extension instance
+	 * 
 	 * @return the extension instance
 	 */
 	public static IOAdvisorExtension getInstance() {
@@ -108,48 +111,46 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected IOAdvisorFactory createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected IOAdvisorFactory createFactory(IConfigurationElement conf) throws Exception {
 		if (conf.getName().equals("advisor")) {
 			return new ConfigurationFactory(conf);
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Find the advisor for an action
+	 * 
 	 * @param actionId the action identifier
 	 * @return the advisor or <code>null</code>
 	 */
 	public IOAdvisor<?> findAdvisor(final String actionId) {
 		// find associated advisor(s)
 		List<IOAdvisorFactory> advisors = getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
-			
+
 			@Override
 			public boolean acceptFactory(IOAdvisorFactory factory) {
 				return factory.getActionID().equals(actionId);
 			}
-			
+
 			@Override
 			public boolean acceptCollection(
 					ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
 				return true;
 			}
 		});
-		
+
 		// create advisor if possible
 		IOAdvisor<?> advisor;
 		if (advisors == null || advisors.isEmpty()) {
-			throw new IllegalStateException(MessageFormat.format(
-					"No advisor for action {0} found", actionId));
+			throw new IllegalStateException(MessageFormat.format("No advisor for action {0} found",
+					actionId));
 		}
 		else {
 			if (advisors.size() > 1) {
-				log.warn(MessageFormat.format(
-						"Multiple advisors for action {0} found", 
-						actionId));
+				log.warn(MessageFormat.format("Multiple advisors for action {0} found", actionId));
 			}
-			
+
 			try {
 				advisor = advisors.get(0).createExtensionObject();
 			} catch (Exception e) {

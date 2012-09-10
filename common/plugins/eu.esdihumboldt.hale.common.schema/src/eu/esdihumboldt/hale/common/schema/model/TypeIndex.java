@@ -20,30 +20,31 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 
 /**
  * A type index holds a set of type definitions and a corresponding name index.
+ * 
  * @author Simon Templer
  */
 public interface TypeIndex {
-	
+
 	/**
 	 * Get all types in the index
-	 *  
+	 * 
 	 * @return all type definitions
 	 */
 	public Collection<? extends TypeDefinition> getTypes();
-	
+
 	/**
 	 * Get the type with the given name
 	 * 
 	 * @param name the type name
 	 * @return the type definition or <code>null</code> if no type with the
-	 *   given name exists in the index
+	 *         given name exists in the index
 	 */
 	public TypeDefinition getType(QName name);
-	
+
 	/**
 	 * Get all mappable types, i.e. types that are flagged with an enabled
 	 * {@link MappingRelevantFlag}
-	 *  
+	 * 
 	 * @return the mappable types
 	 */
 	public Collection<? extends TypeDefinition> getMappingRelevantTypes();

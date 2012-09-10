@@ -17,6 +17,7 @@ import org.osgi.framework.Version;
 
 /**
  * Field handler for {@link Version}s
+ * 
  * @author Simon Templer
  */
 public class VersionFieldHandler extends GeneralizedFieldHandler {
@@ -37,7 +38,7 @@ public class VersionFieldHandler extends GeneralizedFieldHandler {
 		if (value == null) {
 			return Version.emptyVersion;
 		}
-		
+
 		return Version.parseVersion((String) value);
 	}
 

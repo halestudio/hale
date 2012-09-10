@@ -20,7 +20,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
 
 /**
  * Flags if a type has a direct value, apart from eventual properties, defined
- * by the schema. By default enabled for {@link TypeDefinition}s that have no 
+ * by the schema. By default enabled for {@link TypeDefinition}s that have no
  * properties, otherwise disabled by default.<br>
  * <br>
  * The {@link Binding} constraint defines the Java binding for the value.
@@ -38,12 +38,12 @@ public class HasValueFlag extends AbstractFlagConstraint implements TypeConstrai
 	 * Enabled has value flag
 	 */
 	public static final HasValueFlag ENABLED = new HasValueFlag(true);
-	
+
 	/**
 	 * Disabled has value flag
 	 */
 	public static final HasValueFlag DISABLED = new HasValueFlag(false);
-	
+
 	/**
 	 * Get the simple type flag
 	 * 
@@ -51,22 +51,24 @@ public class HasValueFlag extends AbstractFlagConstraint implements TypeConstrai
 	 * @return the flag
 	 */
 	public static HasValueFlag get(boolean hasValue) {
-		return (hasValue)?(ENABLED):(DISABLED);
+		return (hasValue) ? (ENABLED) : (DISABLED);
 	}
-	
+
 	/**
-	 * Creates a default simple type flag, which is disabled. If possible, 
-	 * instead of creating an instance, use {@link #ENABLED} or {@link #DISABLED}.
+	 * Creates a default simple type flag, which is disabled. If possible,
+	 * instead of creating an instance, use {@link #ENABLED} or
+	 * {@link #DISABLED}.
 	 * 
 	 * @see Constraint
 	 */
 	public HasValueFlag() {
 		this(false);
 	}
-	
+
 	/**
 	 * Creates a default simple type flag from a type definition. The flag is
 	 * enabled if the type has no properties.
+	 * 
 	 * @param typeDef the type definition
 	 * 
 	 * @see Constraint
@@ -74,7 +76,7 @@ public class HasValueFlag extends AbstractFlagConstraint implements TypeConstrai
 	public HasValueFlag(TypeDefinition typeDef) {
 		this(typeDef.getChildren().isEmpty());
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */

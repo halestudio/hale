@@ -30,15 +30,14 @@ import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerImpl;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionTrackerUtil;
 
 /**
- * This is the base class for configuring the workbench window in which the 
+ * This is the base class for configuring the workbench window in which the
  * {@link IPerspectiveFactory}s reside.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 @SuppressWarnings("restriction")
-public class ApplicationWorkbenchWindowAdvisor 
-	extends WorkbenchWindowAdvisor {
+public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	/**
 	 * @see WorkbenchWindowAdvisor#WorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
@@ -53,21 +52,24 @@ public class ApplicationWorkbenchWindowAdvisor
 	@Override
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		configurer.setInitialSize(new Point(1280,1024));
-		configurer.setTitle(Messages.ApplicationWorkbenchWindowAdvisor_0 +  //$NON-NLS-1$
+		configurer.setInitialSize(new Point(1280, 1024));
+		configurer.setTitle(Messages.ApplicationWorkbenchWindowAdvisor_0 + //$NON-NLS-1$
 				Version.parseVersion(Display.getAppVersion()));
-		configurer.setShowCoolBar(true); // this reserves space for action bars on top.
-		configurer.setShowPerspectiveBar(true); // this reserves space for the selection of perspectives.
-        configurer.setShowMenuBar(true);
-        configurer.setShowProgressIndicator(true);
-        
-        // show curved view tabs
+		configurer.setShowCoolBar(true); // this reserves space for action bars
+											// on top.
+		configurer.setShowPerspectiveBar(true); // this reserves space for the
+												// selection of perspectives.
+		configurer.setShowMenuBar(true);
+		configurer.setShowProgressIndicator(true);
+
+		// show curved view tabs
 		PlatformUI.getPreferenceStore().setValue(
 				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
-	
+
 		// enable heap status item
-		PrefUtil.getAPIPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, true);
-		
+		PrefUtil.getAPIPreferenceStore().setValue(
+				IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, true);
+
 //      IWorkbenchWindow window = getWindowConfigurer().getWindow();
 //      if (window instanceof WorkbenchWindow) {
 //      	((WorkbenchWindow) window).showHeapStatus(true);
@@ -83,7 +85,8 @@ public class ApplicationWorkbenchWindowAdvisor
 		SelectionTracker tracker = SelectionTrackerUtil.getTracker();
 		if (tracker == null) {
 			// create tracker listening on window selection service
-			tracker = new SelectionTrackerImpl(getWindowConfigurer().getWindow().getSelectionService());
+			tracker = new SelectionTrackerImpl(getWindowConfigurer().getWindow()
+					.getSelectionService());
 			SelectionTrackerUtil.registerTracker(tracker);
 		}
 
@@ -96,9 +99,8 @@ public class ApplicationWorkbenchWindowAdvisor
 	 * @see WorkbenchWindowAdvisor#createActionBarAdvisor(IActionBarConfigurer)
 	 */
 	@Override
-	public ActionBarAdvisor createActionBarAdvisor(
-			final IActionBarConfigurer configurer) {
+	public ActionBarAdvisor createActionBarAdvisor(final IActionBarConfigurer configurer) {
 		return new ApplicationActionBarAdvisor(configurer);
 	}
-	
+
 }

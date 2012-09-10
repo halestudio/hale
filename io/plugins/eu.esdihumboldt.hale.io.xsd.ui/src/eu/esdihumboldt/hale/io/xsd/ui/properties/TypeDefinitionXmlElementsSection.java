@@ -34,8 +34,7 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
  * 
  * @author Patrick Lieb
  */
-public class TypeDefinitionXmlElementsSection extends
-		DefaultDefinitionSection<TypeDefinition> {
+public class TypeDefinitionXmlElementsSection extends DefaultDefinitionSection<TypeDefinition> {
 
 	private Text[] textarray;
 
@@ -52,8 +51,7 @@ public class TypeDefinitionXmlElementsSection extends
 	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		this.parent = parent;
 		this.aTabbedPropertySheetPage = aTabbedPropertySheetPage;
 	}
@@ -73,7 +71,7 @@ public class TypeDefinitionXmlElementsSection extends
 
 		super.createControls(parent, aTabbedPropertySheetPage);
 		composite = getWidgetFactory().createFlatFormComposite(parent);
-		
+
 		FormData data;
 
 		text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
@@ -84,8 +82,7 @@ public class TypeDefinitionXmlElementsSection extends
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		text.setLayoutData(data);
 
-		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite,
-				"XML-Elements:"); //$NON-NLS-1$
+		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite, "XML-Elements:"); //$NON-NLS-1$
 
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
@@ -104,8 +101,7 @@ public class TypeDefinitionXmlElementsSection extends
 			data = new FormData();
 			data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 			data.right = new FormAttachment(100, 0);
-			data.top = new FormAttachment(textarray[pos - 1],
-					ITabbedPropertyConstants.VSPACE);
+			data.top = new FormAttachment(textarray[pos - 1], ITabbedPropertyConstants.VSPACE);
 			text.setLayoutData(data);
 
 			namespaceLabel = getWidgetFactory().createCLabel(composite, ""); //$NON-NLS-1$

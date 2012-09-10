@@ -17,12 +17,14 @@ import eu.esdihumboldt.hale.common.align.model.transformation.Transformation;
 
 /**
  * Processes an alignment and creates transformation instructions
+ * 
  * @author Simon Templer
  */
 public interface AlignmentProcessor {
-	
+
 	/**
 	 * Process an alignment to create transformation instructions
+	 * 
 	 * @param alignment the alignment
 	 * @return the transformation instructions
 	 */

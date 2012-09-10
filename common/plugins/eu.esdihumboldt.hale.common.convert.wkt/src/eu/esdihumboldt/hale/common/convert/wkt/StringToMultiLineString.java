@@ -18,10 +18,11 @@ import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverte
 
 /**
  * Converts Strings to MultiLineStrings
+ * 
  * @author Kevin Mais
  */
-public class StringToMultiLineString extends AbstractGeometryConverter<MultiLineString>{
-	
+public class StringToMultiLineString extends AbstractGeometryConverter<MultiLineString> {
+
 	// concrete typed class
 
 }

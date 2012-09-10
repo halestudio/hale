@@ -17,26 +17,25 @@ import java.util.UUID;
 import eu.esdihumboldt.specification.modelrepository.abstractfc.Relation;
 
 /**
- * A very simple relation type that can be compared to an simple unspecified 
+ * A very simple relation type that can be compared to an simple unspecified
  * associated in UML.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
-public class SimpleRelation 
-	implements Relation, Serializable {
-	
+public class SimpleRelation implements Relation, Serializable {
+
 	// Fields ..................................................................
-	
+
 	private UUID uid;
-	
+
 	private String description;
-	
+
 	private String name;
 
 	// Constructors ............................................................
-	
+
 	/**
 	 * Protected no-args Constructor for Hibernate etc.
 	 */
@@ -46,11 +45,13 @@ public class SimpleRelation
 	}
 
 	/**
-	 * Default constructor with minimum natural-language information. 
-	 * @param description the String describing the nature of this 
-	 * {@link Relation}.
-	 * @param name the name of this relation (in UML, this is also called the 
-	 * role name)
+	 * Default constructor with minimum natural-language information.
+	 * 
+	 * @param description
+	 *            the String describing the nature of this {@link Relation}.
+	 * @param name
+	 *            the name of this relation (in UML, this is also called the
+	 *            role name)
 	 */
 	public SimpleRelation(String description, String name) {
 		this();
@@ -59,7 +60,7 @@ public class SimpleRelation
 	}
 
 	// Relation operations .....................................................
-	
+
 	/**
 	 * @see eu.esdihumboldt.specification.modelrepository.abstractfc.Relation#getDescription()
 	 */
@@ -75,7 +76,7 @@ public class SimpleRelation
 	}
 
 	// SimpleRelation operations ...............................................
-	
+
 	/**
 	 * @return the uid
 	 */

@@ -20,12 +20,12 @@ import eu.esdihumboldt.specification.cst.rdf.IAbout;
 /**
  * This is the core interface for the description of schema alignments.
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface IAlignment {
-	
+
 	/**
 	 * @return the schema1
 	 */
@@ -50,10 +50,10 @@ public interface IAlignment {
 	 * @return the about
 	 */
 	public IAbout getAbout();
-	
+
 	/**
-	 * @return the list fo ValueClasses 
+	 * @return the list fo ValueClasses
 	 */
 
-	 public List<IValueClass> getValueClasses(); 
+	public List<IValueClass> getValueClasses();
 }
