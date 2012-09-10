@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceResolver;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
-import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
+import eu.esdihumboldt.hale.common.instance.model.impl.internal.ONamespaceMap;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 public class BrowseOrientInstanceCollection implements InstanceCollection {
 
 	private class OrientInstanceIterator implements ResourceIterator<Instance> {
@@ -82,7 +83,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 				classQueue = new LinkedList<String>();
 				classTypes = new HashMap<String, TypeDefinition>();
 				for (TypeDefinition type : types.getMappingRelevantTypes()) {
-					String className = ONameUtil.encodeName(type.getIdentifier());
+					String className = ONamespaceMap.encode(type.getName());
+					// ONameUtil.encodeName(type.getIdentifier());
 					classTypes.put(className, type);
 					classQueue.add(className);
 				}
@@ -244,7 +246,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 		Collection<String> classes = new ArrayList<String>();
 
 		for (TypeDefinition type : types.getMappingRelevantTypes()) {
-			classes.add(ONameUtil.encodeName(type.getIdentifier()));
+			classes.add(ONamespaceMap.encode(type.getName()));
+			// ONameUtil.encodeName(type.getIdentifier()));
 		}
 
 		return classes;

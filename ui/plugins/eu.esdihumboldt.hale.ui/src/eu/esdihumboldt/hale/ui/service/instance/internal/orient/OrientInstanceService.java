@@ -49,7 +49,7 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
-import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
+import eu.esdihumboldt.hale.common.instance.model.impl.internal.ONamespaceMap;
 import eu.esdihumboldt.hale.common.instance.model.impl.internal.OSerializationHelper;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -196,9 +196,9 @@ public class OrientInstanceService extends AbstractInstanceService {
 			Collection<OClass> classes = schema.getClasses();
 
 			Collection<? extends TypeDefinition> mappableTypes = schemas.getMappingRelevantTypes();
-			Set<String> allowedIdentifiers = new HashSet<String>();
+			Set<QName> allowedTypes = new HashSet<QName>();
 			for (TypeDefinition type : mappableTypes) {
-				allowedIdentifiers.add(type.getIdentifier());
+				allowedTypes.add(type.getName());
 			}
 
 			for (OClass clazz : classes) {
@@ -207,21 +207,16 @@ public class OrientInstanceService extends AbstractInstanceService {
 						// ignore binary wrapper class
 						continue;
 					}
-					String identifier = ONameUtil.decodeName(clazz.getName());
-					if (allowedIdentifiers.contains(identifier)
-							&& db.countClass(clazz.getName()) > 0) {
-						int lastSlash = identifier.lastIndexOf('/');
-						if (lastSlash >= 0) {
-							String namespace = identifier.substring(0, lastSlash);
-							String localname = identifier.substring(lastSlash + 1);
-							TypeDefinition type = schemas.getType(new QName(namespace, localname));
-							if (type != null) {
-								result.add(type);
-							}
-							else {
-								log.error(MessageFormat.format(
-										"Could not resolve type with identifier {0}", identifier));
-							}
+					QName typeName = ONamespaceMap.decode(clazz.getName());
+					// ONameUtil.decodeName(clazz.getName());
+					if (allowedTypes.contains(typeName) && db.countClass(clazz.getName()) > 0) {
+						TypeDefinition type = schemas.getType(typeName);
+						if (type != null) {
+							result.add(type);
+						}
+						else {
+							log.error(MessageFormat.format("Could not resolve type with name {0}",
+									typeName));
 						}
 					}
 				} catch (Throwable e) {

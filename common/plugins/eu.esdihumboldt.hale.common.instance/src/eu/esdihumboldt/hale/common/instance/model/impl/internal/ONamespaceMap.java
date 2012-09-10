@@ -15,8 +15,11 @@ package eu.esdihumboldt.hale.common.instance.model.impl.internal;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.codec.DecoderException;
+
 import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
 import eu.esdihumboldt.util.Identifiers;
 
 /**
@@ -27,7 +30,7 @@ import eu.esdihumboldt.util.Identifiers;
  */
 public abstract class ONamespaceMap {
 
-	private static final Identifiers<String> IDS = new Identifiers<String>("", true);
+	private static final Identifiers<String> IDS = new Identifiers<String>("n", true);
 
 	/**
 	 * Map the namespace of the given qualified name to a short identifier and
@@ -45,6 +48,21 @@ public abstract class ONamespaceMap {
 	}
 
 	/**
+	 * Encode a {@link QName} for runtime use with OrientDB.
+	 * 
+	 * @param org the qualified name
+	 * @return the encoded name
+	 */
+	public static String encode(QName org) {
+		String ns = org.getNamespaceURI();
+		if (!XMLConstants.NULL_NS_URI.equals(ns)) {
+			ns = IDS.getId(org.getNamespaceURI());
+		}
+
+		return ns + "_" + ONameUtil.encodeName(org.getLocalPart());
+	}
+
+	/**
 	 * Determine the original namespace of the given qualified name with a
 	 * namespace previously mapped with {@link #map(QName)} and return the
 	 * original name.
@@ -58,6 +76,27 @@ public abstract class ONamespaceMap {
 		}
 
 		return new QName(IDS.getObject(mapped.getNamespaceURI()), mapped.getLocalPart());
+	}
+
+	/**
+	 * Decode a name based on the runtime namespace map.
+	 * 
+	 * @param name the encoded name
+	 * @return the decoded qualified name
+	 * @throws DecoderException of decoding the local part of the name fails
+	 */
+	public static QName decode(String name) throws DecoderException {
+		int pos = name.indexOf('_'); // find first underscore
+		String local;
+		String ns = XMLConstants.NULL_NS_URI;
+		if (pos < 0) {
+			local = ONameUtil.decodeName(name);
+		}
+		else {
+			ns = IDS.getObject(name.substring(0, pos));
+			local = ONameUtil.decodeName(name.substring(pos + 1));
+		}
+		return new QName(ns, local);
 	}
 
 }

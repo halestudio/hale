@@ -84,15 +84,8 @@ public class FunctionContextProvider extends AbstractContextProvider implements
 					if (description == null) {
 						description = function.getDisplayName();
 					}
-					return new SingleTopicContext(function.getDisplayName(), description, // XXX
-																							// add
-																							// more
-																							// info
-																							// to
-																							// context
-																							// (e.g.
-																							// title?)
-							topic);
+					return new SingleTopicContext(function.getDisplayName(), description, topic);
+					// XXX add more info to context (e.g. title?)
 				}
 			} catch (DecoderException e) {
 				// no valid function ID
