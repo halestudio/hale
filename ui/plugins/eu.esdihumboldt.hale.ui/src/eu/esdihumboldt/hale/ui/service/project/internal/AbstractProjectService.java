@@ -13,8 +13,8 @@
 package eu.esdihumboldt.hale.ui.service.project.internal;
 
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener;
@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceListener;
  */
 public abstract class AbstractProjectService implements ProjectService {
 
-	private final TypeSafeListenerList<ProjectServiceListener> listeners = new TypeSafeListenerList<ProjectServiceListener>();
+	private final CopyOnWriteArraySet<ProjectServiceListener> listeners = new CopyOnWriteArraySet<ProjectServiceListener>();
 
 	/**
 	 * @see ProjectService#addListener(ProjectServiceListener)

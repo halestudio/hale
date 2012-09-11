@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.util.selector;
 
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -30,7 +32,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.ui.util.viewer.ObjectContentProvider;
 
 /**
@@ -51,7 +52,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 
 	}
 
-	private final TypeSafeListenerList<ISelectionChangedListener> listeners = new TypeSafeListenerList<ISelectionChangedListener>();
+	private final CopyOnWriteArraySet<ISelectionChangedListener> listeners = new CopyOnWriteArraySet<ISelectionChangedListener>();
 
 	private final TableViewer viewer;
 

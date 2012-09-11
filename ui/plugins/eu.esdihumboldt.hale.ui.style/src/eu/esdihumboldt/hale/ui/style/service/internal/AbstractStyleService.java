@@ -12,9 +12,10 @@
 
 package eu.esdihumboldt.hale.ui.style.service.internal;
 
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.eclipse.swt.graphics.RGB;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.ui.style.service.StyleService;
 import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
 
@@ -25,7 +26,7 @@ import eu.esdihumboldt.hale.ui.style.service.StyleServiceListener;
  */
 public abstract class AbstractStyleService implements StyleService {
 
-	private TypeSafeListenerList<StyleServiceListener> listeners = new TypeSafeListenerList<StyleServiceListener>();
+	private final CopyOnWriteArraySet<StyleServiceListener> listeners = new CopyOnWriteArraySet<StyleServiceListener>();
 
 	/**
 	 * @see StyleService#addListener(StyleServiceListener)

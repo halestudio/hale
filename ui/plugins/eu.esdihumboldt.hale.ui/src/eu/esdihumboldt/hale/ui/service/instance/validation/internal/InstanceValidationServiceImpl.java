@@ -12,6 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.validation.internal;
 
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -19,7 +21,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
@@ -43,7 +44,7 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 	private final ReportService reportService;
 	private InstanceValidationJob validationJob;
 	private boolean liveValidation = true; // TODO store somewhere? project?
-	private final TypeSafeListenerList<InstanceValidationListener> listeners = new TypeSafeListenerList<InstanceValidationListener>();
+	private final CopyOnWriteArraySet<InstanceValidationListener> listeners = new CopyOnWriteArraySet<InstanceValidationListener>();
 
 	/**
 	 * Creates the instance validation service.

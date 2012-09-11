@@ -12,7 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.common.service.population.impl;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationListener;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
@@ -24,7 +25,7 @@ import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
  */
 public abstract class AbstractPopulationService implements PopulationService {
 
-	private TypeSafeListenerList<PopulationListener> listeners = new TypeSafeListenerList<PopulationListener>();
+	private final CopyOnWriteArraySet<PopulationListener> listeners = new CopyOnWriteArraySet<PopulationListener>();
 
 	/**
 	 * @see PopulationService#addListener(PopulationListener)

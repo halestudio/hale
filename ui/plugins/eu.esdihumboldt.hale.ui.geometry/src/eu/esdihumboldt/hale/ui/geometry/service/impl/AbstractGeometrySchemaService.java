@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.xml.namespace.QName;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -39,7 +39,7 @@ import eu.esdihumboldt.util.Pair;
  */
 public abstract class AbstractGeometrySchemaService implements GeometrySchemaService {
 
-	private final TypeSafeListenerList<GeometrySchemaServiceListener> listeners = new TypeSafeListenerList<GeometrySchemaServiceListener>();
+	private final CopyOnWriteArraySet<GeometrySchemaServiceListener> listeners = new CopyOnWriteArraySet<GeometrySchemaServiceListener>();
 
 	/**
 	 * @see GeometrySchemaService#getDefaultGeometry(TypeDefinition)

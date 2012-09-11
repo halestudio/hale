@@ -12,12 +12,12 @@
 
 package eu.esdihumboldt.hale.ui.util.selection;
 
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-
-import de.cs3d.util.eclipse.TypeSafeListenerList;
 
 /**
  * Abstract selection provider implementation
@@ -28,7 +28,7 @@ public class AbstactSelectionProvider implements ISelectionProvider {
 
 	private ISelection lastSelection;
 
-	private final TypeSafeListenerList<ISelectionChangedListener> listeners = new TypeSafeListenerList<ISelectionChangedListener>();
+	private final CopyOnWriteArraySet<ISelectionChangedListener> listeners = new CopyOnWriteArraySet<ISelectionChangedListener>();
 
 	/**
 	 * @see ISelectionProvider#addSelectionChangedListener(ISelectionChangedListener)
