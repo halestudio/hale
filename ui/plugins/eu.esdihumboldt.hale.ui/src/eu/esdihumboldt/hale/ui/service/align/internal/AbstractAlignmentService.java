@@ -12,7 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.service.align.internal;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
@@ -26,7 +27,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
  */
 public abstract class AbstractAlignmentService implements AlignmentService {
 
-	private final TypeSafeListenerList<AlignmentServiceListener> listeners = new TypeSafeListenerList<AlignmentServiceListener>();
+	private final CopyOnWriteArraySet<AlignmentServiceListener> listeners = new CopyOnWriteArraySet<AlignmentServiceListener>();
 
 	/**
 	 * Adds a listener to the service

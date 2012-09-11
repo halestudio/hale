@@ -12,7 +12,8 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.internal;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
@@ -33,7 +34,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
  */
 public abstract class AbstractInstanceService implements InstanceService {
 
-	private final TypeSafeListenerList<InstanceServiceListener> listeners = new TypeSafeListenerList<InstanceServiceListener>();
+	private final CopyOnWriteArraySet<InstanceServiceListener> listeners = new CopyOnWriteArraySet<InstanceServiceListener>();
 
 	private final AlignmentService alignmentService;
 	private final ProjectService projectService;

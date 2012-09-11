@@ -13,8 +13,8 @@
 package eu.esdihumboldt.hale.ui.service.schema.internal;
 
 import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
  */
 public abstract class AbstractSchemaService implements SchemaService {
 
-	private final TypeSafeListenerList<SchemaServiceListener> listeners = new TypeSafeListenerList<SchemaServiceListener>();
+	private final CopyOnWriteArraySet<SchemaServiceListener> listeners = new CopyOnWriteArraySet<SchemaServiceListener>();
 	private final ProjectService projectService;
 
 	/**

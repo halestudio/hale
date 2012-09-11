@@ -13,8 +13,8 @@
 package eu.esdihumboldt.hale.ui.service.entity.internal;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
  */
 public abstract class AbstractEntityDefinitionService implements EntityDefinitionService {
 
-	private final TypeSafeListenerList<EntityDefinitionServiceListener> listeners = new TypeSafeListenerList<EntityDefinitionServiceListener>();
+	private final CopyOnWriteArraySet<EntityDefinitionServiceListener> listeners = new CopyOnWriteArraySet<EntityDefinitionServiceListener>();
 
 	/**
 	 * @see EntityDefinitionService#addListener(EntityDefinitionServiceListener)

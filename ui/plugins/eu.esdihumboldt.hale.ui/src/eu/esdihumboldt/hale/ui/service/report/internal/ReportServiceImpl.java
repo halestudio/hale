@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IWorkbench;
@@ -29,7 +30,6 @@ import org.eclipse.ui.PlatformUI;
 
 import com.google.common.collect.Multimap;
 
-import de.cs3d.util.eclipse.TypeSafeListenerList;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
@@ -49,7 +49,7 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
  */
 public class ReportServiceImpl implements ReportService {
 
-	private final TypeSafeListenerList<ReportListener<?, ?>> listeners = new TypeSafeListenerList<ReportListener<?, ?>>();
+	private final CopyOnWriteArraySet<ReportListener<?, ?>> listeners = new CopyOnWriteArraySet<ReportListener<?, ?>>();
 
 	/**
 	 * Map containing {@link ReportSession}s.
