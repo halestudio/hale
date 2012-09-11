@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -225,8 +226,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 
 			try {
-				return StreamGmlHelper
-						.parseInstance(reader, nextType, elementIndex++, strict, null);
+				return StreamGmlHelper.parseInstance(reader, nextType, elementIndex++, strict,
+						null, crsProvider, null);
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException(e);
 			} finally {
@@ -317,6 +318,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 	private boolean emptyInitialized = false;
 	private boolean empty = false;
+	private final CRSProvider crsProvider;
 
 	/**
 	 * Create an XMl/GML instance collection based on the given source.
@@ -330,14 +332,18 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 * @param strict if associating elements with properties should be done
 	 *            strictly according to the schema, otherwise a fall-back is
 	 *            used trying to populate values also on invalid property paths
+	 * @param crsProvider CRS provider in case no CRS is specified, may be
+	 *            <code>null</code>
 	 */
 	public GmlInstanceCollection(LocatableInputSupplier<? extends InputStream> source,
-			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot, boolean strict) {
+			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot, boolean strict,
+			CRSProvider crsProvider) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
 		this.ignoreRoot = ignoreRoot;
 		this.strict = strict;
+		this.crsProvider = crsProvider;
 	}
 
 	/**

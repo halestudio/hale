@@ -26,6 +26,9 @@ public interface CRSProvider {
 	/**
 	 * Get the CRS definition for values of the given property definition.
 	 * 
+	 * FIXME the property definition is not really a good tool for this, because
+	 * it doesn't represent the full path in an instance
+	 * 
 	 * @param property the property definition
 	 * @return the CRS definition or <code>null</code> if it can't be determined
 	 */
