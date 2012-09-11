@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
+import eu.esdihumboldt.hale.ui.io.instance.crs.DefaultCRSManager;
 import eu.esdihumboldt.hale.ui.io.instance.crs.DialogCRSProvider;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -50,7 +51,7 @@ public class InstanceImportAdvisor extends DefaultIOAdvisor<InstanceReader> {
 	public void updateConfiguration(InstanceReader provider) {
 		super.updateConfiguration(provider);
 
-		provider.setDefaultCRSProvider(new DialogCRSProvider());
+		provider.setCRSProvider(new DefaultCRSManager(provider, new DialogCRSProvider()));
 	}
 
 	/**

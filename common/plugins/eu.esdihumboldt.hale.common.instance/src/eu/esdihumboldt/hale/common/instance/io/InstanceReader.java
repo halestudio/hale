@@ -13,11 +13,8 @@
 package eu.esdihumboldt.hale.common.instance.io;
 
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
-import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -29,24 +26,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 public interface InstanceReader extends ImportProvider {
 
 	/**
-	 * The configuration parameter name for the default CRS definition.
-	 * {@link CRSDefinitionManager#parse(String)} is used to handle any values,
-	 * so {@link CRSDefinitionManager#asString(CRSDefinition)} should be used to
-	 * create them.
-	 */
-	public static final String PARAM_DEFAULT_CRS = "defaultCRS";
-
-	/**
-	 * The prefix for configuration parameter names for the default CRS
-	 * definition for a property. The configuration parameter is the prefix
-	 * concatenated with the {@link PropertyDefinition} identifier.
-	 * {@link CRSDefinitionManager#parse(String)} is used to handle any values,
-	 * so {@link CRSDefinitionManager#asString(CRSDefinition)} should be used to
-	 * create them.
-	 */
-	public static final String PREFIX_PARAM_CRS = "defaultCRS:";
-
-	/**
 	 * Set the instance source schema
 	 * 
 	 * @param sourceSchema the source schema
@@ -56,15 +35,11 @@ public interface InstanceReader extends ImportProvider {
 	/**
 	 * Set a CRS provider that is queried if no CRS can be determined for a
 	 * property value and no default CRS is configured for the associated
-	 * property definition. The information obtained will be used to extend the
-	 * configuration.
-	 * 
-	 * @see #PARAM_DEFAULT_CRS
-	 * @see #PREFIX_PARAM_CRS
+	 * property definition.
 	 * 
 	 * @param crsProvider the CRS provider
 	 */
-	public void setDefaultCRSProvider(CRSProvider crsProvider);
+	public void setCRSProvider(CRSProvider crsProvider);
 
 	/**
 	 * Get the instances

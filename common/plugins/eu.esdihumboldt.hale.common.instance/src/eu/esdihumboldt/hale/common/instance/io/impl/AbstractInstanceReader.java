@@ -14,11 +14,8 @@ package eu.esdihumboldt.hale.common.instance.io.impl;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
-import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
-import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -32,7 +29,7 @@ public abstract class AbstractInstanceReader extends AbstractImportProvider impl
 
 	private TypeIndex sourceSchema;
 
-	private CRSProvider defaultCRSProvider;
+	private CRSProvider crsProvider;
 
 	/**
 	 * @see InstanceReader#setSourceSchema(TypeIndex)
@@ -63,41 +60,20 @@ public abstract class AbstractInstanceReader extends AbstractImportProvider impl
 	}
 
 	/**
-	 * @see InstanceReader#setDefaultCRSProvider(CRSProvider)
+	 * @see InstanceReader#setCRSProvider(CRSProvider)
 	 */
 	@Override
-	public void setDefaultCRSProvider(CRSProvider crsProvider) {
-		this.defaultCRSProvider = crsProvider;
+	public void setCRSProvider(CRSProvider crsProvider) {
+		this.crsProvider = crsProvider;
 	}
 
 	/**
-	 * Get the CRS definition for values of the given property definition.
+	 * Get the CRS provider.
 	 * 
-	 * @param property the property definition
-	 * @return the CRS definition or <code>null</code> if it can't be determined
+	 * @return the CRS provider
 	 */
-	protected CRSDefinition getDefaultCRS(PropertyDefinition property) {
-		CRSDefinition result = null;
-
-		// first, try configuration
-		// configuration for property
-		final String pkey = PREFIX_PARAM_CRS + property.getIdentifier();
-		result = CRSDefinitionManager.getInstance().parse(getParameter(pkey));
-		// overall configuration
-		if (result == null) {
-			result = CRSDefinitionManager.getInstance().parse(getParameter(PARAM_DEFAULT_CRS));
-		}
-
-		if (result == null && defaultCRSProvider != null) {
-			// consult default CRS provider
-			result = defaultCRSProvider.getCRS(property);
-			if (result != null) {
-				// store in configuration
-				setParameter(pkey, CRSDefinitionManager.getInstance().asString(result));
-			}
-		}
-
-		return result;
+	protected CRSProvider getCrsProvider() {
+		return crsProvider;
 	}
 
 }
