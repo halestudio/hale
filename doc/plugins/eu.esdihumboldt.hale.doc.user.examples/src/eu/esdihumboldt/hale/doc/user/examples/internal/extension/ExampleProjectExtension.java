@@ -62,8 +62,7 @@ public class ExampleProjectExtension extends IdentifiableExtension<ExampleProjec
 	}
 
 	/**
-	 * @see de.cs3d.util.eclipse.extension.simple.IdentifiableExtension#create(java.lang.String,
-	 *      org.eclipse.core.runtime.IConfigurationElement)
+	 * @see IdentifiableExtension#create(String, IConfigurationElement)
 	 */
 	@Override
 	protected ExampleProject create(String elementId, IConfigurationElement element) {

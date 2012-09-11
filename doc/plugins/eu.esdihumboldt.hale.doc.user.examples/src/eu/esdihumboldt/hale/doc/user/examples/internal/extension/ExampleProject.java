@@ -46,7 +46,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
  * 
  * @author Simon Templer
  */
-public class ExampleProject implements Identifiable {
+public class ExampleProject implements Identifiable, Comparable<ExampleProject> {
 
 	private final String id;
 
@@ -124,6 +124,30 @@ public class ExampleProject implements Identifiable {
 		updater.updateProject(project, url.toURI());
 
 		this.info = project;
+	}
+
+	/**
+	 * @see Comparable#compareTo(Object)
+	 */
+	@Override
+	public int compareTo(ExampleProject o) {
+		int result;
+
+		if (getInfo() == null || getInfo().getName() == null) {
+			result = 1;
+		}
+		else if (o.getInfo() == null || o.getInfo().getName() == null) {
+			result = -1;
+		}
+		else {
+			result = getInfo().getName().compareToIgnoreCase(o.getInfo().getName());
+		}
+
+		if (result == 0) {
+			result = getId().compareTo(o.getId());
+		}
+
+		return result;
 	}
 
 	/**
