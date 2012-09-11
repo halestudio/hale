@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
@@ -54,6 +55,11 @@ public abstract class AbstractIOProvider implements IOProvider {
 	private IContentType contentType = null;
 
 	/**
+	 * The resource identifier
+	 */
+	private String resourceIdentifier;
+
+	/**
 	 * Default constructor
 	 */
 	protected AbstractIOProvider() {
@@ -68,8 +74,20 @@ public abstract class AbstractIOProvider implements IOProvider {
 	@Override
 	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException,
 			IOException {
+		if (resourceIdentifier == null) {
+			resourceIdentifier = generateResourceId();
+		}
 		return execute((progress == null) ? (new LogProgressIndicator()) : (progress),
 				createReporter());
+	}
+
+	/**
+	 * Generate the unique resource identifier.
+	 * 
+	 * @return the generated resource identifier
+	 */
+	protected String generateResourceId() {
+		return UUID.randomUUID().toString();
 	}
 
 	/**
@@ -142,6 +160,10 @@ public abstract class AbstractIOProvider implements IOProvider {
 		if (contentType != null) {
 			configuration.put(PARAM_CONTENT_TYPE, contentType.getId());
 		}
+		// store resource identifier (if set)
+		if (resourceIdentifier != null) {
+			configuration.put(PARAM_RESOURCE_ID, resourceIdentifier);
+		}
 
 		// store generic parameters
 		configuration.putAll(parameters);
@@ -192,10 +214,22 @@ public abstract class AbstractIOProvider implements IOProvider {
 			// configure content type
 			setContentType(Platform.getContentTypeManager().getContentType(value));
 		}
+		if (name.equals(PARAM_RESOURCE_ID)) {
+			// set resource id
+			this.resourceIdentifier = value;
+		}
 		else {
 			// load generic parameter
 			parameters.put(name, value);
 		}
+	}
+
+	/**
+	 * @see IOProvider#getResourceIdentifier()
+	 */
+	@Override
+	public String getResourceIdentifier() {
+		return resourceIdentifier;
 	}
 
 	/**
