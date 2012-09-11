@@ -15,8 +15,11 @@ package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -25,12 +28,18 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.OInstance;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -64,11 +73,16 @@ public abstract class StreamGmlHelper {
 	 *            strictly according to the schema, otherwise a fall-back is
 	 *            used trying to populate values also on invalid property paths
 	 * @param srsDimension the dimension of the instance or <code>null</code>
+	 * @param crsProvider CRS provider in case no CRS is specified, may be
+	 *            <code>null</code>
+	 * @param property the definition representing the current property
+	 *            associated to the instance, or <code>null</code>
 	 * @return the parsed instance
 	 * @throws XMLStreamException if parsing the instance failed
 	 */
 	public static Instance parseInstance(XMLStreamReader reader, TypeDefinition type,
-			Integer indexInStream, boolean strict, Integer srsDimension) throws XMLStreamException {
+			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
+			PropertyDefinition property) throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 
 		if (srsDimension == null) {
@@ -87,7 +101,7 @@ public abstract class StreamGmlHelper {
 		}
 
 		// instance properties
-		parseProperties(reader, instance, strict, srsDimension);
+		parseProperties(reader, instance, strict, srsDimension, crsProvider);
 
 		// instance value
 		if (type.getConstraint(HasValueFlag.class).isEnabled()) {
@@ -110,12 +124,50 @@ public abstract class StreamGmlHelper {
 			// the default value for the srsDimension
 			int defaultValue = 2;
 
-			if (srsDimension != null)
+			if (srsDimension != null) {
 				geomValue = geomFactory.createGeometry(instance, srsDimension);
-
-			// if srsDimension is not set
-			else
+			}
+			else {
+				// srsDimension is not set
 				geomValue = geomFactory.createGeometry(instance, defaultValue);
+			}
+
+			if (geomValue != null && crsProvider != null && property != null) {
+				// check if CRS are set, and if not, try determining them using
+				// the CRS provider
+				Collection<?> values;
+				if (geomValue instanceof Collection) {
+					values = (Collection<?>) geomValue;
+				}
+				else {
+					values = Collections.singleton(geomValue);
+				}
+
+				List<Object> resultVals = new ArrayList<Object>();
+				for (Object value : values) {
+					if (value instanceof Geometry
+							|| (value instanceof GeometryProperty<?> && ((GeometryProperty<?>) value)
+									.getCRSDefinition() == null)) {
+						CRSDefinition crs = crsProvider.getCRS(property);
+						if (crs != null) {
+							Geometry geom = (value instanceof Geometry) ? ((Geometry) value)
+									: (((GeometryProperty<?>) value).getGeometry());
+							resultVals.add(new DefaultGeometryProperty<Geometry>(crs, geom));
+							continue;
+						}
+					}
+
+					resultVals.add(value);
+				}
+
+				if (resultVals.size() == 1) {
+					geomValue = resultVals.get(0);
+				}
+				else {
+					geomValue = resultVals;
+				}
+			}
+
 			if (geomValue != null) {
 				instance.setValue(geomValue);
 			}
@@ -134,10 +186,12 @@ public abstract class StreamGmlHelper {
 	 *            strictly according to the schema, otherwise a fall-back is
 	 *            used trying to populate values also on invalid property paths
 	 * @param srsDimension the dimension of the instance or <code>null</code>
+	 * @param crsProvider CRS provider in case no CRS is specified, may be
+	 *            <code>null</code>
 	 * @throws XMLStreamException if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader, MutableGroup group, boolean strict,
-			Integer srsDimension) throws XMLStreamException {
+			Integer srsDimension, CRSProvider crsProvider) throws XMLStreamException {
 		final MutableGroup topGroup = group;
 
 		// attributes (usually only present in Instances)
@@ -187,7 +241,7 @@ public abstract class StreamGmlHelper {
 							group.addProperty(
 									property.getName(),
 									parseInstance(reader, property.getPropertyType(), null, strict,
-											srsDimension));
+											srsDimension, crsProvider, property));
 						}
 						else {
 							if (hasAttributes(property.getPropertyType())) {
@@ -197,7 +251,7 @@ public abstract class StreamGmlHelper {
 								group.addProperty(
 										property.getName(),
 										parseInstance(reader, property.getPropertyType(), null,
-												strict, srsDimension));
+												strict, srsDimension, crsProvider, property));
 							}
 							else {
 								// no elements and no attributes
