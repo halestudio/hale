@@ -346,8 +346,8 @@ public class GmlInstanceCollectionTest {
 				getClass().getResource("/data/sample_imgeo/IMGEO.xsd").toURI(), getClass()
 						.getResource("/data/sample_imgeo/sample_scheiding_nofc.gml").toURI(), true);
 
-		String ns = "http://www.geonovum.nl/IMGEO";
-		String gmlNs = "http://www.opengis.net/gml";
+//		String ns = "http://www.geonovum.nl/IMGEO";
+//		String gmlNs = "http://www.opengis.net/gml";
 
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
@@ -375,7 +375,7 @@ public class GmlInstanceCollectionTest {
 		Schema sourceSchema = reader.getSchema();
 
 		return new GmlInstanceCollection(new DefaultInputSupplier(xmlLocation), sourceSchema,
-				restrictToFeatures, false, true);
+				restrictToFeatures, false, true, null);
 	}
 
 }
