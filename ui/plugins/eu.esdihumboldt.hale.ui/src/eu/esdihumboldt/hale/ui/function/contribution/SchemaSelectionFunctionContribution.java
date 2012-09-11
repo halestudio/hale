@@ -163,7 +163,7 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 	 * @param type the type
 	 * @return <code>true</code> if all items are of the given type
 	 */
-	private static boolean checkType(Iterable<?> items, Class<?> type) {
+	protected boolean checkType(Iterable<?> items, Class<?> type) {
 		for (Object item : items) {
 			if (!type.isAssignableFrom(item.getClass())) {
 				return false;
@@ -182,7 +182,7 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 	 * @param isTarget if the entities are target entities
 	 * @return if then entity count is compatible with the definitions
 	 */
-	private static boolean checkCount(int count, Set<? extends AbstractParameter> entities,
+	protected boolean checkCount(int count, Set<? extends AbstractParameter> entities,
 			boolean isTarget) {
 		int min = 0;
 		int max = 0;
