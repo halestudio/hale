@@ -12,10 +12,13 @@
 
 package eu.esdihumboldt.hale.ui.function.contribution;
 
+import java.util.Set;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 
+import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.ui.function.contribution.internal.AbstractWizardAction;
@@ -104,6 +107,16 @@ public class ReplaceFunctionWizardContribution extends SchemaSelectionFunctionCo
 		}
 
 		return super.isActive(descriptor);
+	}
+
+	/**
+	 * @see SchemaSelectionFunctionContribution#checkCount(int, Set, boolean)
+	 */
+	@Override
+	protected boolean checkCount(int count, Set<? extends AbstractParameter> entities,
+			boolean isTarget) {
+		// ignore the count
+		return true;
 	}
 
 	/**
