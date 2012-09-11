@@ -43,6 +43,7 @@ import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -392,12 +393,17 @@ public class OrientInstanceService extends AbstractInstanceService {
 					if (sources.isEmpty()) {
 						return;
 					}
+					Alignment alignment = getAlignmentService().getAlignment();
+					if (alignment.getTypeCells().isEmpty()) {
+						// early exit if there are no type relations
+						return;
+					}
 
 					OrientInstanceSink sink = new OrientInstanceSink(transformed, true);
 					TransformationReport report;
 					ATransaction trans = log.begin("Instance transformation");
 					try {
-						report = ts.transform(getAlignmentService().getAlignment(), sources, sink,
+						report = ts.transform(alignment, sources, sink,
 								new ProgressMonitorIndicator(monitor));
 
 						// publish report
