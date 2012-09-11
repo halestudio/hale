@@ -31,6 +31,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -49,7 +50,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.io.shp.ShapefileIO;
 
 /**
- * TODO Type description
+ * Instance collection backed by a Shapefile data store.
  * 
  * @author Simon Templer
  */
@@ -191,10 +192,8 @@ public class ShapesInstanceCollection implements InstanceCollection {
 						// fallback to provider configuration
 						ChildDefinition<?> child = type.getChild(propertyName);
 						if (child != null && child.asProperty() != null) {
-							// TODO ask CRS provider (but settings can't be
-							// stored in InstanceReader configuration!)
-//							crsDef = getDefaultCRS(child.asProperty());
-							crsDef = null;
+							// ask CRS provider
+							crsDef = crsProvider.getCRS(child.asProperty());
 						}
 						else {
 							crsDef = null;
@@ -232,16 +231,20 @@ public class ShapesInstanceCollection implements InstanceCollection {
 
 	private final DataStore store;
 	private final TypeIndex typeIndex;
+	private final CRSProvider crsProvider;
 
 	/**
 	 * Data store for accessing simple features (from a Shapefile).
 	 * 
 	 * @param store the data store
 	 * @param typeIndex the type index
+	 * @param crsProvider CRS provider in case no CRS is specified, may be
+	 *            <code>null</code>
 	 */
-	public ShapesInstanceCollection(DataStore store, TypeIndex typeIndex) {
+	public ShapesInstanceCollection(DataStore store, TypeIndex typeIndex, CRSProvider crsProvider) {
 		this.store = store;
 		this.typeIndex = typeIndex;
+		this.crsProvider = crsProvider;
 	}
 
 	/**

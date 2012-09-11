@@ -59,7 +59,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 
 		progress.setCurrentTask("Extracting shape instances");
 
-		instances = new ShapesInstanceCollection(store, getSourceSchema());
+		instances = new ShapesInstanceCollection(store, getSourceSchema(), getCrsProvider());
 
 		reporter.setSuccess(true);
 		return reporter;
