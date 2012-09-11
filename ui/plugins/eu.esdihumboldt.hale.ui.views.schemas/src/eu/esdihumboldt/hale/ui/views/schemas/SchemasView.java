@@ -473,7 +473,7 @@ public class SchemasView extends PropertiesViewPart {
 			}
 
 			@Override
-			public void cellRemoved(Cell cell) {
+			public void cellsRemoved(Iterable<Cell> cells) {
 				refreshInDisplayThread();
 			}
 

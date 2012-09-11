@@ -66,11 +66,11 @@ public abstract class AlignmentServiceDecorator implements AlignmentService {
 	}
 
 	/**
-	 * @see AlignmentService#removeCell(Cell)
+	 * @see AlignmentService#removeCells(Cell[])
 	 */
 	@Override
-	public void removeCell(Cell cell) {
-		alignmentService.removeCell(cell);
+	public void removeCells(Cell... cells) {
+		alignmentService.removeCells(cells);
 	}
 
 	/**

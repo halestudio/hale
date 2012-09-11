@@ -53,11 +53,11 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 
 			@Override
 			public void alignmentCleared() {
-				cellRemoved(null);
+				cellsRemoved(null);
 			}
 
 			@Override
-			public void cellRemoved(Cell cell) {
+			public void cellsRemoved(Iterable<Cell> cells) {
 				fireSourceChanged(ISources.WORKBENCH, HAS_CELLS, hasCells(as));
 			}
 

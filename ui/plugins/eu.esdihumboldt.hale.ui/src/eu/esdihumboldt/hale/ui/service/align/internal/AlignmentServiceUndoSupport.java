@@ -12,6 +12,10 @@
 
 package eu.esdihumboldt.hale.ui.service.align.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import net.jcip.annotations.Immutable;
 
 import org.eclipse.core.commands.ExecutionException;
@@ -30,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 
 /**
@@ -93,7 +98,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	 */
 	public class CleanOperation extends AbstractOperation {
 
-		private MutableAlignment alignment;
+		private final MutableAlignment alignment;
 
 		/**
 		 * Create an operation that cleans the alignment.
@@ -140,18 +145,18 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	 */
 	public class RemoveCellOperation extends AbstractOperation {
 
-		private final MutableCell cell;
+		private final Collection<MutableCell> cells;
 
 		/**
 		 * Create an operation removing the given cell from the alignment
 		 * service.
 		 * 
-		 * @param cell the cell
+		 * @param cells the cells
 		 */
-		public RemoveCellOperation(MutableCell cell) {
+		public RemoveCellOperation(Collection<MutableCell> cells) {
 			super("Remove alignment cell");
 
-			this.cell = cell;
+			this.cells = cells;
 		}
 
 		/**
@@ -159,7 +164,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 */
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-			alignmentService.removeCell(cell);
+			alignmentService.removeCells(cells.toArray(new Cell[cells.size()]));
 			return Status.OK_STATUS;
 		}
 
@@ -176,7 +181,11 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 */
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-			alignmentService.addCell(cell);
+			MutableAlignment alignment = new DefaultAlignment();
+			for (MutableCell cell : cells) {
+				alignment.addCell(cell);
+			}
+			alignmentService.addOrUpdateAlignment(alignment);
 			return Status.OK_STATUS;
 		}
 
@@ -223,7 +232,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 		 */
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-			alignmentService.removeCell(cell);
+			alignmentService.removeCells(cell);
 			return Status.OK_STATUS;
 		}
 
@@ -283,29 +292,35 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 	}
 
 	/**
-	 * @see AlignmentServiceDecorator#removeCell(Cell)
+	 * @see AlignmentServiceDecorator#removeCells(Cell[])
 	 */
 	@Override
-	public synchronized void removeCell(Cell cell) {
-		if (cell == null) {
+	public synchronized void removeCells(Cell... cells) {
+		if (cells == null || cells.length == 0) {
 			return;
 		}
 
-		boolean contains = getAlignment().getCells().contains(cell);
-		if (contains && cell instanceof MutableCell) {
+		List<MutableCell> contained = new ArrayList<MutableCell>();
+		for (Cell cell : cells) {
+			if (cell instanceof MutableCell && getAlignment().getCells().contains(cell)) {
+				contained.add((MutableCell) cell);
+			}
+		}
+
+		if (!contained.isEmpty()) {
 			/*
-			 * Cell must be contained in the current alignment, else the redo
+			 * Cells must be contained in the current alignment, else the redo
 			 * would do something unexpected (readding a cell that was not
 			 * previously there).
 			 * 
 			 * Also, as long as there is no copy constructor in DefaultCell,
 			 * undo only for removing MutableCells supported.
 			 */
-			IUndoableOperation operation = new RemoveCellOperation((MutableCell) cell);
+			IUndoableOperation operation = new RemoveCellOperation(contained);
 			executeOperation(operation);
 		}
 		else {
-			super.removeCell(cell);
+			super.removeCells(cells);
 		}
 	}
 
@@ -372,7 +387,7 @@ public class AlignmentServiceUndoSupport extends AlignmentServiceDecorator {
 			addCell(newCell);
 		}
 		else if (oldCell != null) {
-			removeCell(oldCell);
+			removeCells(oldCell);
 		}
 	}
 

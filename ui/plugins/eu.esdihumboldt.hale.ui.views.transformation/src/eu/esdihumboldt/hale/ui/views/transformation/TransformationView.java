@@ -117,7 +117,7 @@ public class TransformationView extends AbstractMappingView {
 			}
 
 			@Override
-			public void cellRemoved(Cell cell) {
+			public void cellsRemoved(Iterable<Cell> cells) {
 				update();
 			}
 

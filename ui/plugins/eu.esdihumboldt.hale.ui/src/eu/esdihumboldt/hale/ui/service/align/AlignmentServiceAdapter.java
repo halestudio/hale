@@ -31,10 +31,10 @@ public abstract class AlignmentServiceAdapter implements AlignmentServiceListene
 	}
 
 	/**
-	 * @see AlignmentServiceListener#cellRemoved(Cell)
+	 * @see AlignmentServiceListener#cellsRemoved(Iterable)
 	 */
 	@Override
-	public void cellRemoved(Cell cell) {
+	public void cellsRemoved(Iterable<Cell> cells) {
 		// override me
 	}
 

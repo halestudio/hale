@@ -59,11 +59,11 @@ public interface AlignmentService {
 	public void replaceCell(Cell oldCell, MutableCell newCell);
 
 	/**
-	 * Removes the given cell
+	 * Removes the given cells
 	 * 
-	 * @param cell the cell to remove
+	 * @param cells the cells to remove
 	 */
-	public void removeCell(Cell cell);
+	public void removeCells(Cell... cells);
 
 	/**
 	 * Invoke this operation if you want to clear out all alignments stored.

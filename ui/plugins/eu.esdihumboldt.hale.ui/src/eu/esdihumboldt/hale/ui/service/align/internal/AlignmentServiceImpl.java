@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.service.align.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -66,7 +67,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			}
 
 			@Override
-			public void cellRemoved(Cell cell) {
+			public void cellsRemoved(Iterable<Cell> cell) {
 				projectService.setChanged();
 			}
 
@@ -145,13 +146,23 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 	}
 
 	/**
-	 * @see AlignmentService#removeCell(Cell)
+	 * @see AlignmentService#removeCells(Cell[])
 	 */
 	@Override
-	public void removeCell(Cell cell) {
-		if (alignment.removeCell(cell)) {
-			notifyCellRemoved(cell);
+	public void removeCells(Cell... cells) {
+		if (cells == null || cells.length == 0) {
+			return;
 		}
+
+		List<Cell> removed = new ArrayList<Cell>();
+		synchronized (this) {
+			for (Cell cell : cells) {
+				if (alignment.removeCell(cell)) {
+					removed.add(cell);
+				}
+			}
+		}
+		notifyCellsRemoved(removed);
 	}
 
 }

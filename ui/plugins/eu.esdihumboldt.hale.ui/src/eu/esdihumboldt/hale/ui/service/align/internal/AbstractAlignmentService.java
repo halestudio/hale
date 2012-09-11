@@ -81,13 +81,13 @@ public abstract class AbstractAlignmentService implements AlignmentService {
 	}
 
 	/**
-	 * Call when an existing cell has been removed
+	 * Call when existing cells have been removed
 	 * 
-	 * @param cell the cell that has been removed
+	 * @param cells the cells that have been removed
 	 */
-	protected void notifyCellRemoved(Cell cell) {
+	protected void notifyCellsRemoved(Iterable<Cell> cells) {
 		for (AlignmentServiceListener listener : listeners) {
-			listener.cellRemoved(cell);
+			listener.cellsRemoved(cells);
 		}
 	}
 
