@@ -131,7 +131,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 
 				@Override
-				public void cellRemoved(Cell cell) {
+				public void cellsRemoved(Iterable<Cell> cells) {
 					updateInDisplayThread();
 				}
 

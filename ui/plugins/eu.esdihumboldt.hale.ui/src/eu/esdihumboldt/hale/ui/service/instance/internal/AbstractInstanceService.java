@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
  */
 public abstract class AbstractInstanceService implements InstanceService {
 
-	private TypeSafeListenerList<InstanceServiceListener> listeners = new TypeSafeListenerList<InstanceServiceListener>();
+	private final TypeSafeListenerList<InstanceServiceListener> listeners = new TypeSafeListenerList<InstanceServiceListener>();
 
 	private final AlignmentService alignmentService;
 	private final ProjectService projectService;
@@ -71,7 +71,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 			}
 
 			@Override
-			public void cellRemoved(Cell cell) {
+			public void cellsRemoved(Iterable<Cell> cells) {
 				/*
 				 * TODO analyze cell if it is a type or property mapping
 				 * property mapping: retransform based on related type mappings

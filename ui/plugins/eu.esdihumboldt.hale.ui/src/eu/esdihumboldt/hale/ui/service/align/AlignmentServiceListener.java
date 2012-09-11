@@ -43,10 +43,10 @@ public interface AlignmentServiceListener {
 	public void cellReplaced(Cell oldCell, Cell newCell);
 
 	/**
-	 * Called when an existing cell has been removed
+	 * Called when existing cells have been removed
 	 * 
-	 * @param cell the cell that has been removed
+	 * @param cells the cells that have been removed
 	 */
-	public void cellRemoved(Cell cell);
+	public void cellsRemoved(Iterable<Cell> cells);
 
 }

@@ -101,7 +101,7 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			}
 
 			@Override
-			public void cellRemoved(Cell cell) {
+			public void cellsRemoved(Iterable<Cell> cells) {
 				// XXX do anything?
 			}
 

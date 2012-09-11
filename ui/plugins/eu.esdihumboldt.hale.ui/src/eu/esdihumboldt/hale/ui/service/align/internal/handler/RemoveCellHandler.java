@@ -12,6 +12,7 @@
 
 package eu.esdihumboldt.hale.ui.service.align.internal.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -39,24 +40,27 @@ public class RemoveCellHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		// collect cells from selection
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+
 		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), "Delete cells",
 				"Do you really want to delete the selected cells?")) {
-			// collect cells from selection
-			ISelection selection = HandlerUtil.getCurrentSelection(event);
-
 			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
 					AlignmentService.class);
 
 			if (selection instanceof IStructuredSelection) {
 				List<?> list = ((IStructuredSelection) selection).toList();
+				List<Cell> cells = new ArrayList<Cell>();
 				for (Object object : list) {
 					if (object instanceof Cell) {
 						// FIXME sanity checks for cell deletion? (e.g. don't
 						// allow remove type mapping if there are properties
 						// mapped?) where to do it?
-						as.removeCell((Cell) object);
+						// For now only done in activeWhen defined for handler
+						cells.add((Cell) object);
 					}
 				}
+				as.removeCells(cells.toArray(new Cell[cells.size()]));
 			}
 		}
 
