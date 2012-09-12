@@ -12,14 +12,18 @@
 
 package eu.esdihumboldt.hale.common.core.io.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Map;
+import java.util.UUID;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -40,12 +44,38 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	private LocatableInputSupplier<? extends InputStream> source;
 
 	/**
+	 * The resource identifier
+	 */
+	private String resourceIdentifier;
+
+	/**
 	 * Default constructor
 	 */
 	public AbstractImportProvider() {
 		super();
 
 		addSupportedParameter(PARAM_SOURCE);
+	}
+
+	/**
+	 * @see AbstractIOProvider#execute(ProgressIndicator)
+	 */
+	@Override
+	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException,
+			IOException {
+		if (resourceIdentifier == null) {
+			resourceIdentifier = generateResourceId();
+		}
+		return super.execute(progress);
+	}
+
+	/**
+	 * Generate the unique resource identifier.
+	 * 
+	 * @return the generated resource identifier
+	 */
+	protected String generateResourceId() {
+		return UUID.randomUUID().toString();
 	}
 
 	/**
@@ -89,6 +119,11 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 			}
 		}
 
+		// store resource identifier (if set)
+		if (resourceIdentifier != null) {
+			configuration.put(PARAM_RESOURCE_ID, resourceIdentifier);
+		}
+
 		super.storeConfiguration(configuration);
 	}
 
@@ -99,6 +134,10 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	public void setParameter(String name, String value) {
 		if (name.equals(PARAM_SOURCE)) {
 			setSource(new DefaultInputSupplier(URI.create(value)));
+		}
+		if (name.equals(PARAM_RESOURCE_ID)) {
+			// set resource id
+			this.resourceIdentifier = value;
 		}
 		else {
 			super.setParameter(name, value);
@@ -112,6 +151,14 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	public IOReporter createReporter() {
 		return new DefaultIOReporter(getSource(),
 				MessageFormat.format("{0} import", getTypeName()), true);
+	}
+
+	/**
+	 * @see ImportProvider#getResourceIdentifier()
+	 */
+	@Override
+	public String getResourceIdentifier() {
+		return resourceIdentifier;
 	}
 
 }

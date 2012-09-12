@@ -31,6 +31,11 @@ public interface ImportProvider extends IOProvider {
 	public static final String PARAM_SOURCE = "source";
 
 	/**
+	 * The configuration parameter name for the resource identifier
+	 */
+	public static final String PARAM_RESOURCE_ID = "resourceId";
+
+	/**
 	 * Set the import source
 	 * 
 	 * @param source the source input supplier
@@ -43,5 +48,15 @@ public interface ImportProvider extends IOProvider {
 	 * @return the source input supplier
 	 */
 	public LocatableInputSupplier<? extends InputStream> getSource();
+
+	/**
+	 * Get the resource identifier. The identifier serves to uniquely identify
+	 * the resource represented by the import provider. It is either generated
+	 * on execute or loaded from a stored configuration.
+	 * 
+	 * @return the resource identifier, may be <code>null</code> if the provider
+	 *         was not executed yet
+	 */
+	public String getResourceIdentifier();
 
 }

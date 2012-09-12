@@ -36,11 +36,6 @@ public interface IOProvider {
 	public static final String PARAM_CONTENT_TYPE = "contentType";
 
 	/**
-	 * The configuration parameter name for the resource identifier
-	 */
-	public static final String PARAM_RESOURCE_ID = "resourceId";
-
-	/**
 	 * Execute the I/O provider.
 	 * 
 	 * @param progress the progress indicator, may be <code>null</code>
@@ -92,16 +87,6 @@ public interface IOProvider {
 	 * @return the content type, may be <code>null</code>
 	 */
 	public IContentType getContentType();
-
-	/**
-	 * Get the resource identifier. The identifier serves to uniquely identify
-	 * the resource represented by the I/O provider. It is either generated on
-	 * execute or loaded from a stored configuration.
-	 * 
-	 * @return the resource identifier, may be <code>null</code> if the provider
-	 *         was not executed yet
-	 */
-	public String getResourceIdentifier();
 
 	/**
 	 * Get the supported configuration parameters.
