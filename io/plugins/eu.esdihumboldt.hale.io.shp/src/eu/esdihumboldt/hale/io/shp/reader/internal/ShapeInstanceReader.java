@@ -42,6 +42,15 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 	private ShapesInstanceCollection instances;
 
 	/**
+	 * Default constructor.
+	 */
+	public ShapeInstanceReader() {
+		super();
+
+		addSupportedParameter(PARAM_TYPENAME);
+	}
+
+	/**
 	 * @see IOProvider#isCancelable()
 	 */
 	@Override
