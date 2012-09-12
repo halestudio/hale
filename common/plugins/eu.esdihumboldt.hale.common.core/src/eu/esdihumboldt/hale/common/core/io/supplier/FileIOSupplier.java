@@ -31,7 +31,7 @@ import com.google.common.io.OutputSupplier;
 public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>,
 		LocatableOutputSupplier<FileOutputStream> {
 
-	private File file;
+	private final File file;
 
 	/**
 	 * Create a file I/O supplier
@@ -65,6 +65,38 @@ public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>,
 	@Override
 	public URI getLocation() {
 		return file.toURI();
+	}
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((file == null) ? 0 : file.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FileIOSupplier other = (FileIOSupplier) obj;
+		if (file == null) {
+			if (other.file != null)
+				return false;
+		}
+		else if (!file.equals(other.file))
+			return false;
+		return true;
 	}
 
 }
