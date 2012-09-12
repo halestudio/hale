@@ -47,7 +47,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.hale.io.shp.ShapefileIO;
+import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 
 /**
  * Instance collection backed by a Shapefile data store.
@@ -106,12 +106,18 @@ public class ShapesInstanceCollection implements InstanceCollection {
 				try {
 					currentIterator = store.getFeatureSource(name).getFeatures().features();
 
-					QName typeName = new QName(ShapefileIO.SHAPEFILE_NS, name.getLocalPart());
-					currentType = typeIndex.getType(typeName);
+					if (defaultType != null) {
+						currentType = defaultType;
+					}
+					else {
+						QName typeName = new QName(ShapefileConstants.SHAPEFILE_NS,
+								name.getLocalPart());
+						currentType = typeIndex.getType(typeName);
+					}
 
 					if (currentType == null) {
 						proceedToNext();
-						log.error("Could not find type " + typeName
+						log.error("Could not find type " + name.getLocalPart()
 								+ " in source schema, corresponding instances are not created.");
 					}
 				} catch (IOException e) {
@@ -225,19 +231,24 @@ public class ShapesInstanceCollection implements InstanceCollection {
 	private final DataStore store;
 	private final TypeIndex typeIndex;
 	private final CRSProvider crsProvider;
+	private final TypeDefinition defaultType;
 
 	/**
 	 * Data store for accessing simple features (from a Shapefile).
 	 * 
 	 * @param store the data store
+	 * @param defaultType the default type to use for instances, may be
+	 *            <code>null</code>
 	 * @param typeIndex the type index
 	 * @param crsProvider CRS provider in case no CRS is specified, may be
 	 *            <code>null</code>
 	 */
-	public ShapesInstanceCollection(DataStore store, TypeIndex typeIndex, CRSProvider crsProvider) {
+	public ShapesInstanceCollection(DataStore store, TypeDefinition defaultType,
+			TypeIndex typeIndex, CRSProvider crsProvider) {
 		this.store = store;
 		this.typeIndex = typeIndex;
 		this.crsProvider = crsProvider;
+		this.defaultType = defaultType;
 	}
 
 	/**
