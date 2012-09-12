@@ -12,14 +12,17 @@
 
 package eu.esdihumboldt.hale.ui.io.instance.crs;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Provides default CRS definitions by offering a dialog to the user.
@@ -33,10 +36,10 @@ public class DialogCRSProvider implements CRSProvider {
 	private boolean shown = false;
 
 	/**
-	 * @see CRSProvider#getCRS(PropertyDefinition)
+	 * @see CRSProvider#getCRS(TypeDefinition, List)
 	 */
 	@Override
-	public CRSDefinition getCRS(PropertyDefinition property) {
+	public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath) {
 		// TODO extend dialog to allow selecting a CRS per property definition
 		// XXX for now always reports the same CRS definition
 		if (crsDef == null && !shown) {

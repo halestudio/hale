@@ -12,11 +12,16 @@
 
 package eu.esdihumboldt.hale.ui.io.instance.crs;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Base class for CRS managers storing/loading preferences about assigned CRSs.
@@ -60,7 +65,7 @@ public abstract class AbstractCRSManager implements CRSProvider {
 	}
 
 	@Override
-	public CRSDefinition getCRS(PropertyDefinition property) {
+	public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath) {
 		CRSDefinition result = null;
 		String resourceId = reader.getResourceIdentifier();
 		if (resourceId == null) {
@@ -75,8 +80,16 @@ public abstract class AbstractCRSManager implements CRSProvider {
 		// first, try configuration
 
 		// configuration for property
-		final String pkey = resourceId + PREFIX_PARAM_CRS + property.getIdentifier();
-		result = CRSDefinitionManager.getInstance().parse(loadValue(pkey));
+		StringBuffer keybuilder = new StringBuffer();
+		keybuilder.append(resourceId);
+		keybuilder.append(PREFIX_PARAM_CRS);
+		keybuilder.append(parentType.getName());
+		for (QName property : propertyPath) {
+			keybuilder.append('/');
+			keybuilder.append(property);
+		}
+		final String propertyKey = keybuilder.toString();
+		result = CRSDefinitionManager.getInstance().parse(loadValue(propertyKey));
 
 		// overall configuration for resource
 		if (result == null && !resourceId.isEmpty()) {
@@ -90,10 +103,10 @@ public abstract class AbstractCRSManager implements CRSProvider {
 
 		if (result == null && provider != null) {
 			// consult default CRS provider
-			result = provider.getCRS(property);
+			result = provider.getCRS(parentType, propertyPath);
 			if (result != null) {
 				// store in configuration
-				storeValue(pkey, CRSDefinitionManager.getInstance().asString(result));
+				storeValue(propertyKey, CRSDefinitionManager.getInstance().asString(result));
 			}
 		}
 

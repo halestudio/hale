@@ -12,8 +12,13 @@
 
 package eu.esdihumboldt.hale.common.instance.geometry;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Interface for classes that provide CRS definitions based on
@@ -26,12 +31,11 @@ public interface CRSProvider {
 	/**
 	 * Get the CRS definition for values of the given property definition.
 	 * 
-	 * FIXME the property definition is not really a good tool for this, because
-	 * it doesn't represent the full path in an instance
+	 * @param parentType the definition of the type of the parent instance
+	 * @param propertyPath the property path in the instance
 	 * 
-	 * @param property the property definition
 	 * @return the CRS definition or <code>null</code> if it can't be determined
 	 */
-	public CRSDefinition getCRS(PropertyDefinition property);
+	public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath);
 
 }
