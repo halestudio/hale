@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -32,8 +34,10 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
+import eu.esdihumboldt.hale.io.gml.geometry.AbstractGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
+import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
@@ -41,8 +45,11 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * Handler for polygon geometries
  * 
  * @author Patrick Lieb
+ * @author Simon Templer
  */
 public class PolygonHandler extends FixedConstraintsGeometryHandler {
+
+	private static final ALogger log = ALoggerFactory.getLogger(PolygonHandler.class);
 
 	private static final String POLYGON_TYPE = "PolygonType";
 
@@ -53,8 +60,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	private static final String TRIANGLE_TYPE = "TriangleType";
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      int)
+	 * @see GeometryHandler#createGeometry(Instance, int)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -63,6 +69,8 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 		LinearRing[] holes = null;
 		Polygon polygon = null;
+
+		CRSDefinition crs = null;
 
 		// for use with GML 2
 		// to parse outer linear rings
@@ -75,9 +83,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 				Object value = iterator.next();
 				if (value instanceof Instance) {
 					// outerRing must be a
-					// DefaultGeometryProperty<LinearRing> instance
-					outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-							.getValue()).getGeometry();
+					// GeometryProperty<LinearRing> instance
+					GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
+							.getValue();
+					outerRing = ring.getGeometry();
+					crs = checkCommonCrs(crs, ring.getCRSDefinition());
 				}
 			}
 
@@ -90,9 +100,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
 						// innerRings have to be a
-						// DefaultGeometryProperty<LinearRing> instances
-						innerRings.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-								.getValue()).getGeometry());
+						// GeometryProperty<LinearRing> instance
+						GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
+								.getValue();
+						innerRings.add(ring.getGeometry());
+						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
@@ -112,9 +124,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
 						// innerRings have to be a
-						// DefaultGeometryProperty<LinearRing> instances
-						innerRings.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-								.getValue()).getGeometry());
+						// GeometryProperty<LinearRing> instance
+						GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
+								.getValue();
+						innerRings.add(ring.getGeometry());
+						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
@@ -129,9 +143,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
 						// outerRing must be a
-						// DefaultGeometryProperty<LinearRing> instance
-						outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-								.getValue()).getGeometry();
+						// GeometryProperty<LinearRing> instance
+						GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
+								.getValue();
+						outerRing = ring.getGeometry();
+						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
 				polygon = getGeometryFactory().createPolygon(outerRing, holes);
@@ -150,14 +166,32 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 		}
 
 		if (polygon != null) {
-			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
-			return new DefaultGeometryProperty<Polygon>(crsDef, polygon);
+			if (crs == null) {
+				crs = GMLGeometryUtil.findCRS(instance);
+			}
+			return new DefaultGeometryProperty<Polygon>(crs, polygon);
 		}
 		throw new GeometryNotSupportedException();
 	}
 
+	private CRSDefinition checkCommonCrs(CRSDefinition commonCrs, CRSDefinition newCrs) {
+		if (commonCrs == null) {
+			return newCrs;
+		}
+		if (newCrs == null) {
+			// ignore new CRS not being set
+			return commonCrs;
+		}
+
+		if (!commonCrs.equals(newCrs)) {
+			log.error("Combining geometries with different spatial reference systems.");
+		}
+
+		return commonCrs;
+	}
+
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler#initConstraints()
+	 * @see FixedConstraintsGeometryHandler#initConstraints()
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
@@ -172,7 +206,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.AbstractGeometryHandler#initSupportedTypes()
+	 * @see AbstractGeometryHandler#initSupportedTypes()
 	 */
 	@Override
 	protected Set<? extends QName> initSupportedTypes() {
