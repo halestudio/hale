@@ -47,7 +47,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
-import eu.esdihumboldt.hale.io.shp.ShapefileIO;
+import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
 
 /**
@@ -88,7 +88,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
 
 		// TODO namespace from configuration parameter?!
-		String namespace = ShapefileIO.SHAPEFILE_NS;
+		String namespace = ShapefileConstants.SHAPEFILE_NS;
 		schema = new DefaultSchema(namespace, getSource().getLocation());
 
 		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.2")); //$NON-NLS-1$
@@ -192,7 +192,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return ShapefileIO.DEFAULT_TYPE_NAME;
+		return ShapefileConstants.DEFAULT_TYPE_NAME;
 	}
 
 }

@@ -12,12 +12,16 @@
 
 package eu.esdihumboldt.hale.io.shp;
 
+import javax.xml.namespace.QName;
+
+import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader;
+
 /**
- * Utilities and constants for Shapefile I/O
+ * Constants for Shapefile I/O
  * 
  * @author Simon Templer
  */
-public abstract class ShapefileIO {
+public interface ShapefileConstants {
 
 	/**
 	 * The default shapefile namespace
@@ -29,14 +33,11 @@ public abstract class ShapefileIO {
 	 */
 	public static final String DEFAULT_TYPE_NAME = "Shapefile";
 
-//	/**
-//	 * The Shapefile content type identifier 
-//	 */
-//	public static final String SHAPEFILE_CT_ID = "Shapefile";
-//	
-//	/**
-//	 * The Shapefile content type
-//	 */
-//	public static final ContentType SHAPEFILE_CT = ContentType.getContentType(SHAPEFILE_CT_ID);
+	/**
+	 * Name of the parameter for {@link ShapeInstanceReader} to select the type
+	 * the instances should be associated to. The value is a {@link QName}
+	 * encoded as String.
+	 */
+	public static final String PARAM_TYPENAME = "typename";
 
 }

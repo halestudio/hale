@@ -13,6 +13,8 @@ package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.FileDataStoreFinder;
 
@@ -25,7 +27,8 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.io.shp.ShapefileIO;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
 
 /**
@@ -34,7 +37,7 @@ import eu.esdihumboldt.hale.io.shp.internal.Messages;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class ShapeInstanceReader extends AbstractInstanceReader {
+public class ShapeInstanceReader extends AbstractInstanceReader implements ShapefileConstants {
 
 	private ShapesInstanceCollection instances;
 
@@ -59,7 +62,18 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 
 		progress.setCurrentTask("Extracting shape instances");
 
-		instances = new ShapesInstanceCollection(store, getSourceSchema(), getCrsProvider());
+		String typename = getParameter(PARAM_TYPENAME);
+		TypeDefinition defaultType = null;
+		if (typename != null && !typename.isEmpty()) {
+			try {
+				defaultType = getSourceSchema().getType(QName.valueOf(typename));
+			} catch (Exception e) {
+				// ignore
+				// TODO report?
+			}
+		}
+		instances = new ShapesInstanceCollection(store, defaultType, getSourceSchema(),
+				getCrsProvider());
 
 		reporter.setSuccess(true);
 		return reporter;
@@ -70,7 +84,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return ShapefileIO.DEFAULT_TYPE_NAME;
+		return ShapefileConstants.DEFAULT_TYPE_NAME;
 	}
 
 	/**
