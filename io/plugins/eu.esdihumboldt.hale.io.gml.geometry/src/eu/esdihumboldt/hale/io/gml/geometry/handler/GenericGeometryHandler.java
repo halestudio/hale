@@ -53,6 +53,59 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  */
 public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 
+	/**
+	 * Wraps a {@link CRSDefinition}.
+	 */
+	public static class CRSWrapper {
+
+		private final CRSDefinition crsDef;
+
+		/**
+		 * Create a CRS wrapper
+		 * 
+		 * @param crsDefinition the CRS definition
+		 */
+		public CRSWrapper(CRSDefinition crsDefinition) {
+			this.crsDef = crsDefinition;
+		}
+
+		/**
+		 * Get the contained CRS definition.
+		 * 
+		 * @return the CRS definition
+		 */
+		public CRSDefinition getCrsDef() {
+			return crsDef;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((crsDef == null) ? 0 : crsDef.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			CRSWrapper other = (CRSWrapper) obj;
+			if (crsDef == null) {
+				if (other.crsDef != null)
+					return false;
+			}
+			else if (!crsDef.equals(other.crsDef))
+				return false;
+			return true;
+		}
+
+	}
+
 	private static final String ABSTRACT_GEOMETRY_TYPE = "AbstractGeometryType";
 
 	/**
@@ -126,9 +179,11 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 		List<Geometry> geomList = new ArrayList<Geometry>();
 
 		Class<? extends Geometry> commonGeomType = null;
-		// TODO also check for common crs? no equals for CRSDefinitions
-		// implemented! important for merging geometries
+		CRSWrapper commonCrs = null;
+		boolean allowCombine = true;
 
+		// collect geometries and check for common geometry type and CRS
+		// TODO partition based on CRS?
 		for (GeometryProperty<?> geomProp : childGeometries) {
 			if (geomProp.getGeometry() instanceof GeometryCollection) {
 				GeometryCollection geomCollection = (GeometryCollection) geomProp.getGeometry();
@@ -159,9 +214,17 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				geomList.add(geomProp.getGeometry());
 			}
 
+			// check common CRS
+			CRSWrapper crs = new CRSWrapper(geomProp.getCRSDefinition());
+			if (commonCrs == null) {
+				commonCrs = crs;
+			}
+			else if (!commonCrs.equals(crs)) {
+				allowCombine = false;
+			}
 		}
 
-		if (commonGeomType != null) {
+		if (allowCombine && commonGeomType != null) {
 			Geometry geom = null;
 			if (commonGeomType.equals(Polygon.class)) {
 				// create a MultiPolygon
@@ -189,8 +252,9 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 			}
 			if (geom != null) {
 				// returned combined property
-				return Collections
-						.singleton(new DefaultGeometryProperty<Geometry>(defaultCrs, geom));
+				CRSDefinition crs = (commonCrs != null && commonCrs.getCrsDef() != null) ? (commonCrs
+						.getCrsDef()) : (defaultCrs);
+				return Collections.singleton(new DefaultGeometryProperty<Geometry>(crs, geom));
 			}
 		}
 
@@ -200,5 +264,4 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 		}
 		return childGeometries;
 	}
-
 }
