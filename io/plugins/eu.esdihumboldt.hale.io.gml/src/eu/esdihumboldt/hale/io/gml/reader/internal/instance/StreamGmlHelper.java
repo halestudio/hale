@@ -75,15 +75,19 @@ public abstract class StreamGmlHelper {
 	 * @param srsDimension the dimension of the instance or <code>null</code>
 	 * @param crsProvider CRS provider in case no CRS is specified, may be
 	 *            <code>null</code>
-	 * @param property the definition representing the current property
-	 *            associated to the instance, or <code>null</code>
+	 * @param parentType the type of the topmost instance
+	 * @param propertyPath the property path down from the topmost instance, may
+	 *            be <code>null</code>
 	 * @return the parsed instance
 	 * @throws XMLStreamException if parsing the instance failed
 	 */
 	public static Instance parseInstance(XMLStreamReader reader, TypeDefinition type,
 			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
-			PropertyDefinition property) throws XMLStreamException {
+			TypeDefinition parentType, List<QName> propertyPath) throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
+		if (propertyPath == null) {
+			propertyPath = Collections.emptyList();
+		}
 
 		if (srsDimension == null) {
 			String dim = reader.getAttributeValue(null, "srsDimension");
@@ -101,7 +105,8 @@ public abstract class StreamGmlHelper {
 		}
 
 		// instance properties
-		parseProperties(reader, instance, strict, srsDimension, crsProvider);
+		parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
+				propertyPath);
 
 		// instance value
 		if (type.getConstraint(HasValueFlag.class).isEnabled()) {
@@ -132,7 +137,7 @@ public abstract class StreamGmlHelper {
 				geomValue = geomFactory.createGeometry(instance, defaultValue);
 			}
 
-			if (geomValue != null && crsProvider != null && property != null) {
+			if (geomValue != null && crsProvider != null && propertyPath != null) {
 				// check if CRS are set, and if not, try determining them using
 				// the CRS provider
 				Collection<?> values;
@@ -148,7 +153,7 @@ public abstract class StreamGmlHelper {
 					if (value instanceof Geometry
 							|| (value instanceof GeometryProperty<?> && ((GeometryProperty<?>) value)
 									.getCRSDefinition() == null)) {
-						CRSDefinition crs = crsProvider.getCRS(property);
+						CRSDefinition crs = crsProvider.getCRS(parentType, propertyPath);
 						if (crs != null) {
 							Geometry geom = (value instanceof Geometry) ? ((Geometry) value)
 									: (((GeometryProperty<?>) value).getGeometry());
@@ -188,10 +193,13 @@ public abstract class StreamGmlHelper {
 	 * @param srsDimension the dimension of the instance or <code>null</code>
 	 * @param crsProvider CRS provider in case no CRS is specified, may be
 	 *            <code>null</code>
+	 * @param parentType the type of the topmost instance
+	 * @param propertyPath the property path down from the topmost instance
 	 * @throws XMLStreamException if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader, MutableGroup group, boolean strict,
-			Integer srsDimension, CRSProvider crsProvider) throws XMLStreamException {
+			Integer srsDimension, CRSProvider crsProvider, TypeDefinition parentType,
+			List<QName> propertyPath) throws XMLStreamException {
 		final MutableGroup topGroup = group;
 
 		// attributes (usually only present in Instances)
@@ -235,13 +243,15 @@ public abstract class StreamGmlHelper {
 						group = groups.peek();
 
 						PropertyDefinition property = gp.getProperty();
+						List<QName> path = new ArrayList<QName>(propertyPath);
+						path.add(property.getName());
 
 						if (hasElements(property.getPropertyType())) {
 							// use an instance as value
 							group.addProperty(
 									property.getName(),
 									parseInstance(reader, property.getPropertyType(), null, strict,
-											srsDimension, crsProvider, property));
+											srsDimension, crsProvider, parentType, path));
 						}
 						else {
 							if (hasAttributes(property.getPropertyType())) {
@@ -251,7 +261,7 @@ public abstract class StreamGmlHelper {
 								group.addProperty(
 										property.getName(),
 										parseInstance(reader, property.getPropertyType(), null,
-												strict, srsDimension, crsProvider, property));
+												strict, srsDimension, crsProvider, parentType, path));
 							}
 							else {
 								// no elements and no attributes

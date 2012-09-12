@@ -13,6 +13,7 @@
 package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
@@ -44,7 +45,6 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.io.shp.ShapefileIO;
@@ -121,7 +121,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		}
 
 		/**
-		 * @see java.util.Iterator#next()
+		 * @see Iterator#next()
 		 */
 		@Override
 		public Instance next() {
@@ -189,15 +189,8 @@ public class ShapesInstanceCollection implements InstanceCollection {
 						crsDef = CRSDefinitionUtil.createDefinition(crs);
 					}
 					else {
-						// fallback to provider configuration
-						ChildDefinition<?> child = type.getChild(propertyName);
-						if (child != null && child.asProperty() != null) {
-							// ask CRS provider
-							crsDef = crsProvider.getCRS(child.asProperty());
-						}
-						else {
-							crsDef = null;
-						}
+						// ask CRS provider
+						crsDef = crsProvider.getCRS(type, Collections.singletonList(propertyName));
 					}
 					value = new DefaultGeometryProperty<Geometry>(crsDef, (Geometry) value);
 				}
@@ -210,7 +203,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		}
 
 		/**
-		 * @see java.util.Iterator#remove()
+		 * @see Iterator#remove()
 		 */
 		@Override
 		public void remove() {
@@ -218,7 +211,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		}
 
 		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.ResourceIterator#close()
+		 * @see ResourceIterator#close()
 		 */
 		@Override
 		public void close() {
@@ -248,7 +241,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 	}
 
 	/**
-	 * @see InstanceResolver#getReference(eu.esdihumboldt.hale.common.instance.model.Instance)
+	 * @see InstanceResolver#getReference(Instance)
 	 */
 	@Override
 	public InstanceReference getReference(Instance instance) {
@@ -257,7 +250,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 	}
 
 	/**
-	 * @see InstanceResolver#getInstance(eu.esdihumboldt.hale.common.instance.model.InstanceReference)
+	 * @see InstanceResolver#getInstance(InstanceReference)
 	 */
 	@Override
 	public Instance getInstance(InstanceReference reference) {
