@@ -141,7 +141,75 @@
 				src="images/context_instance.png"></td>
 		</tr>
 	</table>
+	<h2>Cardinality</h2>
+	<p>
+		Next to the property name you usually get the information about a
+		property's <strong>cardinality</strong>. It consists of two values
+		enclosed in brackets - the first value is the minimum, the second the
+		maximum occurrence.
+	</p>
+	<p>
+		<img src="images/cardinality.png">
+	</p>
+	<p>The value <i>n</i> represents an unbounded maximum
+		occurrence. If there is no information about the cardinality
+		displayed, this means that a property occurs exactly once.
+	</p>
+	<p>
+		So for instance in the example below, the property <i>geometry</i>
+		must be present in every <i>River</i> instance, while <i>identifier
+			(0..n)</i> may occur any number of times and all other properties, like <i>code
+			(0..1)</i> or <i>name (0..1)</i> may be present but are optional.
+	</p>
+	<p>
+		<img src="images/cardinality_example.png">
+	</p>
+	<h2>Population</h2>
+	<p>If data is present in the application for the schema,
+		additionally information about how the schema elements are populated
+		in the data may be displayed. It is prefixed with a multiplication sign and states the overall count of instances
+		of the respective type or values of the respective property.</p>
+	<p>
+		<img src="images/population.png">
+	</p>
+	<p>If there is a second value in brackets, it states how many
+		different parents there are for this property. If this value is not
+		displayed, this means the number of parents is the same as the overall
+		value count for the property.</p>
+	<p>
+		In the example below, there are 180 instances of <i>River</i>. All of
+		those rivers have a <i>description</i>, but only two thirds (120) have
+		an associated <i>code</i>.<br> There are 173 values for the
+		<i>identifier</i> property, but only in 165
+		<i>Rivers</i> - meaning there are some <i>Rivers</i> with more than
+		one <i>identifier</i>, while 15 have none.
+	</p>
+	<p>
+		<img src="images/population_example.png">
+	</p>
 
 	<!-- related concepts: schema stuff, default geometry, contexts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_schema.html">What is a Schema?</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/contexts.html">Contexts</a>
+		</p>
+	</div>
+	
+	<!-- related tasks: Load a schema, create relation, edit mappable types -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/load_browse_schema.html">Loading and browsing schemas</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/mapping_schema_elem.html">Mapping schema elements</a>
+		</p>
+	</div>
 </body>
 </html>
