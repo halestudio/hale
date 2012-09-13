@@ -96,12 +96,12 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider imple
 				int count = ps.getPopulation((EntityDefinition) element);
 				switch (count) {
 				case PopulationService.UNKNOWN:
-					countText = "x?";
+					countText = "\u00d7?";
 					break;
 				case 0:
 					break;
 				default:
-					countText = "x" + count;
+					countText = "\u00d7" + count;
 				}
 			}
 
