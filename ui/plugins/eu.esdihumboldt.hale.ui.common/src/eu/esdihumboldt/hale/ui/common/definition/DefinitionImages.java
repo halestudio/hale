@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants;
 import eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin;
+import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.geometry.DefaultGeometryUtil;
 
@@ -256,7 +257,8 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
 					PopulationService.class);
 			if (ps != null && ps.hasPopulation(entityDef.getSchemaSpace())) {
-				faded = (ps.getPopulation(entityDef) == 0);
+				Population pop = ps.getPopulation(entityDef);
+				faded = (pop != null && pop.getOverallCount() == 0);
 			}
 		}
 

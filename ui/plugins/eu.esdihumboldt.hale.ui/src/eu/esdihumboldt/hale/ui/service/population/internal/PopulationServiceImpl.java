@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.common.service.population.impl.AbstractPopulationService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
@@ -37,9 +38,35 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
  */
 public class PopulationServiceImpl extends AbstractPopulationService {
 
-	private final Map<EntityDefinition, Integer> sourcePopulation = new HashMap<EntityDefinition, Integer>();
+	private static final Population NO_POPULATION = new Population() {
 
-	private final Map<EntityDefinition, Integer> targetPopulation = new HashMap<EntityDefinition, Integer>();
+		@Override
+		public int getParentsCount() {
+			return 0;
+		}
+
+		@Override
+		public int getOverallCount() {
+			return 0;
+		}
+	};
+
+	private static final Population UNKNOWN_POPULATION = new Population() {
+
+		@Override
+		public int getParentsCount() {
+			return Population.UNKNOWN;
+		}
+
+		@Override
+		public int getOverallCount() {
+			return Population.UNKNOWN;
+		}
+	};
+
+	private final Map<EntityDefinition, PopulationImpl> sourcePopulation = new HashMap<EntityDefinition, PopulationImpl>();
+
+	private final Map<EntityDefinition, PopulationImpl> targetPopulation = new HashMap<EntityDefinition, PopulationImpl>();
 
 	/**
 	 * Create a population service instance.
@@ -99,25 +126,25 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 * @see PopulationService#getPopulation(EntityDefinition)
 	 */
 	@Override
-	public int getPopulation(EntityDefinition entity) {
-		Integer count;
+	public Population getPopulation(EntityDefinition entity) {
+		Population population;
 		synchronized (this) {
 			switch (entity.getSchemaSpace()) {
 			case TARGET:
-				count = targetPopulation.get(entity);
+				population = targetPopulation.get(entity);
 				break;
 			case SOURCE:
 			default:
-				count = sourcePopulation.get(entity);
+				population = sourcePopulation.get(entity);
 			}
 		}
-		if (count == null) {
+		if (population == null) {
 			if (AlignmentUtil.isDefaultEntity(entity)) {
-				return 0;
+				return NO_POPULATION;
 			}
-			return UNKNOWN;
+			return UNKNOWN_POPULATION;
 		}
-		return count;
+		return population;
 	}
 
 	/**
@@ -126,7 +153,7 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	@Override
 	public boolean hasPopulation(SchemaSpaceID schemaSpace) {
 		synchronized (this) {
-			Map<EntityDefinition, Integer> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
+			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
 					: (sourcePopulation);
 			return !population.isEmpty();
 		}
@@ -162,7 +189,7 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 
 		// count type
 		EntityDefinition def = new TypeEntityDefinition(instance.getDefinition(), schemaSpace, null);
-		increase(def);
+		increase(def, 1);
 
 		addToPopulation(instance, def);
 	}
@@ -183,7 +210,7 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		}
 
 		synchronized (this) {
-			Map<EntityDefinition, Integer> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
+			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
 					: (sourcePopulation);
 			population.clear();
 		}
@@ -201,13 +228,10 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		for (QName propertyName : group.getPropertyNames()) {
 			EntityDefinition propertyDef = AlignmentUtil.getChild(groupDef, propertyName);
 
-			// XXX two options to count population
-			// per parent
-			increase(propertyDef);
-			// or per value
-			// ...
-
 			Object[] values = group.getProperty(propertyName);
+
+			increase(propertyDef, values.length);
+
 			for (Object value : values) {
 				if (value instanceof Group) {
 					addToPopulation((Group) value, propertyDef);
@@ -217,23 +241,26 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	}
 
 	/**
-	 * Increase the counter for the given entity.
+	 * Increase the counter for the given entity per parent.
 	 * 
 	 * @param entity the entity
+	 * @param values number of values
 	 */
-	private void increase(EntityDefinition entity) {
+	private void increase(EntityDefinition entity, int values) {
 		synchronized (this) {
-			Map<EntityDefinition, Integer> population = (entity.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
+			Map<EntityDefinition, PopulationImpl> population = (entity.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
 					: (sourcePopulation);
 
-			Integer count = population.get(entity);
-			if (count == null) {
-				count = 1;
+			PopulationImpl pop = population.get(entity);
+			if (pop == null) {
+				pop = new PopulationImpl(1, values);
+				population.put(entity, pop);
 			}
 			else {
-				count++;
+				pop.increaseParents();
+				pop.increaseOverall(values);
 			}
-			population.put(entity, count);
+
 		}
 	}
 

@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 
 /**
@@ -93,15 +94,20 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider imple
 			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
 					PopulationService.class);
 			if (ps != null) {
-				int count = ps.getPopulation((EntityDefinition) element);
+				Population pop = ps.getPopulation((EntityDefinition) element);
+				int count = pop.getOverallCount();
+				int parents = pop.getParentsCount();
 				switch (count) {
-				case PopulationService.UNKNOWN:
+				case Population.UNKNOWN:
 					countText = "\u00d7?";
 					break;
 				case 0:
 					break;
 				default:
 					countText = "\u00d7" + count;
+					if (parents != count) {
+						countText += " (" + parents + ")";
+					}
 				}
 			}
 

@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 
 /**
@@ -52,16 +53,12 @@ public class UnpopulatedPropertiesFilter extends ViewerFilter {
 			if (element instanceof EntityDefinition) {
 				EntityDefinition entityDef = (EntityDefinition) element;
 
-				if (!entityDef.getPropertyPath().isEmpty() // only filter
-															// properties
-						&& ps.hasPopulation(entityDef.getSchemaSpace())) { // only
-																			// filter
-																			// if
-																			// there
-																			// is
-																			// a
-																			// population
-					return ps.getPopulation(entityDef) != 0;
+				if (!entityDef.getPropertyPath().isEmpty()
+				// only filter properties
+						&& ps.hasPopulation(entityDef.getSchemaSpace())) {
+					// only filter if there is a population
+					Population pop = ps.getPopulation(entityDef);
+					return pop != null && pop.getOverallCount() != 0;
 				}
 			}
 		}

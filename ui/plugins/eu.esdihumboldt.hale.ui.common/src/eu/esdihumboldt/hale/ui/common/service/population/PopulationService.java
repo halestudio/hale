@@ -25,17 +25,12 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 public interface PopulationService {
 
 	/**
-	 * Constant representing unknown population count.
-	 */
-	public static final int UNKNOWN = -1;
-
-	/**
 	 * Get the population count for the given entity.
 	 * 
 	 * @param entity the entity
-	 * @return the population count or {@link #UNKNOWN}
+	 * @return the population
 	 */
-	public int getPopulation(EntityDefinition entity);
+	public Population getPopulation(EntityDefinition entity);
 
 	/**
 	 * Add an instance to the population.
