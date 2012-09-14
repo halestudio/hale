@@ -17,7 +17,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -836,28 +835,32 @@ public class StreamGmlWriterTest {
 				QName propertyName = properties.get(i);
 				DefinitionGroup def = parent.getDefinition();
 
-				Object value = parent.getProperty(propertyName);
-				if (value instanceof MutableGroup) {
-					parent = (MutableGroup) value;
-				}
-				else {
-					MutableGroup child;
-					ChildDefinition<?> childDef = def.getChild(propertyName);
-					if (childDef.asProperty() != null || value != null) {
-						// create instance
-						child = new DefaultInstance(childDef.asProperty().getPropertyType(), null);
+				Object[] vals = parent.getProperty(propertyName);
+				if (vals != null && vals.length > 0) {
+					Object value = vals[0];
+					if (value instanceof MutableGroup) {
+						parent = (MutableGroup) value;
 					}
 					else {
-						// create group
-						child = new DefaultGroup(childDef.asGroup());
-					}
+						MutableGroup child;
+						ChildDefinition<?> childDef = def.getChild(propertyName);
+						if (childDef.asProperty() != null || value != null) {
+							// create instance
+							child = new DefaultInstance(childDef.asProperty().getPropertyType(),
+									null);
+						}
+						else {
+							// create group
+							child = new DefaultGroup(childDef.asGroup());
+						}
 
-					if (value != null) {
-						// wrap value
-						((MutableInstance) child).setValue(value);
-					}
+						if (value != null) {
+							// wrap value
+							((MutableInstance) child).setValue(value);
+						}
 
-					parent = child;
+						parent = child;
+					}
 				}
 			}
 			parent.addProperty(properties.get(properties.size() - 1), entry.getValue());
@@ -882,9 +885,9 @@ public class StreamGmlWriterTest {
 		System.out.println(outFile.getAbsolutePath());
 		System.out.println(targetSchema.toString());
 
-		if (!DEL_TEMP_FILES && Desktop.isDesktopSupported()) {
-			Desktop.getDesktop().open(outFile);
-		}
+//		if (!DEL_TEMP_FILES && Desktop.isDesktopSupported()) {
+//			Desktop.getDesktop().open(outFile);
+//		}
 
 		IOReport valReport = validate(outFile.toURI(), validationSchemas);
 
