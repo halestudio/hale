@@ -86,6 +86,7 @@ public class PropertyResolverTest {
 			Instance instance = it.next();
 			assertNotNull(instance);
 
+			@SuppressWarnings("unused")
 			TypeDefinition test = instance.getDefinition().getChildren().iterator().next()
 					.asProperty().getParentType();
 
@@ -139,6 +140,11 @@ public class PropertyResolverTest {
 		}
 	}
 
+	/**
+	 * Test with complex instances.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
 	@Ignore
 	public void testComplexInstances() throws Exception {
 

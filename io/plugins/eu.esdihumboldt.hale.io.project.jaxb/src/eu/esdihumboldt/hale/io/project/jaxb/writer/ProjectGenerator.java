@@ -33,8 +33,6 @@ public class ProjectGenerator {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param projectService the project service
 	 */
 	public ProjectGenerator(/* ProjectService projectService */) {
 		super();
@@ -49,7 +47,7 @@ public class ProjectGenerator {
 	 * 
 	 * @throws JAXBException if writing the project fails
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unused" })
 	public void write(String xmlPath, String name) throws JAXBException {
 //		
 //		// add *.xml extension if is wasn't added before
@@ -78,6 +76,7 @@ public class ProjectGenerator {
 //				HaleProject.class, hproject), new File(xmlPath));
 	}
 
+	@SuppressWarnings("unused")
 	private HaleProject createHaleProject(String xmlPath, String name) throws JAXBException {
 //		final String basePath = FilenameUtils.getFullPath(xmlPath);
 //		
@@ -109,6 +108,7 @@ public class ProjectGenerator {
 		return hproject;
 	}
 
+	@SuppressWarnings("unused")
 	private void createInstanceData(HaleProject hproject, String basePath) {
 //		if (projectService.getInstanceDataPath() != null) {
 //			InstanceData id = new InstanceData();
@@ -133,6 +133,7 @@ public class ProjectGenerator {
 //		}
 	}
 
+	@SuppressWarnings("unused")
 	private void createMappedSchema(HaleProject hproject, String basePath) {
 //		MappedSchema sourceschema = new MappedSchema();
 //		sourceschema.setPath(getRelativeLocation(projectService.getSourceSchemaPath(), basePath));
@@ -145,6 +146,7 @@ public class ProjectGenerator {
 //		}
 	}
 
+	@SuppressWarnings("unused")
 	private void createTaskStatus(HaleProject hproject) {
 		// XXX tasks in project deactivated for now
 //		TaskService taskService = 
@@ -167,6 +169,7 @@ public class ProjectGenerator {
 //		hproject.setTaskStatus(taskStatus);
 	}
 
+	@SuppressWarnings("unused")
 	private void createAlignment(HaleProject hproject, String basePath, String xmlPath)
 			throws JAXBException {
 //		AlignmentService alignmentService = 
@@ -178,6 +181,7 @@ public class ProjectGenerator {
 //		hproject.setOmlPath(getRelativeLocation(xmlPath + ".goml", basePath)); //$NON-NLS-1$
 	}
 
+	@SuppressWarnings("unused")
 	private void createConfigSections(HaleProject hproject) {
 //		ConfigSchemaService config = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 //		
@@ -191,6 +195,7 @@ public class ProjectGenerator {
 //		}
 	}
 
+	@SuppressWarnings("unused")
 	private void createStyle(HaleProject hproject, String basePath, String xmlPath) {
 		// XXX style in project deactivated for now
 //		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
@@ -232,6 +237,7 @@ public class ProjectGenerator {
 	 * 
 	 * @return the relative file path if possible, otherwise an URI
 	 */
+	@SuppressWarnings("unused")
 	private String getRelativeLocation(String file, String basePath) {
 		try {
 			URI fileUri = new URI(file);

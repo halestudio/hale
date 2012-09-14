@@ -108,6 +108,9 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		super.reset();
 	}
 
+	/**
+	 * Reset the marker areas.
+	 */
 	protected void areaReset() {
 		super.reset();
 	}

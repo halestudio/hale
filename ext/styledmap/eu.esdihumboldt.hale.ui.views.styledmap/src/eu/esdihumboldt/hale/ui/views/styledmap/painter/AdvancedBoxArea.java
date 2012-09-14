@@ -26,6 +26,9 @@ public class AdvancedBoxArea extends BoxArea {
 	private final java.awt.geom.Area area;
 
 	/**
+	 * Create an area.
+	 * 
+	 * @param area AWT area to use for the {@link #contains(int, int)} check
 	 * @param minX the minimum x value of the area
 	 * @param minY the minimum y value of the area
 	 * @param maxX the maximum x value of the area
@@ -35,7 +38,6 @@ public class AdvancedBoxArea extends BoxArea {
 		super(minX, minY, maxX, maxY);
 
 		this.area = area;
-
 	}
 
 	/**

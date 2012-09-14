@@ -58,7 +58,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  * 
  * @author Basti
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings({ "restriction", "javadoc" })
 public class FilterTest {
 
 	static InstanceCollection complexinstances;
@@ -98,8 +98,8 @@ public class FilterTest {
 			report = instanceReader.execute(null);
 			assertTrue(report.isSuccess());
 
-			this.complexinstances = instanceReader.getInstances();
-			assertFalse(this.complexinstances.isEmpty());
+			FilterTest.complexinstances = instanceReader.getInstances();
+			assertFalse(FilterTest.complexinstances.isEmpty());
 			init = true;
 		}
 	}
@@ -126,6 +126,7 @@ public class FilterTest {
 		try {
 			filter = new FilterGeoCqlImpl("Name = 'Mein Porsche'");
 			assertTrue(filter.match(auto));
+			@SuppressWarnings("unused")
 			Filter filter1 = new FilterGeoCqlImpl("Name like 'Porsche'");
 			assertTrue(filter.match(auto));
 		} catch (CQLException e) {
@@ -250,6 +251,7 @@ public class FilterTest {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void testComplexInstancesCQL() throws Exception {
 		/*
@@ -273,7 +275,7 @@ public class FilterTest {
 		 * assertFalse(instances.isEmpty());
 		 */
 
-		ResourceIterator<Instance> ri = this.complexinstances.iterator();
+		ResourceIterator<Instance> ri = FilterTest.complexinstances.iterator();
 		try {
 			boolean foundIt = false;
 			boolean stayFalse = false;
@@ -374,6 +376,7 @@ public class FilterTest {
 		try {
 			filter = new FilterGeoECqlImpl("Name = 'Mein Porsche'");
 			assertTrue(filter.match(auto));
+			@SuppressWarnings("unused")
 			Filter filter1 = new FilterGeoECqlImpl("Name like %Porsche%");
 			assertTrue(filter.match(auto));
 		} catch (CQLException e) {
@@ -517,7 +520,7 @@ public class FilterTest {
 		 * assertFalse(instances.isEmpty());
 		 */
 
-		ResourceIterator<Instance> ri = this.complexinstances.iterator();
+		ResourceIterator<Instance> ri = FilterTest.complexinstances.iterator();
 		try {
 			boolean foundIt = false;
 			boolean stayFalse = false;

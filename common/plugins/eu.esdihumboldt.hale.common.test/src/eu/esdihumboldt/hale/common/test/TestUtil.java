@@ -62,8 +62,9 @@ public class TestUtil {
 	 * 
 	 * @param location the URI specifying the location of the schema
 	 * @return the loaded schema
-	 * @throws IOProviderConfigurationException
-	 * @throws IOException
+	 * @throws IOProviderConfigurationException if the schema reader
+	 *             configuration failed
+	 * @throws IOException if the schema could not be loaded
 	 */
 	public static Schema loadSchema(URI location) throws IOProviderConfigurationException,
 			IOException {
@@ -89,10 +90,11 @@ public class TestUtil {
 	 * @param sourceTypes the source type index
 	 * @param targetTypes the target type index
 	 * @return the loaded alignment
-	 * @throws IOException
-	 * @throws MappingException
-	 * @throws ValidationException
-	 * @throws MarshalException
+	 * @throws IOException if the alignment or other resources could not be
+	 *             loaded
+	 * @throws MappingException if the mapping is faulty or could not be applied
+	 * @throws ValidationException if there was a validation error
+	 * @throws MarshalException if unmarshaling the alignment failed
 	 */
 	public static Alignment loadAlignment(final URI location, Schema sourceTypes, Schema targetTypes)
 			throws MarshalException, ValidationException, MappingException, IOException {
@@ -120,8 +122,9 @@ public class TestUtil {
 	 * @param location the URI specifying the location of the xml instance file
 	 * @param types the type index
 	 * @return the loaded instance collection
-	 * @throws IOException
-	 * @throws IOProviderConfigurationException
+	 * @throws IOException if loading the instance failed
+	 * @throws IOProviderConfigurationException if configuring the instance
+	 *             reader failed
 	 */
 	public static InstanceCollection loadInstances(URI location, Schema types)
 			throws IOProviderConfigurationException, IOException {
@@ -143,16 +146,12 @@ public class TestUtil {
 	 */
 	public static void startConversionService() {
 		List<String> bundlesToStart = new ArrayList<String>();
-		bundlesToStart.add("org.springframework.osgi.core"); // for osgi
-																// extensions in
-																// application
-																// context
-		bundlesToStart.add("org.springframework.osgi.extender"); // activate the
-																	// extender
-		bundlesToStart.add("eu.esdihumboldt.hale.common.convert"); // activate
-																	// the
-																	// conversion
-																	// service
+		// for osgi extensions in application context
+		bundlesToStart.add("org.springframework.osgi.core");
+		// activate the extender
+		bundlesToStart.add("org.springframework.osgi.extender");
+		// activate the conversion service
+		bundlesToStart.add("eu.esdihumboldt.hale.common.convert");
 
 		startService(bundlesToStart, ConversionService.class);
 	}
