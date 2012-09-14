@@ -29,8 +29,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.content.IContentType;
 import org.osgi.framework.Version;
 
-import de.cs3d.util.logging.ALogger;
-import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
@@ -67,7 +65,7 @@ import eu.esdihumboldt.hale.ui.style.io.StyleReader;
  */
 public class ProjectParser extends AbstractImportProvider implements ProjectReader {
 
-	private static ALogger log = ALoggerFactory.getLogger(ProjectParser.class);
+//	private static ALogger log = ALoggerFactory.getLogger(ProjectParser.class);
 
 	/**
 	 * Constant defines the path to the alignment jaxb context
@@ -250,45 +248,45 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 	}
 
 	// XXX: can be removed ?
-	private void loadSchema(IOConfiguration conf, URI source) {
-		// populate IOConfiguration
-		// advisor ID must be already set
-
-		// find provider
-		File file;
-		try {
-			file = new File(source);
-		} catch (IllegalArgumentException e) {
-			file = null;
-		}
-		IContentType ct = HaleIO.findContentType(SchemaReader.class, new DefaultInputSupplier(
-				source), (file == null) ? (null) : (file.getAbsolutePath()));
-		if (ct == null) {
-			report.error(new IOMessageImpl(
-					"Could not load schema at {0}, the content type could not be identified.",
-					null, -1, -1, source));
-			return;
-		}
-		IOProviderDescriptor srf = HaleIO.findIOProviderFactory(SchemaReader.class, ct, null);
-		if (srf == null) {
-			report.error(new IOMessageImpl(
-					"Could not load schema at {0}, no matching I/O provider could be found.", null,
-					-1, -1, source));
-			return;
-		}
-		conf.setProviderId(srf.getIdentifier());
-
-		// provider configuration
-		// source
-		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE, source.toString());
-		// content type
-		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
-
-		// no dependencies needed
-
-		// add configuration to project
-		project.getResources().add(conf);
-	}
+//	private void loadSchema(IOConfiguration conf, URI source) {
+//		// populate IOConfiguration
+//		// advisor ID must be already set
+//
+//		// find provider
+//		File file;
+//		try {
+//			file = new File(source);
+//		} catch (IllegalArgumentException e) {
+//			file = null;
+//		}
+//		IContentType ct = HaleIO.findContentType(SchemaReader.class, new DefaultInputSupplier(
+//				source), (file == null) ? (null) : (file.getAbsolutePath()));
+//		if (ct == null) {
+//			report.error(new IOMessageImpl(
+//					"Could not load schema at {0}, the content type could not be identified.",
+//					null, -1, -1, source));
+//			return;
+//		}
+//		IOProviderDescriptor srf = HaleIO.findIOProviderFactory(SchemaReader.class, ct, null);
+//		if (srf == null) {
+//			report.error(new IOMessageImpl(
+//					"Could not load schema at {0}, no matching I/O provider could be found.", null,
+//					-1, -1, source));
+//			return;
+//		}
+//		conf.setProviderId(srf.getIdentifier());
+//
+//		// provider configuration
+//		// source
+//		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_SOURCE, source.toString());
+//		// content type
+//		conf.getProviderConfiguration().put(AbstractImportProvider.PARAM_CONTENT_TYPE, ct.getId());
+//
+//		// no dependencies needed
+//
+//		// add configuration to project
+//		project.getResources().add(conf);
+//	}
 
 	private void loadInstances(HaleProject haleProject, String basePath) {
 		if (haleProject.getInstanceData() != null) {
@@ -446,6 +444,12 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 		}
 	}
 
+	/**
+	 * Load tasks from the given project.
+	 * 
+	 * @param haleProject the project
+	 * @param basePath the base path
+	 */
 	private void loadTasks(HaleProject haleProject, String basePath) {
 		// XXX tasks in project deactivated for now
 		// SchemaService schemaService = (SchemaService)
@@ -537,8 +541,8 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 		}
 	}
 
-	private void load(URI source, String actionId, String msgCT, String msgIO, Class clazz) {
-
+	private void load(URI source, String actionId, String msgCT, String msgIO,
+			@SuppressWarnings("rawtypes") Class clazz) {
 		// create IOConfiguration for source data
 		IOConfiguration conf = new IOConfiguration();
 		// populate IOConfiguration
@@ -552,12 +556,14 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 		} catch (IllegalArgumentException e) {
 			file = null;
 		}
+		@SuppressWarnings("unchecked")
 		IContentType ct = HaleIO.findContentType(clazz, new DefaultInputSupplier(source),
 				(file == null) ? (null) : (file.getAbsolutePath()));
 		if (ct == null) {
 			report.error(new IOMessageImpl(msgCT, null, -1, -1, source));
 			return;
 		}
+		@SuppressWarnings("unchecked")
 		IOProviderDescriptor srf = HaleIO.findIOProviderFactory(clazz, ct, null);
 		if (srf == null) {
 			report.error(new IOMessageImpl(msgIO, null, -1, -1, source));

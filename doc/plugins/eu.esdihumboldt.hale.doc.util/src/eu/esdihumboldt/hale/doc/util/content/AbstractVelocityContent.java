@@ -30,7 +30,7 @@ import com.google.common.io.Files;
 
 /**
  * Help content based on velocity templates. Use
- * {@link #getContentFromTemplate(VelocityContext, String)} in your
+ * {@link #getContentFromTemplate(String, String, Callable)} in your
  * {@link #getInputStream(String, String, Locale)} implementation.
  * 
  * @author Simon Templer
@@ -53,7 +53,8 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 	 * called more than once with the same id, the previously generated content
 	 * for that id is returned.
 	 * 
-	 * @param contentId the content id or <code>null</code>
+	 * @param contentId the content id
+	 * @param templateId the template id (there may be multiple templates)
 	 * @param contextFactory the context factory, is called once or not at all
 	 * @return the content input stream to return in
 	 *         {@link #getInputStream(String, String, Locale)}
@@ -65,9 +66,8 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 
 		// creates the template file into the temporary directory
 		// if it doesn't already exist
-		File contentFile = (contentId == null) ? (null) : (new File(tempDir, templateId + "_"
-				+ contentId + ".html"));
-		if (contentFile == null || !contentFile.exists()) {
+		File contentFile = new File(tempDir, templateId + "_" + contentId + ".html");
+		if (!contentFile.exists()) {
 			// get the template context
 			VelocityContext context = contextFactory.call();
 
@@ -88,6 +88,8 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 
 	/**
 	 * Initialize temporary directory and template engine.
+	 * 
+	 * @param templateId the template id (there may be multiple templates)
 	 * 
 	 * @throws Exception if an error occurs during the initialization
 	 */
@@ -124,6 +126,8 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 
 	/**
 	 * Get the template content.
+	 * 
+	 * @param templateId the template id (there may be multiple templates)
 	 * 
 	 * @return the template as input stream
 	 * @throws Exception if an error occurs retrieving the template

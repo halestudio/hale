@@ -46,7 +46,9 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
 
 /**
- * Editor for external {@link Graphic}
+ * Editor for external {@link Graphic}.
+ * 
+ * Doesn't support editing of an existing symbolizer.
  * 
  * @author Sebastian Reinhardt
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -64,7 +66,7 @@ public class PointGraphicEditor implements Editor<PointSymbolizer> {
 
 	private final Button dialogButton;
 
-	private boolean changed = false;
+	private final boolean changed = false;
 
 	private URL chosenFile;
 
@@ -76,13 +78,8 @@ public class PointGraphicEditor implements Editor<PointSymbolizer> {
 	 * Creates a {@link Graphic} editor
 	 * 
 	 * @param parent the parent composite
-	 * @param graphic the initial graphic
 	 */
-	public PointGraphicEditor(Composite parent, PointSymbolizer pointSym) {
-		if (pointSym == null) {
-			pointSym = styleBuilder.createPointSymbolizer();
-		}
-
+	public PointGraphicEditor(Composite parent) {
 		page = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		page.setLayout(layout);
@@ -121,7 +118,6 @@ public class PointGraphicEditor implements Editor<PointSymbolizer> {
 		supportText.setLayoutData(new GridData(SWT.BOTTOM, SWT.CENTER, false, false, 2, 1));
 		supportText.setText(new HashSet<String>(Arrays.asList(ImageIO.getReaderMIMETypes()))
 				.toString());
-
 	}
 
 	/**
@@ -179,7 +175,6 @@ public class PointGraphicEditor implements Editor<PointSymbolizer> {
 	}
 
 	/**
-	 * @throws MalformedURLException
 	 * @see Editor#getValue()
 	 */
 	@Override

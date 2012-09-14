@@ -27,7 +27,7 @@ public interface Editor<T> {
 	 * Get the value
 	 * 
 	 * @return the value
-	 * @throws Exception
+	 * @throws Exception if an error occurs getting the value
 	 */
 	public abstract T getValue() throws Exception;
 

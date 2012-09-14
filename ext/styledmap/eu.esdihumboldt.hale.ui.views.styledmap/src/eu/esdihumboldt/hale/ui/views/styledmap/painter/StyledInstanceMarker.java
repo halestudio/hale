@@ -569,12 +569,11 @@ public class StyledInstanceMarker extends InstanceMarker {
 	}
 
 	/**
-	 * Returns the area of the drawn object
+	 * Returns the area of the drawn point.
 	 * 
-	 * @param point
+	 * @param point the point
 	 * @param style the Style2D object
 	 * @param shape the Light Shape
-	 * @param g the Graphics2d Object
 	 * @return the area, which should equal the space of the drawn object
 	 */
 	private Area getArea(Point2D point, Style2D style, LiteShape2 shape) {
