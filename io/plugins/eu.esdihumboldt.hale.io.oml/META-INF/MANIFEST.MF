@@ -40,5 +40,4 @@ Export-Package: eu.esdihumboldt.hale.io.oml,
  eu.esdihumboldt.hale.io.oml.internal.goml.rdf,
  eu.esdihumboldt.hale.io.oml.internal.model.align,
  eu.esdihumboldt.hale.io.oml.internal.model.align.ext,
- eu.esdihumboldt.hale.io.oml.internal.model.rdf,
- eu.esdihumboldt.hale.io.oml.internal.util
+ eu.esdihumboldt.hale.io.oml.internal.model.rdf
