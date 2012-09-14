@@ -13,10 +13,10 @@ package eu.esdihumboldt.hale.io.oml.helper;
 
 import java.util.Iterator;
 
-import eu.esdihumboldt.commons.goml.align.Entity;
-import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.commons.goml.omwg.Property;
-import eu.esdihumboldt.specification.cst.align.IEntity;
+import eu.esdihumboldt.hale.io.oml.internal.goml.align.Entity;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.Property;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.IEntity;
 
 /**
  * Entity utility methods

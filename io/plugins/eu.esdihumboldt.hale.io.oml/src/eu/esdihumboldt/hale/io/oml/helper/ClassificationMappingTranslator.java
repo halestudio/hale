@@ -19,15 +19,15 @@ import java.util.List;
 
 import com.google.common.base.Joiner;
 
-import eu.esdihumboldt.commons.goml.omwg.Property;
-import eu.esdihumboldt.commons.goml.omwg.Restriction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.specification.cst.align.ICell;
-import eu.esdihumboldt.specification.cst.align.ext.IValueExpression;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.Property;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.Restriction;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ext.IValueExpression;
 
 /**
  * Translator class to convert old classification mappings to the new
@@ -51,7 +51,7 @@ public class ClassificationMappingTranslator implements FunctionTranslator,
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
 	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
-	 *      eu.esdihumboldt.specification.cst.align.ICell)
+	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,

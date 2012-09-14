@@ -20,15 +20,6 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.commons.goml.align.Alignment;
-import eu.esdihumboldt.commons.goml.align.Entity;
-import eu.esdihumboldt.commons.goml.oml.io.OmlRdfReader;
-import eu.esdihumboldt.commons.goml.omwg.ComposedFeatureClass;
-import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.commons.goml.omwg.FeatureClass;
-import eu.esdihumboldt.commons.goml.omwg.Property;
-import eu.esdihumboldt.commons.goml.rdf.DetailedAbout;
-import eu.esdihumboldt.commons.goml.rdf.IDetailedAbout;
 import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentReader;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.AlignmentBean;
@@ -64,12 +55,21 @@ import eu.esdihumboldt.hale.io.oml.helper.NotSupportedTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.OrdinatesToPointTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.RenameTranslator;
 import eu.esdihumboldt.hale.io.oml.helper.RetypeTranslator;
+import eu.esdihumboldt.hale.io.oml.internal.goml.align.Alignment;
+import eu.esdihumboldt.hale.io.oml.internal.goml.align.Entity;
+import eu.esdihumboldt.hale.io.oml.internal.goml.oml.io.OmlRdfReader;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedFeatureClass;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.FeatureClass;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.Property;
+import eu.esdihumboldt.hale.io.oml.internal.goml.rdf.DetailedAbout;
+import eu.esdihumboldt.hale.io.oml.internal.goml.rdf.IDetailedAbout;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.IEntity;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ext.IParameter;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
-import eu.esdihumboldt.specification.cst.align.ICell;
-import eu.esdihumboldt.specification.cst.align.IEntity;
-import eu.esdihumboldt.specification.cst.align.ext.IParameter;
 
 /**
  * This class reads the OML Document into Java Object.
