@@ -15,15 +15,15 @@ package eu.esdihumboldt.hale.io.oml.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.cst.functions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.specification.cst.align.ICell;
-import eu.esdihumboldt.specification.cst.align.IEntity;
-import eu.esdihumboldt.specification.cst.align.ext.IParameter;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.Property;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.IEntity;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ext.IParameter;
 
 /**
  * Translator class for geographical name functions
@@ -45,7 +45,7 @@ public class GeographicalNameTranslator implements FunctionTranslator, Geographi
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
 	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
-	 *      eu.esdihumboldt.specification.cst.align.ICell)
+	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,

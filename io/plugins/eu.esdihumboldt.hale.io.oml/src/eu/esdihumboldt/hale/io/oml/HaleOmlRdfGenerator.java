@@ -16,7 +16,7 @@ import javax.xml.bind.PropertyException;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.hale.io.oml.internal.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 
 /**

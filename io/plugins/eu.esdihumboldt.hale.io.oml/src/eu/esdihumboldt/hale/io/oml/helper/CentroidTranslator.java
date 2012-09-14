@@ -18,7 +18,7 @@ import eu.esdihumboldt.cst.functions.geometric.CentroidFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
 
 /**
  * Translator class for centroid function
@@ -40,7 +40,7 @@ public class CentroidTranslator implements FunctionTranslator, CentroidFunction 
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
 	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
-	 *      eu.esdihumboldt.specification.cst.align.ICell)
+	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
