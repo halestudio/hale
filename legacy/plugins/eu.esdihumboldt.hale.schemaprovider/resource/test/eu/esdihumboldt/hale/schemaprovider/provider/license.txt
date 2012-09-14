@@ -1,3 +1,0 @@
-"Les fichiers GEOFLA® Départements peuvent librement être téléchargés depuis notre site web www.ign.fr. Tous les usages de ces fichiers sont autorisés, à l'exclusion de toute exploitation commerciale.
-Pour l'exploitation commerciale des fichiers, une autorisation préalable doit être demandée auprès du réseau commercial de l'IGN.
-Toute reproduction doit être accompagnée de la mention IGN-"nom du produit" et toute représentation sur un site Internet doit être accompagné de la même mention associée à un lien vers l'adresse www.ign.fr." 

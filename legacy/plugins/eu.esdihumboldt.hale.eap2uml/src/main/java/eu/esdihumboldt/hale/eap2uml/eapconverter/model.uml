@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/2.1.0/UML" xmi:id="b0e18700-64e9-40d2-a810-187268adb228" name="Model">
-  <packagedElement xmi:type="uml:Package" xmi:id="_srYH8FEDEd--c-WFYWQE4w" name="PrimitiveTypes"/>
-  <packagedElement xmi:type="uml:Package" xmi:id="{6224AC1A-F7EE-4321-A550-03748D8F5AC8}" name="Feature types"/>
-</uml:Model>
