@@ -103,12 +103,16 @@
             </topic>
             <topic href="html/reference/import/gml_data.html" label="GML">
             </topic>
+            <topic href="html/reference/import/citygml_data.html" label="CityGML">
+            </topic>
             <anchor id="import"/>
          </topic>
          <topic label="Export">
             <topic href="html/reference/export/xml_data.html" label="XML">
             </topic>
             <topic href="html/reference/export/gml_data.html" label="GML">
+            </topic>
+            <topic href="html/reference/export/citygml_data.html" label="CityGML">
             </topic>
             <topic href="html/reference/export/html_mapping.html" label="HTML mapping documentation">
                <topic href="html/reference/export/sample_documentation.html" label="Example">
