@@ -214,6 +214,8 @@ public class RuleStylePage extends FeatureStylePage {
 
 	/**
 	 * Update the {@link Rule} whose editor is currently open
+	 * 
+	 * @throws Exception if an error occurs during the update
 	 */
 	private void updateCurrentRule() throws Exception {
 		if (currentEditor != null && currentEditor.isChanged()) {
@@ -230,7 +232,6 @@ public class RuleStylePage extends FeatureStylePage {
 	/**
 	 * @see IDialogPage#createControl(Composite)
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public void createControl(Composite parent) {
 		changed = false;

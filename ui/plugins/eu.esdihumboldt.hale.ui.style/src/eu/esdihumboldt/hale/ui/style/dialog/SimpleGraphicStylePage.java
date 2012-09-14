@@ -15,12 +15,8 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.geotools.styling.LineSymbolizer;
-import org.geotools.styling.PointSymbolizer;
-import org.geotools.styling.SLD;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
-import org.geotools.styling.Symbolizer;
 
 import eu.esdihumboldt.hale.ui.style.editors.PointGraphicEditor;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
@@ -73,25 +69,25 @@ public class SimpleGraphicStylePage extends FeatureStylePage {
 		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 		page.setLayout(layout);
 
-		Style style = getParent().getStyle();
-		PointSymbolizer point = null;
-		try {
-			Symbolizer[] symbolizers = SLD.symbolizers(style);
-			for (Symbolizer symbol : symbolizers) {
-				if (symbol instanceof LineSymbolizer) {
-					point = (PointSymbolizer) symbol;
-					break;
-				}
-			}
-		} catch (Exception e) {
-			// ignore
-		}
+//		Style style = getParent().getStyle();
+//		PointSymbolizer point = null;
+//		try {
+//			Symbolizer[] symbolizers = SLD.symbolizers(style);
+//			for (Symbolizer symbol : symbolizers) {
+//				if (symbol instanceof LineSymbolizer) {
+//					point = (PointSymbolizer) symbol;
+//					break;
+//				}
+//			}
+//		} catch (Exception e) {
+//			// ignore
+//		}
+//
+//		if (point == null) {
+//			point = styleBuilder.createPointSymbolizer();
+//		}
 
-		if (point == null) {
-			point = styleBuilder.createPointSymbolizer();
-		}
-
-		graphEditor = new PointGraphicEditor(page, point);
+		graphEditor = new PointGraphicEditor(page);
 
 		setControl(page);
 	}

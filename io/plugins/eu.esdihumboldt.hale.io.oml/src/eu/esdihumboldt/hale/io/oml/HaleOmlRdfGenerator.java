@@ -17,7 +17,7 @@ import javax.xml.bind.PropertyException;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.io.oml.internal.goml.oml.io.OmlRdfGenerator;
-import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
+import eu.esdihumboldt.hale.prefixmapper.HumboldtNamespacePrefixMapper;
 
 /**
  * @author Thorsten Reitz
@@ -33,7 +33,7 @@ public class HaleOmlRdfGenerator extends OmlRdfGenerator {
 	public void configurePrefixMapper(Marshaller m) {
 		try {
 			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", //$NON-NLS-1$
-					new NamespacePrefixMapperImpl());
+					new HumboldtNamespacePrefixMapper());
 		} catch (PropertyException e) {
 			_log.error("Setting the PrefixMapper failed: ", e); //$NON-NLS-1$
 		}
