@@ -41,12 +41,12 @@ import org.eclipse.swt.widgets.Text;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.commons.inspire.data.GrammaticalGenderValue;
-import eu.esdihumboldt.commons.inspire.data.GrammaticalNumberValue;
-import eu.esdihumboldt.commons.inspire.data.NameStatusValue;
-import eu.esdihumboldt.commons.inspire.data.NativenessValue;
 import eu.esdihumboldt.cst.functions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.cst.functions.inspire.SpellingType;
+import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalGenderValue;
+import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalNumberValue;
+import eu.esdihumboldt.cst.functions.inspire.data.NameStatusValue;
+import eu.esdihumboldt.cst.functions.inspire.data.NativenessValue;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.schema.model.Definition;

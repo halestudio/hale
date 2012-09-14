@@ -20,7 +20,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
 
 /**
  * Class to translate rename feature function to retype function
@@ -42,7 +42,7 @@ public class RetypeTranslator implements FunctionTranslator, RetypeFunction {
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
 	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
-	 *      eu.esdihumboldt.specification.cst.align.ICell)
+	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,

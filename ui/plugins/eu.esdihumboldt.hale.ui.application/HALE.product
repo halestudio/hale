@@ -102,7 +102,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="de.fhg.igd.swingrcp"/>
       <plugin id="edu.umd.cs.findbugs.annotations"/>
-      <plugin id="eu.esdihumboldt.commons"/>
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dynamic" fragment="true"/>
@@ -188,7 +187,6 @@ http://www.esdi-community.eu/projects/show/hale
       <plugin id="eu.esdihumboldt.hale.ui.views.transformation"/>
       <plugin id="eu.esdihumboldt.hale.ui.views.typehierarchy"/>
       <plugin id="eu.esdihumboldt.hale.userstatus.config" fragment="true"/>
-      <plugin id="eu.esdihumboldt.specification"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>

@@ -17,7 +17,7 @@ import java.util.List;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
 
 /**
  * The interface for all translator functions
