@@ -19,7 +19,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.specification.cst.align.ICell;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
 
 /**
  * Class to translate equivalent old rename function to the new rename function
@@ -41,7 +41,7 @@ public class RenameTranslator implements FunctionTranslator, RenameFunction {
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
 	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
-	 *      eu.esdihumboldt.specification.cst.align.ICell)
+	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
