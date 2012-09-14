@@ -22,7 +22,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.io.oml.internal.goml.align.Cell;
@@ -76,7 +75,6 @@ import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ValueClassType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ValueConditionType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ValueExprType;
 import eu.esdihumboldt.hale.io.oml.internal.model.rdf.IAbout;
-import eu.esdihumboldt.hale.io.oml.internal.util.NamespacePrefixMapperImpl;
 
 /**
  * This class implements methods for marshalling HUMBOLDT OML Objects to XML.
@@ -151,16 +149,21 @@ public class OmlRdfGenerator {
 		 */
 	}
 
+	/**
+	 * Override this method to configure a prefix mapper.
+	 * 
+	 * @param m the marshaller
+	 */
 	protected void configurePrefixMapper(Marshaller m) {
-		try {
-			m.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NamespacePrefixMapperImpl());
-
-		} catch (PropertyException e) {
-			// if the JAXB provider doesn't recognize the prefix mapper,
-			// it will throw this exception. Since being unable to specify
-			// a human friendly prefix is not really a fatal problem,
-			// you can just continue marshalling without failing
-		}
+//		try {
+//			m.setProperty("com.sun.xml.bind.namespacePrefixMapper", new NamespacePrefixMapperImpl());
+//
+//		} catch (PropertyException e) {
+//			// if the JAXB provider doesn't recognize the prefix mapper,
+//			// it will throw this exception. Since being unable to specify
+//			// a human friendly prefix is not really a fatal problem,
+//			// you can just continue marshalling without failing
+//		}
 	}
 
 	/**
