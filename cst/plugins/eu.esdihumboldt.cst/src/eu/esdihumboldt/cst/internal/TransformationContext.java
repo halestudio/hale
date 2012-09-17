@@ -12,13 +12,10 @@
 
 package eu.esdihumboldt.cst.internal;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
@@ -35,13 +32,13 @@ public class TransformationContext {
 	 * 
 	 * XXX would implementation class be better?
 	 */
-	private final Map<String, SetMultimap<Object, Object>> functionContexts = new HashMap<String, SetMultimap<Object, Object>>();
+	private final Map<String, Map<Object, Object>> functionContexts = new HashMap<String, Map<Object, Object>>();
 
 	/**
 	 * Overall transformation context.
 	 */
-	private final SetMultimap<Object, Object> context = Multimaps
-			.synchronizedSetMultimap(HashMultimap.create());
+	private final Map<Object, Object> context = Collections
+			.synchronizedMap(new HashMap<Object, Object>());
 
 	private final Map<Cell, ExecutionContext> cachedContexts = new IdentityHashMap<Cell, ExecutionContext>();
 
@@ -58,22 +55,23 @@ public class TransformationContext {
 			if (context == null) {
 				context = new ExecutionContext() {
 
-					private final SetMultimap<Object, Object> cellContext = Multimaps
-							.synchronizedSetMultimap(HashMultimap.create());
+					private final Map<Object, Object> cellContext = Collections
+							.synchronizedMap(new HashMap<Object, Object>());
 
 					@Override
-					public SetMultimap<Object, Object> getTransformationContext() {
+					public Map<Object, Object> getTransformationContext() {
 						return TransformationContext.this.context;
 					}
 
 					@Override
-					public SetMultimap<Object, Object> getFunctionContext() {
+					public Map<Object, Object> getFunctionContext() {
 						String functionId = cell.getTransformationIdentifier();
-						SetMultimap<Object, Object> context;
+						Map<Object, Object> context;
 						synchronized (functionContexts) {
 							context = functionContexts.get(functionId);
 							if (context == null) {
-								context = Multimaps.synchronizedSetMultimap(HashMultimap.create());
+								context = Collections
+										.synchronizedMap(new HashMap<Object, Object>());
 								functionContexts.put(functionId, context);
 							}
 						}
@@ -81,7 +79,7 @@ public class TransformationContext {
 					}
 
 					@Override
-					public SetMultimap<Object, Object> getCellContext() {
+					public Map<Object, Object> getCellContext() {
 						return cellContext;
 					}
 				};
