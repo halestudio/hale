@@ -31,7 +31,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ArrayListMultimap;
@@ -51,13 +50,15 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * Base parameter page for parameter pages that contain a listing of source
  * types which can be put together to a target value.
  * 
+ * @param <T> the type of the text field/editor
+ * 
  * @author Kai Schwierczek
  */
-public abstract class SourceListParameterPage extends
+public abstract class SourceListParameterPage<T> extends
 		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
 
 	private String initialValue = "";
-	private Text textField;
+	private T textField;
 	private TableViewer varTable;
 	private EntityDefinition[] variables = new EntityDefinition[0];
 
@@ -91,22 +92,12 @@ public abstract class SourceListParameterPage extends
 	protected abstract String getSourcePropertyName();
 
 	/**
-	 * Subclasses can override this method to specify, that the text field
-	 * should have multiple lines. By default it is not.
-	 * 
-	 * @return true if the text field should have multiple lines.
-	 */
-	protected boolean useMultilineInput() {
-		return false;
-	}
-
-	/**
 	 * Subclasses can configure the text field to for example add some
 	 * validation mechanism.
 	 * 
 	 * @param textField the text field to configure
 	 */
-	protected void configure(Text textField) {
+	protected void configure(T textField) {
 		// default: do nothing
 	}
 
@@ -173,7 +164,7 @@ public abstract class SourceListParameterPage extends
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
 		ListMultimap<String, String> params = ArrayListMultimap.create();
-		params.put(getParameterName(), textField.getText());
+		params.put(getParameterName(), getText(textField));
 		return params;
 	}
 
@@ -207,14 +198,12 @@ public abstract class SourceListParameterPage extends
 		page.setLayout(GridLayoutFactory.swtDefaults().create());
 
 		// input field
-		int lineStyle = useMultilineInput() ? SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL : SWT.SINGLE;
-		textField = new Text(page, lineStyle | SWT.BORDER);
-		textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, useMultilineInput()));
+		textField = createAndLayoutTextField(page);
 
 		// let subclasses for example add validation
 		configure(textField);
 
-		textField.setText(initialValue);
+		setText(textField, initialValue);
 
 		// variables
 		Label label = new Label(page, SWT.NONE);
@@ -251,10 +240,44 @@ public abstract class SourceListParameterPage extends
 				if (index >= 0) {
 					String var = varTable.getTable().getItem(index).getText();
 					// let subclass modify variable
-					textField.insert(var);
-					textField.setFocus();
+					insertTextAtCurrentPos(textField, var);
+//					textField.insert(var);
+//					textField.setFocus();
 				}
 			}
 		});
 	}
+
+	/**
+	 * Set the text of the text field to the given value.
+	 * 
+	 * @param textField the text field
+	 * @param value the value to set as text
+	 */
+	protected abstract void setText(T textField, String value);
+
+	/**
+	 * Get the current text of the text field.
+	 * 
+	 * @param textField the text field
+	 * @return the current text of the text field
+	 */
+	protected abstract String getText(T textField);
+
+	/**
+	 * Insert a given text at the current position of the given text field.
+	 * 
+	 * @param textField the text field
+	 * @param insert the text to insert
+	 */
+	protected abstract void insertTextAtCurrentPos(T textField, String insert);
+
+	/**
+	 * Create and text field and layout it.
+	 * 
+	 * @param parent the parent composite, it has a one-column grid layout
+	 * 
+	 * @return the created text field
+	 */
+	protected abstract T createAndLayoutTextField(Composite parent);
 }

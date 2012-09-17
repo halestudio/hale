@@ -19,7 +19,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
  * 
  * @author Kai Schwierczek
  */
-public class FormattedStringParameterPage extends SourceListParameterPage {
+public class FormattedStringParameterPage extends TextSourceListParameterPage {
 
 	/**
 	 * Default constructor.
@@ -34,7 +34,7 @@ public class FormattedStringParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#onShowPage(boolean)
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#onShowPage(boolean)
 	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
@@ -43,7 +43,7 @@ public class FormattedStringParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getParameterName()
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getParameterName()
 	 */
 	@Override
 	protected String getParameterName() {
@@ -51,7 +51,7 @@ public class FormattedStringParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getSourcePropertyName()
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getSourcePropertyName()
 	 */
 	@Override
 	protected String getSourcePropertyName() {
@@ -59,7 +59,7 @@ public class FormattedStringParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getVariableName(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getVariableName(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
 	 */
 	@Override
 	protected String getVariableName(EntityDefinition variable) {
@@ -67,7 +67,7 @@ public class FormattedStringParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#useMultilineInput()
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#useMultilineInput()
 	 */
 	@Override
 	protected boolean useMultilineInput() {

@@ -1,14 +1,14 @@
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
+import eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage;
 
 /**
  * Parameter page for Groovy function.
  * 
  * @author Kai Schwierczek
  */
-public class GroovyParameterPage extends SourceListParameterPage {
+public class GroovyParameterPage extends TextSourceListParameterPage {
 
 	/**
 	 * Default constructor.
@@ -23,7 +23,7 @@ public class GroovyParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#onShowPage(boolean)
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#onShowPage(boolean)
 	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
@@ -32,7 +32,7 @@ public class GroovyParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getParameterName()
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getParameterName()
 	 */
 	@Override
 	protected String getParameterName() {
@@ -40,7 +40,7 @@ public class GroovyParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getSourcePropertyName()
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getSourcePropertyName()
 	 */
 	@Override
 	protected String getSourcePropertyName() {
@@ -48,7 +48,7 @@ public class GroovyParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#useMultilineInput()
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#useMultilineInput()
 	 */
 	@Override
 	protected boolean useMultilineInput() {
@@ -56,7 +56,7 @@ public class GroovyParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getVariableName(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getVariableName(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
 	 */
 	@Override
 	protected String getVariableName(EntityDefinition variable) {
