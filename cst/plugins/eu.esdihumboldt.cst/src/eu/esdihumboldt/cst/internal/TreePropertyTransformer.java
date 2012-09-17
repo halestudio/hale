@@ -79,16 +79,17 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	 *            messages to
 	 * @param sink the target instance sink
 	 * @param engines the transformation engine manager
+	 * @param context the transformation execution context
 	 */
 	public TreePropertyTransformer(Alignment alignment, TransformationReporter reporter,
-			InstanceSink sink, EngineManager engines) {
+			InstanceSink sink, EngineManager engines, TransformationContext context) {
 //		this.reporter = reporter;
 		this.sink = sink;
 
 		ContextMatcher matcher = new AsDeepAsPossible(); // XXX how to determine
 															// matcher?
 		treePool = new TransformationTreePool(alignment, matcher);
-		executor = new FunctionExecutor(reporter, engines);
+		executor = new FunctionExecutor(reporter, engines, context);
 		builder = new InstanceBuilder();
 
 		treeHooks = OsgiUtils.getService(TransformationTreeHooks.class);

@@ -36,6 +36,14 @@ public interface TransformationFunction<E extends TransformationEngine> {
 	public void setParameters(ListMultimap<String, String> parameters);
 
 	/**
+	 * Set the execution context.
+	 * 
+	 * @param executionContext the execution context of the transformation
+	 *            process
+	 */
+	public void setExecutionContext(ExecutionContext executionContext);
+
+	/**
 	 * Execute the function as configured.
 	 * 
 	 * @param transformationIdentifier the transformation function identifier

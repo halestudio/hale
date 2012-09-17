@@ -26,6 +26,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.cst.internal.EngineManager;
+import eu.esdihumboldt.cst.internal.TransformationContext;
 import eu.esdihumboldt.cst.internal.TreePropertyTransformer;
 import eu.esdihumboldt.cst.internal.util.CountingInstanceSink;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension;
@@ -77,6 +78,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			InstanceSink target, ProgressIndicator progressIndicator) {
 		TransformationReporter reporter = new DefaultTransformationReporter(
 				"Instance transformation", true);
+		TransformationContext context = new TransformationContext();
 
 		final SubtaskProgressIndicator sub = new SubtaskProgressIndicator(progressIndicator) {
 
@@ -109,7 +111,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			EngineManager engines = new EngineManager();
 
 			PropertyTransformer transformer = new TreePropertyTransformer(alignment, reporter,
-					target, engines);
+					target, engines, context);
 
 			TypeTransformationExtension typesTransformations = TypeTransformationExtension
 					.getInstance();
@@ -136,7 +138,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 					TypeTransformationFactory transformation = transformations.iterator().next();
 
 					doTypeTransformation(transformation, typeCell, source, target, alignment,
-							engines, transformer, reporter, progressIndicator);
+							engines, transformer, context, reporter, progressIndicator);
 				}
 			}
 
@@ -174,13 +176,14 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	 * @param alignment the alignment
 	 * @param engines the engine manager
 	 * @param transformer the property transformer
+	 * @param context the transformation execution context
 	 * @param reporter the reporter
 	 * @param progressIndicator the progress indicator
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void doTypeTransformation(TypeTransformationFactory transformation, Cell typeCell,
 			InstanceCollection source, InstanceSink target, Alignment alignment,
-			EngineManager engines, PropertyTransformer transformer,
+			EngineManager engines, PropertyTransformer transformer, TransformationContext context,
 			TransformationReporter reporter, ProgressIndicator progressIndicator) {
 		TransformationLog cellLog = new CellLog(reporter, typeCell);
 
@@ -265,6 +268,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 				function.setPropertyTransformer(transformer);
 				function.setParameters(parameters);
 				function.setTarget(targetTypes);
+				function.setExecutionContext(context.getCellContext(typeCell));
 
 				try {
 					((TypeTransformation) function).execute(transformation.getFunctionId(), engine,
@@ -306,7 +310,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		}
 
 		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.Filter#match(eu.esdihumboldt.hale.common.instance.model.Instance)
+		 * @see Filter#match(Instance)
 		 */
 		@Override
 		public boolean match(Instance instance) {
