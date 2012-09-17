@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Function that is evaluated based on variables populated by property values.
@@ -38,6 +39,14 @@ public interface PropertyTransformation<E extends TransformationEngine> extends
 	 *            property values
 	 */
 	public void setVariables(ListMultimap<String, PropertyValue> variables);
+
+	/**
+	 * Set the target type of the created instance that is to be populated with
+	 * the function result.
+	 * 
+	 * @param targetType the type of the target instance
+	 */
+	public void setTargetType(TypeDefinition targetType);
 
 	/**
 	 * Set the expected result names.

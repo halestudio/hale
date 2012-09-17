@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Base class for implementing {@link PropertyTransformation}s
@@ -38,6 +39,25 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	private ListMultimap<String, Object> results;
 	private ListMultimap<String, PropertyValue> variables;
 	private ListMultimap<String, PropertyEntityDefinition> resultNames;
+	private TypeDefinition targetType;
+
+	/**
+	 * @see PropertyTransformation#setTargetType(TypeDefinition)
+	 */
+	@Override
+	public void setTargetType(TypeDefinition targetType) {
+		this.targetType = targetType;
+	}
+
+	/**
+	 * Get the target type of the instance that is to be populated with the
+	 * function result.
+	 * 
+	 * @return the target instance type
+	 */
+	protected TypeDefinition getTargetType() {
+		return targetType;
+	}
 
 	/**
 	 * @see PropertyTransformation#setVariables(ListMultimap)
