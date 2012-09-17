@@ -12,11 +12,9 @@
 
 package eu.esdihumboldt.cst.functions.numeric.sequentialid;
 
-import java.util.Collections;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.SetMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -53,7 +51,7 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 
 		// select appropriate context and key
 		Sequence sequence = Sequence.valueOf(sequenceStr);
-		SetMultimap<Object, Object> context;
+		Map<Object, Object> context;
 		String key;
 		switch (sequence) {
 		case overall:
@@ -71,15 +69,14 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 
 		long id;
 		synchronized (context) {
-			if (context.containsKey(key)) {
-				Long seqValue = (Long) context.get(key).iterator().next();
+			Long seqValue = (Long) context.get(key);
+			if (seqValue != null) {
 				id = seqValue++;
-				context.replaceValues(key, Collections.singleton(id));
 			}
 			else {
 				id = START_VALUE;
-				context.put(key, id);
 			}
+			context.put(key, id);
 		}
 
 		if (prefix.isEmpty() && suffix.isEmpty()) {
