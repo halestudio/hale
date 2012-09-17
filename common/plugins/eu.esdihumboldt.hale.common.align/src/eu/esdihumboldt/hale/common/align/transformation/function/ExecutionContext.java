@@ -12,7 +12,7 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.function;
 
-import com.google.common.collect.SetMultimap;
+import java.util.Map;
 
 /**
  * Execution context of a transformation process. The information put into the
@@ -36,7 +36,7 @@ public interface ExecutionContext {
 	 * 
 	 * @return the cell context map
 	 */
-	public SetMultimap<Object, Object> getCellContext();
+	public Map<Object, Object> getCellContext();
 
 	/**
 	 * Get the execution context for the executed function. This context is
@@ -47,7 +47,7 @@ public interface ExecutionContext {
 	 * 
 	 * @return the function context map
 	 */
-	public SetMultimap<Object, Object> getFunctionContext();
+	public Map<Object, Object> getFunctionContext();
 
 	/**
 	 * Get the overall transformation execution context. This context is shared
@@ -58,6 +58,6 @@ public interface ExecutionContext {
 	 * 
 	 * @return the function context map
 	 */
-	public SetMultimap<Object, Object> getTransformationContext();
+	public Map<Object, Object> getTransformationContext();
 
 }
