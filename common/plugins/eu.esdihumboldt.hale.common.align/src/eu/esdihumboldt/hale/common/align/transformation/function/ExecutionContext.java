@@ -31,6 +31,9 @@ public interface ExecutionContext {
 	 * function. This context is shared only between function executions
 	 * handling this cell.
 	 * 
+	 * When invoking multiple operations on the context map, make sure to use
+	 * synchronization if appropriate.
+	 * 
 	 * @return the cell context map
 	 */
 	public SetMultimap<Object, Object> getCellContext();
@@ -39,6 +42,9 @@ public interface ExecutionContext {
 	 * Get the execution context for the executed function. This context is
 	 * shared between functions of the same type.
 	 * 
+	 * When invoking multiple operations on the context map, make sure to use
+	 * synchronization if appropriate.
+	 * 
 	 * @return the function context map
 	 */
 	public SetMultimap<Object, Object> getFunctionContext();
@@ -46,6 +52,9 @@ public interface ExecutionContext {
 	/**
 	 * Get the overall transformation execution context. This context is shared
 	 * between all functions of the same type.
+	 * 
+	 * When invoking multiple operations on the context map, make sure to use
+	 * synchronization if appropriate.
 	 * 
 	 * @return the function context map
 	 */
