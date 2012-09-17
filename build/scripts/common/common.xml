@@ -710,12 +710,14 @@
 			<tarfileset dir="${release}" mode="755">
 				<include name="${buildVersion}/${launcherName}" />
 				<include name="${buildVersion}/*.sh" />
+				<include name="${buildVersion}/jre/bin/*" />
 			</tarfileset>
 
 			<tarfileset dir="${release}">
 				<include name="${buildVersion}/**" />
 				<exclude name="${buildVersion}/${launcherName}" />
 				<exclude name="${buildVersion}/*.sh" />
+				<exclude name="${buildVersion}/jre/bin/*" />
 			</tarfileset>
 		</tar>
 	</target>
