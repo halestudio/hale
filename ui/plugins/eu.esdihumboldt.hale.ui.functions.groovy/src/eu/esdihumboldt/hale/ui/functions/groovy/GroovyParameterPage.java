@@ -1,14 +1,14 @@
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage;
+import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
 
 /**
  * Parameter page for Groovy function.
  * 
  * @author Kai Schwierczek
  */
-public class GroovyParameterPage extends TextSourceListParameterPage {
+public class GroovyParameterPage extends SourceViewerParameterPage {
 
 	/**
 	 * Default constructor.
@@ -23,7 +23,7 @@ public class GroovyParameterPage extends TextSourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#onShowPage(boolean)
+	 * @see SourceViewerParameterPage#onShowPage(boolean)
 	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
@@ -32,7 +32,7 @@ public class GroovyParameterPage extends TextSourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getParameterName()
+	 * @see SourceViewerParameterPage#getParameterName()
 	 */
 	@Override
 	protected String getParameterName() {
@@ -40,7 +40,7 @@ public class GroovyParameterPage extends TextSourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getSourcePropertyName()
+	 * @see SourceViewerParameterPage#getSourcePropertyName()
 	 */
 	@Override
 	protected String getSourcePropertyName() {
@@ -48,15 +48,7 @@ public class GroovyParameterPage extends TextSourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#useMultilineInput()
-	 */
-	@Override
-	protected boolean useMultilineInput() {
-		return true;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getVariableName(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
+	 * @see SourceViewerParameterPage#getVariableName(EntityDefinition)
 	 */
 	@Override
 	protected String getVariableName(EntityDefinition variable) {
