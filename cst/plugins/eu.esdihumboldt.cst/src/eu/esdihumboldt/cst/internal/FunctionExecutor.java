@@ -60,16 +60,20 @@ public class FunctionExecutor extends CellNodeValidator {
 
 	private final EngineManager engines;
 	private final PropertyTransformationExtension transformations;
+	private final TransformationContext context;
 
 	/**
 	 * Create a function executor.
 	 * 
 	 * @param reporter the transformation reporter
 	 * @param engines the transformation engine manager
+	 * @param context the transformation execution context
 	 */
-	public FunctionExecutor(TransformationReporter reporter, EngineManager engines) {
+	public FunctionExecutor(TransformationReporter reporter, EngineManager engines,
+			TransformationContext context) {
 		super(reporter);
 		this.engines = engines;
+		this.context = context;
 
 		this.transformations = PropertyTransformationExtension.getInstance();
 	}
@@ -155,6 +159,9 @@ public class FunctionExecutor extends CellNodeValidator {
 
 		// set parameters
 		function.setParameters(cell.getTransformationParameters());
+
+		// set context
+		function.setExecutionContext(context.getCellContext(cell));
 
 		// execute function
 		try {

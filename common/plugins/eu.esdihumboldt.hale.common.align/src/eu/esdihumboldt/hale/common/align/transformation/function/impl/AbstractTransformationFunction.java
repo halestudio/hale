@@ -18,6 +18,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 
@@ -32,6 +33,7 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 		TransformationFunction<E> {
 
 	private ListMultimap<String, String> parameters;
+	private ExecutionContext executionContext;
 
 	/**
 	 * @see TransformationFunction#setParameters(ListMultimap)
@@ -49,6 +51,23 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 */
 	public ListMultimap<String, String> getParameters() {
 		return parameters;
+	}
+
+	/**
+	 * @see TransformationFunction#setExecutionContext(ExecutionContext)
+	 */
+	@Override
+	public void setExecutionContext(ExecutionContext executionContext) {
+		this.executionContext = executionContext;
+	}
+
+	/**
+	 * Get the current execution context.
+	 * 
+	 * @return the executionContext the execution context
+	 */
+	protected ExecutionContext getExecutionContext() {
+		return executionContext;
 	}
 
 	/**
