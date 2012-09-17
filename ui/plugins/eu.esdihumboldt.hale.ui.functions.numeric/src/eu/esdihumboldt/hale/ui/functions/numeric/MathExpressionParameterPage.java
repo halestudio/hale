@@ -9,14 +9,14 @@ import com.iabcinc.jmep.Expression;
 import com.iabcinc.jmep.hooks.Constant;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
+import eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage;
 
 /**
  * Parameter page for mathematical expression function.
  * 
  * @author Kai Schwierczek
  */
-public class MathExpressionParameterPage extends SourceListParameterPage {
+public class MathExpressionParameterPage extends TextSourceListParameterPage {
 
 	private Environment environment = new Environment();
 	private Text textField;
@@ -34,7 +34,7 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getParameterName()
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getParameterName()
 	 */
 	@Override
 	protected String getParameterName() {
@@ -42,7 +42,7 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getSourcePropertyName()
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getSourcePropertyName()
 	 */
 	@Override
 	protected String getSourcePropertyName() {
@@ -50,7 +50,7 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#configure(org.eclipse.swt.widgets.Text)
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#configure(org.eclipse.swt.widgets.Text)
 	 */
 	@Override
 	protected void configure(final Text textField) {
@@ -78,7 +78,7 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#sourcePropertiesChanged(eu.esdihumboldt.hale.common.align.model.EntityDefinition[])
+	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#sourcePropertiesChanged(eu.esdihumboldt.hale.common.align.model.EntityDefinition[])
 	 */
 	@Override
 	protected void sourcePropertiesChanged(EntityDefinition[] variables) {
