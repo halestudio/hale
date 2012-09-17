@@ -162,6 +162,13 @@ public class FunctionExecutor extends CellNodeValidator {
 
 		// set context
 		function.setExecutionContext(context.getCellContext(cell));
+		// set target type
+		TypeDefinition targetType = null;
+		if (!targets.isEmpty()) {
+			TargetNode target = targets.values().iterator().next().getFirst();
+			targetType = target.getEntityDefinition().getType();
+		}
+		function.setTargetType(targetType);
 
 		// execute function
 		try {
