@@ -15,6 +15,7 @@
  */
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
+import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
 
@@ -23,7 +24,7 @@ import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
  * 
  * @author Kai Schwierczek
  */
-public class GroovyParameterPage extends SourceViewerParameterPage {
+public class GroovyParameterPage extends SourceViewerParameterPage implements GroovyConstants {
 
 	/**
 	 * Default constructor.
@@ -51,7 +52,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage {
 	 */
 	@Override
 	protected String getParameterName() {
-		return "script";
+		return PARAMETER_SCRIPT;
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage {
 	 */
 	@Override
 	protected String getSourcePropertyName() {
-		return "var";
+		return ENTITY_VARIABLE;
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage {
 	 */
 	@Override
 	protected String getVariableName(EntityDefinition variable) {
-		// TODO Auto-generated method stub
+		// dots are not allowed in variable names, an underscore is used instead
 		return super.getVariableName(variable).replace('.', '_');
 	}
 }
