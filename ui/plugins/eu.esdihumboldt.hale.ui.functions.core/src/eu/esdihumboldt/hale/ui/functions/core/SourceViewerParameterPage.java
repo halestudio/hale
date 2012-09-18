@@ -20,7 +20,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
@@ -123,20 +125,65 @@ public abstract class SourceViewerParameterPage extends SourceListParameterPage<
 		SourceViewerConfiguration conf = createConfiguration();
 		viewer.configure(conf);
 
-		// create initial document
-		IDocument doc = createDocument();
-		viewer.setInput(doc);
+		createAndSetDocument(viewer);
+
+		viewer.getDocument().addDocumentListener(new IDocumentListener() {
+
+			@Override
+			public void documentChanged(DocumentEvent event) {
+				updateState(event.getDocument());
+			}
+
+			@Override
+			public void documentAboutToBeChanged(DocumentEvent event) {
+				// ignore
+			}
+		});
+
+		updateState(viewer.getDocument());
 	}
 
 	/**
-	 * Create the initial document.
+	 * Get the source viewer document.
 	 * 
 	 * @return the document
 	 */
-	private IDocument createDocument() {
+	protected IDocument getDocument() {
+		return getTextField().getDocument();
+	}
+
+	/**
+	 * Update the page state.
+	 * 
+	 * @param document the current document
+	 */
+	protected void updateState(IDocument document) {
+		boolean valid = validate(document);
+
+		setPageComplete(valid);
+	}
+
+	/**
+	 * Validate the given document. The default implementation always returns
+	 * <code>true</code>.
+	 * 
+	 * @param document the document to validate
+	 * @return if the document is valid
+	 */
+	protected boolean validate(IDocument document) {
+		return true;
+	}
+
+	/**
+	 * Create the initial document and set it for the viewer.
+	 * 
+	 * @param viewer the source viewer
+	 */
+	protected void createAndSetDocument(SourceViewer viewer) {
 		IDocument doc = new Document();
 		doc.set(""); //$NON-NLS-1$
-		return doc;
+
+		viewer.setDocument(doc);
 	}
 
 	/**
