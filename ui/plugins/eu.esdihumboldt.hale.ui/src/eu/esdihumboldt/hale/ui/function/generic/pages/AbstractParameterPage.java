@@ -12,11 +12,14 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
@@ -34,7 +37,7 @@ public abstract class AbstractParameterPage extends
 		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
 
 	private ListMultimap<String, String> initialValues;
-	private Set<FunctionParameter> parametersToHandle;
+	private ImmutableMap<String, FunctionParameter> parametersToHandle;
 
 	/**
 	 * @see HaleWizardPage#HaleWizardPage(String)
@@ -58,9 +61,7 @@ public abstract class AbstractParameterPage extends
 	 *            function description will be used
 	 */
 	public AbstractParameterPage(Function function, String description) {
-		super(function.getId(), function.getDisplayName(),
-				(function.getIconURL() != null) ? (ImageDescriptor.createFromURL(function
-						.getIconURL())) : (null));
+		super(function.getId(), function.getDisplayName(), null);
 
 		if (description == null) {
 			setDescription(function.getDescription());
@@ -76,8 +77,17 @@ public abstract class AbstractParameterPage extends
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, String> initialValues) {
-		this.parametersToHandle = Collections.unmodifiableSet(params);
-		this.initialValues = Multimaps.unmodifiableListMultimap(initialValues);
+		Builder<String, FunctionParameter> builder = ImmutableMap.builder();
+		for (FunctionParameter param : params) {
+			builder.put(param.getName(), param);
+		}
+		this.parametersToHandle = builder.build();
+		if (initialValues == null) {
+			this.initialValues = ArrayListMultimap.create();
+		}
+		else {
+			this.initialValues = Multimaps.unmodifiableListMultimap(initialValues);
+		}
 	}
 
 	/**
@@ -94,8 +104,23 @@ public abstract class AbstractParameterPage extends
 	 * 
 	 * @return the set of function parameters to handle (unmodifiable)
 	 */
-	protected Set<FunctionParameter> getParametersToHandle() {
+	protected ImmutableMap<String, FunctionParameter> getParametersToHandle() {
 		return parametersToHandle;
+	}
+
+	/**
+	 * Get a single initial value for the given parameter.
+	 * 
+	 * @param parameterName the parameter name
+	 * @param def the default value to return if the value is not present
+	 * @return the first parameter value or the provided default value
+	 */
+	protected String getOptionalInitialValue(String parameterName, String def) {
+		List<String> values = getInitialValues().get(parameterName);
+		if (values != null && !values.isEmpty()) {
+			return values.get(0);
+		}
+		return def;
 	}
 
 }

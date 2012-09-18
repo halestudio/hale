@@ -34,8 +34,8 @@ public interface ParameterPage extends IWizardPage {
 	 * handle more.
 	 * 
 	 * @param params the parameters this page is responsible for
-	 * @param initialValues initial values of those parameters, may be null,
-	 *            should not be changed
+	 * @param initialValues initial values of those parameters, may be
+	 *            <code>null</code>, should not be changed
 	 */
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, String> initialValues);
