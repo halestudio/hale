@@ -36,7 +36,7 @@ public class NetworkExpansionParameterPage extends MathExpressionParameterPage i
 	 */
 	@Override
 	protected String getSourcePropertyName() {
-		return ENTITY_VARIABLE;
+		return NetworkExpansionFunction.ENTITY_VARIABLE;
 	}
 
 }
