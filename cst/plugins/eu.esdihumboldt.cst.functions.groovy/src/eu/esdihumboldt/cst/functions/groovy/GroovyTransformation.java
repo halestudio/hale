@@ -57,7 +57,7 @@ public class GroovyTransformation extends
 		// get the mathematical expression
 		String script = getParameterChecked(PARAMETER_SCRIPT);
 
-		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE));
+		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), true);
 
 		Object result;
 		try {
@@ -77,22 +77,32 @@ public class GroovyTransformation extends
 	 * Create a Groovy binding from the list of variables.
 	 * 
 	 * @param vars the variables
+	 * @param useNullForMissingBindings if the binding should provide
+	 *            <code>null</code> values for variables that are not provided
+	 *            in the given variable list
 	 * @return the binding for use with {@link GroovyShell}
 	 */
-	public static Binding createGroovyBinding(List<PropertyValue> vars) {
-		Binding binding = new Binding() {
+	public static Binding createGroovyBinding(List<PropertyValue> vars,
+			boolean useNullForMissingBindings) {
+		Binding binding;
+		if (useNullForMissingBindings) {
+			binding = new Binding() {
 
-			@Override
-			public Object getVariable(String name) {
-				try {
-					return super.getVariable(name);
-				} catch (MissingPropertyException mpe) {
-					// use null value for variables that are not defined
-					return null;
+				@Override
+				public Object getVariable(String name) {
+					try {
+						return super.getVariable(name);
+					} catch (MissingPropertyException mpe) {
+						// use null value for variables that are not defined
+						return null;
+					}
 				}
-			}
 
-		};
+			};
+		}
+		else {
+			binding = new Binding();
+		}
 
 		for (PropertyValue var : vars) {
 			// add the variable to the environment

@@ -284,4 +284,14 @@ public abstract class SourceListParameterPage<T> extends
 	 * @return the created text field
 	 */
 	protected abstract T createAndLayoutTextField(Composite parent);
+
+	/**
+	 * Get the text editor/field.
+	 * 
+	 * @return the text field
+	 */
+	protected T getTextField() {
+		return textField;
+	}
+
 }
