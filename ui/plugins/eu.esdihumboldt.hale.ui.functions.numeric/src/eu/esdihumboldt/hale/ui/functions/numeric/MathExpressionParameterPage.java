@@ -8,6 +8,7 @@ import com.iabcinc.jmep.Environment;
 import com.iabcinc.jmep.Expression;
 import com.iabcinc.jmep.hooks.Constant;
 
+import eu.esdihumboldt.cst.functions.numeric.MathematicalExpressionFunction;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage;
 
@@ -16,7 +17,8 @@ import eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage;
  * 
  * @author Kai Schwierczek
  */
-public class MathExpressionParameterPage extends TextSourceListParameterPage {
+public class MathExpressionParameterPage extends TextSourceListParameterPage implements
+		MathematicalExpressionFunction {
 
 	private Environment environment = new Environment();
 	private Text textField;
@@ -34,23 +36,23 @@ public class MathExpressionParameterPage extends TextSourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getParameterName()
+	 * @see TextSourceListParameterPage#getParameterName()
 	 */
 	@Override
 	protected String getParameterName() {
-		return "expression";
+		return PARAMETER_EXPRESSION;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#getSourcePropertyName()
+	 * @see TextSourceListParameterPage#getSourcePropertyName()
 	 */
 	@Override
 	protected String getSourcePropertyName() {
-		return "var";
+		return ENTITY_VARIABLE;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#configure(org.eclipse.swt.widgets.Text)
+	 * @see TextSourceListParameterPage#configure(Text)
 	 */
 	@Override
 	protected void configure(final Text textField) {
@@ -78,7 +80,7 @@ public class MathExpressionParameterPage extends TextSourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage#sourcePropertiesChanged(eu.esdihumboldt.hale.common.align.model.EntityDefinition[])
+	 * @see TextSourceListParameterPage#sourcePropertiesChanged(EntityDefinition[])
 	 */
 	@Override
 	protected void sourcePropertiesChanged(EntityDefinition[] variables) {
