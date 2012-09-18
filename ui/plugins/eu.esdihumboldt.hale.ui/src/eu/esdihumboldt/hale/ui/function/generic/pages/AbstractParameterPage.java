@@ -12,9 +12,16 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
+
 import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 
@@ -25,6 +32,9 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
  */
 public abstract class AbstractParameterPage extends
 		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
+
+	private ListMultimap<String, String> initialValues;
+	private Set<FunctionParameter> parametersToHandle;
 
 	/**
 	 * @see HaleWizardPage#HaleWizardPage(String)
@@ -58,6 +68,34 @@ public abstract class AbstractParameterPage extends
 		else {
 			setDescription(description);
 		}
+	}
+
+	/**
+	 * @see ParameterPage#setParameter(Set, ListMultimap)
+	 */
+	@Override
+	public void setParameter(Set<FunctionParameter> params,
+			ListMultimap<String, String> initialValues) {
+		this.parametersToHandle = Collections.unmodifiableSet(params);
+		this.initialValues = Multimaps.unmodifiableListMultimap(initialValues);
+	}
+
+	/**
+	 * Get the map of initial values for parameters.
+	 * 
+	 * @return parameter names mapped to their initial values (unmodifiable)
+	 */
+	protected ListMultimap<String, String> getInitialValues() {
+		return initialValues;
+	}
+
+	/**
+	 * Get the parameters to handle by this parameter page.
+	 * 
+	 * @return the set of function parameters to handle (unmodifiable)
+	 */
+	protected Set<FunctionParameter> getParametersToHandle() {
+		return parametersToHandle;
 	}
 
 }

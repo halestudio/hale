@@ -29,7 +29,7 @@ public interface ParameterPage extends IWizardPage {
 
 	/**
 	 * Sets the parameters this page is responsible for and their initial
-	 * values. <br>
+	 * values. This method is called before creating the page content.<br>
 	 * It should only handle the parameters in the given set, even if it could
 	 * handle more.
 	 * 
