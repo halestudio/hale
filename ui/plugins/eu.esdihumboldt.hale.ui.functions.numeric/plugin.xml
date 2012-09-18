@@ -11,6 +11,21 @@
                name="expression">
          </parameter>
       </propertyParameterPage>
+      <propertyParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.numeric.SequentialIDParameterPage"
+            function="eu.esdihumboldt.cst.functions.numeric.sequentialid"
+            id="eu.esdihumboldt.hale.ui.functions.numeric.sequentialid"
+            order="0">
+         <parameter
+               name="sequence">
+         </parameter>
+         <parameter
+               name="prefix">
+         </parameter>
+         <parameter
+               name="suffix">
+         </parameter>
+      </propertyParameterPage>
    </extension>
 
 </plugin>
