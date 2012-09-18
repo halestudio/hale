@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * 
  * @author Kai Schwierczek
  */
-public class GroovyExplanation extends AbstractCellExplanation {
+public class GroovyExplanation extends AbstractCellExplanation implements GroovyConstants {
 
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script (be sure to include a return statement):\n"
 			+ "{1}\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn't set.";
@@ -41,9 +41,9 @@ public class GroovyExplanation extends AbstractCellExplanation {
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String script = CellUtil.getFirstParameter(cell, GroovyTransformation.PARAMETER_SCRIPT);
+		String script = CellUtil.getFirstParameter(cell, PARAMETER_SCRIPT);
 		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
-				.get(GroovyTransformation.ENTITY_VARIABLE));
+				.get(ENTITY_VARIABLE));
 
 		if (target != null && script != null) {
 			if (html)

@@ -42,17 +42,7 @@ import groovy.lang.MissingPropertyException;
  * @author Simon Templer
  */
 public class GroovyTransformation extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> {
-
-	/**
-	 * Name for the parameter containing the groovy script.
-	 */
-	public static final String PARAMETER_SCRIPT = "script";
-
-	/**
-	 * Entity name for variables.
-	 */
-	public static final String ENTITY_VARIABLE = "var";
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements GroovyConstants {
 
 	/**
 	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
@@ -67,6 +57,29 @@ public class GroovyTransformation extends
 		// get the mathematical expression
 		String script = getParameterChecked(PARAMETER_SCRIPT);
 
+		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE));
+
+		Object result;
+		try {
+			GroovyShell shell = new GroovyShell(binding);
+			result = shell.evaluate(script);
+		} catch (Throwable e) {
+			throw new TransformationException("Error evaluating the cell script", e);
+		}
+
+		if (result == null) {
+			throw new NoResultException();
+		}
+		return result;
+	}
+
+	/**
+	 * Create a Groovy binding from the list of variables.
+	 * 
+	 * @param vars the variables
+	 * @return the binding for use with {@link GroovyShell}
+	 */
+	public static Binding createGroovyBinding(List<PropertyValue> vars) {
 		Binding binding = new Binding() {
 
 			@Override
@@ -80,7 +93,7 @@ public class GroovyTransformation extends
 			}
 
 		};
-		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);
+
 		for (PropertyValue var : vars) {
 			// add the variable to the environment
 
@@ -119,18 +132,7 @@ public class GroovyTransformation extends
 			}
 		}
 
-		Object result;
-		try {
-			GroovyShell shell = new GroovyShell(binding);
-			result = shell.evaluate(script);
-		} catch (Throwable e) {
-			throw new TransformationException("Error evaluating the cell script", e);
-		}
-
-		if (result == null) {
-			throw new NoResultException();
-		}
-		return result;
+		return binding;
 	}
 
 }

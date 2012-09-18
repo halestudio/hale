@@ -11,3 +11,4 @@ Import-Package: com.google.common.base;version="9.0.0",
  groovy.lang;version="1.7.3",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0"
+Export-Package: eu.esdihumboldt.cst.functions.groovy
