@@ -15,9 +15,21 @@
  */
 package eu.esdihumboldt.hale.ui.functions.groovy;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.text.IDocument;
+
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
+import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
+import groovy.lang.GroovyShell;
+import groovy.lang.Script;
 
 /**
  * Parameter page for Groovy function.
@@ -25,6 +37,9 @@ import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
  * @author Kai Schwierczek
  */
 public class GroovyParameterPage extends SourceViewerParameterPage implements GroovyConstants {
+
+	private EntityDefinition[] variables;
+	private final TestValues testValues;
 
 	/**
 	 * Default constructor.
@@ -35,7 +50,7 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 		setTitle("Function parameters");
 		setDescription("Enter a groovy script");
 
-		setPageComplete(false);
+		testValues = new InstanceTestValues();
 	}
 
 	/**
@@ -44,7 +59,9 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
-		setPageComplete(true);
+
+		// variables may have changed
+		updateState(getDocument());
 	}
 
 	/**
@@ -61,6 +78,42 @@ public class GroovyParameterPage extends SourceViewerParameterPage implements Gr
 	@Override
 	protected String getSourcePropertyName() {
 		return ENTITY_VARIABLE;
+	}
+
+	/**
+	 * @see SourceViewerParameterPage#validate(IDocument)
+	 */
+	@Override
+	protected boolean validate(IDocument document) {
+		List<PropertyValue> values = new ArrayList<PropertyValue>();
+		if (variables != null) {
+			for (EntityDefinition var : variables) {
+				if (var instanceof PropertyEntityDefinition) {
+					PropertyEntityDefinition property = (PropertyEntityDefinition) var;
+					values.add(new PropertyValueImpl(testValues.get(property), property));
+				}
+			}
+		}
+		// TODO specify classloader?
+		GroovyShell shell = new GroovyShell(GroovyTransformation.createGroovyBinding(values, false));
+		try {
+			Script script = shell.parse(document.get());
+			script.run();
+		} catch (Exception e) {
+			setMessage(e.getMessage(), ERROR);
+			return false;
+		}
+
+		setMessage(null);
+		return true;
+	}
+
+	/**
+	 * @see SourceListParameterPage#sourcePropertiesChanged(EntityDefinition[])
+	 */
+	@Override
+	protected void sourcePropertiesChanged(EntityDefinition[] variables) {
+		this.variables = variables;
 	}
 
 	/**
