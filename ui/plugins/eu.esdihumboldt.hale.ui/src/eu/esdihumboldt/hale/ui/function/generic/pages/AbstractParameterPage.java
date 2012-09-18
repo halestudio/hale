@@ -14,6 +14,7 @@ package eu.esdihumboldt.hale.ui.function.generic.pages;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
+import eu.esdihumboldt.hale.common.align.extension.function.Function;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 
@@ -37,6 +38,26 @@ public abstract class AbstractParameterPage extends
 	 */
 	public AbstractParameterPage(String pageName, String title, ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
+	}
+
+	/**
+	 * Create a parameter page for the given function.
+	 * 
+	 * @param function the function
+	 * @param description the page description, if <code>null</code> the
+	 *            function description will be used
+	 */
+	public AbstractParameterPage(Function function, String description) {
+		super(function.getId(), function.getDisplayName(),
+				(function.getIconURL() != null) ? (ImageDescriptor.createFromURL(function
+						.getIconURL())) : (null));
+
+		if (description == null) {
+			setDescription(function.getDescription());
+		}
+		else {
+			setDescription(description);
+		}
 	}
 
 }
