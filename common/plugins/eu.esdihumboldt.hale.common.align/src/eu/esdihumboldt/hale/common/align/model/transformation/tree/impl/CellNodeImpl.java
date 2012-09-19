@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.impl;
@@ -35,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 
 /**
  * Default {@link CellNode} implementation
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -46,41 +51,43 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 
 	/**
 	 * Creates a cell node where the sources are populated from the given cell.
+	 * 
 	 * @param cell the cell
 	 * @param sourceNodes the factory for creating source nodes
 	 */
 	public CellNodeImpl(Cell cell, SourceNodeFactory sourceNodes) {
 		super();
 		this.cell = cell;
-		
+
 		ListMultimap<SourceNode, String> sourceList = ArrayListMultimap.create();
-		
+
 		if (cell.getSource() != null) {
 			for (Entry<String, ? extends Entity> namedEntity : cell.getSource().entries()) {
-				SourceNode node = sourceNodes.getSourceNode(
-						namedEntity.getValue().getDefinition());
-				//XXX what about filter etc.?!
+				SourceNode node = sourceNodes.getSourceNode(namedEntity.getValue().getDefinition());
+				// XXX what about filter etc.?!
 				node.addRelation(this);
 				sourceList.put(node, namedEntity.getKey());
 			}
 		}
-		
+
 		sources = Multimaps.unmodifiableListMultimap(sourceList);
 	}
-	
+
 	/**
 	 * Create a cell node w/o associated sources. Sources can be added later on
 	 * through {@link #addSource(Set, SourceNode)}
+	 * 
 	 * @param cell the associated cell
 	 */
 	public CellNodeImpl(Cell cell) {
 		this.cell = cell;
-		sources = ArrayListMultimap.create(); 
+		sources = ArrayListMultimap.create();
 	}
-	
+
 	/**
 	 * Add a source to the cell node. May only be called if the cell node was
 	 * created using the {@link #CellNodeImpl(Cell)} constructor.
+	 * 
 	 * @param names the entity names associated to the source
 	 * @param source the source node
 	 */
@@ -196,7 +203,8 @@ public class CellNodeImpl extends AbstractTransformationNode implements CellNode
 		if (cell == null) {
 			if (other.cell != null)
 				return false;
-		} else if (!cell.equals(other.cell))
+		}
+		else if (!cell.equals(other.cell))
 			return false;
 		return true;
 	}

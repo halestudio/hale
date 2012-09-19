@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.io.impl;
@@ -28,14 +32,13 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 
 /**
  * Abstract {@link ExportProvider} implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
-public abstract class AbstractExportProvider extends AbstractIOProvider implements
-		ExportProvider {
-	
+public abstract class AbstractExportProvider extends AbstractIOProvider implements ExportProvider {
+
 	private LocatableOutputSupplier<? extends OutputStream> target;
 
 	/**
@@ -60,12 +63,12 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	@Override
 	public void validate() throws IOProviderConfigurationException {
 		super.validate();
-		
+
 		if (target == null) {
 			fail("No target specified");
 		}
 	}
-	
+
 	/**
 	 * @see AbstractIOProvider#storeConfiguration(Map)
 	 */
@@ -78,7 +81,7 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 				configuration.put(PARAM_TARGET, location.toString());
 			}
 		}
-		
+
 		super.storeConfiguration(configuration);
 	}
 
@@ -93,7 +96,7 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 				setTarget(new FileIOSupplier(file));
 			} catch (IllegalArgumentException e) {
 				// ignore, can't set target
-				//XXX extend with support for other URIs?
+				// XXX extend with support for other URIs?
 			}
 		}
 		else {
@@ -106,8 +109,8 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	 */
 	@Override
 	public IOReporter createReporter() {
-		return new DefaultIOReporter(getTarget(), MessageFormat.format(
-				"{0} export", getTypeName()), true);
+		return new DefaultIOReporter(getTarget(),
+				MessageFormat.format("{0} export", getTypeName()), true);
 	}
-	
+
 }

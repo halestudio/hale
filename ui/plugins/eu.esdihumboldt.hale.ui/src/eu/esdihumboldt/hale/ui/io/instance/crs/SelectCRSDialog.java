@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.io.instance.crs;
 
@@ -47,18 +51,18 @@ import eu.esdihumboldt.hale.ui.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeListener {
-	
+
 //	private static ALogger _log = ALoggerFactory.getLogger(SelectCRSDialog.class);
-	
+
 	/**
 	 * Text field for editing WKT
 	 */
 	private class WKText {
-		
+
 		private CoordinateReferenceSystem crs;
-		
+
 		private String errorMessage;
-		
+
 		private final Text text;
 
 		/**
@@ -68,17 +72,17 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		 */
 		public WKText(Composite parent) {
 			text = new Text(parent, SWT.MULTI | SWT.BORDER);
-			
+
 			text.addKeyListener(new KeyAdapter() {
 
 				@Override
 				public void keyReleased(KeyEvent e) {
 					valueChanged();
 				}
-				
+
 			});
 		}
-		
+
 		/**
 		 * Set the text
 		 * 
@@ -86,10 +90,10 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		 */
 		public void setText(String text) {
 			this.text.setText(text);
-			
+
 			valueChanged();
 		}
-		
+
 		/**
 		 * Get the text
 		 * 
@@ -98,7 +102,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		public String getText() {
 			return text.getText();
 		}
-		
+
 		private void valueChanged() {
 			try {
 				crs = CRS.parseWKT(getText());
@@ -107,10 +111,10 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 				errorMessage = e.getLocalizedMessage();
 				crs = null;
 			}
-			
+
 			updateMessage();
 		}
-		
+
 		/**
 		 * Get the coordinate reference system
 		 * 
@@ -119,7 +123,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		public WKTDefinition getCRSDefinition() {
 			return new WKTDefinition(getText(), crs);
 		}
-		
+
 		/**
 		 * Returns if the field's value is valid
 		 * 
@@ -149,7 +153,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	 * Field editor for a CRS code
 	 */
 	private static class CRSFieldEditor extends StringFieldEditor {
-		
+
 		private CoordinateReferenceSystem crs;
 
 		/**
@@ -167,7 +171,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 				return false;
 			}
 		}
-		
+
 		/**
 		 * Get the coordinate reference system
 		 * 
@@ -178,43 +182,42 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		}
 
 	}
-	
+
 	private static final String defaultCode = "EPSG:4326"; //$NON-NLS-1$
-	
-	private static final String defaultWKT = 
-		"PROJCS[\"MGI (Ferro)/AustriaGKWestZone\",\n" + //$NON-NLS-1$
+
+	private static final String defaultWKT = "PROJCS[\"MGI (Ferro)/AustriaGKWestZone\",\n" + //$NON-NLS-1$
 			"\tGEOGCS[\"MGI (Ferro)\",\n" + //$NON-NLS-1$
-				"\t\tDATUM[\"Militar-Geographische Institut (Ferro)\",\n" + //$NON-NLS-1$
-					"\t\t\tSPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n" + //$NON-NLS-1$
-					"\t\t\tAUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]],\n" + //$NON-NLS-1$
-				"\t\tPRIMEM[\"Ferro\",-17.666666666666668,AUTHORITY[\"EPSG\",\"8909\"]],\n" + //$NON-NLS-1$
-				"\t\tUNIT[\"degree\",0.017453292519943295],\n" + //$NON-NLS-1$
-				"\t\tAXIS[\"Geodetic latitude\",NORTH],\n" + //$NON-NLS-1$
-				"\t\tAXIS[\"Geodetic longitude\",EAST],\n" + //$NON-NLS-1$
-				"\t\tAUTHORITY[\"EPSG\",\"4805\"]],\n" + //$NON-NLS-1$
+			"\t\tDATUM[\"Militar-Geographische Institut (Ferro)\",\n" + //$NON-NLS-1$
+			"\t\t\tSPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n" + //$NON-NLS-1$
+			"\t\t\tAUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]],\n" + //$NON-NLS-1$
+			"\t\tPRIMEM[\"Ferro\",-17.666666666666668,AUTHORITY[\"EPSG\",\"8909\"]],\n" + //$NON-NLS-1$
+			"\t\tUNIT[\"degree\",0.017453292519943295],\n" + //$NON-NLS-1$
+			"\t\tAXIS[\"Geodetic latitude\",NORTH],\n" + //$NON-NLS-1$
+			"\t\tAXIS[\"Geodetic longitude\",EAST],\n" + //$NON-NLS-1$
+			"\t\tAUTHORITY[\"EPSG\",\"4805\"]],\n" + //$NON-NLS-1$
 			"\tPROJECTION[\"Transverse Mercator\"],\n" + //$NON-NLS-1$
-		"PARAMETER[\"central_meridian\",28.0],\n" + //$NON-NLS-1$
-		"PARAMETER[\"latitude_of_origin\",0.0],\n" + //$NON-NLS-1$
-		"PARAMETER[\"scale_factor\",1.0],\n" + //$NON-NLS-1$
-		"PARAMETER[\"false_easting\",0.0],\n" + //$NON-NLS-1$
-		"PARAMETER[\"false_northing\",-5000000.0],\n" + //$NON-NLS-1$
-		"UNIT[\"m\",1.0],\n" + //$NON-NLS-1$
-		"AXIS[\"Y\",EAST],\n" + //$NON-NLS-1$
-		"AXIS[\"X\",NORTH],\n" + //$NON-NLS-1$
-		"AUTHORITY[\"EPSG\",\"31251\"]]"; //$NON-NLS-1$
-	
+			"PARAMETER[\"central_meridian\",28.0],\n" + //$NON-NLS-1$
+			"PARAMETER[\"latitude_of_origin\",0.0],\n" + //$NON-NLS-1$
+			"PARAMETER[\"scale_factor\",1.0],\n" + //$NON-NLS-1$
+			"PARAMETER[\"false_easting\",0.0],\n" + //$NON-NLS-1$
+			"PARAMETER[\"false_northing\",-5000000.0],\n" + //$NON-NLS-1$
+			"UNIT[\"m\",1.0],\n" + //$NON-NLS-1$
+			"AXIS[\"Y\",EAST],\n" + //$NON-NLS-1$
+			"AXIS[\"X\",NORTH],\n" + //$NON-NLS-1$
+			"AUTHORITY[\"EPSG\",\"31251\"]]"; //$NON-NLS-1$
+
 	private CRSFieldEditor crsField;
-	
+
 	private WKText wktField;
-	
+
 	private static final String DEF_MESSAGE = ""; //$NON-NLS-1$
-	
+
 	private Button radioCRS;
-	
+
 	private Button radioWKT;
-	
+
 	private Group group;
-	
+
 	private CRSDefinition value;
 
 	/**
@@ -225,23 +228,23 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	 */
 	public SelectCRSDialog(Shell parentShell, CRSDefinition initalValue) {
 		super(parentShell);
-		
+
 		value = initalValue;
 	}
-	
+
 	/**
 	 * @see TitleAreaDialog#createContents(Composite)
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
-		
+
 		setTitle(Messages.SelectCRSDialog_ContentTitle);
 		setMessage(DEF_MESSAGE);
-		
+
 		updateState();
 		updateMessage();
-		
+
 		return control;
 	}
 
@@ -251,7 +254,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		
+
 		newShell.setText(Messages.SelectCRSDialog_ShellTitle);
 	}
 
@@ -263,14 +266,14 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		page.setLayoutData(data);
-		
+
 		page.setLayout(new GridLayout(1, false));
-		
+
 		group = new Group(page, SWT.NONE);
 		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		group.setLayout(new GridLayout(3, false));
 		group.setText(Messages.SelectCRSDialog_GroupText);
-		
+
 		SelectionListener radioListener = new SelectionListener() {
 
 			@Override
@@ -282,17 +285,17 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 			public void widgetSelected(SelectionEvent e) {
 				updateSelection();
 			}
-			
+
 		};
-		
+
 		boolean lastWasCode = value == null || value instanceof CodeDefinition;
-		
+
 		// CRS string
 		radioCRS = new Button(group, SWT.RADIO);
 		radioCRS.setSelection(lastWasCode);
 		radioCRS.setText(Messages.SelectCRSDialog_RadioCRSText);
 		radioCRS.addSelectionListener(radioListener);
-		
+
 		crsField = new CRSFieldEditor();
 		crsField.fillIntoGrid(group, 2);
 		crsField.setEmptyStringAllowed(false);
@@ -306,13 +309,13 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		crsField.setStringValue(code);
 		crsField.setPropertyChangeListener(this);
 		crsField.setEnabled(lastWasCode, group);
-		
+
 		// WKT string
 		radioWKT = new Button(group, SWT.RADIO);
 		radioWKT.setSelection(!lastWasCode);
 		radioWKT.setText(Messages.SelectCRSDialog_RadioWKTText);
 		radioWKT.addSelectionListener(radioListener);
-		
+
 		wktField = new WKText(group);
 		wktField.getTextField().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		String wkt;
@@ -324,7 +327,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		}
 		wktField.setText(wkt);
 		wktField.getTextField().setEnabled(!lastWasCode);
-		
+
 		return page;
 	}
 
@@ -333,10 +336,10 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	 */
 	protected void updateSelection() {
 		boolean enableCode = radioCRS.getSelection();
-		
+
 		crsField.setEnabled(enableCode, group);
 		wktField.getTextField().setEnabled(!enableCode);
-		
+
 		updateMessage();
 		updateState();
 	}
@@ -353,9 +356,9 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		else {
 			crs = wktField.getCRSDefinition();
 		}
-		
+
 		value = crs;
-		
+
 		super.okPressed();
 	}
 
@@ -365,10 +368,10 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	@Override
 	protected void cancelPressed() {
 		value = null;
-		
+
 		super.cancelPressed();
 	}
-	
+
 	/**
 	 * Get the selected value
 	 * 
@@ -377,7 +380,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	public CRSDefinition getValue() {
 		return value;
 	}
-	
+
 	/**
 	 * @see IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
@@ -391,7 +394,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 			updateState();
 		}
 	}
-	
+
 	/**
 	 * Update the dialog message
 	 */
@@ -402,7 +405,8 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		else {
 			if (wktField.isValid()) {
 				setErrorMessage(null);
-				setMessage(wktField.getCRSDefinition().getCRS().getName().toString(), IMessageProvider.INFORMATION);
+				setMessage(wktField.getCRSDefinition().getCRS().getName().toString(),
+						IMessageProvider.INFORMATION);
 			}
 			else {
 				setErrorMessage(wktField.getErrorMessage());
@@ -410,7 +414,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 			}
 		}
 	}
-	
+
 	/**
 	 * Update the dialog message
 	 * 
@@ -419,7 +423,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	private void updateMessage(CRSFieldEditor editor) {
 		if (editor.isValid()) {
 			setErrorMessage(null);
-			setMessage(editor.getCRSDefinition().getCRS().getName().toString(), 
+			setMessage(editor.getCRSDefinition().getCRS().getName().toString(),
 					IMessageProvider.INFORMATION);
 		}
 		else {
@@ -433,8 +437,8 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	 */
 	private void updateState() {
 		getButton(OK).setEnabled(
-				(radioCRS.getSelection() && crsField.isValid()) ||
-				(radioWKT.getSelection() && wktField.isValid()));
+				(radioCRS.getSelection() && crsField.isValid())
+						|| (radioWKT.getSelection() && wktField.isValid()));
 	}
 
 }

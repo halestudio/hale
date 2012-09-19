@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.instance.metadata">
+      <metadata
+            description="The source populated transformation tree"
+            key="cst.ttree.populated"
+            label="Transformation tree">
+      </metadata>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.cst.instancetransformation">
+      <source-tree
+            hook="eu.esdihumboldt.hale.ui.cst.debug.metadata.internal.TransformationTreeMetadataHook"
+            id="eu.esdihumboldt.hale.ui.cst.debug.ttree-metadata.source-tree"
+            name="Store transformation tree in instance metadata">
+      </source-tree>
+   </extension>
+
+</plugin>

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.mapping;
@@ -58,23 +62,24 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 
 /**
  * View displaying the current alignment
+ * 
  * @author Simon Templer
  */
 public class AlignmentView extends AbstractMappingView {
-	
+
 	/**
 	 * The view ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping.alignment";
 
 	private AlignmentServiceListener alignmentListener;
-	
+
 	private ComboViewer typeRelations;
-	
+
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
 	private ISelectionListener selectionListener;
-	
+
 	/**
 	 * @see PropertiesViewPart#getViewContext()
 	 */
@@ -90,7 +95,7 @@ public class AlignmentView extends AbstractMappingView {
 	public void createViewControl(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(GridLayoutFactory.fillDefaults().create());
-		
+
 		// create type relation selection control
 		typeRelations = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY);
 		typeRelations.setContentProvider(ArrayContentProvider.getInstance());
@@ -108,7 +113,7 @@ public class AlignmentView extends AbstractMappingView {
 					}
 					return null;
 				}
-				
+
 				return super.getImage(element);
 			}
 
@@ -116,33 +121,36 @@ public class AlignmentView extends AbstractMappingView {
 			public String getText(Object element) {
 				if (element instanceof Cell) {
 					Cell cell = (Cell) element;
-					
+
 					return CellUtil.getCellDescription(cell);
 				}
-				
+
 				return super.getText(element);
 			}
-			
+
 		});
 		typeRelations.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				updateGraph();
 			}
 		});
-		typeRelations.getControl().setLayoutData(GridDataFactory.swtDefaults()
-				.align(SWT.FILL, SWT.CENTER).grab(true, false).create());
-		
+		typeRelations.getControl().setLayoutData(
+				GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+						.create());
+
 		// create viewer
 		Composite viewerContainer = new Composite(page, SWT.NONE);
 		viewerContainer.setLayout(new FillLayout());
 		viewerContainer.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		super.createViewControl(viewerContainer);
-		
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		
+
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+
 		update();
-		
+
 		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 			@Override
@@ -151,7 +159,7 @@ public class AlignmentView extends AbstractMappingView {
 			}
 
 			@Override
-			public void cellRemoved(Cell cell) {
+			public void cellsRemoved(Iterable<Cell> cells) {
 				update();
 			}
 
@@ -165,46 +173,50 @@ public class AlignmentView extends AbstractMappingView {
 				update();
 			}
 		});
-		
+
 		// listen on SchemaSelections
-		getSite().getWorkbenchWindow().getSelectionService().addPostSelectionListener(selectionListener = new ISelectionListener() {
-			
-			@Override
-			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-				if (!(selection instanceof SchemaSelection)) {
-					// only react on schema selections
-					return;
-				}
-				
-				if (part != AlignmentView.this) {
-					updateRelation((SchemaSelection) selection);
-				}
-			}
-		});
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addPostSelectionListener(selectionListener = new ISelectionListener() {
+
+					@Override
+					public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+						if (!(selection instanceof SchemaSelection)) {
+							// only react on schema selections
+							return;
+						}
+
+						if (part != AlignmentView.this) {
+							updateRelation((SchemaSelection) selection);
+						}
+					}
+				});
 	}
 
 	/**
 	 * Update the selected type relation to a cell that is related to the given
-	 * schema selection. 
+	 * schema selection.
+	 * 
 	 * @param selection the schema selection
 	 */
 	private void updateRelation(SchemaSelection selection) {
 		ISelection typeSelection = typeRelations.getSelection();
-		
+
 		Cell typeCell = null;
 		if (!typeSelection.isEmpty() && typeSelection instanceof IStructuredSelection) {
 			typeCell = (Cell) ((IStructuredSelection) typeSelection).getFirstElement();
 		}
-		
-		if (typeCell != null && (associatedWithType(typeCell.getSource(), selection.getSourceItems())
-				&& associatedWithType(typeCell.getTarget(), selection.getTargetItems()))) {
+
+		if (typeCell != null
+				&& (associatedWithType(typeCell.getSource(), selection.getSourceItems()) && associatedWithType(
+						typeCell.getTarget(), selection.getTargetItems()))) {
 			// type cell is associated with source and target, don't change
 			return;
 		}
-		
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		Alignment alignment = as.getAlignment();
-		
+
 		// find type cell associated with both source and target
 		for (Cell cell : alignment.getTypeCells()) {
 			if ((associatedWithType(cell.getSource(), selection.getSourceItems()))
@@ -213,13 +225,14 @@ public class AlignmentView extends AbstractMappingView {
 				return;
 			}
 		}
-		
-		if (typeCell != null && (associatedWithType(typeCell.getSource(), selection.getSourceItems())
-				|| associatedWithType(typeCell.getTarget(), selection.getTargetItems()))) {
+
+		if (typeCell != null
+				&& (associatedWithType(typeCell.getSource(), selection.getSourceItems()) || associatedWithType(
+						typeCell.getTarget(), selection.getTargetItems()))) {
 			// type cell is associated with source or target, don't change
 			return;
 		}
-		
+
 		// find type cell associated with source or target
 		for (Cell cell : alignment.getTypeCells()) {
 			if ((associatedWithType(cell.getSource(), selection.getSourceItems()))
@@ -229,21 +242,26 @@ public class AlignmentView extends AbstractMappingView {
 			}
 		}
 	}
-	
-	private boolean associatedWithType(
-			ListMultimap<String, ? extends Entity> entities,
+
+	private boolean associatedWithType(ListMultimap<String, ? extends Entity> entities,
 			Set<EntityDefinition> entityDefs) {
-		Set<TypeDefinition> types = new HashSet<TypeDefinition>(); //XXX must be TypeEntityDefintions when there are contexts for types
+		Set<TypeDefinition> types = new HashSet<TypeDefinition>(); // XXX must
+																	// be
+																	// TypeEntityDefintions
+																	// when
+																	// there are
+																	// contexts
+																	// for types
 		for (EntityDefinition entityDef : entityDefs) {
 			types.add(entityDef.getType());
 		}
-		
+
 		for (Entity entity : entities.values()) {
 			if (types.contains(entity.getDefinition().getType())) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -253,7 +271,7 @@ public class AlignmentView extends AbstractMappingView {
 	private void update() {
 		final Display display = PlatformUI.getWorkbench().getDisplay();
 		display.syncExec(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				ISelection selection = typeRelations.getSelection();
@@ -261,12 +279,13 @@ public class AlignmentView extends AbstractMappingView {
 				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 					lastSelected = (Cell) ((IStructuredSelection) selection).getFirstElement();
 				}
-				
+
 				// update type relations
-				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+						AlignmentService.class);
 				Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells();
 				typeRelations.setInput(typeCells);
-				
+
 				ISelection newSelection;
 				if (lastSelected != null && typeCells.contains(lastSelected)) {
 					newSelection = new StructuredSelection(lastSelected);
@@ -278,22 +297,24 @@ public class AlignmentView extends AbstractMappingView {
 					newSelection = new StructuredSelection(typeCells.iterator().next());
 				}
 				typeRelations.setSelection(newSelection);
-				
-				// call to updateGraph is done implicitly through selection change
+
+				// call to updateGraph is done implicitly through selection
+				// change
 			}
 		});
 	}
-		
+
 	private void updateGraph() {
 		ISelection selection = typeRelations.getSelection();
-		
+
 		Cell typeCell = null;
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			typeCell = (Cell) ((IStructuredSelection) selection).getFirstElement();
 		}
-		
+
 		if (typeCell != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			Collection<Cell> cells = new ArrayList<Cell>();
 			cells.add(typeCell);
 			cells.addAll(AlignmentUtil.getPropertyCellsFromTypeCell(as.getAlignment(), typeCell));
@@ -311,16 +332,18 @@ public class AlignmentView extends AbstractMappingView {
 	@Override
 	public void dispose() {
 		if (alignmentListener != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			as.removeListener(alignmentListener);
 		}
-		
+
 		if (selectionListener != null) {
-			getSite().getWorkbenchWindow().getSelectionService().removePostSelectionListener(selectionListener);
+			getSite().getWorkbenchWindow().getSelectionService()
+					.removePostSelectionListener(selectionListener);
 		}
-		
+
 		functionLabels.dispose();
-		
+
 		super.dispose();
 	}
 

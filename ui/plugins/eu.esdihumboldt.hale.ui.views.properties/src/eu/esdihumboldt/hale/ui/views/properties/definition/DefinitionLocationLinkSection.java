@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.properties.definition;
@@ -30,47 +34,46 @@ import eu.esdihumboldt.hale.ui.util.components.URILink;
 
 /**
  * Properties section with a link to open the location in editor or browser
+ * 
  * @author Patrick Lieb
  */
-public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Definition<?>>{
-	
+public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Definition<?>> {
+
 	private URILink location;
-	
+
 	private Link link;
-	
+
 	private Text linktext;
-	
+
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-				.createFlatFormComposite(parent);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		location = new URILink(composite, 0, null, "<A>Open Location</A>");
-		
+
 		link = location.getLink();
-		
+
 		FormData data;
-		
+
 		data = new FormData();
 		data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
 		data.right = new FormAttachment(100, 0);
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		link.setLayoutData(data);
-		
+
 		link.setBackground(getWidgetFactory().getColors().getBackground());
-		
-		CLabel namespaceLabel = getWidgetFactory()
-		.createCLabel(composite, "Location:"); //$NON-NLS-1$
+
+		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite, "Location:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(link,15);
+		data.right = new FormAttachment(link, 15);
 		data.top = new FormAttachment(link, 0, SWT.CENTER);
 		namespaceLabel.setLayoutData(data);
-		
+
 		linktext = getWidgetFactory().createText(composite, "");
 		linktext.setEditable(false);
 
@@ -83,23 +86,22 @@ public class DefinitionLocationLinkSection extends DefaultDefinitionSection<Defi
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		linktext.setLayoutData(data);
 
-		namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, ""); //$NON-NLS-1$
+		namespaceLabel = getWidgetFactory().createCLabel(composite, ""); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(linktext,
-				-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(linktext, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(linktext, 0, SWT.TOP);
 		namespaceLabel.setLayoutData(data);
 	}
-	
+
 	@Override
-	public void refresh(){
+	public void refresh() {
 		URI loc = getDefinition().getLocation();
-		if(loc == null){
+		if (loc == null) {
 			location.setText("no Link available");
 			linktext.setText("location not set");
-		} else {
+		}
+		else {
 			location.refresh(loc);
 			linktext.setText(loc.toASCIIString());
 		}

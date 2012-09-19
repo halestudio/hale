@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal;
@@ -82,12 +86,12 @@ import eu.esdihumboldt.util.validator.Validator;
 
 /**
  * Utility methods regarding type resolving
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class XmlTypeUtil {
-	
+
 //	private static final ALogger log = ALoggerFactory.getLogger(TypeUtil.class);
 //	
 //	private static final AGroup TYPE_RESOLVE = AGroupFactory.getGroup(Messages.getString("TypeUtil.0")); //$NON-NLS-1$
@@ -96,7 +100,7 @@ public abstract class XmlTypeUtil {
 	 * The XML simple types schema
 	 */
 	protected static final XSSchema xsSchema = new XSSchema();
-	
+
 	/**
 	 * GML 3.2 namespace
 	 */
@@ -106,12 +110,13 @@ public abstract class XmlTypeUtil {
 	 * GML up to 3.1.x namespace
 	 */
 	private static final String NAMESPACE_GML = "http://www.opengis.net/gml"; //$NON-NLS-1$
-	
+
 	/**
-	 * Qualified name of the anyType schema type 
+	 * Qualified name of the anyType schema type
 	 */
-	public static final QName NAME_ANY_TYPE = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "anyType");
-	
+	public static final QName NAME_ANY_TYPE = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI,
+			"anyType");
+
 	/**
 	 * Set of XML schema types that should get a String binding but don't get
 	 * one through the Geotools bindings
@@ -133,13 +138,13 @@ public abstract class XmlTypeUtil {
 		XS_STRING_TYPES.add("normalizedString"); //$NON-NLS-1$
 		XS_STRING_TYPES.add("QName"); //$NON-NLS-1$
 	}
-	
+
 	private static final Set<QName> GML_GEOMETRY_TYPES = new HashSet<QName>();
 	static {
 		GML_GEOMETRY_TYPES.add(new QName(NAMESPACE_GML, "AbstractGeometryType"));
 		GML_GEOMETRY_TYPES.add(new QName(NAMESPACE_GML32, "AbstractGeometryType"));
 	}
-	
+
 //	/**
 //	 * Get the attribute type for an GML type
 //	 * 
@@ -184,11 +189,11 @@ public abstract class XmlTypeUtil {
 		if (configureXsdSimpleType(type)) {
 			return;
 		}
-		
-		//TODO more configuration options?
-		//TODO e.g. GML?
+
+		// TODO more configuration options?
+		// TODO e.g. GML?
 	}
-	
+
 	/**
 	 * Configure the given type as XML schema simple type if possible
 	 * 
@@ -197,23 +202,23 @@ public abstract class XmlTypeUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	private static boolean configureXsdSimpleType(XmlTypeDefinition type) {
-		Name typeName = new NameImpl(type.getName().getNamespaceURI(), 
-				type.getName().getLocalPart());
-		
+		Name typeName = new NameImpl(type.getName().getNamespaceURI(), type.getName()
+				.getLocalPart());
+
 		AttributeType ty = xsSchema.get(typeName);
-		
+
 		// special case: ID etc. - assure String binding
 		if (ty != null && XS_STRING_TYPES.contains(typeName.getLocalPart())) {
 			ty = new AttributeTypeImpl(typeName, java.lang.String.class, false, false,
-	                Collections.EMPTY_LIST, ty.getSuper(), null);
+					Collections.EMPTY_LIST, ty.getSuper(), null);
 		}
-		
+
 		// only enable hasValue if the type is not anyType
 		boolean hasValue = !typeName.getLocalPart().equals("anyType");
-		
+
 		if (ty != null) {
 			// configure type
-			
+
 			// set binding
 			type.setConstraint(Binding.get(ty.getBinding()));
 			// simple type flag
@@ -223,12 +228,12 @@ public abstract class XmlTypeUtil {
 			// not mappable
 			type.setConstraint(MappingRelevantFlag.DISABLED);
 			type.setConstraint(MappableFlag.DISABLED);
-			
+
 			type.setLocation(URI.create(XMLConstants.W3C_XML_SCHEMA_NS_URI));
 			if (ty.getDescription() != null) {
 				type.setDescription(ty.getDescription().toString());
 			}
-			
+
 			return true;
 		}
 		else {
@@ -237,7 +242,7 @@ public abstract class XmlTypeUtil {
 	}
 
 	/**
-	 * Configure a type definition for a simple type based on the 
+	 * Configure a type definition for a simple type based on the
 	 * {@link XmlSchemaSimpleType}.
 	 * 
 	 * @param type the type definition
@@ -245,31 +250,29 @@ public abstract class XmlTypeUtil {
 	 * @param index the XML index for resolving type definitions
 	 * @param reporter the report
 	 */
-	public static void configureSimpleType(XmlTypeDefinition type,
-			XmlSchemaSimpleType simpleType, XmlIndex index, IOReporter reporter) {
+	public static void configureSimpleType(XmlTypeDefinition type, XmlSchemaSimpleType simpleType,
+			XmlIndex index, IOReporter reporter) {
 		XmlSchemaSimpleTypeContent content = simpleType.getContent();
-		
+
 		// it's a simple type
 		type.setConstraint(HasValueFlag.ENABLED);
-		
+
 		if (content instanceof XmlSchemaSimpleTypeUnion) {
 			// simple type union
-			configureSimpleTypeUnion(type, (XmlSchemaSimpleTypeUnion) content, 
-					index, reporter);
+			configureSimpleTypeUnion(type, (XmlSchemaSimpleTypeUnion) content, index, reporter);
 		}
 		else if (content instanceof XmlSchemaSimpleTypeList) {
 			// simple type list
-			configureSimpleTypeList(type, (XmlSchemaSimpleTypeList) content, 
-					index, reporter);
+			configureSimpleTypeList(type, (XmlSchemaSimpleTypeList) content, index, reporter);
 		}
 		else if (content instanceof XmlSchemaSimpleTypeRestriction) {
 			// simple type restriction
-			configureSimpleTypeRestriction(type, (XmlSchemaSimpleTypeRestriction) content, 
-					index, reporter);
+			configureSimpleTypeRestriction(type, (XmlSchemaSimpleTypeRestriction) content, index,
+					reporter);
 		}
 		else {
-			reporter.error(new IOMessageImpl(MessageFormat.format("Unrecognized simple type {0}", type.getName()),
-					null, simpleType.getLineNumber(), simpleType.getLinePosition()));
+			reporter.error(new IOMessageImpl(MessageFormat.format("Unrecognized simple type {0}",
+					type.getName()), null, simpleType.getLineNumber(), simpleType.getLinePosition()));
 		}
 	}
 
@@ -283,10 +286,9 @@ public abstract class XmlTypeUtil {
 	 * @param reporter the report
 	 */
 	private static void configureSimpleTypeRestriction(XmlTypeDefinition type,
-			XmlSchemaSimpleTypeRestriction restriction, XmlIndex index,
-			IOReporter reporter) {
+			XmlSchemaSimpleTypeRestriction restriction, XmlIndex index, IOReporter reporter) {
 		QName baseTypeName = restriction.getBaseTypeName();
-		
+
 		XmlTypeDefinition baseTypeDef;
 		if (baseTypeName != null) {
 			// resolve super type
@@ -295,22 +297,25 @@ public abstract class XmlTypeUtil {
 		else if (restriction.getBaseType() != null) {
 			// simple schema type
 			XmlSchemaSimpleType simpleType = restriction.getBaseType();
-			
+
 			// create an anonymous type
-			QName anonymousName = new QName(
-					type.getName().getNamespaceURI() + "/" + 
-					type.getName().getLocalPart(), "AnonymousSuperType"); //$NON-NLS-1$
-			
+			QName anonymousName = new QName(type.getName().getNamespaceURI() + "/"
+					+ type.getName().getLocalPart(), "AnonymousSuperType"); //$NON-NLS-1$
+
 			baseTypeDef = new AnonymousXmlType(anonymousName);
-			
+
 			XmlTypeUtil.configureSimpleType(type, simpleType, index, reporter);
-			
+
 			// set metadata
-			XmlSchemaReader.setMetadata(type, simpleType, null); // no schema location available at this point
+			XmlSchemaReader.setMetadata(type, simpleType, null); // no schema
+																	// location
+																	// available
+																	// at this
+																	// point
 		}
 		else {
 			reporter.error(new IOMessageImpl(
-					"Simple type restriction without base type, skipping type configuration.", 
+					"Simple type restriction without base type, skipping type configuration.",
 					null, restriction.getLineNumber(), restriction.getLinePosition()));
 			return;
 		}
@@ -329,9 +334,11 @@ public abstract class XmlTypeUtil {
 		List<String> values = new LinkedList<String>();
 		List<Validator> patternValidators = new LinkedList<Validator>();
 
-        // TODO different handling for date/time/g.../duration in (min|max)(In|Ex)clusive
+		// TODO different handling for date/time/g.../duration in
+		// (min|max)(In|Ex)clusive
 		// XXX only for date, time, duration, dateTime, gMonthDay, gYearMonth?
-		// no also for some cases of gYear, gMonth, gDay (they can have a timezone!)
+		// no also for some cases of gYear, gMonth, gDay (they can have a
+		// timezone!)
 		// but only need to handle cases where isDecimal() is false...
 
 		XmlSchemaObjectCollection facets = restriction.getFacets();
@@ -339,66 +346,77 @@ public abstract class XmlTypeUtil {
 			XmlSchemaFacet facet = (XmlSchemaFacet) facets.getItem(i);
 			if (facet instanceof XmlSchemaEnumerationFacet) {
 				values.add(facet.getValue().toString());
-	        } else if (facet instanceof XmlSchemaFractionDigitsFacet) {
-	            validators.add(new DigitCountValidator(DigitCountValidator.Type.FRACTIONDIGITS, 
-	            		Integer.parseInt(facet.getValue().toString())));
-	        } else if (facet instanceof XmlSchemaLengthFacet) {
-	            validators.add(new LengthValidator(LengthValidator.Type.EXACT, 
-	            		Integer.parseInt(facet.getValue().toString())));
-	        } else if (facet instanceof XmlSchemaMaxExclusiveFacet) {
-	        	if (isDecimal(facet.getValue().toString())) // number or date?
-	        		validators.add(new NumberValidator(NumberValidator.Type.MAXEXCLUSIVE, 
-	        				new BigDecimal(facet.getValue().toString())));
-	        	else 
-	        		reporter.warn(new IOMessageImpl(
-	        			"(min|max)(In|Ex)clusive not supported for non-number types", 
-	        			null, facet.getLineNumber(), facet.getLinePosition()));
-	        } else if (facet instanceof XmlSchemaMaxInclusiveFacet) {
-	        	if (isDecimal(facet.getValue().toString())) // number or date?
-	        		validators.add(new NumberValidator(NumberValidator.Type.MAXINCLUSIVE, 
-	        				new BigDecimal(facet.getValue().toString())));
-	        	else 
-	        		reporter.warn(new IOMessageImpl(
-	        			"(min|max)(In|Ex)clusive not supported for non-number types", 
-	        			null, facet.getLineNumber(), facet.getLinePosition()));
-	        } else if (facet instanceof XmlSchemaMaxLengthFacet) {
-	        	validators.add(new LengthValidator(LengthValidator.Type.MAXIMUM, 
-	        			Integer.parseInt(facet.getValue().toString())));
-		    } else if (facet instanceof XmlSchemaMinLengthFacet) {
-		    	validators.add(new LengthValidator(LengthValidator.Type.MINIMUM, 
-		    			Integer.parseInt(facet.getValue().toString())));
-	        } else if (facet instanceof XmlSchemaMinExclusiveFacet) {
-	        	if (isDecimal(facet.getValue().toString())) // number or date?
-	        		validators.add(new NumberValidator(NumberValidator.Type.MINEXCLUSIVE, 
-	        				new BigDecimal(facet.getValue().toString())));
-	        	else 
-	        		reporter.warn(new IOMessageImpl(
-	        			"(min|max)(In|Ex)clusive not supported for non-number types", 
-	        			null, facet.getLineNumber(), facet.getLinePosition()));
-	        } else if (facet instanceof XmlSchemaMinInclusiveFacet) {
-	        	if (isDecimal(facet.getValue().toString())) // number or date?
-	        		validators.add(new NumberValidator(NumberValidator.Type.MININCLUSIVE, 
-	        				new BigDecimal(facet.getValue().toString())));
-	        	else 
-	        		reporter.warn(new IOMessageImpl(
-	        			"(min|max)(In|Ex)clusive not supported for non-number types", 
-	        			null, facet.getLineNumber(), facet.getLinePosition()));
-	        } else if (facet instanceof XmlSchemaPatternFacet) {
-	        	patternValidators.add(new PatternValidator(facet.getValue().toString()));
-	        } else if (facet instanceof XmlSchemaTotalDigitsFacet) {
-	            validators.add(new DigitCountValidator(DigitCountValidator.Type.TOTALDIGITS, 
-	            		Integer.parseInt(facet.getValue().toString())));
-	        } else if (facet instanceof XmlSchemaWhiteSpaceFacet) {
-	            reporter.warn(new IOMessageImpl(
-						"White space facet not supported", 
-						null, facet.getLineNumber(), facet.getLinePosition()));
-	        	// Nothing to validate according to w3. 
-	            // Values should be processed according to rule?
-	        } else {
-	        	reporter.error(new IOMessageImpl(
-						"Unrecognized facet: " + facet.getClass().getSimpleName(), 
-						null, facet.getLineNumber(), facet.getLinePosition()));
-	        }
+			}
+			else if (facet instanceof XmlSchemaFractionDigitsFacet) {
+				validators.add(new DigitCountValidator(DigitCountValidator.Type.FRACTIONDIGITS,
+						Integer.parseInt(facet.getValue().toString())));
+			}
+			else if (facet instanceof XmlSchemaLengthFacet) {
+				validators.add(new LengthValidator(LengthValidator.Type.EXACT, Integer
+						.parseInt(facet.getValue().toString())));
+			}
+			else if (facet instanceof XmlSchemaMaxExclusiveFacet) {
+				if (isDecimal(facet.getValue().toString())) // number or date?
+					validators.add(new NumberValidator(NumberValidator.Type.MAXEXCLUSIVE,
+							new BigDecimal(facet.getValue().toString())));
+				else
+					reporter.warn(new IOMessageImpl(
+							"(min|max)(In|Ex)clusive not supported for non-number types", null,
+							facet.getLineNumber(), facet.getLinePosition()));
+			}
+			else if (facet instanceof XmlSchemaMaxInclusiveFacet) {
+				if (isDecimal(facet.getValue().toString())) // number or date?
+					validators.add(new NumberValidator(NumberValidator.Type.MAXINCLUSIVE,
+							new BigDecimal(facet.getValue().toString())));
+				else
+					reporter.warn(new IOMessageImpl(
+							"(min|max)(In|Ex)clusive not supported for non-number types", null,
+							facet.getLineNumber(), facet.getLinePosition()));
+			}
+			else if (facet instanceof XmlSchemaMaxLengthFacet) {
+				validators.add(new LengthValidator(LengthValidator.Type.MAXIMUM, Integer
+						.parseInt(facet.getValue().toString())));
+			}
+			else if (facet instanceof XmlSchemaMinLengthFacet) {
+				validators.add(new LengthValidator(LengthValidator.Type.MINIMUM, Integer
+						.parseInt(facet.getValue().toString())));
+			}
+			else if (facet instanceof XmlSchemaMinExclusiveFacet) {
+				if (isDecimal(facet.getValue().toString())) // number or date?
+					validators.add(new NumberValidator(NumberValidator.Type.MINEXCLUSIVE,
+							new BigDecimal(facet.getValue().toString())));
+				else
+					reporter.warn(new IOMessageImpl(
+							"(min|max)(In|Ex)clusive not supported for non-number types", null,
+							facet.getLineNumber(), facet.getLinePosition()));
+			}
+			else if (facet instanceof XmlSchemaMinInclusiveFacet) {
+				if (isDecimal(facet.getValue().toString())) // number or date?
+					validators.add(new NumberValidator(NumberValidator.Type.MININCLUSIVE,
+							new BigDecimal(facet.getValue().toString())));
+				else
+					reporter.warn(new IOMessageImpl(
+							"(min|max)(In|Ex)clusive not supported for non-number types", null,
+							facet.getLineNumber(), facet.getLinePosition()));
+			}
+			else if (facet instanceof XmlSchemaPatternFacet) {
+				patternValidators.add(new PatternValidator(facet.getValue().toString()));
+			}
+			else if (facet instanceof XmlSchemaTotalDigitsFacet) {
+				validators.add(new DigitCountValidator(DigitCountValidator.Type.TOTALDIGITS,
+						Integer.parseInt(facet.getValue().toString())));
+			}
+			else if (facet instanceof XmlSchemaWhiteSpaceFacet) {
+				reporter.warn(new IOMessageImpl("White space facet not supported", null, facet
+						.getLineNumber(), facet.getLinePosition()));
+				// Nothing to validate according to w3.
+				// Values should be processed according to rule?
+			}
+			else {
+				reporter.error(new IOMessageImpl("Unrecognized facet: "
+						+ facet.getClass().getSimpleName(), null, facet.getLineNumber(), facet
+						.getLinePosition()));
+			}
 		}
 
 		if (!patternValidators.isEmpty())
@@ -406,8 +424,9 @@ public abstract class XmlTypeUtil {
 
 		if (!values.isEmpty()) {
 			// set enumeration constraint
-			// no check of which values are okay, they must be validated somewhere else.
-			//XXX conversion to be done?
+			// no check of which values are okay, they must be validated
+			// somewhere else.
+			// XXX conversion to be done?
 			type.setConstraint(new Enumeration<String>(values, false));
 			validators.add(new EnumerationValidator(values));
 		}
@@ -451,31 +470,30 @@ public abstract class XmlTypeUtil {
 			}
 			else {
 				// anonymous type
-				QName baseName = new QName(type.getName().getNamespaceURI() + 
-						"/" + type.getName().getLocalPart(), "AnonymousType"); //$NON-NLS-1$ //$NON-NLS-2$
-				
+				QName baseName = new QName(type.getName().getNamespaceURI()
+						+ "/" + type.getName().getLocalPart(), "AnonymousType"); //$NON-NLS-1$ //$NON-NLS-2$
+
 				elementType = new AnonymousXmlType(baseName);
 			}
-			
+
 			configureSimpleType(elementType, simpleType, index, reporter);
 		}
 		else if (list.getItemTypeName() != null) {
 			// named type
 			elementType = index.getOrCreateType(list.getItemTypeName());
 		}
-		
+
 		if (elementType != null) {
 			// set constraints on type
-			
+
 			// element type
 			type.setConstraint(ElementType.createFromType(elementType));
 			// list binding
 			type.setConstraint(Binding.get(List.class));
 		}
 		else {
-			reporter.error(new IOMessageImpl(
-					"Unrecognized base type for simple type list", 
-					null, list.getLineNumber(), list.getLinePosition()));
+			reporter.error(new IOMessageImpl("Unrecognized base type for simple type list", null,
+					list.getLineNumber(), list.getLinePosition()));
 		}
 	}
 
@@ -489,8 +507,7 @@ public abstract class XmlTypeUtil {
 	 * @param reporter the report
 	 */
 	private static void configureSimpleTypeUnion(XmlTypeDefinition type,
-			XmlSchemaSimpleTypeUnion union, XmlIndex index,
-			IOReporter reporter) {
+			XmlSchemaSimpleTypeUnion union, XmlIndex index, IOReporter reporter) {
 		XmlSchemaObjectCollection baseTypes = union.getBaseTypes();
 
 		// collect type definitions
@@ -508,18 +525,20 @@ public abstract class XmlTypeUtil {
 				if (baseType instanceof XmlSchemaSimpleType) {
 					XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType) baseType;
 
-					// Here it is a xs:localSimpleTypes, name attribute is prohibited!
+					// Here it is a xs:localSimpleTypes, name attribute is
+					// prohibited!
 					// So it always is a anonymous type.
-					QName baseName = new QName(type.getName().getNamespaceURI() + 
-							"/" + type.getName().getLocalPart(), "AnonymousType" + i); //$NON-NLS-1$ //$NON-NLS-2$
+					QName baseName = new QName(type.getName().getNamespaceURI()
+							+ "/" + type.getName().getLocalPart(), "AnonymousType" + i); //$NON-NLS-1$ //$NON-NLS-2$
 					XmlTypeDefinition baseDef = new AnonymousXmlType(baseName);
 
 					configureSimpleType(baseDef, simpleType, index, reporter);
 					unionTypes.add(baseDef);
-				} else {
+				}
+				else {
 					reporter.error(new IOMessageImpl(
-							"Unrecognized base type for simple type union", 
-							null, union.getLineNumber(), union.getLinePosition()));
+							"Unrecognized base type for simple type union", null, union
+									.getLineNumber(), union.getLinePosition()));
 				}
 			}
 		}
@@ -535,32 +554,35 @@ public abstract class XmlTypeUtil {
 	/**
 	 * Determine if there is a special binding available for a type (apart from
 	 * explicit definition in the schema)
+	 * 
 	 * @param type the type definition
 	 * @return the special binding or <code>null</code>
 	 */
 	public static boolean setSpecialBinding(XmlTypeDefinition type) {
 		// determine special bindings
-		
+
 		// geometry bindings
 		Geometries geoms = Geometries.getInstance();
-		
+
 		try {
 			Iterable<TypeConstraint> constraints = geoms.getTypeConstraints(type);
 			if (constraints != null) {
-				// set the geometry related constraints (Binding, ElementType, GeometryType)
+				// set the geometry related constraints (Binding, ElementType,
+				// GeometryType)
 				for (TypeConstraint constraint : constraints) {
 					type.setConstraint(constraint);
 				}
 			}
-			
-			// enable augmented value, as the derived geometry will be stored as the value
-			//XXX should this be done in handler?!
-			type.setConstraint(AugmentedValueFlag.ENABLED); 
+
+			// enable augmented value, as the derived geometry will be stored as
+			// the value
+			// XXX should this be done in handler?!
+			type.setConstraint(AugmentedValueFlag.ENABLED);
 		} catch (GeometryNotSupportedException e) {
 			// ignore - is no geometry or is not recognized
 		}
-		
-		//XXX the old way
+
+		// XXX the old way
 //		if (GML_GEOMETRY_TYPES.contains(type.getName())) {
 //			//XXX just assign GeometryProperty binding for now
 //			//FIXME concept of binding constraint and geometry property must be adapted to include built-in support for multiple geometries (with possible different CRS)
@@ -572,9 +594,9 @@ public abstract class XmlTypeUtil {
 //			type.setConstraint(AugmentedValueFlag.ENABLED); 
 //			return true;
 //		}
-		
+
 		// otherwise the super type binding will be used
 		return false;
 	}
-	
+
 }

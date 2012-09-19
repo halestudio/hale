@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.csv.ui;
@@ -41,8 +45,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class TypeSelectionPage extends InstanceReaderConfigurationPage
-		implements CSVConstants {
+public class TypeSelectionPage extends InstanceReaderConfigurationPage implements CSVConstants {
 
 	private TypeDefinitionSelector sel;
 	private Button button;
@@ -89,27 +92,25 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type:");
 
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		sel = new TypeDefinitionSelector(page, 
-				"Select the corresponding schema type", 
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
+		sel = new TypeDefinitionSelector(page, "Select the corresponding schema type",
 				ss.getSchemas(SchemaSpaceID.SOURCE), null);
 		sel.getControl().setLayoutData(
-				GridDataFactory.fillDefaults().grab(true, false).span(1, 1)
-						.create());
-		sel.addSelectionChangedListener(
-				new ISelectionChangedListener() {
+				GridDataFactory.fillDefaults().grab(true, false).span(1, 1).create());
+		sel.addSelectionChangedListener(new ISelectionChangedListener() {
 
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						setPageComplete(!(event.getSelection().isEmpty()));
-						if (sel.getSelectedObject() != null) {
-							TypeDefinition type = sel.getSelectedObject();
-							CSVConfiguration conf = type.getConstraint(CSVConfiguration.class);
-							Boolean skip = conf.skipFirst();
-							button.setSelection(skip);
-						}
-					}
-				});
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				setPageComplete(!(event.getSelection().isEmpty()));
+				if (sel.getSelectedObject() != null) {
+					TypeDefinition type = sel.getSelectedObject();
+					CSVConfiguration conf = type.getConstraint(CSVConfiguration.class);
+					Boolean skip = conf.skipFirst();
+					button.setSelection(skip);
+				}
+			}
+		});
 
 		button = new Button(page, SWT.CHECK);
 		button.setText("Skip first line");
@@ -132,7 +133,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 			QName name = sel.getSelectedObject().getName();
 			String param_name = name.toString();
 			provider.setParameter(CSVConstants.PARAM_TYPENAME, param_name);
-		} else {
+		}
+		else {
 			return false;
 		}
 

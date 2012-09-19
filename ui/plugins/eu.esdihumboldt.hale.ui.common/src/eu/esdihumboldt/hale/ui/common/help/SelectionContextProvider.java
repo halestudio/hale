@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.help;
@@ -32,23 +36,25 @@ import eu.esdihumboldt.hale.ui.common.help.internal.ContextWrapper;
 
 /**
  * Context provider providing a context for the selection (if possible).
- * @author Simon Templer 
+ * 
+ * @author Simon Templer
  */
 public abstract class SelectionContextProvider implements IContextProvider {
 
 	private final ISelectionProvider selectionProvider;
-	
+
 	private final String defaultContextId;
-	
+
 	/**
 	 * Create a context provider
-	 * @param selectionProvider the selection provider to use to retrieve the 
-	 *   selection
-	 * @param defaultContextId the ID of the default context that is 
-	 *   supplemented with the selection contexts, may be <code>null</code>
+	 * 
+	 * @param selectionProvider the selection provider to use to retrieve the
+	 *            selection
+	 * @param defaultContextId the ID of the default context that is
+	 *            supplemented with the selection contexts, may be
+	 *            <code>null</code>
 	 */
-	public SelectionContextProvider(ISelectionProvider selectionProvider,
-			String defaultContextId) {
+	public SelectionContextProvider(ISelectionProvider selectionProvider, String defaultContextId) {
 		super();
 		this.selectionProvider = selectionProvider;
 		this.defaultContextId = defaultContextId;
@@ -69,12 +75,12 @@ public abstract class SelectionContextProvider implements IContextProvider {
 	public IContext getContext(Object target) {
 		// provide a context based on the selection
 		ISelection selection = selectionProvider.getSelection();
-		
+
 		IContext defaultContext = null;
 		if (defaultContextId != null) {
 			defaultContext = HelpSystem.getContext(defaultContextId);
 		}
-		
+
 		List<IContext> contexts = new ArrayList<IContext>();
 		if (selection instanceof IStructuredSelection) {
 			for (Object object : ((IStructuredSelection) selection).toList()) {
@@ -84,35 +90,38 @@ public abstract class SelectionContextProvider implements IContextProvider {
 				}
 			}
 		}
-		
+
 		if (contexts.size() == 1) {
 			if (defaultContext == null) {
 				return contexts.get(0);
 			}
 			else {
 				// create context enhanced with default topics
-				return new ContextWrapper(contexts.get(0),
-						Arrays.asList(defaultContext.getRelatedTopics()));
+				return new ContextWrapper(contexts.get(0), Arrays.asList(defaultContext
+						.getRelatedTopics()));
 			}
 		}
 		else if (!contexts.isEmpty()) {
 			LinkedHashSet<IHelpResource> topics = new LinkedHashSet<IHelpResource>();
-			Set<String> hrefs = new HashSet<String>(); 
-			
+			Set<String> hrefs = new HashSet<String>();
+
 			// collect topics
 			for (IContext context : contexts) {
 				for (IHelpResource topic : context.getRelatedTopics()) {
-					if (!hrefs.contains(topic.getHref())) { // ensure that the same topic is only added once
+					if (!hrefs.contains(topic.getHref())) { // ensure that the
+															// same topic is
+															// only added once
 						topics.add(topic);
 						hrefs.add(topic.getHref());
 					}
 				}
 			}
-			
+
 			if (!topics.isEmpty()) {
 				if (defaultContext == null) {
 					return new ContextImpl(
-							"Multiple selected objects, see below for related topics.", //XXX improve?! 
+							"Multiple selected objects, see below for related topics.", // XXX
+																						// improve?!
 							topics.toArray(new IHelpResource[topics.size()]));
 				}
 				else {
@@ -121,28 +130,30 @@ public abstract class SelectionContextProvider implements IContextProvider {
 				}
 			}
 		}
-		
+
 		// by default, get the view context
 		return defaultContext;
 	}
 
 	/**
 	 * Get the context for the given selected object.
+	 * 
 	 * @param object the selected object
 	 * @return the associated context or <code>null</code>
 	 */
 	protected IContext getSelectionContext(Object object) {
 		String contextId = getContextId(object);
-		
+
 		if (contextId != null) {
 			return HelpSystem.getContext(contextId);
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Get the context ID for the given selected object.
+	 * 
 	 * @param object the selected object
 	 * @return the context ID or <code>null</code> if none is available
 	 */

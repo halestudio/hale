@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.util.validator;
@@ -22,11 +26,13 @@ import org.springframework.core.convert.ConversionException;
  * @author Kai Schwierczek
  */
 public class NumberValidator extends AbstractValidator {
+
 	private Type type;
 	private BigDecimal value;
 
 	/**
-	 * Construct a validator that checks the value of the input to match the given type and value.
+	 * Construct a validator that checks the value of the input to match the
+	 * given type and value.
 	 * 
 	 * @param type the condition to check for
 	 * @param value the value to check for
@@ -55,22 +61,26 @@ public class NumberValidator extends AbstractValidator {
 			if (bdValue.compareTo(this.value) < 0)
 				return null;
 			else
-				return "Input must at most be " + this.value + " (exclusive), but is " + bdValue + ".";
+				return "Input must at most be " + this.value + " (exclusive), but is " + bdValue
+						+ ".";
 		case MAXINCLUSIVE:
 			if (bdValue.compareTo(this.value) <= 0)
 				return null;
 			else
-				return "Input must at most be " + this.value + " (inclusive), but is " + bdValue + ".";
+				return "Input must at most be " + this.value + " (inclusive), but is " + bdValue
+						+ ".";
 		case MINEXCLUSIVE:
 			if (bdValue.compareTo(this.value) > 0)
 				return null;
 			else
-				return "Input must at least be " + this.value + " (exclusive), but is " + bdValue + ".";
+				return "Input must at least be " + this.value + " (exclusive), but is " + bdValue
+						+ ".";
 		case MININCLUSIVE:
 			if (bdValue.compareTo(this.value) >= 0)
 				return null;
 			else
-				return "Input must at least be " + this.value + " (inclusive), but is " + bdValue + ".";
+				return "Input must at least be " + this.value + " (inclusive), but is " + bdValue
+						+ ".";
 		default:
 			return null; // all types checked, doesn't happen
 		}

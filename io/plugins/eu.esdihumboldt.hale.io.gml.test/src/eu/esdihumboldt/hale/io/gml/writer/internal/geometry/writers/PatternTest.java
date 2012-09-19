@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
@@ -36,21 +40,21 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
  * Tests for {@link Pattern}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 @SuppressWarnings("restriction")
 public class PatternTest {
-	
+
 	private static final String GML_NS = "http://www.opengis.net/gml"; //$NON-NLS-1$
-	
+
 	/**
 	 * The curve element name
 	 */
 	private static final QName CURVE_ELEMENT = new QName(GML_NS, "Curve"); //$NON-NLS-1$
-	
+
 	/**
 	 * Test a direct match
 	 */
@@ -59,12 +63,13 @@ public class PatternTest {
 	public void testDirect() {
 		Pattern pattern = Pattern.parse("Curve"); //$NON-NLS-1$
 		TypeDefinition start = createCurveType();
-		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT, false), GML_NS);
+		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT, false),
+				GML_NS);
 		assertNotNull("A match should have been found", path); //$NON-NLS-1$
 		assertTrue("Path should be empty", path.isEmpty()); //$NON-NLS-1$
 		assertEquals(start, path.getLastType());
 	}
-	
+
 	/**
 	 * Test a direct match that should fails
 	 */
@@ -72,10 +77,11 @@ public class PatternTest {
 	public void testDirectFail() {
 		Pattern pattern = Pattern.parse("CurveType"); //$NON-NLS-1$
 		TypeDefinition start = createCurveType();
-		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT, false), GML_NS);
+		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT, false),
+				GML_NS);
 		assertNull("A match should not have been found", path); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Test a descending match
 	 */
@@ -84,44 +90,49 @@ public class PatternTest {
 	public void testDescent() {
 		Pattern pattern = Pattern.parse("**/LineStringSegment"); //$NON-NLS-1$
 		TypeDefinition start = createCurveType();
-		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT, false), GML_NS);
+		DefinitionPath path = pattern.match(start, new DefinitionPath(start, CURVE_ELEMENT, false),
+				GML_NS);
 		assertNotNull("A match should have been found", path); //$NON-NLS-1$
 		assertFalse("Path should not be empty", path.isEmpty()); //$NON-NLS-1$
 		List<PathElement> steps = path.getSteps();
 		assertEquals(2, steps.size());
-		String[] names = new String[]{"segments", "LineStringSegment"}; //$NON-NLS-1$ //$NON-NLS-2$
+		String[] names = new String[] { "segments", "LineStringSegment" }; //$NON-NLS-1$ //$NON-NLS-2$
 		// check path elements
 		for (int i = 0; i < steps.size(); i++) {
 			assertEquals(names[i], steps.get(i).getName().getLocalPart());
 		}
 	}
-	
+
 	private TypeDefinition createCurveType() {
 		// create the curve type
 		DefaultTypeDefinition curve = new DefaultTypeDefinition(new QName(GML_NS, "CurveType"));
 		XmlElement curveElement = new XmlElement(CURVE_ELEMENT, curve, null);
 		curve.getConstraint(XmlElements.class).addElement(curveElement);
-		
+
 		// create the segments property for curve
-		TypeDefinition segArray = new DefaultTypeDefinition(new QName(GML_NS, "CurveSegmentArrayPropertyType")); //$NON-NLS-1$
+		TypeDefinition segArray = new DefaultTypeDefinition(new QName(GML_NS,
+				"CurveSegmentArrayPropertyType")); //$NON-NLS-1$
 		new DefaultPropertyDefinition(new QName("segments"), curve, segArray);
-		
+
 		// create the AbstractCurveSegement property for segArray
-		DefaultTypeDefinition absSeg = new DefaultTypeDefinition(new QName(GML_NS, "AbstractCurveSegementType")); //$NON-NLS-1$
+		DefaultTypeDefinition absSeg = new DefaultTypeDefinition(new QName(GML_NS,
+				"AbstractCurveSegementType")); //$NON-NLS-1$
 		absSeg.setConstraint(AbstractFlag.ENABLED);
 		new DefaultPropertyDefinition(new QName("AbstractCurveSegment"), segArray, absSeg);
-		
+
 		// add dummy sub-type
-		DefaultTypeDefinition subtype = new DefaultTypeDefinition(new QName("somespace", "SomeSegmentType")); //$NON-NLS-1$ //$NON-NLS-2$
+		DefaultTypeDefinition subtype = new DefaultTypeDefinition(new QName(
+				"somespace", "SomeSegmentType")); //$NON-NLS-1$ //$NON-NLS-2$
 		subtype.setSuperType(absSeg);
-		
+
 		// create the LineStringSegmentType sub-type
-		DefaultTypeDefinition lineSeg = new DefaultTypeDefinition(new QName(GML_NS, "LineStringSegmentType")); //$NON-NLS-1$
+		DefaultTypeDefinition lineSeg = new DefaultTypeDefinition(new QName(GML_NS,
+				"LineStringSegmentType")); //$NON-NLS-1$
 		lineSeg.setSuperType(absSeg);
-		XmlElement lineSegElement = new XmlElement(new QName(GML_NS, "LineStringSegment"), 
-				lineSeg, new QName(GML_NS, "AbstractCurveSegment"));
+		XmlElement lineSegElement = new XmlElement(new QName(GML_NS, "LineStringSegment"), lineSeg,
+				new QName(GML_NS, "AbstractCurveSegment"));
 		lineSeg.getConstraint(XmlElements.class).addElement(lineSegElement);
-		
+
 		return curve;
 	}
 

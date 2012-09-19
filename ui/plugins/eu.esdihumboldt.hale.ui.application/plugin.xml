@@ -199,14 +199,6 @@
                   name="HALE.separator3"
                   visible="true">
             </separator>
-            <command
-                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
-                  style="toggle">
-            </command>
-            <separator
-                  name="HALE.separator4"
-                  visible="true">
-            </separator>
             <dynamic
                   class="eu.esdihumboldt.hale.ui.service.project.RecentFilesMenu"
                   id="HALE.recentfiles">
@@ -298,6 +290,34 @@
                   style="push"
                   tooltip="Add a new relation">
             </command>
+         </menu>
+         <menu
+               id="transformation"
+               label="Transformation"
+               mnemonic="T">
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
+                  style="toggle">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.instancevalidation.status.toggle_validation"
+                  label="Validate transformed instances"
+                  style="toggle">
+            </command>
+            <separator
+                  name="transformation.separator1"
+                  visible="true">
+            </separator>
+            <menu
+                  label="Hooks">
+               <menu
+                     label="Transformation tree">
+                  <dynamic
+                        class="eu.esdihumboldt.hale.ui.cst.contribution.TransformationTreeHooksContribution"
+                        id="cst.hooks.ttree">
+                  </dynamic>
+               </menu>
+            </menu>
          </menu>
          <menu
                id="window"

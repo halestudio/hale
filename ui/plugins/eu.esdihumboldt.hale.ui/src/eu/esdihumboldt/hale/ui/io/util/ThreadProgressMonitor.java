@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.io.util;
@@ -28,14 +32,16 @@ import eu.esdihumboldt.hale.ui.io.util.internal.StatesIfDoneProgressMonitor;
 /**
  * Stores current {@link IProgressMonitor}s used in a thread. Allows subtasking
  * w/o knowing of the parent task.
+ * 
  * @author Simon Templer
  */
 public class ThreadProgressMonitor {
-	
+
 	private static final ThreadLocal<LinkedList<IProgressMonitor>> threadMonitors = new ThreadLocal<LinkedList<IProgressMonitor>>();
 
 	/**
 	 * Get the monitor currently associated with the thread.
+	 * 
 	 * @return the progress monitor or <code>null</code>
 	 */
 	public static IProgressMonitor getCurrent() {
@@ -49,6 +55,7 @@ public class ThreadProgressMonitor {
 	/**
 	 * Register a progress monitor with the current thread. It must be removed
 	 * using {@link #remove(IProgressMonitor)}.
+	 * 
 	 * @param monitor the progress monitor
 	 */
 	public static void register(IProgressMonitor monitor) {
@@ -63,6 +70,7 @@ public class ThreadProgressMonitor {
 	/**
 	 * Remove a progress monitor that was previously registered. Also removes
 	 * monitors that have been added after the given one.
+	 * 
 	 * @param monitor the progress monitor to remove
 	 */
 	public static void remove(IProgressMonitor monitor) {
@@ -70,21 +78,23 @@ public class ThreadProgressMonitor {
 		if (mons == null || mons.isEmpty()) {
 			return;
 		}
-		
+
 		if (mons.contains(monitor)) {
 			while (!mons.isEmpty() && !mons.getLast().equals(monitor)) {
-				// remove all monitors that have been added after the given monitor (and should have been removed)
+				// remove all monitors that have been added after the given
+				// monitor (and should have been removed)
 				mons.removeLast();
 			}
-		
+
 			// remove given monitor
 			mons.removeLast();
 		}
 	}
 
 	/**
-	 * Run the given operation in a forked thread with a progress monitor dialog 
+	 * Run the given operation in a forked thread with a progress monitor dialog
 	 * or in the current thread with a sub progress monitor if possible.
+	 * 
 	 * @param op the operation to execute
 	 * @param isCancelable if the operation can be canceled
 	 * @throws Exception if any error occurs executing the operation
@@ -98,11 +108,12 @@ public class ThreadProgressMonitor {
 			final Display display = PlatformUI.getWorkbench().getDisplay();
 			final AtomicReference<Exception> error = new AtomicReference<Exception>();
 			final IRunnableWithProgress progressOp = new IRunnableWithProgress() {
-				
+
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
-					// create a custom progress monitor to be able to decide whether the progress is done
+					// create a custom progress monitor to be able to decide
+					// whether the progress is done
 					StatesIfDoneProgressMonitor cpm = new StatesIfDoneProgressMonitor(monitor);
 					// register the progress monitor
 					register(cpm);
@@ -115,11 +126,12 @@ public class ThreadProgressMonitor {
 				}
 			};
 			display.syncExec(new Runnable() {
+
 				@Override
 				public void run() {
 					try {
-						new ProgressMonitorDialog(display.getActiveShell()).run(true, 
-					    		isCancelable, progressOp);
+						new ProgressMonitorDialog(display.getActiveShell()).run(true, isCancelable,
+								progressOp);
 					} catch (Exception e) {
 						error.set(e);
 					}
@@ -136,7 +148,7 @@ public class ThreadProgressMonitor {
 			if (pm instanceof StatesIfDoneProgressMonitor) {
 				useOriginalMonitor = ((StatesIfDoneProgressMonitor) pm).isDone();
 			}
-			
+
 			if (useOriginalMonitor) {
 				// use the original monitor
 				pm.subTask(""); // reset subtask name
@@ -144,9 +156,8 @@ public class ThreadProgressMonitor {
 			}
 			else {
 				// use a sub progress monitor
-				IProgressMonitor sm = new StatesIfDoneProgressMonitor(
-						new SubProgressMonitor(pm, 0, 
-								SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
+				IProgressMonitor sm = new StatesIfDoneProgressMonitor(new SubProgressMonitor(pm, 0,
+						SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
 				register(sm);
 				try {
 					op.run(sm);

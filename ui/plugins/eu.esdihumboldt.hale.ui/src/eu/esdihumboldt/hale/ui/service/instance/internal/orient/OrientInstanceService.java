@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
@@ -43,14 +47,15 @@ import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import de.cs3d.util.logging.ATransaction;
+import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
-import eu.esdihumboldt.hale.common.instance.model.impl.OGroup;
-import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
+import eu.esdihumboldt.hale.common.instance.model.impl.internal.ONamespaceMap;
+import eu.esdihumboldt.hale.common.instance.model.impl.internal.OSerializationHelper;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -69,59 +74,62 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 /**
  * {@link InstanceService} implementation based on OrientDB. This must be a
  * singleton as the references to the databases may only exist once.
+ * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 public class OrientInstanceService extends AbstractInstanceService {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(OrientInstanceService.class);
-	
+
 	private static volatile OrientInstanceService instance;
-	
+
 	/**
 	 * Get the service instance
+	 * 
 	 * @param schemaService the schema service
 	 * @param projectService the project service
-	 * @param alignmentService the alignment service 
+	 * @param alignmentService the alignment service
 	 * @return the service instance
 	 */
-	public static final OrientInstanceService getInstance(
-			SchemaService schemaService, ProjectService projectService, 
-			AlignmentService alignmentService) {
+	public static final OrientInstanceService getInstance(SchemaService schemaService,
+			ProjectService projectService, AlignmentService alignmentService) {
 		if (instance == null) {
-			instance = new OrientInstanceService(schemaService, projectService,
-					alignmentService);
+			instance = new OrientInstanceService(schemaService, projectService, alignmentService);
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Get the existing service instance.
+	 * 
 	 * @return the existing service instance or <code>null</code> if none was
-	 *   created
+	 *         created
 	 */
 	public static OrientInstanceService getExistingInstance() {
 		return instance;
 	}
-	
+
 	private final SchemaService schemaService;
-	
+
 	private final LocalOrientDB source;
 	private final LocalOrientDB transformed;
-	
+
 	private final File databasesFolder;
-	
+
 	/**
-	 * Default constructor 
+	 * Default constructor
+	 * 
 	 * @param schemaService the schema service
-	 * @param projectService the project service 
-	 * @param alignmentService the alignment service 
+	 * @param projectService the project service
+	 * @param alignmentService the alignment service
 	 */
-	private OrientInstanceService(SchemaService schemaService, 
-			ProjectService projectService, AlignmentService alignmentService) {
+	private OrientInstanceService(SchemaService schemaService, ProjectService projectService,
+			AlignmentService alignmentService) {
 		super(projectService, alignmentService);
-		
+
 		this.schemaService = schemaService;
-		
+
 		// setup databases
 		File instanceLoc;
 		try {
@@ -130,13 +138,13 @@ public class OrientInstanceService extends AbstractInstanceService {
 			instanceLoc = new File(System.getProperty("java.io.tmpdir"));
 		}
 		instanceLoc = new File(instanceLoc, "instances");
-		
+
 		File tmpInstanceLoc = null;
 		while (tmpInstanceLoc == null || tmpInstanceLoc.exists()) {
 			tmpInstanceLoc = new File(instanceLoc, UUID.randomUUID().toString());
 		}
 		databasesFolder = tmpInstanceLoc;
-		
+
 		source = new LocalOrientDB(new File(databasesFolder, "source"));
 		transformed = new LocalOrientDB(new File(databasesFolder, "transformed"));
 	}
@@ -148,13 +156,13 @@ public class OrientInstanceService extends AbstractInstanceService {
 	public InstanceCollection getInstances(DataSet dataset) {
 		switch (dataset) {
 		case SOURCE:
-			return new BrowseOrientInstanceCollection(source, 
+			return new BrowseOrientInstanceCollection(source,
 					schemaService.getSchemas(SchemaSpaceID.SOURCE), DataSet.SOURCE);
 		case TRANSFORMED:
-			return new BrowseOrientInstanceCollection(transformed, 
+			return new BrowseOrientInstanceCollection(transformed,
 					schemaService.getSchemas(SchemaSpaceID.TARGET), DataSet.TRANSFORMED);
 		}
-		
+
 		throw new IllegalArgumentException("Illegal data set requested: " + dataset);
 	}
 
@@ -169,57 +177,51 @@ public class OrientInstanceService extends AbstractInstanceService {
 		case TRANSFORMED:
 			return getInstanceTypes(transformed, schemaService.getSchemas(SchemaSpaceID.TARGET));
 		}
-		
+
 		throw new IllegalArgumentException("Illegal data set requested: " + dataset);
 	}
 
 	/**
 	 * Get the instance types available in the given database
+	 * 
 	 * @param lodb the database
 	 * @param schemas the type definitions
-	 * @return the set of type definitions for which instances are present in 
-	 * the database
+	 * @return the set of type definitions for which instances are present in
+	 *         the database
 	 */
-	private Set<TypeDefinition> getInstanceTypes(LocalOrientDB lodb,
-			SchemaSpace schemas) {
+	private Set<TypeDefinition> getInstanceTypes(LocalOrientDB lodb, SchemaSpace schemas) {
 		Set<TypeDefinition> result = new HashSet<TypeDefinition>();
-		
+
 		DatabaseReference<ODatabaseDocumentTx> dbref = lodb.openRead();
 		try {
 			ODatabaseDocumentTx db = dbref.getDatabase();
-			
+
 			// get schema and classes
 			OSchema schema = db.getMetadata().getSchema();
 			Collection<OClass> classes = schema.getClasses();
-			
+
 			Collection<? extends TypeDefinition> mappableTypes = schemas.getMappingRelevantTypes();
-			Set<String> allowedIdentifiers = new HashSet<String>();
+			Set<QName> allowedTypes = new HashSet<QName>();
 			for (TypeDefinition type : mappableTypes) {
-				allowedIdentifiers.add(type.getIdentifier());
+				allowedTypes.add(type.getName());
 			}
-			
+
 			for (OClass clazz : classes) {
 				try {
-					if (clazz.getName().equals(OGroup.BINARY_WRAPPER_CLASSNAME)) {
+					if (clazz.getName().equals(OSerializationHelper.BINARY_WRAPPER_CLASSNAME)) {
 						// ignore binary wrapper class
 						continue;
 					}
-					String identifier = ONameUtil.decodeName(clazz.getName());
-					if (allowedIdentifiers.contains(identifier) && 
-							db.countClass(clazz.getName()) > 0) {
-						int lastSlash = identifier.lastIndexOf('/');
-						if (lastSlash >= 0) {
-							String namespace = identifier.substring(0, lastSlash);
-							String localname = identifier.substring(lastSlash + 1);
-							TypeDefinition type = schemas.getType(new QName(namespace, localname));
-							if (type != null) {
-								result.add(type);
-							}
-							else {
-								log.error(MessageFormat.format(
-										"Could not resolve type with identifier {0}", 
-										identifier));
-							}
+					QName typeName = ONamespaceMap.decode(clazz.getName());
+					// ONameUtil.decodeName(clazz.getName());
+					if (allowedTypes.contains(typeName) && db.countClass(clazz.getName()) > 0) {
+						TypeDefinition type = schemas.getType(typeName);
+						if (type != null) {
+							result.add(type);
+						}
+						else {
+							log.error(MessageFormat.format("Could not resolve type with name {0}",
+									typeName));
 						}
 					}
 				} catch (Throwable e) {
@@ -229,7 +231,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 		} finally {
 			dbref.dispose();
 		}
-		
+
 		return result;
 	}
 
@@ -241,24 +243,24 @@ public class OrientInstanceService extends AbstractInstanceService {
 		notifyDatasetAboutToChange(DataSet.SOURCE);
 		final StoreInstancesJob storeInstances = new StoreInstancesJob(
 				"Load source instances into database", source, sourceInstances) {
-					@Override
-					protected void onComplete() {
-						notifyDatasetChanged(DataSet.SOURCE);
-						retransform();
-					}
+
+			@Override
+			protected void onComplete() {
+				notifyDatasetChanged(DataSet.SOURCE);
+				retransform();
+			}
 		};
 		/*
-		 * Doing this in a job may lead to the transformation being run
-		 * multiple times on project load, because then it may be that source 
-		 * instances are added after the alignment was loaded, if multiple
-		 * source data sets are loaded then the transformation can be triggered
-		 * for each. 
+		 * Doing this in a job may lead to the transformation being run multiple
+		 * times on project load, because then it may be that source instances
+		 * are added after the alignment was loaded, if multiple source data
+		 * sets are loaded then the transformation can be triggered for each.
 		 */
 //		storeInstances.schedule();
 		// so instead, now the data is loaded in a progress dialog
 		try {
 			ThreadProgressMonitor.runWithProgressDialog(new IRunnableWithProgress() {
-				
+
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
@@ -275,12 +277,16 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	@Override
 	public void clearInstances() {
-		IUndoableOperation operation = new AbstractRemoveResourcesOperation("Clear source data", InstanceService.ACTION_READ_SOURCEDATA) {
+		IUndoableOperation operation = new AbstractRemoveResourcesOperation("Clear source data",
+				InstanceService.ACTION_READ_SOURCEDATA) {
+
 			/**
-			 * @see eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation#execute(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+			 * @see eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
+			 *      org.eclipse.core.runtime.IAdaptable)
 			 */
 			@Override
-			public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			public IStatus execute(IProgressMonitor monitor, IAdaptable info)
+					throws ExecutionException {
 				notifyDatasetAboutToChange(null);
 				source.clear();
 				transformed.clear();
@@ -289,7 +295,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 				return super.execute(monitor, info);
 			}
 		};
-		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench().getOperationSupport();
+		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench()
+				.getOperationSupport();
 		operation.addContext(operationSupport.getUndoContext());
 		try {
 			operationSupport.getOperationHistory().execute(operation, null, null);
@@ -304,14 +311,14 @@ public class OrientInstanceService extends AbstractInstanceService {
 	public void dispose() {
 		source.delete();
 		transformed.delete();
-		
+
 		try {
 			FileUtils.deleteDirectory(databasesFolder);
 		} catch (IOException e) {
 			log.warn("Error deleting temporary databases", e);
 		}
 	}
-	
+
 	/**
 	 * @see InstanceService#getReference(Instance)
 	 */
@@ -326,8 +333,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 	@Override
 	public Instance getInstance(InstanceReference reference) {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
-		LocalOrientDB lodb = (ref.getDataSet().equals(DataSet.SOURCE))?(source):(transformed);
-		
+		LocalOrientDB lodb = (ref.getDataSet().equals(DataSet.SOURCE)) ? (source) : (transformed);
+
 		return ref.load(lodb);
 	}
 
@@ -339,21 +346,23 @@ public class OrientInstanceService extends AbstractInstanceService {
 		notifyDatasetAboutToChange(DataSet.TRANSFORMED);
 
 		transformed.clear();
-		
+
 		/*
 		 * XXX cause population updated are currently coupled to
 		 * StoreInstancesJob/OrientInstanceSink and not to events, we have to
-		 * clear the transformed population at this point. 
+		 * clear the transformed population at this point.
 		 */
-		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
+				PopulationService.class);
 		if (ps != null) {
 			ps.resetPopulation(DataSet.TRANSFORMED);
 		}
-		
+
 		boolean success = performTransformation();
-			
+
 		if (!success) {
-			// there may be some (inconsistent) transformed instances from a canceled transformation
+			// there may be some (inconsistent) transformed instances from a
+			// canceled transformation
 			// disable transformation (will clear transformed instances)
 			setTransformationEnabled(false);
 			log.userInfo("Live transformation has been disabled.\nYou can again enable it in the main toolbar or in the File menu.");
@@ -363,9 +372,10 @@ public class OrientInstanceService extends AbstractInstanceService {
 			notifyDatasetChanged(DataSet.TRANSFORMED);
 		}
 	}
-	
+
 	/**
 	 * Perform the transformation
+	 * 
 	 * @return if the transformation was successful
 	 */
 	protected boolean performTransformation() {
@@ -374,11 +384,11 @@ public class OrientInstanceService extends AbstractInstanceService {
 			log.userError("No transformation service available");
 			return false;
 		}
-		
+
 		final AtomicBoolean transformationFinished = new AtomicBoolean(false);
 		final AtomicBoolean transformationCanceled = new AtomicBoolean(false);
 		IRunnableWithProgress op = new IRunnableWithProgress() {
-				
+
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
@@ -387,19 +397,22 @@ public class OrientInstanceService extends AbstractInstanceService {
 					if (sources.isEmpty()) {
 						return;
 					}
-					
+					Alignment alignment = getAlignmentService().getAlignment();
+					if (alignment.getTypeCells().isEmpty()) {
+						// early exit if there are no type relations
+						return;
+					}
+
 					OrientInstanceSink sink = new OrientInstanceSink(transformed, true);
 					TransformationReport report;
 					ATransaction trans = log.begin("Instance transformation");
 					try {
-						report = ts.transform(
-								getAlignmentService().getAlignment(), 
-								sources, 
-								sink, 
+						report = ts.transform(alignment, sources, sink,
 								new ProgressMonitorIndicator(monitor));
-						
+
 						// publish report
-						ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+						ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(
+								ReportService.class);
 						rs.addReport(report);
 					} finally {
 						try {
@@ -414,23 +427,23 @@ public class OrientInstanceService extends AbstractInstanceService {
 					if (monitor.isCanceled()) {
 						transformationCanceled.set(true);
 					}
-					
+
 					// transformation finished
 					transformationFinished.set(true);
 				}
 			}
-				
+
 		};
-		
+
 		try {
 			ThreadProgressMonitor.runWithProgressDialog(op, ts.isCancelable());
 		} catch (Throwable e) {
 			log.error("Error starting transformation process", e);
 		}
-		
+
 		// wait for transformation to complete
 		HaleUI.waitFor(transformationFinished);
-		
+
 		return !transformationCanceled.get();
 	}
 

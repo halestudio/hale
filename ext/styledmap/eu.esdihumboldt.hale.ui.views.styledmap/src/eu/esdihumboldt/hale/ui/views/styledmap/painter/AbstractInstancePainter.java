@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.styledmap.painter;
@@ -83,12 +87,13 @@ import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSDecode;
 
 /**
  * Abstract instance painter implementation based on an {@link InstanceService}.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractInstancePainter extends
-		GenericWaypointPainter<InstanceReference, InstanceWaypoint> implements InstanceServiceListener,
-		ISelectionListener, ClipPainter {
-	
+		GenericWaypointPainter<InstanceReference, InstanceWaypoint> implements
+		InstanceServiceListener, ISelectionListener, ClipPainter {
+
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractInstancePainter.class);
 
 	private static final double BUFFER_VALUE = 0.0125;
@@ -97,62 +102,63 @@ public abstract class AbstractInstancePainter extends
 	 * The list of default paths searched in an instance for an instance name.
 	 * Search is done in the given order.
 	 */
-	private static final String[] DEFAULT_NAME_PATHS = new String[]{"name", "id", "fid"};
+	private static final String[] DEFAULT_NAME_PATHS = new String[] { "name", "id", "fid" };
 
 	private final InstanceService instanceService;
-	
+
 	private final DataSet dataSet;
-	
+
 	private CoordinateReferenceSystem waypointCRS;
-	
+
 	private Clip clip;
 
 	private final StyleServiceListener styleListener;
-	
+
 	private final GeometrySchemaServiceListener geometryListener;
 
 	private Set<InstanceReference> lastSelected = new HashSet<InstanceReference>();
 
 	/**
 	 * Create an instance painter.
+	 * 
 	 * @param instanceService the instance service
 	 * @param dataSet the data set
 	 */
-	public AbstractInstancePainter(InstanceService instanceService,
-			DataSet dataSet) {
-		super(new MarkerWaypointRenderer<InstanceWaypoint>(), 
-				4); // four worker threads
+	public AbstractInstancePainter(InstanceService instanceService, DataSet dataSet) {
+		super(new MarkerWaypointRenderer<InstanceWaypoint>(), 4); // four worker
+																	// threads
 		this.instanceService = instanceService;
 		this.dataSet = dataSet;
-		
+
 		styleListener = new StyleServiceListener() {
-			
+
 			@Override
 			public void stylesRemoved(StyleService styleService) {
 				styleRefresh();
 			}
-			
+
 			@Override
 			public void stylesAdded(StyleService styleService) {
 				styleRefresh();
 			}
-			
+
 			@Override
 			public void styleSettingsChanged(StyleService styleService) {
 				styleRefresh();
 			}
-			
+
 			@Override
 			public void backgroundChanged(StyleService styleService, RGB background) {
 				// ignore, background not supported
 			}
 		};
-		
+
 		geometryListener = new GeometrySchemaServiceListener() {
-			
+
 			@Override
 			public void defaultGeometryChanged(TypeDefinition type) {
-				SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+				SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
+						SchemaService.class);
 				SchemaSpaceID spaceID;
 				switch (getDataSet()) {
 				case TRANSFORMED:
@@ -166,8 +172,9 @@ public abstract class AbstractInstancePainter extends
 				}
 				SchemaSpace schemas = ss.getSchemas(spaceID);
 				if (schemas.getType(type.getName()) != null) {
-					//TODO only update way-points that are affected XXX save type def in way-point?
-					//XXX for now: recreate all
+					// TODO only update way-points that are affected XXX save
+					// type def in way-point?
+					// XXX for now: recreate all
 					update(null);
 				}
 			}
@@ -198,7 +205,8 @@ public abstract class AbstractInstancePainter extends
 	}
 
 	/**
-	 * Get the CRS for use in way-point bounding boxes. 
+	 * Get the CRS for use in way-point bounding boxes.
+	 * 
 	 * @return the way-point CRS
 	 */
 	public CoordinateReferenceSystem getWaypointCRS() {
@@ -209,31 +217,33 @@ public abstract class AbstractInstancePainter extends
 				throw new IllegalStateException("Could not decode way-point CRS", e);
 			}
 		}
-		
+
 		return waypointCRS;
 	}
-	
+
 	/**
-	 * Do a complete update of the way-points.
-	 * Existing way-points are discarded.
+	 * Do a complete update of the way-points. Existing way-points are
+	 * discarded.
+	 * 
 	 * @param selection the current selection
 	 */
 	public void update(ISelection selection) {
 		clearWaypoints();
-		
-		//XXX only mappable type instances for source?!
+
+		// XXX only mappable type instances for source?!
 		InstanceCollection instances = instanceService.getInstances(dataSet);
-		
+
 		if (selection != null) {
 			lastSelected = collectReferences(selection);
 		}
-		
+
 		if (instances.isEmpty()) {
 			return;
 		}
-		
+
 		final AtomicBoolean updateFinished = new AtomicBoolean(false);
 		IRunnableWithProgress op = new IRunnableWithProgress() {
+
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
@@ -248,21 +258,25 @@ public abstract class AbstractInstancePainter extends
 					break;
 				}
 				monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
-				
-				// add way-points for instances 
+
+				// add way-points for instances
 				InstanceCollection instances = instanceService.getInstances(dataSet);
 				ResourceIterator<Instance> it = instances.iterator();
 				try {
 					while (it.hasNext()) {
 						Instance instance = it.next();
-						
+
 						InstanceWaypoint wp = createWaypoint(instance, instanceService);
-						
+
 						if (wp != null) {
 							if (lastSelected.contains(wp.getValue())) {
-								wp.setSelected(true, null); // refresh can be ignored because it's done for addWaypoint
+								wp.setSelected(true, null); // refresh can be
+															// ignored because
+															// it's done for
+															// addWaypoint
 							}
-							addWaypoint(wp, null); // no refresher, as refreshAll is executed
+							addWaypoint(wp, null); // no refresher, as
+													// refreshAll is executed
 						}
 					}
 				} finally {
@@ -272,50 +286,52 @@ public abstract class AbstractInstancePainter extends
 				}
 			}
 		};
-			
+
 		try {
 			ThreadProgressMonitor.runWithProgressDialog(op, false);
 		} catch (Throwable e) {
 			log.error("Error running painter update", e);
 		}
-		
+
 		HaleUI.waitFor(updateFinished);
 		refreshAll();
 	}
 
 	/**
 	 * Create a way-point for an instance
+	 * 
 	 * @param instance the instance
 	 * @param instanceService the instance service
-	 * @return the created way-point or <code>null</code> if 
+	 * @return the created way-point or <code>null</code> if
 	 */
-	protected InstanceWaypoint createWaypoint(Instance instance,
-			InstanceService instanceService) {
+	protected InstanceWaypoint createWaypoint(Instance instance, InstanceService instanceService) {
 		// retrieve instance reference
-		InstanceReference ref = instanceService.getReference(instance);//, getDataSet());
-		
+		InstanceReference ref = instanceService.getReference(instance);// ,
+																		// getDataSet());
+
 		BoundingBox bb = null;
-		List<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>(DefaultGeometryUtil.getDefaultGeometries(instance));
+		List<GeometryProperty<?>> geometries = new ArrayList<GeometryProperty<?>>(
+				DefaultGeometryUtil.getDefaultGeometries(instance));
 		ListIterator<GeometryProperty<?>> it = geometries.listIterator();
 		while (it.hasNext()) {
 			GeometryProperty<?> prop = it.next();
-			
+
 			// check if geometry is valid for display in map
-			CoordinateReferenceSystem crs = (prop.getCRSDefinition() == null)
-					?(null):(prop.getCRSDefinition().getCRS());
-			
+			CoordinateReferenceSystem crs = (prop.getCRSDefinition() == null) ? (null) : (prop
+					.getCRSDefinition().getCRS());
+
 			if (crs == null) {
 				// no CRS, can't display in map
-				
+
 				// remove from list
 				it.remove();
 			}
 			else {
 				Geometry geometry = prop.getGeometry();
-				
+
 				// determine geometry bounding box
 				BoundingBox geometryBB = getBoundingBox(geometry);
-				
+
 				if (geometryBB == null) {
 					// no valid bounding box for geometry
 					it.remove();
@@ -327,7 +343,7 @@ public abstract class AbstractInstancePainter extends
 
 						// convert BB to way-point SRS
 						geometryBB = conv.convert(geometryBB);
-						
+
 						// add to instance bounding box
 						if (bb == null) {
 							bb = new BoundingBox(geometryBB);
@@ -336,24 +352,25 @@ public abstract class AbstractInstancePainter extends
 							bb.add(geometryBB);
 						}
 					} catch (Exception e) {
-						log.error("Error converting instance bounding box to waypoint bounding box", e);
+						log.error(
+								"Error converting instance bounding box to waypoint bounding box",
+								e);
 						// ignore geometry
 						it.remove();
 					}
 				}
 			}
 		}
-		
+
 		if (bb == null || geometries.isEmpty()) {
 			// don't create way-point w/o geometries
 			return null;
 		}
-		
+
 		// use bounding box center as GEO position
 		Point3D center = bb.getCenter();
-		GeoPosition pos = new GeoPosition(center.getX(), center.getY(), 
-				GenericWaypoint.COMMON_EPSG);
-		
+		GeoPosition pos = new GeoPosition(center.getX(), center.getY(), GenericWaypoint.COMMON_EPSG);
+
 		// buffer bounding box if x or y dimension empty
 		if (bb.getMinX() == bb.getMaxX()) {
 			bb.setMinX(bb.getMinX() - BUFFER_VALUE);
@@ -363,25 +380,27 @@ public abstract class AbstractInstancePainter extends
 			bb.setMinY(bb.getMinY() - BUFFER_VALUE);
 			bb.setMaxY(bb.getMaxY() + BUFFER_VALUE);
 		}
-		
+
 		// set dummy z range (otherwise the RTree can't deal correctly with it)
-		bb.setMinZ(- BUFFER_VALUE);
+		bb.setMinZ(-BUFFER_VALUE);
 		bb.setMaxZ(BUFFER_VALUE);
-		
+
 		String name = findInstanceName(instance);
-		
+
 		// create the way-point
-		//XXX in abstract method?
+		// XXX in abstract method?
 		InstanceWaypoint wp = new InstanceWaypoint(pos, bb, ref, geometries, name);
-		
-		// each way-point must have its own marker, as the marker stores the marker areas
+
+		// each way-point must have its own marker, as the marker stores the
+		// marker areas
 		wp.setMarker(createMarker(wp));
-		
+
 		return wp;
 	}
 
 	/**
 	 * Determine the name for the given instance.
+	 * 
 	 * @param instance the instance
 	 * @return the instance name or <code>null</code> if unknown
 	 */
@@ -393,7 +412,7 @@ public abstract class AbstractInstancePainter extends
 					if (value instanceof Instance) {
 						value = ((Instance) value).getValue();
 					}
-					
+
 					if (value != null) {
 						try {
 							String name = ConversionUtil.getAs(value, String.class);
@@ -407,13 +426,14 @@ public abstract class AbstractInstancePainter extends
 				}
 			}
 		}
-		
+
 		// no name found
 		return null;
 	}
 
 	/**
 	 * Create a new marker for a way-point.
+	 * 
 	 * @param wp the way-point
 	 * @return the marker
 	 */
@@ -424,9 +444,10 @@ public abstract class AbstractInstancePainter extends
 
 	/**
 	 * Determine the bounding box for a geometry.
+	 * 
 	 * @param geometry the geometry
 	 * @return the bounding box or <code>null</code> if it is either an empty
-	 *   geometry or the bounding box cannot be determined
+	 *         geometry or the bounding box cannot be determined
 	 */
 	public static BoundingBox getBoundingBox(Geometry geometry) {
 		Geometry envelope = geometry.getEnvelope();
@@ -434,16 +455,14 @@ public abstract class AbstractInstancePainter extends
 			Point point = (Point) envelope;
 			if (!point.isEmpty()) { // not an empty geometry
 				// a bounding box representing the point
-				return new BoundingBox(
-						point.getX(), point.getY(), 0, 
-						point.getX(), point.getY(), 0);
+				return new BoundingBox(point.getX(), point.getY(), 0, point.getX(), point.getY(), 0);
 			}
 		}
 		else if (envelope instanceof Polygon) {
 			Polygon rect = (Polygon) envelope;
 			if (!rect.isEmpty()) {
 				Double maxX = null, maxY = null, minX = null, minY = null;
-				
+
 				Coordinate[] points = rect.getCoordinates();
 				for (Coordinate point : points) {
 					// maximum x ordinate
@@ -475,13 +494,13 @@ public abstract class AbstractInstancePainter extends
 						minY = Math.min(minY, point.y);
 					}
 				}
-				
+
 				if (maxX != null && maxY != null && minX != null && minY != null) {
 					return new BoundingBox(minX, minY, 0, maxX, maxY, 0);
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -509,6 +528,7 @@ public abstract class AbstractInstancePainter extends
 
 	/**
 	 * Try to combine two selections.
+	 * 
 	 * @param oldSelection the first selection
 	 * @param newSelection the second selection
 	 * @return the combined selection
@@ -519,23 +539,24 @@ public abstract class AbstractInstancePainter extends
 			return oldSelection;
 		else if (oldSelection == null)
 			return newSelection;
-		
+
 		if (oldSelection instanceof InstanceSelection && newSelection instanceof InstanceSelection) {
 			// combine scene selections
 			Set<Object> values = new LinkedHashSet<Object>();
-			
+
 			values.addAll(((InstanceSelection) oldSelection).toList());
 			values.addAll(((InstanceSelection) newSelection).toList());
-			
+
 			return new DefaultInstanceSelection(new ArrayList<Object>(values));
 		}
 		else {
 			return newSelection;
 		}
 	}
-	
+
 	/**
 	 * Selects the preferred selection.
+	 * 
 	 * @param oldSelection the first selection
 	 * @param newSelection the second selection
 	 * @return the preferred selection
@@ -545,15 +566,16 @@ public abstract class AbstractInstancePainter extends
 			return oldSelection;
 		else if (oldSelection == null)
 			return newSelection;
-		
-		//FIXME decide on which basis?
-		
-		//XXX for now, always return the new selection
+
+		// FIXME decide on which basis?
+
+		// XXX for now, always return the new selection
 		return newSelection;
 	}
 
 	/**
 	 * Get the selection for a given polygon on the screen.
+	 * 
 	 * @param poly the polygon
 	 * @return a selection or <code>null</code>
 	 */
@@ -564,6 +586,7 @@ public abstract class AbstractInstancePainter extends
 
 	/**
 	 * Get the selection for a given rectangle on the screen.
+	 * 
 	 * @param rect the rectangle
 	 * @return a selection or <code>null</code>
 	 */
@@ -580,12 +603,13 @@ public abstract class AbstractInstancePainter extends
 			}
 			return new DefaultInstanceSelection(values);
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Get the selection for the given point.
+	 * 
 	 * @param point the point (viewport coordinates)
 	 * @return a selection or <code>null</code>
 	 */
@@ -606,37 +630,40 @@ public abstract class AbstractInstancePainter extends
 			// only accept instance selections
 			return;
 		}
-		
-		// called when the selection has changed, to update the state of the way-points
+
+		// called when the selection has changed, to update the state of the
+		// way-points
 		Refresher refresh = prepareRefresh(false);
 		refresh.setImageOp(new FastBlurFilter(2));
-		
+
 		// collect instance references that are in the new selection
 		Set<InstanceReference> selected = collectReferences(selection);
-		
+
 		Set<InstanceReference> toSelect = new HashSet<InstanceReference>();
 		toSelect.addAll(selected);
 		toSelect.removeAll(lastSelected);
-		
-		// select all that previously have not been selected but are in the new selection
+
+		// select all that previously have not been selected but are in the new
+		// selection
 		for (InstanceReference selRef : toSelect) {
 			InstanceWaypoint wp = findWaypoint(selRef);
 			if (wp != null) {
 				wp.setSelected(true, refresh);
 			}
 		}
-		
-		// unselect all that have previously been selected but are not in the new selection
+
+		// unselect all that have previously been selected but are not in the
+		// new selection
 		lastSelected.removeAll(selected);
 		for (InstanceReference selRef : lastSelected) {
-			InstanceWaypoint wp =  findWaypoint(selRef);
+			InstanceWaypoint wp = findWaypoint(selRef);
 			if (wp != null) {
 				wp.setSelected(false, refresh);
 			}
 		}
-		
+
 		lastSelected = selected;
-		
+
 		refresh.execute();
 	}
 
@@ -651,7 +678,8 @@ public abstract class AbstractInstancePainter extends
 					Instance instance = (Instance) element;
 					InstanceReference ref;
 					try {
-						ref = instanceService.getReference(instance);//, dataSet);
+						ref = instanceService.getReference(instance);// ,
+																		// dataSet);
 					} catch (IllegalArgumentException iae) {
 						// instance has no dataset set
 						ref = new PseudoInstanceReference(instance);
@@ -671,7 +699,7 @@ public abstract class AbstractInstancePainter extends
 	@Override
 	public void clearWaypoints() {
 		super.clearWaypoints();
-		
+
 		lastSelected.clear();
 	}
 
@@ -698,18 +726,20 @@ public abstract class AbstractInstancePainter extends
 	}
 
 	/**
-	 * @see AbstractTileOverlayPainter#drawOverlay(Graphics2D, BufferedImage, int, int, int, int, int, Rectangle, PixelConverter)
+	 * @see AbstractTileOverlayPainter#drawOverlay(Graphics2D, BufferedImage,
+	 *      int, int, int, int, int, Rectangle, PixelConverter)
 	 */
 	@Override
-	protected void drawOverlay(Graphics2D gfx, BufferedImage img, int zoom,
-			int tilePosX, int tilePosY, int tileWidth, int tileHeight,
-			Rectangle viewportBounds, PixelConverter converter) {
+	protected void drawOverlay(Graphics2D gfx, BufferedImage img, int zoom, int tilePosX,
+			int tilePosY, int tileWidth, int tileHeight, Rectangle viewportBounds,
+			PixelConverter converter) {
 		if (clip == null) {
 			super.drawOverlay(gfx, img, zoom, tilePosX, tilePosY, tileWidth, tileHeight,
 					viewportBounds, converter);
 		}
 		else {
-			Shape clipShape = clip.getClip(viewportBounds, tilePosX, tilePosY, tileWidth, tileHeight);
+			Shape clipShape = clip.getClip(viewportBounds, tilePosX, tilePosY, tileWidth,
+					tileHeight);
 			if (clipShape != null) { // drawing allowed
 				Shape orgClip = gfx.getClip();
 				gfx.clip(clipShape);

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.io.report.impl;
@@ -20,7 +24,7 @@ import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 
 /**
  * Default {@link IOMessage} implementation
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
@@ -29,7 +33,7 @@ import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 public class IOMessageImpl extends MessageImpl implements IOMessage {
 
 	private final int column;
-	
+
 	private final int lineNumber;
 
 	/**
@@ -50,13 +54,12 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 	 * @param lineNumber the line number in the file, <code>-1</code> for none
 	 * @param column the column in the line, <code>-1</code> for none
 	 */
-	public IOMessageImpl(String message, Throwable throwable, int lineNumber,
-			int column) {
+	public IOMessageImpl(String message, Throwable throwable, int lineNumber, int column) {
 		super(message, throwable);
 		this.column = column;
 		this.lineNumber = lineNumber;
 	}
-	
+
 	/**
 	 * Create a new message
 	 * 
@@ -72,18 +75,7 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 		this.column = column;
 		this.lineNumber = lineNumber;
 	}
-	
-	/**
-	 * Create a new message and format it using {@link MessageFormat}
-	 * 
-	 * @param pattern the message format pattern
-	 * @param throwable the associated throwable, may be <code>null</code>
-	 * @param arguments the arguments for the message format
-	 */
-	public IOMessageImpl(String pattern, Throwable throwable, Object... arguments) {
-		this(pattern, throwable, -1, -1, arguments);
-	}
-	
+
 	/**
 	 * Create a new message and format it using {@link MessageFormat}
 	 * 
@@ -93,8 +85,8 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 	 * @param column the column in the line, <code>-1</code> for none
 	 * @param arguments the arguments for the message format
 	 */
-	public IOMessageImpl(String pattern, Throwable throwable, int lineNumber,
-			int column, Object... arguments) {
+	public IOMessageImpl(String pattern, Throwable throwable, int lineNumber, int column,
+			Object... arguments) {
 		super(MessageFormat.format(pattern, arguments), throwable);
 		this.column = column;
 		this.lineNumber = lineNumber;
@@ -120,8 +112,10 @@ public class IOMessageImpl extends MessageImpl implements IOMessage {
 	public String getFormattedMessage() {
 		if (getLineNumber() <= 0) {
 			return this.getMessage();
-		} else {
-			return String.format("%s, on line %d, column %d", getMessage(), getLineNumber(), getColumn());
+		}
+		else {
+			return String.format("%s, on line %d, column %d", getMessage(), getLineNumber(),
+					getColumn());
 		}
 	}
 }

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.util.graph;
 
@@ -28,8 +32,7 @@ import org.eclipse.zest.core.widgets.IStyleableFigure;
  * 
  * @author Simon Templer
  */
-public class CustomShapeFigure extends Shape implements IStyleableFigure,
-		ILabeledFigure {
+public class CustomShapeFigure extends Shape implements IStyleableFigure, ILabeledFigure {
 
 	/**
 	 * Paints fill and outline of a shape and provides corresponding insets.
@@ -39,20 +42,16 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 		/**
 		 * Fills the interior of the shape.
 		 * 
-		 * @param graphics
-		 *            the graphics object
-		 * @param bounds
-		 *            the figure bounds, may not be modified
+		 * @param graphics the graphics object
+		 * @param bounds the figure bounds, may not be modified
 		 */
 		public void fillShape(Graphics graphics, Rectangle bounds);
 
 		/**
 		 * Outlines the shape.
 		 * 
-		 * @param graphics
-		 *            the graphics object
-		 * @param bounds
-		 *            the figure bounds, may not be modified
+		 * @param graphics the graphics object
+		 * @param bounds the figure bounds, may not be modified
 		 */
 		public void outlineShape(Graphics graphics, Rectangle bounds);
 
@@ -74,7 +73,7 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 	private Image icon;
 
 	private Color borderColor;
-	
+
 	/**
 	 * No maximum width by default
 	 */
@@ -88,8 +87,7 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 	/**
 	 * Create a custom shaped figure.
 	 * 
-	 * @param painter
-	 *            the painter drawing the figure shape
+	 * @param painter the painter drawing the figure shape
 	 */
 	public CustomShapeFigure(ShapePainter painter) {
 		super();
@@ -100,7 +98,7 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 
 		this.painter = painter;
 	}
-	
+
 	/**
 	 * @see Figure#getPreferredSize(int, int)
 	 */
@@ -108,14 +106,15 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 	public Dimension getPreferredSize(int wHint, int hHint) {
 		Dimension size = super.getPreferredSize(wHint, hHint);
 		if (maximumWidth >= 0 && size.width > maximumWidth) {
-			return new Dimension(maximumWidth, size.height); 
+			return new Dimension(maximumWidth, size.height);
 		}
 		return size;
 	}
 
 	/**
 	 * Get the maximum width (which is applied in
-	 * {@link #getPreferredSize(int, int)}). 
+	 * {@link #getPreferredSize(int, int)}).
+	 * 
 	 * @return the maximum width, a negative value for no maximum width
 	 */
 	public int getMaximumWidth() {
@@ -123,10 +122,11 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 	}
 
 	/**
-	 * Set the maximum width (which is applied in 
+	 * Set the maximum width (which is applied in
 	 * {@link #getPreferredSize(int, int)}).
+	 * 
 	 * @param maximumWidth the maximum width to set, a negative value for no
-	 *   maximum width
+	 *            maximum width
 	 */
 	public void setMaximumWidth(int maximumWidth) {
 		this.maximumWidth = maximumWidth;
@@ -135,9 +135,8 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 	/**
 	 * Set the label that displays the text.
 	 * 
-	 * @param textLabel
-	 *            the label to display the text, may be the same as the icon
-	 *            label or <code>null</code> to ignore the text
+	 * @param textLabel the label to display the text, may be the same as the
+	 *            icon label or <code>null</code> to ignore the text
 	 * 
 	 * @see #setIconLabel(Label)
 	 */
@@ -152,9 +151,8 @@ public class CustomShapeFigure extends Shape implements IStyleableFigure,
 	/**
 	 * Set the label that displays the icon.
 	 * 
-	 * @param iconLabel
-	 *            the label to display the icon, may be the same as the text
-	 *            label or <code>null</code> to ignore the icon
+	 * @param iconLabel the label to display the icon, may be the same as the
+	 *            text label or <code>null</code> to ignore the icon
 	 * 
 	 * @see #setTextLabel(Label)
 	 */

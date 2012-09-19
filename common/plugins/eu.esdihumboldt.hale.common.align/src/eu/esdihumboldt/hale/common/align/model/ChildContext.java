@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model;
@@ -17,21 +21,23 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 
 /**
  * Associates an instance context with a child definition.
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class ChildContext {
-	
+
 	private final Integer contextName;
-	
+
 	private final Integer index;
-	
+
 	private final Condition condition;
-	
+
 	private final ChildDefinition<?> child;
-	
+
 	/**
 	 * Create a child with the default context
+	 * 
 	 * @param child the child definition
 	 */
 	public ChildContext(ChildDefinition<?> child) {
@@ -40,13 +46,14 @@ public class ChildContext {
 
 	/**
 	 * Create a child context.
+	 * 
 	 * @param contextName the instance context name, may be <code>null</code>
 	 * @param index the context index, may be <code>null</code>
 	 * @param condition the context condition, may be <code>null</code>
-	 * @param child the child definition 
+	 * @param child the child definition
 	 */
-	public ChildContext(Integer contextName, Integer index, 
-			Condition condition, ChildDefinition<?> child) {
+	public ChildContext(Integer contextName, Integer index, Condition condition,
+			ChildDefinition<?> child) {
 		super();
 		this.contextName = contextName;
 		this.child = child;
@@ -90,10 +97,8 @@ public class ChildContext {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((child == null) ? 0 : child.hashCode());
-		result = prime * result
-				+ ((condition == null) ? 0 : condition.hashCode());
-		result = prime * result
-				+ ((contextName == null) ? 0 : contextName.hashCode());
+		result = prime * result + ((condition == null) ? 0 : condition.hashCode());
+		result = prime * result + ((contextName == null) ? 0 : contextName.hashCode());
 		result = prime * result + ((index == null) ? 0 : index.hashCode());
 		return result;
 	}
@@ -113,22 +118,26 @@ public class ChildContext {
 		if (child == null) {
 			if (other.child != null)
 				return false;
-		} else if (!child.equals(other.child))
+		}
+		else if (!child.equals(other.child))
 			return false;
 		if (condition == null) {
 			if (other.condition != null)
 				return false;
-		} else if (!condition.equals(other.condition))
+		}
+		else if (!condition.equals(other.condition))
 			return false;
 		if (contextName == null) {
 			if (other.contextName != null)
 				return false;
-		} else if (!contextName.equals(other.contextName))
+		}
+		else if (!contextName.equals(other.contextName))
 			return false;
 		if (index == null) {
 			if (other.index != null)
 				return false;
-		} else if (!index.equals(other.index))
+		}
+		else if (!index.equals(other.index))
 			return false;
 		return true;
 	}

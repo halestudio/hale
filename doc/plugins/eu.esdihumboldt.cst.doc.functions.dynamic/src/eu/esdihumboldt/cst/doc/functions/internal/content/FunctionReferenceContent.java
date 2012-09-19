@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.cst.doc.functions.internal.content;
@@ -58,20 +62,18 @@ import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 public class FunctionReferenceContent extends AbstractVelocityContent implements
 		FunctionReferenceConstants {
 
-	private static final ALogger log = ALoggerFactory
-			.getLogger(FunctionReferenceContent.class);
+	private static final ALogger log = ALoggerFactory.getLogger(FunctionReferenceContent.class);
 
 	/**
 	 * Directory for storing the generated images.
 	 */
 	private File tempDir;
-	
+
 	/**
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
 	 */
 	@Override
-	public InputStream getInputStream(String pluginID, String href,
-			Locale locale) {
+	public InputStream getInputStream(String pluginID, String href, Locale locale) {
 		if (href.startsWith(FUNCTION_TOPIC_PATH)) {
 			// it's a function
 			String func_id = href.substring(FUNCTION_TOPIC_PATH.length());
@@ -101,7 +103,8 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			} else {
+			}
+			else {
 				try {
 					return getFunctionContent(func_id);
 				} catch (Exception e) {
@@ -131,7 +134,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 		}
 
 		Callable<VelocityContext> contextFactory = new Callable<VelocityContext>() {
-			
+
 			@Override
 			public VelocityContext call() throws Exception {
 				VelocityContext context = new VelocityContext();
@@ -141,8 +144,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 				if (function.getCategoryId() != null) {
 					String categoryId = function.getCategoryId();
 
-					Category category = (CategoryExtension.getInstance()
-							.get(categoryId));
+					Category category = (CategoryExtension.getInstance().get(categoryId));
 
 					// String category = categoryId.substring(categoryId
 					// .lastIndexOf(".") + 1);
@@ -166,11 +168,11 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 
 					context.put("include", final_help_url);
 				}
-				
+
 				return context;
 			}
 		};
-			
+
 		return getContentFromTemplate(func_id, "function", contextFactory);
 	}
 
@@ -194,7 +196,8 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 			if (Display.getCurrent() != null) {
 				// use the current display if available
 				display = Display.getCurrent();
-			} else {
+			}
+			else {
 				try {
 					// use workbench display if available
 					display = PlatformUI.getWorkbench().getDisplay();
@@ -219,8 +222,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 							LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
 
 							FunctionGraphContentProvider stcp = new FunctionGraphContentProvider();
-							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(
-									false);
+							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(false);
 							viewer.setContentProvider(stcp);
 							viewer.setLabelProvider(fglp);
 							viewer.setInput(function);
@@ -234,7 +236,8 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 					int width;
 					if (dim.width > 450) {
 						width = dim.width;
-					} else {
+					}
+					else {
 						// minimum width = 450
 						width = 450;
 					}
@@ -242,8 +245,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 					off_graph.resize(width, height);
 
 					try {
-						off_graph.saveImage(
-								new FileOutputStream(_functionFile), null);
+						off_graph.saveImage(new FileOutputStream(_functionFile), null);
 					} catch (IOException e) {
 						log.warn("Conversion from Graph to Image failed!");
 					} finally {
@@ -286,10 +288,12 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 			int targetCons = gn.getTargetConnections().size();
 			if (sourceCons == 0 && targetCons == 1) {
 				tempSourceList.add(gn);
-			} else if (sourceCons >= 1 && targetCons >= 1) {
+			}
+			else if (sourceCons >= 1 && targetCons >= 1) {
 				width = width + gn.getFigure().getBounds().width + 10;
 				height = height + gn.getFigure().getBounds().height;
-			} else {
+			}
+			else {
 				tempTargetList.add(gn);
 			}
 		}

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.transformation.report.impl;
@@ -20,19 +24,19 @@ import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 
 /**
  * Reporter for transformation messages
+ * 
  * @author Simon Templer
  */
-public class DefaultTransformationReporter extends
-		DefaultReporter<TransformationMessage> implements TransformationReport,
-		TransformationReporter {
+public class DefaultTransformationReporter extends DefaultReporter<TransformationMessage> implements
+		TransformationReport, TransformationReporter {
 
 	/**
 	 * Create an empty report. It is set to not successful by default. But you
 	 * should call {@link #setSuccess(boolean)} nonetheless to update the
 	 * timestamp after the task has finished.
 	 * 
-	 * @param taskName the name of the task the report is related to 
-	 * @param doLog if added messages shall also be logged using {@link ALogger} 
+	 * @param taskName the name of the task the report is related to
+	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public DefaultTransformationReporter(String taskName, boolean doLog) {
 		super(taskName, TransformationMessage.class, doLog);

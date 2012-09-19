@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.codelist;
@@ -17,10 +21,10 @@ import java.util.Collection;
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public interface CodeList {
 
@@ -30,11 +34,11 @@ public interface CodeList {
 	public static class CodeEntry {
 
 		private final String name;
-		
+
 		private final String description;
-		
+
 		private final String identifier;
-		
+
 		private final String namespace;
 
 		/**
@@ -45,8 +49,7 @@ public interface CodeList {
 		 * @param identifier the identifier
 		 * @param namespace the namespace
 		 */
-		public CodeEntry(String name, String description, String identifier,
-				String namespace) {
+		public CodeEntry(String name, String description, String identifier, String namespace) {
 			super();
 			this.name = name;
 			this.description = description;
@@ -81,31 +84,31 @@ public interface CodeList {
 		public String getNamespace() {
 			return namespace;
 		}
-		
+
 	}
 
 	/**
 	 * Get the code list entries
 	 * 
-	 * @return the code list entries, changes to the returned collection will not
-	 *   be reflected in the code list
+	 * @return the code list entries, changes to the returned collection will
+	 *         not be reflected in the code list
 	 */
 	public Collection<CodeEntry> getEntries();
-	
+
 	/**
 	 * Get the namespace
 	 * 
 	 * @return the namespace
 	 */
 	public String getNamespace();
-	
+
 	/**
 	 * Get the identifier
 	 * 
 	 * @return the identifier
 	 */
 	public String getIdentifier();
-	
+
 	/**
 	 * Get the description
 	 * 
@@ -121,7 +124,7 @@ public interface CodeList {
 	 * @return the entry or <code>null</code>
 	 */
 	public CodeEntry getEntryByName(String name);
-	
+
 	/**
 	 * Get the entry with the given identifier
 	 * 
@@ -130,12 +133,12 @@ public interface CodeList {
 	 * @return the entry or <code>null</code>
 	 */
 	public CodeEntry getEntryByIdentifier(String identifier);
-	
+
 	/**
 	 * Get the code list location
 	 * 
 	 * @return the code list location
 	 */
 	public URI getLocation();
-	
+
 }

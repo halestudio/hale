@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.convert;
@@ -28,32 +32,34 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.util.reflection.ReflectionHelper;
 
-
 /**
  * Factory bean for adding a converter to a converter registry
+ * 
  * @author Simon Templer
  */
-public class ConverterPackageFactoryBean implements FactoryBean<Object>, 
-		BeanClassLoaderAware, InitializingBean {
-	
+public class ConverterPackageFactoryBean implements FactoryBean<Object>, BeanClassLoaderAware,
+		InitializingBean {
+
 	private static final ALogger log = ALoggerFactory.getLogger(ConverterPackageFactoryBean.class);
-	
+
 	private ConverterRegistry registry;
-	
+
 	private String packageName;
 
 	private ClassLoader classLoader;
-	
+
 	/**
 	 * Set the converter registry to add the converter to.
+	 * 
 	 * @param registry the converter registry
 	 */
 	public void setRegistry(ConverterRegistry registry) {
 		this.registry = registry;
 	}
-	
+
 	/**
 	 * Set the package name
+	 * 
 	 * @param packageName the package name
 	 */
 	public void setPackage(String packageName) {
@@ -87,16 +93,17 @@ public class ConverterPackageFactoryBean implements FactoryBean<Object>,
 	/**
 	 * Register all converters and converter factories in a given package with
 	 * the given registry.
+	 * 
 	 * @param registry the converter registry
 	 * @param classLoader the class loader
 	 * @param packageName the package name
 	 */
-	public static void registerConverters(ConverterRegistry registry,
-			ClassLoader classLoader, String packageName) {
+	public static void registerConverters(ConverterRegistry registry, ClassLoader classLoader,
+			String packageName) {
 		try {
-			List<Class<?>> classes = ReflectionHelper.getClassesFromPackage(
-					packageName, classLoader);
-			
+			List<Class<?>> classes = ReflectionHelper.getClassesFromPackage(packageName,
+					classLoader);
+
 			for (Class<?> clazz : classes) {
 				try {
 					if (!Modifier.isAbstract(clazz.getModifiers())) {
@@ -111,8 +118,8 @@ public class ConverterPackageFactoryBean implements FactoryBean<Object>,
 		}
 	}
 
-	private static void registerConverter(ConverterRegistry registry,
-			Class<?> clazz) throws InstantiationException, IllegalAccessException {
+	private static void registerConverter(ConverterRegistry registry, Class<?> clazz)
+			throws InstantiationException, IllegalAccessException {
 		if (Converter.class.isAssignableFrom(clazz)) {
 			Converter<?, ?> converter = (Converter<?, ?>) clazz.newInstance();
 			registry.addConverter(converter);

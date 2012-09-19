@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
@@ -56,20 +60,17 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 		Point point = null;
 
 		// Point is either defined by a CoordinatesType named coordinates
-		Collection<Object> values = PropertyResolver.getValues(instance,
-				"coordinates", false);
+		Collection<Object> values = PropertyResolver.getValues(instance, "coordinates", false);
 		if (values != null && !values.isEmpty()) {
 			Object value = values.iterator().next();
 			if (value instanceof Instance) {
 				try {
-					Coordinate[] cs = GMLGeometryUtil
-							.parseCoordinates((Instance) value);
+					Coordinate[] cs = GMLGeometryUtil.parseCoordinates((Instance) value);
 					if (cs != null && cs.length > 0) {
 						point = getGeometryFactory().createPoint(cs[0]);
 					}
 				} catch (ParseException e) {
-					throw new GeometryNotSupportedException(
-							"Could not parse coordinates", e);
+					throw new GeometryNotSupportedException("Could not parse coordinates", e);
 				}
 			}
 		}
@@ -80,8 +81,7 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 			if (values != null && !values.isEmpty()) {
 				Object value = values.iterator().next();
 				if (value instanceof Instance) {
-					Coordinate c = GMLGeometryUtil
-							.parseDirectPosition((Instance) value);
+					Coordinate c = GMLGeometryUtil.parseDirectPosition((Instance) value);
 					if (c != null) {
 						point = getGeometryFactory().createPoint(c);
 					}
@@ -116,8 +116,7 @@ public class PointHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
-				2);
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
 
 		// contains one point
 		constraints.add(Binding.get(GeometryProperty.class));

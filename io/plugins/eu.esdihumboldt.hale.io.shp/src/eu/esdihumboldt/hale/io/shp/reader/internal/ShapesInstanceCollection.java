@@ -1,18 +1,23 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
@@ -31,6 +36,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -43,37 +49,38 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.hale.io.shp.ShapefileIO;
+import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 
 /**
- * TODO Type description
+ * Instance collection backed by a Shapefile data store.
+ * 
  * @author Simon Templer
  */
 public class ShapesInstanceCollection implements InstanceCollection {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ShapesInstanceCollection.class);
-	
+
 	/**
 	 * Iterates through a shape data store
 	 */
 	private class ShapesIterator implements ResourceIterator<Instance> {
-		
+
 		private final Iterator<Name> nameIterator;
-		
+
 		private TypeDefinition currentType;
-		
+
 		private SimpleFeatureIterator currentIterator;
 
 		/**
 		 * Create a new iterator on the data store.
-		 * @throws IOException if reading the data store fails 
+		 * 
+		 * @throws IOException if reading the data store fails
 		 */
 		public ShapesIterator() throws IOException {
 			super();
-			
+
 			nameIterator = store.getNames().iterator();
 		}
 
@@ -83,7 +90,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		@Override
 		public boolean hasNext() {
 			proceedToNext();
-			
+
 			if (currentIterator != null && currentIterator.hasNext()) {
 				return true;
 			}
@@ -98,18 +105,24 @@ public class ShapesInstanceCollection implements InstanceCollection {
 				if (currentIterator != null) {
 					currentIterator.close();
 				}
-				
+
 				Name name = nameIterator.next();
 				try {
 					currentIterator = store.getFeatureSource(name).getFeatures().features();
-					
-					QName typeName = new QName(ShapefileIO.SHAPEFILE_NS, name.getLocalPart());
-					currentType = typeIndex.getType(typeName);
-					
+
+					if (defaultType != null) {
+						currentType = defaultType;
+					}
+					else {
+						QName typeName = new QName(ShapefileConstants.SHAPEFILE_NS,
+								name.getLocalPart());
+						currentType = typeIndex.getType(typeName);
+					}
+
 					if (currentType == null) {
 						proceedToNext();
-						log.error("Could not find type " + 
-								typeName + " in source schema, corresponding instances are not created.");
+						log.error("Could not find type " + name.getLocalPart()
+								+ " in source schema, corresponding instances are not created.");
 					}
 				} catch (IOException e) {
 					log.error("Error accessing feature source " + name, e);
@@ -118,29 +131,29 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		}
 
 		/**
-		 * @see java.util.Iterator#next()
+		 * @see Iterator#next()
 		 */
 		@Override
 		public Instance next() {
 			proceedToNext();
-			
+
 			if (currentType == null) {
 				throw new IllegalStateException();
 			}
-			
+
 			SimpleFeature feature = currentIterator.next();
-			
+
 			Instance instance = createInstance(currentType, feature);
 			if (instance != null) {
 				return instance;
 			}
 			else {
-				log.error("Could not create a data instance from a feature of type " + 
-						currentType.getName());
+				log.error("Could not create a data instance from a feature of type "
+						+ currentType.getName());
 				throw new IllegalStateException();
 			}
 		}
-		
+
 		/**
 		 * Create an instance from a given feature
 		 * 
@@ -150,64 +163,57 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		 */
 		private Instance createInstance(TypeDefinition type, SimpleFeature feature) {
 			MutableInstance instance = new DefaultInstance(type, null);
-			
+
 			for (Property property : feature.getProperties()) {
 				Object value = property.getValue();
-				QName propertyName = new QName(property.getName().getNamespaceURI(), 
-						property.getName().getLocalPart());
-				
+				QName propertyName = new QName(property.getName().getNamespaceURI(), property
+						.getName().getLocalPart());
+
 				// wrap geometry
 				if (value instanceof Geometry) {
 					// try to determine CRS
 					CoordinateReferenceSystem crs = null;
-					
+
 					// try user data of geometry
 					Object userData = ((Geometry) value).getUserData();
 					if (userData instanceof CoordinateReferenceSystem) {
 						crs = (CoordinateReferenceSystem) userData;
 					}
-					
+
 					if (crs == null) {
 						// try CRS associated to geometry descriptor
-						AttributeDescriptor pd = feature.getFeatureType().getDescriptor(property.getName());
+						AttributeDescriptor pd = feature.getFeatureType().getDescriptor(
+								property.getName());
 						if (pd != null && pd instanceof GeometryDescriptor) {
 							crs = ((GeometryDescriptor) pd).getCoordinateReferenceSystem();
 						}
 					}
-					
+
 					if (crs == null) {
 						// try CRS associated to feature type
 						crs = feature.getFeatureType().getCoordinateReferenceSystem();
 					}
-					
+
 					CRSDefinition crsDef;
 					if (crs != null) {
 						crsDef = CRSDefinitionUtil.createDefinition(crs);
 					}
 					else {
-						// fallback to provider configuration
-						ChildDefinition<?> child = type.getChild(propertyName);
-						if (child != null && child.asProperty() != null) {
-							//TODO ask CRS provider (but settings can't be stored in InstanceReader configuration!)
-//							crsDef = getDefaultCRS(child.asProperty());
-							crsDef = null;
-						}
-						else {
-							crsDef = null;
-						}
+						// ask CRS provider
+						crsDef = crsProvider.getCRS(type, Collections.singletonList(propertyName));
 					}
 					value = new DefaultGeometryProperty<Geometry>(crsDef, (Geometry) value);
 				}
-				
-				//TODO safe add? in respect to binding, existence of property
+
+				// TODO safe add? in respect to binding, existence of property
 				instance.addProperty(propertyName, value);
 			}
-			
+
 			return instance;
 		}
 
 		/**
-		 * @see java.util.Iterator#remove()
+		 * @see Iterator#remove()
 		 */
 		@Override
 		public void remove() {
@@ -215,7 +221,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 		}
 
 		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.ResourceIterator#close()
+		 * @see ResourceIterator#close()
 		 */
 		@Override
 		public void close() {
@@ -228,36 +234,46 @@ public class ShapesInstanceCollection implements InstanceCollection {
 
 	private final DataStore store;
 	private final TypeIndex typeIndex;
+	private final CRSProvider crsProvider;
+	private final TypeDefinition defaultType;
 
 	/**
 	 * Data store for accessing simple features (from a Shapefile).
+	 * 
 	 * @param store the data store
+	 * @param defaultType the default type to use for instances, may be
+	 *            <code>null</code>
 	 * @param typeIndex the type index
+	 * @param crsProvider CRS provider in case no CRS is specified, may be
+	 *            <code>null</code>
 	 */
-	public ShapesInstanceCollection(DataStore store, TypeIndex typeIndex) {
+	public ShapesInstanceCollection(DataStore store, TypeDefinition defaultType,
+			TypeIndex typeIndex, CRSProvider crsProvider) {
 		this.store = store;
 		this.typeIndex = typeIndex;
+		this.crsProvider = crsProvider;
+		this.defaultType = defaultType;
 	}
 
 	/**
-	 * @see InstanceResolver#getReference(eu.esdihumboldt.hale.common.instance.model.Instance)
+	 * @see InstanceResolver#getReference(Instance)
 	 */
 	@Override
 	public InstanceReference getReference(Instance instance) {
-		//TODO data store based instance reference?
+		// TODO data store based instance reference?
 		return new PseudoInstanceReference(instance);
 	}
 
 	/**
-	 * @see InstanceResolver#getInstance(eu.esdihumboldt.hale.common.instance.model.InstanceReference)
+	 * @see InstanceResolver#getInstance(InstanceReference)
 	 */
 	@Override
 	public Instance getInstance(InstanceReference reference) {
-		//TODO data store based instance reference?
+		// TODO data store based instance reference?
 		if (reference instanceof PseudoInstanceReference) {
 			return ((PseudoInstanceReference) reference).getInstance();
 		}
-		
+
 		return null;
 	}
 
@@ -307,7 +323,7 @@ public class ShapesInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
-		//TODO allow applying filter on data source level?
+		// TODO allow applying filter on data source level?
 		return new FilteredInstanceCollection(this, filter);
 	}
 

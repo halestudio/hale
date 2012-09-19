@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.function.contribution;
 
@@ -45,7 +49,7 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 public abstract class AbstractFunctionWizardContribution extends ContributionItem {
 
 	private final boolean showAugmentations;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -54,21 +58,22 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 	public AbstractFunctionWizardContribution(boolean showAugmentations) {
 		this.showAugmentations = showAugmentations;
 	}
-	
+
 	/**
 	 * Create a function wizard contribution that doesn't hide augmentations.
 	 */
 	public AbstractFunctionWizardContribution() {
 		this(true);
 	}
-	
+
 	/**
 	 * @see ContributionItem#fill(ToolBar, int)
 	 */
 	@Override
 	public void fill(ToolBar parent, int index) {
-		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		
+		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
+				.getService(AlignmentService.class);
+
 		for (FunctionWizardDescriptor<?> descriptor : getFunctionWizardDescriptors()) {
 			IAction action = createWizardAction(descriptor, alignmentService);
 			IContributionItem item = new ActionContributionItem(action);
@@ -78,35 +83,37 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 
 	/**
 	 * Get the currently applicable function wizard descriptors
+	 * 
 	 * @return the function wizard descriptors
 	 */
 	protected Collection<FunctionWizardDescriptor<?>> getFunctionWizardDescriptors() {
 		FunctionWizardExtension fwe = FunctionWizardExtension.getInstance();
 		Collection<FunctionWizardDescriptor<?>> result = new ArrayList<FunctionWizardDescriptor<?>>();
-		
+
 		// add wizards for type functions
 		for (TypeFunction function : TypeFunctionExtension.getInstance().getElements()) {
 			result.add(fwe.getWizardDescriptor(function.getId()));
 		}
-		
+
 		// add wizards for property functions
 		for (PropertyFunction function : PropertyFunctionExtension.getInstance().getElements()) {
 			result.add(fwe.getWizardDescriptor(function.getId()));
 		}
-		
+
 		return result;
-		
+
 //		return FunctionWizardExtension.getInstance().getFactories();
 	}
 
 	/**
 	 * Create a wizard action for the given function wizard descriptor
+	 * 
 	 * @param descriptor the function wizard descriptor
 	 * @param alignmentService the alignment service
 	 * @return the action that launches the wizard
 	 */
-	protected abstract AbstractWizardAction<?> createWizardAction(FunctionWizardDescriptor<?> descriptor,
-			AlignmentService alignmentService);
+	protected abstract AbstractWizardAction<?> createWizardAction(
+			FunctionWizardDescriptor<?> descriptor, AlignmentService alignmentService);
 
 	/**
 	 * @see ContributionItem#fill(Menu, int)
@@ -114,11 +121,12 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 	@Override
 	public void fill(Menu menu, int index) {
 		boolean added = false;
-		
-		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		
+
+		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
+				.getService(AlignmentService.class);
+
 		List<AbstractWizardAction<?>> augmentationActions = new ArrayList<AbstractWizardAction<?>>();
-		
+
 		for (FunctionWizardDescriptor<?> descriptor : getFunctionWizardDescriptors()) {
 			if (!descriptor.getFunction().isAugmentation() || showAugmentations) {
 				AbstractWizardAction<?> action = createWizardAction(descriptor, alignmentService);
@@ -134,12 +142,12 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 				}
 			}
 		}
-		
+
 		if (!augmentationActions.isEmpty()) {
 			if (added) {
 				new Separator().fill(menu, index++);
 			}
-			
+
 			// get augmentation target name
 //			ISelection selection = selectionService.getSelection();
 //			AlignmentInfo info = null;
@@ -158,22 +166,22 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 //				augmentations = MessageFormat.format(Messages.FunctionWizardContribution_0, info.getFirstTargetItem().getName().getLocalPart()); 
 //			}
 //			else {
-				augmentations = Messages.FunctionWizardContribution_1; 
+			augmentations = Messages.FunctionWizardContribution_1;
 //			}
 //			
 			MenuItem augItem = new MenuItem(menu, SWT.PUSH, index++);
 			augItem.setText(augmentations);
 			augItem.setEnabled(false);
-			
+
 			new Separator().fill(menu, index++);
-			
+
 			for (AbstractWizardAction<?> action : augmentationActions) {
 				IContributionItem item = new ActionContributionItem(action);
 				item.fill(menu, index++);
 				added = true;
 			}
 		}
-		
+
 		if (!added) {
 			MenuItem item = new MenuItem(menu, SWT.PUSH, index++);
 			item.setText(Messages.FunctionWizardContribution_2); //$NON-NLS-1$
@@ -188,23 +196,21 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 	public boolean isDynamic() {
 		return true;
 	}
-	
+
 	/**
-	 * Determine if a function wizard is active for the current
-	 *   selection
-	 *   
+	 * Determine if a function wizard is active for the current selection
+	 * 
 	 * @param descriptor the function wizard descriptor
-	 * @return if the function wizard is active for the current
-	 *   selection
+	 * @return if the function wizard is active for the current selection
 	 */
 	public abstract boolean isActive(FunctionWizardDescriptor<?> descriptor);
-	
+
 	/**
-	 * Determines if there are any active function wizards for the
-	 *   current selection
-	 *   
-	 * @return if there are any active function wizards for the
-	 *   current selection
+	 * Determines if there are any active function wizards for the current
+	 * selection
+	 * 
+	 * @return if there are any active function wizards for the current
+	 *         selection
 	 */
 	public boolean hasActiveFunctions() {
 		for (FunctionWizardDescriptor<?> descriptor : getFunctionWizardDescriptors()) {
@@ -212,7 +218,7 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 

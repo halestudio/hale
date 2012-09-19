@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
@@ -19,17 +23,17 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 
 /**
- * Represents a local Orient database 
+ * Represents a local Orient database
+ * 
  * @author Simon Templer
  */
 public class LocalOrientDB {
-	
+
 	/**
 	 * Database reference for reading holding a lock
 	 */
-	private class ReadReference implements
-			DatabaseReference<ODatabaseDocumentTx> {
-		
+	private class ReadReference implements DatabaseReference<ODatabaseDocumentTx> {
+
 		private ODatabaseDocumentTx database;
 
 		/**
@@ -37,7 +41,7 @@ public class LocalOrientDB {
 		 */
 		@Override
 		public ODatabaseDocumentTx getDatabase() {
-			if (database == null)  {
+			if (database == null) {
 				dbLock.readLock().lock();
 //				database = pool.acquire(dbURI, "reader", "reader");
 				database = new ODatabaseDocumentTx(dbURI).open("reader", "reader");
@@ -68,13 +72,12 @@ public class LocalOrientDB {
 		}
 
 	}
-	
+
 	/**
 	 * Database reference for writing holding a lock
 	 */
-	private class WriteReference implements
-			DatabaseReference<ODatabaseDocumentTx> {
-		
+	private class WriteReference implements DatabaseReference<ODatabaseDocumentTx> {
+
 		private ODatabaseDocumentTx database;
 
 		/**
@@ -82,11 +85,12 @@ public class LocalOrientDB {
 		 */
 		@Override
 		public ODatabaseDocumentTx getDatabase() {
-			if (database == null)  {
-				//XXX could eventually use read lock
+			if (database == null) {
+				// XXX could eventually use read lock
 				dbLock.writeLock().lock();
 //				database = new ODatabaseDocumentTx(dbURI).open("writer", "writer");
-				// writer use doesn't seem to be supported any more (as of 1.0rc8)
+				// writer use doesn't seem to be supported any more (as of
+				// 1.0rc8)
 //				database = pool.acquire(dbURI, "admin", "admin");
 				database = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
 			}
@@ -101,9 +105,9 @@ public class LocalOrientDB {
 			if (database != null) {
 				if (closeConnection) {
 //					pool.release(database)
-					database.close(); 
+					database.close();
 				}
-				//XXX could eventually use read lock
+				// XXX could eventually use read lock
 				dbLock.writeLock().unlock();
 			}
 		}
@@ -119,11 +123,11 @@ public class LocalOrientDB {
 	}
 
 	private ReadWriteLock dbLock = new ReentrantReadWriteLock();
-	
+
 	private final String dbURI;
-	
+
 //	private final ODatabaseDocumentPool pool;
-	
+
 	/**
 	 * Create a local Orient database. It will delete database that exists
 	 * previously at the same location.
@@ -132,13 +136,13 @@ public class LocalOrientDB {
 	 */
 	public LocalOrientDB(File location) {
 		super();
-		
+
 		dbURI = "local:" + location.getAbsolutePath();
-		
+
 //		pool = new ODatabaseDocumentPool();
 //		pool.setup(1,10);
-		//XXX close pool? when?
-		
+		// XXX close pool? when?
+
 		ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI);
 		try {
 			// delete the database if it already exists
@@ -150,12 +154,12 @@ public class LocalOrientDB {
 		db.create();
 		db.close();
 	}
-	
+
 	/**
 	 * Get a database reference with read access.<br>
 	 * <br>
-	 * NOTE: Getting the database reference locks a read lock on the database. 
-	 * {@link DatabaseReference#dispose()} must be called when the database 
+	 * NOTE: Getting the database reference locks a read lock on the database.
+	 * {@link DatabaseReference#dispose()} must be called when the database
 	 * reference isn't needed any more.
 	 * 
 	 * @return the database reference
@@ -163,12 +167,12 @@ public class LocalOrientDB {
 	public DatabaseReference<ODatabaseDocumentTx> openRead() {
 		return new ReadReference();
 	}
-	
+
 	/**
 	 * Get a database reference with write access.<br>
 	 * <br>
-	 * NOTE: Getting the database reference locks a write lock on the database. 
-	 * {@link DatabaseReference#dispose()} must be called when the database 
+	 * NOTE: Getting the database reference locks a write lock on the database.
+	 * {@link DatabaseReference#dispose()} must be called when the database
 	 * reference isn't needed any more.
 	 * 
 	 * @return the database reference
@@ -176,7 +180,7 @@ public class LocalOrientDB {
 	public DatabaseReference<ODatabaseDocumentTx> openWrite() {
 		return new WriteReference();
 	}
-	
+
 	/**
 	 * Delete the database and recreate it.
 	 */
@@ -193,7 +197,7 @@ public class LocalOrientDB {
 			dbLock.writeLock().unlock();
 		}
 	}
-	
+
 	/**
 	 * Delete the database.
 	 */

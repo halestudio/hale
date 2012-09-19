@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.cst.functions.inspire;
@@ -33,17 +37,14 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Kevin Mais
  * 
  */
-public class Identifier extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine>
+public class Identifier extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
 		implements IdentifierFunction {
 
 	@Override
-	protected Object evaluate(String transformationIdentifier,
-			TransformationEngine engine,
+	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
-			PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException, NoResultException {
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException, NoResultException {
 
 		// get input
 		PropertyValue input = variables.get(null).get(0);
@@ -58,15 +59,13 @@ public class Identifier extends
 		String versionNilReason = getParameterChecked(VERSION_NIL_REASON);
 
 		// definition of the target property (inspireId in this case)
-		TypeDefinition targetType = resultProperty.getDefinition()
-				.getPropertyType();
+		TypeDefinition targetType = resultProperty.getDefinition().getPropertyType();
 
 		// instance that can be changed (add property/instance as child)
 		DefaultInstance inspireInstance = new DefaultInstance(targetType, null);
 
 		// search for the child named "Identifier"
-		PropertyDefinition inspireChildPropDef = Util.getChild("Identifier",
-				targetType);
+		PropertyDefinition inspireChildPropDef = Util.getChild("Identifier", targetType);
 
 		// get type definition to create the "Identifier" instance
 		TypeDefinition identType = inspireChildPropDef.getPropertyType();
@@ -74,9 +73,8 @@ public class Identifier extends
 		DefaultInstance identInstance = new DefaultInstance(identType, null);
 
 		PropertyDefinition identChildLocal = Util.getChild("localId", identType);
-		
-		PropertyDefinition identChildNamespace = Util.getChild("namespace",
-				identType);
+
+		PropertyDefinition identChildNamespace = Util.getChild("namespace", identType);
 
 		PropertyDefinition identChildVersion = Util.getChild("versionId", identType);
 
@@ -84,23 +82,21 @@ public class Identifier extends
 
 		DefaultInstance versionInstance = new DefaultInstance(versionType, null);
 
-		PropertyDefinition versionIdChildVersion = Util.getChild("nilReason",
-				versionType);
+		PropertyDefinition versionIdChildVersion = Util.getChild("nilReason", versionType);
 
 		// 1.)
 		// add the "localId" and "namespace" properties to the identifier
 		// instance
 		identInstance.addProperty(identChildLocal.getName(), source);
-		identInstance.addProperty(identChildNamespace.getName(), countryName
-				+ ":" + providerName + ":" + productName + ":"
-				+ resultProperty.getType().getDisplayName());
+		identInstance.addProperty(identChildNamespace.getName(), countryName + ":" + providerName
+				+ ":" + productName + ":" + resultProperty.getType().getDisplayName());
 
 		// 2.)
 		// add the "nilReason" property to the version instance
 		if (version == null || version.isEmpty()) {
-			versionInstance.addProperty(versionIdChildVersion.getName(),
-					versionNilReason);
-		} else {
+			versionInstance.addProperty(versionIdChildVersion.getName(), versionNilReason);
+		}
+		else {
 			versionInstance.setValue(version);
 		}
 
@@ -110,8 +106,7 @@ public class Identifier extends
 
 		// 4.)
 		// add the "identifier" instance to the inspireId instance
-		inspireInstance.addProperty(inspireChildPropDef.getName(),
-				identInstance);
+		inspireInstance.addProperty(inspireChildPropDef.getName(), identInstance);
 
 		return inspireInstance;
 	}

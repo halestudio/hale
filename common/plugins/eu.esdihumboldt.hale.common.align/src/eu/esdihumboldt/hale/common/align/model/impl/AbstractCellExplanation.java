@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model.impl;
@@ -26,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 
 /**
  * Abstract cell explanation implementation.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractCellExplanation implements CellExplanation {
@@ -48,18 +53,24 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 
 	/**
 	 * Get the explanation string in the specified format.
+	 * 
 	 * @param cell the cell to create an explanation for
-	 * @param html if the format should be HMTL, otherwise the format is just text
+	 * @param html if the format should be HMTL, otherwise the format is just
+	 *            text
 	 * @return the explanation or <code>null</code>
 	 */
 	protected abstract String getExplanation(Cell cell, boolean html);
-	
+
 	/**
 	 * Format an entity for inclusion in an explanation.
+	 * 
 	 * @param entity the entity, may be <code>null</code>
-	 * @param html if the format should be HMTL, otherwise the format is just text
-	 * @param indexInFront whether index conditions should be in front of the property name or behind in brackets
-	 * @return the formatted entity name or <code>null</code> in case of <code>null</code> input
+	 * @param html if the format should be HMTL, otherwise the format is just
+	 *            text
+	 * @param indexInFront whether index conditions should be in front of the
+	 *            property name or behind in brackets
+	 * @return the formatted entity name or <code>null</code> in case of
+	 *         <code>null</code> input
 	 */
 	protected String formatEntity(Entity entity, boolean html, boolean indexInFront) {
 		if (entity == null)
@@ -70,13 +81,17 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 
 		// modify text with filter
 		List<ChildContext> path = entity.getDefinition().getPropertyPath();
-		// different output than AlignmentUtil in case of property with index condition
+		// different output than AlignmentUtil in case of property with index
+		// condition
 		if (path != null && !path.isEmpty() && path.get(path.size() - 1).getIndex() != null) {
 			if (indexInFront)
-				text = formatNumber(path.get(path.size() - 1).getIndex() + 1) + " value of the " + text;
+				text = formatNumber(path.get(path.size() - 1).getIndex() + 1) + " value of the "
+						+ text;
 			else
-				text += " (the " + formatNumber(path.get(path.size() - 1).getIndex() + 1) + " value)";
-		} else {
+				text += " (the " + formatNumber(path.get(path.size() - 1).getIndex() + 1)
+						+ " value)";
+		}
+		else {
 			String filterString = AlignmentUtil.getContextText(entity.getDefinition());
 			if (filterString != null)
 				text += " (matching " + quoteText(filterString, html) + ")";
@@ -86,7 +101,7 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 
 	/**
 	 * Returns an entity name without condition strings (e.g. "part1.part2").
-	 *
+	 * 
 	 * @param entity the entity
 	 * @return the entity name
 	 */
@@ -99,7 +114,8 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 			}
 			String longName = Joiner.on('.').join(names);
 			return longName;
-		} else
+		}
+		else
 			return entityDef.getDefinition().getDisplayName();
 	}
 
@@ -118,8 +134,10 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 	 * Quote or otherwise format (in case of HTML) the given text.
 	 * 
 	 * @param text the text, may be <code>null</code>
-	 * @param html if the format should be HMTL, otherwise the format is just text
-	 * @return the quoted text or <code>null</code> in case of <code>null</code> input
+	 * @param html if the format should be HMTL, otherwise the format is just
+	 *            text
+	 * @return the quoted text or <code>null</code> in case of <code>null</code>
+	 *         input
 	 */
 	protected String quoteText(String text, boolean html) {
 		if (text == null)
@@ -132,12 +150,18 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 
 	private String formatNumber(int number) {
 		switch (number) {
-		case 1: return "first";
-		case 2: return "second";
-		case 3: return "third";
-		case 4: return "fourth";
-		case 5: return "fifth";
-		case 6: return "sixth";
+		case 1:
+			return "first";
+		case 2:
+			return "second";
+		case 3:
+			return "third";
+		case 4:
+			return "fourth";
+		case 5:
+			return "fifth";
+		case 6:
+			return "sixth";
 		default:
 			return (number + 1) + ".";
 		}

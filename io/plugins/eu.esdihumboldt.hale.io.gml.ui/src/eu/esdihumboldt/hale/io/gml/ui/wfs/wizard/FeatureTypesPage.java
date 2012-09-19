@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
@@ -28,24 +32,24 @@ import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.FeatureTypeList.TypeSelectionLi
 
 /**
  * 
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
-	
+
 	private FeatureTypeList list;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param configuration the WFS configuration 
+	 * @param configuration the WFS configuration
 	 * @param capsPage the capabilities page
 	 */
 	public FeatureTypesPage(WfsConfiguration configuration, CapabilitiesPage capsPage) {
 		super(configuration, capsPage, Messages.FeatureTypesPage_0); //$NON-NLS-1$
-		
+
 		setTitle(Messages.FeatureTypesPage_1); //$NON-NLS-1$
 		setMessage(Messages.FeatureTypesPage_2); //$NON-NLS-1$
 	}
@@ -56,24 +60,25 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 	@Override
 	protected void update(List<FeatureType> types) {
 		list.setFeatureTypes(types);
-		
-		//XXX the update doesn't refresh the buttons when the page is shown the first time
-		//update();
-		
-		//XXX so try something nasty instead
+
+		// XXX the update doesn't refresh the buttons when the page is shown the
+		// first time
+		// update();
+
+		// XXX so try something nasty instead
 		final Display display = Display.getCurrent();
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
-			
+
 			@Override
 			public void run() {
 				display.asyncExec(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						FeatureTypesPage.this.update();
 					}
-					
+
 				});
 			}
 		}, 500);
@@ -86,20 +91,20 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 	protected void createContent(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new GridLayout(1, false));
-		
+
 		list = new FeatureTypeList(page, getConfiguration().getFixedNamespace());
 		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		list.addTypeSelectionListener(new TypeSelectionListener() {
-			
+
 			@Override
 			public void selectionChanged() {
 				FeatureTypesPage.this.update();
 			}
-			
+
 		});
-		
+
 		setControl(page);
-		
+
 		update();
 	}
 
@@ -113,11 +118,11 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 
 	private void update() {
 		boolean valid = true;
-		
+
 		// test namespace
 		if (valid) {
 			String ns = getConfiguration().getFixedNamespace();
-			
+
 			if (ns != null) {
 				valid = list.getNamespace().equals(ns);
 				if (!valid) {
@@ -125,7 +130,7 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 				}
 			}
 		}
-		
+
 		// test selection
 		if (valid) {
 			List<FeatureType> selection = list.getSelection();
@@ -134,11 +139,11 @@ public class FeatureTypesPage extends AbstractTypesPage<WfsConfiguration> {
 				setErrorMessage(Messages.FeatureTypesPage_4); //$NON-NLS-1$
 			}
 		}
-		
+
 		if (valid) {
 			setErrorMessage(null);
 		}
-		
+
 		setPageComplete(valid);
 	}
 

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry;
@@ -23,10 +27,11 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 /**
  * Finds a CRS definition in a GML instance. The first valid definition found
  * will be stored, traversal in this case is aborted.
+ * 
  * @author Simon Templer
  */
 public class CRSFinder implements InstanceTraversalCallback {
-	
+
 	/**
 	 * A CRS definition if found
 	 */
@@ -55,32 +60,33 @@ public class CRSFinder implements InstanceTraversalCallback {
 	public boolean visit(Object value, QName name) {
 		if (value != null && name != null && name.getLocalPart().equals("srsName")) {
 			String candidate = value.toString();
-			
+
 			// EPSG:(:)xxx style codes
 			if (checkCode(candidate, "EPSG:")) {
 				// if definition is set, abort the traversal
 				return false;
 			}
-			
+
 			// urn:ogc:def:crs:EPSG:(:)xxx style code
 			if (checkCode(candidate, "urn:ogc:def:crs:EPSG:")) {
 				// if definition is set, abort the traversal
 				return false;
 			}
-			
+
 			// urn:x-ogc:def:crs:EPSG:(:)xxx style code
 			if (checkCode(candidate, "urn:x-ogc:def:crs:EPSG:")) {
 				// if definition is set, abort the traversal
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Check a candidate for a CRS code. Set {@link #definition} to the
 	 * corresponding {@link CRSDefinition} if it represents a CRS.
+	 * 
 	 * @param candidate the CRS code candidate
 	 * @param prefix the expected code prefix
 	 * @return if {@link #definition} was set
@@ -89,32 +95,33 @@ public class CRSFinder implements InstanceTraversalCallback {
 		if (candidate.length() > prefix.length()) {
 			String authPart = candidate.substring(0, prefix.length());
 			String codePart = candidate.substring(prefix.length());
-			
+
 			try {
 				// ignore anything before the last colon
 				int colonIndex = codePart.lastIndexOf(':');
 				if (colonIndex >= 0) {
 					codePart = codePart.substring(colonIndex + 1);
 				}
-				
+
 				// check if codePart represents an integer
 				Integer.parseInt(codePart);
-				
+
 				if (authPart.equalsIgnoreCase(prefix)) {
 					definition = new CodeDefinition("EPSG:" + codePart, null);
-					//XXX check if valid through getCRS()?
+					// XXX check if valid through getCRS()?
 					return true;
 				}
 			} catch (NumberFormatException e) {
 				// invalid
 			}
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * Get the CRS definition found during traversal.
+	 * 
 	 * @return the definition the CRS definition or <code>null</code>
 	 */
 	public CRSDefinition getDefinition() {

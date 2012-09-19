@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.cst.functions.core;
@@ -29,18 +33,22 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSi
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
 /**
- * Classification mapping function to map values of an attribute to a 
- * different classification system.
+ * Classification mapping function to map values of an attribute to a different
+ * classification system.
  * 
  * @author Kai Schwierczek
  */
-public class ClassificationMapping extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements ClassificationMappingFunction {
+public class ClassificationMapping extends
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
+		ClassificationMappingFunction {
+
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
-			ListMultimap<String, PropertyValue> variables, String resultName, PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log) throws TransformationException {
+			ListMultimap<String, PropertyValue> variables, String resultName,
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException {
 		checkParameter(PARAMETER_CLASSIFICATIONS, 1);
-		
+
 		List<String> mappings = getParameters().get(PARAMETER_CLASSIFICATIONS);
 		String source = variables.values().iterator().next().getValueAs(String.class);
 		try {
@@ -53,8 +61,8 @@ public class ClassificationMapping extends AbstractSingleTargetPropertyTransform
 		}
 
 		String notClassifiedAction = USE_NULL_ACTION;
-		if (getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION) != null &&
-				!getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).isEmpty()) {
+		if (getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION) != null
+				&& !getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).isEmpty()) {
 			notClassifiedAction = getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).get(0);
 		}
 
@@ -62,7 +70,8 @@ public class ClassificationMapping extends AbstractSingleTargetPropertyTransform
 			return source;
 		else if (notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX))
 			return notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1);
-		else // USE_NULL_ACTION or null or something unknown
+		else
+			// USE_NULL_ACTION or null or something unknown
 			return null;
 	}
 }

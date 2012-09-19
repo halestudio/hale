@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.function.common;
 
@@ -32,13 +36,14 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class EntityDialog extends AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> {
-	
+public abstract class EntityDialog extends
+		AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> {
+
 	/**
 	 * The schema space
 	 */
 	protected final SchemaSpaceID ssid;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -46,15 +51,15 @@ public abstract class EntityDialog extends AbstractViewerSelectionDialog<EntityD
 	 * @param ssid the schema space
 	 * @param title the dialog title
 	 * @param initialSelection the entity definition to select initially (if
-	 *   possible), may be <code>null</code>
+	 *            possible), may be <code>null</code>
 	 */
 	public EntityDialog(Shell parentShell, SchemaSpaceID ssid, String title,
 			EntityDefinition initialSelection) {
 		super(parentShell, title, initialSelection);
-		
+
 		this.ssid = ssid;
 	}
-	
+
 	/**
 	 * @see AbstractViewerSelectionDialog#createViewer(Composite)
 	 */
@@ -62,17 +67,19 @@ public abstract class EntityDialog extends AbstractViewerSelectionDialog<EntityD
 	protected TreeViewer createViewer(Composite parent) {
 		// create viewer
 		SchemaPatternFilter patternFilter = new SchemaPatternFilter() {
+
 			@Override
 			protected boolean matches(Viewer viewer, Object element) {
 				boolean superMatches = super.matches(viewer, element);
 				if (!superMatches)
 					return false;
-				return acceptObject(viewer, getFilters(), ((TreePath)element).getLastSegment());
+				return acceptObject(viewer, getFilters(), ((TreePath) element).getLastSegment());
 			}
 		};
 		patternFilter.setUseEarlyReturnIfMatcherIsNull(false);
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new TreePathFilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		FilteredTree tree = new TreePathFilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new DefinitionComparator());
 		return tree.getViewer();
 	}

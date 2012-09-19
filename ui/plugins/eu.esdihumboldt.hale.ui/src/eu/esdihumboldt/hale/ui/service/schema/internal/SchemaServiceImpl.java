@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.schema.internal;
@@ -54,6 +58,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * @author Simon Templer
  */
 public class SchemaServiceImpl extends AbstractSchemaService {
+
 	private static final ALogger log = ALoggerFactory.getLogger(SchemaServiceImpl.class);
 
 	/**
@@ -92,17 +97,21 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	public void addSchema(Schema schema, SchemaSpaceID spaceID) {
 		Preconditions.checkNotNull(spaceID);
 
-		String paramName = "mappable" + (spaceID == SchemaSpaceID.SOURCE ? "Source" : "Target") + "Type";
-		List<String> mappableConfig = getProjectService().getConfigurationService().getList(paramName);
+		String paramName = "mappable" + (spaceID == SchemaSpaceID.SOURCE ? "Source" : "Target")
+				+ "Type";
+		List<String> mappableConfig = getProjectService().getConfigurationService().getList(
+				paramName);
 		if (mappableConfig != null) {
 			for (TypeDefinition type : schema.getTypes()) {
 				// don't like warnings, and direct cast to
 				// AbstractDefinition<TypeConstraint> gives warning...
 				Definition<TypeConstraint> def = type;
 				if (mappableConfig.contains(type.getName().toString()))
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.ENABLED);
+					((AbstractDefinition<TypeConstraint>) def)
+							.setConstraint(MappingRelevantFlag.ENABLED);
 				else
-					((AbstractDefinition<TypeConstraint>) def).setConstraint(MappingRelevantFlag.DISABLED);
+					((AbstractDefinition<TypeConstraint>) def)
+							.setConstraint(MappingRelevantFlag.DISABLED);
 			}
 		}
 
@@ -122,12 +131,14 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 		IUndoableOperation operation = new AbstractRemoveResourcesOperation("Clear "
 				+ (spaceID == SchemaSpaceID.SOURCE ? "source" : "target") + " schema",
 				spaceID == SchemaSpaceID.SOURCE ? ACTION_READ_SOURCE : ACTION_READ_TARGET) {
+
 			/**
 			 * @see eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
 			 *      org.eclipse.core.runtime.IAdaptable)
 			 */
 			@Override
-			public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+			public IStatus execute(IProgressMonitor monitor, IAdaptable info)
+					throws ExecutionException {
 				synchronized (spaces) {
 					spaces.remove(spaceID);
 				}
@@ -136,7 +147,8 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 				return super.execute(monitor, info);
 			}
 		};
-		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench().getOperationSupport();
+		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench()
+				.getOperationSupport();
 		operation.addContext(operationSupport.getUndoContext());
 		try {
 			operationSupport.getOperationHistory().execute(operation, null, null);
@@ -153,7 +165,8 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	public void toggleMappable(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
 		ToggleMappableOperation operation = new ToggleMappableOperation(spaceID, types);
 
-		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench().getOperationSupport();
+		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench()
+				.getOperationSupport();
 		operation.addContext(operationSupport.getUndoContext());
 		try {
 			operationSupport.getOperationHistory().execute(operation, null, null);
@@ -166,6 +179,7 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	 * Operation that toggles mappable flags.
 	 */
 	public class ToggleMappableOperation extends AbstractOperation {
+
 		private final SchemaSpaceID spaceID;
 		private final Collection<? extends TypeDefinition> types;
 
@@ -175,7 +189,8 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 		 * @param spaceID the space id
 		 * @param types the types to change
 		 */
-		public ToggleMappableOperation(SchemaSpaceID spaceID, Collection<? extends TypeDefinition> types) {
+		public ToggleMappableOperation(SchemaSpaceID spaceID,
+				Collection<? extends TypeDefinition> types) {
 			super("Change mappable types");
 
 			this.spaceID = spaceID;
@@ -194,21 +209,27 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 				schemaSpace.toggleMappingRelevant(types);
 
 				// update config
-				String paramName = "mappable" + (spaceID == SchemaSpaceID.SOURCE ? "Source" : "Target") + "Type";
-				List<String> mappableConfig = getProjectService().getConfigurationService().getList(paramName);
+				String paramName = "mappable"
+						+ (spaceID == SchemaSpaceID.SOURCE ? "Source" : "Target") + "Type";
+				List<String> mappableConfig = getProjectService().getConfigurationService()
+						.getList(paramName);
 				if (mappableConfig == null) {
-					Collection<? extends TypeDefinition> mappableTypes = schemaSpace.getMappingRelevantTypes();
+					Collection<? extends TypeDefinition> mappableTypes = schemaSpace
+							.getMappingRelevantTypes();
 					mappableConfig = new ArrayList<String>(mappableTypes.size());
 					for (TypeDefinition type : mappableTypes)
 						mappableConfig.add(type.getName().toString());
-					getProjectService().getConfigurationService().setList(paramName, mappableConfig);
-				} else {
+					getProjectService().getConfigurationService()
+							.setList(paramName, mappableConfig);
+				}
+				else {
 					for (TypeDefinition type : types)
 						if (type.getConstraint(MappingRelevantFlag.class).isEnabled())
 							mappableConfig.add(type.getName().toString());
 						else
 							mappableConfig.remove(type.getName().toString());
-					getProjectService().getConfigurationService().setList(paramName, mappableConfig);
+					getProjectService().getConfigurationService()
+							.setList(paramName, mappableConfig);
 				}
 
 				// fire event
@@ -232,7 +253,8 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 		 */
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-			return execute(monitor, info); // it is toggle, so undo and redo is the same
+			return execute(monitor, info); // it is toggle, so undo and redo is
+											// the same
 		}
 	}
 
@@ -242,9 +264,11 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	@Override
 	public void editMappableTypes(final SchemaSpaceID spaceID) {
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
 			@Override
 			public void run() {
-				EditMappableTypesWizard wizard = new EditMappableTypesWizard(spaceID, getSchemas(spaceID));
+				EditMappableTypesWizard wizard = new EditMappableTypesWizard(spaceID,
+						getSchemas(spaceID));
 				Shell shell = Display.getCurrent().getActiveShell();
 				WizardDialog dialog = new WizardDialog(shell, wizard);
 				dialog.open();

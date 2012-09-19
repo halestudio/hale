@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.xml.validator.internal;
@@ -26,16 +30,17 @@ import eu.esdihumboldt.hale.io.xml.validator.Validator;
 
 /**
  * Validate using the XML API.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class XMLApiValidator implements Validator {
 
 	private final URI[] schemaLocations;
-	
+
 	/**
 	 * Constructor
+	 * 
 	 * @param schemaLocations the schema locations
 	 */
 	public XMLApiValidator(URI[] schemaLocations) {
@@ -54,29 +59,30 @@ public class XMLApiValidator implements Validator {
 			Source[] sources = new Source[schemaLocations.length];
 			for (int i = 0; i < this.schemaLocations.length; i++) {
 				URI schemaLocation = this.schemaLocations[i];
-						    
+
 				if (mainUri == null) { // use first schema location for main URI
 					mainUri = schemaLocation;
 				}
-		
-			    // load a WXS schema, represented by a Schema instance
+
+				// load a WXS schema, represented by a Schema instance
 				DefaultInputSupplier dis = new DefaultInputSupplier(schemaLocation);
 				sources[i] = new StreamSource(dis.getInput());
 			}
 			// create a SchemaFactory capable of understanding WXS schemas
-		    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		    factory.setResourceResolver(new SchemaResolver(mainUri));
-		    validateSchema = factory.newSchema(sources);
+			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			factory.setResourceResolver(new SchemaResolver(mainUri));
+			validateSchema = factory.newSchema(sources);
 		} catch (Exception e) {
 			throw new IllegalStateException("Error parsing schema for XML validation", e); //$NON-NLS-1$
 		}
 
-	    // create a Validator instance, which can be used to validate an instance document
-	    javax.xml.validation.Validator validator = validateSchema.newValidator();
-	    ReportImpl report = new ReportImpl();
+		// create a Validator instance, which can be used to validate an
+		// instance document
+		javax.xml.validation.Validator validator = validateSchema.newValidator();
+		ReportImpl report = new ReportImpl();
 		validator.setErrorHandler(new ReportErrorHandler(report));
-	    
-	    // validate the XML document
+
+		// validate the XML document
 		try {
 			validator.validate(new StreamSource(xml));
 			return report;

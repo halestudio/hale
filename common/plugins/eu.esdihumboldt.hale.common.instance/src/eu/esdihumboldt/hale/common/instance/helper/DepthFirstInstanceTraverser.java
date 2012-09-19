@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.instance.helper;
@@ -19,10 +23,11 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
  * Instance traverser that traverses the model depth first.
+ * 
  * @author Simon Templer
  */
 public class DepthFirstInstanceTraverser implements InstanceTraverser {
-	
+
 	private final boolean cancelChildTraversalOnly;
 
 	/**
@@ -34,9 +39,11 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 
 	/**
 	 * Creates a depth first instance traverser.
-	 * @param cancelChildTraversalOnly if when the callback cancels the traversal,
-	 *   only the traversal of the children should be canceled (meaning traversal
-	 *   is continued but not down from the current object)
+	 * 
+	 * @param cancelChildTraversalOnly if when the callback cancels the
+	 *            traversal, only the traversal of the children should be
+	 *            canceled (meaning traversal is continued but not down from the
+	 *            current object)
 	 */
 	public DepthFirstInstanceTraverser(boolean cancelChildTraversalOnly) {
 		super();
@@ -51,31 +58,31 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 		return traverse(instance, callback, null);
 	}
 
-	private boolean traverse(Instance instance,
-			InstanceTraversalCallback callback, QName name) {
+	private boolean traverse(Instance instance, InstanceTraversalCallback callback, QName name) {
 		if (callback.visit(instance, name)) {
 			// traverse value (if applicable)
 			Object value = instance.getValue();
 			if (value != null) {
-				 if (!traverse(value, callback, name)) {
-					 if (!cancelChildTraversalOnly) {
-						 // cancel whole traversal
-						 return false;
-					 }
-					 else {
-						 // only skip traversing children
-						 return true;
-					 }
-				 }
+				if (!traverse(value, callback, name)) {
+					if (!cancelChildTraversalOnly) {
+						// cancel whole traversal
+						return false;
+					}
+					else {
+						// only skip traversing children
+						return true;
+					}
+				}
 			}
-			
+
 			// traverse children
 			return traverseChildren(instance, callback);
 		}
 		else if (!cancelChildTraversalOnly) {
 			// cancel whole traversal
 			return false;
-		} else {
+		}
+		else {
 			// only skipped traversing the current instance
 			return true;
 		}
@@ -89,8 +96,7 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 		return traverse(group, callback, null);
 	}
 
-	private boolean traverse(Group group, InstanceTraversalCallback callback,
-			QName name) {
+	private boolean traverse(Group group, InstanceTraversalCallback callback, QName name) {
 		if (callback.visit(group, name)) {
 			// traverse children
 			return traverseChildren(group, callback);
@@ -98,7 +104,8 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 		else if (!cancelChildTraversalOnly) {
 			// cancel whole traversal
 			return false;
-		} else {
+		}
+		else {
 			// only skipped traversing the current group
 			return true;
 		}
@@ -106,6 +113,7 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 
 	/**
 	 * Traverse the children of a given group.
+	 * 
 	 * @param group the group
 	 * @param callback the traversal callback
 	 * @return if traversal shall be continued
@@ -123,7 +131,7 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 				}
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -135,15 +143,14 @@ public class DepthFirstInstanceTraverser implements InstanceTraverser {
 		return traverse(value, callback, null);
 	}
 
-	private boolean traverse(Object value, InstanceTraversalCallback callback,
-			QName name) {
+	private boolean traverse(Object value, InstanceTraversalCallback callback, QName name) {
 		if (value instanceof Instance) {
 			return traverse((Instance) value, callback, name);
 		}
 		if (value instanceof Group) {
 			return traverse((Group) value, callback, name);
 		}
-		
+
 		return callback.visit(value, name);
 	}
 

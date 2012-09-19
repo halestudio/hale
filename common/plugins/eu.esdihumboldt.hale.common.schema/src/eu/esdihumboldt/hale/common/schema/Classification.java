@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.schema;
@@ -26,6 +30,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
  * Basic classification for definitions
+ * 
  * @author Simon Templer
  * @since 2.2
  */
@@ -52,9 +57,10 @@ public enum Classification {
 	CHOICE,
 	/** Unknown */
 	UNKNOWN;
-	
+
 	/**
 	 * Determine the classification for a definition
+	 * 
 	 * @param def the definition
 	 * @return the classification for the definition
 	 */
@@ -63,28 +69,29 @@ public enum Classification {
 			if (((GroupPropertyDefinition) def).getConstraint(ChoiceFlag.class).isEnabled()) {
 				return CHOICE;
 			}
-			
+
 			return GROUP;
 		}
 		else if (def instanceof PropertyDefinition) {
 			// use binding/constraints to determine type
 			PropertyDefinition property = (PropertyDefinition) def;
-			
+
 			Class<?> binding = property.getPropertyType().getConstraint(Binding.class).getBinding();
-			
-			// geometry binding allowed also for types where HasValue is not enabled (e.g. XML types where geometries are aggregated)
-			GeometryType geometryType = property.getPropertyType().getConstraint(GeometryType.class);
+
+			// geometry binding allowed also for types where HasValue is not
+			// enabled (e.g. XML types where geometries are aggregated)
+			GeometryType geometryType = property.getPropertyType()
+					.getConstraint(GeometryType.class);
 			if (geometryType.isGeometry()) {
 				return GEOMETRIC_PROPERTY;
 			}
-			
+
 			if (property.getPropertyType().getConstraint(HasValueFlag.class).isEnabled()) {
 				// simple type
-				if (Number.class.isAssignableFrom(binding) || 
-						Date.class.isAssignableFrom(binding)) {
+				if (Number.class.isAssignableFrom(binding) || Date.class.isAssignableFrom(binding)) {
 					return NUMERIC_PROPERTY;
 				}
-				
+
 				// default to string for simple types
 				return STRING_PROPERTY;
 			}
@@ -93,7 +100,7 @@ public enum Classification {
 				return COMPLEX_PROPERTY;
 			}
 		}
-		else if (def instanceof TypeDefinition)  {
+		else if (def instanceof TypeDefinition) {
 			TypeDefinition type = (TypeDefinition) def;
 			if (isAbstractFeatureType(type)) {
 				return ABSTRACT_FT;
@@ -102,28 +109,31 @@ public enum Classification {
 				TypeDefinition superType = type.getSuperType();
 				while (superType != null) {
 					if (isAbstractFeatureType(superType)) {
-						return (type.getConstraint(AbstractFlag.class).isEnabled())?(ABSTRACT_FT):(CONCRETE_FT);
+						return (type.getConstraint(AbstractFlag.class).isEnabled()) ? (ABSTRACT_FT)
+								: (CONCRETE_FT);
 					}
-					
+
 					superType = superType.getSuperType();
 				}
-				
-				return (type.getConstraint(AbstractFlag.class).isEnabled())?(ABSTRACT_TYPE):(CONCRETE_TYPE);
+
+				return (type.getConstraint(AbstractFlag.class).isEnabled()) ? (ABSTRACT_TYPE)
+						: (CONCRETE_TYPE);
 			}
 		}
-		
+
 		return UNKNOWN;
 	}
 
 	/**
 	 * Determines if a type is the AbstractFeatureType. This is related to GML.
+	 * 
 	 * @param type the type definition
 	 * @return if the type is the AbstractFeatureType
 	 */
 	private static boolean isAbstractFeatureType(TypeDefinition type) {
-		//XXX not really nice
-		return type.getName().getLocalPart().equals("AbstractFeatureType") &&
-			type.getName().getNamespaceURI().startsWith("http://www.opengis.net/") &&
-			type.getName().getNamespaceURI().contains("gml");
+		// XXX not really nice
+		return type.getName().getLocalPart().equals("AbstractFeatureType")
+				&& type.getName().getNamespaceURI().startsWith("http://www.opengis.net/")
+				&& type.getName().getNamespaceURI().contains("gml");
 	}
 }

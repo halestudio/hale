@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.extension.function;
@@ -31,45 +35,47 @@ import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 
 /**
  * {@link IConfigurationElement} based function base class
+ * 
  * @param <P> the parameter type
  * @author Simon Templer
  */
 @Immutable
 public abstract class AbstractFunction<P extends AbstractParameter> implements Function {
-	
+
 	private final ALogger log = ALoggerFactory.getLogger(AbstractFunction.class);
 
 	/**
 	 * The configuration element
 	 */
 	protected final IConfigurationElement conf;
-	
+
 	private final Set<FunctionParameter> parameters;
-	
+
 	/**
 	 * Create a function definition based on the given configuration element
+	 * 
 	 * @param conf the configuration element
 	 */
 	protected AbstractFunction(IConfigurationElement conf) {
 		super();
 		this.conf = conf;
-		
+
 		this.parameters = createParameters(conf);
 	}
 
 	private static Set<FunctionParameter> createParameters(IConfigurationElement conf) {
 		Set<FunctionParameter> parameters = new LinkedHashSet<FunctionParameter>();
-		
+
 		IConfigurationElement[] pars = conf.getChildren("functionParameter");
 		if (pars != null) {
 			for (IConfigurationElement par : pars) {
 				parameters.add(new FunctionParameter(par));
 			}
 		}
-		
+
 		return parameters;
 	}
-	
+
 	/**
 	 * @see Function#getExplanation()
 	 */
@@ -89,27 +95,30 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 
 	/**
 	 * Get the source entities
+	 * 
 	 * @return the source entities
 	 */
 	@Override
 	public abstract Set<? extends P> getSource();
-	
+
 	/**
 	 * Get the target entities
+	 * 
 	 * @return the target entities
 	 */
 	@Override
 	public abstract Set<? extends P> getTarget();
-	
+
 	/**
 	 * States if the function represents an augmentation of a target instance
 	 * instead of a transformation.
+	 * 
 	 * @return if the function is an augmentation
 	 */
 	public boolean isAugmentation() {
 		return getSource().isEmpty();
 	}
-	
+
 	/**
 	 * @see Identifiable#getId()
 	 */
@@ -171,14 +180,15 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		if (resource != null && !resource.isEmpty()) {
 			String contributor = conf.getDeclaringExtension().getContributor().getName();
 			Bundle bundle = Platform.getBundle(contributor);
-			
+
 			if (bundle != null) {
 				return bundle.getResource(resource);
 			}
 		}
-		
+
 		return null;
 	}
+
 	/**
 	 * @see Function#getHelpURL
 	 */
@@ -187,7 +197,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		String help = conf.getAttribute("help");
 		return getURL(help);
 	}
-	
+
 //	/**
 //	 * @see Function#getHelpFileID()
 //	 */
@@ -222,7 +232,8 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		if (getId() == null) {
 			if (other.getId() != null)
 				return false;
-		} else if (!getId().equals(other.getId()))
+		}
+		else if (!getId().equals(other.getId()))
 			return false;
 		return true;
 	}

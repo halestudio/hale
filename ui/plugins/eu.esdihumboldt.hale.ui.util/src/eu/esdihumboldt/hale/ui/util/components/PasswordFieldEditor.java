@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.util.components;
@@ -30,49 +34,49 @@ import de.cs3d.util.logging.ALoggerFactory;
 /**
  * Password field editor that uses {@link ISecurePreferences}
  * 
- * When using it be careful to also include the
- * org.eclipse.equinox.security.ui bundle or add you
- * own secure storage module through the extension point
+ * When using it be careful to also include the org.eclipse.equinox.security.ui
+ * bundle or add you own secure storage module through the extension point
  * 
  * @author Simon Templer
  */
 public class PasswordFieldEditor extends FieldEditor {
-	
+
 	private static ALogger log = ALoggerFactory.getLogger(PasswordFieldEditor.class);
-	
+
 	/**
 	 * The label
 	 */
 	private Label label;
-	
+
 	/**
 	 * The text field
 	 */
 	private Text text;
-	
+
 	private final String secureNodeName;
-	
+
 	private final String keyName;
-	
+
 	private final String name;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param secureNodeName the name of the node in the {@link ISecurePreferences}
+	 * @param secureNodeName the name of the node in the
+	 *            {@link ISecurePreferences}
 	 * @param keyName the name of the key representing the password in that node
 	 * @param name the field name (displayed in the label)
 	 * @param fieldEditorParent the parent composite
 	 */
-	public PasswordFieldEditor(String secureNodeName,
-			String keyName, String name,
+	public PasswordFieldEditor(String secureNodeName, String keyName, String name,
 			Composite fieldEditorParent) {
 		this.keyName = keyName;
 		this.secureNodeName = secureNodeName;
 		this.name = name;
-		
+
 		Layout layout = fieldEditorParent.getLayout();
-		doFillIntoGrid(fieldEditorParent, (layout instanceof GridLayout)?(((GridLayout) layout).numColumns):(2));
+		doFillIntoGrid(fieldEditorParent,
+				(layout instanceof GridLayout) ? (((GridLayout) layout).numColumns) : (2));
 	}
 
 	/**
@@ -91,7 +95,7 @@ public class PasswordFieldEditor extends FieldEditor {
 		label = new Label(parent, SWT.NONE);
 		label.setText(name);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-		
+
 		text = new Text(parent, SWT.PASSWORD | SWT.BORDER);
 
 		adjustForNumColumns(numColumns);
@@ -103,7 +107,8 @@ public class PasswordFieldEditor extends FieldEditor {
 	@Override
 	protected void doLoad() {
 		try {
-			text.setText(SecurePreferencesFactory.getDefault().node(secureNodeName).get(keyName, "")); //$NON-NLS-1$
+			text.setText(SecurePreferencesFactory.getDefault().node(secureNodeName)
+					.get(keyName, "")); //$NON-NLS-1$
 		} catch (StorageException e) {
 			text.setText(""); //$NON-NLS-1$
 			log.warn("Can't access secure preferences", e); //$NON-NLS-1$
@@ -125,8 +130,8 @@ public class PasswordFieldEditor extends FieldEditor {
 	protected void doStore() {
 		try {
 			String password = text.getText();
-			SecurePreferencesFactory.getDefault().node(secureNodeName).put(
-					keyName, password, password != null && !password.isEmpty());
+			SecurePreferencesFactory.getDefault().node(secureNodeName)
+					.put(keyName, password, password != null && !password.isEmpty());
 		} catch (StorageException e) {
 			log.error("Unable to save password to secure preferences", e); //$NON-NLS-1$
 		}

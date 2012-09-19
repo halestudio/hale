@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.util.validator;
@@ -17,17 +21,20 @@ import java.math.BigDecimal;
 import org.springframework.core.convert.ConversionException;
 
 /**
- * Validator for digit counts. 
- * As in (http://www.w3.org/TR/xmlschema-2/#rf-totalDigits and http://www.w3.org/TR/xmlschema-2/#rf-fractionDigits)
+ * Validator for digit counts. As in
+ * (http://www.w3.org/TR/xmlschema-2/#rf-totalDigits and
+ * http://www.w3.org/TR/xmlschema-2/#rf-fractionDigits)
  * 
  * @author Kai Schwierczek
  */
 public class DigitCountValidator extends AbstractValidator {
+
 	private Type type;
 	private int length;
 
 	/**
-	 * Construct a validator that checks the digit count of the input to match the given type and value.
+	 * Construct a validator that checks the digit count of the input to match
+	 * the given type and value.
 	 * 
 	 * @param type the digits to check for
 	 * @param length the length to check for
@@ -58,16 +65,19 @@ public class DigitCountValidator extends AbstractValidator {
 				// try lowering the scale if it is too large without rounding
 				// -> cut off ending zeros if possible
 				if (decimal.scale() > length)
-					decimal.setScale(length); // throws exception if scaling is not possible
+					decimal.setScale(length); // throws exception if scaling is
+												// not possible
 			} catch (ArithmeticException ae) {
 				ok = false; // scaling failed
 			}
 			if (ok)
 				return null;
 			else
-				return "Input must have at most " + length + " fraction digits but has " + decimal.scale() + ".";
+				return "Input must have at most " + length + " fraction digits but has "
+						+ decimal.scale() + ".";
 		case TOTALDIGITS:
-			// single zero in front of decimal point and ending zeros don't count
+			// single zero in front of decimal point and ending zeros don't
+			// count
 			// here BigDecimal doesn't help, do string work.
 			String numberString = decimal.abs().toPlainString();
 			int indexOfDot = numberString.indexOf('.');
@@ -84,13 +94,15 @@ public class DigitCountValidator extends AbstractValidator {
 					buf.deleteCharAt(indexOfDot); // only delete point
 
 				numberString = buf.toString();
-			} else if (numberString.equals("0"))
+			}
+			else if (numberString.equals("0"))
 				numberString = "";
 
 			if (numberString.length() <= length)
 				return null;
 			else
-				return "Input must have at most " + length + " total digits but has " + decimal.scale() + ".";
+				return "Input must have at most " + length + " total digits but has "
+						+ decimal.scale() + ".";
 		default:
 			return null; // all types checked, doesn't happen
 		}

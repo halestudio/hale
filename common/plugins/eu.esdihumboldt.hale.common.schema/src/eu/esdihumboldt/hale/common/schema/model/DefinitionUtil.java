@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.schema.model;
@@ -25,6 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.internal.ReparentProperty;
 
 /**
  * Definition utility methods
+ * 
  * @author Simon Templer
  */
 public abstract class DefinitionUtil {
@@ -36,8 +41,7 @@ public abstract class DefinitionUtil {
 	 * @param newParent the new parent type
 	 * @return the reparented child definition
 	 */
-	public static ChildDefinition<?> reparentChild(
-			ChildDefinition<?> child,
+	public static ChildDefinition<?> reparentChild(ChildDefinition<?> child,
 			TypeDefinition newParent) {
 		if (child.asProperty() != null) {
 			return new ReparentProperty(child.asProperty(), newParent);
@@ -49,7 +53,7 @@ public abstract class DefinitionUtil {
 			throw new IllegalStateException("Illegal child type.");
 		}
 	}
-	
+
 	/**
 	 * Create a proxy for the given child with another declaring group
 	 * 
@@ -57,8 +61,7 @@ public abstract class DefinitionUtil {
 	 * @param newParent the new declaring group
 	 * @return the redeclared child definition
 	 */
-	public static ChildDefinition<?> redeclareChild(
-			ChildDefinition<?> child,
+	public static ChildDefinition<?> redeclareChild(ChildDefinition<?> child,
 			DefinitionGroup newParent) {
 		if (child.asProperty() != null) {
 			return new RedeclareProperty(child.asProperty(), newParent);
@@ -72,13 +75,13 @@ public abstract class DefinitionUtil {
 	}
 
 	/**
-	 * Get all children of a definition group. For {@link TypeDefinition}
-	 * also the inherited children will be returned.
+	 * Get all children of a definition group. For {@link TypeDefinition} also
+	 * the inherited children will be returned.
+	 * 
 	 * @param group the definition group
 	 * @return the children
 	 */
-	public static Collection<? extends ChildDefinition<?>> getAllChildren(
-			DefinitionGroup group) {
+	public static Collection<? extends ChildDefinition<?>> getAllChildren(DefinitionGroup group) {
 		if (group instanceof TypeDefinition) {
 			return ((TypeDefinition) group).getChildren();
 		}
@@ -86,16 +89,16 @@ public abstract class DefinitionUtil {
 			return group.getDeclaredChildren();
 		}
 	}
-	
+
 	/**
-	 * Get all properties of a definition group. For {@link TypeDefinition}
-	 * also the inherited children will be returned. If there are children 
-	 * that are groups, their properties are also added. 
+	 * Get all properties of a definition group. For {@link TypeDefinition} also
+	 * the inherited children will be returned. If there are children that are
+	 * groups, their properties are also added.
+	 * 
 	 * @param group the definition group
 	 * @return the children
 	 */
-	public static Collection<? extends PropertyDefinition> getAllProperties(
-			DefinitionGroup group) {
+	public static Collection<? extends PropertyDefinition> getAllProperties(DefinitionGroup group) {
 		Collection<PropertyDefinition> result = new ArrayList<PropertyDefinition>();
 		for (ChildDefinition<?> child : getAllChildren(group)) {
 			if (child.asProperty() != null) {
@@ -110,6 +113,7 @@ public abstract class DefinitionUtil {
 
 	/**
 	 * Get the cardinality of a child definition.
+	 * 
 	 * @param child the child definition
 	 * @return the cardinality
 	 */
@@ -120,19 +124,19 @@ public abstract class DefinitionUtil {
 		if (child.asGroup() != null) {
 			return child.asGroup().getConstraint(Cardinality.class);
 		}
-		
+
 		throw new IllegalStateException("Illegal child type.");
 	}
-	
+
 	/**
 	 * Returns the child definition of definition with the given name.
 	 * 
-	 * @param definition the definition 
+	 * @param definition the definition
 	 * @param name the name of the child
 	 * @return the child with the given name of the given definition, or
-	 *   <code>null</code> if it doesn't exist
+	 *         <code>null</code> if it doesn't exist
 	 * @throws IllegalStateException if the given definition isn't group nor
-	 *   property definition
+	 *             property definition
 	 */
 	public static ChildDefinition<?> getChild(Definition<?> definition, QName name) {
 		if (definition instanceof DefinitionGroup) {
@@ -148,12 +152,12 @@ public abstract class DefinitionUtil {
 	/**
 	 * Returns the child definition of definition with the given name.
 	 * 
-	 * @param definition the definition 
+	 * @param definition the definition
 	 * @param name the name of the child
 	 * @return the child with the given name of the given definition, or
-	 *   <code>null</code> if it doesn't exist
+	 *         <code>null</code> if it doesn't exist
 	 * @throws IllegalStateException if the given definition isn't group nor
-	 *   property definition
+	 *             property definition
 	 */
 	public static ChildDefinition<?> getChild(ChildDefinition<?> definition, QName name) {
 		if (definition.asGroup() != null)
@@ -166,55 +170,54 @@ public abstract class DefinitionUtil {
 
 	/**
 	 * Returns the child definition of definition with the given name.
+	 * 
 	 * @param definition the definition
 	 * @param name the name of the child
 	 * @param allowIgnoreNamespace specifies if when the child with the exact
-	 *   name is not present, a child with a similar local name should be
-	 *   returned
+	 *            name is not present, a child with a similar local name should
+	 *            be returned
 	 * @return the child with the given name if it exists, a child with a
-	 *   similar local name if it exists or <code>null</code>
+	 *         similar local name if it exists or <code>null</code>
 	 * @throws IllegalStateException if the given definition isn't group nor
-	 *   property definition
+	 *             property definition
 	 */
-	public static ChildDefinition<?> getChild(
-			ChildDefinition<?> definition, QName name,
+	public static ChildDefinition<?> getChild(ChildDefinition<?> definition, QName name,
 			boolean allowIgnoreNamespace) {
 		ChildDefinition<?> result = getChild(definition, name);
 		if (result != null || !allowIgnoreNamespace) {
 			return result;
 		}
-		
+
 		// get all children
 		Collection<? extends ChildDefinition<?>> children = DefinitionUtil
-				.getAllChildren((definition.asGroup() != null) ? (definition
-						.asGroup()) : (definition.asProperty()
-						.getPropertyType()));
-		
+				.getAllChildren((definition.asGroup() != null) ? (definition.asGroup())
+						: (definition.asProperty().getPropertyType()));
+
 		int rating = 0;
 		for (ChildDefinition<?> child : children) {
 			if (name.getLocalPart().equals(child.getName().getLocalPart())) {
 				// same local name
-				int childRating = namespaceEqualityRating(child.getName()
-						.getNamespaceURI(), name.getNamespaceURI()); 
+				int childRating = namespaceEqualityRating(child.getName().getNamespaceURI(),
+						name.getNamespaceURI());
 				if (result == null || childRating > rating) {
 					result = child;
 					rating = childRating;
 				}
 			}
 		}
-		
+
 		return result;
 	}
 
 	/**
 	 * Determine a rating on namespace equality.
+	 * 
 	 * @param ns1 the first namespace to compare
 	 * @param ns2 the second namespace to compare
-	 * @return the equality rating, the higher the more 
-	 *   equal/compatible are the namespaces
+	 * @return the equality rating, the higher the more equal/compatible are the
+	 *         namespaces
 	 */
-	private static int namespaceEqualityRating(String ns1,
-			String ns2) {
+	private static int namespaceEqualityRating(String ns1, String ns2) {
 		// we define the rating as how many characters are equal from the start
 		int count;
 		int commonLength = Math.min(ns1.length(), ns2.length());
@@ -223,5 +226,5 @@ public abstract class DefinitionUtil {
 		}
 		return count;
 	}
-	
+
 }

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.cst.functions.groovy;
@@ -25,24 +29,27 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * 
  * @author Kai Schwierczek
  */
-public class GroovyExplanation extends AbstractCellExplanation {
+public class GroovyExplanation extends AbstractCellExplanation implements GroovyConstants {
+
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script (be sure to include a return statement):\n"
 			+ "{1}\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn't set.";
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell, boolean)
+	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
+	 *      boolean)
 	 */
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String script = CellUtil.getFirstParameter(cell, GroovyTransformation.PARAMETER_SCRIPT);
-		List<? extends Entity> sources = (cell.getSource() == null)?(null):(cell.getSource().get(GroovyTransformation.ENTITY_VARIABLE));
+		String script = CellUtil.getFirstParameter(cell, PARAMETER_SCRIPT);
+		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
+				.get(ENTITY_VARIABLE));
 
 		if (target != null && script != null) {
 			if (html)
 				script = "<pre>" + script + "</pre>";
-			String explanation = MessageFormat.format(EXPLANATION_PATTERN, formatEntity(target, html, true),
-					script);
+			String explanation = MessageFormat.format(EXPLANATION_PATTERN,
+					formatEntity(target, html, true), script);
 			if (html)
 				explanation = explanation.replaceAll("\n", "<br />");
 			if (html && sources != null) {
@@ -50,7 +57,8 @@ public class GroovyExplanation extends AbstractCellExplanation {
 				sb.append("<br /><br />Replacement table:<br />");
 				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
 				for (Entity entity : sources)
-					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>", getEntityNameWithoutCondition(entity).replace('.', '_'),
+					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
+							getEntityNameWithoutCondition(entity).replace('.', '_'),
 							formatEntity(entity, true, false)));
 				sb.append("</table>");
 				explanation += sb.toString();

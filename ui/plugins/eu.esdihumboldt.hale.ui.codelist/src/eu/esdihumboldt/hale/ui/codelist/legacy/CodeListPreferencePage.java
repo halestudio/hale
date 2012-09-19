@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.codelist.legacy;
@@ -42,45 +46,45 @@ import eu.esdihumboldt.hale.ui.util.tree.CollectionTreeNodeContentProvider;
 
 /**
  * Code list preference page
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class CodeListPreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
-	
+public class CodeListPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+
 	private static final ALogger log = ALoggerFactory.getLogger(CodeListPreferencePage.class);
-	
+
 	private TreeViewer listViewer;
-	
+
 	private List<SearchPathNode> searchPath;
-	
+
 	/**
 	 * @see PreferencePage#createContents(Composite)
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
-		
+
 		page.setLayout(new GridLayout(2, true));
-		
+
 		Label label = new Label(page, SWT.NONE);
 		label.setText(Messages.CodeListPreferencePage_0); //$NON-NLS-1$
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 2, 1));
-		
+
 		// search path list
 		listViewer = new TreeViewer(page);
 		listViewer.setContentProvider(new CollectionTreeNodeContentProvider());
-		listViewer.setLabelProvider(new SearchPathLabelProvider()); //new MultiColumnTreeNodeLabelProvider(0));
+		listViewer.setLabelProvider(new SearchPathLabelProvider()); // new
+																	// MultiColumnTreeNodeLabelProvider(0));
 		listViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		
+
 		List<String> paths = CodeListPreferenceInitializer.getSearchPath();
 		searchPath = new ArrayList<SearchPathNode>(paths.size());
 		for (String path : paths) {
 			searchPath.add(new SearchPathNode(path));
 		}
 		listViewer.setInput(searchPath);
-		
+
 		// add button (using a directory dialog)
 		Button add = new Button(page, SWT.PUSH);
 		add.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
@@ -100,12 +104,12 @@ public class CodeListPreferencePage extends PreferencePage implements
 					searchPath.add(node);
 					listViewer.refresh(false);
 					if (!node.hasChildren()) {
-						log.userWarn(MessageFormat.format(Messages.CodeListPreferencePage_5, path)); 
+						log.userWarn(MessageFormat.format(Messages.CodeListPreferencePage_5, path));
 					}
 				}
 			}
 		});
-		
+
 		// remove button
 		Button remove = new Button(page, SWT.PUSH);
 		remove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
@@ -117,7 +121,8 @@ public class CodeListPreferencePage extends PreferencePage implements
 			public void widgetSelected(SelectionEvent e) {
 				ISelection selection = listViewer.getSelection();
 				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-					TreeNode selected = (TreeNode) ((IStructuredSelection) selection).getFirstElement();
+					TreeNode selected = (TreeNode) ((IStructuredSelection) selection)
+							.getFirstElement();
 					while (selected.getParent() != null) {
 						selected = selected.getParent();
 					}
@@ -125,9 +130,9 @@ public class CodeListPreferencePage extends PreferencePage implements
 					listViewer.refresh(false);
 				}
 			}
-			
+
 		});
-		
+
 		return page;
 	}
 

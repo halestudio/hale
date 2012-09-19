@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.codelist.selector;
@@ -43,12 +47,13 @@ import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
 
 /**
  * A component to select a code list from already loaded code lists.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class ListSelector implements CodeListSelector {
+
 	private final Composite page;
 	private final ListViewer listViewer;
 	private final List<CodeList> codeLists;
@@ -67,10 +72,12 @@ public class ListSelector implements CodeListSelector {
 		gridLayout.horizontalSpacing = 0;
 		page.setLayout(gridLayout);
 
-		CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(CodeListService.class);
+		CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(
+				CodeListService.class);
 
 		codeLists = codeListService.getCodeLists();
 		Collections.sort(codeLists, new Comparator<CodeList>() {
+
 			@Override
 			public int compare(CodeList o1, CodeList o2) {
 				int result = o1.getIdentifier().compareToIgnoreCase(o2.getIdentifier());
@@ -91,7 +98,8 @@ public class ListSelector implements CodeListSelector {
 		searchLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		searchLabel.setToolTipText(tip);
 
-		final Text searchText = new Text(page, SWT.SINGLE | SWT.BORDER | SWT.SEARCH | SWT.ICON_CANCEL);
+		final Text searchText = new Text(page, SWT.SINGLE | SWT.BORDER | SWT.SEARCH
+				| SWT.ICON_CANCEL);
 		searchText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		searchText.setToolTipText(tip);
 
@@ -99,6 +107,7 @@ public class ListSelector implements CodeListSelector {
 		listViewer = new ListViewer(page, SWT.V_SCROLL | SWT.BORDER | SWT.H_SCROLL | SWT.SINGLE);
 		listViewer.setContentProvider(ArrayContentProvider.getInstance());
 		listViewer.setLabelProvider(new LabelProvider() {
+
 			@Override
 			public String getText(Object element) {
 				if (element instanceof CodeList) {
@@ -119,7 +128,8 @@ public class ListSelector implements CodeListSelector {
 		listViewer.getControl().setLayoutData(layoutData);
 
 		// info
-		final Text info = new Text(page, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
+		final Text info = new Text(page, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP
+				| SWT.V_SCROLL);
 
 		layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1);
 		layoutData.widthHint = SWT.DEFAULT;
@@ -127,11 +137,13 @@ public class ListSelector implements CodeListSelector {
 		info.setLayoutData(layoutData);
 
 		listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
 				if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-					CodeList codeList = (CodeList) ((IStructuredSelection) selection).getFirstElement();
+					CodeList codeList = (CodeList) ((IStructuredSelection) selection)
+							.getFirstElement();
 					String desc = codeList.getDescription();
 					if (desc != null) {
 						info.setText(desc);
@@ -148,6 +160,7 @@ public class ListSelector implements CodeListSelector {
 
 		// search filter & update
 		listViewer.addFilter(new ViewerFilter() {
+
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				String filterText = searchText.getText();
@@ -164,7 +177,8 @@ public class ListSelector implements CodeListSelector {
 						return true;
 					if (codeList.getNamespace().toLowerCase().contains(filterText))
 						return true;
-					if (codeList.getDescription() != null && codeList.getDescription().toLowerCase().contains(filterText))
+					if (codeList.getDescription() != null
+							&& codeList.getDescription().toLowerCase().contains(filterText))
 						return true;
 				}
 
@@ -172,6 +186,7 @@ public class ListSelector implements CodeListSelector {
 			}
 		});
 		searchText.addModifyListener(new ModifyListener() {
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				// refilter
@@ -189,7 +204,7 @@ public class ListSelector implements CodeListSelector {
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			return (CodeList) ((IStructuredSelection) selection).getFirstElement();
 		}
-		
+
 		return null;
 	}
 
@@ -211,7 +226,8 @@ public class ListSelector implements CodeListSelector {
 		if (codeList != null && codeLists.contains(codeList)) {
 			listViewer.setSelection(new StructuredSelection(codeList), true);
 			return true;
-		} else
+		}
+		else
 			return false;
 	}
 }

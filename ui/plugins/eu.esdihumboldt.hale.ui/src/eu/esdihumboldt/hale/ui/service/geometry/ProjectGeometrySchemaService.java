@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.geometry;
@@ -22,24 +26,26 @@ import eu.esdihumboldt.hale.ui.geometry.service.impl.AbstractGeometrySchemaServi
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
- * Geometry schema service that stores the default geometry information in
- * the project.
+ * Geometry schema service that stores the default geometry information in the
+ * project.
+ * 
  * @author Simon Templer
  */
 public class ProjectGeometrySchemaService extends AbstractGeometrySchemaService {
-	
+
 	private static final String KEY_PREFIX = "defaultGeometry:";
-	
+
 	private final ProjectService projectService;
 
 	/**
-	 * Create a geometry schema service storing the default geometry 
-	 * information using the given project service.
+	 * Create a geometry schema service storing the default geometry information
+	 * using the given project service.
+	 * 
 	 * @param projectService the project service
 	 */
 	public ProjectGeometrySchemaService(ProjectService projectService) {
 		super();
-		
+
 		this.projectService = projectService;
 	}
 
@@ -50,7 +56,7 @@ public class ProjectGeometrySchemaService extends AbstractGeometrySchemaService 
 	protected List<QName> loadDefaultGeometry(TypeDefinition type) {
 		List<String> names = projectService.getConfigurationService().getList(
 				KEY_PREFIX + type.getName().toString());
-		
+
 		if (names == null) {
 			return null;
 		}
@@ -65,7 +71,8 @@ public class ProjectGeometrySchemaService extends AbstractGeometrySchemaService 
 	}
 
 	/**
-	 * @see AbstractGeometrySchemaService#saveDefaultGeometry(TypeDefinition, List)
+	 * @see AbstractGeometrySchemaService#saveDefaultGeometry(TypeDefinition,
+	 *      List)
 	 */
 	@Override
 	protected void saveDefaultGeometry(TypeDefinition type, List<QName> path) {
@@ -80,10 +87,11 @@ public class ProjectGeometrySchemaService extends AbstractGeometrySchemaService 
 				names.add(name.toString());
 			}
 		}
-		
-		//FIXME it may be a problem that setList treats an empty list and null the same
-		projectService.getConfigurationService().setList(
-				KEY_PREFIX + type.getName().toString(), names);
+
+		// FIXME it may be a problem that setList treats an empty list and null
+		// the same
+		projectService.getConfigurationService().setList(KEY_PREFIX + type.getName().toString(),
+				names);
 	}
 
 }

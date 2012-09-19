@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
@@ -24,6 +28,8 @@ import javax.xml.namespace.QName;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -32,8 +38,10 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
+import eu.esdihumboldt.hale.io.gml.geometry.AbstractGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
+import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
@@ -41,8 +49,11 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * Handler for polygon geometries
  * 
  * @author Patrick Lieb
+ * @author Simon Templer
  */
 public class PolygonHandler extends FixedConstraintsGeometryHandler {
+
+	private static final ALogger log = ALoggerFactory.getLogger(PolygonHandler.class);
 
 	private static final String POLYGON_TYPE = "PolygonType";
 
@@ -53,8 +64,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	private static final String TRIANGLE_TYPE = "TriangleType";
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      int)
+	 * @see GeometryHandler#createGeometry(Instance, int)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -64,50 +74,53 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 		LinearRing[] holes = null;
 		Polygon polygon = null;
 
+		CRSDefinition crs = null;
+
 		// for use with GML 2
-		// to parse inner linear rings
+		// to parse outer linear rings
 		Collection<Object> values = PropertyResolver.getValues(instance,
-				"innerBoundaryIs.LinearRing", false);
+				"outerBoundaryIs.LinearRing", false);
 		if (values != null && !values.isEmpty()) {
 			Iterator<Object> iterator = values.iterator();
-			List<LinearRing> innerRings = new ArrayList<LinearRing>();
+			LinearRing outerRing = null;
 			while (iterator.hasNext()) {
 				Object value = iterator.next();
 				if (value instanceof Instance) {
-					// innerRings have to be a
-					// DefaultGeometryProperty<LinearRing> instances
-					innerRings
-							.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-									.getValue()).getGeometry());
+					// outerRing must be a
+					// GeometryProperty<LinearRing> instance
+					GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
+							.getValue();
+					outerRing = ring.getGeometry();
+					crs = checkCommonCrs(crs, ring.getCRSDefinition());
 				}
 			}
-			holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 
-			// to parse outer linear rings
-			values = PropertyResolver.getValues(instance,
-					"outerBoundaryIs.LinearRing", false);
-			LinearRing outerRing = null;
+			// to parse inner linear rings
+			values = PropertyResolver.getValues(instance, "innerBoundaryIs.LinearRing", false);
 			if (values != null && !values.isEmpty()) {
 				iterator = values.iterator();
+				List<LinearRing> innerRings = new ArrayList<LinearRing>();
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
-						// outerRing must be a
-						// DefaultGeometryProperty<LinearRing> instance
-						outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-								.getValue()).getGeometry();
+						// innerRings have to be a
+						// GeometryProperty<LinearRing> instance
+						GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
+								.getValue();
+						innerRings.add(ring.getGeometry());
+						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
-
+				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 			}
+
 			polygon = getGeometryFactory().createPolygon(outerRing, holes);
 		}
 
 		// for use with GML 3, 3.1 and 3.2
 		// to parse inner linear rings
 		if (polygon == null) {
-			values = PropertyResolver.getValues(instance,
-					"interior.LinearRing", false);
+			values = PropertyResolver.getValues(instance, "interior.LinearRing", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
 				List<LinearRing> innerRings = new ArrayList<LinearRing>();
@@ -115,18 +128,18 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
 						// innerRings have to be a
-						// DefaultGeometryProperty<LinearRing> instances
-						innerRings
-								.add(((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-										.getValue()).getGeometry());
+						// GeometryProperty<LinearRing> instance
+						GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
+								.getValue();
+						innerRings.add(ring.getGeometry());
+						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 			}
 
 			// to parse outer linear rings
-			values = PropertyResolver.getValues(instance,
-					"exterior.LinearRing", false);
+			values = PropertyResolver.getValues(instance, "exterior.LinearRing", false);
 			LinearRing outerRing = null;
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
@@ -134,9 +147,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
 						// outerRing must be a
-						// DefaultGeometryProperty<LinearRing> instance
-						outerRing = ((DefaultGeometryProperty<LinearRing>) ((Instance) value)
-								.getValue()).getGeometry();
+						// GeometryProperty<LinearRing> instance
+						GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
+								.getValue();
+						outerRing = ring.getGeometry();
+						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
 				polygon = getGeometryFactory().createPolygon(outerRing, holes);
@@ -147,8 +162,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 		// normal rings should automatically be handled with generic geometry
 		// handler
 		if (polygon == null) {
-			values = PropertyResolver.getValues(instance, "exterior.Ring",
-					false);
+			values = PropertyResolver.getValues(instance, "exterior.Ring", false);
 			if (values != null && !values.isEmpty()) {
 				GenericGeometryHandler handler = new GenericGeometryHandler();
 				return handler.createGeometry(instance, srsDimension);
@@ -156,19 +170,36 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 		}
 
 		if (polygon != null) {
-			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
-			return new DefaultGeometryProperty<Polygon>(crsDef, polygon);
+			if (crs == null) {
+				crs = GMLGeometryUtil.findCRS(instance);
+			}
+			return new DefaultGeometryProperty<Polygon>(crs, polygon);
 		}
 		throw new GeometryNotSupportedException();
 	}
 
+	private CRSDefinition checkCommonCrs(CRSDefinition commonCrs, CRSDefinition newCrs) {
+		if (commonCrs == null) {
+			return newCrs;
+		}
+		if (newCrs == null) {
+			// ignore new CRS not being set
+			return commonCrs;
+		}
+
+		if (!commonCrs.equals(newCrs)) {
+			log.error("Combining geometries with different spatial reference systems.");
+		}
+
+		return commonCrs;
+	}
+
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler#initConstraints()
+	 * @see FixedConstraintsGeometryHandler#initConstraints()
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
-				2);
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
 
 		constraints.add(Binding.get(GeometryProperty.class));
 		constraints.add(GeometryType.get(Polygon.class));
@@ -179,7 +210,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.AbstractGeometryHandler#initSupportedTypes()
+	 * @see AbstractGeometryHandler#initSupportedTypes()
 	 */
 	@Override
 	protected Set<? extends QName> initSupportedTypes() {

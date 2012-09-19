@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.function.extension.impl;
@@ -32,11 +36,11 @@ import eu.esdihumboldt.hale.ui.function.extension.ParameterEditorFactory;
  * 
  * @author Simon Templer
  */
-public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<EditorFactory> implements
-		ParameterEditorFactory {
-	
+public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<EditorFactory>
+		implements ParameterEditorFactory {
+
 	private static final ALogger _log = ALoggerFactory.getLogger(ParameterEditorFactoryImpl.class);
-	
+
 	private FunctionParameter associatedFunctionParameter;
 
 	/**
@@ -56,7 +60,7 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 		if (conf.getAttribute("priority") == null)
 			return 0;
 		try {
-			return - Integer.parseInt(conf.getAttribute("priority")); // negate
+			return -Integer.parseInt(conf.getAttribute("priority")); // negate
 		} catch (NumberFormatException nfe) {
 			_log.warn("priority not a valid integer", nfe);
 			return 0;
@@ -110,7 +114,8 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 	public FunctionParameter getAssociatedParameter() {
 		if (associatedFunctionParameter == null) {
 			// get defined parameters
-			Set<FunctionParameter> definedParameters = FunctionUtil.getFunction(getFunctionId()).getDefinedParameters();
+			Set<FunctionParameter> definedParameters = FunctionUtil.getFunction(getFunctionId())
+					.getDefinedParameters();
 			// search for defined parameter, add it to associated params
 			// XXX throw some exception if param name is not defined?
 			String name = getParameterName();
@@ -124,5 +129,5 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 
 		return associatedFunctionParameter;
 	}
-	
+
 }

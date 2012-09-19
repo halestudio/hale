@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.properties.function;
@@ -37,11 +41,10 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
  * a table
  * 
  * @author Patrick
- * @param <P>
- *            the Function parameter
+ * @param <P> the Function parameter
  */
-public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
-		extends AbstractTextSection {
+public abstract class AbstractFunctionTableSection<P extends AbstractParameter> extends
+		AbstractTextSection {
 
 	private TableViewer tableViewer;
 
@@ -58,8 +61,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 
 		Composite compparent = getWidgetFactory().createComposite(parent);
@@ -82,8 +84,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
-		TableViewerColumn nameviewercol = new TableViewerColumn(tableViewer,
-				SWT.NONE);
+		TableViewerColumn nameviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn namecol = nameviewercol.getColumn();
 		columnLayout.setColumnData(namecol, new ColumnWeightData(20));
 		namecol.setText("Name");
@@ -96,8 +97,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 
 		});
 
-		TableViewerColumn lableviewercol = new TableViewerColumn(tableViewer,
-				SWT.NONE);
+		TableViewerColumn lableviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn lablecol = lableviewercol.getColumn();
 		columnLayout.setColumnData(lablecol, new ColumnWeightData(20));
 		lablecol.setText("Lable");
@@ -110,8 +110,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 
 		});
 
-		TableViewerColumn occurenceviewercol = new TableViewerColumn(
-				tableViewer, SWT.NONE);
+		TableViewerColumn occurenceviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn occurencecol = occurenceviewercol.getColumn();
 		columnLayout.setColumnData(occurencecol, new ColumnWeightData(20));
 		occurencecol.setText("Occurence");
@@ -120,15 +119,13 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 			@Override
 			public void update(ViewerCell cell) {
 				P cellparameter = ((P) cell.getElement());
-				cell.setText(String.valueOf(cellparameter.getMinOccurrence())
-						+ ".."
+				cell.setText(String.valueOf(cellparameter.getMinOccurrence()) + ".."
 						+ (String.valueOf(cellparameter.getMaxOccurrence())));
 			}
 
 		});
 
-		TableViewerColumn descriptionviewercol = new TableViewerColumn(
-				tableViewer, SWT.NONE);
+		TableViewerColumn descriptionviewercol = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn descriptioncol = descriptionviewercol.getColumn();
 		columnLayout.setColumnData(descriptioncol, new ColumnWeightData(20));
 		descriptioncol.setText("Description");
@@ -136,8 +133,7 @@ public abstract class AbstractFunctionTableSection<P extends AbstractParameter>
 
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(String.valueOf(((P) cell.getElement())
-						.getDescription()));
+				cell.setText(String.valueOf(((P) cell.getElement()).getDescription()));
 			}
 
 		});

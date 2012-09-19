@@ -5,8 +5,19 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.groovy;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui,
- com.google.guava
-Import-Package: eu.esdihumboldt.hale.common.align.extension.function,
+ com.google.guava,
+ org.eclipse.jface.text;bundle-version="3.7.1",
+ com.springsource.org.codehaus.groovy;bundle-version="1.7.3",
+ eu.esdihumboldt.hale.ui;bundle-version="2.5.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.filter;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0"
+Import-Package: eu.esdihumboldt.cst.functions.groovy,
+ eu.esdihumboldt.hale.common.align.extension.function,
  eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.align.model.impl,
+ eu.esdihumboldt.hale.common.align.transformation.function,
+ eu.esdihumboldt.hale.common.align.transformation.function.impl,
  eu.esdihumboldt.hale.ui.function.generic.pages,
  eu.esdihumboldt.hale.ui.functions.core

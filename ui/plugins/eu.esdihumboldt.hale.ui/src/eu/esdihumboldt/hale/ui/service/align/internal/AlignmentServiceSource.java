@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.align.internal;
@@ -27,36 +31,37 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 
 /**
  * Provides UI variables related to the {@link AlignmentService}
- *
+ * 
  * @author Simon Templer
  * @since 2.5
  */
 public class AlignmentServiceSource extends AbstractSourceProvider {
 
 	/**
-	 * The name of the variable which value is <code>true</code> if there
-	 * are cells present in the alignment service
+	 * The name of the variable which value is <code>true</code> if there are
+	 * cells present in the alignment service
 	 */
 	public static final String HAS_CELLS = "hale.alignment.has_cells";
-	
+
 	private AlignmentServiceListener alignmentListener;
-	
+
 	/**
 	 * Default constructor
 	 */
 	public AlignmentServiceSource() {
 		super();
-		
-		final AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+
+		final AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 			@Override
 			public void alignmentCleared() {
-				cellRemoved(null);
+				cellsRemoved(null);
 			}
 
 			@Override
-			public void cellRemoved(Cell cell) {
+			public void cellsRemoved(Iterable<Cell> cells) {
 				fireSourceChanged(ISources.WORKBENCH, HAS_CELLS, hasCells(as));
 			}
 
@@ -78,7 +83,8 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public void dispose() {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		as.removeListener(alignmentListener);
 	}
 
@@ -87,11 +93,12 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public Map<String, Object> getCurrentState() {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
-		
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
+
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(HAS_CELLS, hasCells(as));
-		
+
 		return result;
 	}
 
@@ -104,8 +111,7 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[]{
-				HAS_CELLS};
+		return new String[] { HAS_CELLS };
 	}
 
 }

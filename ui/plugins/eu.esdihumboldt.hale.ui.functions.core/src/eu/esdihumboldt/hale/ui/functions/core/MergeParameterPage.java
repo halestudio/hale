@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.functions.core;
@@ -60,9 +64,11 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * 
  * @author Kai Schwierczek
  */
-public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
+public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
+		implements ParameterPage {
+
 	private static final String PARAMETER_PROPERTY = "property";
-	private static final String PARAMETER_ADDITIONAL_PROPERTY = "additional_property";	
+	private static final String PARAMETER_ADDITIONAL_PROPERTY = "additional_property";
 
 	private FunctionParameter parameter;
 	private List<String> initialSelection;
@@ -90,8 +96,8 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 
 		Cell unfinishedCell = getWizard().getUnfinishedCell();
 		// selected target could've changed!
-		TypeDefinition newSourceType = (TypeDefinition) unfinishedCell.getSource().values().iterator().next()
-				.getDefinition().getDefinition();
+		TypeDefinition newSourceType = (TypeDefinition) unfinishedCell.getSource().values()
+				.iterator().next().getDefinition().getDefinition();
 		if (!newSourceType.equals(sourceType)) {
 			selection = new HashSet<EntityDefinition>();
 			sourceType = newSourceType;
@@ -100,7 +106,8 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		// for additional_property: selected properties can change!
 		if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY)) {
 			filtered = new HashSet<EntityDefinition>();
-			List<String> properties = unfinishedCell.getTransformationParameters().get(PARAMETER_PROPERTY);
+			List<String> properties = unfinishedCell.getTransformationParameters().get(
+					PARAMETER_PROPERTY);
 			boolean oldSelectionChanged = false;
 			for (String propertyPath : properties) {
 				EntityDefinition def = getEntityDefinition(propertyPath, sourceType);
@@ -119,7 +126,8 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params, ListMultimap<String, String> initialValues) {
+	public void setParameter(Set<FunctionParameter> params,
+			ListMultimap<String, String> initialValues) {
 		if (params.size() > 1)
 			throw new IllegalArgumentException("MergeParameterPage is only for one parameter");
 		parameter = params.iterator().next();
@@ -147,12 +155,14 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		for (EntityDefinition selected : selection) {
 			// build property path (QNames separated by .)
 			String propertyPath = Joiner.on('.').join(
-					Collections2.transform(selected.getPropertyPath(), new Function<ChildContext, String>() {
-						@Override
-						public String apply(ChildContext input) {
-							return input.getChild().getName().toString();
-						}
-					}));
+					Collections2.transform(selected.getPropertyPath(),
+							new Function<ChildContext, String>() {
+
+								@Override
+								public String apply(ChildContext input) {
+									return input.getChild().getName().toString();
+								}
+							}));
 
 			// add it to configuration
 			configuration.put(parameter.getName(), propertyPath);
@@ -183,6 +193,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		viewer.setContentProvider(new PropertyPathContentProvider(SchemaSpaceID.SOURCE));
 		// check state listener
 		viewer.addCheckStateListener(new ICheckStateListener() {
+
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				// add/remove it from/to set of selected properties
@@ -196,6 +207,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 
 		// for now filter everything after first level
 		viewer.addFilter(new ViewerFilter() {
+
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				return parentElement == sourceType;
@@ -203,6 +215,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		});
 		if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY))
 			viewer.addFilter(new ViewerFilter() {
+
 				@Override
 				public boolean select(Viewer viewer, Object parentElement, Object element) {
 					return !filtered.contains(element);
@@ -211,8 +224,8 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 
 		Cell unfinishedCell = getWizard().getUnfinishedCell();
 		if (unfinishedCell.getSource() != null)
-			sourceType = (TypeDefinition) unfinishedCell.getSource().values().iterator().next().getDefinition()
-					.getDefinition();
+			sourceType = (TypeDefinition) unfinishedCell.getSource().values().iterator().next()
+					.getDefinition().getDefinition();
 
 		viewer.setInput(sourceType);
 

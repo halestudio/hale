@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.graph.content;
@@ -48,12 +52,13 @@ import eu.esdihumboldt.util.IdentityWrapper;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Transformation graph based on {@link TransformationTree} derived from an 
+ * Transformation graph based on {@link TransformationTree} derived from an
  * {@link Alignment}
+ * 
  * @author Simon Templer
  */
-public class TransformationTreeContentProvider extends ArrayContentProvider
-		implements IGraphEntityContentProvider {
+public class TransformationTreeContentProvider extends ArrayContentProvider implements
+		IGraphEntityContentProvider {
 
 	/**
 	 * @see ArrayContentProvider#getElements(Object)
@@ -68,32 +73,33 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 		if (inputElement instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) inputElement;
 			inputElement = pair.getFirst();
-			
+
 			if (pair.getSecond() instanceof Collection<?>) {
 				instances = (Collection<Instance>) pair.getSecond();
 			}
 		}
-		
+
 		if (inputElement instanceof Alignment) {
 			Alignment alignment = (Alignment) inputElement;
-			
+
 			if (instances != null && !instances.isEmpty()) {
 				Collection<Object> result = new ArrayList<Object>();
 				// create transformation trees for each instance
 				for (Instance instance : instances) {
-					Collection<? extends Cell> associatedCells = alignment
-							.getCells(instance.getDefinition(), SchemaSpaceID.SOURCE);
-					//FIXME check source entities if filter matches instance!
-					
+					Collection<? extends Cell> associatedCells = alignment.getCells(
+							instance.getDefinition(), SchemaSpaceID.SOURCE);
+					// FIXME check source entities if filter matches instance!
+
 					for (Cell cell : associatedCells) {
 						for (Entity target : cell.getTarget().values()) {
 							EntityDefinition def = target.getDefinition();
 							if (def.getDefinition() instanceof TypeDefinition) {
-								//XXX ensure that each type definition is only used once?!
+								// XXX ensure that each type definition is only
+								// used once?!
 								TypeEntityDefinition targetType = AlignmentUtil.getTypeEntity(def);
-								
-								TransformationTree tree = createInstanceTree(
-										instance, targetType, alignment);
+
+								TransformationTree tree = createInstanceTree(instance, targetType,
+										alignment);
 								if (tree != null) {
 									result.addAll(collectNodes(tree));
 								}
@@ -103,32 +109,34 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 				}
 				return result.toArray();
 			}
-			
+
 			Collection<? extends Cell> cells = alignment.getTypeCells();
 			if (!cells.isEmpty()) {
 				// collect target types
 				Set<TypeEntityDefinition> types = new HashSet<TypeEntityDefinition>();
 				for (Cell cell : cells) {
-					EntityDefinition entityDef = cell.getTarget().values().iterator().next().getDefinition();
+					EntityDefinition entityDef = cell.getTarget().values().iterator().next()
+							.getDefinition();
 					TypeEntityDefinition type = AlignmentUtil.getTypeEntity(entityDef);
 					types.add(type);
 				}
-				
+
 				Collection<Object> result = new ArrayList<Object>();
 				for (TypeEntityDefinition type : types) {
 					// create tree and add nodes for each type
-					result.addAll(collectNodes(new TransformationTreeImpl(
-							type.getDefinition(), alignment)));
+					result.addAll(collectNodes(new TransformationTreeImpl(type.getDefinition(),
+							alignment)));
 				}
 				return result.toArray();
 			}
 		}
-		
+
 		return super.getElements(inputElement);
 	}
 
 	/**
 	 * Create a transformation tree based on a source instance.
+	 * 
 	 * @param instance the source instance
 	 * @param targetType the target type
 	 * @param alignment the alignment
@@ -136,44 +144,46 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 	 */
 	private TransformationTree createInstanceTree(Instance instance,
 			TypeEntityDefinition targetType, Alignment alignment) {
-		TransformationTree tree = new TransformationTreeImpl(
-				targetType.getDefinition(), alignment);
-		
+		TransformationTree tree = new TransformationTreeImpl(targetType.getDefinition(), alignment);
+
 		// context matching
-		ContextMatcher matcher = new AsDeepAsPossible(); //XXX instead through service/extension point?
+		ContextMatcher matcher = new AsDeepAsPossible(); // XXX instead through
+															// service/extension
+															// point?
 		matcher.findMatches(tree);
-		
+
 		// process and annotate the tree
 		InstanceVisitor visitor = new InstanceVisitor(new FamilyInstanceImpl(instance), tree);
 		tree.accept(visitor);
-		
+
 		// duplicate subtree as necessary
 		DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree);
 		tree.accept(duplicationVisitor);
 
 		duplicationVisitor.doAugmentationTrackback();
-		
+
 		return tree;
 	}
 
 	/**
 	 * Collect all nodes related to from a type node
+	 * 
 	 * @param typeNode the type node
 	 * @return the nodes
 	 */
 	private Collection<? extends Object> collectNodes(TransformationTree typeNode) {
 		Queue<IdentityWrapper<?>> toTest = new LinkedList<IdentityWrapper<?>>();
 		Set<IdentityWrapper<?>> nodes = new LinkedHashSet<IdentityWrapper<?>>();
-		
+
 		IdentityWrapper<?> wrapper = new IdentityWrapper<Object>(typeNode);
 		toTest.offer(wrapper);
-		
+
 		while (!toTest.isEmpty()) {
 			IdentityWrapper<?> node = toTest.poll();
-			
+
 			// add node
 			nodes.add(node);
-			
+
 			// test children
 			Iterable<? extends Object> children = getChilddren(node.getValue());
 			for (Object child : children) {
@@ -185,12 +195,13 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 				}
 			}
 		}
-		
+
 		return nodes;
 	}
 
 	/**
 	 * Get the children of a node
+	 * 
 	 * @param node the node
 	 * @return the node's children
 	 */
@@ -198,7 +209,7 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 		if (node instanceof IdentityWrapper<?>) {
 			node = ((IdentityWrapper<?>) node).getValue();
 		}
-		
+
 		if (node instanceof TransformationTree) {
 			return wrapNodes(((TransformationTree) node).getChildren(true));
 		}
@@ -217,7 +228,7 @@ public class TransformationTreeContentProvider extends ArrayContentProvider
 				return Collections.singleton(new IdentityWrapper<Object>(parent));
 			}
 		}
-		
+
 		return Collections.emptyList();
 	}
 

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
@@ -25,25 +29,25 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 
 /**
- * Represents a path in a type definition hierarchy (regarding subtypes 
- * and properties)
- *
+ * Represents a path in a type definition hierarchy (regarding subtypes and
+ * properties)
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class DefinitionPath {
-	
+
 	/**
 	 * Downcast path element
 	 */
 	private static class DowncastElement implements PathElement {
 
 		private final QName elementName;
-		
+
 		private final TypeDefinition type;
 
 		private final boolean unique;
-		
+
 		/**
 		 * Constructor
 		 * 
@@ -51,8 +55,7 @@ public class DefinitionPath {
 		 * @param type the definition of the type that is downcast to
 		 * @param unique if the represented element cannot be repeated
 		 */
-		public DowncastElement(QName elementName, TypeDefinition type,
-				boolean unique) {
+		public DowncastElement(QName elementName, TypeDefinition type, boolean unique) {
 			super();
 			this.elementName = elementName;
 			this.type = type;
@@ -114,8 +117,7 @@ public class DefinitionPath {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result
-					+ ((elementName == null) ? 0 : elementName.hashCode());
+			result = prime * result + ((elementName == null) ? 0 : elementName.hashCode());
 			result = prime * result + ((type == null) ? 0 : type.hashCode());
 			return result;
 		}
@@ -135,18 +137,20 @@ public class DefinitionPath {
 			if (elementName == null) {
 				if (other.elementName != null)
 					return false;
-			} else if (!elementName.equals(other.elementName))
+			}
+			else if (!elementName.equals(other.elementName))
 				return false;
 			if (type == null) {
 				if (other.type != null)
 					return false;
-			} else if (!type.equals(other.type))
+			}
+			else if (!type.equals(other.type))
 				return false;
 			return true;
 		}
 
 	}
-	
+
 //	/**
 //	 * Sub-type path element
 //	 */
@@ -240,19 +244,20 @@ public class DefinitionPath {
 //		}
 //
 //	}
-	
+
 	/**
-	 * Path element representing a group.
-	 * XXX a {@link DefinitionPath} that is used for writing should never end
-	 * on a {@link GroupElement}!
+	 * Path element representing a group. XXX a {@link DefinitionPath} that is
+	 * used for writing should never end on a {@link GroupElement}!
+	 * 
 	 * @author Simon Templer
 	 */
 	private static class GroupElement implements PathElement {
-		
+
 		private final GroupPropertyDefinition groupDef;
 
 		/**
 		 * Create a path element representing a group.
+		 * 
 		 * @param groupDef the group property definition
 		 */
 		public GroupElement(GroupPropertyDefinition groupDef) {
@@ -317,8 +322,7 @@ public class DefinitionPath {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result
-					+ ((groupDef == null) ? 0 : groupDef.hashCode());
+			result = prime * result + ((groupDef == null) ? 0 : groupDef.hashCode());
 			return result;
 		}
 
@@ -337,18 +341,19 @@ public class DefinitionPath {
 			if (groupDef == null) {
 				if (other.groupDef != null)
 					return false;
-			} else if (!groupDef.equals(other.groupDef))
+			}
+			else if (!groupDef.equals(other.groupDef))
 				return false;
 			return true;
 		}
-		
+
 	}
 
 	/**
-	 * A property path element 
+	 * A property path element
 	 */
 	private static class PropertyElement implements PathElement {
-		
+
 		private final PropertyDefinition propDef;
 
 		/**
@@ -367,7 +372,7 @@ public class DefinitionPath {
 		public QName getName() {
 			return propDef.getName();
 		}
-		
+
 		/**
 		 * @see PathElement#getType()
 		 */
@@ -375,7 +380,7 @@ public class DefinitionPath {
 		public TypeDefinition getType() {
 			return propDef.getPropertyType();
 		}
-		
+
 		/**
 		 * @see PathElement#isProperty()
 		 */
@@ -416,8 +421,7 @@ public class DefinitionPath {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result
-					+ ((propDef == null) ? 0 : propDef.hashCode());
+			result = prime * result + ((propDef == null) ? 0 : propDef.hashCode());
 			return result;
 		}
 
@@ -436,7 +440,8 @@ public class DefinitionPath {
 			if (propDef == null) {
 				if (other.propDef != null)
 					return false;
-			} else if (!propDef.equals(other.propDef))
+			}
+			else if (!propDef.equals(other.propDef))
 				return false;
 			return true;
 		}
@@ -444,15 +449,15 @@ public class DefinitionPath {
 	}
 
 	private final List<PathElement> steps = new ArrayList<PathElement>();
-	
+
 	private TypeDefinition lastType;
-	
+
 	private QName lastName;
-	
+
 	private GeometryWriter<?> geometryWriter;
 
 	private boolean lastUnique;
-	
+
 	/**
 	 * Create a definition path beginning with the given base path
 	 * 
@@ -460,23 +465,23 @@ public class DefinitionPath {
 	 */
 	public DefinitionPath(DefinitionPath basePath) {
 		this(basePath.lastType, basePath.lastName, basePath.lastUnique);
-		
+
 		steps.addAll(basePath.getSteps());
 	}
 
 	/**
 	 * Create an empty definition path
 	 * 
-	 * @param firstType the type starting the path 
+	 * @param firstType the type starting the path
 	 * @param elementName the corresponding element name
 	 * @param unique if the element starting the path cannot be repeated
 	 */
 	public DefinitionPath(TypeDefinition firstType, QName elementName, boolean unique) {
 		super();
-		
+
 		lastType = firstType;
 		lastName = elementName;
-		lastUnique = unique; 
+		lastUnique = unique;
 	}
 
 //	/**
@@ -500,7 +505,7 @@ public class DefinitionPath {
 //		
 //		return this;
 //	}
-	
+
 	/**
 	 * Add a downcast
 	 * 
@@ -509,22 +514,24 @@ public class DefinitionPath {
 	 */
 	public DefinitionPath addDowncast(TypeDefinition subtype) {
 		// 1. sub-type must override previous sub-type
-		// 2. sub-type must override a previous property XXX check this!!! or only the first?
+		// 2. sub-type must override a previous property XXX check this!!! or
+		// only the first?
 		// XXX -> therefore removing the previous path element
 		QName elementName = getLastName();
 		boolean unique = isLastUnique();
-		
+
 		if (steps.size() > 0) {
 			steps.remove(steps.size() - 1);
 		}
-		
+
 		addStep(new DowncastElement(elementName, subtype, unique));
-		
+
 		return this;
 	}
-	
+
 	/**
 	 * Add a group to the path
+	 * 
 	 * @param groupDef the group definition
 	 * @return this path for chaining
 	 */
@@ -532,9 +539,10 @@ public class DefinitionPath {
 		steps.add(new GroupElement(groupDef));
 		return this;
 	}
-	
+
 	/**
 	 * Add a child to the path
+	 * 
 	 * @param child the child, either a group or property
 	 * @return this path for chaining
 	 */
@@ -547,7 +555,7 @@ public class DefinitionPath {
 		}
 		throw new IllegalArgumentException("Supplied an invalif child definition.");
 	}
-	
+
 	private void addStep(PathElement step) {
 		steps.add(step);
 		lastType = step.getType();
@@ -560,11 +568,11 @@ public class DefinitionPath {
 	 * 
 	 * @param property the property definition
 	 * 
-	 * @return this path for chaining 
+	 * @return this path for chaining
 	 */
 	public DefinitionPath addProperty(PropertyDefinition property) {
 		addStep(new PropertyElement(property));
-		
+
 		return this;
 	}
 
@@ -588,7 +596,7 @@ public class DefinitionPath {
 	public List<PathElement> getSteps() {
 		return Collections.unmodifiableList(steps);
 	}
-	
+
 	/**
 	 * Determines if the path is empty
 	 * 
@@ -600,18 +608,18 @@ public class DefinitionPath {
 
 	/**
 	 * Get the last type of the path. For empty paths this will be the type
-	 * specified on creation
-	 * XXX not for groups
+	 * specified on creation XXX not for groups
+	 * 
 	 * @return the last type
 	 */
 	public TypeDefinition getLastType() {
 		return lastType;
 	}
-	
+
 	/**
 	 * Get the last name of the path. For empty paths this will be the name
-	 * specified on creation
-	 * XXX not if last is a group
+	 * specified on creation XXX not if last is a group
+	 * 
 	 * @return the last type
 	 */
 	public QName getLastName() {
@@ -620,10 +628,10 @@ public class DefinitionPath {
 
 	/**
 	 * Get if the last element in the path is unique, which means that it cannot
-	 * be repeated
-	 * XXX not if last is a group
-	 * @return if the last element in the path is unique, which means that it 
-	 *   cannot be repeated
+	 * be repeated XXX not if last is a group
+	 * 
+	 * @return if the last element in the path is unique, which means that it
+	 *         cannot be repeated
 	 */
 	public boolean isLastUnique() {
 		return lastUnique;
@@ -642,10 +650,10 @@ public class DefinitionPath {
 			else {
 				result.append(", "); //$NON-NLS-1$
 			}
-			
+
 			result.append(step.getName());
 		}
-		
+
 		if (result == null) {
 			return "empty"; //$NON-NLS-1$
 		}

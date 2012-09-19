@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters;
@@ -19,24 +23,23 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverter;
 
 /**
  * Converts a {@link GeometryCollection} to a single {@link Geometry}.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  * @param <C> the geometry collection type
- * @param <T> the geometry type contained in the collection 
+ * @param <T> the geometry type contained in the collection
  */
-public abstract class AbstractGeometryCollectionConverter<C extends GeometryCollection, T extends Geometry> extends
-		AbstractGeometryConverter<C, T> {
+public abstract class AbstractGeometryCollectionConverter<C extends GeometryCollection, T extends Geometry>
+		extends AbstractGeometryConverter<C, T> {
 
 	/**
 	 * Constructor
 	 * 
-	 * @param sourceType the geometry collection type 
+	 * @param sourceType the geometry collection type
 	 * @param targetType the geometry type contained in the collection
 	 */
-	public AbstractGeometryCollectionConverter(Class<C> sourceType,
-			Class<T> targetType) {
+	public AbstractGeometryCollectionConverter(Class<C> sourceType, Class<T> targetType) {
 		super(sourceType, targetType);
 	}
 
@@ -60,7 +63,6 @@ public abstract class AbstractGeometryCollectionConverter<C extends GeometryColl
 	 * @return the empty geometry
 	 */
 	protected abstract T createEmptyGeometry();
-
 
 	/**
 	 * @see GeometryConverter#lossOnConversion(Geometry)

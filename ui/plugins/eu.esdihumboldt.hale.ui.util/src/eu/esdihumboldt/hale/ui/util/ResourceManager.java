@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.util;
@@ -18,38 +22,42 @@ import java.util.Map.Entry;
 
 /**
  * Resource manager that holds resources and offers the possibility to dispose
- * them.
- * Not thread safe as designed for use in the display thread.
+ * them. Not thread safe as designed for use in the display thread.
+ * 
  * @author Simon Templer
  */
 public class ResourceManager {
-	
+
 	private Map<Resource<?>, Object> resources = new HashMap<ResourceManager.Resource<?>, Object>();
-	
+
 	/**
 	 * Life cycle control for a resource managed by a {@link ResourceManager}.
+	 * 
 	 * @param <T> the resource type
 	 */
 	public interface Resource<T> {
 
 		/**
 		 * Initialize a resource.
+		 * 
 		 * @return the resource
 		 * @throws Exception if an error occurs creating the resource instance
 		 */
 		public T initializeResource() throws Exception;
-		
+
 		/**
 		 * Dispose a resource.
+		 * 
 		 * @param resource the resource to dispose
 		 */
 		public void dispose(T resource);
-		
+
 	}
 
 	/**
 	 * Abstract resource type for use in anonymous classes. Is equal to another
 	 * resource if they are of the same class.
+	 * 
 	 * @param <T> the resource type
 	 */
 	public abstract static class AnonymousClassResource<T> implements Resource<T> {
@@ -66,15 +74,16 @@ public class ResourceManager {
 			}
 			return getClass().equals(obj.getClass());
 		}
-		
+
 	}
-	
+
 	/**
-	 * Get a resource instance. The same instance is returned for equal
-	 * resource definitions.
+	 * Get a resource instance. The same instance is returned for equal resource
+	 * definitions.
+	 * 
 	 * @param resource the resource definition
 	 * @return an existing instance of the resource or if none was created yet,
-	 *   a new instance 
+	 *         a new instance
 	 * @throws Exception if an error occurs creating a new resource instance
 	 */
 	@SuppressWarnings("unchecked")
@@ -88,7 +97,7 @@ public class ResourceManager {
 		resources.put(resource, instance);
 		return instance;
 	}
-	
+
 	/**
 	 * Dispose all resource instances.
 	 */

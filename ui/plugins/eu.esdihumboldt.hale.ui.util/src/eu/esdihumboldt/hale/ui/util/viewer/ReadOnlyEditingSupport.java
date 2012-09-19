@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.util.viewer;
@@ -22,22 +26,21 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Provides text editors to allow copying the string values of the cells
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReadOnlyEditingSupport extends EditingSupport {
 
 	private final ILabelProvider labelProvider;
-	
+
 	/**
 	 * @param viewer the viewer
 	 * @param labelProvider the label provider
 	 */
-	public ReadOnlyEditingSupport(ColumnViewer viewer,
-			ILabelProvider labelProvider) {
+	public ReadOnlyEditingSupport(ColumnViewer viewer, ILabelProvider labelProvider) {
 		super(viewer);
-		
+
 		this.labelProvider = labelProvider;
 	}
 
@@ -55,10 +58,11 @@ public class ReadOnlyEditingSupport extends EditingSupport {
 	 */
 	@Override
 	protected CellEditor getCellEditor(Object element) {
-		TextCellEditor editor = new TextCellEditor((Composite) getViewer().getControl(), SWT.READ_ONLY);
-		
-		//editor.set
-		
+		TextCellEditor editor = new TextCellEditor((Composite) getViewer().getControl(),
+				SWT.READ_ONLY);
+
+		// editor.set
+
 		return editor;
 	}
 
@@ -67,7 +71,7 @@ public class ReadOnlyEditingSupport extends EditingSupport {
 	 */
 	@Override
 	protected Object getValue(Object element) {
-		return labelProvider.getText(element); 
+		return labelProvider.getText(element);
 	}
 
 	/**

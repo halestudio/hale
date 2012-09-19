@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.report;
@@ -18,39 +22,35 @@ import java.util.Map;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import eu.esdihumboldt.hale.common.core.report.Message;
-import eu.esdihumboldt.hale.common.core.report.Report;
-
 /**
- * A {@link ReportSession} contains all {@link Report}s
- * from a session, which is currently based on a date.
+ * A {@link ReportSession} contains all {@link Report}s from a session, which is
+ * currently based on a date.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
 public class ReportSession {
-	
+
 	/**
 	 * Contains the session id.
 	 */
 	private long id;
-	
+
 	/**
 	 * Contains all reports.
 	 */
-	private Map<Class<? extends Message>, Multimap<Class<? extends Report<?>>, Report<?>>> reports = new HashMap<Class<? extends Message>, Multimap<Class<? extends Report<?>>,Report<?>>>();
-	
+	private Map<Class<? extends Message>, Multimap<Class<? extends Report<?>>, Report<?>>> reports = new HashMap<Class<? extends Message>, Multimap<Class<? extends Report<?>>, Report<?>>>();
+
 	/**
-	 * Constructor.
-	 * The timestamp is used as an identifier.
+	 * Constructor. The timestamp is used as an identifier.
 	 * 
 	 * @param timestamp the timestamp
 	 */
 	public ReportSession(long timestamp) {
 		this.id = timestamp;
 	}
-	
+
 	/**
 	 * Returns the the id of this session
 	 * 
@@ -59,7 +59,7 @@ public class ReportSession {
 	public long getId() {
 		return this.id;
 	}
-	
+
 	/**
 	 * Add a {@link Report} to this session.
 	 * 
@@ -68,15 +68,16 @@ public class ReportSession {
 	@SuppressWarnings("unchecked")
 	public <M extends Message, R extends Report<M>> void addReport(R report) {
 		// get all reports for this messageType
-		Multimap<Class<? extends Report<?>>, Report<?>> reportMap = getReports(report.getMessageType());
-		
+		Multimap<Class<? extends Report<?>>, Report<?>> reportMap = getReports(report
+				.getMessageType());
+
 		// add the report to temporary map
 		reportMap.put((Class<? extends Report<?>>) report.getClass(), report);
-		
+
 		// add them to internal storage
 		this.reports.put(report.getMessageType(), reportMap);
 	}
-	
+
 	/**
 	 * Get all reports matching the given message type
 	 * 
@@ -88,7 +89,7 @@ public class ReportSession {
 			Class<? extends Message> messageType) {
 		// get a map
 		Multimap<Class<? extends Report<?>>, Report<?>> map = this.reports.get(messageType);
-		
+
 		// if does not exists: create and add it
 		if (map == null) {
 			map = HashMultimap.create();
@@ -96,7 +97,7 @@ public class ReportSession {
 		}
 		return map;
 	}
-	
+
 	/**
 	 * Get all reports.
 	 * 
@@ -105,12 +106,12 @@ public class ReportSession {
 	public Multimap<Class<? extends Report<?>>, Report<?>> getAllReports() {
 		// create a map
 		Multimap<Class<? extends Report<?>>, Report<?>> reportMap = HashMultimap.create();
-		
+
 		// iterate through all reports
 		for (Multimap<Class<? extends Report<?>>, Report<?>> map : this.reports.values()) {
 			reportMap.putAll(map);
 		}
-		
+
 		return reportMap;
 	}
 }

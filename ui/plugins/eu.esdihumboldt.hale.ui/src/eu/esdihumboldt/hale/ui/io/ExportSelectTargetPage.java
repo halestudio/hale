@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.io;
@@ -41,17 +45,18 @@ import eu.esdihumboldt.hale.ui.io.util.SaveFileFieldEditor;
 
 /**
  * Wizard page that allows selecting a target file
+ * 
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ExportSelectTargetPage<P extends ExportProvider, 
-	W extends ExportWizard<P>> extends IOWizardPage<P, W> {
-	
+public class ExportSelectTargetPage<P extends ExportProvider, W extends ExportWizard<P>> extends
+		IOWizardPage<P, W> {
+
 	private static final ALogger log = ALoggerFactory.getLogger(ExportSelectTargetPage.class);
-	
+
 	/**
 	 * The file field editor for the target file
 	 */
@@ -72,14 +77,14 @@ public class ExportSelectTargetPage<P extends ExportProvider,
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(3, false));
-		
+
 		targetFile = new SaveFileFieldEditor("targetFile", "Target file:", true,
 				FileFieldEditor.VALIDATE_ON_KEY_STROKE, page);
 		targetFile.setEmptyStringAllowed(false);
 		targetFile.setAllowUri(true);
 		targetFile.setPage(this);
 		targetFile.setPropertyChangeListener(new IPropertyChangeListener() {
-			
+
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
@@ -90,26 +95,27 @@ public class ExportSelectTargetPage<P extends ExportProvider,
 				}
 			}
 		});
-		
+
 		updateState();
 	}
-	
+
 	/**
 	 * Update the content type
 	 */
 	private void updateContentType() {
 		IContentType contentType = null;
-		
+
 		if (getWizard().getProviderFactory() != null && targetFile.isValid()) {
 			Collection<IContentType> types = getWizard().getProviderFactory().getSupportedTypes();
 			if (types != null && !types.isEmpty()) {
 				if (types.size() == 1) {
-					// if only one content type is possible for the export we can assume that it is used
+					// if only one content type is possible for the export we
+					// can assume that it is used
 					contentType = types.iterator().next();
 				}
 				else {
-					Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(
-							types, null, targetFile.getStringValue());
+					Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(types,
+							null, targetFile.getStringValue());
 					if (!filteredTypes.isEmpty()) {
 						contentType = filteredTypes.iterator().next();
 					}
@@ -117,11 +123,11 @@ public class ExportSelectTargetPage<P extends ExportProvider,
 			}
 			else {
 				// no supported content types!
-				log.error("Export provider {0} doesn't support any content types", 
-						getWizard().getProviderFactory().getDisplayName());
+				log.error("Export provider {0} doesn't support any content types", getWizard()
+						.getProviderFactory().getDisplayName());
 			}
 		}
-		
+
 		getWizard().setContentType(contentType);
 		if (contentType != null) {
 			setMessage(contentType.getName(), DialogPage.INFORMATION);
@@ -133,7 +139,7 @@ public class ExportSelectTargetPage<P extends ExportProvider,
 
 	private void updateState() {
 		updateContentType();
-		
+
 		setPageComplete(targetFile.isValid());
 	}
 
@@ -143,7 +149,7 @@ public class ExportSelectTargetPage<P extends ExportProvider,
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
-		
+
 		// update file editor with possibly changed file extensions
 		targetFile.setContentTypes(getWizard().getProviderFactory().getSupportedTypes());
 	}
@@ -182,11 +188,11 @@ public class ExportSelectTargetPage<P extends ExportProvider,
 
 	/**
 	 * Get the target file name
-	 *  
+	 * 
 	 * @return the target file name
 	 */
 	public String getTargetFileName() {
 		return targetFile.getStringValue();
 	}
-	
+
 }

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.function.generic.pages;
@@ -47,17 +51,18 @@ import eu.esdihumboldt.util.Pair;
 
 /**
  * Entity page for properties
+ * 
  * @author Simon Templer
  */
-public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, PropertyParameter, PropertyField> {
-	
+public class PropertyEntitiesPage extends
+		EntitiesPage<PropertyFunction, PropertyParameter, PropertyField> {
+
 	private ComboViewer typeRelation;
 
 	/**
 	 * @see EntitiesPage#EntitiesPage(SchemaSelection, Cell)
 	 */
-	public PropertyEntitiesPage(SchemaSelection initialSelection,
-			Cell initialCell) {
+	public PropertyEntitiesPage(SchemaSelection initialSelection, Cell initialCell) {
 		super(initialSelection, initialCell);
 	}
 
@@ -66,50 +71,53 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 	 */
 	@Override
 	protected Control createHeader(Composite parent) {
-		//XXX what about augmentations?!
-		
-		Set<Pair<Type, Type>> relations = new HashSet<Pair<Type,Type>>();
-		
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		// XXX what about augmentations?!
+
+		Set<Pair<Type, Type>> relations = new HashSet<Pair<Type, Type>>();
+
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		Collection<? extends Cell> typeCells = as.getAlignment().getTypeCells();
-		
+
 		for (Cell cell : typeCells) {
 			for (Entity source : cell.getSource().values()) {
 				if (source instanceof Type) {
 					for (Entity target : cell.getTarget().values()) {
 						if (target instanceof Type) {
-							relations.add(new Pair<Type, Type>((Type) source, 
-									(Type) target));
+							relations.add(new Pair<Type, Type>((Type) source, (Type) target));
 						}
 					}
 				}
 			}
 		}
-		
+
 		if (relations.isEmpty()) {
-			//XXX this may not happen, i.e. the wizard being created in the first place should be prevented
-			throw new IllegalStateException("No compatible type relations defined"); 
+			// XXX this may not happen, i.e. the wizard being created in the
+			// first place should be prevented
+			throw new IllegalStateException("No compatible type relations defined");
 		}
-		
+
 		typeRelation = new ComboViewer(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 		typeRelation.setContentProvider(ArrayContentProvider.getInstance());
 		typeRelation.setLabelProvider(new LabelProvider() {
+
 			@Override
 			public String getText(Object element) {
 				@SuppressWarnings("unchecked")
 				Pair<Type, Type> types = (Pair<Type, Type>) element;
-				
-				return types.getFirst().getDefinition().getDefinition().getDisplayName() + 
-						" - " + types.getSecond().getDefinition().getDefinition().getDisplayName(); 
+
+				return types.getFirst().getDefinition().getDefinition().getDisplayName() + " - "
+						+ types.getSecond().getDefinition().getDefinition().getDisplayName();
 			}
 		});
 		typeRelation.setInput(relations);
-		
+
 		// set initial selection for relation
 		Pair<Type, Type> selection = determineDefaultRelation(relations);
 		typeRelation.setSelection(new StructuredSelection(selection));
-		
+
 		typeRelation.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				for (PropertyField field : getFunctionFields()) {
@@ -117,28 +125,26 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 				}
 			}
 		});
-		
+
 		return typeRelation.getControl();
 	}
 
 	/**
 	 * Determine the relation to be selected by default.
+	 * 
 	 * @param relations the available relations
 	 * @return the relation to be selected
 	 */
-	private Pair<Type, Type> determineDefaultRelation(
-			Set<Pair<Type, Type>> relations) {
+	private Pair<Type, Type> determineDefaultRelation(Set<Pair<Type, Type>> relations) {
 		Pair<Type, Type> relation = null;
 		// based on initial cell/selection if possible
 		if (getInitialCell() != null) {
-			Type target = new DefaultType(
-					AlignmentUtil.getTypeEntity(getInitialCell().getTarget()
-							.values().iterator().next().getDefinition()));
-			
+			Type target = new DefaultType(AlignmentUtil.getTypeEntity(getInitialCell().getTarget()
+					.values().iterator().next().getDefinition()));
+
 			if (getInitialCell().getSource() != null && !getInitialCell().getSource().isEmpty()) {
-				Type source = new DefaultType(
-						AlignmentUtil.getTypeEntity(getInitialCell().getSource()
-								.values().iterator().next().getDefinition()));
+				Type source = new DefaultType(AlignmentUtil.getTypeEntity(getInitialCell()
+						.getSource().values().iterator().next().getDefinition()));
 				relation = new Pair<Type, Type>(source, target);
 			}
 			else {
@@ -148,24 +154,21 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 		}
 		else if (getInitialSelection() != null) {
 			SchemaSelection sel = getInitialSelection();
-			if (sel.getFirstSourceItem() != null
-					&& sel.getFirstTargetItem() != null) {
-				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel
-						.getFirstSourceItem()));
-				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel
-						.getFirstTargetItem()));
+			if (sel.getFirstSourceItem() != null && sel.getFirstTargetItem() != null) {
+				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstSourceItem()));
+				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstTargetItem()));
 				relation = new Pair<Type, Type>(source, target);
-			} else if (sel.getFirstSourceItem() != null) {
-				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel
-						.getFirstSourceItem()));
+			}
+			else if (sel.getFirstSourceItem() != null) {
+				Type source = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstSourceItem()));
 				relation = findFirstRelation(relations, source, null);
-			} else if (sel.getFirstTargetItem() != null) {
-				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel
-						.getFirstTargetItem()));
+			}
+			else if (sel.getFirstTargetItem() != null) {
+				Type target = new DefaultType(AlignmentUtil.getTypeEntity(sel.getFirstTargetItem()));
 				relation = findFirstRelation(relations, null, target);
 			}
 		}
-		
+
 		if (relation == null) {
 			return relations.iterator().next();
 		}
@@ -176,35 +179,37 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 
 	/**
 	 * Find the first relation matching the given source and target type.
+	 * 
 	 * @param relations the relations to test
-	 * @param source the source type, <code>null</code> for matching any type 
+	 * @param source the source type, <code>null</code> for matching any type
 	 * @param target the target type, <code>null</code> for matching any type
 	 * @return the relation found or <code>null</code> if there is none
 	 */
-	private Pair<Type, Type> findFirstRelation(Set<Pair<Type, Type>> relations,
-			Type source, Type target) {
+	private Pair<Type, Type> findFirstRelation(Set<Pair<Type, Type>> relations, Type source,
+			Type target) {
 		for (Pair<Type, Type> relation : relations) {
-			if ((source == null || source.equals(relation.getFirst())) 
+			if ((source == null || source.equals(relation.getFirst()))
 					&& (target == null || target.equals(relation.getSecond()))) {
 				return relation;
 			}
 		}
-		
+
 		return null;
 	}
 
 	/**
-	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID, Composite, Set, Cell)
+	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID,
+	 *      Composite, Set, Cell)
 	 */
 	@Override
 	protected PropertyField createField(PropertyParameter field, SchemaSpaceID ssid,
 			Composite parent, Set<EntityDefinition> candidates, Cell initialCell) {
-		return new PropertyField(field, ssid, parent, candidates, initialCell, 
-				getParentType(ssid));
+		return new PropertyField(field, ssid, parent, candidates, initialCell, getParentType(ssid));
 	}
 
 	/**
 	 * Get the parent type set for the given schema space
+	 * 
 	 * @param ssid the schema space identifier
 	 * @return the parent type
 	 */
@@ -212,7 +217,8 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 		ISelection selection = typeRelation.getSelection();
 		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 			@SuppressWarnings("unchecked")
-			Pair<Type, Type> relation = (Pair<Type, Type>) ((IStructuredSelection) selection).getFirstElement();
+			Pair<Type, Type> relation = (Pair<Type, Type>) ((IStructuredSelection) selection)
+					.getFirstElement();
 			switch (ssid) {
 			case SOURCE:
 				return relation.getFirst().getDefinition();
@@ -222,7 +228,7 @@ public class PropertyEntitiesPage extends EntitiesPage<PropertyFunction, Propert
 				throw new IllegalArgumentException("Illegal schema space");
 			}
 		}
-		
+
 		return null;
 	}
 

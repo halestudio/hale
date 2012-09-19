@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.instance.model.impl;
@@ -27,18 +31,20 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Default instance implementation backed by a {@link ListMultimap}.
+ * 
  * @author Simon Templer
  */
 public class DefaultInstance extends DefaultGroup implements MutableInstance {
 
 	private DataSet dataSet;
-	
+
 	private Object value;
-	
+
 	private ListMultimap<String, Object> metaData;
 
 	/**
 	 * Create an empty instance.
+	 * 
 	 * @param definition the associated type definition
 	 * @param dataSet the data set the instance is associated to
 	 */
@@ -46,20 +52,20 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 		super(definition);
 		this.dataSet = dataSet;
 	}
-	
+
 	/**
-	 * Copy constructor.
-	 * Creates an instance based on the properties and values of the given 
-	 * instance.
+	 * Copy constructor. Creates an instance based on the properties and values
+	 * of the given instance.
+	 * 
 	 * @param org the instance to copy
 	 */
 	public DefaultInstance(Instance org) {
 		super(org);
-		
+
 		setValue(org.getValue());
 		setDataSet(org.getDataSet());
-		
-		for(String key : org.getMetaDataNames()){
+
+		for (String key : org.getMetaDataNames()) {
 			setMetaData(key, org.getMetaData(key).toArray());
 		}
 	}
@@ -109,19 +115,21 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 	 */
 	@Override
 	public List<Object> getMetaData(String key) {
-		if(metaData == null || metaData.isEmpty()){
+		if (metaData == null || metaData.isEmpty()) {
 			return Collections.emptyList();
 		}
-		else return metaData.get(key);
-		
+		else
+			return metaData.get(key);
+
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.MutableInstance#putMetaData(java.lang.String, java.lang.Object)
+	 * @see eu.esdihumboldt.hale.common.instance.model.MutableInstance#putMetaData(java.lang.String,
+	 *      java.lang.Object)
 	 */
 	@Override
 	public void putMetaData(String key, Object obj) {
-		if(metaData == null){
+		if (metaData == null) {
 			metaData = ArrayListMultimap.create();
 		}
 		metaData.put(key, obj);
@@ -131,35 +139,38 @@ public class DefaultInstance extends DefaultGroup implements MutableInstance {
 	 * @see eu.esdihumboldt.hale.common.instance.model.Instance#getMetaDataNames()
 	 */
 	@Override
-	public Set<String> getMetaDataNames() {		
-		if(metaData == null){
-			return Collections.emptySet();		
-		}	
-		
-		else return Collections.unmodifiableSet(metaData.keySet());
+	public Set<String> getMetaDataNames() {
+		if (metaData == null) {
+			return Collections.emptySet();
+		}
+
+		else
+			return Collections.unmodifiableSet(metaData.keySet());
 
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.MutableInstance#setMetaData(java.lang.String, java.lang.Object[])
+	 * @see eu.esdihumboldt.hale.common.instance.model.MutableInstance#setMetaData(java.lang.String,
+	 *      java.lang.Object[])
 	 */
 	@Override
 	public void setMetaData(String key, Object... values) {
-		if(metaData == null){
+		if (metaData == null) {
 			metaData = ArrayListMultimap.create();
 		}
-		
+
 		if (values == null || values.length == 0) {
 			metaData.removeAll(key);
 			return;
 		}
-		
-		else{
+
+		else {
 			List<Object> valueList = new ArrayList<Object>();
 			for (Object value : values) {
 				valueList.add(value);
 			}
-			metaData.putAll(key, valueList);		}
+			metaData.putAll(key, valueList);
+		}
 	}
 
 }

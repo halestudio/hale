@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.impl;
@@ -31,6 +35,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 
 /**
  * Default {@link SourceNode} implementation
+ * 
  * @author Simon Templer
  */
 public class SourceNodeImpl extends AbstractTransformationNode implements SourceNode {
@@ -40,19 +45,19 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	private final Set<SourceNode> children = new HashSet<SourceNode>();
 //	private final SourceNodeFactory sourceNodeFactory;
 	private final Set<CellNode> relations = new HashSet<CellNode>();
-	
+
 	private TransformationContext context;
 
 	/**
 	 * Constructor
+	 * 
 	 * @param definition the associated entity definition
 	 * @param sourceNodeFactory the factory for creating new source nodes
 	 */
-	public SourceNodeImpl(EntityDefinition definition, 
-			SourceNodeFactory sourceNodeFactory) {
+	public SourceNodeImpl(EntityDefinition definition, SourceNodeFactory sourceNodeFactory) {
 		this.entityDefinition = definition;
 //		this.sourceNodeFactory = sourceNodeFactory;
-		
+
 		EntityDefinition parentDef = AlignmentUtil.getParent(definition);
 		if (parentDef != null) {
 			parent = sourceNodeFactory.getSourceNode(parentDef);
@@ -62,20 +67,20 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 			parent = null;
 		}
 	}
-	
+
 	/**
 	 * Constructor for nodes not associated to a source node factory.
+	 * 
 	 * @param definition the associated entity definition
 	 * @param parent the parent source node
-	 * @param addToParent if the created node should be added as a child to the 
-	 *   given parent
+	 * @param addToParent if the created node should be added as a child to the
+	 *            given parent
 	 */
-	public SourceNodeImpl(EntityDefinition definition, 
-			SourceNode parent, boolean addToParent) {
+	public SourceNodeImpl(EntityDefinition definition, SourceNode parent, boolean addToParent) {
 		this.entityDefinition = definition;
 //		this.sourceNodeFactory = null;
 		this.parent = parent;
-		
+
 		if (addToParent && parent != null) {
 			parent.addChild(this);
 		}
@@ -171,8 +176,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 					child.accept(visitor);
 				}
 				// visit annotated children
-				if (visitor.includeAnnotatedNodes() 
-						&& getAnnotation(ANNOTATION_CHILDREN) != null) {
+				if (visitor.includeAnnotatedNodes() && getAnnotation(ANNOTATION_CHILDREN) != null) {
 					for (SourceNode child : (Iterable<SourceNode>) getAnnotation(ANNOTATION_CHILDREN)) {
 						child.accept(visitor);
 					}
@@ -290,9 +294,7 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((entityDefinition == null) ? 0 : entityDefinition.hashCode());
+		result = prime * result + ((entityDefinition == null) ? 0 : entityDefinition.hashCode());
 		return result;
 	}
 
@@ -311,7 +313,8 @@ public class SourceNodeImpl extends AbstractTransformationNode implements Source
 		if (entityDefinition == null) {
 			if (other.entityDefinition != null)
 				return false;
-		} else if (!entityDefinition.equals(other.entityDefinition))
+		}
+		else if (!entityDefinition.equals(other.entityDefinition))
 			return false;
 		return true;
 	}

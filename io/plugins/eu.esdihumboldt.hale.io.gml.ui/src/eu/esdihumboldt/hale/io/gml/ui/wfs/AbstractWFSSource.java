@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.ui.wfs;
@@ -34,7 +38,8 @@ import eu.esdihumboldt.hale.ui.io.source.AbstractProviderSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
 
 /**
- * Abstract base implementation for import sources based on WFS 
+ * Abstract base implementation for import sources based on WFS
+ * 
  * @param <P> the supported {@link IOProvider} type
  * 
  * @author Simon Templer
@@ -42,26 +47,27 @@ import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
 public abstract class AbstractWFSSource<P extends ImportProvider> extends AbstractProviderSource<P> {
 
 	private WfsUrlFieldEditor sourceURL;
-	
+
 	/**
 	 * @see ImportSource#createControls(Composite)
 	 */
 	@Override
 	public void createControls(Composite parent) {
 		parent.setLayout(new GridLayout(3, false));
-		
+
 		// caption
 		new Label(parent, SWT.NONE); // placeholder
-		
+
 		Label caption = new Label(parent, SWT.NONE);
 		caption.setText(getCaption());
 		caption.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 2, 1));
-		
+
 		// source file
-		sourceURL = createWfsFieldEditor(parent); 
+		sourceURL = createWfsFieldEditor(parent);
 		sourceURL.setPage(getPage());
-		
+
 		sourceURL.setPropertyChangeListener(new IPropertyChangeListener() {
+
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
@@ -72,13 +78,13 @@ public abstract class AbstractWFSSource<P extends ImportProvider> extends Abstra
 				}
 			}
 		});
-		
+
 		// provider selection
-		
+
 		// label
 		Label providerLabel = new Label(parent, SWT.NONE);
 		providerLabel.setText("Import as");
-		
+
 		// create provider combo
 		ComboViewer providers = createProviders(parent);
 		providers.getControl().setLayoutData(
@@ -90,12 +96,14 @@ public abstract class AbstractWFSSource<P extends ImportProvider> extends Abstra
 
 	/**
 	 * Get the caption for the source page
+	 * 
 	 * @return the caption
 	 */
 	protected abstract String getCaption();
 
 	/**
 	 * Create the WFS field editor to use in the page.
+	 * 
 	 * @param parent the parent composite
 	 * @return the WFS field editor
 	 */

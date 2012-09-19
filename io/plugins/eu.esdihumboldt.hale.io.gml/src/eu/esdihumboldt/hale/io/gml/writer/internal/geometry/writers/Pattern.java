@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
@@ -28,7 +32,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.DefinitionPath;
 
 /**
  * Represents a pattern for matching an abstract path
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -65,12 +69,12 @@ public class Pattern {
 	}
 
 	/**
-	 * A pattern element 
+	 * A pattern element
 	 */
 	private static class PatternElement {
 
 		private final ElementType type;
-		
+
 		private final QName name;
 
 		/**
@@ -98,26 +102,26 @@ public class Pattern {
 		public QName getName() {
 			return name;
 		}
-		
+
 	}
-	
+
 	private static final String ELEMENT_DELIMITER = "/"; //$NON-NLS-1$
 	private static final String WILDCARD_ONE = "*"; //$NON-NLS-1$
 	private static final String WILDCARD_ANY = "**"; //$NON-NLS-1$
 	private static final String NS_MARKER = "\""; //$NON-NLS-1$
-	
+
 	/**
 	 * Placeholder for the GML namespace that may be used in patterns
 	 */
 	public static final String GML_NAMESPACE_PLACEHOLDER = "_____________gml_____________";
-	
+
 	/**
 	 * Parse a pattern from the given string. Pattern elements must be separated
-	 * by <code>/</code>. Valid elements are <code>*</code> (one XML element 
-	 * with any name), <code>**</code> (any number of XML elements with any 
+	 * by <code>/</code>. Valid elements are <code>*</code> (one XML element
+	 * with any name), <code>**</code> (any number of XML elements with any
 	 * name) and an XML element name. An XML element name may also include a
-	 * namespace, the namespace must be wrapped by quotes (<code>"</code>).
-	 * If no namespace is specified the GML namespace is assumed.
+	 * namespace, the namespace must be wrapped by quotes (<code>"</code>). If
+	 * no namespace is specified the GML namespace is assumed.
 	 * 
 	 * @param pattern the pattern string
 	 * 
@@ -126,17 +130,17 @@ public class Pattern {
 	@SuppressWarnings(value = "SBSC_USE_STRINGBUFFER_CONCATENATION", justification = "More convenient at this point and number of parts will not be large")
 	public static Pattern parse(String pattern) {
 		List<PatternElement> elements = new ArrayList<PatternElement>();
-		
+
 		String[] parts = pattern.split(ELEMENT_DELIMITER);
-		
-		//TODO - * or ** after ** not allowed
-		
+
+		// TODO - * or ** after ** not allowed
+
 		for (int i = 0; i < parts.length; i++) {
 			String part = parts[i];
-			
+
 			if (part != null && !part.trim().isEmpty()) {
 				part = part.trim();
-				
+
 				if (part.equals(WILDCARD_ONE)) {
 					// one element
 					elements.add(new PatternElement(ElementType.ONE_ELEMENT, null));
@@ -149,50 +153,49 @@ public class Pattern {
 					// name or namespace + name
 					if (part.startsWith(NS_MARKER)) {
 						// namespace + name
-						
+
 						// check if the part contains another marker
 						boolean isLast = part.length() > 1 && part.substring(1).contains(NS_MARKER);
-						
+
 						// add parts until name is complete
 						while (!isLast && i < parts.length - 1) {
 							String next = parts[++i];
-							
+
 							isLast = next.contains(NS_MARKER);
-							
+
 							part += next;
 						}
-						
+
 						if (!isLast) {
-							throw new IllegalArgumentException("No terminating namespace quote found"); //$NON-NLS-1$
+							throw new IllegalArgumentException(
+									"No terminating namespace quote found"); //$NON-NLS-1$
 						}
 						else {
 							// separate namespace and name
 							int index = part.lastIndexOf(NS_MARKER);
 							String namespace = part.substring(1, index).trim();
 							String name = part.substring(index + 1).trim();
-							
-							elements.add(new PatternElement(
-									ElementType.NAMED_ELEMENT, 
-									new QName(namespace, name)));
+
+							elements.add(new PatternElement(ElementType.NAMED_ELEMENT, new QName(
+									namespace, name)));
 						}
 					}
 					else {
-						// element name only, assuming GML namespace 
-						elements.add(new PatternElement(
-								ElementType.NAMED_ELEMENT, 
-								new QName(GML_NAMESPACE_PLACEHOLDER, part)));
+						// element name only, assuming GML namespace
+						elements.add(new PatternElement(ElementType.NAMED_ELEMENT, new QName(
+								GML_NAMESPACE_PLACEHOLDER, part)));
 					}
 				}
 			}
 		}
-		
+
 		return new Pattern(PatternType.MATCH, pattern, elements, null);
 	}
-	
+
 	/**
 	 * Create a pattern that combines multiple patterns with a logical OR. When
 	 * matching, the path of the first pattern that matches is returned.
-	 *  
+	 * 
 	 * @param patterns the sub-patterns
 	 * 
 	 * @return the OR pattern
@@ -200,12 +203,12 @@ public class Pattern {
 	public static Pattern or(Pattern... patterns) {
 		return new Pattern(PatternType.OR, null, null, Arrays.asList(patterns));
 	}
-	
+
 	/**
 	 * Create a pattern that combines multiple patterns with a logical AND. When
-	 * matching, all patterns must match and the path of the first pattern is 
+	 * matching, all patterns must match and the path of the first pattern is
 	 * returned.
-	 *  
+	 * 
 	 * @param patterns the sub-patterns
 	 * 
 	 * @return the AND pattern
@@ -215,31 +218,31 @@ public class Pattern {
 	}
 
 	private final List<PatternElement> elements;
-	
+
 	private final List<Pattern> subPatterns;
-	
+
 	private final String patternString;
-	
+
 	private final PatternType type;
-	
+
 	/**
 	 * Constructor
 	 * 
-	 * @param type the pattern type 
-	 * @param patternString the pattern string 
+	 * @param type the pattern type
+	 * @param patternString the pattern string
 	 * @param elements the pattern elements
 	 * @param subPatterns the sub-patterns
 	 */
-	private Pattern(PatternType type, String patternString, 
-			List<PatternElement> elements, List<Pattern> subPatterns) {
+	private Pattern(PatternType type, String patternString, List<PatternElement> elements,
+			List<Pattern> subPatterns) {
 		super();
-		
+
 		this.patternString = patternString;
 		this.elements = elements;
 		this.subPatterns = subPatterns;
 		this.type = type;
 	}
-	
+
 	/**
 	 * Matches the type against the encoding pattern.
 	 * 
@@ -249,8 +252,7 @@ public class Pattern {
 	 * 
 	 * @return the new path if there is a match, <code>null</code> otherwise
 	 */
-	public DefinitionPath match(TypeDefinition type, DefinitionPath path,
-			String gmlNs) {
+	public DefinitionPath match(TypeDefinition type, DefinitionPath path, String gmlNs) {
 		switch (this.type) {
 		case AND: {
 			DefinitionPath fPath = null;
@@ -283,7 +285,7 @@ public class Pattern {
 					new LinkedList<PatternElement>(elements));
 		}
 	}
-	
+
 	/**
 	 * Matches the type against the encoding pattern.
 	 * 
@@ -291,25 +293,24 @@ public class Pattern {
 	 * @param path the definition path
 	 * @param gmlNs the GML namespace
 	 * @param checkedTypes the type definitions that have already been checked
-	 *   (to prevent cycles)
+	 *            (to prevent cycles)
 	 * @param remainingElements the remaining elements to match
 	 * 
 	 * @return the new path if there is a match, <code>null</code> otherwise
 	 */
-	private static DefinitionPath match(TypeDefinition type, DefinitionPath path,
-			String gmlNs, HashSet<TypeDefinition> checkedTypes,
-			List<PatternElement> remainingElements) {
+	private static DefinitionPath match(TypeDefinition type, DefinitionPath path, String gmlNs,
+			HashSet<TypeDefinition> checkedTypes, List<PatternElement> remainingElements) {
 		if (remainingElements == null || remainingElements.isEmpty()) {
 			return null;
 		}
-		
+
 		if (checkedTypes.contains(type)) {
 			return null;
 		}
 		else {
 			checkedTypes.add(type);
 		}
-		
+
 		PatternElement first = remainingElements.get(0);
 		PatternElement checkAgainst;
 		boolean allowAttributeDescent;
@@ -319,7 +320,9 @@ public class Pattern {
 		case ONE_ELEMENT:
 			checkAgainst = null; // only descend
 			allowAttributeDescent = true;
-			removeFirstForAttributeDescent = true; // first element may not be removed for sub-type descent
+			removeFirstForAttributeDescent = true; // first element may not be
+													// removed for sub-type
+													// descent
 			// special case: was last element
 			if (remainingElements.size() == 1) {
 				return path;
@@ -350,27 +353,27 @@ public class Pattern {
 		default:
 			throw new IllegalStateException("Unknown pattern element type"); //$NON-NLS-1$
 		}
-		
+
 		if (checkAgainst != null) {
 			// get the last path element
 			QName elementName = path.getLastName();
-			
+
 			QName name = checkAgainst.getName();
 			// inject namespace if needed
 			if (name.getNamespaceURI() == GML_NAMESPACE_PLACEHOLDER) {
 				name = new QName(gmlNs, name.getLocalPart());
 			}
-			
+
 			// check direct match
 			if (name.equals(elementName)) {
 				// match for the element name -> we are on the right track
-				
+
 				int index = remainingElements.indexOf(checkAgainst);
 				if (index == remainingElements.size() - 1) {
 					// is last - we have a full match
 					return path;
 				}
-				
+
 				// remove the element (and any leading wildcards) from the queue
 				remainingElements = remainingElements.subList(index + 1, remainingElements.size());
 				// for a name match, no sub-type descent is allowed
@@ -383,13 +386,13 @@ public class Pattern {
 				// sub-type descent is still allowed, don't remove element
 			}
 		}
-		
+
 		// descend further
-		
+
 		if (allowSubtypeDescent) {
 			// step down sub-types
-			//XXX now represented in choices
-			//XXX sub-type must work through parent choice
+			// XXX now represented in choices
+			// XXX sub-type must work through parent choice
 //			for (SchemaElement element : type.getSubstitutions(path.getLastName())) {
 //				DefinitionPath candidate = match(
 //						element.getType(), 
@@ -403,30 +406,29 @@ public class Pattern {
 //				}
 //			}
 		}
-		
+
 		if (allowAttributeDescent) {
 			if (removeFirstForAttributeDescent) {
 				remainingElements.remove(0);
 			}
-			
+
 			// step down properties
 			@java.lang.SuppressWarnings("unchecked")
-			Iterable<ChildDefinition<?>> children = (Iterable<ChildDefinition<?>>) ((path.isEmpty())?(type.getChildren()):(type.getDeclaredChildren()));
-			Iterable<DefinitionPath> childPaths = GmlWriterUtil.collectPropertyPaths(children, path, true);
+			Iterable<ChildDefinition<?>> children = (Iterable<ChildDefinition<?>>) ((path.isEmpty()) ? (type
+					.getChildren()) : (type.getDeclaredChildren()));
+			Iterable<DefinitionPath> childPaths = GmlWriterUtil.collectPropertyPaths(children,
+					path, true);
 			for (DefinitionPath childPath : childPaths) {
-				DefinitionPath candidate = match(
-						childPath.getLastType(),
-						childPath,
-						gmlNs,
-						new HashSet<TypeDefinition>(checkedTypes),
-						new ArrayList<PatternElement>(remainingElements));
-				
+				DefinitionPath candidate = match(childPath.getLastType(), childPath, gmlNs,
+						new HashSet<TypeDefinition>(checkedTypes), new ArrayList<PatternElement>(
+								remainingElements));
+
 				if (candidate != null) {
 					return candidate;
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -443,7 +445,7 @@ public class Pattern {
 //		}
 //		
 //		return false;
-		//XXX for now assume any pattern is valid
+		// XXX for now assume any pattern is valid
 		return true;
 	}
 
@@ -464,8 +466,9 @@ public class Pattern {
 	}
 
 	private String relationString(String delimiter) {
-		if (subPatterns == null) throw new IllegalStateException("Sub-patterns must be set for AND/OR patterns"); //$NON-NLS-1$
-		
+		if (subPatterns == null)
+			throw new IllegalStateException("Sub-patterns must be set for AND/OR patterns"); //$NON-NLS-1$
+
 		StringBuffer result = new StringBuffer("("); //$NON-NLS-1$
 		boolean first = true;
 		for (Pattern pattern : subPatterns) {
@@ -475,12 +478,12 @@ public class Pattern {
 			else {
 				result.append(delimiter);
 			}
-			
+
 			result.append(pattern.toString());
 		}
 		result.append(")"); //$NON-NLS-1$
-		
+
 		return result.toString();
 	}
-	
+
 }

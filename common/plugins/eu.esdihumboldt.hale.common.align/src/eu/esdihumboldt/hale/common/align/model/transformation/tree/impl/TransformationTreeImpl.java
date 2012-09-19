@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.impl;
@@ -41,32 +45,34 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Default {@link TransformationTree} implementation
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class TransformationTreeImpl extends AbstractGroupNode implements TransformationTree {
-	
+
 	private final TypeDefinition type;
 	private final SourceNodeFactory sourceNodes;
 	private final List<TargetNode> children;
 
 	/**
 	 * Create a transformation tree
+	 * 
 	 * @param type the type definition serving as root
 	 * @param alignment the alignment holding the cells
 	 */
 	public TransformationTreeImpl(TypeDefinition type, Alignment alignment) {
 		super(null);
 		this.type = type;
-		
+
 		sourceNodes = new SourceNodeFactory();
-		
-		// dummy target type entity (there may not be any contexts associated to target types)
-		TypeEntityDefinition targetType = new TypeEntityDefinition(type, 
-				SchemaSpaceID.TARGET, null);
-		
+
+		// dummy target type entity (there may not be any contexts associated to
+		// target types)
+		TypeEntityDefinition targetType = new TypeEntityDefinition(type, SchemaSpaceID.TARGET, null);
+
 		Collection<? extends Cell> cells = alignment.getPropertyCells(null, targetType);
-		
+
 		// partition cells by child
 		ListMultimap<EntityDefinition, CellNode> childCells = ArrayListMultimap.create();
 		for (Cell cell : cells) {
@@ -76,25 +82,26 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 					List<ChildContext> path = target.getDefinition().getPropertyPath();
 					if (path != null && !path.isEmpty()) {
 						// store cell with child
-						childCells.put(AlignmentUtil.deriveEntity(
-								target.getDefinition(), 1), node);
+						childCells.put(AlignmentUtil.deriveEntity(target.getDefinition(), 1), node);
 					}
 				}
 				else {
-					// now, that's bad - obviously a cell with targets in more than one type!
+					// now, that's bad - obviously a cell with targets in more
+					// than one type!
 					throw new IllegalStateException();
 				}
 			}
 		}
-		
+
 		// create child cells
 		List<TargetNode> childList = new ArrayList<TargetNode>();
-		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap().entrySet()) {
-			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), 
-					childEntry.getValue(), type, 1, this);
+		for (Entry<EntityDefinition, Collection<CellNode>> childEntry : childCells.asMap()
+				.entrySet()) {
+			TargetNode childNode = new TargetNodeImpl(childEntry.getKey(), childEntry.getValue(),
+					type, 1, this);
 			childList.add(childNode);
 		}
-		
+
 		children = Collections.unmodifiableList(childList);
 	}
 
@@ -106,8 +113,7 @@ public class TransformationTreeImpl extends AbstractGroupNode implements Transfo
 		if (visitor.visit(this)) {
 			if (visitor.isFromTargetToSource()) {
 				// visit children
-				for (TargetNode child : getChildren(
-						visitor.includeAnnotatedNodes())) {
+				for (TargetNode child : getChildren(visitor.includeAnnotatedNodes())) {
 					child.accept(visitor);
 				}
 			}

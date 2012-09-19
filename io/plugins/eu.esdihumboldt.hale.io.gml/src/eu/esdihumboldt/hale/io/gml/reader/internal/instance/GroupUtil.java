@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
@@ -40,69 +44,70 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
  * Utility methods regarding group handling
+ * 
  * @author Simon Templer
  */
 public class GroupUtil {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(GroupUtil.class);
 
 	/**
 	 * Determine the property definition for the given property name.
+	 * 
 	 * @param groups the stack of the current group objects. The topmost element
-	 *   is the current group object 
+	 *            is the current group object
 	 * @param propertyName the property name
 	 * @param allowFallback states if falling back to non-strict mode is allowed
-	 *   for determining the property definition
+	 *            for determining the property definition
 	 * @return the group property or <code>null</code> if none is found
 	 */
-	static GroupProperty determineProperty(
-			List<MutableGroup> groups, QName propertyName,
+	static GroupProperty determineProperty(List<MutableGroup> groups, QName propertyName,
 			boolean allowFallback) {
 		return determineProperty(groups, propertyName, true, allowFallback);
 	}
-	
+
 	/**
 	 * Determine the property definition for the given property name.
+	 * 
 	 * @param groups the stack of the current group objects. The topmost element
-	 *   is the current group object 
+	 *            is the current group object
 	 * @param propertyName the property name
 	 * @param strict states if for assessing possible property definitions
-	 *   strict checks regarding the structure are applied
+	 *            strict checks regarding the structure are applied
 	 * @param allowFallback states if with strict mode being enabled, falling
-	 *   back to non-strict mode is allowed (this will not be propagated to
-	 *   subsequent calls)
+	 *            back to non-strict mode is allowed (this will not be
+	 *            propagated to subsequent calls)
 	 * @return the group property or <code>null</code> if none is found
 	 */
-	private static GroupProperty determineProperty(
-			List<MutableGroup> groups, QName propertyName, boolean strict,
-			boolean allowFallback) {
+	private static GroupProperty determineProperty(List<MutableGroup> groups, QName propertyName,
+			boolean strict, boolean allowFallback) {
 		if (groups.isEmpty()) {
 			return null;
 		}
-		
+
 		// the current group
-		final MutableGroup currentGroup = groups.get(groups.size() -1);
+		final MutableGroup currentGroup = groups.get(groups.size() - 1);
 		// the queue to collect the siblings of the current group with
 		LinkedList<GroupPath> siblings = new LinkedList<GroupPath>();
-		
+
 		/*
 		 * Policy: find the property as high in the hierarchy as possible
 		 * 
-		 * This might lead to problems with some special schemas, e.g. if
-		 * a group is defined that allows unbounded occurrences of an element X
+		 * This might lead to problems with some special schemas, e.g. if a
+		 * group is defined that allows unbounded occurrences of an element X
 		 * and the parent type allows one occurrence there will be trouble if we
-		 * have more than two or three of those elements (depending on group
-		 * and element cardinalities).
+		 * have more than two or three of those elements (depending on group and
+		 * element cardinalities).
 		 * 
 		 * If this really poses a problem in the practice we might need
-		 * configuration parameters to use different policies. IMHO (ST) in
-		 * well designed schemas this problem will not occur.
+		 * configuration parameters to use different policies. IMHO (ST) in well
+		 * designed schemas this problem will not occur.
 		 * 
 		 * This problem only arises because we read all the data from the stream
 		 * and don't know anything about what comes ahead - another possibility
 		 * could be to change this behavior where needed.
 		 */
-		
+
 		// preferred 1: property of a parent group
 		List<MutableGroup> keep = new ArrayList<MutableGroup>(groups);
 		List<MutableGroup> close = new ArrayList<MutableGroup>();
@@ -116,11 +121,18 @@ public class GroupUtil {
 			List<MutableGroup> parents = new ArrayList<MutableGroup>(close);
 			parents.remove(parents.size() - 1); // remove current group
 			if (!keep.isEmpty()) {
-				parents.add(0, keep.get(0)); // insert top allowed parent first in list
+				parents.add(0, keep.get(0)); // insert top allowed parent first
+												// in list
 			}
-			
+
 			int maxDescent = close.size() - 1;
-			List<MutableGroup> stackPrototype = new ArrayList<MutableGroup>(keep); // prototype that is copied for each parent
+			List<MutableGroup> stackPrototype = new ArrayList<MutableGroup>(keep); // prototype
+																					// that
+																					// is
+																					// copied
+																					// for
+																					// each
+																					// parent
 			LinkedList<GroupPath> level = new LinkedList<GroupPath>();
 			LinkedList<GroupPath> nextLevel = new LinkedList<GroupPath>();
 			for (int i = 0; i < parents.size(); i++) {
@@ -128,34 +140,36 @@ public class GroupUtil {
 				GroupPath path = new GroupPath(new ArrayList<MutableGroup>(stackPrototype), null);
 				level.addFirst(path);
 				GroupProperty gp = null;
-				
+
 				// check for a direct match in the group
-				PropertyDefinition property = determineDirectProperty(
-						parents.get(i), propertyName, strict);
+				PropertyDefinition property = determineDirectProperty(parents.get(i), propertyName,
+						strict);
 				if (property != null) {
 					gp = new GroupProperty(property, path);
 				}
-				
-				if (gp == null && maxDescent >= 0) { // >= 0 because also for maxDescent 0 we get siblings
+
+				if (gp == null && maxDescent >= 0) { // >= 0 because also for
+														// maxDescent 0 we get
+														// siblings
 					// check the sub-properties
-					gp = determineSubProperty(level, propertyName, nextLevel, 
-							0, strict);
+					gp = determineSubProperty(level, propertyName, nextLevel, 0, strict);
 				}
-				
+
 				if (gp != null) {
 					return gp;
 				}
-				
-				//XXX remove XXX add twin of parent to next level check (because it was ignored)
+
+				// XXX remove XXX add twin of parent to next level check
+				// (because it was ignored)
 //				List<MutableGroup> twinParents = new ArrayList<MutableGroup>(stackPrototype);
 //				List<DefinitionGroup> twinChildren = new ArrayList<DefinitionGroup>();
 //				twinChildren.add(parents.get(i).getDefinition());
 //				GroupPath twin = new GroupPath(twinParents, twinChildren);
 //				nextLevel.add(twin);
-				
+
 				// prepare stack prototype for next parent
 				if (i + 1 < parents.size()) {
-					stackPrototype.add(parents.get(i+1));
+					stackPrototype.add(parents.get(i + 1));
 				}
 				// swap lists, clear nextLevel
 				LinkedList<GroupPath> tmp = level;
@@ -163,89 +177,91 @@ public class GroupUtil {
 				nextLevel = tmp;
 				nextLevel.clear();
 			}
-			
+
 			siblings = level;
 		}
-		
+
 		// preferred 2: property of the current group
-		PropertyDefinition property = determineDirectProperty(currentGroup, 
-				propertyName, strict);
+		PropertyDefinition property = determineDirectProperty(currentGroup, propertyName, strict);
 		if (property != null) {
 			return new GroupProperty(property, new GroupPath(groups, null));
 		}
-		
-		// preferred 3: property of a sub-group, sibling group or sibling sub-group
+
+		// preferred 3: property of a sub-group, sibling group or sibling
+		// sub-group
 		siblings.addFirst(new GroupPath(groups, null)); // add current group
 		// check the sub-properties
-		GroupProperty gp = determineSubProperty(siblings, propertyName, 
-				null, -1, strict);
-		
+		GroupProperty gp = determineSubProperty(siblings, propertyName, null, -1, strict);
+
 		if (gp != null) {
 			return gp;
 		}
-		
+
 		if (strict && allowFallback) {
 			// fall-back: property in any group without validity checks
-			//XXX though allowClose will still be strict
-			log.warn(MessageFormat.format(
-					"Could not find valid property path for {0}, source data might be invalid regarding the source schema.",
-					propertyName));
+			// XXX though allowClose will still be strict
+			log.warn(MessageFormat
+					.format("Could not find valid property path for {0}, source data might be invalid regarding the source schema.",
+							propertyName));
 			return determineProperty(groups, propertyName, false, false);
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Determines if a property value for the given property name may be added
 	 * to the given group and returns the corresponding property definition.
+	 * 
 	 * @param group the group
 	 * @param propertyName the property name
 	 * @param strict states if additional checks are applied apart from whether
-	 *   the property exists
+	 *            the property exists
 	 * @return the property definition or <code>null</code> if none is found or
-	 *   no value may be added
+	 *         no value may be added
 	 */
-	private static PropertyDefinition determineDirectProperty(
-			MutableGroup group, QName propertyName, boolean strict) {
+	private static PropertyDefinition determineDirectProperty(MutableGroup group,
+			QName propertyName, boolean strict) {
 		ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
-		if (child != null && child.asProperty() != null && 
-				(!strict || allowAdd(group, null, child.asProperty().getName()))) {
+		if (child != null && child.asProperty() != null
+				&& (!strict || allowAdd(group, null, child.asProperty().getName()))) {
 			return child.asProperty();
 		}
-		
+
 		return null;
 	}
 
 	/**
-	 * Determine the property definition for the given property name in 
+	 * Determine the property definition for the given property name in
 	 * sub-groups of the given group stack.
-	 * @param paths the group paths whose children shall be checked for the property 
+	 * 
+	 * @param paths the group paths whose children shall be checked for the
+	 *            property
 	 * @param propertyName the property name
-	 * @param leafs the queue is populated with the leafs in the explored 
-	 *   definition group tree that are not processed because of the max 
-	 *   descent, may be <code>null</code> if no population is needed
+	 * @param leafs the queue is populated with the leafs in the explored
+	 *            definition group tree that are not processed because of the
+	 *            max descent, may be <code>null</code> if no population is
+	 *            needed
 	 * @param maxDescent the maximum descent, -1 for no maximum descent
 	 * @param strict states if additional checks are applied apart from whether
-	 *   the property exists
+	 *            the property exists
 	 * @return the property definition or <code>null</code> if none is found
 	 */
-	private static GroupProperty determineSubProperty(
-			Queue<GroupPath> paths, QName propertyName,
+	private static GroupProperty determineSubProperty(Queue<GroupPath> paths, QName propertyName,
 			Queue<GroupPath> leafs, int maxDescent, boolean strict) {
 		if (maxDescent != -1 && maxDescent < 0) {
 			return null;
 		}
-		
+
 		while (!paths.isEmpty()) {
 			GroupPath path = paths.poll();
-			
+
 			DefinitionGroup lastDef = null;
 			if (path.getChildren() != null && !path.getChildren().isEmpty()) {
 				// check if path is a valid result
 				if (path.allowAdd(propertyName, strict)) {
 					ChildDefinition<?> property = path.getLastDefinition().getChild(propertyName);
-					
+
 					if (property != null && property.asProperty() != null) {
 						// return group property
 						return new GroupProperty(property.asProperty(), path);
@@ -254,32 +270,36 @@ public class GroupUtil {
 						log.error("False positive for property candidate.");
 					}
 				}
-				
+
 				lastDef = path.getLastDefinition();
 			}
 			else {
-				// the first path which must not be checked, just the children must be added to the queue
+				// the first path which must not be checked, just the children
+				// must be added to the queue
 				List<MutableGroup> parents = path.getParents();
 				if (parents != null && !parents.isEmpty()) {
 					lastDef = parents.get(parents.size() - 1).getDefinition();
 				}
 			}
-			
+
 			if (lastDef != null) {
 				// add children to queue
-				Collection<? extends ChildDefinition<?>> children = DefinitionUtil.getAllChildren(lastDef);
-				
+				Collection<? extends ChildDefinition<?>> children = DefinitionUtil
+						.getAllChildren(lastDef);
+
 				for (ChildDefinition<?> child : children) {
-					if (child.asGroup() != null && 
-							(path.getChildren() == null || !path.getChildren().contains(child.asGroup()))) { // (check for definition cycle)
+					if (child.asGroup() != null
+							&& (path.getChildren() == null || !path.getChildren().contains(
+									child.asGroup()))) { // (check for
+															// definition cycle)
 						List<DefinitionGroup> childDefs = new ArrayList<DefinitionGroup>();
 						if (path.getChildren() != null) {
 							childDefs.addAll(path.getChildren());
 						}
 						childDefs.add(child.asGroup());
-						
+
 						GroupPath newPath = new GroupPath(path.getParents(), childDefs);
-						
+
 						// check if path is valid
 						if (!strict || newPath.isValid()) {
 							// check max descent
@@ -296,55 +316,64 @@ public class GroupUtil {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Determines if the given group is valid and may be closed
+	 * 
 	 * @param currentGroup the current group
 	 * @return if the group may be closed
 	 */
 	private static boolean allowClose(MutableGroup currentGroup) {
 		if (currentGroup instanceof Instance) {
-			return false; // instances may never be closed, they have no parent in the group stack
+			return false; // instances may never be closed, they have no parent
+							// in the group stack
 		}
-		
-		if (currentGroup.getDefinition() instanceof GroupPropertyDefinition && 
-				((GroupPropertyDefinition) currentGroup.getDefinition()).getConstraint(ChoiceFlag.class).isEnabled()) {
+
+		if (currentGroup.getDefinition() instanceof GroupPropertyDefinition
+				&& ((GroupPropertyDefinition) currentGroup.getDefinition()).getConstraint(
+						ChoiceFlag.class).isEnabled()) {
 			// group is a choice
 			Iterator<QName> it = currentGroup.getPropertyNames().iterator();
 			if (it.hasNext()) {
-				// choice has at least on value set -> check cardinality for the corresponding property
+				// choice has at least on value set -> check cardinality for the
+				// corresponding property
 				QName name = it.next();
 				return isValidCardinality(currentGroup, currentGroup.getDefinition().getChild(name));
 			}
 			// else check all children like below
 		}
-		
+
 		// determine all children
-		Collection<? extends ChildDefinition<?>> children = DefinitionUtil.getAllChildren(currentGroup.getDefinition());
-	
+		Collection<? extends ChildDefinition<?>> children = DefinitionUtil
+				.getAllChildren(currentGroup.getDefinition());
+
 		// check cardinality of children
 		for (ChildDefinition<?> childDef : children) {
-			if (isValidCardinality(currentGroup, childDef)) { //XXX is this correct?! should it be !isValid... instead?
+			if (isValidCardinality(currentGroup, childDef)) { // XXX is this
+																// correct?!
+																// should it be
+																// !isValid...
+																// instead?
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
 	/**
 	 * Determines if a child is contained in a given group with a valid minimum
 	 * cardinality.
+	 * 
 	 * @param group the group
 	 * @param childDef the child definition
 	 * @return if the minimum cardinality of the child definition is matched in
-	 *   the group
+	 *         the group
 	 */
-	static boolean isValidCardinality(Group group,
-			ChildDefinition<?> childDef) {
+	static boolean isValidCardinality(Group group, ChildDefinition<?> childDef) {
 		Cardinality cardinality = null;
 		if (childDef.asProperty() != null) {
 			cardinality = childDef.asProperty().getConstraint(Cardinality.class);
@@ -355,38 +384,38 @@ public class GroupUtil {
 		else {
 			log.error("Unrecognized child definition.");
 		}
-		
+
 		if (cardinality != null) {
 			// check minimum
 			long min = cardinality.getMinOccurs();
 			if (min > 0 && min != Cardinality.UNBOUNDED) {
 				Object[] values = group.getProperty(childDef.getName());
-				int count = (values == null)?(0):(values.length);
+				int count = (values == null) ? (0) : (values.length);
 				if (min > count) {
 					return false;
 				}
 			}
 		}
-		
+
 		return true;
 	}
 
 	/**
 	 * Determines if another value of the given property may be added to the
 	 * given group.
+	 * 
 	 * @param group the group, <code>null</code> represents an empty group
-	 * @param groupDef the definition of the given group, may be <code>null</code>
-	 *   if the group is not <code>null</code>
+	 * @param groupDef the definition of the given group, may be
+	 *            <code>null</code> if the group is not <code>null</code>
 	 * @param propertyName the property name
 	 * @return if another property value may be added to the group
 	 */
 	@SuppressWarnings("null")
-	static boolean allowAdd(Group group, DefinitionGroup groupDef,
-			QName propertyName) {
+	static boolean allowAdd(Group group, DefinitionGroup groupDef, QName propertyName) {
 		if (group == null && groupDef == null) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		final DefinitionGroup def;
 		if (groupDef == null) {
 			def = group.getDefinition();
@@ -394,37 +423,39 @@ public class GroupUtil {
 		else {
 			def = groupDef;
 		}
-		
+
 		if (group == null) {
 			// create an empty dummy group if none is specified
 			group = new Group() {
+
 				@Override
 				public Object[] getProperty(QName propertyName) {
 					return null;
 				}
-	
+
 				@Override
 				public Iterable<QName> getPropertyNames() {
 					return Collections.emptyList();
 				}
-	
+
 				@Override
 				public DefinitionGroup getDefinition() {
 					return def;
 				}
 			};
 		}
-		
+
 		if (def instanceof GroupPropertyDefinition) {
 			// group property
 			GroupPropertyDefinition gpdef = (GroupPropertyDefinition) def;
-			
+
 			if (gpdef.getConstraint(ChoiceFlag.class).isEnabled()) {
 				// choice
 				// a choice may only contain one of its properties
 				for (QName pName : group.getPropertyNames()) {
 					if (!pName.equals(propertyName)) {
-						// other property is present -> may not add property value
+						// other property is present -> may not add property
+						// value
 						return false;
 					}
 				}
@@ -433,12 +464,12 @@ public class GroupUtil {
 			}
 			else {
 				// sequence, group(, attributeGroup)
-				
+
 				// check order
 				if (!allowAddCheckOrder(group, propertyName, def)) {
 					return false;
 				}
-				
+
 				// check cardinality
 				return allowAddCheckCardinality(group, propertyName);
 			}
@@ -446,59 +477,63 @@ public class GroupUtil {
 		else if (def instanceof TypeDefinition) {
 			// type
 			TypeDefinition typeDef = (TypeDefinition) def;
-			
+
 			// check order
 			if (!allowAddCheckOrder(group, propertyName, typeDef)) {
 				return false;
 			}
-			
+
 			// check cardinality
 			return allowAddCheckCardinality(group, propertyName);
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * Determines if another value of the given property may be added to the
-	 * given group based on values available in the group and the order
-	 * of the child definitions in the given definition group.
+	 * given group based on values available in the group and the order of the
+	 * child definitions in the given definition group.
+	 * 
 	 * @param group the group, <code>null</code> represents an empty group
 	 * @param propertyName the property name
 	 * @param groupDef the definition group
 	 * @return if another property value may be added to the group based on the
-	 *   values and the child definition order
+	 *         values and the child definition order
 	 */
-	private static boolean allowAddCheckOrder(Group group,
-			QName propertyName, final DefinitionGroup groupDef) {
+	private static boolean allowAddCheckOrder(Group group, QName propertyName,
+			final DefinitionGroup groupDef) {
 		boolean before = true;
-		
+
 		Collection<? extends ChildDefinition<?>> children = DefinitionUtil.getAllChildren(groupDef);
-		
+
 		for (ChildDefinition<?> childDef : children) {
 			if (childDef.getName().equals(propertyName)) {
 				before = false;
 			}
 			else {
 				// ignore XML attributes
-				if (childDef.asProperty() != null && childDef.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+				if (childDef.asProperty() != null
+						&& childDef.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
 					continue;
 				}
 				// ignore groups that contain no elements
 				if (childDef.asGroup() != null && !StreamGmlHelper.hasElements(childDef.asGroup())) {
 					continue;
 				}
-				
+
 				if (before) {
 					// child before the property
-					// the property may only be added if all children before are valid in their cardinality
+					// the property may only be added if all children before are
+					// valid in their cardinality
 					if (!isValidCardinality(group, childDef)) {
 						return false;
 					}
 				}
 				else {
 					// child after the property
-					// the property may only be added if there are no values for children after the property
+					// the property may only be added if there are no values for
+					// children after the property
 					Object[] values = group.getProperty(childDef.getName());
 					if (values != null && values.length > 0) {
 						return false;
@@ -506,7 +541,7 @@ public class GroupUtil {
 				}
 			}
 		}
-		
+
 		// no fail -> allow add
 		return true;
 	}
@@ -514,16 +549,16 @@ public class GroupUtil {
 	/**
 	 * Determines if another value of the given property may be added to the
 	 * given group based on the cardinality of the property.
+	 * 
 	 * @param group the group
 	 * @param propertyName the property name
 	 * @return if another property value may be added to the group based on the
-	 *   property cardinality
+	 *         property cardinality
 	 */
-	private static boolean allowAddCheckCardinality(Group group,
-			QName propertyName) {
+	private static boolean allowAddCheckCardinality(Group group, QName propertyName) {
 		ChildDefinition<?> child = group.getDefinition().getChild(propertyName);
 		Cardinality cardinality = DefinitionUtil.getCardinality(child);
-		
+
 		// check maximum
 		long max = cardinality.getMaxOccurs();
 		if (max == Cardinality.UNBOUNDED) {
@@ -532,12 +567,12 @@ public class GroupUtil {
 		else if (max <= 0) {
 			return false; // add never allowed
 		}
-		
+
 		Object[] values = group.getProperty(propertyName);
 		if (values == null) {
 			return true; // allowed because max is 1 or more
 		}
-		
+
 		return values.length < max;
 	}
 

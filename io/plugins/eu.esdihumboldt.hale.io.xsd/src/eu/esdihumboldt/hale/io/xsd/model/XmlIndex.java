@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.xsd.model;
@@ -30,35 +34,36 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 
 /**
  * XML schema used during schema parsing, manages {@link XmlTypeDefinition}s
+ * 
  * @author Simon Templer
  */
 public class XmlIndex extends DefaultSchema {
-	
+
 	/**
 	 * XML attribute definitions
 	 */
 	private final Map<QName, XmlAttribute> attributes = new HashMap<QName, XmlAttribute>();
-	
+
 	/**
 	 * XML attribute group definitions
 	 */
 	private final Map<QName, XmlAttributeGroup> attributeGroups = new HashMap<QName, XmlAttributeGroup>();
-	
+
 	/**
 	 * XML group definitions
 	 */
 	private final Map<QName, XmlGroup> groups = new HashMap<QName, XmlGroup>();
-	
+
 	/**
 	 * XML elements
 	 */
 	private final Map<QName, XmlElement> elements = new HashMap<QName, XmlElement>();
-	
+
 	/**
 	 * Namespaces mapped to prefixes
 	 */
 	private final Map<String, String> prefixes = new HashMap<String, String>();
-	
+
 	/**
 	 * @see DefaultSchema#DefaultSchema(String, URI)
 	 */
@@ -69,6 +74,7 @@ public class XmlIndex extends DefaultSchema {
 	/**
 	 * Get the type definition with the given name. If the type doesn't exist a
 	 * new type definition will be created.
+	 * 
 	 * @param name the type name
 	 * @return the type definition
 	 */
@@ -76,9 +82,9 @@ public class XmlIndex extends DefaultSchema {
 		XmlTypeDefinition type = (XmlTypeDefinition) super.getType(name);
 		if (type == null) {
 			type = new XmlTypeDefinition(name);
-			
+
 			XmlTypeUtil.configureType(type);
-			
+
 			if (name.equals(XmlTypeUtil.NAME_ANY_TYPE)) {
 				type.setConstraint(AbstractFlag.ENABLED);
 				type.setConstraint(MappableFlag.DISABLED);
@@ -87,7 +93,7 @@ public class XmlIndex extends DefaultSchema {
 				// set anyType as default super type
 				type.setSuperType(getOrCreateType(XmlTypeUtil.NAME_ANY_TYPE));
 			}
-			
+
 			addType(type);
 		}
 		return type;
@@ -100,7 +106,7 @@ public class XmlIndex extends DefaultSchema {
 	public void addType(TypeDefinition type) {
 		Preconditions.checkArgument(type instanceof XmlTypeDefinition,
 				"Only XML type definitions may be added to the index");
-		
+
 		super.addType(type);
 	}
 

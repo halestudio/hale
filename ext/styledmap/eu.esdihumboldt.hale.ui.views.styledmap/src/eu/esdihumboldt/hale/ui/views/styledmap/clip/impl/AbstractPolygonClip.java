@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.styledmap.clip.impl;
@@ -21,6 +25,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.Clip;
 
 /**
  * Base class for clip's based on a polygon defined on the view-port.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractPolygonClip implements Clip {
@@ -29,15 +34,14 @@ public abstract class AbstractPolygonClip implements Clip {
 	 * @see Clip#getClip(Rectangle, int, int, int, int)
 	 */
 	@Override
-	public Shape getClip(Rectangle viewportBounds, int originX, int originY,
-			int width, int height) {
+	public Shape getClip(Rectangle viewportBounds, int originX, int originY, int width, int height) {
 		// visible area in world pixel coordinates
 		Polygon visible = getVisiblePolygon(viewportBounds);
 		// visible area in local pixel coordinates
-		visible.translate(-originX, - originY);
+		visible.translate(-originX, -originY);
 		// tile area
 		Rectangle tileRect = new Rectangle(0, 0, width, height);
-		
+
 		if (visible.contains(tileRect)) {
 			// contained whole
 			return tileRect;
@@ -50,7 +54,7 @@ public abstract class AbstractPolygonClip implements Clip {
 			// intersection
 			Area visibleArea = new Area(visible);
 			Area tileArea = new Area(tileRect);
-			
+
 			visibleArea.intersect(tileArea);
 			return visibleArea;
 		}
@@ -58,6 +62,7 @@ public abstract class AbstractPolygonClip implements Clip {
 
 	/**
 	 * Get the visible area.
+	 * 
 	 * @param viewportBounds the view-port bounds
 	 * @return the visible area in world pixel coordinates
 	 */

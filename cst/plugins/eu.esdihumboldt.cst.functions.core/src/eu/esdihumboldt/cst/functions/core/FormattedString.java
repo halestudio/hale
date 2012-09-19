@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.cst.functions.core;
@@ -37,20 +41,20 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 
 /**
  * Function that creates a formatted string from a pattern and input variables.
+ * 
  * @author Simon Templer
  */
 public class FormattedString extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> 
-		implements FormattedStringFunction {
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
+		FormattedStringFunction {
+
 	@Override
-	protected Object evaluate(String transformationIdentifier,
-			TransformationEngine engine,
+	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
-			PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException, NoResultException {
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException, NoResultException {
 		String pattern = getParameterChecked(PARAMETER_PATTERN);
-		
+
 		// name/value mapping
 		Map<String, Object> values = new LinkedHashMap<String, Object>();
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);
@@ -62,16 +66,16 @@ public class FormattedString extends
 			} catch (ConversionException e) {
 				value = var.getValue();
 			}
-			
+
 			// determine the variable name
 			String name = var.getProperty().getDefinition().getName().getLocalPart();
-			
-			// add with short name, but ensure no variable with only a short name is overridden
-			if (!values.keySet().contains(name)
-					|| var.getProperty().getPropertyPath().size() == 1) {
+
+			// add with short name, but ensure no variable with only a short
+			// name is overridden
+			if (!values.keySet().contains(name) || var.getProperty().getPropertyPath().size() == 1) {
 				values.put(name, value);
 			}
-			
+
 			// add with long name if applicable
 			if (var.getProperty().getPropertyPath().size() > 1) {
 				List<String> names = new ArrayList<String>();
@@ -82,23 +86,22 @@ public class FormattedString extends
 				values.put(longName, value);
 			}
 		}
-		
+
 		// replace markers in pattern
-		//FIXME this is quick and dirty! does not handle escaping
+		// FIXME this is quick and dirty! does not handle escaping
 		int i = 0;
 		for (Entry<String, Object> entry : values.entrySet()) {
 			String name = entry.getKey();
-			pattern = pattern.replaceAll(
-					Pattern.quote("{" + name + "}"), "{" + i + "}");
+			pattern = pattern.replaceAll(Pattern.quote("{" + name + "}"), "{" + i + "}");
 			i++;
 		}
-		
+
 		try {
 			return MessageFormat.format(pattern, values.values().toArray());
 		} catch (IllegalArgumentException e) {
 			// missing inputs result in an invalid pattern
-			//TODO better way to handle missing inputs
-			//FIXME an error should still be reported for invalid patterns
+			// TODO better way to handle missing inputs
+			// FIXME an error should still be reported for invalid patterns
 			throw new NoResultException(e);
 		}
 	}

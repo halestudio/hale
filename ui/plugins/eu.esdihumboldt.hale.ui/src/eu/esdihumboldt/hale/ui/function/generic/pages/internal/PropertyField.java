@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.function.generic.pages.internal;
@@ -27,14 +31,16 @@ import eu.esdihumboldt.hale.ui.function.common.PropertyEntitySelector;
 
 /**
  * Represents named property entities in a function
+ * 
  * @author Simon Templer
  */
 public class PropertyField extends Field<PropertyParameter, PropertyEntitySelector> {
-	
+
 	private TypeEntityDefinition parentType;
 
 	/**
 	 * Create a property field
+	 * 
 	 * @param definition the field definition
 	 * @param ssid the schema space
 	 * @param parent the parent composite
@@ -42,22 +48,22 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	 * @param initialCell the initial cell
 	 * @param parentType the parent type of the properties
 	 */
-	public PropertyField(PropertyParameter definition, SchemaSpaceID ssid,
-			Composite parent, Set<EntityDefinition> candidates, Cell initialCell,
-			TypeEntityDefinition parentType) {
+	public PropertyField(PropertyParameter definition, SchemaSpaceID ssid, Composite parent,
+			Set<EntityDefinition> candidates, Cell initialCell, TypeEntityDefinition parentType) {
 		super(definition, ssid, parent, candidates, initialCell);
-		
+
 		// set the parent type on all added selectors
 		setParentType(parentType);
 	}
 
 	/**
 	 * Set the parent type
+	 * 
 	 * @param parentType the parentType to set
 	 */
 	public void setParentType(TypeEntityDefinition parentType) {
 		this.parentType = parentType;
-		
+
 		// set the parent type on the selectors
 		for (PropertyEntitySelector selector : getSelectors()) {
 			selector.setParentType(parentType);
@@ -65,10 +71,11 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	}
 
 	/**
-	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter, Composite)
+	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter,
+	 *      Composite)
 	 */
 	@Override
-	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid, 
+	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid,
 			PropertyParameter field, Composite parent) {
 		return new PropertyEntitySelector(ssid, field, parent, parentType);
 	}

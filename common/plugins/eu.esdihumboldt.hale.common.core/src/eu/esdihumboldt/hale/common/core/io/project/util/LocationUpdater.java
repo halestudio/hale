@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.io.project.util;
@@ -28,12 +32,14 @@ import eu.esdihumboldt.util.io.PathUpdate;
  * Updates locations in a project's I/O configurations that are not accessible,
  * e.g. because the project file has been moved. The updater allows correcting
  * paths to files that reside relative to the project.
+ * 
  * @author Simon Templer
  */
 public class LocationUpdater {
-	
+
 	/**
-	 * Update locations in the given project. 
+	 * Update locations in the given project.
+	 * 
 	 * @param project the project object
 	 * @param newProjectLoc the new project location
 	 */
@@ -43,7 +49,8 @@ public class LocationUpdater {
 		if (saveconfig == null)
 			return;
 
-		URI targetLoc = URI.create(saveconfig.getProviderConfiguration().get(ExportProvider.PARAM_TARGET));
+		URI targetLoc = URI.create(saveconfig.getProviderConfiguration().get(
+				ExportProvider.PARAM_TARGET));
 		if (!targetLoc.equals(newProjectLoc)) {
 			PathUpdate update = new PathUpdate(targetLoc, newProjectLoc);
 
@@ -65,7 +72,7 @@ public class LocationUpdater {
 					}
 				}
 			}
-			
+
 			// update project file infos
 			for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
 				URI location = fileInfo.getLocation();
@@ -74,8 +81,8 @@ public class LocationUpdater {
 					fileInfo.setLocation(location);
 					/*
 					 * For this the fallback method is not called intentionally,
-					 * as in the project service, this update has no effect,
-					 * as the project files are laready loaded in the
+					 * as in the project service, this update has no effect, as
+					 * the project files are laready loaded in the
 					 * DefaultProjectReader.
 					 */
 				}
@@ -84,9 +91,10 @@ public class LocationUpdater {
 	}
 
 	/**
-	 * Update the path to a resource if automatic update fails.
-	 * The default implementation returns <code>null</code>, which means
-	 * the location is not updated.
+	 * Update the path to a resource if automatic update fails. The default
+	 * implementation returns <code>null</code>, which means the location is not
+	 * updated.
+	 * 
 	 * @param oldLocation the old resource location
 	 * @return the replacement resource location or <code>null</code>
 	 */

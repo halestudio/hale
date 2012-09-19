@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.instance.geometry;
@@ -21,6 +25,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
  * Default implementation of a {@link GeometryProperty}
+ * 
  * @param <T> the geometry type
  * 
  * @author Simon Templer
@@ -28,17 +33,17 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 public class DefaultGeometryProperty<T extends Geometry> implements GeometryProperty<T> {
 
 	private static final long serialVersionUID = 9160846585636648227L;
-	
+
 	private CRSDefinition crsDef;
 	private T geometry;
-	
-	//FIXME use custom mechanism for serialization? e.g. WKB for geometries
+
+	// FIXME use custom mechanism for serialization? e.g. WKB for geometries
 
 	/**
 	 * Create a geometry property
 	 * 
-	 * @param crsDef the definition of the coordinate reference system, may be 
-	 *   <code>null</code>
+	 * @param crsDef the definition of the coordinate reference system, may be
+	 *            <code>null</code>
 	 * @param geometry the geometry
 	 */
 	public DefaultGeometryProperty(CRSDefinition crsDef, T geometry) {
@@ -81,7 +86,7 @@ public class DefaultGeometryProperty<T extends Geometry> implements GeometryProp
 				return "{CRS=" + ident + "} " + geometry.toString();
 			}
 		}
-		
+
 		return geometry.toString();
 	}
 

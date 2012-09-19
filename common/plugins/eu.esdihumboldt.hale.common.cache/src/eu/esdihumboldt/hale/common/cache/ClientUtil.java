@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.cache;
@@ -25,31 +29,32 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 
 /**
-* HTTP client utilities
-* @author Simon Templer, Michel Krämer
-*/
+ * HTTP client utilities
+ * 
+ * @author Simon Templer, Michel Krämer
+ */
 public class ClientUtil {
-	
+
 	/**
 	 * Create a thread safe HTTP client
+	 * 
 	 * @return the created HTTP client
 	 */
 	public static DefaultHttpClient createThreadSafeHttpClient() {
-		//create default scheme registry
+		// create default scheme registry
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
-     schemeRegistry.register(new Scheme("http", 80, //$NON-NLS-1$
-     		PlainSocketFactory.getSocketFactory()));
-     schemeRegistry.register(new Scheme("https", 443, //$NON-NLS-1$
-     		SSLSocketFactory.getSocketFactory()));
-     
-		//create multi-threaded connection manager
+		schemeRegistry.register(new Scheme("http", 80, //$NON-NLS-1$
+				PlainSocketFactory.getSocketFactory()));
+		schemeRegistry.register(new Scheme("https", 443, //$NON-NLS-1$
+				SSLSocketFactory.getSocketFactory()));
+
+		// create multi-threaded connection manager
 		HttpParams params = new BasicHttpParams();
-     HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-     
-     ClientConnectionManager cm =
-     	new ThreadSafeClientConnManager(schemeRegistry);
-     
-     //create HTTP client
+		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+
+		ClientConnectionManager cm = new ThreadSafeClientConnManager(schemeRegistry);
+
+		// create HTTP client
 		return new DefaultHttpClient(cm, params);
 	}
 

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.selection.impl;
 
@@ -29,19 +33,21 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
  * A selection with source and target {@link EntityDefinition}s
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelection {
-	
+
 	private final Set<EntityDefinition> sourceItems = new LinkedHashSet<EntityDefinition>();
-	
+
 	private final Set<EntityDefinition> targetItems = new LinkedHashSet<EntityDefinition>();
-	
+
 	private final SchemaStructuredMode mode;
-	
+
 	/**
-	 * Defines modes specifying the behavior of the selection as {@link IStructuredSelection}
+	 * Defines modes specifying the behavior of the selection as
+	 * {@link IStructuredSelection}
 	 */
 	public enum SchemaStructuredMode {
 		/** Only source items are returned */
@@ -58,7 +64,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public DefaultSchemaSelection() {
 		this(null, null, SchemaStructuredMode.ALL);
 	}
-	
+
 	/**
 	 * Creates a selection that is initialized with the given items
 	 * 
@@ -66,22 +72,21 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	 * @param targetItems the target items
 	 * @param mode the selection structured mode
 	 */
-	public DefaultSchemaSelection(final Collection<EntityDefinition> sourceItems, 
-			final Collection<EntityDefinition> targetItems, 
-			SchemaStructuredMode mode) {
+	public DefaultSchemaSelection(final Collection<EntityDefinition> sourceItems,
+			final Collection<EntityDefinition> targetItems, SchemaStructuredMode mode) {
 		super();
-		
+
 		this.mode = mode;
-		
+
 		if (sourceItems != null) {
 			this.sourceItems.addAll(sourceItems);
 		}
-		
+
 		if (targetItems != null) {
 			this.targetItems.addAll(targetItems);
 		}
 	}
-	
+
 	/**
 	 * Adds a source item
 	 * 
@@ -90,7 +95,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public void addSourceItem(EntityDefinition item) {
 		sourceItems.add(item);
 	}
-	
+
 	/**
 	 * Adds a target item
 	 * 
@@ -99,7 +104,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public void addTargetItem(EntityDefinition item) {
 		targetItems.add(item);
 	}
-	
+
 	/**
 	 * @see SchemaSelection#getSourceItems()
 	 */
@@ -115,7 +120,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public Set<EntityDefinition> getTargetItems() {
 		return Collections.unmodifiableSet(targetItems);
 	}
-	
+
 	/**
 	 * @see SchemaSelection#getFirstSourceItem()
 	 */
@@ -123,7 +128,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public EntityDefinition getFirstSourceItem() {
 		return getFirstItem(SchemaSpaceID.SOURCE);
 	}
-	
+
 	/**
 	 * @see SchemaSelection#getFirstTargetItem()
 	 */
@@ -131,7 +136,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	public EntityDefinition getFirstTargetItem() {
 		return getFirstItem(SchemaSpaceID.TARGET);
 	}
-	
+
 	/**
 	 * @see SchemaSelection#getFirstItem(SchemaSpaceID)
 	 */
@@ -156,8 +161,7 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	 */
 	@Override
 	public Object getFirstElement() {
-		if (!sourceItems.isEmpty() && 
-				!mode.equals(SchemaStructuredMode.ONLY_TARGET)) {
+		if (!sourceItems.isEmpty() && !mode.equals(SchemaStructuredMode.ONLY_TARGET)) {
 			return getFirstSourceItem();
 		}
 		else {
@@ -202,8 +206,8 @@ public class DefaultSchemaSelection implements IStructuredSelection, SchemaSelec
 	 */
 	@Override
 	public List<EntityDefinition> toList() {
-		List<EntityDefinition> list = new ArrayList<EntityDefinition>(
-				sourceItems.size() + targetItems.size());
+		List<EntityDefinition> list = new ArrayList<EntityDefinition>(sourceItems.size()
+				+ targetItems.size());
 		switch (mode) {
 		case ONLY_TARGET:
 			list.addAll(targetItems);

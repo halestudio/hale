@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.graph.content;
@@ -28,29 +32,30 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * Graph entity relationship content provider that models entities and cells as 
- * nodes. Property entites are contained in type entities. Supports an 
- * {@link Alignment}, a {@link Cell} or an {@link Iterable} of {@link Cell}s as 
+ * Graph entity relationship content provider that models entities and cells as
+ * nodes. Property entites are contained in type entities. Supports an
+ * {@link Alignment}, a {@link Cell} or an {@link Iterable} of {@link Cell}s as
  * input.
+ * 
  * @author Simon Templer
  */
-public class NestedCellRelationshipContentProvider extends
-		CellRelationshipContentProvider implements INestedContentProvider {
+public class NestedCellRelationshipContentProvider extends CellRelationshipContentProvider
+		implements INestedContentProvider {
 
 	private Multimap<Type, Property> entityMap = HashMultimap.create();
-	
+
 	/**
 	 * @see CellRelationshipContentProvider#getElements(Object)
 	 */
 	@Override
 	public Object[] getElements(Object input) {
 		List<Object> elements = new ArrayList<Object>();
-		
+
 		entityMap.clear();
-		
+
 		Multimap<TypeDefinition, Type> types = HashMultimap.create();
 		Collection<Property> properties = new ArrayList<Property>();
-		
+
 		for (Object element : super.getElements(input)) {
 			if (element instanceof Type) {
 				Type type = (Type) element;
@@ -64,7 +69,7 @@ public class NestedCellRelationshipContentProvider extends
 				elements.add(element);
 			}
 		}
-		
+
 		// assign properties to corresponding parents
 		for (Property property : properties) {
 			// find association through type definition
@@ -74,7 +79,7 @@ public class NestedCellRelationshipContentProvider extends
 				entityMap.put(type, property);
 			}
 		}
-		
+
 		return elements.toArray();
 	}
 
@@ -100,7 +105,7 @@ public class NestedCellRelationshipContentProvider extends
 		if (element instanceof Type) {
 			return entityMap.get((Type) element).toArray();
 		}
-		
+
 		return null;
 	}
 

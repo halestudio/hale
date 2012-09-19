@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.properties.definition;
@@ -24,32 +28,31 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 
-
 /**
  * Properties section with description
+ * 
  * @author Simon Templer
  */
 public class DefinitionDescriptionSection extends DefaultDefinitionSection<Definition<?>> {
 
 	private Text descriptionText;
-	
+
 	private CLabel namespaceLabel;
 
 	/**
-	 * @see AbstractPropertySection#createControls(Composite, TabbedPropertySheetPage)
+	 * @see AbstractPropertySection#createControls(Composite,
+	 *      TabbedPropertySheetPage)
 	 */
 	@Override
-	public void createControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage) {
+	public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-				.createFlatFormComposite(parent);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
-		
+
 		descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
 				SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 		descriptionText.setEditable(false);
-		//TODO improve layout
+		// TODO improve layout
 		data = new FormData();
 		data.width = 100;
 		data.height = 100;
@@ -59,12 +62,10 @@ public class DefinitionDescriptionSection extends DefaultDefinitionSection<Defin
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		descriptionText.setLayoutData(data);
 
-		namespaceLabel = getWidgetFactory()
-				.createCLabel(composite, "Description:"); //$NON-NLS-1$
+		namespaceLabel = getWidgetFactory().createCLabel(composite, "Description:"); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(descriptionText,
-				-ITabbedPropertyConstants.HSPACE);
+		data.right = new FormAttachment(descriptionText, -ITabbedPropertyConstants.HSPACE);
 		data.top = new FormAttachment(descriptionText, 0, SWT.TOP);
 		namespaceLabel.setLayoutData(data);
 	}
@@ -88,11 +89,11 @@ public class DefinitionDescriptionSection extends DefaultDefinitionSection<Defin
 		}
 		descriptionText.setText(desc);
 	}
-	
+
 	/**
 	 * @return the descriptionText
 	 */
-	public Text getDescription(){
+	public Text getDescription() {
 		return descriptionText;
 	}
 }

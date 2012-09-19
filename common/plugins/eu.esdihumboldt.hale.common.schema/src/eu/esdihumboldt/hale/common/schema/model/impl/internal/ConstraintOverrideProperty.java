@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.schema.model.impl.internal;
@@ -20,11 +24,12 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractPropertyDecorator;
 
 /**
  * Decorator for {@link PropertyDefinition}s that overrides given constraints.
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class ConstraintOverrideProperty extends AbstractPropertyDecorator {
-	
+
 	private final AbstractDefinition<PropertyConstraint> constraints;
 
 	/**
@@ -34,14 +39,14 @@ public class ConstraintOverrideProperty extends AbstractPropertyDecorator {
 	 * @param property the property to decorate
 	 * @param constraints the overriding constraints
 	 */
-	public ConstraintOverrideProperty(PropertyDefinition property, 
+	public ConstraintOverrideProperty(PropertyDefinition property,
 			PropertyConstraint... constraints) {
 		super(property);
-		
+
 		this.constraints = new AbstractDefinition<PropertyConstraint>(property.getName()) {
 			// empty implementation
 		};
-		
+
 		// add constraints
 		for (PropertyConstraint constraint : constraints) {
 			this.constraints.setConstraint(constraint);
@@ -52,13 +57,12 @@ public class ConstraintOverrideProperty extends AbstractPropertyDecorator {
 	 * @see AbstractPropertyDecorator#getConstraint(Class)
 	 */
 	@Override
-	public <T extends PropertyConstraint> T getConstraint(
-			Class<T> constraintType) {
+	public <T extends PropertyConstraint> T getConstraint(Class<T> constraintType) {
 		// return overriding constraint if present
 		if (constraints.hasConstraint(constraintType)) {
 			return constraints.getConstraint(constraintType);
 		}
-		
+
 		return super.getConstraint(constraintType);
 	}
 

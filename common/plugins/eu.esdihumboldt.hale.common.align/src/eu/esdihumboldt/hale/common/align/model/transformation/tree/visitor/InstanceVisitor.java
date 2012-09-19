@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
@@ -44,7 +48,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 
-	//	private static final ALogger log = ALoggerFactory.getLogger(InstanceVisitor.class);
+	// private static final ALogger log =
+	// ALoggerFactory.getLogger(InstanceVisitor.class);
 
 	private FamilyInstance instance;
 	private final TransformationTree tree;
@@ -60,7 +65,8 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 		this.instance = instance;
 		this.tree = tree;
 
-		//TODO support multiple instances with a instance per type basis or even duplication of type source nodes?
+		// TODO support multiple instances with a instance per type basis or
+		// even duplication of type source nodes?
 	}
 
 	/**
@@ -87,15 +93,18 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					// instance does not match filter, don't descend further
 					return false;
 					/*
-					 * XXX What about merged instances? Will this be OK for those?
-					 * A type filter should only apply to the original instance if
-					 * it is merged - but most filters should evaluate the same
+					 * XXX What about merged instances? Will this be OK for
+					 * those? A type filter should only apply to the original
+					 * instance if it is merged - but most filters should
+					 * evaluate the same
 					 */
-				} else {
+				}
+				else {
 					source.setValue(instance); // also sets the node to defined
 					for (FamilyInstance child : instance.getChildren()) {
 						// Find fitting SourceNodes.
-						Collection<SourceNode> candidateNodes = tree.getRootSourceNodes(child.getDefinition());
+						Collection<SourceNode> candidateNodes = tree.getRootSourceNodes(child
+								.getDefinition());
 						for (SourceNode candidateNode : candidateNodes) {
 							filter = candidateNode.getEntityDefinition().getFilter();
 							if (filter == null || filter.match(child)) {
@@ -103,18 +112,22 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 								if (candidateNode.getValue() == null) {
 									candidateNode.setAnnotatedParent(source);
 									source.addAnnotatedChild(candidateNode);
-								} else {
-									// Duplicate here, because there is no guarantee, that the Duplication
-									// Visitor will visit candidateNode after this node.
-									SourceNodeImpl duplicateNode = new SourceNodeImpl(candidateNode.getEntityDefinition(),
+								}
+								else {
+									// Duplicate here, because there is no
+									// guarantee, that the Duplication
+									// Visitor will visit candidateNode after
+									// this node.
+									SourceNodeImpl duplicateNode = new SourceNodeImpl(
+											candidateNode.getEntityDefinition(),
 											candidateNode.getParent(), false);
 									duplicateNode.setAnnotatedParent(source);
 									source.addAnnotatedChild(duplicateNode);
 									duplicateNode.setContext(candidateNode.getContext());
-									candidateNode.getContext().duplicateContext(candidateNode, duplicateNode, Collections.<Cell>emptySet());
+									candidateNode.getContext().duplicateContext(candidateNode,
+											duplicateNode, Collections.<Cell> emptySet());
 									candidateNode = duplicateNode;
 								}
-
 
 								// run instance visitor on that annotated child
 								InstanceVisitor visitor = new InstanceVisitor(child, tree);
@@ -124,15 +137,18 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					}
 					return true;
 				}
-			} else
+			}
+			else
 				return false;
-		} else {
+		}
+		else {
 			Object parentValue = source.getParent().getValue();
 
 			if (parentValue == null || !(parentValue instanceof Group)) {
 				source.setDefined(false);
 				return false;
-			} else {
+			}
+			else {
 				Group parentGroup = (Group) parentValue;
 				Definition<?> currentDef = source.getDefinition();
 
@@ -154,7 +170,8 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 						Object value = values[index];
 						source.setValue(value);
 						return true;
-					} else {
+					}
+					else {
 						source.setDefined(false);
 						return false;
 					}
@@ -169,7 +186,8 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 						return false;
 					}
 
-					// apply condition as filter on values and continue with those values
+					// apply condition as filter on values and continue with
+					// those values
 					Collection<Object> matchedValues = new ArrayList<Object>();
 					for (Object value : values) {
 						// create dummy instance
@@ -197,7 +215,8 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					// annotate with the first value
 					Object value = values[0];
 					source.setValue(value);
-				} else {
+				}
+				else {
 					source.setDefined(false);
 					return false;
 				}

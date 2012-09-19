@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.project;
@@ -24,20 +28,20 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * A menu filled with the list of recently opened
- * files (MRU).
+ * A menu filled with the list of recently opened files (MRU).
+ * 
  * @author Michel Kraemer
  * @author Simon Templer
  */
 public class RecentFilesMenu extends ContributionItem {
-	
+
 	/**
 	 * The string filled in for the gap in the filename
 	 */
 	public static final String FILLSTRING = "...";
-	
+
 	/**
-	 * Maximum length of the string displayed in the menu 
+	 * Maximum length of the string displayed in the menu
 	 */
 	public static final int MAX_LENGTH = 40;
 
@@ -45,54 +49,56 @@ public class RecentFilesMenu extends ContributionItem {
 	 * A selection listener for the menu items
 	 */
 	private static class MenuItemSelectionListener extends SelectionAdapter {
-		
+
 		/**
 		 * The data source to open when the menu item has been selected
 		 */
 		private File file;
-		
+
 		/**
 		 * Default constructor
-		 * @param file the project file to open when the menu item has
-		 * been selected
+		 * 
+		 * @param file the project file to open when the menu item has been
+		 *            selected
 		 */
 		public MenuItemSelectionListener(File file) {
 			this.file = file;
 		}
-		
+
 		/**
 		 * @see SelectionAdapter#widgetSelected(SelectionEvent)
 		 */
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+					ProjectService.class);
 			ps.load(file.toURI());
 		}
 	}
-	
-    /**
-     * @see ContributionItem#isDynamic()
-     */
-    @Override
-    public boolean isDynamic() {
-    	return true;
-    }
-	
+
+	/**
+	 * @see ContributionItem#isDynamic()
+	 */
+	@Override
+	public boolean isDynamic() {
+		return true;
+	}
+
 	/**
 	 * @see ContributionItem#fill(Menu, int)
 	 */
 	@Override
 	public void fill(final Menu menu, int index) {
-		RecentFilesService rfs = (RecentFilesService)PlatformUI
-			.getWorkbench().getService(RecentFilesService.class);
+		RecentFilesService rfs = (RecentFilesService) PlatformUI.getWorkbench().getService(
+				RecentFilesService.class);
 		RecentFilesService.Entry[] entries = rfs.getRecentFiles();
 		if (entries == null || entries.length == 0) {
 			return;
 		}
-		
-		//add separator
+
+		// add separator
 		new MenuItem(menu, SWT.SEPARATOR, index);
-		
+
 		int i = entries.length;
 		for (RecentFilesService.Entry entry : entries) {
 			String file = entry.getFile();
@@ -101,7 +107,7 @@ public class RecentFilesMenu extends ContributionItem {
 			String shortened = shorten(file, MAX_LENGTH, filename.length());
 			String nr = String.valueOf(i);
 			if (i <= 9) {
-				//add mnemonic for the first 9 items
+				// add mnemonic for the first 9 items
 				nr = "&" + nr; //$NON-NLS-1$
 			}
 			mi.setText(nr + "  " + shortened); //$NON-NLS-1$
@@ -116,7 +122,8 @@ public class RecentFilesMenu extends ContributionItem {
 	 * 
 	 * @param file the complete file path to shorten
 	 * @param maxLength the maximum length the shortened verison should have
-	 * @param endKeep the length at the end of the string that should not be removed
+	 * @param endKeep the length at the end of the string that should not be
+	 *            removed
 	 * @return a shortened version of the file path
 	 */
 	public static String shorten(String file, int maxLength, int endKeep) {

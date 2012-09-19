@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.schema.internal;
@@ -50,6 +54,7 @@ import eu.esdihumboldt.hale.ui.service.schema.util.NSTypeTreeContentProvider;
  * @author Kai Schwierczek
  */
 public class EditMappableTypesPage extends WizardPage {
+
 	private final TypeIndex typeIndex;
 	private final SchemaSpaceID spaceID;
 	private final Set<TypeDefinition> changedTypes = new HashSet<TypeDefinition>();
@@ -57,7 +62,7 @@ public class EditMappableTypesPage extends WizardPage {
 	private CheckboxTreeViewer viewer;
 	private NSTypeTreeContentProvider contentProvider;
 	private ICheckStateProvider checkStateProvider;
-	
+
 	private final DefinitionLabelProvider definitionLabels = new DefinitionLabelProvider() {
 
 //		@Override
@@ -72,10 +77,11 @@ public class EditMappableTypesPage extends WizardPage {
 		@Override
 		public Image getImage(Object element) {
 			if (element instanceof String)
-				return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+				return PlatformUI.getWorkbench().getSharedImages()
+						.getImage(ISharedImages.IMG_OBJ_FOLDER);
 			return super.getImage(element);
 		}
-		
+
 	};
 
 	/**
@@ -103,8 +109,9 @@ public class EditMappableTypesPage extends WizardPage {
 		// create filtered tree
 		PatternFilter patternFilter = new PatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new FilteredTree(parent, SWT.BORDER | SWT.CHECK | SWT.H_SCROLL | SWT.V_SCROLL,
-				patternFilter, true) {
+		FilteredTree tree = new FilteredTree(parent, SWT.BORDER | SWT.CHECK | SWT.H_SCROLL
+				| SWT.V_SCROLL, patternFilter, true) {
+
 			@Override
 			protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
 				return new CheckboxTreeViewer(parent, style);
@@ -117,6 +124,7 @@ public class EditMappableTypesPage extends WizardPage {
 		viewer.setContentProvider(contentProvider);
 		viewer.setComparator(new DefinitionComparator());
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -133,6 +141,7 @@ public class EditMappableTypesPage extends WizardPage {
 		viewer.setLabelProvider(definitionLabels);
 		// because elements filtered by FilteredTree lose their checked state:
 		checkStateProvider = new ICheckStateProvider() {
+
 			@Override
 			public boolean isGrayed(Object element) {
 				if (element instanceof String) {
@@ -158,13 +167,14 @@ public class EditMappableTypesPage extends WizardPage {
 						if (isChecked(child))
 							return true;
 					return false;
-				}				
-				return ((TypeDefinition) element).getConstraint(MappingRelevantFlag.class).isEnabled() != changedTypes
-								.contains(element);
+				}
+				return ((TypeDefinition) element).getConstraint(MappingRelevantFlag.class)
+						.isEnabled() != changedTypes.contains(element);
 			}
 		};
 		viewer.setCheckStateProvider(checkStateProvider);
 		viewer.addCheckStateListener(new ICheckStateListener() {
+
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getElement() instanceof String) {
@@ -175,20 +185,24 @@ public class EditMappableTypesPage extends WizardPage {
 							viewer.setChecked(child, event.getChecked());
 							checkStateOfTypeChanged((TypeDefinition) child, event.getChecked());
 						}
-					// only two levels, no need to update any parents or children's children
-				} else
+					// only two levels, no need to update any parents or
+					// children's children
+				}
+				else
 					checkStateOfTypeChanged((TypeDefinition) event.getElement(), event.getChecked());
 			}
 		});
 
 		// filter types which are used in the current alignment
 		viewer.addFilter(new ViewerFilter() {
+
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				if (element instanceof String)
 					return true;
 				TypeDefinition type = (TypeDefinition) element;
-				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+						AlignmentService.class);
 				if (as.getAlignment().getCells(type, spaceID).size() > 0)
 					return false;
 				return true;
@@ -228,8 +242,8 @@ public class EditMappableTypesPage extends WizardPage {
 	@Override
 	public void dispose() {
 		definitionLabels.dispose();
-		
+
 		super.dispose();
 	}
-	
+
 }

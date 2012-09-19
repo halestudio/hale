@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.schemas.explorer;
@@ -34,24 +38,25 @@ import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;
 
 /**
  * Extended label provider for definitions
+ * 
  * @author Simon Templer
  */
-public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider
-		implements TipProvider {
-	
+public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider implements
+		TipProvider {
+
 	private final Color typeCellColor;
 	private final Color propertyCellColor;
 	private final Color augmentedColor;
 	private final Color indirectMappingColor;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public SchemaExplorerLabelProvider() {
 		super();
-		
+
 		final Display display = PlatformUI.getWorkbench().getDisplay();
-		
+
 		typeCellColor = new Color(display, 150, 190, 120);
 		propertyCellColor = new Color(display, 190, 220, 170);
 		augmentedColor = new Color(display, 184, 181, 220);
@@ -66,14 +71,14 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider
 		if (element instanceof EntityDefinition) {
 			element = ((EntityDefinition) element).getDefinition();
 		}
-		
+
 		if (element instanceof Definition<?>) {
 			String description = ((Definition<?>) element).getDescription();
 			if (description != null && !description.isEmpty()) {
 				return description;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -86,7 +91,7 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider
 		propertyCellColor.dispose();
 		augmentedColor.dispose();
 		indirectMappingColor.dispose();
-		
+
 		super.dispose();
 	}
 
@@ -105,39 +110,39 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider
 	@Override
 	public Color getBackground(Object element) {
 		if (element instanceof EntityDefinition) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			Alignment alignment = as.getAlignment();
-			
+
 			EntityDefinition entityDef = (EntityDefinition) element;
-			return getEntityBackground(entityDef, alignment, 
-					entityDef.getPropertyPath().isEmpty());
+			return getEntityBackground(entityDef, alignment, entityDef.getPropertyPath().isEmpty());
 		}
-		
+
 		return null;
 	}
 
-	private Color getEntityBackground(EntityDefinition entityDef,
-			Alignment alignment, boolean isType) {
+	private Color getEntityBackground(EntityDefinition entityDef, Alignment alignment,
+			boolean isType) {
 		// check for directly associated cells
 		Collection<? extends Cell> cells = alignment.getCells(entityDef);
-		
+
 		if (!cells.isEmpty()) {
 			if (isType) {
 				return typeCellColor;
 			}
-			
+
 			for (Cell cell : cells) {
 				if (!AlignmentUtil.isAugmentation(cell)) {
 					return propertyCellColor;
 				}
 			}
-			
-			return augmentedColor; 
+
+			return augmentedColor;
 		}
-		
+
 		// check for cells associated to children of the entity definition
 		cells = alignment.getCells(entityDef.getType(), entityDef.getSchemaSpace());
-		
+
 		for (Cell cell : cells) {
 			ListMultimap<String, ? extends Entity> entities;
 			switch (entityDef.getSchemaSpace()) {
@@ -148,9 +153,10 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider
 				entities = cell.getTarget();
 				break;
 			default:
-				throw new IllegalStateException("Entity definition with illegal schema space encountered");
+				throw new IllegalStateException(
+						"Entity definition with illegal schema space encountered");
 			}
-			
+
 			if (entities != null) {
 				for (Entity entity : entities.values()) {
 					if (AlignmentUtil.isParent(entityDef, entity.getDefinition())) {
@@ -159,7 +165,7 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider
 				}
 			}
 		}
-		
+
 		// default color
 		return null;
 	}

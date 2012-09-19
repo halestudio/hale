@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.util.dialog;
@@ -43,12 +47,13 @@ import org.eclipse.ui.statushandlers.StatusManager;
 /**
  * Extended ErrorDialog which displays the stack trace. Can be configured to
  * also show a link to the error log view.
+ * 
  * @author Michel Kraemer
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
 public class StackTraceErrorDialog extends ErrorDialog {
-	
+
 	/**
 	 * ID of the Error Log view
 	 */
@@ -58,28 +63,29 @@ public class StackTraceErrorDialog extends ErrorDialog {
 	 * The status that should be shown
 	 */
 	private IStatus _status;
-	
+
 	/**
 	 * The current clipboard
 	 */
 	private Clipboard _clipboard;
-	
+
 	/**
 	 * The list that shows the stack trace
 	 */
 	private List _list;
-	
+
 	/**
 	 * If the error log link shall be shown
 	 */
 	private boolean showErrorLogLink = false;
-	
+
 	/**
 	 * Constructs a new error dialog
+	 * 
 	 * @see ErrorDialog#ErrorDialog(Shell, String, String, IStatus, int)
 	 */
-	public StackTraceErrorDialog(Shell parentShell, String dialogTitle,
-			String message, IStatus status, int displayMask) {
+	public StackTraceErrorDialog(Shell parentShell, String dialogTitle, String message,
+			IStatus status, int displayMask) {
 		super(parentShell, dialogTitle, message, status, displayMask);
 		_status = status;
 	}
@@ -98,12 +104,13 @@ public class StackTraceErrorDialog extends ErrorDialog {
 	protected List createDropDownList(Composite parent) {
 		_list = super.createDropDownList(parent);
 		_list.removeAll();
-		
-		//replace context menu
+
+		// replace context menu
 		_list.getMenu().dispose();
 		Menu copyMenu = new Menu(_list);
 		MenuItem copyItem = new MenuItem(copyMenu, SWT.NONE);
 		copyItem.addSelectionListener(new SelectionListener() {
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				copyToClipboard();
@@ -116,11 +123,11 @@ public class StackTraceErrorDialog extends ErrorDialog {
 		});
 		copyItem.setText(JFaceResources.getString("copy")); //$NON-NLS-1$
 		_list.setMenu(copyMenu);
-		
-		//convert stack trace to string
+
+		// convert stack trace to string
 		String stackTrace = stackTraceToString(_status.getException());
 		if (stackTrace != null) {
-			//add stack trace to list
+			// add stack trace to list
 			stackTrace = stackTrace.replaceAll("\r", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			stackTrace = stackTrace.replaceAll("\t", "    "); //$NON-NLS-1$ //$NON-NLS-2$
 			String[] lines = stackTrace.split("\n"); //$NON-NLS-1$
@@ -128,12 +135,13 @@ public class StackTraceErrorDialog extends ErrorDialog {
 				_list.add(l);
 			}
 		}
-		
+
 		return _list;
 	}
-	
+
 	/**
 	 * Creates a string from a stack trace
+	 * 
 	 * @param t the exception
 	 * @return the stack trace as a string
 	 */
@@ -141,14 +149,14 @@ public class StackTraceErrorDialog extends ErrorDialog {
 		if (t == null) {
 			return null;
 		}
-		
+
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PrintWriter pw = new PrintWriter(baos);
 		_status.getException().printStackTrace(pw);
 		pw.flush();
 		return baos.toString();
 	}
-	
+
 	/**
 	 * Copies the stack trace to the clipboard
 	 */
@@ -156,9 +164,9 @@ public class StackTraceErrorDialog extends ErrorDialog {
 		if (_clipboard != null) {
 			_clipboard.dispose();
 		}
-		
+
 		String stackTrace = stackTraceToString(_status.getException());
-		
+
 		_clipboard = new Clipboard(_list.getDisplay());
 		_clipboard.setContents(new Object[] { stackTrace },
 				new Transfer[] { TextTransfer.getInstance() });
@@ -166,15 +174,15 @@ public class StackTraceErrorDialog extends ErrorDialog {
 
 	private Link createShowErrorLogLink(Composite parent) {
 		Link link = new Link(parent, SWT.NONE);
-		link.addSelectionListener(new SelectionAdapter(){
+		link.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
-					Workbench.getInstance().getActiveWorkbenchWindow()
-							.getActivePage().showView(LOG_VIEW_ID);
+					Workbench.getInstance().getActiveWorkbenchWindow().getActivePage()
+							.showView(LOG_VIEW_ID);
 				} catch (CoreException ce) {
-					StatusManager.getManager().handle(ce,
-							WorkbenchPlugin.PI_WORKBENCH);
+					StatusManager.getManager().handle(ce, WorkbenchPlugin.PI_WORKBENCH);
 				}
 			}
 		});
@@ -209,17 +217,17 @@ public class StackTraceErrorDialog extends ErrorDialog {
 			gridData.heightHint = 1;
 			gridData.widthHint = 1;
 			space.setLayoutData(gridData);
-			
+
 			Link link = createShowErrorLogLink(main);
 			link.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		}
-		
+
 		return main;
 	}
-	
-	private boolean shouldDisplayLinkToErrorLog(){
+
+	private boolean shouldDisplayLinkToErrorLog() {
 		/* no support for error log */
-		if(!showErrorLogLink) {
+		if (!showErrorLogLink) {
 			return false;
 		}
 		/* view description */

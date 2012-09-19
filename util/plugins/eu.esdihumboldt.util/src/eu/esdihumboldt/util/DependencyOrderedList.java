@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.util;
 
@@ -19,19 +23,19 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 /**
- * A list where the entries are sorted by dependencies, the dependencies
- * to an entry are before the entry
+ * A list where the entries are sorted by dependencies, the dependencies to an
+ * entry are before the entry
  * 
  * @param <T> the entry type
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class DependencyOrderedList<T> {
-	
+
 	private final List<T> list;
-	
+
 	/**
 	 * Create a new list
 	 * 
@@ -39,9 +43,9 @@ public class DependencyOrderedList<T> {
 	 */
 	public DependencyOrderedList(Map<T, Set<T>> dependencies) {
 		list = new ArrayList<T>(dependencies.size());
-		
+
 		Set<T> alreadyInserted = new HashSet<T>();
-		
+
 		for (Entry<T, Set<T>> entry : dependencies.entrySet()) {
 			if (!alreadyInserted.contains(entry.getKey())) {
 				insert(entry.getKey(), dependencies, alreadyInserted);
@@ -58,58 +62,61 @@ public class DependencyOrderedList<T> {
 	 */
 	private void insert(T object, Map<T, Set<T>> dependencies, Set<T> alreadyInserted) {
 		Set<T> objectDependencies = dependencies.get(object);
-		
+
 		// mark object as inserted to prevent cycle loops
 		alreadyInserted.add(object);
-		
+
 		// initialize last index
 		int lastIndex = -1;
-		
+
 		if (objectDependencies != null) {
 			// find all dependencies that have not yet been inserted
 			for (T dependency : objectDependencies) {
-				if (!alreadyInserted.contains(dependency)) { // prevent cycle loops
+				if (!alreadyInserted.contains(dependency)) { // prevent cycle
+																// loops
 					int index = find(dependency);
-					
+
 					if (index < 0) {
 						// insert dependency
 						insert(dependency, dependencies, alreadyInserted);
 					}
 				}
 			}
-			
-			// determine the index to insert the object at 
+
+			// determine the index to insert the object at
 			for (T dependency : objectDependencies) {
 				int index = find(dependency);
 				lastIndex = Math.max(lastIndex, index);
 			}
 		}
-		
+
 		// the minimum index the item has to be inserted at
 		int minInsertIndex = lastIndex + 1;
-		
+
 		// insert the object
 		list.add(minInsertIndex, object);
 	}
-	
+
 	/**
 	 * Find an object in the list
 	 * 
 	 * @param object the object to find
-	 * @return the object's index or <code>-1</code> if there is no such object in the list
+	 * @return the object's index or <code>-1</code> if there is no such object
+	 *         in the list
 	 */
 	private int find(T object) {
 		return list.indexOf(object);
 	}
-	
+
 	/**
 	 * Add an object where it is sure that none of the others depends on it
+	 * 
 	 * @param object the object to append
 	 */
 	public void append(T object) {
 		list.add(object);
 	}
-	
+
 	/**
 	 * Get an {@link Iterable} over the list's items
 	 * 
@@ -118,7 +125,7 @@ public class DependencyOrderedList<T> {
 	public Iterable<T> getItems() {
 		return list;
 	}
-	
+
 	/**
 	 * Get the internal list, there shouldn't be made any changes to this list.
 	 * 

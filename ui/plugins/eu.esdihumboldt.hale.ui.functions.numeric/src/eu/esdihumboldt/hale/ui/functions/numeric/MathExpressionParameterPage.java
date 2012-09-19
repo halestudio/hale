@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2012 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
 package eu.esdihumboldt.hale.ui.functions.numeric;
 
 import org.eclipse.swt.events.ModifyEvent;
@@ -8,15 +23,18 @@ import com.iabcinc.jmep.Environment;
 import com.iabcinc.jmep.Expression;
 import com.iabcinc.jmep.hooks.Constant;
 
+import eu.esdihumboldt.cst.functions.numeric.MathematicalExpressionFunction;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
-import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
+import eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage;
 
 /**
  * Parameter page for mathematical expression function.
  * 
  * @author Kai Schwierczek
  */
-public class MathExpressionParameterPage extends SourceListParameterPage {
+public class MathExpressionParameterPage extends TextSourceListParameterPage implements
+		MathematicalExpressionFunction {
+
 	private Environment environment = new Environment();
 	private Text textField;
 
@@ -33,29 +51,30 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getParameterName()
+	 * @see TextSourceListParameterPage#getParameterName()
 	 */
 	@Override
 	protected String getParameterName() {
-		return "expression";
+		return PARAMETER_EXPRESSION;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#getSourcePropertyName()
+	 * @see TextSourceListParameterPage#getSourcePropertyName()
 	 */
 	@Override
 	protected String getSourcePropertyName() {
-		return "var";
+		return ENTITY_VARIABLE;
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#configure(org.eclipse.swt.widgets.Text)
+	 * @see TextSourceListParameterPage#configure(Text)
 	 */
 	@Override
 	protected void configure(final Text textField) {
 		super.configure(textField);
 		this.textField = textField;
 		textField.addModifyListener(new ModifyListener() {
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				try {
@@ -76,7 +95,7 @@ public class MathExpressionParameterPage extends SourceListParameterPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#sourcePropertiesChanged(eu.esdihumboldt.hale.common.align.model.EntityDefinition[])
+	 * @see TextSourceListParameterPage#sourcePropertiesChanged(EntityDefinition[])
 	 */
 	@Override
 	protected void sourcePropertiesChanged(EntityDefinition[] variables) {

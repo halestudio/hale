@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.definition.selector;
@@ -24,6 +28,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Selector for type definitions.
+ * 
  * @author Simon Templer
  */
 public class TypeDefinitionSelector extends AbstractSelector<TypeDefinition> {
@@ -33,13 +38,14 @@ public class TypeDefinitionSelector extends AbstractSelector<TypeDefinition> {
 
 	/**
 	 * Create a type definition selector.
+	 * 
 	 * @param parent the parent composite
 	 * @param dialogTitle the title for the selection dialog
 	 * @param typeIndex the types to choose from
 	 * @param filters the view filters or <code>null</code>
 	 */
-	public TypeDefinitionSelector(Composite parent, String dialogTitle, 
-			TypeIndex typeIndex, ViewerFilter[] filters) {
+	public TypeDefinitionSelector(Composite parent, String dialogTitle, TypeIndex typeIndex,
+			ViewerFilter[] filters) {
 		super(parent, new DefinitionLabelProvider(), filters);
 		this.dialogTitle = dialogTitle;
 		this.typeIndex = typeIndex;
@@ -51,8 +57,7 @@ public class TypeDefinitionSelector extends AbstractSelector<TypeDefinition> {
 	@Override
 	protected AbstractViewerSelectionDialog<TypeDefinition, ?> createSelectionDialog(
 			Shell parentShell) {
-		return new TypeDefinitionDialog(parentShell, dialogTitle, 
-				getSelectedObject(), typeIndex);
+		return new TypeDefinitionDialog(parentShell, dialogTitle, getSelectedObject(), typeIndex);
 	}
 
 }

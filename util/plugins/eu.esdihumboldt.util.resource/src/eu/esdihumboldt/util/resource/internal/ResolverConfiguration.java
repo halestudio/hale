@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.util.resource.internal;
@@ -23,28 +27,31 @@ import eu.esdihumboldt.util.resource.ResourceResolver;
 
 /**
  * A resolver and its configuration.
+ * 
  * @author Simon Templer
  */
 public class ResolverConfiguration implements Identifiable {
 
 	private final String id;
-	
+
 	private final String resourceTypeId;
-	
+
 	private final Set<String> hosts = new HashSet<String>();
-	
+
 	private final ResourceResolver resourceResolver;
-	
+
 	/**
 	 * Create a resolver configuration.
+	 * 
 	 * @param id the resolver ID
 	 * @param conf the configuration element
 	 * @throws IllegalStateException if no resolver is defined
 	 */
-	public ResolverConfiguration(String id, IConfigurationElement conf) throws IllegalStateException {
+	public ResolverConfiguration(String id, IConfigurationElement conf)
+			throws IllegalStateException {
 		this.id = id;
 		this.resourceTypeId = conf.getAttribute("resourceType");
-		
+
 		// collect host names
 		for (IConfigurationElement host : conf.getChildren("host")) {
 			String hostName = host.getAttribute("name");
@@ -52,14 +59,14 @@ public class ResolverConfiguration implements Identifiable {
 				hosts.add(hostName);
 			}
 		}
-		
+
 		ResourceResolver resolver = null;
 		// try bundle resolver
 		IConfigurationElement[] bundleResolvers = conf.getChildren("bundleResolver");
 		if (bundleResolvers.length > 0) {
 			resolver = new BundleResolver(bundleResolvers[0]);
 		}
-			
+
 		if (resolver != null) {
 			resourceResolver = resolver;
 		}

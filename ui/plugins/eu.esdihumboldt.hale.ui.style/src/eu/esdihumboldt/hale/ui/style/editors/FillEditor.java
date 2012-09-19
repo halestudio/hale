@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.style.editors;
 
@@ -39,17 +43,17 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class FillEditor implements Editor<Fill> {
-	
+
 	private final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private boolean changed = false;
-	
+
 	private Composite page;
-	
+
 	private final Editor<RGB> color;
-	
+
 	private final Spinner opacity;
-	
+
 	private final SelectionListener changeListener = new SelectionAdapter() {
 
 		/**
@@ -60,45 +64,46 @@ public class FillEditor implements Editor<Fill> {
 			changed = true;
 		}
 	};
-	
+
 	/**
 	 * Creates a {@link Fill} editor
-	 *  
+	 * 
 	 * @param parent the parent composite
 	 * @param fill the initial fill
 	 */
 	public FillEditor(Composite parent, Fill fill) {
 		super();
-		
+
 		page = new Composite(parent, SWT.NONE);
-		
+
 		GridLayout layout = new GridLayout(2, false);
 		page.setLayout(layout);
-		
+
 		GridData caption = new GridData(SWT.END, SWT.CENTER, false, false);
 		GridData editor = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
-		
+
 		// color editor
 		Label label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
 		label.setText(Messages.FillEditor_ColorLabelText);
-		
+
 		Color fillColor = SLD.color(fill);
-		color = new ColorEditor(page, new RGB(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue()));
+		color = new ColorEditor(page, new RGB(fillColor.getRed(), fillColor.getGreen(),
+				fillColor.getBlue()));
 		color.getControl().setLayoutData(editor);
-		
+
 		// opacity spinner
 		caption = new GridData(SWT.END, SWT.CENTER, false, false);
 		editor = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
-		
+
 		label = new Label(page, SWT.NONE);
 		label.setLayoutData(caption);
 		label.setText(Messages.FillEditor_OpacityText);
-		
+
 		Composite opc = new Composite(page, SWT.NONE);
 		opc.setLayoutData(editor);
 		opc.setLayout(new RowLayout(SWT.HORIZONTAL));
-		
+
 		opacity = new Spinner(opc, SWT.BORDER);
 		opacity.setMinimum(0);
 		opacity.setMaximum(100);
@@ -110,7 +115,7 @@ public class FillEditor implements Editor<Fill> {
 			opacity.setSelection(100);
 		}
 		opacity.addSelectionListener(changeListener);
-		
+
 		label = new Label(opc, SWT.NONE);
 		label.setText("%"); //$NON-NLS-1$
 	}
@@ -154,7 +159,7 @@ public class FillEditor implements Editor<Fill> {
 	public void setValue(Fill fill) {
 		Color fillColor = SLD.color(fill);
 		color.setValue(new RGB(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue()));
-		
+
 		try {
 			opacity.setSelection(Math.round(Float.parseFloat(fill.getOpacity().toString()) * 100.0f));
 		} catch (Exception e) {

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.data.internal.explore;
@@ -45,27 +49,27 @@ import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvid
 
 /**
  * Instance explorer
+ * 
  * @author Simon Templer
  */
 public class InstanceExplorer implements InstanceViewer {
-	
-	private final SimpleInstanceSelectionProvider selectionProvider = 
-			new SimpleInstanceSelectionProvider();
+
+	private final SimpleInstanceSelectionProvider selectionProvider = new SimpleInstanceSelectionProvider();
 
 	private Composite selectorComposite;
-	
+
 	private Composite main;
-	
+
 	private TreeViewer viewer;
-	
+
 	private List<Instance> instances = new ArrayList<Instance>();
-	
+
 	private List<Control> selectButtons = new ArrayList<Control>();
-	
+
 	private int selectedIndex = 0;
 
 	private final SelectionListener selectListener = new SelectionAdapter() {
-		
+
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			int index = 0;
@@ -75,13 +79,13 @@ public class InstanceExplorer implements InstanceViewer {
 					updateSelection();
 					return;
 				}
-				
+
 				index++;
 			}
 		}
-		
+
 	};
-	
+
 	/**
 	 * @see InstanceViewer#createControls(Composite)
 	 */
@@ -89,33 +93,32 @@ public class InstanceExplorer implements InstanceViewer {
 	public void createControls(Composite parent) {
 		main = new Composite(parent, SWT.NONE);
 		main.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
-		
+
 		// selector composite
 		selectorComposite = new Composite(main, SWT.NONE);
 		selectorComposite.setLayoutData(GridDataFactory.swtDefaults().create());
 		selectorComposite.setLayout(GridLayoutFactory.fillDefaults().create());
-		
+
 		// viewer composite
 		Composite viewerComposite = new Composite(main, SWT.NONE);
-		viewerComposite.setLayoutData(GridDataFactory.fillDefaults()
-				.grab(true, true).create());
+		viewerComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		TreeColumnLayout layout = new TreeColumnLayout();
 		viewerComposite.setLayout(layout);
 		viewer = new TreeViewer(viewerComposite, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 		viewer.getTree().setLinesVisible(true);
-		
+
 		// set content provider
 		viewer.setContentProvider(new InstanceContentProvider());
 		viewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
-		//TODO set label provider?
-		
+		// TODO set label provider?
+
 		// add definition columns
 		TreeViewerColumn column = new TreeViewerColumn(viewer, SWT.LEFT);
 		column.getColumn().setText("Definition");
-		column.setLabelProvider(new TreeColumnViewerLabelProvider(
-				new PairLabelProvider(true, new DefinitionMetaLabelProvider(false, true))));
+		column.setLabelProvider(new TreeColumnViewerLabelProvider(new PairLabelProvider(true,
+				new DefinitionMetaLabelProvider(false, true))));
 		layout.setColumnData(column.getColumn(), new ColumnWeightData(1));
-		
+
 		// add value column
 		column = new TreeViewerColumn(viewer, SWT.LEFT);
 		column.getColumn().setText("Value");
@@ -123,12 +126,12 @@ public class InstanceExplorer implements InstanceViewer {
 //				new PairLabelProvider(false, new LabelProvider())));
 
 		ColumnViewerToolTipSupport.enableFor(viewer);
-				
+
 		layout.setColumnData(column.getColumn(), new ColumnWeightData(1));
-		
+
 		update();
 	}
-	
+
 	/**
 	 * Update the controls.
 	 */
@@ -138,26 +141,27 @@ public class InstanceExplorer implements InstanceViewer {
 			button.dispose();
 		}
 		selectButtons.clear();
-		
-		selectorComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(
-				(instances.isEmpty())?(1):(instances.size())).margins(3, 0).create());
-		
+
+		selectorComposite.setLayout(GridLayoutFactory.swtDefaults()
+				.numColumns((instances.isEmpty()) ? (1) : (instances.size())).margins(3, 0)
+				.create());
+
 		// create new buttons for each instance
 		for (int index = 0; index < instances.size(); index++) {
 			Button button = new Button(selectorComposite, SWT.RADIO);
 			button.setText("#" + (index + 1));
 			button.setSelection(selectedIndex == index);
 			button.addSelectionListener(selectListener);
-			
+
 			selectButtons.add(button);
 		}
-		
+
 		if (selectButtons.isEmpty()) {
 			Label none = new Label(selectorComposite, SWT.NONE);
 			none.setText("No matching instances available");
 			selectButtons.add(none);
 		}
-		
+
 		if (selectedIndex >= selectButtons.size()) {
 			selectedIndex = 0;
 			if (!selectButtons.isEmpty()) {
@@ -167,11 +171,11 @@ public class InstanceExplorer implements InstanceViewer {
 				}
 			}
 		}
-		
+
 		// both layout steps needed
 		selectorComposite.layout();
 		selectorComposite.getParent().layout();
-		
+
 		updateSelection();
 	}
 

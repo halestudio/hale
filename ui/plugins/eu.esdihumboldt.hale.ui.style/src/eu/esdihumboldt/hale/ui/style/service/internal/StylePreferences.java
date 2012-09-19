@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.style.service.internal;
@@ -27,21 +31,21 @@ import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 
 /**
  * Style perferences
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class StylePreferences extends
-		AbstractPreferenceInitializer implements StylePreferenceConstants {
+public class StylePreferences extends AbstractPreferenceInitializer implements
+		StylePreferenceConstants {
 
 	private static final RGB SOURCE_DEFAULT_COLOR = new RGB(57, 75, 95);
-	
+
 	private static final RGB TRANSFORMED_DEFAULT_COLOR = new RGB(90, 25, 90);
-	
+
 	private static final RGB DEFAULT_BACKGROUND = new RGB(126, 166, 210);
-	
+
 	private static final RGB DEFAULT_SELECTION_COLOR = new RGB(255, 0, 0);
-	
+
 	static final Set<String> ALL_KEYS = new HashSet<String>();
 	static {
 		ALL_KEYS.add(KEY_DEFAULT_BACKGROUND);
@@ -58,19 +62,24 @@ public class StylePreferences extends
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore preferences = InstanceStylePlugin.getDefault().getPreferenceStore();
-		
-		preferences.setDefault(KEY_SOURCE_DEFAULT_COLOR, StringConverter.asString(SOURCE_DEFAULT_COLOR));
-		preferences.setDefault(KEY_TRANSFORMED_DEFAULT_COLOR, StringConverter.asString(TRANSFORMED_DEFAULT_COLOR));
+
+		preferences.setDefault(KEY_SOURCE_DEFAULT_COLOR,
+				StringConverter.asString(SOURCE_DEFAULT_COLOR));
+		preferences.setDefault(KEY_TRANSFORMED_DEFAULT_COLOR,
+				StringConverter.asString(TRANSFORMED_DEFAULT_COLOR));
 		preferences.setDefault(KEY_DEFAULT_WIDTH, StringConverter.asString(1));
-		preferences.setDefault(KEY_DEFAULT_BACKGROUND, StringConverter.asString(DEFAULT_BACKGROUND));
-		
-		preferences.setDefault(KEY_SELECTION_COLOR, StringConverter.asString(DEFAULT_SELECTION_COLOR));
+		preferences
+				.setDefault(KEY_DEFAULT_BACKGROUND, StringConverter.asString(DEFAULT_BACKGROUND));
+
+		preferences.setDefault(KEY_SELECTION_COLOR,
+				StringConverter.asString(DEFAULT_SELECTION_COLOR));
 		preferences.setDefault(KEY_SELECTION_WIDTH, StringConverter.asString(2));
 	}
-	
+
 	/**
 	 * Get the default color for the given data set.
-	 * @param dataSet the data set 
+	 * 
+	 * @param dataSet the data set
 	 * @return the default color
 	 */
 	public static Color getDefaultColor(DataSet dataSet) {
@@ -82,7 +91,7 @@ public class StylePreferences extends
 			return getColor(KEY_SOURCE_DEFAULT_COLOR);
 		}
 	}
-	
+
 	/**
 	 * Get the default width
 	 * 
@@ -92,7 +101,7 @@ public class StylePreferences extends
 		IPreferenceStore preferences = InstanceStylePlugin.getDefault().getPreferenceStore();
 		return preferences.getInt(KEY_DEFAULT_WIDTH);
 	}
-	
+
 	/**
 	 * Get the selection color
 	 * 
@@ -101,7 +110,7 @@ public class StylePreferences extends
 	public static Color getSelectionColor() {
 		return getColor(KEY_SELECTION_COLOR);
 	}
-	
+
 	/**
 	 * Get the selection width
 	 * 
@@ -114,7 +123,7 @@ public class StylePreferences extends
 
 	private static Color getColor(String colorKey) {
 		IPreferenceStore preferences = InstanceStylePlugin.getDefault().getPreferenceStore();
-		
+
 		String color = preferences.getString(colorKey);
 		if (color == null) {
 			return null;
@@ -132,7 +141,7 @@ public class StylePreferences extends
 	 */
 	public static RGB getDefaultBackground() {
 		IPreferenceStore preferences = InstanceStylePlugin.getDefault().getPreferenceStore();
-		
+
 		String color = preferences.getString(KEY_DEFAULT_BACKGROUND);
 		return StringConverter.asRGB(color);
 	}

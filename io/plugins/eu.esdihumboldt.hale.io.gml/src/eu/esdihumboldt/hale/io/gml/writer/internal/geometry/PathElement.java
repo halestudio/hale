@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
@@ -18,7 +22,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Path element in a definition path
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -31,12 +35,12 @@ public interface PathElement {
 	 * @return the element name
 	 */
 	public abstract QName getName();
-	
+
 	/**
 	 * Get the path element type definition.
 	 * 
-	 * @return the path element type definition, , may be <code>null</code>
-	 *   if the element is transient
+	 * @return the path element type definition, , may be <code>null</code> if
+	 *         the element is transient
 	 */
 	public abstract TypeDefinition getType();
 
@@ -47,14 +51,15 @@ public interface PathElement {
 	 * @return if this path element represents a property
 	 */
 	public abstract boolean isProperty();
-	
+
 	/**
 	 * Determines if the the path element is transient and thus doesn't
 	 * represent an element.
+	 * 
 	 * @return if the element is transient
 	 */
 	public boolean isTransient();
-	
+
 	/**
 	 * Determines if this path element represents a type downcast. This means
 	 * xsi:type has to be used when writing this element.
@@ -62,13 +67,12 @@ public interface PathElement {
 	 * @return if this path element represents a type downcast
 	 */
 	public boolean isDowncast();
-	
+
 	/**
 	 * Determines if this path element represents an element that can't be
 	 * repeated.
 	 * 
-	 * @return if this path element represents an element that can't be
-	 *   repeated
+	 * @return if this path element represents an element that can't be repeated
 	 */
 	public boolean isUnique();
 

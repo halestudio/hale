@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.report;
@@ -26,34 +30,36 @@ import eu.esdihumboldt.util.definition.AbstractObjectFactory;
 
 /**
  * Factory for Reports.
+ * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 @SuppressWarnings("rawtypes")
 public class ReportFactory extends AbstractObjectFactory<Report, ReportDefinition<?>> {
-	
+
 	/**
 	 * Extension point ID
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.report";
-	
+
 	/**
 	 * Logger
 	 */
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportFactory.class);
-	
+
 	private final ReportDefintions reportExtension = new ReportDefintions();
-	
+
 	/**
-	 * Contains all {@link ReportDefinition} for {@link MessageFactory#getDefinitions()}.
+	 * Contains all {@link ReportDefinition} for
+	 * {@link MessageFactory#getDefinitions()}.
 	 */
 	private ArrayList<ReportDefinition<?>> reportDefinitions = new ArrayList<ReportDefinition<?>>();
-	
+
 	/**
 	 * Instance
 	 */
 	private static ReportFactory _instance;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -61,7 +67,7 @@ public class ReportFactory extends AbstractObjectFactory<Report, ReportDefinitio
 		/* nothing */
 		super();
 	}
-	
+
 	/**
 	 * Get the instance of this factory.
 	 * 
@@ -71,17 +77,18 @@ public class ReportFactory extends AbstractObjectFactory<Report, ReportDefinitio
 		if (_instance == null) {
 			_instance = new ReportFactory();
 		}
-		
+
 		return _instance;
 	}
-	
+
 	/**
 	 * 
 	 * @author Andreas Burchert
 	 * @partner 01 / Fraunhofer Institute for Computer Graphics Research
 	 */
-	public static class ReportDefintions extends AbstractExtension<ReportDefinition<?>, ExtensionObjectFactory<ReportDefinition<?>>> {
-		
+	public static class ReportDefintions extends
+			AbstractExtension<ReportDefinition<?>, ExtensionObjectFactory<ReportDefinition<?>>> {
+
 		/**
 		 * Default constructor
 		 */
@@ -112,14 +119,13 @@ public class ReportFactory extends AbstractObjectFactory<Report, ReportDefinitio
 					public String getIdentifier() {
 						return conf.getAttribute("id");
 					}
-					
+
 				};
 			}
-			
+
 			return null;
 		}
 	}
-
 
 	/**
 	 * @see eu.esdihumboldt.util.definition.AbstractObjectFactory#getDefinitions()
@@ -130,13 +136,14 @@ public class ReportFactory extends AbstractObjectFactory<Report, ReportDefinitio
 		if (this.reportDefinitions.size() > 0) {
 			return this.reportDefinitions;
 		}
-		
+
 		// get all factories
-		List<ExtensionObjectFactory<ReportDefinition<?>>> factories = reportExtension.getFactories();
-		
-		//create arrayliet
+		List<ExtensionObjectFactory<ReportDefinition<?>>> factories = reportExtension
+				.getFactories();
+
+		// create arrayliet
 		List<ReportDefinition<?>> result = new ArrayList<ReportDefinition<?>>();
-		
+
 		// iterate through factories and create ReportDefinition
 		for (ExtensionObjectFactory<ReportDefinition<?>> r : factories) {
 			try {
@@ -146,7 +153,7 @@ public class ReportFactory extends AbstractObjectFactory<Report, ReportDefinitio
 				_log.error("Error during object creation", e);
 			}
 		}
-		
+
 		this.reportDefinitions.addAll(result);
 		return result;
 	}

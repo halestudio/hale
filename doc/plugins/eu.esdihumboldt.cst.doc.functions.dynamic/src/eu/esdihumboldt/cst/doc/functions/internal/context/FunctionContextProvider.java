@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.cst.doc.functions.internal.context;
@@ -27,9 +31,11 @@ import eu.esdihumboldt.hale.doc.util.context.SingleTopicContext;
 
 /**
  * Provides contexts related to functions
+ * 
  * @author Simon Templer
  */
-public class FunctionContextProvider extends AbstractContextProvider implements FunctionReferenceConstants {
+public class FunctionContextProvider extends AbstractContextProvider implements
+		FunctionReferenceConstants {
 
 	/**
 	 * Context function topic
@@ -48,8 +54,7 @@ public class FunctionContextProvider extends AbstractContextProvider implements 
 		 */
 		@Override
 		public String getLabel() {
-			return MessageFormat.format(
-					"{0} (Function Reference)", super.getLabel());
+			return MessageFormat.format("{0} (Function Reference)", super.getLabel());
 		}
 
 	}
@@ -68,11 +73,11 @@ public class FunctionContextProvider extends AbstractContextProvider implements 
 	public IContext getContext(String contextId, String locale) {
 		// It is not possible to use dots (.) in the context id to identify the
 		// function, because it will be treated as part of the bundle name. So
-		// the function identifier is encoded using ONameUtil 
+		// the function identifier is encoded using ONameUtil
 		int index = contextId.lastIndexOf('.');
 		String pluginId = contextId.substring(0, index);
 		String shortContextId = contextId.substring(index + 1);
-		
+
 		if (pluginId.equals(PLUGIN_ID)) {
 			try {
 				String functionId = ONameUtil.decodeName(shortContextId);
@@ -83,16 +88,14 @@ public class FunctionContextProvider extends AbstractContextProvider implements 
 					if (description == null) {
 						description = function.getDisplayName();
 					}
-					return new SingleTopicContext(
-							function.getDisplayName(),
-							description, //XXX add more info to context (e.g. title?)  
-							topic);
+					return new SingleTopicContext(function.getDisplayName(), description, topic);
+					// XXX add more info to context (e.g. title?)
 				}
 			} catch (DecoderException e) {
 				// no valid function ID
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -102,7 +105,7 @@ public class FunctionContextProvider extends AbstractContextProvider implements 
 	@Override
 	public String[] getPlugins() {
 		// provides only contexts for this bundle
-		return new String[]{PLUGIN_ID};
+		return new String[] { PLUGIN_ID };
 	}
 
 }

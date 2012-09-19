@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.io;
@@ -34,15 +38,16 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
 
 /**
  * Wizard page that allows selecting an I/O provider
+ * 
  * @param <W> the concrete I/O wizard type
  * @param <P> the {@link IOProvider} type used in the wizard
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public class ExportSelectProviderPage<P extends ExportProvider, 
-	W extends ExportWizard<P>> extends IOWizardPage<P, W> {
+public class ExportSelectProviderPage<P extends ExportProvider, W extends ExportWizard<P>> extends
+		IOWizardPage<P, W> {
 
 	/**
 	 * Default constructor
@@ -59,7 +64,7 @@ public class ExportSelectProviderPage<P extends ExportProvider,
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(1, false));
-		
+
 		// create provider combo
 		ComboViewer providers = new ComboViewer(page, SWT.DROP_DOWN | SWT.READ_ONLY);
 		providers.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
@@ -73,25 +78,24 @@ public class ExportSelectProviderPage<P extends ExportProvider,
 				}
 				return super.getText(element);
 			}
-			
+
 		});
 		Collection<IOProviderDescriptor> factories = getWizard().getFactories();
 		providers.setInput(factories);
-		
+
 		// set selection
 		if (!factories.isEmpty()) {
-			providers.setSelection(new StructuredSelection(
-					factories.iterator().next()), true);
+			providers.setSelection(new StructuredSelection(factories.iterator().next()), true);
 		}
-		
+
 		// process current selection
 		ISelection selection = providers.getSelection();
 		setPageComplete(!selection.isEmpty());
 		updateWizard(selection);
-		
+
 		// process selection changes
 		providers.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
@@ -102,7 +106,7 @@ public class ExportSelectProviderPage<P extends ExportProvider,
 	}
 
 	/**
-	 * Update the wizard 
+	 * Update the wizard
 	 * 
 	 * @param selection the current selection
 	 */
@@ -116,7 +120,7 @@ public class ExportSelectProviderPage<P extends ExportProvider,
 			providerFactoryChanged((IOProviderDescriptor) element);
 		}
 	}
-	
+
 	/**
 	 * Called when the provider factory has been initialized or changed
 	 * 

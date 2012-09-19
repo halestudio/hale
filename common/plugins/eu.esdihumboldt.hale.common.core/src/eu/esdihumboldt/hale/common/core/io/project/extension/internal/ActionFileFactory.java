@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.io.project.extension.internal;
@@ -25,14 +29,16 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 
 /**
  * Factory for I/O action related project files
+ * 
  * @author Simon Templer
  */
 public class ActionFileFactory implements ProjectFileFactory {
 
 	private final IConfigurationElement conf;
-	
+
 	/**
 	 * Create a factory based on the given configuration
+	 * 
 	 * @param element the configuration element
 	 */
 	public ActionFileFactory(IConfigurationElement element) {
@@ -61,9 +67,9 @@ public class ActionFileFactory implements ProjectFileFactory {
 			loadProviderId = load[0].getAttribute("provider");
 			addParameters(loadParameters, load[0]);
 		}
-		
+
 		checkNotNull(loadActionId, "Action ID for loading the project file not specified");
-		
+
 		String saveActionId = null;
 		String saveProviderId = null;
 		Map<String, String> saveParameters = new HashMap<String, String>();
@@ -73,20 +79,17 @@ public class ActionFileFactory implements ProjectFileFactory {
 			saveProviderId = save[0].getAttribute("provider");
 			addParameters(saveParameters, save[0]);
 		}
-		
+
 		checkNotNull(saveActionId, "Action ID for saving the project file not specified");
-		
-		return new ActionProjectFile(loadActionId, loadProviderId, loadParameters,
-				saveActionId, saveProviderId, saveParameters);
+
+		return new ActionProjectFile(loadActionId, loadProviderId, loadParameters, saveActionId,
+				saveProviderId, saveParameters);
 	}
 
-	private void addParameters(Map<String, String> parameterMap,
-			IConfigurationElement conf) {
+	private void addParameters(Map<String, String> parameterMap, IConfigurationElement conf) {
 		IConfigurationElement[] parameters = conf.getChildren("parameter");
 		for (IConfigurationElement parameter : parameters) {
-			parameterMap.put(
-					parameter.getAttribute("name"), 
-					parameter.getAttribute("value"));
+			parameterMap.put(parameter.getAttribute("name"), parameter.getAttribute("value"));
 		}
 	}
 

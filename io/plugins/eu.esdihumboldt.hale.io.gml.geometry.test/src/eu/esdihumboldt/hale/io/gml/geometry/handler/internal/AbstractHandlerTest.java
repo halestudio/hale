@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler.internal;
@@ -42,44 +46,53 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 /**
  * Base class for handler tests.
+ * 
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
 public abstract class AbstractHandlerTest {
-	
+
 	/**
 	 * Test namespace
 	 */
 	public static final String NS_TEST = "eu:esdihumboldt:hale:test";
-	
+
 	/**
 	 * The geometry factory instance
 	 */
 	protected GeometryFactory geomFactory;
-	
+
 	/**
 	 * Prepare the conversion service
 	 */
 	@BeforeClass
 	public static void initAll() {
 		List<String> bundlesToStart = new ArrayList<String>();
-		bundlesToStart.add("org.springframework.osgi.core"); // for osgi extensions in application context
-		bundlesToStart.add("org.springframework.osgi.extender"); // activate the extender
-		bundlesToStart.add("eu.esdihumboldt.hale.common.convert"); // activate the conversion service
-		
+		bundlesToStart.add("org.springframework.osgi.core"); // for osgi
+																// extensions in
+																// application
+																// context
+		bundlesToStart.add("org.springframework.osgi.extender"); // activate the
+																	// extender
+		bundlesToStart.add("eu.esdihumboldt.hale.common.convert"); // activate
+																	// the
+																	// conversion
+																	// service
+
 		Map<String, Bundle> bundles = new HashMap<String, Bundle>();
 		BundleContext context = OsgiUtilsActivator.getInstance().getContext();
 		for (Bundle bundle : context.getBundles()) {
 			bundles.put(bundle.getSymbolicName(), bundle);
 		}
-		
+
 		for (String bundleName : bundlesToStart) {
 			Bundle bundle = bundles.get(bundleName);
 			if (bundle != null) {
 				try {
 					bundle.start();
 					System.out.println("Attempting to start bundle " + bundle.getSymbolicName());
-					Thread.sleep(2000); //XXX wait for start to have finished FIXME improve
+					Thread.sleep(2000); // XXX wait for start to have finished
+										// FIXME improve
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -90,45 +103,45 @@ public abstract class AbstractHandlerTest {
 			}
 		}
 	}
-	
+
 	/**
 	 * Initialize the test class.
 	 */
 	@Before
 	public void init() {
 		geomFactory = new GeometryFactory();
-		
+
 		PropertyResolver.clearCache();
 	}
-	
+
 	/**
 	 * Load an instance collection from a GML file.
+	 * 
 	 * @param schemaLocation the GML application schema location
 	 * @param xmlLocation the GML file location
 	 * @return the instance collection
 	 * @throws IOException if reading schema or instances failed
-	 * @throws IOProviderConfigurationException if the I/O providers were 
-	 *   not configured correctly
+	 * @throws IOProviderConfigurationException if the I/O providers were not
+	 *             configured correctly
 	 */
-	public static InstanceCollection loadXMLInstances(URI schemaLocation,
-			URI xmlLocation) throws IOException,
-			IOProviderConfigurationException {
+	public static InstanceCollection loadXMLInstances(URI schemaLocation, URI xmlLocation)
+			throws IOException, IOProviderConfigurationException {
 		SchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(null);
 		reader.setSource(new DefaultInputSupplier(schemaLocation));
 		IOReport schemaReport = reader.execute(null);
 		assertTrue(schemaReport.isSuccess());
 		Schema sourceSchema = reader.getSchema();
-		
+
 		InstanceReader instanceReader = new GmlInstanceReader();
-		
+
 		instanceReader.setSource(new DefaultInputSupplier(xmlLocation));
 		instanceReader.setSourceSchema(sourceSchema);
-		
+
 		IOReport instanceReport = instanceReader.execute(null);
 		assertTrue(instanceReport.isSuccess());
-		
-		return instanceReader.getInstances();	
+
+		return instanceReader.getInstances();
 	}
 
 }

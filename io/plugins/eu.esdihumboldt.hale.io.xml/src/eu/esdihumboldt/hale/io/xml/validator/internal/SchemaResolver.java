@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.xml.validator.internal;
@@ -31,7 +35,7 @@ import eu.esdihumboldt.util.resource.Resources;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class SchemaResolver implements LSResourceResolver {
-	
+
 	private final URI mainSchemaURI;
 
 	/**
@@ -45,11 +49,12 @@ public class SchemaResolver implements LSResourceResolver {
 	}
 
 	/**
-	 * @see LSResourceResolver#resolveResource(String, String, String, String, String)
+	 * @see LSResourceResolver#resolveResource(String, String, String, String,
+	 *      String)
 	 */
 	@Override
-	public LSInput resolveResource(String type, String namespaceURI,
-			String publicId, String systemId, String baseURI) {
+	public LSInput resolveResource(String type, String namespaceURI, String publicId,
+			String systemId, String baseURI) {
 		String schemaLocation;
 		if (baseURI != null) {
 			schemaLocation = baseURI.substring(0, baseURI.lastIndexOf("/") + 1); //$NON-NLS-1$
@@ -70,13 +75,13 @@ public class SchemaResolver implements LSResourceResolver {
 		} catch (URISyntaxException e1) {
 			return null;
 		}
-		
+
 		InputStream inputStream = null;
-		
+
 		// try resolving using (local) Resources
 		try {
-			InputSupplier<? extends InputStream> input = Resources.tryResolve(
-					uri, Resources.RESOURCE_TYPE_XML_SCHEMA);
+			InputSupplier<? extends InputStream> input = Resources.tryResolve(uri,
+					Resources.RESOURCE_TYPE_XML_SCHEMA);
 			if (input != null) {
 				inputStream = input.getInput();
 			}
@@ -92,7 +97,7 @@ public class SchemaResolver implements LSResourceResolver {
 				// ignore
 			}
 		}
-		
+
 		// fall-back
 		if (inputStream == null) {
 			try {

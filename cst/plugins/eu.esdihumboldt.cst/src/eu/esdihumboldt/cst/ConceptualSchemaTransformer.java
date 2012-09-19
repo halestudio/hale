@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.cst;
@@ -26,6 +30,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.cst.internal.EngineManager;
+import eu.esdihumboldt.cst.internal.TransformationContext;
 import eu.esdihumboldt.cst.internal.TreePropertyTransformer;
 import eu.esdihumboldt.cst.internal.util.CountingInstanceSink;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension;
@@ -60,87 +65,96 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Transformation service implementation
+ * 
  * @author Simon Templer
  * @since 2.5
  */
-@Immutable // stateless
+@Immutable
+// stateless
 public class ConceptualSchemaTransformer implements TransformationService {
 
 	/**
-	 * @see TransformationService#transform(Alignment, InstanceCollection, InstanceSink, ProgressIndicator)
+	 * @see TransformationService#transform(Alignment, InstanceCollection,
+	 *      InstanceSink, ProgressIndicator)
 	 */
 	@Override
 	public TransformationReport transform(Alignment alignment, InstanceCollection source,
 			InstanceSink target, ProgressIndicator progressIndicator) {
 		TransformationReporter reporter = new DefaultTransformationReporter(
 				"Instance transformation", true);
-		
+		TransformationContext context = new TransformationContext();
+
 		final SubtaskProgressIndicator sub = new SubtaskProgressIndicator(progressIndicator) {
 
 			@Override
-			protected String getCombinedTaskName(String taskName,
-					String subtaskName) {
+			protected String getCombinedTaskName(String taskName, String subtaskName) {
 				return taskName + " (" + subtaskName + ")";
 			}
-			
+
 		};
 		progressIndicator = sub;
-		
+
 		target = new CountingInstanceSink(target) {
-			
+
 			private long lastUpdate = 0;
 
 			@Override
 			protected void countChanged(int count) {
 				long now = System.currentTimeMillis();
-				if (now - lastUpdate > 100) { // only update every 100 milliseconds
+				if (now - lastUpdate > 100) { // only update every 100
+												// milliseconds
 					lastUpdate = now;
 					sub.subTask(count + " transformed instances");
 				}
 			}
-			
+
 		};
-		
+
 		progressIndicator.begin("Transformation", ProgressIndicator.UNKNOWN);
 		try {
 			EngineManager engines = new EngineManager();
-			
-			PropertyTransformer transformer = new TreePropertyTransformer(
-					alignment, reporter, target, engines);
-			
-			TypeTransformationExtension typesTransformations = 
-					TypeTransformationExtension.getInstance();
-			
+
+			PropertyTransformer transformer = new TreePropertyTransformer(alignment, reporter,
+					target, engines, context);
+
+			TypeTransformationExtension typesTransformations = TypeTransformationExtension
+					.getInstance();
+
 			Collection<? extends Cell> typeCells = alignment.getTypeCells();
 			for (Cell typeCell : typeCells) {
 				if (progressIndicator.isCanceled()) {
 					break;
 				}
-				
-				List<TypeTransformationFactory> transformations = typesTransformations.getTransformations(typeCell.getTransformationIdentifier());
-				
+
+				List<TypeTransformationFactory> transformations = typesTransformations
+						.getTransformations(typeCell.getTransformationIdentifier());
+
 				if (transformations == null || transformations.isEmpty()) {
-					reporter.error(new TransformationMessageImpl(typeCell, 
-							MessageFormat.format("No transformation for function {0} found. Skipped type transformation.",
-									typeCell.getTransformationIdentifier()), null));
+					reporter.error(new TransformationMessageImpl(
+							typeCell,
+							MessageFormat
+									.format("No transformation for function {0} found. Skipped type transformation.",
+											typeCell.getTransformationIdentifier()), null));
 				}
 				else {
-					//TODO select based on e.g. preferred transformation engine?
+					// TODO select based on e.g. preferred transformation
+					// engine?
 					TypeTransformationFactory transformation = transformations.iterator().next();
-					
-					doTypeTransformation(transformation, typeCell, source, target, 
-							alignment, engines, transformer, reporter, progressIndicator);
+
+					doTypeTransformation(transformation, typeCell, source, target, alignment,
+							engines, transformer, context, reporter, progressIndicator);
 				}
 			}
-			
+
 			progressIndicator.setCurrentTask("Wait for property transformer to complete");
 
 			// wait for the property transformer to complete
-			// cancel property transformations if process was canceled - this may leave transformed instances in inconsistent state
+			// cancel property transformations if process was canceled - this
+			// may leave transformed instances in inconsistent state
 			transformer.join(progressIndicator.isCanceled());
-	
+
 			engines.dispose();
-			
+
 			reporter.setSuccess(true);
 			return reporter;
 		} finally {
@@ -158,6 +172,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 
 	/**
 	 * Execute a type transformation based on single type cell
+	 * 
 	 * @param transformation the transformation to use
 	 * @param typeCell the type cell
 	 * @param target the target instance sink
@@ -165,30 +180,30 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	 * @param alignment the alignment
 	 * @param engines the engine manager
 	 * @param transformer the property transformer
+	 * @param context the transformation execution context
 	 * @param reporter the reporter
-	 * @param progressIndicator the progress indicator 
+	 * @param progressIndicator the progress indicator
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected void doTypeTransformation(TypeTransformationFactory transformation,
-			Cell typeCell, InstanceCollection source, InstanceSink target, 
-			Alignment alignment, EngineManager engines, 
-			PropertyTransformer transformer, TransformationReporter reporter, 
-			ProgressIndicator progressIndicator) {
+	protected void doTypeTransformation(TypeTransformationFactory transformation, Cell typeCell,
+			InstanceCollection source, InstanceSink target, Alignment alignment,
+			EngineManager engines, PropertyTransformer transformer, TransformationContext context,
+			TransformationReporter reporter, ProgressIndicator progressIndicator) {
 		TransformationLog cellLog = new CellLog(reporter, typeCell);
-		
+
 		TypeTransformation<?> function;
 		try {
 			function = transformation.createExtensionObject();
 		} catch (Exception e) {
-			reporter.error(new TransformationMessageImpl(typeCell, "Error creating transformation function.", e));
+			reporter.error(new TransformationMessageImpl(typeCell,
+					"Error creating transformation function.", e));
 			return;
 		}
-		
-		TransformationEngine engine = engines.get(
-				transformation.getEngineId(), cellLog);
-		
+
+		TransformationEngine engine = engines.get(transformation.getEngineId(), cellLog);
+
 		if (engine == null) {
-			//TODO instead try another transformation
+			// TODO instead try another transformation
 			cellLog.error(cellLog.createMessage(
 					"Skipping type transformation: No matching transformation engine found", null));
 			return;
@@ -204,16 +219,16 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			parameters = Multimaps.unmodifiableListMultimap(parameters);
 		}
 		Map<String, String> executionParameters = transformation.getExecutionParameters();
-		
+
 		// break on cancel
 		if (progressIndicator.isCanceled()) {
 			return;
 		}
-		
+
 		// Step 1: selection
 		// Select only instances that are relevant for the transformation.
 		source = source.select(new TypeCellFilter(typeCell));
-		
+
 		// Step 2: partition
 		ResourceIterator<FamilyInstance> iterator;
 		// use InstanceHandler if available - for example merge or join
@@ -221,16 +236,19 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		if (instanceHandler != null) {
 			progressIndicator.setCurrentTask("Perform instance partitioning");
 			try {
-				iterator = instanceHandler.partitionInstances(source, 
-						transformation.getFunctionId(), engine, parameters,
-						executionParameters, cellLog);
+				iterator = instanceHandler.partitionInstances(source,
+						transformation.getFunctionId(), engine, parameters, executionParameters,
+						cellLog);
 			} catch (TransformationException e) {
 				cellLog.error(cellLog.createMessage("Type transformation: partitioning failed", e));
 				return;
 			}
-		} else {
+		}
+		else {
 			// else just use every instance as is
-			iterator = new GenericResourceIteratorAdapter<Instance, FamilyInstance>(source.iterator()) {
+			iterator = new GenericResourceIteratorAdapter<Instance, FamilyInstance>(
+					source.iterator()) {
+
 				/**
 				 * @see eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter#convert(java.lang.Object)
 				 */
@@ -240,7 +258,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 				}
 			};
 		}
-		
+
 		progressIndicator.setCurrentTask("Execute type transformations");
 
 		try {
@@ -249,17 +267,19 @@ public class ConceptualSchemaTransformer implements TransformationService {
 				if (progressIndicator.isCanceled()) {
 					return;
 				}
-				
+
 				function.setSource(iterator.next());
 				function.setPropertyTransformer(transformer);
 				function.setParameters(parameters);
 				function.setTarget(targetTypes);
-				
+				function.setExecutionContext(context.getCellContext(typeCell));
+
 				try {
-					((TypeTransformation) function).execute(transformation.getFunctionId(), engine, 
+					((TypeTransformation) function).execute(transformation.getFunctionId(), engine,
 							executionParameters, cellLog);
 				} catch (TransformationException e) {
-					cellLog.error(cellLog.createMessage("Type transformation failed, skipping instance.", e));
+					cellLog.error(cellLog.createMessage(
+							"Type transformation failed, skipping instance.", e));
 				}
 			}
 		} finally {
@@ -274,11 +294,13 @@ public class ConceptualSchemaTransformer implements TransformationService {
 	 * 
 	 * @author Kai Schwierczek
 	 */
-	private static class TypeCellFilter implements Filter{
+	private static class TypeCellFilter implements Filter {
+
 		private final HashMap<TypeDefinition, Object> lookup = new HashMap<TypeDefinition, Object>();
 
 		/**
-		 * Constructs a filter that matches all instances relevant to the given cell.
+		 * Constructs a filter that matches all instances relevant to the given
+		 * cell.
 		 * 
 		 * @param typeCell the type cell
 		 */
@@ -286,19 +308,20 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			for (Entity sourceEntity : typeCell.getSource().values()) {
 				Type sourceType = (Type) sourceEntity;
 				Filter filter = sourceType.getDefinition().getFilter();
-				lookup.put(sourceType.getDefinition().getDefinition(), filter == null ? NO_FILTER : filter);
+				lookup.put(sourceType.getDefinition().getDefinition(), filter == null ? NO_FILTER
+						: filter);
 			}
 		}
 
 		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.Filter#match(eu.esdihumboldt.hale.common.instance.model.Instance)
+		 * @see Filter#match(Instance)
 		 */
 		@Override
 		public boolean match(Instance instance) {
 			Object filter = lookup.get(instance.getDefinition());
 			if (filter == null)
 				return false;
-			else 
+			else
 				return filter == NO_FILTER || ((Filter) filter).match(instance);
 		}
 	}

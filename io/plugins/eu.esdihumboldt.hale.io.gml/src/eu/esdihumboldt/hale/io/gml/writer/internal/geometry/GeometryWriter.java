@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
@@ -25,7 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 /**
  * Geometry writer interface. A geometry holds information about compatibility
  * and encoding patterns for a certain geometry type.
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @param <T> the geometry type
@@ -38,17 +42,17 @@ public interface GeometryWriter<T extends Geometry> {
 	 * @return the geometry type
 	 */
 	public Class<T> getGeometryType();
-	
+
 	/**
 	 * Get the compatible types' names for the geometry type that can be handled
-	 * by this writer. The compatible types serve as entry points for the 
+	 * by this writer. The compatible types serve as entry points for the
 	 * matching.
 	 * 
 	 * @return the type names, a <code>null</code> namespace in a name
-	 * references the GML namespace
+	 *         references the GML namespace
 	 */
 	public Set<QName> getCompatibleTypes();
-	
+
 	/**
 	 * Matches the type against the encoding patterns.
 	 * 
@@ -58,15 +62,14 @@ public interface GeometryWriter<T extends Geometry> {
 	 * 
 	 * @return the new path if there is a match, <code>null</code> otherwise
 	 */
-	public DefinitionPath match(TypeDefinition type, DefinitionPath basePath,
-			String gmlNs);
-	
+	public DefinitionPath match(TypeDefinition type, DefinitionPath basePath, String gmlNs);
+
 	/**
 	 * Write a geometry.
 	 * 
-	 * At this point we can assume that the wrapping element matches one of 
-	 * the base patterns. The corresponding element name and its type 
-	 * definition are given.
+	 * At this point we can assume that the wrapping element matches one of the
+	 * base patterns. The corresponding element name and its type definition are
+	 * given.
 	 * 
 	 * @param writer the XML stream writer
 	 * @param geometry the geometry to write
@@ -75,7 +78,7 @@ public interface GeometryWriter<T extends Geometry> {
 	 * @param gmlNs the GML namespace
 	 * @throws XMLStreamException if an error occurs writing the geometry
 	 */
-	public void write(XMLStreamWriter writer, T geometry, 
-			TypeDefinition elementType, QName elementName, String gmlNs) throws XMLStreamException;
-	
+	public void write(XMLStreamWriter writer, T geometry, TypeDefinition elementType,
+			QName elementName, String gmlNs) throws XMLStreamException;
+
 }

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.graph.labels;
@@ -40,7 +44,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	private final Color targetbackgroundcolor;
 
 	private final Color sourcebackgroundcolor;
-	
+
 	private final ResourceManager resourceManager = new ResourceManager();
 
 	private boolean showAll;
@@ -48,8 +52,8 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	/**
 	 * Default constructor
 	 * 
-	 * @param showAll
-	 *            true if additional information (tooltips, etc.) should be shown
+	 * @param showAll true if additional information (tooltips, etc.) should be
+	 *            shown
 	 */
 	public FunctionGraphLabelProvider(boolean showAll) {
 		final Display display = Display.getCurrent();
@@ -103,7 +107,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 	@Override
 	public IFigure getFigure(Object element) {
 		CustomShapeFigure figure = null;
-		
+
 		if (element instanceof AbstractParameter) {
 			figure = new ParameterFigure(new FingerPost(10, SWT.LEFT),
 					getOccurenceString((AbstractParameter) element),
@@ -113,7 +117,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 			if (element instanceof Pair<?, ?>) {
 				element = ((Pair<?, ?>) element).getFirst();
 			}
-	
+
 			if (element instanceof PropertyFunction) {
 				figure = new FunctionFigure(resourceManager,
 						((PropertyFunction) element).getDefinedParameters(), showAll);
@@ -128,7 +132,7 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 						((AbstractParameter) element).getDescription(), showAll);
 			}
 		}
-		
+
 		if (figure != null) {
 			figure.setMaximumWidth(MAX_FIGURE_WIDTH);
 			return figure;
@@ -176,13 +180,15 @@ public class FunctionGraphLabelProvider extends GraphLabelProvider {
 
 		if (parameter.getMinOccurrence() == -1) {
 			min = "n";
-		} else {
+		}
+		else {
 			min = String.valueOf(parameter.getMinOccurrence());
 		}
 
 		if (parameter.getMaxOccurrence() == -1) {
 			max = "n";
-		} else {
+		}
+		else {
 			max = String.valueOf(parameter.getMaxOccurrence());
 		}
 

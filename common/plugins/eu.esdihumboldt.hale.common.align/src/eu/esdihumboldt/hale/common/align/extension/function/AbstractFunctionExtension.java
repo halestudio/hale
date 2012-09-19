@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.extension.function;
@@ -27,16 +31,18 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension;
 
 /**
  * Abstract function extension
- * @param <T> the function type 
+ * 
+ * @param <T> the function type
  * 
  * @author Simon Templer
  */
-public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> extends IdentifiableExtension<T> {
+public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> extends
+		IdentifiableExtension<T> {
 
 	private SetMultimap<String, T> categoryFunctions;
-	
+
 	private boolean initialized = false;
-	
+
 	/**
 	 * @see IdentifiableExtension#IdentifiableExtension(String)
 	 */
@@ -61,9 +67,10 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 		}
 		return function;
 	}
-	
+
 	/**
 	 * Get the functions associated to the category with the given ID
+	 * 
 	 * @param category the category ID, may be <code>null</code>
 	 * @return the list of functions or an empty list
 	 */
@@ -72,12 +79,12 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 			// initialize
 			getElements();
 		}
-		
+
 		if (categoryFunctions != null) {
 			Set<T> res = categoryFunctions.get(category);
 			return new ArrayList<T>(res);
 		}
-		
+
 		return Collections.emptyList();
 	}
 
@@ -95,6 +102,7 @@ public abstract class AbstractFunctionExtension<T extends AbstractFunction<?>> e
 
 	/**
 	 * Create an object for the given configuration element
+	 * 
 	 * @param elementId the element ID
 	 * @param element the configuration element
 	 * @return the element object or <code>null</code>

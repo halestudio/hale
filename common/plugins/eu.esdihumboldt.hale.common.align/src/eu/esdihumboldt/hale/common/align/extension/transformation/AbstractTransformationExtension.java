@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.extension.transformation;
@@ -21,13 +25,14 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationF
 
 /**
  * Abstract extension for transformation functions
- * @param <T> the transformation type 
+ * 
+ * @param <T> the transformation type
  * @param <F> the transformation factory type
  * 
  * @author Simon Templer
  */
 public abstract class AbstractTransformationExtension<T extends TransformationFunction<?>, F extends TransformationFactory<T>>
-	extends AbstractExtension<T, F> {
+		extends AbstractExtension<T, F> {
 
 	/**
 	 * @see AbstractExtension#AbstractExtension(String)
@@ -35,9 +40,10 @@ public abstract class AbstractTransformationExtension<T extends TransformationFu
 	public AbstractTransformationExtension(String extensionPointID) {
 		super(extensionPointID);
 	}
-	
+
 	/**
 	 * Get all transformations for a function
+	 * 
 	 * @param functionId the function ID
 	 * @return the transformations matching the function
 	 */
@@ -50,11 +56,10 @@ public abstract class AbstractTransformationExtension<T extends TransformationFu
 			}
 
 			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<T, F> collection) {
+			public boolean acceptCollection(ExtensionObjectFactoryCollection<T, F> collection) {
 				return true;
 			}
-			
+
 		});
 	}
 

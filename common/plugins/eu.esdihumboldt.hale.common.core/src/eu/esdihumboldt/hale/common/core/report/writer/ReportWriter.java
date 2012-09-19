@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.report.writer;
@@ -27,20 +31,19 @@ import eu.esdihumboldt.hale.common.core.report.MessageFactory;
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportFactory;
 
-
 /**
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.5 
+ * @since 2.5
  */
 public class ReportWriter {
-	
+
 	/**
 	 * Contains all {@link Report}s.
 	 */
 	private Multimap<Class<? extends Report<?>>, Report<?>> reports = HashMultimap.create();
-	
+
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportWriter.class);
 
 	/**
@@ -49,7 +52,7 @@ public class ReportWriter {
 	public ReportWriter() {
 		/* nothing */
 	}
-	
+
 	/**
 	 * Adds all {@link Report}s.
 	 * 
@@ -58,7 +61,7 @@ public class ReportWriter {
 	public void addAllReports(Multimap<Class<? extends Report<?>>, Report<?>> multimap) {
 		this.reports.putAll(multimap);
 	}
-	
+
 	/**
 	 * Writes all {@link Report}s to a {@link File}.
 	 * 
@@ -69,8 +72,8 @@ public class ReportWriter {
 	 * 
 	 * @throws IOException if IO fails
 	 */
-	public boolean writeAll(File file,
-			Multimap<Class<? extends Report<?>>, Report<?>> reports) throws IOException {
+	public boolean writeAll(File file, Multimap<Class<? extends Report<?>>, Report<?>> reports)
+			throws IOException {
 		// check if the file exists
 		if (!file.exists()) {
 			// and create the file
@@ -78,52 +81,52 @@ public class ReportWriter {
 				_log.error("Logfile could not be created!");
 				return false;
 			}
-			
+
 			// make it writable
 			file.setWritable(true);
 		}
-		
+
 		// check if it's writable
 		if (!file.canWrite()) {
 			_log.error("Report could not be saved. No write permission!");
 			return false;
 		}
-		
+
 		// create PrintStream
 		PrintStream p = new PrintStream(file);
-		
+
 		// get an instance of ReportFactory
 		ReportFactory rf = ReportFactory.getInstance();
 		MessageFactory mf = MessageFactory.getInstance();
-		
+
 		// iterate through all reports
 		for (Report<?> r : reports.values()) {
 			// write them to the file
 			p.print(rf.asString(r));
-			
+
 			for (Message m : r.getErrors()) {
 				p.println("!ERROR");
 				p.print(mf.asString(m));
 			}
-			
+
 			for (Message m : r.getWarnings()) {
 				p.println("!WARN");
 				p.print(mf.asString(m));
 			}
-			
+
 			for (Message m : r.getInfos()) {
 				p.println("!INFO");
 				p.print(mf.asString(m));
 			}
 		}
-		
+
 		// set an end marker
 		p.print("!END");
-		
+
 		// close stream
 		p.flush();
 		p.close();
-		
+
 		return true;
 	}
 }

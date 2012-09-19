@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonization and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.io.shp.reader.internal;
 
@@ -47,7 +51,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
-import eu.esdihumboldt.hale.io.shp.ShapefileIO;
+import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
 
 /**
@@ -59,7 +63,7 @@ import eu.esdihumboldt.hale.io.shp.internal.Messages;
 public class ShapeSchemaReader extends AbstractSchemaReader {
 
 	private DefaultSchema schema;
-	
+
 	/**
 	 * @see IOProvider#isCancelable()
 	 */
@@ -83,14 +87,14 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin(Messages.getString("ShapeSchemaProvider.1"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
-		
+
 //		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
 		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
-		
-		//TODO namespace from configuration parameter?!
-		String namespace = ShapefileIO.SHAPEFILE_NS;
+
+		// TODO namespace from configuration parameter?!
+		String namespace = ShapefileConstants.SHAPEFILE_NS;
 		schema = new DefaultSchema(namespace, getSource().getLocation());
-		
+
 		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.2")); //$NON-NLS-1$
 
 		// build type definitions based on Schema extracted by geotools
@@ -98,39 +102,38 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 			SimpleFeatureType sft = store.getSchema(name);
 			try {
 				// create type definition
-				DefaultTypeDefinition type = new DefaultTypeDefinition(
-						new QName(namespace, sft.getName().getLocalPart()));
-				
+				DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(namespace, sft
+						.getName().getLocalPart()));
+
 				// constraints on main type
 				type.setConstraint(MappingRelevantFlag.ENABLED);
 				type.setConstraint(MappableFlag.ENABLED);
 				type.setConstraint(HasValueFlag.DISABLED);
 				type.setConstraint(AbstractFlag.DISABLED);
 				type.setConstraint(Binding.get(Instance.class));
-				
+
 				for (AttributeDescriptor ad : sft.getAttributeDescriptors()) {
-					DefaultPropertyDefinition property = new DefaultPropertyDefinition(
-							new QName(ad.getLocalName()), 
-							type, 
-							getTypeFromAttributeType(ad.getType(), schema,
-									namespace));
-					
+					DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
+							ad.getLocalName()), type, getTypeFromAttributeType(ad.getType(),
+							schema, namespace));
+
 					// set constraints on property
 					property.setConstraint(NillableFlag.get(ad.isNillable())); // nillable
 					property.setConstraint(Cardinality.get(ad.getMinOccurs(), ad.getMaxOccurs())); // cardinality
-					
+
 					// set metadata
 					property.setLocation(getSource().getLocation());
 				}
-				
+
 				schema.addType(type);
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			progress.setCurrentTask(MessageFormat.format(Messages.getString("ShapeSchemaProvider.7"),  //$NON-NLS-1$
+			progress.setCurrentTask(MessageFormat.format(
+					Messages.getString("ShapeSchemaProvider.7"), //$NON-NLS-1$
 					sft.getTypeName()));
 		}
-		
+
 		reporter.setSuccess(true);
 		return reporter;
 	}
@@ -143,25 +146,25 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 	 * @param namespace the namespace to use for the type definition
 	 * @return the type definition
 	 */
-	private TypeDefinition getTypeFromAttributeType(AttributeType type,
-			DefaultSchema schema, String namespace) {
+	private TypeDefinition getTypeFromAttributeType(AttributeType type, DefaultSchema schema,
+			String namespace) {
 		QName typeName = new QName(namespace, type.getName().getLocalPart());
 		TypeDefinition result = null;
-		
+
 		// check shared types
 		if (getSharedTypes() != null) {
 			result = getSharedTypes().getType(typeName);
 		}
-		
+
 		if (result == null) {
 			// get type from schema
 			result = schema.getType(typeName);
 		}
-		
+
 		if (result == null) {
 			// create new type
 			DefaultTypeDefinition typeDef = new DefaultTypeDefinition(typeName);
-			
+
 			// set constraints
 			typeDef.setConstraint(MappingRelevantFlag.DISABLED); // not mappable
 			typeDef.setConstraint(MappableFlag.DISABLED);
@@ -174,17 +177,17 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 				typeDef.setConstraint(Binding.get(type.getBinding()));
 			}
 			typeDef.setConstraint(HasValueFlag.ENABLED); // simple type
-			
+
 			// set metadata
 			typeDef.setLocation(getSource().getLocation());
 			if (type.getDescription() != null) {
 				typeDef.setDescription(type.getDescription().toString());
 			}
-			
+
 			result = typeDef;
 			schema.addType(result);
 		}
-		
+
 		return result;
 	}
 
@@ -193,7 +196,7 @@ public class ShapeSchemaReader extends AbstractSchemaReader {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return ShapefileIO.DEFAULT_TYPE_NAME;
+		return ShapefileConstants.DEFAULT_TYPE_NAME;
 	}
 
 }

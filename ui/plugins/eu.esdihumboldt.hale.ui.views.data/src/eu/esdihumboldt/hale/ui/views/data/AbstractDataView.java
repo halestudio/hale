@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.views.data;
 
@@ -48,7 +52,8 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractDataView extends PropertiesViewPart implements InstanceSelectionListener {
+public abstract class AbstractDataView extends PropertiesViewPart implements
+		InstanceSelectionListener {
 
 	/**
 	 * Action for toggling if an instance selection is provided by the view.
@@ -60,31 +65,29 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 		 */
 		public ToggleProvideSelectionAction() {
 			super("", AS_CHECK_BOX);
-			
+
 			updateText();
 			setImageDescriptor(DataViewPlugin.getImageDescriptor("icons/map.gif"));
 			setChecked(isProvideInstanceSelection());
-			
+
 			addPropertyChangeListener(new IPropertyChangeListener() {
-				
+
 				@Override
 				public void propertyChange(PropertyChangeEvent event) {
 					if (event.getProperty().equals(CHECKED)) {
-						setProvideInstanceSelection(
-								(Boolean) event.getNewValue());
+						setProvideInstanceSelection((Boolean) event.getNewValue());
 						updateText();
 					}
 				}
 			});
 		}
-		
+
 		/**
 		 * Update the action text
 		 */
 		private void updateText() {
-			setToolTipText((isProvideInstanceSelection())
-					?("Disable providing an application instance selection (e.g. for the map)")
-					:("Enable providing an instance selection for the application, e.g. for display in the map"));
+			setToolTipText((isProvideInstanceSelection()) ? ("Disable providing an application instance selection (e.g. for the map)")
+					: ("Enable providing an instance selection for the application, e.g. for display in the map"));
 		}
 
 	}
@@ -93,46 +96,45 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 	 * The instance viewer
 	 */
 	private InstanceViewer viewer;
-	
+
 	private Composite selectorComposite;
-	
+
 	private InstanceSelector instanceSelector;
-	
+
 	private Control selectorControl;
 
 	private Composite viewerComposite;
-	
+
 	private final InstanceViewController controller;
 
 	private TypeDefinition lastType;
 
 	private Iterable<Instance> lastSelection;
-	
+
 	private final SelectionProviderFacade selectionFacade = new SelectionProviderFacade();
-	
+
 	private boolean provideInstanceSelection = false;
 
 	private final InstanceSelector defaultInstanceSelector;
-	
+
 	/**
 	 * Creates a table view
 	 * 
 	 * @param instanceSelector the feature selector
 	 * @param controllerPreferenceKey the preference key for storing the
-	 *   instance view controller configuration
+	 *            instance view controller configuration
 	 */
-	public AbstractDataView(InstanceSelector instanceSelector, 
-			String controllerPreferenceKey) {
+	public AbstractDataView(InstanceSelector instanceSelector, String controllerPreferenceKey) {
 		super();
-		
+
 		this.defaultInstanceSelector = instanceSelector;
-		this.controller = new InstanceViewController(
-				DataViewPlugin.getDefault().getPreferenceStore(), 
-				controllerPreferenceKey);
+		this.controller = new InstanceViewController(DataViewPlugin.getDefault()
+				.getPreferenceStore(), controllerPreferenceKey);
 	}
-	
+
 	/**
 	 * Get the default instance selector.
+	 * 
 	 * @return the default instance selector
 	 */
 	public InstanceSelector getDefaultInstanceSelector() {
@@ -149,7 +151,7 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 		data.heightHint = 300;
 		page.setLayoutData(data);
 		page.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
-		
+
 		// bar composite
 		Composite bar = new Composite(page, SWT.NONE);
 		bar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -159,12 +161,12 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 		gridLayout.verticalSpacing = 0;
 		gridLayout.horizontalSpacing = 0;
 		bar.setLayout(gridLayout);
-		
+
 		// custom control composite
 		Composite custom = new Composite(bar, SWT.NONE);
 		custom.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		provideCustomControls(custom);
-		
+
 		// selector composite
 		selectorComposite = new Composite(bar, SWT.NONE);
 		selectorComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -174,34 +176,35 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 		gridLayout.verticalSpacing = 0;
 		gridLayout.horizontalSpacing = 0;
 		selectorComposite.setLayout(gridLayout);
-		
+
 		// tree composite
 		viewerComposite = new Composite(page, SWT.NONE);
 		viewerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+
 		// tree column layout
 		FillLayout fillLayout = new FillLayout();
 		fillLayout.marginHeight = 0;
 		fillLayout.marginWidth = 0;
 		viewerComposite.setLayout(fillLayout);
-		
+
 		fillActionBars();
-		
+
 		// selector
 		setInstanceSelector(defaultInstanceSelector);
-		
+
 		// tree viewer
 		updateViewer(controller.getCurrent());
-		
-		controller.addListener(new ExclusiveExtensionListener<InstanceViewer, InstanceViewFactory>() {
-			
-			@Override
-			public void currentObjectChanged(InstanceViewer current,
-					InstanceViewFactory definition) {
-				updateViewer(current);
-			}
-		});
-		
+
+		controller
+				.addListener(new ExclusiveExtensionListener<InstanceViewer, InstanceViewFactory>() {
+
+					@Override
+					public void currentObjectChanged(InstanceViewer current,
+							InstanceViewFactory definition) {
+						updateViewer(current);
+					}
+				});
+
 		getSite().setSelectionProvider(selectionFacade);
 	}
 
@@ -210,23 +213,25 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 	 */
 	private void fillActionBars() {
 		IContributionItem viewSelector = new ExclusiveExtensionContribution<InstanceViewer, InstanceViewFactory>() {
+
 			@Override
 			protected ExclusiveExtension<InstanceViewer, InstanceViewFactory> initExtension() {
 				return controller;
 			}
 		};
-		
+
 		IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
 		toolbar.add(viewSelector);
 		toolbar.add(new Separator());
 		toolbar.add(new ToggleProvideSelectionAction());
-		
+
 		IMenuManager menu = getViewSite().getActionBars().getMenuManager();
 		menu.add(viewSelector);
 	}
 
 	/**
 	 * Update on viewer change.
+	 * 
 	 * @param viewer the new viewer
 	 */
 	private void updateViewer(InstanceViewer viewer) {
@@ -237,31 +242,29 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 
 		// create new viewer controls
 		viewer.createControls(viewerComposite);
-		
+
 		viewer.setInput(lastType, lastSelection);
-		
+
 		viewerComposite.layout(true, true);
-		
+
 		this.viewer = viewer;
-		
+
 		// setup selection provider
 		updateSelectionProvider();
 //		new ViewerMenu(getSite(), viewer.getViewer());
 	}
 
 	/**
-	 * Update the selection provider when either the instance viewer or
-	 * instance selector have changed.
+	 * Update the selection provider when either the instance viewer or instance
+	 * selector have changed.
 	 */
 	protected void updateSelectionProvider() {
-		if (viewer == null 
-				|| !provideInstanceSelection
+		if (viewer == null || !provideInstanceSelection
 				|| getInstanceSelector() instanceof WindowSelectionSelector) {
 			selectionFacade.setSelectionProvider(null);
 		}
 		else {
-			selectionFacade.setSelectionProvider(
-					viewer.getInstanceSelectionProvider());//.getViewer());
+			selectionFacade.setSelectionProvider(viewer.getInstanceSelectionProvider());// .getViewer());
 		}
 	}
 
@@ -298,29 +301,30 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 	public void setInstanceSelector(InstanceSelector instanceSelector) {
 		if (this.instanceSelector == instanceSelector)
 			return;
-		
-		selectionFacade.setSelectionProvider(null); // disable selection provider
+
+		selectionFacade.setSelectionProvider(null); // disable selection
+													// provider
 
 		// remove listener
 		if (this.instanceSelector != null)
 			this.instanceSelector.removeSelectionListener(this);
-		
+
 		this.instanceSelector = instanceSelector;
-		
+
 		// remove old control
 		if (selectorControl != null) {
 			selectorControl.dispose();
 		}
-		
+
 		// add listener
 		instanceSelector.addSelectionListener(this);
-		
+
 		// create new control
 		selectorControl = instanceSelector.createControl(selectorComposite);
 		selectorControl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		
+
 		updateSelectionProvider();
-		
+
 		// re-layout
 		selectorComposite.getParent().getParent().layout(true, true);
 	}
@@ -334,11 +338,11 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 		lastSelection = selection;
 		onSelectionChange(selection);
 	}
-	
+
 	/**
 	 * Called when the selection has changed
 	 * 
-	 * @param selection the current selection 
+	 * @param selection the current selection
 	 */
 	protected void onSelectionChange(Iterable<Instance> selection) {
 		// do nothing
@@ -366,7 +370,7 @@ public abstract class AbstractDataView extends PropertiesViewPart implements Ins
 	 */
 	private void setProvideInstanceSelection(boolean provideInstanceSelection) {
 		this.provideInstanceSelection = provideInstanceSelection;
-		
+
 		updateSelectionProvider();
 	}
 

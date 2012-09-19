@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.properties;
@@ -38,21 +42,15 @@ public abstract class AbstractTextSection extends AbstractSingleObjectSection {
 	 * 
 	 * @see AbstractPropertySection#createControls(Composite,TabbedPropertySheetPage)
 	 * 
-	 * @param parent
-	 *            the parent composite for the section
-	 * @param aTabbedPropertySheetPage
-	 *            the tabbed property sheet page
-	 * @param title
-	 *            the title for the property
-	 * @param title2
-	 *            the title for the second property (could be null)
+	 * @param parent the parent composite for the section
+	 * @param aTabbedPropertySheetPage the tabbed property sheet page
+	 * @param title the title for the property
+	 * @param title2 the title for the second property (could be null)
 	 */
 	protected void abstractCreateControls(Composite parent,
-			TabbedPropertySheetPage aTabbedPropertySheetPage, String title,
-			String title2) {
+			TabbedPropertySheetPage aTabbedPropertySheetPage, String title, String title2) {
 		super.createControls(parent, aTabbedPropertySheetPage);
-		Composite composite = getWidgetFactory()
-				.createFlatFormComposite(parent);
+		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
 
 		text = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
@@ -63,8 +61,7 @@ public abstract class AbstractTextSection extends AbstractSingleObjectSection {
 		data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
 		text.setLayoutData(data);
 
-		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite,
-				title); //$NON-NLS-1$
+		CLabel namespaceLabel = getWidgetFactory().createCLabel(composite, title); //$NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(text, 10);

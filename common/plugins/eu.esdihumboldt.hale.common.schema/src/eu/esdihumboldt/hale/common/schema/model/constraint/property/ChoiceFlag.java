@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.property;
@@ -19,6 +23,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
 
 /**
  * Flags if a property group is a choice, disabled by default
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -29,12 +34,12 @@ public class ChoiceFlag extends AbstractFlagConstraint implements GroupPropertyC
 	 * Enabled choice flag
 	 */
 	public static final ChoiceFlag ENABLED = new ChoiceFlag(true);
-	
+
 	/**
 	 * Disabled choice flag
 	 */
 	public static final ChoiceFlag DISABLED = new ChoiceFlag(false);
-	
+
 	/**
 	 * Get the choice flag
 	 * 
@@ -42,12 +47,12 @@ public class ChoiceFlag extends AbstractFlagConstraint implements GroupPropertyC
 	 * @return the flag
 	 */
 	public static ChoiceFlag get(boolean isChoice) {
-		return (isChoice)?(ENABLED):(DISABLED);
+		return (isChoice) ? (ENABLED) : (DISABLED);
 	}
-	
+
 	/**
-	 * Creates a default choice flag, which is disabled. If possible, instead
-	 * of creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or 
+	 * Creates a default choice flag, which is disabled. If possible, instead of
+	 * creating an instance, use {@link #get(boolean)}, {@link #ENABLED} or
 	 * {@link #DISABLED}.
 	 * 
 	 * @see Cardinality
@@ -55,7 +60,7 @@ public class ChoiceFlag extends AbstractFlagConstraint implements GroupPropertyC
 	public ChoiceFlag() {
 		this(false);
 	}
-	
+
 	/**
 	 * @see AbstractFlagConstraint#AbstractFlagConstraint(boolean)
 	 */

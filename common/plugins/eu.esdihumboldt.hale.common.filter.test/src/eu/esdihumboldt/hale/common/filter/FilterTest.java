@@ -1,13 +1,17 @@
 /*
-f * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.filter;
@@ -58,7 +62,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  * 
  * @author Basti
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings({ "restriction", "javadoc" })
 public class FilterTest {
 
 	static InstanceCollection complexinstances;
@@ -69,13 +73,13 @@ public class FilterTest {
 	 */
 	@BeforeClass
 	public static void waitForServices() {
-		assertTrue("Conversion service not available",
-				OsgiUtils.waitUntil(new Condition() {
-					@Override
-					public boolean evaluate() {
-						return OsgiUtils.getService(ConversionService.class) != null;
-					}
-				}, 30));
+		assertTrue("Conversion service not available", OsgiUtils.waitUntil(new Condition() {
+
+			@Override
+			public boolean evaluate() {
+				return OsgiUtils.getService(ConversionService.class) != null;
+			}
+		}, 30));
 	}
 
 	@Before
@@ -90,38 +94,31 @@ public class FilterTest {
 			Schema schema = reader.getSchema();
 
 			StreamGmlReader instanceReader = new GmlInstanceReader();
-			instanceReader.setSource(new DefaultInputSupplier(getClass()
-					.getResource("/testdata/out/transformWrite_ERM_HPW.gml")
-					.toURI()));
+			instanceReader.setSource(new DefaultInputSupplier(getClass().getResource(
+					"/testdata/out/transformWrite_ERM_HPW.gml").toURI()));
 			instanceReader.setSourceSchema(schema);
 
 			instanceReader.validate();
 			report = instanceReader.execute(null);
 			assertTrue(report.isSuccess());
 
-			this.complexinstances = instanceReader.getInstances();
-			assertFalse(this.complexinstances.isEmpty());
+			FilterTest.complexinstances = instanceReader.getInstances();
+			assertFalse(FilterTest.complexinstances.isEmpty());
 			init = true;
 		}
 	}
 
 	@Test
 	public void simpleFilterTestCQL() {
-		DefaultTypeDefinition stringType = new DefaultTypeDefinition(new QName(
-				"StringType"));
+		DefaultTypeDefinition stringType = new DefaultTypeDefinition(new QName("StringType"));
 		stringType.setConstraint(Binding.get(String.class));
 
-		DefaultTypeDefinition personDef = new DefaultTypeDefinition(new QName(
-				"PersonType"));
-		personDef.addChild(new DefaultPropertyDefinition(new QName("Name"),
-				personDef, stringType));
+		DefaultTypeDefinition personDef = new DefaultTypeDefinition(new QName("PersonType"));
+		personDef.addChild(new DefaultPropertyDefinition(new QName("Name"), personDef, stringType));
 
-		DefaultTypeDefinition autoDef = new DefaultTypeDefinition(new QName(
-				"AutoType"));
-		autoDef.addChild(new DefaultPropertyDefinition(new QName("Name"),
-				autoDef, stringType));
-		autoDef.addChild(new DefaultPropertyDefinition(new QName("Besitzer"),
-				autoDef, personDef));
+		DefaultTypeDefinition autoDef = new DefaultTypeDefinition(new QName("AutoType"));
+		autoDef.addChild(new DefaultPropertyDefinition(new QName("Name"), autoDef, stringType));
+		autoDef.addChild(new DefaultPropertyDefinition(new QName("Besitzer"), autoDef, personDef));
 
 		MutableInstance auto = new OInstance(autoDef, null);
 		auto.addProperty(new QName("Name"), "Mein Porsche");
@@ -133,6 +130,7 @@ public class FilterTest {
 		try {
 			filter = new FilterGeoCqlImpl("Name = 'Mein Porsche'");
 			assertTrue(filter.match(auto));
+			@SuppressWarnings("unused")
 			Filter filter1 = new FilterGeoCqlImpl("Name like 'Porsche'");
 			assertTrue(filter.match(auto));
 		} catch (CQLException e) {
@@ -155,8 +153,8 @@ public class FilterTest {
 		Schema schema = schemaReader.getSchema();
 
 		ShapeInstanceReader instanceReader = new ShapeInstanceReader();
-		instanceReader.setSource(new DefaultInputSupplier(getClass()
-				.getResource("/testdata/GN_Point/GN_Point.shp").toURI()));
+		instanceReader.setSource(new DefaultInputSupplier(getClass().getResource(
+				"/testdata/GN_Point/GN_Point.shp").toURI()));
 		instanceReader.setSourceSchema(schema);
 
 		instanceReader.validate();
@@ -204,38 +202,36 @@ public class FilterTest {
 	/**
 	 * Test loading a simple XML file with one instance
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
-	@Ignore // not working due to changes in default behavior of XML reader (skip root element)
+	@Ignore
+	// not working due to changes in default behavior of XML reader (skip root
+	// element)
 	@Test
 	public void testLoadShiporderCQL() throws Exception {
 		InstanceCollection instances = loadXMLInstances(
-				getClass().getResource("/testdata/shiporder/shiporder.xsd")
-						.toURI(),
-				getClass().getResource("/testdata/shiporder/shiporder.xml")
-						.toURI());
+				getClass().getResource("/testdata/shiporder/shiporder.xsd").toURI(), getClass()
+						.getResource("/testdata/shiporder/shiporder.xml").toURI());
 
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
 			assertTrue(it.hasNext());
-	
+
 			boolean foundIt = false;
 			boolean stayFalse = false;
 			boolean stayFalseToo = false;
 			boolean foundIt2 = false;
-	
-			Filter cqlfilter = new FilterGeoCqlImpl(
-					"shipto.city = '4000 Stavanger'");
+
+			Filter cqlfilter = new FilterGeoCqlImpl("shipto.city = '4000 Stavanger'");
 			Filter foulfilter = new FilterGeoCqlImpl("HERP = 'DERP'");
 			Filter foulfilter1 = new FilterGeoCqlImpl("shipto.city = 'HURR'");
 			Filter cqlfilter2 = new FilterGeoCqlImpl(
 					"\"{http://www.example.com}shipto.{http://www.example.com}city\" = '4000 Stavanger'");
-	
+
 			while (it.hasNext()) {
 				Instance instance = it.next();
 				assertNotNull(instance);
-	
+
 				if (cqlfilter.match(instance)) {
 					foundIt = true;
 				}
@@ -249,7 +245,7 @@ public class FilterTest {
 					foundIt2 = true;
 				}
 			}
-	
+
 			assertTrue(foundIt);
 			assertTrue(foundIt2);
 			assertFalse(stayFalse);
@@ -259,6 +255,7 @@ public class FilterTest {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void testComplexInstancesCQL() throws Exception {
 		/*
@@ -282,7 +279,7 @@ public class FilterTest {
 		 * assertFalse(instances.isEmpty());
 		 */
 
-		ResourceIterator<Instance> ri = this.complexinstances.iterator();
+		ResourceIterator<Instance> ri = FilterTest.complexinstances.iterator();
 		try {
 			boolean foundIt = false;
 			boolean stayFalse = false;
@@ -294,32 +291,26 @@ public class FilterTest {
 			boolean foundIt3 = false;
 			boolean foundIt4 = false;
 			boolean foundIt5 = false;
-	
-			Filter cqlfilter = new FilterGeoCqlImpl(
-					"\"geometry.Polygon.srsName\" = 'EPSG:4326'");
-			Filter cqlfilter11 = new FilterGeoCqlImpl(
-					"width.WidthRange.upper = 15.0");
-			Filter cqlfilter1 = new FilterGeoCqlImpl(
-					"\"width.WidthRange.upper\" = 15.0");
-			Filter foulfilter1 = new FilterGeoCqlImpl(
-					"location.AbstractSolid.id = 'HURR'");
+
+			Filter cqlfilter = new FilterGeoCqlImpl("\"geometry.Polygon.srsName\" = 'EPSG:4326'");
+			Filter cqlfilter11 = new FilterGeoCqlImpl("width.WidthRange.upper = 15.0");
+			Filter cqlfilter1 = new FilterGeoCqlImpl("\"width.WidthRange.upper\" = 15.0");
+			Filter foulfilter1 = new FilterGeoCqlImpl("location.AbstractSolid.id = 'HURR'");
 			Filter foulfilter = new FilterGeoCqlImpl("HERP = 'DERP'");
-			Filter cqlfilter2 = new FilterGeoCqlImpl(
-					"id = '_00000000-7953-b57f-0000-00000010cb14'");
+			Filter cqlfilter2 = new FilterGeoCqlImpl("id = '_00000000-7953-b57f-0000-00000010cb14'");
 			Filter cqlfilter21 = new FilterGeoCqlImpl(
 					"\"id\" = '_00000000-7953-b57f-0000-00000010cb14'");
-	
-			Filter cqlfilter3 = new FilterGeoCqlImpl(
-					"\"geometry.Polygon.srsName\" = 'EPSG:4326'");
+
+			Filter cqlfilter3 = new FilterGeoCqlImpl("\"geometry.Polygon.srsName\" = 'EPSG:4326'");
 			Filter cqlfilter4 = new FilterGeoCqlImpl(
 					"\"geometry.{http://www.opengis.net/gml/3.2}Polygon.srsName\" = 'EPSG:4326'");
 			Filter cqlfilter5 = new FilterGeoCqlImpl(
 					"\"{http://www.opengis.net/gml/3.2}geometry.Polygon.srsName\" = 'EPSG:4326'");
-	
+
 			while (ri.hasNext()) {
 				Instance inst = ri.next();
 				assertNotNull(inst);
-	
+
 				if (cqlfilter.match(inst)) {
 					foundIt = true;
 				}
@@ -349,7 +340,7 @@ public class FilterTest {
 				 * if(cqlfilter5.match(inst)){ foundIt5 = true; }
 				 */
 			}
-	
+
 			assertTrue(foundIt);
 			assertTrue(foundIt1);
 			assertTrue(foundIt11);
@@ -360,7 +351,7 @@ public class FilterTest {
 			// assertTrue(foundIt5);
 			assertFalse(stayFalse);
 			assertFalse(stayFalseToo);
-	
+
 			// TODO
 		} finally {
 			ri.close();
@@ -369,21 +360,15 @@ public class FilterTest {
 
 	@Test
 	public void simpleFilterTestECQL() {
-		DefaultTypeDefinition stringType = new DefaultTypeDefinition(new QName(
-				"StringType"));
+		DefaultTypeDefinition stringType = new DefaultTypeDefinition(new QName("StringType"));
 		stringType.setConstraint(Binding.get(String.class));
 
-		DefaultTypeDefinition personDef = new DefaultTypeDefinition(new QName(
-				"PersonType"));
-		personDef.addChild(new DefaultPropertyDefinition(new QName("Name"),
-				personDef, stringType));
+		DefaultTypeDefinition personDef = new DefaultTypeDefinition(new QName("PersonType"));
+		personDef.addChild(new DefaultPropertyDefinition(new QName("Name"), personDef, stringType));
 
-		DefaultTypeDefinition autoDef = new DefaultTypeDefinition(new QName(
-				"AutoType"));
-		autoDef.addChild(new DefaultPropertyDefinition(new QName("Name"),
-				autoDef, stringType));
-		autoDef.addChild(new DefaultPropertyDefinition(new QName("Besitzer"),
-				autoDef, personDef));
+		DefaultTypeDefinition autoDef = new DefaultTypeDefinition(new QName("AutoType"));
+		autoDef.addChild(new DefaultPropertyDefinition(new QName("Name"), autoDef, stringType));
+		autoDef.addChild(new DefaultPropertyDefinition(new QName("Besitzer"), autoDef, personDef));
 
 		MutableInstance auto = new OInstance(autoDef, null);
 		auto.addProperty(new QName("Name"), "Mein Porsche");
@@ -395,6 +380,7 @@ public class FilterTest {
 		try {
 			filter = new FilterGeoECqlImpl("Name = 'Mein Porsche'");
 			assertTrue(filter.match(auto));
+			@SuppressWarnings("unused")
 			Filter filter1 = new FilterGeoECqlImpl("Name like %Porsche%");
 			assertTrue(filter.match(auto));
 		} catch (CQLException e) {
@@ -417,8 +403,8 @@ public class FilterTest {
 		Schema schema = schemaReader.getSchema();
 
 		ShapeInstanceReader instanceReader = new ShapeInstanceReader();
-		instanceReader.setSource(new DefaultInputSupplier(getClass()
-				.getResource("/testdata/GN_Point/GN_Point.shp").toURI()));
+		instanceReader.setSource(new DefaultInputSupplier(getClass().getResource(
+				"/testdata/GN_Point/GN_Point.shp").toURI()));
 		instanceReader.setSourceSchema(schema);
 
 		instanceReader.validate();
@@ -433,15 +419,15 @@ public class FilterTest {
 			boolean foundIt = false;
 			boolean stayFalse = false;
 			boolean stayFalseToo = false;
-	
+
 			Filter cqlfilter = new FilterGeoECqlImpl("NEV = 'Piritulus'");
 			Filter foulfilter = new FilterGeoECqlImpl("HERP = 'DERP'");
 			Filter foulfilter1 = new FilterGeoECqlImpl("NEV = 'HURR'");
-	
+
 			while (ri.hasNext()) {
 				Instance inst = ri.next();
 				assertNotNull(inst);
-	
+
 				if (cqlfilter.match(inst)) {
 					foundIt = true;
 				}
@@ -452,7 +438,7 @@ public class FilterTest {
 					stayFalseToo = true;
 				}
 			}
-	
+
 			assertTrue(foundIt);
 			assertFalse(stayFalse);
 			assertFalse(stayFalseToo);
@@ -465,39 +451,37 @@ public class FilterTest {
 	/**
 	 * Test loading a simple XML file with one instance
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
-	@Ignore // not working due to changes in default behavior of XML reader (skip root element)
+	@Ignore
+	// not working due to changes in default behavior of XML reader (skip root
+	// element)
 	@Test
 	public void testLoadShiporderECQL() throws Exception {
 		InstanceCollection instances = loadXMLInstances(
-				getClass().getResource("/testdata/shiporder/shiporder.xsd")
-						.toURI(),
-				getClass().getResource("/testdata/shiporder/shiporder.xml")
-						.toURI());
+				getClass().getResource("/testdata/shiporder/shiporder.xsd").toURI(), getClass()
+						.getResource("/testdata/shiporder/shiporder.xml").toURI());
 
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
 			assertTrue(it.hasNext());
-	
+
 			boolean foundIt = false;
 			boolean stayFalse = false;
 			boolean stayFalseToo = false;
-	
+
 			// von CQL nicht unterstützt
 			// Filter cqlfilter = new
 			// FilterGeoCqlImpl("{http://www.example.com}shipto.{http://www.example.com}city = '4000 Stavanger'");
-	
-			Filter cqlfilter = new FilterGeoECqlImpl(
-					"shipto.city = '4000 Stavanger'");
+
+			Filter cqlfilter = new FilterGeoECqlImpl("shipto.city = '4000 Stavanger'");
 			Filter foulfilter = new FilterGeoECqlImpl("HERP = 'DERP'");
 			Filter foulfilter1 = new FilterGeoECqlImpl("shipto.city = 'HURR'");
-	
+
 			while (it.hasNext()) {
 				Instance instance = it.next();
 				assertNotNull(instance);
-	
+
 				if (cqlfilter.match(instance)) {
 					foundIt = true;
 				}
@@ -508,7 +492,7 @@ public class FilterTest {
 					stayFalseToo = true;
 				}
 			}
-	
+
 			assertTrue(foundIt);
 			assertFalse(stayFalse);
 			assertFalse(stayFalseToo);
@@ -540,7 +524,7 @@ public class FilterTest {
 		 * assertFalse(instances.isEmpty());
 		 */
 
-		ResourceIterator<Instance> ri = this.complexinstances.iterator();
+		ResourceIterator<Instance> ri = FilterTest.complexinstances.iterator();
 		try {
 			boolean foundIt = false;
 			boolean stayFalse = false;
@@ -549,36 +533,30 @@ public class FilterTest {
 			boolean foundIt1 = false;
 			boolean foundIt2 = false;
 			boolean foundIt3 = false;
-	
-			Filter ecqlfilter = new FilterGeoECqlImpl(
-					"\"geometry.Polygon.srsName\" = 'EPSG:4326'");
-			Filter ecqlfilter11 = new FilterGeoECqlImpl(
-					"width.WidthRange.upper = 15.0");
-			Filter ecqlfilter1 = new FilterGeoECqlImpl(
-					"\"width.WidthRange.upper\" = 15.0");
-			Filter foulfilter1 = new FilterGeoECqlImpl(
-					"\"location.AbstractSolid.id\" = 'HURR'");
+
+			Filter ecqlfilter = new FilterGeoECqlImpl("\"geometry.Polygon.srsName\" = 'EPSG:4326'");
+			Filter ecqlfilter11 = new FilterGeoECqlImpl("width.WidthRange.upper = 15.0");
+			Filter ecqlfilter1 = new FilterGeoECqlImpl("\"width.WidthRange.upper\" = 15.0");
+			Filter foulfilter1 = new FilterGeoECqlImpl("\"location.AbstractSolid.id\" = 'HURR'");
 			Filter foulfilter = new FilterGeoECqlImpl("HERP = 'DERP'");
 			Filter ecqlfilter2 = new FilterGeoECqlImpl(
 					"\"id\" = '_00000000-7953-b57f-0000-00000010cb14'");
 			Filter ecqlfilter3 = new FilterGeoECqlImpl(
 					"'_00000000-7953-b57f-0000-00000010cb14' = \"id\"");
-	
+
 			// this should throw a CQL Exception
 			try {
-				new FilterGeoECqlImpl(
-						"id = '_00000000-7953-b57f-0000-00000010cb14'");
-	
+				new FilterGeoECqlImpl("id = '_00000000-7953-b57f-0000-00000010cb14'");
+
 				fail("Expected exception!");
 			} catch (CQLException e) {
-				System.out
-						.println("CQL Exception thrown because \"id\" is reserved");
+				System.out.println("CQL Exception thrown because \"id\" is reserved");
 			}
-	
+
 			while (ri.hasNext()) {
 				Instance inst = ri.next();
 				assertNotNull(inst);
-	
+
 				if (ecqlfilter.match(inst)) {
 					foundIt = true;
 				}
@@ -601,7 +579,7 @@ public class FilterTest {
 					foundIt3 = true;
 				}
 			}
-	
+
 			assertTrue(foundIt);
 			assertTrue(foundIt1);
 			assertTrue(foundIt11);
@@ -609,16 +587,15 @@ public class FilterTest {
 			assertTrue(foundIt3);
 			assertFalse(stayFalse);
 			assertFalse(stayFalseToo);
-	
+
 			// TODO
 		} finally {
 			ri.close();
 		}
 	}
 
-	private InstanceCollection loadXMLInstances(URI schemaLocation,
-			URI xmlLocation) throws IOException,
-			IOProviderConfigurationException {
+	private InstanceCollection loadXMLInstances(URI schemaLocation, URI xmlLocation)
+			throws IOException, IOProviderConfigurationException {
 		SchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(null);
 		reader.setSource(new DefaultInputSupplier(schemaLocation));

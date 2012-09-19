@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui;
@@ -27,22 +31,22 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Abstract wizard page type with some basic functionality added, can only be
  * added to wizards with the given wizard type <W>
- * @param <W> the concrete wizard type 
- *
+ * 
+ * @param <W> the concrete wizard type
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
-	
+
 	private IPageChangedListener changeListener;
-	
+
 	private boolean wasShown = false;
 
 	/**
 	 * @see WizardPage#WizardPage(String, String, ImageDescriptor)
 	 */
-	protected HaleWizardPage(String pageName, String title,
-			ImageDescriptor titleImage) {
+	protected HaleWizardPage(String pageName, String title, ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
 	}
 
@@ -52,7 +56,7 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 	protected HaleWizardPage(String pageName) {
 		super(pageName);
 	}
-	
+
 	/**
 	 * @see WizardPage#getWizard()
 	 */
@@ -61,45 +65,47 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 	public W getWizard() {
 		return (W) super.getWizard();
 	}
-	
+
 	/**
 	 * @see WizardPage#createControl(Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
 		IWizardContainer container = getContainer();
-		
+
 		if (container instanceof IPageChangeProvider) {
-			((IPageChangeProvider) container).addPageChangedListener(changeListener = new IPageChangedListener() {
-				
-				@Override
-				public void pageChanged(PageChangedEvent event) {
-					if (event.getSelectedPage() == HaleWizardPage.this) {
-						if (wasShown) {
-							onShowPage(false);
+			((IPageChangeProvider) container)
+					.addPageChangedListener(changeListener = new IPageChangedListener() {
+
+						@Override
+						public void pageChanged(PageChangedEvent event) {
+							if (event.getSelectedPage() == HaleWizardPage.this) {
+								if (wasShown) {
+									onShowPage(false);
+								}
+								else {
+									wasShown = true;
+									onShowPage(true);
+								}
+							}
 						}
-						else {
-							wasShown = true;
-							onShowPage(true);
-						}
-					}
-				}
-				
-			});
+
+					});
 		}
-		
+
 		Composite page = new Composite(parent, SWT.NONE);
 		page.setLayout(new FillLayout());
-		
+
 		createContent(page);
-		
+
 		setControl(page);
 	}
 
 	/**
 	 * Called when this page is shown
+	 * 
 	 * @param firstShow specifies if it is the first time the page is shown
-	 *   since its creation
+	 *            since its creation
 	 */
 	protected void onShowPage(boolean firstShow) {
 		// do nothing
@@ -109,7 +115,7 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 	 * Create the page content
 	 * 
 	 * @param page the page composite, implementors may assign a custom layout
-	 *   to this composite
+	 *            to this composite
 	 */
 	protected abstract void createContent(Composite page);
 
@@ -124,7 +130,7 @@ public abstract class HaleWizardPage<W extends Wizard> extends WizardPage {
 				((IPageChangeProvider) container).removePageChangedListener(changeListener);
 			}
 		}
-		
+
 		super.dispose();
 	}
 

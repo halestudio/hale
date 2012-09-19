@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.definition.selector;
@@ -31,6 +35,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
  * Selection dialog for {@link TypeDefinition}s.
+ * 
  * @author Simon Templer
  */
 public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefinition, TreeViewer> {
@@ -43,29 +48,31 @@ public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefi
 
 	/**
 	 * Create a type definition selection dialog.
+	 * 
 	 * @param parentShell the parent shell
-	 * @param title the dialog title 
+	 * @param title the dialog title
 	 * @param initialSelection the initial selection
 	 * @param types the type index
 	 */
-	public TypeDefinitionDialog(Shell parentShell, String title,
-			TypeDefinition initialSelection, TypeIndex types) {
+	public TypeDefinitionDialog(Shell parentShell, String title, TypeDefinition initialSelection,
+			TypeIndex types) {
 		super(parentShell, title, initialSelection);
-		
+
 		this.types = types;
 	}
-	
+
 	/**
 	 * Create a type definition selection dialog.
+	 * 
 	 * @param parentShell the parent shell
-	 * @param title the dialog title 
+	 * @param title the dialog title
 	 * @param initialSelection the initial selection
 	 * @param types the type index
 	 */
-	public TypeDefinitionDialog(Shell parentShell, String title,
-			TypeDefinition initialSelection, Iterable<TypeDefinition> types) {
+	public TypeDefinitionDialog(Shell parentShell, String title, TypeDefinition initialSelection,
+			Iterable<TypeDefinition> types) {
 		super(parentShell, title, initialSelection);
-		
+
 		this.types = types;
 	}
 
@@ -74,23 +81,21 @@ public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefi
 		// create viewer
 		PatternFilter patternFilter = new PatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new FilteredTree(parent, 
-				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new DefinitionComparator());
 		return tree.getViewer();
 	}
 
 	@Override
-	protected void setupViewer(TreeViewer viewer,
-			TypeDefinition initialSelection) {
+	protected void setupViewer(TreeViewer viewer, TypeDefinition initialSelection) {
 		viewer.setLabelProvider(new DefinitionLabelProvider());
 		viewer.setContentProvider(new TypesContentProvider(viewer));
-		
+
 		viewer.setInput(types);
-		
+
 		if (initialSelection != null) {
-			viewer.setSelection(new StructuredSelection(
-					initialSelection));
+			viewer.setSelection(new StructuredSelection(initialSelection));
 		}
 	}
 
@@ -102,7 +107,7 @@ public class TypeDefinitionDialog extends AbstractViewerSelectionDialog<TypeDefi
 				return (TypeDefinition) element;
 			}
 		}
-		
+
 		return null;
 	}
 

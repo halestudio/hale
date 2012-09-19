@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.style;
@@ -43,9 +47,11 @@ import eu.esdihumboldt.util.Pair;
 
 /**
  * Selection dialog for {@link TypeDefinition}s.
+ * 
  * @author Simon Templer
  */
-public class DataSetTypeSelectionDialog extends AbstractViewerSelectionDialog<Pair<TypeDefinition, DataSet>, TreeViewer> {
+public class DataSetTypeSelectionDialog extends
+		AbstractViewerSelectionDialog<Pair<TypeDefinition, DataSet>, TreeViewer> {
 
 	/**
 	 * The types, either a {@link TypeIndex} or an {@link Iterable} of
@@ -55,25 +61,25 @@ public class DataSetTypeSelectionDialog extends AbstractViewerSelectionDialog<Pa
 
 	/**
 	 * Create a type definition selection dialog.
+	 * 
 	 * @param parentShell the parent shell
-	 * @param title the dialog title 
+	 * @param title the dialog title
 	 * @param initialSelection the initial selection
 	 * @param types the type index
 	 */
 	public DataSetTypeSelectionDialog(Shell parentShell, String title,
-			Pair<TypeDefinition, DataSet> initialSelection, 
-			Multimap<DataSet, TypeDefinition> types) {
+			Pair<TypeDefinition, DataSet> initialSelection, Multimap<DataSet, TypeDefinition> types) {
 		super(parentShell, title, initialSelection);
-		
+
 		this.types = types;
-		
-		setFilters(new ViewerFilter[]{new ViewerFilter() {
-			
+
+		setFilters(new ViewerFilter[] { new ViewerFilter() {
+
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				return !(element instanceof DataSet);
 			}
-		}});
+		} });
 	}
 
 	@Override
@@ -81,15 +87,14 @@ public class DataSetTypeSelectionDialog extends AbstractViewerSelectionDialog<Pa
 		// create viewer
 		PatternFilter patternFilter = new PatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new FilteredTree(parent, 
-				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new DefinitionComparator());
 		return tree.getViewer();
 	}
 
 	@Override
-	protected void setupViewer(TreeViewer viewer,
-			Pair<TypeDefinition, DataSet> initialSelection) {
+	protected void setupViewer(TreeViewer viewer, Pair<TypeDefinition, DataSet> initialSelection) {
 		viewer.setLabelProvider(new DefinitionLabelProvider() {
 
 			@Override
@@ -103,11 +108,11 @@ public class DataSetTypeSelectionDialog extends AbstractViewerSelectionDialog<Pa
 						return "Source";
 					}
 				}
-				
+
 				if (element instanceof Pair) {
 					element = ((Pair<?, ?>) element).getFirst();
 				}
-				
+
 				return super.getText(element);
 			}
 
@@ -117,14 +122,14 @@ public class DataSetTypeSelectionDialog extends AbstractViewerSelectionDialog<Pa
 					return PlatformUI.getWorkbench().getSharedImages()
 							.getImage(ISharedImages.IMG_OBJ_FOLDER);
 				}
-				
+
 				if (element instanceof Pair) {
 					element = ((Pair<?, ?>) element).getFirst();
 				}
-				
+
 				return super.getImage(element);
 			}
-			
+
 		});
 		viewer.setContentProvider(new TypeIndexContentProvider(viewer) {
 
@@ -137,14 +142,14 @@ public class DataSetTypeSelectionDialog extends AbstractViewerSelectionDialog<Pa
 			public Object[] getChildren(Object parentElement) {
 				if (parentElement instanceof DataSet) {
 					DataSet dataSet = (DataSet) parentElement;
-					List<Pair<TypeDefinition, DataSet>> typeList = new ArrayList<Pair<TypeDefinition,DataSet>>(); 
+					List<Pair<TypeDefinition, DataSet>> typeList = new ArrayList<Pair<TypeDefinition, DataSet>>();
 					for (TypeDefinition type : types.get(dataSet)) {
 						typeList.add(new Pair<TypeDefinition, DataSet>(type, dataSet));
 					}
 					return typeList.toArray();
 				}
-				
-				return new Object[]{}; 
+
+				return new Object[] {};
 			}
 
 			@Override
@@ -152,15 +157,14 @@ public class DataSetTypeSelectionDialog extends AbstractViewerSelectionDialog<Pa
 				return parentElement instanceof DataSet
 						&& !types.get((DataSet) parentElement).isEmpty();
 			}
-			
+
 		});
 
 		viewer.setAutoExpandLevel(2);
 		viewer.setInput(types);
-		
+
 		if (initialSelection != null) {
-			viewer.setSelection(new StructuredSelection(
-					initialSelection));
+			viewer.setSelection(new StructuredSelection(initialSelection));
 		}
 	}
 
@@ -173,7 +177,7 @@ public class DataSetTypeSelectionDialog extends AbstractViewerSelectionDialog<Pa
 				return (Pair<TypeDefinition, DataSet>) element;
 			}
 		}
-		
+
 		return null;
 	}
 

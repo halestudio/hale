@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.io.impl.internal;
@@ -19,21 +23,22 @@ import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionMan
 
 /**
  * Bean representing a {@link ChildContext}. Instead of the child definition it
- * contains its name. 
+ * contains its name.
+ * 
  * @author Simon Templer
  */
 public class ChildContextBean {
-	
+
 	private Integer contextName;
-	
+
 	private Integer contextIndex;
-	
+
 	private String conditionFilter;
-	
+
 	private QName childName;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public ChildContextBean() {
 		super();
@@ -41,24 +46,26 @@ public class ChildContextBean {
 
 	/**
 	 * Create a child context bean from the given child context
+	 * 
 	 * @param context the child context
 	 */
 	public ChildContextBean(ChildContext context) {
-		this(context.getContextName(), context.getIndex(), (context
-				.getCondition() == null) ? (null) : (FilterDefinitionManager
-				.getInstance().asString(context.getCondition().getFilter())),
-				context.getChild().getName());
+		this(context.getContextName(), context.getIndex(),
+				(context.getCondition() == null) ? (null) : (FilterDefinitionManager.getInstance()
+						.asString(context.getCondition().getFilter())), context.getChild()
+						.getName());
 	}
 
 	/**
 	 * Create a child context bean with the given content
+	 * 
 	 * @param contextName the instance context name
 	 * @param contextIndex the context index
 	 * @param conditionFilter the condition filter
 	 * @param childName the child definition name
 	 */
-	public ChildContextBean(Integer contextName, Integer contextIndex,
-			String conditionFilter, QName childName) {
+	public ChildContextBean(Integer contextName, Integer contextIndex, String conditionFilter,
+			QName childName) {
 		super();
 		this.contextName = contextName;
 		this.childName = childName;

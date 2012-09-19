@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model.impl;
@@ -26,29 +30,31 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Entity definition for a type
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class TypeEntityDefinition implements EntityDefinition {
-	
+
 	private final SchemaSpaceID schemaSpace;
-	
+
 	private final TypeDefinition typeDefinition;
-	
+
 	private final Filter filter;
 
 	/**
 	 * Create an entity definition for the given type
+	 * 
 	 * @param typeDefinition the type definition
 	 * @param schemaSpace the schema space identifier
 	 * @param filter the entity filter, may be <code>null</code>
 	 */
-	public TypeEntityDefinition(TypeDefinition typeDefinition, 
-			SchemaSpaceID schemaSpace, Filter filter) {
+	public TypeEntityDefinition(TypeDefinition typeDefinition, SchemaSpaceID schemaSpace,
+			Filter filter) {
 		super();
-		
+
 		checkNotNull(typeDefinition, "Null type definition not allowed for type entity definition");
-		
+
 		this.typeDefinition = typeDefinition;
 		this.schemaSpace = schemaSpace;
 		this.filter = filter;
@@ -102,10 +108,8 @@ public class TypeEntityDefinition implements EntityDefinition {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
-		result = prime * result
-				+ ((schemaSpace == null) ? 0 : schemaSpace.hashCode());
-		result = prime * result
-				+ ((typeDefinition == null) ? 0 : typeDefinition.hashCode());
+		result = prime * result + ((schemaSpace == null) ? 0 : schemaSpace.hashCode());
+		result = prime * result + ((typeDefinition == null) ? 0 : typeDefinition.hashCode());
 		return result;
 	}
 
@@ -124,14 +128,16 @@ public class TypeEntityDefinition implements EntityDefinition {
 		if (filter == null) {
 			if (other.filter != null)
 				return false;
-		} else if (!filter.equals(other.filter))
+		}
+		else if (!filter.equals(other.filter))
 			return false;
 		if (schemaSpace != other.schemaSpace)
 			return false;
 		if (typeDefinition == null) {
 			if (other.typeDefinition != null)
 				return false;
-		} else if (!typeDefinition.equals(other.typeDefinition))
+		}
+		else if (!typeDefinition.equals(other.typeDefinition))
 			return false;
 		return true;
 	}

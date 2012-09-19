@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.schema.model;
@@ -20,6 +24,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractChildDefinition;
 
 /**
  * A group of children, which may be properties or property groups
+ * 
  * @author Simon Templer
  */
 public interface DefinitionGroup {
@@ -36,11 +41,11 @@ public interface DefinitionGroup {
 	 * 
 	 * @param name the child name
 	 * 
-	 * @return the child definition or <code>null</code> if no child with
-	 *   the given name is available
+	 * @return the child definition or <code>null</code> if no child with the
+	 *         given name is available
 	 */
 	public ChildDefinition<?> getChild(QName name);
-	
+
 	/**
 	 * Add a declared child, this is called by the
 	 * {@link AbstractChildDefinition} constructor.
@@ -48,7 +53,7 @@ public interface DefinitionGroup {
 	 * @param child the child definition
 	 */
 	public void addChild(ChildDefinition<?> child);
-	
+
 	/**
 	 * Get the group identifier
 	 * 

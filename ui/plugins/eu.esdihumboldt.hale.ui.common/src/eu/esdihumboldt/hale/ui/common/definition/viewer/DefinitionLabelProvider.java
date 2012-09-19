@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.definition.viewer;
@@ -26,43 +30,46 @@ import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 
 /**
  * Basic label provider for {@link Definition}s and {@link EntityDefinition}s
+ * 
  * @author Simon Templer
  */
 public class DefinitionLabelProvider extends LabelProvider {
-	
+
 	private final DefinitionImages images = new DefinitionImages();
-	
+
 	private final boolean longNames;
-	
+
 	/**
-	 * Create a label provider that will use short names for 
-	 * {@link EntityDefinition}s. 
+	 * Create a label provider that will use short names for
+	 * {@link EntityDefinition}s.
 	 */
 	public DefinitionLabelProvider() {
 		this(false);
 	}
-	
+
 	/**
-	 * Create a label provider for {@link Definition}s and 
+	 * Create a label provider for {@link Definition}s and
 	 * {@link EntityDefinition}.
-	 * @param longNames if for {@link EntityDefinition}s long names shall
-	 *   be used
+	 * 
+	 * @param longNames if for {@link EntityDefinition}s long names shall be
+	 *            used
 	 */
 	public DefinitionLabelProvider(boolean longNames) {
 		this(longNames, false);
 	}
 
 	/**
-	 * Create a label provider for {@link Definition}s and 
+	 * Create a label provider for {@link Definition}s and
 	 * {@link EntityDefinition}.
-	 * @param longNames if for {@link EntityDefinition}s long names shall
-	 *   be used
-	 * @param suppressMandatory if the mandatory overlay for properties shall
-	 *   be suppressed (defaults to <code>false</code>)
+	 * 
+	 * @param longNames if for {@link EntityDefinition}s long names shall be
+	 *            used
+	 * @param suppressMandatory if the mandatory overlay for properties shall be
+	 *            suppressed (defaults to <code>false</code>)
 	 */
 	public DefinitionLabelProvider(boolean longNames, boolean suppressMandatory) {
 		super();
-		
+
 		this.longNames = longNames;
 		images.setSuppressMandatory(suppressMandatory);
 	}
@@ -75,13 +82,13 @@ public class DefinitionLabelProvider extends LabelProvider {
 		if (element instanceof EntityDefinition) {
 			EntityDefinition entityDef = (EntityDefinition) element;
 			element = entityDef.getDefinition();
-			
+
 			List<ChildContext> path = entityDef.getPropertyPath();
 			if (path != null && !path.isEmpty()) {
 				if (!longNames) {
 					path = Collections.singletonList(path.get(path.size() - 1));
 				}
-				
+
 				StringBuffer name = new StringBuffer();
 				boolean first = true;
 				for (ChildContext context : path) {
@@ -92,8 +99,7 @@ public class DefinitionLabelProvider extends LabelProvider {
 						name.append('.');
 					}
 					boolean defContext = context.getContextName() == null
-							&& context.getIndex() == null
-							&& context.getCondition() == null;
+							&& context.getIndex() == null && context.getCondition() == null;
 					if (!defContext) {
 						name.append('(');
 					}
@@ -110,16 +116,17 @@ public class DefinitionLabelProvider extends LabelProvider {
 				}
 			}
 		}
-		
+
 		if (element instanceof Definition<?>) {
 			return ((Definition<?>) element).getDisplayName();
 		}
-		
+
 		return super.getText(element);
 	}
-	
+
 	/**
 	 * Returns an adjusted image depending on the type of the object passed in.
+	 * 
 	 * @return an Image
 	 */
 	@Override
@@ -127,11 +134,11 @@ public class DefinitionLabelProvider extends LabelProvider {
 		if (element instanceof EntityDefinition) {
 			return images.getImage((EntityDefinition) element);
 		}
-		
+
 		if (element instanceof Definition<?>) {
 			return images.getImage((Definition<?>) element);
 		}
-		
+
 		return super.getImage(element);
 	}
 
@@ -141,7 +148,7 @@ public class DefinitionLabelProvider extends LabelProvider {
 	@Override
 	public void dispose() {
 		images.dispose();
-		
+
 		super.dispose();
 	}
 

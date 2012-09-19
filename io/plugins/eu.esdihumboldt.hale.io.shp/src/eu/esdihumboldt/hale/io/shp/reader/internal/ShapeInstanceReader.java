@@ -1,17 +1,23 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonization and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
+
+import javax.xml.namespace.QName;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.FileDataStoreFinder;
@@ -25,7 +31,8 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.io.shp.ShapefileIO;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 import eu.esdihumboldt.hale.io.shp.internal.Messages;
 
 /**
@@ -34,9 +41,18 @@ import eu.esdihumboldt.hale.io.shp.internal.Messages;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public class ShapeInstanceReader extends AbstractInstanceReader {
+public class ShapeInstanceReader extends AbstractInstanceReader implements ShapefileConstants {
 
 	private ShapesInstanceCollection instances;
+
+	/**
+	 * Default constructor.
+	 */
+	public ShapeInstanceReader() {
+		super();
+
+		addSupportedParameter(PARAM_TYPENAME);
+	}
 
 	/**
 	 * @see IOProvider#isCancelable()
@@ -53,13 +69,24 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin(Messages.getString("ShapeSchemaProvider.1"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
-		
+
 //		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
 		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
-		
+
 		progress.setCurrentTask("Extracting shape instances");
 
-		instances = new ShapesInstanceCollection(store, getSourceSchema());
+		String typename = getParameter(PARAM_TYPENAME);
+		TypeDefinition defaultType = null;
+		if (typename != null && !typename.isEmpty()) {
+			try {
+				defaultType = getSourceSchema().getType(QName.valueOf(typename));
+			} catch (Exception e) {
+				// ignore
+				// TODO report?
+			}
+		}
+		instances = new ShapesInstanceCollection(store, defaultType, getSourceSchema(),
+				getCrsProvider());
 
 		reporter.setSuccess(true);
 		return reporter;
@@ -70,7 +97,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return ShapefileIO.DEFAULT_TYPE_NAME;
+		return ShapefileConstants.DEFAULT_TYPE_NAME;
 	}
 
 	/**

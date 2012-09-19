@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.instance.model;
@@ -30,6 +34,7 @@ import com.google.common.collect.Iterables;
  * @author Kai Schwierczek
  */
 public final class InstanceUtil {
+
 	private InstanceUtil() {
 		// static utility class
 	}
@@ -87,15 +92,18 @@ public final class InstanceUtil {
 				for (int i = 0; i < aProperty.length; i++)
 					if (!propertyValueEquals(aProperty[i], bProperty[i], propertyOrderRelevant))
 						return false;
-			} else {
-				// check whether each property value of a has an equal property value in b
+			}
+			else {
+				// check whether each property value of a has an equal property
+				// value in b
 				List<Object> bPropertyList = new LinkedList<Object>(Arrays.asList(bProperty));
 				for (Object aPropertyValue : aProperty) {
 					Iterator<Object> bPropertyValueIterator = bPropertyList.iterator();
 					boolean match = false;
 					while (!match && bPropertyValueIterator.hasNext()) {
 						Object bPropertyValue = bPropertyValueIterator.next();
-						match = propertyValueEquals(aPropertyValue, bPropertyValue, propertyOrderRelevant);
+						match = propertyValueEquals(aPropertyValue, bPropertyValue,
+								propertyOrderRelevant);
 						if (match)
 							bPropertyValueIterator.remove();
 					}
@@ -114,12 +122,15 @@ public final class InstanceUtil {
 		// check if a is an instance or a group for specialized check
 		// XXX other method than equals if it is not a group or instance?
 		if (a instanceof Instance) {
-			if (b instanceof Instance && instanceEqual((Instance) a, (Instance) b, propertyOrderRelevant))
+			if (b instanceof Instance
+					&& instanceEqual((Instance) a, (Instance) b, propertyOrderRelevant))
 				return true;
-		} else if (a instanceof Group) {
+		}
+		else if (a instanceof Group) {
 			if (b instanceof Group && groupEqual((Group) a, (Group) b, propertyOrderRelevant))
 				return true;
-		} else if (Objects.equal(a, b))
+		}
+		else if (Objects.equal(a, b))
 			return true;
 
 		return false;
@@ -182,25 +193,26 @@ public final class InstanceUtil {
 	private static String indent(String string) {
 		return "\t" + string.replace("\n", "\n\t");
 	}
-	
+
 	/**
 	 * Creates a list of instances out of a FamilyInstance
+	 * 
 	 * @param fi the FamilyInstance
 	 * @return a collection of instances
 	 */
-	public static Collection<Instance> getInstanceOutOfFamily(FamilyInstance fi){
-		Collection<Instance> result = new ArrayList<Instance>();		
+	public static Collection<Instance> getInstanceOutOfFamily(FamilyInstance fi) {
+		Collection<Instance> result = new ArrayList<Instance>();
 		result.add(fi);
-		
-		if(!fi.getChildren().isEmpty()){
-			for(FamilyInstance inst : fi.getChildren()){
-				if (!inst.getChildren().isEmpty()){
+
+		if (!fi.getChildren().isEmpty()) {
+			for (FamilyInstance inst : fi.getChildren()) {
+				if (!inst.getChildren().isEmpty()) {
 					result.addAll(getInstanceOutOfFamily(inst));
 				}
-				else result.add(inst);
+				else
+					result.add(inst);
 			}
-		}		
-		return result;	
+		}
+		return result;
 	}
 }
-

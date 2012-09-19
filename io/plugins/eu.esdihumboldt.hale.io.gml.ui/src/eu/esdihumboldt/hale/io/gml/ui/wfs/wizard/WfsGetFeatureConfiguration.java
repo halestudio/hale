@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
@@ -22,14 +26,14 @@ import org.opengis.feature.type.FeatureType;
 
 /**
  * Configuration for WFS GetFeature
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class WfsGetFeatureConfiguration extends WfsConfiguration {
-	
+
 	private List<String> filters;
-	
+
 	/**
 	 * @see WfsConfiguration#WfsConfiguration(String)
 	 */
@@ -53,28 +57,28 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 
 	/**
 	 * Get the request URL
-	 *  
-	 * @return the request URL 
+	 * 
+	 * @return the request URL
 	 * 
 	 * @throws UnsupportedEncodingException if UTF-8 encoding is not supported
 	 * @throws MalformedURLException if the getFeature request URL is malformed
 	 */
 	public URL getRequestURL() throws UnsupportedEncodingException, MalformedURLException {
 		String capabilities = getCapabilitiesURL();
-		
+
 		String getFeature = null;
 		int x = capabilities.toLowerCase().indexOf("request=getcapabilities"); //$NON-NLS-1$
 		if (x >= 0) {
 			String repl = capabilities.substring(x, x + "request=getcapabilities".length()); //$NON-NLS-1$
 			getFeature = capabilities.replace(repl, "REQUEST=GetFeature"); //$NON-NLS-1$
 		}
-		
+
 		if (getFeature != null) {
 			StringBuffer typeNames = new StringBuffer();
 			StringBuffer filterString = new StringBuffer();
-			
+
 			boolean filterPresent = false;
-			
+
 			boolean first = true;
 			List<FeatureType> types = getFeatureTypes();
 			if (types != null && !types.isEmpty()) {
@@ -86,10 +90,10 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 					else {
 						typeNames.append(',');
 					}
-					
+
 					String typeName = type.getName().getLocalPart();
 					typeNames.append(typeName);
-					
+
 					String filter = null;
 					if (filters != null && filters.size() > i) {
 						filter = filters.get(i);
@@ -97,27 +101,30 @@ public class WfsGetFeatureConfiguration extends WfsConfiguration {
 					if (types.size() > 1) {
 						filterString.append('(');
 					}
-					filterString.append((filter == null)?(""):(filter)); //$NON-NLS-1$
+					filterString.append((filter == null) ? ("") : (filter)); //$NON-NLS-1$
 					if (types.size() > 1) {
 						filterString.append(')');
 					}
-					
+
 					if (filter != null && !filter.isEmpty()) {
 						filterPresent = true;
 					}
 				}
 			}
-			else throw new IllegalArgumentException("No types specified"); //$NON-NLS-1$
+			else
+				throw new IllegalArgumentException("No types specified"); //$NON-NLS-1$
 
 			// types
-			getFeature = getFeature.concat("&TYPENAME=" + URLEncoder.encode(typeNames.toString(), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
-			
+			getFeature = getFeature
+					.concat("&TYPENAME=" + URLEncoder.encode(typeNames.toString(), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+
 			// filters
 			if (filterPresent) {
-				getFeature = getFeature.concat("&FILTER=" + URLEncoder.encode(filterString.toString(), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+				getFeature = getFeature
+						.concat("&FILTER=" + URLEncoder.encode(filterString.toString(), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
-		
+
 		// get the URL
 		return new URL(getFeature);
 	}

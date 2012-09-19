@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.io.supplier;
@@ -23,14 +27,15 @@ import com.google.common.io.OutputSupplier;
 
 /**
  * I/O supplier based on a {@link File}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
-public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>, LocatableOutputSupplier<FileOutputStream> {
+public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>,
+		LocatableOutputSupplier<FileOutputStream> {
 
-	private File file;
+	private final File file;
 
 	/**
 	 * Create a file I/O supplier
@@ -64,6 +69,38 @@ public class FileIOSupplier implements LocatableInputSupplier<FileInputStream>, 
 	@Override
 	public URI getLocation() {
 		return file.toURI();
+	}
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((file == null) ? 0 : file.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FileIOSupplier other = (FileIOSupplier) obj;
+		if (file == null) {
+			if (other.file != null)
+				return false;
+		}
+		else if (!file.equals(other.file))
+			return false;
+		return true;
 	}
 
 }

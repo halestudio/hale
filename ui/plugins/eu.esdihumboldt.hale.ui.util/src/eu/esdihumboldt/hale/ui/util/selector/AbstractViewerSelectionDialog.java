@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.util.selector;
 
@@ -34,49 +38,50 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Abstract selection dialog based on a structured viewer.
+ * 
  * @author Simon Templer
  * @param <T> the type of object that can be selected in the dialog
  * @param <V> the type of the viewer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewer> extends Dialog {
-	
+
 	private static final int NONE_ID = IDialogConstants.CLIENT_ID + 1;
 
 	private T selected;
-	
+
 	private V viewer;
-	
+
 	private final String title;
 
 	private ViewerFilter[] filters;
 
 	private final T initialSelection;
-	
+
 	/**
 	 * Constructor.
+	 * 
 	 * @param parentShell the parent shell
 	 * @param title the dialog title
 	 * @param initialSelection the entity definition to select initially (if
-	 *   possible), may be <code>null</code>
+	 *            possible), may be <code>null</code>
 	 */
-	public AbstractViewerSelectionDialog(Shell parentShell, String title,
-			T initialSelection) {
+	public AbstractViewerSelectionDialog(Shell parentShell, String title, T initialSelection) {
 		super(parentShell);
-		
+
 		this.title = title;
 		this.initialSelection = initialSelection;
 	}
-	
+
 	/**
 	 * @see Dialog#createContents(Composite)
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
-		
+
 		updateState();
-		
+
 		return control;
 	}
 
@@ -86,7 +91,7 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		
+
 		newShell.setText(title);
 	}
 
@@ -100,42 +105,44 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 		data.widthHint = 400;
 		data.minimumHeight = 200;
 		page.setLayoutData(data);
-		
+
 		GridLayout pageLayout = new GridLayout(1, false);
 		pageLayout.marginLeft = 0;
 		pageLayout.marginTop = 0;
 		pageLayout.marginLeft = 0;
 		pageLayout.marginBottom = 0;
 		page.setLayout(pageLayout);
-		
+
 		viewer = createViewer(page);
 		setupViewer(viewer, initialSelection);
-		
-		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().
-				grab(true, true).create());
-		
+
+		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				updateState();
 			}
 		});
-		
+
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				if (getButton(IDialogConstants.OK_ID).isEnabled())
 					okPressed();
 			}
 		});
-		
+
 		updateState();
-		
+
 		return page;
 	}
-	
+
 	/**
 	 * Create the tree viewer.
+	 * 
 	 * @param parent the parent composite
 	 * @return the tree viewer
 	 */
@@ -147,7 +154,7 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
-		
+
 		createButton(parent, NONE_ID, "None", //$NON-NLS-1$
 				false);
 	}
@@ -167,7 +174,7 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 			super.buttonPressed(buttonId);
 		}
 	}
-	
+
 	/**
 	 * Determines if the given object matches the given filters.
 	 * 
@@ -179,7 +186,7 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	public static boolean acceptObject(Viewer viewer, ViewerFilter[] filters, Object candidate) {
 		if (filters == null)
 			return true;
-		
+
 		for (ViewerFilter filter : filters)
 			if (!filter.select(viewer, null, candidate))
 				return false;
@@ -188,7 +195,7 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 
 	private void updateState() {
 		Button ok = getButton(IDialogConstants.OK_ID);
-		
+
 		if (ok != null) {
 			ISelection selection = viewer.getSelection();
 			if (selection.isEmpty())
@@ -196,24 +203,25 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 			else {
 				boolean valid = true;
 				if (selection instanceof IStructuredSelection) {
-					if (!acceptObject(viewer, filters, ((IStructuredSelection) selection).getFirstElement()))
+					if (!acceptObject(viewer, filters,
+							((IStructuredSelection) selection).getFirstElement()))
 						valid = false;
 				}
 				ok.setEnabled(valid);
 			}
 		}
 	}
-	
+
 	/**
 	 * Setup the tree viewer with label provider, content provider and input.
-	 * Don't set any viewer filters as they will be overridden by those 
-	 * provided through {@link #setFilters(ViewerFilter[])}. 
+	 * Don't set any viewer filters as they will be overridden by those provided
+	 * through {@link #setFilters(ViewerFilter[])}.
+	 * 
 	 * @param viewer the tree viewer
-	 * @param initialSelection the object to select (if possible),
-	 *   may be <code>null</code> 
+	 * @param initialSelection the object to select (if possible), may be
+	 *            <code>null</code>
 	 */
-	protected abstract void setupViewer(V viewer, 
-			T initialSelection);
+	protected abstract void setupViewer(V viewer, T initialSelection);
 
 	/**
 	 * @see Dialog#okPressed()
@@ -221,12 +229,13 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	@Override
 	protected void okPressed() {
 		selected = getObjectFromSelection(viewer.getSelection());
-				
+
 		super.okPressed();
 	}
 
 	/**
 	 * Retrieve the selected entity from the given selection
+	 * 
 	 * @param selection the selection
 	 * @return the selected entity or <code>null</code>
 	 */
@@ -238,12 +247,13 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	@Override
 	protected void cancelPressed() {
 		selected = null;
-		
+
 		super.cancelPressed();
 	}
 
 	/**
 	 * Get the selected object.
+	 * 
 	 * @return the object or <code>null</code>
 	 */
 	public T getObject() {
@@ -252,6 +262,7 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 
 	/**
 	 * Set the viewer filters
+	 * 
 	 * @param filters the filters
 	 */
 	public void setFilters(ViewerFilter[] filters) {

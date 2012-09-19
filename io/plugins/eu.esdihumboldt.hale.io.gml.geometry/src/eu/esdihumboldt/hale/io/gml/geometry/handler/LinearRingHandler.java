@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
@@ -45,7 +49,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String LINEAR_RING_TYPE = "LinearRingType";
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(LinearRingHandler.class);
 
 	/**
@@ -56,20 +60,20 @@ public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 			throws GeometryNotSupportedException {
 		return createGeometry(instance, srsDimension, true);
 	}
-		
+
 	/**
 	 * Create a {@link LinearRing} geometry from the given instance.
+	 * 
 	 * @param instance the instance
 	 * @param srsDimension the SRS dimension
-	 * @param allowTryOtherDimension if trying another dimension is allowed on 
-	 *   failure (e.g. 3D instead of 2D)
+	 * @param allowTryOtherDimension if trying another dimension is allowed on
+	 *            failure (e.g. 3D instead of 2D)
 	 * @return the {@link LinearRing} geometry
-	 * @throws GeometryNotSupportedException if the type definition doesn't 
-	 *   represent a geometry type supported by the handler
+	 * @throws GeometryNotSupportedException if the type definition doesn't
+	 *             represent a geometry type supported by the handler
 	 */
 	protected GeometryProperty<LinearRing> createGeometry(Instance instance, int srsDimension,
-			boolean allowTryOtherDimension)
-			throws GeometryNotSupportedException {
+			boolean allowTryOtherDimension) throws GeometryNotSupportedException {
 
 		LinearRing ring = null;
 		LineStringHandler handler = new LineStringHandler();
@@ -79,15 +83,16 @@ public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 		DefaultGeometryProperty<LineString> linestring = (DefaultGeometryProperty<LineString>) handler
 				.createGeometry(instance, srsDimension);
 		try {
-			ring = getGeometryFactory().createLinearRing(
-					linestring.getGeometry().getCoordinates());
+			ring = getGeometryFactory().createLinearRing(linestring.getGeometry().getCoordinates());
 		} catch (IllegalArgumentException e) {
 			if (allowTryOtherDimension) {
-				// the error "Points of LinearRing do not form a closed linestring"
+				// the error
+				// "Points of LinearRing do not form a closed linestring"
 				// can be an expression of a wrong dimension being used
 				// we try an alternative, to be sure (e.g. 3D instead of 2D)
-				int alternativeDimension = (srsDimension == 2)?(3):(2);
-				GeometryProperty<LinearRing> geom = createGeometry(instance, alternativeDimension, false);
+				int alternativeDimension = (srsDimension == 2) ? (3) : (2);
+				GeometryProperty<LinearRing> geom = createGeometry(instance, alternativeDimension,
+						false);
 				log.debug("Assuming geometry is " + alternativeDimension + "-dimensional.");
 				return geom;
 			}
@@ -106,8 +111,7 @@ public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
-				2);
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
 
 		constraints.add(Binding.get(GeometryProperty.class));
 		constraints.add(GeometryType.get(LinearRing.class));

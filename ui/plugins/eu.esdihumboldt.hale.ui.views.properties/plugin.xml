@@ -105,7 +105,20 @@
             </input>
          </propertySection>
          <propertySection
-               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.mappableflag"
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.grouppropertycardinality"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeCardinalitySection"
+               enablesFor="1"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.align.model.Property">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
                class="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeNillableFlagSection"
                enablesFor="1"
                id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.nillableflag"
@@ -118,10 +131,11 @@
             </input>
          </propertySection>
          <propertySection
-               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.grouppropertycardinality"
-               class="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyTypeCardinalitySection"
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.nillableflag"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyUniqueSection"
                enablesFor="1"
-               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.popertytypecardinality"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition.PropertyUniqueFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.unique"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.constraints">
             <input
                   type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">

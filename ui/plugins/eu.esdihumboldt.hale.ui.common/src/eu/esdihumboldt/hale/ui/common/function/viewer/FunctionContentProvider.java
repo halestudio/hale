@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.function.viewer;
@@ -30,15 +34,16 @@ import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtensio
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**
- * Function content provider. Expects no input and displays all 
- * available functions.
+ * Function content provider. Expects no input and displays all available
+ * functions.
+ * 
  * @author Simon Templer
  */
 public class FunctionContentProvider implements ITreeContentProvider {
-	
-	private static final Category CAT_OTHER = new Category(null, Messages.FunctionContentProvider_others, 
-			Messages.FunctionContentProvider_description);
-	
+
+	private static final Category CAT_OTHER = new Category(null,
+			Messages.FunctionContentProvider_others, Messages.FunctionContentProvider_description);
+
 	/**
 	 * @see IContentProvider#dispose()
 	 */
@@ -60,10 +65,9 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		List<Category> cats = new ArrayList<Category>(
-				CategoryExtension.getInstance().getElements());
+		List<Category> cats = new ArrayList<Category>(CategoryExtension.getInstance().getElements());
 		cats.add(CAT_OTHER);
-		
+
 		// remove categories w/o functions
 		ListIterator<Category> it = cats.listIterator();
 		while (it.hasNext()) {
@@ -71,7 +75,7 @@ public class FunctionContentProvider implements ITreeContentProvider {
 				it.remove();
 			}
 		}
-		
+
 		return cats.toArray();
 	}
 
@@ -82,16 +86,15 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof Category) {
 			Category category = (Category) parentElement;
-			
+
 			List<AbstractFunction<?>> functions = new ArrayList<AbstractFunction<?>>();
-			functions.addAll(TypeFunctionExtension.getInstance().getFunctions(
-					category.getId()));
-			functions.addAll(PropertyFunctionExtension.getInstance().getFunctions(
-					category.getId()));
-			
+			functions.addAll(TypeFunctionExtension.getInstance().getFunctions(category.getId()));
+			functions
+					.addAll(PropertyFunctionExtension.getInstance().getFunctions(category.getId()));
+
 			return functions.toArray();
 		}
-		
+
 		return null;
 	}
 
@@ -102,15 +105,15 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	public Object getParent(Object element) {
 		if (element instanceof AbstractFunction<?>) {
 			String catId = ((AbstractFunction<?>) element).getCategoryId();
-			
-			Category cat = (catId == null)?(null):(CategoryExtension.getInstance().get(catId));
+
+			Category cat = (catId == null) ? (null) : (CategoryExtension.getInstance().get(catId));
 			if (cat == null) {
 				cat = CAT_OTHER;
 			}
-			
+
 			return cat;
 		}
-		
+
 		return null;
 	}
 
@@ -121,20 +124,20 @@ public class FunctionContentProvider implements ITreeContentProvider {
 	public boolean hasChildren(Object element) {
 		if (element instanceof Category) {
 			Category category = (Category) element;
-			
-			List<TypeFunction> typeFunctions = TypeFunctionExtension
-					.getInstance().getFunctions(category.getId());
+
+			List<TypeFunction> typeFunctions = TypeFunctionExtension.getInstance().getFunctions(
+					category.getId());
 			if (!typeFunctions.isEmpty()) {
 				return true;
 			}
 
-			List<PropertyFunction> properyFunctions = PropertyFunctionExtension
-					.getInstance().getFunctions(category.getId());
+			List<PropertyFunction> properyFunctions = PropertyFunctionExtension.getInstance()
+					.getFunctions(category.getId());
 			if (!properyFunctions.isEmpty()) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 

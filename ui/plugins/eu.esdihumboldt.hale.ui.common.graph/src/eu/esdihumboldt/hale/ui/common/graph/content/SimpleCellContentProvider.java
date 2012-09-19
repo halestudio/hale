@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.graph.content;
@@ -25,8 +29,9 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 
 /**
  * Graph content provider that models cells as edges. Supports an
- * {@link Alignment}, a {@link Cell} or an {@link Iterable} of {@link Cell}s
- * as input.
+ * {@link Alignment}, a {@link Cell} or an {@link Iterable} of {@link Cell}s as
+ * input.
+ * 
  * @author Simon Templer
  */
 @Deprecated
@@ -55,10 +60,10 @@ public class SimpleCellContentProvider implements IGraphContentProvider {
 	public Object getSource(Object rel) {
 		if (rel instanceof Cell) {
 			Cell cell = (Cell) rel;
-			
+
 			return getEntity(cell.getSource());
 		}
-		
+
 		return null;
 	}
 
@@ -69,10 +74,10 @@ public class SimpleCellContentProvider implements IGraphContentProvider {
 	public Object getDestination(Object rel) {
 		if (rel instanceof Cell) {
 			Cell cell = (Cell) rel;
-			
+
 			return getEntity(cell.getTarget());
 		}
-		
+
 		return null;
 	}
 
@@ -80,8 +85,8 @@ public class SimpleCellContentProvider implements IGraphContentProvider {
 		if (entities.isEmpty()) {
 			return null;
 		}
-		
-		//FIXME what about the other entities?!
+
+		// FIXME what about the other entities?!
 		return entities.values().iterator().next();
 	}
 
@@ -90,20 +95,21 @@ public class SimpleCellContentProvider implements IGraphContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object input) {
-		//FIXME what about cells that refer to multiple source or target entities?!
-		
+		// FIXME what about cells that refer to multiple source or target
+		// entities?!
+
 		if (input instanceof Alignment) {
 			return ((Alignment) input).getCells().toArray();
 		}
-		
+
 		if (input instanceof Cell) {
-			return new Object[]{input};
+			return new Object[] { input };
 		}
-		
+
 		if (input instanceof Iterable<?>) {
 			return Iterables.toArray((Iterable<?>) input, Object.class);
 		}
-		
+
 		return null;
 	}
 

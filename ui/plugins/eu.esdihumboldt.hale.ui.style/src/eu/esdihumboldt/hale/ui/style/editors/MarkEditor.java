@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.style.editors;
 
@@ -37,29 +41,26 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class MarkEditor implements Editor<Mark> {
-	
+
 	/**
 	 * Mark names for {@link Mark} creation
 	 */
-	private static final String[] MARKS = new String[]{
-		StyleBuilder.MARK_X, StyleBuilder.MARK_ARROW,
-		StyleBuilder.MARK_CIRCLE, StyleBuilder.MARK_CROSS,
-		StyleBuilder.MARK_SQUARE, StyleBuilder.MARK_STAR,
-		StyleBuilder.MARK_TRIANGLE
-	};
-	
+	private static final String[] MARKS = new String[] { StyleBuilder.MARK_X,
+			StyleBuilder.MARK_ARROW, StyleBuilder.MARK_CIRCLE, StyleBuilder.MARK_CROSS,
+			StyleBuilder.MARK_SQUARE, StyleBuilder.MARK_STAR, StyleBuilder.MARK_TRIANGLE };
+
 	private static final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private final Composite page;
-	
+
 	private final StrokeEditor strokeEditor;
-	
+
 	private final FillEditor fillEditor;
-	
+
 	private final ComboViewer markView;
-	
+
 	private boolean changed = false;
-	
+
 	/**
 	 * Creates a {@link Mark} editor
 	 * 
@@ -70,40 +71,40 @@ public class MarkEditor implements Editor<Mark> {
 		if (mark == null) {
 			mark = styleBuilder.createMark(StyleBuilder.MARK_SQUARE);
 		}
-		
+
 		page = new Composite(parent, SWT.NONE);
-		
+
 		RowLayout layout = new RowLayout(SWT.VERTICAL);
 		page.setLayout(layout);
-		
+
 		// mark
 		Composite markComp = new Composite(page, SWT.NONE);
 		markComp.setLayout(new GridLayout(2, false));
-		
+
 		Label markLabel = new Label(markComp, SWT.NONE);
 		markLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		markLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		markLabel.setText(Messages.MarkEditor_MarkLabel);
-		
+
 		Combo markCombo = new Combo(markComp, SWT.READ_ONLY);
 		markCombo.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		markView = new ComboViewer(markCombo);
 		markView.add(MARKS);
 		markView.setSelection(new StructuredSelection(mark.getWellKnownName().toString()));
 		markView.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				changed = true;
 			}
 		});
-		
+
 		// stroke
 		Label strokeLabel = new Label(page, SWT.NONE);
 		strokeLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		strokeLabel.setText(Messages.MarkEditor_StrokeLabel);
 		strokeEditor = new StrokeEditor(page, mark.getStroke());
-		
+
 		// fill
 		Label fillLabel = new Label(page, SWT.NONE);
 		fillLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
@@ -124,8 +125,9 @@ public class MarkEditor implements Editor<Mark> {
 	 */
 	@Override
 	public Mark getValue() {
-		String markName = (String) ((IStructuredSelection) markView.getSelection()).getFirstElement();
-		
+		String markName = (String) ((IStructuredSelection) markView.getSelection())
+				.getFirstElement();
+
 		return styleBuilder.createMark(markName, fillEditor.getValue(), strokeEditor.getValue());
 	}
 
@@ -134,7 +136,7 @@ public class MarkEditor implements Editor<Mark> {
 	 */
 	@Override
 	public boolean isChanged() {
-		return changed || strokeEditor.isChanged() || fillEditor.isChanged(); 
+		return changed || strokeEditor.isChanged() || fillEditor.isChanged();
 	}
 
 	/**
@@ -145,7 +147,7 @@ public class MarkEditor implements Editor<Mark> {
 		if (mark == null) {
 			mark = styleBuilder.createMark(StyleBuilder.MARK_SQUARE);
 		}
-		
+
 		markView.setSelection(new StructuredSelection(mark.getWellKnownName().toString()));
 		strokeEditor.setValue(mark.getStroke());
 		fillEditor.setValue(mark.getFill());

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model.impl;
@@ -26,25 +30,27 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Entity definition for a property
+ * 
  * @author Simon Templer
  */
 @Immutable
 public class PropertyEntityDefinition extends ChildEntityDefinition {
 
 	/**
-	 * Create an entity definition specified by the given property path. The 
+	 * Create an entity definition specified by the given property path. The
 	 * property path must contain the property definition as last element.
+	 * 
 	 * @param type the topmost parent of the property
 	 * @param path the property path down from the type
 	 * @param schemaSpace the schema space identifier
 	 * @param filter the entity filter on the type, may be <code>null</code>
 	 */
-	public PropertyEntityDefinition(TypeDefinition type,
-			List<ChildContext> path, SchemaSpaceID schemaSpace, Filter filter) {
+	public PropertyEntityDefinition(TypeDefinition type, List<ChildContext> path,
+			SchemaSpaceID schemaSpace, Filter filter) {
 		super(type, path, schemaSpace, filter);
-		
-		checkArgument(path != null && !path.isEmpty() && path.size() >= 1 && 
-				path.get(path.size() - 1).getChild() instanceof PropertyDefinition);
+
+		checkArgument(path != null && !path.isEmpty() && path.size() >= 1
+				&& path.get(path.size() - 1).getChild() instanceof PropertyDefinition);
 	}
 
 	/**

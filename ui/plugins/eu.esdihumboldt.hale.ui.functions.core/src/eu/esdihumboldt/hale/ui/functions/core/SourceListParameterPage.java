@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.functions.core;
@@ -31,7 +35,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ArrayListMultimap;
@@ -51,13 +54,15 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * Base parameter page for parameter pages that contain a listing of source
  * types which can be put together to a target value.
  * 
+ * @param <T> the type of the text field/editor
+ * 
  * @author Kai Schwierczek
  */
-public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
-		ParameterPage {
-	
+public abstract class SourceListParameterPage<T> extends
+		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
+
 	private String initialValue = "";
-	private Text textField;
+	private T textField;
 	private TableViewer varTable;
 	private EntityDefinition[] variables = new EntityDefinition[0];
 
@@ -76,35 +81,27 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	}
 
 	/**
-	 * Should return the parameter which should be configured using all source properties.
+	 * Should return the parameter which should be configured using all source
+	 * properties.
 	 * 
 	 * @return the parameter name
 	 */
-	protected abstract String getParameterName() ;
+	protected abstract String getParameterName();
 
 	/**
 	 * Should return the name of the source property which should be used.
 	 * 
 	 * @return the source property name
 	 */
-	protected abstract String getSourcePropertyName() ;
+	protected abstract String getSourcePropertyName();
 
 	/**
-	 * Subclasses can override this method to specify, that the text field should have 
-	 * multiple lines. By default it is not.
-	 * 
-	 * @return true if the text field should have multiple lines.
-	 */
-	protected boolean useMultilineInput() {
-		return false;
-	}
-
-	/**
-	 * Subclasses can configure the text field to for example add some validation mechanism.
+	 * Subclasses can configure the text field to for example add some
+	 * validation mechanism.
 	 * 
 	 * @param textField the text field to configure
 	 */
-	protected void configure(Text textField) {
+	protected void configure(T textField) {
 		// default: do nothing
 	}
 
@@ -124,7 +121,8 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 			}
 			String longName = Joiner.on('.').join(names);
 			return longName;
-		} else
+		}
+		else
 			return variable.getDefinition().getDisplayName();
 	}
 
@@ -141,7 +139,8 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	 * @see ParameterPage#setParameter(Set, ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params, ListMultimap<String, String> initialValues) {
+	public void setParameter(Set<FunctionParameter> params,
+			ListMultimap<String, String> initialValues) {
 		for (FunctionParameter param : params) {
 			if (param.getName().equals(getParameterName())) {
 				String description = param.getDescription();
@@ -155,7 +154,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 				break;
 			}
 		}
-		
+
 		if (initialValues != null) {
 			List<String> initialData = initialValues.get(getParameterName());
 			if (initialData.size() > 0)
@@ -169,7 +168,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
 		ListMultimap<String, String> params = ArrayListMultimap.create();
-		params.put(getParameterName(), textField.getText());
+		params.put(getParameterName(), getText(textField));
 		return params;
 	}
 
@@ -201,16 +200,14 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 	@Override
 	protected void createContent(Composite page) {
 		page.setLayout(GridLayoutFactory.swtDefaults().create());
-		
+
 		// input field
-		int lineStyle = useMultilineInput() ? SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL : SWT.SINGLE;
-		textField = new Text(page, lineStyle | SWT.BORDER);
-		textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, useMultilineInput()));
+		textField = createAndLayoutTextField(page);
 
 		// let subclasses for example add validation
 		configure(textField);
 
-		textField.setText(initialValue);
+		setText(textField, initialValue);
 
 		// variables
 		Label label = new Label(page, SWT.NONE);
@@ -227,6 +224,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
 		varTable.setContentProvider(ArrayContentProvider.getInstance());
 		varTable.setLabelProvider(new DefinitionLabelProvider(true, true) {
+
 			/**
 			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getText(java.lang.Object)
 			 */
@@ -236,6 +234,7 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 			}
 		});
 		varTable.getTable().addMouseListener(new MouseAdapter() {
+
 			/**
 			 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
 			 */
@@ -245,10 +244,54 @@ public abstract class SourceListParameterPage extends HaleWizardPage<AbstractGen
 				if (index >= 0) {
 					String var = varTable.getTable().getItem(index).getText();
 					// let subclass modify variable
-					textField.insert(var);
-					textField.setFocus();
+					insertTextAtCurrentPos(textField, var);
+//					textField.insert(var);
+//					textField.setFocus();
 				}
 			}
 		});
 	}
+
+	/**
+	 * Set the text of the text field to the given value.
+	 * 
+	 * @param textField the text field
+	 * @param value the value to set as text
+	 */
+	protected abstract void setText(T textField, String value);
+
+	/**
+	 * Get the current text of the text field.
+	 * 
+	 * @param textField the text field
+	 * @return the current text of the text field
+	 */
+	protected abstract String getText(T textField);
+
+	/**
+	 * Insert a given text at the current position of the given text field.
+	 * 
+	 * @param textField the text field
+	 * @param insert the text to insert
+	 */
+	protected abstract void insertTextAtCurrentPos(T textField, String insert);
+
+	/**
+	 * Create and text field and layout it.
+	 * 
+	 * @param parent the parent composite, it has a one-column grid layout
+	 * 
+	 * @return the created text field
+	 */
+	protected abstract T createAndLayoutTextField(Composite parent);
+
+	/**
+	 * Get the text editor/field.
+	 * 
+	 * @return the text field
+	 */
+	protected T getTextField() {
+		return textField;
+	}
+
 }

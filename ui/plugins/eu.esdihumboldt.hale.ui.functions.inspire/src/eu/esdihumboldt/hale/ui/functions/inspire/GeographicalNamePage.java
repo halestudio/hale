@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.functions.inspire;
@@ -41,12 +45,12 @@ import org.eclipse.swt.widgets.Text;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.commons.inspire.data.GrammaticalGenderValue;
-import eu.esdihumboldt.commons.inspire.data.GrammaticalNumberValue;
-import eu.esdihumboldt.commons.inspire.data.NameStatusValue;
-import eu.esdihumboldt.commons.inspire.data.NativenessValue;
 import eu.esdihumboldt.cst.functions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.cst.functions.inspire.SpellingType;
+import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalGenderValue;
+import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalNumberValue;
+import eu.esdihumboldt.cst.functions.inspire.data.NameStatusValue;
+import eu.esdihumboldt.cst.functions.inspire.data.NativenessValue;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -62,9 +66,8 @@ import eu.esdihumboldt.hale.ui.functions.inspire.internal.Messages;
  * 
  * @author Kevin Mais
  */
-public class GeographicalNamePage extends
-		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements
-		GeographicalNameFunction, ParameterPage, GeographicalNamePageConstants {
+public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
+		implements GeographicalNameFunction, ParameterPage, GeographicalNamePageConstants {
 
 	private ComboViewer nameSpellingText;
 	private StyledText nameSpellingScript;
@@ -134,7 +137,7 @@ public class GeographicalNamePage extends
 			nativeness = initialValues.get(PROPERTY_NATIVENESS).get(0);
 			ipa = initialValues.get(PROPERTY_PRONUNCIATIONIPA).get(0);
 			try {
-			sound = initialValues.get(PROPERTY_PRONUNCIATIONSOUNDLINK).get(0);
+				sound = initialValues.get(PROPERTY_PRONUNCIATIONSOUNDLINK).get(0);
 			} catch (Exception e) {
 				sound = "";
 			}
@@ -161,8 +164,7 @@ public class GeographicalNamePage extends
 			return ArrayListMultimap.create();
 		}
 
-		ListMultimap<String, String> configuration = ArrayListMultimap.create(
-				10, 10);
+		ListMultimap<String, String> configuration = ArrayListMultimap.create(10, 10);
 
 		if (spellings != null && spellings.size() != 0) {
 			for (SpellingType sp : spellings) {
@@ -174,10 +176,8 @@ public class GeographicalNamePage extends
 			}
 		}
 
-		configuration.put(PROPERTY_PRONUNCIATIONSOUNDLINK,
-				namePronounciationSounds.getText());
-		configuration.put(PROPERTY_PRONUNCIATIONIPA,
-				namePronounciationIPA.getText());
+		configuration.put(PROPERTY_PRONUNCIATIONSOUNDLINK, namePronounciationSounds.getText());
+		configuration.put(PROPERTY_PRONUNCIATIONIPA, namePronounciationIPA.getText());
 		configuration.put(PROPERTY_LANGUAGE, nameLanguageText.getText());
 		configuration.put(PROPERTY_SOURCEOFNAME, nameSourceText.getText());
 		configuration.put(PROPERTY_NAMESTATUS, nameStatusCombo.getText());
@@ -215,14 +215,14 @@ public class GeographicalNamePage extends
 	private void createOptionalAttributes(Composite parent) {
 
 		final Composite configurationComposite = new Composite(parent, SWT.NONE);
-		GridData configurationLayoutData = new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
+		GridData configurationLayoutData = new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.FILL_HORIZONTAL);
 		configurationLayoutData.grabExcessHorizontalSpace = true;
 		// configurationLayoutData.grabExcessVerticalSpace = true;
 		configurationLayoutData.verticalIndent = 3;
 		configurationComposite.setLayoutData(configurationLayoutData);
-		configurationComposite.setSize(configurationComposite.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT));
+		configurationComposite
+				.setSize(configurationComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 		GridLayout pronounciationLayout = new GridLayout();
 		pronounciationLayout.numColumns = 2;
@@ -232,19 +232,18 @@ public class GeographicalNamePage extends
 		configurationComposite.setLayout(pronounciationLayout);
 
 		// Language
-		final Label nameLanguageLabel = new Label(configurationComposite,
-				SWT.NONE);
+		final Label nameLanguageLabel = new Label(configurationComposite, SWT.NONE);
 		nameLanguageLabel.setText(LANGUAGE_LABEL_TEXT);
 
-		this.nameLanguageText = new StyledText(configurationComposite,
-				SWT.BORDER | SWT.SINGLE);
+		this.nameLanguageText = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameLanguageText.setLayoutData(configurationLayoutData);
 		String languageCode = null;
 		if (getLanguage() != null && !getLanguage().equals("")) { //$NON-NLS-1$
 			languageCode = getLanguage();
 			this.nameLanguageText.setCaretOffset(languageCode.length());
 
-		} else {
+		}
+		else {
 			languageCode = ISO_CODE_ENG;
 		}
 		this.nameLanguageText.setText(languageCode);
@@ -254,6 +253,7 @@ public class GeographicalNamePage extends
 		this.nameLanguageText.setEnabled(true);
 		this.nameLanguageText.setTabs(0);
 		this.nameLanguageText.addModifyListener(new ModifyListener() {
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				language = nameLanguageText.getText();
@@ -263,18 +263,17 @@ public class GeographicalNamePage extends
 		});
 
 		// Source of Name
-		final Label nameSourceLabel = new Label(configurationComposite,
-				SWT.NONE);
+		final Label nameSourceLabel = new Label(configurationComposite, SWT.NONE);
 		nameSourceLabel.setText(SOURCE_OF_NAME_LABEL_TEXT);
-		this.nameSourceText = new StyledText(configurationComposite, SWT.BORDER
-				| SWT.SINGLE);
+		this.nameSourceText = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameSourceText.setLayoutData(configurationLayoutData);
 		String nameSource = null;
 		if (getSourceOfName() != null
 				&& !getSourceOfName().equals("") && !getSourceOfName().equals("unknown")) { //$NON-NLS-1$ //$NON-NLS-2$
 			nameSource = getSourceOfName();
 
-		} else {
+		}
+		else {
 			nameSource = SOURCE_OF_NAME_PROMT;
 		}
 
@@ -283,6 +282,7 @@ public class GeographicalNamePage extends
 		this.nameSourceText.setCaretOffset(nameSource.length());
 		this.nameSourceText.setEnabled(true);
 		this.nameSourceText.addModifyListener(new ModifyListener() {
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 
@@ -300,15 +300,13 @@ public class GeographicalNamePage extends
 		this.nameSourceText.setTabs(0);
 
 		// Name Status
-		final Label nameStatusLabel = new Label(configurationComposite,
-				SWT.NONE);
+		final Label nameStatusLabel = new Label(configurationComposite, SWT.NONE);
 		nameStatusLabel.setText(NAME_STATUS_LABEL_TEXT);
-		this.nameStatusCombo = new Combo(configurationComposite, SWT.READ_ONLY
-				| SWT.DROP_DOWN);
+		this.nameStatusCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameStatusCombo.setLayoutData(configurationLayoutData);
 		String[] statusItems = new String[] { NameStatusValue.official.name(),
-				NameStatusValue.standardised.name(),
-				NameStatusValue.historical.name(), NameStatusValue.other.name() };
+				NameStatusValue.standardised.name(), NameStatusValue.historical.name(),
+				NameStatusValue.other.name() };
 
 		this.nameStatusCombo.setItems(statusItems);
 		int index = 0;
@@ -327,24 +325,22 @@ public class GeographicalNamePage extends
 		setNameStatus(nameStatusCombo.getItem(index));
 
 		this.nameStatusCombo.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				setNameStatus(nameStatusCombo.getItem(nameStatusCombo
-						.getSelectionIndex()));
+				setNameStatus(nameStatusCombo.getItem(nameStatusCombo.getSelectionIndex()));
 			}
 
 		});
 
 		// Nativeness
-		final Label nativenessLabel = new Label(configurationComposite,
-				SWT.NONE);
+		final Label nativenessLabel = new Label(configurationComposite, SWT.NONE);
 		nativenessLabel.setText(NATIVENESS_LABEL_TEXT);
-		this.nameNativenessCombo = new Combo(configurationComposite,
-				SWT.READ_ONLY | SWT.DROP_DOWN);
+		this.nameNativenessCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameNativenessCombo.setLayoutData(configurationLayoutData);
 
-		String[] nativenessItems = new String[] {
-				NativenessValue.endonym.name(), NativenessValue.exonym.name() };
+		String[] nativenessItems = new String[] { NativenessValue.endonym.name(),
+				NativenessValue.exonym.name() };
 		this.nameNativenessCombo.setItems(nativenessItems);
 		int nativenessIndex = 0;
 		if (getNativeness() != null) {
@@ -362,10 +358,10 @@ public class GeographicalNamePage extends
 		this.nameNativenessCombo.select(nativenessIndex);
 		setNativeness(nameNativenessCombo.getItem(nativenessIndex));
 		this.nameNativenessCombo.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				setNativeness(nameNativenessCombo.getItem(nameNativenessCombo
-						.getSelectionIndex()));
+				setNativeness(nameNativenessCombo.getItem(nameNativenessCombo.getSelectionIndex()));
 			}
 
 		});
@@ -373,12 +369,10 @@ public class GeographicalNamePage extends
 		// Gramatical Gender
 		final Label genderLabel = new Label(configurationComposite, SWT.NONE);
 		genderLabel.setText(GRAMMATICAL_GENDER_LABEL_TEXT);
-		this.nameGenderCombo = new Combo(configurationComposite, SWT.READ_ONLY
-				| SWT.DROP_DOWN);
+		this.nameGenderCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameGenderCombo.setLayoutData(configurationLayoutData);
 		String[] genderItems = new String[] { GENDER_NULL_VAUE_MENU_ENTRY,
-				GrammaticalGenderValue.feminine.name(),
-				GrammaticalGenderValue.masculine.name(),
+				GrammaticalGenderValue.feminine.name(), GrammaticalGenderValue.masculine.name(),
 				GrammaticalGenderValue.common.name() };
 		this.nameGenderCombo.setItems(genderItems);
 		int genderIndex = 0;
@@ -395,10 +389,10 @@ public class GeographicalNamePage extends
 		this.nameGenderCombo.select(genderIndex);
 		setGender(nameGenderCombo.getItem(genderIndex));
 		this.nameGenderCombo.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				setGender(nameGenderCombo.getItem(nameGenderCombo
-						.getSelectionIndex()));
+				setGender(nameGenderCombo.getItem(nameGenderCombo.getSelectionIndex()));
 			}
 
 		});
@@ -406,12 +400,10 @@ public class GeographicalNamePage extends
 		// Gramatical Number
 		final Label numberLabel = new Label(configurationComposite, SWT.NONE);
 		numberLabel.setText(GRAMMATICAL_NUMBER_LABEL_TEXT);
-		this.nameNumberCombo = new Combo(configurationComposite, SWT.READ_ONLY
-				| SWT.DROP_DOWN);
+		this.nameNumberCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameNumberCombo.setLayoutData(configurationLayoutData);
 		String[] numberItems = new String[] { NUMBER_NULL_VALUE_MENU_ENTRY,
-				GrammaticalNumberValue.singular.name(),
-				GrammaticalNumberValue.dual.name(),
+				GrammaticalNumberValue.singular.name(), GrammaticalNumberValue.dual.name(),
 				GrammaticalNumberValue.plural.name() };
 		this.nameNumberCombo.setItems(numberItems);
 		// set default selection
@@ -429,10 +421,10 @@ public class GeographicalNamePage extends
 		this.nameNumberCombo.select(numberIndex);
 		setNumber(nameNumberCombo.getItem(numberIndex));
 		this.nameNumberCombo.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				setNumber(nameNumberCombo.getItem(nameNumberCombo
-						.getSelectionIndex()));
+				setNumber(nameNumberCombo.getItem(nameNumberCombo.getSelectionIndex()));
 			}
 
 		});
@@ -443,19 +435,17 @@ public class GeographicalNamePage extends
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(PRONOUNCIATION_GRPOUP_TEXT);
 		configurationGroup.setLayout(new GridLayout());
-		GridData configurationAreaGD = new GridData(
-				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL);
+		GridData configurationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
+				| GridData.HORIZONTAL_ALIGN_FILL);
 		configurationAreaGD.grabExcessHorizontalSpace = true;
 		configurationAreaGD.grabExcessVerticalSpace = true;
 		configurationGroup.setLayoutData(configurationAreaGD);
-		configurationGroup.setSize(configurationGroup.computeSize(SWT.DEFAULT,
-				SWT.DEFAULT));
+		configurationGroup.setSize(configurationGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		configurationGroup.setFont(parent.getFont());
 
-		final Composite configurationComposite = new Composite(
-				configurationGroup, SWT.NONE);
-		GridData configurationLayoutData = new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
+		final Composite configurationComposite = new Composite(configurationGroup, SWT.NONE);
+		GridData configurationLayoutData = new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.FILL_HORIZONTAL);
 		configurationLayoutData.grabExcessHorizontalSpace = true;
 		configurationComposite.setLayoutData(configurationLayoutData);
 
@@ -467,12 +457,10 @@ public class GeographicalNamePage extends
 		configurationComposite.setLayout(pronounciationLayout);
 
 		// Soundlink
-		final Label namePronounciationTextLabel = new Label(
-				configurationComposite, SWT.NONE);
+		final Label namePronounciationTextLabel = new Label(configurationComposite, SWT.NONE);
 		namePronounciationTextLabel.setText(SOUNDLINK_LABEL_TEXT);
 
-		this.namePronounciationSounds = new Text(configurationComposite,
-				SWT.BORDER);
+		this.namePronounciationSounds = new Text(configurationComposite, SWT.BORDER);
 		this.namePronounciationSounds.setLayoutData(configurationLayoutData);
 		this.namePronounciationSounds.setEnabled(true);
 		String sound = "";
@@ -491,11 +479,9 @@ public class GeographicalNamePage extends
 		});
 
 		// IPA
-		final Label namePronounciatiationIPALabel = new Label(
-				configurationComposite, SWT.NONE);
+		final Label namePronounciatiationIPALabel = new Label(configurationComposite, SWT.NONE);
 		namePronounciatiationIPALabel.setText(IPA_LABEL_TEXT);
-		this.namePronounciationIPA = new StyledText(configurationComposite,
-				SWT.BORDER | SWT.SINGLE);
+		this.namePronounciationIPA = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.namePronounciationIPA.setLayoutData(configurationLayoutData);
 		this.namePronounciationIPA.setEnabled(true);
 		this.namePronounciationIPA.setTabs(0);
@@ -524,19 +510,17 @@ public class GeographicalNamePage extends
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(SPELLING_GROUP_TEXT);
 		configurationGroup.setLayout(new GridLayout());
-		GridData configurationAreaGD = new GridData(
-				GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL);
+		GridData configurationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
+				| GridData.HORIZONTAL_ALIGN_FILL);
 		configurationAreaGD.grabExcessHorizontalSpace = true;
 		configurationAreaGD.grabExcessVerticalSpace = true;
 		configurationGroup.setLayoutData(configurationAreaGD);
-		configurationGroup.setSize(configurationGroup.computeSize(SWT.DEFAULT,
-				SWT.DEFAULT));
+		configurationGroup.setSize(configurationGroup.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		configurationGroup.setFont(parent.getFont());
 
-		final Composite configurationComposite = new Composite(
-				configurationGroup, SWT.NONE);
-		GridData configurationLayoutData = new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
+		final Composite configurationComposite = new Composite(configurationGroup, SWT.NONE);
+		GridData configurationLayoutData = new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.FILL_HORIZONTAL);
 		configurationLayoutData.grabExcessHorizontalSpace = true;
 		configurationComposite.setLayoutData(configurationLayoutData);
 
@@ -551,17 +535,16 @@ public class GeographicalNamePage extends
 		// or get the known information about the cell to be edited
 		if (getSpellings() == null || getSpellings().size() == 0) {
 			spellings = new ArrayList<SpellingType>();
-			for (Entity item : getWizard().getUnfinishedCell().getSource()
-					.values()) {
+			for (Entity item : getWizard().getUnfinishedCell().getSource().values()) {
 				int i = 0;
 				Definition<?> entity = item.getDefinition().getDefinition();
 				if (entity instanceof PropertyDefinition) {
-					SpellingType sp = new SpellingType(
-							(PropertyDefinition) entity);
+					SpellingType sp = new SpellingType((PropertyDefinition) entity);
 					// set the same script value if you had a value before
 					if (scripts != null && i < scripts.size()) {
 						sp.setScript(scripts.get(i));
-					} else {
+					}
+					else {
 						// else set the default value
 						sp.setScript(ISO_CODE_ENG);
 					}
@@ -569,7 +552,8 @@ public class GeographicalNamePage extends
 					// before
 					if (trans != null && i < trans.size()) {
 						sp.setTransliteration(trans.get(i));
-					} else {
+					}
+					else {
 						// else set the default value
 						sp.setTransliteration("");
 					}
@@ -577,7 +561,8 @@ public class GeographicalNamePage extends
 				}
 				i++;
 			}
-		} else {
+		}
+		else {
 			// after initialization of the spellings
 			ArrayList<PropertyDefinition> temp = new ArrayList<PropertyDefinition>();
 			ArrayList<SpellingType> templist = getSpellings();
@@ -586,15 +571,14 @@ public class GeographicalNamePage extends
 			spellings = new ArrayList<SpellingType>();
 			for (int i = 0; i < templist.size(); i++) {
 				temp.add(templist.get(i).getProperty());
-				if (scripts != null && trans != null && i < scripts.size() && scripts.get(i) != null
-						&& i < trans.size() && trans.get(i) != null) {
+				if (scripts != null && trans != null && i < scripts.size()
+						&& scripts.get(i) != null && i < trans.size() && trans.get(i) != null) {
 					templist.get(i).setScript(scripts.get(i));
 					templist.get(i).setTransliteration(trans.get(i));
 				}
 			}
 
-			for (Entity item : getWizard().getUnfinishedCell().getSource()
-					.values()) {
+			for (Entity item : getWizard().getUnfinishedCell().getSource().values()) {
 				Definition<?> entity = item.getDefinition().getDefinition();
 				if (entity instanceof PropertyDefinition) {
 					PropertyDefinition propDef = (PropertyDefinition) entity;
@@ -619,22 +603,18 @@ public class GeographicalNamePage extends
 
 		}
 		// Text
-		final Label nameSpellingTextLabel = new Label(configurationComposite,
-				SWT.NONE);
+		final Label nameSpellingTextLabel = new Label(configurationComposite, SWT.NONE);
 		nameSpellingTextLabel.setText(SPELLING_TEXT_LABEL_TEXT);
-		this.nameSpellingText = new ComboViewer(configurationComposite,
-				SWT.DROP_DOWN | SWT.READ_ONLY);
-		this.nameSpellingText.getControl().setLayoutData(
-				configurationLayoutData);
-		this.nameSpellingText.setContentProvider(ArrayContentProvider
-				.getInstance());
+		this.nameSpellingText = new ComboViewer(configurationComposite, SWT.DROP_DOWN
+				| SWT.READ_ONLY);
+		this.nameSpellingText.getControl().setLayoutData(configurationLayoutData);
+		this.nameSpellingText.setContentProvider(ArrayContentProvider.getInstance());
 		this.nameSpellingText.setLabelProvider(new LabelProvider() {
 
 			@Override
 			public String getText(Object element) {
 				if (element instanceof SpellingType) {
-					return ((SpellingType) element).getProperty().getName()
-							.getLocalPart();
+					return ((SpellingType) element).getProperty().getName().getLocalPart();
 				}
 				return super.getText(element);
 			}
@@ -644,47 +624,39 @@ public class GeographicalNamePage extends
 		// default set selection to the first element on the list
 		if (!spellings.isEmpty()) {
 			this.activeSpelling = spellings.iterator().next();
-			this.nameSpellingText.setSelection(new StructuredSelection(
-					activeSpelling));
+			this.nameSpellingText.setSelection(new StructuredSelection(activeSpelling));
 		}
 		// set active spelling
-		nameSpellingText
-				.addSelectionChangedListener(new ISelectionChangedListener() {
+		nameSpellingText.addSelectionChangedListener(new ISelectionChangedListener() {
 
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						if (!event.getSelection().isEmpty()
-								&& event.getSelection() instanceof IStructuredSelection) {
-							SpellingType selected = (SpellingType) ((IStructuredSelection) event
-									.getSelection()).getFirstElement();
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				if (!event.getSelection().isEmpty()
+						&& event.getSelection() instanceof IStructuredSelection) {
+					SpellingType selected = (SpellingType) ((IStructuredSelection) event
+							.getSelection()).getFirstElement();
 
-							String script = ISO_CODE_ENG;
-							String transliteration = ""; //$NON-NLS-1$
-							activeSpelling = selected;
-							if (activeSpelling.getScript() != null
-									&& !activeSpelling.getScript().equals("")) //$NON-NLS-1$
-								script = activeSpelling.getScript();
-							if (activeSpelling.getTransliteration() != null
-									&& !activeSpelling.getTransliteration()
-											.equals("")) //$NON-NLS-1$
-								transliteration = activeSpelling
-										.getTransliteration();
-							nameSpellingScript.setText(script);
-							nameSpellingScript.setCaretOffset(script.length());
-							nameSpellingTransliteration
-									.setText(transliteration);
-							nameSpellingTransliteration
-									.setCaretOffset(transliteration.length());
-						}
-					}
-				});
+					String script = ISO_CODE_ENG;
+					String transliteration = ""; //$NON-NLS-1$
+					activeSpelling = selected;
+					if (activeSpelling.getScript() != null
+							&& !activeSpelling.getScript().equals("")) //$NON-NLS-1$
+						script = activeSpelling.getScript();
+					if (activeSpelling.getTransliteration() != null
+							&& !activeSpelling.getTransliteration().equals("")) //$NON-NLS-1$
+						transliteration = activeSpelling.getTransliteration();
+					nameSpellingScript.setText(script);
+					nameSpellingScript.setCaretOffset(script.length());
+					nameSpellingTransliteration.setText(transliteration);
+					nameSpellingTransliteration.setCaretOffset(transliteration.length());
+				}
+			}
+		});
 
 		// Script
-		final Label nameSpellingScriptLabel = new Label(configurationComposite,
-				SWT.NONE);
+		final Label nameSpellingScriptLabel = new Label(configurationComposite, SWT.NONE);
 		nameSpellingScriptLabel.setText(SCRIPT_LABEL_TEXT);
-		this.nameSpellingScript = new StyledText(configurationComposite,
-				SWT.BORDER | SWT.SINGLE);
+		this.nameSpellingScript = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameSpellingScript.setLayoutData(configurationLayoutData);
 		this.nameSpellingScript.setEnabled(true);
 		this.nameSpellingScript.setTabs(0);
@@ -705,11 +677,10 @@ public class GeographicalNamePage extends
 		});
 
 		// Transliteration
-		final Label nameSpellingTransliterationLabel = new Label(
-				configurationComposite, SWT.NONE);
+		final Label nameSpellingTransliterationLabel = new Label(configurationComposite, SWT.NONE);
 		nameSpellingTransliterationLabel.setText(TRANSLITERATION_LABEL_TEXT);
-		this.nameSpellingTransliteration = new StyledText(
-				configurationComposite, SWT.BORDER | SWT.SINGLE);
+		this.nameSpellingTransliteration = new StyledText(configurationComposite, SWT.BORDER
+				| SWT.SINGLE);
 		this.nameSpellingTransliteration.setLayoutData(configurationLayoutData);
 		this.nameSpellingTransliteration.setEnabled(true);
 		this.nameSpellingTransliteration.setTabs(0);
@@ -719,27 +690,22 @@ public class GeographicalNamePage extends
 			transliteration = activeSpelling.getTransliteration();
 		// set default value for transliteration
 		this.nameSpellingTransliteration.setText(transliteration);
-		this.nameSpellingTransliteration.setCaretOffset(transliteration
-				.length());
-		this.nameSpellingTransliteration
-				.addModifyListener(new ModifyListener() {
+		this.nameSpellingTransliteration.setCaretOffset(transliteration.length());
+		this.nameSpellingTransliteration.addModifyListener(new ModifyListener() {
 
-					@Override
-					public void modifyText(ModifyEvent e) {
-						activeSpelling
-								.setTransliteration(nameSpellingTransliteration
-										.getText());
+			@Override
+			public void modifyText(ModifyEvent e) {
+				activeSpelling.setTransliteration(nameSpellingTransliteration.getText());
 
-					}
-				});
+			}
+		});
 
 	}
 
 	/**
 	 * Returns a spelling assigned to source attribute name
 	 * 
-	 * @param property
-	 *            the assigned source property definition
+	 * @param property the assigned source property definition
 	 * @return the spelling assigned to property
 	 */
 	protected SpellingType getActiveSpelling(PropertyDefinition property) {
@@ -772,8 +738,7 @@ public class GeographicalNamePage extends
 	}
 
 	/**
-	 * @param ipa
-	 *            the ipa to set
+	 * @param ipa the ipa to set
 	 */
 	public void setIpa(String ipa) {
 		this.ipa = ipa;
@@ -787,8 +752,7 @@ public class GeographicalNamePage extends
 	}
 
 	/**
-	 * @param language
-	 *            the language to set
+	 * @param language the language to set
 	 */
 	public void setLanguage(String language) {
 		this.language = language;
@@ -806,8 +770,7 @@ public class GeographicalNamePage extends
 	}
 
 	/**
-	 * @param sourceOfName
-	 *            the sourceOfName to set
+	 * @param sourceOfName the sourceOfName to set
 	 */
 	public void setSourceOfName(String sourceOfName) {
 		this.sourceOfName = sourceOfName;
@@ -821,8 +784,7 @@ public class GeographicalNamePage extends
 	}
 
 	/**
-	 * @param nameStatus
-	 *            the nameStatus to set
+	 * @param nameStatus the nameStatus to set
 	 */
 	public void setNameStatus(String nameStatus) {
 		this.nameStatus = nameStatus;
@@ -836,8 +798,7 @@ public class GeographicalNamePage extends
 	}
 
 	/**
-	 * @param nativeness
-	 *            the nativeness to set
+	 * @param nativeness the nativeness to set
 	 */
 	public void setNativeness(String nativeness) {
 		this.nativeness = nativeness;
@@ -851,8 +812,7 @@ public class GeographicalNamePage extends
 	}
 
 	/**
-	 * @param gender
-	 *            the gender to set
+	 * @param gender the gender to set
 	 */
 	public void setGender(String gender) {
 		this.gender = gender;
@@ -866,8 +826,7 @@ public class GeographicalNamePage extends
 	}
 
 	/**
-	 * @param number
-	 *            the number to set
+	 * @param number the number to set
 	 */
 	public void setNumber(String number) {
 		this.number = number;
@@ -881,8 +840,7 @@ public class GeographicalNamePage extends
 	}
 
 	/**
-	 * @param sound
-	 *            the sound to set
+	 * @param sound the sound to set
 	 */
 	public void setSound(String sound) {
 		this.sound = sound;
@@ -896,8 +854,7 @@ public class GeographicalNamePage extends
 	}
 
 	/**
-	 * @param spellings
-	 *            the spellings to set
+	 * @param spellings the spellings to set
 	 */
 	public void setSpellings(ArrayList<SpellingType> spellings) {
 		this.spellings = spellings;

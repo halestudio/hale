@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>CityGML Data Import</title>
+</head>
+<body>
+	<h1>CityGML Data Import</h1>
+	<p>
+		The GML support is well able to handle also the import of CityGML files. For more
+		information please see the <a href="gml_data.html">GML Data Import</a> 
+	</p>
+	<h3>Loading 3D geometries</h3>
+	<p> 
+		If the attribute <i>srsDimension</i> is present for a geometry, this information is
+		evaluated. In other cases, the dimension of a geometry is tried to be determined
+		automatically. This works very reliable for <i>LinearRing</i>s or geometries based on
+		them. 
+	</p>
+	<p>
+		Currently there is no dedicated support for viewing the 3D geometries, though you can
+		display the 2D projection of 3D geometries in the map. 
+	</p>
+	
+	<br />
+	<!-- related reference -->
+	<div>
+		<br /> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelr.png"></img>
+		<p>
+			<a href="gml_data.html">GML Data Import</a>
+		</p>
+	</div>
+</body>
+</html>

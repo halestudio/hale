@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.definition.viewer;
@@ -30,20 +34,22 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
+import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 
 /**
  * Extended label provider for definitions.
+ * 
  * @author Simon Templer
  */
-public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
-		implements ILabelProvider, IColorProvider {
-	
+public class StyledDefinitionLabelProvider extends StyledCellLabelProvider implements
+		ILabelProvider, IColorProvider {
+
 	private final ILabelProvider defaultLabels;
 	private final boolean suppressCardinality;
-	
+
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public StyledDefinitionLabelProvider() {
 		this(new DefinitionLabelProvider());
@@ -52,24 +58,25 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 	/**
 	 * Create a styled label provider based on the given plain label provider
 	 * for definitions.
+	 * 
 	 * @param definitionLabelProvider the definition label provider
 	 */
-	public StyledDefinitionLabelProvider(
-			ILabelProvider definitionLabelProvider) {
+	public StyledDefinitionLabelProvider(ILabelProvider definitionLabelProvider) {
 		this(definitionLabelProvider, false);
 	}
-	
+
 	/**
 	 * Create a styled label provider based on the given plain label provider
 	 * for definitions.
+	 * 
 	 * @param definitionLabelProvider the definition label provider
 	 * @param suppressCardinality if displaying the cardinality should be
-	 *   suppressed
+	 *            suppressed
 	 */
-	public StyledDefinitionLabelProvider(
-			ILabelProvider definitionLabelProvider, boolean suppressCardinality) {
+	public StyledDefinitionLabelProvider(ILabelProvider definitionLabelProvider,
+			boolean suppressCardinality) {
 		super();
-		
+
 		this.suppressCardinality = suppressCardinality;
 		this.defaultLabels = definitionLabelProvider;
 	}
@@ -80,72 +87,85 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 	@Override
 	public void update(ViewerCell cell) {
 		Object element = cell.getElement();
-		
+
 		StyledString text = new StyledString(defaultLabels.getText(element));
-		
+
 		cell.setImage(defaultLabels.getImage(element));
-		
+
 		String contextText = null;
 		String countText = null;
 		if (element instanceof EntityDefinition) {
-			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
+					PopulationService.class);
 			if (ps != null) {
-				int count = ps.getPopulation((EntityDefinition) element);
+				Population pop = ps.getPopulation((EntityDefinition) element);
+				int count = pop.getOverallCount();
+				int parents = pop.getParentsCount();
 				switch (count) {
-				case PopulationService.UNKNOWN:
-					countText = "x?";
+				case Population.UNKNOWN:
+					countText = "\u00d7?";
 					break;
 				case 0:
 					break;
 				default:
-					countText = "x" + count;
+					countText = "\u00d7" + count;
+					if (parents != count) {
+						countText += " (" + parents + ")";
+					}
 				}
 			}
-			
+
 			contextText = AlignmentUtil.getContextText((EntityDefinition) element);
 			element = ((EntityDefinition) element).getDefinition();
 		}
-		
+
 		// append cardinality
 		if (!suppressCardinality && element instanceof ChildDefinition<?>) {
 			Cardinality cardinality = null;
 			if (((ChildDefinition<?>) element).asGroup() != null) {
-				cardinality = ((ChildDefinition<?>) element).asGroup().getConstraint(Cardinality.class);
+				cardinality = ((ChildDefinition<?>) element).asGroup().getConstraint(
+						Cardinality.class);
 			}
 			else if (((ChildDefinition<?>) element).asProperty() != null) {
-				cardinality = ((ChildDefinition<?>) element).asProperty().getConstraint(Cardinality.class);
+				cardinality = ((ChildDefinition<?>) element).asProperty().getConstraint(
+						Cardinality.class);
 			}
-			
+
 			if (cardinality != null) {
 				// only append cardinality if it isn't 1/1
 				if (cardinality.getMinOccurs() != 1 || cardinality.getMaxOccurs() != 1) {
-					String card = " " + MessageFormat.format("({0}..{1})", 
-							new Object[]{Long.valueOf(cardinality.getMinOccurs()), 
-							(cardinality.getMaxOccurs() == Cardinality.UNBOUNDED)?("n"):(Long.valueOf(cardinality.getMaxOccurs()))});
+					String card = " "
+							+ MessageFormat
+									.format("({0}..{1})",
+											new Object[] {
+													Long.valueOf(cardinality.getMinOccurs()),
+													(cardinality.getMaxOccurs() == Cardinality.UNBOUNDED) ? ("n")
+															: (Long.valueOf(cardinality
+																	.getMaxOccurs())) });
 					text.append(card, StyledString.COUNTER_STYLER);
 				}
 			}
 		}
-		
+
 		if (contextText != null) {
 			contextText = " " + contextText;
 			text.append(contextText, StyledString.DECORATIONS_STYLER);
 		}
-		
+
 		if (countText != null) {
 			countText = " " + countText;
 			text.append(countText, StyledString.QUALIFIER_STYLER);
 		}
-		
+
 		cell.setText(text.toString());
 		cell.setStyleRanges(text.getStyleRanges());
-		
+
 		Color foreground = getForeground(cell.getElement());
 		cell.setForeground(foreground);
-		
+
 		Color background = getBackground(cell.getElement());
 		cell.setBackground(background);
-		
+
 		super.update(cell);
 	}
 
@@ -161,7 +181,7 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 	}
 
 	/**
-	 * Only implemented for use with {@link PatternFilter} and 
+	 * Only implemented for use with {@link PatternFilter} and
 	 * {@link ViewerComparator}
 	 * 
 	 * @see ILabelProvider#getText(Object)
@@ -171,11 +191,11 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 		if (element instanceof EntityDefinition) {
 			element = ((EntityDefinition) element).getDefinition();
 		}
-		
+
 		if (element instanceof Definition<?>) {
 			return ((Definition<?>) element).getDisplayName();
 		}
-		
+
 		return null;
 	}
 
@@ -185,7 +205,7 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
 	@Override
 	public void dispose() {
 		defaultLabels.dispose();
-		
+
 		super.dispose();
 	}
 

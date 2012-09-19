@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.function.internal;
@@ -22,16 +26,17 @@ import eu.esdihumboldt.hale.ui.util.wizard.MultiWizard;
 
 /**
  * Wizard for creating a new relation.
+ * 
  * @author Simon Templer
  */
 public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public NewRelationWizard() {
 		super();
-		
+
 		setWindowTitle("New relation");
 	}
 
@@ -49,23 +54,25 @@ public class NewRelationWizard extends MultiWizard<NewRelationPage> {
 	@Override
 	public boolean performFinish() {
 		// performFinish of the function wizard was called first
-		
+
 		FunctionWizard functionWizard = getSelectionPage().getFunctionWizard();
-		
+
 		if (functionWizard == null) {
 			return false;
 		}
-		
+
 		MutableCell cell = functionWizard.getResult();
 		if (cell != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			as.addCell(cell);
 		}
-		
+
 		// save page configuration
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 		getSelectionPage().store(ps.getConfigurationService());
-		
+
 		return true;
 	}
 

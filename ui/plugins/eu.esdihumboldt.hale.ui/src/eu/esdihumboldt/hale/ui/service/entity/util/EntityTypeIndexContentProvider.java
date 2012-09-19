@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.entity.util;
@@ -30,12 +34,13 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
  * Tree content provider using a {@link TypeIndex} as root
+ * 
  * @author Simon Templer
  */
 public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 
 	private final TreeViewer tree;
-	
+
 	/**
 	 * The entity definition service instance
 	 */
@@ -45,25 +50,26 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	 * The identifier of the schema space associated to the entities
 	 */
 	protected final SchemaSpaceID schemaSpace;
-	
+
 	/**
 	 * Create a content provider based on a {@link TypeIndex} as input.
+	 * 
 	 * @param tree the associated tree viewer
 	 * @param entityDefinitionService the entity definition service
 	 * @param schemaSpace the associated schema space
 	 */
 	public EntityTypeIndexContentProvider(TreeViewer tree,
-			EntityDefinitionService entityDefinitionService,
-			SchemaSpaceID schemaSpace) {
+			EntityDefinitionService entityDefinitionService, SchemaSpaceID schemaSpace) {
 		super();
-		
+
 		this.tree = tree;
 		this.entityDefinitionService = entityDefinitionService;
 		this.schemaSpace = schemaSpace;
 	}
-	
+
 	/**
 	 * Get the associated tree viewer
+	 * 
 	 * @return the associated tree viewer
 	 */
 	protected TreeViewer getTree() {
@@ -93,12 +99,13 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof EntityDefinition) {
-			Collection<? extends EntityDefinition> children = 
-					entityDefinitionService.getChildren((EntityDefinition) parentElement);
+			Collection<? extends EntityDefinition> children = entityDefinitionService
+					.getChildren((EntityDefinition) parentElement);
 			return children.toArray();
 		}
 		else {
-			throw new IllegalArgumentException("Given element not supported in schema tree structure.");
+			throw new IllegalArgumentException(
+					"Given element not supported in schema tree structure.");
 		}
 	}
 
@@ -108,12 +115,13 @@ public class EntityTypeIndexContentProvider implements ITreeContentProvider {
 	@Override
 	public boolean hasChildren(Object parentElement) {
 		if (parentElement instanceof EntityDefinition) {
-			Collection<? extends EntityDefinition> children = 
-					entityDefinitionService.getChildren((EntityDefinition) parentElement);
+			Collection<? extends EntityDefinition> children = entityDefinitionService
+					.getChildren((EntityDefinition) parentElement);
 			return !children.isEmpty();
 		}
 		else {
-			throw new IllegalArgumentException("Given element not supported in schema tree structure.");
+			throw new IllegalArgumentException(
+					"Given element not supported in schema tree structure.");
 		}
 	}
 

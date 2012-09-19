@@ -53,6 +53,52 @@
                name="expression">
          </functionParameter>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.numeric"
+            description="Generates a sequential numeric identifier"
+            icon="icons/id.png"
+            identifier="eu.esdihumboldt.cst.functions.numeric.sequentialid"
+            name="Generate sequential ID">
+         <targetProperties>
+            <property
+                  description="Property to assign the generated identifier to"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+         <functionParameter
+               description="Identifier prefix"
+               label="Prefix"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="prefix">
+         </functionParameter>
+         <functionParameter
+               description="Identifier suffix"
+               label="Suffix"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="suffix">
+         </functionParameter>
+         <functionParameter
+               description="Generation sequence to use"
+               label="Sequence"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="sequence">
+            <validator
+                  class="eu.esdihumboldt.hale.common.align.extension.function.validator.EnumerationValidator">
+               <parameter
+                     name="value"
+                     value="overall">
+               </parameter>
+               <parameter
+                     name="value"
+                     value="type">
+               </parameter>
+            </validator>
+         </functionParameter>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -61,6 +107,12 @@
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.numeric.mathexpression"
             id="eu.esdihumboldt.cst.functions.numeric.mathexpression">
+      </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.numeric.sequentialid.SequentialID"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.numeric.sequentialid"
+            id="eu.esdihumboldt.cst.functions.numeric.sequentialid">
       </propertyTransformation>
    </extension>
 

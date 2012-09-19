@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2012 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
 package eu.esdihumboldt.hale.io.gml.ui.wfs.wizard;
 
 import java.net.URL;
@@ -18,7 +33,6 @@ import org.eclipse.swt.widgets.Display;
 
 import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.capabilities.GetCapabilititiesRetriever;
 
-
 /*+-------------+----------------------------------------------------------*
  *|  |  |_|_|_|_|   Fraunhofer-Institut fuer Graphische Datenverarbeitung  *
  *|__|__|_|_|_|_|     (Fraunhofer Institute for Computer Graphics)         *
@@ -35,23 +49,22 @@ import eu.esdihumboldt.hale.io.gml.ui.wfs.wizard.capabilities.GetCapabilititiesR
  * @author Simon Templer
  */
 public class WfsLocationFieldEditor extends FieldEditor {
-	
+
 	/**
 	 * Delay for validating on modification in milliseconds
 	 */
 	private static final int MODIFY_VALIDATE_DELAY = 1200;
 
 	private Combo combo;
-	
+
 	private boolean valid;
-	
+
 	private Timer timer;
-	
+
 	/**
 	 * @see FieldEditor#FieldEditor(String, String, Composite)
 	 */
-	public WfsLocationFieldEditor(String name, String labelText,
-			Composite parent) {
+	public WfsLocationFieldEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, parent);
 	}
 
@@ -61,11 +74,11 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	@Override
 	protected void adjustForNumColumns(int numColumns) {
 		GridData gd = (GridData) combo.getLayoutData();
-        gd.horizontalSpan = numColumns - 1;
-        // We only grab excess space if we have to
-        // If another field editor has more columns then
-        // we assume it is setting the width.
-        gd.grabExcessHorizontalSpace = gd.horizontalSpan == 1;
+		gd.horizontalSpan = numColumns - 1;
+		// We only grab excess space if we have to
+		// If another field editor has more columns then
+		// we assume it is setting the width.
+		gd.grabExcessHorizontalSpace = gd.horizontalSpan == 1;
 	}
 
 	/**
@@ -74,20 +87,20 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	@Override
 	protected void doFillIntoGrid(Composite parent, int numColumns) {
 		getLabelControl(parent);
-		
+
 		combo = new Combo(parent, SWT.BORDER | SWT.DROP_DOWN);
 		GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false, numColumns - 1, 1);
 		combo.setLayoutData(layoutData);
-		
+
 		loadRecent();
-		
+
 		refreshValidState();
-		
+
 		combo.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent e) {
-				scheduleValidation(); //refreshValidState();
+				scheduleValidation(); // refreshValidState();
 			}
 		});
 	}
@@ -97,27 +110,27 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	 */
 	protected void scheduleValidation() {
 		final Display display = Display.getCurrent();
-		
+
 		synchronized (this) {
 			if (timer != null) {
 				timer.cancel();
 			}
-			
+
 			// invalidate
 			invalidate();
-			
+
 			// schedule validation
 			timer = new Timer();
 			timer.schedule(new TimerTask() {
-				
+
 				@Override
 				public void run() {
 					display.syncExec(new Runnable() {
-						
+
 						@Override
 						public void run() {
 							BusyIndicator.showWhile(display, new Runnable() {
-						
+
 								@Override
 								public void run() {
 									refreshValidState();
@@ -140,7 +153,7 @@ public class WfsLocationFieldEditor extends FieldEditor {
 			combo.setText(recent.get(0));
 		}
 	}
-	
+
 	/**
 	 * Update the recently used WFSes
 	 */
@@ -160,7 +173,7 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	@Override
 	protected void doLoad() {
 		String value = getPreferenceStore().getString(getPreferenceName());
-		combo.setText((value == null)?(""):(value)); //$NON-NLS-1$
+		combo.setText((value == null) ? ("") : (value)); //$NON-NLS-1$
 	}
 
 	/**
@@ -169,7 +182,7 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	@Override
 	protected void doLoadDefault() {
 		String value = getPreferenceStore().getDefaultString(getPreferenceName());
-		combo.setText((value == null)?(""):(value)); //$NON-NLS-1$
+		combo.setText((value == null) ? ("") : (value)); //$NON-NLS-1$
 	}
 
 	/**
@@ -196,15 +209,15 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	public String getValue() {
 		return combo.getText();
 	}
-	
+
 	/**
 	 * Set the value
 	 * 
 	 * @param value the value to set
 	 */
 	public void setValue(String value) {
-		combo.setText((value == null)?(""):(value)); //$NON-NLS-1$
-		
+		combo.setText((value == null) ? ("") : (value)); //$NON-NLS-1$
+
 		refreshValidState();
 	}
 
@@ -222,14 +235,14 @@ public class WfsLocationFieldEditor extends FieldEditor {
 	@Override
 	protected void refreshValidState() {
 		boolean newValid = getValidState();
-		
+
 		if (valid != newValid) {
 			valid = newValid;
-			
+
 			fireStateChanged(IS_VALID, !valid, valid);
 		}
 	}
-	
+
 	/**
 	 * Invalidate the editor
 	 */
@@ -242,9 +255,9 @@ public class WfsLocationFieldEditor extends FieldEditor {
 
 	private boolean getValidState() {
 		String value = getValue();
-		
+
 		DialogPage page = getPage();
-		
+
 		// try to create a URL
 		try {
 			new URL(value);
@@ -254,7 +267,7 @@ public class WfsLocationFieldEditor extends FieldEditor {
 			}
 			return false;
 		}
-		
+
 		// try to get capabilities?
 		try {
 			GetCapabilititiesRetriever.getDataStore(value);
@@ -271,5 +284,5 @@ public class WfsLocationFieldEditor extends FieldEditor {
 		}
 		return true;
 	}
-	
+
 }

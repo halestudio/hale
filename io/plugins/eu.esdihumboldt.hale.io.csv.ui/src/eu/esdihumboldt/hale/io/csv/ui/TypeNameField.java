@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.csv.ui;
@@ -24,12 +28,12 @@ import org.eclipse.swt.widgets.Text;
 public class TypeNameField extends StringFieldEditor {
 
 	Composite _parent;
-	
+
 	/**
 	 * Parameter that signals when a test has changed
 	 */
 	public static final String TXT_CHNGD = "text_has_changed";
-	
+
 	/**
 	 * @param name the name intern
 	 * @param labelText the label to be set in the StringFieldEditor
@@ -46,19 +50,17 @@ public class TypeNameField extends StringFieldEditor {
 	@Override
 	protected boolean doCheckState() {
 		boolean containsIllegalChar;
-		
+
 		setErrorMessage("You have not entered a valid Name");
 
 		Text txtField = getTextControl(_parent);
 		String txt = txtField.getText();
-		
+
 		containsIllegalChar = txt.contains("/") || txt.contains(":") || txt.contains(".");
-		
+
 		return !(containsIllegalChar);
 	}
 
-	
-	
 	/**
 	 * @see org.eclipse.jface.preference.StringFieldEditor#valueChanged()
 	 */

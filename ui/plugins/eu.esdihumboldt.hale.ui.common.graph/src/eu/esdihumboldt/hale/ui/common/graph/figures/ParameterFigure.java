@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.graph.figures;
@@ -34,17 +38,13 @@ import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 public class ParameterFigure extends CustomShapeFigure {
 
 	/**
-	 * @param painter
-	 *            the painter drawing the figure shape
-	 * @param occurrence
-	 *            the occurrence of the figure
-	 * @param description
-	 *            the description of the figure
-	 * @param showToolTip
-	 *            if the ToolTip should be shown
+	 * @param painter the painter drawing the figure shape
+	 * @param occurrence the occurrence of the figure
+	 * @param description the description of the figure
+	 * @param showToolTip if the ToolTip should be shown
 	 */
-	public ParameterFigure(ShapePainter painter, String occurrence,
-			String description, boolean showToolTip) {
+	public ParameterFigure(ShapePainter painter, String occurrence, String description,
+			boolean showToolTip) {
 		super(painter);
 
 		final Display display = Display.getCurrent();
@@ -58,30 +58,26 @@ public class ParameterFigure extends CustomShapeFigure {
 		setLayoutManager(gridLayout);
 
 		Label namelabel = new Label();
-		GridData namegrid = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
+		GridData namegrid = new GridData(GridData.FILL, GridData.FILL, true, true);
 		add(namelabel, namegrid);
 		setTextLabel(namelabel);
 		setIconLabel(namelabel);
 
 		Label textlabel = new Label(occurrence);
-		GridData textgrid = new GridData(GridData.FILL, GridData.FILL, true,
-				true);
+		GridData textgrid = new GridData(GridData.FILL, GridData.FILL, true, true);
 		Font font = new Font(display, "Arial", 8, SWT.ITALIC);
 		textlabel.setFont(font);
 		add(textlabel, textgrid);
 
 		if (showToolTip) {
-			FieldDecoration fieldDecoration = FieldDecorationRegistry
-					.getDefault().getFieldDecoration(
-							FieldDecorationRegistry.DEC_INFORMATION);
+			FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 			Image image = fieldDecoration.getImage();
 
 			Label descriptionlabel = new Label(image);
 			IFigure descriptionfigure = new Label(description);
 			descriptionlabel.setToolTip(descriptionfigure);
-			GridData descriptiongrid = new GridData(GridData.FILL,
-					GridData.FILL, true, true);
+			GridData descriptiongrid = new GridData(GridData.FILL, GridData.FILL, true, true);
 			add(descriptionlabel, descriptiongrid);
 		}
 	}

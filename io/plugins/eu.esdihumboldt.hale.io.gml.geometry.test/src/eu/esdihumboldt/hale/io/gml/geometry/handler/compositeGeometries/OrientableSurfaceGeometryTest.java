@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
@@ -35,10 +39,11 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 
 /**
  * Test for reading orientable surface geometries
+ * 
  * @author Patrick Lieb
  */
-public class OrientableSurfaceGeometryTest extends AbstractHandlerTest{
-	
+public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
+
 	private MultiPolygon reference;
 
 	/**
@@ -47,7 +52,7 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest{
 	@Override
 	public void init() {
 		super.init();
-		
+
 		LinearRing shell = geomFactory.createLinearRing(new Coordinate[] {
 				new Coordinate(-122.44, 37.80), new Coordinate(-122.45, 37.80),
 				new Coordinate(-122.45, 37.78), new Coordinate(-122.44, 37.78),
@@ -60,24 +65,21 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest{
 				new Coordinate(-122.24, 37.60) });
 		holes[0] = hole1;
 
-		Polygon[] polygons = new Polygon[]{ geomFactory.createPolygon(shell, holes) };
-		
+		Polygon[] polygons = new Polygon[] { geomFactory.createPolygon(shell, holes) };
+
 		reference = geomFactory.createMultiPolygon(polygons);
 	}
-	
+
 	/**
 	 * Test orientable surface geometries read from a GML 3.2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testOrientableSurfaceGml32() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest
-				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml32.xsd")
-						.toURI(),
-						getClass().getResource("/data/surface/sample-orientablesurface-gml32.xml")
-								.toURI());
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-orientablesurface-gml32.xml").toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -92,8 +94,7 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest{
 	}
 
 	private void checkOrientableSurfacePropertyInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 
@@ -109,8 +110,7 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest{
 		for (Object instance : ((Collection<?>) geomInstance.getValue())) {
 			assertTrue(instance instanceof GeometryProperty<?>);
 			@SuppressWarnings("unchecked")
-			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance)
-					.getGeometry();
+			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance).getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
 					multipolygon.equalsExact(reference));
 		}

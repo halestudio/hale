@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.internal;
@@ -42,57 +46,57 @@ import eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceImpl;
 
 /**
  * Factory for HALE services
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class HaleServiceFactory extends AbstractServiceFactory {
 
 	/**
-	 * @see AbstractServiceFactory#create(Class, IServiceLocator, IServiceLocator)
+	 * @see AbstractServiceFactory#create(Class, IServiceLocator,
+	 *      IServiceLocator)
 	 */
 	@Override
-	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface, IServiceLocator parentLocator,
-			IServiceLocator locator) {
+	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface,
+			IServiceLocator parentLocator, IServiceLocator locator) {
 		if (ReportService.class.equals(serviceInterface)) {
 			return new ReportServiceImpl();
 		}
-		
+
 		if (InstanceService.class.equals(serviceInterface)) {
 			return OrientInstanceService.getInstance(
 					(SchemaService) locator.getService(SchemaService.class),
 					(ProjectService) locator.getService(ProjectService.class),
 					(AlignmentService) locator.getService(AlignmentService.class));
 		}
-		
+
 		if (AlignmentService.class.equals(serviceInterface)) {
 			return new AlignmentServiceUndoSupport(new AlignmentServiceImpl(
 					(ProjectService) locator.getService(ProjectService.class)));
 		}
-		
+
 		if (ProjectService.class.equals(serviceInterface)) {
 			return new ProjectServiceImpl();
 		}
-		
+
 		if (RecentFilesService.class.equals(serviceInterface)) {
 			return new RecentFilesServiceImpl();
 		}
-		
+
 		if (SchemaService.class.equals(serviceInterface)) {
-			return new SchemaServiceImpl(
-					(ProjectService) locator.getService(ProjectService.class));
+			return new SchemaServiceImpl((ProjectService) locator.getService(ProjectService.class));
 		}
-		
+
 		if (EntityDefinitionService.class.equals(serviceInterface)) {
 			return new EntityDefinitionServiceUndoSupport(new EntityDefinitionServiceImpl(
 					(AlignmentService) locator.getService(AlignmentService.class),
 					(ProjectService) locator.getService(ProjectService.class)));
 		}
-		
+
 		if (InstanceSampleService.class.equals(serviceInterface)) {
 			return new InstanceSampleServiceImpl();
 		}
-		
+
 		if (GeometrySchemaService.class.equals(serviceInterface)) {
 			return new ProjectGeometrySchemaService(
 					(ProjectService) locator.getService(ProjectService.class));
@@ -101,13 +105,13 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (InstanceValidationService.class.equals(serviceInterface))
 			return new InstanceValidationServiceImpl(
 					(InstanceService) locator.getService(InstanceService.class),
-					(ReportService) locator.getService(ReportService.class)); 
-		
+					(ReportService) locator.getService(ReportService.class));
+
 		if (PopulationService.class.equals(serviceInterface)) {
 			return new PopulationServiceImpl(
 					(InstanceService) locator.getService(InstanceService.class));
 		}
-		
+
 		return null;
 	}
 

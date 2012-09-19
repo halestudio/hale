@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.oml.helper;
@@ -15,15 +19,15 @@ package eu.esdihumboldt.hale.io.oml.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.esdihumboldt.commons.goml.omwg.ComposedProperty;
-import eu.esdihumboldt.commons.goml.omwg.Property;
 import eu.esdihumboldt.cst.functions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.specification.cst.align.ICell;
-import eu.esdihumboldt.specification.cst.align.IEntity;
-import eu.esdihumboldt.specification.cst.align.ext.IParameter;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty;
+import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.Property;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.IEntity;
+import eu.esdihumboldt.hale.io.oml.internal.model.align.ext.IParameter;
 
 /**
  * Translator class for geographical name functions
@@ -31,8 +35,7 @@ import eu.esdihumboldt.specification.cst.align.ext.IParameter;
  * @author Kevin Mais
  */
 @SuppressWarnings("restriction")
-public class GeographicalNameTranslator implements FunctionTranslator,
-		GeographicalNameFunction {
+public class GeographicalNameTranslator implements FunctionTranslator, GeographicalNameFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getTransformationId()
@@ -46,15 +49,15 @@ public class GeographicalNameTranslator implements FunctionTranslator,
 	 * @see eu.esdihumboldt.hale.io.oml.helper.FunctionTranslator#getNewParameters(java.util.List,
 	 *      eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean,
 	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter,
-	 *      eu.esdihumboldt.specification.cst.align.ICell)
+	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params,
-			CellBean cellBean, IOReporter reporter, ICell cell) {
-		
+	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+			IOReporter reporter, ICell cell) {
+
 		// create the new parameter list
 		List<ParameterValue> newParams = new ArrayList<ParameterValue>();
-		
+
 		IEntity source = cell.getEntity1();
 		if (source instanceof ComposedProperty) {
 			ComposedProperty cp = (ComposedProperty) source;
@@ -65,12 +68,10 @@ public class GeographicalNameTranslator implements FunctionTranslator,
 			if (coll instanceof ComposedProperty) {
 				ComposedProperty comProp = (ComposedProperty) coll;
 				// parameters defined by the parameter page
-				List<IParameter> pageParams = comProp.getTransformation()
-						.getParameters();
+				List<IParameter> pageParams = comProp.getTransformation().getParameters();
 				// add each parameter defined by the parameter page
 				for (IParameter p : pageParams) {
-					newParams
-							.add(new ParameterValue(p.getName(), p.getValue()));
+					newParams.add(new ParameterValue(p.getName(), p.getValue()));
 				}
 				// the collection of the collection contains the parameters
 				// defined for the spellings
@@ -78,11 +79,9 @@ public class GeographicalNameTranslator implements FunctionTranslator,
 				for (Property prop : props) {
 					// each property has a list of 3 parameters (text, script,
 					// transliterationScheme)
-					List<IParameter> spellingParams = prop.getTransformation()
-							.getParameters();
+					List<IParameter> spellingParams = prop.getTransformation().getParameters();
 					for (IParameter p : spellingParams) {
-						newParams.add(new ParameterValue(p.getName(), p
-								.getValue()));
+						newParams.add(new ParameterValue(p.getName(), p.getValue()));
 					}
 				}
 			}

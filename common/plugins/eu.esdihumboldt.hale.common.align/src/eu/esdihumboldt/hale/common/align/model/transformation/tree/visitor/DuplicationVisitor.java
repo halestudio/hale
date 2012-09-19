@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor;
@@ -30,11 +34,11 @@ import eu.esdihumboldt.util.Pair;
 /**
  * DuplicationVisitor visits source nodes to duplicate the transformation tree
  * for their leftovers.
- *
+ * 
  * @author Simon Templer
  */
 public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(DuplicationVisitor.class);
 	private final TransformationTree tree;
 
@@ -62,29 +66,30 @@ public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 	@Override
 	public boolean visit(SourceNode source) {
 		Leftovers leftovers = source.getLeftovers();
-		
+
 		if (leftovers != null) {
 			// identify context match (if possible)
 			TransformationContext context = source.getContext();
-			
+
 			if (context == null) {
 				// no transformation context match defined
-				//XXX warn instead? XXX transformation log instead?
+				// XXX warn instead? XXX transformation log instead?
 				log.error("Multiple values for source node w/o transformation context match");
 			}
 			else {
 				Pair<SourceNode, Set<Cell>> leftover;
 				// completely consume leftovers
 				while ((leftover = leftovers.consumeValue()) != null) {
-					context.duplicateContext(source, leftover.getFirst(), 
-							leftover.getSecond());
-					//XXX is this the place where this should be propagated to the duplicated source children?
-					//XXX trying it out
+					context.duplicateContext(source, leftover.getFirst(), leftover.getSecond());
+					// XXX is this the place where this should be propagated to
+					// the duplicated source children?
+					// XXX trying it out
 					SourceNode node = leftover.getFirst();
 					Object value = node.getValue();
 					if (value instanceof Group) {
 						InstanceVisitor instanceVisitor = new InstanceVisitor(null, null);
-						for (SourceNode child : node.getChildren(instanceVisitor.includeAnnotatedNodes())) {
+						for (SourceNode child : node.getChildren(instanceVisitor
+								.includeAnnotatedNodes())) {
 							// annotate children with leftovers
 							child.accept(instanceVisitor);
 							// run the duplication on the children
@@ -94,7 +99,7 @@ public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 				}
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -103,13 +108,14 @@ public class DuplicationVisitor extends AbstractSourceToTargetVisitor {
 	 */
 	@Override
 	public boolean includeAnnotatedNodes() {
-		// follow annotated nodes in case of an instance family that is important
+		// follow annotated nodes in case of an instance family that is
+		// important
 		return true;
 	}
 
 	/**
-	 * Duplicates assignments without connections to source nodes.
-	 * Should be called after all duplication is done.
+	 * Duplicates assignments without connections to source nodes. Should be
+	 * called after all duplication is done.
 	 */
 	public void doAugmentationTrackback() {
 		TargetContext.augmentationTrackback(tree);

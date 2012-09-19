@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.csv.ui;
@@ -72,8 +76,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	private Boolean valid = true;
 	private Boolean isValid = true;
 	private ScrolledComposite sc;
-	private static final ALogger log = ALoggerFactory
-			.getLogger(SchemaTypePage.class);
+	private static final ALogger log = ALoggerFactory.getLogger(SchemaTypePage.class);
 
 	/**
 	 * default constructor
@@ -111,8 +114,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	@Override
 	public boolean updateConfiguration(SchemaReader provider) {
 
-		provider.setParameter(CSVSchemaReader.PARAM_TYPENAME,
-				sfe.getStringValue());
+		provider.setParameter(CSVSchemaReader.PARAM_TYPENAME, sfe.getStringValue());
 
 		StringBuffer propNamesBuffer = new StringBuffer();
 		StringBuffer comboViewerBuffer = new StringBuffer();
@@ -131,18 +133,16 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 		oldNamesBuffer.deleteCharAt(oldNamesBuffer.lastIndexOf(","));
 		String oldNames = oldNamesBuffer.toString();
 		if (oldNames.equals(propNames)) {
-			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE,
-					"True");
-		} else {
-			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE,
-					"False");
+			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, "True");
+		}
+		else {
+			provider.setParameter(CSVInstanceReader.PARAM_SKIP_FIRST_LINE, "False");
 		}
 		provider.setParameter(CSVSchemaReader.PARAM_PROPERTY, propNames);
 
 		for (ComboViewer combo : comboFields) {
-			comboViewerBuffer
-					.append(((PropertyTypeFactory) ((IStructuredSelection) combo
-							.getSelection()).getFirstElement()).getIdentifier());
+			comboViewerBuffer.append(((PropertyTypeFactory) ((IStructuredSelection) combo
+					.getSelection()).getFirstElement()).getIdentifier());
 			comboViewerBuffer.append(",");
 		}
 		comboViewerBuffer.deleteCharAt(comboViewerBuffer.lastIndexOf(","));
@@ -159,8 +159,8 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	@Override
 	protected void onShowPage(boolean firstShow) {
 
-		LocatableInputSupplier<? extends InputStream> source = getWizard()
-				.getProvider().getSource();
+		LocatableInputSupplier<? extends InputStream> source = getWizard().getProvider()
+				.getSource();
 
 		int indexStart = 0;
 		int indexEnd = source.getLocation().getPath().length() - 1;
@@ -171,8 +171,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 				indexEnd = source.getLocation().getPath().lastIndexOf(".");
 			}
 
-			defaultString = source.getLocation().getPath()
-					.substring(indexStart, indexEnd);
+			defaultString = source.getLocation().getPath().substring(indexStart, indexEnd);
 			sfe.setStringValue(defaultString);
 			setPageComplete(sfe.isValid());
 		}
@@ -189,8 +188,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 			}
 
 			// disposes all property names if the read configuration has changed
-			if (last_firstLine != null
-					&& !Arrays.equals(firstLine, last_firstLine)) {
+			if (last_firstLine != null && !Arrays.equals(firstLine, last_firstLine)) {
 				for (TypeNameField properties : fields) {
 					properties.dispose();
 					properties.getTextControl(group).dispose();
@@ -210,43 +208,38 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 					validSel.add(true);
 
-					propField = new TypeNameField("properties",
-							Integer.toString(i + 1), group);
+					propField = new TypeNameField("properties", Integer.toString(i + 1), group);
 					fields.add(propField);
 					propField.setEmptyStringAllowed(false);
-					propField
-							.setErrorMessage("Please enter a valid Property Name");
-					propField
-							.setPropertyChangeListener(new IPropertyChangeListener() {
+					propField.setErrorMessage("Please enter a valid Property Name");
+					propField.setPropertyChangeListener(new IPropertyChangeListener() {
 
-								@Override
-								public void propertyChange(
-										PropertyChangeEvent event) {
+						@Override
+						public void propertyChange(PropertyChangeEvent event) {
 
-									HashSet<String> hs = new HashSet<String>();
+							HashSet<String> hs = new HashSet<String>();
 
-									if (event.getProperty().equals(
-											StringFieldEditor.VALUE)) {
-										for (TypeNameField field : fields) {
-											if (!hs.add(field.getStringValue())) {
-												valid = false;
-												break;
-											} else {
-												valid = true;
-											}
-
-										}
-
+							if (event.getProperty().equals(StringFieldEditor.VALUE)) {
+								for (TypeNameField field : fields) {
+									if (!hs.add(field.getStringValue())) {
+										valid = false;
+										break;
 									}
-
-									if (event.getProperty().equals(
-											StringFieldEditor.IS_VALID)) {
-										isValid = (Boolean) event.getNewValue();
+									else {
+										valid = true;
 									}
-									setPageComplete(isValid && valid);
 
 								}
-							});
+
+							}
+
+							if (event.getProperty().equals(StringFieldEditor.IS_VALID)) {
+								isValid = (Boolean) event.getNewValue();
+							}
+							setPageComplete(isValid && valid);
+
+						}
+					});
 					propField.setStringValue(firstLine[i]);
 					cv = new ComboViewer(group);
 					comboFields.add(cv);
@@ -260,7 +253,8 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 									.getSelection()).getFirstElement());
 
 							try {
-								actualSelection.createExtensionObject().convertFromField(nextLine[i]);
+								actualSelection.createExtensionObject().convertFromField(
+										nextLine[i]);
 								validSel.set(i, true);
 
 							} catch (Exception e) {
@@ -269,9 +263,10 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 							}
 							if (validSel.contains(false)) {
 								int j = validSel.indexOf(false) + 1;
-								setMessage("Your selection in field # " + j
-										+ " is not valid!", WARNING);
-							} else {
+								setMessage("Your selection in field # " + j + " is not valid!",
+										WARNING);
+							}
+							else {
 								setMessage(null);
 							}
 
@@ -279,6 +274,7 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 					});
 					cv.setContentProvider(ArrayContentProvider.getInstance());
 					cv.setLabelProvider(new LabelProvider() {
+
 						/**
 						 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
 						 */
@@ -290,16 +286,17 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 							return super.getText(element);
 						}
 					});
-					Collection<PropertyTypeFactory> elements = PropertyTypeExtension
-							.getInstance().getFactories();
+					Collection<PropertyTypeFactory> elements = PropertyTypeExtension.getInstance()
+							.getFactories();
 					cv.setInput(elements);
-					
-					PropertyTypeFactory defaultSelection = PropertyTypeExtension.getInstance().getFactory("java.lang.String");
-					if(defaultSelection != null) {
+
+					PropertyTypeFactory defaultSelection = PropertyTypeExtension.getInstance()
+							.getFactory("java.lang.String");
+					if (defaultSelection != null) {
 						cv.setSelection(new StructuredSelection(defaultSelection));
-					} else if (!elements.isEmpty()) {
-						cv.setSelection(new StructuredSelection(elements
-								.iterator().next()));
+					}
+					else if (!elements.isEmpty()) {
+						cv.setSelection(new StructuredSelection(elements.iterator().next()));
 					}
 
 				}
@@ -325,18 +322,19 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 	 */
 	@Override
 	protected void createContent(Composite parent) {
-		
+
 		Composite holder = new Composite(parent, SWT.NONE);
 		holder.setLayout(GridLayoutFactory.fillDefaults().create());
 
 		sc = new DynamicScrolledComposite(holder, SWT.V_SCROLL);
 		sc.setExpandHorizontal(true);
-		
-		sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200).create());
-		
+
+		sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200)
+				.create());
+
 		Composite page = new Composite(sc, SWT.NONE);
 		page.setLayout(new GridLayout(2, false));
-		
+
 		sfe = new TypeNameField("typename", "Typename", page);
 		sfe.setEmptyStringAllowed(false);
 		sfe.setErrorMessage("Please enter a valid Type Name");
@@ -355,10 +353,9 @@ public class SchemaTypePage extends SchemaReaderConfigurationPage {
 
 		group = new Group(page, SWT.NONE);
 		group.setText("Properties");
-		group.setLayoutData(GridDataFactory.fillDefaults().grab(true, false)
-				.span(2, 1).create());
-		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(3)
-				.equalWidth(false).margins(5, 5).create());
+		group.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).span(2, 1).create());
+		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(3).equalWidth(false)
+				.margins(5, 5).create());
 
 		sc.setContent(page);
 		sc.layout();

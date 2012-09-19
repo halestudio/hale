@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.instance.internal.orient;
@@ -27,6 +31,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Instance reference for an {@link OrientInstanceService}
+ * 
  * @author Simon Templer
  */
 @Immutable
@@ -38,6 +43,7 @@ public class OrientInstanceReference implements InstanceReference {
 
 	/**
 	 * Create a reference to an instance
+	 * 
 	 * @param id the record ID
 	 * @param dataSet the data set
 	 * @param typeDefinition the associated type definition
@@ -96,33 +102,37 @@ public class OrientInstanceReference implements InstanceReference {
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		}
+		else if (!id.equals(other.id))
 			return false;
 		return true;
 	}
 
 	/**
 	 * Create a reference for an instance
+	 * 
 	 * @param instance the instance, which must be an {@link OInstance}
 	 * @return the instance reference
 	 * @throws IllegalArgumentException if the instance is no {@link OInstance}
 	 */
 	public static InstanceReference createReference(Instance instance) {
 		if (instance.getDataSet() == null) {
-			throw new IllegalArgumentException("Instance data set may not be null for retrieving reference");
+			throw new IllegalArgumentException(
+					"Instance data set may not be null for retrieving reference");
 		}
-		
+
 		OInstance inst = (OInstance) instance;
 		ORID id = inst.getDocument().getIdentity();
-		
+
 		return new OrientInstanceReference(id, instance.getDataSet(), inst.getDefinition());
 	}
 
 	/**
 	 * Load the instance specified by the reference from the given database.
+	 * 
 	 * @param lodb the database
 	 * @return the instance or <code>null</code> if no instance matching the
-	 *   reference is present
+	 *         reference is present
 	 */
 	public Instance load(LocalOrientDB lodb) {
 		DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead();
@@ -130,11 +140,12 @@ public class OrientInstanceReference implements InstanceReference {
 		try {
 			ODocument document = db.getDatabase().load(getId());
 			if (document != null) {
-				OInstance instance = new OInstance(document, 
-						getTypeDefinition(), db.getDatabase(), getDataSet());
+				OInstance instance = new OInstance(document, getTypeDefinition(), db.getDatabase(),
+						getDataSet());
 //				handle.addReference(instance);
 				return new DefaultInstance(instance);
-			} else
+			}
+			else
 				return null;
 		} catch (IllegalArgumentException iae) {
 			return null;

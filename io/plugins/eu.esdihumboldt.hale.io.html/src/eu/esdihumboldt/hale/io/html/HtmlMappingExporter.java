@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2012 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
 package eu.esdihumboldt.hale.io.html;
 
 import java.awt.Dimension;
@@ -54,8 +69,7 @@ import eu.esdihumboldt.util.Identifiers;
  * 
  * @author Kevin Mais
  */
-public class HtmlMappingExporter extends AbstractAlignmentWriter implements
-		ProjectInfoAware {
+public class HtmlMappingExporter extends AbstractAlignmentWriter implements ProjectInfoAware {
 
 	private VelocityContext context;
 	private VelocityEngine ve;
@@ -64,7 +78,6 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	private File tempDir;
 	private Alignment alignment = null;
 	private Identifiers<Cell> cellIds;
-	
 
 	@Override
 	public boolean isCancelable() {
@@ -96,11 +109,11 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		URL headlinePath = this.getClass().getResource("bg-headline.png"); //$NON-NLS-1$
 		URL cssPath = this.getClass().getResource("style.css"); //$NON-NLS-1$
 		URL linkPath = this.getClass().getResource("int_link.png"); //$NON-NLS-1$
-		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils
-				.getName(getTarget().getLocation().getPath())) + "_files"; //$NON-NLS-1$
-		final  File filesDir = new File(FilenameUtils.getFullPath(getTarget()
-				.getLocation().getPath()), filesSubDir);
-		
+		final String filesSubDir = FilenameUtils.removeExtension(FilenameUtils.getName(getTarget()
+				.getLocation().getPath())) + "_files"; //$NON-NLS-1$
+		final File filesDir = new File(FilenameUtils.getFullPath(getTarget().getLocation()
+				.getPath()), filesSubDir);
+
 		filesDir.mkdirs();
 		context.put("filesDir", filesSubDir);
 
@@ -190,7 +203,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			// associate variables with information data
 			String exportDate = dfm.format(date);
 			context.put("exportDate", exportDate);
-			
+
 			if (pi.getCreated() != null) {
 				String created = dfm.format(pi.getCreated());
 				context.put("createdDate", created);
@@ -198,7 +211,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 
 			context.put("pi", pi);
 		}
-		
+
 		if (alignment != null) {
 			Collection<TypeCellInfo> typeCellInfos = new ArrayList<TypeCellInfo>();
 			Collection<? extends Cell> cells = alignment.getTypeCells();
@@ -209,7 +222,8 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 				TypeCellInfo tci = new TypeCellInfo(cell, alignment, cellIds, filesSubDir);
 				typeCellInfos.add(tci);
 			}
-			// the full collection of type cell info put to the context (for the template)
+			// the full collection of type cell info put to the context (for the
+			// template)
 			context.put("typeCellInfos", typeCellInfos);
 			createImages(filesDir);
 		}
@@ -239,8 +253,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	/**
 	 * Initialize temporary directory and template engine.
 	 * 
-	 * @throws Exception
-	 *             if an error occurs during the initialization
+	 * @throws Exception if an error occurs during the initialization
 	 */
 	private void init() throws Exception {
 		synchronized (this) {
@@ -260,16 +273,15 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 				stream.close();
 				fos.close();
 
-				ve.setProperty("file.resource.loader.path",
-						tempDir.getAbsolutePath());
+				ve.setProperty("file.resource.loader.path", tempDir.getAbsolutePath());
 				// initialize VelocityEngine
 				ve.init();
 			}
 		}
 	}
 
-	private void byteArrayToFile(File file, byte[] byteArray)
-			throws FileNotFoundException, IOException {
+	private void byteArrayToFile(File file, byte[] byteArray) throws FileNotFoundException,
+			IOException {
 		if (byteArray != null) {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			fileOutputStream.write(byteArray);
@@ -289,7 +301,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 	}
 
 	private void createImages(File filesDir) {
-		
+
 		Collection<? extends Cell> _cells = alignment.getCells();
 		Iterator<? extends Cell> ite = _cells.iterator();
 		while (ite.hasNext()) {
@@ -305,7 +317,8 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 		if (Display.getCurrent() != null) {
 			// use the current display if available
 			display = Display.getCurrent();
-		} else {
+		}
+		else {
 			try {
 				// use workbench display if available
 				display = PlatformUI.getWorkbench().getDisplay();
@@ -321,50 +334,49 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 
 		final File file = new File(filesDir, "img_" + cellId + ".png");
 
-			display.syncExec(new Runnable() {
+		display.syncExec(new Runnable() {
 
-				@Override
-				public void run() {
-					OffscreenGraph off_graph = new OffscreenGraph(600, 200) {
+			@Override
+			public void run() {
+				OffscreenGraph off_graph = new OffscreenGraph(600, 200) {
 
-						@Override
-						protected void configureViewer(GraphViewer viewer) {
-							IContentProvider cgcp = new CellGraphContentProvider();
-							GraphLabelProvider glp = new GraphLabelProvider();
-							viewer.setContentProvider(cgcp);
-							viewer.setLabelProvider(glp);
-							viewer.setInput(cell);
-						}
-					};
+					@Override
+					protected void configureViewer(GraphViewer viewer) {
+						IContentProvider cgcp = new CellGraphContentProvider();
+						GraphLabelProvider glp = new GraphLabelProvider();
+						viewer.setContentProvider(cgcp);
+						viewer.setLabelProvider(glp);
+						viewer.setInput(cell);
+					}
+				};
 
-					Graph graph = off_graph.getGraph();
-					Dimension dim = computeSize(graph);
-					int width;
-					if(dim.width > 600) {
-						width = dim.width;
-					}
-					else {
-						// minimum width = 600
-						width = 600;
-					}
-					
-					int height = dim.height;
-					
-					off_graph.resize(width, height);
-					
-					try {
-						off_graph.saveImage(new FileOutputStream(file), null);
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-						off_graph.dispose();
-					}
+				Graph graph = off_graph.getGraph();
+				Dimension dim = computeSize(graph);
+				int width;
+				if (dim.width > 600) {
+					width = dim.width;
 				}
-			});
-		}
+				else {
+					// minimum width = 600
+					width = 600;
+				}
 
+				int height = dim.height;
+
+				off_graph.resize(width, height);
+
+				try {
+					off_graph.saveImage(new FileOutputStream(file), null);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					off_graph.dispose();
+				}
+			}
+		});
+	}
 
 	private Dimension computeSize(Graph graph) {
 		@SuppressWarnings("unchecked")
@@ -378,10 +390,12 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements
 			int targetCons = gn.getTargetConnections().size();
 			if (sourceCons == 0 && targetCons == 1) {
 				tempSourceList.add(gn);
-			} else if (sourceCons >= 1 && targetCons >= 1) {
+			}
+			else if (sourceCons >= 1 && targetCons >= 1) {
 				width = width + gn.getFigure().getBounds().width + 10;
 				height = height + gn.getFigure().getBounds().height;
-			} else {
+			}
+			else {
 				tempTargetList.add(gn);
 			}
 		}

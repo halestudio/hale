@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.io.impl.internal;
@@ -21,17 +25,18 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Represents an {@link Entity}
+ * 
  * @param <T> the entity definition type
  * @author Simon Templer
  */
 public abstract class EntityBean<T extends EntityDefinition> {
-	
+
 	private QName typeName;
-	
+
 	private String filter;
-	
+
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public EntityBean() {
 		super();
@@ -39,6 +44,7 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Create an entity bean with the given type name
+	 * 
 	 * @param typeName the type name
 	 * @param filter the filter to the type entity
 	 */
@@ -50,24 +56,25 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Get the entity definition
+	 * 
 	 * @param index the type index
 	 * @param schemaSpace the associated schema space
 	 * @return the entity definition
 	 */
-	protected abstract T createEntityDefinition(TypeIndex index, 
-			SchemaSpaceID schemaSpace);
-	
+	protected abstract T createEntityDefinition(TypeIndex index, SchemaSpaceID schemaSpace);
+
 	/**
 	 * Create the represented entity
+	 * 
 	 * @param types the type index
 	 * @param schemaSpace the associated schema space
 	 * @return the entity
 	 */
-	public abstract Entity createEntity(TypeIndex types, 
-			SchemaSpaceID schemaSpace);
+	public abstract Entity createEntity(TypeIndex types, SchemaSpaceID schemaSpace);
 
 	/**
 	 * Get the type filter.
+	 * 
 	 * @return the type filter
 	 */
 	public String getFilter() {
@@ -76,6 +83,7 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Set the type filter.
+	 * 
 	 * @param filter the type filter to set
 	 */
 	public void setFilter(String filter) {
@@ -84,6 +92,7 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Get the type name
+	 * 
 	 * @return the type name
 	 */
 	public QName getTypeName() {
@@ -92,6 +101,7 @@ public abstract class EntityBean<T extends EntityDefinition> {
 
 	/**
 	 * Set the type name
+	 * 
 	 * @param typeName the type name to set
 	 */
 	public void setTypeName(QName typeName) {

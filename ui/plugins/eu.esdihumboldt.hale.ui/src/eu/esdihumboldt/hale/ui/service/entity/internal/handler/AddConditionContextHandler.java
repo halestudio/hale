@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.entity.internal.handler;
@@ -35,6 +39,7 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 
 /**
  * Adds a new condition context for a selected {@link EntityDefinition}.
+ * 
  * @author Simon Templer
  */
 public class AddConditionContextHandler extends AbstractHandler {
@@ -45,20 +50,19 @@ public class AddConditionContextHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		
+
 		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
-			
+
 			if (element instanceof EntityDefinition) {
-				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+						.getService(EntityDefinitionService.class);
 				EntityDefinition entityDef = (EntityDefinition) element;
 				Filter filter = null;
 				if (entityDef.getPropertyPath().isEmpty()) {
 					// type filter
-					TypeFilterDialog tfd = new TypeFilterDialog(
-							HandlerUtil.getActiveShell(event), 
-							entityDef.getType(),
-							"Type condition",
+					TypeFilterDialog tfd = new TypeFilterDialog(HandlerUtil.getActiveShell(event),
+							entityDef.getType(), "Type condition",
 							"Define the condition for the new context");
 					if (tfd.open() == TypeFilterDialog.OK) {
 						filter = tfd.getFilter();
@@ -70,21 +74,18 @@ public class AddConditionContextHandler extends AbstractHandler {
 					if (def instanceof PropertyDefinition) {
 						TypeDefinition propertyType = ((PropertyDefinition) def).getPropertyType();
 						// create a dummy type for the filter
-						TypeDefinition dummyType = new DefaultTypeDefinition(
-								new QName("ValueFilterDummy"));
-						// with the property type being contained as value property
-						new DefaultPropertyDefinition(new QName("value"),
-								dummyType, propertyType);
+						TypeDefinition dummyType = new DefaultTypeDefinition(new QName(
+								"ValueFilterDummy"));
+						// with the property type being contained as value
+						// property
+						new DefaultPropertyDefinition(new QName("value"), dummyType, propertyType);
 						// and the parent type as parent property
-						new DefaultPropertyDefinition(new QName("parent"),
-								dummyType,
+						new DefaultPropertyDefinition(new QName("parent"), dummyType,
 								((PropertyDefinition) def).getParentType());
-						
+
 						// open the filter dialog
 						TypeFilterDialog tfd = new TypeFilterDialog(
-								HandlerUtil.getActiveShell(event), 
-								dummyType,
-								"Property condition",
+								HandlerUtil.getActiveShell(event), dummyType, "Property condition",
 								"Define the condition for the new context");
 						if (tfd.open() == TypeFilterDialog.OK) {
 							filter = tfd.getFilter();
@@ -96,7 +97,7 @@ public class AddConditionContextHandler extends AbstractHandler {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

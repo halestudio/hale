@@ -5,7 +5,6 @@
 // Generated on: 2011.03.24 at 11:33:30 AM MEZ 
 //
 
-
 package eu.esdihumboldt.hale.io.project.jaxb.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for InstanceData complex type.
+ * <p>
+ * Java class for InstanceData complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="InstanceData">
@@ -38,114 +39,93 @@ import javax.xml.bind.annotation.XmlType;
  */
 @SuppressWarnings("all")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "InstanceData", propOrder = {
-    "path",
-    "wkt",
-    "epsgcode",
-    "type"
-})
+@XmlType(name = "InstanceData", propOrder = { "path", "wkt", "epsgcode", "type" })
 public class InstanceData {
 
-    @XmlElement(required = true)
-    protected String path;
-    protected String wkt;
-    protected String epsgcode;
-    protected String type;
+	@XmlElement(required = true)
+	protected String path;
+	protected String wkt;
+	protected String epsgcode;
+	protected String type;
 
-    /**
-     * Gets the value of the path property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPath() {
-        return path;
-    }
+	/**
+	 * Gets the value of the path property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPath() {
+		return path;
+	}
 
-    /**
-     * Sets the value of the path property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPath(String value) {
-        this.path = value;
-    }
+	/**
+	 * Sets the value of the path property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setPath(String value) {
+		this.path = value;
+	}
 
-    /**
-     * Gets the value of the wkt property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getWkt() {
-        return wkt;
-    }
+	/**
+	 * Gets the value of the wkt property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getWkt() {
+		return wkt;
+	}
 
-    /**
-     * Sets the value of the wkt property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setWkt(String value) {
-        this.wkt = value;
-    }
+	/**
+	 * Sets the value of the wkt property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setWkt(String value) {
+		this.wkt = value;
+	}
 
-    /**
-     * Gets the value of the epsgcode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEpsgcode() {
-        return epsgcode;
-    }
+	/**
+	 * Gets the value of the epsgcode property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getEpsgcode() {
+		return epsgcode;
+	}
 
-    /**
-     * Sets the value of the epsgcode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEpsgcode(String value) {
-        this.epsgcode = value;
-    }
+	/**
+	 * Sets the value of the epsgcode property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setEpsgcode(String value) {
+		this.epsgcode = value;
+	}
 
-    /**
-     * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getType() {
-        return type;
-    }
+	/**
+	 * Gets the value of the type property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getType() {
+		return type;
+	}
 
-    /**
-     * Sets the value of the type property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+	/**
+	 * Sets the value of the type property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setType(String value) {
+		this.type = value;
+	}
 
 }

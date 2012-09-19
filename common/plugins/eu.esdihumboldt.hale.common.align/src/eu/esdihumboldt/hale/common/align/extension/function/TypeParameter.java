@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.extension.function;
@@ -24,14 +28,14 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
 
 /**
- * Represents a source or target type as parameter to a 
- * {@link TypeFunction}
+ * Represents a source or target type as parameter to a {@link TypeFunction}
+ * 
  * @author Simon Templer
  */
 public final class TypeParameter extends AbstractParameter {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(TypeParameter.class);
-	
+
 	private final List<TypeCondition> conditions;
 
 	/**
@@ -39,21 +43,21 @@ public final class TypeParameter extends AbstractParameter {
 	 */
 	public TypeParameter(IConfigurationElement conf) {
 		super(conf);
-		
+
 		conditions = createConditions(conf);
 	}
-	
-	private static List<TypeCondition> createConditions(
-			IConfigurationElement conf) {
+
+	private static List<TypeCondition> createConditions(IConfigurationElement conf) {
 		List<TypeCondition> result = new ArrayList<TypeCondition>();
-		
+
 		IConfigurationElement[] children = conf.getChildren();
 		if (children != null) {
 			for (IConfigurationElement child : children) {
 				String name = child.getName();
 				if (name.equals("typeCondition")) {
 					try {
-						TypeCondition condition = (TypeCondition) child.createExecutableExtension("class");
+						TypeCondition condition = (TypeCondition) child
+								.createExecutableExtension("class");
 						result.add(condition);
 					} catch (CoreException e) {
 						log.error("Error creating property condition from extension", e);
@@ -65,18 +69,19 @@ public final class TypeParameter extends AbstractParameter {
 				}
 			}
 		}
-		
+
 		return result;
 	}
 
 	/**
 	 * Get the property conditions
+	 * 
 	 * @return the property conditions
 	 */
 	public List<TypeCondition> getConditions() {
 		return Collections.unmodifiableList(conditions);
 	}
-	
-	//TODO conditions, properties?
+
+	// TODO conditions, properties?
 
 }

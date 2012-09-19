@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.util.selection;
@@ -24,15 +28,16 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Default selection tracker
+ * 
  * @author Simon Templer
  */
 public class SelectionTrackerImpl implements SelectionTracker {
-	
+
 	/**
 	 * The set of concrete selection types currently stored
 	 */
 	private final Set<Class<? extends ISelection>> storedTypes = new HashSet<Class<? extends ISelection>>();
-	
+
 	/**
 	 * The list of the last selection, the latest selection is at index 0
 	 */
@@ -45,10 +50,10 @@ public class SelectionTrackerImpl implements SelectionTracker {
 	 */
 	public SelectionTrackerImpl(ISelectionService selectionService) {
 		super();
-		
-		//TODO use PostSelectionListener instead?
+
+		// TODO use PostSelectionListener instead?
 		selectionService.addSelectionListener(new ISelectionListener() {
-			
+
 			@Override
 			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 				addSelection(selection);
@@ -75,7 +80,7 @@ public class SelectionTrackerImpl implements SelectionTracker {
 			else {
 				storedTypes.add(type);
 			}
-			
+
 			// add selection
 			lastSelections.addFirst(selection);
 		}
@@ -89,15 +94,16 @@ public class SelectionTrackerImpl implements SelectionTracker {
 	public <T extends ISelection> T getSelection(Class<T> selectionType) {
 		synchronized (this) {
 			for (ISelection selection : lastSelections) {
-				// return the first selection found (which is the most recent) that can be assigned to the given selection type
+				// return the first selection found (which is the most recent)
+				// that can be assigned to the given selection type
 				if (selectionType.isAssignableFrom(selection.getClass())) {
 					return (T) selection;
 				}
 			}
 		}
-		
+
 		// none found
 		return null;
 	}
-	
+
 }

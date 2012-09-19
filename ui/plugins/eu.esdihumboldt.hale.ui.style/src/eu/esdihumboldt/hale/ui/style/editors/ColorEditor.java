@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.style.editors;
 
@@ -35,21 +39,21 @@ import org.eclipse.swt.widgets.Control;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ColorEditor implements Editor<RGB> {
-	
+
 	private boolean changed = false;
-	
+
 	private Button button;
-	
+
 	private RGB color;
-	
+
 	private Image image;
-	
+
 	private int width = 24;
-	
+
 	private int height = 24;
 
 	private boolean initialized = false;
-	
+
 	/**
 	 * Create a color editor button
 	 * 
@@ -58,40 +62,42 @@ public class ColorEditor implements Editor<RGB> {
 	 */
 	public ColorEditor(Composite parent, RGB color) {
 		button = new Button(parent, SWT.PUSH);
-		
+
 		this.color = color;
-		
+
 		init(parent);
-		
+
 		image = new Image(parent.getDisplay(), width, height);
 
 		updateImage();
-        
-        button.addSelectionListener(new SelectionAdapter(){
-            @Override
-			public void widgetSelected(SelectionEvent event) {
-                ColorDialog colorDialog = new ColorDialog(button.getShell());
-                colorDialog.setRGB(ColorEditor.this.color);
-                RGB newColor = colorDialog.open();
-                if (newColor != null) {
-                    ColorEditor.this.color = newColor;
-                    changed = true;
-                    updateImage();
-                }
-            }
-        });
 
-        button.addDisposeListener(new DisposeListener(){
-            @Override
-			public void widgetDisposed( DisposeEvent event ) {
-                if (image != null) {
-                	image.dispose();
-                	image = null;
-                }
-            }
-        });
+		button.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				ColorDialog colorDialog = new ColorDialog(button.getShell());
+				colorDialog.setRGB(ColorEditor.this.color);
+				RGB newColor = colorDialog.open();
+				if (newColor != null) {
+					ColorEditor.this.color = newColor;
+					changed = true;
+					updateImage();
+				}
+			}
+		});
+
+		button.addDisposeListener(new DisposeListener() {
+
+			@Override
+			public void widgetDisposed(DisposeEvent event) {
+				if (image != null) {
+					image.dispose();
+					image = null;
+				}
+			}
+		});
 	}
-	
+
 	/**
 	 * Determine with and height
 	 * 
@@ -100,19 +106,19 @@ public class ColorEditor implements Editor<RGB> {
 	protected void init(Control control) {
 		if (!initialized) {
 			initialized = true;
-			
-	        GC gc = new GC(control);
-	        try {
-		        Font font = JFaceResources.getFontRegistry().get(JFaceResources.DEFAULT_FONT);
-		        gc.setFont(font);
-		        height = gc.getFontMetrics().getHeight();
-		        width = height * 2;
-	        } finally {
-	        	gc.dispose();
-	        }
+
+			GC gc = new GC(control);
+			try {
+				Font font = JFaceResources.getFontRegistry().get(JFaceResources.DEFAULT_FONT);
+				gc.setFont(font);
+				height = gc.getFontMetrics().getHeight();
+				width = height * 2;
+			} finally {
+				gc.dispose();
+			}
 		}
-    }
-	
+	}
+
 	/**
 	 * Get the color, it has to be disposed by the caller
 	 * 
@@ -137,7 +143,7 @@ public class ColorEditor implements Editor<RGB> {
 	@Override
 	public void setValue(RGB color) {
 		this.color = color;
-		
+
 		updateImage();
 	}
 
@@ -146,16 +152,16 @@ public class ColorEditor implements Editor<RGB> {
 	 */
 	private void updateImage() {
 		GC gc = new GC(image);
-        Color clr = getColor(gc.getDevice());
-        try {
-        	gc.setBackground(clr);
-        	gc.fillRectangle(0, 0, width, height);
-        } finally {
-        	gc.dispose();
-        	clr.dispose();
-        }
-        
-        button.setImage(image);
+		Color clr = getColor(gc.getDevice());
+		try {
+			gc.setBackground(clr);
+			gc.fillRectangle(0, 0, width, height);
+		} finally {
+			gc.dispose();
+			clr.dispose();
+		}
+
+		button.setImage(image);
 	}
 
 	/**

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.cst.internal;
@@ -53,23 +57,28 @@ import eu.esdihumboldt.util.Pair;
 
 /**
  * Function executor on a transformation tree.
+ * 
  * @author Simon Templer
  */
 public class FunctionExecutor extends CellNodeValidator {
 
 	private final EngineManager engines;
 	private final PropertyTransformationExtension transformations;
+	private final TransformationContext context;
 
 	/**
 	 * Create a function executor.
+	 * 
 	 * @param reporter the transformation reporter
 	 * @param engines the transformation engine manager
+	 * @param context the transformation execution context
 	 */
-	public FunctionExecutor(TransformationReporter reporter, 
-			EngineManager engines) {
+	public FunctionExecutor(TransformationReporter reporter, EngineManager engines,
+			TransformationContext context) {
 		super(reporter);
 		this.engines = engines;
-		
+		this.context = context;
+
 		this.transformations = PropertyTransformationExtension.getInstance();
 	}
 
@@ -77,154 +86,162 @@ public class FunctionExecutor extends CellNodeValidator {
 	 * @see CellNodeValidator#processValid(Cell, ListMultimap, ListMultimap)
 	 */
 	@Override
-	protected void processValid(Cell cell,
-			ListMultimap<String, Pair<SourceNode, Entity>> sources,
+	protected void processValid(Cell cell, ListMultimap<String, Pair<SourceNode, Entity>> sources,
 			ListMultimap<String, Pair<TargetNode, Entity>> targets) {
 		String functionId = cell.getTransformationIdentifier();
-		
-		List<PropertyTransformationFactory> transformations = 
-				this.transformations.getTransformations(functionId);
-		
+
+		List<PropertyTransformationFactory> transformations = this.transformations
+				.getTransformations(functionId);
+
 		if (transformations == null || transformations.isEmpty()) {
-			reporter.error(new TransformationMessageImpl(cell, 
-					MessageFormat.format("No transformation for function {0} found. Skipping property transformation.",
-							functionId), null));
+			reporter.error(new TransformationMessageImpl(cell, MessageFormat.format(
+					"No transformation for function {0} found. Skipping property transformation.",
+					functionId), null));
 		}
 		else {
-			//TODO select based on e.g. preferred transformation engine?
+			// TODO select based on e.g. preferred transformation engine?
 			PropertyTransformationFactory transformation = transformations.iterator().next();
-			
+
 			executeTransformation(transformation, cell, sources, targets);
 		}
 	}
 
 	/**
 	 * Execute a property transformation.
+	 * 
 	 * @param transformation the transformation factory
 	 * @param cell the alignment cell
 	 * @param sources the named source entities and nodes
 	 * @param targets the named target entities and nodes
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected void executeTransformation(
-			PropertyTransformationFactory transformation, Cell cell,
+	protected void executeTransformation(PropertyTransformationFactory transformation, Cell cell,
 			ListMultimap<String, Pair<SourceNode, Entity>> sources,
 			ListMultimap<String, Pair<TargetNode, Entity>> targets) {
-		TransformationLog cellLog = new CellLog(reporter, cell); 
-		
+		TransformationLog cellLog = new CellLog(reporter, cell);
+
 		PropertyTransformation<?> function;
 		try {
-			//TODO cache function objects?
+			// TODO cache function objects?
 			function = transformation.createExtensionObject();
 		} catch (Exception e) {
-			cellLog.error(cellLog.createMessage(
-					"Error creating transformation function.", e));
+			cellLog.error(cellLog.createMessage("Error creating transformation function.", e));
 			return;
 		}
-		
-		TransformationEngine engine = engines.get(
-				transformation.getEngineId(), cellLog);
-		
+
+		TransformationEngine engine = engines.get(transformation.getEngineId(), cellLog);
+
 		if (engine == null) {
-			//TODO instead try another transformation
+			// TODO instead try another transformation
 			cellLog.error(cellLog.createMessage(
-					"Skipping property transformation: No matching transformation engine found", null));
+					"Skipping property transformation: No matching transformation engine found",
+					null));
 			return;
 		}
-		
+
 		// configure function
-		
+
 		// set expected result
-		ListMultimap<String, PropertyEntityDefinition> expectedResult = 
-				ArrayListMultimap.create(targets.keySet().size(), 1);
+		ListMultimap<String, PropertyEntityDefinition> expectedResult = ArrayListMultimap.create(
+				targets.keySet().size(), 1);
 		for (Entry<String, Pair<TargetNode, Entity>> targetEntry : targets.entries()) {
 			EntityDefinition def = targetEntry.getValue().getSecond().getDefinition();
 			expectedResult.put(targetEntry.getKey(), toPropertyEntityDefinition(def));
 		}
 		function.setExpectedResult(expectedResult);
-		
+
 		// set source variables
 		ListMultimap<String, PropertyValue> variables = ArrayListMultimap.create();
 		for (Entry<String, Pair<SourceNode, Entity>> sourceEntry : sources.entries()) {
 			EntityDefinition def = sourceEntry.getValue().getSecond().getDefinition();
 			Object value = sourceEntry.getValue().getFirst().getValue();
-			PropertyValue propertyValue = new PropertyValueImpl(value, 
+			PropertyValue propertyValue = new PropertyValueImpl(value,
 					toPropertyEntityDefinition(def));
-			variables.put(sourceEntry.getKey(), propertyValue );
+			variables.put(sourceEntry.getKey(), propertyValue);
 		}
 		function.setVariables(variables);
-		
+
 		// set parameters
 		function.setParameters(cell.getTransformationParameters());
-		
+
+		// set context
+		function.setExecutionContext(context.getCellContext(cell));
+		// set target type
+		TypeDefinition targetType = null;
+		if (!targets.isEmpty()) {
+			TargetNode target = targets.values().iterator().next().getFirst();
+			targetType = target.getEntityDefinition().getType();
+		}
+		function.setTargetType(targetType);
+
 		// execute function
 		try {
-			((PropertyTransformation) function).execute(
-					transformation.getIdentifier(), 
-					engine, 
-					transformation.getExecutionParameters(), 
-					cellLog);
+			((PropertyTransformation) function).execute(transformation.getIdentifier(), engine,
+					transformation.getExecutionParameters(), cellLog);
 		} catch (Throwable e) {
-			//TODO instead try another transformation?
+			// TODO instead try another transformation?
 			cellLog.error(cellLog.createMessage(
-					"Skipping property transformation: Executing property transformation failed.", e));
+					"Skipping property transformation: Executing property transformation failed.",
+					e));
 			return;
 		}
-		
+
 		// apply function results
 		ListMultimap<String, Object> results = function.getResults();
 		if (results != null) {
 			for (String name : results.keySet()) {
 				List<Object> values = results.get(name);
 				List<Pair<TargetNode, Entity>> nodes = targets.get(name);
-				
+
 				int count = Math.min(values.size(), nodes.size());
-				
+
 				if (count > values.size()) {
 					cellLog.warn(cellLog.createMessage(MessageFormat.format(
-							"Transformation result misses values for result with name {0}",
-							name), null));
+							"Transformation result misses values for result with name {0}", name),
+							null));
 				}
 				if (count > nodes.size()) {
-					cellLog.warn(cellLog.createMessage(MessageFormat.format(
-							"More transformation results than target nodes for result with name {0}",
-							name), null));
+					cellLog.warn(cellLog.createMessage(
+							MessageFormat
+									.format("More transformation results than target nodes for result with name {0}",
+											name), null));
 				}
-				
+
 				for (int i = 0; i < count; i++) {
 					Object value = values.get(i);
 					TargetNode node = nodes.get(i).getFirst();
-					
+
 					if (function.allowAutomatedResultConversion()) {
 						if (!(value instanceof Group)) {
 							// convert value for target
 							try {
-								value = convert(value, toPropertyEntityDefinition(
-										node.getEntityDefinition()));
+								value = convert(value,
+										toPropertyEntityDefinition(node.getEntityDefinition()));
 							} catch (Throwable e) {
 								// ignore, but create error
-								cellLog.error(cellLog.createMessage(
-										"Conversion according to target property failed, using value as is.", e));
+								cellLog.error(cellLog
+										.createMessage(
+												"Conversion according to target property failed, using value as is.",
+												e));
 							}
-						} else {
+						}
+						else {
 							// TODO any conversion necessary/possible
 						}
 					}
-					
+
 					/*
-					 * If the value is no group, but it should be one, create
-					 * an instance wrapping the value 
+					 * If the value is no group, but it should be one, create an
+					 * instance wrapping the value
 					 */
 					TypeDefinition propertyType = toPropertyEntityDefinition(
-							node.getEntityDefinition()).getDefinition()
-							.getPropertyType();
-					if (!(value instanceof Group)
-							&& !propertyType .getChildren().isEmpty()) {
+							node.getEntityDefinition()).getDefinition().getPropertyType();
+					if (!(value instanceof Group) && !propertyType.getChildren().isEmpty()) {
 						MutableInstance instance = new DefaultInstance(propertyType, null);
 						instance.setValue(value);
 						value = instance;
 					}
-					
+
 					// set node value
 					node.setResult(value);
 				}
@@ -234,50 +251,51 @@ public class FunctionExecutor extends CellNodeValidator {
 
 	/**
 	 * Convert a value according to a target property entity definition.
+	 * 
 	 * @param value the value to convert
 	 * @param propertyEntityDefinition the target property entity definition
 	 * @return the converted object
 	 * @throws ConversionException if an error occurs during conversion
 	 */
-	private Object convert(Object value,
-			PropertyEntityDefinition propertyEntityDefinition) throws ConversionException {
+	private Object convert(Object value, PropertyEntityDefinition propertyEntityDefinition)
+			throws ConversionException {
 		if (value == null) {
 			return null;
 		}
-		
+
 		PropertyDefinition def = propertyEntityDefinition.getDefinition();
 		Binding binding = def.getPropertyType().getConstraint(Binding.class);
 		Class<?> target = binding.getBinding();
-		
+
 		if (target.isAssignableFrom(value.getClass())) {
 			return value;
 		}
-		
+
 		if (Collection.class.isAssignableFrom(target) && target.isAssignableFrom(List.class)) {
 			// collection / list
 			ElementType elementType = def.getPropertyType().getConstraint(ElementType.class);
 			return ConversionUtil.getAsList(value, elementType.getBinding(), true);
 		}
-		
-		//XXX what about a value that is a collection but the target is no collection?
-		
+
+		// XXX what about a value that is a collection but the target is no
+		// collection?
+
 		return ConversionUtil.getAs(value, target);
 	}
 
 	/**
 	 * Returns a {@link PropertyEntityDefinition} for a given entity definition.
+	 * 
 	 * @param def the entity definition
 	 * @return the property entity definition
 	 */
-	private PropertyEntityDefinition toPropertyEntityDefinition(
-			EntityDefinition def) {
+	private PropertyEntityDefinition toPropertyEntityDefinition(EntityDefinition def) {
 		if (def instanceof PropertyEntityDefinition) {
 			return (PropertyEntityDefinition) def;
 		}
-		
-		return new PropertyEntityDefinition(def.getType(), 
-				new ArrayList<ChildContext>(def.getPropertyPath()), 
-				def.getSchemaSpace(), def.getFilter());
+
+		return new PropertyEntityDefinition(def.getType(), new ArrayList<ChildContext>(
+				def.getPropertyPath()), def.getSchemaSpace(), def.getFilter());
 	}
-	
+
 }

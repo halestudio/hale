@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.styledmap.tool;
@@ -29,21 +33,22 @@ import de.fhg.igd.mapviewer.tools.renderer.BoxRenderer;
 
 /**
  * Tool for selecting instances, either by a click or through a selection box.
+ * 
  * @author Simon Templer
  */
 public class InstanceTool extends AbstractInstanceTool {
 
 	private static final Log log = LogFactory.getLog(InstanceTool.class);
-	
+
 	/**
 	 * Default constructor
 	 */
 	public InstanceTool() {
 		BoxRenderer renderer = new BoxRenderer();
-		
+
 		renderer.setBackColor(new Color(0, 255, 255, 50));
 		renderer.setBorderColor(new Color(0, 255, 255, 255));
-		
+
 		setRenderer(renderer);
 	}
 
@@ -65,24 +70,25 @@ public class InstanceTool extends AbstractInstanceTool {
 				// finish box selection
 				// action & reset
 				addPosition(pos);
-				
+
 				// action
 				try {
 					List<Point2D> points = getPoints();
-					Rectangle rect = new Rectangle((int) points.get(0).getX(), (int) points.get(0).getY(), 0, 0);
+					Rectangle rect = new Rectangle((int) points.get(0).getX(), (int) points.get(0)
+							.getY(), 0, 0);
 					rect.add(points.get(1));
-					
+
 					updateSelection(rect, me.isControlDown() || me.isMetaDown(), true);
 				} catch (IllegalGeoPositionException e) {
 					log.error("Error calculating selection box", e); //$NON-NLS-1$
 				}
-				
+
 				reset();
 			}
 			else {
 				// click selection
 				reset();
-				
+
 				updateSelection(me.getPoint(), me.isControlDown() || me.isMetaDown(), true);
 			}
 		}

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.csv.ui;
@@ -47,8 +51,8 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  */
 @SuppressWarnings("restriction")
 public class ReadConfigurationPage extends
-		AbstractConfigurationPage<ImportProvider, ImportWizard<ImportProvider>>
-		implements ModifyListener {
+		AbstractConfigurationPage<ImportProvider, ImportWizard<ImportProvider>> implements
+		ModifyListener {
 
 	private Combo separator;
 	private Combo quote;
@@ -85,17 +89,18 @@ public class ReadConfigurationPage extends
 		String esc = escape.getText();
 
 		if (sep.isEmpty() || sep.contains("/") || sep.contains(":")
-				|| (bmap.get(sep) == null && sep.length() > 1) || qu.isEmpty()
-				|| qu.contains("/") || qu.contains(":") || qu.contains(".")
-				|| (bmap.get(qu) == null && qu.length() > 1) || esc.isEmpty()
-				|| esc.contains("/") || esc.contains(":")
-				|| (bmap.get(esc) == null && esc.length() > 1)) {
+				|| (bmap.get(sep) == null && sep.length() > 1) || qu.isEmpty() || qu.contains("/")
+				|| qu.contains(":") || qu.contains(".")
+				|| (bmap.get(qu) == null && qu.length() > 1) || esc.isEmpty() || esc.contains("/")
+				|| esc.contains(":") || (bmap.get(esc) == null && esc.length() > 1)) {
 			setPageComplete(false);
 			setErrorMessage("You have not entered valid characters!");
-		} else if (sep.equals(qu) || qu.equals(esc) || esc.equals(sep)) {
+		}
+		else if (sep.equals(qu) || qu.equals(esc) || esc.equals(sep)) {
 			setPageComplete(false);
 			setErrorMessage("Your signs must be different!");
-		} else {
+		}
+		else {
 			setPageComplete(true);
 			setErrorMessage(null);
 		}
@@ -132,17 +137,20 @@ public class ReadConfigurationPage extends
 
 		if (bmap.get(sep) != null) {
 			provider.setParameter(CSVConstants.PARAM_SEPARATOR, bmap.get(sep));
-		} else {
+		}
+		else {
 			provider.setParameter(CSVConstants.PARAM_SEPARATOR, sep);
 		}
 		if (bmap.get(qu) != null) {
 			provider.setParameter(CSVConstants.PARAM_QUOTE, bmap.get(qu));
-		} else {
+		}
+		else {
 			provider.setParameter(CSVConstants.PARAM_QUOTE, qu);
 		}
 		if (bmap.get(esc) != null) {
 			provider.setParameter(CSVConstants.PARAM_ESCAPE, bmap.get(esc));
-		} else {
+		}
+		else {
 			provider.setParameter(CSVConstants.PARAM_ESCAPE, esc);
 		}
 		return true;
@@ -199,10 +207,8 @@ public class ReadConfigurationPage extends
 	/**
 	 * Counts the number of a Character in a String
 	 * 
-	 * @param input
-	 *            the String
-	 * @param toCount
-	 *            the Character to be count
+	 * @param input the String
+	 * @param toCount the Character to be count
 	 * @return the number of the Character in the String
 	 */
 	private static int countChar(String input, char toCount) {
@@ -225,9 +231,8 @@ public class ReadConfigurationPage extends
 		String[] separatorSelection = new String[] { "TAB", ",", "|", ".", ";" };
 
 		try {
-			BufferedReader streamReader = new BufferedReader(
-					new InputStreamReader(getWizard().getProvider().getSource()
-							.getInput()));
+			BufferedReader streamReader = new BufferedReader(new InputStreamReader(getWizard()
+					.getProvider().getSource().getInput()));
 			String line = streamReader.readLine();
 			int tab = countChar(line, '\t');
 			int comma = countChar(line, ',');
@@ -237,15 +242,17 @@ public class ReadConfigurationPage extends
 			if (Math.max(tab, comma) == tab && Math.max(tab, pipe) == tab
 					&& Math.max(tab, semicolon) == tab) {
 				p.setParameter(CSVConstants.PARAM_SEPARATOR, "TAB");
-			} else if (Math.max(comma, tab) == comma
-					&& Math.max(comma, pipe) == comma
+			}
+			else if (Math.max(comma, tab) == comma && Math.max(comma, pipe) == comma
 					&& Math.max(comma, semicolon) == comma) {
 				p.setParameter(CSVConstants.PARAM_SEPARATOR, ",");
-			} else if (Math.max(semicolon, tab) == semicolon
+			}
+			else if (Math.max(semicolon, tab) == semicolon
 					&& Math.max(semicolon, comma) == semicolon
 					&& Math.max(semicolon, pipe) == semicolon) {
 				p.setParameter(CSVConstants.PARAM_SEPARATOR, ";");
-			} else {
+			}
+			else {
 				p.setParameter(CSVConstants.PARAM_SEPARATOR, "|");
 			}
 
@@ -253,43 +260,43 @@ public class ReadConfigurationPage extends
 			e.printStackTrace();
 		}
 
-		String selection = getWizard().getProvider().getParameter(
-				CSVConstants.PARAM_SEPARATOR);
+		String selection = getWizard().getProvider().getParameter(CSVConstants.PARAM_SEPARATOR);
 		for (int i = 0; i < separatorSelection.length; i++) {
 			if (separatorSelection[i] == selection) {
 				separator.select(i);
 				break;
-			} else {
+			}
+			else {
 				separator.select(0);
 			}
 		}
 
 		if (p instanceof InstanceReader) {
-			QName name = QName.valueOf(p
-					.getParameter(CSVConstants.PARAM_TYPENAME));
+			QName name = QName.valueOf(p.getParameter(CSVConstants.PARAM_TYPENAME));
 
 			if (last_name == null || !(last_name.equals(name))) {
-				TypeDefinition type = ((InstanceReader) p).getSourceSchema()
-						.getType(name);
-				CSVConfiguration config = type
-						.getConstraint(CSVConfiguration.class);
+				TypeDefinition type = ((InstanceReader) p).getSourceSchema().getType(name);
+				CSVConfiguration config = type.getConstraint(CSVConfiguration.class);
 
 				String sep = String.valueOf(config.getSeparator());
 				if (bmap.inverse().get(sep) != null) {
 					separator.setText(bmap.inverse().get(sep));
-				} else {
+				}
+				else {
 					separator.setText(sep);
 				}
 				String qu = String.valueOf(config.getQuote());
 				if (bmap.inverse().get(qu) != null) {
 					quote.setText(bmap.inverse().get(qu));
-				} else {
+				}
+				else {
 					quote.setText(qu);
 				}
 				String esc = String.valueOf(config.getEscape());
 				if (bmap.inverse().get(esc) != null) {
 					separator.setText(bmap.inverse().get(esc));
-				} else {
+				}
+				else {
 					escape.setText(esc);
 				}
 

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.entity.internal;
@@ -36,7 +40,9 @@ import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
  * @author Kai Schwierczek
  */
 public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceDecorator {
-	private static final ALogger log = ALoggerFactory.getLogger(EntityDefinitionServiceUndoSupport.class);
+
+	private static final ALogger log = ALoggerFactory
+			.getLogger(EntityDefinitionServiceUndoSupport.class);
 
 	/**
 	 * Create undo/redo support for the given entity definition service
@@ -48,7 +54,8 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceDecorator#addConditionContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition, eu.esdihumboldt.hale.common.instance.model.Filter)
+	 * @see eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceDecorator#addConditionContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 *      eu.esdihumboldt.hale.common.instance.model.Filter)
 	 */
 	@Override
 	public EntityDefinition addConditionContext(EntityDefinition sibling, Filter filter) {
@@ -59,7 +66,8 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceDecorator#addIndexContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition, java.lang.Integer)
+	 * @see eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceDecorator#addIndexContext(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 *      java.lang.Integer)
 	 */
 	@Override
 	public EntityDefinition addIndexContext(EntityDefinition sibling, Integer index) {
@@ -91,11 +99,14 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 
 	/**
 	 * Execute an operation.
+	 * 
 	 * @param operation the operation to execute
 	 */
 	protected void executeOperation(IUndoableOperation operation) {
-		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench().getOperationSupport();
-		// service is workbench wide, so the operation should also be workbench wide
+		IWorkbenchOperationSupport operationSupport = PlatformUI.getWorkbench()
+				.getOperationSupport();
+		// service is workbench wide, so the operation should also be workbench
+		// wide
 		operation.addContext(operationSupport.getUndoContext());
 		try {
 			operationSupport.getOperationHistory().execute(operation, null, null);
@@ -105,17 +116,17 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 	}
 
 	/**
-	 * Abstract operation that supports an entity definition result and
-	 * maps redo to execute.
+	 * Abstract operation that supports an entity definition result and maps
+	 * redo to execute.
 	 */
 	private static abstract class AbstractResultOperation extends AbstractOperation {
+
 		private EntityDefinition result;
 
 		/**
 		 * Construct an operation that has the specified label.
 		 * 
-		 * @param label
-		 *            the label to be used for the operation. Should never be
+		 * @param label the label to be used for the operation. Should never be
 		 *            <code>null</code>.
 		 */
 		public AbstractResultOperation(String label) {
@@ -132,16 +143,19 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 		}
 
 		/**
-		 * Returns the resulting entity definition. Operation must be executed once, otherwise null is returned.
+		 * Returns the resulting entity definition. Operation must be executed
+		 * once, otherwise null is returned.
 		 * 
-		 * @return the resulting entity definition or <code>null</code> if the operation wasn't executed yet.
+		 * @return the resulting entity definition or <code>null</code> if the
+		 *         operation wasn't executed yet.
 		 */
 		public EntityDefinition getResult() {
 			return result;
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#redo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#redo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -153,13 +167,16 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 	 * Operation that adds a condition context to an entity definition.
 	 */
 	private class AddConditionContextOperation extends AbstractResultOperation {
+
 		private final EntityDefinition sibling;
 		private final Filter filter;
 
 		/**
-		 * Create an operation that adds a condition context to an entity definition.
+		 * Create an operation that adds a condition context to an entity
+		 * definition.
 		 * 
-		 * @param sibling the entity definition which is a sibling of the entity definition to create
+		 * @param sibling the entity definition which is a sibling of the entity
+		 *            definition to create
 		 * @param filter the condition filter
 		 */
 		private AddConditionContextOperation(EntityDefinition sibling, Filter filter) {
@@ -167,8 +184,10 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 			this.sibling = sibling;
 			this.filter = filter;
 		}
+
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -177,7 +196,8 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -190,13 +210,16 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 	 * Operation that adds an index context to an entity definition.
 	 */
 	private class AddIndexContextOperation extends AbstractResultOperation {
+
 		private final EntityDefinition sibling;
 		private final Integer index;
 
 		/**
-		 * Create an operation that adds an index context to an entity definition.
+		 * Create an operation that adds an index context to an entity
+		 * definition.
 		 * 
-		 * @param sibling the entity definition which is a sibling of the entity definition to create
+		 * @param sibling the entity definition which is a sibling of the entity
+		 *            definition to create
 		 * @param index the condition filter
 		 */
 		private AddIndexContextOperation(EntityDefinition sibling, Integer index) {
@@ -204,8 +227,10 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 			this.sibling = sibling;
 			this.index = index;
 		}
+
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -214,7 +239,8 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -227,19 +253,24 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 	 * Operation that adds a named context to an entity definition.
 	 */
 	private class AddNamedContextOperation extends AbstractResultOperation {
+
 		private final EntityDefinition sibling;
 
 		/**
-		 * Create an operation that adds a named context to an entity definition.
+		 * Create an operation that adds a named context to an entity
+		 * definition.
 		 * 
-		 * @param sibling the entity definition which is a sibling of the entity definition to create
+		 * @param sibling the entity definition which is a sibling of the entity
+		 *            definition to create
 		 */
 		private AddNamedContextOperation(EntityDefinition sibling) {
 			super("Add named context");
 			this.sibling = sibling;
 		}
+
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -248,7 +279,8 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -261,6 +293,7 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 	 * Operation that removes a context from an entity definition.
 	 */
 	private class RemoveContextOperation extends AbstractOperation {
+
 		private final Filter filter;
 		private final Integer index;
 		private final Integer name;
@@ -289,7 +322,8 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#execute(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -298,7 +332,8 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#redo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#redo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus redo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
@@ -306,7 +341,8 @@ public class EntityDefinitionServiceUndoSupport extends EntityDefinitionServiceD
 		}
 
 		/**
-		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
+		 * @see org.eclipse.core.commands.operations.AbstractOperation#undo(org.eclipse.core.runtime.IProgressMonitor,
+		 *      org.eclipse.core.runtime.IAdaptable)
 		 */
 		@Override
 		public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {

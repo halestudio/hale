@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.io.impl.internal;
@@ -18,16 +22,17 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 
 /**
  * A name associated with an entity bean
+ * 
  * @author Simon Templer
  */
 public class NamedEntityBean {
-	
+
 	private String name;
-	
+
 	private EntityBean<?> entity;
 
 	/**
-	 * Default constructor 
+	 * Default constructor
 	 */
 	public NamedEntityBean() {
 		super();
@@ -35,12 +40,13 @@ public class NamedEntityBean {
 
 	/**
 	 * Create a named entity bean and initialize it using the given entity
+	 * 
 	 * @param name the entity name
 	 * @param entity the entity
 	 */
 	public NamedEntityBean(String name, Entity entity) {
 		this.name = name;
-		
+
 		if (entity instanceof Type) {
 			this.entity = new TypeBean((Type) entity);
 		}
@@ -48,13 +54,14 @@ public class NamedEntityBean {
 			this.entity = new PropertyBean((Property) entity);
 		}
 		else {
-			throw new IllegalArgumentException("Unsupported entity type: " + 
-					entity.getClass().getSimpleName());
+			throw new IllegalArgumentException("Unsupported entity type: "
+					+ entity.getClass().getSimpleName());
 		}
 	}
 
 	/**
 	 * Get the entity name
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -63,6 +70,7 @@ public class NamedEntityBean {
 
 	/**
 	 * Set the entity name
+	 * 
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
@@ -71,6 +79,7 @@ public class NamedEntityBean {
 
 	/**
 	 * Get the entity bean
+	 * 
 	 * @return the entity
 	 */
 	public EntityBean<?> getEntity() {
@@ -79,6 +88,7 @@ public class NamedEntityBean {
 
 	/**
 	 * Set the entity bean
+	 * 
 	 * @param entity the entity to set
 	 */
 	public void setEntity(EntityBean<?> entity) {

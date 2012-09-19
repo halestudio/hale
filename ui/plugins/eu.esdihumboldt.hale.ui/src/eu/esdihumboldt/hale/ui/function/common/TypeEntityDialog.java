@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.function.common;
@@ -31,14 +35,16 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 
 /**
  * Dialog for selecting a {@link TypeEntityDefinition}.
+ * 
  * @author Simon Templer
  */
 public class TypeEntityDialog extends EntityDialog {
 
 	/**
-	 * @see EntityDialog#EntityDialog(Shell, SchemaSpaceID, String, EntityDefinition) 
+	 * @see EntityDialog#EntityDialog(Shell, SchemaSpaceID, String,
+	 *      EntityDefinition)
 	 */
-	public TypeEntityDialog(Shell parentShell, SchemaSpaceID ssid, String title, 
+	public TypeEntityDialog(Shell parentShell, SchemaSpaceID ssid, String title,
 			EntityDefinition initialSelection) {
 		super(parentShell, ssid, title, initialSelection);
 	}
@@ -49,17 +55,18 @@ public class TypeEntityDialog extends EntityDialog {
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new StyledDefinitionLabelProvider());
-		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI
+				.getWorkbench().getService(EntityDefinitionService.class);
 		viewer.setContentProvider(new TreePathProviderAdapter(new EntityTypesContentProvider(
 				viewer, entityDefinitionService, ssid)));
-		
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		
+
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
+
 		viewer.setInput(ss.getSchemas(ssid));
-		
+
 		if (initialSelection instanceof TypeEntityDefinition) {
-			viewer.setSelection(new StructuredSelection(
-					initialSelection.getType()));
+			viewer.setSelection(new StructuredSelection(initialSelection.getType()));
 		}
 	}
 
@@ -77,10 +84,10 @@ public class TypeEntityDialog extends EntityDialog {
 				return new TypeEntityDefinition((TypeDefinition) element, ssid, null);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * @see EntityDialog#getObject()
 	 */

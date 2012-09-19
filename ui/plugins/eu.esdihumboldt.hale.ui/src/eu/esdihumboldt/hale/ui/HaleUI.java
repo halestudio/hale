@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui;
@@ -22,18 +26,20 @@ import org.eclipse.ui.operations.UndoRedoActionGroup;
 
 /**
  * Hale UI utility methods.
+ * 
  * @author Simon Templer
  */
 public abstract class HaleUI {
 
 	/**
 	 * Register a view site for undo/redo in workbench context.
+	 * 
 	 * @param site the view site
 	 */
 	public static void registerWorkbenchUndoRedo(IViewSite site) {
-		IUndoContext undoContext = site.getWorkbenchWindow().getWorkbench().getOperationSupport().getUndoContext();
-		UndoRedoActionGroup undoRedoActionGroup = new UndoRedoActionGroup(
-				site, undoContext, true);
+		IUndoContext undoContext = site.getWorkbenchWindow().getWorkbench().getOperationSupport()
+				.getUndoContext();
+		UndoRedoActionGroup undoRedoActionGroup = new UndoRedoActionGroup(site, undoContext, true);
 		IActionBars actionBars = site.getActionBars();
 		undoRedoActionGroup.fillActionBars(actionBars);
 	}
@@ -42,6 +48,7 @@ public abstract class HaleUI {
 	 * Wait for a finished flag being set to <code>true</code> by another
 	 * thread. If the current thread is the display thread, display events will
 	 * still be processed.
+	 * 
 	 * @param finishedFlag the finished flag
 	 */
 	public static void waitFor(AtomicBoolean finishedFlag) {
@@ -65,5 +72,5 @@ public abstract class HaleUI {
 			}
 		}
 	}
-	
+
 }

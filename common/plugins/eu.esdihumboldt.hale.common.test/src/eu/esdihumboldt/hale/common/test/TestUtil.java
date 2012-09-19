@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2012.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.test;
@@ -56,28 +60,30 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  */
 @SuppressWarnings("restriction")
 public class TestUtil {
-	
+
 	/**
 	 * Loads the specified XML Schema.
 	 * 
 	 * @param location the URI specifying the location of the schema
 	 * @return the loaded schema
-	 * @throws IOProviderConfigurationException 
-	 * @throws IOException 
+	 * @throws IOProviderConfigurationException if the schema reader
+	 *             configuration failed
+	 * @throws IOException if the schema could not be loaded
 	 */
-	public static Schema loadSchema(URI location) throws IOProviderConfigurationException, IOException {
+	public static Schema loadSchema(URI location) throws IOProviderConfigurationException,
+			IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		XmlSchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(new DefaultTypeIndex());
 		reader.setSource(input);
-		
+
 		reader.validate();
 		IOReport report = reader.execute(null);
-		
+
 		assertTrue(report.isSuccess());
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
-		
+
 		return reader.getSchema();
 	}
 
@@ -88,21 +94,25 @@ public class TestUtil {
 	 * @param sourceTypes the source type index
 	 * @param targetTypes the target type index
 	 * @return the loaded alignment
-	 * @throws IOException 
-	 * @throws MappingException 
-	 * @throws ValidationException 
-	 * @throws MarshalException 
+	 * @throws IOException if the alignment or other resources could not be
+	 *             loaded
+	 * @throws MappingException if the mapping is faulty or could not be applied
+	 * @throws ValidationException if there was a validation error
+	 * @throws MarshalException if unmarshaling the alignment failed
 	 */
-	public static Alignment loadAlignment(final URI location, Schema sourceTypes, Schema targetTypes) throws MarshalException, ValidationException, MappingException, IOException {
+	public static Alignment loadAlignment(final URI location, Schema sourceTypes, Schema targetTypes)
+			throws MarshalException, ValidationException, MappingException, IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		IOReporter report = new DefaultIOReporter(new Locatable() {
+
 			@Override
 			public URI getLocation() {
 				return location;
 			}
 		}, "Load alignment", true);
-		Alignment alignment = DefaultAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes);
+		Alignment alignment = DefaultAlignmentIO.load(input.getInput(), report, sourceTypes,
+				targetTypes);
 
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());
 
@@ -110,15 +120,18 @@ public class TestUtil {
 	}
 
 	/**
-	 * Loads an instance collection from the specified XML file with the given source types.
+	 * Loads an instance collection from the specified XML file with the given
+	 * source types.
 	 * 
 	 * @param location the URI specifying the location of the xml instance file
 	 * @param types the type index
 	 * @return the loaded instance collection
-	 * @throws IOException 
-	 * @throws IOProviderConfigurationException 
+	 * @throws IOException if loading the instance failed
+	 * @throws IOProviderConfigurationException if configuring the instance
+	 *             reader failed
 	 */
-	public static InstanceCollection loadInstances(URI location, Schema types) throws IOProviderConfigurationException, IOException {
+	public static InstanceCollection loadInstances(URI location, Schema types)
+			throws IOProviderConfigurationException, IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		XmlInstanceReader instanceReader = new XmlInstanceReader();
@@ -137,9 +150,12 @@ public class TestUtil {
 	 */
 	public static void startConversionService() {
 		List<String> bundlesToStart = new ArrayList<String>();
-		bundlesToStart.add("org.springframework.osgi.core"); // for osgi extensions in application context
-		bundlesToStart.add("org.springframework.osgi.extender"); // activate the extender
-		bundlesToStart.add("eu.esdihumboldt.hale.common.convert"); // activate the conversion service
+		// for osgi extensions in application context
+		bundlesToStart.add("org.springframework.osgi.core");
+		// activate the extender
+		bundlesToStart.add("org.springframework.osgi.extender");
+		// activate the conversion service
+		bundlesToStart.add("eu.esdihumboldt.hale.common.convert");
 
 		startService(bundlesToStart, ConversionService.class);
 	}
@@ -156,7 +172,8 @@ public class TestUtil {
 	}
 
 	/**
-	 * Start the given bundles and then check that the given service is available.
+	 * Start the given bundles and then check that the given service is
+	 * available.
 	 * 
 	 * XXX HACKHACK
 	 * 
@@ -169,7 +186,7 @@ public class TestUtil {
 		for (Bundle bundle : context.getBundles()) {
 			bundles.put(bundle.getSymbolicName(), bundle);
 		}
-		
+
 		for (String bundleName : bundlesToStart) {
 			Bundle bundle = bundles.get(bundleName);
 			assertNotNull("Bundle not found: " + bundleName, bundle);
@@ -180,12 +197,14 @@ public class TestUtil {
 			} catch (BundleException be) {
 				fail("Could not start bundle " + bundleName + ": " + be.toString());
 			}
-			// without arguments on start a postcondition is that the bundle is ACTIVE
+			// without arguments on start a postcondition is that the bundle is
+			// ACTIVE
 			assertTrue("Bundle state not ACTIVE", (bundle.getState() & Bundle.ACTIVE) != 0);
 		}
 
 		assertTrue("Service " + serviceToCheck.getSimpleName() + " not available",
 				OsgiUtils.waitUntil(new Condition() {
+
 					@Override
 					public boolean evaluate() {
 						return OsgiUtils.getService(serviceToCheck) != null;

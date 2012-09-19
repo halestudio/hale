@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.data.internal.compare;
@@ -48,6 +52,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentPro
  * @author Simon Templer
  */
 public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
+
 	/**
 	 * The pattern of the text for multiple values. This is used by
 	 * {@link DefinitionInstanceTreeViewer} to determine if a cell is
@@ -67,8 +72,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	 * Create an instance label provider for tree based on a
 	 * {@link TypeDefinition}
 	 * 
-	 * @param instance
-	 *            the instance to use
+	 * @param instance the instance to use
 	 */
 	public DefinitionInstanceLabelProvider(Instance instance) {
 		super();
@@ -94,15 +98,14 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		// First segment is TypeDefinition.
 		if (treePath.getFirstSegment() instanceof TypeDefinition) {
 			definition = true;
-			
+
 			segmentList.add(treePath.getFirstSegment());
 			for (int i = 1; value != null && i < treePath.getSegmentCount(); i++) {
 				Object segment = treePath.getSegment(i);
 				segmentList.add(segment);
 				if (segment instanceof ChildDefinition<?>) {
 					childDef = (ChildDefinition<?>) segment;
-					Object[] values = ((Group) value).getProperty(childDef
-							.getName());
+					Object[] values = ((Group) value).getProperty(childDef.getName());
 					choice = 0;
 					valueCount = 0;
 					if (values != null && values.length > 0) {
@@ -110,9 +113,11 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 						choice = chosenPath == null ? 0 : chosenPath;
 						value = values[choice];
 						valueCount = values.length;
-					} else
+					}
+					else
 						value = null;
-				} else {
+				}
+				else {
 					// TODO log message?
 					value = null;
 				}
@@ -124,29 +129,27 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 				if (treePath.getSegmentCount() > 1) {
 					LinkedList<Object> segmentList2 = new LinkedList<Object>();
 					segmentList2.add(treePath.getFirstSegment());
-					for (int i = 1; value != null
-							&& i < treePath.getSegmentCount(); i++) {
+					for (int i = 1; value != null && i < treePath.getSegmentCount(); i++) {
 						Object segment = treePath.getSegment(i);
 						segmentList2.add(segment);
 						if (segment instanceof String) {
 							Object key = segment;
-							List<Object> values = ((Instance) value)
-									.getMetaData(key.toString());
+							List<Object> values = ((Instance) value).getMetaData(key.toString());
 							choice = 0;
 							valueCount = 0;
 							if (values != null && values.size() > 0) {
-								Integer chosenPath = chosenPaths
-										.get(segmentList2);
+								Integer chosenPath = chosenPaths.get(segmentList2);
 								choice = chosenPath == null ? 0 : chosenPath;
 								value = values.get(choice);
 								valueCount = values.size();
-							} else value = null;
+							}
+							else
+								value = null;
 						}
 					}
 				}
 			}
 		}
-		
 
 		InstanceValidationReport report = null;
 		// If childDef is null we are at the top element.
@@ -168,11 +171,12 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 
 		StyledString styledString;
 		if (value == null) {
-			styledString = new StyledString("no value",
-					StyledString.DECORATIONS_STYLER);
-		} else if (value instanceof Group && !hasValue) {
+			styledString = new StyledString("no value", StyledString.DECORATIONS_STYLER);
+		}
+		else if (value instanceof Group && !hasValue) {
 			styledString = new StyledString("+", StyledString.QUALIFIER_STYLER);
-		} else {
+		}
+		else {
 			if (value instanceof Instance) {
 				value = ((Instance) value).getValue();
 			}
@@ -186,8 +190,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 			 * displayed. As such, we reduce the string to a maximum size.
 			 */
 			if (stringValue.length() > MAX_STRING_LENGTH) {
-				stringValue = stringValue.substring(0, MAX_STRING_LENGTH)
-						+ "...";
+				stringValue = stringValue.substring(0, MAX_STRING_LENGTH) + "...";
 			}
 
 			styledString = new StyledString(stringValue, null);
@@ -196,8 +199,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		// mark cell if there are other values
 		if (valueCount > 1) {
 			String decoration = " "
-					+ MessageFormat.format(MULTIPLE_VALUE_FORMAT, choice + 1,
-							valueCount);
+					+ MessageFormat.format(MULTIPLE_VALUE_FORMAT, choice + 1, valueCount);
 			styledString.append(decoration, StyledString.COUNTER_STYLER);
 		}
 
@@ -214,10 +216,8 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	/**
 	 * Select a specific path.
 	 * 
-	 * @param path
-	 *            the path at which a choice is necessary
-	 * @param choice
-	 *            the made choice
+	 * @param path the path at which a choice is necessary
+	 * @param choice the made choice
 	 */
 	public void selectPath(TreePath path, int choice) {
 		LinkedList<Object> segmentList = new LinkedList<Object>();
@@ -245,11 +245,9 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	@Override
 	public String getToolTipText(Object element) {
 		if (element instanceof TypeDefinition) {
-			InstanceValidationReport report = InstanceValidator
-					.validate(instance);
+			InstanceValidationReport report = InstanceValidator.validate(instance);
 
-			Collection<InstanceValidationMessage> warnings = report
-					.getWarnings();
+			Collection<InstanceValidationMessage> warnings = report.getWarnings();
 
 			if (warnings.isEmpty())
 				return null;
@@ -259,7 +257,8 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 				toolTip.append(m.getFormattedMessage()).append('\n');
 
 			return toolTip.substring(0, toolTip.length() - 1);
-		} else
+		}
+		else
 			return null;
 	}
 }

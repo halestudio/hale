@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.cst.functions.numeric;
@@ -35,26 +39,29 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 
 /**
  * Mathematical expression evaluation function.
+ * 
  * @author Simon Templer
  */
 @Immutable
-public class MathematicalExpression extends AbstractSingleTargetPropertyTransformation<TransformationEngine> implements MathematicalExpressionFunction {
+public class MathematicalExpression extends
+		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
+		MathematicalExpressionFunction {
 
 	/**
-	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String, TransformationEngine, ListMultimap, String, PropertyEntityDefinition, Map, TransformationLog)
+	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
+	 *      TransformationEngine, ListMultimap, String,
+	 *      PropertyEntityDefinition, Map, TransformationLog)
 	 */
 	@Override
-	protected Object evaluate(String transformationIdentifier,
-			TransformationEngine engine,
+	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
-			PropertyEntityDefinition resultProperty,
-			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
+			TransformationLog log) throws TransformationException {
 		// get the mathematical expression
 		String expression = getParameterChecked(PARAMETER_EXPRESSION);
-		
+
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);
-		
+
 		try {
 			return evaluateExpression(expression, vars);
 		} catch (XExpression e) {
@@ -64,19 +71,21 @@ public class MathematicalExpression extends AbstractSingleTargetPropertyTransfor
 
 	/**
 	 * Evaluate a mathematical expression.
+	 * 
 	 * @param expression the mathematical expression. It may contain references
-	 *   to variables
+	 *            to variables
 	 * @param vars the list of available property values that may be bound to
-	 *   variables
+	 *            variables
 	 * @return the evaluated expression, which can be Double, Integer or String
 	 * @throws XExpression if the expression could not be evaluated
 	 */
-	public static Object evaluateExpression(String expression, List<PropertyValue> vars) throws XExpression {
+	public static Object evaluateExpression(String expression, List<PropertyValue> vars)
+			throws XExpression {
 		Environment env = new Environment();
-		
+
 		for (PropertyValue var : vars) {
 			// add the variable to the environment
-			
+
 			// determine the variable value
 			Object value = var.getValue();
 			Number number;
@@ -87,22 +96,23 @@ public class MathematicalExpression extends AbstractSingleTargetPropertyTransfor
 				// try conversion to Double as default
 				number = var.getValueAs(Double.class);
 			}
-			
-			// the JMEP library only supports Integer and Doubles, but e.g. no Floats
+
+			// the JMEP library only supports Integer and Doubles, but e.g. no
+			// Floats
 			if (!(number instanceof Integer) && !(number instanceof Double)) {
 				number = number.doubleValue();
 			}
-			
+
 			// determine the variable name
 			String name = var.getProperty().getDefinition().getName().getLocalPart();
 			Constant varValue = new Constant(number);
-			
-			// add with short name, but ensure no variable with only a short name is overridden
-			if (env.getVariable(name) == null
-					|| var.getProperty().getPropertyPath().size() == 1) {
+
+			// add with short name, but ensure no variable with only a short
+			// name is overridden
+			if (env.getVariable(name) == null || var.getProperty().getPropertyPath().size() == 1) {
 				env.addVariable(name, varValue);
 			}
-			
+
 			// add with long name if applicable
 			if (var.getProperty().getPropertyPath().size() > 1) {
 				List<String> names = new ArrayList<String>();
@@ -115,7 +125,7 @@ public class MathematicalExpression extends AbstractSingleTargetPropertyTransfor
 		}
 
 		Expression ex = new Expression(expression, env);
-		return ex.evaluate();			
+		return ex.evaluate();
 	}
 
 }

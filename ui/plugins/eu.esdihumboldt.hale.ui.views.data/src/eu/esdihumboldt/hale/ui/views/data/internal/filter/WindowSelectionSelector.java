@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.data.internal.filter;
@@ -58,15 +62,17 @@ import eu.esdihumboldt.hale.ui.views.data.AbstractDataView;
 
 /**
  * Instance selector retrieving values from the selection service.
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class WindowSelectionSelector implements InstanceSelector {
-	
+
 	/**
 	 * Instance selector control
 	 */
 	private class InstanceSelectorControl extends Composite implements ISelectionListener {
+
 		private final ComboViewer instanceTypes;
 		private final Map<TypeDefinition, List<Instance>> instanceMap = new HashMap<TypeDefinition, List<Instance>>();
 		private TypeDefinition selectedType;
@@ -83,27 +89,29 @@ public class WindowSelectionSelector implements InstanceSelector {
 			layout.marginHeight = 2;
 			layout.marginWidth = 3;
 			setLayout(layout);
-			
+
 			// instance type selector
 			instanceTypes = new ComboViewer(this, SWT.READ_ONLY);
 			instanceTypes.setContentProvider(ArrayContentProvider.getInstance());
 			instanceTypes.setComparator(new DefinitionComparator());
 			instanceTypes.setLabelProvider(new DefinitionLabelProvider());
 			instanceTypes.addSelectionChangedListener(new ISelectionChangedListener() {
-				
+
 				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					updateSelection();
 				}
-				
+
 			});
-			instanceTypes.getControl().setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+			instanceTypes.getControl().setLayoutData(
+					new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
 			// filter field
-			filterField = new TypeFilterField((selectedType == null)?(null):(selectedType), 
+			filterField = new TypeFilterField((selectedType == null) ? (null) : (selectedType),
 					this, SWT.NONE, SchemaSpaceID.TARGET, FilterType.CQL);
 			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			filterField.addListener(new PropertyChangeListener() {
+
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 					if (evt.getPropertyName().equals(TypeFilterField.PROPERTY_FILTER)) {
@@ -115,10 +123,11 @@ public class WindowSelectionSelector implements InstanceSelector {
 			// max count selector
 			count = new ComboViewer(this, SWT.READ_ONLY);
 			count.setContentProvider(ArrayContentProvider.getInstance());
-			count.setInput(new Integer[]{Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
-					Integer.valueOf(4), Integer.valueOf(5)});
+			count.setInput(new Integer[] { Integer.valueOf(1), Integer.valueOf(2),
+					Integer.valueOf(3), Integer.valueOf(4), Integer.valueOf(5) });
 			count.setSelection(new StructuredSelection(Integer.valueOf(2)));
 			count.addSelectionChangedListener(new ISelectionChangedListener() {
+
 				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					updateSelection();
@@ -126,9 +135,10 @@ public class WindowSelectionSelector implements InstanceSelector {
 			});
 
 			// service listeners
-			ISelectionService ss = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+			ISelectionService ss = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getSelectionService();
 			ss.addPostSelectionListener(this);
-			
+
 			ISelection selection = ss.getSelection();
 
 			if (!(selection instanceof InstanceSelection))
@@ -136,19 +146,19 @@ public class WindowSelectionSelector implements InstanceSelector {
 
 			if (selection != null)
 				lastSelection = (InstanceSelection) selection;
-			
+
 			updateTypeSelection();
 		}
-		
+
 		/**
 		 * Update the feature types selection
 		 */
 		protected void updateTypeSelection() {
 			instanceMap.clear();
-			
+
 			// get selected instance
 			Collection<Instance> instances = getSelectedInstances(null);
-			
+
 			if (instances != null && !instances.isEmpty()) {
 				// determine types
 				Iterator<Instance> it = instances.iterator();
@@ -163,28 +173,30 @@ public class WindowSelectionSelector implements InstanceSelector {
 					instanceList.add(instance);
 				}
 			}
-			
+
 			Set<TypeDefinition> selectableTypes = instanceMap.keySet();
-			
+
 			instanceTypes.setInput(selectableTypes);
 
 			boolean enabled = !selectableTypes.isEmpty();
 			if (enabled)
-				instanceTypes.setSelection(new StructuredSelection(selectableTypes.iterator().next()));
+				instanceTypes.setSelection(new StructuredSelection(selectableTypes.iterator()
+						.next()));
 
 			instanceTypes.getControl().setEnabled(enabled);
 			count.getControl().setEnabled(enabled);
 			filterField.setEnabled(enabled);
-			
+
 			layout(true, true);
-			
+
 			updateSelection();
 		}
 
 		/**
 		 * Get the selected instances form the current {@link InstanceSelection}
-		 * @param typeFilter the type for the instances to match, 
-		 *   <code>null</code> for any type
+		 * 
+		 * @param typeFilter the type for the instances to match,
+		 *            <code>null</code> for any type
 		 * @return the selected features or <code>null</code>
 		 */
 		private Collection<Instance> getSelectedInstances(TypeDefinition typeFilter) {
@@ -194,29 +206,28 @@ public class WindowSelectionSelector implements InstanceSelector {
 			else {
 				List<?> elements = lastSelection.toList();
 				Collection<Instance> result = new ArrayList<Instance>(elements.size());
-				
-				final InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-				
+
+				final InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench()
+						.getService(InstanceService.class);
+
 				// collect instances from selection that match the data set
 				for (Object element : elements) {
 					Instance instance = null;
-					if (element instanceof Instance
-							&& ((Instance) element).getDataSet() == dataSet) {
+					if (element instanceof Instance && ((Instance) element).getDataSet() == dataSet) {
 						instance = (Instance) element;
 					}
-					else if (element instanceof InstanceReference 
+					else if (element instanceof InstanceReference
 							&& ((InstanceReference) element).getDataSet() == dataSet) {
 						instance = instanceService.getInstance((InstanceReference) element);
 					}
-					
-					if (instance != null 
-							&& (typeFilter == null 
-							|| typeFilter.equals(instance.getDefinition()))) {
+
+					if (instance != null
+							&& (typeFilter == null || typeFilter.equals(instance.getDefinition()))) {
 						// add instance if type filter matches
 						result.add(instance);
 					}
 				}
-				
+
 				return result;
 			}
 		}
@@ -226,7 +237,8 @@ public class WindowSelectionSelector implements InstanceSelector {
 		 */
 		protected void updateSelection() {
 			if (!instanceTypes.getSelection().isEmpty()) {
-				TypeDefinition type = (TypeDefinition) ((IStructuredSelection) instanceTypes.getSelection()).getFirstElement();
+				TypeDefinition type = (TypeDefinition) ((IStructuredSelection) instanceTypes
+						.getSelection()).getFirstElement();
 				filterField.setType(type);
 				selectedType = type;
 			}
@@ -234,14 +246,15 @@ public class WindowSelectionSelector implements InstanceSelector {
 				filterField.setType(null);
 				selectedType = null;
 			}
-			
+
 			for (InstanceSelectionListener listener : listeners) {
 				listener.selectionChanged(selectedType, getSelection());
 			}
 		}
-		
+
 		/**
 		 * Get the currently selected instances.
+		 * 
 		 * @return the currently selected instances
 		 */
 		public Iterable<Instance> getSelection() {
@@ -250,13 +263,14 @@ public class WindowSelectionSelector implements InstanceSelector {
 			else {
 				List<Instance> selection = instanceMap.get(selectedType);
 
-				Integer max = (Integer) ((IStructuredSelection) count.getSelection()).getFirstElement();
+				Integer max = (Integer) ((IStructuredSelection) count.getSelection())
+						.getFirstElement();
 				Filter filter = filterField.getFilter();
 
 				List<Instance> result = new ArrayList<Instance>(max);
 				int count = 0;
 				Iterator<Instance> iter = selection.iterator();
-				while(iter.hasNext() && count < max) {
+				while (iter.hasNext() && count < max) {
 					Instance instance = iter.next();
 					if (filter == null || filter.match(instance)) {
 						result.add(instance);
@@ -267,22 +281,25 @@ public class WindowSelectionSelector implements InstanceSelector {
 				return result;
 			}
 		}
-		
+
 		/**
 		 * @see Widget#dispose()
 		 */
 		@Override
 		public void dispose() {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().removePostSelectionListener(this);
-			
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService()
+					.removePostSelectionListener(this);
+
 			listeners.clear();
-			
+
 			super.dispose();
 		}
 
 		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			if (!(part instanceof AbstractDataView) // don't react on data view changes (to prevent loops)
+			if (!(part instanceof AbstractDataView) // don't react on data view
+													// changes (to prevent
+													// loops)
 					&& selection instanceof InstanceSelection) {
 				lastSelection = (InstanceSelection) selection;
 				updateTypeSelection();
@@ -297,7 +314,8 @@ public class WindowSelectionSelector implements InstanceSelector {
 
 	/**
 	 * Constructor
-	 * @param dataSet the data set 
+	 * 
+	 * @param dataSet the data set
 	 */
 	public WindowSelectionSelector(DataSet dataSet) {
 		this.dataSet = dataSet;
@@ -309,7 +327,7 @@ public class WindowSelectionSelector implements InstanceSelector {
 	@Override
 	public void addSelectionListener(InstanceSelectionListener listener) {
 		listeners.add(listener);
-		
+
 		if (current != null && !current.isDisposed()) {
 			listener.selectionChanged(current.selectedType, current.getSelection());
 		}
@@ -334,7 +352,7 @@ public class WindowSelectionSelector implements InstanceSelector {
 
 	/**
 	 * Show the given selection.
-	 *
+	 * 
 	 * @param is the selection to show
 	 */
 	public void showSelection(InstanceSelection is) {

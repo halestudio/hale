@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.report.writer;
@@ -29,21 +33,20 @@ import eu.esdihumboldt.hale.common.core.report.ReportLog;
 import eu.esdihumboldt.hale.common.core.report.ReportSession;
 
 /**
- * This is the ReportReader which extracts {@link Report}s
- * and their {@link Message}s from a previous saved file.
+ * This is the ReportReader which extracts {@link Report}s and their
+ * {@link Message}s from a previous saved file.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ReportReader {
-	
+
 	private ReportFactory rf = ReportFactory.getInstance();
 	private MessageFactory mf = MessageFactory.getInstance();
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportReader.class);
 
 	/**
-	 * Extracts all {@link ReportSession}s from a given
-	 * directory.
+	 * Extracts all {@link ReportSession}s from a given directory.
 	 * 
 	 * @param dir directory containing all log files
 	 * 
@@ -54,52 +57,52 @@ public class ReportReader {
 			// folder does not exist so there are no reports
 			return new ArrayList<ReportSession>();
 		}
-		
+
 		// create a list containing the result
 		List<ReportSession> list = new ArrayList<ReportSession>();
-		
+
 		List<Long> ids = new ArrayList<Long>();
-		
+
 		// iterate through all files from the directory
 		for (File f : dir.listFiles()) {
 			// extract the id from filename
 			long id = this.getIdentifier(f);
-			
+
 			// add the id
 			ids.add(id);
 		}
-		
+
 		// sort the ids
 		Collections.sort(ids);
 		Collections.reverse(ids);
-		
-		// and load the latest 3		
+
+		// and load the latest 3
 		for (File f : dir.listFiles()) {
 			// extract the id from filename
 			long id = this.getIdentifier(f);
 			boolean skip = true;
-			
+
 			for (int i = 0; i < 3; i++) {
 				if (ids.get(i) == id) {
 					skip = false;
 					break;
 				}
 			}
-			
+
 			if (skip) {
 				continue;
 			}
-			
+
 			// parse the session
 			ReportSession session = this.parse(f, id);
-			
+
 			// add it to result
 			list.add(session);
 		}
-		
+
 		return list;
 	}
-	
+
 	/**
 	 * Creates a {@link ReportSession} from a report log file.
 	 * 
@@ -111,16 +114,16 @@ public class ReportReader {
 		if (file.exists()) {
 			// extract the id from filename
 			long id = this.getIdentifier(file);
-			
+
 			// parse the session
 			ReportSession session = this.parse(file, id);
-			
+
 			return session;
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Parse a file and creates a {@link ReportSession}.
 	 * 
@@ -133,7 +136,7 @@ public class ReportReader {
 	private ReportSession parse(File file, long id) {
 		// create the new session
 		ReportSession session = new ReportSession(id);
-		
+
 		// get content
 		StringBuilder sw = new StringBuilder();
 		BufferedReader reader = null;
@@ -144,73 +147,79 @@ public class ReportReader {
 			String temp;
 			Report lastReport = null;
 			String messageType = "";
-			
+
 			// read all data
 			while (reader.ready()) {
 				temp = reader.readLine();
-				
+
 				if (temp.isEmpty()) {
 					continue;
 				}
-				
+
 				// check if the line starts with a marker
 				if (temp.startsWith("!")) {
 					// we found a new marker, time to parse previous lines
 					Report r = rf.parse(sw.toString());
-					
+
 					if (!sw.toString().isEmpty() && !messageType.isEmpty()) {
 						Message m = mf.parse(sw.toString());
 						if (m != null) {
 							ReportLog<Message> repLog = (ReportLog<Message>) lastReport;
-							
+
 							// add the message to the corresponding report
 							if (messageType.equals("!ERROR")) {
 								repLog.error(m);
-							} else if (messageType.equals("!WARN")) {
+							}
+							else if (messageType.equals("!WARN")) {
 								repLog.warn(m);
-							} else if (messageType.equals("!INFO")) {
+							}
+							else if (messageType.equals("!INFO")) {
 								repLog.info(m);
 							}
-							
+
 							// reset message type
 							messageType = "";
 						}
-					} else if (r != null) {
+					}
+					else if (r != null) {
 						// new report
 						lastReport = r;
 						session.addReport(lastReport);
 					}
-					
+
 					// check if the new line is a marker for messages
-					if(temp.startsWith("!ERROR")) {
-						messageType = temp;
-						temp = "";
-					} else if(temp.startsWith("!WARN")) {
-						messageType = temp;
-						temp = "";
-					} else if(temp.startsWith("!INFO")) {
+					if (temp.startsWith("!ERROR")) {
 						messageType = temp;
 						temp = "";
 					}
-					
+					else if (temp.startsWith("!WARN")) {
+						messageType = temp;
+						temp = "";
+					}
+					else if (temp.startsWith("!INFO")) {
+						messageType = temp;
+						temp = "";
+					}
+
 					// then flush sw
 					sw = new StringBuilder();
 					// and add the new line
-					sw.append(temp+nl);
-				} else {
-					sw.append(temp+nl);
+					sw.append(temp + nl);
+				}
+				else {
+					sw.append(temp + nl);
 				}
 			}
-			
+
 			// close reader
 			reader.close();
 		} catch (Exception e) {
 			_log.error("Error while parsing a log file.", e.getStackTrace());
 		}
-		
+
 		return session;
 	}
-	
+
 	/**
 	 * Extract the identifier from the filename.
 	 * 
@@ -221,21 +230,22 @@ public class ReportReader {
 	private long getIdentifier(File file) {
 		String[] name = file.getName().split("[.]");
 		String result = "";
-		
+
 		if (name[0].contains("-")) {
 			name = name[0].split("[-]");
 			result = name[1];
-		} else {
+		}
+		else {
 			result = name[0];
 		}
-		
+
 		long id = 0;
 		try {
 			id = Long.parseLong(result);
-		} catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			_log.error("Could not determine ReportSession ID.");
 		}
-		
+
 		return id;
 	}
 }

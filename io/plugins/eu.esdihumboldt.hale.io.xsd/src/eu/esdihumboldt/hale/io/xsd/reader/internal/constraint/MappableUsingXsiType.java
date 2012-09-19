@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;
@@ -21,6 +25,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 
 /**
  * Mappable constraint that determines if a type is mappable using xsi:type.
+ * 
  * @author Simon Templer
  */
 public class MappableUsingXsiType extends MappableFlag {
@@ -35,7 +40,7 @@ public class MappableUsingXsiType extends MappableFlag {
 	 */
 	public MappableUsingXsiType(XmlTypeDefinition type) {
 		super();
-		
+
 		this.type = type;
 	}
 
@@ -53,15 +58,16 @@ public class MappableUsingXsiType extends MappableFlag {
 		// an associated element
 		TypeDefinition superType = type.getSuperType();
 		while (superType != null) {
-			// check elements first to prevent the mappable constraint to be determined unncessarily
-			if (!superType.getConstraint(XmlElements.class).getElements().isEmpty() && 
-					superType.getConstraint(MappableFlag.class).isEnabled()) {
+			// check elements first to prevent the mappable constraint to be
+			// determined unncessarily
+			if (!superType.getConstraint(XmlElements.class).getElements().isEmpty()
+					&& superType.getConstraint(MappableFlag.class).isEnabled()) {
 				return true;
 			}
-			
+
 			superType = superType.getSuperType();
 		}
-		
+
 		return super.isEnabled();
 	}
 

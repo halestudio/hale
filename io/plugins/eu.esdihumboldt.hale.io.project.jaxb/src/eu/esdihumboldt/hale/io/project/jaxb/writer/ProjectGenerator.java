@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonization and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.io.project.jaxb.writer;
 
@@ -20,8 +24,8 @@ import javax.xml.bind.JAXBException;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
 
 /**
- * The {@link ProjectGenerator} serializes all project info to an xml file.
- * The {@link Alignment} is saved alongside in a goml file.
+ * The {@link ProjectGenerator} serializes all project info to an xml file. The
+ * {@link Alignment} is saved alongside in a goml file.
  * 
  * @author Thorsten Reitz
  */
@@ -30,13 +34,11 @@ public class ProjectGenerator {
 //	private static final ALogger _log = ALoggerFactory.getLogger(ProjectGenerator.class);
 
 //	private final ProjectService projectService;
-	
+
 	/**
 	 * Constructor
-	 * 
-	 * @param projectService the project service
 	 */
-	public ProjectGenerator(/*ProjectService projectService*/) {
+	public ProjectGenerator(/* ProjectService projectService */) {
 		super();
 //		this.projectService = projectService;
 	}
@@ -49,7 +51,7 @@ public class ProjectGenerator {
 	 * 
 	 * @throws JAXBException if writing the project fails
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unused" })
 	public void write(String xmlPath, String name) throws JAXBException {
 //		
 //		// add *.xml extension if is wasn't added before
@@ -77,9 +79,9 @@ public class ProjectGenerator {
 //		m.marshal(new JAXBElement(new QName(null, "HaleProject", "hale"), //$NON-NLS-1$ //$NON-NLS-2$
 //				HaleProject.class, hproject), new File(xmlPath));
 	}
-	
-	private HaleProject createHaleProject(String xmlPath, String name) 
-			throws JAXBException {
+
+	@SuppressWarnings("unused")
+	private HaleProject createHaleProject(String xmlPath, String name) throws JAXBException {
 //		final String basePath = FilenameUtils.getFullPath(xmlPath);
 //		
 //		// setup project and basic attributes
@@ -110,7 +112,7 @@ public class ProjectGenerator {
 		return hproject;
 	}
 
-	
+	@SuppressWarnings("unused")
 	private void createInstanceData(HaleProject hproject, String basePath) {
 //		if (projectService.getInstanceDataPath() != null) {
 //			InstanceData id = new InstanceData();
@@ -134,7 +136,8 @@ public class ProjectGenerator {
 //			hproject.setInstanceData(id);
 //		}
 	}
-	
+
+	@SuppressWarnings("unused")
 	private void createMappedSchema(HaleProject hproject, String basePath) {
 //		MappedSchema sourceschema = new MappedSchema();
 //		sourceschema.setPath(getRelativeLocation(projectService.getSourceSchemaPath(), basePath));
@@ -146,9 +149,10 @@ public class ProjectGenerator {
 //			hproject.setTargetSchema(targetschema);
 //		}
 	}
-	
+
+	@SuppressWarnings("unused")
 	private void createTaskStatus(HaleProject hproject) {
-		//XXX tasks in project deactivated for now
+		// XXX tasks in project deactivated for now
 //		TaskService taskService = 
 //			(TaskService) PlatformUI.getWorkbench().getService(
 //					TaskService.class);
@@ -168,8 +172,10 @@ public class ProjectGenerator {
 //		}
 //		hproject.setTaskStatus(taskStatus);
 	}
-	
-	private void createAlignment(HaleProject hproject, String basePath, String xmlPath) throws JAXBException {
+
+	@SuppressWarnings("unused")
+	private void createAlignment(HaleProject hproject, String basePath, String xmlPath)
+			throws JAXBException {
 //		AlignmentService alignmentService = 
 //			(AlignmentService) PlatformUI.getWorkbench().getService(
 //					AlignmentService.class);
@@ -178,7 +184,8 @@ public class ProjectGenerator {
 //		org.write(alignmentService.getAlignment(), xmlPath + ".goml"); //$NON-NLS-1$
 //		hproject.setOmlPath(getRelativeLocation(xmlPath + ".goml", basePath)); //$NON-NLS-1$
 	}
-	
+
+	@SuppressWarnings("unused")
 	private void createConfigSections(HaleProject hproject) {
 //		ConfigSchemaService config = (ConfigSchemaService) PlatformUI.getWorkbench().getService(ConfigSchemaService.class);
 //		
@@ -191,9 +198,10 @@ public class ProjectGenerator {
 //			}
 //		}
 	}
-	
+
+	@SuppressWarnings("unused")
 	private void createStyle(HaleProject hproject, String basePath, String xmlPath) {
-		//XXX style in project deactivated for now 
+		// XXX style in project deactivated for now
 //		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 //		
 //		Style style = styleService.getStyle();
@@ -224,7 +232,7 @@ public class ProjectGenerator {
 //			hproject.setStyles(styles);
 //		}
 	}
-	
+
 	/**
 	 * Get the relative location to a file
 	 * 
@@ -233,11 +241,12 @@ public class ProjectGenerator {
 	 * 
 	 * @return the relative file path if possible, otherwise an URI
 	 */
+	@SuppressWarnings("unused")
 	private String getRelativeLocation(String file, String basePath) {
 		try {
 			URI fileUri = new URI(file);
 			String scheme = fileUri.getScheme();
-			
+
 			if (scheme == null) {
 				// no scheme specified
 				return getRelativePath(file, basePath);
@@ -278,5 +287,5 @@ public class ProjectGenerator {
 			return new File(file).toURI().toString();
 		}
 	}
-	
+
 }

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.doc.user.examples.internal.content;
@@ -57,42 +61,41 @@ import eu.esdihumboldt.hale.doc.util.content.AbstractVelocityContent;
 
 /**
  * Examples content producer.
+ * 
  * @author Simon Templer
  */
 public class ExamplesContent extends AbstractVelocityContent implements ExamplesConstants {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ExamplesContent.class);
-	
+
 	private static final String TEMPLATE_OVERVIEW = "overview";
-	
+
 	private static final String TEMPLATE_PROJECT = "project";
 
 	/**
-	 * Provider ID of the mapping exporter
-	 * XXX instead store the descriptor?
+	 * Provider ID of the mapping exporter XXX instead store the descriptor?
 	 */
 	private static final String ID_MAPPING_EXPORT = "eu.esdihumboldt.hale.io.htmlexporter";
-	
+
 	private File tempMappingDir;
-	
+
 	private AlignmentWriter mappingDocExport;
-	
+
 	/**
 	 * States if {@link #mappingDocExport} was already initialized (or tried to)
 	 */
 	private boolean mappingDocExportInitialized = false;
-	
+
 	/**
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
 	 */
 	@Override
-	public InputStream getInputStream(String pluginID, String href,
-			Locale locale) {
+	public InputStream getInputStream(String pluginID, String href, Locale locale) {
 		ATransaction trans = log.begin("Generating examples help content");
 		try {
 			if (href.startsWith(PATH_PREFIX_PROJECT)) {
 				// references a project
-				
+
 				// determine the project id
 				String projectId = href.substring(PATH_PREFIX_PROJECT.length());
 				// strip everything after a ?
@@ -100,24 +103,26 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 				if (ind >= 0) {
 					projectId = projectId.substring(0, ind);
 				}
-				
+
 				// strip the .*htm? ending
 				if (projectId.endsWith("html") || projectId.endsWith("htm")) {
 					projectId = projectId.substring(0, projectId.lastIndexOf('.'));
 				}
-				
+
 				if (projectId.endsWith(PATH_SUFFIX_MAPPINGDOC)) {
-					projectId = projectId.substring(0, projectId.length() - PATH_SUFFIX_MAPPINGDOC.length());
+					projectId = projectId.substring(0,
+							projectId.length() - PATH_SUFFIX_MAPPINGDOC.length());
 					return getMappingContent(projectId);
 				}
-				
+
 				ExampleProject project = ExampleProjectExtension.getInstance().get(projectId);
 				if (project != null) {
 					return getProjectContent(project);
 				}
-				
+
 				// Auxiliary mapping documentation files
-				ind = projectId.indexOf('/'); //XXX no / may be contained in project id
+				ind = projectId.indexOf('/'); // XXX no / may be contained in
+												// project id
 				String path = projectId.substring(ind + 1);
 				projectId = projectId.substring(0, ind);
 				return getMappingFileContent(projectId, path);
@@ -128,27 +133,30 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 		} finally {
 			trans.end();
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Create the overview content.
+	 * 
 	 * @return the overview page content
 	 */
 	private InputStream getOverviewContent() {
 		try {
-			return getContentFromTemplate("overview", TEMPLATE_OVERVIEW, new Callable<VelocityContext>() {
+			return getContentFromTemplate("overview", TEMPLATE_OVERVIEW,
+					new Callable<VelocityContext>() {
 
-				@Override
-				public VelocityContext call() throws Exception {
-					VelocityContext context = new VelocityContext();
-					
-					context.put("projects", ExampleProjectExtension.getInstance().getElements());
-					
-					return context;
-				}
-			});
+						@Override
+						public VelocityContext call() throws Exception {
+							VelocityContext context = new VelocityContext();
+
+							context.put("projects", ExampleProjectExtension.getInstance()
+									.getElements());
+
+							return context;
+						}
+					});
 		} catch (Exception e) {
 			log.error("Error creating example project overview", e);
 			return null;
@@ -156,23 +164,25 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 	}
 
 	/**
-	 * Get the project page content. 
+	 * Get the project page content.
+	 * 
 	 * @param project the project
 	 * @return the project page content
 	 */
 	private InputStream getProjectContent(final ExampleProject project) {
 		try {
-			return getContentFromTemplate(project.getId(), TEMPLATE_PROJECT, new Callable<VelocityContext>() {
+			return getContentFromTemplate(project.getId(), TEMPLATE_PROJECT,
+					new Callable<VelocityContext>() {
 
-				@Override
-				public VelocityContext call() throws Exception {
-					VelocityContext context = new VelocityContext();
-					
-					context.put("project", project);
-					
-					return context;
-				}
-			});
+						@Override
+						public VelocityContext call() throws Exception {
+							VelocityContext context = new VelocityContext();
+
+							context.put("project", project);
+
+							return context;
+						}
+					});
 		} catch (Exception e) {
 			log.error("Error creating project page", e);
 			return null;
@@ -192,6 +202,7 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 
 	/**
 	 * Get the content of a auxiliary mapping file.
+	 * 
 	 * @param projectId the project id
 	 * @param path the file path
 	 * @return the file content or <code>null</code>
@@ -200,7 +211,7 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 		if (tempMappingDir == null) {
 			return null;
 		}
-		
+
 		File candidate = new File(tempMappingDir, path);
 		if (candidate.exists()) {
 			try {
@@ -213,14 +224,16 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 	}
 
 	/**
-	 * Get the mapping documentation content for an example project. 
+	 * Get the mapping documentation content for an example project.
+	 * 
 	 * @param projectId the project ID
 	 * @return the mapping documentation content stream or <code>null</code>
 	 */
 	private InputStream getMappingContent(String projectId) {
 		if (!mappingDocExportInitialized) {
-			IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(ID_MAPPING_EXPORT);
-			
+			IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
+					ID_MAPPING_EXPORT);
+
 			if (descriptor != null) {
 				try {
 					mappingDocExport = (AlignmentWriter) descriptor.createExtensionObject();
@@ -228,44 +241,46 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 					log.error("Could not create mapping documentation exporter.", e);
 				}
 			}
-			
+
 			mappingDocExportInitialized = true;
 		}
-		
+
 		if (mappingDocExport == null) {
 			// no mapping documentation export possible
 			return null;
 		}
-		
+
 		if (tempMappingDir == null) {
 			tempMappingDir = Files.createTempDir();
 			tempMappingDir.deleteOnExit();
 		}
-		
+
 		// the file of the mapping documentation
 		File mappingDoc = new File(tempMappingDir, projectId + ".html");
-		
+
 		if (!mappingDoc.exists()) {
 			ATransaction trans = log.begin("Generate example mapping documentation");
 			try {
 				// create the mapping documentation
-				
-				ExampleProject exampleProject = ExampleProjectExtension.getInstance().get(projectId);
+
+				ExampleProject exampleProject = ExampleProjectExtension.getInstance()
+						.get(projectId);
 				final Project project = (Project) exampleProject.getInfo();
-				
-				// determine alignment location - contained in project file, not a resource
+
+				// determine alignment location - contained in project file, not
+				// a resource
 				URI alignmentLoc = exampleProject.getAlignmentLocation();
 				if (alignmentLoc == null) {
 					// no alignment present
 					return null;
 				}
-				
+
 				// store configurations per action ID
 				Multimap<String, IOConfiguration> confs = HashMultimap.create();
 				for (IOConfiguration conf : project.getResources()) {
 					confs.put(conf.getActionId(), conf);
 				}
-				
+
 				// load schemas
 				// source schemas
 				LoadSchemaAdvisor source = new LoadSchemaAdvisor();
@@ -279,18 +294,19 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 					target.setConfiguration(conf);
 					executeProvider(target, conf.getProviderId(), null);
 				}
-				
-				// load alignment 
-				// manual loading needed, as we can't rely on the environment alignment advisor
+
+				// load alignment
+				// manual loading needed, as we can't rely on the environment
+				// alignment advisor
 				DefaultInputSupplier alignmentIn = new DefaultInputSupplier(alignmentLoc);
-				AlignmentReader reader = HaleIO.findIOProvider(AlignmentReader.class, alignmentIn, alignmentLoc.getPath());
-				LoadAlignmentAdvisor alignmentAdvisor = new LoadAlignmentAdvisor(
-						null, source.getSchemaSpace(),
-						target.getSchemaSpace());
+				AlignmentReader reader = HaleIO.findIOProvider(AlignmentReader.class, alignmentIn,
+						alignmentLoc.getPath());
+				LoadAlignmentAdvisor alignmentAdvisor = new LoadAlignmentAdvisor(null,
+						source.getSchemaSpace(), target.getSchemaSpace());
 				reader.setSource(alignmentIn);
 				executeProvider(alignmentAdvisor, null, reader);
 				Alignment alignment = alignmentAdvisor.getAlignment();
-				
+
 				if (alignment != null) {
 					// save alignment docu
 					synchronized (mappingDocExport) { // only a single instance
@@ -298,42 +314,42 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 						mappingDocExport.setTarget(new FileIOSupplier(mappingDoc));
 						if (mappingDocExport instanceof ProjectInfoAware) {
 							ProjectInfo smallInfo = new ProjectInfo() {
-								
+
 								@Override
 								public String getName() {
 									return project.getName();
 								}
-								
+
 								@Override
 								public Date getModified() {
 									return null;
 								}
-								
+
 								@Override
 								public Version getHaleVersion() {
 									return null;
 								}
-								
+
 								@Override
 								public String getDescription() {
 									return project.getDescription();
 								}
-								
+
 								@Override
 								public Date getCreated() {
 									return null;
 								}
-								
+
 								@Override
 								public String getAuthor() {
 									return project.getAuthor();
 								}
 							};
-							((ProjectInfoAware) mappingDocExport).setProjectInfo(smallInfo); //project);
+							((ProjectInfoAware) mappingDocExport).setProjectInfo(smallInfo); // project);
 						}
 						mappingDocExport.execute(null);
 					}
-					
+
 					mappingDoc.deleteOnExit();
 				}
 			} catch (Throwable e) {
@@ -343,7 +359,7 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 				trans.end();
 			}
 		}
-		
+
 		if (mappingDoc.exists()) {
 			try {
 				return new FileInputStream(mappingDoc);
@@ -351,25 +367,28 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 				return null;
 			}
 		}
-		else return null;
+		else
+			return null;
 	}
-	
+
 	/**
 	 * Execute the I/O provider given or specified by the given provider ID.
+	 * 
 	 * @param advisor the advisor to use for configuration of the provider and
-	 *   handling the results
+	 *            handling the results
 	 * @param providerId the ID of the provider to execute, may be
-	 *   <code>null</code> if provider is set
+	 *            <code>null</code> if provider is set
 	 * @param provider the provider to execute
 	 * @throws Exception if executing the provider fails or if a provider with
-	 *   the given ID is not found
+	 *             the given ID is not found
 	 */
 	@SuppressWarnings("unchecked")
-	private void executeProvider(@SuppressWarnings("rawtypes") IOAdvisor advisor, 
+	private void executeProvider(@SuppressWarnings("rawtypes") IOAdvisor advisor,
 			String providerId, IOProvider provider) throws Exception {
 		if (provider == null) {
 			// find and create the provider
-			IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(providerId);
+			IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
+					providerId);
 			if (descriptor != null) {
 				provider = descriptor.createExtensionObject();
 			}
@@ -377,7 +396,7 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 				throw new IllegalStateException("I/O provider with ID " + providerId + " not found");
 			}
 		}
-		
+
 		// use advisor to configure provider
 		advisor.prepareProvider(provider);
 		advisor.updateConfiguration(provider);

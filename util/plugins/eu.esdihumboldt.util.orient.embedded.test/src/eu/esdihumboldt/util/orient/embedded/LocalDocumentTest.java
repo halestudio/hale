@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.util.orient.embedded;
@@ -27,27 +31,28 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 
 /**
  * Tests basic functions in the document based DB in the file system
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class LocalDocumentTest extends AbstractDocumentTest {
-	
-	private static final String TEST_DB = "local:" + new File(new File(System.getProperty("java.io.tmpdir")), "testDB_"
-			+ UUID.randomUUID().toString()).getAbsolutePath();
-	
+
+	private static final String TEST_DB = "local:"
+			+ new File(new File(System.getProperty("java.io.tmpdir")), "testDB_"
+					+ UUID.randomUUID().toString()).getAbsolutePath();
+
 	private ODatabaseDocumentTx db;
-	
+
 	/**
 	 * @see AbstractDocumentTest#init()
 	 */
 	@Override
 	public void init() {
 //		assertNotNull(EmbeddedOrientDB.getServer()); // to activate the embedded DB
-		
+
 		db = new ODatabaseDocumentTx(TEST_DB).create();
 	}
-	
+
 	/**
 	 * @see AbstractDocumentTest#dispose()
 	 */
@@ -56,30 +61,32 @@ public class LocalDocumentTest extends AbstractDocumentTest {
 		db.delete();
 		db.close();
 	}
-	
+
 	/**
 	 * Test connecting to the database from another thread
+	 * 
 	 * @throws Throwable if any exception occurs
 	 */
 	@Test
 	public void testThread() throws Throwable {
 		createMiaAndTim();
-		
+
 		ExecutorService xs = Executors.newSingleThreadExecutor();
 		Future<Throwable> future = xs.submit(new Callable<Throwable>() {
-			
+
 			@Override
 			public Throwable call() throws Exception {
 				try {
-					ODatabaseDocumentTx db2 = new ODatabaseDocumentTx(TEST_DB).open("admin", "admin");
+					ODatabaseDocumentTx db2 = new ODatabaseDocumentTx(TEST_DB).open("admin",
+							"admin");
 //					ODatabaseDocumentTx db2 = ODatabaseDocumentPool.global().acquire(TEST_DB, "admin", "admin");
 					assertEquals(2, db2.countClass("Person"));
-					
+
 					createLuke(db2);
 					assertEquals(3, db2.countClass("Person"));
-					
+
 					db2.close();
-					
+
 					return null;
 				} catch (Throwable e) {
 					return e;
@@ -100,5 +107,5 @@ public class LocalDocumentTest extends AbstractDocumentTest {
 	protected ODatabaseDocumentTx getDb() {
 		return db;
 	}
-	
+
 }

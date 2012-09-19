@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.instance.internal;
@@ -28,10 +32,10 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
 
 /**
  * Provides UI variables related to the {@link InstanceService}
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
 public class InstanceServiceSource extends AbstractSourceProvider {
 
@@ -45,26 +49,29 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 * instances present in the {@link InstanceService}.
 	 */
 	public static final String HAS_SOURCE_INSTANCES = "hale.instances.has_source";
-	
+
 	private InstanceServiceListener instanceListener;
-	
+
 	/**
 	 * Default constructor
 	 */
 	public InstanceServiceSource() {
 		super();
-		
-		final InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+
+		final InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		is.addListener(instanceListener = new InstanceServiceAdapter() {
 
 			@Override
 			public void datasetChanged(DataSet type) {
-				switch(type) {
+				switch (type) {
 				case TRANSFORMED:
-					fireSourceChanged(ISources.WORKBENCH, HAS_TRANSFORMED_INSTANCES, hasTransformedInstances(is));
+					fireSourceChanged(ISources.WORKBENCH, HAS_TRANSFORMED_INSTANCES,
+							hasTransformedInstances(is));
 					break;
 				case SOURCE:
-					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_INSTANCES, hasSourceInstances(is));
+					fireSourceChanged(ISources.WORKBENCH, HAS_SOURCE_INSTANCES,
+							hasSourceInstances(is));
 					break;
 				}
 			}
@@ -77,7 +84,8 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public void dispose() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		is.removeListener(instanceListener);
 	}
 
@@ -86,11 +94,12 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public Map<String, Object> getCurrentState() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
-		
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
+
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(HAS_TRANSFORMED_INSTANCES, hasTransformedInstances(is));
-		
+
 		return result;
 	}
 
@@ -109,8 +118,7 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[]{
-				HAS_TRANSFORMED_INSTANCES, HAS_SOURCE_INSTANCES};
+		return new String[] { HAS_TRANSFORMED_INSTANCES, HAS_SOURCE_INSTANCES };
 	}
 
 }

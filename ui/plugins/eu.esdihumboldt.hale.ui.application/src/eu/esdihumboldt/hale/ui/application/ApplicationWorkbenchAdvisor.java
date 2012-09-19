@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.application;
 
@@ -30,17 +34,17 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 
 /**
- * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the 
+ * The {@link ApplicationWorkbenchAdvisor} controls the appearance of the
  * application (menus, toolbars, perspectives, etc).
  * 
- * @author Thorsten Reitz 
+ * @author Thorsten Reitz
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private static final String PERSPECTIVE_ID = "eu.esdihumboldt.hale.ui.application.perspective.default"; //$NON-NLS-1$
-	
+
 	/**
 	 * A tag for the list of recent files in the workbench memento
 	 */
@@ -50,12 +54,12 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	/**
 	 * Create the application workbench advisor
+	 * 
 	 * @param openDocProcessor the processor for {@link SWT#OpenDocument} events
 	 */
-	public ApplicationWorkbenchAdvisor(
-			OpenDocumentEventProcessor openDocProcessor) {
+	public ApplicationWorkbenchAdvisor(OpenDocumentEventProcessor openDocProcessor) {
 		super();
-		
+
 		this.openDocProcessor = openDocProcessor;
 	}
 
@@ -63,8 +67,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * @see WorkbenchAdvisor#createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
 	 */
 	@Override
-	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-			IWorkbenchWindowConfigurer configurer) {
+	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
 		return new ApplicationWorkbenchWindowAdvisor(configurer);
 	}
 
@@ -82,7 +85,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	@Override
 	public void initialize(IWorkbenchConfigurer configurer) {
 		super.initialize(configurer);
-		
+
 		configurer.setSaveAndRestore(true);
 	}
 
@@ -101,29 +104,29 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	@Override
 	public boolean preShutdown() {
 		// ask for save if there are changes
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(ProjectService.class);
+		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
+				ProjectService.class);
 		if (ps.isChanged()) {
 			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-			MessageBox mb = new MessageBox(shell, 
-					SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
-    		mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); //$NON-NLS-1$
-    		mb.setText(Messages.ApplicationWorkbenchAdvisor_2); //$NON-NLS-1$
-    		int result = mb.open();
-    		if (result == SWT.CANCEL) {
-    			return false;
-    		}
-    		else if (result == SWT.YES) {
+			MessageBox mb = new MessageBox(shell, SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+			mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); //$NON-NLS-1$
+			mb.setText(Messages.ApplicationWorkbenchAdvisor_2); //$NON-NLS-1$
+			int result = mb.open();
+			if (result == SWT.CANCEL) {
+				return false;
+			}
+			else if (result == SWT.YES) {
 				// try saving project
 				ps.save();
-				
+
 				if (ps.isChanged()) {
 					return false;
 				}
 				return true;
 			}
-    		else {
-    			return true;
-    		}
+			else {
+				return true;
+			}
 		}
 		else {
 			return true;
@@ -137,16 +140,15 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	public IStatus restoreState(IMemento memento) {
 		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
 				"Restored state", null); //$NON-NLS-1$
-		
+
 		result.add(super.restoreState(memento));
-		
-		//restore list of recent files
-    	IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-    	RecentFilesService rfs = (RecentFilesService)wb.getService(
-    			RecentFilesService.class);
-    	IMemento c = memento.getChild(TAG_RECENTFILES);
-    	result.add(rfs.restoreState(c));
-		
+
+		// restore list of recent files
+		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
+		RecentFilesService rfs = (RecentFilesService) wb.getService(RecentFilesService.class);
+		IMemento c = memento.getChild(TAG_RECENTFILES);
+		result.add(rfs.restoreState(c));
+
 		return result;
 	}
 
@@ -155,19 +157,17 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	@Override
 	public IStatus saveState(IMemento memento) {
-		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
-			"Saved state", null); //$NON-NLS-1$
-		
+		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK, "Saved state", null); //$NON-NLS-1$
+
 		result.add(super.saveState(memento));
-		
-		//save list of recent files
-    	IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
-    	RecentFilesService rfs = (RecentFilesService)wb.getService(
-    			RecentFilesService.class);
-    	IMemento c = memento.createChild(TAG_RECENTFILES);
-    	result.add(rfs.saveState(c));
-    	
-    	return result;
+
+		// save list of recent files
+		IWorkbench wb = getWorkbenchConfigurer().getWorkbench();
+		RecentFilesService rfs = (RecentFilesService) wb.getService(RecentFilesService.class);
+		IMemento c = memento.createChild(TAG_RECENTFILES);
+		result.add(rfs.saveState(c));
+
+		return result;
 	}
 
 }

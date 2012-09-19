@@ -1,25 +1,31 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.io.instance;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -36,24 +42,71 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 
 /**
  * Wizard for exporting instances
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
 public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceExportWizard.class);
-	
+
 	private IOProviderDescriptor validatorFactory;
+
+	private List<IOProviderDescriptor> cachedFactories;
 
 	/**
 	 * Default constructor
 	 */
 	public InstanceExportWizard() {
 		super(InstanceWriter.class);
-		
+
 		setWindowTitle("Export instances");
+	}
+
+	/**
+	 * @see IOWizard#getFactories()
+	 */
+	@Override
+	public List<IOProviderDescriptor> getFactories() {
+		if (cachedFactories != null) {
+			return cachedFactories;
+		}
+
+		List<IOProviderDescriptor> providers = super.getFactories();
+		IOAdvisor<InstanceWriter> advisor = getAdvisor();
+		if (advisor == null) {
+			return providers;
+		}
+
+		List<IOProviderDescriptor> result = new ArrayList<IOProviderDescriptor>();
+
+		for (IOProviderDescriptor providerFactory : providers) {
+			// create a dummy provider
+			InstanceWriter provider;
+			try {
+				provider = (InstanceWriter) providerFactory.createExtensionObject();
+			} catch (Exception e) {
+				log.error("Error creating an instance writer: " + providerFactory.getIdentifier(),
+						e);
+				continue; // ignore this provider as it cannot be created
+			}
+
+			// assign the basic configuration
+			advisor.prepareProvider(provider);
+			advisor.updateConfiguration(provider);
+
+			// and check the compatibility
+			try {
+				provider.checkCompatibility();
+				result.add(providerFactory);
+			} catch (IOProviderConfigurationException e) {
+				// ignore this export provider, it is not compatible
+			}
+		}
+
+		cachedFactories = result;
+		return cachedFactories;
 	}
 
 	/**
@@ -62,10 +115,10 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	@Override
 	public boolean performFinish() {
 		boolean success = super.performFinish();
-		
+
 		if (success && validatorFactory != null) {
 			// validate the written output
-			
+
 			// create validator
 			InstanceValidator validator;
 			try {
@@ -74,23 +127,25 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 				log.userError("The validator could not be instantiated", e);
 				return false;
 			}
-			
+
 			// configure validator
 			List<? extends Locatable> schemas = getProvider().getValidationSchemas();
 			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 			String fileName = getSelectTargetPage().getTargetFileName(); //XXX will only work for files!
-			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(fileName));
+			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(
+					fileName));
 			validator.setSource(source);
-			
-			//XXX configuration pages for validator?
-			
+
+			// XXX configuration pages for validator?
+
 			IOReporter defReport = validator.createReporter();
-			
+
 			// validate and execute provider
 			try {
 				IOReport report = validateAndExecute(validator, defReport);
 				// add report to report server
-				ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+				ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
+						ReportService.class);
 				repService.addReport(report);
 				// show message to user
 				if (report.isSuccess()) {
@@ -106,7 +161,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 				return false;
 			}
 		}
-		
+
 		return success;
 	}
 

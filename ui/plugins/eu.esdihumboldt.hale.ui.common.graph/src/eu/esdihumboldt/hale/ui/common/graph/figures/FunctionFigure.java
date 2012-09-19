@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.common.graph.figures;
@@ -39,7 +43,7 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
  * @author Patrick Lieb
  */
 public class FunctionFigure extends CustomShapeFigure {
-	
+
 	private static final Resource<Font> SMALL_ITALIC_FONT_RESOURCE = new Resource<Font>() {
 
 		@Override
@@ -55,15 +59,13 @@ public class FunctionFigure extends CustomShapeFigure {
 
 	/**
 	 * Create a new function figure.
-	 * @param resourceManager
-	 *            the resource manager
-	 * @param parameters
-	 *            the Parameters of the Function
-	 * @param showToolTip
-	 *            if the ToolTip should be shown
+	 * 
+	 * @param resourceManager the resource manager
+	 * @param parameters the Parameters of the Function
+	 * @param showToolTip if the ToolTip should be shown
 	 */
-	public FunctionFigure(ResourceManager resourceManager, 
-			Set<FunctionParameter> parameters, boolean showToolTip) {
+	public FunctionFigure(ResourceManager resourceManager, Set<FunctionParameter> parameters,
+			boolean showToolTip) {
 		super(new StretchedHexagon(10));
 
 		setAntialias(SWT.ON);
@@ -75,8 +77,7 @@ public class FunctionFigure extends CustomShapeFigure {
 		setLayoutManager(gridLayout);
 
 		Label label = new Label();
-		GridData gridData = new GridData(GridData.FILL, GridData.BEGINNING,
-				true, false, 3, 1);
+		GridData gridData = new GridData(GridData.FILL, GridData.BEGINNING, true, false, 3, 1);
 		add(label, gridData);
 		setTextLabel(label);
 		setIconLabel(label);
@@ -91,8 +92,8 @@ public class FunctionFigure extends CustomShapeFigure {
 			}
 
 			Label name = new Label();
-			GridData nameGrid = new GridData(GridData.BEGINNING, GridData.BEGINNING,
-					true, false, 3, 1);
+			GridData nameGrid = new GridData(GridData.BEGINNING, GridData.BEGINNING, true, false,
+					3, 1);
 			name.setText("Defined Parameters");
 			if (font != null) {
 				name.setFont(font);
@@ -102,14 +103,13 @@ public class FunctionFigure extends CustomShapeFigure {
 			Iterator<FunctionParameter> iter = parameters.iterator();
 			while (iter.hasNext()) {
 				FunctionParameter para = iter.next();
-				
+
 				// tip
 				Label descriptionlabel = new Label();
 
 				if (showToolTip && para.getDescription() != null) {
-					FieldDecoration fieldDecoration = FieldDecorationRegistry
-							.getDefault().getFieldDecoration(
-									FieldDecorationRegistry.DEC_INFORMATION);
+					FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+							.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 					Image image = fieldDecoration.getImage();
 
 					IFigure descriptionfigure = new Label(para.getDescription());
@@ -117,21 +117,19 @@ public class FunctionFigure extends CustomShapeFigure {
 					descriptionlabel.setToolTip(descriptionfigure);
 				}
 
-				GridData descriptiongrid = new GridData(GridData.CENTER,
-						GridData.CENTER, false, false);
+				GridData descriptiongrid = new GridData(GridData.CENTER, GridData.CENTER, false,
+						false);
 				add(descriptionlabel, descriptiongrid);
-				
+
 				// parameter name
 				name = new Label();
-				nameGrid = new GridData(GridData.BEGINNING, GridData.CENTER, true,
-						false);
+				nameGrid = new GridData(GridData.BEGINNING, GridData.CENTER, true, false);
 				name.setText(para.getDisplayName());
 				add(name, nameGrid);
 
 				// parameter occurrence
 				Label occurence = new Label();
-				GridData occurenceGrid = new GridData(GridData.END, GridData.CENTER,
-						false, false);
+				GridData occurenceGrid = new GridData(GridData.END, GridData.CENTER, false, false);
 				occurence.setText(getOccurence(para));
 				if (font != null) {
 					occurence.setFont(font);
@@ -140,18 +138,20 @@ public class FunctionFigure extends CustomShapeFigure {
 			}
 		}
 	}
-	
-	private String getOccurence(FunctionParameter parameter){
+
+	private String getOccurence(FunctionParameter parameter) {
 		String result = "";
-		if(parameter.getMinOccurrence() == -1){
+		if (parameter.getMinOccurrence() == -1) {
 			result += "n";
-		} else {
+		}
+		else {
 			result += parameter.getMinOccurrence();
 		}
 		result += "..";
-		if(parameter.getMaxOccurrence() == -1){
+		if (parameter.getMaxOccurrence() == -1) {
 			result += "n";
-		} else {
+		}
+		else {
 			result += parameter.getMaxOccurrence();
 		}
 		return result;

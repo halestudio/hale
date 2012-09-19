@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
@@ -47,13 +51,11 @@ public class MultiLineStringGeometryTest extends AbstractHandlerTest {
 
 		Coordinate[] coordinates = new Coordinate[] {
 				new Coordinate(-39799.68820381, 273207.53980172),
-				new Coordinate(-39841.185, 273182.863),
-				new Coordinate(-39882.89, 273153.86) };
+				new Coordinate(-39841.185, 273182.863), new Coordinate(-39882.89, 273153.86) };
 		LineString linestring1 = geomFactory.createLineString(coordinates);
 
 		coordinates = new Coordinate[] { new Coordinate(-39799.8, 273207.7),
-				new Coordinate(-39841.3, 273182.95),
-				new Coordinate(-39882.99, 273153.99) };
+				new Coordinate(-39841.3, 273182.95), new Coordinate(-39882.99, 273153.99) };
 		LineString linestring2 = geomFactory.createLineString(coordinates);
 
 		LineString[] lines = new LineString[] { linestring1, linestring2 };
@@ -63,25 +65,25 @@ public class MultiLineStringGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test multi line string geometries read from a GML 2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiLineStringGml2() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
-				getClass().getResource("/data/linestring/sample-multilinestring-gml2.xml")
-						.toURI());
+				getClass().getResource("/data/linestring/sample-multilinestring-gml2.xml").toURI());
 
 		// two instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			// 1. MultiLineStringProperty with MultiLineString defined through coord
+			// 1. MultiLineStringProperty with MultiLineString defined through
+			// coord
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
-			// 2. MultiLineStringProperty with MultiLineString defined through coordinates
+			// 2. MultiLineStringProperty with MultiLineString defined through
+			// coordinates
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
@@ -93,35 +95,37 @@ public class MultiLineStringGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test multi line string geometries read from a GML 3 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiLineStringGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/linestring/sample-multilinestring-gml3.xml")
-						.toURI());
+				getClass().getResource("/data/linestring/sample-multilinestring-gml3.xml").toURI());
 
 		// four instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			// 1. MultiLineStringProperty with MultiLineString defined through coord
+			// 1. MultiLineStringProperty with MultiLineString defined through
+			// coord
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
-			// 2. MultiLineStringProperty with MultiLineString defined through coordinates
+			// 2. MultiLineStringProperty with MultiLineString defined through
+			// coordinates
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
-			// 3. MultiLineStringProperty with MultiLineString defined through pointRep
+			// 3. MultiLineStringProperty with MultiLineString defined through
+			// pointRep
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
-			// 4. MultiLineStringProperty with MultiLineString defined through pos
+			// 4. MultiLineStringProperty with MultiLineString defined through
+			// pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
@@ -133,46 +137,50 @@ public class MultiLineStringGeometryTest extends AbstractHandlerTest {
 	/**
 	 * Test multi line string geometries read from a GML 2 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMultiLineStringGml31() throws Exception {
-		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
-				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
-				getClass()
-						.getResource("/data/linestring/sample-multilinestring-gml31.xml")
-						.toURI());
+		InstanceCollection instances = AbstractHandlerTest
+				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
+						getClass().getResource("/data/linestring/sample-multilinestring-gml31.xml")
+								.toURI());
 
 		// six instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			// 1. MultiLineStringProperty with MultiLineString defined through coord
+			// 1. MultiLineStringProperty with MultiLineString defined through
+			// coord
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
-			// 2. MultiLineStringProperty with MultiLineString defined through coordinates
+			// 2. MultiLineStringProperty with MultiLineString defined through
+			// coordinates
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
-			// 3. MultiLineStringProperty with MultiLineString defined through pointRep
+			// 3. MultiLineStringProperty with MultiLineString defined through
+			// pointRep
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
-			// 4. MultiLineStringProperty with MultiLineString defined through pos
+			// 4. MultiLineStringProperty with MultiLineString defined through
+			// pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
-			// 5. MultiLineStringProperty with MultiLineString defined through pointProperty
+			// 5. MultiLineStringProperty with MultiLineString defined through
+			// pointProperty
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
 
-			// 6. MultiLineStringProperty with MultiLineString defined through posList
+			// 6. MultiLineStringProperty with MultiLineString defined through
+			// posList
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
 			checkMultiLineStringPropertyInstance(instance);
@@ -181,10 +189,8 @@ public class MultiLineStringGeometryTest extends AbstractHandlerTest {
 		}
 	}
 
-
 	private void checkMultiLineStringPropertyInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 

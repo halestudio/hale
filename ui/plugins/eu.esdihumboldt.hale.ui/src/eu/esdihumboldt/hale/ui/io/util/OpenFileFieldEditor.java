@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.io.util;
@@ -20,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
  * File field editor that opens a save instead of an open dialog
  */
 public class OpenFileFieldEditor extends ExtendedFileFieldEditor {
-	
+
 	private static final int OPEN_STYLE = SWT.OPEN | SWT.SHEET;
 
 	/**
@@ -33,18 +37,18 @@ public class OpenFileFieldEditor extends ExtendedFileFieldEditor {
 	/**
 	 * @see FileFieldEditor#FileFieldEditor(String, String, boolean, Composite)
 	 */
-	public OpenFileFieldEditor(String name, String labelText,
-			boolean enforceAbsolute, Composite parent) {
+	public OpenFileFieldEditor(String name, String labelText, boolean enforceAbsolute,
+			Composite parent) {
 		super(name, labelText, enforceAbsolute, parent, OPEN_STYLE);
 	}
 
 	/**
-	 * @see FileFieldEditor#FileFieldEditor(String, String, boolean, int, Composite)
+	 * @see FileFieldEditor#FileFieldEditor(String, String, boolean, int,
+	 *      Composite)
 	 */
-	public OpenFileFieldEditor(String name, String labelText,
-			boolean enforceAbsolute, int validationStrategy, Composite parent) {
-		super(name, labelText, enforceAbsolute, validationStrategy, parent,
-				OPEN_STYLE);
+	public OpenFileFieldEditor(String name, String labelText, boolean enforceAbsolute,
+			int validationStrategy, Composite parent) {
+		super(name, labelText, enforceAbsolute, validationStrategy, parent, OPEN_STYLE);
 	}
 
 	/**

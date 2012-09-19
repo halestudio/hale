@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.io.action;
@@ -36,10 +40,11 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
  * {@link IOAdvisor} extension
+ * 
  * @author Simon Templer
  */
 public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(ActionUIExtension.class);
 
 	/**
@@ -50,6 +55,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 
 		/**
 		 * Create a factory based on the given configuration element
+		 * 
 		 * @param conf the configuration
 		 */
 		protected ConfigurationFactory(IConfigurationElement conf) {
@@ -65,7 +71,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 			if (children != null && children.length > 0) {
 				// get child of enabled when
 				children = children[0].getChildren();
-				
+
 				if (children != null && children.length > 0) {
 					try {
 						return ElementHandler.getDefault().create(ExpressionConverter.getDefault(),
@@ -75,7 +81,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 					}
 				}
 			}
-			
+
 			return null;
 		}
 
@@ -113,7 +119,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 				// get child of enabled when
 				return children[0].getAttribute("disabledReason");
 			}
-			
+
 			return null;
 		}
 
@@ -123,7 +129,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		@Override
 		public int getPriority() {
 			try {
-			return Integer.parseInt(conf.getAttribute("priority"));
+				return Integer.parseInt(conf.getAttribute("priority"));
 			} catch (NumberFormatException e) {
 				return 0;
 			}
@@ -144,7 +150,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		public boolean isProjectResource() {
 			return Boolean.parseBoolean(conf.getAttribute("projectResource"));
 		}
-		
+
 		/**
 		 * @see ActionUI#getActionID()
 		 */
@@ -159,11 +165,12 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 	 * The extension point ID
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.ui.io.action";
-	
+
 	private static ActionUIExtension instance;
-	
+
 	/**
 	 * Get the extension instance
+	 * 
 	 * @return the instance
 	 */
 	public static ActionUIExtension getInstance() {
@@ -172,7 +179,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Default constructor
 	 */
@@ -184,28 +191,28 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 	 * @see AbstractExtension#createFactory(IConfigurationElement)
 	 */
 	@Override
-	protected ActionUI createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected ActionUI createFactory(IConfigurationElement conf) throws Exception {
 		if (conf.getName().equals("action-ui")) {
 			return new ConfigurationFactory(conf);
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Find the {@link ActionUI} associated with a certain action
+	 * 
 	 * @param actionId the action identifier
 	 * @return the action UI or <code>null</code>
 	 */
 	public ActionUI findActionUI(final String actionId) {
 		List<ActionUI> factories = getFactories(new FactoryFilter<IOWizard<?>, ActionUI>() {
-			
+
 			@Override
 			public boolean acceptFactory(ActionUI factory) {
 				return factory.getActionID().equals(actionId);
 			}
-			
+
 			@Override
 			public boolean acceptCollection(
 					ExtensionObjectFactoryCollection<IOWizard<?>, ActionUI> collection) {
@@ -215,7 +222,7 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		if (factories == null || factories.isEmpty()) {
 			return null;
 		}
-		//XXX what if there are multiple ActionUIs for an action?
+		// XXX what if there are multiple ActionUIs for an action?
 		return factories.get(0);
 	}
 

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.io.impl;
@@ -36,29 +40,33 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Save or load an alignment
+ * 
  * @author Simon Templer
  */
 public class DefaultAlignmentIO {
-	
+
 	/**
 	 * Load a default alignment from an input stream.
+	 * 
 	 * @param in the input stream
-	 * @param reporter the I/O reporter to report any errors to, may be <code>null</code>
-	 * @param sourceTypes the source types to use for resolving definition references
-	 * @param targetTypes the target types to use for resolving definition references
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @param sourceTypes the source types to use for resolving definition
+	 *            references
+	 * @param targetTypes the target types to use for resolving definition
+	 *            references
 	 * @return the alignment
 	 * 
 	 * @throws MappingException if the mapping could not be loaded
 	 * @throws MarshalException if the alignment could not be read
 	 * @throws ValidationException if the input stream did not provide valid XML
 	 */
-	public static MutableAlignment load(InputStream in, IOReporter reporter, 
-			TypeIndex sourceTypes, TypeIndex targetTypes) 
-			throws MappingException, MarshalException, ValidationException {
+	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
+			TypeIndex targetTypes) throws MappingException, MarshalException, ValidationException {
 		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
-		mapping.loadMapping(new InputSource(
-				AlignmentBean.class.getResourceAsStream("AlignmentBean.xml")));
-		        
+		mapping.loadMapping(new InputSource(AlignmentBean.class
+				.getResourceAsStream("AlignmentBean.xml")));
+
 		XMLContext context = new XMLContext();
 		context.addMapping(mapping);
 
@@ -74,25 +82,33 @@ public class DefaultAlignmentIO {
 			}
 		}
 	}
-	
+
 	/**
 	 * Save a default alignment to an output stream.
+	 * 
 	 * @param alignment the alignment to save
 	 * @param out the output stream
 	 * @throws MappingException if the mapping could not be loaded
-	 * @throws ValidationException if the mapping is no valid XML 
-	 * @throws MarshalException if the alignment could not be marshaled 
-	 * @throws IOException if the output could not be written 
+	 * @throws ValidationException if the mapping is no valid XML
+	 * @throws MarshalException if the alignment could not be marshaled
+	 * @throws IOException if the output could not be written
 	 */
-	public static void save(Alignment alignment, OutputStream out) throws MappingException, MarshalException, ValidationException, IOException {
+	public static void save(Alignment alignment, OutputStream out) throws MappingException,
+			MarshalException, ValidationException, IOException {
 		AlignmentBean bean = new AlignmentBean(alignment);
-		
+
 		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
-		mapping.loadMapping(new InputSource(
-				AlignmentBean.class.getResourceAsStream("AlignmentBean.xml")));
-		        
+		mapping.loadMapping(new InputSource(AlignmentBean.class
+				.getResourceAsStream("AlignmentBean.xml")));
+
 		XMLContext context = new XMLContext();
-		context.setProperty("org.exolab.castor.indent", true); // enable indentation for marshaling as project files should be very small
+		context.setProperty("org.exolab.castor.indent", true); // enable
+																// indentation
+																// for
+																// marshaling as
+																// project files
+																// should be
+																// very small
 		context.addMapping(mapping);
 		Marshaller marshaller = context.createMarshaller();
 //		marshaller.setEncoding("UTF-8"); XXX not possible using the XMLContext but UTF-8 seems to be default, see http://jira.codehaus.org/browse/CASTOR-2846

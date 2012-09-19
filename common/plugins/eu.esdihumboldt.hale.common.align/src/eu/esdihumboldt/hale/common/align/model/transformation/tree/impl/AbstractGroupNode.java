@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.model.transformation.tree.impl;
@@ -21,14 +25,16 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 
 /**
  * Abstract group node implementation.
+ * 
  * @author Simon Templer
  */
 public abstract class AbstractGroupNode extends AbstractTransformationNode implements GroupNode {
 
 	private final GroupNode parent;
-	
+
 	/**
 	 * Create a group node.
+	 * 
 	 * @param parent the parent node, may be <code>null</code>
 	 */
 	public AbstractGroupNode(GroupNode parent) {
@@ -39,10 +45,11 @@ public abstract class AbstractGroupNode extends AbstractTransformationNode imple
 	/**
 	 * Get the fixed target node children, i.e. those that are not represented
 	 * through an annotation.
+	 * 
 	 * @return the list of fixed child target nodes
 	 */
 	public abstract List<TargetNode> getFixedChildren();
-	
+
 	/**
 	 * @see GroupNode#getParent()
 	 */
@@ -80,5 +87,5 @@ public abstract class AbstractGroupNode extends AbstractTransformationNode imple
 		}
 		ac.add(node);
 	}
-	
+
 }

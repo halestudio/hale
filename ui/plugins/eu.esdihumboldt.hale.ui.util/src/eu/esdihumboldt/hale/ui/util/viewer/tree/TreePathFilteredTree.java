@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.util.viewer.tree;
@@ -27,16 +31,17 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
- * Filtered tree that supports a {@link ITreePathContentProvider} and
- * a {@link TreePathPatternFilter}
+ * Filtered tree that supports a {@link ITreePathContentProvider} and a
+ * {@link TreePathPatternFilter}
+ * 
  * @author Simon Templer
  */
 public class TreePathFilteredTree extends FilteredTree {
-	
+
 	/**
 	 * Tree viewer that calls filters with {@link TreePath}s as elements
 	 */
-	public static class TreePathTreeViewer extends /*Notifying*/TreeViewer {
+	public static class TreePathTreeViewer extends /* Notifying */TreeViewer {
 
 		/**
 		 * @see TreeViewer#TreeViewer(Composite, int)
@@ -51,19 +56,19 @@ public class TreePathFilteredTree extends FilteredTree {
 		@Override
 		protected Object[] getFilteredChildren(Object parent) {
 			Object[] elements = getRawChildren(parent);
-			
+
 			if (parent != null && !(parent instanceof TreePath)) {
 				// root element
 				parent = TreePath.EMPTY;
 			}
-			
+
 			TreePath parentPath = (TreePath) parent;
-			
+
 			// create tree paths from elements
 			List<TreePath> paths = getPathsForElements(parentPath, elements);
-			
+
 			List<ViewerFilter> filters = Arrays.asList(getFilters());
-			if (filters  != null) {
+			if (filters != null) {
 				for (Iterator<ViewerFilter> iter = filters.iterator(); iter.hasNext();) {
 					ViewerFilter f = iter.next();
 					// call filter with TreePath objects
@@ -74,12 +79,12 @@ public class TreePathFilteredTree extends FilteredTree {
 					}
 				}
 			}
-			
+
 			List<Object> result = new ArrayList<Object>();
 			for (TreePath path : paths) {
 				result.add(path.getLastSegment());
 			}
-			
+
 			return result.toArray();
 		}
 
@@ -88,8 +93,8 @@ public class TreePathFilteredTree extends FilteredTree {
 	/**
 	 * @see FilteredTree#FilteredTree(Composite, int, PatternFilter, boolean)
 	 */
-	public TreePathFilteredTree(Composite parent, int treeStyle,
-			PatternFilter filter, boolean useNewLook) {
+	public TreePathFilteredTree(Composite parent, int treeStyle, PatternFilter filter,
+			boolean useNewLook) {
 		super(parent, treeStyle, filter, useNewLook);
 	}
 
@@ -100,15 +105,15 @@ public class TreePathFilteredTree extends FilteredTree {
 	protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
 		return new TreePathTreeViewer(parent, style);
 	}
-	
+
 	/**
 	 * Get the tree paths for the given objects with the given parent path.
+	 * 
 	 * @param parentPath the parent path for each object
 	 * @param elements the objects
 	 * @return the list of tree paths
 	 */
-	public static List<TreePath> getPathsForElements(TreePath parentPath,
-			Object[] elements) {
+	public static List<TreePath> getPathsForElements(TreePath parentPath, Object[] elements) {
 		List<TreePath> paths = new ArrayList<TreePath>();
 		// create tree paths from elements
 		List<Object> parentSegments = new ArrayList<Object>();
@@ -120,7 +125,7 @@ public class TreePathFilteredTree extends FilteredTree {
 		for (Object element : elements) {
 			TreePath path;
 			if (parentPath == null) {
-				path = new TreePath(new Object[]{element});
+				path = new TreePath(new Object[] { element });
 			}
 			else {
 				parentSegments.add(element);

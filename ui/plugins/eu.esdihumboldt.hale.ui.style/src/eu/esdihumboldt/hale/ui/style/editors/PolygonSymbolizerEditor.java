@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.style.editors;
 
@@ -29,15 +33,15 @@ import eu.esdihumboldt.hale.ui.style.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class PolygonSymbolizerEditor implements Editor<PolygonSymbolizer> {
-	
+
 	private final StyleBuilder styleBuilder = new StyleBuilder();
-	
+
 	private StrokeEditor strokeEditor;
-	
+
 	private FillEditor fillEditor;
-	
+
 	private final Composite page;
-	
+
 	/**
 	 * Creates a {@link PolygonSymbolizer} editor
 	 * 
@@ -46,18 +50,18 @@ public class PolygonSymbolizerEditor implements Editor<PolygonSymbolizer> {
 	 */
 	public PolygonSymbolizerEditor(Composite parent, PolygonSymbolizer poly) {
 		super();
-		
+
 		page = new Composite(parent, SWT.NONE);
 
 		RowLayout layout = new RowLayout(SWT.VERTICAL);
 		page.setLayout(layout);
-		
+
 		// stroke
 		Label strokeLabel = new Label(page, SWT.NONE);
 		strokeLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
 		strokeLabel.setText(Messages.PolygonSymbolizerEditor_StrokeLabel);
 		strokeEditor = new StrokeEditor(page, poly.getStroke());
-		
+
 		// fill
 		Label fillLabel = new Label(page, SWT.NONE);
 		fillLabel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
@@ -78,8 +82,7 @@ public class PolygonSymbolizerEditor implements Editor<PolygonSymbolizer> {
 	 */
 	@Override
 	public PolygonSymbolizer getValue() {
-		return styleBuilder.createPolygonSymbolizer(strokeEditor.getValue(),
-				fillEditor.getValue());
+		return styleBuilder.createPolygonSymbolizer(strokeEditor.getValue(), fillEditor.getValue());
 	}
 
 	/**

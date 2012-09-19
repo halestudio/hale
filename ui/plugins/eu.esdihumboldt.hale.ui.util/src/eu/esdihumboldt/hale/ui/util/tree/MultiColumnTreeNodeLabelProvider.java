@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.util.tree;
@@ -19,13 +23,13 @@ import org.eclipse.swt.graphics.Image;
 /**
  * Label provider for a column of a tree with {@link TreeNode}s or
  * {@link AbstractMultiColumnTreeNode}s
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$ 
+ * @version $Id$
  */
 public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
-	
+
 	/**
 	 * The index of the column
 	 */
@@ -34,11 +38,12 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	/**
 	 * Creates a new label provider for the column with the given index
 	 * 
-	 * @param columnIndex the column index (the index of the first column is zero)
+	 * @param columnIndex the column index (the index of the first column is
+	 *            zero)
 	 */
 	public MultiColumnTreeNodeLabelProvider(final int columnIndex) {
 		super();
-		
+
 		this.columnIndex = columnIndex;
 	}
 
@@ -61,7 +66,7 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 				}
 			}
 		}
-		
+
 		return getDefaultText();
 	}
 
@@ -84,7 +89,7 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 				}
 			}
 		}
-		
+
 		return getDefaultImage();
 	}
 
@@ -96,7 +101,7 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	protected String getDefaultText() {
 		return ""; //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Get the default image when no value is available
 	 * 
@@ -117,7 +122,7 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	protected String getValueText(Object value, TreeNode node) {
 		return value.toString();
 	}
-	
+
 	/**
 	 * Get the image for the given value
 	 * 
@@ -129,5 +134,5 @@ public class MultiColumnTreeNodeLabelProvider extends LabelProvider {
 	protected Image getValueImage(Object value, TreeNode node) {
 		return null;
 	}
-	
+
 }

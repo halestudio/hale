@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.reader.internal;
@@ -26,7 +30,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 
 /**
  * Reads XML/GML from a stream
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -34,28 +38,28 @@ public class StreamGmlReader extends AbstractInstanceReader {
 
 	/**
 	 * The name of the parameter specifying if the root element should be
-	 * ignored and thus not be loaded as an instance.
-	 * Parameter value defaults to <code>true</code>. 
+	 * ignored and thus not be loaded as an instance. Parameter value defaults
+	 * to <code>true</code>.
 	 */
 	public static final String PARAM_IGNORE_ROOT = "ignoreRoot";
-	
+
 	/**
 	 * The name of the parameter specifying if parsing of the XML instances
 	 * should happen strictly according to the schema or if also invalid
-	 * property paths will be allowed.
-	 * Parameter value defaults to <code>false</code>.
+	 * property paths will be allowed. Parameter value defaults to
+	 * <code>false</code>.
 	 */
 	public static final String PARAM_STRICT = "strict";
 
 	private InstanceCollection instances;
-	
+
 	private final boolean restrictToFeatures;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param restrictToFeatures if only instances that are GML features shall
-	 *   be loaded
+	 *            be loaded
 	 */
 	public StreamGmlReader(boolean restrictToFeatures) {
 		super();
@@ -69,23 +73,24 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Prepare loading of " + getTypeName(), ProgressIndicator.UNKNOWN);
-		
+
 		try {
 			String pIgnoreRoot = getParameter(PARAM_IGNORE_ROOT);
-			boolean ignoreRoot = (pIgnoreRoot == null || pIgnoreRoot.isEmpty()) ? (true)
-					: (Boolean.parseBoolean(pIgnoreRoot));
-			
+			boolean ignoreRoot = (pIgnoreRoot == null || pIgnoreRoot.isEmpty()) ? (true) : (Boolean
+					.parseBoolean(pIgnoreRoot));
+
 			String pStrict = getParameter(PARAM_STRICT);
-			boolean strict = (pStrict == null)?(false):(Boolean.parseBoolean(pStrict));
-			
+			boolean strict = (pStrict == null) ? (false) : (Boolean.parseBoolean(pStrict));
+
 			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
-					restrictToFeatures, ignoreRoot, strict);
-			//TODO any kind of analysis on file? e.g. types and size - would also give feedback to the user if the file can be loaded
+					restrictToFeatures, ignoreRoot, strict, getCrsProvider());
+			// TODO any kind of analysis on file? e.g. types and size - would
+			// also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);
 		} catch (Throwable e) {
 			reporter.setSuccess(false);
 		}
-		
+
 		return reporter;
 	}
 
@@ -110,7 +115,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	 */
 	@Override
 	public boolean isCancelable() {
-		//FIXME for now not
+		// FIXME for now not
 		return false;
 	}
 

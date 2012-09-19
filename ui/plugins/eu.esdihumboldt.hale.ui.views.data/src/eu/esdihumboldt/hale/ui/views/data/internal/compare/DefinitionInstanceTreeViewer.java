@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.data.internal.compare;
@@ -53,26 +57,26 @@ import eu.esdihumboldt.hale.ui.views.data.internal.SimpleInstanceSelectionProvid
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Tree viewer for {@link Instance}s of a common type, based on the corresponding
- * {@link TypeDefinition}
- *
+ * Tree viewer for {@link Instance}s of a common type, based on the
+ * corresponding {@link TypeDefinition}
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class DefinitionInstanceTreeViewer implements InstanceViewer {
-	
+
 //	private static ALogger _log = ALoggerFactory.getLogger(DefinitionInstanceTreeViewer.class);
-	
+
 	private TreeViewer treeViewer;
-	
+
 	private Composite main;
 
 	private TreeEditor editor;
-	
+
 	private final SimpleInstanceSelectionProvider selectionProvider = new SimpleInstanceSelectionProvider();
 
 	private Map<Integer, DefinitionInstanceLabelProvider> labelProviders = new HashMap<Integer, DefinitionInstanceLabelProvider>();
-	
+
 	/**
 	 * @see InstanceViewer#createControls(Composite)
 	 */
@@ -80,9 +84,9 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	public void createControls(Composite parent) {
 		main = new Composite(parent, SWT.NONE);
 		main.setLayout(new TreeColumnLayout());
-		
+
 		treeViewer = new TreeViewer(main, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
-		
+
 		treeViewer.setContentProvider(new TypeMetaPairContentProvider(treeViewer));
 		treeViewer.setLabelProvider(new DefinitionMetaCompareLabelProvider());
 
@@ -91,12 +95,14 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 		editor.horizontalAlignment = SWT.RIGHT;
 		editor.minimumWidth = 40;
 		treeViewer.getTree().addMouseMoveListener(new MouseMoveListener() {
+
 			@Override
 			public void mouseMove(MouseEvent e) {
 				final ViewerCell cell = treeViewer.getCell(new Point(e.x, e.y));
 
 				// Selected cell changed?
-				if (cell == null || editor.getItem() != cell.getItem() || editor.getColumn() != cell.getColumnIndex()) {
+				if (cell == null || editor.getItem() != cell.getItem()
+						|| editor.getColumn() != cell.getColumnIndex()) {
 					// Clean up any previous editor control
 					Control oldEditor = editor.getEditor();
 					if (oldEditor != null) {
@@ -106,15 +112,18 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 				}
 
 				// No selected cell or selected cell didn't change.
-				if (cell == null || cell.getColumnIndex() == 0 ||
-						(editor.getItem() == cell.getItem() && editor.getColumn() == cell.getColumnIndex()))
+				if (cell == null
+						|| cell.getColumnIndex() == 0
+						|| (editor.getItem() == cell.getItem() && editor.getColumn() == cell
+								.getColumnIndex()))
 					return;
 
 				// Quote the format first. Pattern.quote does the same, except,
 				// that it checks the input for \Es.
 				// Since we know that there will be no \Es in this case
 				// do it ourselves to be safe from changes to Pattern.quote.
-				String pattern = "\\Q" + DefinitionInstanceLabelProvider.MULTIPLE_VALUE_FORMAT + "\\E$";
+				String pattern = "\\Q" + DefinitionInstanceLabelProvider.MULTIPLE_VALUE_FORMAT
+						+ "\\E$";
 				pattern = pattern.replace("{0}", "\\E(\\d+)\\Q").replace("{1}", "\\E(\\d+)\\Q");
 				Matcher m = Pattern.compile(pattern).matcher(cell.getText());
 				if (!m.find())
@@ -127,36 +136,39 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 				ComboViewer combo = new ComboViewer(treeViewer.getTree());
 				Integer[] values = new Integer[total];
 				for (int i = 1; i <= total; i++)
-					values[i-1] = i;
+					values[i - 1] = i;
 				combo.setContentProvider(ArrayContentProvider.getInstance());
 				combo.setInput(values);
 				combo.setSelection(new StructuredSelection(current));
 				combo.addSelectionChangedListener(new ISelectionChangedListener() {
+
 					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
 						if (event.getSelection() instanceof IStructuredSelection) {
 							// Update label provider and refresh viewer.
-							labelProviders.get(cell.getColumnIndex()).selectPath(cell.getViewerRow().getTreePath(),
-									(Integer) (((IStructuredSelection) event.getSelection()).getFirstElement()));
+							labelProviders.get(cell.getColumnIndex()).selectPath(
+									cell.getViewerRow().getTreePath(),
+									(Integer) (((IStructuredSelection) event.getSelection())
+											.getFirstElement()));
 							treeViewer.refresh(cell.getElement(), true);
 						}
 					}
 				});
-				editor.setEditor(combo.getControl(), (TreeItem) cell.getItem(), cell.getColumnIndex());
+				editor.setEditor(combo.getControl(), (TreeItem) cell.getItem(),
+						cell.getColumnIndex());
 			}
 		});
 
-
 		treeViewer.setComparator(new DefinitionComparator());
-		
+
 		treeViewer.getTree().setHeaderVisible(true);
 		treeViewer.getTree().setLinesVisible(true);
-		
+
 		ColumnViewerToolTipSupport.enableFor(treeViewer);
-		
+
 		setInput(null, null);
 	}
-	
+
 	/**
 	 * @see InstanceViewer#setInput(TypeDefinition, Iterable)
 	 */
@@ -170,8 +182,8 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 			}
 			labelProviders.clear();
 		}
-		
-			// create row defs for metadata
+
+		// create row defs for metadata
 //			if (features != null) {
 //				boolean displayLineage = false;
 //				int lineageLength = 0;
@@ -210,25 +222,26 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 //						lineage.addChild(processStep);
 //					}
 //				}
-			
+
 		// set input
-		if (type != null){
-			//pass metadatas to the treeviewer, if instances contain metadatas
+		if (type != null) {
+			// pass metadatas to the treeviewer, if instances contain metadatas
 			Set<String> completeMetaNames = new HashSet<String>();
-			for(Instance inst : instances){
-				for(String name : inst.getMetaDataNames()){					
-						completeMetaNames.add(name);
-				}	
-			}	
-			
-			Pair<TypeDefinition, Set<String>> pair = new Pair<TypeDefinition, Set<String>>(type, completeMetaNames);
+			for (Instance inst : instances) {
+				for (String name : inst.getMetaDataNames()) {
+					completeMetaNames.add(name);
+				}
+			}
+
+			Pair<TypeDefinition, Set<String>> pair = new Pair<TypeDefinition, Set<String>>(type,
+					completeMetaNames);
 			treeViewer.setInput(pair);
 		}
 		else
 			treeViewer.setInput(Collections.emptySet());
-		
+
 		Layout layout = treeViewer.getTree().getParent().getLayout();
-		
+
 		// add type column
 		if (type != null) {
 			TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
@@ -236,10 +249,11 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 			column.setLabelProvider(new TreeColumnViewerLabelProvider(
 					new DefinitionMetaCompareLabelProvider()));
 			if (layout instanceof TreeColumnLayout) {
-				((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(1));
+				((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(
+						1));
 			}
 		}
-		
+
 		// add columns for features
 		int index = 1;
 		if (instances != null) {
@@ -266,34 +280,37 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 //				}
 //				
 //			});
-			
-			for (Instance instance : instances) { //sortedFeatures) {
+
+			for (Instance instance : instances) { // sortedFeatures) {
 				final TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
 //				FeatureId id = FeatureBuilder.getSourceID(feature);
 //				if (id == null) {
 //					id = feature.getIdentifier();
 //				}
 //				column.getColumn().setText(id.toString());
-				column.getColumn().setText(String.valueOf(index)); //XXX identifier?
-				DefinitionInstanceLabelProvider labelProvider = new DefinitionInstanceLabelProvider(instance);
+				column.getColumn().setText(String.valueOf(index)); // XXX
+																	// identifier?
+				DefinitionInstanceLabelProvider labelProvider = new DefinitionInstanceLabelProvider(
+						instance);
 				labelProviders.put(index, labelProvider);
 				column.setLabelProvider(labelProvider);
 				if (layout instanceof TreeColumnLayout) {
-					((TreeColumnLayout) layout).setColumnData(column.getColumn(), new ColumnWeightData(1));
+					((TreeColumnLayout) layout).setColumnData(column.getColumn(),
+							new ColumnWeightData(1));
 				}
-				
+
 				// add tool tip
 //				new ColumnBrowserTip(treeViewer, 400, 300, true, index, null);
-				
+
 				index++;
 			}
 		}
-		
+
 		treeViewer.refresh();
 		treeViewer.getTree().getParent().layout(true, true);
-		
+
 		selectionProvider.updateSelection(instances);
-		
+
 		// auto-expand attributes/metadata
 		treeViewer.expandToLevel(2);
 	}

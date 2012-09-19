@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.io.schema;
@@ -24,6 +28,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Advisor for schema import to the {@link SchemaService}
+ * 
  * @author Simon Templer
  * @since 2.5
  */
@@ -33,8 +38,9 @@ public class SchemaImportAdvisor extends DefaultIOAdvisor<SchemaReader> {
 
 	/**
 	 * Create a schema import advisor
-	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE} 
-	 *   or {@link SchemaSpaceID#TARGET}
+	 * 
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
 	 */
 	public SchemaImportAdvisor(SchemaSpaceID spaceID) {
 		super();
@@ -47,9 +53,10 @@ public class SchemaImportAdvisor extends DefaultIOAdvisor<SchemaReader> {
 	@Override
 	public void prepareProvider(SchemaReader provider) {
 		super.prepareProvider(provider);
-		
+
 		// set shared types XXX this is not fixed yet
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
 		provider.setSharedTypes(ss.getSchemas(spaceID));
 	}
 
@@ -60,15 +67,17 @@ public class SchemaImportAdvisor extends DefaultIOAdvisor<SchemaReader> {
 	public void handleResults(SchemaReader provider) {
 		// add loaded schema to schema space
 		Schema schema = provider.getSchema();
-		
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+
+		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
+				.getService(SchemaService.class);
 		ss.addSchema(schema, spaceID);
-		
+
 		if (ss.getSchemas(spaceID).getMappingRelevantTypes().isEmpty()) {
-			// if no types are present after loading, open editor for mapping relevant types
+			// if no types are present after loading, open editor for mapping
+			// relevant types
 			ss.editMappableTypes(spaceID);
 		}
-		
+
 		super.handleResults(provider);
 	}
 

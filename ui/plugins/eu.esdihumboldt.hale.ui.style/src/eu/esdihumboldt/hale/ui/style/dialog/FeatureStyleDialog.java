@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.style.dialog;
 
@@ -34,6 +38,7 @@ import eu.esdihumboldt.hale.ui.util.dialog.MultiPageDialog;
 
 /**
  * Dialog for editing feature type styles.
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
@@ -42,39 +47,41 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	private static final int APPLY_ID = IDialogConstants.CLIENT_ID + 1;
 
 	private static Image styleImage;
-	
+
 	private final TypeDefinition type;
-	
+
 	private final StyleService styles;
-	
+
 	private final DataSet dataSet;
-	
+
 	private Style style;
-	
+
 	/**
 	 * Creates a dialog for editing a feature type style
+	 * 
 	 * @param type the type definition
 	 * @param dataSet the type data set
 	 */
 	public FeatureStyleDialog(final TypeDefinition type, DataSet dataSet) {
 		super();
-		
+
 		this.type = type;
 		this.dataSet = dataSet;
-		
+
 		if (styleImage == null) {
-			styleImage = InstanceStylePlugin.getImageDescriptor(
-					"/icons/styles.gif").createImage(); //$NON-NLS-1$
+			styleImage = InstanceStylePlugin.getImageDescriptor("/icons/styles.gif").createImage(); //$NON-NLS-1$
 		}
-		
-		setTitle(MessageFormat.format(Messages.FeatureStyleDialog_Title, type.getName().getLocalPart()));
+
+		setTitle(MessageFormat.format(Messages.FeatureStyleDialog_Title, type.getName()
+				.getLocalPart()));
 		setImage(styleImage);
-		
+
 		styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
 	}
-	
+
 	/**
 	 * Get the type data set.
+	 * 
 	 * @return the data set
 	 */
 	public DataSet getDataSet() {
@@ -85,8 +92,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 * @see MultiPageDialog#allowPageChange(IDialogPage, IDialogPage)
 	 */
 	@Override
-	protected boolean allowPageChange(FeatureStylePage oldPage,
-			FeatureStylePage newPage) {
+	protected boolean allowPageChange(FeatureStylePage oldPage, FeatureStylePage newPage) {
 		if (oldPage == null) {
 			return true;
 		}
@@ -98,8 +104,11 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			try {
 				temp = oldPage.getStyle(false);
 			} catch (Exception e) {
-				if (MessageDialog.openConfirm(getShell(), Messages.FeatureStyleDialog_SwitchStyleTitle,
-						MessageFormat.format(Messages.FeatureStyleDialog_SwitchStyleDescription, e.getMessage()))) { 
+				if (MessageDialog.openConfirm(
+						getShell(),
+						Messages.FeatureStyleDialog_SwitchStyleTitle,
+						MessageFormat.format(Messages.FeatureStyleDialog_SwitchStyleDescription,
+								e.getMessage()))) {
 					// revert changes
 					temp = null;
 				}
@@ -108,10 +117,11 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 					return false;
 				}
 			}
-			
+
 			if (temp != null) {
 				// set style
-				if (MessageDialog.openQuestion(getShell(), Messages.FeatureStyleDialog_SwitchStyleTitle2,
+				if (MessageDialog.openQuestion(getShell(),
+						Messages.FeatureStyleDialog_SwitchStyleTitle2,
 						Messages.FeatureStyleDialog_SwitchStyleDescription2)) {
 					setStyle(temp);
 				}
@@ -130,10 +140,9 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and cancel
 		super.createButtonsForButtonBar(parent);
-		
+
 		// create apply
-		createButton(parent, APPLY_ID,
-				Messages.FeatureStyleDialog_ApplyButtonText, false);
+		createButton(parent, APPLY_ID, Messages.FeatureStyleDialog_ApplyButtonText, false);
 	}
 
 	/**
@@ -154,8 +163,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 * @see MultiPageDialog#onPageChange(IDialogPage, IDialogPage)
 	 */
 	@Override
-	protected void onPageChange(FeatureStylePage oldPage,
-			FeatureStylePage newPage) {
+	protected void onPageChange(FeatureStylePage oldPage, FeatureStylePage newPage) {
 		// ignore
 	}
 
@@ -168,33 +176,35 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			super.okPressed();
 		}
 	}
-	
+
 	/**
 	 * Called when the apply button was pressed
 	 */
 	protected void applyPressed() {
 		apply();
 	}
-	
+
 	private boolean apply() {
 		FeatureStylePage page = getCurrentPage();
-		
+
 		Style temp = null;
 		try {
 			temp = page.getStyle(true);
 		} catch (Exception e) {
-			MessageDialog.openError(getShell(), Messages.FeatureStyleDialog_ErrorMessageTitle,
-					MessageFormat.format(Messages.FeatureStyleDialog_ErrorMessageDescription
-							, e.getMessage()));
+			MessageDialog.openError(
+					getShell(),
+					Messages.FeatureStyleDialog_ErrorMessageTitle,
+					MessageFormat.format(Messages.FeatureStyleDialog_ErrorMessageDescription,
+							e.getMessage()));
 			return false;
 		}
-		
+
 		if (temp != null) {
 			setStyle(temp);
 		}
-		
+
 		styles.addStyles(style);
-		
+
 		return true;
 	}
 
@@ -207,10 +217,10 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		if (style == null) {
 			setStyle(styles.getStyle(type, dataSet));
 		}
-		
+
 		return style;
 	}
-	
+
 	/**
 	 * Set the feature type style
 	 * 
@@ -222,7 +232,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			fts.featureTypeNames().clear();
 			fts.featureTypeNames().add(new NameImpl(StyleHelper.getFeatureTypeName(type)));
 		}
-		
+
 		this.style = style;
 	}
 
@@ -231,7 +241,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	 */
 	@Override
 	protected void createPages() {
-        addPage(new RuleStylePage(this));
+		addPage(new RuleStylePage(this));
 		addPage(new SimpleLineStylePage(this));
 		addPage(new SimplePointStylePage(this));
 		addPage(new SimplePolygonStylePage(this));
@@ -245,5 +255,5 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 	public TypeDefinition getType() {
 		return type;
 	}
-	
+
 }

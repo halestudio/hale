@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.transformation;
@@ -50,6 +54,7 @@ import eu.esdihumboldt.util.Pair;
 
 /**
  * View displaying transformation tree(s).
+ * 
  * @author Simon Templer
  */
 public class TransformationView extends AbstractMappingView {
@@ -62,20 +67,20 @@ public class TransformationView extends AbstractMappingView {
 	private static final String MEMENTO_KEY_INSTANCE_SAMPLE = "apply_sample_instances";
 
 	private AlignmentServiceListener alignmentListener;
-	
+
 	private Observer instanceSampleObserver;
-	
+
 	private IAction instanceAction;
-	
+
 	private boolean initInstanceAction = false;
-	
+
 	/**
 	 * @see ViewPart#init(IViewSite, IMemento)
 	 */
 	@Override
 	public void init(IViewSite site, IMemento memento) throws PartInitException {
 		super.init(site, memento);
-		
+
 		if (memento != null) {
 			Boolean value = memento.getBoolean(MEMENTO_KEY_INSTANCE_SAMPLE);
 			if (value != null) {
@@ -83,7 +88,7 @@ public class TransformationView extends AbstractMappingView {
 			}
 		}
 	}
-	
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -91,22 +96,23 @@ public class TransformationView extends AbstractMappingView {
 	public void createViewControl(Composite parent) {
 		super.createViewControl(parent);
 		IActionBars bars = getViewSite().getActionBars();
-		bars.getToolBarManager().add(instanceAction = new Action(
-				"Apply sample instances", IAction.AS_CHECK_BOX) {
+		bars.getToolBarManager().add(
+				instanceAction = new Action("Apply sample instances", IAction.AS_CHECK_BOX) {
 
-			@Override
-			public void run() {
-				update();
-			}
-			
-		});
+					@Override
+					public void run() {
+						update();
+					}
+
+				});
 		instanceAction.setImageDescriptor(TransformationViewPlugin
 				.getImageDescriptor("icons/samples.gif"));
 		instanceAction.setChecked(initInstanceAction);
-		
+
 		update();
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+				AlignmentService.class);
 		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 			@Override
@@ -115,7 +121,7 @@ public class TransformationView extends AbstractMappingView {
 			}
 
 			@Override
-			public void cellRemoved(Cell cell) {
+			public void cellsRemoved(Iterable<Cell> cells) {
 				update();
 			}
 
@@ -129,19 +135,20 @@ public class TransformationView extends AbstractMappingView {
 				update();
 			}
 		});
-		
-		final InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
+
+		final InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench()
+				.getService(InstanceSampleService.class);
 		iss.addObserver(instanceSampleObserver = new Observer() {
-			
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public void update(Observable o, Object arg) {
 				if (!instanceAction.isChecked()) {
 					return;
 				}
-				
+
 				Object input = getViewer().getInput();
-				
+
 				Collection<Instance> oldInstances = null;
 				int sampleCount = 0;
 				if (input instanceof Pair<?, ?>) {
@@ -151,14 +158,14 @@ public class TransformationView extends AbstractMappingView {
 						sampleCount = oldInstances.size();
 					}
 				}
-				
+
 				Collection<Instance> newSamples = iss.getReferenceInstances();
 				if (sampleCount == newSamples.size()) {
 					// still to decide if update is necessary
 					if (sampleCount == 0) {
 						return;
 					}
-					
+
 					// check if instances equal?
 					Set<Instance> test = new HashSet<Instance>(oldInstances);
 					test.removeAll(newSamples);
@@ -166,7 +173,7 @@ public class TransformationView extends AbstractMappingView {
 						return;
 					}
 				}
-				
+
 				TransformationView.this.update();
 			}
 		});
@@ -177,14 +184,17 @@ public class TransformationView extends AbstractMappingView {
 	 */
 	private void update() {
 		final Display display = PlatformUI.getWorkbench().getDisplay();
-		//TODO add configuration option if instances should be included?
+		// TODO add configuration option if instances should be included?
 		display.syncExec(new Runnable() {
+
 			@Override
 			public void run() {
-				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+						AlignmentService.class);
 				Alignment alignment = as.getAlignment();
-				
-				InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
+
+				InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench()
+						.getService(InstanceSampleService.class);
 				Collection<Instance> instances = iss.getReferenceInstances();
 				if (instanceAction.isChecked()) {
 					if (instances != null && !instances.isEmpty()) {
@@ -200,30 +210,32 @@ public class TransformationView extends AbstractMappingView {
 					// only the alignment as input
 					getViewer().setInput(alignment);
 				}
-				
+
 				getViewer().applyLayout();
 			}
 		});
 	}
-	
+
 	/**
 	 * @see WorkbenchPart#dispose()
 	 */
 	@Override
 	public void dispose() {
 		if (alignmentListener != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class);
+			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
+					AlignmentService.class);
 			as.removeListener(alignmentListener);
 		}
-		
+
 		if (instanceSampleObserver != null) {
-			InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench().getService(InstanceSampleService.class);
+			InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench()
+					.getService(InstanceSampleService.class);
 			iss.deleteObserver(instanceSampleObserver);
 		}
-		
+
 		super.dispose();
 	}
-	
+
 	/**
 	 * @see AbstractMappingView#createLabelProvider()
 	 */
@@ -254,7 +266,7 @@ public class TransformationView extends AbstractMappingView {
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
-		
+
 		memento.putBoolean(MEMENTO_KEY_INSTANCE_SAMPLE, instanceAction.isChecked());
 	}
 

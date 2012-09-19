@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.csv;
@@ -22,11 +26,11 @@ import de.cs3d.util.eclipse.extension.AbstractExtension;
  * 
  * @author Kevin Mais
  */
-public class PropertyTypeExtension extends
-		AbstractExtension<PropertyType, PropertyTypeFactory> {
-	
+public class PropertyTypeExtension extends AbstractExtension<PropertyType, PropertyTypeFactory> {
+
 	/**
 	 * Default implementation class
+	 * 
 	 * @author Kevin Mais
 	 */
 	private static class DefaultFactory extends AbstractConfigurationFactory<PropertyType>
@@ -66,9 +70,9 @@ public class PropertyTypeExtension extends
 		}
 
 	}
-	
+
 	private static volatile PropertyTypeExtension instance;
-	
+
 	/**
 	 * Getter for the PropertyTypeExtension
 	 * 
@@ -81,7 +85,6 @@ public class PropertyTypeExtension extends
 		return instance;
 
 	}
-	
 
 	/**
 	 * the property type identifier
@@ -99,8 +102,7 @@ public class PropertyTypeExtension extends
 	 * @see de.cs3d.util.eclipse.extension.AbstractExtension#createFactory(org.eclipse.core.runtime.IConfigurationElement)
 	 */
 	@Override
-	protected PropertyTypeFactory createFactory(IConfigurationElement conf)
-			throws Exception {
+	protected PropertyTypeFactory createFactory(IConfigurationElement conf) throws Exception {
 		return new DefaultFactory(conf);
 	}
 

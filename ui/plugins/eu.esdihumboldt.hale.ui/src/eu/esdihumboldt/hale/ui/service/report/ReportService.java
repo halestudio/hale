@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.service.report;
@@ -24,29 +28,30 @@ import eu.esdihumboldt.hale.common.core.report.ReportSession;
 
 /**
  * Report service interface
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.2 
+ * @since 2.2
  */
 public interface ReportService {
-	
+
 	/**
 	 * Adds a report
+	 * 
 	 * @param <M> the message type
-	 * @param <R> the report type 
+	 * @param <R> the report type
 	 * 
 	 * @param report the report to add
 	 */
 	public <M extends Message, R extends Report<M>> void addReport(R report);
-	
+
 	/**
 	 * Adds a report listener
 	 * 
 	 * @param listener the report listener to add
 	 */
 	public void addReportListener(ReportListener<?, ?> listener);
-	
+
 	/**
 	 * Removes a report listener
 	 * 
@@ -62,22 +67,21 @@ public interface ReportService {
 	 */
 	public Multimap<Class<? extends Report<?>>, Report<?>> getReports(
 			Class<? extends Message> messageType);
-	
+
 	/**
 	 * Get all current reports.
 	 * 
 	 * @return all reports
 	 */
 	public Multimap<Class<? extends Report<?>>, Report<?>> getCurrentReports();
-	
+
 	/**
 	 * Deletes all reports.
 	 */
 	public void deleteAllReports();
-	
+
 	/**
-	 * Saves all reports from {@link ReportService} to a
-	 * specific file.
+	 * Saves all reports from {@link ReportService} to a specific file.
 	 * 
 	 * @param file the file to save
 	 * 
@@ -86,42 +90,42 @@ public interface ReportService {
 	 * @throws IOException an exception if IO fails
 	 */
 	public boolean saveCurrentReports(File file) throws IOException;
-	
+
 	/**
 	 * Get all saved sessions.
 	 * 
 	 * @return all sessions
 	 */
 	public Collection<ReportSession> getAllSessions();
-	
+
 	/**
-	 * Try to reload previous saved reports and their
-	 * session at program startup.
+	 * Try to reload previous saved reports and their session at program
+	 * startup.
 	 */
 	public void loadReportsOnStartup();
-	
+
 	/**
-	 * Saves all reports with there corresponding session
-	 * on program shutdown.
+	 * Saves all reports with there corresponding session on program shutdown.
 	 */
 	public void saveReportsOnShutdown();
-	
+
 	/**
 	 * Load a specific report log file.
 	 * 
 	 * @param file report log file
 	 * 
-	 * @throws org.eclipse.jface.bindings.keys.ParseException if a parse error occurred
+	 * @throws org.eclipse.jface.bindings.keys.ParseException if a parse error
+	 *             occurred
 	 */
 	public void loadReport(File file) throws org.eclipse.jface.bindings.keys.ParseException;
-	
+
 	/**
 	 * Get the current session description.
 	 * 
 	 * @return session description
 	 */
 	public long getCurrentSessionDescription();
-	
+
 	/**
 	 * Update the session description.
 	 */

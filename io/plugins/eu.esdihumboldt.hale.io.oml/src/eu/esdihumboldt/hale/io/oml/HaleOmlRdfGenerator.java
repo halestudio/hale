@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonization and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.io.oml;
 
@@ -16,17 +20,16 @@ import javax.xml.bind.PropertyException;
 
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
-
-import eu.esdihumboldt.commons.goml.oml.io.OmlRdfGenerator;
+import eu.esdihumboldt.hale.io.oml.internal.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
 
 /**
  * @author Thorsten Reitz
  */
 public class HaleOmlRdfGenerator extends OmlRdfGenerator {
-	
+
 	private static ALogger _log = ALoggerFactory.getLogger(HaleOmlRdfGenerator.class);
-	
+
 	/**
 	 * @param m the {@link Marshaller} to configure.
 	 */
@@ -39,5 +42,5 @@ public class HaleOmlRdfGenerator extends OmlRdfGenerator {
 			_log.error("Setting the PrefixMapper failed: ", e); //$NON-NLS-1$
 		}
 	}
-	
+
 }

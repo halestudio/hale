@@ -1,21 +1,27 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.instancevalidation.report;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -25,8 +31,10 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -41,22 +49,29 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.views.properties.PropertySheet;
 
+import com.google.common.collect.Iterators;
+
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
+import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathPatternFilter;
 import eu.esdihumboldt.hale.ui.views.data.TransformedDataView;
 import eu.esdihumboldt.hale.ui.views.report.properties.details.extension.CustomReportDetailsPage;
 
 /**
  * Custom report details page for instance validation reports.
- *
+ * 
  * @author Kai Schwierczek
  */
 public class InstanceValidationReportDetailsPage implements CustomReportDetailsPage {
+
 	private TreeViewer treeViewer;
+	private InstanceValidationReportDetailsContentProvider contentProvider;
 
 	/**
 	 * @see CustomReportDetailsPage#createControls(Composite)
@@ -67,24 +82,46 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		parent.setLayout(GridLayoutFactory.fillDefaults().create());
 
 		// create pattern filter for FilteredTree
-		PatternFilter filter = new PatternFilter();
+		PatternFilter filter = new TreePathPatternFilter();
+		filter.setIncludeLeadingWildcard(true);
 
 		// create FilteredTree
-		FilteredTree filteredTree = new FilteredTree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL, filter, true);
+		FilteredTree filteredTree = new TreePathFilteredTree(parent, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL, filter, true);
 
 		treeViewer = filteredTree.getViewer();
 
 		// set content provider
-		treeViewer.setContentProvider(new InstanceValidationReportDetailsContentProvider());
+		contentProvider = new InstanceValidationReportDetailsContentProvider();
+		treeViewer.setContentProvider(contentProvider);
 
 		// set label provider
-		treeViewer.setLabelProvider(new InstanceValidationReportDetailsLabelProvider());
+		treeViewer.setLabelProvider(new InstanceValidationReportDetailsLabelProvider(
+				contentProvider));
+
+		// set comparator
+		treeViewer.setComparator(new ViewerComparator() {
+
+			/**
+			 * @see org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
+			 */
+			@Override
+			public int category(Object element) {
+				if (element instanceof QName || element instanceof Definition<?>)
+					return 0; // Path
+				else if (element instanceof String)
+					return 1; // Category
+				else
+					return 2; // InstanceValidationMessage
+			}
+		});
 
 		// add menu on right-click
 		MenuManager menuMgr = new MenuManager();
 		Menu menu = menuMgr.createContextMenu(treeViewer.getTree());
 
 		menuMgr.addMenuListener(new IMenuListener() {
+
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 				if (getValidSelection() == null)
@@ -102,6 +139,7 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		treeViewer.getTree().setMenu(menu);
 
 		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				showSelectionInDataView();
@@ -120,25 +158,49 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 	}
 
 	/**
-	 * Returns a valid instance selection for the current selection of the tree viewer.
-	 * Returns <code>null</code> if there is none.
-	 *
-	 * @return a valid instance selection for the current selection of the tree viewer or <code>null</code>
+	 * Returns a valid instance selection for the current selection of the tree
+	 * viewer. Returns <code>null</code> if there is none.
+	 * 
+	 * @return a valid instance selection for the current selection of the tree
+	 *         viewer or <code>null</code>
 	 */
 	private InstanceSelection getValidSelection() {
 		ISelection viewerSelection = treeViewer.getSelection();
-		if (!(viewerSelection instanceof IStructuredSelection) || viewerSelection.isEmpty())
+		if (!(viewerSelection instanceof ITreeSelection) || viewerSelection.isEmpty())
 			return null;
-		List<?> selection = (List<?>) ((IStructuredSelection) viewerSelection).getFirstElement();
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class);
+
+		ITreeSelection treeSelection = (ITreeSelection) treeViewer.getSelection();
+		TreePath firstPath = treeSelection.getPaths()[0]; // XXX use all paths
+															// instead of first
+															// only?
+
+		InstanceValidationMessage firstMessage;
+		Iterator<InstanceValidationMessage> restIter;
+
+		if (firstPath.getLastSegment() instanceof InstanceValidationMessage) {
+			firstMessage = (InstanceValidationMessage) firstPath.getLastSegment();
+			restIter = Iterators.emptyIterator();
+		}
+		else {
+			Collection<InstanceValidationMessage> messages = contentProvider
+					.getMessages(treeSelection.getPaths()[0]);
+			if (messages.isEmpty())
+				return null; // shouldn't happen, but doesn't really matter
+			restIter = messages.iterator();
+			firstMessage = restIter.next();
+		}
+
+		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
+				InstanceService.class);
 		// check first message for valid instance reference
-		InstanceValidationMessage first = (InstanceValidationMessage) selection.get(0);
-		if (first.getInstanceReference() == null || is.getInstance(first.getInstanceReference()) == null)
+		if (firstMessage.getInstanceReference() == null
+				|| is.getInstance(firstMessage.getInstanceReference()) == null)
 			return null;
 
 		Set<InstanceReference> references = new HashSet<InstanceReference>();
-		for (Object o : selection)
-			references.add(((InstanceValidationMessage) o).getInstanceReference());
+		references.add(firstMessage.getInstanceReference());
+		while (restIter.hasNext())
+			references.add(restIter.next().getInstanceReference());
 
 		return new DefaultInstanceSelection(references.toArray());
 	}
@@ -149,7 +211,8 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 	private void showSelectionInDataView() {
 		InstanceSelection selection = getValidSelection();
 		if (selection != null) {
-			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage();
 
 			// pin the property sheet if possible
 			IViewReference ref = page.findViewReference(IPageLayout.ID_PROP_SHEET);
@@ -161,7 +224,8 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 
 			// show transformed data view with selection if possible
 			try {
-				TransformedDataView transformedDataView = (TransformedDataView) page.showView(TransformedDataView.ID);
+				TransformedDataView transformedDataView = (TransformedDataView) page
+						.showView(TransformedDataView.ID);
 				transformedDataView.showSelection(selection);
 			} catch (PartInitException e) {
 				// if it's not there, we cannot do anything
@@ -170,9 +234,11 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 	}
 
 	/**
-	 * Action that opens the transformed data view with example instances selected here.
+	 * Action that opens the transformed data view with example instances
+	 * selected here.
 	 */
 	private final class ShowExampleAction extends Action {
+
 		/**
 		 * Default constructor.
 		 */

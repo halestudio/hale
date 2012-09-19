@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                  01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
@@ -17,28 +21,27 @@ import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
 
 /**
- * This is the supertype for all Toggle-type actions used in HALE that have a 
- * simple boolean state. It can also be used directly if no specific behaviour 
+ * This is the supertype for all Toggle-type actions used in HALE that have a
+ * simple boolean state. It can also be used directly if no specific behaviour
  * is expected.
  * 
- * @author Thorsten Reitz, Simon Templer 
+ * @author Thorsten Reitz, Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ClassificationFilterAction 
-	extends Action  {
-	
+public class ClassificationFilterAction extends Action {
+
 	private final Classification clazz;
-	
+
 	private String msgDisable = ""; //$NON-NLS-1$
 	private String msgEnable = ""; //$NON-NLS-1$
-	
+
 	private final ClassificationFilter filter;
-	
+
 //	/**
 //	 * Contains "Source" or "Target".
 //	 */
 //	private String caption = ""; //$NON-NLS-1$
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -48,19 +51,19 @@ public class ClassificationFilterAction
 	 * @param iconPath the icon path
 	 * @param filter the pattern view filter
 	 */
-	public ClassificationFilterAction(Classification clazz, String msgDisable, 
-			String msgEnable, String iconPath, ClassificationFilter filter) {
+	public ClassificationFilterAction(Classification clazz, String msgDisable, String msgEnable,
+			String iconPath, ClassificationFilter filter) {
 		super(msgDisable, Action.AS_CHECK_BOX);
-		
+
 		setToolTipText(msgDisable);
-		
+
 		this.clazz = clazz;
 		this.msgDisable = msgDisable;
 		this.msgEnable = msgEnable;
 		this.filter = filter;
-		
+
 		setChecked(filter.isVisible(clazz));
-		
+
 		setImageDescriptor(SchemasViewPlugin.getImageDescriptor(iconPath));
 	}
 
@@ -70,26 +73,26 @@ public class ClassificationFilterAction
 	@Override
 	public void run() {
 		boolean active = isChecked();
-		
-		String text = (active)?(msgDisable):(msgEnable);
+
+		String text = (active) ? (msgDisable) : (msgEnable);
 		setToolTipText(text);
 		setText(text);
-		
+
 		filter.setVisible(clazz, active);
 	}
-	
+
 	/**
 	 * @see Action#setChecked(boolean)
 	 */
 	@Override
 	public void setChecked(boolean checked) {
 		super.setChecked(checked);
-		
+
 //		if (!caption.equals("")) { //$NON-NLS-1$
 //			this.config.addItem(caption, this.objectType.toString(), ""+this.isChecked()); //$NON-NLS-1$ //$NON-NLS-2$
 //		}
 	}
-	
+
 //	/**
 //	 * Setter for {@link ClassificationFilterAction#caption}
 //	 * 
@@ -113,5 +116,5 @@ public class ClassificationFilterAction
 //			});
 //		}
 //	}
-	
+
 }

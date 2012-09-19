@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.align.io.impl.internal;
@@ -56,8 +60,7 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 	/**
 	 * Create a property entity bean based on the given property entity
 	 * 
-	 * @param property
-	 *            the property entity
+	 * @param property the property entity
 	 */
 	public PropertyBean(Property property) {
 		super();
@@ -100,8 +103,8 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 						"Could not resolve property entity definition: child not present");
 			}
 
-			Pair<ChildDefinition<?>, List<ChildDefinition<?>>> childs = findChild(
-					parent, childContext.getChildName());
+			Pair<ChildDefinition<?>, List<ChildDefinition<?>>> childs = findChild(parent,
+					childContext.getChildName());
 
 			ChildDefinition<?> child = childs.getFirst();
 
@@ -113,42 +116,41 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 
 			if (childs.getSecond() != null) {
 				for (ChildDefinition<?> pathElems : childs.getSecond()) {
-					path.add(new ChildContext(childContext.getContextName(),
-							childContext.getContextIndex(),
-							createCondition(childContext.getConditionFilter()),
+					path.add(new ChildContext(childContext.getContextName(), childContext
+							.getContextIndex(), createCondition(childContext.getConditionFilter()),
 							pathElems));
 				}
 			}
 
 			path.add(new ChildContext(childContext.getContextName(),
-					childContext.getContextIndex(),
-					createCondition(childContext.getConditionFilter()), child));
+					childContext.getContextIndex(), createCondition(childContext
+							.getConditionFilter()), child));
 
 			if (child instanceof DefinitionGroup) {
 				parent = (DefinitionGroup) child;
-			} else if (child.asProperty() != null) {
+			}
+			else if (child.asProperty() != null) {
 				parent = child.asProperty().getPropertyType();
-			} else {
+			}
+			else {
 				parent = null;
 			}
 		}
 
-		return new PropertyEntityDefinition(typeDef, path, schemaSpace,
-				FilterDefinitionManager.getInstance().parse(getFilter()));
+		return new PropertyEntityDefinition(typeDef, path, schemaSpace, FilterDefinitionManager
+				.getInstance().parse(getFilter()));
 	}
 
 	/**
 	 * The function to look for a child as ChildDefinition or as Group
 	 * 
-	 * @param parent
-	 *            the starting point to traverse from
-	 * @param childName
-	 *            the name of the parent's child
+	 * @param parent the starting point to traverse from
+	 * @param childName the name of the parent's child
 	 * @return a pair of child and a list with the full path from parent to the
 	 *         child
 	 */
-	private Pair<ChildDefinition<?>, List<ChildDefinition<?>>> findChild(
-			DefinitionGroup parent, QName childName) {
+	private Pair<ChildDefinition<?>, List<ChildDefinition<?>>> findChild(DefinitionGroup parent,
+			QName childName) {
 
 		ChildDefinition<?> child = parent.getChild(childName);
 		if (child == null) {
@@ -163,8 +165,7 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 					// try to find another child with the same local part,
 					// if we find a child with the same local part but
 					// different namespace we overwrite child
-					if (_child.getName().getLocalPart()
-							.equals(childName.getLocalPart())) {
+					if (_child.getName().getLocalPart().equals(childName.getLocalPart())) {
 						child = _child;
 						break;
 					}
@@ -174,12 +175,10 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 		}
 
 		if (child != null) {
-			return new Pair<ChildDefinition<?>, List<ChildDefinition<?>>>(
-					child, null);
+			return new Pair<ChildDefinition<?>, List<ChildDefinition<?>>>(child, null);
 		}
 
-		Collection<? extends ChildDefinition<?>> children = DefinitionUtil
-				.getAllChildren(parent);
+		Collection<? extends ChildDefinition<?>> children = DefinitionUtil.getAllChildren(parent);
 
 		for (ChildDefinition<?> groupChild : children) {
 
@@ -187,16 +186,16 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 				GroupPropertyDefinition temp = groupChild.asGroup();
 
 				if (findChild(temp, childName) != null) {
-					Pair<ChildDefinition<?>, List<ChildDefinition<?>>> recTemp = findChild(
-							temp, childName);
+					Pair<ChildDefinition<?>, List<ChildDefinition<?>>> recTemp = findChild(temp,
+							childName);
 
 					if (recTemp.getSecond() == null) {
 						List<ChildDefinition<?>> second = new ArrayList<ChildDefinition<?>>();
 						second.add(temp);
 						ChildDefinition<?> first = recTemp.getFirst();
-						return new Pair<ChildDefinition<?>, List<ChildDefinition<?>>>(
-								first, second);
-					} else {
+						return new Pair<ChildDefinition<?>, List<ChildDefinition<?>>>(first, second);
+					}
+					else {
 						recTemp.getSecond().add(0, temp);
 					}
 				}
@@ -209,13 +208,11 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 	/**
 	 * Create a condition.
 	 * 
-	 * @param conditionFilter
-	 *            the condition filter
+	 * @param conditionFilter the condition filter
 	 * @return the condition or <code>null</code>
 	 */
 	private Condition createCondition(String conditionFilter) {
-		Filter filter = FilterDefinitionManager.getInstance().parse(
-				conditionFilter);
+		Filter filter = FilterDefinitionManager.getInstance().parse(conditionFilter);
 		if (filter != null) {
 			return new Condition(filter);
 		}
@@ -234,8 +231,7 @@ public class PropertyBean extends EntityBean<PropertyEntityDefinition> {
 	/**
 	 * Set the property names
 	 * 
-	 * @param properties
-	 *            the property names to set
+	 * @param properties the property names to set
 	 */
 	public void setProperties(List<ChildContextBean> properties) {
 		this.properties = properties;

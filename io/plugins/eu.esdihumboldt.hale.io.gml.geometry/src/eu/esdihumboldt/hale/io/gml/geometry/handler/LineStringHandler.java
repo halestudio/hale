@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
@@ -45,43 +49,44 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * @author Patrick Lieb
  */
 public class LineStringHandler extends FixedConstraintsGeometryHandler {
-	
-	
 
 	private static final String LINE_STRING_TYPE = "LineStringType";
-	
+
 	private static final String LINE_STRING_SEGMENT_TYPE = "LineStringSegmentType";
-	
-	//XXX support for curve types is not optimal (different number of feature members needed)
-	
+
+	// XXX support for curve types is not optimal (different number of feature
+	// members needed)
+
 	private static final String ARC_TYPE = "ArcType";
-	
+
 	private static final String ARC_BY_BULGE_TYPE = "ArcByBulgeType";
-	
+
 	private static final String ARC_BY_CENTER_POINT_TYPE = "ArcByCenterPointType";
-	
+
 	private static final String ARC_STRING_TYPE = "ArcStringType";
-	
+
 	private static final String ARC_STRING_BY_BULGE_TYPE = "ArcStringByBulgeType";
-	
+
 	private static final String BEZIER_TYPE = "BezierType";
-	
+
 	private static final String BSPLINE_TYPE = "BSplineType";
-	
+
 	private static final String CIRCLE_TYPE = "CircleType";
-	
+
 	private static final String CIRCLE_BY_CENTER_TYPE = "CircleByCenterType";
-	
+
 	private static final String CUBIC_SPLINE = "CubicSplineType";
-	
+
 	private static final String GEODESIC_TYPE = "Geodesic_Type";
-	
+
 	private static final String GEODESIC_STRING_TYPE = "GeodesicStringType";
-	
-	// XXX support for Triangle and Rectangle is not optimal (only exterior and outerBounderIs needed)
-	
+
+	// XXX support for Triangle and Rectangle is not optimal (only exterior and
+	// outerBounderIs needed)
+
 	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance, int)
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
+	 *      int)
 	 */
 	@Override
 	public Object createGeometry(Instance instance, int srsDimension)
@@ -94,20 +99,17 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 
 		// to parse coordinates of a line string
 		// for use with GML 2, 3, 3.1, 3.2
-		Collection<Object> values = PropertyResolver.getValues(instance,
-				"coordinates", false);
+		Collection<Object> values = PropertyResolver.getValues(instance, "coordinates", false);
 		if (values != null && !values.isEmpty()) {
 			Object value = values.iterator().next();
 			if (value instanceof Instance) {
 				try {
-					Coordinate[] cs = GMLGeometryUtil
-							.parseCoordinates((Instance) value);
+					Coordinate[] cs = GMLGeometryUtil.parseCoordinates((Instance) value);
 					if (cs != null && cs.length > 0) {
 						line = getGeometryFactory().createLineString(cs);
 					}
 				} catch (ParseException e) {
-					throw new GeometryNotSupportedException(
-							"Could not parse coordinates", e);
+					throw new GeometryNotSupportedException("Could not parse coordinates", e);
 				}
 			}
 		}
@@ -122,8 +124,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
-						Coordinate c = GMLGeometryUtil
-								.parseDirectPosition((Instance) value);
+						Coordinate c = GMLGeometryUtil.parseDirectPosition((Instance) value);
 						if (c != null) {
 							cs.add(c);
 						}
@@ -142,8 +143,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 				Iterator<Object> iterator = values.iterator();
 				Object value = iterator.next();
 				if (value instanceof Instance) {
-					Coordinate[] cs = GMLGeometryUtil
-							.parsePosList((Instance) value, srsDimension);
+					Coordinate[] cs = GMLGeometryUtil.parsePosList((Instance) value, srsDimension);
 					if (cs != null) {
 						line = getGeometryFactory().createLineString(cs);
 					}
@@ -155,8 +155,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 		// for use with GML 3, 3.1, 3.2
 
 		if (line == null) {
-			values = PropertyResolver.getValues(instance, "pointRep.Point",
-					false);
+			values = PropertyResolver.getValues(instance, "pointRep.Point", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
 				List<Coordinate> cs = new ArrayList<Coordinate>();
@@ -182,8 +181,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 		// to parse Point Properties of a line string
 		// for use with GML 3.1
 		if (line == null) {
-			values = PropertyResolver.getValues(instance,
-					"pointProperty.Point", false);
+			values = PropertyResolver.getValues(instance, "pointProperty.Point", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
 				List<Coordinate> cs = new ArrayList<Coordinate>();
@@ -216,8 +214,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
 					if (value instanceof Instance) {
-						Coordinate c = GMLGeometryUtil
-								.parseCoord((Instance) value);
+						Coordinate c = GMLGeometryUtil.parseCoord((Instance) value);
 						if (c != null) {
 							cs.add(c);
 						}
@@ -241,8 +238,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
-				2);
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
 
 		constraints.add(Binding.get(GeometryProperty.class));
 		constraints.add(GeometryType.get(LineString.class));
@@ -261,46 +257,46 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 
 		types.add(new QName(NS_GML, LINE_STRING_TYPE));
 		types.add(new QName(NS_GML_32, LINE_STRING_TYPE));
-		
+
 		types.add(new QName(NS_GML, LINE_STRING_SEGMENT_TYPE));
 		types.add(new QName(NS_GML_32, LINE_STRING_SEGMENT_TYPE));
-		
+
 		types.add(new QName(NS_GML, ARC_TYPE));
 		types.add(new QName(NS_GML_32, ARC_TYPE));
-		
+
 		types.add(new QName(NS_GML, ARC_BY_BULGE_TYPE));
 		types.add(new QName(NS_GML_32, ARC_BY_BULGE_TYPE));
-		
+
 		types.add(new QName(NS_GML, ARC_BY_CENTER_POINT_TYPE));
 		types.add(new QName(NS_GML_32, ARC_BY_CENTER_POINT_TYPE));
-		
+
 		types.add(new QName(NS_GML, ARC_STRING_TYPE));
 		types.add(new QName(NS_GML_32, ARC_STRING_TYPE));
-		
+
 		types.add(new QName(NS_GML, ARC_STRING_BY_BULGE_TYPE));
 		types.add(new QName(NS_GML_32, ARC_STRING_BY_BULGE_TYPE));
-		
+
 		types.add(new QName(NS_GML, BEZIER_TYPE));
 		types.add(new QName(NS_GML_32, BEZIER_TYPE));
-		
+
 		types.add(new QName(NS_GML, BSPLINE_TYPE));
 		types.add(new QName(NS_GML_32, BSPLINE_TYPE));
-		
+
 		types.add(new QName(NS_GML, CIRCLE_TYPE));
 		types.add(new QName(NS_GML_32, CIRCLE_TYPE));
-		
+
 		types.add(new QName(NS_GML, CIRCLE_BY_CENTER_TYPE));
 		types.add(new QName(NS_GML_32, CIRCLE_BY_CENTER_TYPE));
-		
+
 		types.add(new QName(NS_GML, CUBIC_SPLINE));
 		types.add(new QName(NS_GML_32, CUBIC_SPLINE));
-		
+
 		types.add(new QName(NS_GML, GEODESIC_TYPE));
 		types.add(new QName(NS_GML_32, GEODESIC_TYPE));
-		
+
 		types.add(new QName(NS_GML, GEODESIC_STRING_TYPE));
 		types.add(new QName(NS_GML_32, GEODESIC_STRING_TYPE));
-		
+
 //		types.add(new QName(NS_GML, ENVELOPE_TYPE));
 //		types.add(new QName(NS_GML_32, ENVELOPE_TYPE));
 //		

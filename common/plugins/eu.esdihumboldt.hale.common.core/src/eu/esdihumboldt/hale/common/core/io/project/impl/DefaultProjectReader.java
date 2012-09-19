@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.core.io.project.impl;
@@ -128,10 +132,12 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 						try {
 							project = Project.load(new EntryInputStream(zip));
 						} catch (Exception e) {
-							// fail if main project file cannot be loaded 
-							throw new IOProviderConfigurationException("Source is no valid project archive", e);
+							// fail if main project file cannot be loaded
+							throw new IOProviderConfigurationException(
+									"Source is no valid project archive", e);
 						}
-					} else {
+					}
+					else {
 						ProjectFile file = projectFiles.get(name);
 
 						if (file != null) {
@@ -139,7 +145,8 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 								file.load(new EntryInputStream(zip));
 							} catch (Exception e) {
 								reporter.error(new IOMessageImpl(
-										"Error while loading project file {0}, file will be reset.", e, name));
+										"Error while loading project file {0}, file will be reset.",
+										e, -1, -1, name));
 								// reset file
 								file.reset();
 							}
@@ -149,26 +156,28 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 			} finally {
 				zip.close();
 			}
-		} else {
+		}
+		else {
 			// read from XML
 			try {
 				project = Project.load(in);
 			} catch (Exception e) {
-				// fail if main project file cannot be loaded 
+				// fail if main project file cannot be loaded
 				throw new IOProviderConfigurationException("Source is no valid project file", e);
 			} finally {
 				in.close();
 			}
 		}
 
-		PathUpdate update = new PathUpdate(URI.create(project.getSaveConfiguration().getProviderConfiguration()
-				.get(ExportProvider.PARAM_TARGET)), getSource().getLocation());
+		PathUpdate update = new PathUpdate(URI.create(project.getSaveConfiguration()
+				.getProviderConfiguration().get(ExportProvider.PARAM_TARGET)), getSource()
+				.getLocation());
 
 		// check if there are any external project files listed
 		if (projectFiles != null) { // only if project files set at all
 			for (ProjectFileInfo fileInfo : project.getProjectFiles()) {
 				ProjectFile projectFile = projectFiles.get(fileInfo.getName());
-	
+
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
 					if (!IOUtils.testStream(fileInfo.getLocation(), false))
@@ -187,15 +196,18 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 					} catch (Exception e) {
 						log.debug("Loading project file failed", e);
 					}
-	
+
 					if (!fileSuccess) {
-						reporter.error(new IOMessageImpl("Error while loading project file {0}, file will be reset.", null,
-								fileInfo.getName()));
+						reporter.error(new IOMessageImpl(
+								"Error while loading project file {0}, file will be reset.", null,
+								-1, -1, fileInfo.getName()));
 						projectFile.reset();
 					}
-				} else {
-					reporter.info(new IOMessageImpl("No handler for external project file {0} found.", null, fileInfo
-							.getName()));
+				}
+				else {
+					reporter.info(new IOMessageImpl(
+							"No handler for external project file {0} found.", null, -1, -1,
+							fileInfo.getName()));
 				}
 			}
 		}
@@ -237,7 +249,7 @@ public class DefaultProjectReader extends AbstractImportProvider implements Proj
 	 */
 	@Override
 	public boolean isCancelable() {
-		//TODO change?
+		// TODO change?
 		return false;
 	}
 

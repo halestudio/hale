@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2010.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.codelist.legacy;
@@ -23,12 +27,12 @@ import eu.esdihumboldt.hale.ui.codelist.internal.CodeListUIPlugin;
 
 /**
  * Code list preferences
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class CodeListPreferenceInitializer extends
-		AbstractPreferenceInitializer implements CodeListPreferenceConstants {
+public class CodeListPreferenceInitializer extends AbstractPreferenceInitializer implements
+		CodeListPreferenceConstants {
 
 	/**
 	 * @see AbstractPreferenceInitializer#initializeDefaultPreferences()
@@ -36,10 +40,10 @@ public class CodeListPreferenceInitializer extends
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore preferences = CodeListUIPlugin.getDefault().getPreferenceStore();
-		
+
 		preferences.setDefault(KEY_SEARCH_PATH_COUNT, 0);
 	}
-	
+
 	/**
 	 * Save the search path to the preferences
 	 * 
@@ -47,22 +51,22 @@ public class CodeListPreferenceInitializer extends
 	 */
 	public static void setSearchPath(List<String> searchPath) {
 		IPreferenceStore preferences = CodeListUIPlugin.getDefault().getPreferenceStore();
-		
-		//TODO remove old ones
-		/*int oldCount = preferences.getInt(KEY_SEARCH_PATH_COUNT);
-		int numRemove = oldCount - searchPath.size();
-		
-		if (numRemove > 0) {
-			for (int i = ...)
-		}*/
-		
+
+		// TODO remove old ones
+		/*
+		 * int oldCount = preferences.getInt(KEY_SEARCH_PATH_COUNT); int
+		 * numRemove = oldCount - searchPath.size();
+		 * 
+		 * if (numRemove > 0) { for (int i = ...) }
+		 */
+
 		// set new path
 		preferences.setValue(KEY_SEARCH_PATH_COUNT, searchPath.size());
 		for (int i = 0; i < searchPath.size(); i++) {
 			preferences.setValue(KEY_SEARCH_PATH_PREFIX + i, searchPath.get(i));
 		}
 	}
-	
+
 	/**
 	 * Get the search path from the preferences
 	 * 
@@ -70,20 +74,20 @@ public class CodeListPreferenceInitializer extends
 	 */
 	public static List<String> getSearchPath() {
 		IPreferenceStore preferences = CodeListUIPlugin.getDefault().getPreferenceStore();
-		
+
 		List<String> result = new ArrayList<String>();
 		int count = preferences.getInt(KEY_SEARCH_PATH_COUNT);
-		
+
 		for (int i = 0; i < count; i++) {
 			String path = preferences.getString(KEY_SEARCH_PATH_PREFIX + i);
 			if (path != null) {
 				result.add(path);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Assign a code list location to an attribute
 	 * 
@@ -92,10 +96,11 @@ public class CodeListPreferenceInitializer extends
 	 */
 	public static void assignCodeList(String attributeIdentifier, URI codeListLocation) {
 		IPreferenceStore preferences = CodeListUIPlugin.getDefault().getPreferenceStore();
-		
-		preferences.setValue(KEY_ATTRIBUTE_PREFIX + attributeIdentifier, (codeListLocation == null)?(""):(codeListLocation.toString())); //$NON-NLS-1$
+
+		preferences.setValue(KEY_ATTRIBUTE_PREFIX + attributeIdentifier,
+				(codeListLocation == null) ? ("") : (codeListLocation.toString())); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Get the assigned code list location for an attribute
 	 * 
@@ -105,7 +110,7 @@ public class CodeListPreferenceInitializer extends
 	 */
 	public static URI getAssignedCodeList(String attributeIdentifier) {
 		IPreferenceStore preferences = CodeListUIPlugin.getDefault().getPreferenceStore();
-		
+
 		String location = preferences.getString(KEY_ATTRIBUTE_PREFIX + attributeIdentifier);
 		if (location == null || location.isEmpty()) {
 			return null;

@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
@@ -53,6 +57,59 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  */
 public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 
+	/**
+	 * Wraps a {@link CRSDefinition}.
+	 */
+	public static class CRSWrapper {
+
+		private final CRSDefinition crsDef;
+
+		/**
+		 * Create a CRS wrapper
+		 * 
+		 * @param crsDefinition the CRS definition
+		 */
+		public CRSWrapper(CRSDefinition crsDefinition) {
+			this.crsDef = crsDefinition;
+		}
+
+		/**
+		 * Get the contained CRS definition.
+		 * 
+		 * @return the CRS definition
+		 */
+		public CRSDefinition getCrsDef() {
+			return crsDef;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((crsDef == null) ? 0 : crsDef.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			CRSWrapper other = (CRSWrapper) obj;
+			if (crsDef == null) {
+				if (other.crsDef != null)
+					return false;
+			}
+			else if (!crsDef.equals(other.crsDef))
+				return false;
+			return true;
+		}
+
+	}
+
 	private static final String ABSTRACT_GEOMETRY_TYPE = "AbstractGeometryType";
 
 	/**
@@ -73,8 +130,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
-		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(
-				3);
+		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(3);
 
 		// binding is collection, as we can't be sure that all contained
 		// geometries share the same CRS
@@ -96,77 +152,83 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	public Object createGeometry(Instance instance, int srsDimension)
 			throws GeometryNotSupportedException {
 		CRSDefinition defaultCrsDef = GMLGeometryUtil.findCRS(instance);
-		
+
 		// depth first traverser that on cancel continues traversal but w/o the
 		// children of the current object
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
-		
+
 		GeometryFinder geoFind = new GeometryFinder(defaultCrsDef);
-		
+
 		traverser.traverse(instance, geoFind);
-		
+
 		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef);
 	}
 
 	/**
 	 * Create a geometry value from a given instance.
 	 * 
-	 * @param instance
-	 *            the instance
-	 * @param childGeometries
-	 *            the child geometries found in the instance
-	 * @param defaultCrs
-	 *            the definition of the default CRS for this instance
+	 * @param instance the instance
+	 * @param childGeometries the child geometries found in the instance
+	 * @param defaultCrs the definition of the default CRS for this instance
 	 * @return the geometry value derived from the instance, the return type
 	 *         should match the {@link Binding} created in
 	 *         {@link #getTypeConstraints(TypeDefinition)}.
-	 * @throws GeometryNotSupportedException
-	 *             if the type definition doesn't represent a geometry type
-	 *             supported by the handler
+	 * @throws GeometryNotSupportedException if the type definition doesn't
+	 *             represent a geometry type supported by the handler
 	 */
 	@SuppressWarnings("unused")
-	protected Object createGeometry(Instance instance,
-			List<GeometryProperty<?>> childGeometries, CRSDefinition defaultCrs)
-			throws GeometryNotSupportedException {
+	protected Object createGeometry(Instance instance, List<GeometryProperty<?>> childGeometries,
+			CRSDefinition defaultCrs) throws GeometryNotSupportedException {
 
 		List<Geometry> geomList = new ArrayList<Geometry>();
 
 		Class<? extends Geometry> commonGeomType = null;
-		// TODO also check for common crs? no equals for CRSDefinitions
-		// implemented! important for merging geometries
+		CRSWrapper commonCrs = null;
+		boolean allowCombine = true;
 
+		// collect geometries and check for common geometry type and CRS
+		// TODO partition based on CRS?
 		for (GeometryProperty<?> geomProp : childGeometries) {
 			if (geomProp.getGeometry() instanceof GeometryCollection) {
-				GeometryCollection geomCollection = (GeometryCollection) geomProp
-						.getGeometry();
+				GeometryCollection geomCollection = (GeometryCollection) geomProp.getGeometry();
 				for (int i = 0; i < geomCollection.getNumGeometries(); i++) {
 					// find the common geometry class
-					Class<? extends Geometry> geometryType = geomCollection
-							.getGeometryN(i).getClass();
+					Class<? extends Geometry> geometryType = geomCollection.getGeometryN(i)
+							.getClass();
 					if (commonGeomType == null) {
 						commonGeomType = geometryType;
-					} else if (!commonGeomType.equals(geometryType)) {
+					}
+					else if (!commonGeomType.equals(geometryType)) {
 						// TODO determine common type in inheritance?
 						commonGeomType = Geometry.class;
 					}
 					geomList.add(geomCollection.getGeometryN(i));
 				}
-			} else {
+			}
+			else {
 				// find the common geometry class
-				Class<? extends Geometry> geometryType = geomProp.getGeometry()
-						.getClass();
+				Class<? extends Geometry> geometryType = geomProp.getGeometry().getClass();
 				if (commonGeomType == null) {
 					commonGeomType = geometryType;
-				} else if (!commonGeomType.equals(geometryType)) {
+				}
+				else if (!commonGeomType.equals(geometryType)) {
 					// TODO determine common type in inheritance?
 					commonGeomType = Geometry.class;
 				}
 				geomList.add(geomProp.getGeometry());
 			}
 
+			// check common CRS
+			CRSWrapper crs = new CRSWrapper(geomProp.getCRSDefinition());
+			if (commonCrs == null) {
+				commonCrs = crs;
+			}
+			else if (!commonCrs.equals(crs)) {
+				allowCombine = false;
+			}
 		}
 
-		if (commonGeomType != null) {
+		if (allowCombine && commonGeomType != null) {
 			Geometry geom = null;
 			if (commonGeomType.equals(Polygon.class)) {
 				// create a MultiPolygon
@@ -175,14 +237,16 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 					polygons[i] = (Polygon) geomList.get(i);
 				}
 				geom = getGeometryFactory().createMultiPolygon(polygons);
-			} else if (commonGeomType.equals(LineString.class)) {
+			}
+			else if (commonGeomType.equals(LineString.class)) {
 				// create a MultiLineString
 				LineString[] lines = new LineString[geomList.size()];
 				for (int i = 0; i < geomList.size(); i++) {
 					lines[i] = (LineString) geomList.get(i);
 				}
 				geom = getGeometryFactory().createMultiLineString(lines);
-			} else if (commonGeomType.equals(Point.class)) {
+			}
+			else if (commonGeomType.equals(Point.class)) {
 				// create a MultiPoint
 				Point[] points = new Point[geomList.size()];
 				for (int i = 0; i < geomList.size(); i++) {
@@ -192,9 +256,9 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 			}
 			if (geom != null) {
 				// returned combined property
-				return Collections
-						.singleton(new DefaultGeometryProperty<Geometry>(
-								defaultCrs, geom));
+				CRSDefinition crs = (commonCrs != null && commonCrs.getCrsDef() != null) ? (commonCrs
+						.getCrsDef()) : (defaultCrs);
+				return Collections.singleton(new DefaultGeometryProperty<Geometry>(crs, geom));
 			}
 		}
 
@@ -204,5 +268,4 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 		}
 		return childGeometries;
 	}
-
 }

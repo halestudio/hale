@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.io.instance;
@@ -45,15 +49,16 @@ import eu.esdihumboldt.hale.ui.io.IOWizardListener;
 /**
  * Wizard page that allows selecting a target instance file and a corresponding
  * validator
- *
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWriter, 
-		InstanceExportWizard> implements IOWizardListener<InstanceWriter, InstanceExportWizard> {
+public class InstanceSelectTargetPage extends
+		ExportSelectTargetPage<InstanceWriter, InstanceExportWizard> implements
+		IOWizardListener<InstanceWriter, InstanceExportWizard> {
 
 	private ComboViewer validators;
-	
+
 	/**
 	 * @see ExportSelectTargetPage#createContent(Composite)
 	 */
@@ -61,24 +66,18 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 	protected void createContent(Composite page) {
 		super.createContent(page);
 		// page has a 3-column grid layout
-		
+
 		Group validatorGroup = new Group(page, SWT.NONE);
 		validatorGroup.setText("Validation");
-		validatorGroup.setLayoutData(GridDataFactory.swtDefaults()
-				.align(SWT.FILL, SWT.BEGINNING)
-				.grab(true, false)
-				.span(3, 1)
-				.indent(8, 10)
+		validatorGroup.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING)
+				.grab(true, false).span(3, 1).indent(8, 10).create());
+		validatorGroup.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).margins(10, 8)
 				.create());
-		validatorGroup.setLayout(GridLayoutFactory.swtDefaults()
-				.numColumns(1)
-				.margins(10, 8)
-				.create());
-		
+
 		Label vabel = new Label(validatorGroup, SWT.NONE);
 		vabel.setText("Please select a validator if you want to validate the exported file");
 		vabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-		
+
 		validators = new ComboViewer(validatorGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
 		validators.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		validators.setContentProvider(ArrayContentProvider.getInstance());
@@ -91,20 +90,20 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 				}
 				return super.getText(element);
 			}
-			
+
 		});
 		updateInput();
-		
+
 		// process selection changes
 		validators.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
 				updateWizard(selection);
 			}
 		});
-		
+
 		getWizard().addIOWizardListener(this);
 	}
 
@@ -114,35 +113,34 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 	private void updateInput() {
 		// remember selection
 		ISelection lastSelection = validators.getSelection();
-		
+
 		// populate input
 		List<Object> input = new ArrayList<Object>();
-		
+
 		IContentType contentType = getWizard().getContentType();
 		if (contentType != null) {
-			Collection<IOProviderDescriptor> factories = HaleIO.getProviderFactories(InstanceValidator.class);
+			Collection<IOProviderDescriptor> factories = HaleIO
+					.getProviderFactories(InstanceValidator.class);
 			factories = HaleIO.filterFactories(factories, contentType);
 			if (!factories.isEmpty()) {
 				input.add("No validation");
 			}
 			input.addAll(factories);
 		}
-		
+
 		if (input.isEmpty()) {
-			input.add((contentType == null)
-					?("Unrecognized content type")
-					:(MessageFormat.format("No validator available for {0}", 
-							contentType.getName())));
+			input.add((contentType == null) ? ("Unrecognized content type") : (MessageFormat
+					.format("No validator available for {0}", contentType.getName())));
 			validators.getControl().setEnabled(false);
 		}
 		else {
 			validators.getControl().setEnabled(true);
 		}
-		
+
 		validators.setInput(input);
-		
+
 		ISelection newSelection = new StructuredSelection(input.get(0));
-		
+
 		// retain old selection if possible
 		if (!lastSelection.isEmpty() && lastSelection instanceof IStructuredSelection) {
 			Object selected = ((IStructuredSelection) lastSelection).getFirstElement();
@@ -150,16 +148,16 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 				newSelection = lastSelection;
 			}
 		}
-		
+
 		validators.setSelection(newSelection, true);
-		
+
 		// process current selection
 		ISelection selection = validators.getSelection();
 		updateWizard(selection);
 	}
-	
+
 	/**
-	 * Update the wizard 
+	 * Update the wizard
 	 * 
 	 * @param selection the current selection
 	 */
@@ -186,7 +184,7 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
-		
+
 		updateInput();
 	}
 
@@ -212,7 +210,7 @@ public class InstanceSelectTargetPage extends ExportSelectTargetPage<InstanceWri
 	@Override
 	public void dispose() {
 		getWizard().removeIOWizardListener(this);
-		
+
 		super.dispose();
 	}
 

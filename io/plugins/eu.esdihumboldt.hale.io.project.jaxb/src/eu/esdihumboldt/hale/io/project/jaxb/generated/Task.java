@@ -5,21 +5,23 @@
 // Generated on: 2011.03.24 at 11:33:30 AM MEZ 
 //
 
-
 package eu.esdihumboldt.hale.io.project.jaxb.generated;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for Task complex type.
+ * <p>
+ * Java class for Task complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="Task">
@@ -40,122 +42,105 @@ import javax.xml.bind.annotation.XmlType;
  */
 @SuppressWarnings("all")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Task", propOrder = {
-    "taskType",
-    "comment",
-    "taskStatus",
-    "contextIdentifier"
-})
+@XmlType(name = "Task", propOrder = { "taskType", "comment", "taskStatus", "contextIdentifier" })
 public class Task {
 
-    @XmlElement(required = true)
-    protected String taskType;
-    @XmlElement(required = true)
-    protected String comment;
-    @XmlElement(required = true)
-    protected String taskStatus;
-    @XmlElement(required = true)
-    protected List<String> contextIdentifier;
+	@XmlElement(required = true)
+	protected String taskType;
+	@XmlElement(required = true)
+	protected String comment;
+	@XmlElement(required = true)
+	protected String taskStatus;
+	@XmlElement(required = true)
+	protected List<String> contextIdentifier;
 
-    /**
-     * Gets the value of the taskType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTaskType() {
-        return taskType;
-    }
+	/**
+	 * Gets the value of the taskType property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTaskType() {
+		return taskType;
+	}
 
-    /**
-     * Sets the value of the taskType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTaskType(String value) {
-        this.taskType = value;
-    }
+	/**
+	 * Sets the value of the taskType property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setTaskType(String value) {
+		this.taskType = value;
+	}
 
-    /**
-     * Gets the value of the comment property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getComment() {
-        return comment;
-    }
+	/**
+	 * Gets the value of the comment property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getComment() {
+		return comment;
+	}
 
-    /**
-     * Sets the value of the comment property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setComment(String value) {
-        this.comment = value;
-    }
+	/**
+	 * Sets the value of the comment property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setComment(String value) {
+		this.comment = value;
+	}
 
-    /**
-     * Gets the value of the taskStatus property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTaskStatus() {
-        return taskStatus;
-    }
+	/**
+	 * Gets the value of the taskStatus property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTaskStatus() {
+		return taskStatus;
+	}
 
-    /**
-     * Sets the value of the taskStatus property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTaskStatus(String value) {
-        this.taskStatus = value;
-    }
+	/**
+	 * Sets the value of the taskStatus property.
+	 * 
+	 * @param value allowed object is {@link String }
+	 * 
+	 */
+	public void setTaskStatus(String value) {
+		this.taskStatus = value;
+	}
 
-    /**
-     * Gets the value of the contextIdentifier property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the contextIdentifier property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContextIdentifier().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
-     */
-    public List<String> getContextIdentifier() {
-        if (contextIdentifier == null) {
-            contextIdentifier = new ArrayList<String>();
-        }
-        return this.contextIdentifier;
-    }
+	/**
+	 * Gets the value of the contextIdentifier property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the contextIdentifier property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getContextIdentifier().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link String }
+	 * 
+	 * 
+	 */
+	public List<String> getContextIdentifier() {
+		if (contextIdentifier == null) {
+			contextIdentifier = new ArrayList<String>();
+		}
+		return this.contextIdentifier;
+	}
 
 }

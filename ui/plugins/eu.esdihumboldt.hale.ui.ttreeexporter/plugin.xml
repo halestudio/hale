@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.cst.instancetransformation">
+      <source-tree
+            hook="eu.esdihumboldt.hale.ui.ttreeexporter.TTreeExporter"
+            id="eu.esdihumboldt.hale.ui.ttreeexporter.source-tree"
+            name="Save tree (Populated)">
+      </source-tree>
+      <minimal-tree
+            hook="eu.esdihumboldt.hale.ui.ttreeexporter.TTreeExporter"
+            id="eu.esdihumboldt.hale.ui.ttreeexporter.minimal-tree"
+            name="Save tree (Unpopulated)">
+      </minimal-tree>
+      <full-tree
+            hook="eu.esdihumboldt.hale.ui.ttreeexporter.TTreeExporter"
+            id="eu.esdihumboldt.hale.ui.ttreeexporter.full-tree"
+            name="Save tree (Executed)">
+      </full-tree>
+   </extension>
+
+</plugin>

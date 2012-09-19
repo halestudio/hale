@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
@@ -31,12 +35,13 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 
 /**
  * Test for reading envelope geometries
+ * 
  * @author Patrick Lieb
  */
 public class EnvelopeHandlerTest extends AbstractHandlerTest {
-	
+
 	private MultiPoint reference;
-	
+
 	@Override
 	public void init() {
 		super.init();
@@ -50,20 +55,18 @@ public class EnvelopeHandlerTest extends AbstractHandlerTest {
 	/**
 	 * Test envelope geometries read from a GML 3 file
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testEnvelopeGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/envelope/sample-envelope-gml3.xml")
-						.toURI());
+				getClass().getResource("/data/envelope/sample-envelope-gml3.xml").toURI());
 
 		// one instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
-			// 1. EnvelopeProperty  defined through pos
+			// 1. EnvelopeProperty defined through pos
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkEnvelopePropertyInstance(instance);
@@ -71,10 +74,9 @@ public class EnvelopeHandlerTest extends AbstractHandlerTest {
 			it.close();
 		}
 	}
-	
+
 	private void checkEnvelopePropertyInstance(Instance instance) {
-		Object[] geomVals = instance
-				.getProperty(new QName(NS_TEST, "geometry"));
+		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
 
@@ -86,12 +88,12 @@ public class EnvelopeHandlerTest extends AbstractHandlerTest {
 	}
 
 	private void checkGeomInstance(Instance geomInstance) {
-			assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
-			@SuppressWarnings("unchecked")
-			MultiPoint multipoint = ((GeometryProperty<MultiPoint>) geomInstance.getValue())
-					.getGeometry();
-			assertTrue("Read geometry does not match the reference geometry",
-					multipoint.equalsExact(reference));
+		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
+		@SuppressWarnings("unchecked")
+		MultiPoint multipoint = ((GeometryProperty<MultiPoint>) geomInstance.getValue())
+				.getGeometry();
+		assertTrue("Read geometry does not match the reference geometry",
+				multipoint.equalsExact(reference));
 	}
 
 }

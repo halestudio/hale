@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui;
@@ -25,17 +29,18 @@ import eu.esdihumboldt.hale.common.instance.model.impl.ONameUtil;
 import eu.esdihumboldt.hale.ui.common.help.SelectionContextProvider;
 
 /**
- * Selection context provider for selection containing objects from the HALE 
+ * Selection context provider for selection containing objects from the HALE
  * models, e.g. the schema, instance and alignment models.
+ * 
  * @author Simon Templer
  */
 public class HALEContextProvider extends SelectionContextProvider {
 
 	/**
-	 * @see SelectionContextProvider#SelectionContextProvider(ISelectionProvider, String)
+	 * @see SelectionContextProvider#SelectionContextProvider(ISelectionProvider,
+	 *      String)
 	 */
-	public HALEContextProvider(ISelectionProvider selectionProvider,
-			String defaultContextId) {
+	public HALEContextProvider(ISelectionProvider selectionProvider, String defaultContextId) {
 		super(selectionProvider, defaultContextId);
 	}
 
@@ -45,24 +50,24 @@ public class HALEContextProvider extends SelectionContextProvider {
 	@Override
 	protected String getContextId(Object object) {
 		object = extractObject(object);
-		
+
 		if (object instanceof Cell) {
 			Cell cell = (Cell) object;
-			return FunctionReferenceConstants.PLUGIN_ID + "." + 
-					ONameUtil.encodeName(cell.getTransformationIdentifier());
+			return FunctionReferenceConstants.PLUGIN_ID + "."
+					+ ONameUtil.encodeName(cell.getTransformationIdentifier());
 		}
-		
+
 		if (object instanceof AbstractFunction<?>) {
 			AbstractFunction<?> function = (AbstractFunction<?>) object;
-			return FunctionReferenceConstants.PLUGIN_ID + "." + 
-					ONameUtil.encodeName(function.getId());
+			return FunctionReferenceConstants.PLUGIN_ID + "."
+					+ ONameUtil.encodeName(function.getId());
 		}
-		
-		//TODO for other kinds of selection
-		
+
+		// TODO for other kinds of selection
+
 		return null;
 	}
-	
+
 	private Object extractObject(Object node) {
 		if (node instanceof TransformationTree) {
 			return ((TransformationTree) node).getType();
@@ -76,7 +81,7 @@ public class HALEContextProvider extends SelectionContextProvider {
 		if (node instanceof SourceNode) {
 			return ((SourceNode) node).getDefinition();
 		}
-		
+
 		return node;
 	}
 

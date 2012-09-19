@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.ui.views.data.internal.extension;
@@ -29,15 +33,16 @@ import eu.esdihumboldt.hale.ui.views.data.internal.compare.DefinitionInstanceTre
 
 /**
  * TODO Type description
+ * 
  * @author Simon Templer
  */
-public class InstanceViewController extends PreferencesExclusiveExtension<InstanceViewer, InstanceViewFactory> {
+public class InstanceViewController extends
+		PreferencesExclusiveExtension<InstanceViewer, InstanceViewFactory> {
 
 	/**
 	 * Factory for default instance view
 	 */
-	private static class DefaultViewFactory extends
-			AbstractObjectFactory<InstanceViewer> implements
+	private static class DefaultViewFactory extends AbstractObjectFactory<InstanceViewer> implements
 			InstanceViewFactory {
 
 		/**
@@ -85,11 +90,12 @@ public class InstanceViewController extends PreferencesExclusiveExtension<Instan
 	/**
 	 * Default factory based on a configuration element.
 	 */
-	private static class ConfigurationViewFactory extends AbstractConfigurationFactory<InstanceViewer>
-			implements InstanceViewFactory {
+	private static class ConfigurationViewFactory extends
+			AbstractConfigurationFactory<InstanceViewer> implements InstanceViewFactory {
 
 		/**
-		 * Create an instance view factory based on a configuration element. 
+		 * Create an instance view factory based on a configuration element.
+		 * 
 		 * @param conf the configuration element
 		 */
 		protected ConfigurationViewFactory(IConfigurationElement conf) {
@@ -134,13 +140,14 @@ public class InstanceViewController extends PreferencesExclusiveExtension<Instan
 	 * The extension ID
 	 */
 	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.ui.views.data";
-	
+
 	/**
 	 * {@link InstanceViewer} extension
 	 */
-	public static class InstanceViewExtension extends AbstractExtension<InstanceViewer, InstanceViewFactory>
-			implements ObjectExtension<InstanceViewer, InstanceViewFactory> {
-		
+	public static class InstanceViewExtension extends
+			AbstractExtension<InstanceViewer, InstanceViewFactory> implements
+			ObjectExtension<InstanceViewer, InstanceViewFactory> {
+
 		/**
 		 * Default constructor
 		 */
@@ -152,12 +159,11 @@ public class InstanceViewController extends PreferencesExclusiveExtension<Instan
 		 * @see AbstractExtension#createFactory(IConfigurationElement)
 		 */
 		@Override
-		protected InstanceViewFactory createFactory(IConfigurationElement conf)
-				throws Exception {
+		protected InstanceViewFactory createFactory(IConfigurationElement conf) throws Exception {
 			if (conf.getName().equals("instanceView")) {
 				return new ConfigurationViewFactory(conf);
 			}
-			
+
 			return null;
 		}
 
@@ -165,11 +171,11 @@ public class InstanceViewController extends PreferencesExclusiveExtension<Instan
 
 	/**
 	 * Create an instance view controller.
+	 * 
 	 * @param preferences the preference store
 	 * @param preferenceKey the preference key to use for storing the setting
 	 */
-	public InstanceViewController(
-			IPreferenceStore preferences, String preferenceKey) {
+	public InstanceViewController(IPreferenceStore preferences, String preferenceKey) {
 		super(new InstanceViewExtension(), preferences, preferenceKey);
 	}
 
