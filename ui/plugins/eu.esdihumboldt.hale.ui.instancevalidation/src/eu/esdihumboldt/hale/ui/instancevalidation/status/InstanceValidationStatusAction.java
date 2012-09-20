@@ -21,9 +21,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -34,6 +33,7 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationListener;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
+import eu.esdihumboldt.hale.ui.views.properties.handler.OpenPropertiesHandler;
 import eu.esdihumboldt.hale.ui.views.report.ReportList;
 
 /**
@@ -68,14 +68,14 @@ public class InstanceValidationStatusAction extends Action {
 
 	@Override
 	public void run() {
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		try {
 			// show report view, select report
-			ReportList reportView = (ReportList) page.showView(ReportList.ID);
+			ReportList reportView = (ReportList) window.getActivePage().showView(ReportList.ID);
 			reportView.selectReport(report);
 
 			// and show properties view
-			page.showView(IPageLayout.ID_PROP_SHEET);
+			OpenPropertiesHandler.unpinAndOpenPropertiesView(window);
 		} catch (PartInitException e) {
 			// if it's not there we cannot do anything
 		}
