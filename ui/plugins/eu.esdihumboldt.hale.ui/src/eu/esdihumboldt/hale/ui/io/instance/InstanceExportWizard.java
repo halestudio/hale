@@ -154,7 +154,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 				}
 				else {
 					// error message
-					log.userError(report.getSummary());
+					log.userError(report.getSummary() + "\nPlease see the report for more details.");
 				}
 			} catch (IOProviderConfigurationException e) {
 				log.userError("The validator could not be executed", e);
