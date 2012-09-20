@@ -72,6 +72,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SkipGeometryValidation;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionBinding;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionEnumeration;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.UnionValidationConstraint;
@@ -578,6 +579,7 @@ public abstract class XmlTypeUtil {
 			// the value
 			// XXX should this be done in handler?!
 			type.setConstraint(AugmentedValueFlag.ENABLED);
+			type.setConstraint(SkipGeometryValidation.getInstance());
 		} catch (GeometryNotSupportedException e) {
 			// ignore - is no geometry or is not recognized
 		}
