@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -93,6 +94,17 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	@Override
 	public void addChild(ChildDefinition<?> child) {
 		declaredChildren.addChild(child);
+	}
+
+	/**
+	 * Get the unmodifiable map of inherited children.
+	 * 
+	 * @return the inherited children, names mapped to definitions
+	 */
+	protected Map<QName, ChildDefinition<?>> getInheritedChildren() {
+		initInheritedChildren();
+
+		return Collections.unmodifiableMap(inheritedChildren);
 	}
 
 	/**
