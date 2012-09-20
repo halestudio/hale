@@ -155,6 +155,9 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 	@Override
 	public void setInput(Collection<? extends Message> messages, MessageType type) {
 		treeViewer.setInput(messages);
+
+		// initially expand all levels
+		treeViewer.expandAll();
 	}
 
 	/**
