@@ -17,6 +17,8 @@
 package eu.esdihumboldt.hale.io.xsd.reader.internal;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -46,14 +48,34 @@ public class XmlTypeDefinition extends DefaultTypeDefinition {
 	 */
 	@Override
 	public Collection<? extends ChildDefinition<?>> getChildren() {
-		if (getConstraint(RestrictionFlag.class).isEnabled()
-				&& !getConstraint(HasValueFlag.class).isEnabled()) {
-			/*
-			 * XXX For restrictions (on complex types) assume that all
-			 * properties are redefined if needed. FIXME is this correct?
-			 */
-			// only return declared properties
-			return getDeclaredChildren();
+		if (getConstraint(RestrictionFlag.class).isEnabled()) {
+			if (!getConstraint(HasValueFlag.class).isEnabled()) {
+				/*
+				 * XXX For restrictions (on complex types) assume that all
+				 * properties are redefined if needed. FIXME is this correct?
+				 */
+				// only return declared properties
+				// FIXME should here also the technique below be used? (maybe
+				// improved/adapted as order matters for elements)
+				return getDeclaredChildren();
+			}
+			else {
+				// restriction on simple type
+				Collection<? extends ChildDefinition<?>> declaredChildren = getDeclaredChildren();
+				if (declaredChildren.isEmpty()) {
+					return super.getChildren();
+				}
+
+				// if there are declared children, they may override the
+				// inherited children
+				Map<QName, ChildDefinition<?>> children = new HashMap<QName, ChildDefinition<?>>(
+						getInheritedChildren());
+				for (ChildDefinition<?> child : declaredChildren) {
+					children.put(child.getName(), child);
+				}
+
+				return children.values();
+			}
 		}
 
 		return super.getChildren();
