@@ -27,6 +27,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -52,6 +54,7 @@ import eu.esdihumboldt.hale.ui.service.report.ReportListener;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
+import eu.esdihumboldt.hale.ui.views.properties.handler.OpenPropertiesHandler;
 
 /**
  * This is the Report view.
@@ -70,7 +73,7 @@ public class ReportList extends PropertiesViewPart implements
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.report.ReportList"; //$NON-NLS-1$
 
 	private TreeViewer _treeViewer;
-	private ReportService repService;
+	private final ReportService repService;
 
 	/**
 	 * Constructor.
@@ -205,6 +208,15 @@ public class ReportList extends PropertiesViewPart implements
 
 		// set selection provider
 		getSite().setSelectionProvider(_treeViewer);
+
+		_treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				OpenPropertiesHandler.unpinAndOpenPropertiesView(PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow());
+			}
+		});
 
 		// load all added reports
 		this.loadReports();
