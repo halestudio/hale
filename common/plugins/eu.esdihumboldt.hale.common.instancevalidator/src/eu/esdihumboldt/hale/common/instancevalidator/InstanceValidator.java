@@ -57,6 +57,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.SkipValidation;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
@@ -182,6 +183,11 @@ public class InstanceValidator {
 			QName type, List<QName> path, boolean onlyCheckExistingChildren,
 			InstanceReference reference, InstanceValidationContext context) {
 		TypeDefinition typeDef = instance.getDefinition();
+
+		if (skipValidation(typeDef, instance)) {
+			return;
+		}
+
 		for (Entry<Class<TypeConstraint>, TypeConstraintValidator> entry : ConstraintValidatorExtension
 				.getInstance().getTypeConstraintValidators().entrySet())
 			try {
@@ -194,6 +200,19 @@ public class InstanceValidator {
 
 		validateGroupChildren(instance, reporter, type, path, onlyCheckExistingChildren, reference,
 				context);
+	}
+
+	/**
+	 * Determines if validation should be skipped for a certain property type
+	 * and value.
+	 * 
+	 * @param typeDef the property type
+	 * @param value the property value
+	 * @return if validation should be skipped for the property and its children
+	 */
+	protected static boolean skipValidation(TypeDefinition typeDef, Object value) {
+		SkipValidation skip = typeDef.getConstraint(SkipValidation.class);
+		return skip.skipValidation(value);
 	}
 
 	/**
@@ -359,11 +378,16 @@ public class InstanceValidator {
 						reporter.warn(new DefaultInstanceValidationMessage(reference, type,
 								new ArrayList<QName>(path), "Wrong group", "A property is no group"));
 					else if (childDef.asProperty() != null) {
-						MutableInstance instance = new DefaultInstance(childDef.asProperty()
-								.getPropertyType(), null);
-						instance.setValue(property);
-						validateInstance(instance, reporter, type, path, onlyCheckExistingChildren,
-								reference, context);
+						if (!skipValidation(childDef.asProperty().getPropertyType(), property)) {
+							// don't skip property
+
+							// wrap value in dummy instance for type validation
+							MutableInstance instance = new DefaultInstance(childDef.asProperty()
+									.getPropertyType(), null);
+							instance.setValue(property);
+							validateInstance(instance, reporter, type, path,
+									onlyCheckExistingChildren, reference, context);
+						}
 					}
 				}
 			}
