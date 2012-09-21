@@ -18,67 +18,28 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import com.google.common.io.Files;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
-import eu.esdihumboldt.hale.common.core.io.project.model.Project;
-import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
- * Load project from a zip-archive
+ * Load project from a zip-archive (created by {@link ArchiveProjectWriter})
  * 
  * @author Patrick Lieb
  */
-public class ArchiveProjectReader extends AbstractImportProvider implements
-		ProjectReader {
+public class ArchiveProjectReader extends AbstractProjectReader {
 
-	private Project project;
-
-	private Map<String, ProjectFile> projectFiles;
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
-	 */
-	@Override
-	public boolean isCancelable() {
-		return false;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectReader#setProjectFiles(java.util.Map)
-	 */
-	@Override
-	public void setProjectFiles(Map<String, ProjectFile> projectFiles) {
-		this.projectFiles = projectFiles;
-
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectReader#getProjectFiles()
-	 */
-	@Override
-	public Map<String, ProjectFile> getProjectFiles() {
-		return projectFiles;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectReader#getProject()
-	 */
-	@Override
-	public Project getProject() {
-		return project;
-	}
+	private static final ALogger log = ALoggerFactory.getLogger(ArchiveProjectReader.class);
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
@@ -87,91 +48,79 @@ public class ArchiveProjectReader extends AbstractImportProvider implements
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		
+
 		XMLProjectReader reader = new XMLProjectReader();
 
+		// copy resources to a temporary directory
 		File tempDir = Files.createTempDir();
-
 		getZipFiles(getSource().getInput(), tempDir);
-		
+
+		// create the project file via XMLProjectReader
 		File baseFile = new File(tempDir, "project.halex");
-		LocatableInputSupplier<FileInputStream> source = new FileIOSupplier(
-				baseFile);
+		LocatableInputSupplier<FileInputStream> source = new FileIOSupplier(baseFile);
 		setSource(source);
 		reader.setSource(source);
 		IOReport report = reader.execute(progress, reporter);
-		project = reader.getProject();
+		setProject(reader.getProject());
 
+		// delete the temporary directory
 		deleteDirectory(tempDir);
 
-		return report; 
+		return report;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
-	 */
-	@Override
-	protected String getDefaultTypeName() {
-		return null;
-	}
+	// extract all files from the InputStream to the destination
+	// InputStream must be based on a zip file
+	// destination file has to be a directory
+	private void getZipFiles(InputStream file, File destination) throws IOException {
+		byte[] buf = new byte[1024];
+		ZipInputStream zipinputstream = null;
+		ZipEntry zipentry;
+		zipinputstream = new ZipInputStream(file);
 
-	private void getZipFiles(InputStream file, File destination) {
-			byte[] buf = new byte[1024];
-			ZipInputStream zipinputstream = null;
-			ZipEntry zipentry;
-			zipinputstream = new ZipInputStream(file);
+		try {
+			while ((zipentry = zipinputstream.getNextEntry()) != null) {
+				String entryName = zipentry.getName();
+				int n;
+				FileOutputStream fileoutputstream;
+				File newFile = new File(entryName);
+				String directory = newFile.getParent();
 
-			try {
-				while ((zipentry = zipinputstream.getNextEntry()) != null) {
-					String entryName = zipentry.getName();
-					int n;
-					FileOutputStream fileoutputstream;
-					File newFile = new File(entryName);
-					String directory = newFile.getParent();
-
-					if (directory != null) {
-						File newF = new File(destination.getAbsolutePath() + "/"
-								+ directory);
-						try{
+				if (directory != null) {
+					File newF = new File(destination.getAbsolutePath() + "/" + directory);
+					try {
 						newF.mkdirs();
-						} catch (SecurityException e){
-							// TODO: exception handling
-						}
+					} catch (SecurityException e) {
+						log.debug("Can not create directories because of SecurityManager", e);
 					}
-
-					File nf = new File(destination.getAbsolutePath() + "/"
-							+ entryName);
-					fileoutputstream = new FileOutputStream(nf);
-
-					while ((n = zipinputstream.read(buf, 0, 1024)) > -1)
-						fileoutputstream.write(buf, 0, n);
-
-					fileoutputstream.close();
-					zipinputstream.closeEntry();
-
 				}
-			} catch (FileNotFoundException e) {
-				// TODO: exception handling
-			} catch (SecurityException e){
-				// TODO: exception handling
-			} catch (IOException e) {
-				// TODO: exception handling
-			}
 
-			try {
-				zipinputstream.close();
-			} catch (IOException e) {
-				// TODO: exception handling
+				File nf = new File(destination.getAbsolutePath() + "/" + entryName);
+				fileoutputstream = new FileOutputStream(nf);
+
+				while ((n = zipinputstream.read(buf, 0, 1024)) > -1)
+					fileoutputstream.write(buf, 0, n);
+
+				fileoutputstream.close();
+				zipinputstream.closeEntry();
+
 			}
+		} catch (FileNotFoundException e) {
+			throw new IOException("Destination directory not found", e);
+		}
+
+		zipinputstream.close();
 	}
 
+	// delete the complete directory
 	private void deleteDirectory(File directory) {
 		if (directory.exists()) {
 			File[] fileList = directory.listFiles();
 			for (int i = fileList.length - 1; i > 0; i--) {
 				if (fileList[i].isDirectory()) {
 					deleteDirectory(fileList[i]);
-				} else {
+				}
+				else {
 					fileList[i].deleteOnExit();
 				}
 			}
