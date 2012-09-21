@@ -145,9 +145,13 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 
 			@Override
 			public String getText(Object element) {
-				// XXX show more information out of the CodeEntry?
-				if (element instanceof CodeEntry)
-					return ((CodeEntry) element).getName();
+				if (element instanceof CodeEntry) {
+					CodeEntry e = (CodeEntry) element;
+					if (e.getName().equals(e.getIdentifier()))
+						return e.getName();
+					else
+						return e.getName() + " (" + e.getIdentifier() + ")";
+				}
 				else
 					return super.getText(element);
 			}
@@ -264,7 +268,6 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 	}
 
 	private void updateCodeList() {
-		// TODO how to handle enumeration + code list?
 		values = new ArrayList<Object>();
 		if (enumerationValues != null)
 			values.addAll(enumerationValues);
@@ -276,12 +279,19 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 			codeList = clService.findCodeListByIdentifier(codeListNamespace, codeListName);
 		if (codeList != null) {
 			// XXX check values against validator and binding?
+			// XXX currently codeList is ignored for enumerations
 			if (values.isEmpty())
 				values.addAll(codeList.getEntries());
 		}
 		values.trimToSize();
 
+		// save valid stringValue or combo text if not available
+		String oldValue = stringValue != null ? stringValue : viewer.getCombo().getText();
+
 		viewer.setInput(values);
+
+		// set old value again
+		viewer.getCombo().setText(oldValue);
 	}
 
 	/**
@@ -374,10 +384,19 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 	 */
 	@Override
 	public void setAsText(String text) {
-		// Simply set as string IF other values are allowed. Check against
-		// enumeration otherwise.
-		if (otherValuesAllowed || values.contains(text))
+		if (values == null || values.isEmpty())
 			viewer.getCombo().setText(text);
+		else if (enumerationValues != null) {
+			// enumeration -> ignore value if it isn't valid
+			if (otherValuesAllowed || enumerationValues.contains(text))
+				viewer.getCombo().setText(text);
+		}
+		else {
+			// a code list is assigned -> try to find matching entry
+			CodeEntry entry = codeList.getEntryByIdentifier(text);
+			if (entry != null)
+				viewer.setSelection(new StructuredSelection(entry));
+		}
 	}
 
 	/**
