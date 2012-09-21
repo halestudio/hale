@@ -70,6 +70,8 @@
          </topic>
          <topic href="html/tasks/data/save_transformation.html" label="Save the transformation result">
          </topic>
+         <topic href="html/tasks/data/transform_data.html" label="Transform data">
+         </topic>
          <anchor id="tasks_data"/>
       </topic>
       <topic label="Alignment/Mapping">
