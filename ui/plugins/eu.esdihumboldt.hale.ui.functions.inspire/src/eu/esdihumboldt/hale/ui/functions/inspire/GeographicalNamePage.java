@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -64,18 +63,19 @@ import eu.esdihumboldt.hale.ui.functions.inspire.internal.Messages;
 /**
  * Wizard page for the inspire geographical name function
  * 
+ * @author Anna Pitaev
  * @author Kevin Mais
  */
 public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
 		implements GeographicalNameFunction, ParameterPage, GeographicalNamePageConstants {
 
 	private ComboViewer nameSpellingText;
-	private StyledText nameSpellingScript;
-	private StyledText nameSpellingTransliteration;
+	private Text nameSpellingScript;
+	private Text nameSpellingTransliteration;
 	private Text namePronounciationSounds;
-	private StyledText namePronounciationIPA;
-	private StyledText nameLanguageText;
-	private StyledText nameSourceText;
+	private Text namePronounciationIPA;
+	private Text nameLanguageText;
+	private Text nameSourceText;
 	private Combo nameStatusCombo;
 	private Combo nameNativenessCombo;
 	private Combo nameGenderCombo;
@@ -104,7 +104,6 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	public GeographicalNamePage() {
 		super("geographic", Messages.GeographicNameFunctionWizard_2, null);
 		this.spellings = new ArrayList<SpellingType>();
-
 	}
 
 	/**
@@ -122,8 +121,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#setParameter(java.util.Set,
-	 *      com.google.common.collect.ListMultimap)
+	 * @see ParameterPage#setParameter(Set, ListMultimap)
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
@@ -151,7 +149,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
+	 * @see ParameterPage#getConfiguration()
 	 */
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
@@ -235,13 +233,11 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		final Label nameLanguageLabel = new Label(configurationComposite, SWT.NONE);
 		nameLanguageLabel.setText(LANGUAGE_LABEL_TEXT);
 
-		this.nameLanguageText = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
+		this.nameLanguageText = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameLanguageText.setLayoutData(configurationLayoutData);
 		String languageCode = null;
 		if (getLanguage() != null && !getLanguage().equals("")) { //$NON-NLS-1$
 			languageCode = getLanguage();
-			this.nameLanguageText.setCaretOffset(languageCode.length());
-
 		}
 		else {
 			languageCode = ISO_CODE_ENG;
@@ -249,7 +245,6 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		this.nameLanguageText.setText(languageCode);
 		setLanguage(languageCode);
 
-		this.nameLanguageText.setCaretOffset(languageCode.length());
 		this.nameLanguageText.setEnabled(true);
 		this.nameLanguageText.setTabs(0);
 		this.nameLanguageText.addModifyListener(new ModifyListener() {
@@ -257,7 +252,6 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 			@Override
 			public void modifyText(ModifyEvent e) {
 				language = nameLanguageText.getText();
-
 			}
 
 		});
@@ -265,7 +259,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Source of Name
 		final Label nameSourceLabel = new Label(configurationComposite, SWT.NONE);
 		nameSourceLabel.setText(SOURCE_OF_NAME_LABEL_TEXT);
-		this.nameSourceText = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
+		this.nameSourceText = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameSourceText.setLayoutData(configurationLayoutData);
 		String nameSource = null;
 		if (getSourceOfName() != null
@@ -279,7 +273,6 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 
 		this.nameSourceText.setText(nameSource);
 		setSourceOfName(nameSource);
-		this.nameSourceText.setCaretOffset(nameSource.length());
 		this.nameSourceText.setEnabled(true);
 		this.nameSourceText.addModifyListener(new ModifyListener() {
 
@@ -366,7 +359,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 
 		});
 
-		// Gramatical Gender
+		// Grammatical Gender
 		final Label genderLabel = new Label(configurationComposite, SWT.NONE);
 		genderLabel.setText(GRAMMATICAL_GENDER_LABEL_TEXT);
 		this.nameGenderCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
@@ -397,7 +390,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 
 		});
 
-		// Gramatical Number
+		// Grammatical Number
 		final Label numberLabel = new Label(configurationComposite, SWT.NONE);
 		numberLabel.setText(GRAMMATICAL_NUMBER_LABEL_TEXT);
 		this.nameNumberCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
@@ -481,7 +474,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// IPA
 		final Label namePronounciatiationIPALabel = new Label(configurationComposite, SWT.NONE);
 		namePronounciatiationIPALabel.setText(IPA_LABEL_TEXT);
-		this.namePronounciationIPA = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
+		this.namePronounciationIPA = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.namePronounciationIPA.setLayoutData(configurationLayoutData);
 		this.namePronounciationIPA.setEnabled(true);
 		this.namePronounciationIPA.setTabs(0);
@@ -491,7 +484,6 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		}
 		this.namePronounciationIPA.setText(ipa);
 		setIpa(ipa);
-		this.namePronounciationIPA.setCaretOffset(ipa.length());
 		this.namePronounciationIPA.addModifyListener(new ModifyListener() {
 
 			@Override
@@ -501,11 +493,9 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 			}
 
 		});
-
 	}
 
 	private void createSpellingGroup(Composite parent) {
-
 		// define Spelling Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(SPELLING_GROUP_TEXT);
@@ -535,31 +525,35 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// or get the known information about the cell to be edited
 		if (getSpellings() == null || getSpellings().size() == 0) {
 			spellings = new ArrayList<SpellingType>();
-			for (Entity item : getWizard().getUnfinishedCell().getSource().values()) {
-				int i = 0;
-				Definition<?> entity = item.getDefinition().getDefinition();
-				if (entity instanceof PropertyDefinition) {
-					SpellingType sp = new SpellingType((PropertyDefinition) entity);
-					// set the same script value if you had a value before
-					if (scripts != null && i < scripts.size()) {
-						sp.setScript(scripts.get(i));
+			ListMultimap<String, ? extends Entity> source = getWizard().getUnfinishedCell()
+					.getSource();
+			if (source != null) {
+				for (Entity item : source.values()) {
+					int i = 0;
+					Definition<?> entity = item.getDefinition().getDefinition();
+					if (entity instanceof PropertyDefinition) {
+						SpellingType sp = new SpellingType((PropertyDefinition) entity);
+						// set the same script value if you had a value before
+						if (scripts != null && i < scripts.size()) {
+							sp.setScript(scripts.get(i));
+						}
+						else {
+							// else set the default value
+							sp.setScript(ISO_CODE_ENG);
+						}
+						// set the same transliteration value if you had a value
+						// before
+						if (trans != null && i < trans.size()) {
+							sp.setTransliteration(trans.get(i));
+						}
+						else {
+							// else set the default value
+							sp.setTransliteration("");
+						}
+						spellings.add(sp);
 					}
-					else {
-						// else set the default value
-						sp.setScript(ISO_CODE_ENG);
-					}
-					// set the same transliteration value if you had a value
-					// before
-					if (trans != null && i < trans.size()) {
-						sp.setTransliteration(trans.get(i));
-					}
-					else {
-						// else set the default value
-						sp.setTransliteration("");
-					}
-					spellings.add(sp);
+					i++;
 				}
-				i++;
 			}
 		}
 		else {
@@ -646,9 +640,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 							&& !activeSpelling.getTransliteration().equals("")) //$NON-NLS-1$
 						transliteration = activeSpelling.getTransliteration();
 					nameSpellingScript.setText(script);
-					nameSpellingScript.setCaretOffset(script.length());
 					nameSpellingTransliteration.setText(transliteration);
-					nameSpellingTransliteration.setCaretOffset(transliteration.length());
 				}
 			}
 		});
@@ -656,50 +648,44 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Script
 		final Label nameSpellingScriptLabel = new Label(configurationComposite, SWT.NONE);
 		nameSpellingScriptLabel.setText(SCRIPT_LABEL_TEXT);
-		this.nameSpellingScript = new StyledText(configurationComposite, SWT.BORDER | SWT.SINGLE);
+		this.nameSpellingScript = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameSpellingScript.setLayoutData(configurationLayoutData);
 		this.nameSpellingScript.setEnabled(true);
 		this.nameSpellingScript.setTabs(0);
 		String script = "eng"; //$NON-NLS-1$
 		// read script from the active spelling
-		if (activeSpelling.getScript() != null)
+		if (activeSpelling != null && activeSpelling.getScript() != null)
 			script = activeSpelling.getScript();
 		// set default value for script
 		this.nameSpellingScript.setText(script);
-		this.nameSpellingScript.setCaretOffset(script.length());
 		this.nameSpellingScript.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
 				activeSpelling.setScript(nameSpellingScript.getText());
-
 			}
 		});
 
 		// Transliteration
 		final Label nameSpellingTransliterationLabel = new Label(configurationComposite, SWT.NONE);
 		nameSpellingTransliterationLabel.setText(TRANSLITERATION_LABEL_TEXT);
-		this.nameSpellingTransliteration = new StyledText(configurationComposite, SWT.BORDER
-				| SWT.SINGLE);
+		this.nameSpellingTransliteration = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameSpellingTransliteration.setLayoutData(configurationLayoutData);
 		this.nameSpellingTransliteration.setEnabled(true);
 		this.nameSpellingTransliteration.setTabs(0);
 		// read script from the active spelling
 		String transliteration = ""; //$NON-NLS-1$
-		if (activeSpelling.getTransliteration() != null)
+		if (activeSpelling != null && activeSpelling.getTransliteration() != null)
 			transliteration = activeSpelling.getTransliteration();
 		// set default value for transliteration
 		this.nameSpellingTransliteration.setText(transliteration);
-		this.nameSpellingTransliteration.setCaretOffset(transliteration.length());
 		this.nameSpellingTransliteration.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
 				activeSpelling.setTransliteration(nameSpellingTransliteration.getText());
-
 			}
 		});
-
 	}
 
 	/**
