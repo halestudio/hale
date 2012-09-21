@@ -15,8 +15,11 @@ package eu.esdihumboldt.hale.common.core.io.project.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,196 +44,234 @@ import org.xml.sax.SAXException;
 
 import com.google.common.io.Files;
 
+import de.cs3d.util.logging.ALogger;
+import de.cs3d.util.logging.ALoggerFactory;
+
 /**
  * Update the xml schema to store/load in archives
  * 
  * @author Patrick Lieb
  */
-// implements ResourceHandler
 public class XMLSchemaUpdater {
-	
-	private List<File> imports = new ArrayList<File>();
+
+	private static final ALogger log = ALoggerFactory.getLogger(XMLSchemaUpdater.class);
+
+	private final Map<File, File> imports = new HashMap<File, File>();
+
+	private static String IMPORT = "schema/import";
+	private static String INCLUDE = "schema/include";
+
+	// every resource should have his own directory
+	private static int COUNT = 0;
 
 	/**
-	 * @param resource
-	 *            the file of the new resource
-	 * @param oldFile
-	 *            the file of the old resource
-	 * @see eu.esdihumboldt.hale.common.core.io.ResourceHandler#execute()
+	 * @param resource the file of the new resource
+	 * @param oldFile the file of the old resource
+	 * @throws IOException if file can not be updated
 	 */
-	// @Override
-	public void execute(File resource, File oldFile) {
+	public void update(File resource, File oldFile) throws IOException {
 
-		File res = resource;
-		File old = oldFile;
-		
-		changeNodeAndCopyFile(res, old, "schema/import");
+//		File res = resource;
+//		File old = oldFile;
 
-		changeNodeAndCopyFile(resource, oldFile, "schema/include");
+		changeNodeAndCopyFile(resource, oldFile, IMPORT);
+
+		changeNodeAndCopyFile(resource, oldFile, INCLUDE);
 	}
 
-	private void changeNodeAndCopyFile(File res, File old, String path){
-		
-		
-		File resource = res;
-		File oldRes = old;
+	private void changeNodeAndCopyFile(File currentSchema, File oldPath, String xPathExpression)
+			throws IOException {
+
+		File curSchema = currentSchema;
+		File oldSchemaPath = oldPath;
 
 		DocumentBuilder builder = null;
 		try {
 			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.debug("Can not create a DocumentBuilder", e);
 			return;
 		}
 		builder.setEntityResolver(new EntityResolver() {
+
 			@Override
-			public InputSource resolveEntity(String publicId, String systemId)
-					throws SAXException, IOException {
+			public InputSource resolveEntity(String publicId, String systemId) throws SAXException,
+					IOException {
 
 				return new InputSource(new StringReader(""));
 			}
 		});
-		
+
 		Document doc = null;
 		try {
-			doc = builder.parse(resource);
+			doc = builder.parse(curSchema);
 		} catch (SAXException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new IOException("Can not parse resource " + curSchema.toString(), e1);
 		}
-		
-		// find schemaLocation of import and resolve address
+
+		// find schemaLocation of imports/includes via XPath
 		XPath xpath = XPathFactory.newInstance().newXPath();
-		Node identifier = null;
+		NodeList nodelist = null;
 		try {
-			identifier = ((NodeList) xpath.evaluate(path, doc,
-					XPathConstants.NODESET)).item(0);
+			nodelist = ((NodeList) xpath.evaluate(xPathExpression, doc, XPathConstants.NODESET));
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// should not happen because of constant variables IMPORT and
+			// INCLUDE
+			log.debug("The XPathExpression is wrong", e);
 			return;
 		}
-		if (identifier == null)
-			return;
-		Node locationNode = identifier.getAttributes().getNamedItem(
-				"schemaLocation");
-		
-		String location = locationNode.getNodeValue();
 
-		// XXX better check for local file?
-		if (!location.startsWith("http")) {
-
-			File oldFile = oldRes;
-			// get directory of the file
-			String locationCheck = location;
-			oldFile = oldFile.getParentFile();
-			while (locationCheck.startsWith("../")) {
-				locationCheck = locationCheck.substring(
-						locationCheck.indexOf("../") + 3,
-						locationCheck.length());
-			}
-			// the absolute location of the old resource
-			oldFile = new File(oldFile, location);
-			try {
-				oldFile = oldFile.getCanonicalFile();
-			} catch (IOException e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			}
-			if(imports.contains(oldFile))
+		// iterate over all imports or includes and get the schemaLocations
+		for (int i = 0; i < nodelist.getLength(); i++) {
+			Node identifier = nodelist.item(i);
+			if (identifier == null)
 				return;
+			Node locationNode = identifier.getAttributes().getNamedItem("schemaLocation");
+			String location = locationNode.getNodeValue();
 
-//			if(!resource.isDirectory())
-//				resource = resource.getParentFile();
-			// the new absolute location where resource should be copied to
-			resource = resource.getParentFile();
-			// if(!location.contains("/")){
-			//
-			// location = "/" + location;
-			// }
-				
-				
-			File newFile = new File(resource, locationCheck);
+			URI file = null;
 			try {
-				newFile = newFile.getCanonicalFile();
-				newFile.getParentFile().mkdirs();
-			} catch (IOException e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
+				file = new URI(location);
+			} catch (URISyntaxException e1) {
+				log.debug("The schemaLocation is no valid file", e1);
+				continue;
 			}
+			// only local resources have to be updated
+			if (file.getScheme() == null || file.getScheme().equals("file")) {
 
-			// copy to correct directory
-			try {
-				Files.copy(oldFile.getCanonicalFile(),
-						newFile.getCanonicalFile());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				File includedOldFile = oldSchemaPath;
+				String filename = location;
+				if (location.contains("/"))
+					filename = location.substring(location.lastIndexOf("/"));
+				includedOldFile = includedOldFile.getParentFile();
+
+				// every file needs his own directory because if name conflicts
+				filename = COUNT + "/" + filename;
+
+				// the absolute location of the included xml schema
+				includedOldFile = new File(includedOldFile, location);
+//				oldFile = oldFile.getCanonicalFile();
+
+				File includednewFile = null;
+
+				if (imports.containsKey(includedOldFile)) {
+					// if the current xml schema is already updated we have to
+					// find the relative path to this resource
+					String relative = getRelativePath(imports.get(includedOldFile).toURI()
+							.toString(), currentSchema.toURI().toString(), "/");
+					locationNode.setNodeValue(relative);
+				}
+				else {
+
+					// we need the directory of the file
+					curSchema = currentSchema.getParentFile();
+
+					// path where included schema should be copied to
+					includednewFile = new File(curSchema, filename);
+//					newFile = newFile.getCanonicalFile();
+					try {
+						includednewFile.getParentFile().mkdirs();
+					} catch (SecurityException e) {
+						throw new IOException("Can not create directories "
+								+ includednewFile.getParent(), e);
+					}
+
+					// copy to new directory
+					Files.copy(includedOldFile, includednewFile);
+
+					// set new location in the xml schema
+					locationNode.setNodeValue(filename);
+
+					// every xml schema should be updated (and copied) only once
+					// so we save the currently adapted resource in a map
+					imports.put(includedOldFile, includednewFile);
+				}
+
+				// write new XML-File
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = null;
+				try {
+					transformer = transformerFactory.newTransformer();
+				} catch (TransformerConfigurationException e) {
+					log.debug("Can not create transformer for creating XMl file", e);
+					return;
+				}
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = null;
+				result = new StreamResult(currentSchema);
+				try {
+					transformer.transform(source, result);
+				} catch (TransformerException e) {
+					log.debug("Can not create new XMl file", e);
+					return;
+				}
+
+				COUNT += 1;
+
+				// if the newFile is not null we found a new file which is not
+				// read yet so we have to update it
+				if (includednewFile != null) {
+					update(includednewFile, includedOldFile);
+
+				}
 			}
-
-			locationNode.setNodeValue("./" + locationCheck);
-
-			// write new XML-File
-			TransformerFactory transformerFactory = TransformerFactory
-					.newInstance();
-			Transformer transformer = null;
-			try {
-				transformer = transformerFactory.newTransformer();
-			} catch (TransformerConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return;
-			}
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = null;
-			result = new StreamResult(res);
-			try {
-				transformer.transform(source, result);
-			} catch (TransformerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			imports.add(oldFile);
-			execute(newFile, oldFile);
-
 		}
 	}
 
-	// /**
-	// * @see
-	// eu.esdihumboldt.hale.common.core.io.ResourceHandler#setDirectory(java.io.File)
-	// */
-	// @Override
-	// public void setDirectory(File directory) {
-	// this.directory = directory;
-	//
-	// }
-	//
-	// /**
-	// * @see
-	// eu.esdihumboldt.hale.common.core.io.ResourceHandler#setResource(java.io.File)
-	// */
-	// @Override
-	// public void setResource(File resource) {
-	// this.resource = resource;
-	//
-	// }
+	// this solution is copied from stackoverflow
+	// (http://stackoverflow.com/a/1288584)
+	private String getRelativePath(String targetPath, String basePath, String pathSeparator) {
 
-	// private static String resolveAddress(String address, String newDirectory)
-	// {
-	// String absoluteAddress = "";
-	// if (!address.contains("../")) {
-	// return address;
-	// }
-	//
-	// absoluteAddress = newDirectory.replace("\\", "/").concat(
-	// address.substring(address.indexOf("../") + 2));
-	// return absoluteAddress;
-	// }
+		// We need the -1 argument to split to make sure we get a trailing
+		// "" token if the base ends in the path separator and is therefore
+		// a directory. We require directory paths to end in the path
+		// separator -- otherwise they are indistinguishable from files.
+		String[] base = basePath.split(Pattern.quote(pathSeparator), -1);
+		String[] target = targetPath.split(Pattern.quote(pathSeparator), 0);
+
+		// First get all the common elements. Store them as a string,
+		// and also count how many of them there are.
+		StringBuffer buf = new StringBuffer();
+		int commonIndex = 0;
+		for (int i = 0; i < target.length && i < base.length; i++) {
+
+			if (target[i].equals(base[i])) {
+				buf.append(target[i]).append(pathSeparator);
+				commonIndex++;
+			}
+			else
+				break;
+		}
+
+		String common = buf.toString();
+
+		if (commonIndex == 0) {
+			// Whoops -- not even a single common path element. This most
+			// likely indicates differing drive letters, like C: and D:.
+			// These paths cannot be relativized. Return the target path.
+			return targetPath;
+			// This should never happen when all absolute paths
+			// begin with / as in *nix.
+		}
+
+		String relative = "";
+		if (base.length == commonIndex) {
+			// Comment this out if you prefer that a relative path not start
+			// with ./
+			relative = "." + pathSeparator;
+		}
+		else {
+			int numDirsUp = base.length - commonIndex - 1;
+			// The number of directories we have to backtrack is the length of
+			// the base path MINUS the number of common path elements, minus
+			// one because the last element in the path isn't a directory.
+			for (int i = 1; i <= (numDirsUp); i++) {
+				relative += ".." + pathSeparator;
+			}
+		}
+		relative += targetPath.substring(common.length());
+
+		return relative;
+	}
 
 }
