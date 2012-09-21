@@ -28,7 +28,9 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -36,10 +38,12 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -55,6 +59,7 @@ import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.ui.instancevalidation.InstanceValidationUIPlugin;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
@@ -72,6 +77,7 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 
 	private TreeViewer treeViewer;
 	private InstanceValidationReportDetailsContentProvider contentProvider;
+	private Image reportImage;
 
 	/**
 	 * @see CustomReportDetailsPage#createControls(Composite)
@@ -145,6 +151,12 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 				showSelectionInDataView();
 			}
 		});
+
+		Image noReportBaseImage = InstanceValidationUIPlugin.getDefault().getImageRegistry()
+				.get(InstanceValidationUIPlugin.IMG_INSTANCE_VALIDATION);
+		reportImage = new DecorationOverlayIcon(noReportBaseImage, PlatformUI.getWorkbench()
+				.getSharedImages().getImageDescriptor(ISharedImages.IMG_DEC_FIELD_WARNING),
+				IDecoration.BOTTOM_LEFT).createImage();
 
 		return filteredTree;
 	}
@@ -229,10 +241,20 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 			try {
 				TransformedDataView transformedDataView = (TransformedDataView) page
 						.showView(TransformedDataView.ID);
-				transformedDataView.showSelection(selection);
+				transformedDataView.showSelection(selection, reportImage);
 			} catch (PartInitException e) {
 				// if it's not there, we cannot do anything
 			}
+		}
+	}
+
+	/**
+	 * @see CustomReportDetailsPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		if (reportImage != null) {
+			reportImage.dispose();
 		}
 	}
 
