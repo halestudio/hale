@@ -48,6 +48,11 @@ public interface CustomReportDetailsPage {
 	public void setInput(Collection<? extends Message> messages, MessageType type);
 
 	/**
+	 * Dispose resources.
+	 */
+	public void dispose();
+
+	/**
 	 * Enum constants indicating the type of {@link Message}.
 	 * 
 	 * @author Kai Schwierczek

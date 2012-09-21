@@ -71,8 +71,12 @@ public abstract class ReportDetailsPage extends AbstractPropertySection {
 					customPage = new DefaultReportDetailsPage();
 				if (page == null || page.getClass() != customPage.getClass()) {
 					// update shown page...
-					if (page != null && control != null)
+					if (page != null && control != null) {
+						// dispose controls
 						control.dispose();
+						// cleanup
+						page.dispose();
+					}
 					page = customPage;
 					control = page.createControls(parent);
 				}
@@ -113,4 +117,15 @@ public abstract class ReportDetailsPage extends AbstractPropertySection {
 	public boolean shouldUseExtraSpace() {
 		return true;
 	}
+
+	/**
+	 * @see AbstractPropertySection#dispose()
+	 */
+	@Override
+	public void dispose() {
+		if (page != null) {
+			page.dispose();
+		}
+	}
+
 }
