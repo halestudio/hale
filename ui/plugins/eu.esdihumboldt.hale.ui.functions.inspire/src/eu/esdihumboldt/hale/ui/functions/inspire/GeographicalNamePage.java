@@ -505,7 +505,6 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	}
 
 	private void createSpellingGroup(Composite parent) {
-
 		// define Spelling Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(SPELLING_GROUP_TEXT);
@@ -535,31 +534,35 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// or get the known information about the cell to be edited
 		if (getSpellings() == null || getSpellings().size() == 0) {
 			spellings = new ArrayList<SpellingType>();
-			for (Entity item : getWizard().getUnfinishedCell().getSource().values()) {
-				int i = 0;
-				Definition<?> entity = item.getDefinition().getDefinition();
-				if (entity instanceof PropertyDefinition) {
-					SpellingType sp = new SpellingType((PropertyDefinition) entity);
-					// set the same script value if you had a value before
-					if (scripts != null && i < scripts.size()) {
-						sp.setScript(scripts.get(i));
+			ListMultimap<String, ? extends Entity> source = getWizard().getUnfinishedCell()
+					.getSource();
+			if (source != null) {
+				for (Entity item : source.values()) {
+					int i = 0;
+					Definition<?> entity = item.getDefinition().getDefinition();
+					if (entity instanceof PropertyDefinition) {
+						SpellingType sp = new SpellingType((PropertyDefinition) entity);
+						// set the same script value if you had a value before
+						if (scripts != null && i < scripts.size()) {
+							sp.setScript(scripts.get(i));
+						}
+						else {
+							// else set the default value
+							sp.setScript(ISO_CODE_ENG);
+						}
+						// set the same transliteration value if you had a value
+						// before
+						if (trans != null && i < trans.size()) {
+							sp.setTransliteration(trans.get(i));
+						}
+						else {
+							// else set the default value
+							sp.setTransliteration("");
+						}
+						spellings.add(sp);
 					}
-					else {
-						// else set the default value
-						sp.setScript(ISO_CODE_ENG);
-					}
-					// set the same transliteration value if you had a value
-					// before
-					if (trans != null && i < trans.size()) {
-						sp.setTransliteration(trans.get(i));
-					}
-					else {
-						// else set the default value
-						sp.setTransliteration("");
-					}
-					spellings.add(sp);
+					i++;
 				}
-				i++;
 			}
 		}
 		else {
