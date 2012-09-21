@@ -428,7 +428,9 @@ public class ClassificationMappingParameterPage extends
 		if (fixedValueInputButton != null) {
 			fixedValueInputButton.dispose();
 			fixedValueInputButton = null;
-			fixedValueText.dispose();
+			if (fixedValueText != null) {
+				fixedValueText.dispose();
+			}
 			fixedValueText = null;
 			notClassifiedActionComposite.layout();
 			setPageComplete(true);
