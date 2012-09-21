@@ -21,14 +21,14 @@ import com.google.common.collect.Iterables;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;
 import eu.esdihumboldt.hale.ui.selection.impl.DefaultInstanceSelection;
-import eu.esdihumboldt.hale.ui.util.selection.AbstactSelectionProvider;
+import eu.esdihumboldt.hale.ui.util.selection.AbstractSelectionProvider;
 
 /**
  * Instance selection provider.
  * 
  * @author Simon Templer
  */
-public class SimpleInstanceSelectionProvider extends AbstactSelectionProvider {
+public class SimpleInstanceSelectionProvider extends AbstractSelectionProvider {
 
 	/**
 	 * Update the instance selection.
