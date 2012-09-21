@@ -55,9 +55,9 @@ public class SourceDataView extends AbstractDataView {
 
 	private Image instanceImage;
 
-	private InstanceServiceSelector instanceSelector;
+	private final InstanceServiceSelector instanceSelector;
 
-	private WindowSelectionSelector mapSelector;
+	private final WindowSelectionSelector mapSelector;
 
 	/**
 	 * Default constructor
@@ -126,7 +126,7 @@ public class SourceDataView extends AbstractDataView {
 
 		final Button mapButton = new Button(parent, SWT.RADIO);
 		if (mapImage == null) {
-			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
+			mapImage = DataViewPlugin.getImageDescriptor("icons/table.gif").createImage(); //$NON-NLS-1$
 		}
 		mapButton.setImage(mapImage);
 		mapButton.setToolTipText(Messages.ReferenceTableView_1); //$NON-NLS-1$

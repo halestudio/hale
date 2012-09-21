@@ -132,12 +132,20 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.views.report.properties.details.extension.CustomReportDetailsPage#setInput(java.util.Collection,
-	 *      eu.esdihumboldt.hale.ui.views.report.properties.details.extension.CustomReportDetailsPage.MessageType)
+	 * @see CustomReportDetailsPage#setInput(Collection,
+	 *      CustomReportDetailsPage.MessageType)
 	 */
 	@Override
 	public void setInput(Collection<? extends Message> messages, MessageType type) {
 		treeViewer.setInput(messages);
+	}
+
+	/**
+	 * @see CustomReportDetailsPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		// override me
 	}
 
 	/**
@@ -153,7 +161,7 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 		/**
 		 * Stacktrace message.
 		 */
-		private String stackTrace;
+		private final String stackTrace;
 
 		/**
 		 * Constructor.
@@ -178,7 +186,7 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 		/**
 		 * Contains the message.
 		 */
-		private Message m;
+		private final Message m;
 
 		/**
 		 * Constructor.

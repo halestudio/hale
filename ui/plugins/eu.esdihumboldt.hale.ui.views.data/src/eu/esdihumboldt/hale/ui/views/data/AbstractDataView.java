@@ -296,6 +296,8 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 	}
 
 	/**
+	 * Set the current instance selector.
+	 * 
 	 * @param instanceSelector the instance selector to set
 	 */
 	public void setInstanceSelector(InstanceSelector instanceSelector) {
@@ -303,7 +305,6 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 			return;
 
 		selectionFacade.setSelectionProvider(null); // disable selection
-													// provider
 
 		// remove listener
 		if (this.instanceSelector != null)

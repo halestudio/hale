@@ -57,11 +57,11 @@ public class TransformedDataView extends AbstractDataView {
 
 	private Image mapImage;
 
-	private InstanceServiceSelector instanceSelector;
+	private final InstanceServiceSelector instanceSelector;
 
-	private SampleTransformInstanceSelector sampleSelector;
+	private final SampleTransformInstanceSelector sampleSelector;
 
-	private WindowSelectionSelector mapSelector;
+	private final WindowSelectionSelector mapSelector;
 
 	private Button mapButton;
 	private List<Button> selectorButtons;
@@ -120,7 +120,7 @@ public class TransformedDataView extends AbstractDataView {
 
 		final Button sampleButton = new Button(parent, SWT.RADIO);
 		if (sampleImage == null) {
-			sampleImage = DataViewPlugin.getImageDescriptor("icons/table.gif").createImage(); //$NON-NLS-1$
+			sampleImage = DataViewPlugin.getImageDescriptor("icons/synced.gif").createImage(); //$NON-NLS-1$
 		}
 		sampleButton.setImage(sampleImage);
 		sampleButton.setSelection(true);
@@ -138,7 +138,7 @@ public class TransformedDataView extends AbstractDataView {
 
 		mapButton = new Button(parent, SWT.RADIO);
 		if (mapImage == null) {
-			mapImage = DataViewPlugin.getImageDescriptor("icons/map.gif").createImage(); //$NON-NLS-1$
+			mapImage = DataViewPlugin.getImageDescriptor("icons/table.gif").createImage(); //$NON-NLS-1$
 		}
 		mapButton.setImage(mapImage);
 		mapButton.setToolTipText(Messages.TransformedTableView_1); //$NON-NLS-1$
@@ -151,6 +151,7 @@ public class TransformedDataView extends AbstractDataView {
 			}
 
 		});
+		mapSelector.setActivator(mapButton);
 		selectorButtons.add(mapButton);
 	}
 
@@ -158,15 +159,16 @@ public class TransformedDataView extends AbstractDataView {
 	 * Show the given selection.
 	 * 
 	 * @param is the selection to show
+	 * @param image an image to show for the selection, may be <code>null</code>
 	 */
-	public void showSelection(InstanceSelection is) {
+	public void showSelection(InstanceSelection is, Image image) {
 		// mapButton.setSelected(true) neither fires an event (at least not
 		// directly), nor deselects the other buttons
 		for (Button b : selectorButtons)
 			b.setSelection(false);
 		mapButton.setSelection(true);
 		setInstanceSelector(mapSelector);
-		mapSelector.showSelection(is);
+		mapSelector.showSelection(is, image);
 	}
 
 	/**
