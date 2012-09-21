@@ -26,6 +26,9 @@
             <property
                   maxOccurrence="1"
                   minOccurrence="1">
+               <propertyCondition
+                     class="eu.esdihumboldt.cst.functions.inspire.InspireIdentifierTarget">
+               </propertyCondition>
             </property>
          </targetProperties>
          <sourceProperties>
