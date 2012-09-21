@@ -52,13 +52,13 @@ import eu.esdihumboldt.hale.ui.functions.inspire.internal.Messages;
 public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
 		implements ParameterPage, IdentifierFunction {
 
-	Text countryCode = null;
+	private Text countryCode = null;
 
-	Text providerName = null;
+	private Text providerName = null;
 
-	Text productName = null;
+	private Text productName = null;
 
-	Text version = null;
+	private Text version = null;
 
 	private Editor<?> nilEditor;
 
@@ -68,7 +68,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	private String initialVersion;
 	private String initialVersionNil;
 
-	private ListMultimap<String, String> configuration = ArrayListMultimap.create(5, 5);
+	private final ListMultimap<String, String> configuration = ArrayListMultimap.create(5, 5);
 
 	/**
 	 * /* Default Constructor
@@ -81,18 +81,24 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
 			ListMultimap<String, String> initialValues) {
-
-		initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0);
-		initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME).get(0);
-		initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0);
-		initialVersion = initialValues.get(VERSION).get(0);
-		initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0);
-
+		if (initialValues != null) {
+			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0);
+			initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME).get(0);
+			initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0);
+			initialVersion = initialValues.get(VERSION).get(0);
+			initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0);
+		}
+		else {
+			initialCountry = "";
+			initialProvider = "";
+			initialProduct = "";
+			initialVersion = "";
+			initialVersionNil = "";
+		}
 	}
 
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
-
 		configuration.put(COUNTRY_PARAMETER_NAME, countryCode.getText());
 		configuration.put(DATA_PROVIDER_PARAMETER_NAME, providerName.getText());
 		configuration.put(PRODUCT_PARAMETER_NAME, productName.getText());
@@ -146,8 +152,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		if (identifierType != null) {
 			PropertyDefinition propDef = null; //$NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
-				String namespace = child.getName().getNamespaceURI().toString();
-				if (namespace.equals("namespace")) {
+				String localName = child.getName().getLocalPart();
+				if (localName.equals("namespace")) {
 					if (child.asProperty() != null) {
 						propDef = child.asProperty();
 					}
@@ -203,8 +209,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		if (identifierType != null) {
 			PropertyDefinition propDef = null; //$NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
-				String namespace = child.getName().getNamespaceURI().toString();
-				if (namespace.equals("localId")) {
+				String LocalName = child.getName().getLocalPart();
+				if (LocalName.equals("localId")) {
 					if (child.asProperty() != null) {
 						propDef = child.asProperty();
 					}
@@ -235,8 +241,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		if (identifierType != null) {
 			PropertyDefinition propDef = null; //$NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
-				String namespace = child.getName().getNamespaceURI().toString();
-				if (namespace.equals("versionId")) {
+				String localName = child.getName().getLocalPart();
+				if (localName.equals("versionId")) {
 					if (child.asProperty() != null) {
 						propDef = child.asProperty();
 					}
@@ -261,8 +267,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		if (identifierType != null) {
 			PropertyDefinition propDef = null; //$NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
-				String namespace = child.getName().getLocalPart();
-				if (namespace.equals("versionId")) {
+				String localName = child.getName().getLocalPart();
+				if (localName.equals("versionId")) {
 					if (child.asProperty() != null) {
 						propDef = child.asProperty();
 					}
@@ -270,8 +276,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			}
 			if (propDef != null) {
 				for (ChildDefinition<?> child : propDef.getPropertyType().getChildren()) {
-					String namespace = child.getName().getNamespaceURI().toString();
-					if (namespace.equals("nilReason")) {
+					String localName = child.getName().getLocalPart();
+					if (localName.equals("nilReason")) {
 						if (child.asProperty() != null) {
 							propDef = child.asProperty();
 						}
@@ -281,7 +287,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			}
 			if (propDef != null) {
 				// label
-				Control nilLabel = dlf.createLabel(versGroup, def, false);
+				Control nilLabel = dlf.createLabel(versGroup, propDef, false);
 				nilLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
 				// editor
@@ -294,7 +300,6 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		}
 
 		setPageComplete(true);
-
 	}
 
 }
