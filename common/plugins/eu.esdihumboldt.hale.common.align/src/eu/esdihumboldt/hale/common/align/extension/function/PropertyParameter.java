@@ -122,12 +122,11 @@ public final class PropertyParameter extends AbstractParameter {
 	private static BindingCondition createBindingCondition(IConfigurationElement child) {
 		Class<?> bindingClass = ExtensionUtil.loadClass(child, "compatibleClass");
 		if (bindingClass != null) {
-			boolean allowConversion = Boolean.parseBoolean(child.getAttribute("allowConversion")); // defaults
-																									// to
-																									// false
-			boolean allowCollection = Boolean.parseBoolean(child.getAttribute("allowCollection")); // defaults
-																									// to
-																									// false
+			boolean allowConversion = Boolean.parseBoolean(child.getAttribute("allowConversion"));
+			// defaults to false
+
+			boolean allowCollection = Boolean.parseBoolean(child.getAttribute("allowCollection"));
+			// defaults to false
 
 			return new BindingCondition(bindingClass, allowConversion, allowCollection);
 		}
@@ -140,7 +139,7 @@ public final class PropertyParameter extends AbstractParameter {
 	}
 
 	/**
-	 * Get the property conditions
+	 * Get the property conditions. All conditions have to match.
 	 * 
 	 * @return the property conditions
 	 */
