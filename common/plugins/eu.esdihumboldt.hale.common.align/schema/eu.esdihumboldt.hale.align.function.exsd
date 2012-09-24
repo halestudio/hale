@@ -246,6 +246,7 @@ For references, e.g. to images, use absolute references to plugin and path, led 
             <element ref="bindingCondition"/>
             <element ref="propertyCondition"/>
             <element ref="geometryCondition"/>
+            <element ref="valueCondition"/>
          </choice>
          <attribute name="name" type="string">
             <annotation>
@@ -545,6 +546,32 @@ For references, e.g. to images, use absolute references to plugin and path, led 
                   <meta.attribute kind="java" basedOn="com.vividsolutions.jts.geom.Geometry:"/>
                </appinfo>
             </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="valueCondition">
+      <annotation>
+         <documentation>
+            Condition that matches properties that have a value of their own, i.e. the HasValueFlag or AugmentedValueFlag constraint is enabled.
+In principle this is a generalisation of the binding condition, missing the binding check.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="allowAugmented" use="default" value="true">
+            <annotation>
+               <documentation>
+                  If types with enabled AugmentedValueFlag should be accepted. Defaults to true.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="true">
+                  </enumeration>
+                  <enumeration value="false">
+                  </enumeration>
+               </restriction>
+            </simpleType>
          </attribute>
       </complexType>
    </element>

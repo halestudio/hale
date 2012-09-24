@@ -30,10 +30,15 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.PropertyTypeCondition;
+import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.impl.BindingCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.impl.GeometryCondition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
  * Represents a source or target property as parameter to a
@@ -44,6 +49,27 @@ import eu.esdihumboldt.hale.common.align.model.condition.impl.GeometryCondition;
 public final class PropertyParameter extends AbstractParameter {
 
 	private static final ALogger log = ALoggerFactory.getLogger(PropertyParameter.class);
+
+	private static final PropertyCondition VALUE_CONDITION = new PropertyTypeCondition(
+			new TypeCondition() {
+
+				@Override
+				public boolean accept(Type entity) {
+					TypeDefinition type = entity.getDefinition().getDefinition();
+					return type.getConstraint(HasValueFlag.class).isEnabled()
+							|| type.getConstraint(AugmentedValueFlag.class).isEnabled();
+				}
+			});
+
+	private static final PropertyCondition VALUE_CONDITION_STRICT = new PropertyTypeCondition(
+			new TypeCondition() {
+
+				@Override
+				public boolean accept(Type entity) {
+					TypeDefinition type = entity.getDefinition().getDefinition();
+					return type.getConstraint(HasValueFlag.class).isEnabled();
+				}
+			});
 
 	private final List<PropertyCondition> conditions;
 
@@ -82,6 +108,22 @@ public final class PropertyParameter extends AbstractParameter {
 					GeometryCondition gc = createGeometryCondition(child);
 					if (gc != null) {
 						result.add(new PropertyTypeCondition(gc));
+					}
+				}
+				else if (name.equals("valueCondition")) {
+					String attr = child.getAttribute("allowAugmented");
+					boolean allowAugmented;
+					if (attr == null || attr.isEmpty()) {
+						allowAugmented = true; // default value
+					}
+					else {
+						allowAugmented = Boolean.parseBoolean(attr);
+					}
+					if (allowAugmented) {
+						result.add(VALUE_CONDITION);
+					}
+					else {
+						result.add(VALUE_CONDITION_STRICT);
 					}
 				}
 				else {
