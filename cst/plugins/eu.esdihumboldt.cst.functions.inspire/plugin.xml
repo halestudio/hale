@@ -19,7 +19,9 @@
    <extension
          point="eu.esdihumboldt.hale.align.function">
       <propertyFunction
+            category="inspire"
             cellExplanation="eu.esdihumboldt.cst.functions.inspire.IdentifierExplanation"
+            icon="icons/inspire.gif"
             identifier="eu.esdihumboldt.cst.functions.inspire.identifier"
             name="Inspire Identifier">
          <targetProperties>
@@ -69,7 +71,9 @@
          </functionParameter>
       </propertyFunction>
       <propertyFunction
+            category="inspire"
             cellExplanation="eu.esdihumboldt.cst.functions.inspire.GeographicalNameExplanation"
+            icon="icons/inspire.gif"
             identifier="eu.esdihumboldt.cst.functions.inspire.geographicalname"
             name="Geographical Name">
          <targetProperties>
@@ -143,6 +147,14 @@
                name="grammaticalNumber">
          </functionParameter>
       </propertyFunction>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.category">
+      <category
+            description="Functions related to Inspire specific structures"
+            id="inspire"
+            name="Inspire">
+      </category>
    </extension>
 
 </plugin>
