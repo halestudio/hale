@@ -297,6 +297,7 @@
                mnemonic="T">
             <command
                   commandId="eu.esdihumboldt.hale.ui.transformation"
+                  label="Transform external data..."
                   style="push">
             </command>
             <command

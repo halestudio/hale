@@ -2,20 +2,22 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Transform data</title>
+<title>Transform external data</title>
 </head>
 <body>
-	<h1>Transform data</h1>
+	<h1>Transform external data</h1>
+	<p>To transform your data you don't need to load all of it into
+		HALE. Usually it's a better practice to only load a representative
+		sample of your data, to help you verify the mapping and quickly get
+		feedback on its transformation. Once you have defined the mapping you
+		have the possibility to transform your data without loading it into
+		the project, but launching a dedicated data transformation job.</p>
 	<p>
-		If you have defined a mapping you have the possibility to directly
-		transform a set of source data without loading it into the project.
-	</p>
-	<p>
-		To use the <a class="command-link"
+		To <a class="command-link"
 			href='javascript:executeCommand("eu.esdihumboldt.hale.ui.transformation")'><img
 			src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
-			alt="command link">transform data</a> feature, select
-		<i>Transformation</i>&#8594;<i>Transform data</i>.
+			alt="command link">transform external data</a>, select
+		<i>Transformation</i>&#8594;<i>Transform external data...</i> from the main menu.
 		Next you will be prompted to select source data files that you want to use.
 		Click on <i>Add source file</i> to add another file.
 		The instance import wizard will open for you to select the file of your choice.
@@ -23,10 +25,11 @@
 		transformed data export wizard.
 	</p>
 	<p>
-		If your alignment only contains <i>Retype</i>s the data will directly be streamed
-		from source to target files.<br>
-		If you also use for example <i>Merge</i> or <i>Join</i> the source data will first
-		be read into a temporary database for performance reasons.
+		If your alignment only contains one-to-one type relations, e.g. <i>Retype</i>,
+		the data will directly be transformed and streamed from the data source to the target file.<br>
+		If you also use for example <i>Merge</i> or <i>Join</i> the source
+		data will first be read into a temporary database for performance
+		reasons.
 	</p>
 
 	<br>
