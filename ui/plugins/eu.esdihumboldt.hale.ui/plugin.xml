@@ -94,7 +94,7 @@
       </command>
       <command
             id="eu.esdihumboldt.hale.ui.transformation"
-            name="Transform data">
+            name="Transform external data">
       </command>
    </extension>
    <extension
