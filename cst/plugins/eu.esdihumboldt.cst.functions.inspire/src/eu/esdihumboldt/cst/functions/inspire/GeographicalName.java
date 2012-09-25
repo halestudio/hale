@@ -85,6 +85,8 @@ public class GeographicalName extends
 		if (inputs.size() != scripts.size() || inputs.size() != trans.size()) {
 			throw new TransformationException(
 					"Number of inputs does not match number of configured spellings, can't determine script and transliteration of spellings.");
+			// XXX could this be dealt with if the property "text" would be used
+			// again for this purpose?
 		}
 
 		// definition of the target property
