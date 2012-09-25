@@ -72,8 +72,6 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	private String initialVersion;
 	private String initialVersionNil;
 
-	private final ListMultimap<String, String> configuration = ArrayListMultimap.create(5, 5);
-
 	/**
 	 * The main composite of the page
 	 */
@@ -121,6 +119,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 
 	@Override
 	public ListMultimap<String, String> getConfiguration() {
+		ListMultimap<String, String> configuration = ArrayListMultimap.create(5, 1);
+
 		configuration.put(COUNTRY_PARAMETER_NAME, countryCode.getText());
 		configuration.put(DATA_PROVIDER_PARAMETER_NAME, providerName.getText());
 		configuration.put(PRODUCT_PARAMETER_NAME, productName.getText());
