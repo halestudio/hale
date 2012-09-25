@@ -839,12 +839,6 @@
             commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
             icon="icons/play.gif">
       </image>
-      <image
-            commandId="eu.esdihumboldt.hale.ui.instance.toggle_transformation"
-            hoverIcon="icons/play.gif"
-            icon="icons/stop_start.gif"
-            style="toolbar">
-      </image>
    </extension>
 
 </plugin>
