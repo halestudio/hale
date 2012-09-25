@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.core.runtime.FileLocator;
+
 import com.google.common.io.Files;
 
 import de.cs3d.util.logging.ALogger;
@@ -117,10 +119,22 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				log.debug("Path of resource is invalid", e1);
 				continue;
 			}
-			if (!path.getScheme().equals("file")) {
-				// URI represents no local file and can not be updated
-				continue;
+			String scheme = path.getScheme();
+			if (scheme != null) {
+				if (scheme.equals("bundleentry")) {
+					try {
+						path = FileLocator.toFileURL(path.toURL()).toURI();
+					} catch (URISyntaxException e) {
+						log.debug("Bundleentry is invalid", e);
+						continue;
+					}
+				}
+				else if (!scheme.equals("files")) {
+					// URI represents no local file and can not be updated
+					continue;
+				}
 			}
+
 			// only xml schemas have to be updated
 			String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
 			if (contentType.equals(XSD_CONTENT_TYPE)) {
