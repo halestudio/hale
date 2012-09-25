@@ -39,6 +39,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -161,83 +162,92 @@ public class XMLSchemaUpdater {
 				log.debug("The schemaLocation is no valid file", e1);
 				continue;
 			}
-			// only local resources have to be updated
 			String scheme = file.getScheme();
-			if (scheme == null || scheme.equals("file") || scheme.equals("bundleentry")) {
-
-				File includedOldFile = oldSchemaPath;
-				String filename = location;
-				if (location.contains("/"))
-					filename = location.substring(location.lastIndexOf("/"));
-				includedOldFile = includedOldFile.getParentFile();
-
-				// every file needs his own directory because if name conflicts
-				filename = count + "/" + filename;
-
-				// the absolute location of the included xml schema
-				includedOldFile = new File(includedOldFile, location);
-
-				File includednewFile = null;
-
-				if (imports.containsKey(includedOldFile)) {
-					// if the current xml schema is already updated we have to
-					// find the relative path to this resource
-					String relative = getRelativePath(imports.get(includedOldFile).toURI()
-							.toString(), currentSchema.toURI().toString(), "/");
-					locationNode.setNodeValue(relative);
+			// only local resources have to be updated
+			// if scheme is null it has to be a local file represented by a
+			// relative path
+			if (scheme != null) {
+				if (scheme.equals("bundleentry")) {
+					// get absolute path of the bundleentry file
+					location = FileLocator.toFileURL(file.toURL()).toString();
 				}
-				else {
-
-					// we need the directory of the file
-					curSchema = currentSchema.getParentFile();
-
-					// path where included schema should be copied to
-					includednewFile = new File(curSchema, filename);
-					try {
-						includednewFile.getParentFile().mkdirs();
-					} catch (SecurityException e) {
-						throw new IOException("Can not create directories "
-								+ includednewFile.getParent(), e);
-					}
-
-					// copy to new directory
-					Files.copy(includedOldFile, includednewFile);
-
-					// set new location in the xml schema
-					locationNode.setNodeValue(filename);
-
-					// every xml schema should be updated (and copied) only once
-					// so we save the currently adapted resource in a map
-					imports.put(includedOldFile, includednewFile);
+				else if (!scheme.equals("file")) {
+					continue;
 				}
+			}
 
-				// write new XML-File
-				TransformerFactory transformerFactory = TransformerFactory.newInstance();
-				Transformer transformer = null;
+			File includedOldFile = oldSchemaPath;
+			String filename = location;
+			if (location.contains("/"))
+				filename = location.substring(location.lastIndexOf("/"));
+			includedOldFile = includedOldFile.getParentFile();
+
+			// every file needs his own directory because if name conflicts
+			filename = count + "/" + filename;
+
+			// the absolute location of the included xml schema
+			includedOldFile = new File(includedOldFile, location);
+
+			File includednewFile = null;
+
+			if (imports.containsKey(includedOldFile)) {
+				// if the current xml schema is already updated we have to
+				// find the relative path to this resource
+				String relative = getRelativePath(imports.get(includedOldFile).toURI().toString(),
+						currentSchema.toURI().toString(), "/");
+				locationNode.setNodeValue(relative);
+			}
+			else {
+
+				// we need the directory of the file
+				curSchema = currentSchema.getParentFile();
+
+				// path where included schema should be copied to
+				includednewFile = new File(curSchema, filename);
 				try {
-					transformer = transformerFactory.newTransformer();
-				} catch (TransformerConfigurationException e) {
-					log.debug("Can not create transformer for creating XMl file", e);
-					return;
-				}
-				DOMSource source = new DOMSource(doc);
-				StreamResult result = null;
-				result = new StreamResult(currentSchema);
-				try {
-					transformer.transform(source, result);
-				} catch (TransformerException e) {
-					log.debug("Can not create new XMl file", e);
-					return;
+					includednewFile.getParentFile().mkdirs();
+				} catch (SecurityException e) {
+					throw new IOException("Can not create directories "
+							+ includednewFile.getParent(), e);
 				}
 
-				count += 1;
+				// copy to new directory
+				Files.copy(includedOldFile, includednewFile);
 
-				// if the newFile is not null we found a new file which is not
-				// read yet so we have to update it
-				if (includednewFile != null) {
-					update(includednewFile, includedOldFile);
+				// set new location in the xml schema
+				locationNode.setNodeValue(filename);
 
-				}
+				// every xml schema should be updated (and copied) only once
+				// so we save the currently adapted resource in a map
+				imports.put(includedOldFile, includednewFile);
+			}
+
+			// write new XML-File
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = null;
+			try {
+				transformer = transformerFactory.newTransformer();
+			} catch (TransformerConfigurationException e) {
+				log.debug("Can not create transformer for creating XMl file", e);
+				return;
+			}
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = null;
+			result = new StreamResult(currentSchema);
+			try {
+				transformer.transform(source, result);
+			} catch (TransformerException e) {
+				log.debug("Can not create new XMl file", e);
+				return;
+			}
+
+			count += 1;
+
+			// if the newFile is not null we found a new file which is not
+			// read yet so we have to update it
+			if (includednewFile != null) {
+				update(includednewFile, includedOldFile);
+
 			}
 		}
 	}

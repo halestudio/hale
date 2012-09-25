@@ -64,6 +64,7 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 		LocatableInputSupplier<FileInputStream> source = new FileIOSupplier(baseFile);
 		setSource(source);
 		reader.setSource(source);
+		reader.setProjectFiles(getProjectFiles());
 		IOReport report = reader.execute(progress, reporter);
 		setProject(reader.getProject());
 
