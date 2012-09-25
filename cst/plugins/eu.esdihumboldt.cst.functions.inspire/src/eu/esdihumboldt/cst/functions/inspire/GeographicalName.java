@@ -101,73 +101,113 @@ public class GeographicalName extends
 
 		// name/GeographicalName/
 		DefaultInstance geoInstance = new DefaultInstance(geoType, null);
+		targetInstance.addProperty(targetChildGeoName.getName(), geoInstance);
 
 		// name/GeographicalName/grammaticalGender/
-		PropertyDefinition geoChildGramGender = Util.getChild("grammaticalGender", geoType);
-
-		TypeDefinition grammarGenderType = geoChildGramGender.getPropertyType();
-
-		// name/GeographicalName/grammaticalGender/
-		DefaultInstance grammarGenderInst = new DefaultInstance(grammarGenderType, null);
+		if (gender != null && !gender.isEmpty()) {
+			PropertyDefinition geoChildGramGender = Util.getChild("grammaticalGender", geoType);
+			TypeDefinition grammarGenderType = geoChildGramGender.getPropertyType();
+			DefaultInstance grammarGenderInst = new DefaultInstance(grammarGenderType, null);
+			grammarGenderInst.setValue(gender);
+			geoInstance.addProperty(geoChildGramGender.getName(), grammarGenderInst);
+		}
 
 		// name/GeographicalName/grammaticalNumber
-		PropertyDefinition geoChildGramNumber = Util.getChild("grammaticalNumber", geoType);
-		TypeDefinition grammarNumberType = geoChildGramNumber.getPropertyType();
-		DefaultInstance grammarNumberInst = new DefaultInstance(grammarNumberType, null);
+		if (number != null && !number.isEmpty()) {
+			PropertyDefinition geoChildGramNumber = Util.getChild("grammaticalNumber", geoType);
+			TypeDefinition grammarNumberType = geoChildGramNumber.getPropertyType();
+			DefaultInstance grammarNumberInst = new DefaultInstance(grammarNumberType, null);
+			// set value of the grammaticalNumber instance
+			grammarNumberInst.setValue(number);
+			geoInstance.addProperty(geoChildGramNumber.getName(), grammarNumberInst);
+		}
 
 		// name/GeographicalName/language
-		PropertyDefinition geoChildLanguage = Util.getChild("language", geoType);
-		TypeDefinition languageType = geoChildLanguage.getPropertyType();
-		DefaultInstance languageInstance = new DefaultInstance(languageType, null);
+		if (language != null && !language.isEmpty()) {
+			PropertyDefinition geoChildLanguage = Util.getChild("language", geoType);
+			TypeDefinition languageType = geoChildLanguage.getPropertyType();
+			DefaultInstance languageInstance = new DefaultInstance(languageType, null);
+			// set value of the language instance
+			languageInstance.setValue(language);
+			geoInstance.addProperty(geoChildLanguage.getName(), languageInstance);
+		}
 
 		// name/GeographicalName/nameStatus
-		PropertyDefinition geoChildNameStatus = Util.getChild("nameStatus", geoType);
-		TypeDefinition nameStatusType = geoChildNameStatus.getPropertyType();
-		DefaultInstance nameStatusInstance = new DefaultInstance(nameStatusType, null);
+		if (nameStatus != null && !nameStatus.isEmpty()) {
+			PropertyDefinition geoChildNameStatus = Util.getChild("nameStatus", geoType);
+			TypeDefinition nameStatusType = geoChildNameStatus.getPropertyType();
+			DefaultInstance nameStatusInstance = new DefaultInstance(nameStatusType, null);
+			// set value of the nameStatus instance
+			nameStatusInstance.setValue(nameStatus);
+			geoInstance.addProperty(geoChildNameStatus.getName(), nameStatusInstance);
+		}
 
 		// name/GeographicalName/nativeness
-		PropertyDefinition geoChildNativeness = Util.getChild("nativeness", geoType);
-		TypeDefinition nativenessType = geoChildNativeness.getPropertyType();
-		DefaultInstance nativenessInstance = new DefaultInstance(nativenessType, null);
+		if (nativeness != null && !nativeness.isEmpty()) {
+			PropertyDefinition geoChildNativeness = Util.getChild("nativeness", geoType);
+			TypeDefinition nativenessType = geoChildNativeness.getPropertyType();
+			DefaultInstance nativenessInstance = new DefaultInstance(nativenessType, null);
+			// set value of the nativeness instance
+			nativenessInstance.setValue(nativeness);
+			geoInstance.addProperty(geoChildNativeness.getName(), nativenessInstance);
+		}
 
-		// name/GeographicalName/pronunciation
-		PropertyDefinition geoChildPronun = Util.getChild("pronunciation", geoType);
-		TypeDefinition pronunType = geoChildPronun.getPropertyType();
-		DefaultInstance pronunInstance = new DefaultInstance(pronunType, null);
+		if ((ipa != null && !ipa.isEmpty()) || (sound != null && !sound.isEmpty())) {
+			// name/GeographicalName/pronunciation
+			PropertyDefinition geoChildPronun = Util.getChild("pronunciation", geoType);
+			TypeDefinition pronunType = geoChildPronun.getPropertyType();
+			DefaultInstance pronunInstance = new DefaultInstance(pronunType, null);
+			geoInstance.addProperty(geoChildPronun.getName(), pronunInstance);
 
-		// name/GeographicalName/pronunciation/PronunciationOfName
-		PropertyDefinition pronunChildPronOfName = Util.getChild("PronunciationOfName", pronunType);
-		TypeDefinition pronOfNameType = pronunChildPronOfName.getPropertyType();
-		DefaultInstance pronOfNameInst = new DefaultInstance(pronOfNameType, null);
+			// name/GeographicalName/pronunciation/PronunciationOfName
+			PropertyDefinition pronunChildPronOfName = Util.getChild("PronunciationOfName",
+					pronunType);
+			TypeDefinition pronOfNameType = pronunChildPronOfName.getPropertyType();
+			DefaultInstance pronOfNameInst = new DefaultInstance(pronOfNameType, null);
+			pronunInstance.addProperty(pronunChildPronOfName.getName(), pronOfNameInst);
 
-		// name/GeographicalName/pronunciation/PronunciationOfName/pronunciationIPA
-		PropertyDefinition pronOfNameChildIPA = Util.getChild("pronunciationIPA", pronOfNameType);
-		TypeDefinition pronunIpaType = pronOfNameChildIPA.getPropertyType();
-		DefaultInstance pronunIpaInstance = new DefaultInstance(pronunIpaType, null);
+			if (ipa != null && !ipa.isEmpty()) {
+				// name/GeographicalName/pronunciation/PronunciationOfName/pronunciationIPA
+				PropertyDefinition pronOfNameChildIPA = Util.getChild("pronunciationIPA",
+						pronOfNameType);
+				TypeDefinition pronunIpaType = pronOfNameChildIPA.getPropertyType();
+				DefaultInstance pronunIpaInstance = new DefaultInstance(pronunIpaType, null);
+				pronunIpaInstance.setValue(ipa);
+				pronOfNameInst.addProperty(pronOfNameChildIPA.getName(), pronunIpaInstance);
+			}
 
-		// name/GeographicalName/pronunciation/PronunciationOfName/pronunciationSoundLink
-		PropertyDefinition pronOfNameChildSound = Util.getChild("pronunciationSoundLink",
-				pronOfNameType);
-		TypeDefinition pronunSoundType = pronOfNameChildSound.getPropertyType();
-		DefaultInstance pronunSoundInstance = new DefaultInstance(pronunSoundType, null);
+			if (sound != null && !sound.isEmpty()) {
+				// name/GeographicalName/pronunciation/PronunciationOfName/pronunciationSoundLink
+				PropertyDefinition pronOfNameChildSound = Util.getChild("pronunciationSoundLink",
+						pronOfNameType);
+				TypeDefinition pronunSoundType = pronOfNameChildSound.getPropertyType();
+				DefaultInstance pronunSoundInstance = new DefaultInstance(pronunSoundType, null);
+				pronunSoundInstance.setValue(sound);
+				pronOfNameInst.addProperty(pronOfNameChildSound.getName(), pronunSoundInstance);
+			}
+		}
 
 		// name/GeographicalName/sourceOfName
-		PropertyDefinition geoChildSource = Util.getChild("sourceOfName", geoType);
-		TypeDefinition sourceType = geoChildSource.getPropertyType();
-		DefaultInstance sourceInstance = new DefaultInstance(sourceType, null);
+		if (sourceOfName != null && !sourceOfName.isEmpty()) {
+			PropertyDefinition geoChildSource = Util.getChild("sourceOfName", geoType);
+			TypeDefinition sourceType = geoChildSource.getPropertyType();
+			DefaultInstance sourceInstance = new DefaultInstance(sourceType, null);
+			// set value of the sourceOfName instance
+			sourceInstance.setValue(sourceOfName);
+			geoInstance.addProperty(geoChildSource.getName(), sourceInstance);
+		}
 
 		// name/GeographicalName/spelling
 		PropertyDefinition geoChildSpelling = Util.getChild("spelling", geoType);
 		TypeDefinition spellingType = geoChildSpelling.getPropertyType();
-		DefaultInstance spellingInstance = new DefaultInstance(spellingType, null);
 
 		// name/GeographicalName/spelling/SpellingOfName
 		PropertyDefinition spellingChildSpellOfName = Util.getChild("SpellingOfName", spellingType);
 		TypeDefinition spellOfNameType = spellingChildSpellOfName.getPropertyType();
 
-		// create a "SpellingOfName" instance for each spelling
+		// create a "spelling" instance for each spelling
 		for (int i = 0; i < scripts.size(); i++) {
-
+			DefaultInstance spellingInstance = new DefaultInstance(spellingType, null);
 			DefaultInstance spellOfNameInst = new DefaultInstance(spellOfNameType, null);
 
 			// name/GeographicalName/spelling/SpellingOfName/script
@@ -196,48 +236,9 @@ public class GeographicalName extends
 					transliterationInstance);
 
 			spellingInstance.addProperty(spellingChildSpellOfName.getName(), spellOfNameInst);
+
+			geoInstance.addProperty(geoChildSpelling.getName(), spellingInstance);
 		}
-
-		// set value of the grammaticalGender instance
-		grammarGenderInst.setValue(gender);
-
-		// set value of the grammaticalNumber instance
-		grammarNumberInst.setValue(number);
-
-		// set value of the language instance
-		languageInstance.setValue(language);
-
-		// set value of the nameStatus instance
-		nameStatusInstance.setValue(nameStatus);
-
-		// set value of the nativeness instance
-		nativenessInstance.setValue(nativeness);
-
-		// build the pronunciation instance
-		// first build the inner instances ...
-		pronunIpaInstance.setValue(ipa);
-
-		pronunSoundInstance.setValue(sound);
-
-		pronOfNameInst.addProperty(pronOfNameChildIPA.getName(), pronunIpaInstance);
-		pronOfNameInst.addProperty(pronOfNameChildSound.getName(), pronunSoundInstance);
-
-		// ... and merge all to the outer instance "pronunciation"
-		pronunInstance.addProperty(pronunChildPronOfName.getName(), pronOfNameInst);
-
-		// set value of the sourceOfName instance
-		sourceInstance.setValue(sourceOfName);
-
-		geoInstance.addProperty(geoChildGramGender.getName(), grammarGenderInst);
-		geoInstance.addProperty(geoChildGramNumber.getName(), grammarNumberInst);
-		geoInstance.addProperty(geoChildLanguage.getName(), languageInstance);
-		geoInstance.addProperty(geoChildNameStatus.getName(), nameStatusInstance);
-		geoInstance.addProperty(geoChildNativeness.getName(), nativenessInstance);
-		geoInstance.addProperty(geoChildPronun.getName(), pronunInstance);
-		geoInstance.addProperty(geoChildSource.getName(), sourceInstance);
-		geoInstance.addProperty(geoChildSpelling.getName(), spellingInstance);
-
-		targetInstance.addProperty(targetChildGeoName.getName(), geoInstance);
 
 		return targetInstance;
 	}
