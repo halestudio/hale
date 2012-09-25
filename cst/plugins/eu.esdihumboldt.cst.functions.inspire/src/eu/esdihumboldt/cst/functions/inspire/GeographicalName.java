@@ -42,12 +42,9 @@ public class GeographicalName extends
 		GeographicalNameFunction {
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation#evaluate(java.lang.String,
-	 *      eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine,
-	 *      com.google.common.collect.ListMultimap, java.lang.String,
-	 *      eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition,
-	 *      java.util.Map,
-	 *      eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
+	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
+	 *      TransformationEngine, ListMultimap, String,
+	 *      PropertyEntityDefinition, Map, TransformationLog)
 	 */
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
@@ -57,6 +54,10 @@ public class GeographicalName extends
 
 		// list of all source properties
 		List<PropertyValue> inputs = variables.get(null);
+		if (inputs.isEmpty()) {
+			// no input, so don't create any structure
+			throw new NoResultException();
+		}
 
 		// get all parameters defined by the wizard page
 		String ipa = getParameterChecked(PROPERTY_PRONUNCIATIONIPA);
@@ -80,6 +81,11 @@ public class GeographicalName extends
 		ListMultimap<String, String> params = getParameters();
 		List<String> scripts = params.get(PROPERTY_SCRIPT);
 		List<String> trans = params.get(PROPERTY_TRANSLITERATION);
+
+		if (inputs.size() != scripts.size() || inputs.size() != trans.size()) {
+			throw new TransformationException(
+					"Number of inputs does not match number of configured spellings, can't determine script and transliteration of spellings.");
+		}
 
 		// definition of the target property
 		TypeDefinition targetType = resultProperty.getDefinition().getPropertyType();
@@ -160,43 +166,36 @@ public class GeographicalName extends
 		TypeDefinition spellOfNameType = spellingChildSpellOfName.getPropertyType();
 
 		// create a "SpellingOfName" instance for each spelling
-		if (scripts != null) {
-			for (int i = 0; i < scripts.size(); i++) {
+		for (int i = 0; i < scripts.size(); i++) {
 
-				DefaultInstance spellOfNameInst = new DefaultInstance(spellOfNameType, null);
+			DefaultInstance spellOfNameInst = new DefaultInstance(spellOfNameType, null);
 
-				// name/GeographicalName/spelling/SpellingOfName/script
-				PropertyDefinition spellOfNameChildScript = Util
-						.getChild("script", spellOfNameType);
-				TypeDefinition scriptType = spellOfNameChildScript.getPropertyType();
-				DefaultInstance scriptInstance = new DefaultInstance(scriptType, null);
+			// name/GeographicalName/spelling/SpellingOfName/script
+			PropertyDefinition spellOfNameChildScript = Util.getChild("script", spellOfNameType);
+			TypeDefinition scriptType = spellOfNameChildScript.getPropertyType();
+			DefaultInstance scriptInstance = new DefaultInstance(scriptType, null);
 
-				// name/GeographicalName/spelling/SpellingOfName/text
-				PropertyDefinition spellOfNameChildText = Util.getChild("text", spellOfNameType);
+			// name/GeographicalName/spelling/SpellingOfName/text
+			PropertyDefinition spellOfNameChildText = Util.getChild("text", spellOfNameType);
 
-				// name/GeographicalName/spelling/SpellingOfName/transliterationScheme
-				PropertyDefinition spellOfNameChildTransliteration = Util.getChild(
-						"transliterationScheme", spellOfNameType);
-				TypeDefinition transliterationType = spellOfNameChildTransliteration
-						.getPropertyType();
-				DefaultInstance transliterationInstance = new DefaultInstance(transliterationType,
-						null);
+			// name/GeographicalName/spelling/SpellingOfName/transliterationScheme
+			PropertyDefinition spellOfNameChildTransliteration = Util.getChild(
+					"transliterationScheme", spellOfNameType);
+			TypeDefinition transliterationType = spellOfNameChildTransliteration.getPropertyType();
+			DefaultInstance transliterationInstance = new DefaultInstance(transliterationType, null);
 
-				// build the spelling instance
-				scriptInstance.setValue(scripts.get(i));
+			// build the spelling instance
+			scriptInstance.setValue(scripts.get(i));
 
-				transliterationInstance.setValue(trans.get(i));
+			transliterationInstance.setValue(trans.get(i));
 
-				spellOfNameInst.addProperty(spellOfNameChildScript.getName(), scriptInstance);
-				// set text value from inputs
-				spellOfNameInst.addProperty(spellOfNameChildText.getName(), inputs.get(i)
-						.getValue());
-				spellOfNameInst.addProperty(spellOfNameChildTransliteration.getName(),
-						transliterationInstance);
+			spellOfNameInst.addProperty(spellOfNameChildScript.getName(), scriptInstance);
+			// set text value from inputs
+			spellOfNameInst.addProperty(spellOfNameChildText.getName(), inputs.get(i).getValue());
+			spellOfNameInst.addProperty(spellOfNameChildTransliteration.getName(),
+					transliterationInstance);
 
-				spellingInstance.addProperty(spellingChildSpellOfName.getName(), spellOfNameInst);
-
-			}
+			spellingInstance.addProperty(spellingChildSpellOfName.getName(), spellOfNameInst);
 		}
 
 		// set value of the grammaticalGender instance
