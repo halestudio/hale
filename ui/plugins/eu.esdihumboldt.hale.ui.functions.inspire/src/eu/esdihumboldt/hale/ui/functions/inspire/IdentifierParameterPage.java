@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.ui.functions.inspire;
 
 import java.util.Set;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -27,11 +28,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.inspire.IdentifierFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -47,6 +50,7 @@ import eu.esdihumboldt.hale.ui.functions.inspire.internal.Messages;
 /**
  * Wizard page for the inspire identifier function
  * 
+ * @author Thorsten Reitz
  * @author Kevin Mais
  */
 public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
@@ -71,10 +75,28 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	private final ListMultimap<String, String> configuration = ArrayListMultimap.create(5, 5);
 
 	/**
+	 * The main composite of the page
+	 */
+	private Composite page;
+
+	/**
+	 * The parent composite of the dialog page
+	 */
+	private Composite parent;
+
+	/**
+	 * The target entity when {@link #createContent(Composite)} was last called.
+	 */
+	private EntityDefinition lastEntity;
+
+	/**
 	 * /* Default Constructor
 	 */
 	public IdentifierParameterPage() {
-		super("identifier", Messages.IdentifierFunctionWizardPage_0, null);
+		super("identifier", "Inspire Identifier", null);
+
+		setDescription(Messages.IdentifierFunctionWizardPage_0);
+
 		setPageComplete(false);
 	}
 
@@ -108,28 +130,57 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		return configuration;
 	}
 
+	/**
+	 * @see HaleWizardPage#onShowPage(boolean)
+	 */
+	@Override
+	protected void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
+
+		if (parent != null && !Objects.equal(lastEntity, determineTargetEntity())) {
+			// recreate the page if the target entity has changed
+			createContent(parent);
+		}
+	}
+
 	@Override
 	protected void createContent(Composite parent) {
+		boolean relayout = this.parent != null;
+		this.parent = parent;
+
+		lastEntity = determineTargetEntity();
+
+		if (lastEntity == null) {
+			setPageComplete(false);
+			return; // can't create controls
+		}
+
+		if (page != null) {
+			// page was created before
+			initialCountry = countryCode.getText();
+			initialProvider = providerName.getText();
+			initialProduct = productName.getText();
+			initialVersion = version.getText();
+			initialVersionNil = nilEditor.getAsText();
+
+			page.dispose();
+		}
+
+		// create a composite to hold the widgets
+		page = new Composite(parent, SWT.NULL);
+		setControl(page);
+		// create layout for this wizard page
+		GridLayout gl = GridLayoutFactory.fillDefaults().create();
+		page.setLayout(gl);
+
 		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
 				AttributeEditorFactory.class);
 		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(
 				DefinitionLabelFactory.class);
 
-		// create a composite to hold the widgets
-		Composite page = new Composite(parent, SWT.NULL);
-		setControl(parent);
-		// create layout for this wizard page
-		GridLayout gl = new GridLayout();
-		gl.numColumns = 1;
-		gl.marginLeft = 0;
-		gl.marginTop = 20;
-		gl.marginRight = 70;
-		page.setLayout(gl);
-
 		// identifier type
 		TypeDefinition identifierType = null;
-		Definition<?> def = getWizard().getUnfinishedCell().getTarget().get(null).get(0)
-				.getDefinition().getDefinition();
+		Definition<?> def = lastEntity.getDefinition();
 
 		if (def instanceof PropertyDefinition) {
 			TypeDefinition typeDef = ((PropertyDefinition) def).getPropertyType();
@@ -299,7 +350,25 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 
 		}
 
+		if (relayout) {
+			parent.layout();
+			getContainer().getShell().pack();
+		}
+
 		setPageComplete(true);
+	}
+
+	/**
+	 * Determine the target entity.
+	 * 
+	 * @return the target entity or <code>null</code> if it is not set
+	 */
+	private EntityDefinition determineTargetEntity() {
+		try {
+			return getWizard().getUnfinishedCell().getTarget().get(null).get(0).getDefinition();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }
