@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.core.runtime.FileLocator;
+
 import com.google.common.io.Files;
 
 import de.cs3d.util.logging.ALogger;
@@ -60,8 +62,10 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+		// all files related to the project are copied into a temporary
+		// directory first and the packed into a zip file
 
-		// first all files are copied into a temporary directory
+		// create temporary directory and project file
 		File tempDir = Files.createTempDir();
 		File baseFile = new File(tempDir, "project.halex");
 
@@ -106,6 +110,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	private void updateResources(File targetDirectory) throws IOException {
 
 		List<IOConfiguration> resources = getProject().getResources();
+		// every resource needs his own directory
 		int count = 1;
 		for (IOConfiguration resource : resources) {
 			Map<String, String> providerConfig = resource.getProviderConfiguration();
@@ -117,10 +122,25 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				log.debug("Path of resource is invalid", e1);
 				continue;
 			}
-			if (!path.getScheme().equals("file")) {
-				// URI represents no local file and can not be updated
-				continue;
+			String scheme = path.getScheme();
+			// if scheme is null it has to be a local file represented by a
+			// relative path
+			if (scheme != null) {
+				if (scheme.equals("bundleentry")) {
+					try {
+						// get absolute path of the bundleentry file
+						path = FileLocator.toFileURL(path.toURL()).toURI();
+					} catch (URISyntaxException e) {
+						log.debug("Bundleentry is invalid", e);
+						continue;
+					}
+				}
+				else if (!scheme.equals("file")) {
+					// URI represents no local file and can not be updated
+					continue;
+				}
 			}
+
 			// only xml schemas have to be updated
 			String contentType = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
 			if (contentType.equals(XSD_CONTENT_TYPE)) {
