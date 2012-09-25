@@ -64,6 +64,8 @@
          </topic>
          <topic href="html/tasks/schema/mapping_relevant.html" label="How to customize the mapping relevant types">
          </topic>
+         <topic href="html/tasks/schema/inspire_schema.html" label="Using INSPIRE GML data models">
+         </topic>
       </topic>
       <topic label="Data">
          <topic href="html/tasks/data/working_source_data.html" label="Working with a source data set">
