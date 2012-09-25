@@ -88,8 +88,8 @@ public class Identifier extends AbstractSingleTargetPropertyTransformation<Trans
 		// add the "localId" and "namespace" properties to the identifier
 		// instance
 		identInstance.addProperty(identChildLocal.getName(), source);
-		identInstance.addProperty(identChildNamespace.getName(), countryName + ":" + providerName
-				+ ":" + productName + ":" + resultProperty.getType().getDisplayName());
+		identInstance.addProperty(identChildNamespace.getName(),
+				getNamespace(countryName, providerName, productName, getTargetType()));
 
 		// 2.)
 		// add the "nilReason" property to the version instance
@@ -109,6 +109,37 @@ public class Identifier extends AbstractSingleTargetPropertyTransformation<Trans
 		inspireInstance.addProperty(inspireChildPropDef.getName(), identInstance);
 
 		return inspireInstance;
+	}
+
+	/**
+	 * Determine an Inspire Identifier namespace from the given information.
+	 * 
+	 * @param countryName the country
+	 * @param providerName the provider name
+	 * @param productName the product name
+	 * @param targetType the target type
+	 * @return the namespace
+	 */
+	public static String getNamespace(String countryName, String providerName, String productName,
+			TypeDefinition targetType) {
+		StringBuilder result = new StringBuilder();
+		if (countryName == null || countryName.isEmpty()) {
+			countryName = "_"; // default
+		}
+
+		result.append(countryName);
+		result.append(':');
+		if (providerName != null && !providerName.isEmpty()) {
+			result.append(providerName);
+			result.append(':');
+		}
+		if (productName != null && !productName.isEmpty()) {
+			result.append(productName);
+			result.append(':');
+		}
+		result.append(targetType.getDisplayName());
+
+		return result.toString();
 	}
 
 }
