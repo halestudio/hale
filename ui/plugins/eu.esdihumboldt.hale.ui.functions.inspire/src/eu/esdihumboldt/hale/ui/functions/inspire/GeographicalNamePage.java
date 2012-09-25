@@ -177,7 +177,11 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		configuration.put(PROPERTY_PRONUNCIATIONSOUNDLINK, namePronounciationSounds.getText());
 		configuration.put(PROPERTY_PRONUNCIATIONIPA, namePronounciationIPA.getText());
 		configuration.put(PROPERTY_LANGUAGE, nameLanguageText.getText());
-		configuration.put(PROPERTY_SOURCEOFNAME, nameSourceText.getText());
+		String sourceOfName = nameSourceText.getText();
+		if (SOURCE_OF_NAME_PROMT.equals(sourceOfName)) {
+			sourceOfName = "";
+		}
+		configuration.put(PROPERTY_SOURCEOFNAME, sourceOfName);
 		configuration.put(PROPERTY_NAMESTATUS, nameStatusCombo.getText());
 		configuration.put(PROPERTY_NATIVENESS, nameNativenessCombo.getText());
 		configuration.put(PROPERTY_GRAMMA_GENDER, nameGenderCombo.getText());
