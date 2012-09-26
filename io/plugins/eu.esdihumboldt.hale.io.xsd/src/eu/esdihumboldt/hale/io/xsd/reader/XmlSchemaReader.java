@@ -467,7 +467,6 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			try {
 				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
 				XmlSchema importedSchema = imp.getSchema();
-				// XXX imports überprüfen
 				String location = importedSchema.getSourceURI();
 				if (!(imports.contains(location))) { // only add schemas that
 														// were not already
@@ -476,13 +475,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 											// prevent loading the location in
 											// the call to loadSchema
 					loadSchema(location, importedSchema, imports, progress, mainSchema
-							&& imp instanceof XmlSchemaInclude); // is part of
-																	// main
-																	// schema if
-																	// it's a
-																	// main
-																	// schema
-																	// include
+							&& imp instanceof XmlSchemaInclude);
+					// is part of main schema if it's a main schema include
 				}
 				if (imp instanceof XmlSchemaInclude) {
 					includes.add(location);
