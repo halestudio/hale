@@ -17,6 +17,9 @@ package eu.esdihumboldt.hale.ui.functions.inspire;
 
 import java.util.Set;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -34,6 +37,8 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.inspire.IdentifierFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -166,6 +171,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			page.dispose();
 		}
 
+		PropertyFunction function = PropertyFunctionExtension.getInstance().get(ID);
+
 		// create a composite to hold the widgets
 		page = new Composite(parent, SWT.NULL);
 		setControl(page);
@@ -197,7 +204,11 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		Group nsGroup = new Group(page, SWT.NONE);
 		nsGroup.setText(Messages.IdentifierFunctionWizardPage_2);
 		nsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		nsGroup.setLayout(new GridLayout(2, false));
+		nsGroup.setLayout(GridLayoutFactory//
+				.swtDefaults()//
+				.numColumns(2)//
+				.spacing(8, 4)//
+				.create());//
 
 		// localId
 		if (identifierType != null) {
@@ -224,6 +235,9 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		ccLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		ccLabel.setText(Messages.IdentifierFunctionWizardPage_5);
 
+		FunctionParameter param = function.getParameter(COUNTRY_PARAMETER_NAME);
+		configureParameterLabel(ccLabel, param);
+
 		this.countryCode = new Text(nsGroup, SWT.BORDER);
 		this.countryCode.setText(initialCountry); //$NON-NLS-1$
 		this.countryCode.setEnabled(true);
@@ -234,6 +248,9 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		providerLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		providerLabel.setText(Messages.IdentifierFunctionWizardPage_7);
 
+		param = function.getParameter(DATA_PROVIDER_PARAMETER_NAME);
+		configureParameterLabel(providerLabel, param);
+
 		this.providerName = new Text(nsGroup, SWT.BORDER);
 		this.providerName.setText(initialProvider); //$NON-NLS-1$
 		this.providerName.setEnabled(true);
@@ -243,6 +260,9 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		Label productLabel = new Label(nsGroup, SWT.NONE);
 		productLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		productLabel.setText(Messages.IdentifierFunctionWizardPage_9);
+
+		param = function.getParameter(PRODUCT_PARAMETER_NAME);
+		configureParameterLabel(productLabel, param);
 
 		this.productName = new Text(nsGroup, SWT.BORDER);
 		this.productName.setText(initialProduct); //$NON-NLS-1$
@@ -356,6 +376,30 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		}
 
 		setPageComplete(true);
+	}
+
+	/**
+	 * Configure a label representing a parameter.
+	 * 
+	 * @param paramLabel the parameter label
+	 * @param param the associated function parameter
+	 */
+	private void configureParameterLabel(Label paramLabel, FunctionParameter param) {
+		if (param != null) {
+			String name = param.getDisplayName();
+			if (name != null && !name.isEmpty()) {
+				paramLabel.setText(name);
+			}
+
+			String descr = param.getDescription();
+			if (descr != null && !descr.isEmpty()) {
+				ControlDecoration dec = new ControlDecoration(paramLabel, SWT.RIGHT);
+				dec.setDescriptionText(descr);
+				FieldDecoration fd = FieldDecorationRegistry.getDefault().getFieldDecoration(
+						FieldDecorationRegistry.DEC_INFORMATION);
+				dec.setImage(fd.getImage());
+			}
+		}
 	}
 
 	/**
