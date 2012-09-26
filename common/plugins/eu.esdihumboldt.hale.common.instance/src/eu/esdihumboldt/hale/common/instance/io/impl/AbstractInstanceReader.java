@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.instance.io.impl;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.GZipEnabledImport;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
@@ -28,8 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractInstanceReader extends AbstractImportProvider implements
-		InstanceReader {
+public abstract class AbstractInstanceReader extends GZipEnabledImport implements InstanceReader {
 
 	private TypeIndex sourceSchema;
 
