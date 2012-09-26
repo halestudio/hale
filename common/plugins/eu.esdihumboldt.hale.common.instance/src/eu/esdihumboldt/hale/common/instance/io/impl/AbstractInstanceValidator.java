@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.instance.io.impl;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.GZipEnabledImport;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 
@@ -28,7 +29,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public abstract class AbstractInstanceValidator extends AbstractImportProvider implements
+public abstract class AbstractInstanceValidator extends GZipEnabledImport implements
 		InstanceValidator {
 
 	private Locatable[] schemas;
