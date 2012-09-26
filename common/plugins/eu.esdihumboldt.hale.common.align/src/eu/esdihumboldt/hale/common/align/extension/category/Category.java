@@ -26,7 +26,7 @@ import de.cs3d.util.eclipse.extension.simple.IdentifiableExtension.Identifiable;
  * @author Simon Templer
  */
 @Immutable
-public final class Category implements Identifiable {
+public final class Category implements Identifiable, Comparable<Category> {
 
 	private final String id;
 	private final String name;
@@ -66,6 +66,20 @@ public final class Category implements Identifiable {
 	 */
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Category o) {
+		int result = getName().compareToIgnoreCase(o.getName());
+
+		if (result == 0) {
+			result = getId().compareToIgnoreCase(o.getId());
+		}
+
+		return result;
 	}
 
 }
