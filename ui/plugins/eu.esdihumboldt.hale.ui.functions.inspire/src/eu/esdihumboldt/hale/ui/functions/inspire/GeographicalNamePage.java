@@ -21,6 +21,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -51,6 +55,8 @@ import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalNumberValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NameStatusValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NativenessValue;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -206,16 +212,17 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
 
-		createSpellingGroup(composite);
-		createPronounciationGroup(composite);
-		createOptionalAttributes(composite);
+		PropertyFunction function = PropertyFunctionExtension.getInstance().get(ID);
+
+		createSpellingGroup(composite, function);
+		createPronounciationGroup(composite, function);
+		createOptionalAttributes(composite, function);
 
 		setErrorMessage(null); // should not initially have error message
 		super.setControl(composite);
 	}
 
-	private void createOptionalAttributes(Composite parent) {
-
+	private void createOptionalAttributes(Composite parent, PropertyFunction function) {
 		final Composite configurationComposite = new Composite(parent, SWT.NONE);
 		GridData configurationLayoutData = new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.FILL_HORIZONTAL);
@@ -226,16 +233,18 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		configurationComposite
 				.setSize(configurationComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
-		GridLayout pronounciationLayout = new GridLayout();
-		pronounciationLayout.numColumns = 2;
-		pronounciationLayout.makeColumnsEqualWidth = false;
-		pronounciationLayout.marginWidth = 0;
-		pronounciationLayout.marginHeight = 0;
-		configurationComposite.setLayout(pronounciationLayout);
+		GridLayout optionalAttrLayout = new GridLayout();
+		optionalAttrLayout.numColumns = 2;
+		optionalAttrLayout.makeColumnsEqualWidth = false;
+		optionalAttrLayout.marginWidth = 0;
+		optionalAttrLayout.marginHeight = 0;
+		optionalAttrLayout.horizontalSpacing = 8;
+		configurationComposite.setLayout(optionalAttrLayout);
 
 		// Language
 		final Label nameLanguageLabel = new Label(configurationComposite, SWT.NONE);
 		nameLanguageLabel.setText(LANGUAGE_LABEL_TEXT);
+		configureParameterLabel(nameLanguageLabel, PROPERTY_LANGUAGE, function);
 
 		this.nameLanguageText = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameLanguageText.setLayoutData(configurationLayoutData);
@@ -263,6 +272,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Source of Name
 		final Label nameSourceLabel = new Label(configurationComposite, SWT.NONE);
 		nameSourceLabel.setText(SOURCE_OF_NAME_LABEL_TEXT);
+		configureParameterLabel(nameSourceLabel, PROPERTY_SOURCEOFNAME, function);
 		this.nameSourceText = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameSourceText.setLayoutData(configurationLayoutData);
 		String nameSource = null;
@@ -299,6 +309,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Name Status
 		final Label nameStatusLabel = new Label(configurationComposite, SWT.NONE);
 		nameStatusLabel.setText(NAME_STATUS_LABEL_TEXT);
+		configureParameterLabel(nameStatusLabel, PROPERTY_NAMESTATUS, function);
 		this.nameStatusCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameStatusCombo.setLayoutData(configurationLayoutData);
 		String[] statusItems = new String[] { NameStatusValue.official.name(),
@@ -333,6 +344,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Nativeness
 		final Label nativenessLabel = new Label(configurationComposite, SWT.NONE);
 		nativenessLabel.setText(NATIVENESS_LABEL_TEXT);
+		configureParameterLabel(nativenessLabel, PROPERTY_NATIVENESS, function);
 		this.nameNativenessCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameNativenessCombo.setLayoutData(configurationLayoutData);
 
@@ -366,6 +378,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Grammatical Gender
 		final Label genderLabel = new Label(configurationComposite, SWT.NONE);
 		genderLabel.setText(GRAMMATICAL_GENDER_LABEL_TEXT);
+		configureParameterLabel(genderLabel, PROPERTY_GRAMMA_GENDER, function);
 		this.nameGenderCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameGenderCombo.setLayoutData(configurationLayoutData);
 		String[] genderItems = new String[] { GENDER_NULL_VAUE_MENU_ENTRY,
@@ -397,6 +410,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Grammatical Number
 		final Label numberLabel = new Label(configurationComposite, SWT.NONE);
 		numberLabel.setText(GRAMMATICAL_NUMBER_LABEL_TEXT);
+		configureParameterLabel(numberLabel, PROPERTY_GRAMMA_NUMBER, function);
 		this.nameNumberCombo = new Combo(configurationComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
 		this.nameNumberCombo.setLayoutData(configurationLayoutData);
 		String[] numberItems = new String[] { NUMBER_NULL_VALUE_MENU_ENTRY,
@@ -427,7 +441,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		});
 	}
 
-	private void createPronounciationGroup(Composite parent) {
+	private void createPronounciationGroup(Composite parent, PropertyFunction function) {
 		// define Pronounciatiation Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(PRONOUNCIATION_GRPOUP_TEXT);
@@ -451,11 +465,14 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		pronounciationLayout.makeColumnsEqualWidth = false;
 		pronounciationLayout.marginWidth = 0;
 		pronounciationLayout.marginHeight = 0;
+		pronounciationLayout.horizontalSpacing = 8;
 		configurationComposite.setLayout(pronounciationLayout);
 
 		// Soundlink
 		final Label namePronounciationTextLabel = new Label(configurationComposite, SWT.NONE);
 		namePronounciationTextLabel.setText(SOUNDLINK_LABEL_TEXT);
+		configureParameterLabel(namePronounciationTextLabel, PROPERTY_PRONUNCIATIONSOUNDLINK,
+				function);
 
 		this.namePronounciationSounds = new Text(configurationComposite, SWT.BORDER);
 		this.namePronounciationSounds.setLayoutData(configurationLayoutData);
@@ -478,6 +495,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// IPA
 		final Label namePronounciatiationIPALabel = new Label(configurationComposite, SWT.NONE);
 		namePronounciatiationIPALabel.setText(IPA_LABEL_TEXT);
+		configureParameterLabel(namePronounciatiationIPALabel, PROPERTY_PRONUNCIATIONIPA, function);
 		this.namePronounciationIPA = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.namePronounciationIPA.setLayoutData(configurationLayoutData);
 		this.namePronounciationIPA.setEnabled(true);
@@ -499,11 +517,11 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		});
 	}
 
-	private void createSpellingGroup(Composite parent) {
+	private void createSpellingGroup(Composite parent, PropertyFunction function) {
 		// define Spelling Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(SPELLING_GROUP_TEXT);
-		configurationGroup.setLayout(new GridLayout());
+		configurationGroup.setLayout(GridLayoutFactory.fillDefaults().create());
 		GridData configurationAreaGD = new GridData(GridData.VERTICAL_ALIGN_FILL
 				| GridData.HORIZONTAL_ALIGN_FILL);
 		configurationAreaGD.grabExcessHorizontalSpace = true;
@@ -523,6 +541,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		spellingLayout.makeColumnsEqualWidth = false;
 		spellingLayout.marginWidth = 0;
 		spellingLayout.marginHeight = 0;
+		spellingLayout.horizontalSpacing = 8;
 		configurationComposite.setLayout(spellingLayout);
 
 		// init spelling types if it doesn't exists
@@ -603,6 +622,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Text
 		final Label nameSpellingTextLabel = new Label(configurationComposite, SWT.NONE);
 		nameSpellingTextLabel.setText(SPELLING_TEXT_LABEL_TEXT);
+
 		this.nameSpellingText = new ComboViewer(configurationComposite, SWT.DROP_DOWN
 				| SWT.READ_ONLY);
 		this.nameSpellingText.getControl().setLayoutData(configurationLayoutData);
@@ -652,6 +672,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Script
 		final Label nameSpellingScriptLabel = new Label(configurationComposite, SWT.NONE);
 		nameSpellingScriptLabel.setText(SCRIPT_LABEL_TEXT);
+		configureParameterLabel(nameSpellingScriptLabel, PROPERTY_SCRIPT, function);
 		this.nameSpellingScript = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameSpellingScript.setLayoutData(configurationLayoutData);
 		this.nameSpellingScript.setEnabled(true);
@@ -673,6 +694,8 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		// Transliteration
 		final Label nameSpellingTransliterationLabel = new Label(configurationComposite, SWT.NONE);
 		nameSpellingTransliterationLabel.setText(TRANSLITERATION_LABEL_TEXT);
+		configureParameterLabel(nameSpellingTransliterationLabel, PROPERTY_TRANSLITERATION,
+				function);
 		this.nameSpellingTransliteration = new Text(configurationComposite, SWT.BORDER | SWT.SINGLE);
 		this.nameSpellingTransliteration.setLayoutData(configurationLayoutData);
 		this.nameSpellingTransliteration.setEnabled(true);
@@ -718,6 +741,33 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 			this.spellings.add(aSpelling);
 		}
 		return aSpelling;
+	}
+
+	/**
+	 * Configure a label representing a parameter.
+	 * 
+	 * @param paramLabel the parameter label
+	 * @param paramName the parameter name
+	 * @param function the function
+	 */
+	private void configureParameterLabel(Label paramLabel, String paramName,
+			PropertyFunction function) {
+		FunctionParameter param = function.getParameter(paramName);
+		if (param != null) {
+//			String name = param.getDisplayName();
+//			if (name != null && !name.isEmpty()) {
+//				paramLabel.setText(name);
+//			}
+
+			String descr = param.getDescription();
+			if (descr != null && !descr.isEmpty()) {
+				ControlDecoration dec = new ControlDecoration(paramLabel, SWT.RIGHT);
+				dec.setDescriptionText(descr);
+				FieldDecoration fd = FieldDecorationRegistry.getDefault().getFieldDecoration(
+						FieldDecorationRegistry.DEC_INFORMATION);
+				dec.setImage(fd.getImage());
+			}
+		}
 	}
 
 	/**
