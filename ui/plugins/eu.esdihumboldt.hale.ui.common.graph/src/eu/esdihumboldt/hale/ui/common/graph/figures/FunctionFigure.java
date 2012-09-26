@@ -16,8 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.common.graph.figures;
 
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
@@ -64,8 +64,8 @@ public class FunctionFigure extends CustomShapeFigure {
 	 * @param parameters the Parameters of the Function
 	 * @param showToolTip if the ToolTip should be shown
 	 */
-	public FunctionFigure(ResourceManager resourceManager, Set<FunctionParameter> parameters,
-			boolean showToolTip) {
+	public FunctionFigure(ResourceManager resourceManager,
+			Collection<FunctionParameter> parameters, boolean showToolTip) {
 		super(new StretchedHexagon(10));
 
 		setAntialias(SWT.ON);

@@ -17,8 +17,10 @@
 package eu.esdihumboldt.hale.common.align.extension.function;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import net.jcip.annotations.Immutable;
@@ -49,7 +51,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	 */
 	protected final IConfigurationElement conf;
 
-	private final Set<FunctionParameter> parameters;
+	private final Map<String, FunctionParameter> parameters;
 
 	/**
 	 * Create a function definition based on the given configuration element
@@ -63,13 +65,14 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		this.parameters = createParameters(conf);
 	}
 
-	private static Set<FunctionParameter> createParameters(IConfigurationElement conf) {
-		Set<FunctionParameter> parameters = new LinkedHashSet<FunctionParameter>();
+	private static Map<String, FunctionParameter> createParameters(IConfigurationElement conf) {
+		Map<String, FunctionParameter> parameters = new LinkedHashMap<String, FunctionParameter>();
 
 		IConfigurationElement[] pars = conf.getChildren("functionParameter");
 		if (pars != null) {
 			for (IConfigurationElement par : pars) {
-				parameters.add(new FunctionParameter(par));
+				FunctionParameter funPar = new FunctionParameter(par);
+				parameters.put(funPar.getName(), funPar);
 			}
 		}
 
@@ -163,8 +166,18 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	 * @see Function#getDefinedParameters()
 	 */
 	@Override
-	public final Set<FunctionParameter> getDefinedParameters() {
-		return Collections.unmodifiableSet(parameters);
+	public final Collection<FunctionParameter> getDefinedParameters() {
+		return Collections.unmodifiableCollection(parameters.values());
+	}
+
+	/**
+	 * Get the function parameter with the given name.
+	 * 
+	 * @param paramName the parameter name
+	 * @return the parameter or <code>null</code> if it doesn't exist
+	 */
+	public FunctionParameter getParameter(String paramName) {
+		return parameters.get(paramName);
 	}
 
 	/**

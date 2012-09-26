@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.function.extension.impl;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -105,8 +106,8 @@ public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<Param
 		if (associatedFunctionParameters == null) {
 			Set<FunctionParameter> params = new HashSet<FunctionParameter>();
 			// get defined parameters
-			Set<FunctionParameter> definedParameters = FunctionUtil.getFunction(getFunctionId())
-					.getDefinedParameters();
+			Collection<FunctionParameter> definedParameters = FunctionUtil.getFunction(
+					getFunctionId()).getDefinedParameters();
 			// walk over conf parameters
 			IConfigurationElement[] parameterElements = conf.getChildren("parameter");
 			for (IConfigurationElement parameterElement : parameterElements) {
