@@ -33,6 +33,15 @@
             name="HALE project archive"
             priority="normal">
       </content-type>
+      <content-type
+            file-extensions="gz"
+            id="eu.esdihumboldt.hale.common.core.gzip"
+            name="GZiped file"
+            priority="normal">
+         <describer
+               class="eu.esdihumboldt.hale.common.core.io.util.GZipContentDescriber">
+         </describer>
+      </content-type>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.io.provider">
