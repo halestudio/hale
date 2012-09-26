@@ -108,6 +108,7 @@
             </property>
          </targetProperties>
          <functionParameter
+               description="The value to be assigned."
                label="Value"
                maxOccurrence="1"
                minOccurrence="1"
