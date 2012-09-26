@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.function.extension.impl;
 
-import java.util.Set;
+import java.util.Collection;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
@@ -114,8 +114,8 @@ public class ParameterEditorFactoryImpl extends AbstractConfigurationFactory<Edi
 	public FunctionParameter getAssociatedParameter() {
 		if (associatedFunctionParameter == null) {
 			// get defined parameters
-			Set<FunctionParameter> definedParameters = FunctionUtil.getFunction(getFunctionId())
-					.getDefinedParameters();
+			Collection<FunctionParameter> definedParameters = FunctionUtil.getFunction(
+					getFunctionId()).getDefinedParameters();
 			// search for defined parameter, add it to associated params
 			// XXX throw some exception if param name is not defined?
 			String name = getParameterName();
