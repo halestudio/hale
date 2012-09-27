@@ -20,8 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
 
@@ -30,9 +34,39 @@ import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
  * 
  * @author Simon Templer
  */
-public class SchemaPresetLabelProvider extends LabelProvider {
+public class SchemaPresetLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
+
+	private final Image defImage = AbstractUIPlugin.imageDescriptorFromPlugin(
+			"eu.esdihumboldt.hale.ui.schema.presets", "icons/def_preset.gif").createImage();
 
 	private final Map<String, Image> urlImages = new HashMap<String, Image>();
+
+	@Override
+	public void update(ViewerCell cell) {
+		Object element = cell.getElement();
+
+		StyledString text = new StyledString(getText(element));
+
+		if (element instanceof SchemaPreset) {
+			SchemaPreset preset = (SchemaPreset) element;
+
+			String version = preset.getVersion();
+			if (version != null) {
+				text.append(" " + version, StyledString.COUNTER_STYLER);
+			}
+
+			String tag = preset.getTag();
+			if (tag != null) {
+				text.append(" (" + tag + ")", StyledString.DECORATIONS_STYLER);
+			}
+		}
+
+		cell.setImage(getImage(element));
+		cell.setText(text.toString());
+		cell.setStyleRanges(text.getStyleRanges());
+
+		super.update(cell);
+	}
 
 	@Override
 	public Image getImage(Object element) {
@@ -48,8 +82,10 @@ public class SchemaPresetLabelProvider extends LabelProvider {
 				}
 				return image;
 			}
+
+			return defImage;
 		}
-		return super.getImage(element);
+		return null;
 	}
 
 	@Override
@@ -58,7 +94,8 @@ public class SchemaPresetLabelProvider extends LabelProvider {
 			SchemaPreset schema = (SchemaPreset) element;
 			return schema.getName();
 		}
-		return super.getText(element);
+
+		return element.toString();
 	}
 
 	@Override
@@ -67,6 +104,8 @@ public class SchemaPresetLabelProvider extends LabelProvider {
 			image.dispose();
 		}
 		urlImages.clear();
+
+		defImage.dispose();
 
 		super.dispose();
 	}

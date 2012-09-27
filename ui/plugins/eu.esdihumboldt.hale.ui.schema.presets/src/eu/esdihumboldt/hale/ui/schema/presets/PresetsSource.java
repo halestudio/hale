@@ -145,6 +145,9 @@ public class PresetsSource extends AbstractProviderSource<SchemaReader> {
 		ComboViewer providers = createProviders(parent);
 		controlData.applyTo(providers.getControl());
 
+		// prevent selector appearing very small
+		parent.pack();
+
 		// initial state update
 		updateState(true);
 	}
