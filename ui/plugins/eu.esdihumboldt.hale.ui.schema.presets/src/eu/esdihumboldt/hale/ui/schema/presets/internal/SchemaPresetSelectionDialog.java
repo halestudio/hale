@@ -59,7 +59,7 @@ public class SchemaPresetSelectionDialog extends
 		PatternFilter patternFilter = new PatternFilter();
 		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.BORDER, patternFilter, true);
-//		tree.getViewer().setComparator(new ViewerComparator());
+		tree.getViewer().setComparator(new SchemaPresetComparator());
 		return tree.getViewer();
 	}
 
