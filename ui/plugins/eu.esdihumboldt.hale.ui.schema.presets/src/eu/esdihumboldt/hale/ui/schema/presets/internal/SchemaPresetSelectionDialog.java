@@ -57,6 +57,7 @@ public class SchemaPresetSelectionDialog extends
 	@Override
 	protected TreeViewer createViewer(Composite parent) {
 		PatternFilter patternFilter = new PatternFilter();
+		patternFilter.setIncludeLeadingWildcard(true);
 		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new SchemaPresetComparator());
