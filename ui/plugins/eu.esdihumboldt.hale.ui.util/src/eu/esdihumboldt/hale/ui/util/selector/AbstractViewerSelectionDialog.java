@@ -103,7 +103,8 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.widthHint = 400;
-		data.minimumHeight = 200;
+//		data.minimumHeight = 200;
+		data.heightHint = 400;
 		page.setLayoutData(data);
 
 		GridLayout pageLayout = new GridLayout(1, false);
