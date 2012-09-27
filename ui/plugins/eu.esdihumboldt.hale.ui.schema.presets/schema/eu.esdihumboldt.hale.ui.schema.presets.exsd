@@ -89,6 +89,23 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="version" type="string">
+            <annotation>
+               <documentation>
+                  The schema version. Version number or date.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="tag" type="string">
+            <annotation>
+               <documentation>
+                  A tag to discern it from other versions of the same schema, e.g. specifying a repository name.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

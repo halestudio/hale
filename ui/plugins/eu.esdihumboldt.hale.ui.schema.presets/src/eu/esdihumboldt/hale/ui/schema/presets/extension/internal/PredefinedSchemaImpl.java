@@ -110,4 +110,20 @@ public class PredefinedSchemaImpl implements SchemaPreset {
 		return elementId;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset#getTag()
+	 */
+	@Override
+	public String getTag() {
+		return element.getAttribute("tag");
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset#getVersion()
+	 */
+	@Override
+	public String getVersion() {
+		return element.getAttribute("version");
+	}
+
 }

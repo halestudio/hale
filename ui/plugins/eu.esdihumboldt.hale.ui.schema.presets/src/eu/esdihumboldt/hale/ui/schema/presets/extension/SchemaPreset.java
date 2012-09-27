@@ -36,6 +36,21 @@ public interface SchemaPreset extends Identifiable {
 	public abstract String getName();
 
 	/**
+	 * Get a tag to discern it from other versions of the same schema, e.g.
+	 * specifying a repository name.
+	 * 
+	 * @return the schema tag, may be <code>null</code>
+	 */
+	public abstract String getTag();
+
+	/**
+	 * Get the schema version.
+	 * 
+	 * @return the schema version, may be <code>null</code>
+	 */
+	public abstract String getVersion();
+
+	/**
 	 * Get the schema description.
 	 * 
 	 * @return the description, may be <code>null</code>
