@@ -135,6 +135,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 			LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(
 					fileName));
 			validator.setSource(source);
+			validator.setContentType(getContentType());
 
 			// XXX configuration pages for validator?
 
@@ -158,7 +159,8 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 					}
 					else {
 						// error message
-						log.userError(report.getSummary() + "\nPlease see the report for more details.");
+						log.userError(report.getSummary()
+								+ "\nPlease see the report for more details.");
 					}
 				}
 			} catch (IOProviderConfigurationException e) {
