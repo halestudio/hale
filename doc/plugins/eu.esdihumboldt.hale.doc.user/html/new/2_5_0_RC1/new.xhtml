@@ -125,7 +125,8 @@ table.news tr td.content {
 					it - but using source data to support in the mapping creation with
 					HALE is best done with a manageable example. In the new <em>Transformation</em>
 					menu you have the possibility to launch a dedicated transformation
-					job based on the current alignment and schemas, to transform bigger data sets.
+					job based on the current alignment and schemas, to transform bigger
+					data sets.
 					<p>
 						<img src="images/transform_menu.png" />
 					</p>
@@ -177,9 +178,9 @@ table.news tr td.content {
 				<td class="content" colspan="1" rowspan="1">When using the <em>Compare</em>
 					mode in a data view, you now can select a specific value for a
 					property if there are multiple. So if a value is annotated with
-					something like <b>(1 of 7)</b> you can hover over the
-					corresponding table cell and select a different value (e.g. the
-					second, third, etc.) from the combo box that appears.
+					something like <b>(1 of 7)</b> you can hover over the corresponding
+					table cell and select a different value (e.g. the second, third,
+					etc.) from the combo box that appears.
 					<p>
 						<img src="images/compare_select.png" />
 					</p>
@@ -255,6 +256,21 @@ table.news tr td.content {
 					internal database uses has been drastically reduced. The internal
 					database serves for temporarily storing source and transformed
 					instances.</td>
+			</tr>
+
+			<tr id="2_1-projects">
+				<td class="title" colspan="1" rowspan="1">Load HALE 2.1
+					projects</td>
+				<td class="content" colspan="1" rowspan="1">Projects created in
+					HALE up to version 2.1.x can now be imported again, though with
+					some limitations:
+					<ul>
+						<li>Previously defined filters are not applied</li>
+						<li>The <em>NilReasonFunction</em> is not supported
+						</li>
+					</ul> Please take a look at the reports after importing such a project,
+					to identify if and where there might be problems.
+				</td>
 			</tr>
 
 		</tbody>
