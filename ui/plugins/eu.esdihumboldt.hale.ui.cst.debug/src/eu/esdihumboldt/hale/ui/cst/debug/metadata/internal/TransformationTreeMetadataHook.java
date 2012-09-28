@@ -40,15 +40,37 @@ public class TransformationTreeMetadataHook implements TransformationTreeHook,
 		if (state == TreeState.SOURCE_POPULATED) { // TODO key per state - for
 													// now only support this
 													// state
-			// TODO get "serializable tree"
-			// suggestion: write dot export based on a transformation tree
-			// visitor
 
-			// TODO store tree as metadata
-//			target.setMetaData(KEY_POPULATED_TREE, treeVal);
-			// XXX dummy
-			target.setMetaData(KEY_POPULATED_TREE, "TODO");
+			DotProvider dotProv = new TreeToDotProvider(tree);
+			String dot = dotProv.generateGraph();
+			// writeDotFile(dot);
+
+			target.setMetaData(KEY_POPULATED_TREE, dot);
 		}
 	}
+
+	/**
+	 * XXX test-method for file-output delete later
+	 * 
+	 * @param dot the dot-graph
+	 */
+	/*
+	 * private void writeDotFile(String dot) { File dotFile = new
+	 * File("C://Users/Calico//Desktop//dot.txt");
+	 * 
+	 * PrintWriter output; BufferedWriter buffer; FileWriter fileWriter; try {
+	 * dotFile.createNewFile();
+	 * 
+	 * fileWriter = new FileWriter(dotFile); buffer = new
+	 * BufferedWriter(fileWriter); output = new PrintWriter(buffer); try {
+	 * output.print(dot);
+	 * 
+	 * } finally { output.close(); buffer.close(); fileWriter.close();
+	 * 
+	 * } } catch (IOException e) { // TODO Auto-generated catch block
+	 * e.printStackTrace(); }
+	 * 
+	 * }
+	 */
 
 }
