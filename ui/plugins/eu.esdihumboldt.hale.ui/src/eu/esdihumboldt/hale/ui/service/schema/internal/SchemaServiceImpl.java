@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -51,6 +50,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Default {@link SchemaService} implementation
@@ -270,7 +270,7 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 				EditMappableTypesWizard wizard = new EditMappableTypesWizard(spaceID,
 						getSchemas(spaceID));
 				Shell shell = Display.getCurrent().getActiveShell();
-				WizardDialog dialog = new WizardDialog(shell, wizard);
+				HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
 				dialog.open();
 			}
 		});

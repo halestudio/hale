@@ -23,5 +23,6 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.ui.function.generic,
  eu.esdihumboldt.hale.ui.function.generic.pages,
  eu.esdihumboldt.hale.ui.service.entity,
- eu.esdihumboldt.hale.ui.service.entity.util
+ eu.esdihumboldt.hale.ui.service.entity.util,
+ eu.esdihumboldt.hale.ui.util.wizard
 Export-Package: eu.esdihumboldt.hale.ui.functions.core
