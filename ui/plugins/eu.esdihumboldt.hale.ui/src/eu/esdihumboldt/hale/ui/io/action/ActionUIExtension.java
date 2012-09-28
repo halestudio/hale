@@ -124,6 +124,21 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		}
 
 		/**
+		 * @see AbstractConfigurationFactory#createExtensionObject()
+		 */
+		@Override
+		public IOWizard<?> createExtensionObject() throws Exception {
+			IOWizard<?> wizard = super.createExtensionObject();
+
+			String customTitle = getCustomTitle();
+			if (customTitle != null && !customTitle.isEmpty()) {
+				wizard.setWindowTitle(customTitle);
+			}
+
+			return wizard;
+		}
+
+		/**
 		 * @see AbstractObjectDefinition#getPriority()
 		 */
 		@Override
@@ -157,6 +172,14 @@ public class ActionUIExtension extends AbstractExtension<IOWizard<?>, ActionUI> 
 		@Override
 		public String getActionID() {
 			return conf.getAttribute("action");
+		}
+
+		/**
+		 * @see ActionUI#getCustomTitle()
+		 */
+		@Override
+		public String getCustomTitle() {
+			return conf.getAttribute("customTitle");
 		}
 
 	}

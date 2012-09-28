@@ -115,6 +115,16 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="customTitle" type="string">
+            <annotation>
+               <documentation>
+                  Custom title for the wizard.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
