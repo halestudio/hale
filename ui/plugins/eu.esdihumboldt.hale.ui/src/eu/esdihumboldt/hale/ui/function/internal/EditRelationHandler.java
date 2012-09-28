@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardFactory;
 import eu.esdihumboldt.hale.ui.function.generic.GenericPropertyFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.GenericTypeFunctionWizard;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Handler for editing an existing {@link Cell}.
@@ -113,7 +114,8 @@ public class EditRelationHandler extends AbstractHandler {
 				// initialize wizard
 				wizard.init();
 
-				WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveShell(event), wizard);
+				HaleWizardDialog dialog = new HaleWizardDialog(HandlerUtil.getActiveShell(event),
+						wizard);
 
 				if (dialog.open() == WizardDialog.OK) {
 					MutableCell cell = wizard.getResult();

@@ -65,4 +65,11 @@ public interface ActionUI extends ExtensionObjectFactory<IOWizard<?>> {
 	 */
 	public String getDisabledReason();
 
+	/**
+	 * Get the custom wizard title.
+	 * 
+	 * @return the wizard title, may be <code>null</code>
+	 */
+	public String getCustomTitle();
+
 }
