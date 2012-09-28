@@ -436,6 +436,7 @@
          point="eu.esdihumboldt.hale.ui.io.action">
       <action-ui
             action="eu.esdihumboldt.hale.io.schema.read.source"
+            customTitle="Import source schema"
             id="eu.esdihumboldt.hale.io.schema.read.source.ui"
             label="Source schema..."
             priority="-10"
@@ -444,6 +445,7 @@
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.schema.read.target"
+            customTitle="Import target schema"
             id="eu.esdihumboldt.hale.io.schema.read.target.ui"
             label="Target schema..."
             priority="-9"
@@ -452,6 +454,7 @@
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.instance.read.source"
+            customTitle="Import source data"
             id="eu.esdihumboldt.hale.io.instance.read.source.ui"
             label="Source data..."
             priority="-6"
@@ -469,6 +472,7 @@
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.align.read"
+            customTitle="Import alignment"
             id="eu.esdihumboldt.hale.io.align.read.ui"
             label="Alignment..."
             priority="0"
@@ -494,6 +498,7 @@
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.align.write"
+            customTitle="Export alignment"
             id="eu.esdihumboldt.hale.io.align.write.ui"
             label="Alignment..."
             priority="0"
@@ -511,6 +516,7 @@
       </action-ui>
       <action-ui
             action="eu.esdihumboldt.hale.io.instance.write.transformed"
+            customTitle="Export transformed data"
             id="eu.esdihumboldt.hale.io.instance.write.transformed.ui"
             label="Transformed data..."
             priority="0"
