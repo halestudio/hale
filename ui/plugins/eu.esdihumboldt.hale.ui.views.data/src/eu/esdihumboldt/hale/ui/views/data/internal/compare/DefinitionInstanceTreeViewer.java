@@ -16,9 +16,11 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -75,6 +77,8 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	private Composite main;
 
 	private TreeEditor editor;
+
+	private MetadataActionProvider maep;
 
 	private final SimpleInstanceSelectionProvider selectionProvider = new SimpleInstanceSelectionProvider();
 
@@ -169,7 +173,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 			}
 		});
 
-		MetadataActionProvider maep = new MetadataCompareActionProvider(treeViewer);
+		maep = new MetadataCompareActionProvider(treeViewer);
 		maep.setup();
 
 		treeViewer.setComparator(new DefinitionComparator());
@@ -293,7 +297,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 //				}
 //				
 //			});
-
+			List<Instance> insts = new ArrayList<Instance>();
 			for (Instance instance : instances) { // sortedFeatures) {
 				final TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.LEFT);
 //				FeatureId id = FeatureBuilder.getSourceID(feature);
@@ -314,9 +318,10 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 
 				// add tool tip
 //				new ColumnBrowserTip(treeViewer, 400, 300, true, index, null);
-
+				insts.add(instance);
 				index++;
 			}
+			((MetadataCompareActionProvider) maep).setInput(insts, labelProviders);
 		}
 
 		treeViewer.refresh();

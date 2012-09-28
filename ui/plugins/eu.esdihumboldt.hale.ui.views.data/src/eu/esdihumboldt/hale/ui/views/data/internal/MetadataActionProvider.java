@@ -107,6 +107,10 @@ public abstract class MetadataActionProvider {
 				// Initiate the extension-point
 				MetadataActionExtension mae = MetadataActionExtension.getInstance();
 				final Pair<Object, Object> data = retrieveMetadata(cell);
+				if (data == null) {
+					return;
+				}
+
 				// get all defined actions
 				final List<MetadataActionFactory> actionSources = mae.getMetadataActions(data
 						.getFirst().toString());
