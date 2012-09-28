@@ -111,9 +111,7 @@ public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		if (element == Metadata.METADATA) {
-			Image img = CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_META);
-			metaimages.put(Metadata.METADATA.toString(), img);
-			return img;
+			return CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_META);
 		}
 		if (element instanceof String) {
 			MetadataInfo meta = MetadataInfoExtension.getInstance().get((String) element);
@@ -144,6 +142,7 @@ public class DefinitionMetaLabelProvider extends DefinitionLabelProvider {
 		for (Image img : metaimages.values()) {
 			img.dispose();
 		}
+		metaimages.clear();
 
 		super.dispose();
 	}
