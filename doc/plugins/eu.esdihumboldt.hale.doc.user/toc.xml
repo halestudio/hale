@@ -76,6 +76,8 @@
          </topic>
          <topic href="html/tasks/data/save_transformation.html" label="Save the transformation result">
          </topic>
+         <topic href="html/tasks/data/validate_data.html" label="Validate the transformed data">
+         </topic>
          <topic href="html/tasks/data/transform_data.html" label="Transform external data">
          </topic>
          <anchor id="tasks_data"/>

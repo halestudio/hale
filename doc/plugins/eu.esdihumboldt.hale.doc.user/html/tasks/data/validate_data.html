@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Validate the transformed data</title>
+</head>
+<body>
+	<h1>Validate the transformed data</h1>
+	<p>If you target a specific schema it is vital for your
+		transformation result to not only follow the schema's structure, but
+		to also meet the other constraints defined by the schema, like
+		mandatory properties or restrictions on property values.</p>
+	<p>Validation of instances in HALE currently is supported for XML
+		based schemas. Validation can be done on the exported transformation
+		result or on the transformed instances currently available in the
+		application.</p>
+
+	<h2>Validation of exported data</h2>
+	<p>When exporting data or transforming external data you have the
+		option to specify a validator that should be executed when writing the
+		data to the output file is finished. This validator produces a report
+		about errors found during the validation and informs you if the file
+		is valid or not.</p>
+
+	<h2>Validation inside HALE</h2>
+	<p>If you have loaded source data and created a mapping, on each
+		mapping change the live transformation is executed (if activated).
+		When the transformed data changes, automatically a job is started to
+		validate the instances. This can be deactivated and activated in the
+		main menu or tool bar:</p>
+	<div>
+		<img src="images/validation_activate.png">
+	</div>
+	<p>A status item in the lower right corner of the HALE window shows
+		the status of the validation. If there is a small warning sign in the
+		icon, it informs us about validation errors:</p>
+	<div>
+		<img src="images/val_status_2.png">
+	</div>
+	<p>
+		Clicking on the status item opens the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/report_list.html">Report
+			List</a> and selects the last validation report.
+	</p>
+	<div>
+		<img src="images/validation_report.png">
+	</div>
+	<p>
+		If the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/views/properties.html">Properties
+			view</a> is not yet shown, you can open it by double-clicking on the
+		report. If there were problems during the validation you will see the
+		<em>Warnings</em> section in the report's properties. There the
+		validation warnings are listed, grouped by the property where they
+		occur. If there are many warnings for a property, only a few are
+		displayed, because usually they originate from the same problem.
+	</p>
+	<p>
+		You can inspect the instances for which these warnings were generated
+		by double-clicking on a warning message or a property. The transformed
+		data view is opened, and the instance associated to the message or the
+		instances with problems for this property are displayed. Please note
+		that this action <em>pins</em> the Properties view, so it show the
+		report information even if another view is selected.
+	</p>
+	<div>
+		<img src="images/validation_properties.png">
+	</div>
+
+	<br>
+	<!-- related concepts -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png">
+		<p>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What
+				is an Instance?</a>
+		</p>
+	</div>
+
+	<!-- related tasks: load target schema, load source data -->
+	<div>
+		<br> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png">
+		<p>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/save_transformation.html">Save
+				the transformation result</a>
+		</p>
+		<p>
+			<a
+				href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/transform_data.html">Transform
+				external data</a>
+		</p>
+	</div>
+</body>
+</html>
