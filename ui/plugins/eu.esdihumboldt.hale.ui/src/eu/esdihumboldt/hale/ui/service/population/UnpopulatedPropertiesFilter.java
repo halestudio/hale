@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.views.schemas.explorer;
+package eu.esdihumboldt.hale.ui.service.population;
 
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;

@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
+import eu.esdihumboldt.hale.ui.service.population.UnpopulatedPropertiesFilter;
 import eu.esdihumboldt.hale.ui.util.viewer.FilterAction;
 import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
 import eu.esdihumboldt.hale.ui.views.schemas.internal.SchemasViewPlugin;
