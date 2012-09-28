@@ -69,6 +69,8 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 
 	private final Map<LinkedList<Object>, Integer> chosenPaths = new HashMap<LinkedList<Object>, Integer>();
 
+	private final Map<Object, Integer> chosenMetaPaths = new HashMap<Object, Integer>();
+
 	/**
 	 * Create an instance label provider for tree based on a
 	 * {@link TypeDefinition}
@@ -130,27 +132,24 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		else {
 			// if segments contain a set of metadata keys
 			if (treePath.getFirstSegment() instanceof Set<?>) {
-				if (treePath.getSegmentCount() > 1) {
-					LinkedList<Object> segmentList2 = new LinkedList<Object>();
-					segmentList2.add(treePath.getFirstSegment());
-					for (int i = 1; value != null && i < treePath.getSegmentCount(); i++) {
-						Object segment = treePath.getSegment(i);
-						segmentList2.add(segment);
-						if (segment instanceof String) {
-							Object key = segment;
-							List<Object> values = ((Instance) value).getMetaData(key.toString());
-							choice = 0;
-							valueCount = 0;
-							if (values != null && values.size() > 0) {
-								Integer chosenPath = chosenPaths.get(segmentList2);
-								choice = chosenPath == null ? 0 : chosenPath;
-								value = values.get(choice);
-								valueCount = values.size();
-							}
-							else
-								value = null;
+				if (treePath.getSegmentCount() > 1 && value != null) {
+
+					Object key = treePath.getLastSegment();
+
+					if (key instanceof String) {
+						List<Object> values = ((Instance) value).getMetaData(key.toString());
+						choice = 0;
+						valueCount = 0;
+						if (values != null && values.size() > 0) {
+							Integer chosenPath = chosenMetaPaths.get(key);
+							choice = chosenPath == null ? 0 : chosenPath;
+							value = values.get(choice);
+							valueCount = values.size();
 						}
+						else
+							value = null;
 					}
+
 				}
 			}
 		}
@@ -224,6 +223,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	 * @param choice the made choice
 	 */
 	public void selectPath(TreePath path, int choice) {
+
 		LinkedList<Object> segmentList = new LinkedList<Object>();
 		for (int i = 0; i < path.getSegmentCount(); i++) {
 			Object element = path.getSegment(i);
@@ -236,6 +236,21 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 			chosenPaths.remove(segmentList);
 		else
 			chosenPaths.put(segmentList, choice - 1);
+		for (int i = 0; i < path.getSegmentCount(); i++)
+			segmentList.add(path.getSegment(i));
+		// First segment is TypeDefinition.
+		if (path.getFirstSegment() instanceof TypeDefinition) {
+			if (choice == 1)
+				chosenPaths.remove(segmentList);
+			else
+				chosenPaths.put(segmentList, choice - 1);
+		}
+		if (path.getFirstSegment() instanceof Set<?>) {
+			if (choice == 1)
+				chosenMetaPaths.remove(path.getLastSegment());
+			chosenMetaPaths.put(path.getLastSegment(), choice - 1);
+		}
+
 	}
 
 	/**
@@ -269,5 +284,19 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		}
 		else
 			return null;
+	}
+
+	/**
+	 * get the specific choosen metadata value number for a certain metadata key
+	 * 
+	 * @param key the metadata key
+	 * @return the choice represented by an int
+	 */
+	public int getMetaDataChoice(String key) {
+		if (chosenMetaPaths.containsKey(key)) {
+			return chosenMetaPaths.get(key).intValue();
+		}
+		else
+			return 0;
 	}
 }

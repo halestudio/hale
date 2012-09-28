@@ -16,9 +16,15 @@
 
 package eu.esdihumboldt.hale.ui.views.data.internal.compare;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.ui.views.data.internal.MetadataActionProvider;
 import eu.esdihumboldt.util.Pair;
 
@@ -30,6 +36,9 @@ import eu.esdihumboldt.util.Pair;
  */
 public class MetadataCompareActionProvider extends MetadataActionProvider {
 
+	private List<Instance> instances;
+	private Map<Integer, DefinitionInstanceLabelProvider> labelProviders;
+
 	/**
 	 * Standard Constructor
 	 * 
@@ -37,6 +46,19 @@ public class MetadataCompareActionProvider extends MetadataActionProvider {
 	 */
 	public MetadataCompareActionProvider(TreeViewer treeViewer) {
 		super(treeViewer);
+		this.instances = new ArrayList<Instance>();
+	}
+
+	/**
+	 * Stores all instances and labelProviders
+	 * 
+	 * @param instances the instances
+	 * @param labelProviders the labelProviders
+	 */
+	public void setInput(List<Instance> instances,
+			Map<Integer, DefinitionInstanceLabelProvider> labelProviders) {
+		this.instances = instances;
+		this.labelProviders = labelProviders;
 	}
 
 	/**
@@ -44,7 +66,19 @@ public class MetadataCompareActionProvider extends MetadataActionProvider {
 	 */
 	@Override
 	protected Pair<Object, Object> retrieveMetadata(ViewerCell cell) {
-		return new Pair<Object, Object>(cell.getElement().toString(), cell.getText());
-	}
+		if (cell.getViewerRow().getTreePath().getFirstSegment() instanceof Set<?>) {
+			if (cell.getElement() instanceof Set<?>) {
+				return null;
+			}
 
+			String key = cell.getElement().toString();
+
+			List<Object> values = instances.get(cell.getColumnIndex() - 1).getMetaData(key);
+			Object value = values.get(labelProviders.get(cell.getColumnIndex()).getMetaDataChoice(
+					key));
+			return new Pair<Object, Object>(key, value);
+		}
+		else
+			return null;
+	}
 }
