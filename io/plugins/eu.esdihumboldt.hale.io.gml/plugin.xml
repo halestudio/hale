@@ -80,6 +80,9 @@
          <contentType
                ref="org.eclipse.core.runtime.xml">
          </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xml.gzip">
+         </contentType>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.GmlInstanceWriter"

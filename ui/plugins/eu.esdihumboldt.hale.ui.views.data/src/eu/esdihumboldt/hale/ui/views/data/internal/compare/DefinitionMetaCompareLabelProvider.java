@@ -31,7 +31,6 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.internal.Messages;
-import eu.esdihumboldt.hale.ui.views.data.internal.Metadata;
 
 /**
  * Subclass of basic label provider {@link DefinitionLabelProvider}, which can
@@ -105,9 +104,7 @@ public class DefinitionMetaCompareLabelProvider extends DefinitionLabelProvider 
 	@Override
 	public Image getImage(Object element) {
 		if (element instanceof Set<?>) {
-			Image img = CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_META);
-			metaimages.put(Metadata.METADATA.toString(), img);
-			return img;
+			return CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_META);
 		}
 		if (element instanceof String) {
 			MetadataInfo meta = MetadataInfoExtension.getInstance().get((String) element);
@@ -137,8 +134,9 @@ public class DefinitionMetaCompareLabelProvider extends DefinitionLabelProvider 
 		for (Image img : metaimages.values()) {
 			img.dispose();
 		}
-		super.dispose();
+		metaimages.clear();
 
+		super.dispose();
 	}
 
 }

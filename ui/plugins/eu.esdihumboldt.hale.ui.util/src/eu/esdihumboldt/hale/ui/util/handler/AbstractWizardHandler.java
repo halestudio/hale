@@ -21,9 +21,10 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Shows a wizard
@@ -39,7 +40,7 @@ public abstract class AbstractWizardHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWizard wizard = createWizard();
 		Shell shell = Display.getCurrent().getActiveShell();
-		WizardDialog dialog = new WizardDialog(shell, wizard);
+		HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
 		dialog.open();
 
 		return null;

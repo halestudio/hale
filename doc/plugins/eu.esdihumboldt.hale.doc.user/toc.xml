@@ -7,6 +7,10 @@
       </topic>
       <anchor id="introduction"/>
    </topic>
+   <topic label="What&apos;s new?">
+      <topic href="html/new/2_5_0_RC1/new.xhtml" label="2.5.0.RC1">
+      </topic>
+   </topic>
    <topic label="Getting Started">
       <topic href="html/getting_started/main_workflow.html" label="First steps in HALE">
       </topic>
@@ -72,7 +76,9 @@
          </topic>
          <topic href="html/tasks/data/save_transformation.html" label="Save the transformation result">
          </topic>
-         <topic href="html/tasks/data/transform_data.html" label="Transform data">
+         <topic href="html/tasks/data/validate_data.html" label="Validate the transformed data">
+         </topic>
+         <topic href="html/tasks/data/transform_data.html" label="Transform external data">
          </topic>
          <anchor id="tasks_data"/>
       </topic>

@@ -24,7 +24,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -37,6 +36,7 @@ import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Action that launches an {@link IOWizard}
@@ -117,7 +117,7 @@ public class IOWizardAction extends AbstractFactoryAction<ActionUI> {
 			// set advisor and action ID
 			((IOWizard) wizard).setAdvisor(advisor, actionId);
 			Shell shell = Display.getCurrent().getActiveShell();
-			WizardDialog dialog = new WizardDialog(shell, wizard);
+			HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
 			notifyResult(dialog.open() == Window.OK);
 		} catch (Exception e) {
 			log.error("Could not launch I/O wizard for advisor " + getFactory().getIdentifier(), e);

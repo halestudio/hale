@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -77,6 +76,7 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.RecentFilesService;
 import eu.esdihumboldt.hale.ui.service.project.UILocationUpdater;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Default implementation of the {@link ProjectService}.
@@ -615,7 +615,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				wizard.setAdvisor(saveProjectAdvisor, null);
 
 				Shell shell = Display.getCurrent().getActiveShell();
-				WizardDialog dialog = new WizardDialog(shell, wizard);
+				HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
 				dialog.open();
 			}
 		});
@@ -638,7 +638,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				wizard.setAdvisor(openProjectAdvisor, null);
 
 				Shell shell = Display.getCurrent().getActiveShell();
-				WizardDialog dialog = new WizardDialog(shell, wizard);
+				HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
 				dialog.open();
 			}
 		});

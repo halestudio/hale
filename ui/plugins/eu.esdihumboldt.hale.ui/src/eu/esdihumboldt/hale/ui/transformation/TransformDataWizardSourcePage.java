@@ -28,7 +28,6 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -49,6 +48,7 @@ import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
 import eu.esdihumboldt.hale.ui.io.util.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Page for selection of source data files for the {@link TransformDataWizard}.
@@ -115,7 +115,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 				// ProjectService.rememberIO
 				importWizard.setAdvisor(advisor, null);
 
-				new WizardDialog(getShell(), importWizard).open();
+				new HaleWizardDialog(getShell(), importWizard).open();
 
 				if (advisor.getInstances() != null) {
 					sourceCollections.add(advisor.getInstances());
