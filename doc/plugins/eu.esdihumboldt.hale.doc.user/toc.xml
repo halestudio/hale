@@ -7,6 +7,10 @@
       </topic>
       <anchor id="introduction"/>
    </topic>
+   <topic label="What&apos;s new?">
+      <topic href="html/new/2_5_0_RC1/new.xhtml" label="2.5.0.RC1">
+      </topic>
+   </topic>
    <topic label="Getting Started">
       <topic href="html/getting_started/main_workflow.html" label="First steps in HALE">
       </topic>
