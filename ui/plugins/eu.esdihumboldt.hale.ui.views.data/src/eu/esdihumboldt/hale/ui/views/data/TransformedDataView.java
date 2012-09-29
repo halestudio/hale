@@ -70,7 +70,7 @@ public class TransformedDataView extends AbstractDataView {
 	 * Default constructor
 	 */
 	public TransformedDataView() {
-		super(new SampleTransformInstanceSelector(), ID + ".viewer");
+		super(new SampleTransformInstanceSelector(), SchemaSpaceID.TARGET, ID + ".viewer");
 
 		instanceSelector = new InstanceServiceSelector(SchemaSpaceID.TARGET);
 		// another selector based on the reference sample service
