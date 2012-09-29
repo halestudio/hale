@@ -90,7 +90,7 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 
 		treeViewer = new TreeViewer(main, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 
-		treeViewer.setContentProvider(new TypeMetaPairContentProvider(treeViewer));
+		treeViewer.setContentProvider(new TypeMetaPairContentProvider(treeViewer, schemaSpace));
 
 		treeViewer.setLabelProvider(new DefinitionMetaCompareLabelProvider());
 

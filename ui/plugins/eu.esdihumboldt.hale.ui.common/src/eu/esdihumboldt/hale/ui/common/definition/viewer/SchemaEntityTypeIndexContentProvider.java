@@ -215,4 +215,13 @@ public class SchemaEntityTypeIndexContentProvider implements ITreeContentProvide
 		return null;
 	}
 
+	/**
+	 * Get the schema space associated to the types.
+	 * 
+	 * @return the schema space
+	 */
+	public SchemaSpaceID getSchemaSpace() {
+		return schemaSpace;
+	}
+
 }
