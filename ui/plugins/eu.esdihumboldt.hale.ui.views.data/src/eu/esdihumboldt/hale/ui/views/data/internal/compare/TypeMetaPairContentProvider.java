@@ -21,22 +21,28 @@ import java.util.Set;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaEntityTypeIndexContentProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeIndexContentProvider;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Subclass of the tree content provider {@link TypeIndexContentProvider}, which
- * can handle metadatas of instances
+ * Subclass of the tree content provider
+ * {@link SchemaEntityTypeIndexContentProvider}, which can handle metadatas of
+ * instances.
  * 
  * @author Sebastian Reinhardt
  */
-public class TypeMetaPairContentProvider extends TypeIndexContentProvider {
+public class TypeMetaPairContentProvider extends SchemaEntityTypeIndexContentProvider {
 
 	/**
-	 * @see TypeIndexContentProvider#TypeIndexContentProvider(TreeViewer)
+	 * @see SchemaEntityTypeIndexContentProvider#SchemaEntityTypeIndexContentProvider(TreeViewer,
+	 *      SchemaSpaceID)
 	 */
-	public TypeMetaPairContentProvider(TreeViewer tree) {
-		super(tree);
+	public TypeMetaPairContentProvider(TreeViewer tree, SchemaSpaceID schemaSpace) {
+		super(tree, schemaSpace);
 	}
 
 	/**
@@ -44,18 +50,17 @@ public class TypeMetaPairContentProvider extends TypeIndexContentProvider {
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-
 		if (inputElement instanceof Pair<?, ?>) {
-
 			Pair<?, ?> pair = (Pair<?, ?>) inputElement;
+			Object type = pair.getFirst();
+			if (type instanceof TypeDefinition) {
+				type = new TypeEntityDefinition((TypeDefinition) type, getSchemaSpace(), null);
+			}
 			// second item will be a set of metadata keys
-			return new Object[] { pair.getFirst(), pair.getSecond() };
-
+			return new Object[] { type, pair.getSecond() };
 		}
-
 		else
 			return new Object[0];
-
 	}
 
 	/**
