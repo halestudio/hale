@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Label;
 import com.google.common.collect.Iterables;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.util.viewer.PairLabelProvider;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
@@ -91,10 +92,10 @@ public class InstanceExplorer implements InstanceViewer {
 	};
 
 	/**
-	 * @see InstanceViewer#createControls(Composite)
+	 * @see InstanceViewer#createControls(Composite, SchemaSpaceID)
 	 */
 	@Override
-	public void createControls(Composite parent) {
+	public void createControls(Composite parent, SchemaSpaceID schemaSpace) {
 		main = new Composite(parent, SWT.NONE);
 		main.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
 
