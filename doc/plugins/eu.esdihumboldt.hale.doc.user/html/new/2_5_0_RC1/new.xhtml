@@ -11,6 +11,11 @@ table.news tr {
 	vertical-align: top;
 }
 
+table.news {
+	width: 600px;
+	max-width: 100%;
+}
+
 table.news tr td.section {
 	font-size: 20px;
 	font-weight: bold;
@@ -20,12 +25,18 @@ table.news tr td.title {
 	vertical-align: top;
 	width: 30%;
 	font-weight: bold;
+	min-width: 100px;
 }
 
 table.news tr td.content {
 	vertical-align: top;
 	width: 70%;
 }
+
+table.news tr td.content p img {
+	max-width: 550px;
+}
+
 </style>
 <title>What's new in HALE 2.5.0.RC1</title>
 </head>
@@ -40,8 +51,7 @@ table.news tr td.content {
 		<li><a href="#Core" shape="rect">Under the Hood</a></li>
 	</ul>
 
-	<table border="0" cellpadding="15" cellspacing="0" class="news"
-		width="700">
+	<table border="0" cellpadding="15" cellspacing="0" class="news">
 		<tbody>
 
 			<!-- User Interface -->
@@ -78,7 +88,7 @@ table.news tr td.content {
 					mode additionally validation warnings are shown for the affected
 					properties.
 					<p>
-						<img src="images/validate_data_view.png" width="700" />
+						<img src="images/validate_data_view.png" />
 					</p>
 				</td>
 			</tr>
@@ -117,6 +127,20 @@ table.news tr td.content {
 						the INSPIRE schema repository.</p>
 					<p>
 						<img src="images/preset.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="compare-population">
+				<td class="title" colspan="1" rowspan="1">Compare only
+					populated properties</td>
+				<td class="content" colspan="1" rowspan="1">In the data views
+					there is a new variant of the <em>Compare</em> mode, which only
+					displays properties populated in the loaded source data set or the
+					live transformation result - this makes it easier to compare
+					instances, especially in very complex schemas.
+					<p>
+						<img src="images/compare_populated.png" />
 					</p>
 				</td>
 			</tr>
@@ -231,7 +255,7 @@ table.news tr td.content {
 					If you want to use your local version of Java, just delete the <em>jre</em>
 					folder in the HALE directory.
 					<p>
-						<img src="images/duke.png" />
+						<img src="images/duke.png" width="100" height="180" />
 					</p>
 				</td>
 			</tr>

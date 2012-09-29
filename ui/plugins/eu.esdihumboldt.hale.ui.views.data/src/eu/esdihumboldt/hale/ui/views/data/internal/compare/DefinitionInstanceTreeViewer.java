@@ -50,6 +50,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
 import eu.esdihumboldt.hale.ui.views.data.InstanceViewer;
@@ -80,16 +81,16 @@ public class DefinitionInstanceTreeViewer implements InstanceViewer {
 	private final Map<Integer, DefinitionInstanceLabelProvider> labelProviders = new HashMap<Integer, DefinitionInstanceLabelProvider>();
 
 	/**
-	 * @see InstanceViewer#createControls(Composite)
+	 * @see InstanceViewer#createControls(Composite, SchemaSpaceID)
 	 */
 	@Override
-	public void createControls(final Composite parent) {
+	public void createControls(final Composite parent, SchemaSpaceID schemaSpace) {
 		main = new Composite(parent, SWT.NONE);
 		main.setLayout(new TreeColumnLayout());
 
 		treeViewer = new TreeViewer(main, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 
-		treeViewer.setContentProvider(new TypeMetaPairContentProvider(treeViewer));
+		treeViewer.setContentProvider(new TypeMetaPairContentProvider(treeViewer, schemaSpace));
 
 		treeViewer.setLabelProvider(new DefinitionMetaCompareLabelProvider());
 
