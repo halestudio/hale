@@ -42,9 +42,9 @@ public interface FunctionTranslator {
 	 * Returns the list with the translated parameters
 	 * 
 	 * @param params the pre-translation parameters
-	 * @param cellBean the cell bean containing source and target cells
+	 * @param cellBean the cell being constructed
 	 * @param reporter the warning/error reporter
-	 * @param cell the initially cell
+	 * @param cell the initial cell loaded from OML
 	 * @return the post-translation parameters
 	 */
 	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
