@@ -21,7 +21,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 
@@ -35,12 +37,25 @@ public class UnpopulatedPropertiesFilter extends ViewerFilter {
 
 	private final PopulationService ps;
 
+	private final boolean filterOnlyPopulatedTypes;
+
 	/**
-	 * Default constructor
+	 * Default constructor. Filters also properties of unpopulated types.
 	 */
 	public UnpopulatedPropertiesFilter() {
+		this(false);
+	}
+
+	/**
+	 * Create a filter for unpopulated properties.
+	 * 
+	 * @param filterOnlyPopulatedTypes if the filter should be applied only for
+	 *            populated types
+	 */
+	public UnpopulatedPropertiesFilter(boolean filterOnlyPopulatedTypes) {
 		super();
 
+		this.filterOnlyPopulatedTypes = filterOnlyPopulatedTypes;
 		ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
 	}
 
@@ -56,6 +71,16 @@ public class UnpopulatedPropertiesFilter extends ViewerFilter {
 
 			if (element instanceof EntityDefinition) {
 				EntityDefinition entityDef = (EntityDefinition) element;
+
+				if (filterOnlyPopulatedTypes) {
+					TypeEntityDefinition type = AlignmentUtil.getTypeEntity(entityDef);
+					int typeCount = ps.getPopulation(type).getOverallCount();
+					if (typeCount == 0 || typeCount == Population.UNKNOWN) {
+						// for types where there is no population counted, show
+						// all
+						return true;
+					}
+				}
 
 				if (!entityDef.getPropertyPath().isEmpty()
 				// only filter properties

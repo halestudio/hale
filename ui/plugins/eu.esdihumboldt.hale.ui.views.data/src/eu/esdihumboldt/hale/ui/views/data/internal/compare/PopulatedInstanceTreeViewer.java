@@ -36,7 +36,7 @@ public class PopulatedInstanceTreeViewer extends DefinitionInstanceTreeViewer {
 	public void createControls(Composite parent, SchemaSpaceID schemaSpace) {
 		super.createControls(parent, schemaSpace);
 
-		getViewer().setFilters(new ViewerFilter[] { new UnpopulatedPropertiesFilter() });
+		getViewer().setFilters(new ViewerFilter[] { new UnpopulatedPropertiesFilter(true) });
 	}
 
 }
