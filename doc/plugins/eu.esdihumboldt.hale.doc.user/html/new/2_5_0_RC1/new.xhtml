@@ -36,7 +36,6 @@ table.news tr td.content {
 table.news tr td.content p img {
 	max-width: 550px;
 }
-
 </style>
 <title>What's new in HALE 2.5.0.RC1</title>
 </head>
@@ -63,18 +62,20 @@ table.news tr td.content p img {
 			<tr id="validation">
 				<td class="title" colspan="1" rowspan="1">Validation of
 					transformed instances</td>
-				<td class="content" colspan="1" rowspan="1">Additionally to the
-					transformation inside HALE, now also a validation on all
-					transformed instances is performed. From the validation report you
-					can see if there are any problems with missing or invalid property
-					values, grouped by the property where they occur. Problematic
-					instances can be inspected in the data view.
+				<td class="content" colspan="1" rowspan="1">During the
+					transformation, all new instances are validated against the
+					constraints that come with the target schema. The results are
+					presented in the validation report, highlighting any problems with
+					missing or invalid property values, grouped by the property where
+					they occur. Problematic instances can be inspected in the data
+					view.
 					<p>
 						<img src="images/validation_properties.png" />
 					</p>
 					<p>
 						For more information, see <a
-							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/validate_data.html">Validate the transformed data</a>.
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/validate_data.html">Validate
+							the transformed data</a>.
 					</p>
 				</td>
 			</tr>
@@ -82,11 +83,10 @@ table.news tr td.content p img {
 			<tr id="validation-data-view">
 				<td class="title" colspan="1" rowspan="1">Instance validation
 					in data views</td>
-				<td class="content" colspan="1" rowspan="1">Instances displayed
-					in the a data view are validated. When using the <em>Compare</em>
+				<td class="content" colspan="1" rowspan="1">Validation
+					information is also available in the data views. When using the <em>Compare</em>
 					mode, a validation summary is displayed as tooltip. In the <em>Explore</em>
-					mode additionally validation warnings are shown for the affected
-					properties.
+					mode, validation warnings are shown for the affected properties.
 					<p>
 						<img src="images/validate_data_view.png" />
 					</p>
@@ -138,7 +138,7 @@ table.news tr td.content p img {
 					there is a new variant of the <em>Compare</em> mode, which only
 					displays properties populated in the loaded source data set or the
 					live transformation result - this makes it easier to compare
-					instances, especially in very complex schemas.
+					instances, especially with very complex schemas.
 					<p>
 						<img src="images/compare_populated.png" />
 					</p>
@@ -170,7 +170,7 @@ table.news tr td.content p img {
 				<td class="title" colspan="1" rowspan="1">Show cells associated
 					to a schema element</td>
 				<td class="content" colspan="1" rowspan="1">If you want to see
-					or edit the mapping cells associated to a specific schema element
+					or edit the mapping cells associated with a specific schema element
 					you can use the new <em>Mapping View</em>. It displays the cells
 					associated to the schema element selected in the <em>Schema
 						Explorer</em>. Like in the <a
@@ -294,8 +294,15 @@ table.news tr td.content p img {
 					some limitations:
 					<ul>
 						<li>Previously defined filters are not applied</li>
-						<li>The <em>NilReasonFunction</em> is not supported
+						<li>The <em>NilReasonFunction</em> is converted to an assignment
 						</li>
+						<li>The <em>BoundingBoxFunction</em> is not supported
+						</li>
+						<li>The <em>ClipByRectangleFunction</em> is not supported
+						</li>
+						<li>Problems can arise if multiple properties with the same
+							local name but different namespace exist in a type and were
+							mapped.</li>
 					</ul> Please take a look at the reports after importing such a project,
 					to identify if and where there might be problems.
 				</td>

@@ -253,7 +253,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	 */
 	@Override
 	public String getToolTipText(Object element) {
-		if (element instanceof TypeDefinition) {
+		if (element instanceof EntityDefinition) {
 			InstanceValidationReport report = InstanceValidator.validate(instance);
 
 			Collection<InstanceValidationMessage> warnings = report.getWarnings();

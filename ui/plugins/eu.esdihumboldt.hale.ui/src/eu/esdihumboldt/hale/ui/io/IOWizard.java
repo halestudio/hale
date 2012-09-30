@@ -530,7 +530,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 				}
 				else {
 					// error message
-					log.userError(report.getSummary());
+					log.userError(report.getSummary() + "\nPlease see the report for details.");
 					return false;
 				}
 			}
