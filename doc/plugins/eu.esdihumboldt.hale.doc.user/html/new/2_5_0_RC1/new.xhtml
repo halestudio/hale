@@ -138,7 +138,7 @@ table.news tr td.content p img {
 					there is a new variant of the <em>Compare</em> mode, which only
 					displays properties populated in the loaded source data set or the
 					live transformation result - this makes it easier to compare
-					instances, especially in very complex schemas.
+					instances, especially with very complex schemas.
 					<p>
 						<img src="images/compare_populated.png" />
 					</p>
@@ -300,6 +300,9 @@ table.news tr td.content p img {
 						</li>
 						<li>The <em>ClipByRectangleFunction</em> is not supported
 						</li>
+						<li>Problems can arise if multiple properties with the same
+							local name but different namespace exist in a type and were
+							mapped.</li>
 					</ul> Please take a look at the reports after importing such a project,
 					to identify if and where there might be problems.
 				</td>
