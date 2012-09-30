@@ -2,80 +2,55 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>The HUMBOLDT Alignment Editor</title>
+<title>HALE - The HUMBOLDT Alignment Editor</title>
 </head>
 <body>
-	<h1>The HUMBOLDT Alignment Editor</h1>
-	<h2>What can HUMBOLDT Alignment Editor do for you?</h2>
-	<p>The HUMBOLDT Alignment Editor, short HALE, is a rich graphical
-		user interface for defining mappings between concepts in conceptual
-		schemas (application schemas created with the HUMBOLDT Model Editor or
-		other modelling applications), as well as for defining transformations
-		between attributes of these schemas. These mappings are expressed in a
-		high level language called Ontology Mapping Language (OML) and can
-		later be used by the Conceptual Schema Transformer processing
-		component to execute the transformation.</p>
-	<div style="text-align: center;">
-		<img alt="" src="haleio.png" style="max-width: 95%;">
+	<h1>HALE - The HUMBOLDT Alignment Editor</h1>
+
+	<p>The mapping of elements such as Feature Types and Attributes of
+		one conceptual schema (e.g. GML Application Schemas, Database Schemas
+		or UML models) to another is a cornerstone of data harmonisation. The
+		HUMBOLDT Alignment Editor (HALE) is a tool for defining and evaluating
+		conceptual schema mappings. HALE allows domain experts to create
+		logically and semantically consistent mappings and to transform
+		geodata based on these mappings. Furthermore, a major focus is put on
+		the documentation of the schema transformation process and its
+		impacts, e.g. in the form of lineage information attached to the
+		resultant transformed data.</p>
+		
+	<div>
+		<img style="text-align: center; max-width: 95%" src="haleio.png">
 	</div>
-	<p>
-		To make the mapping process more accessible to a domain expert and to
-		increase the quality of transformations, <i>HALE allows working
-			with sample source geodata for interactive visualization and
-			validation.</i> Furthermore, a task-based system as it is often used in
-		programming <i>supports users in the creation of a mapping.</i> HALE
-		also provides other innovative capabilities, such as the <i>real-time
-			evaluation of the mappings</i> you create in terms of their quality.
-		Finally, HALE also contains a system that can be used to <i>document
-			the validity of mappings.</i>
-	</p>
-	<h2>Supporting Data harmonisation</h2>
-	<p>The HUMBOLDT Alignment Editor is a core part of the HUMBOLDT
-		Harmonisation toolkit. HALE (and the component executing your
-		specified mappings, called the Conceptual Schema Translation Service
-		CST) allows you to resolve several different interoperability issues:</p>
+
+	<p>HALE uses a high-level language for expressing the mappings.
+		They can later be used by the Conceptual Schema Transformer processing
+		component to execute a data transformation, e.g. from a non-harmonised
+		data source to a INSPIRE-compliant data set.</p>
+
+	<p>To make this complex process more accessible to domain experts
+		and to increase the quality of the transformations, HALE allows
+		working with sample geodata (instances) for visualization and
+		validation.</p>
+
+	<p>The value that HALE provides to data custodians, i.e.
+		maintainers of geographic datasets, is manifold:</p>
 	<ul>
-		<li>Application schema and Terminology
-			<ul>
-				<li>Mapping rules for the classes and attributes of a source to
-					a target conceptual schema</li>
-			</ul>
-		</li>
-		<li>Metadata
-			<ul>
-				<li>Mapping rules for metadata elements</li>
-			</ul>
-		</li>
-		<li>Spatial and temporal aspects
-			<ul>
-				<li>Definition of functions for transformation of geometric
-					types</li>
-			</ul>
-		</li>
-		<li>Multiple representations
-			<ul>
-				<li>Definition of rules for handling other representations of
-					the same object, i.e. under which circumstances which precedence
-					should be used.</li>
-			</ul>
-		</li>
+		<li>HALE provides a unique declarative approach to making
+			interactive schema mapping a less daunting task;</li>
+		<li>HALE is based on a powerful conceptual-level mapping paradigm
+			that makes mappings easier to understand and to maintain;</li>
+		<li>HALE makes use of both the information in different
+			conceptual schemas and of geographic instances to ensure high-quality
+			mappings;</li>
+		<li>HALE provides a rich, textual and graphical interface
+			specifically adopted for GI Experts;</li>
+		<li>HALE gives instant feedback about the progress of mapping
+			data from one schema to another, enabling throughout understanding of
+			the transformation process;</li>
+		<li>HALE enables collaborative creation of mappings;</li>
+		<li>With HALE, users can furthermore document known limitations
+			of the mapping they are creating in the form of a unique Mismatch
+			Description Language.</li>
 	</ul>
-	<h2>Terminology</h2>
-	<p>
-		The term <i>alignment</i> refers to the complete set of relationships
-		defined between two conceptual schemas. A <i>mapping</i> is an
-		individual relationship between entities of the source and the target
-		schema. A <i>conceptual schema</i> is the model used for a data set
-		and can be expressed in a different conceptual schema languages, such
-		as a GML Application Schema, as an XML Schema (XSD), as a UML model or
-		as a SQL DDL. Even shapefiles contain a simple model for attributive
-		data. Please note that throughout this documentation, the terms <i>Type</i>
-		and <i>Class</i> is used synonymously to Spatial Object Type (INSPIRE
-		wording) and Concept (Ontology Engineering). <i>Attribute</i> and <i>Property</i>
-		are used synonymously. Both refer to elements of a type definition,
-		sometimes also called fields. Usually, a Property represents a complex
-		field, i.e. one that is not of a primitive type such as a String or
-		number.
-	</p>
 </body>
 </html>
