@@ -16,11 +16,13 @@
 
 package eu.esdihumboldt.hale.doc.util.content;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
@@ -114,7 +116,7 @@ public abstract class AbstractVelocityContent implements IHelpContentProducer {
 
 			File templateFile = new File(tempDir, templateId + ".vm");
 			if (!templateFile.exists()) {
-				FileOutputStream fos = new FileOutputStream(templateFile);
+				OutputStream fos = new BufferedOutputStream(new FileOutputStream(templateFile));
 				InputStream stream = getTemplate(templateId);
 
 				// copy the InputStream into FileOutputStream

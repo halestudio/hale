@@ -58,8 +58,8 @@ import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
 public abstract class OffscreenGraph {
 
 	private final Graph graph;
-	private Shell shell;
-	private Composite composite;
+	private final Shell shell;
+	private final Composite composite;
 
 	/**
 	 * @return the graph
@@ -146,7 +146,8 @@ public abstract class OffscreenGraph {
 	/**
 	 * Save the graph as image to an output stream.
 	 * 
-	 * @param out the output stream to write the image to
+	 * @param out the output stream to write the image to (which is closed after
+	 *            writing)
 	 * @param format the informal name of the image format, if <code>null</code>
 	 *            defaults to <code>png</code>
 	 * @throws IOException if writing the image fails
@@ -160,7 +161,8 @@ public abstract class OffscreenGraph {
 	/**
 	 * Save the graph as Scalable Vector Graphics to an output stream.
 	 * 
-	 * @param out the output stream to write the SVG DOM to
+	 * @param out the output stream to write the SVG DOM to (which is closed
+	 *            after writing)
 	 * @throws IOException if writing to the output stream fails
 	 * @throws TransformerFactoryConfigurationError if creating the transformer
 	 *             fails
@@ -175,7 +177,8 @@ public abstract class OffscreenGraph {
 	 * Save a figure as image to an output stream.
 	 * 
 	 * @param root the figure to draw
-	 * @param out the output stream to write the image to
+	 * @param out the output stream to write the image to (which is closed after
+	 *            writing)
 	 * @param format the informal name of the image format, if <code>null</code>
 	 *            defaults to <code>png</code>
 	 * @throws IOException if writing the image fails
@@ -210,7 +213,8 @@ public abstract class OffscreenGraph {
 	 * Save a figure as Scalable Vector Graphics to an output stream.
 	 * 
 	 * @param root the figure to draw
-	 * @param out the output stream to write the SVG DOM to
+	 * @param out the output stream to write the SVG DOM to (which is closed
+	 *            after writing)
 	 * @throws IOException if writing to the output stream fails
 	 * @throws TransformerFactoryConfigurationError if creating the transformer
 	 *             fails
@@ -252,7 +256,7 @@ public abstract class OffscreenGraph {
 	 * Save a graph in the dot format to an output stream.
 	 * 
 	 * @param graph the graph
-	 * @param out the output stream
+	 * @param out the output stream (which is closed after writing)
 	 * @throws IOException if writing to the output stream fails
 	 */
 	public static void saveDot(Graph graph, OutputStream out) throws IOException {
