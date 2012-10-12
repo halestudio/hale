@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -69,7 +69,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		File tempDir = Files.createTempDir();
 		File baseFile = new File(tempDir, "project.halex");
 
-		LocatableOutputSupplier<FileOutputStream> out = new FileIOSupplier(baseFile);
+		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
 		// copy resources to the temp directory and update xml schemas
