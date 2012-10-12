@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -61,7 +60,7 @@ public class ArchiveProjectReader extends AbstractProjectReader {
 
 		// create the project file via XMLProjectReader
 		File baseFile = new File(tempDir, "project.halex");
-		LocatableInputSupplier<FileInputStream> source = new FileIOSupplier(baseFile);
+		LocatableInputSupplier<InputStream> source = new FileIOSupplier(baseFile);
 		setSource(source);
 		reader.setSource(source);
 		reader.setProjectFiles(getProjectFiles());
