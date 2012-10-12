@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -136,7 +137,8 @@ public class DefaultAlignmentIOTest {
 		File alignmentFile = tmp.newFile("alignment.xml");
 		System.out.println(alignmentFile.getAbsolutePath());
 
-		DefaultAlignmentIO.save(align, new FileOutputStream(alignmentFile));
+		DefaultAlignmentIO.save(align,
+				new BufferedOutputStream(new FileOutputStream(alignmentFile)));
 
 		// load alignment
 		// TODO use and check reporter?

@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.doc.user.examples.internal.extension;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -107,8 +108,10 @@ public class ExampleProject implements Identifiable, Comparable<ExampleProject> 
 
 			@Override
 			public void load(InputStream in) throws Exception {
+				OutputStream out = new BufferedOutputStream(new FileOutputStream(alignmentFile));
 				// save to alignment file
-				ByteStreams.copy(in, new FileOutputStream(alignmentFile));
+				ByteStreams.copy(in, out);
+				out.close();
 				alignmentFile.deleteOnExit();
 			}
 
