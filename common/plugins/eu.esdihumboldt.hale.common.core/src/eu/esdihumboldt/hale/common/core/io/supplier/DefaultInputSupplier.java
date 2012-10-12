@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.supplier;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -57,6 +58,18 @@ public class DefaultInputSupplier implements LocatableInputSupplier<InputStream>
 	 */
 	@Override
 	public InputStream getInput() throws IOException {
+		InputStream in = resolve(location);
+		return new BufferedInputStream(in);
+	}
+
+	/**
+	 * Resolve the given location and open an input stream.
+	 * 
+	 * @param location the location
+	 * @return the input stream
+	 * @throws IOException if an error occurs opening the stream
+	 */
+	protected InputStream resolve(URI location) throws IOException {
 		// try resolving using resources
 		boolean triedLocal = false;
 		if (location.getScheme().equals(SCHEME_LOCAL)) { // prefer local
