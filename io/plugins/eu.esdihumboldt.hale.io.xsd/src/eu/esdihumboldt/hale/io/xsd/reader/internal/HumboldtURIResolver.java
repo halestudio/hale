@@ -122,17 +122,6 @@ public class HumboldtURIResolver implements CollectionURIResolver {
 	}
 
 	/**
-	 * Find whether a given URI is relative or not
-	 * 
-	 * @param uri the URI
-	 * 
-	 * @return if the URI is absolute
-	 */
-	protected boolean isAbsolute(String uri) {
-		return uri.startsWith("http://"); //$NON-NLS-1$
-	}
-
-	/**
 	 * @see CollectionURIResolver#getCollectionBaseURI()
 	 */
 	@Override

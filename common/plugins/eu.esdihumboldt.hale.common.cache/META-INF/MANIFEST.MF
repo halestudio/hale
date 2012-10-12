@@ -6,6 +6,8 @@ Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: de.fhg.igd.osgi.util,
  de.fhg.igd.osgi.util.configuration,
+ eu.esdihumboldt.util,
+ eu.esdihumboldt.util.http,
  net.sf.ehcache,
  net.sf.ehcache.config,
  net.sf.ehcache.store,

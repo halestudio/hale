@@ -24,9 +24,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
@@ -35,14 +38,18 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.log4j.Logger;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
+import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.http.ProxyUtil;
 
 /**
  * This class manages requests and caching for remote files.
@@ -57,11 +64,14 @@ public class Request {
 	private boolean enabled = true;
 
 	private static final String DELIMITER = "/"; //$NON-NLS-1$
-	private IConfigurationService org;
+	private final IConfigurationService org;
+
+	private final Map<Proxy, DefaultHttpClient> clients = new HashMap<Proxy, DefaultHttpClient>();
+
+	// fallback encoding
+	private static final String defaultEncoding = "UTF-8"; //$NON-NLS-1$
 
 	private static Logger _log = Logger.getLogger(Request.class);
-
-	HttpClient httpclient = ClientUtil.createThreadSafeHttpClient();
 
 	/**
 	 * The instance of {@link Request}
@@ -133,7 +143,7 @@ public class Request {
 	 * 
 	 * @return instance
 	 */
-	public static Request getInstance() {
+	public synchronized static Request getInstance() {
 		if (instance == null) {
 			instance = new Request();
 		}
@@ -165,7 +175,7 @@ public class Request {
 	 */
 	public InputStream get(URI uri) throws Exception {
 		// check for local files
-		if (uri.toString().startsWith("file:") || uri.toString().startsWith("bundleresource:")) { //$NON-NLS-1$
+		if (uri.getScheme().equals("file") || uri.getScheme().equals("bundleresource")) { //$NON-NLS-1$
 			return this.getLocal(uri.toURL());
 		}
 
@@ -176,7 +186,7 @@ public class Request {
 
 		// no caching activated
 		if (!this.enabled) {
-			return uri.toURL().openStream();
+			return openStream(uri, null).getFirst();
 		}
 
 		// get the current cache for webrequests
@@ -187,46 +197,12 @@ public class Request {
 		String content = ""; //$NON-NLS-1$
 
 		// if the entry does not exist fetch it from the web
-		if (cache.get(link) == null) {
-			InputStream in;
-
-			// fallback encoding
-			String encoding = "UTF-8"; //$NON-NLS-1$
-
-			// try to download stuff with HttpGet
-//			HttpClient httpclient = ClientUtil.createThreadSafeHttpClient();
-			HttpGet httpget = new HttpGet(uri);
-			HttpResponse response = httpclient.execute(httpget);
-			HttpEntity entity = response.getEntity();
-
-			// create InputStream
-			in = entity.getContent();
-
-			// use url.openStream() as fallback if there aren't bytes available
-			if (in.available() <= 0) {
-				in = uri.toURL().openStream();
-			}
-			// if HttpGet was successful we try to get the encoding
-			else if (entity.getContentLength() > 0) {
-				// first from the data itself
-				if (entity.getContentEncoding() != null) {
-					encoding = entity.getContentEncoding().getValue();
-				}
-				// or from the returned header codes
-				else {
-					Header[] header = response.getHeaders("Content-Type"); //$NON-NLS-1$
-					for (Header h : header) {
-						String head = h.getValue();
-						if (head.contains("charset=")) //$NON-NLS-1$
-							encoding = h
-									.getValue()
-									.substring(h.getValue().indexOf("charset=")).replace("charset=", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					}
-				}
-			}
+		Element element = cache.get(link);
+		if (element == null) {
+			Pair<InputStream, String> is = openStream(uri, defaultEncoding);
 
 			// create a String out of the Stream
-			content = this.streamToString(in, encoding);
+			content = this.streamToString(is.getFirst(), is.getSecond());
 
 			// and add it to the cache
 			cache.put(new Element(link, content));
@@ -235,7 +211,7 @@ public class Request {
 			return this.get(uri);
 		}
 		else {
-			content = (String) cache.get(link).getObjectValue();
+			content = (String) element.getObjectValue();
 
 			// create the result stream
 			stream = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
@@ -247,6 +223,77 @@ public class Request {
 //		_log.info(CacheManager.getInstance().getCache(this.cacheName).getStatistics().toString()); // this may decrease performance
 
 		return stream;
+	}
+
+	/**
+	 * Open a stream for the given URI and try to determine the encoding
+	 * 
+	 * @param uri the URI
+	 * @param encoding the default encoding
+	 * @return the opened input stream and encoding
+	 * @throws IOException if opening the input stream fails
+	 */
+	private Pair<InputStream, String> openStream(URI uri, String encoding) throws IOException {
+		Proxy proxy = ProxyUtil.findProxy(uri);
+		DefaultHttpClient client = getClient(proxy);
+
+		HttpGet httpget = new HttpGet(uri);
+		HttpResponse response = client.execute(httpget);
+
+		InputStream in;
+
+		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+			in = uri.toURL().openStream();
+		}
+		else {
+			HttpEntity entity = response.getEntity();
+
+			// create InputStream
+			in = entity.getContent();
+
+			// first from the data itself
+			if (entity.getContentEncoding() != null) {
+				encoding = entity.getContentEncoding().getValue();
+			}
+			// or from the returned header codes
+			else {
+				Header[] header = response.getHeaders("Content-Type"); //$NON-NLS-1$
+				for (Header h : header) {
+					String head = h.getValue();
+					if (head.contains("charset=")) //$NON-NLS-1$
+						encoding = h
+								.getValue()
+								.substring(h.getValue().indexOf("charset=")).replace("charset=", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				}
+			}
+		}
+
+		return new Pair<InputStream, String>(in, encoding);
+	}
+
+	/**
+	 * Get the HTTP client for a given proxy
+	 * 
+	 * @param proxy the proxy
+	 * @return the client configured for the proxy
+	 */
+	private synchronized DefaultHttpClient getClient(Proxy proxy) {
+		DefaultHttpClient client = clients.get(proxy);
+
+		if (client == null) {
+			client = ClientUtil.createThreadSafeHttpClient();
+			ProxyUtil.setupClient(client, proxy);
+
+			// set timeout
+			// 2 seconds socket timeout
+			client.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 2000);
+			// 2 seconds connections timeout
+			client.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 2000);
+
+			clients.put(proxy, client);
+		}
+
+		return client;
 	}
 
 	/**
