@@ -16,52 +16,52 @@
 
 package eu.esdihumboldt.hale.common.cache;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.log4j.Logger;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreConnectionPNames;
+
+import com.google.common.io.ByteStreams;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
+import eu.esdihumboldt.util.http.ProxyUtil;
 
 /**
  * This class manages requests and caching for remote files.
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public class Request {
 
-	private String cacheName = "", cachePath = ""; //$NON-NLS-1$ //$NON-NLS-2$
-	private boolean enabled = true;
+	private static final String CACHE_NAME = "haleResourceCache";
+
+	private boolean cacheEnabled;
 
 	private static final String DELIMITER = "/"; //$NON-NLS-1$
-	private IConfigurationService org;
 
-	private static Logger _log = Logger.getLogger(Request.class);
+	private final IConfigurationService configService;
 
-	HttpClient httpclient = ClientUtil.createThreadSafeHttpClient();
+	private final Map<Proxy, DefaultHttpClient> clients = new HashMap<Proxy, DefaultHttpClient>();
 
 	/**
 	 * The instance of {@link Request}
@@ -78,35 +78,30 @@ public class Request {
 
 			// 1. use user prefs, may not have rights to access system prefs
 			// 2. no default properties
-			// 3. don't default to system properties
-			org = new JavaPreferencesConfigurationService(false, null, false);
+			// 3. default to system properties
+			org = new JavaPreferencesConfigurationService(false, null, true);
 		}
 
-		this.org = new NamespaceConfigurationServiceDecorator(org, Request.class.getPackage()
+		configService = new NamespaceConfigurationServiceDecorator(org, Request.class.getPackage()
 				.getName().replace(".", DELIMITER), //$NON-NLS-1$
 				DELIMITER);
 
 		// get saved seeting
-		this.enabled = this.org.getBoolean("cache.enabled", false); //$NON-NLS-1$
+		cacheEnabled = configService.getBoolean("hale.cache.enabled", true); //$NON-NLS-1$
 
 		// initialize the cache
-		this.init();
+		init();
 	}
 
 	/**
 	 * Initialize the cache.
 	 */
 	private void init() {
-		if (this.enabled) {
-			this.cacheName = this.org.get("cache.name"); //$NON-NLS-1$
-			this.cachePath = this.org.get("cache.path"); //$NON-NLS-1$
-
-			// use system property to set the proper diskStorePath
-			String tmpDir = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
-			System.setProperty("java.io.tmpdir", this.cachePath); //$NON-NLS-1$
+		if (cacheEnabled) {
+//			String tmpDir = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
 
 			// this cache has already been initialized
-			if (CacheManager.getInstance().getCache(this.cacheName) != null) {
+			if (CacheManager.getInstance().getCache(CACHE_NAME) != null) {
 				return;
 			}
 
@@ -114,17 +109,11 @@ public class Request {
 			CacheManager.create();
 
 			// create a Cache instance - providing cachePath has no effect
-			Cache cache = new Cache(this.cacheName, 300, MemoryStoreEvictionPolicy.LRU, true,
-					this.cachePath, true, 0, 0, true, 0, null);
-
-			// set disk store path - this has no effect!
-			cache.setDiskStorePath(this.cachePath);
+			Cache cache = new Cache(CACHE_NAME, 300, MemoryStoreEvictionPolicy.LRU, true, null,
+					true, 0, 0, true, 0, null);
 
 			// add it to CacheManger
 			CacheManager.getInstance().addCache(cache);
-
-			// reset java.io.tmpdir
-			System.setProperty("java.io.tmpdir", tmpDir); //$NON-NLS-1$
 		}
 	}
 
@@ -133,7 +122,7 @@ public class Request {
 	 * 
 	 * @return instance
 	 */
-	public static Request getInstance() {
+	public synchronized static Request getInstance() {
 		if (instance == null) {
 			instance = new Request();
 		}
@@ -145,13 +134,13 @@ public class Request {
 	 * 
 	 * @return {@link InputStream}
 	 * 
-	 * @throws URISyntaxException if the uri is malformed
+	 * @throws URISyntaxException if the URI is malformed
 	 * @throws Exception may contain IOException
 	 * 
 	 * @see Request#get(URI)
 	 */
 	public InputStream get(String uri) throws URISyntaxException, Exception {
-		return this.get(new URI(uri));
+		return get(new URI(uri));
 	}
 
 	/**
@@ -164,89 +153,97 @@ public class Request {
 	 * @throws Exception if something goes wrong
 	 */
 	public InputStream get(URI uri) throws Exception {
-		// check for local files
-		if (uri.toString().startsWith("file:") || uri.toString().startsWith("bundleresource:")) { //$NON-NLS-1$
-			return this.getLocal(uri.toURL());
-		}
+		String scheme = uri.getScheme();
 
-		// no host given
-		if (uri.getHost() == null) {
-			throw new Exception("Empty host!"); //$NON-NLS-1$
+		if (!scheme.equals("http") && !scheme.equals("https")) { //$NON-NLS-1$
+			// get non-HTTP(S) resources through URL.openStream
+			return getLocal(uri.toURL());
 		}
 
 		// no caching activated
-		if (!this.enabled) {
-			return uri.toURL().openStream();
+		if (!cacheEnabled) {
+			return openStream(uri);
 		}
 
-		// get the current cache for webrequests
-		Cache cache = CacheManager.getInstance().getCache(this.cacheName);
-		String link = this.removeSpecialChars(uri.toString());
+		// get the current cache for web requests
+		Cache cache = CacheManager.getInstance().getCache(CACHE_NAME);
+		String key = uri.toString(); // removeSpecialChars(uri.toString());
 
-		InputStream stream = null;
-		String content = ""; //$NON-NLS-1$
+		Element element = cache.get(key);
+		if (element == null) {
+			// if the entry does not exist fetch it from the web
+			InputStream in = openStream(uri);
+			byte[] data;
+			try {
+				data = ByteStreams.toByteArray(in);
+			} finally {
+				in.close();
+			}
 
-		// if the entry does not exist fetch it from the web
-		if (cache.get(link) == null) {
-			InputStream in;
+			// and add it to the cache
+			cache.put(new Element(key, data));
 
-			// fallback encoding
-			String encoding = "UTF-8"; //$NON-NLS-1$
+			return new ByteArrayInputStream(data);
+		}
+		else {
+			byte[] data = (byte[]) element.getObjectValue();
+			return new ByteArrayInputStream(data);
+		}
+	}
 
-			// try to download stuff with HttpGet
-//			HttpClient httpclient = ClientUtil.createThreadSafeHttpClient();
-			HttpGet httpget = new HttpGet(uri);
-			HttpResponse response = httpclient.execute(httpget);
+	/**
+	 * Open a stream for the given URI.
+	 * 
+	 * @param uri the URI
+	 * @return the opened input stream
+	 * @throws IOException if opening the input stream fails
+	 */
+	private InputStream openStream(URI uri) throws IOException {
+		Proxy proxy = ProxyUtil.findProxy(uri);
+		DefaultHttpClient client = getClient(proxy);
+
+		HttpGet httpget = new HttpGet(uri);
+		HttpResponse response = client.execute(httpget);
+
+		InputStream in;
+
+		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+			// fall back to URL.openStream
+			in = uri.toURL().openStream();
+		}
+		else {
 			HttpEntity entity = response.getEntity();
 
 			// create InputStream
 			in = entity.getContent();
-
-			// use url.openStream() as fallback if there aren't bytes available
-			if (in.available() <= 0) {
-				in = uri.toURL().openStream();
-			}
-			// if HttpGet was successful we try to get the encoding
-			else if (entity.getContentLength() > 0) {
-				// first from the data itself
-				if (entity.getContentEncoding() != null) {
-					encoding = entity.getContentEncoding().getValue();
-				}
-				// or from the returned header codes
-				else {
-					Header[] header = response.getHeaders("Content-Type"); //$NON-NLS-1$
-					for (Header h : header) {
-						String head = h.getValue();
-						if (head.contains("charset=")) //$NON-NLS-1$
-							encoding = h
-									.getValue()
-									.substring(h.getValue().indexOf("charset=")).replace("charset=", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					}
-				}
-			}
-
-			// create a String out of the Stream
-			content = this.streamToString(in, encoding);
-
-			// and add it to the cache
-			cache.put(new Element(link, content));
-
-			// fetch the file from cache to prevent already closed streams
-			return this.get(uri);
-		}
-		else {
-			content = (String) cache.get(link).getObjectValue();
-
-			// create the result stream
-			stream = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
 		}
 
-		_log.debug("Cachesize (Memory/Disk): " + CacheManager.getInstance().getCache(this.cacheName).getMemoryStoreSize() + //$NON-NLS-1$
-				" / " + CacheManager.getInstance().getCache(this.cacheName).getDiskStoreSize()); //$NON-NLS-1$
+		return in;
+	}
 
-//		_log.info(CacheManager.getInstance().getCache(this.cacheName).getStatistics().toString()); // this may decrease performance
+	/**
+	 * Get the HTTP client for a given proxy
+	 * 
+	 * @param proxy the proxy
+	 * @return the client configured for the proxy
+	 */
+	private synchronized DefaultHttpClient getClient(Proxy proxy) {
+		DefaultHttpClient client = clients.get(proxy);
 
-		return stream;
+		if (client == null) {
+			client = ClientUtil.createThreadSafeHttpClient();
+			ProxyUtil.setupClient(client, proxy);
+
+			// set timeout
+			// 2 seconds socket timeout
+			client.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 3000);
+			// 2 seconds connections timeout
+			client.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000);
+
+			clients.put(proxy, client);
+		}
+
+		return client;
 	}
 
 	/**
@@ -263,67 +260,11 @@ public class Request {
 	}
 
 	/**
-	 * Removes some substrings.
-	 * 
-	 * @param txt String with special chars
-	 * 
-	 * @return clean string
-	 */
-	private String removeSpecialChars(String txt) {
-		txt = txt.replace("http://", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		txt = txt.replace("/", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-		txt = txt.replace(":", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-
-		return txt;
-	}
-
-	/**
-	 * Converts a {@link InputStream} to a {@link String}.
-	 * 
-	 * @param in the {@link InputStream}
-	 * @param encoding the encoding
-	 * 
-	 * @return the whole content of in
-	 * 
-	 * @throws IOException if the file could not be read
-	 */
-	public String streamToString(InputStream in, String encoding) throws IOException {
-		if (in != null) {
-			// create a StringWriter
-			Writer writer = new StringWriter();
-
-			// create a buffer
-			char[] buffer = new char[1024];
-			try {
-				// try to get a InputStreamReader from InputStream with encoding
-				InputStreamReader isr = new InputStreamReader(in, encoding);
-				Reader reader = new BufferedReader(isr);
-				int n;
-
-				// read all data
-				while ((n = reader.read(buffer)) != -1) {
-					writer.write(buffer, 0, n);
-				}
-			} finally {
-				// close the InputStream
-				in.close();
-			}
-
-			// and return its data
-			return writer.toString();
-		}
-		// if the InputStrean is null, return ""
-		else {
-			return ""; //$NON-NLS-1$
-		}
-	}
-
-	/**
 	 * @see CacheManager#flush(String)
 	 */
 	public void flush() {
-		if (this.enabled)
-			CacheManager.flush(this.cacheName);
+		if (cacheEnabled)
+			CacheManager.flush(CACHE_NAME);
 	}
 
 	/**
@@ -337,7 +278,7 @@ public class Request {
 	 * @see CacheManager#removalAll()
 	 */
 	public void clear() {
-		CacheManager.getInstance().getCache(cacheName).removeAll();
+		CacheManager.getInstance().getCache(CACHE_NAME).removeAll();
 	}
 
 	/**
@@ -345,16 +286,17 @@ public class Request {
 	 * 
 	 * @return boolean
 	 */
-	public boolean isEnabled() {
-		return enabled;
+	public boolean isCacheEnabled() {
+		return cacheEnabled;
 	}
 
 	/**
 	 * 
 	 * @param enabled enabled
 	 */
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-		this.init();
+	public void setCacheEnabled(boolean enabled) {
+		this.cacheEnabled = enabled;
+		init();
 	}
+
 }

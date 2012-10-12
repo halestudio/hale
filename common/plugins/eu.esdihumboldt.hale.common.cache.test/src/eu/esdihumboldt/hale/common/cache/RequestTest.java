@@ -16,13 +16,11 @@
 
 package eu.esdihumboldt.hale.common.cache;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
-import org.apache.http.client.ClientProtocolException;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 /**
@@ -33,39 +31,50 @@ import org.junit.Test;
 public class RequestTest {
 
 	/**
-	 * Test retrieving online resources using {@link Request}
+	 * Test retrieving online resources using {@link Request} with cache
+	 * enabled.
 	 */
 	@Test
-	public void testRequest() {
-		// FIXME activate cache?
-		try {
-			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
-			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
-			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
-			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
-			Request.getInstance().get(
-					new URI("http://www.fraunhofer.de/rss/presse.jsp?et_cid=2&et_lid=2"));
+	public void testRequestCache() {
+		testRequests(true);
+	}
 
-			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
-			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"));
-			Request.getInstance().get(
-					new URI("http://www.fraunhofer.de/rss/presse.jsp?et_cid=2&et_lid=2"));
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-			assertTrue(false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue(false);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			assertTrue(false);
+	/**
+	 * Test retrieving online resources using {@link Request} with cache
+	 * disabled.
+	 */
+	@Test
+	public void testRequestNoCache() {
+		testRequests(false);
+	}
+
+	/**
+	 * Do some test requests.
+	 * 
+	 * @param doCache if the cache should be enabled
+	 */
+	private void testRequests(boolean doCache) {
+		Request.getInstance().setCacheEnabled(doCache);
+		try {
+			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"))
+					.close();
+			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"))
+					.close();
+			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"))
+					.close();
+			Request.getInstance().get(new URI("http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"))
+					.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			assertTrue(false);
+			fail();
 		}
-		assertTrue(true);
-		// FIXME any better way to check the test results?
+	}
 
+	/**
+	 * Shutdown the cache manager.
+	 */
+	@AfterClass
+	public static void shutdownCache() {
 		CacheManager.getInstance().shutdown();
 	}
 }

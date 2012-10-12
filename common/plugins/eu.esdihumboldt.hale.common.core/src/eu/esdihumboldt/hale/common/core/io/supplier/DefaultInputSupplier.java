@@ -88,19 +88,21 @@ public class DefaultInputSupplier implements LocatableInputSupplier<InputStream>
 		try {
 			return Request.getInstance().get(location);
 		} catch (Exception e) {
-			try {
-				return location.toURL().openStream();
-			} catch (IOException ioe) {
-				// try to resolve locally
-				if (!triedLocal) {
-					InputSupplier<? extends InputStream> localSupplier = Resources.tryResolve(
-							location, null);
-					if (localSupplier != null) {
-						return localSupplier.getInput();
-					}
+			// ignore
+		}
+
+		try {
+			return location.toURL().openStream();
+		} catch (IOException ioe) {
+			// try to resolve locally
+			if (!triedLocal) {
+				InputSupplier<? extends InputStream> localSupplier = Resources.tryResolve(location,
+						null);
+				if (localSupplier != null) {
+					return localSupplier.getInput();
 				}
-				throw ioe;
 			}
+			throw ioe;
 		}
 	}
 
