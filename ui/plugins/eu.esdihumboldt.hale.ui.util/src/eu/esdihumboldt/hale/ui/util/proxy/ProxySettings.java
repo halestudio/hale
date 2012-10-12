@@ -26,6 +26,7 @@ import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.util.internal.UIUtilitiesPlugin;
 import eu.esdihumboldt.hale.ui.util.proxy.preferences.PreferenceConstants;
+import eu.esdihumboldt.util.http.ProxyUtil;
 
 /**
  * Manages and applies the proxy settings

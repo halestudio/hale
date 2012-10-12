@@ -16,13 +16,14 @@
 
 package eu.esdihumboldt.hale.ui.cache;
 
-import org.eclipse.core.runtime.Platform;
+import java.io.IOException;
+
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.IWorkbench;
@@ -39,14 +40,14 @@ import eu.esdihumboldt.hale.common.cache.Request;
  * 
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public class CachePreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
-	private IConfigurationService org;
+	private final IConfigurationService configService;
 	private static final String DELIMITER = "/"; //$NON-NLS-1$
-	private PreferenceStore prefs = new PreferenceStore();
+
+	private final PreferenceStore prefs;
 
 	/**
 	 * Constructor.
@@ -60,16 +61,33 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements
 
 			// 1. use user prefs, may not have rights to access system prefs
 			// 2. no default properties
-			// 3. don't default to system properties
-			org = new JavaPreferencesConfigurationService(false, null, false);
+			// 3. default to system properties
+			org = new JavaPreferencesConfigurationService(false, null, true);
 		}
 
-		this.org = new NamespaceConfigurationServiceDecorator(org, Request.class.getPackage()
+		configService = new NamespaceConfigurationServiceDecorator(org, Request.class.getPackage()
 				.getName().replace(".", DELIMITER), //$NON-NLS-1$
 				DELIMITER);
 
-		// setup PreferenceStore save path
-		prefs.setFilename(org.get("cache.path", Platform.getLocation().toString()) + "/Cache.pref"); //$NON-NLS-1$
+		// TODO implement preference store based on configuration service
+		prefs = new PreferenceStore() {
+
+			@Override
+			public void load() throws IOException {
+				setValue("cache.enabled", configService.getBoolean("hale.cache.enabled", true));
+			}
+
+			@Override
+			public void save() throws IOException {
+				configService.setBoolean("hale.cache.enabled", getBoolean("cache.enabled"));
+			}
+
+		};
+		try {
+			prefs.load();
+		} catch (IOException e) {
+			// TODO log
+		}
 		setPreferenceStore(prefs);
 	}
 
@@ -83,34 +101,19 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements
 
 	@Override
 	protected void createFieldEditors() {
-		// restore data
-		prefs.setValue("cache.enabled", org.getBoolean("cache.enabled", false)); //$NON-NLS-1$ //$NON-NLS-2$
-		prefs.setValue("cache.path", org.get("cache.path", Platform.getLocation().toString())); //$NON-NLS-1$ //$NON-NLS-2$
-		prefs.setValue("cache.name", org.get("cache.name", "HALE_WebRequest")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
 		// add fields
 		addField(new BooleanFieldEditor(
 				"cache.enabled", Messages.CachePreferencePage_10, getFieldEditorParent())); //$NON-NLS-1$
-		// don't show these fields for now
-		//addField(new DirectoryFieldEditor("cache.path", Messages.CachePreferencePage_12, getFieldEditorParent())); //$NON-NLS-1$
-		//addField(new StringFieldEditor("cache.name", Messages.CachePreferencePage_14, 20, getFieldEditorParent())); //$NON-NLS-1$
-
-		// placeholder
-//		Composite ph = new Composite(getFieldEditorParent(), SWT.NONE);
-//		ph.setLayoutData(GridDataFactory.swtDefaults().hint(0, 0).create());
 
 		Button clearCache = new Button(getFieldEditorParent(), GRID);
 		clearCache.setText(Messages.CachePreferencePage_15);
-		clearCache.addSelectionListener(new SelectionListener() {
+		clearCache.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Request.getInstance().clear();
 			}
 
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {/* not needed */
-			}
 		});
 		clearCache.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
 	}
@@ -120,12 +123,7 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements
 	 */
 	@Override
 	public boolean performOk() {
-		org.setBoolean("cache.enabled", prefs.getBoolean("cache.enabled")); //$NON-NLS-1$ //$NON-NLS-2$
-		org.set("cache.path", prefs.getString("cache.path")); //$NON-NLS-1$ //$NON-NLS-2$
-		org.set("cache.name", prefs.getString("cache.name")); //$NON-NLS-1$ //$NON-NLS-2$
-
-		//
-		Request.getInstance().setEnabled(prefs.getBoolean("cache.enabled")); //$NON-NLS-1$
+		Request.getInstance().setCacheEnabled(prefs.getBoolean("cache.enabled")); //$NON-NLS-1$
 
 		return super.performOk();
 	}

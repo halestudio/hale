@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.util.proxy;
+package eu.esdihumboldt.util.http;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
