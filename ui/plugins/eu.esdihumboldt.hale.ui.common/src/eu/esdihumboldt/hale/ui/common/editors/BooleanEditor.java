@@ -115,5 +115,4 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 	public boolean isValid() {
 		return true;
 	}
-
 }

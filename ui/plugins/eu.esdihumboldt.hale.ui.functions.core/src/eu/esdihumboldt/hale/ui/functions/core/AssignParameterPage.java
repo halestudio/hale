@@ -32,6 +32,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.Editor;
@@ -46,7 +48,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * @author Kai Schwierczek
  */
 public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
-		implements ParameterPage {
+		implements ParameterPage, AssignFunction {
 
 	private String initialValue;
 	private Editor<?> editor;
@@ -93,13 +95,13 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		// this page is only for parameter value, ignore params
 		if (initialValues == null)
 			return;
-		List<String> values = initialValues.get("value");
+		List<ParameterValue> values = initialValues.get(PARAMETER_VALUE);
 		if (!values.isEmpty()) {
-			initialValue = values.get(0);
+			initialValue = values.get(0).getValue();
 			setPageComplete(true);
 		}
 	}
@@ -108,10 +110,10 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> configuration = ArrayListMultimap.create(1, 1);
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> configuration = ArrayListMultimap.create(1, 1);
 		if (editor != null && !editor.getControl().isDisposed())
-			configuration.put("value", editor.getAsText());
+			configuration.put(PARAMETER_VALUE, new ParameterValue(editor.getAsText()));
 		return configuration;
 	}
 

@@ -55,10 +55,10 @@ public abstract class CellUtil {
 	 * @param parameterName the parameter name
 	 * @return the parameter value or <code>null</code>
 	 */
-	public static String getFirstParameter(Cell cell, String parameterName) {
-		ListMultimap<String, String> params = cell.getTransformationParameters();
+	public static ParameterValue getFirstParameter(Cell cell, String parameterName) {
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
 		if (params != null) {
-			List<String> values = params.get(parameterName);
+			List<ParameterValue> values = params.get(parameterName);
 			if (values != null && !values.isEmpty()) {
 				return values.get(0);
 			}

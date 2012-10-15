@@ -46,7 +46,8 @@ public class RenameExplanation extends AbstractCellExplanation implements Rename
 			else
 				text = "For each value in {0}";
 			text += " adds the same value to the {1} property. If necessary a conversion is applied.";
-			String structuralRename = CellUtil.getFirstParameter(cell, PARAMETER_STRUCTURAL_RENAME);
+			String structuralRename = CellUtil.getFirstParameter(cell, PARAMETER_STRUCTURAL_RENAME)
+					.getValue();
 			if (Boolean.parseBoolean(structuralRename))
 				text += " Furthermore child properties get added, too, if the property names match.";
 			return MessageFormat.format(text, formatEntity(source, html, true),

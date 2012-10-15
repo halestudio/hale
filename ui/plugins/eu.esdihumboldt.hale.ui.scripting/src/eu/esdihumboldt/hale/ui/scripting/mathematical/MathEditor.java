@@ -1,0 +1,208 @@
+/*
+ * Copyright (c) 2012 Data Harmonisation Panel
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ */
+
+package eu.esdihumboldt.hale.ui.scripting.mathematical;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
+import eu.esdihumboldt.hale.common.scripting.Script;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
+import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
+
+/**
+ * Editor for math scripts.
+ * 
+ * @author Kai Schwierczek
+ */
+public class MathEditor extends AbstractEditor<String> {
+
+	private final Composite composite;
+	private Text textField;
+	private TableViewer varTable;
+	private Collection<PropertyEntityDefinition> variables = Collections.emptySet();
+	private boolean valid;
+	private final Script script;
+	private String currentValue;
+
+	/**
+	 * Default constructor.
+	 * 
+	 * @param parent the parent composite
+	 * @param script the script object
+	 */
+	public MathEditor(Composite parent, Script script) {
+		this.script = script;
+
+		composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(GridLayoutFactory.swtDefaults().create());
+
+		// input field
+		textField = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		textField.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				fireValueChanged(VALUE, currentValue, textField.getText());
+				currentValue = textField.getText();
+				// TODO create values only once
+				// TODO publish result text?
+				String result = MathEditor.this.script.validate(currentValue,
+						createPropertyValues());
+				boolean oldValid = valid;
+				valid = result == null;
+				if (valid != oldValid)
+					fireStateChanged(IS_VALID, oldValid, valid);
+			}
+		});
+
+		// variables
+		Label label = new Label(composite, SWT.NONE);
+		label.setText("Available variables (double click to insert)");
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+
+		// variables table
+		Composite tableComposite = new Composite(composite, SWT.NONE);
+		tableComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+		TableColumnLayout columnLayout = new TableColumnLayout();
+		tableComposite.setLayout(columnLayout);
+		varTable = new TableViewer(tableComposite, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
+		TableViewerColumn column = new TableViewerColumn(varTable, SWT.NONE);
+		columnLayout.setColumnData(column.getColumn(), new ColumnWeightData(1, false));
+		varTable.setContentProvider(ArrayContentProvider.getInstance());
+		varTable.setLabelProvider(new DefinitionLabelProvider(true, true) {
+
+			/**
+			 * @see eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider#getText(java.lang.Object)
+			 */
+			@Override
+			public String getText(Object element) {
+				return MathEditor.this.script.getVariableName((PropertyEntityDefinition) element);
+			}
+		});
+		varTable.getTable().addMouseListener(new MouseAdapter() {
+
+			/**
+			 * @see MouseAdapter#mouseDoubleClick(MouseEvent)
+			 */
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				int index = varTable.getTable().getSelectionIndex();
+				if (index >= 0) {
+					String var = varTable.getTable().getItem(index).getText();
+					textField.insert(var);
+					textField.setFocus();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Returns an {@link Iterable} for the current variables for use with the
+	 * {@link Script}.
+	 * 
+	 * @return an {@link Iterable} for the current variables for use with the
+	 *         {@link Script}
+	 */
+	protected Iterable<PropertyValue> createPropertyValues() {
+		Collection<PropertyValue> result = new ArrayList<PropertyValue>(variables.size());
+		Double one = Double.valueOf(1.5);
+		for (PropertyEntityDefinition property : variables)
+			result.add(new PropertyValueImpl(one, property));
+		return result;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#getControl()
+	 */
+	@Override
+	public Control getControl() {
+		return composite;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#setValue(java.lang.Object)
+	 */
+	@Override
+	public void setValue(String value) {
+		textField.setText(value);
+		currentValue = value;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValue()
+	 */
+	@Override
+	public String getValue() {
+		return currentValue;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#setAsText(java.lang.String)
+	 */
+	@Override
+	public void setAsText(String text) {
+		setValue(text);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#getAsText()
+	 */
+	@Override
+	public String getAsText() {
+		return getValue();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#isValid()
+	 */
+	@Override
+	public boolean isValid() {
+		return valid;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.editors.AbstractEditor#setVariables(java.util.Collection)
+	 */
+	@Override
+	public void setVariables(Collection<PropertyEntityDefinition> properties) {
+		variables = properties;
+		varTable.setInput(variables);
+	}
+}

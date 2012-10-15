@@ -73,9 +73,12 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="referenceSystem">
-            <validator
-                  class="eu.esdihumboldt.cst.functions.geometric.SRSValidator">
-            </validator>
+            <functionParameterBinding
+                  class="java.lang.String">
+               <validator
+                     class="eu.esdihumboldt.cst.functions.geometric.SRSValidator">
+               </validator>
+            </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -114,6 +117,9 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="bufferWidth">
+            <functionParameterBinding
+                  class="java.lang.Number">
+            </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction

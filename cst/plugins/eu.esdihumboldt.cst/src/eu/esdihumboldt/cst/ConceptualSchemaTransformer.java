@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransforma
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
@@ -214,7 +215,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		for (Entry<String, ? extends Entity> entry : typeCell.getTarget().entries()) {
 			targetTypes.put(entry.getKey(), (Type) entry.getValue());
 		}
-		ListMultimap<String, String> parameters = typeCell.getTransformationParameters();
+		ListMultimap<String, ParameterValue> parameters = typeCell.getTransformationParameters();
 		if (parameters != null) {
 			parameters = Multimaps.unmodifiableListMultimap(parameters);
 		}

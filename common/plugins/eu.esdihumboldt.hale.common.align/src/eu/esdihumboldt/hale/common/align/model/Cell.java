@@ -48,7 +48,7 @@ public interface Cell {
 	 * @return the transformation parameters, parameter names are mapped to
 	 *         parameter values, may be <code>null</code>
 	 */
-	public ListMultimap<String, String> getTransformationParameters();
+	public ListMultimap<String, ParameterValue> getTransformationParameters();
 
 	/**
 	 * Get the identifier for the transformation referenced by the cell.

@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ChildContextBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.EntityBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.PropertyBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.TypeBean;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
@@ -352,14 +352,14 @@ public class OmlReader extends AbstractAlignmentReader implements AlignmentReade
 
 		// create a list of ParameterValue (because
 		// setTransformationParameters needs a list)
-		List<ParameterValue> params = new ArrayList<ParameterValue>();
+		List<ParameterValueBean> params = new ArrayList<ParameterValueBean>();
 
 		for (int i = 0; i < list.size(); i++) {
 			String name = list.get(i).getName();
 			String value = list.get(i).getValue();
 
 			// create the ParameterValue for the CellBean
-			ParameterValue paramVal = new ParameterValue(name, value);
+			ParameterValueBean paramVal = new ParameterValueBean(name, value);
 
 			// add the ParameterValue
 			params.add(paramVal);

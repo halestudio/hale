@@ -16,22 +16,38 @@
 
 package eu.esdihumboldt.hale.common.align.io.impl.internal;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+
 /**
  * Combines a parameter name and value
  * 
  * @author Simon Templer
  */
-public class ParameterValue {
+public class ParameterValueBean {
 
 	private String name;
+
+	private String type = ParameterValue.DEFAULT_TYPE;
 
 	private String value;
 
 	/**
 	 * Default constructor
 	 */
-	public ParameterValue() {
+	public ParameterValueBean() {
 		super();
+	}
+
+	/**
+	 * Creates a parameter value an initializes it with the given name and value
+	 * with default type
+	 * 
+	 * @param name the parameter name
+	 * @param value the parameter value
+	 */
+	public ParameterValueBean(String name, String value) {
+		this.name = name;
+		this.value = value;
 	}
 
 	/**
@@ -40,9 +56,10 @@ public class ParameterValue {
 	 * @param name the parameter name
 	 * @param value the parameter value
 	 */
-	public ParameterValue(String name, String value) {
+	public ParameterValueBean(String name, ParameterValue value) {
 		this.name = name;
-		this.value = value;
+		this.type = value.getType();
+		this.value = value.getValue();
 	}
 
 	/**
@@ -64,6 +81,24 @@ public class ParameterValue {
 	}
 
 	/**
+	 * Get the parameter type
+	 * 
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * Set the parameter type
+	 * 
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
 	 * Get the parameter value
 	 * 
 	 * @return the value
@@ -81,4 +116,12 @@ public class ParameterValue {
 		this.value = value;
 	}
 
+	/**
+	 * Creates a {@link ParameterValue} of this bean.
+	 * 
+	 * @return the created parameter value
+	 */
+	public ParameterValue createParameterValue() {
+		return new ParameterValue(type, value);
+	}
 }

@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.functions.inspire;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +59,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -131,26 +133,41 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null && initialValues.size() != 0) {
 			// set the initial values if they exist
-			gender = initialValues.get(PROPERTY_GRAMMA_GENDER).get(0);
-			number = initialValues.get(PROPERTY_GRAMMA_NUMBER).get(0);
-			language = initialValues.get(PROPERTY_LANGUAGE).get(0);
-			nameStatus = initialValues.get(PROPERTY_NAMESTATUS).get(0);
-			nativeness = initialValues.get(PROPERTY_NATIVENESS).get(0);
-			ipa = initialValues.get(PROPERTY_PRONUNCIATIONIPA).get(0);
+			gender = initialValues.get(PROPERTY_GRAMMA_GENDER).get(0).getValue();
+			number = initialValues.get(PROPERTY_GRAMMA_NUMBER).get(0).getValue();
+			language = initialValues.get(PROPERTY_LANGUAGE).get(0).getValue();
+			nameStatus = initialValues.get(PROPERTY_NAMESTATUS).get(0).getValue();
+			nativeness = initialValues.get(PROPERTY_NATIVENESS).get(0).getValue();
+			ipa = initialValues.get(PROPERTY_PRONUNCIATIONIPA).get(0).getValue();
 			try {
-				sound = initialValues.get(PROPERTY_PRONUNCIATIONSOUNDLINK).get(0);
+				sound = initialValues.get(PROPERTY_PRONUNCIATIONSOUNDLINK).get(0).getValue();
 			} catch (Exception e) {
 				sound = "";
 			}
-			sourceOfName = initialValues.get(PROPERTY_SOURCEOFNAME).get(0);
+			sourceOfName = initialValues.get(PROPERTY_SOURCEOFNAME).get(0).getValue();
 
 			// script and transliteration can have more than one value, so set
 			// lists for them
-			scripts = initialValues.get(PROPERTY_SCRIPT);
-			trans = initialValues.get(PROPERTY_TRANSLITERATION);
+			List<ParameterValue> tmp;
+			if (initialValues.get(PROPERTY_SCRIPT) != null) {
+				tmp = initialValues.get(PROPERTY_SCRIPT);
+				scripts = new ArrayList<String>(tmp.size());
+				for (ParameterValue value : tmp)
+					scripts.add(value.getValue());
+			}
+			else
+				scripts = Collections.emptyList();
+			if (initialValues.get(PROPERTY_TRANSLITERATION) != null) {
+				tmp = initialValues.get(PROPERTY_TRANSLITERATION);
+				trans = new ArrayList<String>(tmp.size());
+				for (ParameterValue value : tmp)
+					trans.add(value.getValue());
+			}
+			else
+				trans = Collections.emptyList();
 		}
 	}
 
@@ -158,7 +175,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	 * @see ParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
+	public ListMultimap<String, ParameterValue> getConfiguration() {
 
 		// if one configuration element is null all are null because the page
 		// isn't built yet
@@ -168,30 +185,32 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 			return ArrayListMultimap.create();
 		}
 
-		ListMultimap<String, String> configuration = ArrayListMultimap.create(10, 1);
+		ListMultimap<String, ParameterValue> configuration = ArrayListMultimap.create(10, 1);
 
 		if (spellings != null && spellings.size() != 0) {
 			for (SpellingType sp : spellings) {
 				String script = sp.getScript();
 				String trans = sp.getTransliteration();
 
-				configuration.put(PROPERTY_SCRIPT, script);
-				configuration.put(PROPERTY_TRANSLITERATION, trans);
+				configuration.put(PROPERTY_SCRIPT, new ParameterValue(script));
+				configuration.put(PROPERTY_TRANSLITERATION, new ParameterValue(trans));
 			}
 		}
 
-		configuration.put(PROPERTY_PRONUNCIATIONSOUNDLINK, namePronounciationSounds.getText());
-		configuration.put(PROPERTY_PRONUNCIATIONIPA, namePronounciationIPA.getText());
-		configuration.put(PROPERTY_LANGUAGE, nameLanguageText.getText());
+		configuration.put(PROPERTY_PRONUNCIATIONSOUNDLINK, new ParameterValue(
+				namePronounciationSounds.getText()));
+		configuration.put(PROPERTY_PRONUNCIATIONIPA,
+				new ParameterValue(namePronounciationIPA.getText()));
+		configuration.put(PROPERTY_LANGUAGE, new ParameterValue(nameLanguageText.getText()));
 		String sourceOfName = nameSourceText.getText();
 		if (SOURCE_OF_NAME_PROMT.equals(sourceOfName)) {
 			sourceOfName = "";
 		}
-		configuration.put(PROPERTY_SOURCEOFNAME, sourceOfName);
-		configuration.put(PROPERTY_NAMESTATUS, nameStatusCombo.getText());
-		configuration.put(PROPERTY_NATIVENESS, nameNativenessCombo.getText());
-		configuration.put(PROPERTY_GRAMMA_GENDER, nameGenderCombo.getText());
-		configuration.put(PROPERTY_GRAMMA_NUMBER, nameNumberCombo.getText());
+		configuration.put(PROPERTY_SOURCEOFNAME, new ParameterValue(sourceOfName));
+		configuration.put(PROPERTY_NAMESTATUS, new ParameterValue(nameStatusCombo.getText()));
+		configuration.put(PROPERTY_NATIVENESS, new ParameterValue(nameNativenessCombo.getText()));
+		configuration.put(PROPERTY_GRAMMA_GENDER, new ParameterValue(nameGenderCombo.getText()));
+		configuration.put(PROPERTY_GRAMMA_NUMBER, new ParameterValue(nameNumberCombo.getText()));
 
 		return configuration;
 	}

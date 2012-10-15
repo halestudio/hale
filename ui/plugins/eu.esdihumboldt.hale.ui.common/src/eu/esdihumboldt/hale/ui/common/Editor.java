@@ -16,8 +16,12 @@
 
 package eu.esdihumboldt.hale.ui.common;
 
+import java.util.Collection;
+
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.widgets.Control;
+
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 
 /**
  * Attribute editor interface
@@ -94,4 +98,11 @@ public interface Editor<T> {
 	 *            remove
 	 */
 	public void setPropertyChangeListener(IPropertyChangeListener listener);
+
+	/**
+	 * Sets available variables. Editors may ignore this.
+	 * 
+	 * @param properties the property variables
+	 */
+	public void setVariables(Collection<PropertyEntityDefinition> properties);
 }

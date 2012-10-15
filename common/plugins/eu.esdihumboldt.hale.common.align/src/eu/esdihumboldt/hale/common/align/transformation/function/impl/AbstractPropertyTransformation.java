@@ -16,11 +16,16 @@
 
 package eu.esdihumboldt.hale.common.align.transformation.function.impl;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
+import javax.script.ScriptException;
+
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
@@ -29,6 +34,9 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationFunction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.scripting.Script;
+import eu.esdihumboldt.hale.common.scripting.ScriptExtension;
+import eu.esdihumboldt.hale.common.scripting.ScriptFactory;
 
 /**
  * Base class for implementing {@link PropertyTransformation}s
@@ -43,6 +51,7 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	private ListMultimap<String, Object> results;
 	private ListMultimap<String, PropertyValue> variables;
 	private ListMultimap<String, PropertyEntityDefinition> resultNames;
+	private ListMultimap<String, String> transformedParameters;
 	private TypeDefinition targetType;
 
 	/**
@@ -95,6 +104,41 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	public void execute(String transformationIdentifier, E engine,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
+		ListMultimap<String, ParameterValue> originalParameters = getParameters();
+		ListMultimap<String, String> transformedParameters = ArrayListMultimap.create();
+
+		if (originalParameters != null) {
+			for (Map.Entry<String, ParameterValue> entry : originalParameters.entries()) {
+				if (ParameterValue.DEFAULT_TYPE.equals(entry.getValue().getType()))
+					transformedParameters.put(entry.getKey(), entry.getValue().getValue());
+				else {
+					// type is a script
+					ScriptFactory factory = ScriptExtension.getInstance().getFactory(
+							entry.getValue().getType());
+					if (factory == null)
+						throw new TransformationException("Couldn't find factory for script id "
+								+ entry.getValue().getType());
+					Script script;
+					try {
+						script = factory.createExtensionObject();
+					} catch (Exception e) {
+						throw new TransformationException("Couldn't create script from factory", e);
+					}
+					Object result;
+					try {
+						result = script.evaluate(entry.getValue().getValue(), variables.values());
+					} catch (ScriptException e) {
+						throw new TransformationException(
+								"Couldn't evaluate a transformation parameter", e);
+					}
+					// XXX use conversion service instead of valueOf?
+					transformedParameters.put(entry.getKey(), String.valueOf(result));
+				}
+			}
+		}
+
+		this.transformedParameters = Multimaps.unmodifiableListMultimap(transformedParameters);
+
 		results = evaluate(transformationIdentifier, engine, variables, resultNames,
 				executionParameters, log);
 	}
@@ -133,4 +177,48 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 		return true;
 	}
 
+	/**
+	 * Returns the transformed parameters.
+	 * 
+	 * @return the transformed parameters
+	 */
+	protected ListMultimap<String, String> getTransformedParameters() {
+		return transformedParameters;
+	}
+
+	/**
+	 * Get the first parameter defined with the given parameter name. Throws a
+	 * {@link TransformationException} if such a parameter doesn't exist.
+	 * 
+	 * @param parameterName the parameter name
+	 * @return the parameter value
+	 * @throws TransformationException if a parameter with the given name
+	 *             doesn't exist
+	 */
+	protected String getParameterChecked(String parameterName) throws TransformationException {
+		if (transformedParameters == null || transformedParameters.get(parameterName) == null
+				|| transformedParameters.get(parameterName).isEmpty()) {
+			throw new TransformationException(MessageFormat.format(
+					"Mandatory parameter {0} not defined", parameterName));
+		}
+
+		return transformedParameters.get(parameterName).get(0);
+	}
+
+	/**
+	 * Get the first parameter defined with the given parameter name. If no such
+	 * parameter exists, the given default value is returned.
+	 * 
+	 * @param parameterName the parameter name
+	 * @param defaultValue the default value for the parameter
+	 * @return the parameter value, or the default if none is specified
+	 */
+	protected String getOptionalParameter(String parameterName, String defaultValue) {
+		if (transformedParameters == null || transformedParameters.get(parameterName) == null
+				|| transformedParameters.get(parameterName).isEmpty()) {
+			return defaultValue;
+		}
+
+		return transformedParameters.get(parameterName).get(0);
+	}
 }
