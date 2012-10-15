@@ -23,6 +23,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 
 /**
  * Interface for a parameter configuration page of a function.
@@ -42,7 +43,7 @@ public interface ParameterPage extends IWizardPage {
 	 *            <code>null</code>, should not be changed
 	 */
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues);
+			ListMultimap<String, ParameterValue> initialValues);
 
 	/**
 	 * Returns the configuration of the parameters this page is responsible for. <br>
@@ -51,5 +52,5 @@ public interface ParameterPage extends IWizardPage {
 	 * 
 	 * @return the configuration of the parameters
 	 */
-	public ListMultimap<String, String> getConfiguration();
+	public ListMultimap<String, ParameterValue> getConfiguration();
 }

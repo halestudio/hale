@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.ui.common.definition.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
@@ -35,10 +37,12 @@ import eu.esdihumboldt.hale.ui.common.editors.BooleanEditor;
 public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 
 	/**
-	 * @see AttributeEditorFactory#createEditor(Composite, PropertyDefinition)
+	 * @see AttributeEditorFactory#createEditor(Composite, PropertyDefinition,
+	 *      boolean)
 	 */
 	@Override
-	public Editor<?> createEditor(Composite parent, PropertyDefinition property) {
+	public Editor<?> createEditor(Composite parent, PropertyDefinition property,
+			boolean allowScripts) {
 		TypeDefinition type = property.getPropertyType();
 
 //		if (attributeType.isComplexType()) {
@@ -48,21 +52,63 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 //			return null;
 //		}
 
-		Binding typeBinding = type.getConstraint(Binding.class);
-		Class<?> binding = typeBinding.getBinding();
-
-		if (Boolean.class.isAssignableFrom(binding)) {
-			// boolean
-			return new BooleanEditor(parent);
-		}
-		// TODO other editors (for date/time for example)
-
-		if (!type.getConstraint(HasValueFlag.class).isEnabled()) {
+		if (!type.getConstraint(HasValueFlag.class).isEnabled())
 			return null;
+		else {
+			if (allowScripts) {
+				EditorChooserEditor<Object> result = new PropertyEditorChooserEditor(parent,
+						property);
+				result.selectDefaultEditor();
+				return result;
+			}
+			else {
+				Class<?> binding = type.getConstraint(Binding.class).getBinding();
+				if (Boolean.class.equals(binding))
+					return new BooleanEditor(parent);
+				else
+					return new DefaultPropertyEditor(parent, property);
+			}
+		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory#createEditor(org.eclipse.swt.widgets.Composite,
+	 *      eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter,
+	 *      ParameterValue)
+	 */
+	@Override
+	public Editor<?> createEditor(Composite parent, FunctionParameter parameter,
+			ParameterValue initialValue) {
+		Class<?> binding = parameter.getBinding();
+		if (binding != null) {
+			if (parameter.isScriptable()) {
+				EditorChooserEditor<Object> result = new FunctionParameterEditorChooserEditor(
+						parent, binding, parameter.getValidator());
+				if (initialValue != null) {
+					result.selectEditor(initialValue.getType());
+					result.setAsText(initialValue.getValue());
+				}
+				else
+					result.selectDefaultEditor();
+				return result;
+			}
+			else {
+				Editor<?> resultEditor;
+				if (Boolean.class.equals(binding))
+					resultEditor = new BooleanEditor(parent);
+				else
+					resultEditor = new DefaultFunctionParameterEditor(parent, binding,
+							parameter.getValidator());
+				if (initialValue != null)
+					resultEditor.setAsText(initialValue.getValue());
+				return resultEditor;
+			}
 		}
 		else {
-			// fall back to default editor
-			return new DefaultAttributeEditor(parent, property);
+			EnumerationEditor editor = new EnumerationEditor(parent, parameter.getEnumeration());
+			if (initialValue != null)
+				editor.setAsText(initialValue.getValue());
+			return editor;
 		}
 	}
 }

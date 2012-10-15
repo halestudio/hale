@@ -21,7 +21,7 @@ import java.util.List;
 import eu.esdihumboldt.cst.functions.geometric.OrdinatesToPointFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
@@ -50,7 +50,7 @@ public class OrdinatesToPointTranslator implements FunctionTranslator, Ordinates
 	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell) {
 
 		reporter.warn(new IOMessageImpl("Behavior of this function has changed.", null));

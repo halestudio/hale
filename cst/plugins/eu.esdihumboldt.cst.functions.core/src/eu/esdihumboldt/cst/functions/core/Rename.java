@@ -72,10 +72,10 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 		// get the source value
 		Object sourceValue = variables.values().iterator().next().getValue();
 
-		String structuralRename = getOptionalParameter(PARAMETER_STRUCTURAL_RENAME, "false");
+		String structuralRename = getRawOptionalParameter(PARAMETER_STRUCTURAL_RENAME, "false");
 		boolean structuralRenameEnabled = Boolean.parseBoolean(structuralRename);
 
-		String ignoreNamespaces = getOptionalParameter(PARAMETER_IGNORE_NAMESPACES, "false");
+		String ignoreNamespaces = getRawOptionalParameter(PARAMETER_IGNORE_NAMESPACES, "false");
 		boolean ignoreNamespacesEnabled = Boolean.parseBoolean(ignoreNamespaces);
 
 		// not a group? just return value.
