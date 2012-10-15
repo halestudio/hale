@@ -3,7 +3,7 @@
 <plugin>
    <extension
          point="eu.esdihumboldt.hale.ui.function">
-      <propertyParameterPage
+      <!--<propertyParameterPage
             class="eu.esdihumboldt.hale.ui.functions.geometric.NetworkExpansionParameterPage"
             function="eu.esdihumboldt.cst.functions.geometric.networkexpansion"
             id="eu.esdihumboldt.hale.ui.functions.geometric.networkexpansion"
@@ -11,7 +11,7 @@
          <parameter
                name="bufferWidth">
          </parameter>
-      </propertyParameterPage>
+      </propertyParameterPage>-->
    </extension>
 
 </plugin>

@@ -61,7 +61,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstr
 import eu.esdihumboldt.hale.ui.codelist.internal.CodeListUIPlugin;
 import eu.esdihumboldt.hale.ui.codelist.selector.CodeListSelectionDialog;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
-import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
 import eu.esdihumboldt.util.validator.Validator;
 
 /**
@@ -70,25 +69,22 @@ import eu.esdihumboldt.util.validator.Validator;
  * 
  * @author Kai Schwierczek
  */
-public class DefaultAttributeEditor extends AbstractEditor<Object> {
+public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Object> {
 
 	// XXX generic version instead?
 
 	private final PropertyDefinition property;
-	private final Class<?> binding;
 	private final Collection<String> enumerationValues;
 	private ArrayList<Object> values;
 	private final boolean otherValuesAllowed;
 	private final Validator validator;
-	private final ConversionService cs = OsgiUtils.getService(ConversionService.class);
 
 	private Composite composite;
 	private ComboViewer viewer;
 	private ControlDecoration decoration;
-	private String stringValue;
-	private Object objectValue;
-	private boolean validated = false;
-	private String validationResult;
+
+	private Class<?> binding;
+	private final ConversionService cs = OsgiUtils.getService(ConversionService.class);
 
 	private CodeList codeList;
 	private final String codeListNamespace;
@@ -100,7 +96,8 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 	 * @param parent the parent composite
 	 * @param property the property
 	 */
-	public DefaultAttributeEditor(Composite parent, PropertyDefinition property) {
+	public DefaultPropertyEditor(Composite parent, PropertyDefinition property) {
+		super(property.getPropertyType().getConstraint(Binding.class).getBinding());
 		this.property = property;
 		TypeDefinition type = property.getPropertyType();
 		binding = type.getConstraint(Binding.class).getBinding();
@@ -139,7 +136,7 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 		viewer = new ComboViewer(composite, (otherValuesAllowed ? SWT.NONE : SWT.READ_ONLY)
 				| SWT.BORDER);
 		viewer.getControl().setLayoutData(
-				GridDataFactory.fillDefaults().indent(5, 0).grab(true, false).create());
+				GridDataFactory.fillDefaults().indent(7, 0).grab(true, false).create());
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewer.setLabelProvider(new LabelProvider() {
 
@@ -175,10 +172,8 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 			}
 		});
 		viewer.setInput(values);
-		if (otherValuesAllowed) {
+		if (otherValuesAllowed)
 			viewer.getCombo().setText("");
-			stringValue = "";
-		}
 
 		// create decoration
 		decoration = new ControlDecoration(viewer.getControl(), SWT.LEFT | SWT.TOP, composite);
@@ -191,7 +186,6 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				String oldValue = stringValue;
 				String newValue = viewer.getCombo().getText();
 				if (viewer.getSelection() != null && !viewer.getSelection().isEmpty()
 						&& viewer.getSelection() instanceof IStructuredSelection) {
@@ -200,7 +194,15 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 					if (selection instanceof CodeEntry)
 						newValue = ((CodeEntry) selection).getIdentifier();
 				}
-				valueChanged(oldValue, newValue);
+
+				String validationResult = valueChanged(newValue);
+				// show or hide decoration
+				if (validationResult != null) {
+					decoration.setDescriptionText(validationResult);
+					decoration.show();
+				}
+				else
+					decoration.hide();
 			}
 		});
 
@@ -223,14 +225,14 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 				CodeListSelectionDialog dialog = new CodeListSelectionDialog(display
 						.getActiveShell(), codeList, MessageFormat.format(
 						"Please select a code list to assign to {0}",
-						DefaultAttributeEditor.this.property.getDisplayName()));
+						DefaultPropertyEditor.this.property.getDisplayName()));
 				if (dialog.open() == CodeListSelectionDialog.OK) {
 					CodeList newCodeList = dialog.getCodeList();
 					CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench()
 							.getService(CodeListService.class);
 
 					codeListService.assignAttributeCodeList(
-							DefaultAttributeEditor.this.property.getIdentifier(), newCodeList);
+							DefaultPropertyEditor.this.property.getIdentifier(), newCodeList);
 
 					updateCodeList();
 				}
@@ -285,69 +287,10 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 		}
 		values.trimToSize();
 
-		// save valid stringValue or combo text if not available
-		String oldValue = stringValue != null ? stringValue : viewer.getCombo().getText();
-
+		// save combo text to restore after setting the new input
+		String oldValue = viewer.getCombo().getText();
 		viewer.setInput(values);
-
-		// set old value again
 		viewer.getCombo().setText(oldValue);
-	}
-
-	/**
-	 * Updates the local value, valid status and fires necessary events.
-	 * 
-	 * @param oldValue the old value
-	 * @param newValue the new value
-	 */
-	private void valueChanged(String oldValue, String newValue) {
-		// get old valid status
-		boolean wasValid = isValid();
-		// set new value
-		stringValue = newValue;
-		// validate it
-		validate();
-		// check whether valid status changed
-		boolean validChanged = false;
-		if (wasValid != isValid())
-			validChanged = true;
-		// fire events
-		fireValueChanged(VALUE, oldValue, newValue);
-		if (validChanged)
-			fireStateChanged(IS_VALID, wasValid, !wasValid);
-	}
-
-	/**
-	 * Validates the current string value and sets validationResult.<br>
-	 * Also sets object result if possible and updates the ControlDecoration.
-	 */
-	private void validate() {
-		validationResult = null;
-		validated = true;
-
-		// check binding first
-		try {
-			// for example boolean converter returns null for empty string...
-			objectValue = cs.convert(stringValue, binding);
-			if (objectValue == null)
-				validationResult = stringValue + " cannot be converted to "
-						+ binding.getSimpleName();
-		} catch (ConversionException ce) {
-			objectValue = null;
-			validationResult = stringValue + " cannot be converted to " + binding.getSimpleName();
-		}
-
-		// validators
-		if (validationResult == null)
-			validationResult = validator.validate(objectValue);
-
-		// show or hide decoration
-		if (validationResult != null) {
-			decoration.setDescriptionText(validationResult);
-			decoration.show();
-		}
-		else
-			decoration.hide();
 	}
 
 	/**
@@ -356,27 +299,6 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 	@Override
 	public Control getControl() {
 		return composite;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setValue(java.lang.Object)
-	 */
-	@Override
-	public void setValue(Object value) {
-		setAsText(cs.convert(value, String.class));
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValue()
-	 * 
-	 * @throws IllegalStateException if the current input is not valid
-	 */
-	@Override
-	public Object getValue() {
-		if (isValid())
-			return objectValue;
-		else
-			throw new IllegalStateException();
 	}
 
 	/**
@@ -400,28 +322,11 @@ public class DefaultAttributeEditor extends AbstractEditor<Object> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getAsText()
-	 * 
-	 * @throws IllegalStateException if the current input is not valid
+	 * @see eu.esdihumboldt.hale.ui.common.definition.editors.AbstractBindingValidatingEditor#additionalValidate(java.lang.String,
+	 *      java.lang.Object)
 	 */
 	@Override
-	public String getAsText() {
-		if (isValid()) {
-			// return converted value, as that SHOULD be XML conform
-			// in contrast to input value where the converter maybe allows more.
-			return cs.convert(objectValue, String.class);
-		}
-		else
-			throw new IllegalStateException();
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#isValid()
-	 */
-	@Override
-	public boolean isValid() {
-		if (!validated)
-			validate();
-		return validationResult == null;
+	protected String additionalValidate(String stringValue, Object objectValue) {
+		return validator.validate(objectValue);
 	}
 }

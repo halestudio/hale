@@ -38,7 +38,7 @@ public class AssignExplanation extends AbstractCellExplanation implements Assign
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String value = CellUtil.getFirstParameter(cell, PARAMETER_VALUE);
+		String value = CellUtil.getFirstRawParameter(cell, PARAMETER_VALUE);
 
 		if (target != null && value != null) {
 			return MessageFormat.format("Assigns the value {1} to the {0} property.",

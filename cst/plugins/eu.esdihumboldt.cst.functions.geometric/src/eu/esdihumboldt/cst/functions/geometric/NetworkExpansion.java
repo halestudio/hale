@@ -32,7 +32,6 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
-import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
@@ -44,6 +43,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.scripting.transformation.AbstractSingleTargetScriptedPropertyTransformation;
 
 /**
  * Network expansion function.
@@ -51,13 +51,13 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
  * @author Simon Templer
  */
 public class NetworkExpansion extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
+		AbstractSingleTargetScriptedPropertyTransformation<TransformationEngine> implements
 		NetworkExpansionFunction {
 
 	private static int CAP_STYLE = BufferParameters.CAP_ROUND;
 
 	/**
-	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
+	 * @see AbstractSingleTargetScriptedPropertyTransformation#evaluate(String,
 	 *      TransformationEngine, ListMultimap, String,
 	 *      PropertyEntityDefinition, Map, TransformationLog)
 	 */
@@ -67,7 +67,7 @@ public class NetworkExpansion extends
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
 		// get the buffer width parameter
-		String bufferWidthString = getParameterChecked(PARAMETER_BUFFER_WIDTH);
+		String bufferWidthString = getTransformedParameterChecked(PARAMETER_BUFFER_WIDTH);
 
 		double bufferWidth;
 		try {

@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ChildContextBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.PropertyBean;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -55,7 +55,7 @@ public class NilReasonTranslator implements FunctionTranslator, AssignFunction {
 	 *      ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell) {
 		// update target, adding nilReason child to path
 		ChildContextBean nilReason = new ChildContextBean();
@@ -64,12 +64,12 @@ public class NilReasonTranslator implements FunctionTranslator, AssignFunction {
 		target.getProperties().add(nilReason);
 
 		// updated parameters
-		List<ParameterValue> newList = new ArrayList<ParameterValue>();
+		List<ParameterValueBean> newList = new ArrayList<ParameterValueBean>();
 
-		for (ParameterValue val : params) {
+		for (ParameterValueBean val : params) {
 			// translate the nilReason type to the value being assigned
 			if (val.getName().equals(PARAMETER_NIL_REASON_TYPE)) {
-				newList.add(new ParameterValue(PARAMETER_VALUE, val.getValue()));
+				newList.add(new ParameterValueBean(PARAMETER_VALUE, val.getValue()));
 			}
 			else {
 				newList.add(val);

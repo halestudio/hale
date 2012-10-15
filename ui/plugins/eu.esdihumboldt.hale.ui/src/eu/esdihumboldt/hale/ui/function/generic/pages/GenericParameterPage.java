@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.function.generic.pages;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,8 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -46,6 +49,12 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.function.extension.ParameterEditorExtension;
@@ -62,10 +71,10 @@ import eu.esdihumboldt.util.Pair;
 public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
 		implements ParameterPage {
 
-	private ListMultimap<String, String> initialValues;
+	private ListMultimap<String, ParameterValue> initialValues;
 	private Set<FunctionParameter> params;
-	private ListMultimap<FunctionParameter, Pair<Editor<?>, Button>> inputFields;
-	private HashMap<FunctionParameter, Button> addButtons;
+	private final ListMultimap<FunctionParameter, Pair<Editor<?>, Button>> inputFields;
+	private final HashMap<FunctionParameter, Button> addButtons;
 	private static final Image removeImage = HALEUIPlugin.getImageDescriptor("icons/remove.gif")
 			.createImage();
 
@@ -89,6 +98,18 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
+		Cell cell = getWizard().getUnfinishedCell();
+		// update variables as they could have changed
+		if (!AlignmentUtil.isTypeCell(cell)) {
+			Set<PropertyEntityDefinition> variables = new HashSet<PropertyEntityDefinition>();
+			for (Entity e : cell.getSource().values()) {
+				// Cell is no type cell, so entities are Properties.
+				variables.add(((Property) e).getDefinition());
+			}
+			for (Pair<Editor<?>, Button> pair : inputFields.values())
+				pair.getFirst().setVariables(variables);
+		}
+
 		updateState();
 	}
 
@@ -97,9 +118,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 */
 	private void updateState() {
 		for (Map.Entry<FunctionParameter, Pair<Editor<?>, Button>> entry : inputFields.entries())
-			if (entry.getKey().getValidator() != null
-					&& entry.getKey().getValidator()
-							.validate(entry.getValue().getFirst().getAsText()) != null) {
+			if (!entry.getValue().getFirst().isValid()) {
 				setPageComplete(false);
 				return;
 			}
@@ -112,7 +131,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		this.params = params;
 		if (initialValues == null)
 			initialValues = ArrayListMultimap.create();
@@ -123,10 +142,11 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> conf = ArrayListMultimap.create();
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> conf = ArrayListMultimap.create();
 		for (Map.Entry<FunctionParameter, Pair<Editor<?>, Button>> entry : inputFields.entries())
-			conf.put(entry.getKey().getName(), entry.getValue().getFirst().getAsText());
+			conf.put(entry.getKey().getName(), new ParameterValue(entry.getValue().getFirst()
+					.getValueType(), entry.getValue().getFirst().getAsText()));
 		return conf;
 	}
 
@@ -151,14 +171,14 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			}
 
 			// walk over data of initial cell while creating input fields
-			List<String> initialData = initialValues.get(fp.getName());
-			Iterator<String> initialDataIter = initialData.iterator();
+			List<ParameterValue> initialData = initialValues.get(fp.getName());
+			Iterator<ParameterValue> initialDataIter = initialData.iterator();
 
 			// create a minimum number of input fields
 			int i;
 			for (i = 0; i < fp.getMinOccurrence(); i++)
 				if (initialDataIter.hasNext())
-					createField(group, fp, initialDataIter.next());
+					createField(group, fp, initialDataIter.next().getValue());
 				else
 					createField(group, fp, ""); // important "" not null! runs
 												// validator.
@@ -167,7 +187,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			for (; initialDataIter.hasNext()
 					&& (fp.getMaxOccurrence() == AbstractParameter.UNBOUNDED || i < fp
 							.getMaxOccurrence()); i++)
-				createField(group, fp, initialDataIter.next());
+				createField(group, fp, initialDataIter.next().getValue());
 
 			// create control buttons if max occurrence != min occurrence
 			if (fp.getMaxOccurrence() != fp.getMinOccurrence())
@@ -256,7 +276,20 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 		// use attribute editors - FIXME currently disregarding the internal
 		// editor validation
 		final Editor<?> editor = ParameterEditorExtension.getInstance().createEditor(parent,
-				getWizard().getFunctionId(), fp.getName());
+				getWizard().getFunctionId(), fp);
+		editor.getControl().addControlListener(new ControlListener() {
+
+			@Override
+			public void controlResized(ControlEvent e) {
+				((Composite) getControl()).layout();
+				pack();
+			}
+
+			@Override
+			public void controlMoved(ControlEvent e) {
+				// ignore
+			}
+		});
 		final Button removeButton = new Button(parent, SWT.NONE);
 		final Pair<Editor<?>, Button> pair = new Pair<Editor<?>, Button>(editor, removeButton);
 

@@ -132,5 +132,4 @@ public abstract class AbstractPropertyTransformation<E extends TransformationEng
 	public boolean allowAutomatedResultConversion() {
 		return true;
 	}
-
 }
