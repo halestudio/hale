@@ -41,7 +41,7 @@ public class MathematicalExpressionExplanation extends AbstractCellExplanation {
 	@Override
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String expression = CellUtil.getFirstParameter(cell,
+		String expression = CellUtil.getFirstRawParameter(cell,
 				MathematicalExpression.PARAMETER_EXPRESSION);
 		List<? extends Entity> sources = cell.getSource().get(
 				MathematicalExpression.ENTITY_VARIABLE);

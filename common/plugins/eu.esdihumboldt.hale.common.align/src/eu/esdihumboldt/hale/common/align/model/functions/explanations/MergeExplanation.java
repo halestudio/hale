@@ -22,6 +22,7 @@ import java.util.List;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
@@ -42,13 +43,13 @@ public class MergeExplanation extends AbstractCellExplanation implements MergeFu
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
-		List<String> properties = (cell.getTransformationParameters() == null) ? (null) : (cell
-				.getTransformationParameters().get(PARAMETER_PROPERTY));
+		List<ParameterValue> properties = (cell.getTransformationParameters() == null) ? (null)
+				: (cell.getTransformationParameters().get(PARAMETER_PROPERTY));
 
 		if (source != null && target != null && properties != null && !properties.isEmpty()) {
 			StringBuffer propertiesString = new StringBuffer();
 			for (int i = 0; i < properties.size(); i++) {
-				propertiesString.append(quoteText(properties.get(i), html));
+				propertiesString.append(quoteText(properties.get(i).getValue(), html));
 
 				if (i == properties.size() - 2) {
 					propertiesString.append(" and ");

@@ -45,6 +45,7 @@ import eu.esdihumboldt.cst.functions.numeric.sequentialid.SequentialIDConstants;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -84,23 +85,23 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 	 * @see AbstractParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> result = ArrayListMultimap.create(3, 1);
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> result = ArrayListMultimap.create(3, 1);
 
 		if (sequence != null) {
 			ISelection sel = sequence.getSelection();
 			if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
-				result.put(PARAM_SEQUENCE,
-						((Sequence) ((IStructuredSelection) sel).getFirstElement()).name());
+				result.put(PARAM_SEQUENCE, new ParameterValue(
+						((Sequence) ((IStructuredSelection) sel).getFirstElement()).name()));
 			}
 		}
 
 		if (prefix != null) {
-			result.put(PARAM_PREFIX, prefix.getText());
+			result.put(PARAM_PREFIX, new ParameterValue(prefix.getText()));
 		}
 
 		if (suffix != null) {
-			result.put(PARAM_SUFFIX, suffix.getText());
+			result.put(PARAM_SUFFIX, new ParameterValue(suffix.getText()));
 		}
 
 		return result;
@@ -147,7 +148,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			controlLayout.applyTo(sequence.getControl());
 
 			Sequence initialValue = Sequence.valueOf(getOptionalInitialValue(PARAM_SEQUENCE,
-					Sequence.type.name()));
+					new ParameterValue(Sequence.type.name())).getValue());
 			sequence.setSelection(new StructuredSelection(initialValue));
 
 			sequence.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -168,7 +169,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			prefix = new Text(page, SWT.SINGLE | SWT.BORDER);
 			controlLayout.applyTo(prefix);
 
-			prefix.setText(getOptionalInitialValue(PARAM_PREFIX, ""));
+			prefix.setText(getOptionalInitialValue(PARAM_PREFIX, new ParameterValue("")).getValue());
 
 			prefix.addModifyListener(new ModifyListener() {
 
@@ -188,7 +189,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			suffix = new Text(page, SWT.SINGLE | SWT.BORDER);
 			controlLayout.applyTo(suffix);
 
-			suffix.setText(getOptionalInitialValue(PARAM_SUFFIX, ""));
+			suffix.setText(getOptionalInitialValue(PARAM_SUFFIX, new ParameterValue("")).getValue());
 
 			suffix.addModifyListener(new ModifyListener() {
 

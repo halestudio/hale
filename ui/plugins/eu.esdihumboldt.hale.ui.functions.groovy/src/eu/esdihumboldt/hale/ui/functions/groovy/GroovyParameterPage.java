@@ -28,6 +28,8 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage;
 import eu.esdihumboldt.hale.ui.functions.core.SourceViewerParameterPage;
+import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
+import eu.esdihumboldt.hale.ui.scripting.groovy.TestValues;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 

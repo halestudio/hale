@@ -58,7 +58,7 @@ public class DateExtraction extends
 					"Mandatory parameter {0} not defined", PARAMETER_DATE_FORMAT));
 		}
 
-		String dateFormat = getParameters().get(PARAMETER_DATE_FORMAT).get(0);
+		String dateFormat = getParameters().get(PARAMETER_DATE_FORMAT).get(0).getValue();
 		String sourceString = variables.values().iterator().next().getValueAs(String.class);
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 

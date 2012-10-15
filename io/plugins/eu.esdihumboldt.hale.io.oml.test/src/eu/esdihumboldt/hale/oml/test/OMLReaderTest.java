@@ -37,6 +37,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -163,12 +164,12 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
-		List<String> values = params.get("pattern");
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+		List<ParameterValue> values = params.get("pattern");
 
 		assertEquals(1, values.size());
 		// size is 1, so "get(0)" works fine
-		assertEquals("{id}-xxx-{details.address.street}", values.get(0));
+		assertEquals("{id}-xxx-{details.address.street}", values.get(0).getValue());
 
 	}
 
@@ -194,14 +195,14 @@ public class OMLReaderTest {
 		}
 		assertNotNull(cell);
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
-		List<String> values = params.get("pattern");
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+		List<ParameterValue> values = params.get("pattern");
 
 		assertEquals(1, values.size());
 		// size is 1
 		assertEquals(
 				"{flurstuecksnummer.AX_Flurstuecksnummer.zaehler}/{flurstuecksnummer.AX_Flurstuecksnummer.nenner}",
-				values.get(0));
+				values.get(0).getValue());
 	}
 
 	/**
@@ -226,12 +227,12 @@ public class OMLReaderTest {
 		}
 		assertNotNull(cell);
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
-		List<String> values = params.get("pattern");
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+		List<ParameterValue> values = params.get("pattern");
 
 		assertEquals(1, values.size());
 		// size is 1
-		assertEquals("{Grundbuch}:{Nummer}:{Einlage}", values.get(0));
+		assertEquals("{Grundbuch}:{Nummer}:{Einlage}", values.get(0).getValue());
 	}
 
 	/**
@@ -255,11 +256,11 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
-		List<String> values = params.get("classificationMapping");
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+		List<ParameterValue> values = params.get("classificationMapping");
 
 		for (int i = 0; i < values.size(); i++) {
-			String temp = values.get(i);
+			String temp = values.get(i).getValue();
 
 			if (i == 0) {
 				assertEquals("onGroundSurface 3", temp);
@@ -301,13 +302,13 @@ public class OMLReaderTest {
 		for (int i = 0; i < classMapCells.size(); i++) {
 			Cell cell = classMapCells.get(i);
 
-			ListMultimap<String, String> params = cell.getTransformationParameters();
-			List<String> values = params.get("classificationMapping");
+			ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+			List<ParameterValue> values = params.get("classificationMapping");
 
 			// each cell can have more than one value, so iterate through them
 			// for each cell too
 			for (int j = 0; j < values.size(); j++) {
-				String temp = values.get(j);
+				String temp = values.get(j).getValue();
 
 				// "i" is the index for the cell number
 				// "j" stands for the indices of the values per cell
@@ -366,12 +367,12 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
-		List<String> values = params.get("bufferWidth");
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+		List<ParameterValue> values = params.get("bufferWidth");
 
 		assertEquals(1, values.size());
 		// size is always 1
-		String temp = values.get(0);
+		String temp = values.get(0).getValue();
 
 		assertEquals("0.005", temp);
 	}
@@ -401,10 +402,10 @@ public class OMLReaderTest {
 
 			Cell cell = networkCells.get(i);
 
-			ListMultimap<String, String> params = cell.getTransformationParameters();
-			List<String> values = params.get("bufferWidth");
+			ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+			List<ParameterValue> values = params.get("bufferWidth");
 
-			String temp = values.get(0);
+			String temp = values.get(0).getValue();
 
 			if (i == 0) {
 				assertEquals("50", temp);
@@ -445,12 +446,12 @@ public class OMLReaderTest {
 		for (int i = 0; i < assignCells.size(); i++) {
 			Cell cell = assignCells.get(i);
 
-			ListMultimap<String, String> params = cell.getTransformationParameters();
-			List<String> values = params.get("value");
+			ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+			List<ParameterValue> values = params.get("value");
 
 			assertEquals(1, values.size());
 			// size is always 1
-			String temp = values.get(0);
+			String temp = values.get(0).getValue();
 
 			// test cell #1
 			if (i == 0) {
@@ -497,12 +498,12 @@ public class OMLReaderTest {
 		for (int i = 0; i < assignCells.size(); i++) {
 			Cell cell = assignCells.get(i);
 
-			ListMultimap<String, String> params = cell.getTransformationParameters();
-			List<String> values = params.get("value");
+			ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+			List<ParameterValue> values = params.get("value");
 
 			assertEquals(1, values.size());
 			// size is always 1
-			String temp = values.get(0);
+			String temp = values.get(0).getValue();
 
 			// test cell #1
 			if (i == 0) {
@@ -551,12 +552,12 @@ public class OMLReaderTest {
 		for (int i = 0; i < assignCells.size(); i++) {
 			Cell cell = assignCells.get(i);
 
-			ListMultimap<String, String> params = cell.getTransformationParameters();
-			List<String> values = params.get("value");
+			ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+			List<ParameterValue> values = params.get("value");
 
 			assertEquals(1, values.size());
 			// size is always 1
-			String temp = values.get(0);
+			String temp = values.get(0).getValue();
 
 			// test cell #1
 			if (i == 0) {
@@ -691,12 +692,12 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
-		List<String> values = params.get("dateFormat");
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+		List<ParameterValue> values = params.get("dateFormat");
 
 		assertEquals(1, values.size());
 
-		String date = values.get(0);
+		String date = values.get(0).getValue();
 
 		assertEquals("yyyy-MM-dd HH:mm:ss", date);
 	}
@@ -721,13 +722,13 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
-		List<String> values = params.get("expression");
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
+		List<ParameterValue> values = params.get("expression");
 
 		// test the amount and the correctness of the parameter
 		assertEquals(1, values.size());
 
-		String date = values.get(0);
+		String date = values.get(0).getValue();
 
 		assertEquals("income * age/10", date);
 
@@ -773,13 +774,13 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
 
-		List<String> country = params.get("countryName");
-		List<String> provider = params.get("providerName");
-		List<String> product = params.get("productName");
-		List<String> version = params.get("version");
-		List<String> versionNilReason = params.get("versionNilReason");
+		List<ParameterValue> country = params.get("countryName");
+		List<ParameterValue> provider = params.get("providerName");
+		List<ParameterValue> product = params.get("productName");
+		List<ParameterValue> version = params.get("version");
+		List<ParameterValue> versionNilReason = params.get("versionNilReason");
 
 		// check if all parameters were set once
 		assertEquals(1, country.size());
@@ -789,11 +790,11 @@ public class OMLReaderTest {
 		assertEquals(1, versionNilReason.size());
 
 		// now test if they have correct values
-		assertEquals("at", country.get(0));
-		assertEquals("BEV", provider.get(0));
-		assertEquals("humboldt-sample-transformed-data-CadastralParcels", product.get(0));
-		assertEquals("", version.get(0));
-		assertEquals("unknown", versionNilReason.get(0));
+		assertEquals("at", country.get(0).getValue());
+		assertEquals("BEV", provider.get(0).getValue());
+		assertEquals("humboldt-sample-transformed-data-CadastralParcels", product.get(0).getValue());
+		assertEquals("", version.get(0).getValue());
+		assertEquals("unknown", versionNilReason.get(0).getValue());
 
 		// check if all parameters were tested
 		assertEquals(5, params.size());
@@ -819,19 +820,19 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
 
-		List<String> gender = params.get("grammaticalGender");
-		List<String> number = params.get("grammaticalNumber");
-		List<String> lang = params.get("language");
-		List<String> nameStatus = params.get("nameStatus");
-		List<String> nativeness = params.get("nativeness");
-		List<String> ipa = params.get("pronunciationIPA");
-		List<String> sound = params.get("pronunciationSoundLink");
-		List<String> source = params.get("sourceOfName");
-		List<String> script = params.get("script");
-		List<String> text = params.get("text");
-		List<String> trans = params.get("transliterationScheme");
+		List<ParameterValue> gender = params.get("grammaticalGender");
+		List<ParameterValue> number = params.get("grammaticalNumber");
+		List<ParameterValue> lang = params.get("language");
+		List<ParameterValue> nameStatus = params.get("nameStatus");
+		List<ParameterValue> nativeness = params.get("nativeness");
+		List<ParameterValue> ipa = params.get("pronunciationIPA");
+		List<ParameterValue> sound = params.get("pronunciationSoundLink");
+		List<ParameterValue> source = params.get("sourceOfName");
+		List<ParameterValue> script = params.get("script");
+		List<ParameterValue> text = params.get("text");
+		List<ParameterValue> trans = params.get("transliterationScheme");
 
 		// test if all parameters were set only once
 		assertEquals(1, gender.size());
@@ -849,16 +850,16 @@ public class OMLReaderTest {
 		assertEquals(1, trans.size());
 
 		// now test if they have the correct values
-		assertEquals("common", gender.get(0));
-		assertEquals("dual", number.get(0));
-		assertEquals("deu", lang.get(0));
-		assertEquals("historical", nameStatus.get(0));
-		assertEquals("exonym", nativeness.get(0));
-		assertEquals("IDipa", ipa.get(0));
-		assertEquals("source", source.get(0));
-		assertEquals("IDscript", script.get(0));
-		assertEquals("identifier", text.get(0));
-		assertEquals("IDtrans", trans.get(0));
+		assertEquals("common", gender.get(0).getValue());
+		assertEquals("dual", number.get(0).getValue());
+		assertEquals("deu", lang.get(0).getValue());
+		assertEquals("historical", nameStatus.get(0).getValue());
+		assertEquals("exonym", nativeness.get(0).getValue());
+		assertEquals("IDipa", ipa.get(0).getValue());
+		assertEquals("source", source.get(0).getValue());
+		assertEquals("IDscript", script.get(0).getValue());
+		assertEquals("identifier", text.get(0).getValue());
+		assertEquals("IDtrans", trans.get(0).getValue());
 
 		// check if all parameters were tested (size is 10 because "sound" is
 		// not defined in params)
@@ -885,19 +886,19 @@ public class OMLReaderTest {
 			}
 		}
 
-		ListMultimap<String, String> params = cell.getTransformationParameters();
+		ListMultimap<String, ParameterValue> params = cell.getTransformationParameters();
 
-		List<String> gender = params.get("grammaticalGender");
-		List<String> number = params.get("grammaticalNumber");
-		List<String> lang = params.get("language");
-		List<String> nameStatus = params.get("nameStatus");
-		List<String> nativeness = params.get("nativeness");
-		List<String> ipa = params.get("pronunciationIPA");
-		List<String> sound = params.get("pronunciationSoundLink");
-		List<String> source = params.get("sourceOfName");
-		List<String> script = params.get("script");
-		List<String> text = params.get("text");
-		List<String> trans = params.get("transliterationScheme");
+		List<ParameterValue> gender = params.get("grammaticalGender");
+		List<ParameterValue> number = params.get("grammaticalNumber");
+		List<ParameterValue> lang = params.get("language");
+		List<ParameterValue> nameStatus = params.get("nameStatus");
+		List<ParameterValue> nativeness = params.get("nativeness");
+		List<ParameterValue> ipa = params.get("pronunciationIPA");
+		List<ParameterValue> sound = params.get("pronunciationSoundLink");
+		List<ParameterValue> source = params.get("sourceOfName");
+		List<ParameterValue> script = params.get("script");
+		List<ParameterValue> text = params.get("text");
+		List<ParameterValue> trans = params.get("transliterationScheme");
 
 		// test if all parameters (except the parameters for the spellings) were
 		// set only once
@@ -918,18 +919,18 @@ public class OMLReaderTest {
 		assertEquals(2, trans.size());
 
 		// now test if they have the correct values
-		assertEquals("", gender.get(0));
-		assertEquals("", number.get(0));
-		assertEquals("esp", lang.get(0));
-		assertEquals("official", nameStatus.get(0));
-		assertEquals("endonym", nativeness.get(0));
-		assertEquals("", ipa.get(0));
-		assertEquals("unknown", source.get(0));
+		assertEquals("", gender.get(0).getValue());
+		assertEquals("", number.get(0).getValue());
+		assertEquals("esp", lang.get(0).getValue());
+		assertEquals("official", nameStatus.get(0).getValue());
+		assertEquals("endonym", nativeness.get(0).getValue());
+		assertEquals("", ipa.get(0).getValue());
+		assertEquals("unknown", source.get(0).getValue());
 
 		for (int i = 0; i < text.size(); i++) {
-			String spellText = text.get(i);
-			String spellScript = script.get(i);
-			String spellTrans = trans.get(i);
+			String spellText = text.get(i).getValue();
+			String spellScript = script.get(i).getValue();
+			String spellTrans = trans.get(i).getValue();
 			if (i == 0) {
 				assertEquals("identifier", spellText);
 				assertEquals("idScript", spellScript);
