@@ -46,6 +46,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.function.extension.ParameterEditorExtension;
@@ -62,10 +63,10 @@ import eu.esdihumboldt.util.Pair;
 public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
 		implements ParameterPage {
 
-	private ListMultimap<String, String> initialValues;
+	private ListMultimap<String, ParameterValue> initialValues;
 	private Set<FunctionParameter> params;
-	private ListMultimap<FunctionParameter, Pair<Editor<?>, Button>> inputFields;
-	private HashMap<FunctionParameter, Button> addButtons;
+	private final ListMultimap<FunctionParameter, Pair<Editor<?>, Button>> inputFields;
+	private final HashMap<FunctionParameter, Button> addButtons;
 	private static final Image removeImage = HALEUIPlugin.getImageDescriptor("icons/remove.gif")
 			.createImage();
 
@@ -112,7 +113,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		this.params = params;
 		if (initialValues == null)
 			initialValues = ArrayListMultimap.create();
@@ -123,10 +124,11 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> conf = ArrayListMultimap.create();
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> conf = ArrayListMultimap.create();
 		for (Map.Entry<FunctionParameter, Pair<Editor<?>, Button>> entry : inputFields.entries())
-			conf.put(entry.getKey().getName(), entry.getValue().getFirst().getAsText());
+			conf.put(entry.getKey().getName(), new ParameterValue(entry.getValue().getFirst()
+					.getAsText()));
 		return conf;
 	}
 
@@ -151,14 +153,14 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			}
 
 			// walk over data of initial cell while creating input fields
-			List<String> initialData = initialValues.get(fp.getName());
-			Iterator<String> initialDataIter = initialData.iterator();
+			List<ParameterValue> initialData = initialValues.get(fp.getName());
+			Iterator<ParameterValue> initialDataIter = initialData.iterator();
 
 			// create a minimum number of input fields
 			int i;
 			for (i = 0; i < fp.getMinOccurrence(); i++)
 				if (initialDataIter.hasNext())
-					createField(group, fp, initialDataIter.next());
+					createField(group, fp, initialDataIter.next().getValue());
 				else
 					createField(group, fp, ""); // important "" not null! runs
 												// validator.
@@ -167,7 +169,7 @@ public class GenericParameterPage extends HaleWizardPage<AbstractGenericFunction
 			for (; initialDataIter.hasNext()
 					&& (fp.getMaxOccurrence() == AbstractParameter.UNBOUNDED || i < fp
 							.getMaxOccurrence()); i++)
-				createField(group, fp, initialDataIter.next());
+				createField(group, fp, initialDataIter.next().getValue());
 
 			// create control buttons if max occurrence != min occurrence
 			if (fp.getMaxOccurrence() != fp.getMinOccurrence())

@@ -38,13 +38,13 @@ public class IdentifierExplanation extends AbstractCellExplanation implements Id
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
-		String country = CellUtil.getFirstParameter(cell, COUNTRY_PARAMETER_NAME);
-		String provider = CellUtil.getFirstParameter(cell, DATA_PROVIDER_PARAMETER_NAME);
-		String product = CellUtil.getFirstParameter(cell, PRODUCT_PARAMETER_NAME);
+		String country = CellUtil.getFirstParameter(cell, COUNTRY_PARAMETER_NAME).getValue();
+		String provider = CellUtil.getFirstParameter(cell, DATA_PROVIDER_PARAMETER_NAME).getValue();
+		String product = CellUtil.getFirstParameter(cell, PRODUCT_PARAMETER_NAME).getValue();
 		String namespace = Identifier.getNamespace(country, provider, product, target
 				.getDefinition().getType());
 
-		String version = CellUtil.getFirstParameter(cell, VERSION);
+		String version = CellUtil.getFirstParameter(cell, VERSION).getValue();
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("The {1} property is populated with an Inspire Identifier composed as follows: <br /><br />");
@@ -54,7 +54,7 @@ public class IdentifierExplanation extends AbstractCellExplanation implements Id
 			sb.append("3. <i>version</i> is set to <b>{3}</b>.");
 		}
 		else {
-			version = CellUtil.getFirstParameter(cell, VERSION_NIL_REASON);
+			version = CellUtil.getFirstParameter(cell, VERSION_NIL_REASON).getValue();
 			if (version != null && !version.isEmpty()) {
 				sb.append("3. The reason why the version is not set is given as <b>{3}</b>.");
 			}

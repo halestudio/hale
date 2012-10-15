@@ -4,18 +4,23 @@ Bundle-Name: Attribute Editor Bundle
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.common.definition.editors;singleton:=true
 Bundle-Version: 2.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: de.fhg.igd.osgi.util,
+Import-Package: de.cs3d.util.eclipse.extension,
+ de.fhg.igd.osgi.util,
+ eu.esdihumboldt.hale.common.align.extension.function,
+ eu.esdihumboldt.hale.common.align.model.impl,
  eu.esdihumboldt.hale.common.codelist,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.constraint,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
+ eu.esdihumboldt.hale.common.scripting,
  eu.esdihumboldt.hale.ui.codelist.internal,
  eu.esdihumboldt.hale.ui.codelist.selector,
  eu.esdihumboldt.hale.ui.codelist.service,
  eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.hale.ui.common.definition,
  eu.esdihumboldt.hale.ui.common.editors,
+ eu.esdihumboldt.hale.ui.scripting,
  eu.esdihumboldt.util.validator,
  org.springframework.core.convert
 Require-Bundle: org.eclipse.ui,

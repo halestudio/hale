@@ -34,6 +34,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
@@ -71,11 +72,12 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		selected = new HashMap<FunctionParameter, Boolean>((int) (params.size() * 1.4));
 		for (FunctionParameter param : params) {
 			if (initialValues != null && !initialValues.get(param.getName()).isEmpty())
-				selected.put(param, Boolean.parseBoolean(initialValues.get(param.getName()).get(0)));
+				selected.put(param,
+						Boolean.parseBoolean(initialValues.get(param.getName()).get(0).getValue()));
 			else
 				selected.put(param, false);
 		}
@@ -85,10 +87,10 @@ public class CheckboxParameterPage extends HaleWizardPage<AbstractGenericFunctio
 	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> result = ArrayListMultimap.create(selected.size(), 1);
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> result = ArrayListMultimap.create(selected.size(), 1);
 		for (Entry<FunctionParameter, Boolean> entry : selected.entrySet())
-			result.put(entry.getKey().getName(), entry.getValue().toString());
+			result.put(entry.getKey().getName(), new ParameterValue(entry.getValue().toString()));
 
 		return result;
 	}

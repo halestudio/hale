@@ -49,7 +49,7 @@ public class ClassificationMapping extends
 			TransformationLog log) throws TransformationException {
 		checkParameter(PARAMETER_CLASSIFICATIONS, 1);
 
-		List<String> mappings = getParameters().get(PARAMETER_CLASSIFICATIONS);
+		List<String> mappings = getTransformedParameters().get(PARAMETER_CLASSIFICATIONS);
 		String source = variables.values().iterator().next().getValueAs(String.class);
 		try {
 			String sourceValue = URLEncoder.encode(source, "UTF-8");
@@ -63,7 +63,8 @@ public class ClassificationMapping extends
 		String notClassifiedAction = USE_NULL_ACTION;
 		if (getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION) != null
 				&& !getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).isEmpty()) {
-			notClassifiedAction = getParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION).get(0);
+			notClassifiedAction = getTransformedParameters().get(PARAMETER_NOT_CLASSIFIED_ACTION)
+					.get(0);
 		}
 
 		if (USE_SOURCE_ACTION.equals(notClassifiedAction))

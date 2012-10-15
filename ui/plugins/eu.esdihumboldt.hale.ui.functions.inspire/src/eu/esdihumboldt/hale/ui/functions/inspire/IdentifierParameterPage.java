@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -105,13 +106,13 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null) {
-			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0);
-			initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME).get(0);
-			initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0);
-			initialVersion = initialValues.get(VERSION).get(0);
-			initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0);
+			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0).getValue();
+			initialProvider = initialValues.get(DATA_PROVIDER_PARAMETER_NAME).get(0).getValue();
+			initialProduct = initialValues.get(PRODUCT_PARAMETER_NAME).get(0).getValue();
+			initialVersion = initialValues.get(VERSION).get(0).getValue();
+			initialVersionNil = initialValues.get(VERSION_NIL_REASON).get(0).getValue();
 		}
 		else {
 			initialCountry = "";
@@ -123,14 +124,14 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	}
 
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> configuration = ArrayListMultimap.create(5, 1);
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> configuration = ArrayListMultimap.create(5, 1);
 
-		configuration.put(COUNTRY_PARAMETER_NAME, countryCode.getText());
-		configuration.put(DATA_PROVIDER_PARAMETER_NAME, providerName.getText());
-		configuration.put(PRODUCT_PARAMETER_NAME, productName.getText());
-		configuration.put(VERSION, version.getText());
-		configuration.put(VERSION_NIL_REASON, nilEditor.getAsText());
+		configuration.put(COUNTRY_PARAMETER_NAME, new ParameterValue(countryCode.getText()));
+		configuration.put(DATA_PROVIDER_PARAMETER_NAME, new ParameterValue(providerName.getText()));
+		configuration.put(PRODUCT_PARAMETER_NAME, new ParameterValue(productName.getText()));
+		configuration.put(VERSION, new ParameterValue(version.getText()));
+		configuration.put(VERSION_NIL_REASON, new ParameterValue(nilEditor.getAsText()));
 
 		return configuration;
 	}

@@ -55,6 +55,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
@@ -125,13 +126,14 @@ public class ClassificationMappingParameterPage extends
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		// this page is only for parameter classificationMapping, ignore params
 		if (initialValues == null)
 			return;
 
-		List<String> mappings = initialValues.get(PARAMETER_CLASSIFICATIONS);
-		for (String s : mappings) {
+		List<ParameterValue> mappings = initialValues.get(PARAMETER_CLASSIFICATIONS);
+		for (ParameterValue value : mappings) {
+			String s = value.getValue();
 			String[] splitted = s.split(" ");
 			try {
 				for (int i = 0; i < splitted.length; i++)
@@ -145,17 +147,18 @@ public class ClassificationMappingParameterPage extends
 				classifications.get(splitted[0]).add(splitted[i]);
 		}
 
-		List<String> notClassifiedActionParams = initialValues.get(PARAMETER_NOT_CLASSIFIED_ACTION);
+		List<ParameterValue> notClassifiedActionParams = initialValues
+				.get(PARAMETER_NOT_CLASSIFIED_ACTION);
 		if (!notClassifiedActionParams.isEmpty())
-			notClassifiedAction = notClassifiedActionParams.get(0);
+			notClassifiedAction = notClassifiedActionParams.get(0).getValue();
 	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> configuration = ArrayListMultimap.create();
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> configuration = ArrayListMultimap.create();
 		for (Map.Entry<String, Set<String>> mapping : classifications.entrySet()) {
 			StringBuffer buffer = new StringBuffer();
 			try {
@@ -165,7 +168,7 @@ public class ClassificationMappingParameterPage extends
 			} catch (UnsupportedEncodingException e) {
 				// UTF-8 should be everywhere
 			}
-			configuration.put(PARAMETER_CLASSIFICATIONS, buffer.toString());
+			configuration.put(PARAMETER_CLASSIFICATIONS, new ParameterValue(buffer.toString()));
 		}
 
 		switch (notClassifiedActionOptions
@@ -182,7 +185,7 @@ public class ClassificationMappingParameterPage extends
 		default:
 			notClassifiedAction = "null";
 		}
-		configuration.put(PARAMETER_NOT_CLASSIFIED_ACTION, notClassifiedAction);
+		configuration.put(PARAMETER_NOT_CLASSIFIED_ACTION, new ParameterValue(notClassifiedAction));
 		return configuration;
 	}
 
