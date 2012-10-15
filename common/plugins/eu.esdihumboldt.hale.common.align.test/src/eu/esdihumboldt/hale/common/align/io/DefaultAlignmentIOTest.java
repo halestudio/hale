@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
@@ -84,10 +85,10 @@ public class DefaultAlignmentIOTest {
 		String id1;
 		cell1.setTransformationIdentifier(id1 = "trans1");
 
-		ListMultimap<String, String> parameters1 = LinkedListMultimap.create();
-		parameters1.put("test", "1");
-		parameters1.put("test", "2");
-		parameters1.put("t", "3");
+		ListMultimap<String, ParameterValue> parameters1 = LinkedListMultimap.create();
+		parameters1.put("test", new ParameterValue("1"));
+		parameters1.put("test", new ParameterValue("2"));
+		parameters1.put("t", new ParameterValue("3"));
 		cell1.setTransformationParameters(parameters1);
 
 		ListMultimap<String, Type> source1 = ArrayListMultimap.create();
@@ -118,10 +119,10 @@ public class DefaultAlignmentIOTest {
 		String id2;
 		cell2.setTransformationIdentifier(id2 = "trans2");
 
-		ListMultimap<String, String> parameters2 = LinkedListMultimap.create();
-		parameters2.put("test", "4");
-		parameters2.put("tx", "5");
-		parameters2.put("tx", "6");
+		ListMultimap<String, ParameterValue> parameters2 = LinkedListMultimap.create();
+		parameters2.put("test", new ParameterValue("4"));
+		parameters2.put("tx", new ParameterValue("5"));
+		parameters2.put("tx", new ParameterValue("6"));
 		cell2.setTransformationParameters(parameters2);
 
 		ListMultimap<String, Type> target2 = ArrayListMultimap.create();
@@ -176,7 +177,7 @@ public class DefaultAlignmentIOTest {
 		assertEquals(id2, ncell2.getTransformationIdentifier());
 
 		// parameters
-		ListMultimap<String, String> param2 = ncell2.getTransformationParameters();
+		ListMultimap<String, ParameterValue> param2 = ncell2.getTransformationParameters();
 		assertEquals(2, param2.keySet().size());
 		assertEquals(3, param2.values().size());
 	}

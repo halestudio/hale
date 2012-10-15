@@ -55,7 +55,7 @@ public class GroovyTransformation extends
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
 		// get the mathematical expression
-		String script = getParameterChecked(PARAMETER_SCRIPT);
+		String script = getRawParameterChecked(PARAMETER_SCRIPT);
 
 		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), true);
 

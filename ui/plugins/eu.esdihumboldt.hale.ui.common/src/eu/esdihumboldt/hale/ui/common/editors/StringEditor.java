@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.common.Editor;
 
 /**
@@ -105,4 +106,11 @@ public class StringEditor extends AbstractEditor<String> {
 		return true;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
+	 */
+	@Override
+	public String getValueType() {
+		return ParameterValue.DEFAULT_TYPE;
+	}
 }

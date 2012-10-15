@@ -51,6 +51,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="expression">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -77,6 +79,8 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="prefix">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
          <functionParameter
                description="Identifier suffix"
@@ -84,6 +88,8 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="suffix">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
          <functionParameter
                description="Generation sequence to use"
@@ -91,17 +97,14 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="sequence">
-            <validator
-                  class="eu.esdihumboldt.hale.common.align.extension.function.validator.EnumerationValidator">
-               <parameter
-                     name="value"
+            <functionParameterEnumeration>
+               <enumerationValue
                      value="overall">
-               </parameter>
-               <parameter
-                     name="value"
+               </enumerationValue>
+               <enumerationValue
                      value="type">
-               </parameter>
-            </validator>
+               </enumerationValue>
+            </functionParameterEnumeration>
          </functionParameter>
       </propertyFunction>
    </extension>

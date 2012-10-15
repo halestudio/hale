@@ -32,6 +32,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
@@ -52,9 +53,9 @@ public class PropertiesMergeHandler extends
 
 	class PropertiesMergeConfig {
 
-		private List<List<QName>> keyProperties;
-		private List<List<QName>> additionalProperties;
-		private boolean autoDetect;
+		private final List<List<QName>> keyProperties;
+		private final List<List<QName>> additionalProperties;
+		private final boolean autoDetect;
 
 		private PropertiesMergeConfig(List<List<QName>> keyProperties,
 				List<List<QName>> additionalProperties, boolean autoDetect) {
@@ -67,7 +68,7 @@ public class PropertiesMergeHandler extends
 
 	@Override
 	protected PropertiesMergeConfig createMergeConfiguration(String transformationIdentifier,
-			ListMultimap<String, String> transformationParameters,
+			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
 		if (transformationParameters == null
@@ -77,14 +78,15 @@ public class PropertiesMergeHandler extends
 		}
 
 		List<List<QName>> properties = new ArrayList<List<QName>>();
-		for (String property : transformationParameters.get(PARAMETER_PROPERTY)) {
-			properties.add(PropertyResolver.getQNamesFromPath(property));
+		for (ParameterValue property : transformationParameters.get(PARAMETER_PROPERTY)) {
+			properties.add(PropertyResolver.getQNamesFromPath(property.getValue()));
 		}
 
 		List<List<QName>> additionalProperties = new ArrayList<List<QName>>();
 		if (transformationParameters.containsKey(PARAMETER_ADDITIONAL_PROPERTY)) {
-			for (String property : transformationParameters.get(PARAMETER_ADDITIONAL_PROPERTY)) {
-				additionalProperties.add(PropertyResolver.getQNamesFromPath(property));
+			for (ParameterValue property : transformationParameters
+					.get(PARAMETER_ADDITIONAL_PROPERTY)) {
+				additionalProperties.add(PropertyResolver.getQNamesFromPath(property.getValue()));
 			}
 		}
 
@@ -95,7 +97,7 @@ public class PropertiesMergeHandler extends
 		}
 		else {
 			autoDetect = Boolean.parseBoolean(transformationParameters.get(PARAMETER_AUTO_DETECT)
-					.get(0));
+					.get(0).getValue());
 		}
 
 		return new PropertiesMergeConfig(properties, additionalProperties, autoDetect);

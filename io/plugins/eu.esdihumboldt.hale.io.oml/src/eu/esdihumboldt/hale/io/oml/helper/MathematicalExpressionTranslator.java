@@ -22,7 +22,7 @@ import java.util.List;
 import eu.esdihumboldt.cst.functions.numeric.MathematicalExpressionFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
 
@@ -51,14 +51,14 @@ public class MathematicalExpressionTranslator implements FunctionTranslator,
 	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell) {
-		List<ParameterValue> newList = new ArrayList<ParameterValue>();
+		List<ParameterValueBean> newList = new ArrayList<ParameterValueBean>();
 
-		for (ParameterValue val : params) {
+		for (ParameterValueBean val : params) {
 			// translate "math_expression" to "expression"
 			if (val.getName().equals("math_expression")) {
-				newList.add(new ParameterValue(PARAMETER_EXPRESSION, val.getValue()));
+				newList.add(new ParameterValueBean(PARAMETER_EXPRESSION, val.getValue()));
 			}
 			else {
 				newList.add(val);

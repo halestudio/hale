@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
@@ -48,11 +48,11 @@ public class RenameTranslator implements FunctionTranslator, RenameFunction {
 	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell) {
 
-		List<ParameterValue> newList = new ArrayList<ParameterValue>();
-		newList.add(new ParameterValue("structuralRename", "false"));
+		List<ParameterValueBean> newList = new ArrayList<ParameterValueBean>();
+		newList.add(new ParameterValueBean("structuralRename", "false"));
 
 		return newList;
 	}

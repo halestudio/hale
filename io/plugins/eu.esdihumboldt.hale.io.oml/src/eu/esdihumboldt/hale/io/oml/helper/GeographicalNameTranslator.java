@@ -21,7 +21,7 @@ import java.util.List;
 
 import eu.esdihumboldt.cst.functions.inspire.GeographicalNameFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty;
 import eu.esdihumboldt.hale.io.oml.internal.goml.omwg.Property;
@@ -52,11 +52,11 @@ public class GeographicalNameTranslator implements FunctionTranslator, Geographi
 	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell) {
 
 		// create the new parameter list
-		List<ParameterValue> newParams = new ArrayList<ParameterValue>();
+		List<ParameterValueBean> newParams = new ArrayList<ParameterValueBean>();
 
 		IEntity source = cell.getEntity1();
 		if (source instanceof ComposedProperty) {
@@ -71,7 +71,7 @@ public class GeographicalNameTranslator implements FunctionTranslator, Geographi
 				List<IParameter> pageParams = comProp.getTransformation().getParameters();
 				// add each parameter defined by the parameter page
 				for (IParameter p : pageParams) {
-					newParams.add(new ParameterValue(p.getName(), p.getValue()));
+					newParams.add(new ParameterValueBean(p.getName(), p.getValue()));
 				}
 				// the collection of the collection contains the parameters
 				// defined for the spellings
@@ -81,7 +81,7 @@ public class GeographicalNameTranslator implements FunctionTranslator, Geographi
 					// transliterationScheme)
 					List<IParameter> spellingParams = prop.getTransformation().getParameters();
 					for (IParameter p : spellingParams) {
-						newParams.add(new ParameterValue(p.getName(), p.getValue()));
+						newParams.add(new ParameterValueBean(p.getName(), p.getValue()));
 					}
 				}
 			}

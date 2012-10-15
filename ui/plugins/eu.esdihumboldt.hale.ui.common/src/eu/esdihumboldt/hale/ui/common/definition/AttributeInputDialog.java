@@ -105,7 +105,7 @@ public class AttributeInputDialog extends Dialog {
 		// create editor
 		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
 				AttributeEditorFactory.class);
-		editor = aef.createEditor(composite, definition);
+		editor = aef.createEditor(composite, definition, false);
 		editor.getControl().setLayoutData(
 				new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		editor.setPropertyChangeListener(new IPropertyChangeListener() {

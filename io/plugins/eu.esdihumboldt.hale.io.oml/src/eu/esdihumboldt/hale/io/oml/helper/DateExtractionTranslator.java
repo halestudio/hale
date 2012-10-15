@@ -21,7 +21,7 @@ import java.util.List;
 
 import eu.esdihumboldt.cst.functions.string.DateExtractionFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
@@ -49,11 +49,11 @@ public class DateExtractionTranslator implements FunctionTranslator, DateExtract
 	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell) {
-		List<ParameterValue> newList = new ArrayList<ParameterValue>();
+		List<ParameterValueBean> newList = new ArrayList<ParameterValueBean>();
 
-		for (ParameterValue val : params) {
+		for (ParameterValueBean val : params) {
 			if (val.getName().equals("dateFormatTarget") && val.getValue() != null) {
 				reporter.warn(new IOMessageImpl(
 						"The 'dateFormatTarget' value has been removed, your result could be different.",
@@ -61,7 +61,7 @@ public class DateExtractionTranslator implements FunctionTranslator, DateExtract
 			}
 			// translate "dateFormatSource" to "dateFormat"
 			if (val.getName().equals("dateFormatSource")) {
-				newList.add(new ParameterValue(PARAMETER_DATE_FORMAT, val.getValue()));
+				newList.add(new ParameterValueBean(PARAMETER_DATE_FORMAT, val.getValue()));
 			}
 			else {
 				newList.add(val);
