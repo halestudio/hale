@@ -115,6 +115,10 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			}
 		});
 
+		// in case alignment was loaded before service was created -> add
+		// missing contexts now
+		addMissingContexts(alignmentService.getAlignment().getCells());
+
 		projectService.addListener(new ProjectServiceAdapter() {
 
 			@Override
@@ -352,7 +356,7 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 	 * 
 	 * @param cells the cells
 	 */
-	protected void addMissingContexts(Iterable<Cell> cells) {
+	protected void addMissingContexts(Iterable<? extends Cell> cells) {
 		for (Cell cell : cells) {
 			Collection<EntityDefinition> addedContexts = new ArrayList<EntityDefinition>();
 			synchronized (namedContexts) {
