@@ -29,8 +29,8 @@ import org.springframework.core.convert.ConversionException;
  */
 public class DigitCountValidator extends AbstractValidator {
 
-	private Type type;
-	private int length;
+	private final Type type;
+	private final int length;
 
 	/**
 	 * Construct a validator that checks the digit count of the input to match

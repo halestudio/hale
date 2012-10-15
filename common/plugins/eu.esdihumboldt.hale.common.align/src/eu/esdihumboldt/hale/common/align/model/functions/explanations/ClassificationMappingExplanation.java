@@ -24,6 +24,7 @@ import java.util.List;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
@@ -45,13 +46,15 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 	public String getExplanation(Cell cell) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
-		List<String> mappings = cell.getTransformationParameters().get(PARAMETER_CLASSIFICATIONS);
-		String notClassifiedAction = CellUtil.getFirstParameter(cell,
+		List<ParameterValue> mappings = cell.getTransformationParameters().get(
+				PARAMETER_CLASSIFICATIONS);
+		String notClassifiedAction = CellUtil.getFirstRawParameter(cell,
 				PARAMETER_NOT_CLASSIFIED_ACTION);
 
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
-			for (String s : mappings) {
+			for (ParameterValue value : mappings) {
+				String s = value.getValue();
 				try {
 					mappingString.append(quoteText(
 							URLDecoder.decode(s.substring(0, s.indexOf(' ')), "UTF-8"), false));
@@ -97,15 +100,17 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 
-		List<String> mappings = cell.getTransformationParameters().get(PARAMETER_CLASSIFICATIONS);
-		String notClassifiedAction = CellUtil.getFirstParameter(cell,
+		List<ParameterValue> mappings = cell.getTransformationParameters().get(
+				PARAMETER_CLASSIFICATIONS);
+		String notClassifiedAction = CellUtil.getFirstRawParameter(cell,
 				PARAMETER_NOT_CLASSIFIED_ACTION);
 
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
 			mappingString
 					.append("<table border=\"1\"><tr><th>Target value</th><th>Source values</th></tr>");
-			for (String s : mappings) {
+			for (ParameterValue value : mappings) {
+				String s = value.getValue();
 				mappingString.append("<tr><td>");
 				try {
 					mappingString.append(quoteText(

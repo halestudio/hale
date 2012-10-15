@@ -67,7 +67,7 @@ public class NetworkExpansion extends
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
 		// get the buffer width parameter
-		String bufferWidthString = getParameterChecked(PARAMETER_BUFFER_WIDTH);
+		String bufferWidthString = getRawParameterChecked(PARAMETER_BUFFER_WIDTH);
 
 		double bufferWidth;
 		try {

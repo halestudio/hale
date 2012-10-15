@@ -21,7 +21,7 @@ import java.util.List;
 
 import eu.esdihumboldt.cst.functions.geometric.NetworkExpansionFunction;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
@@ -49,18 +49,18 @@ public class NetworkExpansionTranslator implements FunctionTranslator, NetworkEx
 	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell) {
-		List<ParameterValue> newList = new ArrayList<ParameterValue>();
+		List<ParameterValueBean> newList = new ArrayList<ParameterValueBean>();
 
-		for (ParameterValue val : params) {
+		for (ParameterValueBean val : params) {
 			if (val.getName().equals("CAPSSTYLE") && val.getValue() != null) {
 				reporter.warn(new IOMessageImpl("The 'CAPSSTYLE' value has been removed.", null));
 			}
 
 			// translate "BUFFERWIDTH" to "bufferWidth"
 			if (val.getName().equals("BUFFERWIDTH")) {
-				newList.add(new ParameterValue(PARAMETER_BUFFER_WIDTH, val.getValue()));
+				newList.add(new ParameterValueBean(PARAMETER_BUFFER_WIDTH, val.getValue()));
 			}
 			else {
 				newList.add(val);

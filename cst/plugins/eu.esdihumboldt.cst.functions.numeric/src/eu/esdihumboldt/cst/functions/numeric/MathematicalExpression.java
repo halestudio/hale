@@ -58,7 +58,7 @@ public class MathematicalExpression extends
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException {
 		// get the mathematical expression
-		String expression = getParameterChecked(PARAMETER_EXPRESSION);
+		String expression = getRawParameterChecked(PARAMETER_EXPRESSION);
 
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);
 

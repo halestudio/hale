@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.functions.groovy;
+package eu.esdihumboldt.hale.ui.scripting.groovy;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 

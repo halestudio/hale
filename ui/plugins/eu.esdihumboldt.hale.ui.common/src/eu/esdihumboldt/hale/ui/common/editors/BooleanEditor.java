@@ -27,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.common.Editor;
 
 /**
@@ -116,4 +117,11 @@ public class BooleanEditor extends AbstractEditor<Boolean> {
 		return true;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
+	 */
+	@Override
+	public String getValueType() {
+		return ParameterValue.DEFAULT_TYPE;
+	}
 }
