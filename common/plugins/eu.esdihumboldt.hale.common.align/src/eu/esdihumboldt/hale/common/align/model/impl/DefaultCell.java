@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 
 /**
  * Default implementation of an alignment cell
@@ -33,7 +34,7 @@ public class DefaultCell implements Cell, MutableCell {
 
 	private ListMultimap<String, ? extends Entity> source;
 	private ListMultimap<String, ? extends Entity> target;
-	private ListMultimap<String, String> parameters;
+	private ListMultimap<String, ParameterValue> parameters;
 	private String transformation;
 
 	/**
@@ -45,10 +46,10 @@ public class DefaultCell implements Cell, MutableCell {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setTransformationParameters(com.google.common.collect.ListMultimap)
+	 * @see eu.esdihumboldt.hale.common.align.model.MutableCell#setTransformationParameters(ListMultimap)
 	 */
 	@Override
-	public void setTransformationParameters(ListMultimap<String, String> parameters) {
+	public void setTransformationParameters(ListMultimap<String, ParameterValue> parameters) {
 		this.parameters = parameters;
 	}
 
@@ -94,7 +95,7 @@ public class DefaultCell implements Cell, MutableCell {
 	 * @see Cell#getTransformationParameters()
 	 */
 	@Override
-	public ListMultimap<String, String> getTransformationParameters() {
+	public ListMultimap<String, ParameterValue> getTransformationParameters() {
 		if (parameters == null) {
 			return null;
 		}

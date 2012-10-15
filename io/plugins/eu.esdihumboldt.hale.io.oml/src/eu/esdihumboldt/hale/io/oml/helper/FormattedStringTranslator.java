@@ -26,7 +26,7 @@ import com.google.common.base.Joiner;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.ChildContextBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.NamedEntityBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.PropertyBean;
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -63,15 +63,15 @@ public class FormattedStringTranslator implements FunctionTranslator, FormattedS
 	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell) {
 
-		List<ParameterValue> newList = new ArrayList<ParameterValue>();
+		List<ParameterValueBean> newList = new ArrayList<ParameterValueBean>();
 
 		String separator = ""; // default separator
 		String concatenation = "";
 
-		for (ParameterValue val : params) {
+		for (ParameterValueBean val : params) {
 			// get original separator parameter
 			if (val.getName().equals(SEPARATOR)) {
 				separator = val.getValue();
@@ -125,7 +125,7 @@ public class FormattedStringTranslator implements FunctionTranslator, FormattedS
 			}
 		}
 		// add pattern parameter
-		newList.add(new ParameterValue(PARAMETER_PATTERN, pattern.toString()));
+		newList.add(new ParameterValueBean(PARAMETER_PATTERN, pattern.toString()));
 
 		return newList;
 	}

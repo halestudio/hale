@@ -16,9 +16,12 @@
 
 package eu.esdihumboldt.hale.ui.common.editors;
 
+import java.util.Collection;
+
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.ui.common.Editor;
 
 /**
@@ -72,5 +75,13 @@ public abstract class AbstractEditor<T> implements Editor<T> {
 		}
 		propertyChangeListener.propertyChange(new PropertyChangeEvent(this, property, oldValue,
 				newValue));
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.Editor#setVariables(java.util.Collection)
+	 */
+	@Override
+	public void setVariables(Collection<PropertyEntityDefinition> properties) {
+		// ignore variables by default
 	}
 }

@@ -34,6 +34,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
@@ -67,7 +68,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 	@Override
 	public ResourceIterator<FamilyInstance> partitionInstances(InstanceCollection instances,
 			String transformationIdentifier, TransformationEngine engine,
-			ListMultimap<String, String> transformationParameters,
+			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
 		if (transformationParameters == null
@@ -86,7 +87,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		// type on the right side.
 
 		// first collect relevant properties per type to build an index of those
-		String joinParameter = transformationParameters.get(PARAMETER_JOIN).get(0);
+		String joinParameter = transformationParameters.get(PARAMETER_JOIN).get(0).getValue();
 		String[] typesAndProps = joinParameter.split("::", -1);
 
 		// has two be two parts

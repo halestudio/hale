@@ -38,7 +38,7 @@ public class DateExtractionExplanation extends AbstractCellExplanation {
 	protected String getExplanation(Cell cell, boolean html) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String format = CellUtil.getFirstParameter(cell, DateExtraction.PARAMETER_DATE_FORMAT);
+		String format = CellUtil.getFirstRawParameter(cell, DateExtraction.PARAMETER_DATE_FORMAT);
 
 		if (target != null && format != null) {
 			return MessageFormat

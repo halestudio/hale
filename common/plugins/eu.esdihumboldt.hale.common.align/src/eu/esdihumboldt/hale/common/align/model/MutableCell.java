@@ -35,7 +35,7 @@ public interface MutableCell extends Cell {
 	/**
 	 * @param parameters the parameters to set
 	 */
-	public void setTransformationParameters(ListMultimap<String, String> parameters);
+	public void setTransformationParameters(ListMultimap<String, ParameterValue> parameters);
 
 	/**
 	 * @param source the source to set

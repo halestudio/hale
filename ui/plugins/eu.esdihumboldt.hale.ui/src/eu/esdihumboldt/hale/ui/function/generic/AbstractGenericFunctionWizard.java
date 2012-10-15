@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.ui.function.AbstractFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
@@ -161,8 +162,8 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 		for (FunctionParameter param : getFunction().getDefinedParameters())
 			functionParameters.add(param);
 		// get initial values
-		ListMultimap<String, String> initialValues = initialCell == null ? null : initialCell
-				.getTransformationParameters();
+		ListMultimap<String, ParameterValue> initialValues = initialCell == null ? null
+				: initialCell.getTransformationParameters();
 		if (initialValues != null)
 			initialValues = Multimaps.unmodifiableListMultimap(initialValues);
 		// get available parameter pages
@@ -257,7 +258,7 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	 */
 	@Override
 	public boolean performFinish() {
-		ListMultimap<String, String> parameters = ArrayListMultimap.create();
+		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
 		resultCell.setTransformationParameters(parameters);
 		// configure cell with all pages
 		for (IWizardPage page : getPages())
@@ -278,7 +279,7 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	public Cell getUnfinishedCell() {
 		MutableCell current = new DefaultCell();
 		current.setTransformationIdentifier(getFunctionId());
-		ListMultimap<String, String> parameters = ArrayListMultimap.create();
+		ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
 		current.setTransformationParameters(parameters);
 		for (IWizardPage page : getPages()) {
 			// stop at first uncompleted page

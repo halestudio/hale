@@ -22,13 +22,16 @@
 			<bind-xml name="target" node="element" />
 		</field>
 		
-		<field name="transformationParameters" collection="arraylist" type="eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue">
+		<field name="transformationParameters" collection="arraylist" type="eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean">
 			<bind-xml name="parameter" node="element" />
 		</field>
 	</class>
-	<class name="eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue" auto-complete="true">
+	<class name="eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean" auto-complete="true">
 		<field name="name" type="string">
 			<bind-xml name="name" node="attribute" />
+		</field>
+		<field name="type" type="string">
+			<bind-xml name="type" node="attribute" />
 		</field>
 		<field name="value" type="string">
 			<bind-xml name="value" node="attribute" />
