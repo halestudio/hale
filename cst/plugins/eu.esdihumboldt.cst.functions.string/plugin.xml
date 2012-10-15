@@ -48,9 +48,11 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="dateFormat">
-            <validator
-                  class="eu.esdihumboldt.cst.functions.string.DateExtractionFormatValidator">
-            </validator>
+            <functionParameterBinding>
+               <validator
+                     class="eu.esdihumboldt.cst.functions.string.DateExtractionFormatValidator">
+               </validator>
+            </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
    </extension>

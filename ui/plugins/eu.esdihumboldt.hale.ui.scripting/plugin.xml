@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.ui.script" name="Script UI" schema="schema/eu.esdihumboldt.hale.ui.script.exsd"/>
+   <extension
+         point="eu.esdihumboldt.hale.script">
+   </extension>
+
+</plugin>
