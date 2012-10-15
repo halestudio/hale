@@ -61,17 +61,9 @@
                name="structuralRename"
                label="Structural rename"
                description="If set to true, the rename transformation will try to copy child properties of equal names, too.">
-            <validator
-                  class="eu.esdihumboldt.hale.common.align.extension.function.validator.EnumerationValidator">
-               <parameter
-                     name="value"
-                     value="true">
-               </parameter>
-               <parameter
-                     name="value"
-                     value="false">
-               </parameter>
-            </validator>
+            <functionParameterBinding
+               class="java.lang.Boolean">
+            </functionParameterBinding>
          </functionParameter>
          <functionParameter
                description="Specifies if for the structural rename it is allowed to do copying independent of property namespaces."
@@ -79,17 +71,9 @@
                maxOccurrence="1"
                minOccurrence="0"
                name="ignoreNamespaces">
-            <validator
-                  class="eu.esdihumboldt.hale.common.align.extension.function.validator.EnumerationValidator">
-               <parameter
-                     name="value"
-                     value="true">
-               </parameter>
-               <parameter
-                     name="value"
-                     value="false">
-               </parameter>
-            </validator>
+            <functionParameterBinding
+               class="java.lang.Boolean">
+            </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -113,6 +97,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="value">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -145,11 +131,15 @@
                maxOccurrence="*"
                minOccurrence="1"
                name="classificationMapping">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
          <functionParameter
                maxOccurrence="1"
                minOccurrence="0"
                name="notClassifiedAction">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
       <propertyFunction
@@ -190,6 +180,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="pattern">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
       </propertyFunction>
       <typeFunction
@@ -218,6 +210,8 @@
                maxOccurrence="n"
                minOccurrence="1"
                name="property">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
          <functionParameter
                description="Each property is defined by a property path"
@@ -225,6 +219,8 @@
                maxOccurrence="n"
                minOccurrence="0"
                name="additional_property">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
          <functionParameter
                description="Auto detection of additional equal properties which will get merged."
@@ -232,17 +228,9 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="auto_detect">
-            <validator
-                  class="eu.esdihumboldt.hale.common.align.extension.function.validator.EnumerationValidator">
-               <parameter
-                     name="value"
-                     value="true">
-               </parameter>
-               <parameter
-                     name="value"
-                     value="false">
-               </parameter>
-            </validator>
+            <functionParameterBinding
+                  class="java.lang.Boolean">
+            </functionParameterBinding>
          </functionParameter>
       </typeFunction>
       <typeFunction
@@ -271,6 +259,8 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="join">
+            <functionParameterBinding>
+            </functionParameterBinding>
          </functionParameter>
       </typeFunction>
    </extension>

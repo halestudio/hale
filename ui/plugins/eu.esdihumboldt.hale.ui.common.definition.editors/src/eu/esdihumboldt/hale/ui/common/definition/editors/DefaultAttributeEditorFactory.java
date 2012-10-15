@@ -18,13 +18,12 @@ package eu.esdihumboldt.hale.ui.common.definition.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
-import eu.esdihumboldt.hale.ui.common.editors.BooleanEditor;
 
 /**
  * Default attribute editor factory
@@ -48,21 +47,32 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 //			return null;
 //		}
 
-		Binding typeBinding = type.getConstraint(Binding.class);
-		Class<?> binding = typeBinding.getBinding();
-
-		if (Boolean.class.isAssignableFrom(binding)) {
-			// boolean
-			return new BooleanEditor(parent);
-		}
-		// TODO other editors (for date/time for example)
-
-		if (!type.getConstraint(HasValueFlag.class).isEnabled()) {
+		if (!type.getConstraint(HasValueFlag.class).isEnabled())
 			return null;
-		}
 		else {
-			// fall back to default editor
-			return new DefaultAttributeEditor(parent, property);
+			EditorChooserEditor<Object> result = new PropertyEditorChooserEditor(parent, property);
+			result.selectDefaultEditor();
+			return result;
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory#createEditor(org.eclipse.swt.widgets.Composite,
+	 *      eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter)
+	 */
+	@Override
+	public Editor<?> createEditor(Composite parent, FunctionParameter parameter) {
+		// TODO possibility to set input variables for scripts
+		// TODO type field for function parameter to see whether a script was
+		// used or not
+		Class<?> binding = parameter.getBinding();
+		if (binding != null) {
+			EditorChooserEditor<Object> result = new FunctionParameterEditorChooserEditor(parent,
+					binding, parameter.getValidator());
+			result.selectDefaultEditor();
+			return result;
+		}
+		else
+			return new EnumerationEditor(parent, parameter.getEnumeration());
 	}
 }

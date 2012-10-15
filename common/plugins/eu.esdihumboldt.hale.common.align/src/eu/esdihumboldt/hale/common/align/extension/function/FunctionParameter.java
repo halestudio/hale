@@ -16,6 +16,10 @@
 
 package eu.esdihumboldt.hale.common.align.extension.function;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.jcip.annotations.Immutable;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,6 +28,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import de.cs3d.util.eclipse.extension.ExtensionUtil;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
 
@@ -37,7 +42,9 @@ public final class FunctionParameter extends AbstractParameter {
 
 	private static final ALogger log = ALoggerFactory.getLogger(FunctionParameter.class);
 
+	private final Class<?> binding;
 	private final Validator validator;
+	private final List<String> enumeration;
 
 	/**
 	 * Create a function parameter definition.
@@ -46,30 +53,74 @@ public final class FunctionParameter extends AbstractParameter {
 	 */
 	public FunctionParameter(IConfigurationElement conf) {
 		super(conf);
-		validator = createValidator(conf);
+		IConfigurationElement[] bindingElement = conf.getChildren("functionParameterBinding");
+		if (bindingElement.length > 0) {
+			this.enumeration = null;
+
+			// default to String
+			String clazz = bindingElement[0].getAttribute("class");
+			if (clazz == null)
+				this.binding = String.class;
+			else
+				this.binding = ExtensionUtil.loadClass(bindingElement[0], "class");
+
+			IConfigurationElement[] validatorElement = bindingElement[0].getChildren("validator");
+			if (validatorElement.length > 0) {
+				Validator validator = null;
+				try {
+					validator = (Validator) validatorElement[0].createExecutableExtension("class");
+					ListMultimap<String, String> parameters = ArrayListMultimap.create();
+					for (IConfigurationElement parameter : validatorElement[0]
+							.getChildren("validatorParameter"))
+						parameters.put(parameter.getAttribute("name"),
+								parameter.getAttribute("value"));
+					validator.setParameters(parameters);
+				} catch (CoreException e) {
+					log.error("Error creating validator from extension", e);
+				}
+				this.validator = validator;
+			}
+			else
+				this.validator = null;
+		}
+		else {
+			this.binding = null;
+			this.validator = null;
+			// must be present, otherwise xml is invalid
+			IConfigurationElement[] enumerationElement = conf
+					.getChildren("functionParameterEnumeration");
+			IConfigurationElement[] enumerationValues = enumerationElement[0]
+					.getChildren("enumerationValue");
+			List<String> enumeration = new ArrayList<String>(enumerationValues.length);
+			for (IConfigurationElement value : enumerationValues)
+				enumeration.add(value.getAttribute("value"));
+			this.enumeration = Collections.unmodifiableList(enumeration);
+		}
 	}
 
-	private static Validator createValidator(IConfigurationElement conf) {
-		IConfigurationElement[] validatorElement = conf.getChildren("validator");
-		if (validatorElement.length > 0) {
-			try {
-				Validator validator = (Validator) validatorElement[0]
-						.createExecutableExtension("class");
-				ListMultimap<String, String> parameters = ArrayListMultimap.create();
-				for (IConfigurationElement parameter : validatorElement[0].getChildren("parameter"))
-					parameters.put(parameter.getAttribute("name"), parameter.getAttribute("value"));
-				validator.setParameters(parameters);
-				return validator;
-			} catch (CoreException e) {
-				log.error("Error creating validator from extension", e);
-			}
-		}
-		return null;
+	/**
+	 * Returns the binding class for this function parameter or null if there is
+	 * an enumeration present.
+	 * 
+	 * @return the binding
+	 */
+	public Class<?> getBinding() {
+		return binding;
+	}
+
+	/**
+	 * Returns the enumeration of allowed values for this function parameter or
+	 * null if there is a binding present.
+	 * 
+	 * @return the enumeration
+	 */
+	public List<String> getEnumeration() {
+		return enumeration;
 	}
 
 	/**
 	 * Returns the validator associated with this function parameter or null if
-	 * there is none.
+	 * there is none. A validator can only be present if a binding is present.
 	 * 
 	 * @return the validator
 	 */
