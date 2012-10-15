@@ -25,6 +25,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -113,7 +114,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	@Override
 	public ResourceIterator<FamilyInstance> partitionInstances(InstanceCollection instances,
 			String transformationIdentifier, TransformationEngine engine,
-			ListMultimap<String, String> transformationParameters,
+			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
 		T mergeConfig = createMergeConfiguration(transformationIdentifier,
@@ -160,7 +161,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	 *             created
 	 */
 	protected abstract T createMergeConfiguration(String transformationIdentifier,
-			ListMultimap<String, String> transformationParameters,
+			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException;
 

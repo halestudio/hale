@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -49,9 +49,9 @@ public class RetypeTranslator implements FunctionTranslator, RetypeFunction {
 	 *      eu.esdihumboldt.hale.io.oml.internal.model.align.ICell)
 	 */
 	@Override
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell) {
-		for (ParameterValue val : params) {
+		for (ParameterValueBean val : params) {
 			if (val.getName().equals("split") && val.getValue() != null) {
 				reporter.error(new IOMessageImpl("The 'split' value has been removed.", null));
 			}
@@ -60,7 +60,7 @@ public class RetypeTranslator implements FunctionTranslator, RetypeFunction {
 			}
 		}
 		// the retype function has no parameters, so just return an empty list
-		return new ArrayList<ParameterValue>();
+		return new ArrayList<ParameterValueBean>();
 	}
 
 }

@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.io.oml.helper;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.io.impl.internal.CellBean;
-import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValue;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.ParameterValueBean;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.io.oml.internal.model.align.ICell;
 
@@ -47,7 +47,7 @@ public interface FunctionTranslator {
 	 * @param cell the initial cell loaded from OML
 	 * @return the post-translation parameters
 	 */
-	public List<ParameterValue> getNewParameters(List<ParameterValue> params, CellBean cellBean,
+	public List<ParameterValueBean> getNewParameters(List<ParameterValueBean> params, CellBean cellBean,
 			IOReporter reporter, ICell cell);
 
 }

@@ -48,10 +48,10 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 			TransformationLog log) throws TransformationException, NoResultException {
 		// get parameter values
 
-		String prefix = getOptionalParameter(PARAM_PREFIX, "");
-		String suffix = getOptionalParameter(PARAM_SUFFIX, "");
+		String prefix = getRawOptionalParameter(PARAM_PREFIX, "");
+		String suffix = getRawOptionalParameter(PARAM_SUFFIX, "");
 		// assume type as default for sequence
-		String sequenceStr = getOptionalParameter(PARAM_SEQUENCE, Sequence.type.name());
+		String sequenceStr = getRawOptionalParameter(PARAM_SEQUENCE, Sequence.type.name());
 
 		// select appropriate context and key
 		Sequence sequence = Sequence.valueOf(sequenceStr);

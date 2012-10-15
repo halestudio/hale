@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExte
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 
 /**
@@ -65,8 +66,9 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 		// per source parameters
 		List<? extends Entity> sources = cell.getSource().get(null);
 //		PROPERTY_TEXT
-		List<String> scripts = cell.getTransformationParameters().get(PROPERTY_SCRIPT);
-		List<String> transs = cell.getTransformationParameters().get(PROPERTY_TRANSLITERATION);
+		List<ParameterValue> scripts = cell.getTransformationParameters().get(PROPERTY_SCRIPT);
+		List<ParameterValue> transs = cell.getTransformationParameters().get(
+				PROPERTY_TRANSLITERATION);
 
 		if (!sources.isEmpty()) {
 			sb.append("For each source property a spelling is created, the spelling text is the value of the source property.");
@@ -79,8 +81,8 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 
 			int index = 0;
 			for (Entity source : sources) {
-				String script = (index < scripts.size()) ? (scripts.get(index)) : (null);
-				String trans = (index < transs.size()) ? (transs.get(index)) : (null);
+				String script = (index < scripts.size()) ? (scripts.get(index).getValue()) : (null);
+				String trans = (index < transs.size()) ? (transs.get(index).getValue()) : (null);
 
 				if (html) {
 					sb.append("<tr>");
@@ -147,7 +149,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 
 	private void addOptionalParameter(StringBuilder sb, Cell cell, String paramName,
 			PropertyFunction function, boolean html) {
-		String value = CellUtil.getFirstParameter(cell, paramName);
+		String value = CellUtil.getFirstRawParameter(cell, paramName);
 		if (value != null && !value.isEmpty()) {
 			FunctionParameter param = function.getParameter(paramName);
 

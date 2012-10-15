@@ -40,7 +40,8 @@ public class OrdinatesToPointExplanation extends AbstractCellExplanation {
 		Entity sourceX = cell.getSource().get("x").get(0);
 		Entity sourceY = cell.getSource().get("y").get(0);
 		Entity sourceZ = null;
-		String srsName = CellUtil.getFirstParameter(cell,
+
+		String srsName = CellUtil.getFirstRawParameter(cell,
 				OrdinatesToPoint.PARAMETER_REFERENCE_SYSTEM);
 
 		if (!cell.getSource().get("z").isEmpty())

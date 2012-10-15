@@ -60,25 +60,25 @@ public class GeographicalName extends
 		}
 
 		// get all parameters defined by the wizard page
-		String ipa = getParameterChecked(PROPERTY_PRONUNCIATIONIPA);
+		String ipa = getRawParameterChecked(PROPERTY_PRONUNCIATIONIPA);
 		// we need a default value and a try/catch-block because in older
 		// version we couldn't edit the pronunciationSoundLink text field
 		String sound = "";
 		try {
-			sound = getParameterChecked(PROPERTY_PRONUNCIATIONSOUNDLINK);
+			sound = getRawParameterChecked(PROPERTY_PRONUNCIATIONSOUNDLINK);
 		} catch (Exception e) {
 			// do nothing
 		}
-		String language = getParameterChecked(PROPERTY_LANGUAGE);
-		String sourceOfName = getParameterChecked(PROPERTY_SOURCEOFNAME);
-		String nameStatus = getParameterChecked(PROPERTY_NAMESTATUS);
-		String nativeness = getParameterChecked(PROPERTY_NATIVENESS);
-		String gender = getParameterChecked(PROPERTY_GRAMMA_GENDER);
-		String number = getParameterChecked(PROPERTY_GRAMMA_NUMBER);
+		String language = getRawParameterChecked(PROPERTY_LANGUAGE);
+		String sourceOfName = getRawParameterChecked(PROPERTY_SOURCEOFNAME);
+		String nameStatus = getRawParameterChecked(PROPERTY_NAMESTATUS);
+		String nativeness = getRawParameterChecked(PROPERTY_NATIVENESS);
+		String gender = getRawParameterChecked(PROPERTY_GRAMMA_GENDER);
+		String number = getRawParameterChecked(PROPERTY_GRAMMA_NUMBER);
 
 		// get the script and transliteration parameters
 		// should have the same order like source properties
-		ListMultimap<String, String> params = getParameters();
+		ListMultimap<String, String> params = getRawParameters();
 		List<String> scripts = params.get(PROPERTY_SCRIPT);
 		List<String> trans = params.get(PROPERTY_TRANSLITERATION);
 

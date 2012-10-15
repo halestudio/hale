@@ -20,15 +20,18 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 
 import de.cs3d.util.eclipse.extension.AbstractExtension;
 import de.cs3d.util.eclipse.extension.ExtensionObjectFactoryCollection;
 import de.cs3d.util.eclipse.extension.FactoryFilter;
 import de.cs3d.util.logging.ALogger;
 import de.cs3d.util.logging.ALoggerFactory;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.EditorFactory;
-import eu.esdihumboldt.hale.ui.common.editors.StringEditor;
+import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.function.extension.impl.ParameterEditorFactoryImpl;
 
 /**
@@ -79,16 +82,17 @@ public class ParameterEditorExtension extends
 	 * 
 	 * @param parent the parent composite
 	 * @param functionId the ID of the function the parameter is associated with
-	 * @param parameterName the parameter name
+	 * @param parameter the parameter
+	 * @param initialValue the initial value, may be <code>null</code>
 	 * @return the editor
 	 */
 	public Editor<?> createEditor(final Composite parent, final String functionId,
-			final String parameterName) {
+			final FunctionParameter parameter, final ParameterValue initialValue) {
 		List<ParameterEditorFactory> factories = getFactories(new FactoryFilter<EditorFactory, ParameterEditorFactory>() {
 
 			@Override
 			public boolean acceptFactory(ParameterEditorFactory factory) {
-				return factory.getParameterName().equals(parameterName)
+				return factory.getParameterName().equals(parameter.getName())
 						&& factory.getFunctionId().equals(functionId);
 			}
 
@@ -102,7 +106,10 @@ public class ParameterEditorExtension extends
 		if (!factories.isEmpty()) {
 			ParameterEditorFactory fact = factories.get(0);
 			try {
-				return fact.createExtensionObject().createEditor(parent);
+				Editor<?> editor = fact.createExtensionObject().createEditor(parent);
+				if (initialValue != null)
+					editor.setAsText(initialValue.getValue());
+				return editor;
 			} catch (Exception e) {
 				// ignore, use default
 				log.error("Could not create editor for parameter, using default editor instead.");
@@ -110,7 +117,9 @@ public class ParameterEditorExtension extends
 		}
 
 		// default editor
-		return new StringEditor(parent);
+		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
+				AttributeEditorFactory.class);
+		return aef.createEditor(parent, parameter, initialValue);
 	}
 
 }

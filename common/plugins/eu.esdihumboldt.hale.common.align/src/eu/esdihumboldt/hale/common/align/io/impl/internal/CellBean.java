@@ -26,6 +26,7 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -43,7 +44,7 @@ public class CellBean {
 
 	private List<NamedEntityBean> target = new ArrayList<NamedEntityBean>();
 
-	private List<ParameterValue> transformationParameters = new ArrayList<ParameterValue>();
+	private List<ParameterValueBean> transformationParameters = new ArrayList<ParameterValueBean>();
 
 	private String transformationIdentifier;
 
@@ -63,8 +64,9 @@ public class CellBean {
 		this.transformationIdentifier = cell.getTransformationIdentifier();
 
 		if (cell.getTransformationParameters() != null) {
-			for (Entry<String, String> param : cell.getTransformationParameters().entries()) {
-				transformationParameters.add(new ParameterValue(param.getKey(), param.getValue()));
+			for (Entry<String, ParameterValue> param : cell.getTransformationParameters().entries()) {
+				transformationParameters.add(new ParameterValueBean(param.getKey(), param
+						.getValue()));
 			}
 		}
 
@@ -97,9 +99,9 @@ public class CellBean {
 		cell.setTransformationIdentifier(getTransformationIdentifier());
 
 		if (transformationParameters != null && !transformationParameters.isEmpty()) {
-			ListMultimap<String, String> parameters = ArrayListMultimap.create();
-			for (ParameterValue param : transformationParameters) {
-				parameters.put(param.getName(), param.getValue());
+			ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
+			for (ParameterValueBean param : transformationParameters) {
+				parameters.put(param.getName(), param.createParameterValue());
 			}
 			cell.setTransformationParameters(parameters);
 		}
@@ -172,7 +174,7 @@ public class CellBean {
 	 * 
 	 * @return the transformation parameters
 	 */
-	public List<ParameterValue> getTransformationParameters() {
+	public List<ParameterValueBean> getTransformationParameters() {
 		return transformationParameters;
 	}
 
@@ -181,7 +183,7 @@ public class CellBean {
 	 * 
 	 * @param transformationParameters the transformation parameters to set
 	 */
-	public void setTransformationParameters(List<ParameterValue> transformationParameters) {
+	public void setTransformationParameters(List<ParameterValueBean> transformationParameters) {
 		this.transformationParameters = transformationParameters;
 	}
 

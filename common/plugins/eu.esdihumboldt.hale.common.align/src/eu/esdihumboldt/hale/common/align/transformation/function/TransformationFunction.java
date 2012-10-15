@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 
@@ -37,7 +38,7 @@ public interface TransformationFunction<E extends TransformationEngine> {
 	 * 
 	 * @param parameters the transformation parameters
 	 */
-	public void setParameters(ListMultimap<String, String> parameters);
+	public void setParameters(ListMultimap<String, ParameterValue> parameters);
 
 	/**
 	 * Set the execution context.

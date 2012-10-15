@@ -18,9 +18,11 @@ package eu.esdihumboldt.hale.common.align.transformation.function.impl;
 
 import java.text.MessageFormat;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -36,14 +38,14 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationF
 public abstract class AbstractTransformationFunction<E extends TransformationEngine> implements
 		TransformationFunction<E> {
 
-	private ListMultimap<String, String> parameters;
+	private ListMultimap<String, ParameterValue> parameters;
 	private ExecutionContext executionContext;
 
 	/**
 	 * @see TransformationFunction#setParameters(ListMultimap)
 	 */
 	@Override
-	public void setParameters(ListMultimap<String, String> parameters) {
+	public void setParameters(ListMultimap<String, ParameterValue> parameters) {
 		this.parameters = (parameters == null) ? (null) : (Multimaps
 				.unmodifiableListMultimap(parameters));
 	}
@@ -53,8 +55,29 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 * 
 	 * @return the parameters, may be <code>null</code> if there are none
 	 */
-	public ListMultimap<String, String> getParameters() {
+	public ListMultimap<String, ParameterValue> getParameters() {
 		return parameters;
+	}
+
+	/**
+	 * Returns the raw parameter value map ignoring specified types.
+	 * 
+	 * @return the raw parameter values
+	 */
+	public ListMultimap<String, String> getRawParameters() {
+		return Multimaps.transformValues(parameters, new Function<ParameterValue, String>() {
+
+			/**
+			 * @see com.google.common.base.Function#apply(java.lang.Object)
+			 */
+			@Override
+			public String apply(ParameterValue input) {
+				if (input == null)
+					return null;
+				else
+					return input.getValue();
+			}
+		});
 	}
 
 	/**
@@ -85,8 +108,8 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 */
 	protected void checkParameter(String parameterName, int minCount)
 			throws TransformationException {
-		if (getParameters() == null || getParameters().get(parameterName) == null
-				|| getParameters().get(parameterName).size() < minCount) {
+		if (parameters == null || parameters.get(parameterName) == null
+				|| parameters.get(parameterName).size() < minCount) {
 			if (minCount == 1) {
 				throw new TransformationException(MessageFormat.format(
 						"Mandatory parameter {0} not defined", parameterName));
@@ -107,14 +130,14 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 * @throws TransformationException if a parameter with the given name
 	 *             doesn't exist
 	 */
-	protected String getParameterChecked(String parameterName) throws TransformationException {
-		if (getParameters() == null || getParameters().get(parameterName) == null
-				|| getParameters().get(parameterName).isEmpty()) {
+	protected String getRawParameterChecked(String parameterName) throws TransformationException {
+		if (parameters == null || parameters.get(parameterName) == null
+				|| parameters.get(parameterName).isEmpty()) {
 			throw new TransformationException(MessageFormat.format(
 					"Mandatory parameter {0} not defined", parameterName));
 		}
 
-		return getParameters().get(parameterName).get(0);
+		return parameters.get(parameterName).get(0).getValue();
 	}
 
 	/**
@@ -125,13 +148,12 @@ public abstract class AbstractTransformationFunction<E extends TransformationEng
 	 * @param defaultValue the default value for the parameter
 	 * @return the parameter value, or the default if none is specified
 	 */
-	protected String getOptionalParameter(String parameterName, String defaultValue) {
-		if (getParameters() == null || getParameters().get(parameterName) == null
-				|| getParameters().get(parameterName).isEmpty()) {
+	protected String getRawOptionalParameter(String parameterName, String defaultValue) {
+		if (parameters == null || parameters.get(parameterName) == null
+				|| parameters.get(parameterName).isEmpty()) {
 			return defaultValue;
 		}
 
-		return getParameters().get(parameterName).get(0);
+		return parameters.get(parameterName).get(0).getValue();
 	}
-
 }

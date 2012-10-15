@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
@@ -140,7 +141,7 @@ public abstract class SourceListParameterPage<T> extends
 	 */
 	@Override
 	public void setParameter(Set<FunctionParameter> params,
-			ListMultimap<String, String> initialValues) {
+			ListMultimap<String, ParameterValue> initialValues) {
 		for (FunctionParameter param : params) {
 			if (param.getName().equals(getParameterName())) {
 				String description = param.getDescription();
@@ -156,9 +157,9 @@ public abstract class SourceListParameterPage<T> extends
 		}
 
 		if (initialValues != null) {
-			List<String> initialData = initialValues.get(getParameterName());
+			List<ParameterValue> initialData = initialValues.get(getParameterName());
 			if (initialData.size() > 0)
-				initialValue = initialData.get(0);
+				initialValue = initialData.get(0).getValue();
 		}
 	}
 
@@ -166,9 +167,9 @@ public abstract class SourceListParameterPage<T> extends
 	 * @see ParameterPage#getConfiguration()
 	 */
 	@Override
-	public ListMultimap<String, String> getConfiguration() {
-		ListMultimap<String, String> params = ArrayListMultimap.create();
-		params.put(getParameterName(), getText(textField));
+	public ListMultimap<String, ParameterValue> getConfiguration() {
+		ListMultimap<String, ParameterValue> params = ArrayListMultimap.create();
+		params.put(getParameterName(), new ParameterValue(getText(textField)));
 		return params;
 	}
 
