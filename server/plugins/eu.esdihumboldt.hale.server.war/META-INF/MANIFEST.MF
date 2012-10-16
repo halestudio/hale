@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Server
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.war;singleton:=true
 Bundle-Version: 2.5.0.qualifier
-Web-ContextPath: /
+Web-ContextPath: /hale
 Bundle-Activator: eu.esdihumboldt.hale.server.internal.Activator
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
