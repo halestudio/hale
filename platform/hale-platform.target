@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="27">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="30">
 <locations>
 <location path="${project_loc:hale-platform}/target/org.jdesktop.swingx" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.aopalliance" type="Directory"/>
@@ -33,7 +33,6 @@
 <location path="${project_loc:hale-platform}/target/com.sun.xml.bind" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/edu.umd.cs.findbugs" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.codehaus.groovy" type="Directory"/>
-<location path="${project_loc:hale-platform}/target/com.google.guava" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/javax.media.jai" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.dom4j" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.apache.ws" type="Directory"/>
@@ -81,5 +80,8 @@
 </location>
 <location path="${project_loc:hale-platform}/target/org.eclipse.jetty" type="Directory"/>
 <location path="${project_loc:hale-platform}/target/org.eclipse.gemini" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/com.google.guava" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.apache.wicket" type="Directory"/>
+<location path="${project_loc:hale-platform}/target/org.wicketstuff" type="Directory"/>
 </locations>
 </target>
