@@ -1,13 +1,17 @@
 /*
- * HUMBOLDT: A Framework for Data Harmonisation and Service Integration.
- * EU Integrated Project #030962                 01.10.2006 - 30.09.2010
+ * Copyright (c) 2012 Data Harmonisation Panel
  * 
- * For more information on the project, please refer to the this web site:
- * http://www.esdi-humboldt.eu
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  * 
- * LICENSE: For information on the license under which this program is 
- * available, please refer to http:/www.esdi-humboldt.eu/license.html#core
- * (c) the HUMBOLDT Consortium, 2007 to 2011.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     HUMBOLDT EU Integrated Project #030962
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.property;
@@ -19,13 +23,15 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
 
 /**
- * Specifies that a property references another another type's {@link PrimaryKey}.
- *
+ * Specifies that a property references another another type's
+ * {@link PrimaryKey}.
+ * 
  * @author Kai Schwierczek
  */
 @Immutable
 @Constraint(mutable = false)
 public class Reference implements PropertyConstraint {
+
 	private final TypeDefinition targetType;
 
 	/**
@@ -37,7 +43,7 @@ public class Reference implements PropertyConstraint {
 
 	/**
 	 * Creates a reference to the specified type.
-	 *
+	 * 
 	 * @param targetType the type that gets referenced
 	 */
 	public Reference(TypeDefinition targetType) {
@@ -46,7 +52,7 @@ public class Reference implements PropertyConstraint {
 
 	/**
 	 * Returns whether this reference references anything.
-	 *
+	 * 
 	 * @return true, if this reference references anything, false otherwise
 	 */
 	public boolean isReference() {
@@ -56,7 +62,7 @@ public class Reference implements PropertyConstraint {
 	/**
 	 * Returns the referenced type. This is <code>null</code> if and only if
 	 * {@link #isReference()} is false.
-	 *
+	 * 
 	 * @return the referenced type, may be <code>null</code>
 	 */
 	public TypeDefinition getTargetType() {
