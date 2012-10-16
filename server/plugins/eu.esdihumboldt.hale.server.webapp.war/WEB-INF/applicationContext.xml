@@ -4,7 +4,8 @@
 	xmlns:osgi="http://www.eclipse.org/gemini/blueprint/schema/blueprint"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd">
-
-	<!-- nothing -->
-
+	
+	<!-- beans -->
+	<bean id="wicketApplication" class="eu.esdihumboldt.hale.server.webapp.war.RootApplication" />
+	
 </beans>

@@ -3,7 +3,6 @@
 
 <product name="HALE Server" id="eu.esdihumboldt.hale.server.application.Server" application="org.eclipse.ui.ide.workbench" version="2.5.0" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -15,7 +14,6 @@
 
    <windowImages/>
 
-
    <launcher name="hale_server">
       <solaris/>
       <win useIco="false">
@@ -23,10 +21,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="cal10n.api"/>
@@ -43,8 +39,15 @@
       <plugin id="eu.esdihumboldt.hale.server.application"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.war"/>
+      <plugin id="eu.esdihumboldt.hale.server.webapp"/>
+      <plugin id="eu.esdihumboldt.hale.server.webapp.war"/>
       <plugin id="javax.servlet"/>
       <plugin id="jcl.over.slf4j"/>
+      <plugin id="jul.to.slf4j"/>
+      <plugin id="log4j.over.slf4j"/>
+      <plugin id="org.apache.wicket.wicket"/>
+      <plugin id="org.apache.wicket.wicket-ioc"/>
+      <plugin id="org.apache.wicket.wicket-spring"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
@@ -77,6 +80,7 @@
       <plugin id="org.springframework.context.support"/>
       <plugin id="org.springframework.core"/>
       <plugin id="org.springframework.expression"/>
+      <plugin id="org.springframework.osgi.web.mini"/>
       <plugin id="org.springframework.web"/>
       <plugin id="org.springframework.web.servlet"/>
       <plugin id="slf4j.ext"/>
@@ -84,6 +88,7 @@
 
    <configurations>
       <plugin id="eu.esdihumboldt.hale.server.war" autoStart="false" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.server.webapp.war" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="2" />
