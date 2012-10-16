@@ -14,36 +14,42 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.server;
+package eu.esdihumboldt.hale.server.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-/*
+/**
+ * Main server bundle activator.
+ * 
  * @author Andreas Burchert
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
+ * @author Simon Templer
  */
 public class Activator implements BundleActivator {
 
+	/**
+	 * Bundle name
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.server.war";
+
 	private static BundleContext context;
 
-	static BundleContext getContext() {
+	/**
+	 * Get the bundle context.
+	 * 
+	 * @return the bundle context if the bundle was activated, otherwise
+	 *         <code>null</code>
+	 */
+	public static BundleContext getContext() {
 		return context;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
+	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
+	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
 	}
